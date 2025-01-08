@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -36,7 +36,7 @@ public record ProcedureDetailsDto(
     @NotNull boolean isDeletable,
     @NotNull Instant createdAt,
     @NotNull Instant modifiedAt,
-    @Valid WaitingRoomDto waitingRoom,
+    @NotNull @Valid WaitingRoomDto waitingRoom,
     Instant schoolInfoLetterCreatedAt,
     @NotNull boolean hasInformationBlock,
     @NotNull boolean hasBeenClosed,

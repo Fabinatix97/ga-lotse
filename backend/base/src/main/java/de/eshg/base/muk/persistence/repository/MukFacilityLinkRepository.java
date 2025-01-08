@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -11,5 +11,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MukFacilityLinkRepository extends JpaRepository<MukFacilityLink, Long> {
 
-  Optional<MukFacilityLink> findByMukId(String mukId);
+  Optional<MukFacilityLink> findByDataTransmitterPseudonymId(String dataTransmitterPseudonymId);
 }

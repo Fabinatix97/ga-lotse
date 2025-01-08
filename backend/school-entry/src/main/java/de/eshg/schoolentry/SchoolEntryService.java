@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -318,7 +318,7 @@ public class SchoolEntryService {
     SchoolEntryProcedure procedure =
         schoolEntryProcedureRepository
             .findByExternalIdForUpdate(procedureId)
-            .orElseThrow(ExceptionUtil.procedureNotFoundException(procedureId));
+            .orElseThrow(ExceptionUtil::procedureNotFoundException);
     ValidationUtil.validateVersion(version, procedure);
     return procedure;
   }
@@ -326,7 +326,7 @@ public class SchoolEntryService {
   public SchoolEntryProcedure findProcedureByExternalId(UUID procedureId) {
     return schoolEntryProcedureRepository
         .findByExternalId(procedureId)
-        .orElseThrow(ExceptionUtil.procedureNotFoundException(procedureId));
+        .orElseThrow(ExceptionUtil::procedureNotFoundException);
   }
 
   ProcedureDetailsData findAndAugmentProcedureByExternalId(UUID procedureId) {
@@ -587,7 +587,7 @@ public class SchoolEntryService {
         SchoolEntryProcedure procedure =
             schoolEntryProcedureRepository
                 .findByExternalIdForUpdate(procedureId)
-                .orElseThrow(ExceptionUtil.procedureNotFoundException(procedureId));
+                .orElseThrow(ExceptionUtil::procedureNotFoundException);
         Validator.validateProcedureStatusNotClosed(procedure);
         if (procedure.getAppointment() != null) {
           stats.countUnmodified();
@@ -817,7 +817,7 @@ public class SchoolEntryService {
     WaitingRoom waitingRoom =
         waitingRoomRepository
             .findByProcedureExternalIdForUpdate(procedureId)
-            .orElseThrow(ExceptionUtil.procedureNotFoundException(procedureId));
+            .orElseThrow(ExceptionUtil::procedureNotFoundException);
     ValidationUtil.validateVersion(version, waitingRoom);
     return waitingRoom;
   }

@@ -1,0 +1,161 @@
+/**
+ * Copyright 2025 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { ApiUser } from "@eshg/employee-portal-api/base";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { Divider, Stack } from "@mui/joy";
+import { Formik, FormikErrors } from "formik";
+import { isDefined, isEmpty } from "remeda";
+
+import { AppointmentTypeConfig } from "@/lib/businessModules/officialMedicalService/api/models/AppointmentTypeConfig";
+import { CreateAppointmentBlockGroupValues } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/appointmentBlocksGroupForm/CreateAppointmentBlockGroupForm";
+import { APPOINTMENT_TYPE_OPTIONS } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/options";
+import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
+import { AppointmentBlockGroupFields } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockGroupFields";
+import {
+  AppointmentCountWithDays,
+  calculateAppointmentCount,
+} from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
+import { AppointmentStaffSelection } from "@/lib/shared/components/appointmentBlocks/AppointmentStaffSelection";
+import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
+import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
+import { FormSheet } from "@/lib/shared/components/form/FormSheet";
+import { fullName } from "@/lib/shared/components/users/userFormatter";
+import { validateFieldArray } from "@/lib/shared/helpers/validators";
+
+const DEFAULT_PARALLEL_EXAMINATIONS = 1;
+
+function validateForm(
+  values: CreateAppointmentBlockGroupValues,
+  appointmentDurations: Record<string, number>,
+) {
+  const errors: FormikErrors<CreateAppointmentBlockGroupValues> = {};
+
+  const appointmentBlockErrors = validateFieldArray(
+    values.appointmentBlocks,
+    (appointmentBlock) =>
+      validateAppointmentBlock(
+        values.type,
+        appointmentBlock,
+        appointmentDurations,
+      ),
+  );
+  if (isDefined(appointmentBlockErrors)) {
+    errors.appointmentBlocks = appointmentBlockErrors;
+  }
+
+  if (isEmpty(values.physicians)) {
+    errors.physicians =
+      "Es muss mindestens ein Arzt/eine Ärztin ausgewählt sein.";
+  }
+
+  return errors;
+}
+
+function hasAtLeastOneAppointmentInGroup(
+  values: CreateAppointmentBlockGroupValues,
+  appointmentDurations: Record<string, number>,
+) {
+  return (
+    calculateAppointmentCount({
+      ...values,
+      appointmentDurations: appointmentDurations,
+      parallelExaminations: isEmptyString(values.parallelExaminations)
+        ? DEFAULT_PARALLEL_EXAMINATIONS
+        : Math.max(values.parallelExaminations, DEFAULT_PARALLEL_EXAMINATIONS),
+      skipCalculatingOfBlocks:
+        validateForm(values, appointmentDurations).appointmentBlocks !=
+        undefined,
+    }) > 0
+  );
+}
+
+interface AppointmentBlockGroupFormProps {
+  initialValues: CreateAppointmentBlockGroupValues;
+  onSubmit: (values: CreateAppointmentBlockGroupValues) => Promise<void>;
+  allPhysicians: ApiUser[];
+  allAppointmentTypes: AppointmentTypeConfig[];
+  blockedStaff: string[];
+  freeStaff: string[];
+  validateAvailability: (values: CreateAppointmentBlockGroupValues) => void;
+}
+
+export function AppointmentBlockGroupForm(
+  props: Readonly<AppointmentBlockGroupFormProps>,
+) {
+  const snackbar = useSnackbar();
+  const physicianOptions = props.allPhysicians.map((option) => ({
+    value: option.userId,
+    label: fullName(option),
+  }));
+  const appointmentDurations = Object.fromEntries(
+    props.allAppointmentTypes.map((currentType) => [
+      currentType.appointmentTypeDto,
+      currentType.standardDurationInMinutes,
+    ]),
+  );
+  const appointmentTypesRecord: Record<string, number> = {};
+  props.allAppointmentTypes.forEach(
+    (currentType) =>
+      (appointmentTypesRecord[currentType.appointmentTypeDto] =
+        currentType.standardDurationInMinutes),
+  );
+  return (
+    <Formik
+      initialValues={props.initialValues}
+      onSubmit={async (values) => {
+        if (hasAtLeastOneAppointmentInGroup(values, appointmentTypesRecord)) {
+          await props.onSubmit(values);
+        } else {
+          snackbar.notification(
+            "Es muss mindestens ein Termin enthalten sein.",
+          );
+        }
+      }}
+      validate={(values) => validateForm(values, appointmentTypesRecord)}
+    >
+      {({ values, isSubmitting, handleSubmit }) => (
+        <FormSheet gap={5} onSubmit={handleSubmit}>
+          <Stack gap={5}>
+            <AppointmentBlockGroupFields
+              appointmentBlocksWithDays={values.appointmentBlocks}
+              options={APPOINTMENT_TYPE_OPTIONS}
+              showParallelExaminations
+            />
+          </Stack>
+          <Stack gap={5}>
+            <AppointmentStaffSelection
+              physicianOptions={physicianOptions}
+              freeStaff={props.freeStaff}
+              blockedStaff={props.blockedStaff}
+              validateAvailability={() => props.validateAvailability(values)}
+            />
+          </Stack>
+          <Divider />
+          <FormButtonBar
+            left={
+              <AppointmentCountWithDays
+                appointments={values}
+                appointmentDurations={appointmentDurations}
+                parallelExaminations={
+                  isEmptyString(values.parallelExaminations)
+                    ? DEFAULT_PARALLEL_EXAMINATIONS
+                    : Math.max(
+                        values.parallelExaminations,
+                        DEFAULT_PARALLEL_EXAMINATIONS,
+                      )
+                }
+              />
+            }
+            submitLabel="Planen"
+            submitting={isSubmitting}
+            onCancel={routes.appointmentBlockGroups.index}
+          />
+        </FormSheet>
+      )}
+    </Formik>
+  );
+}

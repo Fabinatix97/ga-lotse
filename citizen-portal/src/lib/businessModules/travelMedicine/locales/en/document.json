@@ -1,6 +1,6 @@
 {
-  "radioButtonYes": "Ja",
-  "radioButtonNo": "Nein",
-  "multiSelectWhich": "Welche?",
-  "textareaPlaceholder": "Bitte eingeben"
+  "radioButtonYes": "Yes",
+  "radioButtonNo": "No",
+  "multiSelectWhich": "Please select",
+  "textareaPlaceholder": "Please fill in"
 }

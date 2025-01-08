@@ -1,10 +1,15 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 // @ts-check
-import { object, parse, picklist, pipe, string, url } from "valibot";
+import {
+  environmentTypeSchema,
+  nodeEnvSchema,
+  urlSchema,
+} from "@eshg/lib-portal/schemas/environment";
+import { object, parse } from "valibot";
 
 /*
  * Environment Variables exposed to the Server (Node.js)
@@ -15,8 +20,11 @@ export const schema = object({
    * Next.js automatically assigns `development` when running the next dev command,
    * or `production` for all other commands.
    */
-  NODE_ENV: picklist(["development", "production"]),
-  PUBLIC_FRONTEND_URL: pipe(string(), url()),
+  NODE_ENV: nodeEnvSchema,
+
+  PUBLIC_ENVIRONMENT_TYPE: environmentTypeSchema,
+
+  PUBLIC_FRONTEND_URL: urlSchema,
 });
 
 // eslint-disable-next-line no-restricted-properties

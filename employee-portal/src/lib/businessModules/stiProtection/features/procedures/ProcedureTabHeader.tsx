@@ -1,10 +1,11 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { COUNTRY_CODE_LABELS } from "@eshg/lib-portal/components/formFields/countryCodes";
+
 import { useStiProcedureQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
-import { COUNTRY_CODE_LABELS } from "@/lib/businessModules/stiProtection/shared/countryCodes";
 import {
   TabNavigationHeader,
   TabNavigationHeaderTypography,

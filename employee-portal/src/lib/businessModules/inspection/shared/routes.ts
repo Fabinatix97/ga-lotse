@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -73,11 +73,8 @@ export const routes = {
       `${proceduresPath}/${procedureId}/reportresult`,
     reportEditor: (procedureId: string, reportId: string) =>
       `${proceduresPath}/${procedureId}/reportresult/edit/${reportId}`,
-    progressEntries: (procedureId: string) => ({
-      index: `${proceduresPath}/${procedureId}/progress-entries`,
-      details: (entryId: string) =>
-        `${routes.procedures.progressEntries(procedureId).index}/${entryId}/details`,
-    }),
+    progressEntries: (procedureId: string) =>
+      `${proceduresPath}/${procedureId}/progress-entries`,
     history: (procedureId: string) =>
       `${proceduresPath}/${procedureId}/history`,
     new: (procedureId: string) => `${proceduresPath}/new/${procedureId}`,

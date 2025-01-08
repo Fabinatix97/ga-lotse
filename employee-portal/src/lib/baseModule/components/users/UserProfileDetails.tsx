@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,6 +11,7 @@ import {
   ApiUser,
   ApiUserGroup,
 } from "@eshg/employee-portal-api/base";
+import { SALUTATION_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import { Sheet, Stack, Typography } from "@mui/joy";
@@ -30,7 +31,6 @@ import {
   ExternalLinkDetailsCell,
   emailHref,
 } from "@/lib/shared/components/detailsSection/ExternalLinkDetailsCell";
-import { SALUTATION_VALUES } from "@/lib/shared/components/personSidebar/constants";
 
 import { UserAvatar } from "./UserAvatar";
 

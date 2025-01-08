@@ -1,11 +1,12 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 "use client";
 
 import { ApiFacilityContactPerson } from "@eshg/employee-portal-api/base";
+import { SALUTATION_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { Grid } from "@mui/joy";
 import { isNonNullish } from "remeda";
 
@@ -15,7 +16,6 @@ import { TileDivider } from "@/lib/businessModules/inspection/components/inspect
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
-import { SALUTATION_VALUES } from "@/lib/shared/components/personSidebar/constants";
 
 export interface ContactPersonTileProps {
   contactPerson?: ApiFacilityContactPerson;

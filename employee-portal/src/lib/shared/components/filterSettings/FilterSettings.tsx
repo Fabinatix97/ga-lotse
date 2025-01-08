@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -10,6 +10,7 @@ import {
   SearchableGroupItem,
   SearchableGroups,
 } from "@/lib/shared/components/SearchableGroups";
+import { DateComparisonFilter } from "@/lib/shared/components/filterSettings/DateComparisonFilter";
 import { DateSpanFilter } from "@/lib/shared/components/filterSettings/DateSpanFilter";
 import { FilterSettingsContent } from "@/lib/shared/components/filterSettings/FilterSettingsContent";
 import {
@@ -133,6 +134,19 @@ export function FilterSettings(props: FilterSettingsProps) {
             case "DateSpan":
               return (
                 <DateSpanFilter
+                  definition={item.filterDefinition}
+                  value={findValueByDefinition(
+                    props.draftValues,
+                    item.filterDefinition,
+                  )}
+                  onChange={(value) =>
+                    props.onDraftValueChange(item.filterDefinition.key, value)
+                  }
+                />
+              );
+            case "DateComparison":
+              return (
+                <DateComparisonFilter
                   definition={item.filterDefinition}
                   value={findValueByDefinition(
                     props.draftValues,

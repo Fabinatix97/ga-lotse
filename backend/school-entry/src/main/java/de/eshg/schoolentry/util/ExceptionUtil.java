@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -9,19 +9,16 @@ import de.eshg.lib.appointmentblock.LocationSelectionMode;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
-import java.util.UUID;
-import java.util.function.Supplier;
 
 public final class ExceptionUtil {
   private ExceptionUtil() {}
 
-  public static Supplier<NotFoundException> notFoundException(Class<?> clazz, UUID id) {
-    return () ->
-        new NotFoundException("%s with UUID %s not found".formatted(clazz.getSimpleName(), id));
+  public static NotFoundException notFoundException(Class<?> clazz) {
+    return new NotFoundException("%s with given UUID not found".formatted(clazz.getSimpleName()));
   }
 
-  public static Supplier<NotFoundException> procedureNotFoundException(UUID procedureId) {
-    return notFoundException(SchoolEntryProcedure.class, procedureId);
+  public static NotFoundException procedureNotFoundException() {
+    return notFoundException(SchoolEntryProcedure.class);
   }
 
   public static BadRequestException badRequestExceptionForbiddenLocationId() {

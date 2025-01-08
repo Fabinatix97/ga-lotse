@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -49,7 +49,7 @@ public class ContactDetails extends BaseEntity {
   private String phoneNumber;
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  @OneToOne(optional = false, fetch = FetchType.LAZY)
+  @OneToOne(optional = false, fetch = FetchType.LAZY, mappedBy = InboxProcedure_.CONTACT_DETAILS)
   private InboxProcedure inboxProcedure;
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)

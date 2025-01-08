@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -18,11 +18,8 @@ import { Button, List, Stack, Typography } from "@mui/joy";
 import { useMemo, useState } from "react";
 import { prop, sortBy } from "remeda";
 
-import {
-  headerHeightDesktop,
-  headerHeightMobile,
-} from "@/lib/components/layout/theme/sizes";
 import { theme } from "@/lib/components/layout/theme/theme";
+import { useHeaderHeights } from "@/lib/components/layout/useHeaderHeights";
 import { entityToString } from "@/lib/helpers/entityToString";
 import { useOrgUnitsQuery } from "@/lib/hooks/useOrgUnits";
 import { useTranslation } from "@/lib/i18n/client";
@@ -65,6 +62,7 @@ const items: MainItem[] = [
 export function Navigation() {
   const { data: getOrgUnitsResponse } = useOrgUnitsQuery();
   const [navigationSidebarOpen, setNavigationSidebarOpen] = useState(true);
+  const { headerHeightMobile, headerHeightDesktop } = useHeaderHeights();
   const { t } = useTranslation();
 
   const itemsWithActorSubItems = useMemo<MainItem[]>(() => {

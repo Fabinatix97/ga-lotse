@@ -1,11 +1,10 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 package de.eshg.schoolentry;
 
-import static de.eshg.schoolentry.util.ExceptionUtil.procedureNotFoundException;
 import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.ANAMNESIS_MODIFIED;
 import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.DEVELOPMENT_SCREENING_MODIFIED;
 import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.EYE_EXAMINATION_MODIFIED;
@@ -27,6 +26,7 @@ import de.eshg.schoolentry.domain.repository.HearingTestResultRepository;
 import de.eshg.schoolentry.domain.repository.SopessExaminationResultRepository;
 import de.eshg.schoolentry.domain.repository.VaccinationStatusRepository;
 import de.eshg.schoolentry.percentiles.PercentileCalculationService;
+import de.eshg.schoolentry.util.ExceptionUtil;
 import de.eshg.schoolentry.util.ProgressEntryUtil;
 import de.eshg.validation.ValidationUtil;
 import java.util.Objects;
@@ -68,7 +68,7 @@ public class ExaminationResultService {
     HearingTestResult hearingTestResult =
         hearingTestResultRepository
             .findByProcedureExternalIdForUpdate(procedureId)
-            .orElseThrow(procedureNotFoundException(procedureId));
+            .orElseThrow(ExceptionUtil::procedureNotFoundException);
     ValidationUtil.validateVersion(version, hearingTestResult);
     return hearingTestResult;
   }
@@ -76,14 +76,14 @@ public class ExaminationResultService {
   public HearingTestResult findHearingTestResult(UUID procedureId) {
     return hearingTestResultRepository
         .findByProcedureExternalId(procedureId)
-        .orElseThrow(procedureNotFoundException(procedureId));
+        .orElseThrow(ExceptionUtil::procedureNotFoundException);
   }
 
   public EyeExaminationResult findEyeExaminationResultForUpdate(UUID procedureId, long version) {
     EyeExaminationResult eyeExaminationResult =
         eyeExaminationResultRepository
             .findByProcedureExternalIdForUpdate(procedureId)
-            .orElseThrow(procedureNotFoundException(procedureId));
+            .orElseThrow(ExceptionUtil::procedureNotFoundException);
     ValidationUtil.validateVersion(version, eyeExaminationResult);
     return eyeExaminationResult;
   }
@@ -91,7 +91,7 @@ public class ExaminationResultService {
   public EyeExaminationResult findEyeExaminationResult(UUID procedureId) {
     return eyeExaminationResultRepository
         .findByProcedureExternalId(procedureId)
-        .orElseThrow(procedureNotFoundException(procedureId));
+        .orElseThrow(ExceptionUtil::procedureNotFoundException);
   }
 
   public SopessExaminationResult findSopessExaminationResultForUpdate(
@@ -99,7 +99,7 @@ public class ExaminationResultService {
     SopessExaminationResult sopessExaminationResult =
         sopessExaminationResultRepository
             .findByProcedureExternalIdForUpdate(procedureId)
-            .orElseThrow(procedureNotFoundException(procedureId));
+            .orElseThrow(ExceptionUtil::procedureNotFoundException);
     ValidationUtil.validateVersion(version, sopessExaminationResult);
     return sopessExaminationResult;
   }
@@ -107,7 +107,7 @@ public class ExaminationResultService {
   public SopessExaminationResult findSopessExaminationResult(UUID procedureId) {
     return sopessExaminationResultRepository
         .findByProcedureExternalId(procedureId)
-        .orElseThrow(procedureNotFoundException(procedureId));
+        .orElseThrow(ExceptionUtil::procedureNotFoundException);
   }
 
   public DevelopmentScreening findDevelopmentScreeningResultForUpdate(
@@ -115,7 +115,7 @@ public class ExaminationResultService {
     DevelopmentScreening developmentScreeningResult =
         developmentScreeningResultRepository
             .findByProcedureExternalIdForUpdate(procedureId)
-            .orElseThrow(procedureNotFoundException(procedureId));
+            .orElseThrow(ExceptionUtil::procedureNotFoundException);
     ValidationUtil.validateVersion(version, developmentScreeningResult);
     return developmentScreeningResult;
   }
@@ -123,20 +123,20 @@ public class ExaminationResultService {
   public DevelopmentScreening findDevelopmentScreeningResult(UUID procedureId) {
     return developmentScreeningResultRepository
         .findByProcedureExternalId(procedureId)
-        .orElseThrow(procedureNotFoundException(procedureId));
+        .orElseThrow(ExceptionUtil::procedureNotFoundException);
   }
 
   public Anamnesis findAnamnesis(UUID procedureId) {
     return anamnesisRepository
         .findByProcedureExternalId(procedureId)
-        .orElseThrow(procedureNotFoundException(procedureId));
+        .orElseThrow(ExceptionUtil::procedureNotFoundException);
   }
 
   public Anamnesis findAnamnesisForUpdate(UUID procedureId, long version) {
     Anamnesis anamnesis =
         anamnesisRepository
             .findByProcedureExternalIdForUpdate(procedureId)
-            .orElseThrow(procedureNotFoundException(procedureId));
+            .orElseThrow(ExceptionUtil::procedureNotFoundException);
     ValidationUtil.validateVersion(version, anamnesis);
     return anamnesis;
   }
@@ -145,7 +145,7 @@ public class ExaminationResultService {
     VaccinationStatus vaccinationStatus =
         vaccinationStatusRepository
             .findByProcedureExternalIdForUpdate(procedureId)
-            .orElseThrow(procedureNotFoundException(procedureId));
+            .orElseThrow(ExceptionUtil::procedureNotFoundException);
     ValidationUtil.validateVersion(version, vaccinationStatus);
     return vaccinationStatus;
   }
@@ -153,7 +153,7 @@ public class ExaminationResultService {
   public VaccinationStatus findVaccinationStatus(UUID procedureId) {
     return vaccinationStatusRepository
         .findByProcedureExternalId(procedureId)
-        .orElseThrow(procedureNotFoundException(procedureId));
+        .orElseThrow(ExceptionUtil::procedureNotFoundException);
   }
 
   void updateHearingTestResult(

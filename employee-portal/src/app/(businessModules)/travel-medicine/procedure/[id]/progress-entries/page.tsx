@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -31,17 +31,11 @@ import {
 } from "@/lib/businessModules/travelMedicine/api/queries/progressEntries";
 import { systemProgressEntryTypeTitles } from "@/lib/businessModules/travelMedicine/shared/constants";
 import { moduleUserGroup } from "@/lib/businessModules/travelMedicine/shared/moduleUserGroup";
-import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
 import { ProgressEntriesUrlParams } from "@/lib/shared/components/procedures/progress-entries/types";
 
-interface TravelMedicineProgressEntriesPageParams
-  extends EditInspectionPageParams {
-  entryId?: string;
-}
-
 export default function TravelMedicineProgressEntries(
-  props: ProgressEntriesUrlParams<TravelMedicineProgressEntriesPageParams>,
+  props: ProgressEntriesUrlParams<EditInspectionPageParams>,
 ) {
   const { params, searchParams } = props;
   return (
@@ -53,7 +47,6 @@ export default function TravelMedicineProgressEntries(
       useFetchProgressEntries={useFetchProgressEntries}
       useFetchProgressEntryDetails={useFetchProgressEntryDetails}
       procedureId={params.id}
-      progressEntryId={params.entryId}
       searchParams={searchParams}
       leaderRole={ApiUserRole.TravelMedicineLeader}
       useRequestProgressEntryDeletion={useRequestProgressEntryDeletion}
@@ -63,12 +56,6 @@ export default function TravelMedicineProgressEntries(
       useDownloadFile={useDownloadTravelMedicineFile}
       useGetManualProgressEntryHistory={useGetManualProgressEntryHistory}
       useGetMetaDataHistory={useGetMetaDataHistory}
-      routes={{
-        entryDetails: (procedureId, entryId) =>
-          routes.procedures.progressEntries(procedureId).details(entryId),
-        progressEntries: (procedureId) =>
-          routes.procedures.progressEntries(procedureId).index,
-      }}
       systemProgressEntryTypes={systemProgressEntryTypeTitles}
       groupName={moduleUserGroup.group}
     />

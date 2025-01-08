@@ -1,21 +1,22 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { ApiBaseFeature, ApiUserRole } from "@eshg/employee-portal-api/base";
 import {
-  CalendarMonth,
-  Contacts,
+  CalendarTodayOutlined,
+  ContactsOutlined,
   ContentPasteSearch,
-  EmailSharp,
-  Group,
-  ListAlt,
+  ContentPasteSearchOutlined,
+  DashboardOutlined,
+  GppGoodOutlined,
+  InventoryOutlined,
+  MailOutline,
+  PeopleAltOutlined,
   PermMediaOutlined,
-  Policy,
-  SpaceDashboard,
-  Speed,
-  Warehouse,
+  TrackChangesOutlined,
+  WarehouseOutlined,
 } from "@mui/icons-material";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
@@ -27,63 +28,72 @@ import { hasUserRole, noCheck } from "@/lib/shared/helpers/accessControl";
 
 import { routes } from "./shared/routes";
 
+const dashboardItem: SideNavigationItem[] = [
+  {
+    name: "Dashboard",
+    href: routes.index,
+    decorator: <DashboardOutlined />,
+    accessCheck: noCheck(),
+  },
+];
+
+export function useDashboardItem(): UseSideNavigationItemsResult[] {
+  const items = dashboardItem;
+
+  return [{ isLoading: false, items }];
+}
+
 /**
  * These are the side navigation items of base module pages.
  * Navigation items of business module pages are defined in their respective files and must not be added here.
  */
 const sideNavigationItems: SideNavigationItem[] = [
   {
-    name: "Dashboard",
-    href: routes.index,
-    decorator: <SpaceDashboard color="neutral" />,
-    accessCheck: noCheck(),
-  },
-  {
     name: "DSGVO",
     href: routes.gdpr.index,
-    decorator: <Policy />,
+    decorator: <GppGoodOutlined />,
     accessCheck: hasUserRole(ApiUserRole.BaseGdprProcedureRead),
   },
   {
     name: "Benutzer",
     href: routes.users.index,
-    decorator: <Group />,
+    decorator: <PeopleAltOutlined />,
     accessCheck: noCheck(),
   },
   {
     name: "Kalender",
     href: routes.calendar,
-    decorator: <CalendarMonth />,
+    decorator: <CalendarTodayOutlined />,
     accessCheck: noCheck(),
   },
   {
     name: "Ressourcen",
     href: routes.resources.index,
-    decorator: <Warehouse />,
+    decorator: <WarehouseOutlined />,
     accessCheck: hasUserRole(ApiUserRole.BaseResourcesRead),
   },
   {
     name: "Inventar",
     href: routes.inventory.index,
-    decorator: <ListAlt />,
+    decorator: <InventoryOutlined />,
     accessCheck: hasUserRole(ApiUserRole.BaseInventoryRead),
   },
   {
     name: "Kontakte",
     href: routes.contacts.index,
-    decorator: <Contacts />,
+    decorator: <ContactsOutlined />,
     accessCheck: hasUserRole(ApiUserRole.BaseContactsRead),
   },
   {
     name: "Kennzahlen",
     href: routes.metrics.index,
-    decorator: <Speed />,
+    decorator: <TrackChangesOutlined />,
     accessCheck: hasUserRole(ApiUserRole.BaseProcedureMetricsRead),
   },
   {
     name: "Auditlog",
     href: routes.auditlog.index,
-    decorator: <ContentPasteSearch />,
+    decorator: <ContentPasteSearchOutlined />,
     accessCheck: hasUserRole(ApiUserRole.AuditlogDecryptAndAccess),
   },
   {
@@ -101,7 +111,7 @@ const sideNavigationItems: SideNavigationItem[] = [
   {
     name: "Posteingang",
     href: routes.inbox,
-    decorator: <EmailSharp />,
+    decorator: <MailOutline />,
     accessCheck: hasUserRole(ApiUserRole.InboxProcedureWrite),
   },
 ];

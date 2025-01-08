@@ -49,5 +49,19 @@
     "dr": "Dr.",
     "prof": "Prof.",
     "prof_dr": "Prof. Dr."
+  },
+  "confirmationDialog": {
+    "title": "Änderung speichern?",
+    "description": "Möchten Sie die Änderung wirklich speichern?",
+    "confirmLabel": "Speichern",
+    "cancelLabel": "Abbrechen"
+  },
+  "cancelDialog": {
+    "title": "Änderungen verwerfen?",
+    "description": "Möchten Sie die Änderungen wirklich verwerfen?",
+    "confirmLabel": "Verwerfen"
+  },
+  "error": {
+    "title": "Fehler beim Laden"
   }
 }

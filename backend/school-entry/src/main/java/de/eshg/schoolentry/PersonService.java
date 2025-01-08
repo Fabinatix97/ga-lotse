@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -122,7 +122,7 @@ public class PersonService {
         procedure.getRelatedPersons().stream()
             .filter(p -> p.getCentralFileStateId().equals(centralFileStateId))
             .collect(StreamUtil.toSingleOptionalElement())
-            .orElseThrow(notFoundException(Person.class, centralFileStateId));
+            .orElseThrow(PersonService::personNotFoundException);
     procedure.getRelatedPersons().remove(person);
 
     progressEntryUtil.addProgressEntry(procedure, CUSTODIAN_REMOVED);
@@ -141,11 +141,13 @@ public class PersonService {
     Person person =
         personRepository.findByProcedureExternalIdAndFileStateIdForUpdate(procedureId, fileStateId);
     if (person == null) {
-      throw new NotFoundException(
-          "Person with fileStateId %s for procedure %s not found"
-              .formatted(fileStateId, procedureId));
+      throw new NotFoundException("Person with given fileStateId for given procedure not found");
     }
     ValidationUtil.validateVersion(version, person);
     return person;
+  }
+
+  private static NotFoundException personNotFoundException() {
+    return notFoundException(Person.class);
   }
 }

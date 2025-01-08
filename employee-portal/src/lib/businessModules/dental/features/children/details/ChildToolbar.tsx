@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -51,12 +51,12 @@ function buildTabItems(childId: string): TabNavigationItem[] {
     },
     {
       tabButtonName: "Untersuchungen",
-      href: routes.children.byId(childId).examinations,
+      href: routes.children.byId(childId).examinations.overview,
       decorator: <FormatListBulletedOutlined />,
     },
     {
       tabButtonName: "Verlaufseinträge",
-      href: routes.children.byId(childId).progressEntries.overview,
+      href: routes.children.byId(childId).progressEntries,
       decorator: <TimelineOutlined />,
     },
   ];

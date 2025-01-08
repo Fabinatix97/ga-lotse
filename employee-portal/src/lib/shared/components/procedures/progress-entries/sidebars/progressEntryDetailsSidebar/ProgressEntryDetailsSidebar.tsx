@@ -1,77 +1,58 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 "use client";
 
-import { ApiGetProgressEntryResponse } from "@eshg/employee-portal-api/businessProcedures";
-import { UseSuspenseQueryResult } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useContext } from "react";
 import { isDefined } from "remeda";
 
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { useBuildRoutePreservingSearchParams } from "@/lib/shared/components/procedures/hooks/useBuildRoutePreservingSearchParams";
+import { ProgressEntriesContext } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import { InboxProgressEntryDetails } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/InboxProgressEntryDetails";
 import { ManualProgressEntryDetails } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/ManualProgressEntryDetails";
 import { SystemProgressEntryDetails } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/SystemProgressEntryDetails";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 
 interface ProgressEntryDetailsSidebarProps {
-  procedureId: string;
   progressEntryId: string;
-  route: (procedureId: string, entryId: string) => string;
-  useFetchProgressEntryDetails: (
-    procedureId: string,
-    entryId: string,
-  ) => UseSuspenseQueryResult<ApiGetProgressEntryResponse>;
 }
 
 export function ProgressEntryDetailsSidebar({
-  procedureId,
   progressEntryId,
-  route,
-  useFetchProgressEntryDetails,
-}: Readonly<ProgressEntryDetailsSidebarProps>) {
+}: ProgressEntryDetailsSidebarProps) {
+  const progressEntriesContext = useContext(ProgressEntriesContext);
+  const { procedureId, useFetchProgressEntryDetails } =
+    progressEntriesContext.config;
+  const { closeEntryDetailsSidebar } = progressEntriesContext.action;
   const { progressEntry, relatedKeyDocumentProgressEntries } =
     useFetchProgressEntryDetails(procedureId, progressEntryId).data;
-  const router = useRouter();
-  const buildRoutePreservingSearchParams =
-    useBuildRoutePreservingSearchParams();
-
-  function onClose() {
-    router.push(
-      buildRoutePreservingSearchParams(route(procedureId, progressEntryId)),
-    );
-  }
 
   return (
-    <OverlayBoundary>
-      <Sidebar open={isDefined(progressEntry)} onClose={onClose}>
-        {isDefined(progressEntry) &&
-          progressEntry.type === "ManualProgressEntry" && (
-            <ManualProgressEntryDetails
-              entry={progressEntry}
-              relatedKeyDocumentProgressEntries={
-                relatedKeyDocumentProgressEntries
-              }
-              onClose={onClose}
-            />
-          )}
-        {isDefined(progressEntry) &&
-          progressEntry.type === "SystemProgressEntry" && (
-            <SystemProgressEntryDetails
-              entry={progressEntry}
-              relatedKeyDocumentProgressEntries={
-                relatedKeyDocumentProgressEntries
-              }
-            />
-          )}
-        {isDefined(progressEntry) &&
-          progressEntry.type === "ProcessedInboxProgressEntry" && (
-            <InboxProgressEntryDetails entry={progressEntry} />
-          )}
-      </Sidebar>
-    </OverlayBoundary>
+    <Sidebar open onClose={closeEntryDetailsSidebar}>
+      {isDefined(progressEntry) &&
+        progressEntry.type === "ManualProgressEntry" && (
+          <ManualProgressEntryDetails
+            entry={progressEntry}
+            relatedKeyDocumentProgressEntries={
+              relatedKeyDocumentProgressEntries
+            }
+            onClose={closeEntryDetailsSidebar}
+          />
+        )}
+      {isDefined(progressEntry) &&
+        progressEntry.type === "SystemProgressEntry" && (
+          <SystemProgressEntryDetails
+            entry={progressEntry}
+            relatedKeyDocumentProgressEntries={
+              relatedKeyDocumentProgressEntries
+            }
+          />
+        )}
+      {isDefined(progressEntry) &&
+        progressEntry.type === "ProcessedInboxProgressEntry" && (
+          <InboxProgressEntryDetails entry={progressEntry} />
+        )}
+    </Sidebar>
   );
 }

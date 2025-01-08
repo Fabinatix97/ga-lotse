@@ -1,11 +1,11 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package de.eshg.base.contact.api;
 
-import de.eshg.CustomValidations.EmailAddressConstraint;
+import de.eshg.CustomValidations.MandatoryEmailAddressConstraint;
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.base.address.AddressDto;
@@ -30,7 +30,7 @@ public record PersonContactDto(
             example = "@username:server")
         String externalChatUsername,
     @NotNull List<String> phoneNumbers,
-    @NotNull List<@EmailAddressConstraint String> emailAddresses,
+    @NotNull List<@MandatoryEmailAddressConstraint String> emailAddresses,
     @Valid AddressDto contactAddress,
     @Valid AddressDto differentBillingAddress)
     implements ContactDto {

@@ -1,4 +1,4 @@
-# Copyright 2024 cronn GmbH
+# Copyright 2025 cronn GmbH
 # SPDX-License-Identifier: AGPL-3.0-only
 
 packages:
@@ -33,6 +33,7 @@ catalogs:
     "@emotion/react": "11.13.5"
     "@emotion/styled": "11.13.5"
     "@fontsource/poppins": "5.1.0"
+    "@fontsource/source-code-pro": "5.1.0"
 
   i18next:
     "i18next": "24.0.2"

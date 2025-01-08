@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -16,6 +16,8 @@ import de.eshg.lib.notification.NotificationApi;
 import de.eshg.lib.notification.api.GetNotificationsResponse;
 import de.eshg.lib.notification.api.MarkNotificationsAsReadRequest;
 import de.eshg.lib.procedure.api.*;
+import de.eshg.lib.procedure.model.CheckFileStateUsageRequest;
+import de.eshg.lib.procedure.model.CheckFileStateUsageResponse;
 import de.eshg.lib.procedure.model.GetProcedureMetricsResponse;
 import de.eshg.lib.procedure.model.GetRecentProceduresResponse;
 import de.eshg.lib.procedure.model.GetTaskMetricsResponse;
@@ -58,7 +60,7 @@ public class BusinessModuleClient
         EventMetadataApi,
         NotificationApi,
         StatisticsApi,
-        RecentProcedureApi,
+        BusinessModuleProcedureApi,
         ProcedureMetricsApi,
         GdprValidationTaskApi {
 
@@ -156,6 +158,11 @@ public class BusinessModuleClient
       Set<ProcedureStatusDto> procedureStatus,
       Integer limit) {
     return procedureApiDelegate.getRecentProcedures(userId, procedureTypes, procedureStatus, limit);
+  }
+
+  @Override
+  public CheckFileStateUsageResponse checkFileStateUsage(CheckFileStateUsageRequest request) {
+    return procedureApiDelegate.checkFileStateUsage(request);
   }
 
   @Override

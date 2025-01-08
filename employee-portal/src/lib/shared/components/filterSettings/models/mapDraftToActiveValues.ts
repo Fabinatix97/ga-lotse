@@ -1,11 +1,15 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { isNonNull } from "remeda";
 
+import {
+  DateComparisonFilterDraftValue,
+  DateComparisonFilterValue,
+} from "@/lib/shared/components/filterSettings/models/DateComparisonFilter";
 import {
   FilterDraftValue,
   FilterValue,
@@ -26,6 +30,8 @@ export function mapDraftToActiveValues(
       switch (draftValue.type) {
         case "Number":
           return mapNumber(draftValue);
+        case "DateComparison":
+          return mapDateComparison(draftValue);
         default:
           return draftValue;
       }
@@ -34,6 +40,15 @@ export function mapDraftToActiveValues(
     .toSorted((draftValueA, draftValueB) =>
       draftValueA.key.localeCompare(draftValueB.key),
     );
+}
+
+function mapDateComparison(
+  draftValue: DateComparisonFilterDraftValue,
+): DateComparisonFilterValue | null {
+  if (draftValue.value && draftValue.value.trim().length > 0) {
+    return draftValue;
+  }
+  return null;
 }
 
 function mapNumber(

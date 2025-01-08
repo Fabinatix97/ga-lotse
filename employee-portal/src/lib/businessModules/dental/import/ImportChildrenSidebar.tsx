@@ -1,17 +1,17 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiContactCategory } from "@eshg/employee-portal-api/base";
+import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Stack } from "@mui/joy";
 import { Formik } from "formik";
 
+import { SCHOOL_OR_DAYCARE } from "@/lib/baseModule/api/queries/contacts";
 import { useImportChildren } from "@/lib/businessModules/dental/api/mutations/importApi";
 import { SearchMultipleContactsField } from "@/lib/shared/components/formFields/SearchMultipleContactsField";
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
-import { FileType } from "@/lib/shared/components/formFields/file/FileType";
 import { SchoolYearField } from "@/lib/shared/components/formFields/schoolYear";
 import { ImportDataForm } from "@/lib/shared/components/import/ImportDataForm";
 import {
@@ -57,9 +57,7 @@ function ImportChildrenSidebar(props: SidebarWithFormRefProps) {
             <SearchMultipleContactsField
               name="institutionId"
               label="Einrichtung"
-              categories={new Set<ApiContactCategory>()
-                .add(ApiContactCategory.School)
-                .add(ApiContactCategory.Daycare)}
+              categories={SCHOOL_OR_DAYCARE}
             />
             <SchoolYearField
               name="schoolYear"

@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,7 +7,7 @@ import { useResolveSideNavigationItems } from "@/lib/baseModule/moduleRegister/s
 import { AccessCheck } from "@/lib/shared/helpers/accessControl";
 import { useAccessControl } from "@/lib/shared/hooks/useAccessControl";
 
-import { SideNavigationItem, UseSideNavigationItemsResult } from "./types";
+import { SideNavigationItem, UseSideNavigationItemGroupsResult } from "./types";
 
 export function filterNavigationItemsWithAccess(
   items: SideNavigationItem[],
@@ -44,12 +44,22 @@ export function filterNavigationItemsWithAccess(
   );
 }
 
-export function useNavigationItems(): UseSideNavigationItemsResult {
+export function useNavigationItems(): UseSideNavigationItemGroupsResult {
   const checkAccess = useAccessControl();
-  const { isLoading, items } = useResolveSideNavigationItems();
+  const { isLoading, itemGroups } = useResolveSideNavigationItems();
 
   return {
     isLoading,
-    items: filterNavigationItemsWithAccess(items, checkAccess),
+    itemGroups: {
+      dashboardItem: itemGroups.dashboardItem,
+      businessItems: filterNavigationItemsWithAccess(
+        itemGroups.businessItems,
+        checkAccess,
+      ),
+      baseItems: filterNavigationItemsWithAccess(
+        itemGroups.baseItems,
+        checkAccess,
+      ),
+    },
   };
 }

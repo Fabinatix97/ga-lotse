@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -89,7 +89,7 @@ export function ProceduresOverviewTable(
             route: (row) => routes.procedures.byId(row.original.id).details,
             focusColumnAccessorKey: "lastName",
           }}
-          minWidth={450}
+          minWidth={780}
         />
       </TableSheet>
     </TablePage>

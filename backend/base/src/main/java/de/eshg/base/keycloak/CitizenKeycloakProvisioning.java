@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -19,6 +19,8 @@ import de.eshg.mutex.MutexService;
 import java.net.URI;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.keycloak.representations.idm.IdentityProviderMapperRepresentation;
 import org.keycloak.representations.idm.IdentityProviderRepresentation;
@@ -44,7 +46,8 @@ public class CitizenKeycloakProvisioning extends KeycloakProvisioning<CitizenKey
       "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent";
   public static final String NAMEID_FORMAT_TRANSIENT =
       "urn:oasis:names:tc:SAML:2.0:nameid-format:transient";
-  public static final BundIdAttribute BUND_ID_PRIMARY_KEY_ATTRIBUTE = BundIdAttribute.B_PK_2;
+  public static final String ATTRIBUTE_NAME_FORMAT = "attribute.name.format";
+  public static final String INHERIT = "INHERIT";
 
   public CitizenKeycloakProvisioning(
       CitizenKeycloakClient citizenKeycloakClient,
@@ -127,9 +130,7 @@ public class CitizenKeycloakProvisioning extends KeycloakProvisioning<CitizenKey
               "Mein Unternehmenskonto",
               mukIdp,
               new NameIdPolicy(NAMEID_FORMAT_PERSISTENT, "Subject NameID", null)));
-      identityProviderMappers.add(
-          getSAMLIdentityProviderRoleMapper(
-              MUK_IDENTITY_PROVIDER_ALIAS, CitizenPermissionRole.MUK_USER));
+      identityProviderMappers.addAll(getMukIdentityProviderMappers());
     }
 
     KeycloakProperties.IdentityProvider bundIdIdp = keycloakProperties.citizenRealm().bundIdIdp();
@@ -140,67 +141,66 @@ public class CitizenKeycloakProvisioning extends KeycloakProvisioning<CitizenKey
               "BundID",
               bundIdIdp,
               new NameIdPolicy(
-                  NAMEID_FORMAT_TRANSIENT, "ATTRIBUTE", BUND_ID_PRIMARY_KEY_ATTRIBUTE.getOid())));
-      identityProviderMappers.add(
-          getSAMLIdentityProviderRoleMapper(
-              BUND_ID_IDENTITY_PROVIDER_ALIAS, CitizenPermissionRole.BUND_ID_USER));
-      identityProviderMappers.add(
-          getSAMLIdentityProviderBundIdAttributeMapper(BundIdAttribute.B_PK_2));
+                  NAMEID_FORMAT_TRANSIENT, "ATTRIBUTE", BundIdUserAttribute.B_PK_2.getSamlName())));
+      identityProviderMappers.addAll(getBundIdIdentityProviderMappers());
     }
 
     keycloakClient.createOrUpdateIdentityProviders(identityProviders);
     keycloakClient.createOrUpdateIdentityProviderMappers(identityProviderMappers);
   }
 
-  private IdentityProviderMapperRepresentation getSAMLIdentityProviderBundIdAttributeMapper(
-      BundIdAttribute attribute) {
+  private static List<IdentityProviderMapperRepresentation> getMukIdentityProviderMappers() {
+    return ListUtils.union(
+        List.of(
+            getSAMLIdentityProviderRoleMapper(
+                MUK_IDENTITY_PROVIDER_ALIAS, CitizenPermissionRole.MUK_USER)),
+        Arrays.stream(MukUserAttribute.values())
+            .map(
+                attribute ->
+                    getSAMLIdentityProviderAttributeMapper(MUK_IDENTITY_PROVIDER_ALIAS, attribute))
+            .toList());
+  }
+
+  private static List<IdentityProviderMapperRepresentation> getBundIdIdentityProviderMappers() {
+    return ListUtils.union(
+        List.of(
+            getSAMLIdentityProviderRoleMapper(
+                BUND_ID_IDENTITY_PROVIDER_ALIAS, CitizenPermissionRole.BUND_ID_USER)),
+        Arrays.stream(BundIdUserAttribute.values())
+            .flatMap(
+                attribute ->
+                    Stream.of(
+                        getSAMLIdentityProviderBundIdAuthnRequestMapper(attribute),
+                        getSAMLIdentityProviderAttributeMapper(
+                            BUND_ID_IDENTITY_PROVIDER_ALIAS, attribute)))
+            .toList());
+  }
+
+  private static IdentityProviderMapperRepresentation
+      getSAMLIdentityProviderBundIdAuthnRequestMapper(BundIdUserAttribute attribute) {
     IdentityProviderMapperRepresentation mapper = new IdentityProviderMapperRepresentation();
-    mapper.setIdentityProviderAlias(CitizenKeycloakProvisioning.BUND_ID_IDENTITY_PROVIDER_ALIAS);
-    mapper.setName("Set BundID attribute %s".formatted(attribute.getFriendlyName()));
+    mapper.setIdentityProviderAlias(BUND_ID_IDENTITY_PROVIDER_ALIAS);
+    mapper.setName(
+        "Set requested attribute %s in %s AuthnRequests"
+            .formatted(attribute.getFriendlyName(), BUND_ID_IDENTITY_PROVIDER_ALIAS));
     mapper.setIdentityProviderMapper("saml-bundid-session-attribute-idp-mapper");
     mapper.setConfig(
         Map.of(
             SYNC_MODE,
-            "INHERIT",
-            "attribute.name.format",
+            INHERIT,
+            ATTRIBUTE_NAME_FORMAT,
             "ATTRIBUTE_FORMAT_URI",
             "attribute.friendly.name",
             attribute.getFriendlyName(),
             "attribute.oid",
-            attribute.getOid(),
+            attribute.getSamlName(),
             "attribute.required",
             String.valueOf(attribute.isRequired()),
             "session.attribute",
-            attribute.getFriendlyName(),
+            attribute.getCitizenUserAttribute().getKey(),
             "session.attribute.excludeFromAutomapper",
             TRUE));
     return mapper;
-  }
-
-  enum BundIdAttribute {
-    B_PK_2("bPK2", "urn:oid:1.3.6.1.4.1.25484.494450.3", true);
-
-    private final String friendlyName;
-    private final String oid;
-    private final boolean required;
-
-    BundIdAttribute(String friendlyName, String oid, boolean required) {
-      this.friendlyName = friendlyName;
-      this.oid = oid;
-      this.required = required;
-    }
-
-    public String getFriendlyName() {
-      return friendlyName;
-    }
-
-    public String getOid() {
-      return oid;
-    }
-
-    public boolean isRequired() {
-      return required;
-    }
   }
 
   private static IdentityProviderMapperRepresentation getSAMLIdentityProviderRoleMapper(
@@ -211,6 +211,38 @@ public class CitizenKeycloakProvisioning extends KeycloakProvisioning<CitizenKey
     mapper.setIdentityProviderMapper("oidc-hardcoded-role-idp-mapper");
     mapper.setConfig(Map.of(SYNC_MODE, "IMPORT", "role", role.getKeycloakName()));
     return mapper;
+  }
+
+  private static IdentityProviderMapperRepresentation getSAMLIdentityProviderAttributeMapper(
+      String idpAlias, IdpUserAttribute attribute) {
+    IdentityProviderMapperRepresentation mapper = new IdentityProviderMapperRepresentation();
+    mapper.setIdentityProviderAlias(idpAlias);
+    mapper.setName(
+        "Set attribute %s for %s users"
+            .formatted(attribute.getCitizenUserAttribute().getDisplayName(), idpAlias));
+    Map<String, String> config = getSamlAttributeMapperConfig(attribute);
+    if (attribute instanceof MukUserAttribute mukUserAttribute
+        && StringUtils.isNotBlank(mukUserAttribute.getXPath())) {
+      mapper.setIdentityProviderMapper("saml-xpath-attribute-idp-mapper");
+      config.put("attribute.xpath", mukUserAttribute.getXPath());
+    } else {
+      mapper.setIdentityProviderMapper("saml-user-attribute-idp-mapper");
+    }
+    mapper.setConfig(config);
+    return mapper;
+  }
+
+  private static Map<String, String> getSamlAttributeMapperConfig(IdpUserAttribute attribute) {
+    return new LinkedHashMap<>(
+        Map.of(
+            SYNC_MODE,
+            INHERIT,
+            ATTRIBUTE_NAME_FORMAT,
+            attribute.getAttributeNameFormat().getIdpMapperName(),
+            "attribute.name",
+            attribute.getSamlName(),
+            "user.attribute",
+            attribute.getCitizenUserAttribute().getKey()));
   }
 
   private IdentityProviderRepresentation getSAMLIdentityProvider(

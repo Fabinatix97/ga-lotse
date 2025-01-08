@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -10,6 +10,7 @@ import de.eshg.domain.model.BaseEntity_;
 import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.statistics.aggregation.DataSourceAggregationService;
+import de.eshg.statistics.aggregation.DataSourceValidator;
 import de.eshg.statistics.api.datasource.AvailableDataSource;
 import de.eshg.statistics.api.evaluationtemplate.AddEvaluationTemplateWithDataSourcesRequest;
 import de.eshg.statistics.api.evaluationtemplate.EvaluationTemplateDto;
@@ -20,7 +21,8 @@ import de.eshg.statistics.api.evaluationtemplate.GetEvaluationTemplatesFilterOpt
 import de.eshg.statistics.api.evaluationtemplate.GetEvaluationTemplatesRequest;
 import de.eshg.statistics.api.evaluationtemplate.GetEvaluationTemplatesResponse;
 import de.eshg.statistics.api.evaluationtemplate.UpdateEvaluationTemplateRequest;
-import de.eshg.statistics.config.OriginalDataAccessConfig;
+import de.eshg.statistics.config.StatisticsConfig;
+import de.eshg.statistics.config.StatisticsConfig.BusinessModuleConfig;
 import de.eshg.statistics.datatransfer.EvaluationTemplateData;
 import de.eshg.statistics.mapper.EvaluationMapper;
 import de.eshg.statistics.mapper.EvaluationTemplateMapper;
@@ -37,7 +39,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -55,19 +56,19 @@ public class EvaluationTemplateService {
   private final EvaluationTemplateRepository evaluationTemplateRepository;
   private final StatisticsUserService userService;
   private final Clock clock;
-  private final OriginalDataAccessConfig originalDataAccessConfig;
+  private final BusinessModuleConfig businessModuleConfig;
   private final DataSourceAggregationService dataSourceAggregationService;
 
   public EvaluationTemplateService(
       EvaluationTemplateRepository evaluationTemplateRepository,
       StatisticsUserService userService,
       Clock clock,
-      OriginalDataAccessConfig originalDataAccessConfig,
+      StatisticsConfig statisticsConfig,
       DataSourceAggregationService dataSourceAggregationService) {
     this.evaluationTemplateRepository = evaluationTemplateRepository;
     this.userService = userService;
     this.clock = clock;
-    this.originalDataAccessConfig = originalDataAccessConfig;
+    this.businessModuleConfig = statisticsConfig.businessModule();
     this.dataSourceAggregationService = dataSourceAggregationService;
   }
 
@@ -155,7 +156,7 @@ public class EvaluationTemplateService {
                 evaluationTemplate ->
                     EvaluationTemplateMapper.mapToInfo(
                         evaluationTemplate,
-                        this::withoutAnonymizationAllowed,
+                        this::sensitiveDataAllowed,
                         template -> getMostRestrictiveSensitivity(template, availableDataSources),
                         template -> getCanBeAnonymized(template, availableDataSources)))
             .toList();
@@ -213,62 +214,64 @@ public class EvaluationTemplateService {
         dataSourceAggregationService.getAvailableDataSources().availableDataSources();
     return EvaluationTemplateMapper.mapToApi(
         evaluationTemplate,
-        this::withoutAnonymizationAllowed,
-        template -> getMostRestrictiveSensitivity(template, availableDataSources),
-        template -> getCanBeAnonymized(template, availableDataSources),
+        sensitiveDataAllowed(evaluationTemplate),
+        getMostRestrictiveSensitivity(evaluationTemplate, availableDataSources),
+        getCanBeAnonymized(evaluationTemplate, availableDataSources),
         userService.findUser(evaluationTemplate.getCreatedByUserId()));
   }
 
-  private boolean withoutAnonymizationAllowed(EvaluationTemplate evaluationTemplate) {
+  private boolean sensitiveDataAllowed(EvaluationTemplate evaluationTemplate) {
     Set<String> businessModules =
         evaluationTemplate.getDataSources().stream()
             .map(DataSource::getBusinessModuleName)
             .collect(Collectors.toSet());
-    return originalDataAccessConfig
-        .getBusinessModulesOriginalDataAllowedForCurrentUser()
+    return businessModuleConfig
+        .getBusinessModulesSensitiveDataAllowedForCurrentUser()
         .containsAll(businessModules);
   }
 
   private DataSourceSensitivity getMostRestrictiveSensitivity(
       EvaluationTemplate evaluationTemplate, List<AvailableDataSource> availableDataSources) {
-    DataSourceSensitivity dataSourceSensitivity = null;
-    for (DataSource dataSource : evaluationTemplate.getDataSources()) {
-      Optional<AvailableDataSource> optionalAvailableDataSource =
-          findExistingAvailableDataSource(availableDataSources, dataSource);
-      if (optionalAvailableDataSource.isEmpty()) {
-        return null;
-      }
-      AvailableDataSource existingDataSource = optionalAvailableDataSource.get();
-      if (dataSourceSensitivity == null
-          || dataSourceSensitivity.equals(DataSourceSensitivity.ANONYMOUS)
-          || existingDataSource.sensitivity().equals(DataSourceSensitivity.SENSITIVE)) {
-        dataSourceSensitivity = existingDataSource.sensitivity();
-      }
+    if (anyDataSourceNotExisting(evaluationTemplate, availableDataSources)) {
+      return null;
     }
-    return dataSourceSensitivity;
+    return DataSourceValidator.getMostRestrictiveSensitivity(
+        getRelevantAvailableDataSources(evaluationTemplate, availableDataSources));
   }
 
   private boolean getCanBeAnonymized(
       EvaluationTemplate evaluationTemplate, List<AvailableDataSource> availableDataSources) {
-    for (DataSource dataSource : evaluationTemplate.getDataSources()) {
-      Optional<AvailableDataSource> optionalAvailableDataSource =
-          findExistingAvailableDataSource(availableDataSources, dataSource);
-      if (optionalAvailableDataSource.isEmpty()
-          || !optionalAvailableDataSource.get().canBeAnonymized()) {
-        return false;
-      }
+    if (anyDataSourceNotExisting(evaluationTemplate, availableDataSources)) {
+      return false;
     }
-    return true;
+    return DataSourceValidator.getCanBeAnonymized(
+        getRelevantAvailableDataSources(evaluationTemplate, availableDataSources));
   }
 
-  private static Optional<AvailableDataSource> findExistingAvailableDataSource(
-      List<AvailableDataSource> availableDataSources, DataSource dataSource) {
+  private static boolean anyDataSourceNotExisting(
+      EvaluationTemplate evaluationTemplate, List<AvailableDataSource> availableDataSources) {
+    return evaluationTemplate.getDataSources().stream()
+        .anyMatch(
+            dataSource ->
+                availableDataSources.stream()
+                    .noneMatch(
+                        availableDataSource -> isSameDataSource(dataSource, availableDataSource)));
+  }
+
+  private static List<AvailableDataSource> getRelevantAvailableDataSources(
+      EvaluationTemplate evaluationTemplate, List<AvailableDataSource> availableDataSources) {
     return availableDataSources.stream()
         .filter(
             availableDataSource ->
-                availableDataSource.businessModuleName().equals(dataSource.getBusinessModuleName())
-                    && availableDataSource.id().equals(dataSource.getExternalDataSourceId()))
-        .findFirst();
+                evaluationTemplate.getDataSources().stream()
+                    .anyMatch(dataSource -> isSameDataSource(dataSource, availableDataSource)))
+        .toList();
+  }
+
+  private static boolean isSameDataSource(
+      DataSource dataSource, AvailableDataSource availableDataSource) {
+    return availableDataSource.businessModuleName().equals(dataSource.getBusinessModuleName())
+        && availableDataSource.id().equals(dataSource.getExternalDataSourceId());
   }
 
   @Transactional
@@ -279,10 +282,7 @@ public class EvaluationTemplateService {
   public EvaluationTemplate getEvaluationTemplateInternal(UUID templateId) {
     return evaluationTemplateRepository
         .findByExternalId(templateId)
-        .orElseThrow(
-            () ->
-                new NotFoundException(
-                    "Evaluation template with id %s not found".formatted(templateId)));
+        .orElseThrow(() -> new NotFoundException("Evaluation template with given id not found"));
   }
 
   public void setLastUsageToNow(UUID templateId) {

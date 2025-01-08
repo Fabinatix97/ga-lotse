@@ -1,12 +1,12 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Typography } from "@mui/joy";
 
-import { SectionGrid } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/SectionGrid";
-import { YesOrNoWithFollowUp } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/YesOrNoWithFollowUp";
+import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
+import { YesOrNoWithFollowUp } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
 import {
   safeSexRegularityOptions,
   stiProtectiveMeasuresOptions,
@@ -18,7 +18,7 @@ import { RadioButtonsField } from "@/lib/shared/components/formFields/RadioButto
 export function Prevention() {
   return (
     <>
-      <Typography level="title-md" mt={1} id="prevention-section-title">
+      <Typography level="h3" mb={3} id="prevention-section-title">
         Prävention
       </Typography>
       <SectionGrid aria-labelledby="prevention-section-title">
@@ -33,6 +33,7 @@ export function Prevention() {
           name="prevention.safeSexRegularity"
           label="Safer Sex"
           options={safeSexRegularityOptions}
+          resettable
         />
         <CheckboxGroupField
           sx={{ gridColumnStart: "span 2" }}

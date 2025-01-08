@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -10,12 +10,19 @@ import {
 } from "@eshg/employee-portal-api/base";
 import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
+import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import {
   InputArrayField,
   getIndexLabel,
 } from "@eshg/lib-portal/components/formFields/InputArrayField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import {
+  GENDER_OPTIONS,
+  PERSON_FIELD_NAME,
+  SALUTATION_OPTIONS,
+  TITLE_OPTIONS,
+} from "@eshg/lib-portal/components/formFields/constants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { validateLength } from "@eshg/lib-portal/helpers/validators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
@@ -30,13 +37,6 @@ import {
   createEmptyAddress,
 } from "@/lib/shared/components/form/address/helpers";
 import { CountryField } from "@/lib/shared/components/formFields/CountryField";
-import { EmailField } from "@/lib/shared/components/formFields/EmailField";
-import {
-  GENDER_OPTIONS,
-  PERSON_FIELD_NAME,
-  SALUTATION_OPTIONS,
-  TITLE_OPTIONS,
-} from "@/lib/shared/components/personSidebar/constants";
 import {
   PersonFormProps,
   PersonFormValues,

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -34,7 +34,6 @@ import de.eshg.inspection.facility.persistence.PendingFacilityView;
 import de.eshg.inspection.facility.websearch.WebSearchService;
 import de.eshg.inspection.facility.websearch.persistence.WebSearchEntry;
 import de.eshg.inspection.facility.websearch.persistence.WebSearchEntryStatus;
-import de.eshg.inspection.feature.InspectionFeature;
 import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.inspection.InspectionFinalizer;
 import de.eshg.inspection.inspection.InspectionService;
@@ -254,10 +253,6 @@ public class FacilityService {
   public InspPendingFacilitiesOverviewResponse getPendingFacilities(
       GetPendingFacilitiesFilterOptionsDto params,
       GetPendingFacilitiesPaginationOptionsDto pagination) {
-    if (params.hasDuplicates() != null) {
-      inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.IMPORT);
-    }
-
     // early validate page request params
     PageRequest pageRequest = pagination.getPageRequest();
 

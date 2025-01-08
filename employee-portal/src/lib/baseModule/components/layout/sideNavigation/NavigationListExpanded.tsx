@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -12,20 +12,29 @@ import { NavigationItem } from "@/lib/baseModule/components/layout/sideNavigatio
 import { sideNavigationWidth } from "@/lib/baseModule/components/layout/sizes";
 
 import { StyledList } from "./StyledList";
-import { sideNavAriaLabel } from "./constants";
-import { SideNavigationItem } from "./types";
+import { listStyling, navItemIconColor, sideNavAriaLabel } from "./constants";
+import { SideNavItemGroups, SideNavigationItem } from "./types";
 
 export function NavigationListExpanded({
   setCollapsed,
   showCollapseButton,
-  items,
+  itemGroups,
   isLoading,
 }: {
   setCollapsed?: Dispatch<SetStateAction<boolean>>;
   showCollapseButton: boolean;
-  items: SideNavigationItem[];
+  itemGroups: SideNavItemGroups;
   isLoading: boolean;
 }) {
+  function getNavItemGroup(itemGroup: SideNavigationItem[]) {
+    if (itemGroup.length > 0) {
+      const list = itemGroup.map((item) => {
+        return <NavigationItem key={item.name} item={item} />;
+      });
+      return <StyledList sx={listStyling}>{list}</StyledList>;
+    } else return undefined;
+  }
+
   return (
     <Stack
       component="nav"
@@ -46,27 +55,20 @@ export function NavigationListExpanded({
             whiteSpace: "nowrap",
             justifyContent: "space-between",
             paddingInline: "0.25rem",
-            marginInline: 3,
+            marginInline: "0.5rem",
             display: "flex",
           }}
         >
-          <Typography level="body-sm" textColor="neutral.700">
+          <Typography level="body-sm" textColor="text.secondary">
             Menü einklappen
           </Typography>
-          <ExpandNavigation size="md" color="neutral" />
+          <ExpandNavigation size="md" sx={{ color: navItemIconColor }} />
         </Button>
       )}
-      <Stack flex={1} sx={{ overflowY: "auto", paddingInline: 3 }}>
-        <StyledList
-          sx={{
-            // Small extra space that makes room for focus outline (keyboard navigation)
-            paddingBlock: "0.25rem",
-          }}
-        >
-          {items.map((item) => (
-            <NavigationItem key={item.name} item={item} />
-          ))}
-        </StyledList>
+      <Stack flex={1} sx={{ overflowY: "auto", paddingInline: 2, gap: 3 }}>
+        {getNavItemGroup(itemGroups.dashboardItem)}
+        {getNavItemGroup(itemGroups.businessItems)}
+        {getNavItemGroup(itemGroups.baseItems)}
         {isLoading && <LoadingOverlay />}
       </Stack>
     </Stack>

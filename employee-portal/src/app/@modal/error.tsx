@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,13 +8,13 @@
 import { NextErrorBoundaryProps } from "@eshg/lib-portal/components/boundaries/NextErrorBoundary";
 import { useRouter } from "next/navigation";
 
-import { ErrorModal } from "@/lib/shared/components/boundaries/ErrorModal";
+import { EmployeePortalErrorModal } from "@/lib/shared/components/boundaries/EmployeePortalErrorModal";
 
 export default function ModalSlotError(props: NextErrorBoundaryProps) {
   const router = useRouter();
 
   return (
-    <ErrorModal
+    <EmployeePortalErrorModal
       error={props.error}
       digest={props.error.digest}
       onReset={props.reset}

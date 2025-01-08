@@ -1,10 +1,11 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 import type { ApiGetReferencePersonResponse } from "@eshg/employee-portal-api/base";
 import { AlertProps } from "@eshg/lib-portal/components/Alert";
+import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { Formik, FormikErrors } from "formik";
 import { ReactNode } from "react";
 import { isNonNullish } from "remeda";
@@ -14,7 +15,6 @@ import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { SelectableCard } from "@/lib/shared/components/cards/SelectableCard";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { RadioGroupField } from "@/lib/shared/components/formFields/RadioGroupField";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 

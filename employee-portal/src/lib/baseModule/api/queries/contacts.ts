@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -106,21 +106,23 @@ export function useSearchContactsQuery(
   });
 }
 
-export function useSearchSchools(schoolName: string) {
-  const [debouncedSchoolName] = useDebounce(schoolName, 250, {
+export const SCHOOL_OR_DAYCARE = new Set<ApiContactCategory>([
+  ApiContactCategory.School,
+  ApiContactCategory.Daycare,
+]);
+
+export function useSearchSchoolOrDaycare(institutionName: string) {
+  const [debouncedInstitutionName] = useDebounce(institutionName, 250, {
     trailing: true,
   });
-  const categories = new Set<ApiContactCategory>().add(
-    ApiContactCategory.School,
-  );
 
   return useSearchContactsQuery(
     {
-      name: debouncedSchoolName,
-      categories: categories,
+      name: debouncedInstitutionName,
+      categories: SCHOOL_OR_DAYCARE,
       sortKey: ApiContactSortKey.Relevance,
     },
-    { enabled: debouncedSchoolName.length >= 1 },
+    { enabled: debouncedInstitutionName.length >= 1 },
   );
 }
 

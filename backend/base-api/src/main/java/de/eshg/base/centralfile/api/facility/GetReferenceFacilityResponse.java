@@ -1,11 +1,11 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package de.eshg.base.centralfile.api.facility;
 
-import de.eshg.CustomValidations.EmailAddressConstraint;
+import de.eshg.CustomValidations.MandatoryEmailAddressConstraint;
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.centralfile.api.DataOriginDto;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -28,7 +28,7 @@ public record GetReferenceFacilityResponse(
         @NotNull
         long version,
     @NotNull @Size(min = 1, max = 300) String name,
-    @NotNull List<@EmailAddressConstraint String> emailAddresses,
+    @NotNull List<@MandatoryEmailAddressConstraint String> emailAddresses,
     @NotNull List<@NotNull @Size(min = 1, max = 23) String> phoneNumbers,
     @NotNull @Valid List<FacilityContactPersonDto> contactPersons,
     @Valid AddressDto contactAddress,

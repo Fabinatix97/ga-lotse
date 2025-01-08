@@ -10,6 +10,7 @@
     "@eshg/employee-portal-api": "workspace:*",
     "@eshg/lib-portal": "workspace:*",
     "@fontsource/poppins": "catalog:joy",
+    "@fontsource/source-code-pro": "catalog:joy",
     "@fullcalendar/core": "catalog:fullcalendar",
     "@fullcalendar/daygrid": "catalog:fullcalendar",
     "@fullcalendar/interaction": "catalog:fullcalendar",

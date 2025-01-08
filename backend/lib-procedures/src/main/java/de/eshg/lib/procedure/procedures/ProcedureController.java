@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -73,6 +73,8 @@ import de.eshg.lib.procedure.mapping.FileMapper;
 import de.eshg.lib.procedure.mapping.PersonTypeMapper;
 import de.eshg.lib.procedure.mapping.ProcedureLibraryEnrichingMapper;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
+import de.eshg.lib.procedure.model.CheckFileStateUsageRequest;
+import de.eshg.lib.procedure.model.CheckFileStateUsageResponse;
 import de.eshg.lib.procedure.model.DetailedFacilityDto;
 import de.eshg.lib.procedure.model.DetailedPersonDto;
 import de.eshg.lib.procedure.model.DetailedTaskDto;
@@ -121,6 +123,8 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -136,6 +140,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProcedureController<
         ProcedureT extends Procedure<ProcedureT, TaskT, ?, ?>, TaskT extends Task<ProcedureT>>
     implements ProcedureApi {
+  private static final Logger log = LoggerFactory.getLogger(ProcedureController.class);
 
   private final Clock clock;
   private final BusinessModule businessModule;
@@ -304,6 +309,14 @@ public class ProcedureController<
     Map<UUID, UserDto> resolvedUsers = userHelper.resolveUsers(approvalRequestDtos);
 
     return new GetProcedureApprovalRequestsResponse(approvalRequestDtos, resolvedUsers);
+  }
+
+  @Override
+  public CheckFileStateUsageResponse checkFileStateUsage(CheckFileStateUsageRequest request) {
+    log.info("Checking usage of file state ids: {}", request.fileStatesIds());
+    List<UUID> centralFileStateIdsInUse =
+        procedureRepository.findCentralFileStateIdsInUseNoDuplicates(request.fileStatesIds());
+    return new CheckFileStateUsageResponse(centralFileStateIdsInUse);
   }
 
   private Specification<ApprovalRequest<?>> isAttachedToProcedure(ProcedureT procedure) {
@@ -689,9 +702,7 @@ public class ProcedureController<
     ProcedureT procedureT = resolveProcedureByExternalIdOrThrow(id);
 
     List<ProgressEntry> procedureProgressEntries =
-        progressEntryRepository
-            .findAllByProcedureIdAndFetchFileAndAttachments(procedureT.getId())
-            .stream()
+        progressEntryRepository.findAllByProcedureIdAndFetchFile(procedureT.getId()).stream()
             .filter(progressEntry -> progressEntry.getFile() != null)
             .filter(p -> !p.getFile().isDeleted())
             .toList();

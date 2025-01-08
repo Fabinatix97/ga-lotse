@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -27,8 +27,6 @@ import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.keycloak.admin.client.resource.RoleScopeResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.representations.idm.RoleRepresentation;
@@ -62,11 +60,8 @@ public class EmployeeKeycloakClient extends RealmBoundKeycloakClient {
           .users();
     } catch (NotFoundException notFound) {
       KeycloakError keycloakError = notFound.getResponse().readEntity(KeycloakError.class);
-      Pattern pattern = Pattern.compile("^User with id '(?<userId>[-a-zA-Z0-9]+)' not found$");
-      Matcher matcher = pattern.matcher(keycloakError.error());
-      if (matcher.matches()) {
-        throw new de.eshg.rest.service.error.NotFoundException(
-            "User with id '%s' not found".formatted(matcher.group("userId")));
+      if (keycloakError.error().equals("User with given id not found")) {
+        throw new de.eshg.rest.service.error.NotFoundException("Some users could not be found");
       }
 
       throw new IllegalStateException("Unexpected exception for bulk get user by id", notFound);

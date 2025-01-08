@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -33,47 +33,44 @@ export function createPendingFacilitiesColumns(
   openReviewFacilityDuplicateSidebar: (inspectionId: string) => void,
   openInspectionFacilityDuplicateSidebar: (inspectionId: string) => void,
   showOfflineColumn: boolean,
-  isImportFeatureEnabled: boolean,
 ) {
   return [
-    isImportFeatureEnabled
-      ? columnHelper.display({
-          id: "possibleDuplicate",
-          header: "",
-          cell: (ctx) =>
-            (ctx.row.original.possibleFacilityDuplicate && (
-              <IconButton
-                aria-label="Einrichtungsduplikat"
-                sx={{ color: "warning.900" }}
-                onClick={() =>
-                  openReviewFacilityDuplicateSidebar(
-                    ctx.row.original.inspection!.id,
-                  )
-                }
-              >
-                <DuplicateIcon />
-              </IconButton>
-            )) ||
-            (ctx.row.original.inspection!.possibleInspectionDuplicate && (
-              <IconButton
-                aria-label="Vorgangsduplikat"
-                sx={{ color: "warning.900" }}
-                onClick={() =>
-                  openInspectionFacilityDuplicateSidebar(
-                    ctx.row.original.inspection!.id,
-                  )
-                }
-              >
-                <DuplicateIcon />
-              </IconButton>
-            )),
-          meta: {
-            width: 48,
-            cellStyle: "icon",
-            headerLabel: "Mögliche Duplikate",
-          },
-        })
-      : null,
+    columnHelper.display({
+      id: "possibleDuplicate",
+      header: "",
+      cell: (ctx) =>
+        (ctx.row.original.possibleFacilityDuplicate && (
+          <IconButton
+            aria-label="Einrichtungsduplikat"
+            sx={{ color: "warning.900" }}
+            onClick={() =>
+              openReviewFacilityDuplicateSidebar(
+                ctx.row.original.inspection!.id,
+              )
+            }
+          >
+            <DuplicateIcon />
+          </IconButton>
+        )) ||
+        (ctx.row.original.inspection!.possibleInspectionDuplicate && (
+          <IconButton
+            aria-label="Vorgangsduplikat"
+            sx={{ color: "warning.900" }}
+            onClick={() =>
+              openInspectionFacilityDuplicateSidebar(
+                ctx.row.original.inspection!.id,
+              )
+            }
+          >
+            <DuplicateIcon />
+          </IconButton>
+        )),
+      meta: {
+        width: 48,
+        cellStyle: "icon",
+        headerLabel: "Mögliche Duplikate",
+      },
+    }),
     columnHelper.accessor("kind", {
       header: "Art",
       cell: (ctx) => translatePendingFacilityKind(ctx.getValue()),

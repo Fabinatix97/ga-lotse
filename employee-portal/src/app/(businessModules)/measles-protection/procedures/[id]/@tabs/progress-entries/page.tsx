@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -30,13 +30,11 @@ import {
 } from "@/lib/businessModules/measlesProtection/api/queries/progressEntries";
 import { systemProgressEntryTypeTitles } from "@/lib/businessModules/measlesProtection/shared/constants";
 import { moduleUserGroup } from "@/lib/businessModules/measlesProtection/shared/moduleUserGroup";
-import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
 import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
 import { ProgressEntriesUrlParams } from "@/lib/shared/components/procedures/progress-entries/types";
 
 interface MeaslesProtectionProcedureProgressEntriesPageParams {
   id: string;
-  entryId?: string;
 }
 
 export default function MeaslesProtectionProcedureDataProgressEntriesTab(
@@ -51,8 +49,7 @@ export default function MeaslesProtectionProcedureDataProgressEntriesTab(
       usePatchProgressEntry={usePatchProgressEntry}
       useFetchProgressEntries={useFetchProgressEntries}
       useFetchProgressEntryDetails={useFetchProgressEntryDetails}
-      procedureId={props.params.id}
-      progressEntryId={params.entryId}
+      procedureId={params.id}
       searchParams={searchParams}
       leaderRole={ApiUserRole.MeaslesProtectionLeader}
       useRequestProgressEntryDeletion={useRequestProgressEntryDeletion}
@@ -62,14 +59,6 @@ export default function MeaslesProtectionProcedureDataProgressEntriesTab(
       useDownloadFile={useDownloadMeaslesProtectionFile}
       useGetManualProgressEntryHistory={useGetManualProgressEntryHistory}
       useGetMetaDataHistory={useGetMetaDataHistory}
-      routes={{
-        entryDetails: (procedureId, entryId) =>
-          routes.procedures
-            .details(procedureId)
-            .progressEntries.details(entryId),
-        progressEntries: (procedureId) =>
-          routes.procedures.details(procedureId).progressEntries.index,
-      }}
       systemProgressEntryTypes={systemProgressEntryTypeTitles}
       groupName={moduleUserGroup.group}
     />

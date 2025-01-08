@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -91,7 +91,7 @@ function createTabItems(
     },
     {
       tabButtonName: "Verlaufseinträge",
-      href: `${businessRoutes.procedures.progressEntries(procedureId).index}`,
+      href: `${businessRoutes.procedures.progressEntries(procedureId)}`,
       decorator: <TimelineOutlined />,
     },
   ].filter(isPlainObject);

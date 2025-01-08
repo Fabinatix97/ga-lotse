@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -9,6 +9,7 @@ import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToOne;
 import java.util.UUID;
 import org.hibernate.annotations.JdbcType;
@@ -19,7 +20,7 @@ import org.springframework.data.annotation.CreatedBy;
 public class ProcessedInboxProgressEntry extends ProgressEntry {
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  @OneToOne(optional = false)
+  @OneToOne(optional = false, fetch = FetchType.LAZY)
   private InboxProcedure inboxProcedure;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)

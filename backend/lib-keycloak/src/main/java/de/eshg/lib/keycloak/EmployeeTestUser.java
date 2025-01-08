@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -13,6 +13,7 @@ import static de.eshg.lib.keycloak.EmployeePermissionRole.CHAT_MANAGEMENT_WRITE;
 import de.eshg.base.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public enum EmployeeTestUser implements KeycloakUser {
   DUMMY(
@@ -203,8 +204,8 @@ public enum EmployeeTestUser implements KeycloakUser {
       "oms_leader",
       "+49 555 456 654",
       "password",
-      "Hans",
-      "Hansen",
+      "Paula",
+      "Paulsen",
       List.of(
           ModuleLeaderGroup.OFFICIAL_MEDICAL_SERVICE, ModuleMemberGroup.OFFICIAL_MEDICAL_SERVICE)),
   OMS_CLERK(
@@ -300,5 +301,10 @@ public enum EmployeeTestUser implements KeycloakUser {
   @Override
   public List<KeycloakGroup> groups() {
     return groups;
+  }
+
+  @Override
+  public Map<String, String> additionalAttributes() {
+    return Map.of();
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -98,12 +98,20 @@ public interface PersonRepository
 
   Optional<Person> findByExternalIdEqualsAndReferencePersonIsNull(UUID id);
 
+  @Query(
+      """
+    select p from Person p
+    left join fetch p.bundIdPersonLink
+    left join fetch p.referencePerson
+    left join fetch p.referencePerson.bundIdPersonLink
+    where p.externalId in :ids
+    and p.referencePerson is not null
+    order by p.id
+    """)
   List<Person> findAllByExternalIdInAndReferencePersonIsNotNullOrderById(List<UUID> ids);
 
   @Query("select p.referencePerson from Person p where p.externalId = :fileStateId")
   Optional<Person> findReferencePersonByFileStateId(UUID fileStateId);
-
-  List<Person> findAllByExternalIdInAndReferencePersonIsNotNullOrderById(Set<UUID> ids);
 
   @Query(
       """
@@ -117,20 +125,19 @@ public interface PersonRepository
 
   @Query(
       """
-    select fileState.externalId from Person fileState
-    join Person ref on fileState.referencePerson.id = ref.id
-    where ref.externalId = :refExternalId
-    and fileState.createdAt <= :createdAt
-    order by fileState.id
-    """)
-  List<UUID> findAllFileStateIdsByReferencePersonCreatedBefore(
-      @Param("refExternalId") UUID refExternalId, @Param("createdAt") Instant createdAt);
+select fileState.externalId from Person fileState
+join Person ref on fileState.referencePerson.id = ref.id
+where ref.externalId = :refExternalId
+order by fileState.id
+""")
+  List<UUID> findAllFileStateIdsByReferencePerson(@Param("refExternalId") UUID refExternalId);
 
   @Query(
       """
     select p from Person p
     left join fetch p.contactAddress
     left join fetch p.differentBillingAddress
+    left join fetch p.bundIdPersonLink
     where p.externalId in :ids
     and p.referencePerson is not null
     """)
@@ -142,9 +149,11 @@ public interface PersonRepository
   select p from Person p
   left join fetch p.contactAddress
   left join fetch p.differentBillingAddress
+  left join fetch p.bundIdPersonLink
   left join fetch p.referencePerson
   left join fetch p.referencePerson.contactAddress
   left join fetch p.referencePerson.differentBillingAddress
+  left join fetch p.referencePerson.bundIdPersonLink
   where p.externalId in :ids
   and p.referencePerson is not null
   order by p.id
@@ -156,9 +165,11 @@ public interface PersonRepository
     select p from Person p
     left join fetch p.contactAddress
     left join fetch p.differentBillingAddress
+    left join fetch p.bundIdPersonLink
     left join fetch p.referencePerson
     left join fetch p.referencePerson.contactAddress
     left join fetch p.referencePerson.differentBillingAddress
+    left join fetch p.referencePerson.bundIdPersonLink
     where p.externalId in :ids
     and p.referencePerson is not null
     order by p.id

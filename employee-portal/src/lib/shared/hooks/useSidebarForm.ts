@@ -1,12 +1,12 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 import { Ref, useCallback, useRef } from "react";
 
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export interface UseSidebarFormProps {
   onClose: () => void;

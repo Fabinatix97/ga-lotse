@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -11,18 +11,18 @@ import {
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import {
+  GENDER_OPTIONS,
+  SALUTATION_OPTIONS,
+  TITLE_OPTIONS,
+  TITLE_VALUES,
+} from "@eshg/lib-portal/components/formFields/constants";
 import { validateLength } from "@eshg/lib-portal/helpers/validators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Grid, Stack } from "@mui/joy";
 
 import { CountryField } from "@/lib/shared/components/formFields/CountryField";
 import { LegacyPerson } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyPersonForm";
-import {
-  GENDER_OPTIONS,
-  SALUTATION_OPTIONS,
-  TITLE_OPTIONS,
-  TITLE_VALUES,
-} from "@/lib/shared/components/personSidebar/constants";
 
 export interface LegacyMinimalPerson {
   firstName: string;

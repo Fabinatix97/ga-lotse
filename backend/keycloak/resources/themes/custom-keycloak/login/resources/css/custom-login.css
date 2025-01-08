@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -186,6 +186,8 @@ a {
     font-size: 48px;
     line-height: 60px;
     font-weight: bold;
+    hyphens: auto;
+    text-wrap: balance;
 
     @media(max-width: 1000px) {
         font-size: 32px;

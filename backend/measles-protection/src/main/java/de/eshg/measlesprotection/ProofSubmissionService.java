@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -102,10 +102,7 @@ public class ProofSubmissionService {
         procedure.getProofSubmissions().stream()
             .filter(ps -> ps.getExternalId().equals(proofSubmissionId))
             .findAny()
-            .orElseThrow(
-                () ->
-                    new NotFoundException(
-                        "ProofSubmission with UUID %s not found".formatted(proofSubmissionId)));
+            .orElseThrow(() -> new NotFoundException("ProofSubmission with given UUID not found"));
 
     updateProofSubmission(currentProofSubmission, updateProofSubmission);
 

@@ -1,11 +1,11 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 const basePath = "/medical-registry";
 const proceduresPath = `${basePath}/procedures`;
-const proceduresSearchPath = `${basePath}/search-procedure`;
+const proceduresSearchPath = `${basePath}/search`;
 const proceduresCreatePath = `${proceduresPath}/create`;
 
 export const routes = {
@@ -14,12 +14,7 @@ export const routes = {
     byId: (procedureId: string) => ({
       index: `${proceduresPath}/${procedureId}`,
       details: `${proceduresPath}/${procedureId}/details`,
-      progressEntries: {
-        index: `${proceduresPath}/${procedureId}/progress-entries`,
-        byId: (progressEntryId: string) => ({
-          details: `${proceduresPath}/${procedureId}/progress-entries/${progressEntryId}/details`,
-        }),
-      },
+      progressEntries: `${proceduresPath}/${procedureId}/progress-entries`,
     }),
     create: `${proceduresCreatePath}`,
   },

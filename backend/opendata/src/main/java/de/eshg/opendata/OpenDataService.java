@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -80,6 +80,7 @@ public class OpenDataService {
   public void updateVersionMetadata(UUID versionId, UpdateVersionMetaDataRequest updateRequest) {
     Version version = getVersionForUpdateOrThrow(versionId, updateRequest.version());
     validateNewFileNameExtension(updateRequest.fileName(), version);
+    validateStatisticsDates(updateRequest.statisticStartDate(), updateRequest.statisticEndDate());
 
     version.setVersionName(updateRequest.versionName());
     version.setFileName(updateRequest.fileName());

@@ -1,11 +1,17 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { ApiSalutation } from "@eshg/employee-portal-api/base";
+import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { PhoneNumberField } from "@eshg/lib-portal/components/formFields/PhoneNumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import {
+  SALUTATION_OPTIONS,
+  TITLE_OPTIONS,
+} from "@eshg/lib-portal/components/formFields/constants";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import {
   validateLength,
@@ -15,18 +21,9 @@ import { Chip, Grid } from "@mui/joy";
 import { Formik } from "formik";
 
 import { useSuggestUser } from "@/lib/baseModule/api/mutations/users";
-import {
-  chatUsernameValidator,
-  phoneNumberValidator,
-} from "@/lib/baseModule/components/users/validation";
+import { phoneNumberValidator } from "@/lib/baseModule/components/users/validation";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { EmailField } from "@/lib/shared/components/formFields/EmailField";
-import { PhoneNumberField } from "@/lib/shared/components/formFields/PhoneNumberField";
-import {
-  SALUTATION_OPTIONS,
-  TITLE_OPTIONS,
-} from "@/lib/shared/components/personSidebar/constants";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { translateUserGroup } from "@/lib/shared/helpers/users";
@@ -175,13 +172,6 @@ function SuggestNewUserFormSidebar({
                   name={"phoneNumber"}
                   label={"Telefonnummer"}
                   validate={phoneNumberValidator}
-                />
-              </Grid>
-              <Grid xxs={12}>
-                <InputField
-                  name={"externalChatUsername"}
-                  label={"Chat Benutzername"}
-                  validate={chatUsernameValidator}
                 />
               </Grid>
               <Grid xxs={12}>

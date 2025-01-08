@@ -1,9 +1,11 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiProfessionalTitle } from "@eshg/employee-portal-api/medicalRegistry";
+import { professionalTitleNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
+import { OccupationalInformationFormValues } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
+import { lifetimeDoctorNumberValidator } from "@eshg/lib-portal/businessModules/medicalRegistry/validator";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
@@ -11,26 +13,10 @@ import {
   buildEnumOptions,
   createFieldNameMapper,
 } from "@eshg/lib-portal/helpers/form";
-import {
-  NestedFormProps,
-  OptionalFieldValue,
-} from "@eshg/lib-portal/types/form";
+import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { Grid, Typography } from "@mui/joy";
 
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
-import { lifetimeDoctorNumberValidator } from "@/lib/businessModules/medicalRegistry/components/procedures/create/validator";
-import { professionalTitleNames } from "@/lib/businessModules/medicalRegistry/shared/constants";
-
-export interface OccupationalInformationFormValues {
-  professionalTitle: OptionalFieldValue<ApiProfessionalTitle>;
-  fieldOfExpertise: OptionalFieldValue<string>;
-  specialistTitle: OptionalFieldValue<string>;
-  furtherTraining: OptionalFieldValue<string>;
-  qualifications: OptionalFieldValue<string>;
-  approbationGrantedOn: OptionalFieldValue<Date>;
-  approbationIssuingAuthority: string;
-  lifetimeDoctorNumber: OptionalFieldValue<string>;
-}
 
 export function OccupationalInformationForm(props: NestedFormProps) {
   const fieldName = createFieldNameMapper<OccupationalInformationFormValues>(
@@ -46,7 +32,9 @@ export function OccupationalInformationForm(props: NestedFormProps) {
         <SelectField
           name={fieldName("professionalTitle")}
           label="Berufsbezeichnung"
-          options={buildEnumOptions(professionalTitleNames)}
+          options={buildEnumOptions(professionalTitleNames).sort((a, b) =>
+            a.label.localeCompare(b.label),
+          )}
           required={requiredFieldMessage}
         />
       </Grid>

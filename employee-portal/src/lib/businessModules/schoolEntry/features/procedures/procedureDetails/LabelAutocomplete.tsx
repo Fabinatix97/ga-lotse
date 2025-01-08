@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,7 +7,7 @@ import { Autocomplete, AutocompleteOption } from "@mui/joy";
 
 import { Label } from "@/lib/businessModules/schoolEntry/api/models/Label";
 import { useGetLabels } from "@/lib/businessModules/schoolEntry/api/queries/labelApi";
-import { LabelChip } from "@/lib/businessModules/schoolEntry/features/labels/LabelChip";
+import { ChipWithTooltip } from "@/lib/shared/components/chip/ChipWithTooltip";
 
 interface LabelAutocompleteProps {
   name: string;
@@ -32,12 +32,23 @@ export function LabelAutocomplete(props: LabelAutocompleteProps) {
       }}
       renderOption={(props, label) => (
         <AutocompleteOption {...props} key={label.id}>
-          <LabelChip label={label} />
+          <ChipWithTooltip
+            key={label.id}
+            name={label.name}
+            hexColor={label.hexColor}
+            modalTitle="Kennung"
+          />
         </AutocompleteOption>
       )}
       renderTags={(tags, props) =>
         tags.map((label, index) => (
-          <LabelChip {...props({ index })} key={label.id} label={label} />
+          <ChipWithTooltip
+            {...props({ index })}
+            key={label.id}
+            name={label.name}
+            hexColor={label.hexColor}
+            modalTitle="Kennung"
+          />
         ))
       }
     />

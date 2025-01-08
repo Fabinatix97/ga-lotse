@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -14,14 +14,17 @@ import {
   TimelapseOutlined,
   TimelineOutlined,
 } from "@mui/icons-material";
+import { Stack } from "@mui/joy";
 
 import { useGetInspection } from "@/lib/businessModules/inspection/api/queries/inspection";
+import { InspectionLockInfo } from "@/lib/businessModules/inspection/components/inspection/InspectionLockInfo";
 import { InspectionTabHeader } from "@/lib/businessModules/inspection/components/inspection/InspectionTabHeader";
 import { OfflineSwitch } from "@/lib/businessModules/inspection/components/inspection/OfflineSwitch";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
 import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
+import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 export function InspectionTabNavigationToolbar({
   inspectionId,
@@ -33,6 +36,7 @@ export function InspectionTabNavigationToolbar({
   );
   const { data: inspection } = useGetInspection(inspectionId);
   const tabItems = createTabItems(inspectionId);
+  const isMobile = useIsMobile();
 
   return (
     <TabNavigationToolbar
@@ -40,11 +44,14 @@ export function InspectionTabNavigationToolbar({
       routeBack={hasProcedureEditRole ? routes.procedures.index : undefined}
       header={<InspectionTabHeader inspection={inspection} />}
       afterTabs={
-        <OfflineSwitch
-          procedureId={inspection.externalId}
-          currentPhase={inspection.phase}
-          label="Offline-Modus"
-        />
+        <Stack direction="row">
+          {isMobile && <InspectionLockInfo inspection={inspection} />}
+          <OfflineSwitch
+            procedureId={inspection.externalId}
+            currentPhase={inspection.phase}
+            label="Offline-Modus"
+          />
+        </Stack>
       }
     />
   );
@@ -74,7 +81,7 @@ function createTabItems(id: string): TabNavigationItem[] {
     },
     {
       tabButtonName: "Verlaufseinträge",
-      href: routes.procedures.progressEntries(id).index,
+      href: routes.procedures.progressEntries(id),
       decorator: <TimelineOutlined />,
     },
     {

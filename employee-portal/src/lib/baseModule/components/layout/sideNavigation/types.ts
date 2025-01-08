@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -40,4 +40,14 @@ export type SideNavigationItem =
 export interface UseSideNavigationItemsResult {
   isLoading: boolean;
   items: SideNavigationItem[];
+}
+
+export interface SideNavItemGroups {
+  dashboardItem: SideNavigationItem[];
+  businessItems: SideNavigationItem[];
+  baseItems: SideNavigationItem[];
+}
+export interface UseSideNavigationItemGroupsResult {
+  isLoading: boolean;
+  itemGroups: SideNavItemGroups;
 }

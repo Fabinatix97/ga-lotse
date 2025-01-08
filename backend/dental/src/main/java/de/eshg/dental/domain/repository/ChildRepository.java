@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -31,4 +31,9 @@ public interface ChildRepository extends ProcedureRepository<Child> {
 
   List<Child> findByInstitutionIdAndProcedureStatusOrderById(
       UUID institutionId, ProcedureStatus status);
+
+  List<Child> findByProcedureStatusOrderById(ProcedureStatus status);
+
+  boolean existsByInstitutionIdAndGroupNameAndProcedureStatus(
+      UUID institutionId, String groupName, ProcedureStatus status);
 }

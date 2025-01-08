@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -34,26 +34,11 @@ import {
   systemProgressEntryTypeTitles,
 } from "@/lib/businessModules/dental/shared/constants";
 import { moduleUserGroup } from "@/lib/businessModules/dental/shared/moduleUserGroup";
-import { routes } from "@/lib/businessModules/dental/shared/routes";
 import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
-import {
-  ProgressEntriesPageProps,
-  ProgressEntriesUrlParams,
-} from "@/lib/shared/components/procedures/progress-entries/types";
-
-const PROGRESS_ENTRY_ROUTES: ProgressEntriesPageProps["routes"] = {
-  entryDetails: (procedureId, entryId) =>
-    routes.children.byId(procedureId).progressEntries.byId(entryId),
-  progressEntries: (procedureId) =>
-    routes.children.byId(procedureId).progressEntries.overview,
-};
-
-interface DentalProgressEntriesPageParams extends DentalChildPageParams {
-  progressEntryId?: string;
-}
+import { ProgressEntriesUrlParams } from "@/lib/shared/components/procedures/progress-entries/types";
 
 export default function DentalProgressEntriesPage(
-  props: ProgressEntriesUrlParams<DentalProgressEntriesPageParams>,
+  props: ProgressEntriesUrlParams<DentalChildPageParams>,
 ) {
   const { params, searchParams } = props;
   return (
@@ -65,7 +50,6 @@ export default function DentalProgressEntriesPage(
       useFetchProgressEntries={useFetchProgressEntries}
       useFetchProgressEntryDetails={useFetchProgressEntryDetails}
       procedureId={params.childId}
-      progressEntryId={params.progressEntryId}
       searchParams={searchParams}
       leaderRole={ApiUserRole.DentalLeader}
       useRequestProgressEntryDeletion={useRequestProgressEntryDeletion}
@@ -75,7 +59,6 @@ export default function DentalProgressEntriesPage(
       useDownloadFile={useDownloadDentalFile}
       useGetManualProgressEntryHistory={useGetManualProgressEntryHistory}
       useGetMetaDataHistory={useGetMetaDataHistory}
-      routes={PROGRESS_ENTRY_ROUTES}
       systemProgressEntryTypes={systemProgressEntryTypeTitles}
       additionalKeyDocumentTypes={keyDocumentTypes}
       groupName={moduleUserGroup.group}

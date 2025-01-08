@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -30,6 +30,7 @@ import de.eshg.statistics.api.chart.ScatterChartConfigurationDto;
 import de.eshg.statistics.api.diagram.DiagramDto;
 import de.eshg.statistics.api.diagram.UpdateDiagramRequest;
 import de.eshg.statistics.api.filter.TableColumnFilterParameter;
+import de.eshg.statistics.config.StatisticsConfig;
 import de.eshg.statistics.mapper.AnalysisMapper;
 import de.eshg.statistics.mapper.FilterParameterMapper;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
@@ -89,7 +90,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Hibernate;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -99,8 +99,8 @@ import org.springframework.util.CollectionUtils;
 
 @Service
 public class AnalysisService {
-  private static final String ANALYSIS_WITH_ID_NOT_FOUND = "Analysis with id '%s' not found";
-  private static final String DIAGRAM_WITH_ID_NOT_FOUND = "Diagram with id '%s' not found";
+  private static final String ANALYSIS_WITH_ID_NOT_FOUND = "Analysis with given id not found";
+  private static final String DIAGRAM_WITH_ID_NOT_FOUND = "Diagram with given id not found";
   private static final String PRIMARY_ATTRIBUTE = "primaryAttribute";
   private static final String SECONDARY_ATTRIBUTE = "secondaryAttribute";
 
@@ -118,17 +118,13 @@ public class AnalysisService {
       AnalysisRepository analysisRepository,
       TableRowRepository tableRowRepository,
       DiagramRepository diagramRepository,
-      @Value("${eshg.statistics.diagramdata.pagesize:500}") int pageSizeForCollectionDiagramData) {
+      StatisticsConfig statisticsConfig) {
     this.evaluationService = evaluationService;
     this.geoShapeService = geoShapeService;
     this.analysisRepository = analysisRepository;
     this.tableRowRepository = tableRowRepository;
     this.diagramRepository = diagramRepository;
-    this.pageSizeForCollectionDiagramData = pageSizeForCollectionDiagramData;
-    if (this.pageSizeForCollectionDiagramData <= 0) {
-      throw new IllegalArgumentException(
-          "'eshg.statistics.diagramdata.pagesize' must be greater than 0");
-    }
+    this.pageSizeForCollectionDiagramData = statisticsConfig.diagramData().pageSize();
   }
 
   @Transactional(readOnly = true)
@@ -136,7 +132,7 @@ public class AnalysisService {
     AbstractAggregationResult aggregationResult =
         getAnalysisInternal(analysisId).getAggregationResult();
     if (evaluationService.accessNotAllowed(aggregationResult)) {
-      throw new NotFoundException(ANALYSIS_WITH_ID_NOT_FOUND.formatted(analysisId));
+      throw new NotFoundException(ANALYSIS_WITH_ID_NOT_FOUND);
     }
   }
 
@@ -145,7 +141,7 @@ public class AnalysisService {
     AbstractAggregationResult aggregationResult =
         getDiagramInternal(diagramId).getAnalysis().getAggregationResult();
     if (evaluationService.accessNotAllowed(aggregationResult)) {
-      throw new NotFoundException(DIAGRAM_WITH_ID_NOT_FOUND.formatted(diagramId));
+      throw new NotFoundException(DIAGRAM_WITH_ID_NOT_FOUND);
     }
   }
 
@@ -573,7 +569,7 @@ public class AnalysisService {
   public Analysis getAnalysisInternal(UUID analysisId) {
     return analysisRepository
         .findByExternalId(analysisId)
-        .orElseThrow(() -> new NotFoundException(ANALYSIS_WITH_ID_NOT_FOUND.formatted(analysisId)));
+        .orElseThrow(() -> new NotFoundException(ANALYSIS_WITH_ID_NOT_FOUND));
   }
 
   @Transactional
@@ -1496,7 +1492,7 @@ public class AnalysisService {
   public Diagram getDiagramInternal(UUID diagramId) {
     return diagramRepository
         .findByExternalId(diagramId)
-        .orElseThrow(() -> new NotFoundException(DIAGRAM_WITH_ID_NOT_FOUND.formatted(diagramId)));
+        .orElseThrow(() -> new NotFoundException(DIAGRAM_WITH_ID_NOT_FOUND));
   }
 
   @Transactional

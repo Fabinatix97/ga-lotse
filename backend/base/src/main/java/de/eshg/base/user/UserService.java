@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -73,11 +73,7 @@ public class UserService {
   }
 
   public UserRepresentation getUserByIdOrThrow(UUID userId) {
-    try {
-      return employeeKeycloakClient.getRealm().users().get(userId.toString()).toRepresentation();
-    } catch (jakarta.ws.rs.NotFoundException e) {
-      throw new NotFoundException("User not found");
-    }
+    return getUserById(userId).orElseThrow(() -> new NotFoundException("User not found"));
   }
 
   public Optional<UserRepresentation> getUserById(UUID userId) {

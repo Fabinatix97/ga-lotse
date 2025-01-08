@@ -1,17 +1,17 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
+import {
+  RadioGroupField,
+  RadioGroupFieldProps,
+} from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { Stack } from "@mui/joy";
 import { ReactElement } from "react";
 
 import { SelectableCard } from "@/lib/shared/components/cards/SelectableCard";
-import {
-  RadioGroupField,
-  RadioGroupFieldProps,
-} from "@/lib/shared/components/formFields/RadioGroupField";
 
 interface SelectableCardsFieldProps extends RadioGroupFieldProps {
   options: {

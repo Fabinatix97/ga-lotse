@@ -1,11 +1,11 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package de.eshg.medicalregistry.api;
 
-import de.eshg.CustomValidations.EmailAddressConstraint;
+import de.eshg.CustomValidations.MandatoryEmailAddressConstraint;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -19,7 +19,7 @@ public class CreatePracticeDto {
   @Size(min = 1, max = 300)
   private String name;
 
-  @NotNull @EmailAddressConstraint private String emailAddress;
+  @NotNull @MandatoryEmailAddressConstraint private String emailAddress;
 
   @NotNull
   @Size(min = 1, max = 23)

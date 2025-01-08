@@ -1,27 +1,19 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiTypeOfChange } from "@eshg/employee-portal-api/medicalRegistry";
+import { changeTypeNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
+import { GeneralInformationFormValues } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
   buildEnumOptions,
   createFieldNameMapper,
 } from "@eshg/lib-portal/helpers/form";
-import {
-  NestedFormProps,
-  OptionalFieldValue,
-} from "@eshg/lib-portal/types/form";
+import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { Grid, Typography } from "@mui/joy";
 
-import { changeTypeNames } from "@/lib/businessModules/medicalRegistry/shared/constants";
-
 import { requiredFieldMessage } from "./MedicalRegistryCreateProcedureForm";
-
-export interface GeneralInformationFormValues {
-  changeType: OptionalFieldValue<ApiTypeOfChange>;
-}
 
 export function GeneralInformationForm(props: NestedFormProps) {
   const fieldName = createFieldNameMapper<GeneralInformationFormValues>(

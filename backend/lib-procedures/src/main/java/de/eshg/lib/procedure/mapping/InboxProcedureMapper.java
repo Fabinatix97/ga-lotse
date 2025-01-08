@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -16,7 +16,7 @@ import de.eshg.lib.procedure.domain.model.InboxProcedureStatus;
 import de.eshg.lib.procedure.domain.model.InboxProgressEntry;
 import de.eshg.lib.procedure.domain.model.InboxProgressEntryType;
 import de.eshg.lib.procedure.domain.model.Title;
-import de.eshg.lib.procedure.model.ConcreteFileOrFileReference;
+import de.eshg.lib.procedure.model.AbstractFileReferenceDto;
 import de.eshg.lib.procedure.model.ContactDetailsDto;
 import de.eshg.lib.procedure.model.ContactTypeDto;
 import de.eshg.lib.procedure.model.CreateInboxProcedureRequest;
@@ -125,7 +125,7 @@ public final class InboxProcedureMapper {
   }
 
   private static InboxProcedureDto toInterfaceType(
-      InboxProcedure inboxProcedure, Function<File, ConcreteFileOrFileReference> fileMapper) {
+      InboxProcedure inboxProcedure, Function<File, AbstractFileReferenceDto> fileMapper) {
     return new InboxProcedureDto(
         inboxProcedure.getExternalId(),
         ProcedureMapper.toInterfaceType(inboxProcedure.getProcedureType()),
@@ -146,8 +146,7 @@ public final class InboxProcedureMapper {
   }
 
   private static InboxProgressEntryDto toInterfaceType(
-      InboxProgressEntry inboxProgressEntry,
-      Function<File, ConcreteFileOrFileReference> fileMapper) {
+      InboxProgressEntry inboxProgressEntry, Function<File, AbstractFileReferenceDto> fileMapper) {
     return new InboxProgressEntryDto(
         inboxProgressEntry.getExternalId(),
         inboxProgressEntry.getSubject(),

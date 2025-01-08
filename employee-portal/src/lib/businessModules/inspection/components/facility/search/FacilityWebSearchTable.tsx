@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -25,9 +25,9 @@ import {
 } from "@/lib/businessModules/inspection/api/mutations/webSearch";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 const columnHelper: ColumnHelper<ApiWebSearchOverviewEntry> =
   createColumnHelper<ApiWebSearchOverviewEntry>();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -19,16 +19,20 @@ import de.eshg.base.gdpr.persistence.repository.GdprProcedureRepository;
 import de.eshg.base.util.PaginationUtil;
 import de.eshg.domain.model.EntityWithExternalId;
 import de.eshg.domain.model.serialization.SerializationService;
+import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.rest.service.error.AlreadyExistsException;
 import de.eshg.rest.service.error.NotFoundException;
+import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.validation.ValidationUtil;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -39,12 +43,16 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class GdprProcedureService {
+
+  private static final String AUDITLOG_CATEGORY = "DSGVO";
+
   private static final Logger log = LoggerFactory.getLogger(GdprProcedureService.class);
   private final GdprProcedureRepository repository;
   private final PersonRepository personRepository;
   private final FacilityRepository facilityRepository;
   private final GdprDownloadRepository downloadRepository;
   private final SerializationService serializationService;
+  private final AuditLogger auditLogger;
 
   private static Specification<GdprProcedure> hasType(GdprProcedureType type) {
     if (type == null) {
@@ -58,17 +66,21 @@ public class GdprProcedureService {
       PersonRepository personRepository,
       FacilityRepository facilityRepository,
       GdprDownloadRepository downloadRepository,
-      SerializationService serializationService) {
+      SerializationService serializationService,
+      AuditLogger auditLogger) {
     this.repository = procedureRepository;
     this.personRepository = personRepository;
     this.facilityRepository = facilityRepository;
     this.downloadRepository = downloadRepository;
     this.serializationService = serializationService;
+    this.auditLogger = auditLogger;
   }
 
   public GdprProcedure add(GdprProcedure procedure) {
     procedure.setStatus(GdprProcedureStatus.DRAFT);
-    return repository.save(procedure);
+    GdprProcedure saved = repository.save(procedure);
+    writeAuditLog("DSGVO Vorgang anlegen", mapAuditLog(saved));
+    return saved;
   }
 
   public Optional<GdprProcedure> findByExternalId(UUID id) {
@@ -91,21 +103,25 @@ public class GdprProcedureService {
 
     storedGdprProcedure.setCentralFileId(centralFileId);
 
-    return getGdprProcedure(gdprProcedureId);
+    GdprProcedure getGdprProcedure = getGdprProcedure(gdprProcedureId);
+    writeAuditLog("StammdatenID hinzufügen", mapAuditLog(getGdprProcedure));
+    return getGdprProcedure;
   }
 
   private GdprProcedure getGdprProcedure(UUID gdprProcedureId) {
-    return repository.findByExternalId(gdprProcedureId).orElseThrow(notFound(gdprProcedureId));
+    return repository
+        .findByExternalId(gdprProcedureId)
+        .orElseThrow(GdprProcedureService::notFoundException);
   }
 
   public GdprProcedure getGdprProcedureForUpdate(UUID gdprProcedureId) {
     return repository
         .findByExternalIdForUpdate(gdprProcedureId)
-        .orElseThrow(notFound(gdprProcedureId));
+        .orElseThrow(GdprProcedureService::notFoundException);
   }
 
-  private static Supplier<NotFoundException> notFound(UUID id) {
-    return () -> new NotFoundException("GdprProcedure with id '%s' not found.".formatted(id));
+  private static NotFoundException notFoundException() {
+    return new NotFoundException("GdprProcedure with given id not found.");
   }
 
   public void addGdprDownloads(UUID id, @NotNull Set<UUID> downloadIdsToAdd) {
@@ -122,6 +138,8 @@ public class GdprProcedureService {
       GdprDownload download = new GdprDownload();
       download.setDownloadId(uuid);
       procedure.addDownload(download);
+
+      writeAuditLog("Datenpaket hinzufügen", mapAuditLog(procedure, uuid));
     }
 
     log.info("Added downloadIds={} to GdprProcedure(id={})", downloadIdsToAdd, id);
@@ -133,6 +151,7 @@ public class GdprProcedureService {
 
     for (UUID uuid : downloadIdsToDelete) {
       procedure.deleteDownload(uuid);
+      writeAuditLog("Datenpaket löschen", mapAuditLog(procedure, uuid));
     }
 
     log.info("Deleted downloadIds={} of GdprProcedure(id={})", downloadIdsToDelete, id);
@@ -142,6 +161,8 @@ public class GdprProcedureService {
     log.info("Setting status of GdprProcedure(id={}) to {}.", gdprProcedure.getId(), newStatus);
     gdprProcedure.setStatus(newStatus);
     repository.flush();
+
+    writeAuditLog("Status aktualisieren", mapAuditLog(gdprProcedure));
     return gdprProcedure;
   }
 
@@ -152,20 +173,19 @@ public class GdprProcedureService {
     DownloadPackage downloadPackage = new DownloadPackage();
     downloadPackage.setContent(zipped);
     procedure.setCentralFileDownload(downloadPackage);
+    writeAuditLog("Stammdatenpaket erzeugen", mapAuditLog(procedure));
   }
 
   private byte[] serializeCentralFiles(GdprProcedure procedure) {
     List<UUID> personFileStateIds =
-        personRepository.findAllFileStateIdsByReferencePersonCreatedBefore(
-            procedure.getCentralFileId(), procedure.getCreatedAt());
+        personRepository.findAllFileStateIdsByReferencePerson(procedure.getCentralFileId());
 
     List<Person> personFileStates =
         personRepository.findAllByExternalIdInAndReferencePersonIsNotNullOrderById(
             personFileStateIds);
 
     List<UUID> facilityFileStateIds =
-        facilityRepository.findAllFileStateIdsByReferenceFacilityCreatedBefore(
-            procedure.getCentralFileId(), procedure.getCreatedAt());
+        facilityRepository.findAllFileStateIdsByReferenceFacility(procedure.getCentralFileId());
 
     List<Facility> facilityFileStates =
         facilityRepository.findAllByExternalIdInAndReferenceFacilityIsNotNullOrderById(
@@ -176,5 +196,22 @@ public class GdprProcedureService {
     fileStates.addAll(facilityFileStates);
 
     return serializationService.toNestedZip("Sachstand-", fileStates);
+  }
+
+  public void writeAuditLog(String operationName, Map<String, String> attributes) {
+    attributes = new LinkedHashMap<>(attributes);
+    attributes.put(
+        "durch Benutzer", CurrentUserHelper.getCurrentUserIdAsStringGracefully().orElse("-"));
+    auditLogger.log(AUDITLOG_CATEGORY, operationName, attributes);
+  }
+
+  public Map<String, String> mapAuditLog(GdprProcedure procedure) {
+    return Map.of("DSGVO Vorgang ID", procedure.getExternalId().toString());
+  }
+
+  private Map<String, String> mapAuditLog(GdprProcedure procedure, UUID downloadId) {
+    Map<String, String> mappedAuditLog = new HashMap<>(mapAuditLog(procedure));
+    mappedAuditLog.putIfAbsent("Download ID", downloadId.toString());
+    return mappedAuditLog;
   }
 }

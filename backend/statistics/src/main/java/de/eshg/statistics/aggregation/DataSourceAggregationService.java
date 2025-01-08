@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -15,12 +15,14 @@ import de.eshg.lib.aggregation.BusinessModuleClient;
 import de.eshg.lib.aggregation.ClientResponse;
 import de.eshg.lib.statistics.api.Attribute;
 import de.eshg.lib.statistics.api.DataSource;
+import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.api.GetDataSourcesResponse;
 import de.eshg.statistics.api.datasource.AvailableDataSource;
 import de.eshg.statistics.api.datasource.BaseDataSourceAttribute;
 import de.eshg.statistics.api.datasource.BusinessDataSourceAttribute;
 import de.eshg.statistics.api.datasource.GetAvailableDataSourcesResponse;
-import de.eshg.statistics.config.OriginalDataAccessConfig;
+import de.eshg.statistics.config.StatisticsConfig;
+import de.eshg.statistics.config.StatisticsConfig.BusinessModuleConfig;
 import de.eshg.statistics.mapper.EvaluationMapper;
 import java.util.Collection;
 import java.util.Comparator;
@@ -34,15 +36,15 @@ public class DataSourceAggregationService {
 
   private final BusinessModuleAggregationHelper businessModuleAggregationHelper;
   private final BaseStatisticsApi baseModuleStatisticsApi;
-  private final OriginalDataAccessConfig originalDataAccessConfig;
+  private final BusinessModuleConfig businessModuleConfig;
 
   public DataSourceAggregationService(
       BusinessModuleAggregationHelper businessModuleAggregationHelper,
       BaseStatisticsApi baseModuleStatisticsApi,
-      OriginalDataAccessConfig originalDataAccessConfig) {
+      StatisticsConfig statisticsConfig) {
     this.businessModuleAggregationHelper = businessModuleAggregationHelper;
     this.baseModuleStatisticsApi = baseModuleStatisticsApi;
-    this.originalDataAccessConfig = originalDataAccessConfig;
+    this.businessModuleConfig = statisticsConfig.businessModule();
   }
 
   public GetAvailableDataSourcesResponse getAvailableDataSources() {
@@ -93,12 +95,20 @@ public class DataSourceAggregationService {
       List<BaseAvailableDataSource> baseAvailableDataSources) {
     return new AvailableDataSource(
         businessModule,
-        originalDataAccessConfig.originalDataAllowedForCurrentUser(businessModule),
+        isSensitiveDataAllowed(
+            dataSource.sensitivity(),
+            businessModuleConfig.sensitiveDataAllowedForCurrentUser(businessModule)),
         dataSource.id(),
         dataSource.name(),
         dataSource.sensitivity(),
         dataSource.canBeAnonymized(),
         mapAndExtendAttributes(dataSource.attributes(), baseAvailableDataSources));
+  }
+
+  public static boolean isSensitiveDataAllowed(
+      DataSourceSensitivity sensitivity, boolean sensitiveDataAllowedForBusinessModule) {
+    return DataSourceSensitivity.SENSITIVE.equals(sensitivity)
+        && sensitiveDataAllowedForBusinessModule;
   }
 
   private static List<BusinessDataSourceAttribute> mapAndExtendAttributes(

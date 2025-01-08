@@ -1,12 +1,12 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { ApiGetProcedureDraftResponse } from "@eshg/employee-portal-api/medicalRegistry";
+import { changeTypeNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
 import { Typography } from "@mui/joy";
 
-import { changeTypeNames } from "@/lib/businessModules/medicalRegistry/shared/constants";
 import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 

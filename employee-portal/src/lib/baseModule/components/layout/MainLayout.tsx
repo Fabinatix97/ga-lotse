@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,11 +11,10 @@ import { ReactNode, useState } from "react";
 import { Header } from "@/lib/baseModule/components/layout/header/Header";
 import { SideNavigation } from "@/lib/baseModule/components/layout/sideNavigation/SideNavigation";
 import {
-  headerHeightDesktop,
-  headerHeightMobile,
   sideNavigationCollapsedWidth,
   sideNavigationWidth,
 } from "@/lib/baseModule/components/layout/sizes";
+import { useHeaderHeights } from "@/lib/baseModule/components/layout/useHeaderHeights";
 import { SidebarSlot } from "@/lib/shared/components/drawer/SidebarSlot";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
@@ -23,6 +22,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
   const isOffline = useIsOffline();
   const [collapsed, setCollapsed] = useState(false);
   const drawerTransitionTime = "0.3s";
+  const { headerHeightMobile, headerHeightDesktop } = useHeaderHeights();
 
   return (
     <>

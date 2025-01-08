@@ -1,10 +1,10 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { ApiUserRole } from "@eshg/employee-portal-api/base";
-import { Chat } from "@mui/icons-material";
+import { ChatOutlined } from "@mui/icons-material";
 
 import {
   SideNavigationItem,
@@ -19,7 +19,7 @@ import { routes } from "./routes";
 export const sideNavigationItem: SideNavigationItem = {
   name: "Chat",
   href: routes.index,
-  decorator: <Chat />,
+  decorator: <ChatOutlined />,
   accessCheck: hasUserRole(ApiUserRole.ChatManagementWrite),
   chip: <ChatMessageCounter />,
 };

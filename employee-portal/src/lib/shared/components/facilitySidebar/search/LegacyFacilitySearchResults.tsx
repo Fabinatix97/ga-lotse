@@ -1,11 +1,12 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 import type { ApiGetReferenceFacilityResponse } from "@eshg/employee-portal-api/base";
 import { AlertProps } from "@eshg/lib-portal/components/Alert";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
+import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import AddOutlined from "@mui/icons-material/AddOutlined";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import { Button, Stack, Typography } from "@mui/joy";
@@ -15,7 +16,6 @@ import { ReactNode } from "react";
 import { FacilityCardContent } from "@/lib/baseModule/components/facility/FacilityCardContent";
 import { SelectableCard } from "@/lib/shared/components/cards/SelectableCard";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { RadioGroupField } from "@/lib/shared/components/formFields/RadioGroupField";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { fullAddress } from "@/lib/shared/helpers/facilityUtils";

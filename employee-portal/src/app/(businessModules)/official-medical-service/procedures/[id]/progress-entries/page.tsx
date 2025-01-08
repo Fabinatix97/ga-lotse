@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -31,17 +31,11 @@ import {
 } from "@/lib/businessModules/officialMedicalService/api/queries/progressEntries";
 import { systemProgressEntryTypeTitles } from "@/lib/businessModules/officialMedicalService/shared/constants";
 import { moduleUserGroup } from "@/lib/businessModules/officialMedicalService/shared/moduleUserGroup";
-import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
 import { ProgressEntriesUrlParams } from "@/lib/shared/components/procedures/progress-entries/types";
 
-interface OfficialMedicalServiceProgressEntriesPageParams
-  extends OfficialMedicalServiceDetailsPageParams {
-  entryId?: string;
-}
-
 export default function OfficialMedicalServiceProgressEntries(
-  props: ProgressEntriesUrlParams<OfficialMedicalServiceProgressEntriesPageParams>,
+  props: ProgressEntriesUrlParams<OfficialMedicalServiceDetailsPageParams>,
 ) {
   const { params, searchParams } = props;
   return (
@@ -53,7 +47,6 @@ export default function OfficialMedicalServiceProgressEntries(
       useFetchProgressEntries={useFetchProgressEntries}
       useFetchProgressEntryDetails={useFetchProgressEntryDetails}
       procedureId={params.id}
-      progressEntryId={params.entryId}
       searchParams={searchParams}
       leaderRole={ApiUserRole.OfficialMedicalServiceLeader}
       useRequestProgressEntryDeletion={useRequestProgressEntryDeletion}
@@ -63,13 +56,6 @@ export default function OfficialMedicalServiceProgressEntries(
       useDownloadFile={useDownloadOfficialMedicalFileFile}
       useGetManualProgressEntryHistory={useGetManualProgressEntryHistory}
       useGetMetaDataHistory={useGetMetaDataHistory}
-      routes={{
-        entryDetails: (procedureId, entryId) =>
-          routes.procedures.byId(procedureId).progressEntries.byId(entryId)
-            .details,
-        progressEntries: (procedureId) =>
-          routes.procedures.byId(procedureId).progressEntries.index,
-      }}
       systemProgressEntryTypes={systemProgressEntryTypeTitles}
       groupName={moduleUserGroup.group}
     />

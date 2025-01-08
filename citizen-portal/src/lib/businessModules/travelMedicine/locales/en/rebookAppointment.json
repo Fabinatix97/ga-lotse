@@ -1,24 +1,24 @@
 {
   "header": {
-    "title": "Termin (um)buchen",
-    "logout": "Mein Bereich verlassen"
+    "title": "(Re)schedule Appointment",
+    "logout": "Logout"
   },
   "content": {
-    "title": "Verfügbare Termine",
-    "requiredTitle": "*Pflichtfeld",
-    "errorMessage": "Bitte einen Termin auswählen",
-    "infoPanelTitle": "Terminverschiebung",
-    "infoPanelText": "Sie können Ihren Termin maximal zwei Mal verschieben."
+    "title": "Available Appointments",
+    "requiredTitle": "*Required Field",
+    "errorMessage": "Please select an appointment",
+    "infoPanelTitle": "Rescheduling",
+    "infoPanelText": "You are allowed to reschedule a maximum of two times."
   },
   "sidePanel": {
-    "title": "Übersicht",
-    "dateAndTime": "{{ appointmentStart }} Uhr",
-    "appointmentDuration": "(Dauer: {{ durationInMinutes }} Minuten)",
-    "postponeAppointment": "Termin verschieben",
-    "bookAppointment": "Termin buchen",
-    "back": "Zurück"
+    "title": "Overview",
+    "dateAndTime": "{{ appointmentStart }}",
+    "appointmentDuration": "(Duration: {{ durationInMinutes }} minutes)",
+    "postponeAppointment": "Postpone appointment",
+    "bookAppointment": "Book Appointment",
+    "back": "Back"
   },
   "snackbar": {
-    "putAppointmentConfirmation": "Der Termin wurde (um)gebucht."
+    "putAppointmentConfirmation": "The appointment has been (re)scheduled."
   }
 }

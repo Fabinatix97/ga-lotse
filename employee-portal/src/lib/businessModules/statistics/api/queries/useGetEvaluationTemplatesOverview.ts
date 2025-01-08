@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -10,6 +10,8 @@ import {
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useEvaluationTemplateApi } from "@/lib/businessModules/statistics/api/clients";
+import { extractFilterValue } from "@/lib/businessModules/statistics/api/mapper/extractFilterValue";
+import { mapDateSpanFilterToApiDateSpan } from "@/lib/businessModules/statistics/api/mapper/mapDateSpanFilterToApiDateSpan";
 import { mapDataSourceSensitivityApiToFrontend } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import {
   EvaluationTemplateTableView,
@@ -19,6 +21,10 @@ import {
   PageRequest,
   mapPageRequest,
 } from "@/lib/businessModules/statistics/api/models/pageRequest";
+import { EvaluationTemplatesFilterKey } from "@/lib/businessModules/statistics/components/evaluations/templates/filterDefinitions";
+import { DateSpanFilterValue } from "@/lib/shared/components/filterSettings/models/DateSpanFilter";
+import { EnumFilterValue } from "@/lib/shared/components/filterSettings/models/EnumFilter";
+import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 
 import { evaluationTemplateApiQueryKey } from "./apiQueryKeys";
 
@@ -56,21 +62,45 @@ export function mapPageRequestSortKey(key: string | undefined) {
   }
 }
 
+export function mapPageRequestWithFilterToApi(
+  pageRequest: PageRequest,
+  filterValues: FilterValue[],
+) {
+  const dataSourceIds = extractFilterValue<EnumFilterValue>(
+    filterValues,
+    EvaluationTemplatesFilterKey.DataSource,
+  )?.selectedValues;
+  const createdAt = mapDateSpanFilterToApiDateSpan(
+    extractFilterValue<DateSpanFilterValue>(
+      filterValues,
+      EvaluationTemplatesFilterKey.CreatedAt,
+    ),
+    false,
+  );
+
+  return {
+    ...mapPageRequest(pageRequest, mapPageRequestSortKey),
+    filterOptions: {
+      dataSourceIds: dataSourceIds,
+      createdAt: createdAt,
+    },
+  };
+}
+
 export function useGetEvaluationTemplatesOverview(
-  evaluationTemplatesOverviewRequest: PageRequest,
+  pageRequest: PageRequest,
+  filterValues: FilterValue[],
 ) {
   const evaluationTemplateApi = useEvaluationTemplateApi();
   const queryResult = useSuspenseQuery({
     queryKey: evaluationTemplateApiQueryKey([
       "getEvaluationTemplateOverview",
-      evaluationTemplatesOverviewRequest,
+      pageRequest,
+      filterValues,
     ]),
     queryFn: () =>
       evaluationTemplateApi.getEvaluationTemplateOverview(
-        mapPageRequest(
-          evaluationTemplatesOverviewRequest,
-          mapPageRequestSortKey,
-        ),
+        mapPageRequestWithFilterToApi(pageRequest, filterValues),
       ),
     select: mapEvaluationTemplatesToTableView,
   });

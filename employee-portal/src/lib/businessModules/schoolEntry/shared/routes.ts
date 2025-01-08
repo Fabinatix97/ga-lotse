@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -27,19 +27,7 @@ export const routes = defineRoutes("/school-entry", (schoolEntryPath) => ({
           ),
           vaccination: procedurePath("/vaccination"),
           anamnesis: procedurePath("/anamnesis"),
-          progressEntries: defineRoutes(
-            procedurePath("/progress-entries"),
-            (progressEntriesPath) => ({
-              index: progressEntriesPath("/"),
-              byId: (progressEntryId: string) =>
-                defineRoutes(
-                  progressEntriesPath(`/${progressEntryId}`),
-                  (entryPath) => ({
-                    details: entryPath("/details"),
-                  }),
-                ),
-            }),
-          ),
+          progressEntries: procedurePath("/progress-entries"),
         })),
     }),
   ),

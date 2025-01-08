@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -15,7 +15,7 @@ import de.eshg.lib.procedure.domain.model.FileContent;
 import de.eshg.lib.procedure.domain.model.FileDeletionApprovalRequest;
 import de.eshg.lib.procedure.domain.model.MetaData;
 import de.eshg.lib.procedure.mapping.FileMapper;
-import de.eshg.lib.procedure.model.ConcreteFileDto;
+import de.eshg.lib.procedure.model.AbstractFileDto;
 import de.eshg.lib.procedure.model.GetMetaDataHistoryResponse;
 import de.eshg.lib.procedure.model.MetaDataDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -47,14 +47,14 @@ public class FileController implements FileApi {
 
   @Override
   @Transactional(readOnly = true)
-  public ConcreteFileDto getFile(UUID fileId) {
+  public AbstractFileDto getFile(UUID fileId) {
     File file = fileStorageService.findFileOrThrow(fileId);
     return FileMapper.toInterfaceType(file);
   }
 
   @Override
   @Transactional
-  public ConcreteFileDto updateFileMetaData(UUID fileId, MetaDataDto metaData) {
+  public AbstractFileDto updateFileMetaData(UUID fileId, MetaDataDto metaData) {
     MetaData domainMetaData = FileMapper.toDomainType(metaData);
     File file = fileStorageService.updateFileMetaData(fileId, domainMetaData);
     return FileMapper.toInterfaceType(file);

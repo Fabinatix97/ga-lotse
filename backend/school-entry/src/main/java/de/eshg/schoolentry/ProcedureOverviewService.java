@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -14,8 +14,7 @@ import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonsSortKey;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
-import de.eshg.lib.procedure.domain.model.RelatedPerson;
-import de.eshg.lib.procedure.domain.model.RelatedPerson_;
+import de.eshg.lib.procedure.procedures.ProcedureQuery;
 import de.eshg.lib.procedure.procedures.ProcedureSearchService;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.schoolentry.api.ProcedureFilterParameters;
@@ -32,7 +31,6 @@ import de.eshg.schoolentry.business.model.WaitingRoomProcedureData;
 import de.eshg.schoolentry.client.PersonClient;
 import de.eshg.schoolentry.domain.model.Person;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
-import de.eshg.schoolentry.domain.model.SchoolEntryProcedure_;
 import de.eshg.schoolentry.domain.repository.SchoolEntryProcedureRepository;
 import de.eshg.schoolentry.domain.specification.SchoolEntryProcedureSpecification;
 import de.eshg.schoolentry.domain.specification.WaitingRoomSpecification;
@@ -42,11 +40,6 @@ import de.eshg.schoolentry.util.ProcedurePageSpec;
 import de.eshg.schoolentry.util.ProcedureSortKey;
 import de.eshg.schoolentry.util.WaitingRoomPageSpec;
 import de.eshg.schoolentry.util.WaitingRoomSortKey;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.Root;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -67,7 +60,7 @@ public class ProcedureOverviewService {
   private final ProcedureSearchService<SchoolEntryProcedure> procedureSearchService;
   private final PersonClient personClient;
   private final ContactClient contactClient;
-  private final EntityManager entityManager;
+  private final ProcedureQuery procedureQuery;
   private final Validator validator;
   private final Clock clock;
 
@@ -76,14 +69,14 @@ public class ProcedureOverviewService {
       ProcedureSearchService<SchoolEntryProcedure> procedureSearchService,
       PersonClient personClient,
       ContactClient contactClient,
-      EntityManager entityManager,
+      ProcedureQuery procedureQuery,
       Validator validator,
       Clock clock) {
     this.schoolEntryProcedureRepository = schoolEntryProcedureRepository;
     this.procedureSearchService = procedureSearchService;
     this.personClient = personClient;
     this.contactClient = contactClient;
-    this.entityManager = entityManager;
+    this.procedureQuery = procedureQuery;
     this.validator = validator;
     this.clock = clock;
   }
@@ -261,23 +254,8 @@ public class ProcedureOverviewService {
   }
 
   private List<UUID> findAllChildIds(Specification<SchoolEntryProcedure> procedureSpecification) {
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<UUID> query = criteriaBuilder.createQuery(UUID.class);
-    Root<SchoolEntryProcedure> root = query.from(SchoolEntryProcedure.class);
-
-    Join<SchoolEntryProcedure, ? extends RelatedPerson<?>> relatedPersonsJoin =
-        root.join(SchoolEntryProcedure_.relatedPersons);
-    Join<SchoolEntryProcedure, ? extends RelatedPerson<?>> childJoin =
-        relatedPersonsJoin.on(
-            criteriaBuilder.equal(
-                relatedPersonsJoin.get(RelatedPerson_.personType),
-                Person.PERSON_TYPE_USED_FOR_CHILDREN));
-
-    query.select(childJoin.get(RelatedPerson_.centralFileStateId));
-
-    query.where(procedureSpecification.toPredicate(root, query, criteriaBuilder));
-
-    return entityManager.createQuery(query).getResultList();
+    return procedureQuery.findAllRelatedPersonFileStateIds(
+        procedureSpecification, SchoolEntryProcedure.class, Person.PERSON_TYPE_USED_FOR_CHILDREN);
   }
 
   private Instant getDayOfAppointmentAsInstant(LocalDate dayOfAppointmentFilter) {

@@ -1,32 +1,28 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 "use client";
 
-import {
-  ApiAddPersonFileStateRequest,
-  ApiGetReferencePersonResponse,
-} from "@eshg/employee-portal-api/base";
-import {
-  ApiAffectedPerson,
-  ApiPostEmployeeOmsProcedureRequest,
-} from "@eshg/employee-portal-api/officialMedicalService";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { ApiGetReferencePersonResponse } from "@eshg/employee-portal-api/base";
+import { ApiPostEmployeeOmsProcedureRequest } from "@eshg/employee-portal-api/officialMedicalService";
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
 import { usePostEmployeeProcedure } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
+import {
+  mapToAffectedPerson,
+  mapToCreateProcedureRequest,
+} from "@/lib/businessModules/officialMedicalService/shared/helpers";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
 import { PersonSidebar } from "@/lib/shared/components/personSidebar/PersonSidebar";
 import { DefaultPersonFormValues } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
-import { mapToPersonAddRequest } from "@/lib/shared/components/personSidebar/helpers";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function CreateProcedure() {
   const router = useRouter();
@@ -34,7 +30,6 @@ export function CreateProcedure() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const sidebarFormRef = useRef<SidebarFormHandle>(null);
   const { openCancelDialog } = useConfirmationDialog();
-  const snackbar = useSnackbar();
 
   async function createProcedureWithNewPerson(person: DefaultPersonFormValues) {
     const request: ApiPostEmployeeOmsProcedureRequest =
@@ -42,7 +37,6 @@ export function CreateProcedure() {
     await postEmployeeProcedure.mutateAsync(request, {
       onSuccess: (response) => {
         if (response) {
-          snackbar.confirmation("Vorgang wurde angelegt");
           router.push(routes.procedures.byId(response).details);
         }
       },
@@ -58,7 +52,6 @@ export function CreateProcedure() {
     await postEmployeeProcedure.mutateAsync(request, {
       onSuccess: (response) => {
         if (response) {
-          snackbar.confirmation("Vorgang wurde angelegt");
           router.push(routes.procedures.byId(response).details);
         }
       },
@@ -109,22 +102,4 @@ export function CreateProcedure() {
       </Sidebar>
     </>
   );
-}
-
-function mapToAffectedPerson(
-  person: ApiAddPersonFileStateRequest,
-): ApiAffectedPerson {
-  return {
-    ...person,
-    contactAddress: person.contactAddress!,
-  };
-}
-
-function mapToCreateProcedureRequest(
-  values: DefaultPersonFormValues,
-): ApiPostEmployeeOmsProcedureRequest {
-  const person = mapToPersonAddRequest(values);
-  return {
-    affectedPerson: mapToAffectedPerson(person),
-  };
 }

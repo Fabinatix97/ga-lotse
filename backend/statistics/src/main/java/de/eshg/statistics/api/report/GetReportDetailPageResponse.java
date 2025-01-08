@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -33,4 +33,5 @@ public record GetReportDetailPageResponse(
     @Valid UserDto userReportSeries,
     @Valid UserDto userReport,
     @NotNull @Valid List<AnalysisDto> analyses,
-    @NotNull ReportTypeDto reportType) {}
+    @NotNull ReportTypeDto reportType,
+    @NotNull ReportDataSensitivity dataSensitivity) {}

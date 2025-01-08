@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -11,6 +11,7 @@ import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToOne;
 import java.util.UUID;
 import org.hibernate.annotations.JdbcType;
@@ -20,7 +21,10 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 public class InboxProgressEntry extends BaseEntityWithExternalId implements FileAware {
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  @OneToOne(optional = false)
+  @OneToOne(
+      optional = false,
+      fetch = FetchType.LAZY,
+      mappedBy = InboxProcedure_.INBOX_PROGRESS_ENTRY)
   private InboxProcedure inboxProcedure;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)

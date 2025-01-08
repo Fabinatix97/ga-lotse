@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -7,12 +7,13 @@ import { InternalLinkIconButton } from "@eshg/lib-portal/components/navigation/I
 import ChevronLeft from "@mui/icons-material/ChevronLeft";
 import { Divider, Sheet, Stack, Typography } from "@mui/joy";
 
-import { headerHeightMobile } from "@/lib/baseModule/components/layout/sizes";
+import { useHeaderHeights } from "@/lib/baseModule/components/layout/useHeaderHeights";
 
 export function SubPageHeader({
   routeBack,
   header,
 }: Readonly<{ routeBack: string; header: string }>) {
+  const { headerHeightMobile } = useHeaderHeights();
   const iconSize = headerHeightMobile;
   return (
     <Sheet sx={{ padding: 0, borderRadius: 0 }} data-testid="subPageHeader">

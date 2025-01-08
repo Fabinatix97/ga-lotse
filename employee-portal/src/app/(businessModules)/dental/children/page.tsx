@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -9,6 +9,7 @@ import { Cached } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 
 import { ChildrenTable } from "@/lib/businessModules/dental/features/children/ChildrenTable";
+import { CloseSchoolYearButton } from "@/lib/businessModules/dental/features/children/CloseSchoolYearButton";
 import { CreateChildSidebar } from "@/lib/businessModules/dental/features/children/new/CreateChildSidebar";
 import { useImportChildrenSidebar } from "@/lib/businessModules/dental/import/ImportChildrenSidebar";
 import { BUTTON_SIZE } from "@/lib/businessModules/schoolEntry/features/procedures/new/constants";
@@ -45,6 +46,7 @@ export default function DentalProceduresPage() {
       <MainContentLayout fullViewportHeight>
         <ChildrenTable
           buttons={[
+            <CloseSchoolYearButton key="closeSchoolYear" />,
             <ImportChildrenButton key="importChildren" />,
             <CreateChildButton key="createChild" />,
           ]}

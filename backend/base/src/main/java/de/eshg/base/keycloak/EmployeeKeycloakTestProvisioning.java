@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -91,6 +91,7 @@ public class EmployeeKeycloakTestProvisioning extends KeycloakTestProvisioning {
       case STI_PROTECTION_PHYSICIANS -> "Michael";
       case STI_PROTECTION_MFAS -> "Emilia";
       case STI_PROTECTION_CONSULTANTS -> "Gregor";
+      case OFFICIAL_MEDICAL_SERVICE_PHYSICIANS -> "Tina";
     };
   }
 
@@ -103,6 +104,7 @@ public class EmployeeKeycloakTestProvisioning extends KeycloakTestProvisioning {
       case STI_PROTECTION_PHYSICIANS -> "Kohlhaas";
       case STI_PROTECTION_MFAS -> "Galotti";
       case STI_PROTECTION_CONSULTANTS -> "Samsa";
+      case OFFICIAL_MEDICAL_SERVICE_PHYSICIANS -> "Hoffmann";
     };
   }
 
@@ -132,6 +134,7 @@ public class EmployeeKeycloakTestProvisioning extends KeycloakTestProvisioning {
         lastNameMapper.apply(group),
         "password",
         Arrays.asList(employeePermissionRole),
-        List.of(group));
+        List.of(group),
+        Map.of());
   }
 }

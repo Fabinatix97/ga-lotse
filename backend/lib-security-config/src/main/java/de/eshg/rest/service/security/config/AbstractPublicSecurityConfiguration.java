@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -105,6 +105,10 @@ public abstract class AbstractPublicSecurityConfiguration {
     requestMatchers(
             GET, ProcedureLibrary.PROCEDURES_API + "/**", ProcedureLibrary.FILES_API + "/**")
         .hasAnyRole(procedureAccessRole, EmployeePermissionRole.PROCEDURE_ARCHIVE);
+
+    requestMatchers(POST, ProcedureLibrary.PROCEDURES_API + "/check-file-state-usage")
+        .hasAnyRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ);
+
     requestMatchers(
             GET, ProcedureLibrary.INBOX_PROCEDURES_API + "/**", ProcedureLibrary.TASKS_API + "/**")
         .hasRole(procedureAccessRole);

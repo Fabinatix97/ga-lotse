@@ -1,4 +1,4 @@
-# Copyright 2024 cronn GmbH
+# Copyright 2025 cronn GmbH
 # SPDX-License-Identifier: AGPL-3.0-only
 
 openapi: 3.0.1
@@ -1045,6 +1045,25 @@ paths:
                 $ref: "#/components/schemas/GetProceduresResponse"
           description: the users recent procedures
       summary: Get recent procedures for user
+      tags:
+      - Procedure
+  /procedures/check-file-state-usage:
+    post:
+      operationId: checkFileStateUsage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CheckFileStateUsageRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CheckFileStateUsageResponse"
+          description: OK
+      summary: Identify which file state IDs are still used by active procedures.
       tags:
       - Procedure
   /procedures/recent:
@@ -2360,9 +2379,8 @@ components:
       - $ref: "#/components/schemas/AbstractFileReference"
       - type: object
         properties:
-          attachedToMail:
+          '@type':
             type: string
-            format: uuid
           createdAt:
             type: string
             format: date-time
@@ -2381,10 +2399,7 @@ components:
           modifiedAt:
             type: string
             format: date-time
-      - type: object
-        properties:
-          '@type':
-            type: string
+      - $ref: "#/components/schemas/ApprovalRequestEntity"
       discriminator:
         propertyName: '@type'
       required:
@@ -2517,6 +2532,7 @@ components:
       - HIV_STI_CONSULTATION
       - SEX_WORK
       - RESULTS_REVIEW
+      - OFFICIAL_MEDICAL_SERVICE
     AppointmentTypeConfig:
       type: object
       properties:
@@ -2691,80 +2707,33 @@ components:
       required:
       - businessProcedure
       - inclusionStatus
+    CheckFileStateUsageRequest:
+      type: object
+      properties:
+        fileStatesIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+          maxItems: 2147483647
+          minItems: 1
+      required:
+      - fileStatesIds
+    CheckFileStateUsageResponse:
+      type: object
+      properties:
+        inUse:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - inUse
     Concern:
       type: string
       enum:
       - HIV_STI_CONSULTATION
       - SEX_WORK
-    ConcreteFileDto:
-      type: object
-      allOf:
-      - $ref: "#/components/schemas/AbstractFile"
-      - type: object
-        properties:
-          '@type':
-            type: string
-      - $ref: "#/components/schemas/ConcreteFileOrFileReference"
-      - type: object
-        properties:
-          attachedToMail:
-            type: string
-            format: uuid
-          createdAt:
-            type: string
-            format: date-time
-          createdBy:
-            type: string
-            format: uuid
-          deletable:
-            type: boolean
-          deleted:
-            type: boolean
-          fileId:
-            type: string
-            format: uuid
-          fileName:
-            type: string
-          fileSizeBytes:
-            type: integer
-            format: int32
-          fileType:
-            $ref: "#/components/schemas/FileType"
-          locked:
-            type: boolean
-          modifiedAt:
-            type: string
-            format: date-time
-      - $ref: "#/components/schemas/ApprovalRequestEntity"
-      discriminator:
-        propertyName: '@type'
-      required:
-      - '@type'
-      - createdAt
-      - deletable
-      - deleted
-      - fileId
-      - fileName
-      - fileSizeBytes
-      - fileType
-      - locked
-      - modifiedAt
-    ConcreteFileOrFileReference:
-      type: object
-      discriminator:
-        propertyName: '@type'
-      properties:
-        '@type':
-          type: string
-        deletable:
-          type: boolean
-        deleted:
-          type: boolean
-        fileId:
-          type: string
-          format: uuid
-      required:
-      - '@type'
     ContactDetails:
       type: object
       properties:
@@ -3694,32 +3663,10 @@ components:
       - FEMALE
       - MALE
       example: "['FEMALE','DIVERSE']"
-    GenericFile:
-      type: object
-      allOf:
-      - $ref: "#/components/schemas/AbstractFile"
-      - type: object
-        properties:
-          '@type':
-            type: string
-      discriminator:
-        propertyName: '@type'
-      required:
-      - '@type'
-      - createdAt
-      - deletable
-      - deleted
-      - fileId
-      - fileName
-      - fileSizeBytes
-      - fileType
-      - locked
-      - modifiedAt
     GenericFileReference:
       type: object
       allOf:
       - $ref: "#/components/schemas/AbstractFileReference"
-      - $ref: "#/components/schemas/ConcreteFileOrFileReference"
       - type: object
         properties:
           '@type':
@@ -4387,7 +4334,7 @@ components:
     Image:
       type: object
       allOf:
-      - $ref: "#/components/schemas/ConcreteFileDto"
+      - $ref: "#/components/schemas/AbstractFile"
       - type: object
         properties:
           '@type':
@@ -4627,18 +4574,11 @@ components:
     Mail:
       type: object
       allOf:
-      - $ref: "#/components/schemas/ConcreteFileDto"
+      - $ref: "#/components/schemas/AbstractFile"
       - type: object
         properties:
           '@type':
             type: string
-          attachments:
-            type: array
-            items:
-              oneOf:
-              - $ref: "#/components/schemas/Image"
-              - $ref: "#/components/schemas/Mail"
-              - $ref: "#/components/schemas/Pdf"
           metaData:
             $ref: "#/components/schemas/MailMetaData"
           removedInvalidAttachments:
@@ -4802,7 +4742,7 @@ components:
     Pdf:
       type: object
       allOf:
-      - $ref: "#/components/schemas/ConcreteFileDto"
+      - $ref: "#/components/schemas/AbstractFile"
       - type: object
         properties:
           '@type':
@@ -5177,7 +5117,10 @@ components:
       type: object
       properties:
         file:
-          $ref: "#/components/schemas/GenericFile"
+          oneOf:
+          - $ref: "#/components/schemas/Image"
+          - $ref: "#/components/schemas/Mail"
+          - $ref: "#/components/schemas/Pdf"
         progressEntryId:
           type: string
           format: uuid

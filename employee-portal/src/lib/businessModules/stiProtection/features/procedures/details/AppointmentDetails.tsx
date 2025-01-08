@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -23,13 +23,13 @@ import {
   ActionsItem,
   ActionsMenu,
 } from "@/lib/shared/components/buttons/ActionsMenu";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { CalendarAddDay } from "@/lib/shared/components/icons/CalendarAddDay";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 import { formatAppointmentTime } from "./AdditionalDataSection";
 import {

@@ -1,10 +1,10 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 import { ApiUserRole } from "@eshg/employee-portal-api/base";
-import InventoryIcon from "@mui/icons-material/Inventory";
+import { Inventory2Outlined } from "@mui/icons-material";
 
 import { SideNavigationItem } from "@/lib/baseModule/components/layout/sideNavigation/types";
 import { hasUserRole } from "@/lib/shared/helpers/accessControl";
@@ -14,7 +14,7 @@ import { routes } from "./routes";
 export const sideNavigationItems: SideNavigationItem[] = [
   {
     name: "Archivierung",
-    decorator: <InventoryIcon />,
+    decorator: <Inventory2Outlined />,
     subItems: [
       {
         name: "Begehung",
@@ -50,7 +50,7 @@ export const sideNavigationItems: SideNavigationItem[] = [
   },
   {
     name: "Archiv-Admin",
-    decorator: <InventoryIcon />,
+    decorator: <Inventory2Outlined />,
     subItems: [
       {
         name: "Begehung",

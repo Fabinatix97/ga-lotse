@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,12 +8,12 @@ import { MonthAndYearFields } from "@eshg/lib-portal/components/formFields/Month
 import { FormControl, FormLabel, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
+import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
+import { YesOrNoWithFollowUp } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
 import {
   MedicalHistoryFormData,
   StandardRiskQuestion,
 } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/MedicalHistoryForm.config";
-import { SectionGrid } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/SectionGrid";
-import { YesOrNoWithFollowUp } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/YesOrNoWithFollowUp";
 import {
   StandardRiskFactor,
   standardRiskFactorNames,
@@ -24,10 +24,10 @@ export function Risks() {
 
   return (
     <>
-      <Typography level="title-md" mt={1} id="risks-section-title">
+      <Typography level="h3" mb={3} id="risks-section-title">
         Angaben zum Risiko
       </Typography>
-      <SectionGrid aria-labelledby="risks-section-title">
+      <SectionGrid aria-labelledby="risks-section-title" defaultColumn={1}>
         {Object.entries(values.standardRiskFactors).map(
           ([riskName, { lastIncident }]: [string, StandardRiskQuestion]) => (
             <YesOrNoWithFollowUp

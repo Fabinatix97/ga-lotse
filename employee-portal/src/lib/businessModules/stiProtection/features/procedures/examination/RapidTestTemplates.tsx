@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -9,7 +9,7 @@ import { Grid, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { PropsWithChildren } from "react";
 
-import { YesOrNoWithFollowUp } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/YesOrNoWithFollowUp";
+import { YesOrNoWithFollowUp } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
 import { FormGroupGrid } from "@/lib/shared/components/form/FormGroupGrid";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
@@ -21,11 +21,6 @@ export interface RapidTestProps extends PropsWithChildren {
   label: string;
 }
 
-export interface RapidTestWithTextResultProps extends RapidTestProps {
-  result: string;
-  positiveFieldLabel?: string;
-}
-
 function RapidTest(props: RapidTestProps) {
   const { name, label } = props;
   const { getFieldMeta } = useFormikContext<RapidTestsFormData>();
@@ -35,15 +30,20 @@ function RapidTest(props: RapidTestProps) {
   }
 
   return (
-    <Stack spacing={0}>
-      <Grid xxs={12} md={6} xxl={3}>
+    <Stack
+      component="fieldset"
+      aria-label={label}
+      border={0}
+      margin={0}
+      padding={0}
+      spacing={0}
+      gap={1.25}
+    >
+      <Grid xxs={12} md={6} xxl={3} sx={{ paddingLeft: 0 }}>
         <CheckboxField name={name} label={label} />
       </Grid>
       {isTestRequested() ? (
-        <FormGroupGrid
-          component="section"
-          aria-labelledby="general-section-title"
-        >
+        <FormGroupGrid>
           <Grid container xxs={12}>
             {props.children}
           </Grid>
@@ -84,8 +84,8 @@ export function RapidTestWithBooleanResult(
         <YesOrNoWithFollowUp
           name={result}
           label={"Ergebnis"}
-          labelFalse={"Negativ"}
-          labelTrue={positiveFieldLabel}
+          negativeLabel={"Negativ"}
+          positiveLabel={positiveFieldLabel}
           required={hasNumber() ? "Bitte das Testergebnis angeben" : undefined}
         />
       </Grid>

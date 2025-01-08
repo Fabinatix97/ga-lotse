@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -8,6 +8,7 @@ import {
   ApiManualProgressEntryType,
   ApiProgressEntryClass,
 } from "@eshg/employee-portal-api/businessProcedures";
+import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 import {
   CallOutlined,
   DescriptionOutlined,
@@ -26,7 +27,6 @@ import { systemProgressEntryTypeTitles as medicalRegistrySystemProgressEntryType
 import { systemProgressEntryTypeTitles as schoolEntrySystemProgressEntryTypeTitles } from "@/lib/businessModules/schoolEntry/shared/constants";
 import { systemProgressEntryTypeTitles as stiProtectionSystemProgressEntryTypeTitles } from "@/lib/businessModules/stiProtection/shared/constants";
 import { systemProgressEntryTypeTitles as travelMedicineSystemProgressEntryTypeTitles } from "@/lib/businessModules/travelMedicine/shared/constants";
-import { FileType } from "@/lib/shared/components/formFields/file/FileType";
 
 export const manualProgressEntryTypeNames = {
   [ApiManualProgressEntryType.Document]: "Dokument",

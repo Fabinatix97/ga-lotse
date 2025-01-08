@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -27,10 +27,10 @@ import {
 } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
 import { useInformationStatementSidebar } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/informationStatements/InformationStatementSidebar";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 import { informationStatementsColumns } from "./InformationStatementsColumns";
 

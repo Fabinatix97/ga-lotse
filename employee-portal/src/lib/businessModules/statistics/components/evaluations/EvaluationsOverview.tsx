@@ -1,23 +1,22 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 "use client";
 
-import { ApiEvaluationSortKey } from "@eshg/employee-portal-api/statistics";
 import { startTransition, useState } from "react";
 
-import { EvaluationOverviewTableItem } from "@/lib/businessModules/statistics/api/models/evaluationOverview";
 import { useGetEvaluationsOverview } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationsOverview";
 import { useCreateEvaluationSidebar } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/CreateEvaluationSidebar";
+import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 import { usePagination } from "@/lib/shared/hooks/table/usePagination";
 import { useTableSorting } from "@/lib/shared/hooks/table/useTableSorting";
 
 import { EvaluationsTable } from "./EvaluationsTable";
 
 export function EvaluationsOverview() {
-  const [anonymizationValue, setAnonymizationValue] = useState<boolean>();
+  const [filterValues, setFilterValues] = useState<FilterValue[]>([]);
 
   const { resetPageNumber, page, pageSize, getPaginationProps } =
     usePagination();
@@ -30,31 +29,20 @@ export function EvaluationsOverview() {
   });
   const createEvaluationSidebar = useCreateEvaluationSidebar();
 
-  const evaluationSortKey: Partial<
-    Record<keyof EvaluationOverviewTableItem, ApiEvaluationSortKey>
-  > = {
-    name: "NAME",
-    createdAt: "CREATED_AT",
-    timeRangeStart: "TIME_RANGE_START",
-    timeRangeEnd: "TIME_RANGE_END",
-  };
-
   const {
     evaluationsOverview,
     evaluationsOverviewIsFetching,
     availableDataSources,
     evaluationTemplates,
-  } = useGetEvaluationsOverview({
-    apiGetEvaluationsRequest: {
+  } = useGetEvaluationsOverview(
+    {
       page,
       pageSize,
-      filterOptions: {
-        anonymizationValue,
-      },
       sortDirection,
-      sortKey: evaluationSortKey[sortKey as keyof EvaluationOverviewTableItem],
+      sortKey,
     },
-  });
+    filterValues,
+  );
 
   function openCreateEvaluationSidebar() {
     createEvaluationSidebar.open({
@@ -65,12 +53,13 @@ export function EvaluationsOverview() {
 
   return (
     <EvaluationsTable
+      apiDataSources={availableDataSources}
       evaluationOverview={evaluationsOverview}
       loading={evaluationsOverviewIsFetching}
       onCreateEvaluationClick={openCreateEvaluationSidebar}
-      onAnonymizedFilterChanged={(filter) => {
+      onFilterValuesChanged={(filterValues) => {
         startTransition(() => {
-          setAnonymizationValue(filter);
+          setFilterValues(filterValues);
           resetPageNumber();
         });
       }}

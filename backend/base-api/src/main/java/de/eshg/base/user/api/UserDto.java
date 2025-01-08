@@ -1,11 +1,11 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package de.eshg.base.user.api;
 
-import de.eshg.CustomValidations.EmailAddressConstraint;
+import de.eshg.CustomValidations.MandatoryEmailAddressConstraint;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -23,7 +23,7 @@ public record UserDto(
         @NotBlank
         String username,
     @Schema(description = "The email address of a user.", example = "example@mail.de")
-        @EmailAddressConstraint
+        @MandatoryEmailAddressConstraint
         String email,
     @Schema(description = "The phone number of a user.", example = "+491234567890")
         String phoneNumber,

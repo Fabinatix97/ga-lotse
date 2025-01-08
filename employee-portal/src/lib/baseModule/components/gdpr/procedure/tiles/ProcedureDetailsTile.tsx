@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -44,9 +44,9 @@ import {
 } from "@/lib/baseModule/components/gdpr/procedure/tiles/SectionTile";
 import { multiLineEllipsis } from "@/lib/baseModule/theme/theme";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 function isMatterOfConcernRequired(type: ApiGdprProcedureType) {
   return (
@@ -68,28 +68,24 @@ export function ProcedureDetailsTile({
     CloseModalMode | undefined
   >();
 
-  const isRectification =
-    procedure.type === ApiGdprProcedureType.ToRectification;
-  const isObjection = procedure.type === ApiGdprProcedureType.ToObject;
-
-  const requiresMatterOfConcern = isObjection || isRectification;
+  const isBroadcast =
+    procedure.type === ApiGdprProcedureType.OfAccess ||
+    procedure.type === ApiGdprProcedureType.ToErasure;
+  const requiresMatterOfConcern = !isBroadcast;
 
   const isEditable =
     procedure.status === ApiGdprProcedureStatus.Draft ||
     procedure.status === ApiGdprProcedureStatus.InProgress;
-  const isCancellable =
-    isObjection &&
-    (procedure.status === ApiGdprProcedureStatus.InProgress ||
-      procedure.status === ApiGdprProcedureStatus.Draft);
+  const isCancellable = isEditable && !isBroadcast;
   const isClosable =
-    isObjection && procedure.status === ApiGdprProcedureStatus.InProgress;
+    !isBroadcast && procedure.status === ApiGdprProcedureStatus.InProgress;
 
   const showButtons =
     procedure.status !== ApiGdprProcedureStatus.Aborted &&
     procedure.status !== ApiGdprProcedureStatus.Closed;
 
   const canDownloadReport =
-    isObjection &&
+    procedure.type === ApiGdprProcedureType.ToObject &&
     (procedure.status === ApiGdprProcedureStatus.InProgress ||
       procedure.status === ApiGdprProcedureStatus.Closed);
 
@@ -223,7 +219,6 @@ function RefreshStatusButton({
   procedure: ApiGetGdprProcedureResponse;
 }) {
   const [isPending, startTransition] = useTransition();
-  const snackbar = useSnackbar();
   const refreshStatus = useRefreshProcedureStatus(procedure.id);
 
   const isVisible =
@@ -239,13 +234,7 @@ function RefreshStatusButton({
         onClick={() =>
           startTransition(async () => {
             try {
-              await refreshStatus.mutateAsync(undefined, {
-                onSuccess: (response) => {
-                  if (response.status === ApiGdprProcedureStatus.Closed) {
-                    snackbar.confirmation("Vorgang ist abgeschlossen.");
-                  }
-                },
-              });
+              await refreshStatus.mutateAsync();
             } catch {}
           })
         }

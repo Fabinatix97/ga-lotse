@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -9,6 +9,7 @@ import de.eshg.lib.keycloak.KeycloakGroup;
 import de.eshg.lib.keycloak.KeycloakRole;
 import de.eshg.lib.keycloak.KeycloakUser;
 import java.util.List;
+import java.util.Map;
 
 public record KeycloakTestUser(
     String username,
@@ -18,28 +19,9 @@ public record KeycloakTestUser(
     String lastName,
     String password,
     List<KeycloakRole> roles,
-    List<KeycloakGroup> groups)
+    List<KeycloakGroup> groups,
+    Map<String, String> additionalAttributes)
     implements KeycloakUser {
-
-  public KeycloakTestUser(
-      String username,
-      String phoneNumber,
-      String externalChatUsername,
-      String firstName,
-      String lastName,
-      String password,
-      KeycloakRole role,
-      List<KeycloakGroup> group) {
-    this(
-        username,
-        phoneNumber,
-        externalChatUsername,
-        firstName,
-        lastName,
-        password,
-        List.of(role),
-        group);
-  }
 
   public KeycloakTestUser(
       String username,
@@ -57,7 +39,8 @@ public record KeycloakTestUser(
         lastName,
         password,
         List.of(role),
-        List.of());
+        List.of(),
+        Map.of());
   }
 
   @Override

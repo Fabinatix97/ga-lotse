@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -288,7 +288,7 @@ public class ContactController implements ContactApi {
   private Contact findByIdOrThrow(UUID id) {
     return contactService
         .findById(id)
-        .orElseThrow(() -> new NotFoundException("Contact with id '%s' not found".formatted(id)));
+        .orElseThrow(() -> new NotFoundException("Contact with given id not found"));
   }
 
   private Map<UUID, UserDto> getAuditUsers(List<ContactHistoryEntryDto> history) {

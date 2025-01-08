@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 public record GetEvaluationsFilterOptions(
-    Boolean anonymizationValue,
+    List<EvaluationDataSensitivity> dataSensitivities,
     String name,
     List<EvaluationStateDto> states,
     List<UUID> dataSourceIds,

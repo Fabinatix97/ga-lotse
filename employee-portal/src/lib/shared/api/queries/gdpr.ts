@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -17,6 +17,7 @@ import { queryOptions, useSuspenseQueries } from "@tanstack/react-query";
 import assert from "assert";
 import { isDefined } from "remeda";
 
+import { useGdprProcedureApi } from "@/lib/baseModule/api/clients";
 import { gdprValidationTaskApiQueryKey } from "@/lib/baseModule/api/queries/apiQueryKey";
 import { useServerConfig } from "@/lib/baseModule/api/queries/config";
 import { useIsNewFeatureEnabled as useIsNewBaseFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
@@ -160,4 +161,10 @@ export function useDownloadPackageFileByModule() {
   }
 
   return downloadPackage;
+}
+
+export function useDownloadBaseModulePackage() {
+  const gdprApi = useGdprProcedureApi();
+  return (gdprProcedureId: string) =>
+    gdprApi.getCentralFileDownloadPackageRaw({ id: gdprProcedureId });
 }

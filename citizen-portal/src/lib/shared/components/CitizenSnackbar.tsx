@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -13,10 +13,9 @@ import {
   ContentMargin,
   contentMarginDesktop,
   contentMarginMobile,
-  headerHeightDesktop,
-  headerHeightMobile,
 } from "@/lib/baseModule/components/layout/sizes";
 import { responsiveContent } from "@/lib/shared/components/layout/PageContent";
+import { useHeaderHeights } from "@/lib/shared/components/layout/useHeaderHeights";
 
 const ICONS: Record<SnackbarComponentProps["color"], SvgIconComponent> = {
   primary: Info,
@@ -24,8 +23,21 @@ const ICONS: Record<SnackbarComponentProps["color"], SvgIconComponent> = {
   danger: Warning,
 };
 
-const StyledSnackbar = styled(Snackbar)<SnackbarComponentProps>(
-  ({ theme, color, position }) => ({
+interface StyledSnackbarProps extends SnackbarComponentProps {
+  headerHeightDesktop: string;
+  headerHeightMobile: string;
+}
+
+function excludeHeaderHeightProps(
+  prop: PropertyKey,
+): prop is keyof StyledSnackbarProps {
+  return prop !== "headerHeightDesktop" && prop !== "headerHeightMobile";
+}
+
+const StyledSnackbar = styled(Snackbar, {
+  shouldForwardProp: excludeHeaderHeightProps,
+})<StyledSnackbarProps>(
+  ({ theme, color, position, headerHeightDesktop, headerHeightMobile }) => ({
     "&.MuiSnackbar-root": {
       "--Snackbar-padding": theme.spacing(2),
       "--Snackbar-inset": calculatedSnackbarOffset(
@@ -54,11 +66,14 @@ const StyledSnackbar = styled(Snackbar)<SnackbarComponentProps>(
 );
 
 export function CitizenSnackbar(props: SnackbarComponentProps) {
+  const { headerHeightDesktop, headerHeightMobile } = useHeaderHeights();
   const IconComponent = ICONS[props.color];
   return (
     <StyledSnackbar
       variant="soft"
       size="lg"
+      headerHeightDesktop={headerHeightDesktop}
+      headerHeightMobile={headerHeightMobile}
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
       startDecorator={<IconComponent />}
       {...props}

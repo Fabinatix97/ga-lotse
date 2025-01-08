@@ -1,19 +1,19 @@
 {
   "header": {
-    "title": "Impfberatung Aufklärungsbogen",
-    "stepText": "Schritt {{currentStepIndex}} von {{totalSteps}}"
+    "title": "Vaccination Consultation Information Sheet",
+    "stepText": "Step {{currentStepIndex}} of {{totalSteps}}"
   },
   "briefing": {
-    "title": "Fragebogen",
-    "infoText": "Daten zum Aufklärungsbogen können hier vor dem Untersuchungstermin eingetragen werden. Das Speichern der Eintragungen ist nur einmal möglich und kann später nicht korrigiert werden."
+    "title": "Questionnaire",
+    "infoText": "Information sheet data can be entered here before the examination appointment. These entries can be saved once and cannot be corrected later."
   },
   "sidePanel": {
-    "nextStep": "Weiter",
-    "submitInformationStatement": "Aufklärungsbogen absenden",
-    "previousStep": "Zurück",
-    "cancel": "Abbrechen"
+    "nextStep": "Next",
+    "submitInformationStatement": "Submit Information Sheet",
+    "previousStep": "Back",
+    "cancel": "Cancel"
   },
   "snackbar": {
-    "patchInformationStatementConfirmation": "Der Aufklärungsbogen wurde übermittelt."
+    "patchInformationStatementConfirmation": "The information sheet has been submitted."
   }
 }

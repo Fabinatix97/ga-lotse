@@ -1,18 +1,16 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ConfirmationDialogOptions } from "@eshg/lib-portal/components/confirmationDialog/ConfirmationDialogProvider";
 import { List, ListItem } from "@mui/joy";
 import { useRouter } from "next/navigation";
 import { isDefined } from "remeda";
 
 import { useDeleteReport } from "@/lib/businessModules/statistics/api/mutations/useDeleteReport";
 import { useDeleteReportSeries } from "@/lib/businessModules/statistics/api/mutations/useDeleteReportSeries";
-import {
-  ConfirmationDialogOptions,
-  useConfirmationDialog,
-} from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function useDeleteWithConfirmation({
   redirectRoute,

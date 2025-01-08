@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,10 +8,8 @@ import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Divider, Sheet, Stack, Typography } from "@mui/joy";
 import { isNonNullish } from "remeda";
 
-import {
-  headerHeightDesktop,
-  simpleToolbarHeight,
-} from "@/lib/baseModule/components/layout/sizes";
+import { simpleToolbarHeight } from "@/lib/baseModule/components/layout/sizes";
+import { useHeaderHeights } from "@/lib/baseModule/components/layout/useHeaderHeights";
 import { useExportReportData } from "@/lib/businessModules/statistics/api/downloads/useExportReportData";
 import { ReportDataType } from "@/lib/businessModules/statistics/api/models/evaluationReports";
 import { useUpdateReportSidebar } from "@/lib/businessModules/statistics/components/evaluations/details/reports/UpdateReportSidebar/UpdateReportSidebar";
@@ -57,6 +55,7 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
 
   const { download: exportData, downloadContainerRef } = useExportReportData();
   const dataExportGuard = useDataExportGuard(false);
+  const { headerHeightDesktop } = useHeaderHeights();
 
   function openUpdateReportSidebar() {
     updateReportSidebar.open({

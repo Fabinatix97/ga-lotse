@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -348,8 +348,7 @@ public class InspectionFinalizer {
     Inspection inspection =
         inspectionRepository
             .findByReportId(reportId)
-            .orElseThrow(
-                () -> new NotFoundException("inspection not found for reportId: " + reportId));
+            .orElseThrow(() -> new NotFoundException("inspection not found for given reportId"));
     if (inspection.getPhase().ordinal() < InspectionPhase.CREATING_REPORT_AND_INVOICE.ordinal()) {
       throw new BadRequestException(
           "wrong phase; expected: "

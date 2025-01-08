@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -84,6 +84,6 @@ function mapToDataSource(apiDataSource: ApiAvailableDataSource): DataSource {
     id: apiDataSource.id,
     businessModule: apiDataSource.businessModuleName,
     name: apiDataSource.name,
-    withoutAnonymizationAllowed: apiDataSource.withoutAnonymizationAllowed,
+    withoutAnonymizationAllowed: apiDataSource.sensitiveDataAllowed,
   };
 }

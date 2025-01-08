@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -39,7 +39,7 @@ export function procedureOverviewTableColumns() {
       cell: (props) => formatDate(props.getValue()),
       enableSorting: false,
       meta: {
-        width: 90,
+        width: 120,
         canNavigate: {
           parentRow: true,
         },
@@ -51,6 +51,17 @@ export function procedureOverviewTableColumns() {
       enableSorting: false,
       meta: {
         width: 100,
+        canNavigate: {
+          parentRow: true,
+        },
+      },
+    }),
+    columnHelper.accessor("facilityName", {
+      header: "Auftraggeber",
+      cell: (props) => props.getValue(),
+      enableSorting: false,
+      meta: {
+        width: 200,
         canNavigate: {
           parentRow: true,
         },

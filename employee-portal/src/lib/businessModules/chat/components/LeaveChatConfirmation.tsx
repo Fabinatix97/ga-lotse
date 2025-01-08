@@ -1,16 +1,15 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ConfirmationDialog,
-  ConfirmationDialogProps,
-} from "@/lib/shared/components/confirmationDialog/ConfirmationDialog";
+import { ConfirmationDialogProps } from "@eshg/lib-portal/components/confirmationDialog/BaseConfirmationDialog";
+
+import { EmployeePortalConfirmationDialog } from "@/lib/shared/components/confirmationDialog/EmployeePortalConfirmationDialog";
 
 export function LeaveChatConfirmation(props: ConfirmationDialogProps) {
   return (
-    <ConfirmationDialog
+    <EmployeePortalConfirmationDialog
       color="danger"
       title="Wollen Sie den Chat wirklich verlassen?"
       description="Wenn Sie den Chat verlassen, können Sie keine neuen Nachrichten mehr empfangen."

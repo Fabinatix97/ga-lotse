@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -60,6 +60,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
 
@@ -79,7 +80,7 @@ public class StatisticsPopulator {
   private final ReportSeriesController reportSeriesController;
   private final EvaluationTemplateController evaluationTemplateController;
   private final FilterTemplateController filterTemplateController;
-  private final TestHelperClock testHelperClock;
+  private final Optional<TestHelperClock> optionalTestHelperClock;
 
   public StatisticsPopulator(
       EvaluationController evaluationController,
@@ -87,13 +88,13 @@ public class StatisticsPopulator {
       ReportSeriesController reportSeriesController,
       EvaluationTemplateController evaluationTemplateController,
       FilterTemplateController filterTemplateController,
-      TestHelperClock testHelperClock) {
+      Optional<TestHelperClock> optionalTestHelperClock) {
     this.evaluationController = evaluationController;
     this.analysisController = analysisController;
     this.reportSeriesController = reportSeriesController;
     this.evaluationTemplateController = evaluationTemplateController;
     this.filterTemplateController = filterTemplateController;
-    this.testHelperClock = testHelperClock;
+    this.optionalTestHelperClock = optionalTestHelperClock;
   }
 
   public UUID addEvaluationSchoolEntry(boolean anonymized) {
@@ -147,7 +148,8 @@ public class StatisticsPopulator {
             "populated template",
             evaluationId));
 
-    testHelperClock.changeToDate(LocalDate.of(2023, 12, 1));
+    optionalTestHelperClock.ifPresent(
+        testHelperClock -> testHelperClock.changeToDate(LocalDate.of(2023, 12, 1)));
     reportSeriesController.addReportSeries(
         new AddAutoReportSeriesRequest(
             evaluationId,
@@ -156,7 +158,8 @@ public class StatisticsPopulator {
             1,
             FrequencyDto.PER_MONTH,
             ReportingPeriodDto.MONTH));
-    testHelperClock.changeToDate(LocalDate.of(2024, 1, 1));
+    optionalTestHelperClock.ifPresent(
+        testHelperClock -> testHelperClock.changeToDate(LocalDate.of(2024, 1, 1)));
     reportSeriesController.addReportSeries(
         new AddManualReportSeriesRequest(
             evaluationId,

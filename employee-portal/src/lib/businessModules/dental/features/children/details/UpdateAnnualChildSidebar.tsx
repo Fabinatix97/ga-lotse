@@ -1,14 +1,14 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiContactCategory } from "@eshg/employee-portal-api/base";
 import { UpdateChildRequest } from "@eshg/employee-portal-api/dental";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Divider, Stack } from "@mui/joy";
 import { FormikProvider, useFormik } from "formik";
 
+import { SCHOOL_OR_DAYCARE } from "@/lib/baseModule/api/queries/contacts";
 import { ChildDetails } from "@/lib/businessModules/dental/api/models/ChildDetails";
 import { Institution } from "@/lib/businessModules/dental/api/models/Institution";
 import { useUpdateAnnualChild } from "@/lib/businessModules/dental/api/mutations/childApi";
@@ -90,9 +90,7 @@ function UpdateAnnualChildSidebar(props: UpdateAnnualChildSidebarProps) {
               <SelectMultipleContactsField
                 name="institution"
                 label="Einrichtung"
-                categories={new Set<ApiContactCategory>()
-                  .add(ApiContactCategory.School)
-                  .add(ApiContactCategory.Daycare)}
+                categories={SCHOOL_OR_DAYCARE}
               />
               <Divider />
               <SearchGroupField

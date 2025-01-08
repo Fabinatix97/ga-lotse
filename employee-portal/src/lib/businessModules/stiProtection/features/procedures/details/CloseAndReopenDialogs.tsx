@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,6 +7,7 @@ import {
   ApiStiProtectionProcedure,
   ApiStiProtectionProcedureOverview,
 } from "@eshg/employee-portal-api/stiProtection";
+import { COUNTRY_CODE_LABELS } from "@eshg/lib-portal/components/formFields/countryCodes";
 import { styled } from "@mui/joy";
 import { useState } from "react";
 
@@ -14,9 +15,8 @@ import {
   useCloseProcedure,
   useReopenProcedure,
 } from "@/lib/businessModules/stiProtection/api/mutations/procedures";
-import { COUNTRY_CODE_LABELS } from "@/lib/businessModules/stiProtection/shared/countryCodes";
 import { isProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
-import { ConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialog";
+import { EmployeePortalConfirmationDialog } from "@/lib/shared/components/confirmationDialog/EmployeePortalConfirmationDialog";
 
 type Procedure = ApiStiProtectionProcedure | ApiStiProtectionProcedureOverview;
 interface CloseAndReopenConfirmationDialogProps {
@@ -78,7 +78,7 @@ export function CloseConfirmationDialog({
   onConfirm,
 }: CloseAndReopenConfirmationDialogProps) {
   return (
-    <ConfirmationDialog
+    <EmployeePortalConfirmationDialog
       title="Vorgang abschließen?"
       description="Möchten Sie diesen Vorgang wirklich abschließen?"
       confirmLabel="Abschließen"
@@ -101,7 +101,7 @@ export function ReopenConfirmationDialog({
   }
   const personDetails = "person" in procedure ? procedure.person : procedure;
   return (
-    <ConfirmationDialog
+    <EmployeePortalConfirmationDialog
       title={"Vorgang wiedereröffnen?"}
       confirmLabel="Wiedereröffnen"
       description="Durch das wiedereröffnen können existierende Daten geändert werden."
@@ -127,7 +127,7 @@ export function ReopenConfirmationDialog({
           </td>
         </tr>
       </DetailsTable>
-    </ConfirmationDialog>
+    </EmployeePortalConfirmationDialog>
   );
 }
 

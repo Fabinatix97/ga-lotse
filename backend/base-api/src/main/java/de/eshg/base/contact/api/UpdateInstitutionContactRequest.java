@@ -1,11 +1,11 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package de.eshg.base.contact.api;
 
-import de.eshg.CustomValidations.EmailAddressConstraint;
+import de.eshg.CustomValidations.MandatoryEmailAddressConstraint;
 import de.eshg.base.address.AddressDto;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,7 +37,7 @@ public record UpdateInstitutionContactRequest(
                 @Schema(
                     description = "A list of email addresses of the Contact.",
                     example = "['mail1@address.de','mail2@address.de','mail3@address.de']"))
-        List<@EmailAddressConstraint String> emailAddresses,
+        List<@MandatoryEmailAddressConstraint String> emailAddresses,
     @Valid AddressDto contactAddress,
     @Valid AddressDto differentBillingAddress)
     implements AbstractUpdateContactRequest {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -15,11 +15,13 @@ import de.eshg.dental.api.CreateChildRequest;
 import de.eshg.dental.api.CreateChildResponse;
 import de.eshg.dental.api.ExaminationDto;
 import de.eshg.dental.api.GetChildrenResponse;
+import de.eshg.dental.api.GetChildrenWithDetailsResponse;
 import de.eshg.dental.api.GetInstitutionGroupsResponse;
 import de.eshg.dental.api.SearchChildrenResponse;
 import de.eshg.dental.api.UpdateChildRequest;
 import de.eshg.dental.api.UpdateExaminationRequest;
 import de.eshg.dental.business.model.ChildWithAugmentedData;
+import de.eshg.dental.business.model.PagedChildren;
 import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.mapper.ChildMapper;
@@ -42,7 +44,6 @@ import java.time.Year;
 import java.util.List;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,11 +91,23 @@ public class ChildController {
       @InlineParameterObject @ParameterObject @Valid ChildFilterParameters filterParameters,
       @InlineParameterObject @ParameterObject @Valid
           ChildPaginationAndSortParameters paginationAndSortParameters) {
-    Page<ChildWithAugmentedData> pagedChildren =
+    PagedChildren pagedChildren =
         childService.getChildren(filterParameters, paginationAndSortParameters);
     return new GetChildrenResponse(
         pagedChildren.stream().map(ChildMapper::mapChildToDto).toList(),
-        pagedChildren.getTotalElements());
+        pagedChildren.totalNumberOfChildren());
+  }
+
+  @GetMapping("/by-person-id")
+  @Transactional(readOnly = true)
+  public GetChildrenWithDetailsResponse getChildrenByPerson(
+      @RequestParam(name = "personId") UUID personId) {
+    List<ChildDetailsDto> children =
+        childService
+            .findByPersonId(personId)
+            .map(child -> ChildMapper.mapToChildDetailsDto(child, null))
+            .toList();
+    return new GetChildrenWithDetailsResponse(children);
   }
 
   @GetMapping("/{childId}")
@@ -116,6 +129,13 @@ public class ChildController {
   private ChildDetailsDto getChildDetails(ChildWithAugmentedData augmentedChildData) {
     List<Examination> examinations = childService.getAllExaminations(augmentedChildData.child());
     return ChildMapper.mapToChildDetailsDto(augmentedChildData, examinations);
+  }
+
+  @GetMapping("/examination/{examinationId}")
+  @Transactional(readOnly = true)
+  public ExaminationDto getExamination(@PathVariable("examinationId") UUID examinationId) {
+    Examination examination = examinationService.findExamination(examinationId);
+    return ExaminationMapper.mapToDto(examination);
   }
 
   @PutMapping("/examination/{examinationId}")
@@ -162,5 +182,11 @@ public class ChildController {
 
     validator.validateInstitution(institutionId);
     return new SearchChildrenResponse(childService.searchChildren(institutionId, searchString));
+  }
+
+  @PostMapping("/school-year")
+  @Transactional
+  public void closeSchoolYear() {
+    childService.closeSchoolYear();
   }
 }

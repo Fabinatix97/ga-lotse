@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -9,6 +9,6 @@ import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import jakarta.validation.constraints.NotNull;
 
 public record TemplateSensitivityInfo(
-    @NotNull boolean withoutAnonymizationAllowed,
+    @NotNull boolean sensitiveDataAllowed,
     DataSourceSensitivity sensitivity,
     @NotNull boolean canBeAnonymized) {}

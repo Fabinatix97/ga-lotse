@@ -1,11 +1,11 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package de.eshg.base.centralfile.api.person;
 
-import de.eshg.CustomValidations.EmailAddressConstraint;
+import de.eshg.CustomValidations.MandatoryEmailAddressConstraint;
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.base.address.AddressDto;
@@ -28,7 +28,7 @@ public record PersonDetailsDto(
     @Size(min = 1, max = 40) String nameAtBirth,
     @Size(min = 1, max = 50) String placeOfBirth,
     CountryCode countryOfBirth,
-    List<@EmailAddressConstraint String> emailAddresses,
+    List<@MandatoryEmailAddressConstraint String> emailAddresses,
     List<@NotNull @Size(min = 1, max = 23) String> phoneNumbers,
     @Valid AddressDto contactAddress,
     @Valid AddressDto differentBillingAddress)

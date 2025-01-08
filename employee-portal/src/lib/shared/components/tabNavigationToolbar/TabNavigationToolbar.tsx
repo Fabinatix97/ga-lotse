@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -10,6 +10,7 @@ import { ReactNode } from "react";
 
 import { TabNavigation } from "@/lib/shared/components/tabNavigation/TabNavigation";
 import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
+import { HorizontalScrollBoxWithButtons } from "@/lib/shared/components/tabNavigationToolbar/HorizontalScrollBoxWithButtons";
 
 export interface TabNavigationToolbarProps {
   /** tab definitions */
@@ -53,17 +54,7 @@ export function TabNavigationToolbar(props: TabNavigationToolbarProps) {
         )}
         <Stack divider={<Divider />} sx={{ flexGrow: 1, minWidth: 0 }}>
           <Box sx={{ paddingInline: 3 }}>{props.header}</Box>
-          <Box
-            sx={{
-              // allow horizontal scrolling
-              overflowX: "auto",
-              // take up all the remaining vertical space
-              flexGrow: 1,
-              // keep the tabs centered
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
+          <HorizontalScrollBoxWithButtons>
             <Stack
               direction="row"
               sx={{
@@ -82,7 +73,7 @@ export function TabNavigationToolbar(props: TabNavigationToolbarProps) {
                 <Box sx={{ alignSelf: "center" }}>{props.afterTabs}</Box>
               )}
             </Stack>
-          </Box>
+          </HorizontalScrollBoxWithButtons>
         </Stack>
       </Stack>
     </Sheet>

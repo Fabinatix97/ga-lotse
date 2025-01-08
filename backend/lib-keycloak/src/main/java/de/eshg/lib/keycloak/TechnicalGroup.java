@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -16,7 +16,9 @@ public enum TechnicalGroup implements KeycloakGroup {
   TRAVEL_MEDICINE_MFA("RMBI-MFA", EmployeePermissionRole.TRAVEL_MEDICINE_ADMIN),
   STI_PROTECTION_PHYSICIANS("HIV-STI-Arzt", EmployeePermissionRole.STI_PROTECTION_PHYSICIAN),
   STI_PROTECTION_MFAS("HIV-STI-MFA", EmployeePermissionRole.STI_PROTECTION_MFA),
-  STI_PROTECTION_CONSULTANTS("HIV-STI-Berater", EmployeePermissionRole.STI_PROTECTION_CONSULTANT);
+  STI_PROTECTION_CONSULTANTS("HIV-STI-Berater", EmployeePermissionRole.STI_PROTECTION_CONSULTANT),
+  OFFICIAL_MEDICAL_SERVICE_PHYSICIANS(
+      "AÄD-Arzt", EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_ADMIN);
 
   private final List<KeycloakRole> roles;
   private final String name;

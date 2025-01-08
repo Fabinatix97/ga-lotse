@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -19,7 +19,7 @@ import { useApproveInspection } from "@/lib/businessModules/inspection/api/mutat
 import { inspectionHasResult } from "@/lib/businessModules/inspection/components/inspection/reportresult/reportutils";
 import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared/enums";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 export function ReportApprovalButtons({

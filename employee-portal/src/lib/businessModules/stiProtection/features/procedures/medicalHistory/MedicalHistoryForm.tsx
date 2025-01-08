@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -15,7 +15,7 @@ import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import Print from "@mui/icons-material/Print";
-import { Divider, Sheet, Stack, Typography, styled } from "@mui/joy";
+import { Button, Divider, Sheet, Typography, styled } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { Formik } from "formik";
 import { useEffect, useState } from "react";
@@ -26,17 +26,16 @@ import {
   MedicalHistoryDocumentLanguage,
   useGetMedicalHistoryDocumentQuery,
 } from "@/lib/businessModules/stiProtection/api/queries/medicalHistoryDocument";
+import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
 import { CONCERN_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { StickyBottomButtonBar } from "@/lib/shared/components/buttons/StickyBottomButtonBar";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
-import { IconButton } from "@/lib/shared/components/pagination/IconButton";
 
 import {
   MedicalHistoryFormData,
   defaultMedicalHistoryFormValues,
 } from "./MedicalHistoryForm.config";
-import { SectionGrid } from "./SectionGrid";
 import { mapFormValuesToApi, mapToFormValues } from "./helpers";
 import { Examinations } from "./sections/Examinations";
 import { General } from "./sections/General";
@@ -56,6 +55,11 @@ export const AutoWidthHorizontalField = styled(HorizontalField)({
     justifyContent: "space-between",
   },
 });
+
+const PaddedDivider = styled(Divider)(({ theme }) => ({
+  marginTop: theme.spacing(5),
+  marginBottom: theme.spacing(5),
+}));
 
 export function MedicalHistoryForm({
   procedure: stiProcedure,
@@ -116,27 +120,27 @@ export function MedicalHistoryForm({
       {({ isSubmitting }) => (
         <FormPlus>
           <Sheet sx={{ overflow: "auto", margin: theme.spacing(3) }}>
-            <Typography level="h3" mb={2}>
+            <Typography level="h2" mb={5}>
               {formTitle}
             </Typography>
 
             <General isForSexWork={isForSexWork} />
-            <Divider />
+            <PaddedDivider />
 
             <Examinations />
-            <Divider />
+            <PaddedDivider />
 
             <PreviousIllnesses />
-            <Divider />
+            <PaddedDivider />
 
             <SexualOrientationAndContact isForSexWork={isForSexWork} />
-            <Divider />
+            <PaddedDivider />
 
             <Prevention />
-            <Divider />
+            <PaddedDivider />
 
             <Risks />
-            <Divider />
+            <PaddedDivider />
 
             <SectionGrid>
               <TextareaField name="remarks" label="Bemerkungen" />
@@ -187,14 +191,14 @@ function MedicalHistoryStickyBottomButtonBar(
       }
       left={
         <>
-          <NamedIconButton
+          <PrintButton
             label={"Anamnesebogen auf Deutsch herunterladen"}
             text={"Druckvorlage herunterladen (DE)"}
             onClick={() =>
               fetchMedicalHistoryDocument(stiProcedure.concern, "DE")
             }
           />
-          <NamedIconButton
+          <PrintButton
             label={"Anamnesebogen auf Englisch herunterladen"}
             text={"Druckvorlage herunterladen (EN)"}
             onClick={() =>
@@ -207,39 +211,22 @@ function MedicalHistoryStickyBottomButtonBar(
   );
 }
 
-interface NamedIconButtonProps {
+interface PrintButtonProps {
   text: string;
   label: string;
   onClick: () => void;
   sx?: SxProps;
 }
 
-function NamedIconButton(props: NamedIconButtonProps) {
+function PrintButton(props: PrintButtonProps) {
   return (
-    <IconButton
+    <Button
       variant="plain"
-      sx={{ padding: "6px 16px" }}
-      disabled={false}
-      label={props.label}
+      aria-label={props.label}
       onClick={props.onClick}
+      startDecorator={<Print />}
     >
-      <Stack direction={"row"} gap={theme.spacing(1)} alignItems={"center"}>
-        <Print
-          sx={{
-            width: "24px",
-            height: "24px",
-          }}
-        />
-        <Typography
-          textColor={"primary.plainColor"}
-          sx={(theme) => ({
-            fontSize: theme.fontSize.md,
-            fontWeight: theme.fontWeight.lg,
-          })}
-        >
-          {props.text}
-        </Typography>
-      </Stack>
-    </IconButton>
+      {props.text}
+    </Button>
   );
 }

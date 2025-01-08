@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -9,7 +9,7 @@ import { NavigationContextProvider } from "@eshg/lib-portal/components/navigatio
 import { MutationBundle } from "@eshg/lib-portal/types/query";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
-import { useConfirmationDialog } from "./ConfirmationDialogProvider";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 const LABELS = {
   cancel: "Abbrechen",

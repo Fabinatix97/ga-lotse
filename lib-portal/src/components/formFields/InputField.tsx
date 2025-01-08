@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -42,6 +42,7 @@ export interface InputFieldProps
   "aria-details"?: string;
   untrimmedInput?: boolean;
   autoComplete?: InputProps["autoComplete"];
+  autoFocus?: boolean;
 }
 
 export function InputField(props: Readonly<InputFieldProps>) {
@@ -100,6 +101,7 @@ export function InputField(props: Readonly<InputFieldProps>) {
             readOnly: props.readOnly === true || props.unstyledReadOnly,
             maxLength: props.maxLength,
             "aria-details": props["aria-details"],
+            autoFocus: props.autoFocus ?? false,
           },
         }}
       />

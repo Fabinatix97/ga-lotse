@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -114,6 +114,7 @@ public abstract class KeycloakTestProvisioning {
     Map<String, List<String>> attributes =
         UserMapper.mapAttributesToDm(
             new LinkedHashMap<>(), user.phoneNumber(), user.externalChatUsername(), null, null);
+    user.additionalAttributes().forEach((name, value) -> attributes.put(name, List.of(value)));
     userRepresentation.setAttributes(!attributes.isEmpty() ? attributes : null);
   }
 }

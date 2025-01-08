@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,7 +7,6 @@ package de.eshg.inspection.statistics;
 
 import de.eshg.inspection.facility.persistence.Facility;
 import de.eshg.inspection.facility.persistence.FacilityRepository;
-import de.eshg.inspection.feature.InspectionFeature;
 import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.inspection.api.InspectionResult;
 import de.eshg.inspection.inspection.persistence.Inspection;
@@ -32,11 +31,11 @@ import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -73,16 +72,11 @@ public class InspectionStatisticsService extends AbstractStatisticsService<Inspe
 
   @Override
   protected boolean isProcedureBasedDataSource(UUID dataSourceId) {
-    inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.STATISTICS);
     return INSPECTION_DATA_SOURCE_ID.equals(dataSourceId);
   }
 
   @Override
   public List<DataSourceInfo> getDataSourceMetaInfos() {
-    if (inspectionFeatureToggle.isNewFeatureDisabled(InspectionFeature.STATISTICS)) {
-      return Collections.emptyList();
-    }
-
     return List.of(
         new DataSourceInfo(
             INSPECTION_DATA_SOURCE_ID,
@@ -98,10 +92,6 @@ public class InspectionStatisticsService extends AbstractStatisticsService<Inspe
 
   @Override
   protected Map<UUID, List<AttributeInfo>> getDataSourceIdToAttributeInfos() {
-    if (inspectionFeatureToggle.isNewFeatureDisabled(InspectionFeature.STATISTICS)) {
-      return Collections.emptyMap();
-    }
-
     return Map.of(
         INSPECTION_DATA_SOURCE_ID,
         Arrays.asList(InspectionAttributes.values()),
@@ -111,14 +101,12 @@ public class InspectionStatisticsService extends AbstractStatisticsService<Inspe
 
   @Override
   protected SubjectType getSubjectType(AttributeInfo attributeInfo) {
-    inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.STATISTICS);
     return SubjectType.FACILITY;
   }
 
   @Override
   protected Object getSpecificValue(
       Inspection procedure, AttributeInfo attributeInfo, UUID dataSourceId, boolean anonymized) {
-    inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.STATISTICS);
     if (!dataSourceId.equals(INSPECTION_DATA_SOURCE_ID)) {
       throw new IllegalArgumentException("Only inspection allowed here");
     }
@@ -129,7 +117,7 @@ public class InspectionStatisticsService extends AbstractStatisticsService<Inspe
       case YEAR_OF_INSPECTION -> getYearOfInspection(procedure);
       case OBJECT_TYPE -> getObjectTypeName(procedure.getFacility().getObjectType());
       case RESULT -> procedure.getResult();
-      case DURATION -> getDuration(procedure);
+      case DURATION -> getDurationInMinutes(procedure);
       case NUMBER_OF_INCIDENTS -> procedure.getIncidents().size();
     };
   }
@@ -140,7 +128,6 @@ public class InspectionStatisticsService extends AbstractStatisticsService<Inspe
       GetSpecificDataRequest getSpecificDataRequest,
       List<AttributeInfo> requestedAttributeInfos,
       DataTableHeader dataTableHeader) {
-    inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.STATISTICS);
     if (!dataSourceName.equals(FACILITY_DATA_SOURCE_NAME)) {
       throw new IllegalArgumentException("Only facility allowed here");
     }
@@ -208,14 +195,13 @@ public class InspectionStatisticsService extends AbstractStatisticsService<Inspe
     return LocalDate.ofInstant(appointment.getAppointmentStart(), clock.getZone()).getYear();
   }
 
-  private Long getDuration(Inspection inspection) {
+  private Long getDurationInMinutes(Inspection inspection) {
     InspectionAppointment appointment = inspection.getExecutionAppointment();
     if (appointment == null) {
       return null;
     }
-    return (appointment.getAppointmentEnd().getEpochSecond()
-            - appointment.getAppointmentStart().getEpochSecond())
-        / 60L;
+    return Duration.between(appointment.getAppointmentStart(), appointment.getAppointmentEnd())
+        .toMinutes();
   }
 
   private DataRow facilityToDataRow(

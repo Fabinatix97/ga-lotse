@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -13,10 +13,10 @@ import {
   ActionsItem,
   ActionsMenu,
 } from "@/lib/shared/components/buttons/ActionsMenu";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export interface AppointmentCardProps {
   appointment?: ApiAppointment;

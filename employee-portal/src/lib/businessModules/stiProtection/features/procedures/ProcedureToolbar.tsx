@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -15,6 +15,7 @@ import {
 } from "@mui/icons-material";
 
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
+import { PersonDocumentConsultation } from "@/lib/shared/components/icons/PersonDocumentConsultation";
 import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
 import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
@@ -51,6 +52,11 @@ function buildTabItems(id: string): TabNavigationItem[] {
       decorator: <FormatListBulletedOutlined />,
     },
     {
+      tabButtonName: "Konsultation",
+      href: routes.procedures.byId(id).consultation,
+      decorator: <PersonDocumentConsultation />,
+    },
+    {
       tabButtonName: "Untersuchung",
       href: routes.procedures.byId(id).examination,
       decorator: <MedicalServicesOutlined />,
@@ -62,7 +68,7 @@ function buildTabItems(id: string): TabNavigationItem[] {
     },
     {
       tabButtonName: "Verlaufseinträge",
-      href: routes.procedures.byId(id).progressEntries.index,
+      href: routes.procedures.byId(id).progressEntries,
       decorator: <TimelineOutlined />,
     },
   ];

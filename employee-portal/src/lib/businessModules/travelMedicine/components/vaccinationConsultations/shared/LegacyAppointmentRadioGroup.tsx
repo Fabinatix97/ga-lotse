@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,6 +8,7 @@ import {
   ApiAppointmentType,
 } from "@eshg/employee-portal-api/travelMedicine";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
+import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import {
   AppointmentPickerField,
@@ -20,7 +21,6 @@ import { useState } from "react";
 import { useGetFreeAppointmentsUnsuspended } from "@/lib/businessModules/travelMedicine/api/queries/appointmentBlocks";
 import { SelectableCard } from "@/lib/shared/components/cards/SelectableCard";
 import { DateTimeField } from "@/lib/shared/components/formFields/DateTimeField";
-import { RadioGroupField } from "@/lib/shared/components/formFields/RadioGroupField";
 
 interface AppointmentRadioGroupProps {
   type?: ApiAppointmentType;

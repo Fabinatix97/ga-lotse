@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -21,7 +21,6 @@ public final class BaseUrls {
 
   public static final class Base {
     public static final String BULK_GET_URL_END = "/bulk-get";
-    public static final String MUK_SELF_USER_FACILITY = "/self/facility";
 
     public static final String USER_API = "/users";
     public static final String USER_KEYS_URL = "/keys";
@@ -48,6 +47,8 @@ public final class BaseUrls {
     public static final String PERSON_API = "/persons";
     public static final String PERSON_FILE_STATE_URL = "/centralfilestates";
     public static final String PERSON_EXTERNAL_DATA_SOURCE_URL = "/external-source";
+    public static final String BUNDID_PERSON_LINK_API = "/bundid-person-link";
+    public static final String BUNDID_SELF_USER_PERSON = "/self/person";
     public static final String INVENTORY_API = "/inventoryItems";
     public static final String INVENTORY_BOOKING_URL = "/booking";
     public static final String INVENTORY_RESTOCKING_URL = "/restocking";
@@ -65,6 +66,7 @@ public final class BaseUrls {
     public static final String FACILITY_FILE_STATE_URL = "/centralfilestates";
     public static final String FACILITY_EXTERNAL_DATA_SOURCE_URL = "/external-source";
     public static final String MUK_FACILITY_LINK_API = "/muk-facility-link";
+    public static final String MUK_SELF_USER_FACILITY = "/self/facility";
     public static final String STREET_AUTOCOMPLETE_URL = "/autocomplete";
     public static final String RECENT_PROCEDURE_API = "/recent-procedures";
     public static final String PROCEDURE_METRICS_API = "/procedure-metrics";
@@ -148,6 +150,7 @@ public final class BaseUrls {
     public static final String MEDICAL_REGISTRY_CONTROLLER = "/medical-registry-entries";
     public static final String CITIZEN_PORTAL_ENDPOINT = "/public";
     public static final String MEDICAL_REGISTRY_IMPORT_CONTROLLER = "/import";
+    public static final String FEATURE_TOGGLES_CONTROLLER = "/feature-toggles";
 
     private MedicalRegistry() {}
   }

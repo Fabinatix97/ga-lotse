@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,6 +11,7 @@ import {
   formatDate,
   formatDateTime,
 } from "@eshg/lib-portal/formatters/dateTime";
+import { useToggleableState } from "@eshg/lib-portal/hooks/useToggleableState";
 import { Chip, Stack } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import {
@@ -18,13 +19,12 @@ import {
   TableOptions,
   createColumnHelper,
 } from "@tanstack/react-table";
-import { ReactNode, useReducer } from "react";
+import { ReactNode } from "react";
 import { isNullish } from "remeda";
 
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { Procedure } from "@/lib/businessModules/schoolEntry/api/models/Procedure";
 import { getProceduresQuery } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
-import { LabelChip } from "@/lib/businessModules/schoolEntry/features/labels/LabelChip";
 import { ProceduresTableTitle } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/ProcedureTableTitle";
 import {
   PROCEDURE_STATUS,
@@ -34,6 +34,7 @@ import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
+import { ChipWithTooltip } from "@/lib/shared/components/chip/ChipWithTooltip";
 import { useFilterDictionary } from "@/lib/shared/components/filterSettings/useFilterDictionary";
 import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
@@ -72,10 +73,7 @@ const initialSorting: ColumnSort = {
 };
 
 export function ProceduresTable(props: ProceduresTableProps) {
-  const [activePanel, toggleActivePanel] = useReducer(
-    reduceActivePanel,
-    undefined,
-  );
+  const [activePanel, toggleActivePanel] = useToggleableState<PanelName>();
   const columns = useProcedureColumns();
   const tableControl = useTableControl({
     serverSideSorting: true,
@@ -298,7 +296,12 @@ const COLUMNS = [
     cell: (props) => (
       <Stack direction="row" gap={0.5} flexWrap="wrap">
         {props.getValue().map((label) => (
-          <LabelChip key={label.id} label={label} />
+          <ChipWithTooltip
+            key={label.id}
+            name={label.name}
+            hexColor={label.hexColor}
+            modalTitle="Kennung"
+          />
         ))}
       </Stack>
     ),
@@ -327,13 +330,6 @@ function useProcedureColumns(): TableOptions<Procedure>["columns"] {
 }
 
 type PanelName = "filters" | "personSearch";
-
-function reduceActivePanel(
-  state: PanelName | undefined,
-  newState: PanelName,
-): PanelName | undefined {
-  return newState === state ? undefined : newState;
-}
 
 const SORT_KEY_MAPPING: Record<string, ApiSchoolEntryProcedureSortKey> = {
   child_firstName: ApiSchoolEntryProcedureSortKey.Firstname,

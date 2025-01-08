@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -311,15 +311,6 @@ async function prefetchAll({
             progressEntryApi.getProgressEntry(inspectionId, entryId, headers),
         }),
       );
-      // pre-fetch progress entry details page
-      inspPromises.push(
-        ...precachePage(
-          inspectionRoutes.procedures
-            .progressEntries(inspectionId)
-            .details(entryId),
-          headers,
-        ),
-      );
     }
     // 1.8.3 pre-fetch progress entries file details
     inspPromises.push(
@@ -368,7 +359,7 @@ async function prefetchAll({
       inspectionRoutes.procedures.planning,
       inspectionRoutes.procedures.execution,
       inspectionRoutes.procedures.reportResult,
-      (id: string) => inspectionRoutes.procedures.progressEntries(id).index,
+      (id: string) => inspectionRoutes.procedures.progressEntries(id),
       inspectionRoutes.procedures.details,
       inspectionRoutes.procedures.history,
     ];

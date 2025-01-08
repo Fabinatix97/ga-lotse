@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -23,10 +23,10 @@ import { TypeOfChangeSection } from "@/lib/businessModules/medicalRegistry/compo
 import { WrittenConfirmationSection } from "@/lib/businessModules/medicalRegistry/components/procedures/details/WrittenConfirmationSection";
 import { useFinalizeDraft } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/FinalizeDraftSidebar";
 import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 import { PageGrid } from "@/lib/shared/components/page/PageGrid";
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface MedicalRegistryProcedureDetailsProps {
   procedureId: string;

@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -58,6 +58,7 @@ export function useSearchDraftReferences(
           applicant.lastName,
           applicant.dateOfBirth,
         ),
+        isDefined(applicant.nameAtBirth) &&
         applicant.lastName !== applicant.nameAtBirth
           ? procedureApi.searchProceduresByPerson(
               applicant.firstName,

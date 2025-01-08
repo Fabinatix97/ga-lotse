@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -15,9 +15,9 @@ import {
   type ApiCLTextElementContext,
   ApiChecklistDefinitionVersion,
 } from "@eshg/employee-portal-api/inspection";
+import { ConfirmationDialogProps } from "@eshg/lib-portal/components/confirmationDialog/BaseConfirmationDialog";
 import { v4 as uuidv4 } from "uuid";
 
-import { ConfirmationDialogProps } from "@/lib/shared/components/confirmationDialog/ConfirmationDialog";
 import { useHasUserRolesCheck } from "@/lib/shared/hooks/useAccessControl";
 
 function getId(

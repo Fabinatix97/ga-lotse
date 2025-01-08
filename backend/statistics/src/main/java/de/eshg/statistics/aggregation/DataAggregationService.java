@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -17,6 +17,7 @@ import de.eshg.lib.aggregation.ClientResponse;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.statistics.api.Attribute;
 import de.eshg.lib.statistics.api.DataRow;
+import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.api.DataTableHeader;
 import de.eshg.lib.statistics.api.GetSpecificDataRequest;
 import de.eshg.lib.statistics.api.GetSpecificDataResponse;
@@ -27,6 +28,7 @@ import de.eshg.rest.service.error.ErrorResponseWithLocation;
 import de.eshg.statistics.api.datasource.BusinessDataAttribute;
 import de.eshg.statistics.api.datasource.DataSourceDto;
 import de.eshg.statistics.api.filter.NumericComparisonDto;
+import de.eshg.statistics.config.StatisticsConfig;
 import de.eshg.statistics.mapper.AttributeSelectionMapper;
 import de.eshg.statistics.mapper.EvaluationMapper;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
@@ -35,6 +37,7 @@ import de.eshg.statistics.persistence.entity.AggregationResultState;
 import de.eshg.statistics.persistence.entity.CellEntry;
 import de.eshg.statistics.persistence.entity.Evaluation;
 import de.eshg.statistics.persistence.entity.MinMaxNullUnknownValues;
+import de.eshg.statistics.persistence.entity.StatisticsDataSensitivity;
 import de.eshg.statistics.persistence.entity.TableColumn;
 import de.eshg.statistics.persistence.entity.TableRow;
 import de.eshg.statistics.persistence.entity.ValueToMeaning;
@@ -64,7 +67,6 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -79,21 +81,16 @@ public class DataAggregationService {
   public DataAggregationService(
       BusinessModuleAggregationHelper businessModuleAggregationHelper,
       BaseStatisticsApi baseModuleStatisticsApi,
-      @Value("${eshg.statistics.businessmodule.pagesize:500}")
-          int businessModuleDataRequestPageSize,
+      StatisticsConfig statisticsConfig,
       TableRowRepository tableRowRepository,
       CellEntryRepository cellEntryRepository,
       AuditLogger auditLogger) {
     this.businessModuleAggregationHelper = businessModuleAggregationHelper;
     this.baseModuleStatisticsApi = baseModuleStatisticsApi;
-    this.businessModuleDataRequestPageSize = businessModuleDataRequestPageSize;
+    this.businessModuleDataRequestPageSize = statisticsConfig.businessModule().pageSize();
     this.tableRowRepository = tableRowRepository;
     this.cellEntryRepository = cellEntryRepository;
     this.auditLogger = auditLogger;
-    if (this.businessModuleDataRequestPageSize <= 0) {
-      throw new IllegalArgumentException(
-          "'eshg.statistics.businessmodule.pagesize' must be greater than 0");
-    }
   }
 
   public Evaluation createEvaluation(
@@ -101,6 +98,7 @@ public class DataAggregationService {
       String name,
       Instant timeRangeStart,
       Instant timeRangeEnd,
+      DataSourceSensitivity sensitivity,
       boolean anonymized) {
     GetSpecificDataRequest request =
         new GetSpecificDataRequest(
@@ -139,9 +137,13 @@ public class DataAggregationService {
     if (tableColumns.isEmpty()) {
       throw new BadRequestException("Evaluation has no valid fields");
     }
+    StatisticsDataSensitivity statisticsDataSensitivity =
+        anonymized
+            ? StatisticsDataSensitivity.ANONYMOUS
+            : StatisticsDataSensitivity.valueOf(sensitivity.name());
 
     Evaluation evaluation = new Evaluation();
-    evaluation.setDataSensitivity(EvaluationMapper.mapToPersistence(anonymized));
+    evaluation.setDataSensitivity(statisticsDataSensitivity);
     evaluation.setName(name);
     evaluation.setTimeRangeStart(timeRangeStart);
     evaluation.setTimeRangeEnd(timeRangeEnd);

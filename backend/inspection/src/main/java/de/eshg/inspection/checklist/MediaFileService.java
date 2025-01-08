@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -102,10 +102,7 @@ public class MediaFileService {
     Optional<MediaFile> mediaFile = mediaFileRepository.findByFileExternalId(externalId);
     return mediaFile
         .filter(MediaFile::isNotDeleted)
-        .orElseThrow(
-            () ->
-                new NotFoundException(
-                    String.format("Media file with id %s was not found", externalId)));
+        .orElseThrow(() -> new NotFoundException("Media file with given id was not found"));
   }
 
   InputStreamResource loadContent(MediaFile mediaFile) {

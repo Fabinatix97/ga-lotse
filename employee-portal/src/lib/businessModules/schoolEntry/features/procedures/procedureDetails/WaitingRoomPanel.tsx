@@ -1,11 +1,11 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import {
+  ApiWaitingRoom,
   ApiWaitingStatus,
-  UpdateWaitingRoomDetailsRequest,
 } from "@eshg/employee-portal-api/schoolEntry";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
@@ -36,18 +36,14 @@ interface WaitingRoomValues {
   status: OptionalFieldValue<ApiWaitingStatus>;
 }
 
-const INITIAL_VALUES: WaitingRoomValues = { description: "", status: "" };
-
 export function WaitingRoomPanel(props: { procedure: ProcedureDetails }) {
-  const updateWaitingRoomDetails = useUpdateWaitingRoomDetails();
+  const updateWaitingRoomDetails = useUpdateWaitingRoomDetails(
+    props.procedure.id,
+  );
 
   async function handleSubmit(values: WaitingRoomValues) {
     await updateWaitingRoomDetails.mutateAsync(
-      mapToRequest(
-        props.procedure.id,
-        values,
-        props.procedure.waitingRoom?.version ?? 0,
-      ),
+      mapToRequest(values, props.procedure.waitingRoom.version),
     );
   }
 
@@ -63,11 +59,7 @@ export function WaitingRoomPanel(props: { procedure: ProcedureDetails }) {
       <ContentPanelTitle>Wartezimmer</ContentPanelTitle>
       <Formik
         onSubmit={handleSubmit}
-        initialValues={
-          props.procedure.waitingRoom
-            ? mapToFormValues(props.procedure.waitingRoom)
-            : INITIAL_VALUES
-        }
+        initialValues={mapToFormValues(props.procedure.waitingRoom)}
       >
         {({ isSubmitting, handleSubmit, setFieldValue }) => {
           return (
@@ -107,17 +99,13 @@ export function WaitingRoomPanel(props: { procedure: ProcedureDetails }) {
 }
 
 function mapToRequest(
-  procedureId: string,
   formValues: WaitingRoomValues,
   version: number,
-): UpdateWaitingRoomDetailsRequest {
+): ApiWaitingRoom {
   return {
-    procedureId,
-    apiWaitingRoom: {
-      version,
-      description: mapOptionalValue(formValues.description),
-      status: mapOptionalValue(formValues.status),
-    },
+    version,
+    description: mapOptionalValue(formValues.description),
+    status: mapOptionalValue(formValues.status),
   };
 }
 

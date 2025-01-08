@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -16,6 +16,7 @@ import { useGetChildrenQuery } from "@/lib/businessModules/dental/api/queries/ch
 import { routes } from "@/lib/businessModules/dental/shared/routes";
 import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
+import { ChipWithTooltip } from "@/lib/shared/components/chip/ChipWithTooltip";
 import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
@@ -130,15 +131,19 @@ const COLUMNS = [
       },
     },
   }),
-  columnHelper.accessor("institution.name", {
+  columnHelper.accessor("institution", {
     header: "Einrichtung",
-    cell: (props) => props.getValue(),
+    cell: (props) => (
+      <ChipWithTooltip
+        key={props.getValue().id}
+        name={props.getValue().name}
+        hexColor={props.getValue().hexColor}
+        modalTitle="Institution"
+      />
+    ),
     enableSorting: false,
     meta: {
       width: 180,
-      canNavigate: {
-        parentRow: true,
-      },
     },
   }),
   columnHelper.accessor("groupName", {

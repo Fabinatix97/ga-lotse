@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -14,6 +14,7 @@ import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 import { differenceInMinutes } from "date-fns";
 
 import { useGetWaitingRoomProcedures } from "@/lib/businessModules/stiProtection/api/queries/waitingRoomApi";
+import { DisplayAccessCode } from "@/lib/businessModules/stiProtection/features/procedures/DisplayAccessCode";
 import { GENDER_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
@@ -84,7 +85,7 @@ const columnHelper = createColumnHelper<ApiWaitingRoomProcedure>();
 const COLUMNS = [
   columnHelper.accessor("accessCode", {
     header: "Anmeldecode",
-    cell: (props) => props.getValue(),
+    cell: (props) => <DisplayAccessCode code={props.getValue()} />,
     enableSorting: false,
     meta: {
       width: 200,
@@ -117,7 +118,6 @@ const COLUMNS = [
     header: "Info",
     cell: (props) => props.getValue(),
     meta: {
-      width: 180,
       canNavigate: {
         parentRow: true,
       },
@@ -127,7 +127,7 @@ const COLUMNS = [
     header: "Status",
     cell: (props) => <StatusChip status={props.getValue()} />,
     meta: {
-      width: 270,
+      width: 275,
       canNavigate: {
         parentRow: true,
       },

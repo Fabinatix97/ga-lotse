@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -341,6 +341,7 @@ public class ChecklistDefinitionCentralRepoService {
                       new NotFoundException(
                           "Couldn't locally find an object type with name '%s'"
                               .formatted(centralRepoCld.objectType().name())));
+
       return CentralRepositoryMapper.mapLocalObjectTypeToCentralRepoCld(centralRepoCld, objectType);
     } catch (IOException e) {
       logger.error("Unable to read CLD central repo content", e);
@@ -388,9 +389,7 @@ public class ChecklistDefinitionCentralRepoService {
     return checklistDefinitionRepository
         .findById(cldId)
         .orElseThrow(
-            () ->
-                new NotFoundException(
-                    String.format("Could not find checklist definition with id %s", cldId)));
+            () -> new NotFoundException("Could not find checklist definition with given id"));
   }
 
   private Map<Long, ChecklistDefinition> getMatchedLocalChecklistDefinitions(

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,7 +8,6 @@ package de.eshg.inspection.importer;
 import static de.eshg.lib.xlsximport.util.FileResponseUtil.filename;
 
 import de.eshg.file.common.CustomMediaTypes;
-import de.eshg.inspection.feature.InspectionFeature;
 import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.lib.xlsximport.model.ImportResult;
 import de.eshg.lib.xlsximport.util.FileResponseUtil;
@@ -63,7 +62,6 @@ public class ImporterController {
   @Transactional
   public ResponseEntity<MultiValueMap<String, Object>> importProcesses(
       @RequestPart("file") MultipartFile file) throws IOException {
-    featureToggle.assertNewFeatureIsEnabled(InspectionFeature.IMPORT);
     ImportResult result = importerService.importProcesses(file);
     return FileResponseUtil.mapImportResultToMultipartResponse(result, filename(clock));
   }
@@ -73,7 +71,6 @@ public class ImporterController {
       produces = CustomMediaTypes.APPLICATION_XLSX_VALUE)
   @Operation(summary = "Get the XLSX inspection import template")
   public ResponseEntity<Resource> getInspectionImportTemplate() {
-    featureToggle.assertNewFeatureIsEnabled(InspectionFeature.IMPORT);
     return FileResponseUtil.getTemplateFileResponse(importTemplate);
   }
 }

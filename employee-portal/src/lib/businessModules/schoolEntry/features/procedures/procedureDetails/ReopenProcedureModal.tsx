@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -21,16 +21,12 @@ interface ReopenProcedureModalProps
 }
 
 export function ReopenProcedureModal(props: ReopenProcedureModalProps) {
-  const reopenProcedure = useReopenProcedure();
+  const { procedure, onClose } = props;
+  const reopenProcedure = useReopenProcedure(procedure.id);
   async function handleSubmit() {
-    await reopenProcedure.mutateAsync({
-      procedureId: props.procedure.id,
-      apiReopenProcedureRequest: {
-        version: props.procedure.version,
-      },
-    });
+    await reopenProcedure.mutateAsync({ version: procedure.version });
     // TODO: ISSUE-6052: move onClose into onSuccess(?)
-    props.onClose();
+    onClose();
   }
 
   return (

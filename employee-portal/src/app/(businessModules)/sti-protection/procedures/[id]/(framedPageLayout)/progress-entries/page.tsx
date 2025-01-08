@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -31,19 +31,11 @@ import {
 } from "@/lib/businessModules/stiProtection/api/queries/progressEntries";
 import { systemProgressEntryTypeTitles } from "@/lib/businessModules/stiProtection/shared/constants";
 import { moduleUserGroup } from "@/lib/businessModules/stiProtection/shared/moduleUserGroup";
-import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
 import { ProgressEntriesUrlParams } from "@/lib/shared/components/procedures/progress-entries/types";
 
-interface StiProtectionProcedureProgressEntriesPageParams
-  extends StiProtectionProcedurePageParams {
-  entryId?: string;
-}
-
 export default function StiProtectionProcedureProgressEntriesTab(
-  props: Readonly<
-    ProgressEntriesUrlParams<StiProtectionProcedureProgressEntriesPageParams>
-  >,
+  props: Readonly<ProgressEntriesUrlParams<StiProtectionProcedurePageParams>>,
 ) {
   const { params, searchParams } = props;
   return (
@@ -55,7 +47,6 @@ export default function StiProtectionProcedureProgressEntriesTab(
       useFetchProgressEntries={useFetchProgressEntries}
       useFetchProgressEntryDetails={useFetchProgressEntryDetails}
       procedureId={params.id}
-      progressEntryId={params.entryId}
       searchParams={searchParams}
       leaderRole={ApiUserRole.StiProtectionLeader}
       useRequestProgressEntryDeletion={useRequestProgressEntryDeletion}
@@ -65,12 +56,6 @@ export default function StiProtectionProcedureProgressEntriesTab(
       useDownloadFile={useDownloadStiProtectionFile}
       useGetManualProgressEntryHistory={useGetManualProgressEntryHistory}
       useGetMetaDataHistory={useGetMetaDataHistory}
-      routes={{
-        entryDetails: (procedureId, entryId) =>
-          routes.procedures.byId(procedureId).progressEntries.byId(entryId),
-        progressEntries: (procedureId) =>
-          routes.procedures.byId(procedureId).progressEntries.index,
-      }}
       systemProgressEntryTypes={systemProgressEntryTypeTitles}
       groupName={moduleUserGroup.group}
     />

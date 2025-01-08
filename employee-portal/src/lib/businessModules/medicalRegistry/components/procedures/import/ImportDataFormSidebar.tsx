@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,6 +7,7 @@
 
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
+import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 import { Button, List, ListItem, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 
@@ -14,7 +15,6 @@ import { DownloadTemplateLink } from "@/lib/businessModules/medicalRegistry/comp
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
-import { FileType } from "@/lib/shared/components/formFields/file/FileType";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 

@@ -1,4 +1,4 @@
-# Copyright 2024 cronn GmbH
+# Copyright 2025 cronn GmbH
 # SPDX-License-Identifier: AGPL-3.0-only
 
 openapi: 3.0.1
@@ -1632,18 +1632,18 @@ components:
           format: uuid
         name:
           type: string
+        sensitiveDataAllowed:
+          type: boolean
         sensitivity:
           $ref: "#/components/schemas/DataSourceSensitivity"
-        withoutAnonymizationAllowed:
-          type: boolean
       required:
       - attributes
       - businessModuleName
       - canBeAnonymized
       - id
       - name
+      - sensitiveDataAllowed
       - sensitivity
-      - withoutAnonymizationAllowed
     BarChartConfiguration:
       type: object
       allOf:
@@ -2197,14 +2197,20 @@ components:
       required:
       - errorCode
       - errorLocation
+    EvaluationDataSensitivity:
+      type: string
+      enum:
+      - ANONYMOUS
+      - INTERNAL_USAGE
+      - SENSITIVE
     EvaluationInfo:
       type: object
       properties:
-        anonymized:
-          type: boolean
         createdAt:
           type: string
           format: date-time
+        dataSensitivity:
+          $ref: "#/components/schemas/EvaluationDataSensitivity"
         dataSourceNames:
           type: array
           items:
@@ -2230,8 +2236,8 @@ components:
           type: string
           format: uuid
       required:
-      - anonymized
       - createdAt
+      - dataSensitivity
       - dataSourceNames
       - id
       - name
@@ -2663,8 +2669,10 @@ components:
     GetEvaluationsFilterOptions:
       type: object
       properties:
-        anonymizationValue:
-          type: boolean
+        dataSensitivities:
+          type: array
+          items:
+            $ref: "#/components/schemas/EvaluationDataSensitivity"
         dataSourceIds:
           type: array
           items:
@@ -2749,6 +2757,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Analysis"
+        dataSensitivity:
+          $ref: "#/components/schemas/ReportDataSensitivity"
         description:
           type: string
         executionDate:
@@ -2792,6 +2802,7 @@ components:
           $ref: "#/components/schemas/User"
       required:
       - analyses
+      - dataSensitivity
       - executionDate
       - id
       - name
@@ -2807,8 +2818,8 @@ components:
     GetReportSeriesEntriesOfEvaluationResponse:
       type: object
       properties:
-        anonymized:
-          type: boolean
+        dataSensitivity:
+          $ref: "#/components/schemas/EvaluationDataSensitivity"
         evaluationId:
           type: string
           format: uuid
@@ -2823,7 +2834,7 @@ components:
           additionalProperties:
             $ref: "#/components/schemas/User"
       required:
-      - anonymized
+      - dataSensitivity
       - evaluationId
       - evaluationName
       - reportSeriesEntries
@@ -2831,6 +2842,10 @@ components:
     GetReportsFilterOptions:
       type: object
       properties:
+        dataSensitivities:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReportDataSensitivity"
         dataSourceIds:
           type: array
           items:
@@ -3229,9 +3244,16 @@ components:
       enum:
       - ADAPTED
       - ORIGIN
+    ReportDataSensitivity:
+      type: string
+      enum:
+      - ANONYMOUS
+      - INTERNAL_USAGE
     ReportInfo:
       type: object
       properties:
+        dataSensitivity:
+          $ref: "#/components/schemas/ReportDataSensitivity"
         executionDate:
           type: string
           format: date
@@ -3255,6 +3277,7 @@ components:
           format: int64
           minimum: 0
       required:
+      - dataSensitivity
       - executionDate
       - id
       - name
@@ -3466,13 +3489,13 @@ components:
       properties:
         canBeAnonymized:
           type: boolean
+        sensitiveDataAllowed:
+          type: boolean
         sensitivity:
           $ref: "#/components/schemas/DataSourceSensitivity"
-        withoutAnonymizationAllowed:
-          type: boolean
       required:
       - canBeAnonymized
-      - withoutAnonymizationAllowed
+      - sensitiveDataAllowed
     TestHelperClockSetRequest:
       type: object
       properties:

@@ -1,6 +1,6 @@
 {
-  "title": "School Enrollment Examination Anamnesis Form",
-  "information": "Anamnesis data can be entered here before the examination appointment. Saving the entries is only possible once and cannot be corrected later.",
+  "title": "School Enrollment Examination Medical History Form",
+  "information": "Medical history data can be entered here before the examination appointment. These entries can be saved once and cannot be corrected later.",
   "step": "Step",
   "stepsRemaining": "of",
   "result": {

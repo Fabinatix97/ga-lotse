@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -7,6 +7,12 @@ import {
   ApiGetPersonDiffResponse,
   ApiPersonDetails,
 } from "@eshg/employee-portal-api/base";
+import {
+  GENDER_VALUES,
+  PERSON_FIELD_NAME,
+  SALUTATION_VALUES,
+  getOptionalTitle,
+} from "@eshg/lib-portal/components/formFields/constants";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Stack } from "@mui/joy";
 import { isDefined } from "remeda";
@@ -25,12 +31,6 @@ import {
 } from "@/lib/shared/components/centralFile/sync/SyncFormGrid";
 import { SyncBaseAddressSection } from "@/lib/shared/components/centralFile/sync/sections/SyncBaseAddressSection";
 import { SyncListSection } from "@/lib/shared/components/centralFile/sync/sections/SyncListSection";
-import {
-  GENDER_VALUES,
-  PERSON_FIELD_NAME,
-  SALUTATION_VALUES,
-  getOptionalTitle,
-} from "@/lib/shared/components/personSidebar/constants";
 import { translateCountry } from "@/lib/shared/helpers/i18n";
 
 export function BasePersonDiffForm({

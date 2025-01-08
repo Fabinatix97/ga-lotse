@@ -1,22 +1,22 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { PhoneNumberField } from "@eshg/lib-portal/components/formFields/PhoneNumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import {
+  SALUTATION_OPTIONS,
+  TITLE_OPTIONS,
+} from "@eshg/lib-portal/components/formFields/constants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { validateLength } from "@eshg/lib-portal/helpers/validators";
 import { Divider, Grid, Stack } from "@mui/joy";
 import { ReactNode } from "react";
 
 import { BaseFacilityContactPerson } from "@/lib/shared/components/facilitySidebar/types";
-import { EmailField } from "@/lib/shared/components/formFields/EmailField";
-import { PhoneNumberField } from "@/lib/shared/components/formFields/PhoneNumberField";
-import {
-  SALUTATION_OPTIONS,
-  TITLE_OPTIONS,
-} from "@/lib/shared/components/personSidebar/constants";
 
 interface ContactPersonFormProps {
   name: string;

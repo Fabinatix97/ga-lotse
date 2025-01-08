@@ -1,15 +1,15 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 import { ApiGetReferencePersonResponse } from "@eshg/employee-portal-api/base";
-import { ComponentType, Ref, useEffect, useState } from "react";
+import { DefaultError, UseQueryOptions, useQuery } from "@tanstack/react-query";
+import { ComponentType, ReactNode, Ref, useEffect, useState } from "react";
 import { isDefined } from "remeda";
 
 import { useSearchReferencePersonsQuery } from "@/lib/baseModule/api/queries/persons";
 import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
-import { PersonDetailsSidebar } from "@/lib/shared/components/personSidebar/PersonDetailsSidebar";
 import {
   DefaultPersonForm,
   DefaultPersonFormValues,
@@ -30,6 +30,9 @@ import {
   SearchPersonFormValues,
   SearchPersonSidebar,
 } from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
+
+import { PersonDetailsSidebar } from "./PersonDetailsSidebar";
+import { AssociatedProceduresSearchResult } from "./search/AssociatedProceduresSearchResult";
 
 type CreatePersonStateMapper<TSearchValues, TCreateValues> = (props: {
   inputs: TSearchValues;
@@ -56,9 +59,25 @@ type CreateFormProps<TSearchValues, TCreateValues> =
       createFormComponent?: never;
     };
 
+interface AssociatedProceduresProps<TProcedure> {
+  getQuery: (
+    personId: string | undefined,
+  ) => Pick<
+    UseQueryOptions<unknown, DefaultError, TProcedure[]>,
+    "queryKey" | "queryFn"
+  >;
+  cardComponent: (props: { procedure: TProcedure }) => ReactNode;
+}
+
+const EMPTY_ASSOCIATED_PROCEDURES_QUERY = {
+  queryKey: ["emptyGetAssociatedProcedures"],
+  queryFn: () => [],
+} satisfies UseQueryOptions<unknown[]>;
+
 export type PersonSidebarProps<
   TSearchValues extends SearchPersonFormValues = SearchPersonFormValues,
   TCreateValues extends PersonFormValues = DefaultPersonFormValues,
+  TProcedure = unknown,
 > = SearchFormProps<TSearchValues> &
   CreateFormProps<TSearchValues, TCreateValues> & {
     onCancel: () => void;
@@ -75,6 +94,7 @@ export type PersonSidebarProps<
     title: string;
     submitLabel: string;
     addressRequired?: boolean;
+    associatedProcedures?: AssociatedProceduresProps<TProcedure>;
   };
 
 type SidebarMode = "search" | "create" | "search_results" | "display";
@@ -90,7 +110,8 @@ interface SidebarState<TSearchValues, TCreateValues> {
 export function PersonSidebar<
   TSearchValues extends SearchPersonFormValues = SearchPersonFormValues,
   TCreateValues extends PersonFormValues = DefaultPersonFormValues,
->(props: PersonSidebarProps<TSearchValues, TCreateValues>) {
+  TProcedure = unknown,
+>(props: PersonSidebarProps<TSearchValues, TCreateValues, TProcedure>) {
   const SearchFormComponent = (props.searchFormComponent ??
     DefaultSearchPersonForm) as ComponentType<
     SearchPersonFormProps<TSearchValues>
@@ -120,8 +141,7 @@ export function PersonSidebar<
   }
 
   const [state, setState] = useState(getInitialState);
-
-  const query = useSearchReferencePersonsQuery(
+  const searchReferencePersonsQuery = useSearchReferencePersonsQuery(
     {
       firstName: state.searchState.firstName.trim(),
       lastName: state.searchState.lastName.trim(),
@@ -134,100 +154,149 @@ export function PersonSidebar<
 
   useEffect(() => {
     setState((previous) => {
-      if (query.data) {
-        return { ...previous, searchResult: query.data.persons };
+      if (searchReferencePersonsQuery.data) {
+        return {
+          ...previous,
+          searchResult: searchReferencePersonsQuery.data.persons,
+        };
       } else {
         return previous;
       }
     });
-  }, [query.data]);
+  }, [searchReferencePersonsQuery.data]);
+
+  const associatedProcedures = props.associatedProcedures;
+  const getAssociatedProceduresQuery = useQuery<
+    unknown,
+    DefaultError,
+    TProcedure[]
+  >(
+    isDefined(associatedProcedures)
+      ? associatedProcedures.getQuery(state.selectedPerson?.id)
+      : EMPTY_ASSOCIATED_PROCEDURES_QUERY,
+  );
 
   let activeMode: SidebarMode;
-  if (state.mode === "display" && isDefined(state.selectedPerson)) {
+  if (
+    state.mode === "display" &&
+    isDefined(state.selectedPerson) &&
+    (associatedProcedures === undefined ||
+      getAssociatedProceduresQuery.isSuccess)
+  ) {
     activeMode = "display";
   } else if (state.mode === "create") {
     activeMode = "create";
-  } else if (state.mode === "search_results" && query.isSuccess) {
+  } else if (
+    state.mode === "search_results" &&
+    searchReferencePersonsQuery.isSuccess
+  ) {
     activeMode = "search_results";
   } else {
     activeMode = "search";
   }
 
-  return (
-    <>
-      {activeMode === "search" && (
-        <SearchPersonSidebar<TSearchValues>
-          searchFormTitle={props.title}
-          sidebarFormRef={props.sidebarFormRef}
-          onCancel={props.onCancel}
-          onBack={props.onBack}
-          initialValues={state.searchState}
-          searchFormComponent={SearchFormComponent}
-          searching={state.mode === "search_results" && query.isLoading}
-          onSearch={(values) =>
-            setState((previous) => ({
-              ...previous,
-              searchState: values,
-              mode: "search_results",
-            }))
-          }
-        />
-      )}
-      {activeMode === "search_results" && (
-        <PersonSearchResults
-          title={props.title}
-          sidebarFormRef={props.sidebarFormRef}
+  if (activeMode === "search") {
+    return (
+      <SearchPersonSidebar<TSearchValues>
+        searchFormTitle={props.title}
+        sidebarFormRef={props.sidebarFormRef}
+        onCancel={props.onCancel}
+        onBack={props.onBack}
+        initialValues={state.searchState}
+        searchFormComponent={SearchFormComponent}
+        searching={
+          state.mode === "search_results" &&
+          searchReferencePersonsQuery.isLoading
+        }
+        onSearch={(values) =>
+          setState((previous) => ({
+            ...previous,
+            searchState: values,
+            mode: "search_results",
+          }))
+        }
+      />
+    );
+  }
+
+  if (activeMode === "search_results") {
+    return (
+      <PersonSearchResults
+        title={props.title}
+        sidebarFormRef={props.sidebarFormRef}
+        loadingAssociatedProcedures={getAssociatedProceduresQuery.isLoading}
+        onCancel={props.onCancel}
+        onBack={() => setState((previous) => ({ ...previous, mode: "search" }))}
+        inputs={state.searchState}
+        persons={state.searchResult}
+        onSelectPerson={(person) =>
+          setState((previous) => ({
+            ...previous,
+            mode: "display",
+            selectedPerson: person,
+          }))
+        }
+        onCreatePerson={() =>
+          setState((previous) => ({
+            ...previous,
+            mode: "create",
+            createState: mapCreateState({
+              inputs: previous.searchState,
+              addressRequired: props.addressRequired,
+            }),
+            selectedPerson: undefined,
+          }))
+        }
+      />
+    );
+  }
+
+  if (activeMode === "create") {
+    return (
+      <PersonSidebarForm<TCreateValues>
+        title={props.title}
+        subtitle={"Person anlegen"}
+        submitLabel={props.submitLabel}
+        sidebarFormRef={props.sidebarFormRef}
+        onCancel={props.onCancel}
+        onBack={() =>
+          setState((previous) => ({
+            ...previous,
+            mode: "search_results",
+          }))
+        }
+        onSubmit={async (values) =>
+          await props.onCreate({
+            searchInputs: state.searchState,
+            createInputs: values,
+          })
+        }
+        addressRequired={props.addressRequired}
+        initialValues={state.createState}
+        component={CreateFormComponent}
+      />
+    );
+  }
+
+  if (activeMode === "display" && isDefined(state.selectedPerson)) {
+    if (
+      isDefined(associatedProcedures) &&
+      getAssociatedProceduresQuery.isSuccess &&
+      getAssociatedProceduresQuery.data.length > 0
+    ) {
+      return (
+        <AssociatedProceduresSearchResult<TProcedure>
           onCancel={props.onCancel}
           onBack={() =>
-            setState((previous) => ({ ...previous, mode: "search" }))
+            setState((previous) => ({ ...previous, mode: "search_results" }))
           }
-          inputs={state.searchState}
-          persons={state.searchResult}
-          onSelectPerson={(person) =>
-            setState((previous) => ({
-              ...previous,
-              mode: "display",
-              selectedPerson: person,
-            }))
-          }
-          onCreatePerson={() =>
-            setState((previous) => ({
-              ...previous,
-              mode: "create",
-              createState: mapCreateState({
-                inputs: previous.searchState,
-                addressRequired: props.addressRequired,
-              }),
-              selectedPerson: undefined,
-            }))
-          }
+          inputs={state.selectedPerson}
+          procedures={getAssociatedProceduresQuery.data}
+          procedureCard={associatedProcedures.cardComponent}
         />
-      )}
-      {activeMode === "create" && (
-        <PersonSidebarForm<TCreateValues>
-          title={props.title}
-          subtitle={"Person anlegen"}
-          submitLabel={props.submitLabel}
-          sidebarFormRef={props.sidebarFormRef}
-          onCancel={props.onCancel}
-          onBack={() =>
-            setState((previous) => ({
-              ...previous,
-              mode: "search_results",
-            }))
-          }
-          onSubmit={async (values) =>
-            await props.onCreate({
-              searchInputs: state.searchState,
-              createInputs: values,
-            })
-          }
-          addressRequired={props.addressRequired}
-          initialValues={state.createState}
-          component={CreateFormComponent}
-        />
-      )}
-      {activeMode === "display" && isDefined(state.selectedPerson) && (
+      );
+    } else {
+      return (
         <PersonDetailsSidebar
           title={props.title}
           person={state.selectedPerson}
@@ -246,7 +315,9 @@ export function PersonSidebar<
             })
           }
         />
-      )}
-    </>
-  );
+      );
+    }
+  }
+
+  throw new Error("Invalid sidebar state");
 }

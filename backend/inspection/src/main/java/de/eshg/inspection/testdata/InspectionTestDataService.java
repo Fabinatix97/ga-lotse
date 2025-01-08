@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -23,7 +23,7 @@ public class InspectionTestDataService {
   public ResponseEntity<Resource> downloadOsmTestData(String filename) throws IOException {
     String ressource = "/de/eshg/inspection/facility/websearch/" + filename;
     try (InputStream inputStream = getClass().getResourceAsStream(ressource)) {
-      if (inputStream == null) throw new NotFoundException("not found: " + ressource);
+      if (inputStream == null) throw new NotFoundException("ressource not found");
       ContentDisposition contentDisposition =
           ContentDisposition.attachment().filename(filename, UTF_8).build();
       ByteArrayResource resource = new ByteArrayResource(inputStream.readAllBytes());

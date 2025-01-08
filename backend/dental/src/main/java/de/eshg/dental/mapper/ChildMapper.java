@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -52,7 +52,10 @@ public final class ChildMapper {
         child.personData().differentBillingAddress(),
         child.child().getYear().getValue(),
         child.child().getGroupName(),
-        new InstitutionDto(child.contact().id(), child.contact().name()),
+        new InstitutionDto(
+            child.contact().id(),
+            child.contact().name(),
+            InstitutionHexColorMapper.mapInstitutionContactToHexColor(child.contact())),
         mapToDto(examinations));
   }
 
@@ -65,7 +68,10 @@ public final class ChildMapper {
         child.personData().dateOfBirth(),
         child.child().getYear().getValue(),
         child.child().getGroupName(),
-        new InstitutionDto(child.contact().id(), child.contact().name()));
+        new InstitutionDto(
+            child.contact().id(),
+            child.contact().name(),
+            InstitutionHexColorMapper.mapInstitutionContactToHexColor(child.contact())));
   }
 
   private static List<ExaminationDto> mapToDto(List<Examination> examinations) {

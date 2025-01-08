@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -7,7 +7,7 @@ import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/Inter
 import { Button, Stack } from "@mui/joy";
 import { isString } from "remeda";
 
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export interface SyncFormButtonBarProps {
   onCancel: string | (() => void);

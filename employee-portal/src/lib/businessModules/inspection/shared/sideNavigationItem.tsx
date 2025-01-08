@@ -1,10 +1,10 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { ApiUserRole } from "@eshg/employee-portal-api/base";
-import { EmojiTransportation } from "@mui/icons-material";
+import { OtherHousesOutlined } from "@mui/icons-material";
 
 import {
   SideNavigationSubItem,
@@ -16,7 +16,7 @@ import { routes } from "./routes";
 
 const sideNavigationItem = {
   name: "Begehung",
-  decorator: <EmojiTransportation />,
+  decorator: <OtherHousesOutlined />,
 };
 
 const defaultSubItems: SideNavigationSubItem[] = [

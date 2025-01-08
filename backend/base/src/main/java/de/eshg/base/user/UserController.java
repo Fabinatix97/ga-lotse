@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -10,7 +10,6 @@ import de.eshg.base.calendar.CalendarEventService;
 import de.eshg.base.calendar.CalendarService;
 import de.eshg.base.calendar.api.GetEventsOfCalendarResponse;
 import de.eshg.base.calendar.api.UserCalendar;
-import de.eshg.base.feature.BaseFeatureToggle;
 import de.eshg.base.keycloak.EmployeeKeycloakClient;
 import de.eshg.base.keycloak.EmployeeUserAttribute;
 import de.eshg.base.keycloak.KeycloakEventType;
@@ -45,22 +44,22 @@ public class UserController implements UserApi {
   private final CalendarService calendarService;
   private final CalendarEventService calendarEventService;
   private final SimpleNotificationService notificationService;
+  private final UserControllerRateLimiter rateLimiter;
   private final Clock clock;
-  private final BaseFeatureToggle featureToggle;
 
   public UserController(
       UserService userService,
       CalendarService calendarService,
       CalendarEventService calendarEventService,
       SimpleNotificationService notificationService,
-      BaseFeatureToggle featureToggle,
+      UserControllerRateLimiter rateLimiter,
       Clock clock) {
     this.userService = userService;
     this.calendarService = calendarService;
     this.calendarEventService = calendarEventService;
     this.notificationService = notificationService;
+    this.rateLimiter = rateLimiter;
     this.clock = clock;
-    this.featureToggle = featureToggle;
   }
 
   @Override
@@ -253,6 +252,8 @@ public class UserController implements UserApi {
 
   @Override
   public UserDto suggestUser(AddUserRequest request) {
+    rateLimiter.suggestUser();
+
     UserRepresentation user = UserMapper.mapUserToDm(request);
     user.setEnabled(false);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -15,4 +15,5 @@ public record GetReportsFilterOptions(
     ReportTypeDto reportType,
     List<UUID> dataSourceIds,
     @Valid DateSpan start,
-    @Valid DateSpan end) {}
+    @Valid DateSpan end,
+    List<ReportDataSensitivity> dataSensitivities) {}

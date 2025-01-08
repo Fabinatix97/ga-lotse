@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,6 +7,8 @@ import {
   ApiConcern,
   ApiStiProtectionProcedure,
 } from "@eshg/employee-portal-api/stiProtection";
+import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
+import { COUNTRY_CODE_LABELS } from "@eshg/lib-portal/components/formFields/countryCodes";
 import { EditOutlined } from "@mui/icons-material";
 import { Divider, IconButton, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
@@ -17,9 +19,7 @@ import {
   APPOINTMENT_TYPES,
   CONCERN_VALUES,
 } from "@/lib/businessModules/stiProtection/shared/constants";
-import { COUNTRY_CODE_LABELS } from "@/lib/businessModules/stiProtection/shared/countryCodes";
 import { getOpenAppointmentsFromProcedure } from "@/lib/businessModules/stiProtection/shared/helpers";
-import { GENDER_VALUES } from "@/lib/shared/components/personSidebar/constants";
 
 import {
   AddNewProcedureForm,

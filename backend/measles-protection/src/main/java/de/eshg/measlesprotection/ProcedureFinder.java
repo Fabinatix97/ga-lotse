@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -28,11 +28,7 @@ public class ProcedureFinder {
   public MeaslesProtectionProcedure findProcedureByExternalId(UUID procedureId) {
     return measlesProtectionProcedureRepository
         .findByExternalId(procedureId)
-        .orElseThrow(
-            () ->
-                new NotFoundException(
-                    "%s with UUID %s not found"
-                        .formatted(MeaslesProtectionProcedure.class.getSimpleName(), procedureId)));
+        .orElseThrow(() -> new NotFoundException("Procedure with given UUID not found"));
   }
 
   @Transactional(readOnly = true)

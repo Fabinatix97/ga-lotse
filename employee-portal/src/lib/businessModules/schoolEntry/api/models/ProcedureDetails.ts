@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -26,7 +26,7 @@ export interface ProcedureDetails extends Procedure {
   readonly isDeceased: boolean;
   readonly deceased?: Date;
   readonly custodians: PersonDetails[];
-  readonly waitingRoom?: WaitingRoom;
+  readonly waitingRoom: WaitingRoom;
   readonly isDeletable: boolean;
   readonly schoolInfoLetterCreatedAt?: Date;
   readonly hasInformationBlock: boolean;
@@ -49,7 +49,7 @@ export function mapProcedureDetails(
     isDeceased: response.isDeceased,
     deceased: mapOptionalValue(response.deceased),
     custodians: response.custodians.map(mapPersonDetails),
-    waitingRoom: mapOptional(response.waitingRoom, mapWaitingRoom),
+    waitingRoom: mapWaitingRoom(response.waitingRoom),
     isDeletable: response.isDeletable,
     schoolInfoLetterCreatedAt: response.schoolInfoLetterCreatedAt,
     hasInformationBlock: response.hasInformationBlock,

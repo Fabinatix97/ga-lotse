@@ -1,12 +1,12 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import {
+  ApiAvailableDataSource,
   ApiEvaluationInfo,
   ApiEvaluationState,
-  ApiStatisticsFeature,
 } from "@eshg/employee-portal-api/statistics";
 import { HiddenContainer } from "@eshg/lib-portal/components/HiddenContainer";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
@@ -30,16 +30,10 @@ import {
   EvaluationOverviewTableItem,
 } from "@/lib/businessModules/statistics/api/models/evaluationOverview";
 import { getEvaluationsQueryKey } from "@/lib/businessModules/statistics/api/queries/apiQueryKeys";
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/statistics/api/queries/useStatisticsFeatureToggle";
 import { useDuplicateEvaluationSidebar } from "@/lib/businessModules/statistics/components/evaluations/DuplicateEvaluationSidebar/DuplicateEvaluationSidebar";
 import { useSaveAsEvaluationTemplateSidebar } from "@/lib/businessModules/statistics/components/evaluations/EvaluationTemplateSidebar/SaveAsEvaluationTemplateSidebar";
 import { EvaluationNameChangeModal } from "@/lib/businessModules/statistics/components/evaluations/details/EvaluationNameChangeModal";
-import {
-  ENUM_FALSE_VALUE,
-  ENUM_TRUE_VALUE,
-  shouldSearchForFalse,
-  shouldSearchForTrue,
-} from "@/lib/businessModules/statistics/components/evaluations/details/filter/enumFilterMappings";
+import { createFilterDefinitions } from "@/lib/businessModules/statistics/components/evaluations/filterDefinitions";
 import { useDeleteEvaluationWithConfirmation } from "@/lib/businessModules/statistics/components/evaluations/useDeleteEvaluationWithConfirmation";
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
 import { useDataExportGuard } from "@/lib/businessModules/statistics/components/shared/hooks/useDataExportGuard";
@@ -52,8 +46,6 @@ import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { RefreshButton } from "@/lib/shared/components/buttons/RefreshButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
-import { EnumFilterValue } from "@/lib/shared/components/filterSettings/models/EnumFilter";
-import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
 import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 import { useFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import {
@@ -213,26 +205,24 @@ function columns(
 }
 
 export interface EvaluationsTableProps {
+  apiDataSources: ApiAvailableDataSource[];
   evaluationOverview: EvaluationOverview;
   loading: boolean;
   onCreateEvaluationClick: () => void;
-  onAnonymizedFilterChanged: (filter: boolean | undefined) => void;
+  onFilterValuesChanged: (filterValues: FilterValue[]) => void;
   manualSortingProps: ManualSortingProps;
   paginationProps: PaginationProps;
 }
 
 export function EvaluationsTable({
+  apiDataSources,
   evaluationOverview,
   loading,
   onCreateEvaluationClick,
-  onAnonymizedFilterChanged,
+  onFilterValuesChanged,
   manualSortingProps,
   paginationProps,
 }: EvaluationsTableProps) {
-  const fakeAnonymizationEnabled = useIsNewFeatureEnabled(
-    ApiStatisticsFeature.FakeAnonymization,
-  );
-
   const duplicateEvaluationSidebar = useDuplicateEvaluationSidebar();
   const [nameChangeAction, setNameChangeAction] =
     useState<Pick<ApiEvaluationInfo, "id" | "name">>();
@@ -248,12 +238,8 @@ export function EvaluationsTable({
   const dataExportGuard = useDataExportGuard(false);
 
   const filterSettings = useFilterSettings({
-    definitions: evaluationsOverviewFilterDefinitions,
-    onValuesSubmit: (filterValues) => {
-      onAnonymizedFilterChanged(
-        mapFilterValuesToAnonymizationFilter(filterValues),
-      );
-    },
+    definitions: createFilterDefinitions(apiDataSources),
+    onValuesSubmit: onFilterValuesChanged,
     showSearch: false,
   });
 
@@ -272,11 +258,7 @@ export function EvaluationsTable({
         fullHeight
         controls={
           <ButtonBar
-            left={
-              fakeAnonymizationEnabled ? (
-                <FilterButton {...filterSettings.filterButtonProps} />
-              ) : undefined
-            }
+            left={<FilterButton {...filterSettings.filterButtonProps} />}
             right={[
               <RefreshButton
                 key="refreshEvaluation"
@@ -362,41 +344,4 @@ export function EvaluationsTable({
       <HiddenContainer ref={downloadContainerRef} />
     </>
   );
-}
-
-const evaluationsOverviewFilterDefinitions = [
-  {
-    type: "Enum",
-    key: "anonymizationValue",
-    name: "Anonymisierte Daten",
-    options: [
-      { label: "Ja", value: ENUM_TRUE_VALUE },
-      { label: "Nein", value: ENUM_FALSE_VALUE },
-    ],
-  },
-] satisfies FilterDefinition[];
-
-function mapFilterValuesToAnonymizationFilter(
-  filterValues: FilterValue[],
-): boolean | undefined {
-  const selectedValues =
-    (
-      filterValues.find(
-        (filterValue) =>
-          filterValue.key === "anonymizationValue" &&
-          filterValue.type === "Enum",
-      ) as EnumFilterValue
-    )?.selectedValues ?? [];
-
-  const searchForTrue = shouldSearchForTrue(selectedValues);
-  const searchForFalse = shouldSearchForFalse(selectedValues);
-  if (searchForTrue && searchForFalse) {
-    return undefined;
-  }
-  if (searchForTrue) {
-    return true;
-  }
-  if (searchForFalse) {
-    return false;
-  }
 }

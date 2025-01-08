@@ -1,17 +1,17 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Stack } from "@mui/joy";
 
 import { EditPersonalDataForm } from "@/lib/businessModules/stiProtection/features/procedures/details/EditPersonalDataSidebar";
 import { CountryField } from "@/lib/shared/components/formFields/CountryField";
-import { GENDER_OPTIONS } from "@/lib/shared/components/personSidebar/constants";
 
 import { AddNewProcedureForm } from "./AddNewProcedureSidebar";
 

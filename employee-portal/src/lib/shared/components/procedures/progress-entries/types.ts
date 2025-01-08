@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -44,16 +44,9 @@ export type ProgressEntriesSearchParams = Omit<
   "procedureId"
 >;
 
-interface Routes {
-  entryDetails: (procedureId: string, entryId: string) => string;
-  progressEntries: (procedureId: string) => string;
-}
-
 export interface ProgressEntriesPageProps extends ProgressEntryApiMethods {
   procedureId: string;
-  progressEntryId: string | undefined;
   searchParams: SearchParams;
-  routes: Routes;
   leaderRole: ApiUserRole;
   systemProgressEntryTypes: Record<string, string>;
   groupName: string;
@@ -68,7 +61,6 @@ export interface ProgressEntriesConfig extends ProgressEntryApiActions {
   files: ApiProgressEntryReferenceFilePair[];
   searchParams: ProgressEntriesSearchParams;
   filterSettings: UseFilterSettings;
-  routes: Routes;
   leaderRole: ApiUserRole;
   keyDocumentTypes: Record<string, string>;
   approvalRequestsResponse?: ApiGetProcedureApprovalRequestsResponse;

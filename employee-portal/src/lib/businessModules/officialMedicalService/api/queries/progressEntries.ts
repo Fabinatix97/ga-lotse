@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -9,7 +9,7 @@ import {
   useProcedureApi,
   useProgressEntryApi,
 } from "@/lib/businessModules/officialMedicalService/api/clients";
-import { progressEntryApiQueryKey } from "@/lib/businessModules/officialMedicalService/api/queries/queryKeys";
+import { progressEntryApiQueryKey } from "@/lib/businessModules/officialMedicalService/api/queries/apiQueryKeys";
 import {
   useFetchProgressEntriesTemplate,
   useFetchProgressEntryDetailsTemplate,

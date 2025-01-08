@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -73,6 +73,21 @@ const filterDefinitions: FilterDefinition[] = [
       { label: "Option 9", value: "option-9" },
     ],
   },
+  {
+    type: "Date",
+    key: "date",
+    name: "Date",
+  },
+  {
+    type: "DateSpan",
+    key: "date-span",
+    name: "Date Span",
+  },
+  {
+    type: "DateComparison",
+    key: "date-comparison",
+    name: "Date Comparison",
+  },
 ];
 
 const initialValues: FilterValue[] = [
@@ -90,7 +105,7 @@ const initialValues: FilterValue[] = [
 
 export default function PlaygroundFilterSettingsPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [autoApplyFilters, setautoApplyFilters] = useState(false);
+  const [autoApplyFilters, setAutoApplyFilters] = useState(false);
 
   const filterSettings = useFilterSettings({
     definitions: filterDefinitions,
@@ -117,7 +132,7 @@ export default function PlaygroundFilterSettingsPage() {
                     <Switch
                       checked={autoApplyFilters}
                       onChange={(event) =>
-                        setautoApplyFilters(event.target.checked)
+                        setAutoApplyFilters(event.target.checked)
                       }
                     />
                   }

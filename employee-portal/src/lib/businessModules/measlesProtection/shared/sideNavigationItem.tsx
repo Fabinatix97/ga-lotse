@@ -1,10 +1,10 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { ApiBaseFeature, ApiUserRole } from "@eshg/employee-portal-api/base";
-import { Coronavirus } from "@mui/icons-material";
+import { HubOutlined } from "@mui/icons-material";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import {
@@ -17,7 +17,7 @@ import { routes } from "./routes";
 
 const sideNavigationItem = {
   name: "Masernschutz",
-  decorator: <Coronavirus />,
+  decorator: <HubOutlined />,
 };
 
 const defaultSubItems: SideNavigationSubItem[] = [

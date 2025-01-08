@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -411,11 +411,7 @@ public class CalendarEventService {
     List<CalendarData> calendars =
         calendarEventDomainModelHandler.findCalendarsById(calendarExternalIds);
     if (calendars.size() != calendarExternalIds.size()) {
-      List<UUID> notFoundIds =
-          identifyNotExistingIds(calendarExternalIds, calendars, CalendarData::getExternalId);
-      throw new NotFoundException(
-          "CalendarId %s not found"
-              .formatted(String.join(";", notFoundIds.stream().map(UUID::toString).toList())));
+      throw new NotFoundException("CalendarId not found");
     }
     return calendars;
   }
@@ -496,9 +492,9 @@ public class CalendarEventService {
     CalendarEventData calendarEventData =
         calendarEventDomainModelHandler
             .findEvent(eventExternalId)
-            .orElseThrow(() -> eventNotFound(eventExternalId));
+            .orElseThrow(CalendarEventService::eventNotFound);
     if (EventType.BUSINESS_CASE.equals(calendarEventData.getEventType())) {
-      throw eventNotFound(eventExternalId);
+      throw eventNotFound();
     }
     return calendarEventData;
   }
@@ -507,9 +503,9 @@ public class CalendarEventService {
     CalendarEventData calendarEventData =
         calendarEventDomainModelHandler
             .findEvent(eventExternalId)
-            .orElseThrow(() -> eventNotFound(eventExternalId));
+            .orElseThrow(CalendarEventService::eventNotFound);
     if (!EventType.BUSINESS_CASE.equals(calendarEventData.getEventType())) {
-      throw eventNotFound(eventExternalId);
+      throw eventNotFound();
     }
     return calendarEventData;
   }
@@ -523,7 +519,7 @@ public class CalendarEventService {
     }
   }
 
-  private NotFoundException eventNotFound(UUID eventExternalId) {
-    return new NotFoundException("Event with id %s not found".formatted(eventExternalId));
+  private static NotFoundException eventNotFound() {
+    return new NotFoundException("Event not found");
   }
 }

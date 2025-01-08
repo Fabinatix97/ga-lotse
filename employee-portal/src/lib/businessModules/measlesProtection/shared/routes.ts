@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -14,11 +14,7 @@ export const routes = {
     details: (procedureId: string) => ({
       index: `${proceduresPath}/${procedureId}`,
       proof: `${proceduresPath}/${procedureId}/proof`,
-      progressEntries: {
-        index: `${proceduresPath}/${procedureId}/progress-entries`,
-        details: (entryId: string) =>
-          `${proceduresPath}/${procedureId}/progress-entries/${entryId}/details`,
-      },
+      progressEntries: `${proceduresPath}/${procedureId}/progress-entries`,
     }),
     draft: (procedureId: string) => `${proceduresPath}/draft/${procedureId}`,
   },

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -31,7 +31,10 @@ public final class ProphylaxisSessionMapper {
     return new ProphylaxisSessionDto(
         session.getExternalId(),
         session.getDateAndTime(),
-        new InstitutionDto(institution.id(), institution.name()),
+        new InstitutionDto(
+            institution.id(),
+            institution.name(),
+            InstitutionHexColorMapper.mapInstitutionContactToHexColor(institution)),
         session.getGroupName(),
         mapToDto(session.getType()));
   }
@@ -67,9 +70,13 @@ public final class ProphylaxisSessionMapper {
     ProphylaxisSession session = prophylaxisSession.prophylaxisSession();
     ContactDto institution = prophylaxisSession.institution();
     return new ProphylaxisSessionDetailsDto(
+        session.getVersion(),
         session.getExternalId(),
         session.getDateAndTime(),
-        new InstitutionDto(institution.id(), institution.name()),
+        new InstitutionDto(
+            institution.id(),
+            institution.name(),
+            InstitutionHexColorMapper.mapInstitutionContactToHexColor(institution)),
         session.getGroupName(),
         mapToDto(session.getType()),
         mapToChildResults(prophylaxisSession.participants()));

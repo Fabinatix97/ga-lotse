@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -10,7 +10,7 @@ import {
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
-import { Button, Divider, Grid, Sheet, Stack, Typography } from "@mui/joy";
+import { Box, Button, Divider, Grid, Sheet, Stack, Typography } from "@mui/joy";
 import { Formik, FormikState } from "formik";
 
 import { useUpsertRapidTest } from "@/lib/businessModules/stiProtection/api/mutations/examination";
@@ -19,13 +19,12 @@ import {
   YesOrNoFieldData,
   mapBoolToYesOrNo,
   mapYesOrNoToBool,
-} from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/YesOrNoWithFollowUp";
+} from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
 import { StickyBottomButtonBar } from "@/lib/shared/components/buttons/StickyBottomButtonBar";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 import {
   RapidTestWithBooleanResult,
@@ -216,8 +215,17 @@ function RapidTests(props: RapidTestsProps) {
       enableReinitialize
     >
       {({ dirty, resetForm, isSubmitting }) => (
-        <FormPlus style={{ height: "100%" }}>
-          <MainContentLayout fullViewportHeight>
+        <FormPlus style={{ height: "100%", overflow: "hidden" }}>
+          <Box
+            sx={{
+              pt: 3,
+              pr: 3,
+              pb: 15,
+              pl: 3,
+              height: "100%",
+              overflow: "auto",
+            }}
+          >
             <Grid container spacing={2}>
               <Grid container spacing={2} xs={12} lg={9}>
                 <Grid xs={12}>
@@ -285,7 +293,7 @@ function RapidTests(props: RapidTestsProps) {
                 </Stack>
               </Grid>
             </Grid>
-          </MainContentLayout>
+          </Box>
           <ExaminationStickyBottomButtonBar
             isSubmitting={isSubmitting}
             onClick={() => onCancel(dirty, resetForm)}
@@ -312,8 +320,11 @@ function ExaminationInfo() {
     <>
       <Sheet>
         <DetailsSection title="Schnelltests">
-          <Typography>Allgemeine Bemerkung</Typography>
-          <TextareaField name="generalRemarks" minRows={3} />
+          <TextareaField
+            name="generalRemarks"
+            label={"Allgemeine Bemerkung"}
+            minRows={3}
+          />
           <CheckboxField name="testsPayed" label={"Tests bezahlt"} />
         </DetailsSection>
       </Sheet>

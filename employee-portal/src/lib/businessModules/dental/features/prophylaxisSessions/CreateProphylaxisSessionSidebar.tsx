@@ -1,11 +1,10 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 "use client";
 
-import { ApiContactCategory } from "@eshg/employee-portal-api/base";
 import { ApiProphylaxisType } from "@eshg/employee-portal-api/dental";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
@@ -15,6 +14,7 @@ import { Stack } from "@mui/joy";
 import { FormikProvider, useFormik } from "formik";
 import { useEffect } from "react";
 
+import { SCHOOL_OR_DAYCARE } from "@/lib/baseModule/api/queries/contacts";
 import { useCreateProphylaxisSession } from "@/lib/businessModules/dental/api/mutations/prophylaxisSessionApi";
 import { SearchGroupField } from "@/lib/businessModules/dental/features/prophylaxisSessions/SearchGroupField";
 import { PROPHYLAXIS_TYPE_OPTIONS } from "@/lib/businessModules/dental/features/prophylaxisSessions/options";
@@ -89,9 +89,7 @@ function CreateProphylaxisSessionSidebar(props: SidebarWithFormRefProps) {
             <SearchMultipleContactsField
               name="institutionId"
               label="Einrichtung"
-              categories={new Set<ApiContactCategory>()
-                .add(ApiContactCategory.School)
-                .add(ApiContactCategory.Daycare)}
+              categories={SCHOOL_OR_DAYCARE}
             />
             <SearchGroupField
               name="groupName"

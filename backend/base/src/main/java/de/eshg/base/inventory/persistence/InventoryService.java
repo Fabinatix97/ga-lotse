@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -24,12 +24,11 @@ import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.rest.service.error.AlreadyExistsException;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
+import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.validation.ValidationUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
-import jakarta.persistence.PersistenceContext;
-import jakarta.ws.rs.NotFoundException;
 import java.util.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -50,20 +49,21 @@ public class InventoryService {
   private final FuzzySearchHelper fuzzySearchHelper;
   private final LabelService labelService;
   private final AuditLogger auditLogger;
-
-  @PersistenceContext private EntityManager entityManager;
+  private final EntityManager entityManager;
 
   public InventoryService(
       InventoryRepository inventoryRepository,
       InventoryBookingRepository inventoryBookingRepository,
       FuzzySearchHelper fuzzySearchHelper,
       LabelService labelService,
-      AuditLogger auditLogger) {
+      AuditLogger auditLogger,
+      EntityManager entityManager) {
     this.inventoryRepository = inventoryRepository;
     this.inventoryBookingRepository = inventoryBookingRepository;
     this.fuzzySearchHelper = fuzzySearchHelper;
     this.labelService = labelService;
     this.auditLogger = auditLogger;
+    this.entityManager = entityManager;
   }
 
   private Specification<InventoryItem> containsNameOrHasNameFuzzy(String name) {
@@ -114,29 +114,20 @@ public class InventoryService {
     };
   }
 
-  public Optional<InventoryItem> findById(UUID id) {
+  private Optional<InventoryItem> findById(UUID id) {
     return inventoryRepository.findById(id);
   }
 
   public InventoryItem findByIdOrThrow(UUID id) {
-    return findById(id)
-        .orElseThrow(
-            () -> new de.eshg.rest.service.error.NotFoundException("InventoryItem not found"));
+    return findById(id).orElseThrow(InventoryService::inventoryItemNotFoundException);
   }
 
-  public InventoryItem findAndLockByIdOrThrow(UUID id) {
-    return findById(id)
-        .map(
-            item -> {
-              entityManager.lock(item, LockModeType.OPTIMISTIC_FORCE_INCREMENT);
-              return item;
-            })
-        .orElseThrow(
-            () -> new de.eshg.rest.service.error.NotFoundException("InventoryItem not found"));
+  private static NotFoundException inventoryItemNotFoundException() {
+    return new NotFoundException("InventoryItem not found");
   }
 
   public void correctCount(UUID id, long version, int newCount) {
-    InventoryItem item = findAndLockByIdOrThrow(id);
+    InventoryItem item = findByIdOrThrow(id);
     ValidationUtil.validateVersion(version, item);
 
     item.setCount(newCount);
@@ -152,7 +143,7 @@ public class InventoryService {
 
   @Transactional
   public InventoryItemBooking book(UUID id, int amount) {
-    InventoryItem item = findAndLockByIdOrThrow(id);
+    InventoryItem item = findByIdOrThrow(id);
     try {
       int count = Math.subtractExact(item.getCount(), amount);
       if (count < 0) {
@@ -179,7 +170,7 @@ public class InventoryService {
 
   @Transactional
   public InventoryItemBooking restock(UUID id, int amount) {
-    InventoryItem item = findAndLockByIdOrThrow(id);
+    InventoryItem item = findByIdOrThrow(id);
     try {
       item.setCount(Math.addExact(item.getCount(), amount));
     } catch (ArithmeticException e) {
@@ -200,8 +191,7 @@ public class InventoryService {
   public InventoryItemBooking findBookingByIdOrThrow(UUID inventoryId, long bookingId) {
     return inventoryBookingRepository
         .findByInventoryItemIdAndId(inventoryId, bookingId)
-        .orElseThrow(
-            () -> new de.eshg.rest.service.error.NotFoundException("Booking entry not found"));
+        .orElseThrow(() -> new NotFoundException("Booking entry not found"));
   }
 
   @Transactional
@@ -264,7 +254,7 @@ public class InventoryService {
   }
 
   public InventoryItem update(UUID id, UpdateInventoryItemRequest request) {
-    InventoryItem item = inventoryRepository.findById(id).orElseThrow(NotFoundException::new);
+    InventoryItem item = findByIdOrThrow(id);
     item.setName(request.name());
     item.setType(InventoryMapper.mapInventoryItemTypeToDm(request.type()));
     item.setMinCount(request.minCount());

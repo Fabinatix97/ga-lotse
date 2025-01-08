@@ -1,10 +1,11 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package de.eshg.medicalregistry.domain.specification;
 
+import static de.eshg.domain.model.SequencedBaseEntity_.id;
 import static de.eshg.lib.procedure.MapperHelper.mapEnumSet;
 import static de.eshg.lib.procedure.domain.model.Procedure_.createdAt;
 import static de.eshg.lib.procedure.domain.model.Procedure_.procedureStatus;
@@ -98,7 +99,8 @@ public class MedicalRegistryProcedureOverviewSpecification
 
     query.orderBy(
         cb.asc(statusToSortingIndex(procedure.get(procedureStatus), cb)),
-        cb.asc(procedure.get(createdAt)));
+        cb.asc(procedure.get(createdAt)),
+        cb.asc(procedure.get(id)));
 
     return cb.and(filters.toArray(Predicate[]::new));
   }

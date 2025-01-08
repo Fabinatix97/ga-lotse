@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -19,7 +19,7 @@ import {
 } from "@eshg/employee-portal-api/stiProtection";
 import { MonthAndYear } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
 
-import { YesOrNoFieldData } from "./YesOrNoWithFollowUp";
+import { YesOrNoFieldData } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
 
 type ValueOf<T> = T[keyof T];
 type DateKeys<T> = ValueOf<{

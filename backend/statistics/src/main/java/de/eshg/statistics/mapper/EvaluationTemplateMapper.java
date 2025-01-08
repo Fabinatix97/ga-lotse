@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,6 +8,7 @@ package de.eshg.statistics.mapper;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.statistics.aggregation.DataSourceAggregationService;
 import de.eshg.statistics.api.chart.BarChartConfigurationDto;
 import de.eshg.statistics.api.chart.ChoroplethMapConfigurationDto;
 import de.eshg.statistics.api.chart.HistogramChartConfigurationDto;
@@ -242,7 +243,7 @@ public class EvaluationTemplateMapper {
 
   public static EvaluationTemplateInfoDto mapToInfo(
       EvaluationTemplate evaluationTemplate,
-      Predicate<EvaluationTemplate> withoutAnonymizationAllowedPredicate,
+      Predicate<EvaluationTemplate> sensitiveDataAllowedForBusinessModulePredicate,
       Function<EvaluationTemplate, DataSourceSensitivity> dataSourceSensitivityFunction,
       Predicate<EvaluationTemplate> canBeAnonymizedPredicate) {
     List<String> dataSourceNames =
@@ -253,12 +254,15 @@ public class EvaluationTemplateMapper {
             .sorted()
             .toList();
 
+    DataSourceSensitivity sensitivity = dataSourceSensitivityFunction.apply(evaluationTemplate);
     return new EvaluationTemplateInfoDto(
         evaluationTemplate.getExternalId(),
         evaluationTemplate.getName(),
         new TemplateSensitivityInfo(
-            withoutAnonymizationAllowedPredicate.test(evaluationTemplate),
-            dataSourceSensitivityFunction.apply(evaluationTemplate),
+            DataSourceAggregationService.isSensitiveDataAllowed(
+                sensitivity,
+                sensitiveDataAllowedForBusinessModulePredicate.test(evaluationTemplate)),
+            sensitivity,
             canBeAnonymizedPredicate.test(evaluationTemplate)),
         dataSourceNames,
         evaluationTemplate.getAnalysisCount(),
@@ -275,9 +279,9 @@ public class EvaluationTemplateMapper {
 
   public static EvaluationTemplateDto mapToApi(
       EvaluationTemplate evaluationTemplate,
-      Predicate<EvaluationTemplate> withoutAnonymizationAllowedPredicate,
-      Function<EvaluationTemplate, DataSourceSensitivity> dataSourceSensitivityFunction,
-      Predicate<EvaluationTemplate> canBeAnonymizedPredicate,
+      boolean sensitiveDataAllowedForBusinessModule,
+      DataSourceSensitivity sensitivity,
+      boolean canBeAnonymized,
       UserDto user) {
     List<DataSourceWithAttributeNames> dataSources =
         mapToAttributesWithNames(evaluationTemplate.getDataSources());
@@ -287,9 +291,10 @@ public class EvaluationTemplateMapper {
         evaluationTemplate.getName(),
         evaluationTemplate.getDescription(),
         new TemplateSensitivityInfo(
-            withoutAnonymizationAllowedPredicate.test(evaluationTemplate),
-            dataSourceSensitivityFunction.apply(evaluationTemplate),
-            canBeAnonymizedPredicate.test(evaluationTemplate)),
+            DataSourceAggregationService.isSensitiveDataAllowed(
+                sensitivity, sensitiveDataAllowedForBusinessModule),
+            sensitivity,
+            canBeAnonymized),
         dataSources,
         mapToAnalysisInfos(evaluationTemplate.getAnalysisTemplates()),
         user,

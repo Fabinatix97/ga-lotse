@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -50,11 +50,11 @@ public abstract class AbstractStatisticsService<P extends Procedure<P, ?, ?, ?>>
 
   private List<AttributeInfo> getAttributeInfos(UUID dataSourceId) {
     return Optional.ofNullable(getDataSourceIdToAttributeInfos().get(dataSourceId))
-        .orElseThrow(() -> getDataSourceNotFoundException(dataSourceId));
+        .orElseThrow(AbstractStatisticsService::dataSourceNotFoundException);
   }
 
-  private static NotFoundException getDataSourceNotFoundException(UUID dataSourceId) {
-    return new NotFoundException("Data source with id '%s' not found".formatted(dataSourceId));
+  private static NotFoundException dataSourceNotFoundException() {
+    return new NotFoundException("Data source with given id not found");
   }
 
   protected abstract Map<UUID, List<AttributeInfo>> getDataSourceIdToAttributeInfos();
@@ -91,8 +91,7 @@ public abstract class AbstractStatisticsService<P extends Procedure<P, ?, ?, ?>>
             .filter(
                 dataSourceInfo -> dataSourceInfo.id().equals(getSpecificDataRequest.dataSourceId()))
             .findFirst()
-            .orElseThrow(
-                () -> getDataSourceNotFoundException(getSpecificDataRequest.dataSourceId()));
+            .orElseThrow(AbstractStatisticsService::dataSourceNotFoundException);
     if (getSpecificDataRequest.anonymizationRequired() && !dataSource.canBeAnonymized()) {
       throw new BadRequestException("Data cannot be anonymized");
     }

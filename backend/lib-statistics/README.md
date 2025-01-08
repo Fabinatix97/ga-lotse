@@ -42,8 +42,7 @@ in the statistics module.
 
 IMPORTANT: `canBeAnonymized` can only be true if the business module has an algorithm for the
 anonymization of the data. 
-
-It should always be false if `DataSourceSensitivity` = `ANONYMOUS`.
+`canBeAnonymized` should always be false if `DataSourceSensitivity` = `ANONYMOUS`.
 
 ### getDataSourceIdToAttributeInfos
 A list of `AttributeInfo`s belongs to each `DataSourceInfo`.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -20,6 +20,7 @@ import java.util.List;
 
 @Schema(name = "AffectedPerson")
 public record AffectedPersonDto(
+    @NotNull long version,
     SalutationDto salutation,
     @NotBlank @Size(max = 80) String firstName,
     @NotBlank @Size(max = 120) String lastName,

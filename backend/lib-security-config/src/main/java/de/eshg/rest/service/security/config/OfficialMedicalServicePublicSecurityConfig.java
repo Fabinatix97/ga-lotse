@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -16,6 +16,8 @@ public class OfficialMedicalServicePublicSecurityConfig
   OfficialMedicalServicePublicSecurityConfig() {
     super("official-medical-service");
 
+    grantAccessToLibAppointmentBlockUrls(
+        EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_ADMIN, false);
     grantAccessToLibProceduresUrls(
         EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_ADMIN,
         ModuleLeaderRole.OFFICIAL_MEDICAL_SERVICE_LEADER);
@@ -27,8 +29,5 @@ public class OfficialMedicalServicePublicSecurityConfig
 
     requestMatchers(BaseUrls.OfficialMedicalService.EMPLOYEE_API + "/**")
         .hasRole(EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_ADMIN);
-
-    requestMatchers(BaseUrls.OfficialMedicalService.EMPLOYEE_API + "/**")
-        .hasRole(EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_PHYSICIAN);
   }
 }

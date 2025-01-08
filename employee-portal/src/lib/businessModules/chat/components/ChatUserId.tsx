@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -12,9 +12,14 @@ import { useCopy } from "@/lib/shared/hooks/useCopy";
 interface ChatUserIdProps {
   userId?: string | null;
   noLabel?: boolean;
+  isParagraph?: boolean;
 }
 
-export function ChatUserId({ userId, noLabel = false }: ChatUserIdProps) {
+export function ChatUserId({
+  userId,
+  noLabel = false,
+  isParagraph = false,
+}: ChatUserIdProps) {
   const copy = useCopy();
 
   if (!userId) return null;
@@ -28,6 +33,7 @@ export function ChatUserId({ userId, noLabel = false }: ChatUserIdProps) {
       )}
       <Stack spacing={2} direction="row" sx={{ alignItems: "center" }}>
         <Typography
+          component={isParagraph ? "p" : "span"}
           level="title-md"
           sx={{
             ...multiLineEllipsis(2),

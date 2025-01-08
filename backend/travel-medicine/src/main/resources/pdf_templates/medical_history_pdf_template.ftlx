@@ -6,10 +6,8 @@
     <head>
         <link rel="stylesheet" type="text/css"
               href="medical_history_pdf_template.css"/>
-        <link href='https://fonts.googleapis.com/css?family=Poppins'
-              rel='stylesheet'/>
     </head>
-    <body style="font-family: Poppins, serif;">
+    <body style="font-family: serif;">
         <img src="data:${departmentLogo.contentType};base64,${departmentLogo.contentAsBase64}"/>
 
         <footer>

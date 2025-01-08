@@ -1,27 +1,20 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { EmployeeInformationFormValues } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
 import { BooleanRadioField } from "@eshg/lib-portal/components/formFields/BooleanRadioField";
+import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import {
-  NestedFormProps,
-  NullableFieldValue,
-} from "@eshg/lib-portal/types/form";
+import { validateFile } from "@eshg/lib-portal/helpers/validators";
+import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { Grid, Typography } from "@mui/joy";
 import { useField } from "formik";
 
 import { useServerConfig } from "@/lib/baseModule/api/queries/config";
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
-import { FileType } from "@/lib/shared/components/formFields/file/FileType";
-import { validateFile } from "@/lib/shared/helpers/validators";
-
-export interface EmployeeInformationFormValues {
-  employeesEmployed: boolean;
-  employeesFile: NullableFieldValue<File>;
-}
 
 export function EmployeeInformationForm(props: NestedFormProps) {
   const { data: config } = useServerConfig();

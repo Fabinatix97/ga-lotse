@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,6 +7,7 @@ import {
   ApiAnalysis,
   ApiAnalysisChartConfiguration,
   ApiAttributeSelection,
+  ApiEvaluationDataSensitivity,
   ApiGetDetailPageInformationResponse,
   EvaluationApi,
 } from "@eshg/employee-portal-api/statistics";
@@ -153,7 +154,10 @@ export function mapToEvaluationDetailsView(
     attributes: attributes,
     analyses: mapAnalyses(result.analyses, attributes),
     userId: result.user?.userId,
-    anonymized: result.evaluationInfo.anonymized,
+    //TODO: Display sensitivity instead of anonymized
+    anonymized:
+      result.evaluationInfo.dataSensitivity !==
+      ApiEvaluationDataSensitivity.Sensitive,
     tooMuchDataForExport: result.evaluationInfo.tooMuchDataForExport,
   } satisfies EvaluationDetailsView;
 }

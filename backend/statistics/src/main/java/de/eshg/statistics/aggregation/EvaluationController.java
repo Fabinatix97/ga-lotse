@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,7 +8,6 @@ package de.eshg.statistics.aggregation;
 import static de.eshg.statistics.aggregation.EvaluationController.BASE_URL;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.statistics.api.GetDetailPageInformationResponse;
 import de.eshg.statistics.api.completeness.GetCompletenessDataResponse;
@@ -21,8 +20,6 @@ import de.eshg.statistics.api.evaluation.GetEvaluationsRequest;
 import de.eshg.statistics.api.evaluation.GetEvaluationsResponse;
 import de.eshg.statistics.api.evaluation.UpdateEvaluationTimeRangeRequest;
 import de.eshg.statistics.api.report.GetReportSeriesEntriesOfEvaluationResponse;
-import de.eshg.statistics.config.StatisticsFeature;
-import de.eshg.statistics.config.StatisticsFeatureToggle;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -47,29 +44,22 @@ public class EvaluationController {
   private final StatisticsExecutorService statisticsExecutorService;
   private final EvaluationExecution evaluationExecution;
   private final EvaluationCopyService evaluationCopyService;
-  private final StatisticsFeatureToggle featureToggle;
 
   public EvaluationController(
       EvaluationService evaluationService,
       StatisticsExecutorService statisticsExecutorService,
       EvaluationExecution evaluationExecution,
-      EvaluationCopyService evaluationCopyService,
-      StatisticsFeatureToggle featureToggle) {
+      EvaluationCopyService evaluationCopyService) {
     this.evaluationService = evaluationService;
     this.statisticsExecutorService = statisticsExecutorService;
     this.evaluationExecution = evaluationExecution;
     this.evaluationCopyService = evaluationCopyService;
-    this.featureToggle = featureToggle;
   }
 
   @PostExchange(accept = APPLICATION_JSON_VALUE)
   @ApiResponse(responseCode = "200", description = "The UUID of the evaluation")
   @Operation(summary = "Add evaluation")
   public UUID addEvaluation(@Valid @RequestBody AbstractAddEvaluationRequest addEvaluationRequest) {
-    if (!featureToggle.isNewFeatureEnabled(StatisticsFeature.FAKE_ANONYMIZATION)
-        && addEvaluationRequest.anonymized()) {
-      throw new BadRequestException("Only allowed without anonymization");
-    }
     UUID evaluationId = evaluationService.addEvaluation(addEvaluationRequest);
     statisticsExecutorService.submit(() -> evaluationExecution.addEvaluation(evaluationId));
     return evaluationId;

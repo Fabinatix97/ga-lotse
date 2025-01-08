@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -13,7 +13,7 @@ import jakarta.validation.Valid;
 @Schema(name = ImageDto.SCHEMA_NAME)
 @JsonTypeName(ImageDto.SCHEMA_NAME)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "@type")
-public final class ImageDto extends ConcreteFileDto {
+public final class ImageDto extends AbstractFileDto {
 
   public static final String SCHEMA_NAME = "Image";
 

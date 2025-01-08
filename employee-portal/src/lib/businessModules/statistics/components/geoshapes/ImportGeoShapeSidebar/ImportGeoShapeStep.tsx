@@ -1,13 +1,13 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 import { Stack } from "@mui/joy";
 
 import { DeletableFileField } from "@/lib/shared/components/formFields/file/DeletableFileField";
-import { FileType } from "@/lib/shared/components/formFields/file/FileType";
 
 export function ImportGeoShapeStep() {
   return (

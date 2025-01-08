@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -61,10 +61,7 @@ public class FilterTemplateService {
   private FilterTemplate getFilterTemplateInternal(UUID filterTemplateId) {
     return filterTemplateRepository
         .findByExternalId(filterTemplateId)
-        .orElseThrow(
-            () ->
-                new NotFoundException(
-                    "FilterTemplate with id '%s' not found".formatted(filterTemplateId)));
+        .orElseThrow(() -> new NotFoundException("FilterTemplate with given id not found"));
   }
 
   @Transactional(readOnly = true)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -22,4 +22,5 @@ public record ReportInfoDto(
     @NotNull ReportStateDto state,
     @NotNull LocalDate executionDate,
     @Min(0) Long totalNumberOfElements,
-    @NotNull boolean tooMuchDataForExport) {}
+    @NotNull boolean tooMuchDataForExport,
+    @NotNull ReportDataSensitivity dataSensitivity) {}

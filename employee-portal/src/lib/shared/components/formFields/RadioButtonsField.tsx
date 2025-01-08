@@ -1,37 +1,43 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 import { Row } from "@eshg/lib-portal/components/Row";
+import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
+import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { ValidationRules } from "@eshg/lib-portal/types/form";
-import { Radio } from "@mui/joy";
+import { Button, Radio } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
+import { useFormikContext } from "formik";
 import { ReactNode } from "react";
 
-import { RadioGroupField } from "./RadioGroupField";
-
-interface RadioButtonsFieldProps<T extends SelectOption>
-  extends ValidationRules<T["value"]> {
+export interface RadioButtonsFieldProps<T extends SelectOption = SelectOption>
+  extends ValidationRules<T["value"] | null> {
   options: T[];
   name: string;
   label?: string | ReactNode;
   orientation?: "vertical" | "horizontal";
-  onChange?: (value: T["value"]) => unknown;
+  onChange?: (value: T["value"] | null) => unknown;
   sx?: SxProps;
   // Retains the styling of the radio buttons but prevents onChange from being called
   readOnly?: boolean;
   // Disables the radio buttons
   disabled?: boolean;
   "data-testid"?: string;
+  resettable?: true;
+  additionalField?: ReactNode;
 }
 
 export function RadioButtonsField<T extends SelectOption = SelectOption>({
   onChange,
+  resettable,
+  additionalField,
   ...props
 }: RadioButtonsFieldProps<T>) {
-  function handleChange(value: string) {
+  const formDisabled = useIsFormDisabled();
+  function handleChange(value: string | null) {
     if (props.readOnly) {
       return;
     }
@@ -45,9 +51,13 @@ export function RadioButtonsField<T extends SelectOption = SelectOption>({
       <RadioButtons
         options={props.options}
         name={props.name}
-        disabled={props.disabled}
+        disabled={formDisabled || props.disabled}
         readOnly={props.readOnly}
         orientation={props.orientation}
+        required={!!props.required}
+        onReset={() => handleChange(null)}
+        resettable={resettable}
+        additionalField={additionalField}
       />
     </RadioGroupField>
   );
@@ -58,7 +68,11 @@ interface RadioButtonsProps<T extends SelectOption> {
   options: T[];
   disabled?: boolean;
   readOnly?: boolean;
+  required?: boolean;
   orientation?: "vertical" | "horizontal";
+  onReset?: () => void;
+  resettable?: true;
+  additionalField?: ReactNode;
 }
 
 function RadioButtons<T extends SelectOption>({
@@ -67,9 +81,26 @@ function RadioButtons<T extends SelectOption>({
   disabled,
   readOnly,
   orientation,
+  required,
+  onReset,
+  resettable,
+  additionalField,
 }: RadioButtonsProps<T>) {
+  const { getFieldMeta, setFieldValue } = useFormikContext();
+  const { value } = getFieldMeta(name);
+
+  function handleReset() {
+    void setFieldValue(name, null);
+    onReset?.();
+  }
+
+  const showResetButton =
+    resettable && !disabled && !required && !readOnly && !!value;
+
+  const verticalOrientation = orientation === "vertical";
+
   return (
-    <Row flexDirection={orientation == "vertical" ? "column" : "row"}>
+    <Row flexDirection={verticalOrientation ? "column" : "row"}>
       {options.map((t) => (
         <Radio
           key={name + t.value}
@@ -79,6 +110,22 @@ function RadioButtons<T extends SelectOption>({
           readOnly={readOnly}
         />
       ))}
+      {additionalField}
+      {showResetButton ? (
+        <Button
+          variant="plain"
+          size="sm"
+          sx={{
+            marginTop: !verticalOrientation ? "-0.375rem" : undefined,
+            marginBottom: !verticalOrientation ? "-0.375rem" : undefined,
+            maxWidth: "min-content",
+            fontWeight: 400,
+          }}
+          onClick={handleReset}
+        >
+          Zurücksetzen
+        </Button>
+      ) : undefined}
     </Row>
   );
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -116,8 +116,7 @@ public class AccessRestrictionService {
     MeaslesProtectionProcedure procedure = procedureFinder.findProcedureByExternalId(procedureId);
 
     if (procedure.getAccessRestriction() == null) {
-      throw new NotFoundException(
-          "Procedure with UUID %s has no AccessRestriction".formatted(procedureId));
+      throw new NotFoundException("Procedure with with given UUID has no AccessRestriction");
     }
 
     // Todo: check if recipient id is one of related persons of procedure

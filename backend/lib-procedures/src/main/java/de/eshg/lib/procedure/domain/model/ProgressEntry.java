@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -14,6 +14,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Index;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.OneToOne;
@@ -43,7 +44,7 @@ public abstract class ProgressEntry extends SequencedBaseEntityWithExternalId im
   private Instant modifiedAt;
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  @OneToOne(cascade = CascadeType.PERSIST, orphanRemoval = true)
+  @OneToOne(cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
   @NotAudited
   private File file;
 

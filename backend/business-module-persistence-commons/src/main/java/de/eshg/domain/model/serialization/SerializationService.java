@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -73,6 +73,10 @@ public class SerializationService {
   }
 
   public byte[] toZip(String dataFileBaseName, EntityWithExternalId entity) {
+    return toZip(dataFileBaseName, entity, (n, z) -> {});
+  }
+
+  public byte[] toZip(String dataFileBaseName, EntityWithExternalId entity, ZipFilter zipFilter) {
     ZipFileWrapper zipFileWrapper = new ZipFileWrapper();
 
     FileContentSerializer fileContentSerializer =
@@ -86,8 +90,10 @@ public class SerializationService {
                 objectMapper, zipFileWrapper::addEntry, zipFileWrapper::getCollisionFreeFileName));
 
     JsonNode jsonNode = toJsonNode(entity, objectMapper);
+    zipFilter.filter(jsonNode, zipFileWrapper);
     String jsonNodeAsCsv = jsonNodeToCsv(entity.getClass().getSimpleName(), jsonNode);
     zipFileWrapper.addEntry(dataFileBaseName + ".csv", jsonNodeAsCsv.getBytes());
+    zipFilter.filter(jsonNode, zipFileWrapper);
 
     return zipFileWrapper.asByteArray();
   }

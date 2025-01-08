@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,7 +11,7 @@ import {
   ResourceForm,
   ResourceFormValues,
 } from "@/lib/baseModule/components/resources/forms/ResourceForm";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 import {
   SidebarWithFormRefProps,
   useSidebarWithFormRef,

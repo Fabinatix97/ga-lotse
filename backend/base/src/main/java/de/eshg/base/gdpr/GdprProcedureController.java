@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -8,6 +8,7 @@ package de.eshg.base.gdpr;
 import static de.eshg.base.gdpr.GdprProcedureMapper.*;
 import static de.eshg.lib.aggregation.AggregationHelper.aggregateErrorResponses;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.SortDirection;
 import de.eshg.base.centralfile.mapper.FacilityMapper;
 import de.eshg.base.centralfile.mapper.PersonMapper;
@@ -27,6 +28,8 @@ import de.eshg.file.common.CustomMediaTypes;
 import de.eshg.lib.aggregation.BusinessModuleAggregationHelper;
 import de.eshg.lib.aggregation.ClientResponse;
 import de.eshg.lib.common.BusinessModuleCapability;
+import de.eshg.lib.procedure.model.CheckFileStateUsageRequest;
+import de.eshg.lib.procedure.model.CheckFileStateUsageResponse;
 import de.eshg.lib.procedure.model.gdpr.AddGdprValidationTaskRequest;
 import de.eshg.lib.procedure.model.gdpr.GdprValidationTaskStatusDto;
 import de.eshg.lib.procedure.model.gdpr.GetGdprValidationTaskResponse;
@@ -38,11 +41,12 @@ import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.validation.ValidationUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.nio.charset.StandardCharsets;
+import java.time.Clock;
 import java.time.Instant;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,6 +74,7 @@ public class GdprProcedureController implements GdprProcedureApi {
   private final GdprRightToObjectLetterGenerator rightToObjectLetterGenerator;
   private final BaseFeatureToggle baseFeatureToggle;
   private final BusinessModuleAggregationHelper businessModuleAggregationHelper;
+  private final Clock clock;
 
   public GdprProcedureController(
       GdprProcedureService service,
@@ -79,7 +84,8 @@ public class GdprProcedureController implements GdprProcedureApi {
       FacilityRepository facilityRepository,
       GdprRightToObjectLetterGenerator rightToObjectLetterGenerator,
       BaseFeatureToggle baseFeatureToggle,
-      BusinessModuleAggregationHelper businessModuleAggregationHelper) {
+      BusinessModuleAggregationHelper businessModuleAggregationHelper,
+      Clock clock) {
     this.service = service;
     this.personService = personService;
     this.facilityService = facilityService;
@@ -88,6 +94,7 @@ public class GdprProcedureController implements GdprProcedureApi {
     this.rightToObjectLetterGenerator = rightToObjectLetterGenerator;
     this.baseFeatureToggle = baseFeatureToggle;
     this.businessModuleAggregationHelper = businessModuleAggregationHelper;
+    this.clock = clock;
   }
 
   @Override
@@ -119,10 +126,46 @@ public class GdprProcedureController implements GdprProcedureApi {
     if (isStatusRefreshRequired(gdprProcedureFromDb)) {
       List<GetGdprValidationTaskResponse> validationTasks =
           getValidationTasksFromBusinessModules(gdprProcedureFromDb);
-      closeGdprProcedureIfAllValidationTasksClosed(validationTasks, gdprProcedureFromDb);
+
+      if (gdprProcedureFromDb.getType() == GdprProcedureType.RIGHT_TO_ERASURE
+          && isAllClosed(validationTasks)) {
+        deleteUnusedFileStates(gdprProcedureFromDb);
+      }
+
+      closeGdprProcedureAndCreateCentralFileDownloadIfAllValidationTasksClosed(
+          validationTasks, gdprProcedureFromDb);
     }
 
     return mapGdprProcedureToApi(gdprProcedureFromDb);
+  }
+
+  private void deleteUnusedFileStates(GdprProcedure procedure) {
+    UUID id = procedure.getExternalId();
+    log.info("Deleting unused file states for GdprProcedure(id={}).", id);
+
+    Set<UUID> fileStateIds = fetchFileStateIdsFromDb(procedure);
+    if (fileStateIds.isEmpty()) {
+      log.info("No file states to delete. None found in DB for GdprProcedure(id={}).", id);
+      return;
+    }
+
+    Set<UUID> fileStatesInUse =
+        fetchUsedFileStateIdsFromBusinessModules(fileStateIds.stream().toList(), id);
+
+    fileStateIds.removeAll(fileStatesInUse);
+    log.info("Marking file states for deletion for GdprProcedure(id={}): {}", id, fileStateIds);
+    personService.markAllForDeletionAt(fileStateIds, Instant.now(clock));
+    facilityService.markAllForDeletionAt(fileStateIds, Instant.now(clock));
+  }
+
+  private Set<UUID> fetchFileStateIdsFromDb(GdprProcedure procedure) {
+    Set<UUID> fileStateIds = new LinkedHashSet<>();
+    fileStateIds.addAll(
+        personRepository.findAllFileStateIdsByReferencePerson(procedure.getCentralFileId()));
+
+    fileStateIds.addAll(
+        facilityRepository.findAllFileStateIdsByReferenceFacility(procedure.getCentralFileId()));
+    return fileStateIds;
   }
 
   private static boolean isStatusRefreshRequired(GdprProcedure gdprProcedureFromDb) {
@@ -130,12 +173,15 @@ public class GdprProcedureController implements GdprProcedureApi {
         && TYPES_REQUIRING_BROADCAST.contains(gdprProcedureFromDb.getType());
   }
 
-  private void closeGdprProcedureIfAllValidationTasksClosed(
+  private void closeGdprProcedureAndCreateCentralFileDownloadIfAllValidationTasksClosed(
       List<GetGdprValidationTaskResponse> validationTasks, GdprProcedure gdprProcedureFromDb) {
     UUID id = gdprProcedureFromDb.getExternalId();
     if (isAllClosed(validationTasks)) {
       log.info("GdpProcedure(id={}) is closed. It has no open validation tasks.", id);
       service.updateStatus(gdprProcedureFromDb, GdprProcedureStatus.CLOSED);
+      if (gdprProcedureFromDb.getType() == GdprProcedureType.RIGHT_OF_ACCESS) {
+        service.createDownloadPackageForCentralFiles(gdprProcedureFromDb);
+      }
     } else {
       log.info("GdpProcedure(id={}) is not closed. It has open validation tasks.", id);
     }
@@ -147,7 +193,7 @@ public class GdprProcedureController implements GdprProcedureApi {
   }
 
   private GdprProcedure getGdprProcedureFromDb(UUID id) {
-    return service.findByExternalId(id).orElseThrow(notFound(id));
+    return service.findByExternalId(id).orElseThrow(GdprProcedureController::notFoundException);
   }
 
   private List<GetGdprValidationTaskResponse> getValidationTasksFromBusinessModules(
@@ -204,6 +250,27 @@ public class GdprProcedureController implements GdprProcedureApi {
         });
   }
 
+  private Set<UUID> fetchUsedFileStateIdsFromBusinessModules(List<UUID> fileStateIds, UUID id) {
+    log.info("Checking usage in modules: GdprProcedure(id={}), fileStateIds={}", id, fileStateIds);
+    List<ClientResponse<CheckFileStateUsageResponse>> clientResponses =
+        businessModuleAggregationHelper.requestFromBusinessModules(
+            null,
+            BusinessModuleCapability.PROCEDURES,
+            client -> {
+              return client.checkFileStateUsage(new CheckFileStateUsageRequest(fileStateIds));
+            });
+
+    List<ErrorResponseWithLocation> errorResponses = aggregateErrorResponses(clientResponses);
+
+    if (hasError(errorResponses)) {
+      onBusinessModuleError(errorResponses, "checkFileStateUsage", id);
+    }
+
+    return clientResponses.stream()
+        .flatMap(r -> r.response().inUse().stream())
+        .collect(StreamUtil.toLinkedHashSet());
+  }
+
   @Override
   @Transactional(readOnly = true)
   public GetGdprProcedureDetailsPageResponse getGdprProcedureDetailsPage(UUID id) {
@@ -245,8 +312,8 @@ public class GdprProcedureController implements GdprProcedureApi {
         facilityMatches.stream().map(FacilityMapper::mapReferenceFacilityToApi).toList());
   }
 
-  private static Supplier<NotFoundException> notFound(UUID id) {
-    return () -> new NotFoundException("GdprProcedure with id '%s' not found.".formatted(id));
+  private static NotFoundException notFoundException() {
+    return new NotFoundException("GdprProcedure with given id not found.");
   }
 
   @Override
@@ -281,12 +348,10 @@ public class GdprProcedureController implements GdprProcedureApi {
     validateCreatedAt(gdprProcedure);
 
     List<UUID> personFileStateIds =
-        personRepository.findAllFileStateIdsByReferencePersonCreatedBefore(
-            gdprProcedure.getCentralFileId(), gdprProcedure.getCreatedAt());
+        personRepository.findAllFileStateIdsByReferencePerson(gdprProcedure.getCentralFileId());
 
     List<UUID> facilityFileStateIds =
-        facilityRepository.findAllFileStateIdsByReferenceFacilityCreatedBefore(
-            gdprProcedure.getCentralFileId(), gdprProcedure.getCreatedAt());
+        facilityRepository.findAllFileStateIdsByReferenceFacility(gdprProcedure.getCentralFileId());
 
     return new GetGdprProcedureFileStateIdsResponse(personFileStateIds, facilityFileStateIds);
   }
@@ -310,6 +375,7 @@ public class GdprProcedureController implements GdprProcedureApi {
   public void setMatterOfConcern(UUID id, SetMatterOfConcernRequest request) {
     GdprProcedure procedure = getProcedureAndValidateVersion(id, request.version());
     procedure.setMatterOfConcern(request.concern());
+    service.writeAuditLog("Anliegen setzen", service.mapAuditLog(procedure));
   }
 
   @Override
@@ -320,20 +386,13 @@ public class GdprProcedureController implements GdprProcedureApi {
     validateStatusTransitionToInProgress(procedure);
     validateMatterOfConcern(procedure);
 
-    switch (procedure.getType()) {
-      case GdprProcedureType.RIGHT_OF_ACCESS -> {
-        validateCentralFileId(procedure);
-        validateCreatedAt(procedure);
-        service.createDownloadPackageForCentralFiles(procedure);
-        createValidationTasks(procedure);
-      }
-      case RIGHT_TO_ERASURE -> {
-        validateCentralFileId(procedure);
-        validateCreatedAt(procedure);
-        createValidationTasks(procedure);
-      }
+    if (procedure.getType() == GdprProcedureType.RIGHT_OF_ACCESS
+        || procedure.getType() == GdprProcedureType.RIGHT_TO_ERASURE) {
+      validateCentralFileId(procedure);
+      validateCreatedAt(procedure);
+      createValidationTasks(procedure);
     }
-    changeStatus(id, procedure, GdprProcedureStatus.IN_PROGRESS);
+    service.updateStatus(procedure, GdprProcedureStatus.IN_PROGRESS);
   }
 
   private static void validateStatusTransitionToInProgress(GdprProcedure procedure) {
@@ -370,7 +429,7 @@ public class GdprProcedureController implements GdprProcedureApi {
     }
 
     procedure.setInternalNote(request.internalNote());
-    changeStatus(id, procedure, GdprProcedureStatus.ABORTED);
+    service.updateStatus(procedure, GdprProcedureStatus.ABORTED);
   }
 
   @Override
@@ -386,17 +445,7 @@ public class GdprProcedureController implements GdprProcedureApi {
     }
 
     procedure.setInternalNote(request.internalNote());
-    changeStatus(id, procedure, GdprProcedureStatus.CLOSED);
-  }
-
-  private void changeStatus(UUID id, GdprProcedure procedure, GdprProcedureStatus newStatus) {
-    procedure.setStatus(newStatus);
-    log.info(
-        "Changed status of GdprProcedure(id={}) of type {} from {} to {}",
-        id,
-        procedure.getType(),
-        procedure.getStatus(),
-        newStatus);
+    service.updateStatus(procedure, GdprProcedureStatus.CLOSED);
   }
 
   private GdprProcedure getProcedureAndValidateVersion(UUID id, long version) {
@@ -453,6 +502,7 @@ public class GdprProcedureController implements GdprProcedureApi {
           ErrorCode.UNEXPECTED_ERROR,
           "Error from one or more Business Modules while creating ValidationTasks");
     }
+    service.writeAuditLog("Fachmodul Prüfaufträge erzeugen", service.mapAuditLog(gdprProcedure));
   }
 
   private List<ErrorResponseWithLocation> postValidationTasks(
@@ -528,15 +578,20 @@ public class GdprProcedureController implements GdprProcedureApi {
 
     byte[] content = centralFileDownload.getContent();
 
-    return ResponseEntity.ok()
-        .header(
-            HttpHeaders.CONTENT_DISPOSITION,
-            ContentDisposition.attachment()
-                .filename(downloadPackageFilename(id), StandardCharsets.UTF_8)
-                .build()
-                .toString())
-        .header(HttpHeaders.CONTENT_TYPE, CustomMediaTypes.ZIP_VALUE)
-        .body(new ByteArrayResource(content));
+    ResponseEntity<Resource> body =
+        ResponseEntity.ok()
+            .header(
+                HttpHeaders.CONTENT_DISPOSITION,
+                ContentDisposition.attachment()
+                    .filename(downloadPackageFilename(id), StandardCharsets.UTF_8)
+                    .build()
+                    .toString())
+            .header(HttpHeaders.CONTENT_TYPE, CustomMediaTypes.ZIP_VALUE)
+            .body(new ByteArrayResource(content));
+
+    service.writeAuditLog("Stammdaten Paket herunterladen", service.mapAuditLog(procedure));
+
+    return body;
   }
 
   private static String downloadPackageFilename(UUID id) {

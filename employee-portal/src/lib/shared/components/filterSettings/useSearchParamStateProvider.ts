@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -11,6 +11,8 @@ import {
 } from "next/navigation";
 import { SetStateAction, useCallback, useState } from "react";
 
+import { defaultDraftValueDateComparisonFilter } from "@/lib/shared/components/filterSettings/DateComparisonFilter";
+import { DateComparisonOperator } from "@/lib/shared/components/filterSettings/models/DateComparisonFilter";
 import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
 import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 import {
@@ -84,6 +86,8 @@ export function activeValueToParamValues(activeValue: FilterValue): string[] {
     case "Date":
     case "Year":
       return [activeValue.selectedValue];
+    case "DateComparison":
+      return [activeValue.value, activeValue.operator];
     case "Enum":
       return activeValue.selectedValues;
     case "DateSpan":
@@ -165,6 +169,14 @@ export function paramValuesToActiveValue(
             type: def.type,
             key: def.key,
             selectedValue: values[0],
+          }
+        : undefined;
+    case "DateComparison":
+      return values[0] && values[1]
+        ? {
+            ...defaultDraftValueDateComparisonFilter(def.key),
+            value: values[0],
+            operator: values[1] as DateComparisonOperator,
           }
         : undefined;
     case "Enum":

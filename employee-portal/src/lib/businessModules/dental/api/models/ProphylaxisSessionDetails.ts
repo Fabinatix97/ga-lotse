@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -13,29 +13,31 @@ import {
   mapProphylaxisSession,
 } from "@/lib/businessModules/dental/api/models/ProphylaxisSession";
 
-export interface ChildKeyAttributes {
+export interface ChildResult {
+  readonly id: string;
   readonly firstName: string;
   readonly lastName: string;
   readonly dateOfBirth: Date;
+  readonly groupName: string;
 }
 
 export interface ProphylaxisSessionDetails extends ProphylaxisSession {
-  participants: ChildKeyAttributes[];
+  version: number;
+  participants: ChildResult[];
 }
 
-function mapChildKeyAttributes(
-  participants: ApiChildResult,
-): ChildKeyAttributes {
+function mapChildKeyAttributes(participant: ApiChildResult): ChildResult {
   return {
-    ...participants,
+    ...participant,
   };
 }
 
 export function mapProphylaxisSessionDetails(
   response: ApiProphylaxisSessionDetails,
-) {
+): ProphylaxisSessionDetails {
   return {
     ...mapProphylaxisSession(response),
     participants: response.participants.map(mapChildKeyAttributes),
+    version: response.version,
   };
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,8 +11,8 @@ import { isDefined } from "remeda";
 
 import { inventoryItemTypeNames } from "@/lib/baseModule/components/inventory/constants";
 import { useModifyInventory } from "@/lib/businessModules/inspection/api/mutations/inventory";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface InventoryTableProps {
   readonly?: boolean;

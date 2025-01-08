@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -10,9 +10,11 @@ import static de.eshg.lib.common.SensitivityLevel.PSEUDONYMIZED;
 
 import de.eshg.domain.model.BaseEntityWithExternalId;
 import de.eshg.lib.common.DataSensitivity;
+import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import java.time.Instant;
@@ -22,8 +24,12 @@ import java.util.UUID;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class ProphylaxisSession extends BaseEntityWithExternalId {
 
   @DataSensitivity(PSEUDONYMIZED)
@@ -51,6 +57,16 @@ public class ProphylaxisSession extends BaseEntityWithExternalId {
   @OrderBy
   @BatchSize(size = 100)
   private final List<Examination> examinations = new ArrayList<>();
+
+  @Column(nullable = false)
+  @CreatedDate
+  @DataSensitivity(SensitivityLevel.PROTECTED)
+  private Instant createdAt;
+
+  @Column(nullable = false)
+  @LastModifiedDate
+  @DataSensitivity(SensitivityLevel.PROTECTED)
+  private Instant modifiedAt;
 
   public Instant getDateAndTime() {
     return dateAndTime;
@@ -93,7 +109,24 @@ public class ProphylaxisSession extends BaseEntityWithExternalId {
     examination.setProphylaxisSession(this);
   }
 
+  public void removeExamination(Examination examination) {
+    this.examinations.remove(examination);
+    examination.setProphylaxisSession(null);
+  }
+
   public List<Child> getParticipants() {
     return getExaminations().stream().map(Examination::getChild).toList();
+  }
+
+  public Instant getCreatedAt() {
+    return createdAt;
+  }
+
+  public Instant getModifiedAt() {
+    return modifiedAt;
+  }
+
+  public void setModifiedAt(Instant modifiedAt) {
+    this.modifiedAt = modifiedAt;
   }
 }

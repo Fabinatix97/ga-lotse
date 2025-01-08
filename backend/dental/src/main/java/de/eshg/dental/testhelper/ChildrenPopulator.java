@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -68,6 +68,13 @@ public class ChildrenPopulator extends DentalPopulator<CreateChildResponse> {
   protected CreateChildResponse populate(
       int index, Faker faker, ChildrenPopulator.UniqueValueProvider uniqueValueProvider) {
     CreateChildRequest request = randomChild(faker);
+    int numberOfPastYears = faker.number().numberBetween(0, 3);
+    for (int i = numberOfPastYears; i > 0; i--) {
+      Year yearInPast = Year.of(request.year() - i);
+      CreateChildRequest requestForPast = withNewYear(request, yearInPast);
+      childController.createChild(requestForPast);
+    }
+
     return childController.createChild(request);
   }
 
@@ -106,5 +113,26 @@ public class ChildrenPopulator extends DentalPopulator<CreateChildResponse> {
   @Override
   protected long countExistingEntities() {
     return this.childRepository.count();
+  }
+
+  private static CreateChildRequest withNewYear(CreateChildRequest original, Year newYear) {
+    return new CreateChildRequest(
+        original.referenceId(),
+        original.title(),
+        original.salutation(),
+        original.firstName(),
+        original.lastName(),
+        original.gender(),
+        original.dateOfBirth(),
+        original.nameAtBirth(),
+        original.placeOfBirth(),
+        original.countryOfBirth(),
+        original.emailAddresses(),
+        original.phoneNumbers(),
+        original.contactAddress(),
+        original.differentBillingAddress(),
+        newYear.getValue(),
+        original.groupName(),
+        original.institutionId());
   }
 }

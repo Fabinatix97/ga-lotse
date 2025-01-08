@@ -1,6 +1,6 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <!--
- Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ Copyright 2025 SCOOP Software GmbH, cronn GmbH
  SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -71,5 +71,6 @@
   <include
     file="migrations/0056_add_official_medical_service_procedure_type.xml"/>
   <include file="migrations/0057_add_mail_to_simple_notification.xml"/>
+  <include file="migrations/0058_invert_inbox_procedure_relationships.xml"/>
 
 </databaseChangeLog>

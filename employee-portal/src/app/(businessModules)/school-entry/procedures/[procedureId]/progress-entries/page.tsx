@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -34,17 +34,11 @@ import {
   systemProgressEntryTypeTitles,
 } from "@/lib/businessModules/schoolEntry/shared/constants";
 import { moduleUserGroup } from "@/lib/businessModules/schoolEntry/shared/moduleUserGroup";
-import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
 import { ProgressEntriesUrlParams } from "@/lib/shared/components/procedures/progress-entries/types";
 
-interface SchoolEntryProgressEntriesPageParams
-  extends SchoolEntryProcedurePageParams {
-  progressEntryId?: string;
-}
-
 export default function SchoolEntryProgressEntriesPage(
-  props: ProgressEntriesUrlParams<SchoolEntryProgressEntriesPageParams>,
+  props: ProgressEntriesUrlParams<SchoolEntryProcedurePageParams>,
 ) {
   const { params, searchParams } = props;
   return (
@@ -56,7 +50,6 @@ export default function SchoolEntryProgressEntriesPage(
       useFetchProgressEntries={useFetchProgressEntries}
       useFetchProgressEntryDetails={useFetchProgressEntryDetails}
       procedureId={params.procedureId}
-      progressEntryId={params.progressEntryId}
       searchParams={searchParams}
       leaderRole={ApiUserRole.SchoolEntryLeader}
       useRequestProgressEntryDeletion={useRequestProgressEntryDeletion}
@@ -66,13 +59,6 @@ export default function SchoolEntryProgressEntriesPage(
       useDownloadFile={useDownloadSchoolEntryFile}
       useGetManualProgressEntryHistory={useGetManualProgressEntryHistory}
       useGetMetaDataHistory={useGetMetaDataHistory}
-      routes={{
-        entryDetails: (procedureId, entryId) =>
-          routes.procedures.byId(procedureId).progressEntries.byId(entryId)
-            .details,
-        progressEntries: (procedureId) =>
-          routes.procedures.byId(procedureId).progressEntries.index,
-      }}
       systemProgressEntryTypes={systemProgressEntryTypeTitles}
       additionalKeyDocumentTypes={keyDocumentTypes}
       groupName={moduleUserGroup.group}

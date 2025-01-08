@@ -1,0 +1,29 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1733929659632-1">
+    <createTable tableName="bund_id_person_link">
+      <column name="bund_id_person_link" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_bund_id_person_link"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="bund_id" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1733929659632-2">
+    <createIndex indexName="idx_bund_id_person_link_bund_id" tableName="bund_id_person_link">
+      <column name="bund_id"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1733929659632-3">
+    <addForeignKeyConstraint baseColumnNames="bund_id_person_link" baseTableName="bund_id_person_link" constraintName="fk_bund_id_person_link_person" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="person" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

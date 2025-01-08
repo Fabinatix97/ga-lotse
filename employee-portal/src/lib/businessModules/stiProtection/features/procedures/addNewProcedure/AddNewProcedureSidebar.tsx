@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -13,6 +13,8 @@ import {
   ApiCreateProcedureResponse,
   ApiGender,
 } from "@eshg/employee-portal-api/stiProtection";
+import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
+import { COUNTRY_CODE_OPTIONS } from "@eshg/lib-portal/components/formFields/countryCodes";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { differenceInMinutes } from "date-fns";
 import { Formik, FormikHelpers } from "formik";
@@ -22,7 +24,6 @@ import { useReducer, useState } from "react";
 import { useCreateStiProcedureMutation } from "@/lib/businessModules/stiProtection/api/mutations/procedures";
 import { CreateAppointmentForm } from "@/lib/businessModules/stiProtection/features/procedures/details/CreateAppointmentSidebar";
 import { CONCERN_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";
-import { COUNTRY_CODE_OPTIONS } from "@/lib/businessModules/stiProtection/shared/countryCodes";
 import {
   deleteUndefined,
   optionalInt,
@@ -31,7 +32,6 @@ import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { SelectableCardsField } from "@/lib/shared/components/formFields/SelectableCardsField";
-import { GENDER_OPTIONS } from "@/lib/shared/components/personSidebar/constants";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";

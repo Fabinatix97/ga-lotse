@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -12,7 +12,6 @@ import static org.springframework.data.jpa.domain.Specification.allOf;
 import static org.springframework.data.jpa.domain.Specification.where;
 
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.domain.model.BaseEntity;
 import de.eshg.lib.foureyes.mapping.ApprovalRequestMapper;
 import de.eshg.lib.foureyes.model.ApprovalRequestDto;
 import de.eshg.lib.foureyes.model.CreateApprovalRequestRequest;
@@ -31,11 +30,9 @@ import de.eshg.lib.procedure.domain.model.ProgressEntry_;
 import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.lib.procedure.domain.model.SystemProgressEntry_;
 import de.eshg.lib.procedure.domain.model.TriggerType;
-import de.eshg.lib.procedure.domain.model.view.InboxProcedureProgressEntryView;
 import de.eshg.lib.procedure.domain.repository.InboxProcedureRepository;
 import de.eshg.lib.procedure.domain.repository.ProgressEntryRepository;
 import de.eshg.lib.procedure.helper.UserHelper;
-import de.eshg.lib.procedure.mapping.FileMapper;
 import de.eshg.lib.procedure.mapping.ProgressEntryMapper;
 import de.eshg.lib.procedure.model.CreateManualProgressEntryRequest;
 import de.eshg.lib.procedure.model.FileMetaDataDto;
@@ -55,8 +52,6 @@ import de.eshg.lib.procedure.model.ProgressEntrySortOrderDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -142,51 +137,23 @@ public class ProgressEntryController<P extends Procedure<P, ?, ?, ?>> implements
       specifications.add(progressEntryHasTriggerType(triggerTypes));
     }
 
+    Sort sort = mapToSort(sortOptions);
     Page<ProgressEntry> page =
         progressEntryRepository.findAll(
             where(allOf(specifications)),
             PageRequest.ofSize(paginationOptions.pageSize())
                 .withPage(paginationOptions.pageNumber())
-                .withSort(mapToSort(sortOptions)));
-
-    enrichWithInboxProcedureIds(page);
+                .withSort(sort));
 
     List<ProgressEntryDto> progressEntries =
-        page.stream().map(ProgressEntryMapper::toInterfaceType).toList();
+        progressEntryRepository.fetchFilesMetaDataAndInboxProcedure(page.toList(), sort).stream()
+            .map(ProgressEntryMapper::toInterfaceType)
+            .toList();
 
     userHelper.enrichUsersFirstNamesAndLastNames(progressEntries);
 
     return new GetProgressEntriesResponse(
         page.getTotalPages(), page.getTotalElements(), progressEntries);
-  }
-
-  private void enrichWithInboxProcedureIds(Page<ProgressEntry> page) {
-    List<ProcessedInboxProgressEntry> processedInboxProgressEntries =
-        page.stream()
-            .filter(ProcessedInboxProgressEntry.class::isInstance)
-            .map(ProcessedInboxProgressEntry.class::cast)
-            .toList();
-
-    Set<Long> inboxProcedureIds =
-        processedInboxProgressEntries.stream()
-            .map(ProcessedInboxProgressEntry::getInboxProcedure)
-            .map(BaseEntity::getId)
-            .collect(Collectors.toSet());
-
-    if (inboxProcedureIds.isEmpty()) {
-      return;
-    }
-
-    Map<Long, InboxProcedureProgressEntryView> inboxProcedureInternalIdToViewMap =
-        inboxProcedureRepository.findByIdIsIn(inboxProcedureIds).stream()
-            .collect(Collectors.toMap(InboxProcedureProgressEntryView::id, Function.identity()));
-
-    for (ProcessedInboxProgressEntry progressEntry : processedInboxProgressEntries) {
-      InboxProcedureProgressEntryView inboxProcedureProgressEntryView =
-          inboxProcedureInternalIdToViewMap.get(progressEntry.getInboxProcedure().getId());
-
-      progressEntry.setInboxProcedure(inboxProcedureProgressEntryView.asInboxProcedure());
-    }
   }
 
   @Override
@@ -205,7 +172,7 @@ public class ProgressEntryController<P extends Procedure<P, ?, ?, ?>> implements
             procedureId, manualProgressEntry, file, fileMetaData);
 
     ManualProgressEntryDto manualProgressEntryDto =
-        ProgressEntryMapper.toInterfaceTypeWithFileReference(savedManualProgressEntry);
+        ProgressEntryMapper.toInterfaceType(savedManualProgressEntry);
 
     userHelper.enrichUsersFirstNamesAndLastNames(manualProgressEntryDto);
 
@@ -301,8 +268,7 @@ public class ProgressEntryController<P extends Procedure<P, ?, ?, ?>> implements
     ProgressEntry progressEntry =
         progressEntryService.getProgressEntryOrThrow(procedureId, progressEntryId);
     return new GetProgressEntryResponse(
-        mapAndEnrichWithFileDetails(progressEntry),
-        getRelatedKeyDocumentProgressEntries(progressEntry));
+        mapAndEnrich(progressEntry), getRelatedKeyDocumentProgressEntries(progressEntry));
   }
 
   private List<KeyDocumentAwareProgressEntryDto> getRelatedKeyDocumentProgressEntries(
@@ -316,21 +282,20 @@ public class ProgressEntryController<P extends Procedure<P, ?, ?, ?>> implements
     }
 
     return progressEntryRepository
-        .findAllByProcedureIdAndKeyDocumentTypeAndNotIdFetchingFileAndAttachments(
+        .findAllByProcedureIdAndKeyDocumentTypeAndNotIdFetchingFile(
             progressEntry.getProcedureId(),
             keyDocumentAware.getKeyDocumentType(),
             progressEntry.getId())
         .stream()
-        .map(this::mapAndEnrichWithFileDetails)
+        .map(this::mapAndEnrich)
         .filter(KeyDocumentAwareProgressEntryDto.class::isInstance)
         .map(KeyDocumentAwareProgressEntryDto.class::cast)
         .toList();
   }
 
-  private ProgressEntryDto mapAndEnrichWithFileDetails(ProgressEntry entity) {
-    ProgressEntryDto response = ProgressEntryMapper.toInterfaceTypeWithFileReference(entity);
+  private ProgressEntryDto mapAndEnrich(ProgressEntry entity) {
+    ProgressEntryDto response = ProgressEntryMapper.toInterfaceType(entity);
     userHelper.enrichUsersFirstNamesAndLastNames(response);
-    response.setFileReference(FileMapper.toInterfaceType(entity.getFile()));
     return response;
   }
 
@@ -357,7 +322,7 @@ public class ProgressEntryController<P extends Procedure<P, ?, ?, ?>> implements
             procedureId, progressEntryId, patchManualProgressEntryRequest);
 
     ManualProgressEntryDto manualProgressEntryDto =
-        ProgressEntryMapper.toInterfaceTypeWithFileReference(manualProgressEntry);
+        ProgressEntryMapper.toInterfaceType(manualProgressEntry);
 
     userHelper.enrichUsersFirstNamesAndLastNames(manualProgressEntryDto);
 

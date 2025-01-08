@@ -1,11 +1,11 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { ApiBaseFeature, ApiUserRole } from "@eshg/employee-portal-api/base";
 import { ApiLocationSelectionMode } from "@eshg/employee-portal-api/schoolEntry";
-import { EscalatorWarning } from "@mui/icons-material";
+import { WcOutlined } from "@mui/icons-material";
 import { useQuery } from "@tanstack/react-query";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
@@ -75,7 +75,7 @@ export function useSideNavigationItems(): UseSideNavigationItemsResult {
 
   const sideNavigationItem = {
     name: "Einschulung",
-    decorator: <EscalatorWarning />,
+    decorator: <WcOutlined />,
     error: isLocationModeError
       ? "Bei der Verbindung zum Einschulungsmodul ist ein Fehler aufgetreten."
       : undefined,

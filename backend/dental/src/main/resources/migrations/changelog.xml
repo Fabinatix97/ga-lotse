@@ -1,6 +1,6 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <!--
- Copyright 2024 cronn GmbH
+ Copyright 2025 cronn GmbH
  SPDX-License-Identifier: Apache-2.0
 -->
 
@@ -19,5 +19,7 @@
     file="migrations/0008_add_official_medical_service_procedure_type.xml"/>
   <include file="migrations/0009_prophylaxis_with_children.xml"/>
   <include file="migrations/0010_add_mail_to_simple_notification.xml"/>
+  <include file="migrations/0011_add_created_and_modified_at_to_prophylaxis_session.xml"/>
+  <include file="migrations/0012_invert_inbox_procedure_relationships.xml"/>
 
 </databaseChangeLog>

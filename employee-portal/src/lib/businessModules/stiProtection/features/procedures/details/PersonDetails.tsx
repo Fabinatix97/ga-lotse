@@ -1,13 +1,13 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { ApiStiProtectionProcedure } from "@eshg/employee-portal-api/stiProtection";
+import { COUNTRY_CODE_LABELS } from "@eshg/lib-portal/components/formFields/countryCodes";
 import { Sheet, Stack } from "@mui/joy";
 
 import { GENDER_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";
-import { COUNTRY_CODE_LABELS } from "@/lib/businessModules/stiProtection/shared/countryCodes";
 import { createOnlyIfProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
 import { EditButton } from "@/lib/shared/components/buttons/EditButton";

@@ -1,15 +1,18 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { ApiProvider } from "@eshg/lib-portal/api/ApiProvider";
+import { EnvironmentTypeProvider } from "@eshg/lib-portal/components/EnvironmentTypeProvider";
 import { NonceProvider } from "@eshg/lib-portal/components/NonceProvider";
 import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
+import { ConfirmationDialogProvider } from "@eshg/lib-portal/components/confirmationDialog/ConfirmationDialogProvider";
 import { SnackbarProvider } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { getNonceFromHeader } from "@eshg/lib-portal/next/contentSecurityPolicyHeaderMiddleware";
 import { ReactNode } from "react";
 
+import { env } from "@/env/server";
 import { MainLayout } from "@/lib/baseModule/components/layout/MainLayout";
 import { ThemeProvider } from "@/lib/baseModule/theme/ThemeProvider";
 import { ChatProvider } from "@/lib/businessModules/chat/shared/ChatProvider";
@@ -18,8 +21,9 @@ import { ServiceWorkerProvider } from "@/lib/businessModules/inspection/shared/o
 import { OfflinePasswordPrompt } from "@/lib/businessModules/inspection/shared/offline/password/OfflinePasswordPrompt";
 import { API_CONFIGURATION } from "@/lib/shared/api/config";
 import { EmployeeSnackbar } from "@/lib/shared/components/EmployeeSnackbar";
+import { EmployeePortalErrorModal } from "@/lib/shared/components/boundaries/EmployeePortalErrorModal";
 import { ConfirmNavigationProvider } from "@/lib/shared/components/confirmationDialog/ConfirmNavigationProvider";
-import { ConfirmationDialogProvider } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
+import { EmployeePortalConfirmationDialog } from "@/lib/shared/components/confirmationDialog/EmployeePortalConfirmationDialog";
 import { DrawerProvider } from "@/lib/shared/components/drawer/drawerContext";
 
 // Opt out of the Data Cache and Full Route Cache. All routes are dynamically rendered.
@@ -65,25 +69,32 @@ export default function RootLayout({
         </noscript>
         <NonceProvider initialNonce={nonce}>
           <ThemeProvider>
-            <SnackbarProvider snackbar={EmployeeSnackbar}>
-              <DrawerProvider>
-                <ApiProvider configuration={API_CONFIGURATION}>
-                  <ConfirmationDialogProvider>
-                    <ConfirmNavigationProvider>
-                      <QueryBoundary>
-                        <OfflinePasswordPrompt />
-                        <ServiceWorkerProvider>
-                          <ChatProvider configuration={CHAT_CONFIGURATION}>
-                            <MainLayout>{children}</MainLayout>
-                          </ChatProvider>
-                          {modal}
-                        </ServiceWorkerProvider>
-                      </QueryBoundary>
-                    </ConfirmNavigationProvider>
-                  </ConfirmationDialogProvider>
-                </ApiProvider>
-              </DrawerProvider>
-            </SnackbarProvider>
+            <EnvironmentTypeProvider
+              environmentType={env.PUBLIC_ENVIRONMENT_TYPE}
+            >
+              <SnackbarProvider snackbar={EmployeeSnackbar}>
+                <DrawerProvider>
+                  <ApiProvider configuration={API_CONFIGURATION}>
+                    <ConfirmationDialogProvider
+                      component={EmployeePortalConfirmationDialog}
+                      errorModal={EmployeePortalErrorModal}
+                    >
+                      <ConfirmNavigationProvider>
+                        <QueryBoundary>
+                          <OfflinePasswordPrompt />
+                          <ServiceWorkerProvider>
+                            <ChatProvider configuration={CHAT_CONFIGURATION}>
+                              <MainLayout>{children}</MainLayout>
+                            </ChatProvider>
+                            {modal}
+                          </ServiceWorkerProvider>
+                        </QueryBoundary>
+                      </ConfirmNavigationProvider>
+                    </ConfirmationDialogProvider>
+                  </ApiProvider>
+                </DrawerProvider>
+              </SnackbarProvider>
+            </EnvironmentTypeProvider>
           </ThemeProvider>
         </NonceProvider>
       </body>

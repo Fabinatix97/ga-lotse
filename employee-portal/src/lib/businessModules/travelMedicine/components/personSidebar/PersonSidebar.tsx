@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -21,7 +21,6 @@ import {
 import { PersonForm } from "@/lib/businessModules/travelMedicine/components/personSidebar/person/PersonForm";
 import { PersonSidebarMode } from "@/lib/businessModules/travelMedicine/components/personSidebar/personSidebarHelper";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
 import { LegacyMinimalPerson } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyBasePersonForm";
 import {
@@ -34,6 +33,7 @@ import {
 } from "@/lib/shared/components/legacyPersonSidebar/personSidebarHelper";
 import { LegacyPersonSearch } from "@/lib/shared/components/legacyPersonSidebar/search/LegacyPersonSearch";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface PersonSidebarProps {
   open: boolean;

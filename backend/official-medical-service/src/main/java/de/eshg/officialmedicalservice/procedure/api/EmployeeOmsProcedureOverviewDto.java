@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -17,4 +17,5 @@ public record EmployeeOmsProcedureOverviewDto(
     @NotNull ProcedureStatusDto status,
     String firstName,
     String lastName,
-    LocalDate dateOfBirth) {}
+    LocalDate dateOfBirth,
+    String facilityName) {}

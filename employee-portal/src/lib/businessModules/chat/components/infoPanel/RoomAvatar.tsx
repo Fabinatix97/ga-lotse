@@ -1,10 +1,12 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
+import { FileLike } from "@eshg/lib-portal/components/formFields/file/validators";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
@@ -18,8 +20,6 @@ import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClie
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { useRoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
-import { FileType } from "@/lib/shared/components/formFields/file/FileType";
-import { FileLike } from "@/lib/shared/components/formFields/file/validators";
 
 interface RoomAvatarProps {
   roomId: string;

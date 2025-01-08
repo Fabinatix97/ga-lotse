@@ -1,11 +1,11 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package de.eshg.base.keycloak;
 
-import static de.eshg.base.keycloak.CitizenKeycloakProvisioning.BUND_ID_PRIMARY_KEY_ATTRIBUTE;
+import static de.eshg.base.keycloak.CitizenKeycloakProvisioning.NAMEID_FORMAT_PERSISTENT;
 import static de.eshg.base.keycloak.KeycloakProvisioning.FALSE;
 import static de.eshg.base.keycloak.KeycloakProvisioning.TRUE;
 
@@ -16,6 +16,7 @@ import de.eshg.testhelper.environment.EnvironmentConfig;
 import jakarta.ws.rs.core.Response;
 import java.util.*;
 import java.util.function.Consumer;
+import org.apache.commons.collections4.ListUtils;
 import org.keycloak.admin.client.resource.ClientResource;
 import org.keycloak.common.util.MultivaluedHashMap;
 import org.keycloak.representations.idm.*;
@@ -56,27 +57,36 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning
 
     if (keycloakProperties.mukTestRealm().enabled()) {
       log.warn("Adding a muk realm for development");
-      createOrUpdateIdpTestRealm(mukKeycloakClient, this::getMukTestRealmRepresentation);
+      List<IdpTestRealmUserAttribute> mukTestRealmUserAttributes =
+          IdpTestRealmUserAttribute.fromIdpUserAttributes(MukUserAttribute.values());
+      createOrUpdateIdpTestRealm(
+          mukKeycloakClient, this::getMukTestRealmRepresentation, mukTestRealmUserAttributes);
       createOrUpdateIdpTestRealmKeys(
           keycloakProperties.mukTestRealm(),
           keycloakProperties.citizenRealm().mukIdp(),
           mukKeycloakClient);
+      createOrUpdateIdpTestRealmClientScopes(mukTestRealmUserAttributes, mukKeycloakClient);
       createOrUpdateSamlClientInIdpTestRealm(
           CitizenKeycloakProvisioning.MUK_IDENTITY_PROVIDER_ALIAS, mukKeycloakClient);
-      addTestUserToMukRealm();
+      addTestUserToMukTestRealm();
     }
 
     if (keycloakProperties.bundIdTestRealm().enabled()) {
       log.warn("Adding a bund-id realm for development");
-      createOrUpdateIdpTestRealm(bundIdKeycloakClient, this::getBundIdTestRealmRepresentation);
+      List<IdpTestRealmUserAttribute> bundIdTestRealmUserAttributes =
+          IdpTestRealmUserAttribute.fromIdpUserAttributes(BundIdUserAttribute.values());
+      createOrUpdateIdpTestRealm(
+          bundIdKeycloakClient,
+          this::getBundIdTestRealmRepresentation,
+          bundIdTestRealmUserAttributes);
       createOrUpdateIdpTestRealmKeys(
           keycloakProperties.bundIdTestRealm(),
           keycloakProperties.citizenRealm().bundIdIdp(),
           bundIdKeycloakClient);
-      createOrUpdateBundIdTestClientScope();
+      createOrUpdateIdpTestRealmClientScopes(bundIdTestRealmUserAttributes, bundIdKeycloakClient);
       createOrUpdateSamlClientInIdpTestRealm(
           CitizenKeycloakProvisioning.BUND_ID_IDENTITY_PROVIDER_ALIAS, bundIdKeycloakClient);
-      addTestUserToBundIdRealm();
+      addTestUserToBundIdTestRealm();
     }
   }
 
@@ -157,36 +167,42 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning
         .toList();
   }
 
-  private void addTestUserToMukRealm() {
+  private void addTestUserToMukTestRealm() {
     addTestUsersToIdpTestRealm(mukKeycloakClient, List.of(IdpTestUser.MUK_DUMMY));
   }
 
-  private void addTestUserToBundIdRealm() {
+  private void addTestUserToBundIdTestRealm() {
     addTestUsersToIdpTestRealm(bundIdKeycloakClient, List.of(IdpTestUser.BUND_ID_DUMMY));
   }
 
   private void addTestUsersToIdpTestRealm(
       RealmBoundKeycloakClient realmClient, List<KeycloakUser> users) {
     new KeycloakTestClient(realmClient, keycloakProperties, 16, environmentConfig)
-        .createOrUpdateUsers(users, this::configureMukUser);
+        .createOrUpdateUsers(users, this::configureIdpTestUser);
   }
 
-  private void configureMukUser(UserRepresentation userRepresentation, KeycloakUser user) {
+  private void configureIdpTestUser(UserRepresentation userRepresentation, KeycloakUser user) {
     userRepresentation.setUsername(user.username());
     userRepresentation.setEmail(user.email());
     userRepresentation.setEmailVerified(true);
     userRepresentation.setEnabled(true);
     userRepresentation.setRequiredActions(List.of());
-    userRepresentation.setAttributes(null);
+    LinkedHashMap<String, List<String>> attributeMap = new LinkedHashMap<>();
+    user.additionalAttributes().forEach((key, value) -> attributeMap.put(key, List.of(value)));
+    userRepresentation.setAttributes(attributeMap);
   }
 
   private void createOrUpdateIdpTestRealm(
       RealmBoundKeycloakClient idpTestRealmClient,
-      Consumer<RealmRepresentation> idpTestRealmRepresentation) {
+      Consumer<RealmRepresentation> idpTestRealmRepresentation,
+      List<? extends KeycloakUserAttribute> customTestUserAttributes) {
     String idpTestRealmName = idpTestRealmClient.realmName;
     idpTestRealmClient.createOrUpdateRealm(idpTestRealmRepresentation);
     idpTestRealmClient.configureUserProfile(
-        IdpTestUserAttribute.values(), idpTestRealmName, idpTestRealmName);
+        ListUtils.union(List.of(TestUserDefaultAttribute.values()), customTestUserAttributes)
+            .toArray(KeycloakUserAttribute[]::new),
+        idpTestRealmName,
+        idpTestRealmName);
   }
 
   private void getMukTestRealmRepresentation(RealmRepresentation realmRepresentation) {
@@ -308,25 +324,35 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning
     return allUsers;
   }
 
-  private enum IdpTestUserAttribute implements KeycloakUserAttribute {
-    EMAIL(DEFAULT_ATTRIBUTE_EMAIL, KEYCLOAK_VALUE_REF_TEMPLATE.formatted(DEFAULT_ATTRIBUTE_EMAIL)),
+  private enum TestUserDefaultAttribute implements KeycloakUserAttribute {
+    USERNAME(
+        DEFAULT_ATTRIBUTE_USERNAME,
+        KEYCLOAK_VALUE_REF_TEMPLATE.formatted(DEFAULT_ATTRIBUTE_USERNAME),
+        DEFAULT_USERNAME_VALIDATIONS),
+    EMAIL(
+        DEFAULT_ATTRIBUTE_EMAIL,
+        KEYCLOAK_VALUE_REF_TEMPLATE.formatted(DEFAULT_ATTRIBUTE_EMAIL),
+        DEFAULT_EMAIL_VALIDATIONS),
     FIRST_NAME(
         DEFAULT_ATTRIBUTE_FIRST_NAME,
-        KEYCLOAK_VALUE_REF_TEMPLATE.formatted(DEFAULT_ATTRIBUTE_FIRST_NAME)),
+        KEYCLOAK_VALUE_REF_TEMPLATE.formatted(DEFAULT_ATTRIBUTE_FIRST_NAME),
+        DEFAULT_NAME_VALIDATIONS),
     LAST_NAME(
         DEFAULT_ATTRIBUTE_LAST_NAME,
-        KEYCLOAK_VALUE_REF_TEMPLATE.formatted(DEFAULT_ATTRIBUTE_LAST_NAME)),
+        KEYCLOAK_VALUE_REF_TEMPLATE.formatted(DEFAULT_ATTRIBUTE_LAST_NAME),
+        DEFAULT_NAME_VALIDATIONS),
     ;
 
     private final String key;
     private final String displayName;
+    private final List<ValidationRule> validationRules;
 
-    IdpTestUserAttribute(String key, String displayName) {
+    TestUserDefaultAttribute(String key, String displayName, ValidationRule... validationRules) {
       this.key = key;
       this.displayName = displayName;
+      this.validationRules = List.of(validationRules);
     }
 
-    @Override
     public String getKey() {
       return key;
     }
@@ -347,37 +373,53 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning
     }
 
     @Override
-    public List<ValidationRule> validationRules() {
-      return List.of();
+    public List<ValidationRule> getValidationRules() {
+      return validationRules;
     }
   }
 
-  protected void createOrUpdateBundIdTestClientScope() {
+  protected void createOrUpdateIdpTestRealmClientScopes(
+      List<IdpTestRealmUserAttribute> idpTestRealmUserAttributes,
+      RealmBoundKeycloakClient idpTestRealmClient) {
     ClientScopeRepresentation clientScope = new ClientScopeRepresentation();
     clientScope.setName(SAML_ATTRIBUTES);
-    clientScope.setDescription("Sets bund-id SAML attributes");
+    clientScope.setDescription("Sets SAML user attributes");
     clientScope.setProtocol(SAML);
     clientScope.setAttributes(Map.of("include.in.token.scope", FALSE));
-    clientScope.setProtocolMappers(List.of(getHardcodedBPK2SamlAttributeMapper()));
+    clientScope.setProtocolMappers(
+        ListUtils.union(
+            List.of(getUsernameAsSamlNameIdMapper()),
+            idpTestRealmUserAttributes.stream()
+                .map(CitizenKeycloakTestProvisioning::getSamlTestRealmUserAttributeMapper)
+                .toList()));
 
-    bundIdKeycloakClient.createOrUpdateClientScopes(List.of(clientScope));
+    idpTestRealmClient.createOrUpdateClientScopes(List.of(clientScope));
   }
 
-  private static ProtocolMapperRepresentation getHardcodedBPK2SamlAttributeMapper() {
+  private static ProtocolMapperRepresentation getUsernameAsSamlNameIdMapper() {
     ProtocolMapperRepresentation realmRolesMapper = new ProtocolMapperRepresentation();
-    realmRolesMapper.setName("Hardcoded bPK2 attribute");
+    realmRolesMapper.setName("Username as NameID Mapper");
     realmRolesMapper.setProtocol(SAML);
-    realmRolesMapper.setProtocolMapper("saml-hardcode-attribute-mapper");
+    realmRolesMapper.setProtocolMapper("saml-user-attribute-nameid-mapper");
+    realmRolesMapper.setConfig(
+        Map.of("mapper.nameid.format", NAMEID_FORMAT_PERSISTENT, "user.attribute", "username"));
+    return realmRolesMapper;
+  }
+
+  private static ProtocolMapperRepresentation getSamlTestRealmUserAttributeMapper(
+      IdpTestRealmUserAttribute attribute) {
+    ProtocolMapperRepresentation realmRolesMapper = new ProtocolMapperRepresentation();
+    realmRolesMapper.setName("User Attribute Mapper: " + attribute.getSamlName());
+    realmRolesMapper.setProtocol(SAML);
+    realmRolesMapper.setProtocolMapper("saml-user-attribute-mapper");
     realmRolesMapper.setConfig(
         Map.of(
             "attribute.nameformat",
-            "Basic",
+            attribute.getAttributeNameFormat().getProtocolMapperName(),
             "attribute.name",
-            BUND_ID_PRIMARY_KEY_ATTRIBUTE.getOid(),
-            "friendly.name",
-            BUND_ID_PRIMARY_KEY_ATTRIBUTE.getFriendlyName(),
-            "attribute.value",
-            "hardcoded-bPK2-value"));
+            attribute.getSamlName(),
+            "user.attribute",
+            attribute.getKey()));
     return realmRolesMapper;
   }
 }

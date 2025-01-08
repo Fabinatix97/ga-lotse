@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -9,10 +9,8 @@ import {
   ApiAppointmentBlockSortKey,
   ApiAppointmentType,
 } from "@eshg/employee-portal-api/travelMedicine/models";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import { Schedule, TodayOutlined } from "@mui/icons-material";
-import { Chip, Stack, Typography } from "@mui/joy";
+import { Chip } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 import { ReactNode } from "react";
@@ -24,6 +22,7 @@ import {
 import { useGetAppointmentBlockGroupsQuery } from "@/lib/businessModules/travelMedicine/api/queries/appointmentBlocks";
 import { appointmentTypes } from "@/lib/businessModules/travelMedicine/shared/appointmentTypes";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
+import { NoAppointmentBlocksAvailable } from "@/lib/shared/components/appointmentBlocks/NoAppointmentBlocksAvailable";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
@@ -184,35 +183,15 @@ export function AppointmentBlockGroupsTable(
         <DataTable
           data={rows}
           columns={COLUMNS}
-          noDataComponent={() => <NoAppointmentBlocksAvailable />}
+          noDataComponent={() => (
+            <NoAppointmentBlocksAvailable
+              href={routes.appointmentBlockGroups.new}
+            />
+          )}
           getSubRows={getSubRows}
           sorting={tableControl.tableSorting}
         />
       </TableSheet>
     </TablePage>
-  );
-}
-
-function NoAppointmentBlocksAvailable() {
-  return (
-    <Stack
-      sx={{
-        alignItems: "center",
-        justifyContent: "center",
-        flex: 1,
-      }}
-    >
-      <TodayOutlined sx={{ height: "40px", width: "40px" }} />
-      <Typography sx={{ mt: 2, mb: 3 }}>
-        Aktuell keine Terminblöcke vorhanden
-      </Typography>
-      <InternalLinkButton
-        href={routes.appointmentBlockGroups.new}
-        size="sm"
-        startDecorator={<Schedule />}
-      >
-        Neuen Terminblock planen
-      </InternalLinkButton>
-    </Stack>
   );
 }

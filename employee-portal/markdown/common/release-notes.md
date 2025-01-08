@@ -2,6 +2,22 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 1.5
+
+_18.12.2024_
+
+Sechster Release der Anwendung GA-Lotse.
+
+### Begehung:
+
+* Import von Einrichtungen und zugehörigen Begehungs-Vorgängen
+* Ableich vom beim Import entstandenen Duplikaten
+  * von Vorgängen
+  * von Einrichtungen
+* Statistik für Begehungen
+  * Datenquelle für Einrichtungen
+  * Datenquelle für Begehungs-Vorgänge
+
 ## GA-Lotse 1.4
 
 _04.12.2024_

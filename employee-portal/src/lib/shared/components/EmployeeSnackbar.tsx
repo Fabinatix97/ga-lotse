@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -8,13 +8,23 @@
 import { SnackbarComponentProps } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Snackbar, Theme, styled } from "@mui/joy";
 
-import {
-  headerHeightDesktop,
-  headerHeightMobile,
-} from "@/lib/baseModule/components/layout/sizes";
+import { useHeaderHeights } from "@/lib/baseModule/components/layout/useHeaderHeights";
 
-const StyledSnackbar = styled(Snackbar)<SnackbarComponentProps>(
-  ({ theme, position }) => ({
+interface StyledSnackbarProps extends SnackbarComponentProps {
+  headerHeightDesktop: string;
+  headerHeightMobile: string;
+}
+
+function excludeHeaderHeightProps(
+  prop: PropertyKey,
+): prop is keyof StyledSnackbarProps {
+  return prop !== "headerHeightDesktop" && prop !== "headerHeightMobile";
+}
+
+const StyledSnackbar = styled(Snackbar, {
+  shouldForwardProp: excludeHeaderHeightProps,
+})<StyledSnackbarProps>(
+  ({ theme, position, headerHeightDesktop, headerHeightMobile }) => ({
     "&.MuiSnackbar-root": {
       "--Snackbar-padding": theme.spacing(1),
       "--Snackbar-inset": calculatedSnackbarOffset(
@@ -37,10 +47,13 @@ const StyledSnackbar = styled(Snackbar)<SnackbarComponentProps>(
 );
 
 export function EmployeeSnackbar(props: SnackbarComponentProps) {
+  const { headerHeightMobile, headerHeightDesktop } = useHeaderHeights();
   return (
     <StyledSnackbar
       variant="soft"
       anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      headerHeightMobile={headerHeightMobile}
+      headerHeightDesktop={headerHeightDesktop}
       {...props}
     />
   );

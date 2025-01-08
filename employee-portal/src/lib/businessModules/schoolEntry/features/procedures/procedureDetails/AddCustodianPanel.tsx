@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -12,7 +12,6 @@ import { useRef, useState } from "react";
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
 import { useAddPersonAsCustodian } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
@@ -20,6 +19,7 @@ import { PersonSidebar } from "@/lib/shared/components/personSidebar/PersonSideb
 import { DefaultPersonFormValues } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
 import { mapToPersonAddRequest } from "@/lib/shared/components/personSidebar/helpers";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function AddCustodianPanel(props: { procedure: ProcedureDetails }) {
   const [sidebarMode, setSidebarMode] = useState("none");

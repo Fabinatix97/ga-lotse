@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -16,6 +16,7 @@ import {
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function AppointmentDetailsSidePanel({
   hasAccomplishedService,
@@ -29,10 +30,21 @@ export function AppointmentDetailsSidePanel({
   const { procedureId, procedureStepId, appointmentDetails } = useIdContext();
   const deleteAppointment = useDeleteAppointmentCp();
 
-  async function handleDeleteAppointment() {
-    await deleteAppointment.mutateAsync({
-      procedureId: procedureId,
-      procedureStepId: procedureStepId,
+  const { openConfirmationDialog } = useConfirmationDialog();
+
+  function handleDeleteAppointment() {
+    openConfirmationDialog({
+      onConfirm: async () => {
+        await deleteAppointment.mutateAsync({
+          procedureId: procedureId,
+          procedureStepId: procedureStepId,
+        });
+      },
+      title: t("deleteAppointment.cancelModal.title"),
+      description: t("deleteAppointment.cancelModal.description"),
+      confirmLabel: t("deleteAppointment.cancelModal.confirmLabel"),
+      cancelLabel: t("deleteAppointment.cancelModal.cancelLabel"),
+      color: "danger",
     });
   }
 

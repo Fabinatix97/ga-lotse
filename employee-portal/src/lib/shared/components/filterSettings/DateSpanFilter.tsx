@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -83,25 +83,36 @@ function maxInput(definition: DateSpanFilterDefinition) {
 }
 
 export function validateDateSpan(
-  { maxInputPast }: DateSpanFilterDefinition,
+  { maxInputPast, doNotRequireStartAndEnd }: DateSpanFilterDefinition,
   { startDate, endDate }: DateSpanFilterValue,
 ) {
   if (startDate === undefined && endDate === undefined) {
     return undefined;
   }
 
-  if (startDate === undefined || endDate === undefined) {
+  if (
+    !doNotRequireStartAndEnd &&
+    (startDate === undefined || endDate === undefined)
+  ) {
     return "Die Zeitspanne wurde unvollständig angegeben.";
   }
 
-  const parsedStartDate = parse(startDate, "yyyy-MM-dd", new Date());
-  const parsedEndDate = parse(endDate, "yyyy-MM-dd", new Date());
+  const parsedStartDate = startDate
+    ? parse(startDate, "yyyy-MM-dd", new Date())
+    : undefined;
+  const parsedEndDate = endDate
+    ? parse(endDate, "yyyy-MM-dd", new Date())
+    : undefined;
 
-  if (parsedEndDate < parsedStartDate) {
+  if (parsedEndDate && parsedStartDate && parsedEndDate < parsedStartDate) {
     return "Das Enddatum darf nicht vor dem Startdatum liegen.";
   }
 
-  if (maxInputPast && parsedEndDate >= startOfDay(new Date())) {
+  if (
+    maxInputPast &&
+    ((parsedStartDate && parsedStartDate >= startOfDay(new Date())) ||
+      (parsedEndDate && parsedEndDate >= startOfDay(new Date())))
+  ) {
     return "Die Zeitspanne muss in der Vergangenheit liegen.";
   }
 

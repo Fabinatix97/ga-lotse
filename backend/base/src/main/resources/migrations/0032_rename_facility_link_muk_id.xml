@@ -1,0 +1,19 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1732993443092-1">
+    <renameColumn tableName="muk_facility_link" oldColumnName="muk_id" newColumnName="data_transmitter_pseudonym_id"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1732993443092-2">
+    <dropIndex indexName="idx_muk_facility_link_muk_id" tableName="muk_facility_link"/>
+    <createIndex indexName="idx_muk_facility_link_data_transmitter_pseudonym_id" tableName="muk_facility_link">
+      <column name="data_transmitter_pseudonym_id"/>
+    </createIndex>
+  </changeSet>
+</databaseChangeLog>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -332,7 +332,7 @@ public class ImportService {
   private static SchoolEntryProcedure getProcedureOrThrow(
       Map<UUID, SchoolEntryProcedure> procedures, UUID procedureId) {
     return Optional.ofNullable(procedures.get(procedureId))
-        .orElseThrow(ExceptionUtil.procedureNotFoundException(procedureId));
+        .orElseThrow(ExceptionUtil::procedureNotFoundException);
   }
 
   private void addProgressEntryForMerge(SchoolEntryProcedure procedure, ImportType importType) {

@@ -1,9 +1,14 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 import { ApiGetReferencePersonResponse } from "@eshg/employee-portal-api/base";
+import {
+  GENDER_VALUES,
+  SALUTATION_VALUES,
+  getOptionalTitle,
+} from "@eshg/lib-portal/components/formFields/constants";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Divider, Stack } from "@mui/joy";
@@ -15,11 +20,6 @@ import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell"
 import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import {
-  GENDER_VALUES,
-  SALUTATION_VALUES,
-  getOptionalTitle,
-} from "@/lib/shared/components/personSidebar/constants";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { translateCountry } from "@/lib/shared/helpers/i18n";

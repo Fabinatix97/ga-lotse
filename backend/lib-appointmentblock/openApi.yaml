@@ -1,4 +1,4 @@
-# Copyright 2024 cronn GmbH
+# Copyright 2025 cronn GmbH
 # SPDX-License-Identifier: Apache-2.0
 
 openapi: 3.0.1
@@ -343,6 +343,7 @@ components:
       - HIV_STI_CONSULTATION
       - SEX_WORK
       - RESULTS_REVIEW
+      - OFFICIAL_MEDICAL_SERVICE
     AppointmentTypeConfig:
       type: object
       properties:

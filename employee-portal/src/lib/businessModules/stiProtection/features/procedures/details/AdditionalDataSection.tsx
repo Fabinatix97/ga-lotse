@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,8 +7,6 @@ import { ApiStiProtectionProcedure } from "@eshg/employee-portal-api/stiProtecti
 import { Sheet } from "@mui/joy";
 
 import { CONCERN_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";
-import { createOnlyIfProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
-import { EditButton } from "@/lib/shared/components/buttons/EditButton";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
@@ -25,13 +23,9 @@ export function formatAppointmentTime(date?: Date) {
 export function AdditionalDataSection({
   procedure,
 }: Readonly<{ procedure: ApiStiProtectionProcedure }>) {
-  const onlyIfOpen = createOnlyIfProcedureOpen(procedure);
   return (
     <Sheet>
-      <DetailsSection
-        title="Zusatzinfos"
-        buttons={onlyIfOpen(<EditButton aria-label="Zusatzinfos bearbeiten" />)}
-      >
+      <DetailsSection title="Zusatzinfos">
         <DetailsColumn>
           <DetailsCell label="Art" value={CONCERN_VALUES[procedure.concern]} />
           <DetailsCell

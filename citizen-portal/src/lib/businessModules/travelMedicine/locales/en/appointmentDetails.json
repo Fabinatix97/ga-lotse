@@ -1,42 +1,50 @@
 {
   "header": {
-    "title": "Mein Termin",
-    "logout": "Mein Bereich verlassen"
+    "title": "My Appointment",
+    "logout": "Logout"
   },
-  "title": "Informationen",
+  "title": "Information",
   "sidePanel": {
-    "title_false": "Wählen Sie jetzt Ihren Termin",
-    "title_true": "Sie können den Termin nicht wahrnehmen?",
-    "postponeAppointment": "Termin verschieben",
-    "bookAppointment": "Termin buchen",
-    "cancelAppointment": "Termin absagen",
-    "back": "Zurück"
+    "title_false": "Please select your appointment",
+    "title_true": "Not able to make the appointment?",
+    "postponeAppointment": "Postpone appointment",
+    "bookAppointment": "Book appointment",
+    "cancelAppointment": "Cancel appointment",
+    "back": "Back"
   },
   "appointmentType": {
-    "consultation": "Reiseberatung",
-    "vaccination": "Impfung"
+    "consultation": "Travel consultation",
+    "vaccination": "Vaccination"
   },
-  "start": "{{ time }} Uhr",
-  "duration": "Dauer: {{ appointmentDuration }} Minuten",
+  "start": "{{ time }}",
+  "duration": "Duration: {{ appointmentDuration }} minutes",
   "medicalHistoryPanel": {
-    "title": "Vorbereitung zum Termin",
-    "medicalHistorySheet": "Anamnesebogen",
-    "notAnswered": "noch nicht vorgelegt",
-    "answered": "erfolgreich übermittelt",
-    "answerNow": "Jetzt ausfüllen",
-    "neededDocuments": "Benötigte Unterlagen",
-    "filledMedicalHistory": "ausgefüllter Anamnesebogen",
-    "vaccinationCertificate": "Impfausweis",
-    "uBooklet": "das gelbe Vorsorgeheft (U-Heft)",
-    "medicalDocuments": "gegebenenfalls weitere medizinische Unterlagen, evtl. aktuelle Medikation",
-    "otherTools": "gegebenenfalls vorhandene Hilfsmittel (Brille, Hörgerät)"
+    "title": "Appointment Preparations",
+    "medicalHistorySheet": "Medical history form",
+    "notAnswered": "not yet submitted",
+    "answered": "successfully submitted",
+    "answerNow": "Fill out now",
+    "neededDocuments": "Required documents",
+    "filledMedicalHistory": "completed medical history form",
+    "vaccinationCertificate": "International Certificate of Vaccination or Prophylaxis (yellow card)",
+    "uBooklet": "the yellow preventive care booklet (U-Heft)",
+    "medicalDocuments": "other medical documents, e.g. current medications",
+    "otherTools": "other relevant medical necessities (glasses, hearing aid)"
   },
   "informationStatementPanel": {
-    "notAnswered": "noch nicht vorgelegt",
-    "answered": "erfolgreich übermittelt",
-    "answerNow": "Jetzt ausfüllen"
+    "notAnswered": "not yet submitted",
+    "answered": "successfully submitted",
+    "answerNow": "Fill out now"
   },
-  "snackbar": {
-    "cancelAppointmentConfirmation": "Der Termin wurde abgesagt."
+  "deleteAppointment": {
+    "cancelModal": {
+      "title": "Cancel appointment?",
+      "description": "Are you sure you want to cancel your appointment? You can schedule a new appointment at any time afterward.",
+      "confirmLabel": "Yes, cancel",
+      "cancelLabel": "Keep"
+    },
+    "snackbar": {
+      "cancelAppointmentConfirmation": "The appointment has been canceled."
+    }
   }
 }

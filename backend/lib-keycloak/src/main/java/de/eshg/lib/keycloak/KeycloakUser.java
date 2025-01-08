@@ -1,11 +1,12 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package de.eshg.lib.keycloak;
 
 import java.util.List;
+import java.util.Map;
 
 public interface KeycloakUser {
   String TEST_USER_EMAIL_POSTFIX = "@eshg.de";
@@ -27,4 +28,6 @@ public interface KeycloakUser {
   List<KeycloakRole> roles();
 
   List<KeycloakGroup> groups();
+
+  Map<String, String> additionalAttributes();
 }

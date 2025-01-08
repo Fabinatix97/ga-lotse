@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -22,6 +22,7 @@ import de.eshg.statistics.api.filter.TableColumnFilterParameter;
 import de.eshg.statistics.api.filter.TextFilterParameterDto;
 import de.eshg.statistics.api.filter.ValueOptionFilterParameterDto;
 import de.eshg.statistics.api.report.GetReportDetailPageResponse;
+import de.eshg.statistics.config.StatisticsConfig;
 import de.eshg.statistics.mapper.AnalysisMapper;
 import de.eshg.statistics.mapper.EvaluationMapper;
 import de.eshg.statistics.mapper.FilterParameterMapper;
@@ -56,7 +57,6 @@ import java.util.UUID;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,13 +73,13 @@ public class ReportService extends AbstractAggregationResultService {
   public ReportService(
       DataAggregationService dataAggregationService,
       TableRowRepository tableRowRepository,
-      @Value("${eshg.statistics.tablerows.pagesize:500}") int tableRowPageSize,
+      StatisticsConfig statisticsConfig,
       ReportRepository reportRepository,
       ReportSeriesRepository reportSeriesRepository,
       StatisticsUserService userService,
       Clock clock,
       AnalysisService analysisService) {
-    super(dataAggregationService, tableRowRepository, tableRowPageSize);
+    super(dataAggregationService, tableRowRepository, statisticsConfig);
     this.reportRepository = reportRepository;
     this.reportSeriesRepository = reportSeriesRepository;
     this.userService = userService;
@@ -95,8 +95,7 @@ public class ReportService extends AbstractAggregationResultService {
   public Report getReportInternal(UUID reportId) {
     return reportRepository
         .findByExternalId(reportId)
-        .orElseThrow(
-            () -> new NotFoundException("Report with id '%s' not found".formatted(reportId)));
+        .orElseThrow(() -> new NotFoundException("Report with given id not found"));
   }
 
   static Report createReport(
@@ -121,7 +120,6 @@ public class ReportService extends AbstractAggregationResultService {
             ? AggregationResultPendingState.DATA_AGGREGATION
             : null);
     report.setExecutionDate(executionDate);
-    // TODO reevaluate data sensitivity from available data sources
     report.setDataSensitivity(evaluation.getDataSensitivity());
 
     report.addTableColumns(
@@ -158,7 +156,8 @@ public class ReportService extends AbstractAggregationResultService {
         resolvedUsers.get(reportSeriesUserId),
         resolvedUsers.get(report.getCreatedByUserId()),
         analyses,
-        ReportMapper.mapToReportTypeDto(report.getReportSeries().getReportType()));
+        ReportMapper.mapToReportTypeDto(report.getReportSeries().getReportType()),
+        ReportMapper.mapToApi(report.getDataSensitivity()));
   }
 
   public static void validateReportCompleted(Report report) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -65,10 +65,7 @@ public class MonetaryFineService {
         procedure.getMonetaryFines().stream()
             .filter(mf -> mf.getExternalId().equals(monetaryFineId))
             .findAny()
-            .orElseThrow(
-                () ->
-                    new NotFoundException(
-                        "MonetaryFine with UUID %s not found".formatted(monetaryFineId)));
+            .orElseThrow(() -> new NotFoundException("MonetaryFine with given UUID not found"));
 
     monetaryFine.setFineIssuedDate(request.fineIssuedDate());
     return monetaryFine;

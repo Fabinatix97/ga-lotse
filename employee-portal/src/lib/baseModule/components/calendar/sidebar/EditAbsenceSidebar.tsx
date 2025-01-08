@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -24,7 +24,6 @@ import {
   mapEventToFormValues,
   mapFormToRequestValues,
 } from "@/lib/baseModule/components/calendar/calendarMapper";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
 import {
   UseSidebarResult,
@@ -32,6 +31,7 @@ import {
 } from "@/lib/shared/components/drawer/useSidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function useEditAbsenceSidebar(): UseSidebarResult<EditAbsenceSidebarProps> {
   return useSidebar({

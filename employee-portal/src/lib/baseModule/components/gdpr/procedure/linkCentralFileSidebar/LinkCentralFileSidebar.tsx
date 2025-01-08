@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,6 +7,7 @@ import {
   ApiGetReferenceFacilityResponse,
   ApiGetReferencePersonResponse,
 } from "@eshg/employee-portal-api/base";
+import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { ReactNode, useState } from "react";
@@ -17,15 +18,14 @@ import { useAddCentralFileIdToGdprProcedure } from "@/lib/baseModule/api/mutatio
 import { FacilityCardContent } from "@/lib/baseModule/components/facility/FacilityCardContent";
 import { PersonCardContent } from "@/lib/baseModule/components/person/PersonCardContent";
 import { SelectableCard } from "@/lib/shared/components/cards/SelectableCard";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { FacilityDetailsSidebar } from "@/lib/shared/components/facilitySidebar/FacilityDetailsSidebar";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { RadioGroupField } from "@/lib/shared/components/formFields/RadioGroupField";
 import { PersonDetailsSidebar } from "@/lib/shared/components/personSidebar/PersonDetailsSidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { fullAddress } from "@/lib/shared/helpers/facilityUtils";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 type CentralFileData =
   | ApiGetReferencePersonResponse

@@ -1,10 +1,11 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 import type { ApiGetReferencePersonResponse } from "@eshg/employee-portal-api/base";
 import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
+import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import ArrowBackIosOutlined from "@mui/icons-material/ArrowBackIosOutlined";
 import { Box, Button, Stack, Typography } from "@mui/joy";
@@ -20,7 +21,6 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@/lib/shared/components/form/SidebarForm";
-import { RadioGroupField } from "@/lib/shared/components/formFields/RadioGroupField";
 import { SearchPersonFormValues } from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
@@ -29,6 +29,7 @@ interface PersonSearchResultsProps {
   title: string;
   inputs: SearchPersonFormValues;
   persons: ApiGetReferencePersonResponse[];
+  loadingAssociatedProcedures?: boolean;
   onSelectPerson: (person: ApiGetReferencePersonResponse) => void;
   onCreatePerson: () => void;
   onCancel: () => void;
@@ -119,7 +120,9 @@ export function PersonSearchResults(props: PersonSearchResultsProps) {
           </SidebarContent>
           <SidebarActions>
             <MultiFormButtonBar
-              submitting={isSubmitting}
+              submitting={
+                isSubmitting || (props.loadingAssociatedProcedures ?? false)
+              }
               submitLabel={props.persons.length > 0 ? "Weiter" : undefined}
               onCancel={props.onCancel}
               onBack={props.onBack}

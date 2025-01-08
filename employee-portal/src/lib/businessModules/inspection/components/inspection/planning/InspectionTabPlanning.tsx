@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -13,7 +13,7 @@ import { Box, useTheme } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
-import { headerHeightDesktop } from "@/lib/baseModule/components/layout/sizes";
+import { useHeaderHeights } from "@/lib/baseModule/components/layout/useHeaderHeights";
 import { useInspectionApi } from "@/lib/businessModules/inspection/api/clients";
 import {
   getAvailableCLDVsQuery,
@@ -51,6 +51,7 @@ export function InspectionTabPlanning({
 
   const theme = useTheme();
   const { width } = useWindowDimensions();
+  const { headerHeightDesktop } = useHeaderHeights();
   const isLargeLayout = width && width >= theme.breakpoints.values.lg;
 
   const isOffline = useIsOffline();

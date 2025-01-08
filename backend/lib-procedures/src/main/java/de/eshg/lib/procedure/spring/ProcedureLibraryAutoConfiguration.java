@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -16,6 +16,7 @@ import de.eshg.lib.procedure.file.FileDeletionRequestApprovalRequestDecisionHand
 import de.eshg.lib.procedure.file.FileStorageService;
 import de.eshg.lib.procedure.gdpr.GdprValidationTaskController;
 import de.eshg.lib.procedure.gdpr.GdprValidationTaskService;
+import de.eshg.lib.procedure.gdpr.GdprZipFilterProvider;
 import de.eshg.lib.procedure.helper.UserHelper;
 import de.eshg.lib.procedure.housekeeping.archiving.ArchivingConfiguration;
 import de.eshg.lib.procedure.housekeeping.cemetery.CemeteryHousekeepingConfiguration;
@@ -25,8 +26,6 @@ import de.eshg.lib.procedure.inbox.InboxProcedureService;
 import de.eshg.lib.procedure.mapping.ProcedureApprovalRequestMapper;
 import de.eshg.lib.procedure.mapping.ProcedureLibraryEnrichingMapper;
 import de.eshg.lib.procedure.model.AbstractFileDto;
-import de.eshg.lib.procedure.model.ConcreteFileDto;
-import de.eshg.lib.procedure.model.GenericFileDto;
 import de.eshg.lib.procedure.model.GenericFileReferenceDto;
 import de.eshg.lib.procedure.model.ImageDto;
 import de.eshg.lib.procedure.model.ImageMetaDataDto;
@@ -46,6 +45,7 @@ import de.eshg.lib.procedure.notifications.ApprovalRequestMailService;
 import de.eshg.lib.procedure.procedures.DefaultProcedureAsSearchableStringFormatter;
 import de.eshg.lib.procedure.procedures.ProcedureController;
 import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
+import de.eshg.lib.procedure.procedures.ProcedureQuery;
 import de.eshg.lib.procedure.procedures.ProcedureSearchService;
 import de.eshg.lib.procedure.progressentry.ManualProgressEntryDeletionApprovalRequestHandler;
 import de.eshg.lib.procedure.progressentry.ManualProgressEntryDeletionApprovalRequestNotificationService;
@@ -97,6 +97,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
   ArchivingConfiguration.class,
   InboxProcedureCleanupJob.class,
   ProcedureSearchService.class,
+  ProcedureQuery.class,
   ProcedureDeletionService.class,
   CemeteryService.class,
   SerializationService.class,
@@ -106,7 +107,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
   ApprovalRequestMailService.class,
   ProcedureLibrarySchedulingConfig.class,
   GdprValidationTaskController.class,
-  GdprValidationTaskService.class
+  GdprValidationTaskService.class,
+  GdprZipFilterProvider.class
 })
 public class ProcedureLibraryAutoConfiguration {
   @Bean
@@ -130,11 +132,10 @@ public class ProcedureLibraryAutoConfiguration {
         .registerSubtypes(
             GenericFileReferenceDto.class,
             AbstractFileDto.class,
-            ConcreteFileDto.class,
+            AbstractFileDto.class,
             ImageDto.class,
             MailDto.class,
-            PdfDto.class,
-            GenericFileDto.class);
+            PdfDto.class);
   }
 
   @Bean

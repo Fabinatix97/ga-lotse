@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -9,12 +9,10 @@ import {
   ApiProcedureReference,
   ApiProfessionalReferencePerson,
 } from "@eshg/employee-portal-api/medicalRegistry";
+import { ConfirmationDialogOptions } from "@eshg/lib-portal/components/confirmationDialog/ConfirmationDialogProvider";
 
 import { useConfirmDraft } from "@/lib/businessModules/medicalRegistry/api/mutations/medicalRegistryEntries";
-import {
-  ConfirmationDialogOptions,
-  useConfirmationDialog,
-} from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface ConfirmDraftParams {
   procedure: ApiGetProcedureDraftResponse;

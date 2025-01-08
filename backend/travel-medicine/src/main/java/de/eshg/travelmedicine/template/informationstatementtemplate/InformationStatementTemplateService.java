@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -108,7 +108,7 @@ public class InformationStatementTemplateService {
 
   public void deleteInformationStatementTemplate(UUID id) {
     if (!informationStatementTemplateRepository.existsById(id)) {
-      throw new NotFoundException("Information Statement Template not found: " + id);
+      throw new NotFoundException("Information Statement Template not found");
     }
     informationStatementTemplateRepository.deleteById(id);
 

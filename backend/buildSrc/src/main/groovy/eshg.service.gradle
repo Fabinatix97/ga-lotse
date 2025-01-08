@@ -112,7 +112,6 @@ tasks.register('createDockerfile', Dockerfile) {
     }
 
     environmentVariable('TZ', 'Europe/Berlin')
-    environmentVariable('JAVA_TOOL_OPTIONS', '-Xmx512m')
 
     copyFile(new Dockerfile.CopyFile("application/spring-boot-loader/", "./").withChown("${userName}:${groupName}").withStage("build"))
     copyFile(new Dockerfile.CopyFile("application/common-deps/", "./").withChown("${userName}:${groupName}").withStage("build"))
@@ -125,6 +124,8 @@ tasks.register('createDockerfile', Dockerfile) {
         "-Dserver.port=${listenPort}",
         '-Djava.security.egd=file:/dev/urandom',
         "-XX:+ExitOnOutOfMemoryError",
+        "-XshowSettings:system",
+        "-XX:MaxRAMPercentage=50",
         'org.springframework.boot.loader.launch.JarLauncher')
 }
 

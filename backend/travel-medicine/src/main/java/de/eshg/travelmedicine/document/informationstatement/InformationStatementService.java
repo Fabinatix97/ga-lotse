@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -193,8 +193,7 @@ public class InformationStatementService {
                   InformationStatementTemplate template =
                       informationStatementTemplateRepository
                           .findById(templateID)
-                          .orElseThrow(
-                              () -> new NotFoundException("No such template: " + templateID));
+                          .orElseThrow(() -> new NotFoundException("No such template"));
                   if (template.getState() != InformationStatementTemplateState.FINAL)
                     throw new BadRequestException(
                         "The template can't be used until it's in its FINAL state.");

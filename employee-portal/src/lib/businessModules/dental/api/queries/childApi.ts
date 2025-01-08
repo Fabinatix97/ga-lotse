@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,10 +11,12 @@ import {
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { isBlankString } from "@eshg/lib-portal/helpers/guards";
 import { queryOptions, useQuery } from "@tanstack/react-query";
+import { isDefined } from "remeda";
 
 import { useChildApi } from "@/lib/businessModules/dental/api/clients";
 import { mapChild } from "@/lib/businessModules/dental/api/models/Child";
 import { mapChildDetails } from "@/lib/businessModules/dental/api/models/ChildDetails";
+import { mapExamination } from "@/lib/businessModules/dental/api/models/Examination";
 import { mapPaginatedList } from "@/lib/shared/api/models/PaginatedList";
 
 import { childApiQueryKey } from "./apiQueryKeys";
@@ -37,6 +39,14 @@ export function getChildDetailsQuery(childApi: ChildApi, childId: string) {
   });
 }
 
+export function getExaminationQuery(childApi: ChildApi, examinationId: string) {
+  return queryOptions({
+    queryKey: childApiQueryKey(["getExamination", examinationId]),
+    queryFn: () => childApi.getExamination(examinationId),
+    select: mapExamination,
+  });
+}
+
 export function useSearchInstitutionGroups(institutionId: string) {
   const childApi = useChildApi();
 
@@ -50,4 +60,30 @@ export function useSearchInstitutionGroups(institutionId: string) {
   function getGroups(response: ApiGetInstitutionGroupsResponse) {
     return response.groups;
   }
+}
+
+export function getChildrenByPersonQuery(
+  childApi: ChildApi,
+  personId: string | undefined,
+) {
+  return queryOptions({
+    queryKey: childApiQueryKey(["getChildrenByPerson", personId]),
+    queryFn: () =>
+      isDefined(personId)
+        ? childApi.getChildrenByPersonRaw({ personId }).then(unwrapRawResponse)
+        : Promise.reject(new Error("Expected personId to be defined")),
+    select: (response) => response.children,
+    enabled: isDefined(personId),
+  });
+}
+
+export function useSearchChildren(institutionId: string, searchString: string) {
+  const childApi = useChildApi();
+  const enabled = !isBlankString(institutionId) && searchString.length > 2;
+  return useQuery({
+    queryKey: childApiQueryKey(["searchChildren", institutionId, searchString]),
+    queryFn: () => childApi.searchChildren(institutionId, searchString),
+    enabled,
+    select: (response) => (enabled ? response.children : []),
+  });
 }

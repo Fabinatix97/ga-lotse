@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -23,9 +23,9 @@ import {
 } from "@/lib/businessModules/inspection/api/queries/packlist";
 import { Packlist } from "@/lib/businessModules/inspection/components/inspection/planning/packlist/Packlist";
 import { PacklistSelectSidebar } from "@/lib/businessModules/inspection/components/inspection/planning/packlist/PacklistSelectSidebar";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export interface PacklistTileProps {
   readonly?: boolean;

@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -9,8 +9,8 @@ import { Option, Select, Stack } from "@mui/joy";
 import { useState } from "react";
 
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { FormDialog } from "@/lib/shared/components/formDialog/FormDialog";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface TemplateNameFormModel {
   templateName: string;

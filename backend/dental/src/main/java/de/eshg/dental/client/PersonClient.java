@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -25,20 +25,19 @@ public class PersonClient {
   }
 
   public List<GetPersonFileStateResponse> fetchPersonDataInBulk(
-      List<Child> children, GetPersonFileStatesSortParameters sortParameters) {
-    if (children.isEmpty()) {
+      List<UUID> fileStateIds, GetPersonFileStatesSortParameters sortParameters) {
+    if (fileStateIds.isEmpty()) {
       return List.of();
     }
-    List<UUID> fileStateIds = children.stream().map(Child::getChildIdFromCentralFile).toList();
     GetPersonFileStatesResponse response =
         personApi.getPersonFileStates(new GetPersonFileStatesRequest(fileStateIds, sortParameters));
 
     int expectedResponseSize =
         sortParameters == null
-            ? children.size()
+            ? fileStateIds.size()
             : Math.min(
                 sortParameters.pageSize(),
-                children.size() - (sortParameters.pageNumber() * sortParameters.pageSize()));
+                fileStateIds.size() - (sortParameters.pageNumber() * sortParameters.pageSize()));
     if (response.personFileStates().size() < expectedResponseSize) {
       throw new IllegalStateException("Some persons were not found in the central file.");
     }
@@ -47,6 +46,7 @@ public class PersonClient {
   }
 
   public List<GetPersonFileStateResponse> fetchPersonDataInBulk(List<Child> children) {
-    return fetchPersonDataInBulk(children, null);
+    List<UUID> fileStateIds = children.stream().map(Child::getChildIdFromCentralFile).toList();
+    return fetchPersonDataInBulk(fileStateIds, null);
   }
 }

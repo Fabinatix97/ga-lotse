@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -9,10 +9,10 @@ import { Divider, Typography } from "@mui/joy";
 import { RowSelectionState } from "@tanstack/react-table";
 
 import { ArchiveTableProps } from "@/lib/shared/components/archiving/components/archiveView/ArchiveTable";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { RowSelectionTableToolbar } from "@/lib/shared/components/table/RowSelectionTableToolbar";
 import { RowSelectionTableToolbarButton } from "@/lib/shared/components/table/RowSelectionTableToolbarButton";
 import { mapToRowIds } from "@/lib/shared/hooks/table/useRowSelection";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface ArchiveTableTitleProps extends ArchiveTableProps {
   rowSelection: RowSelectionState;

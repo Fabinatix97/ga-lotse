@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -9,10 +9,7 @@ import { SnackbarComponentProps } from "@eshg/lib-portal/components/snackbar/Sna
 import { Check, Info, SvgIconComponent, Warning } from "@mui/icons-material";
 import { Snackbar, Theme, styled } from "@mui/joy";
 
-import {
-  headerHeightDesktop,
-  headerHeightMobile,
-} from "@/lib/components/layout/theme/sizes";
+import { useHeaderHeights } from "@/lib/components/layout/useHeaderHeights";
 
 const ICONS: Record<SnackbarComponentProps["color"], SvgIconComponent> = {
   primary: Info,
@@ -20,8 +17,21 @@ const ICONS: Record<SnackbarComponentProps["color"], SvgIconComponent> = {
   danger: Warning,
 };
 
-const StyledSnackbar = styled(Snackbar)<SnackbarComponentProps>(
-  ({ theme, position }) => ({
+interface StyledSnackbarProps extends SnackbarComponentProps {
+  headerHeightDesktop: string;
+  headerHeightMobile: string;
+}
+
+function excludeHeaderHeightProps(
+  prop: PropertyKey,
+): prop is keyof StyledSnackbarProps {
+  return prop !== "headerHeightDesktop" && prop !== "headerHeightMobile";
+}
+
+const StyledSnackbar = styled(Snackbar, {
+  shouldForwardProp: excludeHeaderHeightProps,
+})<StyledSnackbarProps>(
+  ({ theme, position, headerHeightDesktop, headerHeightMobile }) => ({
     "&.MuiSnackbar-root": {
       "--Snackbar-padding": theme.spacing(1),
       "--Snackbar-inset": calculatedSnackbarOffset(
@@ -45,11 +55,14 @@ const StyledSnackbar = styled(Snackbar)<SnackbarComponentProps>(
 );
 
 export function AdminSnackbar(props: SnackbarComponentProps) {
+  const { headerHeightMobile, headerHeightDesktop } = useHeaderHeights();
   const IconComponent = ICONS[props.color];
   return (
     <StyledSnackbar
       variant="soft"
       size="lg"
+      headerHeightMobile={headerHeightMobile}
+      headerHeightDesktop={headerHeightDesktop}
       anchorOrigin={{ vertical: "top", horizontal: "right" }}
       startDecorator={<IconComponent />}
       {...props}

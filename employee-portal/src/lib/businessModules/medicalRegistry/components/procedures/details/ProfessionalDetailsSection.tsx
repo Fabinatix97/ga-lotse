@@ -1,19 +1,20 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { ApiGetProcedure200Response } from "@eshg/employee-portal-api/medicalRegistry";
+import {
+  employmentStatusNames,
+  employmentTypeNames,
+  professionalTitleNames,
+} from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
+import { PERSON_FIELD_NAME } from "@eshg/lib-portal/components/formFields/constants";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Stack } from "@mui/joy";
 import { isDefined } from "remeda";
 
 import { ContactData } from "@/lib/businessModules/medicalRegistry/components/procedures/details/ContactData";
-import {
-  employmentStatusNames,
-  employmentTypeNames,
-  professionalTitleNames,
-} from "@/lib/businessModules/medicalRegistry/shared/constants";
 import { GENDER_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";
 import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
@@ -21,7 +22,6 @@ import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsCol
 import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
-import { PERSON_FIELD_NAME } from "@/lib/shared/components/personSidebar/constants";
 import { streetAndHouseNumber } from "@/lib/shared/helpers/facilityUtils";
 import { translateCountry } from "@/lib/shared/helpers/i18n";
 

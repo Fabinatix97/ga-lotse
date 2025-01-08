@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,19 +11,14 @@ export const routes = defineRoutes("/official-medical-service", (omsPath) => ({
     byId: (procedureId: string) =>
       defineRoutes(proceduresPath(`/${procedureId}`), (procedurePath) => ({
         details: procedurePath("/details"),
-        progressEntries: defineRoutes(
-          procedurePath("/progress-entries"),
-          (progressEntriesPath) => ({
-            index: progressEntriesPath("/"),
-            byId: (progressEntryId: string) =>
-              defineRoutes(
-                progressEntriesPath(`/${progressEntryId}`),
-                (entryPath) => ({
-                  details: entryPath("/details"),
-                }),
-              ),
-          }),
-        ),
+        progressEntries: procedurePath("/progress-entries"),
       })),
   })),
+  appointmentBlockGroups: defineRoutes(
+    omsPath("/appointment-block-groups"),
+    (appointmentBlockGroupsPath) => ({
+      index: appointmentBlockGroupsPath("/"),
+      new: appointmentBlockGroupsPath("/new"),
+    }),
+  ),
 }));

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -16,4 +16,4 @@ public record InboxProgressEntryDto(
     String subject,
     String messageText,
     @NotNull InboxProgressEntryTypeDto inboxProgressEntryType,
-    @Valid ConcreteFileOrFileReference fileReference) {}
+    @Valid AbstractFileReferenceDto fileReference) {}

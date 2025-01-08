@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -22,9 +22,9 @@ import { isDefined } from "remeda";
 
 import { resourceTypeNames } from "@/lib/baseModule/components/resources/constants";
 import { useDeleteResource } from "@/lib/businessModules/inspection/api/mutations/resources";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { formatDateTimeRange } from "@/lib/shared/helpers/dateTime";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export interface ResourcesTableProps {
   readonly?: boolean;

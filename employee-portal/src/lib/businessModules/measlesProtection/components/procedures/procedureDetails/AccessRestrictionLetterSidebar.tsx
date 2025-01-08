@@ -1,9 +1,10 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { ApiGetProcedure200Response } from "@eshg/employee-portal-api/measlesProtection";
+import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Stack } from "@mui/joy";
 import { Formik, useFormikContext } from "formik";
@@ -22,7 +23,6 @@ import { WrappedSelectField } from "@/lib/businessModules/measlesProtection/shar
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
-import { FileType } from "@/lib/shared/components/formFields/file/FileType";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";

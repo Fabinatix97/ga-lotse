@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -10,21 +10,30 @@ import java.util.Arrays;
 import java.util.List;
 
 public enum EmployeeUserAttribute implements KeycloakUserAttribute {
+  USERNAME(
+      DEFAULT_ATTRIBUTE_USERNAME,
+      KEYCLOAK_VALUE_REF_TEMPLATE.formatted(DEFAULT_ATTRIBUTE_USERNAME),
+      false,
+      Group.DEFAULT,
+      DEFAULT_USERNAME_VALIDATIONS),
   EMAIL(
       DEFAULT_ATTRIBUTE_EMAIL,
       KEYCLOAK_VALUE_REF_TEMPLATE.formatted(DEFAULT_ATTRIBUTE_EMAIL),
       true,
-      Group.DEFAULT),
+      Group.DEFAULT,
+      DEFAULT_EMAIL_VALIDATIONS),
   FIRST_NAME(
       DEFAULT_ATTRIBUTE_FIRST_NAME,
       KEYCLOAK_VALUE_REF_TEMPLATE.formatted(DEFAULT_ATTRIBUTE_FIRST_NAME),
       true,
-      Group.DEFAULT),
+      Group.DEFAULT,
+      DEFAULT_NAME_VALIDATIONS),
   LAST_NAME(
       DEFAULT_ATTRIBUTE_LAST_NAME,
       KEYCLOAK_VALUE_REF_TEMPLATE.formatted(DEFAULT_ATTRIBUTE_LAST_NAME),
       true,
-      Group.DEFAULT),
+      Group.DEFAULT,
+      DEFAULT_NAME_VALIDATIONS),
   TITLE(
       "eshg.title",
       "Titel",
@@ -98,7 +107,7 @@ public enum EmployeeUserAttribute implements KeycloakUserAttribute {
   }
 
   @Override
-  public List<ValidationRule> validationRules() {
+  public List<ValidationRule> getValidationRules() {
     return validationRules;
   }
 }

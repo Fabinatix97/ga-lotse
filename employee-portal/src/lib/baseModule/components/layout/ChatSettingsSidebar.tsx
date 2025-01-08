@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -54,6 +54,7 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
   const [modalValues, setModalValues] = useState<DeactivateModalProps>();
   const [termsOfUseModal, setTermsOfUseModal] = useState(false);
   const snackbar = useSnackbar();
+  const { deactivateAccount } = useUserSettings();
 
   const chatUserId = matrixClient?.getUserId();
 
@@ -68,7 +69,6 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
     togglePresenceStatus,
     toggleReadConfirmation,
     toggleTypingNotifications,
-    deactivateAccount,
   } = useUserSettings();
   const updateSelfUser = useUpdateSelfUserChatUsername();
   const { data: selfUser } = useGetSelfUser();
@@ -76,7 +76,6 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
 
   const handleStopChat = useCallback(async () => {
     if (!matrixClient) return;
-    deactivateAccount(true);
     try {
       await updateSelfUser.mutateAsync({
         externalChatUsername: undefined,
@@ -89,11 +88,11 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
     }
     try {
       await deleteCachedCredentials();
-      await clearMatrixStores();
+      void clearMatrixStores();
     } catch (error) {
       logger.error(error);
     }
-  }, [deactivateAccount, matrixClient, updateSelfUser, userData]);
+  }, [matrixClient, updateSelfUser, userData]);
 
   const showSSOModal = useCallback(
     (values: Omit<DeactivateModalProps, "onFinished" | "open">) => {
@@ -135,13 +134,15 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
           session: session,
           authData: error.data as AuthDict,
         });
+        onClose();
+        deactivateAccount(true);
         const { confirmed } = await modalPromise;
         if (confirmed) {
           snackbar.notification("Account Deactivated");
         }
       }
     }
-  }, [matrixClient, showSSOModal, snackbar]);
+  }, [deactivateAccount, matrixClient, onClose, showSSOModal, snackbar]);
 
   return (
     <>

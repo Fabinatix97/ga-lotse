@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -13,10 +13,10 @@ import { isDefined } from "remeda";
 
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
 import { useGetLocationSelectionMode } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
-import { LabelChip } from "@/lib/businessModules/schoolEntry/features/labels/LabelChip";
 import { InvitationDetails } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/InvitationDetails";
 import { useUpdateProcedureSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/UpdateProcedureSidebar";
 import { PROCEDURE_TYPES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
+import { ChipWithTooltip } from "@/lib/shared/components/chip/ChipWithTooltip";
 import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
@@ -67,7 +67,12 @@ export function ProcedureDetailsSection(props: ProcedureDetailsProps) {
                   value={
                     <Stack direction="row" gap={1} flexWrap="wrap">
                       {props.procedure.labels.map((label) => (
-                        <LabelChip key={label.id} label={label} />
+                        <ChipWithTooltip
+                          key={label.id}
+                          name={label.name}
+                          hexColor={label.hexColor}
+                          modalTitle="Kennung"
+                        />
                       ))}
                     </Stack>
                   }

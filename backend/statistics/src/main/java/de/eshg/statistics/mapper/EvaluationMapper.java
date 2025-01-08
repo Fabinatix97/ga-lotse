@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -21,6 +21,7 @@ import de.eshg.statistics.api.attributes.ProcedureIdAttribute;
 import de.eshg.statistics.api.attributes.TextAttribute;
 import de.eshg.statistics.api.attributes.ValueOption;
 import de.eshg.statistics.api.attributes.ValueWithOptionsAttribute;
+import de.eshg.statistics.api.evaluation.EvaluationDataSensitivity;
 import de.eshg.statistics.api.evaluation.EvaluationInfo;
 import de.eshg.statistics.api.evaluation.EvaluationSortKey;
 import de.eshg.statistics.api.evaluation.EvaluationStateDto;
@@ -235,7 +236,7 @@ public class EvaluationMapper {
         evaluation.getTimeRangeStart(),
         evaluation.getTimeRangeEnd(),
         evaluation.getCreatedAt(),
-        mapToAnonymized(evaluation.getDataSensitivity()),
+        mapToApi(evaluation.getDataSensitivity()),
         isTooMuchDataForExport);
   }
 
@@ -252,14 +253,8 @@ public class EvaluationMapper {
     return EvaluationStateDto.valueOf(aggregationResultState.name());
   }
 
-  // TODO do a proper mapping after api changes ISSUE-6899 are done
-  private static boolean mapToAnonymized(StatisticsDataSensitivity dataSensitivity) {
-    return StatisticsDataSensitivity.ANONYMOUS.equals(dataSensitivity);
-  }
-
-  // TODO do a proper mapping after api changes ISSUE-6899 are done
-  public static StatisticsDataSensitivity mapToPersistence(boolean anonymized) {
-    return anonymized ? StatisticsDataSensitivity.ANONYMOUS : StatisticsDataSensitivity.SENSITIVE;
+  public static EvaluationDataSensitivity mapToApi(StatisticsDataSensitivity dataSensitivity) {
+    return EvaluationDataSensitivity.valueOf(dataSensitivity.name());
   }
 
   public static List<AggregationResultState> mapToAggregationResultStates(

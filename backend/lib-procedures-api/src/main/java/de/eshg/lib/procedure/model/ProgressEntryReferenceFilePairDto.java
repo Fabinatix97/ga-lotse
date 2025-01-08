@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -12,4 +12,4 @@ import java.util.UUID;
 
 @Schema(name = "ProgressEntryReferenceFilePair")
 public record ProgressEntryReferenceFilePairDto(
-    @NotNull UUID progressEntryId, @NotNull @Valid GenericFileDto file) {}
+    @NotNull UUID progressEntryId, @NotNull @Valid AbstractFileDto file) {}

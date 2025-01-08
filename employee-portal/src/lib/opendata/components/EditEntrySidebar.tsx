@@ -1,9 +1,10 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
+import { ConfirmationDialogOptions } from "@eshg/lib-portal/components/confirmationDialog/ConfirmationDialogProvider";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import { Button } from "@mui/joy";
 import { Formik } from "formik";
@@ -11,19 +12,17 @@ import { Formik } from "formik";
 import {
   OpenDataForm,
   OpenDataFormValues,
+  validateOpenDataForm,
 } from "@/lib/opendata/components/OpenDataForm";
 import { VersionFileCard } from "@/lib/opendata/components/VersionFileCard";
 import { OpenDataVersion } from "@/lib/opendata/components/openDataColumns";
 import { useUpdateVersionMetadata } from "@/lib/opendata/mutations/opendata";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import {
-  ConfirmationDialogOptions,
-  useConfirmationDialog,
-} from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface EditEntrySidebarProps {
   version: OpenDataVersion;
@@ -94,6 +93,7 @@ export function EditEntrySidebar({
           handleSubmitUpdateVersion(values);
           setSubmitting(false);
         }}
+        validate={validateOpenDataForm}
       >
         {({ isSubmitting, handleSubmit }) => (
           <SidebarForm onSubmit={handleSubmit}>

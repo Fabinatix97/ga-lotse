@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -19,6 +19,7 @@ import de.eshg.statistics.api.report.AddManualReportSeriesRequest;
 import de.eshg.statistics.api.report.GetReportsFilterOptions;
 import de.eshg.statistics.api.report.GetReportsRequest;
 import de.eshg.statistics.api.report.GetReportsResponse;
+import de.eshg.statistics.api.report.ReportDataSensitivity;
 import de.eshg.statistics.api.report.ReportSeriesDto;
 import de.eshg.statistics.api.report.ReportTypeDto;
 import de.eshg.statistics.api.report.UpdateReportSeriesRequest;
@@ -36,6 +37,7 @@ import de.eshg.statistics.persistence.entity.report.ReportSeries_;
 import de.eshg.statistics.persistence.entity.report.ReportType;
 import de.eshg.statistics.persistence.entity.report.Report_;
 import de.eshg.statistics.persistence.repository.ReportSeriesRepository;
+import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
@@ -45,8 +47,10 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -64,16 +68,19 @@ import org.springframework.util.CollectionUtils;
 public class ReportSeriesService {
   private final ReportSeriesRepository reportSeriesRepository;
   private final EvaluationService evaluationService;
+  private final DataSourceAggregationService dataSourceAggregationService;
   private final StatisticsUserService userService;
   private final Clock clock;
 
   public ReportSeriesService(
       ReportSeriesRepository reportSeriesRepository,
       EvaluationService evaluationService,
+      DataSourceAggregationService dataSourceAggregationService,
       StatisticsUserService userService,
       Clock clock) {
     this.reportSeriesRepository = reportSeriesRepository;
     this.evaluationService = evaluationService;
+    this.dataSourceAggregationService = dataSourceAggregationService;
     this.userService = userService;
     this.clock = clock;
   }
@@ -92,6 +99,8 @@ public class ReportSeriesService {
       throw new BadRequestException("Reports are only allowed for non-sensitive evaluations");
     }
     validateIsNotDeleting(evaluation);
+    AggregationResultUtil.validateSameSensitivityPossible(
+        evaluation, dataSourceAggregationService.getAvailableDataSources().availableDataSources());
 
     ReportSeries reportSeries =
         switch (addReportSeriesRequest) {
@@ -191,10 +200,7 @@ public class ReportSeriesService {
   private ReportSeries getReportSeriesInternal(UUID reportSeriesId) {
     return reportSeriesRepository
         .findByExternalId(reportSeriesId)
-        .orElseThrow(
-            () ->
-                new NotFoundException(
-                    "Report series with id '%s' not found".formatted(reportSeriesId)));
+        .orElseThrow(() -> new NotFoundException("Report series with given id not found"));
   }
 
   @Transactional
@@ -301,6 +307,10 @@ public class ReportSeriesService {
     addAtLeastOneCompletedReportSpecification(specifications);
 
     GetReportsFilterOptions filterOptions = getReportsRequest.filterOptions();
+    List<ReportDataSensitivity> dataSensitivities =
+        Optional.ofNullable(getReportsRequest.filterOptions())
+            .map(GetReportsFilterOptions::dataSensitivities)
+            .orElse(Collections.emptyList());
     if (filterOptions != null) {
       addReportTypeSpecification(specifications, filterOptions.reportType());
       addDataSourcesSpecification(specifications, filterOptions.dataSourceIds());
@@ -311,6 +321,7 @@ public class ReportSeriesService {
       OverviewSpecifications.<ReportSeries>nameSpecification(
               filterOptions.name(), AbstractAggregationResult_.NAME)
           .ifPresent(specifications::add);
+      addAtLeastOneDataSensitivityMatchSpecification(specifications, dataSensitivities);
     }
 
     Page<ReportSeries> relevantReportSeriesPage =
@@ -324,7 +335,10 @@ public class ReportSeriesService {
                     BaseEntity_.ID)));
 
     List<ReportSeriesDto> reportSeriesDtos =
-        relevantReportSeriesPage.get().map(this::mapReportSeriesForOverview).toList();
+        relevantReportSeriesPage
+            .get()
+            .map(reportSeries -> mapReportSeriesForOverview(reportSeries, dataSensitivities))
+            .toList();
 
     Map<UUID, UserDto> resolvedUsers =
         userService.getResolvedUsers(
@@ -339,7 +353,7 @@ public class ReportSeriesService {
 
     specifications.add(
         (root, query, criteriaBuilder) -> {
-          Assert.notNull(query, "CriteriaQuery must not be null");
+          assertQuery(query);
           Subquery<Report> subquery = query.subquery(Report.class);
           Root<Report> reportRoot = subquery.from(Report.class);
 
@@ -353,6 +367,10 @@ public class ReportSeriesService {
 
           return criteriaBuilder.exists(subquery);
         });
+  }
+
+  private static void assertQuery(CriteriaQuery<?> query) {
+    Assert.notNull(query, "CriteriaQuery must not be null");
   }
 
   private void addReportTypeSpecification(
@@ -374,7 +392,7 @@ public class ReportSeriesService {
     }
     specifications.add(
         (root, query, criteriaBuilder) -> {
-          Assert.notNull(query, "CriteriaQuery must not be null");
+          assertQuery(query);
           Join<ReportSeries, Evaluation> evaluationJoin = root.join(ReportSeries_.EVALUATION);
 
           Subquery<TableColumn> subquery = query.subquery(TableColumn.class);
@@ -394,10 +412,43 @@ public class ReportSeriesService {
         });
   }
 
-  private ReportSeriesDto mapReportSeriesForOverview(ReportSeries reportSeries) {
+  private void addAtLeastOneDataSensitivityMatchSpecification(
+      List<Specification<ReportSeries>> specifications,
+      List<ReportDataSensitivity> dataSensitivities) {
+    if (CollectionUtils.isEmpty(dataSensitivities)) {
+      return;
+    }
+    specifications.add(
+        (root, query, criteriaBuilder) -> {
+          assertQuery(query);
+          Subquery<Report> subquery = query.subquery(Report.class);
+          Root<Report> reportRoot = subquery.from(Report.class);
+
+          subquery.select(reportRoot);
+          subquery.where(
+              criteriaBuilder.and(
+                  reportRoot
+                      .get(AbstractAggregationResult_.DATA_SENSITIVITY)
+                      .in(dataSensitivities.stream().map(ReportMapper::mapToPersistence).toList()),
+                  criteriaBuilder.equal(reportRoot.get(Report_.REPORT_SERIES), root)));
+
+          return criteriaBuilder.exists(subquery);
+        });
+  }
+
+  private ReportSeriesDto mapReportSeriesForOverview(
+      ReportSeries reportSeries, List<ReportDataSensitivity> dataSensitivities) {
     Stream<Report> reportStream =
         reportSeries.getReports().stream()
             .filter(report -> report.getState().equals(AggregationResultState.COMPLETED));
+
+    if (!dataSensitivities.isEmpty()) {
+      reportStream =
+          reportStream.filter(
+              report ->
+                  dataSensitivities.contains(ReportMapper.mapToApi(report.getDataSensitivity())));
+    }
+
     return ReportMapper.mapToApi(
         reportSeries,
         reportStream,

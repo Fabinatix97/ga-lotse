@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -10,6 +10,11 @@ import {
   ApiProcedureType,
 } from "@eshg/employee-portal-api/medicalRegistry";
 import { Chip, ChipProps } from "@mui/joy";
+
+import {
+  EntryStatus,
+  entryStatusNames,
+} from "@/lib/businessModules/medicalRegistry/shared/constants";
 
 interface MedicalRegistryProcedureChipProps {
   status: ApiProcedureStatus;
@@ -25,28 +30,28 @@ export function MedicalRegistryProcedureChip({
   if (status === ApiProcedureStatus.Closed) {
     return (
       <Chip {...props} color="success">
-        Geschlossen
+        {entryStatusNames[EntryStatus.Closed]}
       </Chip>
     );
   }
   if (type === "MEDICAL_REGISTRY_ENTRY") {
     return (
       <Chip {...props} color="neutral">
-        Offen
+        {entryStatusNames[EntryStatus.Open]}
       </Chip>
     );
   }
   if (type === "MEDICAL_REGISTRY_CITIZEN_DRAFT") {
     return (
       <Chip {...props} color="danger">
-        Externer Entwurf
+        {entryStatusNames[EntryStatus.DraftCitizen]}
       </Chip>
     );
   }
   if (type === "MEDICAL_REGISTRY_EMPLOYEE_DRAFT") {
     return (
       <Chip {...props} color="warning">
-        Interner Entwurf
+        {entryStatusNames[EntryStatus.DraftEmployee]}
       </Chip>
     );
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -13,7 +13,7 @@ import jakarta.validation.Valid;
 @Schema(name = PdfDto.SCHEMA_NAME)
 @JsonTypeName(PdfDto.SCHEMA_NAME)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "@type")
-public final class PdfDto extends ConcreteFileDto {
+public final class PdfDto extends AbstractFileDto {
 
   public static final String SCHEMA_NAME = "Pdf";
 

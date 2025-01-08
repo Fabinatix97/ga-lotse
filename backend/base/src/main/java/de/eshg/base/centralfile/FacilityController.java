@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -218,8 +218,7 @@ public class FacilityController implements FacilityApi {
         .orElseThrow(
             () ->
                 new NotFoundException(
-                    "Facility File State with ID %s (or associated Reference Facility) not found"
-                        .formatted(id)));
+                    "Facility File State with given ID (or associated Reference Facility) not found"));
   }
 
   private static GetFacilityFileStateResponse mapFacilityToGetFacilityFileStateResponse(

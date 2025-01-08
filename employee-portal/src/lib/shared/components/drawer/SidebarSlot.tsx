@@ -1,8 +1,9 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { LoadingOverlayHiddenBackdrop } from "@eshg/lib-portal/components/LoadingOverlayHiddenBackdrop";
 import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 import { ErrorAlert } from "@eshg/lib-portal/errorHandling/ErrorAlert";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
@@ -10,7 +11,6 @@ import { useQueryErrorResetBoundary } from "@tanstack/react-query";
 import { ReactNode, Suspense } from "react";
 import { ErrorBoundary, FallbackProps } from "react-error-boundary";
 
-import { LoadingOverlay } from "@/lib/shared/components/LoadingOverlay";
 import {
   DrawerFallbackOptions,
   DrawerInstance,
@@ -84,7 +84,7 @@ function SidebarError({
 function SidebarLoading({ fallbackTitle }: DrawerFallbackOptions) {
   return (
     <SidebarContent title={fallbackTitle}>
-      <LoadingOverlay />
+      <LoadingOverlayHiddenBackdrop />
     </SidebarContent>
   );
 }

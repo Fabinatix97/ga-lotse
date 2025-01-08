@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -32,16 +32,11 @@ import {
 import { systemProgressEntryTypeTitles } from "@/lib/businessModules/inspection/shared/constants";
 import { moduleUserGroup } from "@/lib/businessModules/inspection/shared/moduleUserGroup";
 import { getHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/getHeadersForOfflineCaching";
-import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
 import { ProgressEntriesUrlParams } from "@/lib/shared/components/procedures/progress-entries/types";
 
-interface InspectionProgressEntriesPageParams extends EditInspectionPageParams {
-  entryId?: string;
-}
-
 export default function InspectionProgressEntriesPage(
-  props: ProgressEntriesUrlParams<InspectionProgressEntriesPageParams>,
+  props: ProgressEntriesUrlParams<EditInspectionPageParams>,
 ) {
   const { params, searchParams } = props;
   return (
@@ -53,7 +48,6 @@ export default function InspectionProgressEntriesPage(
       useFetchProgressEntries={useFetchProgressEntries}
       useFetchProgressEntryDetails={useFetchProgressEntryDetails}
       procedureId={params.id}
-      progressEntryId={params.entryId}
       searchParams={searchParams}
       leaderRole={ApiUserRole.InspectionLeader}
       useRequestProgressEntryDeletion={useRequestProgressEntryDeletion}
@@ -63,12 +57,6 @@ export default function InspectionProgressEntriesPage(
       useDownloadFile={useDownloadInspectionFile}
       useGetManualProgressEntryHistory={useGetManualProgressEntryHistory}
       useGetMetaDataHistory={useGetMetaDataHistory}
-      routes={{
-        entryDetails: (procedureId, entryId) =>
-          routes.procedures.progressEntries(procedureId).details(entryId),
-        progressEntries: (procedureId) =>
-          routes.procedures.progressEntries(procedureId).index,
-      }}
       systemProgressEntryTypes={systemProgressEntryTypeTitles}
       groupName={moduleUserGroup.group}
       getInitOverrides={getHeadersForOfflineCaching}

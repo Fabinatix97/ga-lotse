@@ -1,14 +1,14 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { Typography } from "@mui/joy";
 
+import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
+import { YesOrNoWithFollowUp } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
 import { defaultPreviousIllnesses } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/MedicalHistoryForm.config";
-import { SectionGrid } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/SectionGrid";
-import { YesOrNoWithFollowUp } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/YesOrNoWithFollowUp";
 import {
   ExaminableIllnesses,
   examinableIllnessNames,
@@ -17,26 +17,28 @@ import {
 export function PreviousIllnesses() {
   return (
     <>
-      <Typography level="title-md" mt={1} id="previous-illnesses-section-title">
+      <Typography level="h3" mb={3} id="previous-illnesses-section-title">
         Bisherige Krankheiten
       </Typography>
-      <SectionGrid aria-labelledby="previous-illnesses-section-title">
+      <SectionGrid
+        aria-labelledby="previous-illnesses-section-title"
+        defaultColumn={1}
+      >
         {Object.keys(defaultPreviousIllnesses)
           .filter((t) => !["other", "otherData"].includes(t))
           .map((diseaseType) => (
             <YesOrNoWithFollowUp
-              sx={{ gridColumn: 1 }}
               key={diseaseType}
               name={`previousIllnesses.${diseaseType}`}
               label={examinableIllnessNames[diseaseType as ExaminableIllnesses]}
             />
           ))}
         <YesOrNoWithFollowUp
-          sx={{ gridColumn: 1 }}
           label="Andere sexuell übertragbare Krankheit"
           name="previousIllnesses.other"
         >
           <InputField
+            sx={{ gridColumn: 2 }}
             name="previousIllnesses.otherData"
             label={"Wenn ja, welche?"}
           />

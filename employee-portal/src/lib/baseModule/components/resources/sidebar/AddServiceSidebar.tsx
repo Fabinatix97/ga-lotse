@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -21,7 +21,6 @@ import {
   mapEventToFormValues,
   mapFormToRequestValues,
 } from "@/lib/baseModule/components/resources/resourceCalendarMapper";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { DateOrDateTimeField } from "@/lib/shared/components/formFields/DateOrDateTimeField";
@@ -31,6 +30,7 @@ import {
 } from "@/lib/shared/components/formFields/dateOrDateTimeFieldHelper";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 import {
   SidebarWithFormRefProps,
   useSidebarWithFormRef,

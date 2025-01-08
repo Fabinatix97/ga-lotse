@@ -1,11 +1,12 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 package de.eshg.statistics.aggregation;
 
 import de.eshg.domain.model.SequencedBaseEntity_;
+import de.eshg.statistics.config.StatisticsConfig;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
@@ -33,14 +34,10 @@ public abstract class AbstractAggregationResultService {
   protected AbstractAggregationResultService(
       DataAggregationService dataAggregationService,
       TableRowRepository tableRowRepository,
-      int tableRowPageSize) {
+      StatisticsConfig statisticsConfig) {
     this.dataAggregationService = dataAggregationService;
     this.tableRowRepository = tableRowRepository;
-    this.tableRowPageSize = tableRowPageSize;
-    if (this.tableRowPageSize <= 0) {
-      throw new IllegalArgumentException(
-          "'eshg.statistics.tablerows.pagesize' must be greater than 0");
-    }
+    this.tableRowPageSize = statisticsConfig.tableRows().pageSize();
   }
 
   public static void resetMaxDataRowExportable() {

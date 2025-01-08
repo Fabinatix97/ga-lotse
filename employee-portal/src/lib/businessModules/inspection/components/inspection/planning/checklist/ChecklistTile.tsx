@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -20,9 +20,9 @@ import { useState } from "react";
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { inspectionGettersQueryKey } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { ChecklistSelectSidebar } from "@/lib/businessModules/inspection/components/inspection/planning/checklist/ChecklistSelectSidebar";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export interface ChecklistTileProps {
   readonly?: boolean;

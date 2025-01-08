@@ -1,0 +1,13 @@
+{
+  "pageTitle": "Informationen zur Berufskartei",
+  "content": {
+    "title": "Allgemeine Informationen",
+    "information": "Nach § 12 HGöGD müssen Personen, die einen Beruf des Gesundheitswesens ausüben oder Berufsangehörige beschäftigen, Beginn und Ende der Tätigkeit innerhalb eines Monats dem für den Niederlassungsort zuständigem Gesundheitsamt anzeigen. Die Anzeige beim Gesundheitsamt erfolgt über dieses Online-Formular.",
+    "requiredFieldsHint": "Alle mit * gekennzeichneten Pflichtfelder müssen ausgefüllt sein, um das Online-Formular abschicken zu können."
+  },
+  "sidebar": {
+    "title": "Möchten Sie einen Gesundheitsberuf melden?",
+    "content": "Verwenden Sie das Meldeformular, um einen Eintrag anzulegen oder zu aktualisieren.",
+    "registrationForm": "Zum Meldeformular"
+  }
+}

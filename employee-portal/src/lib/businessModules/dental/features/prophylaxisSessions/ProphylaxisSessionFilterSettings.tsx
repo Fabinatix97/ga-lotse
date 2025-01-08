@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -9,7 +9,7 @@ import { FormControl, FormLabel, Select } from "@mui/joy";
 import { isDefined } from "remeda";
 
 import { PROPHYLAXIS_TYPE_OPTIONS } from "@/lib/businessModules/dental/features/prophylaxisSessions/options";
-import { SearchSchoolFilter } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/SearchSchoolFilter";
+import { SearchInstitutionFilter } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/SearchInstitutionFilter";
 import { ResetButton } from "@/lib/shared/components/ResetButton";
 import { ActiveFilter } from "@/lib/shared/components/filterSettings/ActiveFilter";
 import { FilterSettingsContent } from "@/lib/shared/components/filterSettings/FilterSettingsContent";
@@ -66,8 +66,8 @@ export function ProphylaxisSessionFilterSettings(
       >
         <FormControl>
           <FormLabel>Einrichtung</FormLabel>
-          <SearchSchoolFilter
-            schoolId={props.filterFormValues.institutionIdFilter}
+          <SearchInstitutionFilter
+            institutionId={props.filterFormValues.institutionIdFilter}
             onChange={(institutionId) =>
               props.setFilterFormValue("institutionIdFilter", institutionId)
             }

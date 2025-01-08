@@ -1,17 +1,20 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package de.eshg.base.testhelper;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.auditlog.SharedAuditLogTestHelperApi;
 import de.eshg.base.contact.api.SearchContactsResponse;
 import de.eshg.base.feature.BaseFeature;
 import de.eshg.base.feature.BaseFeatureToggle;
 import de.eshg.base.inventory.api.GetInventoryItemsResponse;
+import de.eshg.base.keycloak.CitizenKeycloakClient;
 import de.eshg.base.keycloak.MasterKeycloakProvisioning;
 import de.eshg.base.resource.api.GetResourcesResponse;
+import de.eshg.base.testhelper.api.CitizenUserDto;
 import de.eshg.base.testhelper.api.CreateCalendarTestEventsRequest;
 import de.eshg.base.testhelper.api.CreateCalendarTestEventsResponse;
 import de.eshg.base.testhelper.api.CreateSetupAdminRequest;
@@ -22,6 +25,7 @@ import de.eshg.lib.common.BusinessModule;
 import de.eshg.lib.keycloak.Realm;
 import de.eshg.lib.keycloak.UsernamePassword;
 import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.testhelper.AccessToken;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperController;
@@ -31,7 +35,13 @@ import de.eshg.testhelper.api.TestHelperLoginAsCitizenAccessCodeUserRequest;
 import de.eshg.testhelper.api.TestHelperLoginRequest;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import org.apache.commons.collections4.CollectionUtils;
 import org.keycloak.admin.client.resource.UserResource;
+import org.keycloak.representations.idm.FederatedIdentityRepresentation;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -44,6 +54,7 @@ public class BaseTestHelperController extends TestHelperController
   private final MasterKeycloakProvisioning masterKeycloakProvisioning;
   private final AuditLogTestHelperService auditLogTestHelperService;
   private final BusinessModulesConfigurationProperties businessModulesConfigurationProperties;
+  private final CitizenKeycloakClient citizenKeycloakClient;
 
   public BaseTestHelperController(
       BaseTestHelperService baseTestHelperService,
@@ -51,13 +62,15 @@ public class BaseTestHelperController extends TestHelperController
       MasterKeycloakProvisioning masterKeycloakProvisioning,
       AuditLogTestHelperService auditLogTestHelperService,
       EnvironmentConfig environmentConfig,
-      BusinessModulesConfigurationProperties businessModulesConfigurationProperties) {
+      BusinessModulesConfigurationProperties businessModulesConfigurationProperties,
+      CitizenKeycloakClient citizenKeycloakClient) {
     super(baseTestHelperService, environmentConfig);
     this.baseTestHelperService = baseTestHelperService;
     this.baseFeatureToggle = baseFeatureToggle;
     this.masterKeycloakProvisioning = masterKeycloakProvisioning;
     this.auditLogTestHelperService = auditLogTestHelperService;
     this.businessModulesConfigurationProperties = businessModulesConfigurationProperties;
+    this.citizenKeycloakClient = citizenKeycloakClient;
   }
 
   @Override
@@ -161,6 +174,44 @@ public class BaseTestHelperController extends TestHelperController
         .getKeycloakClient()
         .getUserResourceByName(userName)
         .ifPresent(UserResource::remove);
+  }
+
+  @Override
+  public CitizenUserDto getIdpUser(String nameId) {
+    UserRepresentation userRepresentation =
+        citizenKeycloakClient
+            .getUserResourceByName(nameId)
+            .orElseThrow(() -> new NotFoundException("Unknown username"))
+            .toRepresentation();
+
+    // Hint: Implement in KeycloakUserApi instead if we need to make this available via UserApi
+    // outside of test scope
+    validateFederatedIdentityWithNameId(userRepresentation, nameId);
+
+    return new CitizenUserDto(
+        UUID.fromString(userRepresentation.getId()),
+        sortedAttributes(userRepresentation.getRawAttributes()));
+  }
+
+  private static Map<String, List<String>> sortedAttributes(Map<String, List<String>> attributes) {
+    if (attributes == null) {
+      return null;
+    }
+    return attributes.entrySet().stream()
+        .sorted(Map.Entry.comparingByKey())
+        .collect(StreamUtil.toLinkedHashMap(Map.Entry::getKey, Map.Entry::getValue));
+  }
+
+  private static void validateFederatedIdentityWithNameId(
+      UserRepresentation userRepresentation, String nameId) {
+    List<FederatedIdentityRepresentation> federatedIdentities =
+        userRepresentation.getFederatedIdentities();
+    if (CollectionUtils.isEmpty(federatedIdentities)
+        || federatedIdentities.stream()
+            .map(FederatedIdentityRepresentation::getUserId)
+            .noneMatch(nameId::equals)) {
+      throw new BadRequestException("Requested user is not an IDP user");
+    }
   }
 
   @Override

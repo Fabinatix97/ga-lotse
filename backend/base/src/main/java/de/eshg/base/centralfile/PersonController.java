@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -334,8 +334,7 @@ public class PersonController implements PersonApi {
         .orElseThrow(
             () ->
                 new NotFoundException(
-                    "Person File State with ID %s (or associated Reference Person) not found"
-                        .formatted(id)));
+                    "Person File State with given ID (or associated Reference Person) not found"));
   }
 
   public static GetPersonFileStateResponse mapPersonToGetPersonFileStateResponse(

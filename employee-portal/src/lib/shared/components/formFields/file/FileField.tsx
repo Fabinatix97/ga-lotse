@@ -1,9 +1,15 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
+import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
+import { useDragAndDrop } from "@eshg/lib-portal/components/formFields/file/useDragAndDrop";
+import {
+  FileLike,
+  validateFileType,
+} from "@eshg/lib-portal/components/formFields/file/validators";
 import { validatePipe } from "@eshg/lib-portal/helpers/validators";
 import { FieldProps } from "@eshg/lib-portal/types/form";
 import {
@@ -16,10 +22,7 @@ import {
 import { ChangeEvent, ReactNode, useId, useRef } from "react";
 import { isDefined, isFunction, isString } from "remeda";
 
-import { FileType } from "./FileType";
 import { FileButton, FileInputButton } from "./buttonVariants";
-import { useDragAndDrop } from "./useDragAndDrop";
-import { FileLike, validateFileType } from "./validators";
 
 const DEFAULT_PLACEHOLDER = "Datei auswählen";
 

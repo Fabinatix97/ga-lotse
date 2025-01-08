@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -17,6 +17,7 @@ import de.eshg.base.gdpr.api.GdprIdentificationDataDto;
 import de.eshg.base.gdpr.api.GetGdprDownloadsResponse;
 import de.eshg.base.util.PaginationUtil;
 import de.eshg.domain.model.serialization.SerializationService;
+import de.eshg.domain.model.serialization.ZipFilter;
 import de.eshg.file.common.CustomMediaTypes;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.api.GdprValidationTaskApi;
@@ -38,12 +39,12 @@ import de.eshg.lib.procedure.model.gdpr.GetGdprNotificationBannerResponse;
 import de.eshg.lib.procedure.model.gdpr.GetGdprValidationTaskDetailsResponse;
 import de.eshg.lib.procedure.model.gdpr.GetGdprValidationTaskResponse;
 import de.eshg.rest.service.error.BadRequestException;
-import de.eshg.rest.service.security.CurrentUserHelper;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
@@ -65,17 +66,18 @@ public class GdprValidationTaskController<
   private final GdprValidationTaskService<ProcedureT, TaskT> service;
   private final BaseFeatureTogglesApi baseFeatureTogglesApi;
   private final SerializationService serializationService;
-  private final AuditLogger auditLogger;
+  private final GdprZipFilterProvider zipFilterProvider;
 
   public GdprValidationTaskController(
       GdprValidationTaskService<ProcedureT, TaskT> service,
       BaseFeatureTogglesApi baseFeatureTogglesApi,
       SerializationService serializationService,
+      GdprZipFilterProvider zipFilterProvider,
       AuditLogger auditLogger) {
     this.service = service;
     this.baseFeatureTogglesApi = baseFeatureTogglesApi;
     this.serializationService = serializationService;
-    this.auditLogger = auditLogger;
+    this.zipFilterProvider = zipFilterProvider;
   }
 
   @Override
@@ -108,30 +110,34 @@ public class GdprValidationTaskController<
     validateStatus(validationTask, GdprValidationTaskStatus.OPEN);
 
     Procedure<?, ?, ?, ?> procedure = service.getBusinessProcedureFromDb(businessProcedureId);
-    service.getFileStateIdsAndValidateLink(gdprProcedureId, businessProcedureId);
+    List<UUID> fileStateIds =
+        service.getFileStateIdsAndValidateLink(gdprProcedureId, businessProcedureId);
 
     log.info(
         "Attempting to create a zip of procedure(id={}) for gdprProcedure(id={})",
         businessProcedureId,
         gdprProcedureId);
-    byte[] zip = serializationService.toZip("DSGVO-Vorgang_" + businessProcedureId, procedure);
+
+    ZipFilter zipFilter = zipFilterProvider.create(fileStateIds);
+    byte[] zip =
+        serializationService.toZip("DSGVO-Vorgang_" + businessProcedureId, procedure, zipFilter);
     UUID downloadId =
         service.createAndSaveDownloadPackage(businessProcedureId, zip).getExternalId();
     service.sendDownloadId(gdprProcedureId, downloadId);
-    auditLogger.log(
-        "DSGVO",
-        "Erstellung DSGVO Datenpaket",
-        Map.of(
-            "durch Benutzer",
-            CurrentUserHelper.getCurrentUserIdAsStringGracefully().orElse("-"),
-            "ID des DSGVO-Vorgangs",
-            gdprProcedureId.toString(),
-            "ID des Fachmodule-Vorgangs",
-            businessProcedureId.toString()));
+    service.writeAuditLog("Erstellung DSGVO Datenpaket", mapAuditlog(validationTask, procedure));
     log.info(
         "Created downloadPackage of procedure(id={}) for gdprProcedure(id={})",
         businessProcedureId,
         gdprProcedureId);
+  }
+
+  private Map<String, String> mapAuditlog(
+      GdprValidationTask validationTask, Procedure<?, ?, ?, ?> procedure) {
+    return Map.of(
+        "DSGVO Vorgang ID",
+        validationTask.getGdprProcedureId().toString(),
+        "Fachmodul Vorgang ID",
+        procedure.getExternalId().toString());
   }
 
   private static void validateType(
@@ -209,6 +215,8 @@ public class GdprValidationTaskController<
     GdprDownloadPackage downloadPackage = service.getDownloadPackage(id);
     byte[] content = downloadPackage.getContent();
 
+    service.writeAuditLog("Abrufen DSGVO Datenpaket", mapAuditlog(downloadPackage));
+
     return ResponseEntity.ok()
         .header(
             HttpHeaders.CONTENT_DISPOSITION,
@@ -230,6 +238,8 @@ public class GdprValidationTaskController<
     assertNewFeatureEnabled(BaseFeature.GDPR, baseFeatureTogglesApi.getFeatureToggles());
     List<UUID> fileStateIds = service.getAndValidateFileStateIds(gdprId);
     GdprValidationTask existingTask = service.getValidationTaskFromDb(gdprId);
+
+    service.writeAuditLog("Abrufen Daten Überprüfungsvorgang", service.mapAuditLog(existingTask));
 
     GdprValidationTaskDto validationTaskDto = getGdprValidationTaskDto(existingTask);
     return new GetGdprValidationTaskDetailsResponse(
@@ -262,7 +272,20 @@ public class GdprValidationTaskController<
         service.findAll(mapToDm(parameters.status()), pageSpec);
     List<GdprValidationTaskDto> validationTaskDtos =
         validationTasks.stream().map(this::getGdprValidationTaskDto).toList();
+
     return new GetAllValidationTasksResponse(
         validationTaskDtos, validationTasks.getTotalElements());
+  }
+
+  private Map<String, String> mapAuditlog(Page<GdprValidationTask> validationTasks) {
+    List<UUID> validationsTasksIds =
+        validationTasks.stream().map(GdprValidationTask::getGdprProcedureId).toList();
+    return Map.of(
+        "Prüfaufträge IDs:",
+        validationsTasksIds.stream().map(UUID::toString).collect(Collectors.joining(", ")));
+  }
+
+  private Map<String, String> mapAuditlog(GdprDownloadPackage downloadPackage) {
+    return Map.of("Datenpaket", downloadPackage.getExternalId().toString());
   }
 }

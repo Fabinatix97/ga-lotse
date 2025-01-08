@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -20,7 +20,6 @@ public enum CitizenPermissionRole implements PermissionRole {
       "Mein Unternehmenskonto Benutzer",
       "Über 'Mein Unternehmenskonto' (externer IDP) authentifizierte Benutzer",
       Module.BASE),
-
   BUND_ID_USER(
       "BundID Benutzer", "Über 'BundID' (externer IDP) authentifizierte Benutzer", Module.BASE),
   ;

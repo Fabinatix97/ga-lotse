@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -23,10 +23,10 @@ export function useUpsertMedicalHistory() {
       medicalHistory: ApiCreateMedicalHistoryRequest;
     }) => medicalHistoryApi.updateMedicalHistory(id, medicalHistory),
     onSuccess: () => {
-      snackbar.confirmation("Die Anamnese wurde erfolgreich erstellt.");
+      snackbar.confirmation("Die Anamnese wurde erfolgreich gespeichert.");
     },
     onError: () => {
-      snackbar.error("Die Anamnese konnte nicht erstellt werden.");
+      snackbar.error("Die Anamnese konnte nicht gespeichert werden.");
     },
     mutationKey: stiProtectionProceduresApiQueryKey(["medicalHistory"]),
   });

@@ -1,10 +1,11 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package de.eshg.officialmedicalservice.procedure;
 
+import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.lib.auditlog.AuditLogger;
@@ -64,14 +65,20 @@ public class OmsProcedureOverviewMapper {
   }
 
   public EmployeeOmsProcedureOverviewDto toInterfaceType(
-      OmsProcedure procedure, GetPersonFileStateResponse affectedPerson) {
+      OmsProcedure procedure,
+      GetPersonFileStateResponse affectedPerson,
+      AddFacilityFileStateResponse facility) {
     String firstName = null;
     String lastName = null;
     LocalDate dateOfBirth = null;
+    String facilityName = null;
     if (affectedPerson != null) {
       firstName = affectedPerson.firstName();
       lastName = affectedPerson.lastName();
       dateOfBirth = affectedPerson.dateOfBirth();
+    }
+    if (facility != null) {
+      facilityName = facility.name();
     }
 
     return new EmployeeOmsProcedureOverviewDto(
@@ -79,6 +86,7 @@ public class OmsProcedureOverviewMapper {
         ProcedureMapper.toInterfaceType(procedure.getProcedureStatus()),
         firstName,
         lastName,
-        dateOfBirth);
+        dateOfBirth,
+        facilityName);
   }
 }

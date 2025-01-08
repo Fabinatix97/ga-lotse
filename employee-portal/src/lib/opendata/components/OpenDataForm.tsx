@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,6 +7,10 @@ import { ApiBusinessModule } from "@eshg/employee-portal-api/base";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import {
+  validateFile,
+  validateFileName,
+} from "@eshg/lib-portal/helpers/validators";
 import { Chip, Stack } from "@mui/joy";
 import { parse } from "date-fns";
 import { FormikErrors, useFormikContext } from "formik";
@@ -16,11 +20,7 @@ import { openDataFileTypes } from "@/lib/opendata/constants";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
 import { buildOptionsFromBusinessModules } from "@/lib/shared/components/procedures/helper";
-import {
-  validateFile,
-  validateFileName,
-  validateURL,
-} from "@/lib/shared/helpers/validators";
+import { validateURL } from "@/lib/shared/helpers/validators";
 
 interface OpenDataFormContentProps {
   children?: ReactNode;

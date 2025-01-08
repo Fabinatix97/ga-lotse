@@ -1,11 +1,10 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 import { Ref, useRef } from "react";
 
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import {
   DrawerOpenOptions,
   DrawerProps,
@@ -15,6 +14,7 @@ import {
   useSidebar,
 } from "@/lib/shared/components/drawer/useSidebar";
 import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export interface SidebarWithFormRefProps extends DrawerProps {
   formRef: Ref<SidebarFormHandle>;

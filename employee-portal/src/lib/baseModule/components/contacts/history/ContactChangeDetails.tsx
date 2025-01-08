@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -14,10 +14,7 @@ export function ContactChangeDetails({ contact }: { contact: Contact }) {
         <>
           <HistoryChange label="Vorname" value={contact.firstName} />
           <HistoryChange label="Name" value={contact.name} />
-          <HistoryChange
-            label="Chat Benutzername"
-            value={contact.externalChatUsername}
-          />
+          <HistoryChange label="Chat-ID" value={contact.externalChatUsername} />
         </>
       )}
       {contact.type === "InstitutionContact" && (

@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -27,16 +27,16 @@ import {
   NavigationIconItemWithoutSubItems,
 } from "./NavigationIconItem";
 import { StyledList } from "./StyledList";
-import { sideNavAriaLabel } from "./constants";
+import { listStyling, navItemIconColor, sideNavAriaLabel } from "./constants";
 import { isItemSelected } from "./isItemSelected";
-import { SideNavigationItem } from "./types";
+import { SideNavItemGroups, SideNavigationItem } from "./types";
 
 export function NavigationListCollapsed({
   setCollapsed,
-  items,
+  itemGroups,
 }: {
   setCollapsed?: Dispatch<SetStateAction<boolean>>;
-  items: SideNavigationItem[];
+  itemGroups: SideNavItemGroups;
 }) {
   const [menuIndex, setMenuIndex] = useState<null | number>(null);
 
@@ -60,6 +60,68 @@ export function NavigationListCollapsed({
       }, 200);
     };
 
+  function getNavItemGroup(itemGroup: SideNavigationItem[]) {
+    if (itemGroup.length > 0) {
+      const list = itemGroup.map((item, index) =>
+        "subItems" in item ? (
+          <NavigationIconItemWithSubItems
+            key={item.name}
+            item={item}
+            open={menuIndex === index}
+            onOpen={() => setMenuIndex(index)}
+            onLeaveMenu={createHandleLeaveMenu(index)}
+            selected={
+              menuIndex !== index &&
+              item.subItems.some((subItem) => isItemSelected(subItem, pathname))
+            }
+            menu={
+              <Menu
+                onClose={() => setMenuIndex(null)}
+                keepMounted={true}
+                disablePortal={true}
+              >
+                <MenuItem disabled>
+                  <Typography noWrap level="body-sm">
+                    {item.name}
+                  </Typography>
+                </MenuItem>
+                {item.subItems.map((subItem) => (
+                  <MenuItem
+                    {...itemProps}
+                    key={`${subItem.href}-${subItem.name}`}
+                    component={NavigationLink}
+                    href={subItem.href ?? ""}
+                    selected={isItemSelected(subItem, pathname)}
+                  >
+                    <ListItemContent
+                      sx={{
+                        borderRadius: (theme) => theme.radius.md,
+                        width: "100%",
+                      }}
+                    >
+                      <Typography noWrap component="span">
+                        {subItem.name}
+                      </Typography>
+                    </ListItemContent>
+                  </MenuItem>
+                ))}
+              </Menu>
+            }
+          >
+            {item.decorator}
+          </NavigationIconItemWithSubItems>
+        ) : (
+          <NavigationIconItemWithoutSubItems
+            key={`${item.href}-${item.name}`}
+            item={item}
+            resetActiveIndex={() => setMenuIndex(index)}
+          />
+        ),
+      );
+      return <StyledList sx={listStyling}>{list}</StyledList>;
+    } else return undefined;
+  }
+
   return (
     <Stack
       component="nav"
@@ -80,80 +142,18 @@ export function NavigationListCollapsed({
           enterNextDelay={tooltipEnterDelay}
         >
           <IconButton onClick={() => setCollapsed?.((prevState) => !prevState)}>
-            <ExpandNavigation color="neutral" />
+            <ExpandNavigation sx={{ color: navItemIconColor }} />
           </IconButton>
         </Tooltip>
       </Stack>
       <Stack
         flex={1}
         alignItems="center"
-        sx={{ overflowY: "auto", overflowX: "hidden" }}
+        sx={{ overflowY: "auto", overflowX: "hidden", gap: 3 }}
       >
-        <StyledList
-          sx={{
-            // Small extra space that makes room for focus outline (keyboard navigation)
-            paddingBlock: "0.25rem",
-          }}
-        >
-          {items.map((item, index) =>
-            "subItems" in item ? (
-              <NavigationIconItemWithSubItems
-                key={item.name}
-                item={item}
-                open={menuIndex === index}
-                onOpen={() => setMenuIndex(index)}
-                onLeaveMenu={createHandleLeaveMenu(index)}
-                selected={
-                  menuIndex !== index &&
-                  item.subItems.some((subItem) =>
-                    isItemSelected(subItem, pathname),
-                  )
-                }
-                menu={
-                  <Menu
-                    onClose={() => setMenuIndex(null)}
-                    keepMounted={true}
-                    disablePortal={true}
-                  >
-                    <MenuItem disabled>
-                      <Typography noWrap level="body-sm">
-                        {item.name}
-                      </Typography>
-                    </MenuItem>
-                    {item.subItems.map((subItem) => (
-                      <MenuItem
-                        {...itemProps}
-                        key={`${subItem.href}-${subItem.name}`}
-                        component={NavigationLink}
-                        href={subItem.href ?? ""}
-                        selected={isItemSelected(subItem, pathname)}
-                      >
-                        <ListItemContent
-                          sx={{
-                            borderRadius: (theme) => theme.radius.md,
-                            width: "100%",
-                          }}
-                        >
-                          <Typography noWrap component="span">
-                            {subItem.name}
-                          </Typography>
-                        </ListItemContent>
-                      </MenuItem>
-                    ))}
-                  </Menu>
-                }
-              >
-                {item.decorator}
-              </NavigationIconItemWithSubItems>
-            ) : (
-              <NavigationIconItemWithoutSubItems
-                key={`${item.href}-${item.name}`}
-                item={item}
-                resetActiveIndex={() => setMenuIndex(index)}
-              />
-            ),
-          )}
-        </StyledList>
+        {getNavItemGroup(itemGroups.dashboardItem)}
+        {getNavItemGroup(itemGroups.businessItems)}
+        {getNavItemGroup(itemGroups.baseItems)}
       </Stack>
     </Stack>
   );

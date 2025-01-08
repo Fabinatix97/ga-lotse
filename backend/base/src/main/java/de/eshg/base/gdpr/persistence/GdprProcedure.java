@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -70,10 +70,6 @@ public class GdprProcedure extends BaseEntityWithExternalId {
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private DownloadPackage centralFileDownload;
 
-  public void setCreatedAt(Instant createdAt) {
-    this.createdAt = createdAt;
-  }
-
   public UUID getCentralFileId() {
     return centralFileId;
   }
@@ -104,10 +100,6 @@ public class GdprProcedure extends BaseEntityWithExternalId {
 
   public Instant getModifiedAt() {
     return modifiedAt;
-  }
-
-  public void setModifiedAt(Instant modifiedAt) {
-    this.modifiedAt = modifiedAt;
   }
 
   public Instant getClosedAt() {

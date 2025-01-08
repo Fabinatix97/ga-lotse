@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,6 +7,7 @@ package de.eshg.statistics.export;
 
 import de.eshg.statistics.mapper.EvaluationMapper;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
+import de.eshg.statistics.persistence.entity.StatisticsDataSensitivity;
 import de.eshg.statistics.persistence.entity.TableColumn;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -21,6 +22,10 @@ import org.apache.poi.ss.util.CellRangeAddress;
 public class DataExportUtil {
   private static final DateTimeFormatter DATE_TIME_FORMATTER =
       DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneOffset.UTC);
+  private static final String DISCLAIMER_INTERNAL_USAGE =
+      "Interner Gebrauch: Der Datensatz enthält personenbezogene Daten und ist daher nur für den internen Gebrauch vorgesehen.";
+  private static final String DISCLAIMER_ANONYMOUS =
+      "Anonym: Der Datensatz ist anonym und daher für die Verwendung über das Gesundheitsamt hinaus geeignet.";
   static final String SENSITIVE_DATA_ERROR =
       "Data exports are only allowed for non-sensitive evaluations";
 
@@ -67,6 +72,12 @@ public class DataExportUtil {
           "Datensätze ausgewertet",
           evaluatedDataAmount);
     }
+    addMetadataRow(
+        sheet,
+        cellStyle,
+        rowCounter.getAndIncrement(),
+        "Verwendung",
+        getDisclaimer(aggregationResult.getDataSensitivity()));
   }
 
   static void addMetadataRow(
@@ -104,5 +115,15 @@ public class DataExportUtil {
 
   static String getAttributeName(TableColumn tableColumn, boolean withUnit) {
     return EvaluationMapper.getAttributeDisplayName(tableColumn, withUnit);
+  }
+
+  private static String getDisclaimer(StatisticsDataSensitivity dataSensitivity) {
+    return switch (dataSensitivity) {
+      case ANONYMOUS -> DISCLAIMER_ANONYMOUS;
+      case INTERNAL_USAGE -> DISCLAIMER_INTERNAL_USAGE;
+      default ->
+          throw new IllegalStateException(
+              "Data sensitivity not allowed for export: " + dataSensitivity);
+    };
   }
 }

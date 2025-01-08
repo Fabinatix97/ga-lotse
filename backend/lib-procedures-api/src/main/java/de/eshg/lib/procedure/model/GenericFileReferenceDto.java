@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -10,11 +10,10 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.UUID;
 
-@Schema(name = GenericFileReferenceDto.SCHEMA_NAME, allOf = AbstractFileReferenceDto.class)
+@Schema(name = GenericFileReferenceDto.SCHEMA_NAME)
 @JsonTypeName(GenericFileReferenceDto.SCHEMA_NAME)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "@type")
-public final class GenericFileReferenceDto extends AbstractFileReferenceDto
-    implements ConcreteFileOrFileReference {
+public final class GenericFileReferenceDto extends AbstractFileReferenceDto {
 
   public static final String SCHEMA_NAME = "GenericFileReference";
 

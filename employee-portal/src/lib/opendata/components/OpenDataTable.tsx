@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -24,12 +24,12 @@ import { useGetOpenDocuments } from "@/lib/opendata/queries/opendata";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 import { useSidebarWithFormRef } from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function OpenDataTable() {

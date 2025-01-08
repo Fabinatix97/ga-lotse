@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -12,9 +12,9 @@ import { createColumnHelper } from "@tanstack/react-table";
 
 import { Label } from "@/lib/businessModules/schoolEntry/api/models/Label";
 import { useCreateLabelSidebar } from "@/lib/businessModules/schoolEntry/features/labels/CreateLabelSidebar";
-import { LabelChip } from "@/lib/businessModules/schoolEntry/features/labels/LabelChip";
 import { useUpdateLabelSidebar } from "@/lib/businessModules/schoolEntry/features/labels/UpdateLabelSidebar";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
+import { ChipWithTooltip } from "@/lib/shared/components/chip/ChipWithTooltip";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
@@ -29,7 +29,13 @@ export function labelColumns({ onEdit }: LabelColumnsProps) {
   return [
     columnHelper.accessor("name", {
       header: "Kennung",
-      cell: (props) => <LabelChip label={props.row.original} />,
+      cell: (props) => (
+        <ChipWithTooltip
+          name={props.row.original.name}
+          hexColor={props.row.original.hexColor}
+          modalTitle="Kennung"
+        />
+      ),
       enableSorting: false,
       meta: {
         width: 240,

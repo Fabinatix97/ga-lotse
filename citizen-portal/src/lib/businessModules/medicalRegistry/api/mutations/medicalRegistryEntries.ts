@@ -1,0 +1,30 @@
+/**
+ * Copyright 2025 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { CreateProcedureRequest } from "@eshg/citizen-portal-api/medicalRegistry/apis";
+import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+
+import { useMedicalRegistryApi } from "@/lib/businessModules/medicalRegistry/api/clients";
+import { useTranslation } from "@/lib/i18n/client";
+
+export function useCreateProcedure() {
+  const medicalRegistryApi = useMedicalRegistryApi();
+  const snackbar = useSnackbar();
+  const { t } = useTranslation([
+    "medicalRegistry/professionalRegistrationForm",
+  ]);
+
+  return useHandledMutation({
+    mutationFn: (req: CreateProcedureRequest) =>
+      medicalRegistryApi
+        .createProcedureFromCitizenPortalRaw(req)
+        .then(unwrapRawResponse),
+    onSuccess: () => {
+      snackbar.confirmation(t("snackbar.success"));
+    },
+  });
+}

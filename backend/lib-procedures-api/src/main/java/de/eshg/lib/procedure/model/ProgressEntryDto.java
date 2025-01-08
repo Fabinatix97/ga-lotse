@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -20,7 +20,7 @@ public abstract sealed class ProgressEntryDto
   @NotNull private UUID progressEntryId;
   @NotNull private Instant createdAt;
   @NotNull private Instant modifiedAt;
-  private @Valid ConcreteFileOrFileReference fileReference;
+  private @Valid AbstractFileReferenceDto fileReference;
 
   public UUID getProgressEntryId() {
     return progressEntryId;
@@ -46,11 +46,11 @@ public abstract sealed class ProgressEntryDto
     this.modifiedAt = modifiedAt;
   }
 
-  public ConcreteFileOrFileReference getFileReference() {
+  public AbstractFileReferenceDto getFileReference() {
     return fileReference;
   }
 
-  public void setFileReference(ConcreteFileOrFileReference fileReference) {
+  public void setFileReference(AbstractFileReferenceDto fileReference) {
     this.fileReference = fileReference;
   }
 

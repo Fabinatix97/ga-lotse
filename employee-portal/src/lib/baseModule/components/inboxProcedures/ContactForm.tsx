@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,6 +7,11 @@ import { ApiContactType } from "@eshg/employee-portal-api/businessProcedures";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import {
+  AcademicTitle,
+  SALUTATION_OPTIONS,
+  TITLE_VALUES,
+} from "@eshg/lib-portal/components/formFields/constants";
 import {
   buildEnumOptions,
   createFieldNameMapper,
@@ -18,12 +23,6 @@ import {
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
 import { Divider, Grid, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
-
-import {
-  AcademicTitle,
-  SALUTATION_OPTIONS,
-  TITLE_VALUES,
-} from "@/lib/shared/components/personSidebar/constants";
 
 import {
   AddressForm,

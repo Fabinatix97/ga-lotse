@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,10 +8,8 @@ import { InfoOutlined } from "@mui/icons-material";
 import { Alert, Box } from "@mui/joy";
 import { ReactNode } from "react";
 
-import {
-  headerHeightDesktop,
-  simpleToolbarHeight,
-} from "@/lib/baseModule/components/layout/sizes";
+import { simpleToolbarHeight } from "@/lib/baseModule/components/layout/sizes";
+import { useHeaderHeights } from "@/lib/baseModule/components/layout/useHeaderHeights";
 import { CLDInfoCard } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/CLDInfoCard";
 import { ReadOnlyCLDContent } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/ReadOnlyCLDContent";
 
@@ -24,6 +22,7 @@ export function ReadOnlyCLDPage({
   cldVersion,
   infoCard,
 }: Readonly<ReadOnlyCLDPageProps>) {
+  const { headerHeightDesktop } = useHeaderHeights();
   return (
     <Box
       sx={{

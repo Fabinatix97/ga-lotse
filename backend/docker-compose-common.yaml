@@ -1,4 +1,4 @@
-# Copyright 2024 cronn GmbH
+# Copyright 2025 cronn GmbH
 # SPDX-License-Identifier: Apache-2.0
 
 services:
@@ -9,6 +9,10 @@ services:
       - eshg.keycloak.internal.url=http://keycloak:8080
       - eshg.population.enabled=${POPULATION_ENABLED:-true}
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1G
 
   eshg-postgres-base:
     image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX:-docker.io}/postgres:16.3@sha256:d0f363f8366fbc3f52d172c6e76bc27151c3d643b870e1062b4e8bfe65baf609

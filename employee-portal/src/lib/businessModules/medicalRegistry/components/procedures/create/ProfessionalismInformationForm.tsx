@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,21 +7,17 @@ import {
   ApiEmploymentStatus,
   ApiEmploymentType,
 } from "@eshg/employee-portal-api/medicalRegistry";
+import {
+  employmentStatusNames,
+  employmentTypeNames,
+} from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
+import { ProfessionalismInformationFormValues } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
+import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { Grid, Radio, Typography } from "@mui/joy";
 
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
-import {
-  employmentStatusNames,
-  employmentTypeNames,
-} from "@/lib/businessModules/medicalRegistry/shared/constants";
-import { RadioGroupField } from "@/lib/shared/components/formFields/RadioGroupField";
-
-export interface ProfessionalismInformationFormValues {
-  employmentType: ApiEmploymentType;
-  employmentStatus: ApiEmploymentStatus;
-}
 
 export function ProfessionalismInformationForm(props: NestedFormProps) {
   const fieldName = createFieldNameMapper<ProfessionalismInformationFormValues>(

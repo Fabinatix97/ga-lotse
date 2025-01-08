@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,6 +7,10 @@
 
 import { ApiFileType } from "@eshg/employee-portal-api/inspection";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
+import { FileLike } from "@eshg/lib-portal/components/formFields/file/validators";
+import { formatFileSize } from "@eshg/lib-portal/helpers/file";
+import { validateFile } from "@eshg/lib-portal/helpers/validators";
 import { DeleteOutlined, OpenInNew } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
 import { useId } from "react";
@@ -23,10 +27,6 @@ import {
 } from "@/lib/shared/components/FileCard";
 import { InfoIconTooltipButton } from "@/lib/shared/components/buttons/IconTooltipButton";
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
-import { FileType } from "@/lib/shared/components/formFields/file/FileType";
-import { FileLike } from "@/lib/shared/components/formFields/file/validators";
-import { formatFileSize } from "@/lib/shared/helpers/file";
-import { validateFile } from "@/lib/shared/helpers/validators";
 
 interface ChecklistFileElementProps {
   inspectionExternalId: string;

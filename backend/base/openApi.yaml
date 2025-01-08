@@ -1,4 +1,4 @@
-# Copyright 2024 cronn GmbH
+# Copyright 2025 cronn GmbH
 # SPDX-License-Identifier: Apache-2.0
 
 openapi: 3.0.1
@@ -9,6 +9,35 @@ info:
 servers:
 - url: http://localhost:8080
 paths:
+  /bundid-person-link:
+    post:
+      operationId: createBundIdPersonLink
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddBundIdPersonLinkRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Establish a link between a BundId user and a person
+      tags:
+      - BundIdPersonLink
+  /bundid-person-link/self/person:
+    get:
+      operationId: getReferencePersonLinkedToBundIdSelfUser
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetReferencePersonResponse"
+          description: OK
+      summary: Get the reference person linked to the BUNDID user which is currently
+        active
+      tags:
+      - BundIdPersonLink
   /calendars:
     get:
       operationId: getCalendars
@@ -3177,6 +3206,24 @@ paths:
           description: OK
       tags:
       - TestHelper
+  /test-helper/idp-user/{nameId}:
+    get:
+      operationId: getIdpUser
+      parameters:
+      - in: path
+        name: nameId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CitizenUser"
+          description: OK
+      tags:
+      - TestHelper
   /test-helper/keycloak/reset:
     post:
       operationId: resetKeycloak
@@ -3964,6 +4011,23 @@ components:
           minimum: 1
       required:
       - barrierId
+    AddBundIdPersonLinkRequest:
+      type: object
+      description: Request used for establishing a link between a BundId user and
+        a reference person
+      properties:
+        bundId:
+          type: string
+          description: The id of the bundId user
+          example: To be added
+        referencePersonId:
+          type: string
+          format: uuid
+          description: The (external) id of the reference person
+          example: be9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
+      required:
+      - bundId
+      - referencePersonId
     AddCentralFileIdToGdprProcedureRequest:
       type: object
       properties:
@@ -4197,9 +4261,9 @@ components:
       description: Request used for establishing a link between a MUK user and a reference
         facility
       properties:
-        mukId:
+        dataTransmitterPseudonymId:
           type: string
-          description: The id of the mukUser
+          description: The 'DatenübermittlerPseudonymId' of the MUK user
           example: du-986b2b54ab89cf4ed674ad8c3126b966b54d4872
         referenceFacilityId:
           type: string
@@ -4207,7 +4271,7 @@ components:
           description: The (external) id of the reference facility
           example: be9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
       required:
-      - mukId
+      - dataTransmitterPseudonymId
       - referenceFacilityId
     AddPersonContactRequest:
       type: object
@@ -4542,6 +4606,7 @@ components:
       - GDPR
       - GDPR_ONLINE_PORTAL
       - MUK_FACILITY_LINK
+      - BUNDID_PERSON_LINK
     BlockingEventsOfCalendar:
       type: object
       properties:
@@ -4657,6 +4722,20 @@ components:
           example: ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
       required:
       - accessCode
+      - userId
+    CitizenUser:
+      type: object
+      properties:
+        attributes:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+        userId:
+          type: string
+          format: uuid
+      required:
       - userId
     CitizenUserRole:
       type: string
@@ -9083,6 +9162,7 @@ components:
       - BASE_GDPR_PROCEDURE_READ
       - BASE_GDPR_PROCEDURE_WRITE
       - BASE_MUK_FACILITY_LINK_WRITE
+      - BASE_BUNDID_PERSON_LINK_WRITE
       - BASE_GLOBAL_CALENDARS_WRITE
       - BASE_CALENDAR_BUSINESS_EVENTS_WRITE
       - BASE_PROCEDURES_READ
@@ -9133,7 +9213,6 @@ components:
       - MEDICAL_REGISTRY_IMPORT
       - OFFICIAL_MEDICAL_SERVICE_LEADER
       - OFFICIAL_MEDICAL_SERVICE_ADMIN
-      - OFFICIAL_MEDICAL_SERVICE_PHYSICIAN
     VCardAddress:
       type: object
       properties:

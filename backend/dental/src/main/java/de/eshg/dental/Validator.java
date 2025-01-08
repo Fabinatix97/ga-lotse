@@ -1,12 +1,14 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package de.eshg.dental;
 
 import de.eshg.base.contact.api.InstitutionContactCategoryDto;
+import de.eshg.dental.domain.repository.ChildRepository;
 import de.eshg.lib.contact.ContactClient;
+import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.rest.service.error.BadRequestException;
 import java.time.Clock;
 import java.time.Year;
@@ -19,10 +21,12 @@ public class Validator {
 
   private final Clock clock;
   private final ContactClient contactClient;
+  private final ChildRepository childRepository;
 
-  public Validator(Clock clock, ContactClient contactClient) {
+  public Validator(Clock clock, ContactClient contactClient, ChildRepository childRepository) {
     this.clock = clock;
     this.contactClient = contactClient;
+    this.childRepository = childRepository;
   }
 
   public void validateSchoolYear(int schoolYear) {
@@ -37,5 +41,12 @@ public class Validator {
     contactClient.validateContactIsInstitutionWithCategory(
         institutionId,
         EnumSet.of(InstitutionContactCategoryDto.SCHOOL, InstitutionContactCategoryDto.DAYCARE));
+  }
+
+  public void validateGroupAtInstitutionExists(UUID institutionId, String groupName) {
+    if (!childRepository.existsByInstitutionIdAndGroupNameAndProcedureStatus(
+        institutionId, groupName, ProcedureStatus.OPEN)) {
+      throw new BadRequestException("Group does not exist: " + groupName);
+    }
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -80,7 +80,7 @@ public class VaccineService {
   private Disease retrieveDiseaseFromRepo(UUID diseaseId) {
     return diseaseRepository
         .findById(diseaseId)
-        .orElseThrow(() -> new BadRequestException("No such disease: " + diseaseId));
+        .orElseThrow(() -> new BadRequestException("No such disease"));
   }
 
   public VaccineDto getOneVaccine(UUID id) {
@@ -169,7 +169,7 @@ public class VaccineService {
     Vaccine vaccine =
         vaccineRepository
             .findById(id)
-            .orElseThrow(() -> new NotFoundException("Vaccine not found: " + id));
+            .orElseThrow(() -> new NotFoundException("Vaccine not found"));
     vaccineRepository.delete(vaccine);
   }
 

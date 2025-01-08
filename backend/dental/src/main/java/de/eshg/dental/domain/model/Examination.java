@@ -1,10 +1,11 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package de.eshg.dental.domain.model;
 
+import de.cronn.reflection.util.PropertyUtils;
 import de.eshg.domain.model.BaseEntityWithExternalId;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
@@ -14,7 +15,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import java.beans.PropertyDescriptor;
 import java.time.Instant;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 @Entity
 @DataSensitivity(SensitivityLevel.SENSITIVE)
@@ -59,5 +64,24 @@ public class Examination extends BaseEntityWithExternalId {
 
   public Instant getDateAndTime() {
     return getProphylaxisSession().getDateAndTime();
+  }
+
+  public boolean hasEdits() {
+    return getPropertiesToValidate()
+        .map(prop -> PropertyUtils.read(this, prop))
+        .anyMatch(Objects::nonNull);
+  }
+
+  public Stream<PropertyDescriptor> getPropertiesToValidate() {
+    List<PropertyDescriptor> propertiesToIgnore =
+        List.of(
+            PropertyUtils.getPropertyDescriptor(Examination.class, Examination::getId),
+            PropertyUtils.getPropertyDescriptor(Examination.class, Examination::getChild),
+            PropertyUtils.getPropertyDescriptor(
+                Examination.class, Examination::getProphylaxisSession));
+
+    return PropertyUtils.getPropertyDescriptors(Examination.class).stream()
+        .filter(prop -> !propertiesToIgnore.contains(prop))
+        .filter(PropertyUtils::isFullyAccessible);
   }
 }

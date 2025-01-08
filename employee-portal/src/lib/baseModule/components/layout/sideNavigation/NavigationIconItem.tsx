@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -20,12 +20,17 @@ import {
   ReactNode,
   cloneElement,
   useRef,
+  useState,
 } from "react";
 import { isDefined } from "remeda";
 
+import { ModuleErrorModal } from "@/lib/baseModule/components/layout/sideNavigation/ModuleErrorModal";
 import { NavigationItemError } from "@/lib/baseModule/components/layout/sideNavigation/NavigationItemError";
+import {
+  navItemSelectedBackgroundColor,
+  navItemSelectedIconColor,
+} from "@/lib/baseModule/components/layout/sideNavigation/constants";
 import { tooltipEnterDelay } from "@/lib/baseModule/components/layout/sizes";
-import { theme } from "@/lib/baseModule/theme/theme";
 
 import { isItemSelected } from "./isItemSelected";
 import {
@@ -58,7 +63,10 @@ export function NavigationIconItemWithoutSubItems({
           aria-current={selected ? "page" : undefined}
           sx={{
             padding: 1,
-            "--Icon-color": theme.palette.text.secondary,
+            "&.Mui-selected": {
+              backgroundColor: navItemSelectedBackgroundColor,
+              "--Icon-color": navItemSelectedIconColor,
+            },
           }}
           onMouseEnter={resetActiveIndex}
           onKeyDown={resetActiveIndex}
@@ -109,7 +117,8 @@ export function NavigationIconItemWithSubItems({
 }: NavigationIconItemWithSubItemsProps) {
   const isOnButton = useRef(false);
 
-  const disabled = isDefined(item.error);
+  const isItemError = isDefined(item.error);
+  const [openModuleErrorModal, setopenModuleErrorModal] = useState(false);
 
   function handleButtonKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
@@ -121,35 +130,55 @@ export function NavigationIconItemWithSubItems({
     <Dropdown
       open={open}
       onOpenChange={(_, isOpen) => {
-        if (isOpen) {
+        if (isOpen && !isItemError) {
           onOpen?.();
         }
       }}
     >
-      <ListItem>
-        {isDefined(item.error) && <NavigationItemError error={item.error} />}
+      <ListItem
+        sx={{
+          height: "38px",
+        }}
+      >
+        {isDefined(item.error) && <NavigationItemError />}
+        <ModuleErrorModal
+          open={openModuleErrorModal}
+          onClose={() => setopenModuleErrorModal(false)}
+          moduleName={item.name}
+        />
         <MenuButton
-          disabled={disabled}
           slots={{ root: ListItemButton }}
           slotProps={{
             root: {
-              selected: !disabled && selected,
+              selected: !isItemError && selected,
               sx: {
                 padding: 1,
-                "--Icon-color": theme.palette.text.secondary,
+                "&.Mui-selected": {
+                  backgroundColor: navItemSelectedBackgroundColor,
+                  "--Icon-color": navItemSelectedIconColor,
+                },
+                alignSelf: "unset",
               },
               "aria-haspopup": true,
             },
           }}
           onMouseDown={() => {
-            onOpen();
+            if (!isItemError) {
+              onOpen();
+            }
           }}
           onClick={() => {
-            onOpen();
+            if (isItemError) {
+              setopenModuleErrorModal(true);
+            } else {
+              onOpen();
+            }
           }}
           onMouseEnter={() => {
-            onOpen();
-            isOnButton.current = true;
+            if (!isItemError) {
+              onOpen();
+              isOnButton.current = true;
+            }
           }}
           onMouseLeave={() => {
             isOnButton.current = false;

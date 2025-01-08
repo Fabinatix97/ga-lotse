@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -157,9 +157,8 @@ public class ProofRequestLetterService {
     GetPersonFileStateResponse personFileState =
         procedure.custodians().stream()
             .filter(custodian -> custodian.id().equals(custodianId))
-            .collect(
-                StreamUtil.toSingleElement(
-                    () -> new NotFoundException(custodianId + ": No such custodian")));
+            .collect(StreamUtil.toSingleOptionalElement())
+            .orElseThrow(() -> new NotFoundException("No such custodian"));
 
     return ToDtoMappers.toCustodianDto(personFileState);
   }

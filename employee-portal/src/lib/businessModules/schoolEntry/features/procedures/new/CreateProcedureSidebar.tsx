@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -22,7 +22,6 @@ import { useCreateProcedure } from "@/lib/businessModules/schoolEntry/api/mutati
 import { BUTTON_SIZE } from "@/lib/businessModules/schoolEntry/features/procedures/new/constants";
 import { PROCEDURE_TYPE_OPTIONS_EXCLUDING_DRAFT } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
 import { PersonSidebar } from "@/lib/shared/components/personSidebar/PersonSidebar";
 import { mapToPersonAddRequest } from "@/lib/shared/components/personSidebar/helpers";
@@ -36,6 +35,7 @@ import {
   SearchPersonFormValues,
 } from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface EsuSearchForm extends SearchPersonFormValues {
   type: OptionalFieldValue<ApiSchoolEntryProcedureType>;

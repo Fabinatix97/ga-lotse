@@ -1,16 +1,23 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Stack, Typography, TypographyProps } from "@mui/joy";
+import { Children } from "react";
+
+import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 export interface TabNavigationHeaderProps extends RequiresChildren {
   titleAsH1?: boolean;
 }
 
 export function TabNavigationHeader(props: TabNavigationHeaderProps) {
+  const isMobile = useIsMobile();
+
+  const firstChild = Children.toArray(props.children)[0];
+
   return (
     <Stack
       component={props.titleAsH1 ? "h1" : "div"}
@@ -19,7 +26,7 @@ export function TabNavigationHeader(props: TabNavigationHeaderProps) {
       gap={4}
       data-testid="tabNavigationHeader"
     >
-      {props.children}
+      {isMobile ? firstChild : props.children}
     </Stack>
   );
 }
@@ -35,6 +42,7 @@ export function TabNavigationHeaderTypography({
       component="p"
       sx={{ lineHeight: "27px", ...sx }}
       {...props}
+      noWrap
     >
       {children}
     </Typography>

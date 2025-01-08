@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -120,8 +120,7 @@ public class GeoShapeService {
   public GeoShape getGeoShapeInternal(UUID geoShapeId) {
     return geoShapeRepository
         .findByExternalId(geoShapeId)
-        .orElseThrow(
-            () -> new NotFoundException("GeoShape with id '%s' not found".formatted(geoShapeId)));
+        .orElseThrow(() -> new NotFoundException("GeoShape with given id not found"));
   }
 
   @Transactional

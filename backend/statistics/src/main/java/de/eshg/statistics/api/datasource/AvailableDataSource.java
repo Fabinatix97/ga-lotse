@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public record AvailableDataSource(
     @NotNull String businessModuleName,
-    @NotNull boolean withoutAnonymizationAllowed,
+    @NotNull boolean sensitiveDataAllowed,
     @NotNull UUID id,
     @NotBlank String name,
     @NotNull DataSourceSensitivity sensitivity,

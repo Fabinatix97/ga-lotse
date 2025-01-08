@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -24,7 +24,6 @@ import jakarta.validation.Valid;
 import java.awt.Color;
 import java.security.SecureRandom;
 import java.util.*;
-import java.util.function.Supplier;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -65,7 +64,7 @@ public class LabelController {
   @Transactional(readOnly = true)
   public LabelDto getLabel(@PathVariable("id") UUID id) {
     return LabelMapper.toDto(
-        labelRepository.findByExternalId(id).orElseThrow(labelNotFoundException(id)));
+        labelRepository.findByExternalId(id).orElseThrow(LabelController::labelNotFoundException));
   }
 
   @PutMapping("/{id}")
@@ -73,7 +72,9 @@ public class LabelController {
   public LabelDto updateLabel(
       @PathVariable("id") UUID id, @Valid @RequestBody UpdateLabelRequest request) {
     Label label =
-        labelRepository.findByExternalIdForUpdate(id).orElseThrow(labelNotFoundException(id));
+        labelRepository
+            .findByExternalIdForUpdate(id)
+            .orElseThrow(LabelController::labelNotFoundException);
 
     if (label.isReadonly()) {
       throw new BadRequestException("Label %s is readonly and cannot be updated.".formatted(id));
@@ -117,7 +118,7 @@ public class LabelController {
         "#%02X%02X%02X", randomColor.getRed(), randomColor.getGreen(), randomColor.getBlue());
   }
 
-  private static Supplier<NotFoundException> labelNotFoundException(UUID id) {
-    return notFoundException(Label.class, id);
+  private static NotFoundException labelNotFoundException() {
+    return notFoundException(Label.class);
   }
 }

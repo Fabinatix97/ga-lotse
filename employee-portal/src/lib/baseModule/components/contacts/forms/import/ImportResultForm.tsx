@@ -1,9 +1,10 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { ApiVCardAddress } from "@eshg/employee-portal-api/base";
+import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { Sheet, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 import { ComponentType, Ref } from "react";
@@ -15,7 +16,6 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@/lib/shared/components/form/SidebarForm";
-import { RadioGroupField } from "@/lib/shared/components/formFields/RadioGroupField";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { join } from "@/lib/shared/helpers/strings";

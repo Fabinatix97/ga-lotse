@@ -18,7 +18,8 @@
     "react": "catalog:react",
     "react-dom": "catalog:react",
     "remeda": "catalog:common",
-    "uuid": "catalog:common"
+    "uuid": "catalog:common",
+    "valibot": "catalog:common"
   },
   "devDependencies": {
     "@eslint/compat": "catalog:eslint",

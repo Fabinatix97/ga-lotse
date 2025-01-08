@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,6 +7,7 @@ package de.eshg.statistics.aggregation;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.aggregation.BusinessModuleAggregationHelper;
+import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.statistics.api.datasource.AvailableDataSource;
 import de.eshg.statistics.api.datasource.BaseDataSourceAttribute;
@@ -223,5 +224,26 @@ public class DataSourceValidator {
     return businessDataSourceAttribute.baseAttributes().stream()
         .map(BaseDataSourceAttribute::code)
         .toList();
+  }
+
+  public static DataSourceSensitivity getMostRestrictiveSensitivity(
+      List<AvailableDataSource> availableDataSources) {
+    if (availableDataSources.stream()
+        .anyMatch(
+            availableDataSource ->
+                availableDataSource.sensitivity().equals(DataSourceSensitivity.SENSITIVE))) {
+      return DataSourceSensitivity.SENSITIVE;
+    } else if (availableDataSources.stream()
+        .anyMatch(
+            availableDataSource ->
+                availableDataSource.sensitivity().equals(DataSourceSensitivity.INTERNAL_USAGE))) {
+      return DataSourceSensitivity.INTERNAL_USAGE;
+    } else {
+      return DataSourceSensitivity.ANONYMOUS;
+    }
+  }
+
+  public static boolean getCanBeAnonymized(List<AvailableDataSource> availableDataSources) {
+    return availableDataSources.stream().allMatch(AvailableDataSource::canBeAnonymized);
   }
 }

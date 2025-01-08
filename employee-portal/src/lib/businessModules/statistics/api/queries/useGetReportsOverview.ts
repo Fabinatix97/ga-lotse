@@ -1,24 +1,43 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import {
-  ApiGetReportsRequest,
   ApiGetReportsResponse,
   ApiReportInfo,
   ApiReportSeries,
+  ApiReportType,
+  ReportSeriesApi,
 } from "@eshg/employee-portal-api/statistics";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQueries } from "@tanstack/react-query";
 
-import { useReportSeriesApi } from "@/lib/businessModules/statistics/api/clients";
+import {
+  useDataSourceApi,
+  useReportSeriesApi,
+} from "@/lib/businessModules/statistics/api/clients";
+import { extractFilterValue } from "@/lib/businessModules/statistics/api/mapper/extractFilterValue";
+import { mapDateSpanFilterToApiDateSpan } from "@/lib/businessModules/statistics/api/mapper/mapDateSpanFilterToApiDateSpan";
+import {
+  DataSourceSensitivity,
+  mapReportDataSourceSensitivityFrontendToApi,
+} from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import { ReportDataType } from "@/lib/businessModules/statistics/api/models/evaluationReports";
+import {
+  PageRequest,
+  mapPageRequest,
+} from "@/lib/businessModules/statistics/api/models/pageRequest";
 import {
   ReportSeriesItemOverview,
   ReportSeriesOverview,
   ReportsOverview,
   SingleReportOverview,
 } from "@/lib/businessModules/statistics/api/models/reportsOverviewTypes";
+import { createQueryGetAvailableDataSources } from "@/lib/businessModules/statistics/api/queries/useGetAvailableDataSources";
+import { ReportOverviewFilterKey } from "@/lib/businessModules/statistics/components/reports/filterDefinitions";
+import { DateSpanFilterValue } from "@/lib/shared/components/filterSettings/models/DateSpanFilter";
+import { EnumFilterValue } from "@/lib/shared/components/filterSettings/models/EnumFilter";
+import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 
 import { reportApiQueryKey } from "./apiQueryKeys";
 
@@ -80,12 +99,92 @@ export function mapToReportsOverview(
   };
 }
 
-export function useGetReportsOverview(reportsRequest: ApiGetReportsRequest) {
-  const reportSeriesApi = useReportSeriesApi();
-  const queryResult = useSuspenseQuery({
-    queryKey: reportApiQueryKey(["getReportOverview", reportsRequest]),
-    queryFn: () => reportSeriesApi.getReportOverview(reportsRequest),
+export function mapPageRequestWithFilterToApi(
+  pageRequest: PageRequest,
+  filterValues: FilterValue[],
+) {
+  const reportType = extractFilterValue<EnumFilterValue>(
+    filterValues,
+    ReportOverviewFilterKey.ReportType,
+  )?.selectedValues[0] as ApiReportType;
+  const dataSourceIds = extractFilterValue<EnumFilterValue>(
+    filterValues,
+    ReportOverviewFilterKey.DataSource,
+  )?.selectedValues;
+  const startDateSpan = mapDateSpanFilterToApiDateSpan(
+    extractFilterValue<DateSpanFilterValue>(
+      filterValues,
+      ReportOverviewFilterKey.DateRangeStart,
+    ),
+    false,
+  );
+  const endDateSpan = mapDateSpanFilterToApiDateSpan(
+    extractFilterValue<DateSpanFilterValue>(
+      filterValues,
+      ReportOverviewFilterKey.DateRangeEnd,
+    ),
+    true,
+  );
+  const sensitivities = extractFilterValue<EnumFilterValue>(
+    filterValues,
+    ReportOverviewFilterKey.Sensitivity,
+  )?.selectedValues?.map((it) =>
+    mapReportDataSourceSensitivityFrontendToApi(it as DataSourceSensitivity),
+  );
+
+  return {
+    ...mapPageRequest(pageRequest, () => undefined),
+    filterOptions: {
+      reportType: reportType,
+      dataSourceIds: dataSourceIds,
+      dataSensitivities: sensitivities,
+      start: startDateSpan,
+      end: endDateSpan,
+    },
+  };
+}
+
+export function createQueryGetReportsOverview(
+  pageRequest: PageRequest,
+  filterValues: FilterValue[],
+  reportSeriesApi: ReportSeriesApi,
+) {
+  return {
+    queryKey: reportApiQueryKey([
+      "getReportOverview",
+      pageRequest,
+      filterValues,
+    ]),
+    queryFn: () =>
+      reportSeriesApi.getReportOverview(
+        mapPageRequestWithFilterToApi(pageRequest, filterValues),
+      ),
     select: mapToReportsOverview,
-  });
-  return queryResult.data;
+  };
+}
+
+export function useGetReportsOverview(
+  pageRequest: PageRequest,
+  filterValues: FilterValue[],
+) {
+  const reportSeriesApi = useReportSeriesApi();
+  const dataSourceApi = useDataSourceApi();
+
+  const [{ data: dataSources }, { data: reportsOverview }] = useSuspenseQueries(
+    {
+      queries: [
+        createQueryGetAvailableDataSources(dataSourceApi),
+        createQueryGetReportsOverview(
+          pageRequest,
+          filterValues,
+          reportSeriesApi,
+        ),
+      ],
+    },
+  );
+
+  return {
+    dataSources,
+    reportsOverview,
+  };
 }

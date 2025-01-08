@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -92,11 +92,9 @@ public interface FacilityRepository
     select fileState.externalId from Facility fileState
     join Facility ref on fileState.referenceFacility.id = ref.id
     where ref.externalId = :refExternalId
-    and fileState.createdAt <= :createdAt
     order by fileState.id
     """)
-  List<UUID> findAllFileStateIdsByReferenceFacilityCreatedBefore(
-      @Param("refExternalId") UUID refExternalId, @Param("createdAt") Instant createdAt);
+  List<UUID> findAllFileStateIdsByReferenceFacility(@Param("refExternalId") UUID refExternalId);
 
   @Transactional
   @Modifying

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -138,6 +138,10 @@ public enum EmployeePermissionRole implements PermissionRole {
   BASE_MUK_FACILITY_LINK_WRITE(
       WRITE_PERMISSION_TEMPLATE.formatted("Muk Facility Links"),
       "Kann Verknüpfungen zwischen MUK Usern und Facilities (Stammdaten-Konverter) anlegen",
+      Module.BASE),
+  BASE_BUNDID_PERSON_LINK_WRITE(
+      WRITE_PERMISSION_TEMPLATE.formatted("BundId Person Links"),
+      "Kann Verknüpfungen zwischen BundId Usern und Personen (Stammdaten-Konverter) anlegen",
       Module.BASE),
 
   BASE_PROCEDURES_READ(
@@ -320,12 +324,10 @@ public enum EmployeePermissionRole implements PermissionRole {
       "Amtsärztlicher Dienst Admin",
       Module.OFFICIAL_MEDICAL_SERVICE,
       BASE_PERSONS_READ,
-      BASE_PERSONS_WRITE),
-  OFFICIAL_MEDICAL_SERVICE_PHYSICIAN(
-      "Amtsärztlicher Dienst Arzt",
-      Module.OFFICIAL_MEDICAL_SERVICE,
-      BASE_PERSONS_READ,
-      BASE_PERSONS_WRITE);
+      BASE_PERSONS_WRITE,
+      BASE_FACILITIES_READ,
+      BASE_FACILITIES_WRITE,
+      BASE_CALENDAR_BUSINESS_EVENTS_WRITE);
 
   private final String keycloakNameWithoutPrefix;
   private final String description;

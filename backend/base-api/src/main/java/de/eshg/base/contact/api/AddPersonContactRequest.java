@@ -1,11 +1,11 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package de.eshg.base.contact.api;
 
-import de.eshg.CustomValidations.EmailAddressConstraint;
+import de.eshg.CustomValidations.MandatoryEmailAddressConstraint;
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.base.address.AddressDto;
@@ -34,7 +34,7 @@ public record AddPersonContactRequest(
         @Size(min = 1, max = 255)
         String externalChatUsername,
     List<@NotNull @Size(min = 1, max = 23) String> phoneNumbers,
-    List<@EmailAddressConstraint String> emailAddresses,
+    List<@MandatoryEmailAddressConstraint String> emailAddresses,
     @Valid AddressDto contactAddress,
     @Valid AddressDto differentBillingAddress)
     implements AbstractAddContactRequest {

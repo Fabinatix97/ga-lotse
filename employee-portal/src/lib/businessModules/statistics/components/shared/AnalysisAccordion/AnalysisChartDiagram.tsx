@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -40,7 +40,7 @@ import { ScatterChart } from "@/lib/businessModules/statistics/components/shared
 import { ImageType } from "@/lib/businessModules/statistics/components/shared/charts/types";
 import { useDataExportGuard } from "@/lib/businessModules/statistics/components/shared/hooks/useDataExportGuard";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function AnalysisChartDiagram(props: {
   configuration: AnalysisDiagramConfiguration;

@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -10,7 +10,7 @@ import { Button } from "@mui/joy";
 
 import { useExportBannedFacilities } from "@/lib/businessModules/inspection/api/mutations/facility";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function ExportBannedFacilitiesButton() {
   return (

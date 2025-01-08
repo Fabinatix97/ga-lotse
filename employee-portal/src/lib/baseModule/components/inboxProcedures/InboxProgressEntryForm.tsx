@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,10 +8,12 @@
 import { ApiInboxProgressEntryType } from "@eshg/employee-portal-api/businessProcedures";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 import {
   buildEnumOptions,
   createFieldNameMapper,
 } from "@eshg/lib-portal/helpers/form";
+import { validateFile } from "@eshg/lib-portal/helpers/validators";
 import {
   NestedFormProps,
   OptionalFieldValue,
@@ -25,8 +27,6 @@ import {
   FileField,
   FileFieldProps,
 } from "@/lib/shared/components/formFields/file/FileField";
-import { FileType } from "@/lib/shared/components/formFields/file/FileType";
-import { validateFile } from "@/lib/shared/helpers/validators";
 
 import { CreateInboxProcedureValues } from "./CreateInboxProcedureForm";
 

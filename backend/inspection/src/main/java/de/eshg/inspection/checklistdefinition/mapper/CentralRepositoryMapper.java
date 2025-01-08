@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -43,8 +43,8 @@ public final class CentralRepositoryMapper {
                 () ->
                     new NotFoundException(
                         String.format(
-                            "Could not find version %d for checklist definition with id %s",
-                            cldVersionNr, cld.getExternalId())));
+                            "Could not find version %d for checklist definition with given id ",
+                            cldVersionNr)));
 
     if (checklistDefinitionVersionDto.context().getRepositoryVersion() != null) {
       throw new BadRequestException(ErrorCode.CONFLICT, "Repository version already exists");

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -14,4 +14,5 @@ public enum BaseFeature {
   GDPR,
   GDPR_ONLINE_PORTAL,
   MUK_FACILITY_LINK,
+  BUNDID_PERSON_LINK,
 }

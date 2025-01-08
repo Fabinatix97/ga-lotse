@@ -1,29 +1,36 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package de.eshg.lib.procedure.model;
 
+import static de.eshg.lib.procedure.model.AbstractFileDto.SCHEMA_NAME;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+import de.cronn.commons.lang.SetUtils;
+import de.eshg.lib.foureyes.model.ApprovalRequestEntityDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
-import java.util.*;
+import java.util.Set;
+import java.util.UUID;
 
-@Schema(name = AbstractFileDto.SCHEMA_NAME, allOf = AbstractFileReferenceDto.class)
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "@type")
+@Schema(name = SCHEMA_NAME)
+@JsonTypeInfo(use = Id.NAME, property = "@type")
 public abstract sealed class AbstractFileDto extends AbstractFileReferenceDto
-    permits GenericFileDto, ConcreteFileDto {
+    implements ApprovalRequestEntityDto permits ImageDto, MailDto, PdfDto {
 
   public static final String SCHEMA_NAME = "AbstractFile";
+
   private @NotNull Instant createdAt;
   private @NotNull Instant modifiedAt;
   private UUID createdBy;
   private @NotNull String fileName;
   private @NotNull FileTypeDto fileType;
   private @NotNull int fileSizeBytes;
-  private UUID attachedToMail;
   private @NotNull boolean locked;
 
   public Instant getCreatedAt() {
@@ -50,10 +57,6 @@ public abstract sealed class AbstractFileDto extends AbstractFileReferenceDto
     return fileSizeBytes;
   }
 
-  public UUID getAttachedToMail() {
-    return attachedToMail;
-  }
-
   public void setCreatedAt(Instant createdAt) {
     this.createdAt = createdAt;
   }
@@ -78,15 +81,22 @@ public abstract sealed class AbstractFileDto extends AbstractFileReferenceDto
     this.fileSizeBytes = fileSizeBytes;
   }
 
-  public void setAttachedToMail(UUID attachedToMail) {
-    this.attachedToMail = attachedToMail;
-  }
-
   public boolean isLocked() {
     return locked;
   }
 
   public void setLocked(boolean locked) {
     this.locked = locked;
+  }
+
+  @Override
+  @JsonIgnore
+  public Set<UUID> getResolvableUserIds() {
+    UUID createdBy = getCreatedBy();
+    if (createdBy == null) {
+      return Set.of();
+    }
+
+    return SetUtils.orderedSet(createdBy);
   }
 }

@@ -1,17 +1,19 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 package de.eshg.statistics.mapper;
 
 import de.eshg.statistics.api.report.FrequencyDto;
+import de.eshg.statistics.api.report.ReportDataSensitivity;
 import de.eshg.statistics.api.report.ReportInfoDto;
 import de.eshg.statistics.api.report.ReportSeriesDto;
 import de.eshg.statistics.api.report.ReportStateDto;
 import de.eshg.statistics.api.report.ReportTypeDto;
 import de.eshg.statistics.api.report.ReportingPeriodDto;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
+import de.eshg.statistics.persistence.entity.StatisticsDataSensitivity;
 import de.eshg.statistics.persistence.entity.report.Frequency;
 import de.eshg.statistics.persistence.entity.report.Report;
 import de.eshg.statistics.persistence.entity.report.ReportSeries;
@@ -78,7 +80,8 @@ public class ReportMapper {
         report.getState().equals(AggregationResultState.COMPLETED)
             ? report.getNumberOfTableRows()
             : null,
-        isTooMuchDataForExport);
+        isTooMuchDataForExport,
+        ReportMapper.mapToApi(report.getDataSensitivity()));
   }
 
   private static ReportStateDto mapToReportStateDto(AggregationResultState state) {
@@ -95,5 +98,13 @@ public class ReportMapper {
 
   public static ReportingPeriod mapToReportingPeriod(ReportingPeriodDto reportingPeriod) {
     return ReportingPeriod.valueOf(reportingPeriod.name());
+  }
+
+  public static StatisticsDataSensitivity mapToPersistence(ReportDataSensitivity dataSensitivity) {
+    return StatisticsDataSensitivity.valueOf(dataSensitivity.name());
+  }
+
+  public static ReportDataSensitivity mapToApi(StatisticsDataSensitivity dataSensitivity) {
+    return ReportDataSensitivity.valueOf(dataSensitivity.name());
   }
 }

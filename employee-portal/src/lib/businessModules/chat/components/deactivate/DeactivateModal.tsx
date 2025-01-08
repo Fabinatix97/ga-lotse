@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,7 +11,6 @@ import { useEffect, useRef } from "react";
 import { SSOAuth } from "@/lib/businessModules/chat/components/deactivate/SSOAuth";
 import { MakeRequest } from "@/lib/businessModules/chat/components/secureBackup/CreateBackupSidebar";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
-import { logger } from "@/lib/businessModules/chat/shared/helpers";
 
 export interface DeactivateModalProps {
   makeRequest: MakeRequest | undefined;
@@ -33,7 +32,6 @@ export function DeactivateModal({
     if (!session) return;
     const ssoUrl = matrixClient.getFallbackAuthUrl(AuthType.Sso, session);
     popup.current = window.open(ssoUrl);
-    logger.debug(popup.current);
   }
 
   function handleCancel() {

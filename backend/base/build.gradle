@@ -19,6 +19,7 @@ dependencies {
     implementation project(':file-commons')
     implementation project(':lib-aggregation')
 
+    implementation 'com.bucket4j:bucket4j-core:latest.release'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.apache.commons:commons-collections4:latest.release'

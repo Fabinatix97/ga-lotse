@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -8,13 +8,13 @@
 import { ApiManualProgressEntryType } from "@eshg/employee-portal-api/businessProcedures";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import { validateFile } from "@eshg/lib-portal/helpers/validators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Stack } from "@mui/joy";
 import { Formik, FormikHelpers } from "formik";
 import { isEmpty } from "remeda";
 
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
@@ -32,7 +32,7 @@ import { mapFormValuesToCreateProgressEntryRequest } from "@/lib/shared/componen
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import { validateFile } from "@/lib/shared/helpers/validators";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface CreateProgressEntrySidebarProps {
   open: boolean;

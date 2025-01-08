@@ -1,21 +1,20 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 "use client";
 
-import { ApiReportType } from "@eshg/employee-portal-api/statistics";
 import { HiddenContainer } from "@eshg/lib-portal/components/HiddenContainer";
 import { Box } from "@mui/joy";
 import { startTransition, useState } from "react";
 
 import { useExportReportData } from "@/lib/businessModules/statistics/api/downloads/useExportReportData";
-import { translateReportType } from "@/lib/businessModules/statistics/api/mapper/translateReportType";
 import { ReportDataType } from "@/lib/businessModules/statistics/api/models/evaluationReports";
 import { ReportOverviewTableRow } from "@/lib/businessModules/statistics/api/models/reportsOverviewTypes";
 import { useGetReportsOverview } from "@/lib/businessModules/statistics/api/queries/useGetReportsOverview";
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
+import { createFilterDefinitions } from "@/lib/businessModules/statistics/components/reports/filterDefinitions";
 import { useDeleteWithConfirmation } from "@/lib/businessModules/statistics/components/reports/useDeleteWithConfirmation";
 import { useDataExportGuard } from "@/lib/businessModules/statistics/components/shared/hooks/useDataExportGuard";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
@@ -24,7 +23,6 @@ import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
-import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
 import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 import { useFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
@@ -35,36 +33,6 @@ import { usePagination } from "@/lib/shared/hooks/table/usePagination";
 import { useCopy } from "@/lib/shared/hooks/useCopy";
 
 import { getReportsOverviewColumns } from "./columns";
-
-function mapFilterValuesToReportsFilter(filterValues: FilterValue[]): string[] {
-  return filterValues.map((filterValue) => {
-    switch (filterValue.type) {
-      case "EnumSingle":
-        return filterValue.selectedValue;
-      default:
-        throw new Error(`FilterValue of type ${filterValue.type} not expected`);
-    }
-  });
-}
-
-const filterDefinitions: FilterDefinition[] = [
-  {
-    type: "EnumSingle",
-    key: "report-type",
-    name: "Report-Typ",
-    options: [
-      {
-        label: translateReportType[ReportDataType.Series],
-        value: ApiReportType.Auto,
-      },
-      {
-        label: translateReportType[ReportDataType.Single],
-        value: ApiReportType.Manual,
-      },
-    ],
-    placeholder: "Bitte auswählen",
-  },
-];
 
 export function ReportsOverview() {
   const copy = useCopy();
@@ -78,29 +46,24 @@ export function ReportsOverview() {
   const { resetPageNumber, page, pageSize, getPaginationProps } =
     usePagination();
 
-  const [reportType, setReportTypeFilter] = useState<ApiReportType>();
+  const [filterValues, setFilterValues] = useState<FilterValue[]>([]);
 
-  const reportsOverview = useGetReportsOverview({
-    page,
-    pageSize,
-    filterOptions: {
-      reportType,
+  const { dataSources, reportsOverview } = useGetReportsOverview(
+    {
+      page,
+      pageSize,
+      sortDirection: undefined,
+      sortKey: undefined,
     },
-  });
-
-  function onFilterSubmit(reportType: ApiReportType) {
-    startTransition(() => {
-      setReportTypeFilter(reportType);
-      resetPageNumber();
-    });
-  }
-
+    filterValues,
+  );
   const filterSettings = useFilterSettings({
-    definitions: filterDefinitions,
+    definitions: createFilterDefinitions(dataSources),
     onValuesSubmit: (filterValues) => {
-      onFilterSubmit(
-        mapFilterValuesToReportsFilter(filterValues)[0] as ApiReportType,
-      );
+      startTransition(() => {
+        setFilterValues(filterValues);
+        resetPageNumber();
+      });
     },
     showSearch: false,
   });

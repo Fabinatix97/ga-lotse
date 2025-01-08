@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -11,6 +11,7 @@ import java.io.UncheckedIOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.apache.commons.io.FilenameUtils;
@@ -31,6 +32,17 @@ public class ZipFileWrapper {
     if (existingEntry != null) {
       throw new IllegalArgumentException("FileName " + fileName + " already exists");
     }
+  }
+
+  public void removeEntry(String fileName) {
+    if (!entries.containsKey(fileName)) {
+      throw new IllegalArgumentException("FileName " + fileName + " not found");
+    }
+    entries.remove(fileName);
+  }
+
+  public Set<String> getFileNames() {
+    return entries.keySet();
   }
 
   public byte[] asByteArray() {

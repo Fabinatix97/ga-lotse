@@ -1,11 +1,11 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package de.eshg.medicalregistry.api;
 
-import de.eshg.CustomValidations.EmailAddressConstraint;
+import de.eshg.CustomValidations.MandatoryEmailAddressConstraint;
 import de.eshg.base.GenderDto;
 import de.eshg.lib.common.CountryCode;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,9 +23,9 @@ public record ApplicantDto(
     @NotNull @Size(min = 1, max = 80) String firstName,
     @NotNull @Size(min = 1, max = 120) String lastName,
     @NotNull LocalDate dateOfBirth,
-    @NotNull @Size(min = 1, max = 40) String nameAtBirth,
+    @Size(min = 1, max = 40) String nameAtBirth,
     @NotNull @Size(min = 1, max = 50) String placeOfBirth,
-    @NotEmpty List<@EmailAddressConstraint String> emailAddresses,
+    @NotNull List<@MandatoryEmailAddressConstraint String> emailAddresses,
     @NotEmpty List<@NotNull @Size(min = 1, max = 23) String> phoneNumbers,
     @NotNull @Valid ApplicantAddressDto address,
     @NotNull CountryCode nationality) {}

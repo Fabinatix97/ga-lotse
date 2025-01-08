@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -9,16 +9,18 @@ import {
   ApiProcessedInboxProgressEntry,
   ApiSystemProgressEntry,
 } from "@eshg/employee-portal-api/businessProcedures";
-import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import CheckIcon from "@mui/icons-material/Check";
 import MailOutlinedIcon from "@mui/icons-material/MailOutlined";
 import { Sheet, Stack, Typography } from "@mui/joy";
-import { useSearchParams } from "next/navigation";
+import { useContext } from "react";
 import { isDefined, isEmpty } from "remeda";
 
-import { buildRouteWithParams } from "@/lib/shared/components/procedures/helper";
-import { useProgressEntriesConfig } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
+import {
+  ProgressEntriesContext,
+  useProgressEntriesConfig,
+} from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import { TimelineEntryProps } from "@/lib/shared/components/timeline/TimelineEntry";
 import { TimelineEntryIndicator } from "@/lib/shared/components/timeline/TimelineEntryIndicator";
 
@@ -37,31 +39,23 @@ interface ProgressEntryTimelineEntryProps extends TimelineEntryProps {
 }
 
 export function useTimelineEntryProps(): ProgressEntryTimelineEntryProps[] {
-  const { procedureId, progressEntries, routes } = useProgressEntriesConfig();
-  const rawSearchParams = useSearchParams();
+  const { progressEntries } = useProgressEntriesConfig();
 
   return progressEntries.map((progressEntry) =>
-    timelineEntryPropsOfProgressEntry(
-      progressEntry,
-      buildRouteWithParams(
-        routes.entryDetails(procedureId, progressEntry.progressEntryId),
-        rawSearchParams,
-      ),
-    ),
+    timelineEntryPropsOfProgressEntry(progressEntry),
   );
 }
 
 function timelineEntryPropsOfProgressEntry(
   progressEntry: ApiGetProgressEntriesResponseProgressEntriesInner,
-  detailsUrl: string,
 ): ProgressEntryTimelineEntryProps {
   switch (progressEntry.type) {
     case "SystemProgressEntry":
-      return timelineEntryPropsOfSystemProgressEntry(progressEntry, detailsUrl);
+      return timelineEntryPropsOfSystemProgressEntry(progressEntry);
     case "ManualProgressEntry":
-      return timelineEntryPropsOfManualProgressEntry(progressEntry, detailsUrl);
+      return timelineEntryPropsOfManualProgressEntry(progressEntry);
     case "ProcessedInboxProgressEntry":
-      return timelineEntryPropsOfInboxProgressEntry(progressEntry, detailsUrl);
+      return timelineEntryPropsOfInboxProgressEntry(progressEntry);
   }
 }
 
@@ -79,7 +73,6 @@ function TextSheet(props: { text: string; dataTestId: string }) {
 
 function timelineEntryPropsOfSystemProgressEntry(
   systemProgressEntry: ApiSystemProgressEntry,
-  detailsUrl: string,
 ): ProgressEntryTimelineEntryProps {
   return {
     key: systemProgressEntry.progressEntryId,
@@ -90,7 +83,7 @@ function timelineEntryPropsOfSystemProgressEntry(
             systemProgressEntry.systemProgressEntryType
           ] ?? "Unbekannt"
         }
-        detailsUrl={detailsUrl}
+        progressEntryId={systemProgressEntry.progressEntryId}
       />
     ),
     label: buildLabel(
@@ -123,7 +116,6 @@ function timelineEntryPropsOfSystemProgressEntry(
 
 function timelineEntryPropsOfManualProgressEntry(
   manualProgressEntry: ApiManualProgressEntry,
-  detailsUrl: string,
 ): ProgressEntryTimelineEntryProps {
   const note = manualProgressEntry.note;
   return {
@@ -133,7 +125,7 @@ function timelineEntryPropsOfManualProgressEntry(
         title={
           manualProgressEntryTitles[manualProgressEntry.manualProgressEntryType]
         }
-        detailsUrl={detailsUrl}
+        progressEntryId={manualProgressEntry.progressEntryId}
       />
     ),
     label: buildLabel(
@@ -166,7 +158,6 @@ function timelineEntryPropsOfManualProgressEntry(
 
 function timelineEntryPropsOfInboxProgressEntry(
   inboxProgressEntry: ApiProcessedInboxProgressEntry,
-  detailsUrl: string,
 ): ProgressEntryTimelineEntryProps {
   return {
     key: inboxProgressEntry.progressEntryId,
@@ -175,7 +166,7 @@ function timelineEntryPropsOfInboxProgressEntry(
         title={
           inboxProgressEntryTitles[inboxProgressEntry.inboxProgressEntryType]
         }
-        detailsUrl={detailsUrl}
+        progressEntryId={inboxProgressEntry.progressEntryId}
       />
     ),
     label: buildLabel(
@@ -199,13 +190,25 @@ function timelineEntryPropsOfInboxProgressEntry(
   };
 }
 
-function Title({ title, detailsUrl }: { title: string; detailsUrl: string }) {
+function Title({
+  title,
+  progressEntryId,
+}: {
+  title: string;
+  progressEntryId: string;
+}) {
+  const progressEntriesContext = useContext(ProgressEntriesContext);
+  const { openEntryDetailsSidebar } = progressEntriesContext.action;
+
   return (
     <Stack direction="row" spacing={0.75}>
       <Typography>{title}</Typography>
-      <InternalLink level="body-sm" href={detailsUrl}>
+      <ButtonLink
+        level="body-sm"
+        onClick={() => openEntryDetailsSidebar(progressEntryId)}
+      >
         Details
-      </InternalLink>
+      </ButtonLink>
     </Stack>
   );
 }

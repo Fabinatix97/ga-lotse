@@ -1,14 +1,23 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FormHelperText } from "@mui/joy";
+import { FormHelperText, styled } from "@mui/joy";
 import { PropsWithChildren } from "react";
 
-export function OptionalHelperText({ children }: PropsWithChildren) {
+export function OptionalHelperText({
+  children,
+  id,
+}: PropsWithChildren<{ id?: string }>) {
   if (children == null) {
     return null;
   }
-  return <FormHelperText>{children}</FormHelperText>;
+  return <StyledFormHelperText id={id}>{children}</StyledFormHelperText>;
 }
+
+const StyledFormHelperText = styled(FormHelperText)(({ theme }) => ({
+  ".Mui-error &": {
+    color: theme.palette.danger[500],
+  },
+}));

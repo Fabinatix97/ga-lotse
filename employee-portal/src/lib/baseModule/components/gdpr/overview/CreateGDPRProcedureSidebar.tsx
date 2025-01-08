@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,8 +8,10 @@ import {
   ApiSalutation,
 } from "@eshg/employee-portal-api/base";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
+import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { SALUTATION_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { validateLength } from "@eshg/lib-portal/helpers/validators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
@@ -28,8 +30,6 @@ import {
   BaseAddressFormInputs,
   createEmptyAddress,
 } from "@/lib/shared/components/form/address/helpers";
-import { EmailField } from "@/lib/shared/components/formFields/EmailField";
-import { SALUTATION_OPTIONS } from "@/lib/shared/components/personSidebar/constants";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import {

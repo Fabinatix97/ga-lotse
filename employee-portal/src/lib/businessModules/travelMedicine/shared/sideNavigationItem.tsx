@@ -1,11 +1,11 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { ApiBaseFeature, ApiUserRole } from "@eshg/employee-portal-api/base";
 import { ApiTravelMedicineFeature } from "@eshg/employee-portal-api/travelMedicine";
-import { Vaccines } from "@mui/icons-material";
+import { VaccinesOutlined } from "@mui/icons-material";
 import { isPlainObject } from "remeda";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
@@ -35,7 +35,7 @@ export function useSideNavigationItems(): UseSideNavigationItemsResult {
     items: [
       {
         name: "Impfberatung",
-        decorator: <Vaccines />,
+        decorator: <VaccinesOutlined />,
         error: isTravelMedicineError
           ? "Bei der Verbindung zum Modul Impfberatung ist ein Fehler aufgetreten."
           : undefined,

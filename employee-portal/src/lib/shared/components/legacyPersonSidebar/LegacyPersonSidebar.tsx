@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -13,7 +13,6 @@ import { ReactNode, useEffect, useRef, useState } from "react";
 import { isNullish } from "remeda";
 
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
 import { LegacyMinimalPerson } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyBasePersonForm";
 import {
@@ -29,6 +28,7 @@ import {
 import { ProcedureList } from "@/lib/shared/components/legacyPersonSidebar/procedures/ProcedureList";
 import { LegacyPersonSearch } from "@/lib/shared/components/legacyPersonSidebar/search/LegacyPersonSearch";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export interface ProcedureLiteItem {
   link: string;

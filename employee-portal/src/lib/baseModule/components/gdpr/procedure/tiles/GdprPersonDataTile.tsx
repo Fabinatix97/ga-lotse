@@ -1,9 +1,13 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { ApiGdprPerson, ApiSalutation } from "@eshg/employee-portal-api/base";
+import {
+  PERSON_FIELD_NAME,
+  SALUTATION_VALUES,
+} from "@eshg/lib-portal/components/formFields/constants";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { Stack } from "@mui/joy";
@@ -19,10 +23,6 @@ import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell"
 import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
 import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
 import { ExternalLinkDetailsCell } from "@/lib/shared/components/detailsSection/ExternalLinkDetailsCell";
-import {
-  PERSON_FIELD_NAME,
-  SALUTATION_VALUES,
-} from "@/lib/shared/components/personSidebar/constants";
 
 export function GdprPersonDataTile({
   identity,

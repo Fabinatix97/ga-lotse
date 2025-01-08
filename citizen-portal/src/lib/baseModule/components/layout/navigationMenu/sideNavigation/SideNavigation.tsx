@@ -1,17 +1,18 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Drawer, Stack } from "@mui/joy";
 
-import { headerHeightMobile } from "@/lib/baseModule/components/layout/sizes";
 import { NavigationProps } from "@/lib/baseModule/components/layout/types";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
+import { useHeaderHeights } from "@/lib/shared/components/layout/useHeaderHeights";
 
 import { NavigationList } from "./NavigationList";
 
 export function SideNavigation(props: NavigationProps) {
+  const { headerHeightMobile } = useHeaderHeights();
   return (
     <Drawer
       open={props.navigationState.type !== "closed"}

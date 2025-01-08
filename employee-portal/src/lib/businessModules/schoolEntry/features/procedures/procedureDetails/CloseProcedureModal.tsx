@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -23,15 +23,11 @@ interface CloseProcedureModalProps
 }
 
 export function CloseProcedureModal(props: CloseProcedureModalProps) {
-  const closeProcedure = useCloseProcedure();
+  const { procedure, onClose } = props;
+  const closeProcedure = useCloseProcedure(procedure.id);
   async function handleSubmit() {
-    await closeProcedure.mutateAsync({
-      procedureId: props.procedure.id,
-      apiCloseProcedureRequest: {
-        version: props.procedure.version,
-      },
-    });
-    props.onClose();
+    await closeProcedure.mutateAsync({ version: procedure.version });
+    onClose();
   }
 
   return isDefined(props.procedure.schoolInfoLetterCreatedAt) ? (

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -12,25 +12,27 @@ import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.*;
 
 @Entity
-@Table(indexes = @Index(columnList = "reference_facility_id"))
+@Table(
+    indexes = {
+      @Index(columnList = "reference_facility_id"),
+      @Index(columnList = "data_transmitter_pseudonym_id")
+    })
 public class MukFacilityLink extends BaseEntity {
-
-  public MukFacilityLink() {}
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @Column(nullable = false)
-  private String mukId;
+  private String dataTransmitterPseudonymId;
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @OneToOne(optional = false, fetch = FetchType.LAZY)
   private Facility referenceFacility;
 
-  public String getMukId() {
-    return mukId;
+  public String getDataTransmitterPseudonymId() {
+    return dataTransmitterPseudonymId;
   }
 
-  public void setMukId(String mukId) {
-    this.mukId = mukId;
+  public void setDataTransmitterPseudonymId(String dataTransmitterPseudonymId) {
+    this.dataTransmitterPseudonymId = dataTransmitterPseudonymId;
   }
 
   public Facility getReferenceFacility() {

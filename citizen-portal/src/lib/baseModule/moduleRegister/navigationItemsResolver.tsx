@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,6 +11,10 @@ import {
   useOrganizationNavigationItems as useBaseOrganizationCitizenNavigationItems,
 } from "@/lib/baseModule/shared/navigationItems";
 import { useOrganizationNavigationItems as useMeaslesProtectionOrganizationNavigationItems } from "@/lib/businessModules/measlesProtection/shared/navigationItems";
+import {
+  useCitizenNavigationItems as useMedicalRegistryCitizenNavigationItems,
+  useOrganizationNavigationItems as useMedicalRegistryOrganizationNavigationItems,
+} from "@/lib/businessModules/medicalRegistry/shared/navigationItems";
 import { useCitizenNavigationItems as useOfficialMedicalServcieNavigationItems } from "@/lib/businessModules/officialMedicalService/shared/navigationItems";
 import {
   useCitizenNavigationItems as useSchoolEntryCitizenNavigationItems,
@@ -24,19 +28,24 @@ import { useHasBusinessModule } from "@/lib/shared/hooks/useHasBusinessModule";
 
 export function useResolveCitizenNavigationItems(): NavigationItem[] {
   const hasBusinessModule = useHasBusinessModule();
-  const schoolEntryOrganizationNavigationItems =
+  const schoolEntryCitizenNavigationItems =
     useSchoolEntryCitizenNavigationItems();
-  const travelMedicineOrganizationNavigationItems =
+  const travelMedicineCitizenNavigationItems =
     useTravelMedicineCitizenNavigationItems();
   const officialMedicalServcieNavigationItems =
     useOfficialMedicalServcieNavigationItems();
+  const medicalRegistryCitizenNavigationItems =
+    useMedicalRegistryCitizenNavigationItems();
   const navigationItems = useBaseCitizenNavigationItems();
 
   if (hasBusinessModule(ApiBusinessModule.SchoolEntry)) {
-    navigationItems.push(...schoolEntryOrganizationNavigationItems);
+    navigationItems.push(...schoolEntryCitizenNavigationItems);
   }
   if (hasBusinessModule(ApiBusinessModule.TravelMedicine)) {
-    navigationItems.push(...travelMedicineOrganizationNavigationItems);
+    navigationItems.push(...travelMedicineCitizenNavigationItems);
+  }
+  if (hasBusinessModule(ApiBusinessModule.MedicalRegistry)) {
+    navigationItems.push(...medicalRegistryCitizenNavigationItems);
   }
   if (hasBusinessModule(ApiBusinessModule.OfficialMedicalService)) {
     navigationItems.push(...officialMedicalServcieNavigationItems);
@@ -53,6 +62,8 @@ export function useResolveOrganizationNavigationItems(): NavigationItem[] {
     useMeaslesProtectionOrganizationNavigationItems();
   const travelMedicineOrganizationNavigationItems =
     useTravelMedicineOrganizationNavigationItems();
+  const medicalRegistryOrganizationNavigationItems =
+    useMedicalRegistryOrganizationNavigationItems();
   const navigationItems = useBaseOrganizationCitizenNavigationItems();
 
   if (hasBusinessModule(ApiBusinessModule.SchoolEntry)) {
@@ -63,6 +74,9 @@ export function useResolveOrganizationNavigationItems(): NavigationItem[] {
   }
   if (hasBusinessModule(ApiBusinessModule.TravelMedicine)) {
     navigationItems.push(...travelMedicineOrganizationNavigationItems);
+  }
+  if (hasBusinessModule(ApiBusinessModule.MedicalRegistry)) {
+    navigationItems.push(...medicalRegistryOrganizationNavigationItems);
   }
 
   return navigationItems;

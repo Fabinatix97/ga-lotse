@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -13,6 +13,7 @@ import de.eshg.base.gdpr.api.GdprIdentificationDataDto;
 import de.eshg.base.gdpr.api.GetGdprDownloadsResponse;
 import de.eshg.base.gdpr.api.GetGdprProcedureFileStateIdsResponse;
 import de.eshg.base.util.PaginationUtil;
+import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.model.GdprDownloadPackage;
 import de.eshg.lib.procedure.domain.model.GdprValidationTask;
 import de.eshg.lib.procedure.domain.model.GdprValidationTaskStatus;
@@ -27,12 +28,14 @@ import de.eshg.lib.procedure.model.gdpr.BusinessProcedureInclusionStatusDto;
 import de.eshg.lib.procedure.model.gdpr.BusinessProcedureWithInclusionStatusDto;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
+import de.eshg.rest.service.security.CurrentUserHelper;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -47,6 +50,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class GdprValidationTaskService<
     ProcedureT extends Procedure<ProcedureT, TaskT, ?, ?>, TaskT extends Task<ProcedureT>> {
+
+  private static final String AUDITLOG_CATEGORY = "DSGVO Prüfauftrag";
+
   private static final Logger log = LoggerFactory.getLogger(GdprValidationTaskService.class);
   private final GdprValidationTaskRepository validationTaskRepository;
   private final GdprDownloadPackageRepository downloadPackageRepository;
@@ -54,6 +60,7 @@ public class GdprValidationTaskService<
   private final ProcedureLibraryEnrichingMapper<ProcedureT, TaskT> enrichingMapper;
   private final GdprProcedureApi baseGdprProcedureApi;
   private final Clock clock;
+  private final AuditLogger auditLogger;
 
   public GdprValidationTaskService(
       GdprValidationTaskRepository validationTaskRepository,
@@ -61,13 +68,15 @@ public class GdprValidationTaskService<
       ProcedureRepository<ProcedureT> procedureRepository,
       ProcedureLibraryEnrichingMapper<ProcedureT, TaskT> enrichingMapper,
       GdprProcedureApi baseGdprProcedureApi,
-      Clock clock) {
+      Clock clock,
+      AuditLogger auditLogger) {
     this.validationTaskRepository = validationTaskRepository;
     this.downloadPackageRepository = downloadPackageRepository;
     this.procedureRepository = procedureRepository;
     this.enrichingMapper = enrichingMapper;
     this.baseGdprProcedureApi = baseGdprProcedureApi;
     this.clock = clock;
+    this.auditLogger = auditLogger;
   }
 
   public GdprValidationTask getValidationTaskFromDb(UUID id) {
@@ -105,7 +114,7 @@ public class GdprValidationTaskService<
         .orElseThrow(() -> new NotFoundException("BusinessProcedure not found."));
   }
 
-  public void getFileStateIdsAndValidateLink(UUID gdprProcedureId, UUID businessProcedureId) {
+  public List<UUID> getFileStateIdsAndValidateLink(UUID gdprProcedureId, UUID businessProcedureId) {
     List<UUID> fileStateIdsToSearch = getAndValidateFileStateIds(gdprProcedureId);
 
     List<UUID> businessProcedureIds =
@@ -115,6 +124,7 @@ public class GdprValidationTaskService<
       throw new BadRequestException(
           "The requested business procedure does not have any fileState of the given GDPR procedure");
     }
+    return fileStateIdsToSearch;
   }
 
   public boolean validationTaskAlreadyExists(AddGdprValidationTaskRequest request) {
@@ -142,7 +152,9 @@ public class GdprValidationTaskService<
     validationTask.setCreatedAt(now);
     validationTask.setModifiedAt(now);
 
-    return validationTaskRepository.save(validationTask);
+    GdprValidationTask saved = validationTaskRepository.save(validationTask);
+    writeAuditLog("Prüfauftrag hinzufügen", mapAuditLog(validationTask));
+    return saved;
   }
 
   public void sendDownloadId(UUID gdprProcedureId, UUID downloadId) {
@@ -231,6 +243,7 @@ public class GdprValidationTaskService<
       log.info("Closing GdprProcedure with gdprProcedureId: {}", gdprProcedureId);
       task.setStatus(CLOSED);
       task.setClosedAt(clock.instant());
+      writeAuditLog("Schließen Prüfauftrag", mapAuditLog(task));
     }
   }
 
@@ -254,5 +267,16 @@ public class GdprValidationTaskService<
       return (root, query, builder) -> builder.and();
     }
     return (root, query, cb) -> cb.equal(root.get(GdprValidationTask_.status), status);
+  }
+
+  public void writeAuditLog(String operationName, Map<String, String> attributes) {
+    attributes = new LinkedHashMap<>(attributes);
+    attributes.put(
+        "durch Benutzer", CurrentUserHelper.getCurrentUserIdAsStringGracefully().orElse("-"));
+    auditLogger.log(AUDITLOG_CATEGORY, operationName, attributes);
+  }
+
+  public Map<String, String> mapAuditLog(GdprValidationTask task) {
+    return Map.of("Prüfauftrag ID", task.getGdprProcedureId().toString());
   }
 }

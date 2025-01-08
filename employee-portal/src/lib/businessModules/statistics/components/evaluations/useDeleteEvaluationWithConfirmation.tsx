@@ -1,12 +1,12 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Alert } from "@eshg/lib-portal/components/Alert";
 
 import { useDeleteEvaluation } from "@/lib/businessModules/statistics/api/mutations/useDeleteEvaluation";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function useDeleteEvaluationWithConfirmation(onConfirm?: () => void) {
   const deleteEvaluation = useDeleteEvaluation();

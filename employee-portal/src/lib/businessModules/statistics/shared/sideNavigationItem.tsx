@@ -1,10 +1,10 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { ApiUserRole } from "@eshg/employee-portal-api/base";
-import { Leaderboard } from "@mui/icons-material";
+import { BarChartOutlined } from "@mui/icons-material";
 import { isPlainObject } from "remeda";
 
 import { UseSideNavigationItemsResult } from "@/lib/baseModule/components/layout/sideNavigation/types";
@@ -21,7 +21,7 @@ export function useSideNavigationItems(): UseSideNavigationItemsResult {
     items: [
       {
         name: "Statistik",
-        decorator: <Leaderboard />,
+        decorator: <BarChartOutlined />,
         subItems: [
           {
             name: "Auswertungen",

@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -20,11 +20,11 @@ import { generateChecklistDefinitionOverviewTableColumns } from "@/lib/businessM
 import { UploadChecklistToRepoSidebar } from "@/lib/businessModules/inspection/components/checklistDefinition/sidebars/UploadChecklistToRepoSidebar";
 import { ChecklistVersionsSidebar } from "@/lib/businessModules/inspection/components/checklistDefinition/sidebars/history/ChecklistVersionsSidebar";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { useHasUserRolesCheck } from "@/lib/shared/hooks/useAccessControl";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 type UserActivityState =
   | { type: "view-table" }

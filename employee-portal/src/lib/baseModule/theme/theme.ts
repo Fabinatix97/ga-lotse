@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,6 +11,8 @@ import "@fontsource/poppins/400.css";
 import "@fontsource/poppins/500.css";
 import "@fontsource/poppins/600.css";
 import "@fontsource/poppins/700.css";
+import "@fontsource/source-code-pro/400.css";
+import "@fontsource/source-code-pro/600.css";
 import { FontSize, Theme, extendTheme } from "@mui/joy/styles";
 import { SxProps } from "@mui/joy/styles/types";
 import { isNullish } from "remeda";
@@ -46,8 +48,6 @@ const noBackdrop = {
 const noBoxShadow = {
   boxShadow: "none",
 };
-
-export const radioGroupLabelClassName = "radio-group-label";
 
 export function multiLineEllipsis(linesToShow = 2): SxProps {
   return {
@@ -262,11 +262,10 @@ export const theme = extendTheme({
               ? theme.palette.text.secondary
               : theme.palette.text.primary,
           },
-          [`& .MuiRadio-root label, & .MuiCheckbox-label, & .${radioGroupLabelClassName}`]:
-            {
-              fontWeight: 400,
-              fontSize: theme.fontSize.md,
-            },
+          [`& .MuiRadio-root label, & .MuiCheckbox-label`]: {
+            fontWeight: 400,
+            fontSize: theme.fontSize.md,
+          },
         }),
       },
       defaultProps: {
@@ -412,6 +411,12 @@ export const theme = extendTheme({
       styleOverrides: {
         root: ({ ownerState, theme }) => ({
           ...buttonStyle(theme, ownerState.variant, ownerState.color),
+        }),
+        startDecorator: ({ theme }) => ({
+          ".MuiSvgIcon-root": {
+            width: theme.spacing(3),
+            height: theme.spacing(3),
+          },
         }),
       },
     },

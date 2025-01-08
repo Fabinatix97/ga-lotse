@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -121,8 +121,7 @@ public class InspectionIncidentService {
     return inspection.getIncidents().stream()
         .filter(inspectionIncident -> inspectionIncident.getIncidentExternalId().equals(incidentId))
         .findAny()
-        .orElseThrow(
-            () -> new NotFoundException("Incident not found for id: %s".formatted(incidentId)));
+        .orElseThrow(() -> new NotFoundException("Incident not found for given id"));
   }
 
   private static void adjustPosition(List<InspectionIncident> incidents, int deletedPosition) {

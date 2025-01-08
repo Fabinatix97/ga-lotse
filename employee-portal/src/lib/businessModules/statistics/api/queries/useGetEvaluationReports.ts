@@ -1,9 +1,10 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import {
+  ApiEvaluationDataSensitivity,
   ApiFrequency,
   ApiGetReportSeriesEntriesOfEvaluationResponse,
   ApiReportSeries,
@@ -149,7 +150,8 @@ export function mapToEvaluationReports(
         : mapSingleReport(reportSeriesEntry);
     }),
     activeSeries: mapActiveSeries(response),
-    anonymized: response.anonymized,
+    anonymized:
+      response.dataSensitivity !== ApiEvaluationDataSensitivity.Sensitive,
   };
 }
 

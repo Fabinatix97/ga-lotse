@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -12,7 +12,7 @@ import {
 import { Typography } from "@mui/joy";
 
 import { useCloseValidationTask } from "@/lib/baseModule/api/mutations/gdpr";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface UseCloseValidationTaskDialogProps {
   gdprValidationTaskApi: GdprValidationTaskApiInterface;

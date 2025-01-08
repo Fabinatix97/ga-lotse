@@ -1,25 +1,13 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 import { FormLabel, getFormLabelUtilityClass, useTheme } from "@mui/joy";
 import { PropsWithChildren } from "react";
 
-export function Legend({
-  children,
-  variant = "group",
-}: PropsWithChildren<{ variant?: "group" | "single" }>) {
+export function Legend({ children }: PropsWithChildren) {
   const theme = useTheme();
-  const groupLegendStyles = {
-    fontWeight: 400,
-    fontSize: theme.fontSize.md,
-  };
-  const singleLegendStyles = {
-    fontWeight: theme.fontWeight.md,
-  };
-  const extraLegendStyles =
-    variant === "group" ? groupLegendStyles : singleLegendStyles;
 
   if (children == null) {
     return null;
@@ -34,7 +22,8 @@ export function Legend({
       sx={{
         padding: 0,
         margin: "0 0 0.375rem 0",
-        ...extraLegendStyles,
+        fontSize: theme.fontSize.sm,
+        fontWeight: theme.fontWeight.md,
       }}
     >
       {children}

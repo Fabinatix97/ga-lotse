@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -27,6 +27,8 @@ public final class MedicalRegistryPublicSecurityConfig extends AbstractPublicSec
                 + MedicalRegistry.CITIZEN_PORTAL_ENDPOINT
                 + "/**")
         .permitAll();
+
+    requestMatchers(HttpMethod.GET, MedicalRegistry.FEATURE_TOGGLES_CONTROLLER + "/**").permitAll();
 
     requestMatchers(HttpMethod.GET, MedicalRegistry.CITIZEN_PORTAL_ENDPOINT + "/privacy-notice")
         .permitAll();

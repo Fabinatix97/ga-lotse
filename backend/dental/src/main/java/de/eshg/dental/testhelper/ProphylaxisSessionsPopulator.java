@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -19,6 +19,7 @@ import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.domain.repository.ExaminationRepository;
 import de.eshg.dental.domain.repository.ProphylaxisSessionRepository;
+import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.ListWithTotalNumber;
 import de.eshg.testhelper.population.PopulateWithAccessTokenHelper;
@@ -123,7 +124,7 @@ public class ProphylaxisSessionsPopulator
 
   private void randomExaminations(Faker faker) {
     List<Examination> someExaminations =
-        randomElements(faker, examinationRepository.findAllByOrderById());
+        randomElements(faker, examinationRepository.findAllByChildStatus(ProcedureStatus.OPEN));
 
     for (Examination examination : someExaminations) {
       UpdateExaminationRequest request =

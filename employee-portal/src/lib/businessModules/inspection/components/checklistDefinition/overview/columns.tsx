@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,6 +7,7 @@ import {
   ApiChecklistDefinition,
   ApiChecklistDefinitionVersion,
 } from "@eshg/employee-portal-api/inspection";
+import { ConfirmationDialogProps } from "@eshg/lib-portal/components/confirmationDialog/BaseConfirmationDialog";
 import { Snackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import {
@@ -35,7 +36,6 @@ import {
   ActionsItem,
   ActionsMenu,
 } from "@/lib/shared/components/buttons/ActionsMenu";
-import { ConfirmationDialogProps } from "@/lib/shared/components/confirmationDialog/ConfirmationDialog";
 
 const columnHelper = createColumnHelper<ApiChecklistDefinition>();
 

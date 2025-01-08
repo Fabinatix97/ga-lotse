@@ -1,14 +1,15 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import {
   GetProphylaxisSessionRequest,
   GetProphylaxisSessionsRequest,
+  ProphylaxisSessionApi,
 } from "@eshg/employee-portal-api/dental";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useProphylaxisSessionApi } from "@/lib/businessModules/dental/api/clients";
 import { mapProphylaxisSession } from "@/lib/businessModules/dental/api/models/ProphylaxisSession";
@@ -35,12 +36,11 @@ export function useGetProphylaxisSessions(
   });
 }
 
-export function useGetProphylaxisSession(
+export function getProphylaxisSessionQuery(
+  prophylaxisSessionApi: ProphylaxisSessionApi,
   request: GetProphylaxisSessionRequest,
 ) {
-  const prophylaxisSessionApi = useProphylaxisSessionApi();
-
-  return useSuspenseQuery({
+  return queryOptions({
     queryKey: prophylaxisSessionApiQueryKey(["getProphylaxisSession", request]),
     queryFn: () =>
       prophylaxisSessionApi
@@ -48,4 +48,14 @@ export function useGetProphylaxisSession(
         .then(unwrapRawResponse),
     select: mapProphylaxisSessionDetails,
   });
+}
+
+export function useGetProphylaxisSession(
+  request: GetProphylaxisSessionRequest,
+) {
+  const prophylaxisSessionApi = useProphylaxisSessionApi();
+
+  return useSuspenseQuery(
+    getProphylaxisSessionQuery(prophylaxisSessionApi, request),
+  );
 }

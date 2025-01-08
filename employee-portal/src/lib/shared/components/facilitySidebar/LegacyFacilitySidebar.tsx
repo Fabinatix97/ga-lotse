@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -11,7 +11,6 @@ import { isNullish } from "remeda";
 
 import { useAddFacility } from "@/lib/baseModule/api/mutations/facility";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { FacilityForm } from "@/lib/shared/components/facilitySidebar/FacilityForm";
 import { FacilitySearch } from "@/lib/shared/components/facilitySidebar/search/FacilitySearch";
 import { BaseFacility } from "@/lib/shared/components/facilitySidebar/types";
@@ -25,6 +24,7 @@ import {
   createEmptyContactPerson,
   mapApiContactPersonToForm,
 } from "@/lib/shared/helpers/facilityUtils";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export enum Mode {
   search,

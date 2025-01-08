@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,8 +7,8 @@ import {
   ApiBusinessModule,
   ApiVersion,
 } from "@eshg/employee-portal-api/opendata";
+import { ConfirmationDialogOptions } from "@eshg/lib-portal/components/confirmationDialog/ConfirmationDialogProvider";
 
-import { ConfirmationDialogOptions } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { buildOptionsFromBusinessModules } from "@/lib/shared/components/procedures/helper";
 
 export function buildOpenDataBusinessModuleOptions() {

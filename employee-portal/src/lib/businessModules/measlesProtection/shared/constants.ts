@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -37,4 +37,5 @@ export const APPOINTMENT_TYPES: EnumMap<ApiAppointmentType> = {
   [ApiAppointmentType.HivStiConsultation]: "HIV-STI-Beratung",
   [ApiAppointmentType.SexWork]: "Sexarbeit",
   [ApiAppointmentType.ResultsReview]: "Ergebnisbesprechung",
+  [ApiAppointmentType.OfficialMedicalService]: "Amtsärtzlicher Dienst",
 };

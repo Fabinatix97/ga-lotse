@@ -11,5 +11,6 @@ openapiGenerator {
     'schoolEntry' : backendDir.file('school-entry/openApi.yaml'), // TODO: use separate OpenAPI specification for citizen-portal
     'travelMedicine' : backendDir.file('travel-medicine/openApi.yaml'), // TODO: use separate OpenAPI specification for citizen-portal
     'officialMedicalService' : backendDir.file('official-medical-service/openApi.yaml'), // TODO: use separate OpenAPI specification for citizen-portal
+    'medicalRegistry' : backendDir.file('medical-registry/openApi.yaml'), // TODO: use separate OpenAPI specification for citizen-portal
   ]
 }

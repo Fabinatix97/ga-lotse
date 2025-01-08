@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -13,7 +13,6 @@ import { Button, Stack } from "@mui/joy";
 import { useRef, useState } from "react";
 
 import { PROCEDURE_TYPE_OPTIONS_EXCLUDING_DRAFT } from "@/lib/businessModules/schoolEntry/features/procedures/options";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
@@ -30,6 +29,7 @@ import {
   SearchPersonFormValues,
 } from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export default function PersonSidebarPage() {
   const [sidebarOpen, setSidebarOpen] = useState("none");

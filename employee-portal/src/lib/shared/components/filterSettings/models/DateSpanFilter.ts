@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -9,6 +9,7 @@ import { FilterValueBase } from "@/lib/shared/components/filterSettings/models/F
 export interface DateSpanFilterDefinition extends FilterDefinitionBase {
   type: "DateSpan";
   maxInputPast?: boolean;
+  doNotRequireStartAndEnd?: boolean;
 }
 
 export interface DateSpanFilterValue extends FilterValueBase {

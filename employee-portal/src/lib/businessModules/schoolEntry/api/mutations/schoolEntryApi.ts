@@ -1,11 +1,12 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import {
   ApiAddCustodianRequest,
   ApiAnamnesis,
+  ApiCloseProcedureRequest,
   ApiCreateAppointmentsBulkRequest,
   ApiCreateMedicalReportRequest,
   ApiCreateProcedureRequest,
@@ -14,13 +15,13 @@ import {
   ApiEyeExaminationResult,
   ApiHearingTestResult,
   ApiRemoveCustodianRequest,
+  ApiReopenProcedureRequest,
   ApiSopessExaminationResult,
   ApiSyncPersonRequest,
   ApiUpdatePersonRequest,
   ApiVaccinationStatus,
-  CloseProcedureRequest,
+  ApiWaitingRoom,
   DeleteProcedureRequest,
-  ReopenProcedureRequest,
   UpdateAnamnesisRequest,
   UpdateChildDataRequest,
   UpdateDevelopmentScreeningResultRequest,
@@ -29,7 +30,6 @@ import {
   UpdateProcedureRequest,
   UpdateSopessExaminationResultRequest,
   UpdateVaccinationStatusRequest,
-  UpdateWaitingRoomDetailsRequest,
 } from "@eshg/employee-portal-api/schoolEntry";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
@@ -246,17 +246,25 @@ export function useUpdateCustodian(
 ) {
   const schoolEntryApi = useSchoolEntryApi();
   const snackbar = useSnackbar();
+  const { queryKey } = getProcedureQuery(schoolEntryApi, procedureId);
+  const queryClient = useQueryClient();
+
   return useHandledMutation({
+    meta: {
+      updatesQuery: queryKey,
+    },
     mutationFn: (request: ApiUpdatePersonRequest) =>
-      schoolEntryApi.updateCustodianRaw({
+      schoolEntryApi.updateCustodian(
         procedureId,
         custodianCentralFileStateId,
-        apiUpdatePersonRequest: request,
-      }),
-    onSuccess: () =>
+        request,
+      ),
+    onSuccess: (response) => {
+      queryClient.setQueryData(queryKey, response);
       snackbar.confirmation(
         "Die Änderungen zum PSB wurden erfolgreich gespeichert.",
-      ),
+      );
+    },
   });
 }
 
@@ -285,24 +293,45 @@ export function useRemoveCustodian(
   });
 }
 
-export function useCloseProcedure() {
+export function useCloseProcedure(procedureId: string) {
   const schoolEntryApi = useSchoolEntryApi();
+  const { queryKey } = getProcedureQuery(schoolEntryApi, procedureId);
+  const queryClient = useQueryClient();
   const snackbar = useSnackbar();
   return useHandledMutation({
-    mutationFn: (values: CloseProcedureRequest) =>
-      schoolEntryApi.closeProcedureRaw(values).then(unwrapRawResponse),
-    onSuccess: () => snackbar.confirmation("Vorgang erfolgreich geschlossen."),
+    meta: { updatesQuery: queryKey },
+    mutationFn: (apiCloseProcedureRequest: ApiCloseProcedureRequest) =>
+      schoolEntryApi
+        .closeProcedureRaw({
+          procedureId: procedureId,
+          apiCloseProcedureRequest,
+        })
+        .then(unwrapRawResponse),
+    onSuccess: (response) => {
+      queryClient.setQueryData(queryKey, response);
+      snackbar.confirmation("Vorgang erfolgreich geschlossen.");
+    },
   });
 }
 
-export function useReopenProcedure() {
+export function useReopenProcedure(procedureId: string) {
   const schoolEntryApi = useSchoolEntryApi();
+  const { queryKey } = getProcedureQuery(schoolEntryApi, procedureId);
+  const queryClient = useQueryClient();
   const snackbar = useSnackbar();
   return useHandledMutation({
-    mutationFn: (values: ReopenProcedureRequest) =>
-      schoolEntryApi.reopenProcedureRaw(values).then(unwrapRawResponse),
-    onSuccess: () =>
-      snackbar.confirmation("Vorgang erfolgreich wiedereröffnet."),
+    meta: { updatesQuery: queryKey },
+    mutationFn: (apiReopenProcedureRequest: ApiReopenProcedureRequest) =>
+      schoolEntryApi
+        .reopenProcedureRaw({
+          procedureId,
+          apiReopenProcedureRequest,
+        })
+        .then(unwrapRawResponse),
+    onSuccess: (response) => {
+      queryClient.setQueryData(queryKey, response);
+      snackbar.confirmation("Vorgang erfolgreich wiedereröffnet.");
+    },
   });
 }
 
@@ -338,15 +367,26 @@ export function useCreateSchoolInfoLetter(procedureId: string) {
   });
 }
 
-export function useUpdateWaitingRoomDetails() {
+export function useUpdateWaitingRoomDetails(procedureId: string) {
   const schoolEntryApi = useSchoolEntryApi();
+  const { queryKey } = getProcedureQuery(schoolEntryApi, procedureId);
+  const queryClient = useQueryClient();
   const snackbar = useSnackbar();
   return useHandledMutation({
-    mutationFn: (request: UpdateWaitingRoomDetailsRequest) =>
+    meta: { updatesQuery: queryKey },
+    mutationFn: (apiWaitingRoom: ApiWaitingRoom) =>
       schoolEntryApi
-        .updateWaitingRoomDetailsRaw(request)
+        .updateWaitingRoomDetailsRaw({ procedureId, apiWaitingRoom })
         .then(unwrapRawResponse),
-    onSuccess: () =>
-      snackbar.confirmation("Wartezimmmer Informationen erfolgreich geändert."),
+    onSuccess: (response) => {
+      queryClient.setQueryData(queryKey, (procedureResponse) => {
+        if (procedureResponse === undefined) {
+          return undefined;
+        }
+
+        return { ...procedureResponse, waitingRoom: response };
+      });
+      snackbar.confirmation("Wartezimmmer Informationen erfolgreich geändert.");
+    },
   });
 }

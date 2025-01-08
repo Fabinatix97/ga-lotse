@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -7,6 +7,7 @@ package de.eshg.medicalregistry;
 
 import de.eshg.lib.common.BusinessModule;
 import de.eshg.medicalregistry.config.MedicalRegistryProperties;
+import de.eshg.medicalregistry.featuretoggle.MedicalRegistryFeatureToggle;
 import de.eshg.rest.service.security.config.MedicalRegistryPublicSecurityConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,7 +17,10 @@ import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
 @Import(MedicalRegistryPublicSecurityConfig.class)
-@EnableConfigurationProperties(MedicalRegistryProperties.class)
+@EnableConfigurationProperties({
+  MedicalRegistryProperties.class,
+  MedicalRegistryFeatureToggle.class
+})
 public class MedicalRegistryApplication {
 
   @Bean

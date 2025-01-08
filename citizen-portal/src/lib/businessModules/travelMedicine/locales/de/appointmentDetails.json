@@ -36,7 +36,15 @@
     "answered": "erfolgreich übermittelt",
     "answerNow": "Jetzt ausfüllen"
   },
-  "snackbar": {
-    "cancelAppointmentConfirmation": "Der Termin wurde abgesagt."
+  "deleteAppointment": {
+    "cancelModal": {
+      "title": "Termin absagen?",
+      "description": "Sind Sie sicher, dass Sie Ihren Termin absagen möchten? Sie können danach jederzeit einen neuen Termin vereinbaren.",
+      "confirmLabel": "Ja, absagen",
+      "cancelLabel": "Beibehalten"
+    },
+    "snackbar": {
+      "cancelAppointmentConfirmation": "Der Termin wurde abgesagt."
+    }
   }
 }

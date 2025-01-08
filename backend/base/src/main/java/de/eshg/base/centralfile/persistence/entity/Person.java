@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -7,6 +7,8 @@ package de.eshg.base.centralfile.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.eshg.base.address.persistence.entity.Address;
+import de.eshg.base.bundid.persistence.entity.BundIdPersonLink;
+import de.eshg.base.bundid.persistence.entity.BundIdPersonLink_;
 import de.eshg.base.centralfile.CentralFileData;
 import de.eshg.base.util.Gender;
 import de.eshg.base.util.Salutation;
@@ -110,6 +112,13 @@ public class Person extends SequencedBaseEntityWithExternalId implements Central
   @OneToOne(cascade = CascadeType.PERSIST, orphanRemoval = true)
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private PersonAddress differentBillingAddress;
+
+  @OneToOne(
+      cascade = CascadeType.REMOVE,
+      orphanRemoval = true,
+      mappedBy = BundIdPersonLink_.REFERENCE_PERSON)
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  private BundIdPersonLink bundIdPersonLink;
 
   public Instant getCreatedAt() {
     return createdAt;
@@ -359,6 +368,10 @@ public class Person extends SequencedBaseEntityWithExternalId implements Central
 
   public void setDifferentBillingAddress(PersonAddress differentBillingAddress) {
     this.differentBillingAddress = differentBillingAddress;
+  }
+
+  public void setBundIdPersonLink(BundIdPersonLink bundIdPersonLink) {
+    this.bundIdPersonLink = bundIdPersonLink;
   }
 
   @Override

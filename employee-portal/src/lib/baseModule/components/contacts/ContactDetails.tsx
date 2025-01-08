@@ -1,10 +1,16 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { ApiBaseFeature, ApiUserRole } from "@eshg/employee-portal-api/base";
-import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
+import {
+  GENDER_VALUES,
+  SALUTATION_VALUES,
+  getOptionalTitle,
+} from "@eshg/lib-portal/components/formFields/constants";
+import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import { Divider, Stack, Typography } from "@mui/joy";
 import { isDefined, isNonNullish } from "remeda";
 
@@ -16,6 +22,7 @@ import {
   isPersonContact,
 } from "@/lib/baseModule/components/contacts/types";
 import { contactCategoryNames } from "@/lib/baseModule/shared/translations";
+import { ChatUserId } from "@/lib/businessModules/chat/components/ChatUserId";
 import { routes } from "@/lib/businessModules/chat/shared/routes";
 import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
 import { BaseAddressDetails } from "@/lib/shared/components/address/BaseAddressDetails";
@@ -29,11 +36,6 @@ import {
   emailHref,
   phoneHref,
 } from "@/lib/shared/components/detailsSection/ExternalLinkDetailsCell";
-import {
-  GENDER_VALUES,
-  SALUTATION_VALUES,
-  getOptionalTitle,
-} from "@/lib/shared/components/personSidebar/constants";
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 export function ContactDetails({ contact }: { contact: Contact }) {
@@ -98,20 +100,33 @@ export function ContactDetails({ contact }: { contact: Contact }) {
                 />
               )}
 
-              {showChatUsername && (
-                <DetailsCell
-                  name={"externalChatUsername"}
-                  label={"Chat Nutzername"}
-                  value={
-                    isNonNullish(contact.externalChatUsername) ? (
-                      <InternalLink
-                        href={routes.userRoom(contact.externalChatUsername)}
-                      >
-                        {contact.externalChatUsername}
-                      </InternalLink>
-                    ) : undefined
-                  }
-                />
+              {showChatUsername && contact.externalChatUsername && (
+                <>
+                  <DetailsCell
+                    name={"externalChatUsername"}
+                    label={"Chat-ID"}
+                    valueIsDiv
+                    value={
+                      <ChatUserId
+                        userId={contact.externalChatUsername}
+                        noLabel
+                        isParagraph
+                      />
+                    }
+                  />
+                  <InternalLinkButton
+                    href={routes.userRoom(contact.externalChatUsername)}
+                    startDecorator={<ChatOutlinedIcon />}
+                    variant="outlined"
+                    sx={{
+                      alignSelf: "flex-start",
+                      maxWidth: "100%",
+                      mt: 1,
+                    }}
+                  >
+                    Direktnachricht
+                  </InternalLinkButton>
+                </>
               )}
             </>
           )}

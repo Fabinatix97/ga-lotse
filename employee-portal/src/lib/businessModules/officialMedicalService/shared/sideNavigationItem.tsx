@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -22,6 +22,11 @@ export function useSideNavigationItems(): UseSideNavigationItemsResult {
           {
             name: "Vorgänge",
             href: routes.procedures.index,
+            accessCheck: hasUserRole(ApiUserRole.OfficialMedicalServiceAdmin),
+          },
+          {
+            name: "Terminblöcke",
+            href: routes.appointmentBlockGroups.index,
             accessCheck: hasUserRole(ApiUserRole.OfficialMedicalServiceAdmin),
           },
         ].filter(isPlainObject),

@@ -49,5 +49,19 @@
     "dr": "Dr.",
     "prof": "Prof.",
     "prof_dr": "Prof. Dr."
+  },
+  "confirmationDialog": {
+    "title": "Save changes?",
+    "description": "Are you sure you want to save all changes?",
+    "confirmLabel": "Save",
+    "cancelLabel": "Cancel"
+  },
+  "cancelDialog": {
+    "title": "Discard changes?",
+    "description": "Are you sure you want to discard all changes?",
+    "confirmLabel": "Discard"
+  },
+  "error": {
+    "title": "Error loading"
   }
 }

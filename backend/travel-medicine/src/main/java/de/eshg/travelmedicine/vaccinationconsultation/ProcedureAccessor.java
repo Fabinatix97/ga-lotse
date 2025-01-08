@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -118,8 +118,7 @@ public class ProcedureAccessor {
     final VaccinationConsultation vaccinationConsultation =
         vaccinationConsultationRepository
             .findByExternalId(procedureId)
-            .orElseThrow(
-                () -> new NotFoundException("Vaccination consultation not found: " + procedureId));
+            .orElseThrow(() -> new NotFoundException("Vaccination consultation not found"));
     if (procedureChecks != null) {
       procedureChecks.forEach(c -> c.applyCheck(vaccinationConsultation));
     }
@@ -150,19 +149,13 @@ public class ProcedureAccessor {
     final ProcedureStep procedureStep =
         procedureStepRepository
             .findById(procedureStepId)
-            .orElseThrow(
-                () -> new NotFoundException("Procedure step not found: " + procedureStepId));
+            .orElseThrow(() -> new NotFoundException("Procedure step not found"));
 
     VaccinationConsultation vaccinationConsultation = procedureStep.getVaccinationConsultation();
 
     if (procedureId != null) {
       if (!vaccinationConsultation.getExternalId().equals(procedureId)) {
-        throw new NotFoundException(
-            "The procedure step "
-                + procedureStepId
-                + " is not part of the procedure "
-                + procedureId
-                + ".");
+        throw new NotFoundException("The given procedure step is not part of the procedure.");
       }
     }
 
@@ -182,14 +175,13 @@ public class ProcedureAccessor {
     final VcService service =
         serviceRepository
             .findById(serviceId)
-            .orElseThrow(() -> new NotFoundException("Service not found: " + serviceId));
+            .orElseThrow(() -> new NotFoundException("Service not found."));
 
     VaccinationConsultation vaccinationConsultation = service.getVaccinationConsultation();
 
     if (procedureId != null) {
       if (!vaccinationConsultation.getExternalId().equals(procedureId)) {
-        throw new NotFoundException(
-            "The service " + serviceId + " is not part of the procedure " + procedureId + ".");
+        throw new NotFoundException("The given service is not part of the procedure.");
       }
     }
 
@@ -209,18 +201,13 @@ public class ProcedureAccessor {
     final Vaccination vaccination =
         vaccinationRepository
             .findById(vaccinationId)
-            .orElseThrow(() -> new NotFoundException("Vaccination not found: " + vaccinationId));
+            .orElseThrow(() -> new NotFoundException("Vaccination not found."));
 
     VaccinationConsultation vaccinationConsultation = vaccination.getVaccinationConsultation();
 
     if (procedureId != null) {
       if (!vaccinationConsultation.getExternalId().equals(procedureId)) {
-        throw new NotFoundException(
-            "The vaccination "
-                + vaccinationId
-                + " is not part of the procedure "
-                + procedureId
-                + ".");
+        throw new NotFoundException("The given vaccination is not part of the procedure.");
       }
     }
 
@@ -240,18 +227,13 @@ public class ProcedureAccessor {
     final OtherService otherService =
         otherServiceRepository
             .findById(otherServiceId)
-            .orElseThrow(() -> new NotFoundException("Other service not found: " + otherServiceId));
+            .orElseThrow(() -> new NotFoundException("Other service not found"));
 
     VaccinationConsultation vaccinationConsultation = otherService.getVaccinationConsultation();
 
     if (procedureId != null) {
       if (!vaccinationConsultation.getExternalId().equals(procedureId)) {
-        throw new NotFoundException(
-            "The other service "
-                + otherServiceId
-                + " is not part of the procedure "
-                + procedureId
-                + ".");
+        throw new NotFoundException("The given other service is not part of the procedure.");
       }
     }
 
@@ -271,8 +253,7 @@ public class ProcedureAccessor {
     final MedicalHistory medicalHistory =
         medicalHistoryRepository
             .findById(medicalHistoryId)
-            .orElseThrow(
-                () -> new NotFoundException("Medical history not found: " + medicalHistoryId));
+            .orElseThrow(() -> new NotFoundException("Medical history not found."));
 
     VaccinationConsultation vaccinationConsultation =
         medicalHistoryRepository
@@ -280,18 +261,11 @@ public class ProcedureAccessor {
             .orElseThrow(
                 () ->
                     new NotFoundException(
-                        "The medical history "
-                            + medicalHistoryId
-                            + " doesn't belong to any procedure."));
+                        "The given medical history doesn't belong to any procedure."));
 
     if (procedureId != null) {
       if (!vaccinationConsultation.getExternalId().equals(procedureId)) {
-        throw new NotFoundException(
-            "The medical history "
-                + medicalHistoryId
-                + " is not part of the procedure "
-                + procedureId
-                + ".");
+        throw new NotFoundException("The medical history is not part of the procedure.");
       }
     }
 
@@ -312,19 +286,14 @@ public class ProcedureAccessor {
     final Certificate certificate =
         certificateRepository
             .findById(certificateId)
-            .orElseThrow(() -> new NotFoundException("Certificate not found: " + certificateId));
+            .orElseThrow(() -> new NotFoundException("Certificate not found"));
 
     VaccinationConsultation vaccinationConsultation =
         certificate.getProcedureStep().getVaccinationConsultation();
 
     if (procedureId != null) {
       if (!vaccinationConsultation.getExternalId().equals(procedureId)) {
-        throw new NotFoundException(
-            "The Certificate "
-                + certificateId
-                + " is not part of the procedure "
-                + procedureId
-                + ".");
+        throw new NotFoundException("The given Certificate is not part of the procedure.");
       }
     }
 
@@ -344,22 +313,14 @@ public class ProcedureAccessor {
     final InformationStatement informationStatement =
         informationStatementRepository
             .findById(informationStatementId)
-            .orElseThrow(
-                () ->
-                    new NotFoundException(
-                        "InformationStatement not found: " + informationStatementId));
+            .orElseThrow(() -> new NotFoundException("InformationStatement not found"));
 
     VaccinationConsultation vaccinationConsultation =
         informationStatement.getVaccinationConsultation();
 
     if (procedureId != null) {
       if (!vaccinationConsultation.getExternalId().equals(procedureId)) {
-        throw new NotFoundException(
-            "The Information Statement "
-                + informationStatementId
-                + " is not part of the procedure "
-                + procedureId
-                + ".");
+        throw new NotFoundException("The Information Statement is not part of the procedure.");
       }
     }
 

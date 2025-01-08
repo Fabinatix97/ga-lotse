@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -17,13 +17,13 @@ import { useDeleteGeoShape } from "@/lib/businessModules/statistics/api/mutation
 import { useGetGeoShapes } from "@/lib/businessModules/statistics/api/queries/useGetGeoShapes";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { usePagination } from "@/lib/shared/hooks/table/usePagination";
 import { useTableSorting } from "@/lib/shared/hooks/table/useTableSorting";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 import { geoShapeTableColumns } from "./columns";
 

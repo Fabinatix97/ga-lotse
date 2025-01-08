@@ -1,9 +1,11 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package de.eshg.keycloak.providers;
+
+import static org.keycloak.models.UserModel.COMPARE_BY_USERNAME;
 
 import de.eshg.keycloak.api.user.model.BulkGetUsersRequest;
 import de.eshg.keycloak.api.user.model.CredentialRequest;
@@ -38,8 +40,6 @@ import org.keycloak.services.resources.admin.permissions.AdminPermissionEvaluato
 
 @Extension(name = KeycloakOpenAPI.Profiles.ADMIN, value = "")
 public class ExtendedUserResource {
-  public static final Comparator<UserModel> SORT_BY_USERNAME =
-      Comparator.comparing(UserModel::getUsername);
   private final KeycloakSession session;
   private final RealmModel realm;
   private final AdminPermissionEvaluator auth;
@@ -90,7 +90,7 @@ public class ExtendedUserResource {
                         || user.getGroupsStream()
                             .map(GroupModel::getName)
                             .anyMatch(groups::contains))
-            .sorted(SORT_BY_USERNAME)
+            .sorted(COMPARE_BY_USERNAME)
             .map(
                 user -> {
                   List<String> groupNames =
@@ -121,7 +121,7 @@ public class ExtendedUserResource {
     List<KeycloakApiUserDto> roleMembers =
         getAllUserStream(userProvider, request.searchTerm())
             .filter(user -> role == null || user.hasRole(role))
-            .sorted(SORT_BY_USERNAME)
+            .sorted(COMPARE_BY_USERNAME)
             .map(this::getRepresentation)
             .map(KeycloakMapper::mapUserToApi)
             .toList();
@@ -227,8 +227,11 @@ public class ExtendedUserResource {
   private UserModel getUserByIdOrThrow(
       UserProvider userProvider, String id, boolean ignoreUnknownId) {
     UserModel user = userProvider.getUserById(realm, id);
+    if (user != null && user.getServiceAccountClientLink() != null) {
+      user = null;
+    }
     if (user == null && !ignoreUnknownId) {
-      throw new NotFoundException("User with id '%s' not found".formatted(id));
+      throw new NotFoundException("User with given id not found");
     }
     return user;
   }

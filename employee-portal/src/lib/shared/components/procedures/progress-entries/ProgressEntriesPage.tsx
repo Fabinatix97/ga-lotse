@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -8,10 +8,10 @@
 import { DeleteOutlined } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import { Button, Divider, Grid, Sheet, Stack, Typography } from "@mui/joy";
-import { useState } from "react";
-import { isDefined } from "remeda";
+import { useContext, useState } from "react";
 
 import { useGetUsersByGroupQuery } from "@/lib/baseModule/api/queries/users";
+import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
@@ -28,6 +28,7 @@ import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 import { FileCardWithActions } from "./FileCardWithActions";
 import {
+  ProgressEntriesContext,
   ProgressEntriesProvider,
   useHasDeletionRights,
   useIsReadOnly,
@@ -45,7 +46,6 @@ export function ProgressEntriesPage({
   useFetchProgressEntries,
   useFetchProgressEntryDetails,
   procedureId,
-  progressEntryId,
   searchParams,
   additionalKeyDocumentTypes,
   ...props
@@ -87,25 +87,15 @@ export function ProgressEntriesPage({
         ...props,
       }}
     >
-      <ProgressEntriesPageComponent
-        procedureId={procedureId}
-        progressEntryId={progressEntryId}
-      />
+      <ProgressEntriesPageComponent />
     </ProgressEntriesProvider>
   );
 }
 
-interface ProgressEntriesPageComponentProps {
-  procedureId: string;
-  progressEntryId: string | undefined;
-}
-
-export function ProgressEntriesPageComponent({
-  procedureId,
-  progressEntryId,
-}: ProgressEntriesPageComponentProps) {
-  const { filterSettings, routes, useFetchProgressEntryDetails } =
-    useProgressEntriesConfig();
+export function ProgressEntriesPageComponent() {
+  const progressEntriesContext = useContext(ProgressEntriesContext);
+  const { filterSettings } = progressEntriesContext.config;
+  const { entryIdForDetails } = progressEntriesContext.state;
   const [showCreateProgressEntrySidebar, setShowCreateProgressEntrySidebar] =
     useState(false);
   const [showFilesSidebar, setShowFilesSidebar] = useState(false);
@@ -209,13 +199,10 @@ export function ProgressEntriesPageComponent({
           onClose={closeApprovalRequestsSidebar}
         />
       )}
-      {isDefined(progressEntryId) ? (
-        <ProgressEntryDetailsSidebar
-          procedureId={procedureId}
-          progressEntryId={progressEntryId}
-          route={routes.progressEntries}
-          useFetchProgressEntryDetails={useFetchProgressEntryDetails}
-        />
+      {entryIdForDetails !== null ? (
+        <OverlayBoundary>
+          <ProgressEntryDetailsSidebar progressEntryId={entryIdForDetails} />
+        </OverlayBoundary>
       ) : null}
       <FileDeletionModal />
     </>

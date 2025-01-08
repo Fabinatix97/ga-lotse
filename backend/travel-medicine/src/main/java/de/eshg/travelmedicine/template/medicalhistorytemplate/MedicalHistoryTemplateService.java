@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -79,7 +79,7 @@ public class MedicalHistoryTemplateService {
 
   public void deleteMedicalHistoryTemplate(UUID id) {
     if (!medicalHistoryTemplateRepository.existsById(id)) {
-      throw new NotFoundException("Medical History Template not found: " + id);
+      throw new NotFoundException("Medical History Template not found");
     }
     medicalHistoryTemplateRepository.deleteById(id);
 

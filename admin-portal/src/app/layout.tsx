@@ -1,14 +1,16 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { EnvironmentTypeProvider } from "@eshg/lib-portal/components/EnvironmentTypeProvider";
 import { NonceProvider } from "@eshg/lib-portal/components/NonceProvider";
 import { getNonceFromHeader } from "@eshg/lib-portal/next/contentSecurityPolicyHeaderMiddleware";
 import { Box } from "@mui/joy";
 import type { Metadata } from "next";
 import { ReactNode } from "react";
 
+import { env } from "@/env/server";
 import { ApiProvider } from "@/lib/components/layout/ApiProvider";
 import { MainLayoutWithProviders } from "@/lib/components/layout/MainLayout";
 import { ThemeProvider } from "@/lib/components/layout/theme/ThemeProvider";
@@ -112,7 +114,11 @@ export default function RootLayout({
               Bitte aktivieren Sie JavaScript, um diese Anwendung zu nutzen.
             </noscript>
             <ApiProvider>
-              <MainLayoutWithProviders>{children}</MainLayoutWithProviders>
+              <EnvironmentTypeProvider
+                environmentType={env.PUBLIC_ENVIRONMENT_TYPE}
+              >
+                <MainLayoutWithProviders>{children}</MainLayoutWithProviders>
+              </EnvironmentTypeProvider>
             </ApiProvider>
           </Box>
         </ThemeProvider>

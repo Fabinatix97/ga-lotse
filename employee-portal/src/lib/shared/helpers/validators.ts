@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -11,20 +11,11 @@ import { isValidURL } from "@eshg/lib-portal/helpers/url";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { endOfDay, isPast } from "date-fns";
 import { FormikErrors } from "formik";
-import { isEmpty, isNullish } from "remeda";
+import { isEmpty } from "remeda";
 
 import { isInteger } from "@/lib/shared/helpers/guards";
 
 import { isDateTimeString, isTimeString } from "./dateTime";
-import {
-  fileExtensionChanged,
-  fileHasAcceptedExtension,
-  fileIsTooLarge,
-  fileNameIsTooLong,
-  fileNameIsValid,
-  formatFileSize,
-  getExtensionFromFileName,
-} from "./file";
 
 export function validateTodayOrFutureDate(value: string) {
   if (isDateString(value) && isPast(endOfDay(value))) {
@@ -162,47 +153,6 @@ export function validateFieldArray<TItem>(
   }
 
   return arrayErrors;
-}
-
-export function validateFile(
-  acceptedExtensions?: string[],
-  maxFileSize?: number,
-) {
-  function validateFile(file: File | null) {
-    if (isNullish(file)) return undefined;
-    if (!fileNameIsValid(file))
-      return "Bitte eine Datei mit gültigem Dateinamen auswählen.";
-    if (fileNameIsTooLong(file))
-      return "Bitte eine Datei mit einem kürzeren Dateinamen auswählen.";
-    if (!fileHasAcceptedExtension(file, acceptedExtensions))
-      return "Bitte eine Datei mit einer gültigen Dateiendung auswählen.";
-    if (fileIsTooLarge(file, maxFileSize))
-      return `Bitte eine Datei kleiner ${formatFileSize(maxFileSize!)} auswählen.`;
-    return undefined;
-  }
-
-  return validateFile;
-}
-
-export function validateFileName(existingFileName?: string) {
-  function validateFileName(fileName: string) {
-    if (isEmpty(fileName)) return undefined;
-
-    const file = new File([], fileName);
-    if (!fileNameIsValid(file))
-      return "Bitte einen gültigen Dateinamen auswählen.";
-    if (fileNameIsTooLong(file))
-      return "Bitte einen kürzeren Dateinamen auswählen.";
-    if (
-      existingFileName !== undefined &&
-      fileExtensionChanged(file, existingFileName)
-    ) {
-      return `Die ursprüngliche Dateiendung (.${getExtensionFromFileName(existingFileName)}) darf nicht verändert werden.`;
-    }
-    return undefined;
-  }
-
-  return validateFileName;
 }
 
 export function validateMatches(otherValue: string, errorMessage: string) {

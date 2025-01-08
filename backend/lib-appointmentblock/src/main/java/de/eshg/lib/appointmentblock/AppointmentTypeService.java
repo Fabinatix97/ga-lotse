@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -53,7 +53,7 @@ public class AppointmentTypeService {
     AppointmentTypeConfig appointmentTypeConfig =
         appointmentTypeRepository
             .findById(id)
-            .orElseThrow(() -> new NotFoundException("Appointment type not found: " + id));
+            .orElseThrow(() -> new NotFoundException("Appointment type not found"));
     appointmentTypeConfig.setStandardDurationInMinutes(request.standardDurationInMinutes());
     appointmentTypeRepository.save(appointmentTypeConfig);
 

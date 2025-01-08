@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -55,7 +55,9 @@ function RepositoryEvaluationTemplateDetailsSidebar({
             message="Eine Kopie der geteilten Auswertungsvorlage wird in die internen Vorlagen übernommen und bereitgestellt."
           />
           <Divider />
-          <Typography level="h3">{evaluationTemplateDetails.name}</Typography>
+          <Typography level="h3" component="h2">
+            {evaluationTemplateDetails.name}
+          </Typography>
           {isDefined(evaluationTemplateDetails.description) && (
             <Typography level="body-md">
               {evaluationTemplateDetails.description}

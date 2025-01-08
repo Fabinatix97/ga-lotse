@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -24,15 +24,15 @@ export const routes = defineRoutes("/dental", (dentalPath) => ({
     byId: (childId: string) =>
       defineRoutes(childrenPath(`/${childId}`), (childPath) => ({
         details: childPath("/details"),
-        examinations: childPath("/examinations"),
-        progressEntries: defineRoutes(
-          childPath("/progress-entries"),
-          (progressEntriesPath) => ({
-            overview: progressEntriesPath("/"),
-            byId: (progressEntryId: string) =>
-              progressEntriesPath(`/${progressEntryId}`),
+        examinations: defineRoutes(
+          childPath("/examinations"),
+          (examinationsPath) => ({
+            overview: examinationsPath("/"),
+            byId: (examinationId: string) =>
+              examinationsPath(`/${examinationId}`),
           }),
         ),
+        progressEntries: childPath("/progress-entries"),
       })),
   })),
 }));

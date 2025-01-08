@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -16,7 +16,7 @@ import { isDefined, isEmpty } from "remeda";
 import { Label } from "@/lib/businessModules/schoolEntry/api/models/Label";
 import { PROCEDURE_TYPE_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 import { LabelAutocomplete } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/LabelAutocomplete";
-import { SearchSchoolFilter } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/SearchSchoolFilter";
+import { SearchInstitutionFilter } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/SearchInstitutionFilter";
 import { ResetButton } from "@/lib/shared/components/ResetButton";
 import { ActiveFilter } from "@/lib/shared/components/filterSettings/ActiveFilter";
 import { FilterSettingsContent } from "@/lib/shared/components/filterSettings/FilterSettingsContent";
@@ -187,8 +187,8 @@ export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
         </FormControl>
         <FormControl>
           <FormLabel>Schule</FormLabel>
-          <SearchSchoolFilter
-            schoolId={props.filterFormValues.schoolIdFilter}
+          <SearchInstitutionFilter
+            institutionId={props.filterFormValues.schoolIdFilter}
             onChange={(schoolId) =>
               props.setFilterFormValue("schoolIdFilter", schoolId)
             }

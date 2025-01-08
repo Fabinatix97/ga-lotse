@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -8,10 +8,7 @@
 import { Box } from "@mui/joy";
 import { ReactNode } from "react";
 
-import {
-  headerHeightDesktop,
-  headerHeightMobile,
-} from "@/lib/baseModule/components/layout/sizes";
+import { useHeaderHeights } from "@/lib/baseModule/components/layout/useHeaderHeights";
 
 export interface StickyToolbarLayoutProps {
   children: ReactNode;
@@ -27,6 +24,7 @@ export interface StickyToolbarLayoutProps {
  * The MainContentLayout should be passed as children.
  */
 export function StickyToolbarLayout(props: StickyToolbarLayoutProps) {
+  const { headerHeightMobile, headerHeightDesktop } = useHeaderHeights();
   return (
     <>
       <Box

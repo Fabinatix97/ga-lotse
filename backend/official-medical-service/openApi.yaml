@@ -1,4 +1,4 @@
-# Copyright 2024 cronn GmbH
+# Copyright 2025 cronn GmbH
 # SPDX-License-Identifier: Apache-2.0
 
 openapi: 3.0.1
@@ -9,6 +9,165 @@ info:
 servers:
 - url: http://localhost:8099
 paths:
+  /appointment-blocks/appointment-block-groups:
+    get:
+      operationId: getAppointmentBlockGroups
+      parameters:
+      - in: query
+        name: sortKey
+        required: false
+        schema:
+          $ref: "#/components/schemas/AppointmentBlockSortKey"
+      - in: query
+        name: sortDirection
+        required: false
+        schema:
+          $ref: "#/components/schemas/SortDirection"
+      - in: query
+        name: pageNumber
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 0
+      - in: query
+        name: pageSize
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetAppointmentBlockGroupsResponse"
+          description: OK
+      summary: Get all appointment block groups.
+      tags:
+      - AppointmentBlock
+  /appointment-blocks/daily-appointment-block-groups:
+    post:
+      operationId: createDailyAppointmentBlocksForGroup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDailyAppointmentBlockGroupRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CreateAppointmentBlockGroupResponse"
+          description: OK
+      summary: Create appointment group with blocks for week days.
+      tags:
+      - AppointmentBlock
+  /appointment-blocks/daily-appointment-block-groups/validate:
+    post:
+      operationId: validateDailyAppointmentBlocksForGroup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDailyAppointmentBlockGroupRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ValidateAppointmentBlockGroupResponse"
+          description: OK
+      summary: Create appointment group with blocks for week days.
+      tags:
+      - AppointmentBlock
+  /appointment-blocks/free-appointments:
+    get:
+      operationId: getFreeAppointments
+      parameters:
+      - in: query
+        name: appointmentType
+        required: true
+        schema:
+          $ref: "#/components/schemas/AppointmentType"
+      - in: query
+        name: earliestDate
+        required: false
+        schema:
+          type: string
+          format: date-time
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetFreeAppointmentsResponse"
+          description: OK
+      summary: Get free appointments for an appointment type.
+      tags:
+      - AppointmentBlock
+  /appointment-types:
+    get:
+      operationId: getAppointmentTypes
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetAppointmentTypesResponse"
+          description: OK
+      summary: Gets all Appointment Types
+      tags:
+      - AppointmentType
+  /appointment-types/{id}:
+    get:
+      operationId: getOneAppointmentType
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AppointmentTypeConfig"
+          description: OK
+      summary: Gets one Appointment Type by ID
+      tags:
+      - AppointmentType
+    put:
+      operationId: updateAppointmentType
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAppointmentTypeRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AppointmentTypeConfig"
+          description: OK
+      summary: Modifies an existing Appointment Type
+      tags:
+      - AppointmentType
   /approval-requests/{approvalRequestId}:
     get:
       operationId: getApprovalRequest
@@ -355,6 +514,54 @@ paths:
       summary: Get details of an oms procedure
       tags:
       - EmployeeOmsProcedure
+  /employee/procedures/{id}/facility:
+    patch:
+      operationId: patchFacility
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchEmployeeOmsProcedureFacilityRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Updates a facility
+      tags:
+      - EmployeeOmsProcedure
+    post:
+      operationId: postFacility
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostEmployeeOmsProcedureFacilityRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+          description: OK
+      summary: Add facility to a draft oms procedure
+      tags:
+      - EmployeeOmsProcedure
   /employee/procedures/{id}/header:
     get:
       operationId: getEmployeeProcedureHeader
@@ -373,6 +580,28 @@ paths:
                 $ref: "#/components/schemas/EmployeeOmsProcedureHeader"
           description: OK
       summary: Get details of an oms procedure
+      tags:
+      - EmployeeOmsProcedure
+  /employee/procedures/{procedureId}/affected-person:
+    patch:
+      operationId: updateAffectedPerson
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchAffectedPersonRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Update affected person in an oms procedure
       tags:
       - EmployeeOmsProcedure
   /files/{fileId}:
@@ -1009,6 +1238,25 @@ paths:
                 $ref: "#/components/schemas/GetProceduresResponse"
           description: the users recent procedures
       summary: Get recent procedures for user
+      tags:
+      - Procedure
+  /procedures/check-file-state-usage:
+    post:
+      operationId: checkFileStateUsage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CheckFileStateUsageRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CheckFileStateUsageResponse"
+          description: OK
+      summary: Identify which file state IDs are still used by active procedures.
       tags:
       - Procedure
   /procedures/recent:
@@ -1677,6 +1925,19 @@ paths:
           description: OK
       tags:
       - TestHelper
+  /test-helper/population/administrative:
+    post:
+      operationId: populateAdministrative
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PostPopulateAdministrativeResponse"
+          description: OK
+      summary: Create administrative entities
+      tags:
+      - TestHelper
   /test-helper/population/procedure:
     post:
       operationId: populateProcedure
@@ -1814,9 +2075,8 @@ components:
       - $ref: "#/components/schemas/AbstractFileReference"
       - type: object
         properties:
-          attachedToMail:
+          '@type':
             type: string
-            format: uuid
           createdAt:
             type: string
             format: date-time
@@ -1835,10 +2095,7 @@ components:
           modifiedAt:
             type: string
             format: date-time
-      - type: object
-        properties:
-          '@type':
-            type: string
+      - $ref: "#/components/schemas/ApprovalRequestEntity"
       discriminator:
         propertyName: '@type'
       required:
@@ -1950,11 +2207,74 @@ components:
           type: string
           maxLength: 119
           minLength: 1
+        version:
+          type: integer
+          format: int64
       required:
       - contactAddress
       - dateOfBirth
       - firstName
       - lastName
+      - version
+    Appointment:
+      type: object
+      description: Appointment of a procedure.
+      properties:
+        end:
+          type: string
+          format: date-time
+        start:
+          type: string
+          format: date-time
+      required:
+      - end
+      - start
+    AppointmentBlockSortKey:
+      type: string
+      enum:
+      - START
+      - END
+    AppointmentLocation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+      required:
+      - id
+      - name
+    AppointmentType:
+      type: string
+      enum:
+      - CONSULTATION
+      - VACCINATION
+      - REGULAR_EXAMINATION
+      - CAN_CHILD
+      - ENTRY_LEVEL
+      - SPECIAL_NEEDS
+      - PROOF_SUBMISSION
+      - HIV_STI_CONSULTATION
+      - SEX_WORK
+      - RESULTS_REVIEW
+      - OFFICIAL_MEDICAL_SERVICE
+    AppointmentTypeConfig:
+      type: object
+      properties:
+        appointmentTypeDto:
+          $ref: "#/components/schemas/AppointmentType"
+        id:
+          type: string
+          format: uuid
+        standardDurationInMinutes:
+          type: integer
+          format: int32
+          minimum: 0
+      required:
+      - appointmentTypeDto
+      - id
+      - standardDurationInMinutes
     ApprovalRequest:
       type: object
       properties:
@@ -2113,75 +2433,28 @@ components:
       required:
       - businessProcedure
       - inclusionStatus
-    ConcreteFileDto:
+    CheckFileStateUsageRequest:
       type: object
-      allOf:
-      - $ref: "#/components/schemas/AbstractFile"
-      - type: object
-        properties:
-          '@type':
-            type: string
-      - $ref: "#/components/schemas/ConcreteFileOrFileReference"
-      - type: object
-        properties:
-          attachedToMail:
-            type: string
-            format: uuid
-          createdAt:
-            type: string
-            format: date-time
-          createdBy:
-            type: string
-            format: uuid
-          deletable:
-            type: boolean
-          deleted:
-            type: boolean
-          fileId:
-            type: string
-            format: uuid
-          fileName:
-            type: string
-          fileSizeBytes:
-            type: integer
-            format: int32
-          fileType:
-            $ref: "#/components/schemas/FileType"
-          locked:
-            type: boolean
-          modifiedAt:
-            type: string
-            format: date-time
-      - $ref: "#/components/schemas/ApprovalRequestEntity"
-      discriminator:
-        propertyName: '@type'
-      required:
-      - '@type'
-      - createdAt
-      - deletable
-      - deleted
-      - fileId
-      - fileName
-      - fileSizeBytes
-      - fileType
-      - locked
-      - modifiedAt
-    ConcreteFileOrFileReference:
-      type: object
-      discriminator:
-        propertyName: '@type'
       properties:
-        '@type':
-          type: string
-        deletable:
-          type: boolean
-        deleted:
-          type: boolean
-        fileId:
-          type: string
-          format: uuid
+        fileStatesIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+          maxItems: 2147483647
+          minItems: 1
       required:
-      - '@type'
+      - fileStatesIds
+    CheckFileStateUsageResponse:
+      type: object
+      properties:
+        inUse:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - inUse
     ContactDetails:
       type: object
       properties:
@@ -2464,6 +2737,22 @@ components:
       - ZA
       - ZM
       - ZW
+    CreateAppointmentBlockGroupResponse:
+      type: object
+      properties:
+        appointmentBlockIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+        id:
+          type: string
+          format: uuid
+          description: Id of the AppointmentBlockGroup.
+          example: a765534d-760a-417d-8639-5e2fd59246e2
+      required:
+      - appointmentBlockIds
+      - id
     CreateApprovalRequestRequest:
       type: object
       properties:
@@ -2471,6 +2760,63 @@ components:
           type: string
       required:
       - reason
+    CreateDailyAppointmentBlock:
+      type: object
+      properties:
+        daysOfWeek:
+          type: array
+          items:
+            $ref: "#/components/schemas/DayOfWeek"
+        end:
+          type: string
+          format: date-time
+          description: Time at which the appointment block ends.
+          example: 2016-01-01T01:45:00.123456+01:00
+        start:
+          type: string
+          format: date-time
+          description: Time at which the appointment block starts.
+          example: 2016-01-01T01:00:00.123456+01:00
+      required:
+      - daysOfWeek
+      - end
+      - start
+    CreateDailyAppointmentBlockGroupRequest:
+      type: object
+      properties:
+        appointmentBlocks:
+          type: array
+          items:
+            $ref: "#/components/schemas/CreateDailyAppointmentBlock"
+        consultants:
+          type: array
+          items:
+            type: string
+            format: uuid
+        locationId:
+          type: string
+          format: uuid
+        mfas:
+          type: array
+          items:
+            type: string
+            format: uuid
+        parallelExaminations:
+          type: integer
+          format: int32
+          maximum: 10
+          minimum: 1
+        physicians:
+          type: array
+          items:
+            type: string
+            format: uuid
+        type:
+          $ref: "#/components/schemas/AppointmentType"
+      required:
+      - appointmentBlocks
+      - parallelExaminations
+      - type
     CreateInboxProcedureRequest:
       type: object
       properties:
@@ -2517,6 +2863,16 @@ components:
       - EXTERNAL
       - IMPORT
       - EDIT
+    DayOfWeek:
+      type: string
+      enum:
+      - MONDAY
+      - TUESDAY
+      - WEDNESDAY
+      - THURSDAY
+      - FRIDAY
+      - SATURDAY
+      - SUNDAY
     Decision:
       type: string
       enum:
@@ -2618,6 +2974,8 @@ components:
       properties:
         affectedPerson:
           $ref: "#/components/schemas/AffectedPerson"
+        facility:
+          $ref: "#/components/schemas/Facility"
         id:
           type: string
           format: uuid
@@ -2651,6 +3009,8 @@ components:
         dateOfBirth:
           type: string
           format: date
+        facilityName:
+          type: string
         firstName:
           type: string
         id:
@@ -2680,6 +3040,35 @@ components:
           uniqueItems: true
       required:
       - procedures
+    Facility:
+      type: object
+      properties:
+        contactAddress:
+          oneOf:
+          - $ref: "#/components/schemas/DomesticAddress"
+          - $ref: "#/components/schemas/PostboxAddress"
+        contactPersons:
+          type: array
+          items:
+            $ref: "#/components/schemas/FacilityContactPerson"
+        emailAddresses:
+          type: array
+          items:
+            type: string
+        name:
+          type: string
+        phoneNumbers:
+          type: array
+          items:
+            type: string
+            maxLength: 23
+            minLength: 1
+        version:
+          type: integer
+          format: int64
+      required:
+      - name
+      - version
     FacilityContactPerson:
       type: object
       properties:
@@ -2951,32 +3340,10 @@ components:
       - DIVERSE
       - FEMALE
       - MALE
-    GenericFile:
-      type: object
-      allOf:
-      - $ref: "#/components/schemas/AbstractFile"
-      - type: object
-        properties:
-          '@type':
-            type: string
-      discriminator:
-        propertyName: '@type'
-      required:
-      - '@type'
-      - createdAt
-      - deletable
-      - deleted
-      - fileId
-      - fileName
-      - fileSizeBytes
-      - fileType
-      - locked
-      - modifiedAt
     GenericFileReference:
       type: object
       allOf:
       - $ref: "#/components/schemas/AbstractFileReference"
-      - $ref: "#/components/schemas/ConcreteFileOrFileReference"
       - type: object
         properties:
           '@type':
@@ -3002,6 +3369,89 @@ components:
       required:
       - elements
       - totalNumberOfElements
+    GetAppointmentBlock:
+      type: object
+      description: A planned appointment block. Appointment blocks offer a set of
+        bookable appointments at different times within the timeframe of the appointment
+        block.
+      properties:
+        end:
+          type: string
+          format: date-time
+          description: Time at which the appointment block ends.
+          example: 2016-01-01T01:45:00.123456+01:00
+        id:
+          type: string
+          format: uuid
+          description: Id of the AppointmentBlock.
+          example: a765534d-760a-417d-8639-5e2fd59246e2
+        numberOfBookedAppointments:
+          type: integer
+          format: int64
+          minimum: 0
+        numberOfFreeAppointments:
+          type: integer
+          format: int64
+          minimum: 0
+        start:
+          type: string
+          format: date-time
+          description: Time at which the appointment block starts.
+          example: 2016-01-01T01:00:00.123456+01:00
+      required:
+      - end
+      - id
+      - numberOfBookedAppointments
+      - numberOfFreeAppointments
+      - start
+    GetAppointmentBlockGroup:
+      type: object
+      properties:
+        appointmentBlocks:
+          type: array
+          items:
+            $ref: "#/components/schemas/GetAppointmentBlock"
+        id:
+          type: string
+          format: uuid
+          description: Id of the AppointmentBlockGroup.
+          example: a765534d-760a-417d-8639-5e2fd59246e2
+        location:
+          $ref: "#/components/schemas/AppointmentLocation"
+        parallelExaminations:
+          type: integer
+          format: int32
+          maximum: 10
+          minimum: 1
+        type:
+          $ref: "#/components/schemas/AppointmentType"
+      required:
+      - appointmentBlocks
+      - id
+      - parallelExaminations
+      - type
+    GetAppointmentBlockGroupsResponse:
+      type: object
+      properties:
+        elements:
+          type: array
+          items:
+            $ref: "#/components/schemas/GetAppointmentBlockGroup"
+        totalNumberOfElements:
+          type: integer
+          format: int64
+      required:
+      - elements
+      - totalNumberOfElements
+    GetAppointmentTypesResponse:
+      type: object
+      properties:
+        appointmentTypeConfigDtos:
+          type: array
+          items:
+            $ref: "#/components/schemas/AppointmentTypeConfig"
+      required:
+      - appointmentTypeConfigDtos
     GetArchivableProceduresResponse:
       type: object
       properties:
@@ -3140,6 +3590,15 @@ components:
       required:
       - elements
       - totalNumberOfElements
+    GetFreeAppointmentsResponse:
+      type: object
+      properties:
+        appointments:
+          type: array
+          items:
+            $ref: "#/components/schemas/Appointment"
+      required:
+      - appointments
     GetGdprDownloadPackagesInfoResponse:
       type: object
       properties:
@@ -3578,7 +4037,7 @@ components:
     Image:
       type: object
       allOf:
-      - $ref: "#/components/schemas/ConcreteFileDto"
+      - $ref: "#/components/schemas/AbstractFile"
       - type: object
         properties:
           '@type':
@@ -3750,18 +4209,11 @@ components:
     Mail:
       type: object
       allOf:
-      - $ref: "#/components/schemas/ConcreteFileDto"
+      - $ref: "#/components/schemas/AbstractFile"
       - type: object
         properties:
           '@type':
             type: string
-          attachments:
-            type: array
-            items:
-              oneOf:
-              - $ref: "#/components/schemas/Image"
-              - $ref: "#/components/schemas/Mail"
-              - $ref: "#/components/schemas/Pdf"
           metaData:
             $ref: "#/components/schemas/MailMetaData"
           removedInvalidAttachments:
@@ -3894,6 +4346,20 @@ components:
       type: string
       enum:
       - DELETE
+    PatchAffectedPersonRequest:
+      type: object
+      properties:
+        affectedPerson:
+          $ref: "#/components/schemas/AffectedPerson"
+      required:
+      - affectedPerson
+    PatchEmployeeOmsProcedureFacilityRequest:
+      type: object
+      properties:
+        updatedFacility:
+          $ref: "#/components/schemas/Facility"
+      required:
+      - updatedFacility
     PatchManualProgressEntryRequest:
       type: object
       properties:
@@ -3905,7 +4371,7 @@ components:
     Pdf:
       type: object
       allOf:
-      - $ref: "#/components/schemas/ConcreteFileDto"
+      - $ref: "#/components/schemas/AbstractFile"
       - type: object
         properties:
           '@type':
@@ -3964,6 +4430,13 @@ components:
       required:
       - numberOfPopulatedEntities
       - totalNumberOfEntities
+    PostEmployeeOmsProcedureFacilityRequest:
+      type: object
+      properties:
+        facility:
+          $ref: "#/components/schemas/Facility"
+      required:
+      - facility
     PostEmployeeOmsProcedureRequest:
       type: object
       properties:
@@ -3971,16 +4444,41 @@ components:
           $ref: "#/components/schemas/AffectedPerson"
       required:
       - affectedPerson
+    PostPopulateAdministrativeResponse:
+      type: object
+      properties:
+        appointmentBlockGroupsCreated:
+          type: object
+          additionalProperties:
+            type: string
+            format: uuid
+        physicians:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+              format: uuid
+      required:
+      - appointmentBlockGroupsCreated
+      - physicians
     PostPopulateProcedureRequest:
       type: object
       properties:
+        facility:
+          $ref: "#/components/schemas/PostEmployeeOmsProcedureFacilityRequest"
         procedureData:
           $ref: "#/components/schemas/PostEmployeeOmsProcedureRequest"
+        targetState:
+          $ref: "#/components/schemas/ProcedureStatus"
       required:
       - procedureData
     PostPopulateProcedureResponse:
       type: object
       properties:
+        facilityId:
+          type: string
+          format: uuid
         procedureId:
           type: string
           format: uuid
@@ -4206,7 +4704,10 @@ components:
       type: object
       properties:
         file:
-          $ref: "#/components/schemas/GenericFile"
+          oneOf:
+          - $ref: "#/components/schemas/Image"
+          - $ref: "#/components/schemas/Mail"
+          - $ref: "#/components/schemas/Pdf"
         progressEntryId:
           type: string
           format: uuid
@@ -4461,6 +4962,15 @@ components:
       - SYSTEM_AUTOMATIC
       - EMPLOYEE
       - CITIZEN
+    UpdateAppointmentTypeRequest:
+      type: object
+      properties:
+        standardDurationInMinutes:
+          type: integer
+          format: int32
+          minimum: 0
+      required:
+      - standardDurationInMinutes
     User:
       type: object
       properties:
@@ -4504,3 +5014,19 @@ components:
       - lastName
       - userId
       - username
+    ValidateAppointmentBlockGroupResponse:
+      type: object
+      properties:
+        userIdsWithEventConflicts:
+          type: array
+          items:
+            type: string
+            format: uuid
+        userIdsWithoutEventConflicts:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - userIdsWithEventConflicts
+      - userIdsWithoutEventConflicts

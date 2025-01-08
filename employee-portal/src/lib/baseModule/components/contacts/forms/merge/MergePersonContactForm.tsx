@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -12,6 +12,11 @@ import {
   InputArrayField,
   getIndexLabel,
 } from "@eshg/lib-portal/components/formFields/InputArrayField";
+import {
+  GENDER_VALUES,
+  SALUTATION_VALUES,
+  TITLE_VALUES,
+} from "@eshg/lib-portal/components/formFields/constants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Box, Divider, Grid, Stack } from "@mui/joy";
 import { Formik } from "formik";
@@ -38,11 +43,6 @@ import {
   SidebarFormHandle,
 } from "@/lib/shared/components/form/SidebarForm";
 import { BaseAddressFormInputs } from "@/lib/shared/components/form/address/helpers";
-import {
-  GENDER_VALUES,
-  SALUTATION_VALUES,
-  TITLE_VALUES,
-} from "@/lib/shared/components/personSidebar/constants";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 

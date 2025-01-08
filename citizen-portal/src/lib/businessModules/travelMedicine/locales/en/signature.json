@@ -1,15 +1,15 @@
 {
   "panelSection": {
-    "title": "Signaturfeld",
-    "ownerLabel": "Eigentümer",
-    "modalButton": "Unterschrift hinzufügen",
-    "ownerRequired": "Bitte geben Sie den Namen des Eigentümers ein",
-    "signatureRequired": "Bitte fügen Sie ihre Unterschrift hinzu"
+    "title": "Signature Field",
+    "ownerLabel": "Owner",
+    "modalButton": "Add Signature",
+    "ownerRequired": "Please enter the owner's name",
+    "signatureRequired": "Please add your signature"
   },
   "modal": {
-    "title": "Signatur",
-    "sign": "Bitte hier Unterschreiben",
-    "deleteButton": "Unterschrift löschen",
-    "addButton": "Hinzufügen"
+    "title": "Signature",
+    "sign": "Please Sign Here",
+    "deleteButton": "Delete Signature",
+    "addButton": "Add"
   }
 }

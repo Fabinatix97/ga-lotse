@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -22,6 +22,10 @@ import {
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 
 import {
+  mapBoolToYesOrNo,
+  mapYesOrNoToBool,
+} from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
+import {
   guardValue,
   mapOptional,
 } from "@/lib/businessModules/stiProtection/shared/helpers";
@@ -37,7 +41,6 @@ import {
   StandardRiskQuestion,
   defaultExaminations,
 } from "./MedicalHistoryForm.config";
-import { mapBoolToYesOrNo, mapYesOrNoToBool } from "./YesOrNoWithFollowUp";
 
 function mapApiExaminationToForm(
   examinations?: ApiExamination,

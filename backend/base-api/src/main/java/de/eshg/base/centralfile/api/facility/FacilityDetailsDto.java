@@ -1,11 +1,11 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package de.eshg.base.centralfile.api.facility;
 
-import de.eshg.CustomValidations.EmailAddressConstraint;
+import de.eshg.CustomValidations.MandatoryEmailAddressConstraint;
 import de.eshg.base.address.AddressDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -16,7 +16,7 @@ import java.util.List;
 @Schema(name = FacilityDetailsDto.SCHEMA_NAME, description = "The data relating to a facility")
 public record FacilityDetailsDto(
     @NotNull @Size(min = 1, max = 300) String name,
-    List<@EmailAddressConstraint String> emailAddresses,
+    List<@MandatoryEmailAddressConstraint String> emailAddresses,
     List<@NotNull @Size(max = 23) String> phoneNumbers,
     @Valid List<FacilityContactPersonDto> contactPersons,
     @Valid AddressDto contactAddress,

@@ -1,10 +1,11 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { ApiContactType } from "@eshg/employee-portal-api/base";
 import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
+import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import {
   InputArrayField,
   getIndexLabel,
@@ -38,7 +39,6 @@ import {
   OptionalBillingAddressForm,
 } from "@/lib/shared/components/form/address/BaseAddressForm";
 import { createEmptyAddress } from "@/lib/shared/components/form/address/helpers";
-import { EmailField } from "@/lib/shared/components/formFields/EmailField";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 

@@ -1,8 +1,12 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import {
+  DateComparisonFilterDraftValue,
+  DateComparisonFilterValue,
+} from "@/lib/shared/components/filterSettings/models/DateComparisonFilter";
 import { EnumFilterValue } from "@/lib/shared/components/filterSettings/models/EnumFilter";
 import {
   NumberFilterDraftValue,
@@ -21,6 +25,7 @@ export interface FilterValueBase {
 export type FilterValue =
   | DateFilterValue
   | DateSpanFilterValue
+  | DateComparisonFilterValue
   | EnumFilterValue
   | EnumSingleFilterValue
   | NumberFilterValue
@@ -29,6 +34,7 @@ export type FilterValue =
 export type FilterDraftValue =
   | DateFilterValue
   | DateSpanFilterValue
+  | DateComparisonFilterDraftValue
   | EnumFilterValue
   | EnumSingleFilterValue
   | NumberFilterDraftValue

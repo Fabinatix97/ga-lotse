@@ -1,0 +1,13 @@
+{
+  "pageTitle": "Information on the professional registry",
+  "content": {
+    "title": "General informationen",
+    "information": "According to § 12 HGöGD, individuals practicing a healthcare profession or employing healthcare professionals must notify the health department responsible for their place of business of the start and end of their activities within one month. The notification to the health department can be made using this online form.",
+    "requiredFieldsHint": "All mandatory fields indicated by an asterisk (*) must be filled out to submit the online form."
+  },
+  "sidebar": {
+    "title": "Would you like to register a healthcare profession?",
+    "content": "Use the registration form to create a new entry or update an existing one.",
+    "registrationForm": "To the registration form"
+  }
+}

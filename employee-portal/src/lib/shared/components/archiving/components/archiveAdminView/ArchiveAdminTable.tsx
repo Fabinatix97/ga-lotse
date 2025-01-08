@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -9,6 +9,7 @@ import {
 } from "@eshg/employee-portal-api/businessProcedures";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import { HiddenContainer } from "@eshg/lib-portal/components/HiddenContainer";
+import { formatFileSize } from "@eshg/lib-portal/helpers/file";
 import { DeleteOutlined, DownloadOutlined } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 
@@ -21,7 +22,6 @@ import {
 } from "@/lib/shared/components/archiving/hooks/useArchiveAdminFilterSettings";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
@@ -32,8 +32,8 @@ import {
   getSortDirection,
   getSortKey,
 } from "@/lib/shared/components/table/sorting";
-import { formatFileSize } from "@/lib/shared/helpers/file";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export type ArchiveAdminTableProps = Omit<ArchiveAdminViewProps, "title">;
 

@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -14,12 +14,12 @@ import { Grid } from "@mui/joy";
 import { Formik } from "formik";
 
 import { useUpdateObjectType } from "@/lib/businessModules/inspection/api/mutations/objectTypes";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 import {
   SidebarWithFormRefProps,
   useSidebarWithFormRef,

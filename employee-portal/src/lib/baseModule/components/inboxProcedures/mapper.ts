@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -12,6 +12,7 @@ import {
   ApiInboxProgressEntryType,
   ApiTitle,
 } from "@eshg/employee-portal-api/businessProcedures";
+import { AcademicTitle } from "@eshg/lib-portal/components/formFields/constants";
 import { toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { isEmpty } from "remeda";
@@ -23,7 +24,6 @@ import {
   PROGRESS_ENTRY_TYPES_WITH_FILE_UPLOAD,
   PROGRESS_ENTRY_TYPES_WITH_SUBJECT_AND_MESSAGE,
 } from "@/lib/baseModule/components/inboxProcedures/InboxProgressEntryForm";
-import { AcademicTitle } from "@/lib/shared/components/personSidebar/constants";
 
 import { CreateInboxProcedureValues } from "./CreateInboxProcedureForm";
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -9,6 +9,7 @@ import de.eshg.base.contact.api.SearchContactsResponse;
 import de.eshg.base.feature.BaseFeature;
 import de.eshg.base.inventory.api.GetInventoryItemsResponse;
 import de.eshg.base.resource.api.GetResourcesResponse;
+import de.eshg.base.testhelper.api.CitizenUserDto;
 import de.eshg.base.testhelper.api.CreateCalendarTestEventsRequest;
 import de.eshg.base.testhelper.api.CreateCalendarTestEventsResponse;
 import de.eshg.base.testhelper.api.CreateSetupAdminRequest;
@@ -24,6 +25,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.DeleteExchange;
+import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
 
@@ -85,4 +87,7 @@ public interface BaseTestHelperApi extends TestHelperApi, LoginProvider {
 
   @DeleteExchange("/setup-admin/{userName}")
   void deleteSetupAdmin(@PathVariable("userName") String userName);
+
+  @GetExchange("/idp-user/{nameId}")
+  CitizenUserDto getIdpUser(@PathVariable("nameId") String nameId);
 }

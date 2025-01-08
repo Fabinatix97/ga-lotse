@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -40,7 +40,7 @@ export function MedicalRegistryTabNavigationToolbar({
     },
     {
       tabButtonName: "Verlaufseinträge",
-      href: routes.procedures.byId(procedureId).progressEntries.index,
+      href: routes.procedures.byId(procedureId).progressEntries,
       decorator: <TimelineOutlined />,
     },
   ];

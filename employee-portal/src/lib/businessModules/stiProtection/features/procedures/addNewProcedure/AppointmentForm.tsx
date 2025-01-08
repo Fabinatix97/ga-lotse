@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -10,6 +10,7 @@ import {
 } from "@eshg/employee-portal-api/stiProtection";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
+import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import {
   AppointmentPickerField,
   FIELD_LABELS_DE,
@@ -23,7 +24,6 @@ import { useGetFreeAppointments } from "@/lib/businessModules/stiProtection/api/
 import { CreateAppointmentForm } from "@/lib/businessModules/stiProtection/features/procedures/details/CreateAppointmentSidebar";
 import { concernToAppointmentType } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { DateTimeField } from "@/lib/shared/components/formFields/DateTimeField";
-import { RadioGroupField } from "@/lib/shared/components/formFields/RadioGroupField";
 import {
   validateNonNegativeInteger,
   validateTodayOrFutureDate,

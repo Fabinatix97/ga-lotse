@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -7,39 +7,47 @@ package de.eshg.lib.keycloak;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public enum CitizenTestUser implements KeycloakUser {
-  CITIZEN("citizen", "+49 555 123 100", "password", "Max", "Mustermann", List.of()),
-  MUK_USER(
-      "du-986b2b54ab89cf4ed674ad8c3126b966b54d4872",
-      "+49 777 987 649",
+  CITIZEN("citizen", "password", "Max", "Mustermann", List.of(), Map.of()),
+  MUK_DUMMY_USER(
+      "muk-dummy-user",
       "password",
       "MUK",
       "USER",
-      List.of(CitizenPermissionRole.MUK_USER));
+      List.of(CitizenPermissionRole.MUK_USER),
+      Map.of("muk.dataTransmitterPseudonymId", "du-986b2b54ab89cf4ed674ad8c3126b966b54d4872")),
+  BUND_ID_USER(
+      "de93489238",
+      "password",
+      "BundId",
+      "User",
+      List.of(CitizenPermissionRole.BUND_ID_USER),
+      Map.of());
 
   private final String username;
   private final String email;
-  private final String phoneNumber;
   private final String password;
   private final String firstName;
   private final String lastName;
   private final List<KeycloakRole> roles;
+  private final Map<String, String> additionalAttributes;
 
   CitizenTestUser(
       String username,
-      String phoneNumber,
       String password,
       String firstName,
       String lastName,
-      List<CitizenPermissionRole> roles) {
+      List<CitizenPermissionRole> roles,
+      Map<String, String> additionalAttributes) {
     this.username = username;
     this.email = username + TEST_USER_EMAIL_POSTFIX;
-    this.phoneNumber = phoneNumber;
     this.password = password;
     this.firstName = firstName;
     this.lastName = lastName;
     this.roles = new ArrayList<>(roles);
+    this.additionalAttributes = additionalAttributes;
   }
 
   @Override
@@ -54,12 +62,12 @@ public enum CitizenTestUser implements KeycloakUser {
 
   @Override
   public String phoneNumber() {
-    return phoneNumber;
+    return null;
   }
 
   @Override
   public String externalChatUsername() {
-    return username;
+    return null;
   }
 
   @Override
@@ -89,5 +97,10 @@ public enum CitizenTestUser implements KeycloakUser {
   @Override
   public List<KeycloakGroup> groups() {
     return List.of();
+  }
+
+  @Override
+  public Map<String, String> additionalAttributes() {
+    return additionalAttributes;
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -14,6 +14,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToOne;
 import java.time.Clock;
 import java.time.Instant;
@@ -55,17 +56,17 @@ public class InboxProcedure extends BaseEntityWithExternalId {
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @OneToOne(
       optional = false,
-      mappedBy = "inboxProcedure",
       cascade = CascadeType.PERSIST,
-      orphanRemoval = true)
+      orphanRemoval = true,
+      fetch = FetchType.LAZY)
   private ContactDetails contactDetails;
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @OneToOne(
       optional = false,
-      mappedBy = "inboxProcedure",
       cascade = CascadeType.PERSIST,
-      orphanRemoval = true)
+      orphanRemoval = true,
+      fetch = FetchType.LAZY)
   private InboxProgressEntry inboxProgressEntry;
 
   public InboxProcedureStatus getInboxProcedureStatus() {

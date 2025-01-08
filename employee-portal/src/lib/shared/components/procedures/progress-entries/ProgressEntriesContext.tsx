@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -24,12 +24,15 @@ interface ProgressEntriesContextProps {
   state: {
     fileIdForDeletion: string | null;
     entryIdForDeletion: string | null;
+    entryIdForDetails: string | null;
   };
   action: {
     openFileDeletionModal: (fileId: string) => void;
     closeFileDeletionModal: () => void;
     openEntryDeletionModal: (entryId: string) => void;
     closeEntryDeletionModal: () => void;
+    openEntryDetailsSidebar: (entryId: string) => void;
+    closeEntryDetailsSidebar: () => void;
   };
 }
 
@@ -49,6 +52,9 @@ export function ProgressEntriesProvider(
   const [entryIdForDeletion, setEntryIdForDeletion] = useState<string | null>(
     null,
   );
+  const [entryIdForDetails, setEntryIdForDetails] = useState<string | null>(
+    null,
+  );
 
   function openFileDeletionModal(fileId: string) {
     setFileIdForDeletion(fileId);
@@ -66,6 +72,14 @@ export function ProgressEntriesProvider(
     setEntryIdForDeletion(null);
   }
 
+  function openEntryDetailsSidebar(entryId: string) {
+    setEntryIdForDetails(entryId);
+  }
+
+  function closeEntryDetailsSidebar() {
+    setEntryIdForDetails(null);
+  }
+
   return (
     <ProgressEntriesContext.Provider
       value={{
@@ -73,12 +87,15 @@ export function ProgressEntriesProvider(
         state: {
           fileIdForDeletion,
           entryIdForDeletion,
+          entryIdForDetails,
         },
         action: {
           openFileDeletionModal,
           closeFileDeletionModal,
           openEntryDeletionModal,
           closeEntryDeletionModal,
+          openEntryDetailsSidebar,
+          closeEntryDetailsSidebar,
         },
       }}
     >

@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -10,6 +10,7 @@ import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 
 import { Examination } from "@/lib/businessModules/dental/api/models/Examination";
 import { PROPHYLAXIS_TYPES } from "@/lib/businessModules/dental/features/prophylaxisSessions/translations";
+import { routes } from "@/lib/businessModules/dental/shared/routes";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
@@ -23,6 +24,7 @@ const COLUMNS = [
     enableSorting: false,
     meta: {
       width: 150,
+      canNavigate: { parentRow: true },
     },
   }),
   columnHelper.accessor("prophylaxisType", {
@@ -31,12 +33,16 @@ const COLUMNS = [
     enableSorting: false,
     meta: {
       width: 250,
+      canNavigate: { parentRow: true },
     },
   }),
   columnHelper.accessor("note", {
     header: "Bemerkung",
     cell: (props) => props.getValue(),
     enableSorting: false,
+    meta: {
+      canNavigate: { parentRow: true },
+    },
   }),
 ];
 
@@ -47,6 +53,7 @@ const initialSorting: ColumnSort = {
 
 interface ExaminationsTableProps {
   examinations: Examination[];
+  childId: string;
 }
 
 export function ExaminationsTable(props: ExaminationsTableProps) {
@@ -65,6 +72,13 @@ export function ExaminationsTable(props: ExaminationsTableProps) {
           columns={COLUMNS}
           sorting={tableControl.tableSorting}
           enableSortingRemoval={false}
+          rowNavigation={{
+            route: (row) =>
+              routes.children
+                .byId(props.childId)
+                .examinations.byId(row.original.id),
+            focusColumnAccessorKey: "dateAndTime",
+          }}
           minWidth={600}
         />
       </TableSheet>

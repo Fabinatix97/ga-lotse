@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -115,8 +115,7 @@ public class MedicalHistoryService {
         vaccinationConsultation.getProcedureSteps().stream()
             .filter(ps -> ps.getMedicalHistory().getId().equals(medicalHistoryId))
             .findFirst()
-            .orElseThrow(
-                () -> new NotFoundException("Medical history not found: " + medicalHistoryId));
+            .orElseThrow(() -> new NotFoundException("Medical history with given id not found"));
     MedicalHistory medicalHistory = procedureStep.getMedicalHistory();
 
     medicalHistory.setNote(patchMedicalHistoryRequest.note());

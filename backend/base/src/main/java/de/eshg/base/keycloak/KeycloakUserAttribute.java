@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -9,9 +9,29 @@ import java.util.List;
 import java.util.Map;
 
 public interface KeycloakUserAttribute {
+  String DEFAULT_ATTRIBUTE_USERNAME = "username";
   String DEFAULT_ATTRIBUTE_FIRST_NAME = "firstName";
   String DEFAULT_ATTRIBUTE_LAST_NAME = "lastName";
   String DEFAULT_ATTRIBUTE_EMAIL = "email";
+
+  ValidationRule[] DEFAULT_USERNAME_VALIDATIONS =
+      new ValidationRule[] {
+        new ValidationRule.Length(3, 255),
+        new ValidationRule.Default("up-username-not-idn-homograph", Map.of()),
+        new ValidationRule.Default("username-prohibited-characters", Map.of()),
+      };
+
+  ValidationRule[] DEFAULT_EMAIL_VALIDATIONS =
+      new ValidationRule[] {
+        new ValidationRule.Default("email", Map.of()),
+        new ValidationRule.Default("length", Map.of("max", 255))
+      };
+
+  ValidationRule[] DEFAULT_NAME_VALIDATIONS =
+      new ValidationRule[] {
+        new ValidationRule.Default("length", Map.of("max", 255)),
+        new ValidationRule.Default("person-name-prohibited-characters", Map.of())
+      };
 
   String KEYCLOAK_VALUE_REF_TEMPLATE = "${%s}";
 
@@ -23,7 +43,7 @@ public interface KeycloakUserAttribute {
 
   boolean isRequired();
 
-  List<ValidationRule> validationRules();
+  List<ValidationRule> getValidationRules();
 
   enum Group {
     DEFAULT,
@@ -35,6 +55,8 @@ public interface KeycloakUserAttribute {
 
     Map<String, Object> toMap();
 
+    record Default(String ruleId, Map<String, Object> toMap) implements ValidationRule {}
+
     record Length(int minLength, int maxLength) implements ValidationRule {
       @Override
       public String ruleId() {
@@ -43,7 +65,7 @@ public interface KeycloakUserAttribute {
 
       @Override
       public Map<String, Object> toMap() {
-        return Map.of("min", String.valueOf(minLength), "max", String.valueOf(maxLength));
+        return Map.of("min", minLength, "max", maxLength);
       }
     }
 

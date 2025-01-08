@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -18,7 +18,7 @@ import { OfflineNewPasswordDialog } from "@/lib/businessModules/inspection/share
 import { hasQueuedRequests } from "@/lib/businessModules/inspection/shared/offline/password/hasQueuedRequests";
 import { isServiceWorkerRegistered } from "@/lib/businessModules/inspection/shared/offline/registerServiceWorker";
 import { useIsOfflineFeatureEnabled } from "@/lib/businessModules/inspection/shared/offline/useIsOfflineFeatureEnabled";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 import {
   SALT,
   getInspectionOfflineDb,

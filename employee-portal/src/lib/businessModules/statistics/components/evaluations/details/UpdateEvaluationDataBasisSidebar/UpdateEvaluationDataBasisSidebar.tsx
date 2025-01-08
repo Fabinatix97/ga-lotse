@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -9,7 +9,7 @@ import { useUpdateDataBasis } from "@/lib/businessModules/statistics/api/mutatio
 import { validateUpdateEvaluationDataBasisStep } from "@/lib/businessModules/statistics/components/evaluations/details/UpdateEvaluationDataBasisSidebar/validateUpdateEvaluationDataBasisStep";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,

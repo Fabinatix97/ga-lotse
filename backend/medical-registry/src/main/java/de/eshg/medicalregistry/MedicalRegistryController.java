@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -55,7 +55,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.MediaType;
@@ -128,7 +127,7 @@ public class MedicalRegistryController {
         Validator.validateIsMedicalRegistryEntryChange(
             medicalRegistryService
                 .findProcedureByExternalIdForUpdate(procedureId, confirmProcedureRequest.version())
-                .orElseThrow(notFoundException(procedureId)));
+                .orElseThrow(MedicalRegistryController::notFoundException));
 
     Validator.validateIsDraft(sourceMedicalRegistryChange);
 
@@ -186,8 +185,7 @@ public class MedicalRegistryController {
         medicalRegistryService
             .findProcedureByExternalIdForUpdate(targetReference.id(), targetReference.version())
             .map(Validator::validateIsMedicalRegistryEntry)
-            .orElseThrow(
-                () -> new BadRequestException(makeProcedureNotFoundMessage(targetReference.id())));
+            .orElseThrow(() -> new BadRequestException(makeProcedureNotFoundMessage()));
 
     validator.validateMergeTarget(
         mergeTarget, confirmProcedureRequest.professionalReferencePerson());
@@ -344,7 +342,7 @@ public class MedicalRegistryController {
     MedicalRegistryProcedure medicalRegistryProcedure =
         medicalRegistryService
             .findProcedureByExternalId(procedureId)
-            .orElseThrow(notFoundException(procedureId));
+            .orElseThrow(MedicalRegistryController::notFoundException);
 
     Professional professional = medicalRegistryProcedure.getProfessional();
     GetPersonFileStateResponse professionalDetails =
@@ -378,7 +376,7 @@ public class MedicalRegistryController {
     MedicalRegistryProcedure medicalRegistryProcedure =
         medicalRegistryService
             .findProcedureByExternalIdForUpdate(procedureId, request.version())
-            .orElseThrow(notFoundException(procedureId));
+            .orElseThrow(MedicalRegistryController::notFoundException);
     MedicalRegistryEntryChange medicalRegistryEntryChange =
         Validator.validateIsMedicalRegistryEntryChange(medicalRegistryProcedure);
 
@@ -437,12 +435,11 @@ public class MedicalRegistryController {
     return String.format("%s.%s", filename, FileType.JPEG.getDefaultFileExtension().getValue());
   }
 
-  private static Supplier<NotFoundException> notFoundException(UUID procedureId) {
-    return () -> new NotFoundException(makeProcedureNotFoundMessage(procedureId));
+  private static NotFoundException notFoundException() {
+    return new NotFoundException(makeProcedureNotFoundMessage());
   }
 
-  private static String makeProcedureNotFoundMessage(UUID procedureId) {
-    return "%s with UUID %s not found"
-        .formatted(MedicalRegistryProcedure.class.getSimpleName(), procedureId);
+  private static String makeProcedureNotFoundMessage() {
+    return "%s with given UUID not found".formatted(MedicalRegistryProcedure.class.getSimpleName());
   }
 }

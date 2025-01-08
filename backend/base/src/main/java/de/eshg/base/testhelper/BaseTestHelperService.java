@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -21,6 +21,7 @@ import de.eshg.base.resource.api.GetResourcesResponse;
 import de.eshg.base.resource.api.ResourceDto;
 import de.eshg.base.testhelper.api.CreateCalendarTestEventsRequest;
 import de.eshg.base.testhelper.api.CreateCalendarTestEventsResponse;
+import de.eshg.base.user.UserControllerRateLimiter;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.base.user.mapper.UserMapper;
 import de.eshg.lib.common.TimeoutConstants;
@@ -71,6 +72,7 @@ public class BaseTestHelperService extends DefaultTestHelperService {
   private final HealthDepartmentContactPopulator healthDepartmentContactPopulator;
 
   private final CalendarService calendarService;
+  private final UserControllerRateLimiter userControllerRateLimiter;
 
   private final CalendarEventService calendarEventService;
   private final AccessCodeGenerator accessCodeGenerator;
@@ -99,7 +101,8 @@ public class BaseTestHelperService extends DefaultTestHelperService {
       ContactPopulator contactPopulator,
       SchoolContactPopulator schoolContactPopulator,
       EnvironmentConfig environmentConfig,
-      HealthDepartmentContactPopulator healthDepartmentContactPopulator) {
+      HealthDepartmentContactPopulator healthDepartmentContactPopulator,
+      UserControllerRateLimiter userControllerRateLimiter) {
     super(
         databaseResetHelper,
         testRequestInterceptor,
@@ -119,6 +122,13 @@ public class BaseTestHelperService extends DefaultTestHelperService {
     this.accessCodeGenerator = accessCodeGenerator;
     this.citizenKeycloakTestProvisioning = citizenKeycloakTestProvisioning;
     this.healthDepartmentContactPopulator = healthDepartmentContactPopulator;
+    this.userControllerRateLimiter = userControllerRateLimiter;
+  }
+
+  @Override
+  public Instant reset() throws Exception {
+    this.userControllerRateLimiter.reset();
+    return super.reset();
   }
 
   public void resetKeycloak() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -7,7 +7,7 @@ package de.eshg.lib.procedure.api;
 
 import de.eshg.lib.foureyes.model.ApprovalRequestDto;
 import de.eshg.lib.foureyes.model.CreateApprovalRequestRequest;
-import de.eshg.lib.procedure.model.ConcreteFileDto;
+import de.eshg.lib.procedure.model.AbstractFileDto;
 import de.eshg.lib.procedure.model.GetMetaDataHistoryResponse;
 import de.eshg.lib.procedure.model.MetaDataDto;
 import de.eshg.rest.service.security.config.BaseUrls.ProcedureLibrary;
@@ -33,12 +33,12 @@ public interface FileApi {
   @GetExchange("/{fileId}")
   @ApiResponse(responseCode = "200")
   @Operation(summary = "Retrieves the meta data of the specified file")
-  ConcreteFileDto getFile(@PathVariable("fileId") UUID fileId);
+  AbstractFileDto getFile(@PathVariable("fileId") UUID fileId);
 
   @PutExchange("/{fileId}/meta-data")
   @ApiResponse(responseCode = "200", description = "Updated file")
   @Operation(summary = "Updates the meta data of the specified file")
-  ConcreteFileDto updateFileMetaData(
+  AbstractFileDto updateFileMetaData(
       @PathVariable("fileId") UUID fileId, @RequestBody @Valid MetaDataDto metaData);
 
   @GetExchange(value = "/{fileId}/meta-data/history")

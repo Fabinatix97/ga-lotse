@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,9 +7,11 @@ package de.eshg.statistics.aggregation;
 
 import static de.eshg.statistics.mapper.AttributeSelectionMapper.SEARCH_KEY_DELIMITER;
 
+import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.statistics.api.AttributeSelectionDto;
+import de.eshg.statistics.api.datasource.AvailableDataSource;
 import de.eshg.statistics.api.filter.BooleanFilterParameterDto;
 import de.eshg.statistics.api.filter.DecimalRangeFilterParameterDto;
 import de.eshg.statistics.api.filter.DecimalValueFilterParameterDto;
@@ -21,6 +23,7 @@ import de.eshg.statistics.api.filter.TextFilterParameterDto;
 import de.eshg.statistics.api.filter.ValueOptionFilterParameterDto;
 import de.eshg.statistics.mapper.AttributeSelectionMapper;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
+import de.eshg.statistics.persistence.entity.StatisticsDataSensitivity;
 import de.eshg.statistics.persistence.entity.TableColumn;
 import java.time.Instant;
 import java.util.List;
@@ -34,6 +37,60 @@ public class AggregationResultUtil {
     if (!timeRangeStart.isBefore(timeRangeEnd)) {
       throw new BadRequestException("Time range is invalid: start not before end");
     }
+  }
+
+  public static void validateSameSensitivityPossible(
+      AbstractAggregationResult aggregationResult, List<AvailableDataSource> availableDataSources) {
+    checkAllDataSourcesExist(aggregationResult, availableDataSources);
+    List<AvailableDataSource> relevantAvailableDataSources =
+        getRelevantAvailableDataSources(aggregationResult, availableDataSources);
+
+    StatisticsDataSensitivity statisticsDataSensitivity = aggregationResult.getDataSensitivity();
+    if (statisticsDataSensitivity.equals(StatisticsDataSensitivity.ANONYMOUS)
+        && !DataSourceValidator.getCanBeAnonymized(relevantAvailableDataSources)
+        && !DataSourceValidator.getMostRestrictiveSensitivity(relevantAvailableDataSources)
+            .equals(DataSourceSensitivity.ANONYMOUS)) {
+      throw new BadRequestException("Data source is not anonymous and cannot be anonymized");
+    }
+    if (statisticsDataSensitivity.equals(StatisticsDataSensitivity.INTERNAL_USAGE)
+        && !DataSourceValidator.getMostRestrictiveSensitivity(relevantAvailableDataSources)
+            .equals(DataSourceSensitivity.INTERNAL_USAGE)) {
+      throw new BadRequestException("Data source changed the sensitivity");
+    }
+    if (statisticsDataSensitivity.equals(StatisticsDataSensitivity.SENSITIVE)
+        && !DataSourceValidator.getMostRestrictiveSensitivity(relevantAvailableDataSources)
+            .equals(DataSourceSensitivity.SENSITIVE)) {
+      throw new BadRequestException("Data source changed the sensitivity");
+    }
+  }
+
+  private static void checkAllDataSourcesExist(
+      AbstractAggregationResult aggregationResult, List<AvailableDataSource> availableDataSources) {
+    if (aggregationResult.getTableColumns().stream()
+        .anyMatch(
+            tableColumn ->
+                availableDataSources.stream()
+                    .noneMatch(
+                        availableDataSource ->
+                            isSameDataSource(tableColumn, availableDataSource)))) {
+      throw new BadRequestException("At least one data source can not be found");
+    }
+  }
+
+  private static List<AvailableDataSource> getRelevantAvailableDataSources(
+      AbstractAggregationResult aggregationResult, List<AvailableDataSource> availableDataSources) {
+    return availableDataSources.stream()
+        .filter(
+            availableDataSource ->
+                aggregationResult.getTableColumns().stream()
+                    .anyMatch(tableColumn -> isSameDataSource(tableColumn, availableDataSource)))
+        .toList();
+  }
+
+  private static boolean isSameDataSource(
+      TableColumn tableColumn, AvailableDataSource availableDataSource) {
+    return tableColumn.getDataSourceId().equals(availableDataSource.id())
+        && tableColumn.getBusinessModuleName().equals(availableDataSource.businessModuleName());
   }
 
   public static TableColumn getTableColumn(

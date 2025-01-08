@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -198,9 +198,7 @@ public class FacilityMapper {
             view.facility().hasPossibleDuplicates(),
             executedFrom);
       }
-      default ->
-          throw new NotFoundException(
-              "invalid address of unknown type: " + facilityDto.contactAddress());
+      default -> throw new NotFoundException("invalid address of unknown type");
     }
   }
 
@@ -268,9 +266,7 @@ public class FacilityMapper {
             baseFacility.emailAddresses(),
             baseFacility.phoneNumbers());
       }
-      default ->
-          throw new NotFoundException(
-              "invalid address of unknown type: " + baseFacility.contactAddress());
+      default -> throw new NotFoundException("invalid address of unknown type");
     }
   }
 
@@ -303,9 +299,7 @@ public class FacilityMapper {
             baseFacility.emailAddresses(),
             baseFacility.phoneNumbers());
       }
-      default ->
-          throw new NotFoundException(
-              "invalid address of unknown type: " + baseFacility.contactAddress());
+      default -> throw new NotFoundException("invalid address of unknown type");
     }
   }
 }

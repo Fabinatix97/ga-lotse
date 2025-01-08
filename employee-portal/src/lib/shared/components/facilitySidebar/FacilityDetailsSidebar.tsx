@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -7,6 +7,10 @@ import {
   ApiFacilityContactPerson,
   ApiGetReferenceFacilityResponse,
 } from "@eshg/employee-portal-api/base";
+import {
+  SALUTATION_VALUES,
+  getOptionalTitle,
+} from "@eshg/lib-portal/components/formFields/constants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import {
   Accordion,
@@ -28,10 +32,6 @@ import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell"
 import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import {
-  SALUTATION_VALUES,
-  getOptionalTitle,
-} from "@/lib/shared/components/personSidebar/constants";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { join } from "@/lib/shared/helpers/strings";

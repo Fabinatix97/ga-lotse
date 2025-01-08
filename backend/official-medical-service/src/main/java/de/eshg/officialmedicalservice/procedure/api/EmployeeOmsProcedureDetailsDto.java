@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -15,4 +15,5 @@ import java.util.UUID;
 public record EmployeeOmsProcedureDetailsDto(
     @NotNull UUID id,
     @NotNull ProcedureStatusDto status,
-    @NotNull @Valid AffectedPersonDto affectedPerson) {}
+    @NotNull @Valid AffectedPersonDto affectedPerson,
+    @Valid FacilityDto facility) {}

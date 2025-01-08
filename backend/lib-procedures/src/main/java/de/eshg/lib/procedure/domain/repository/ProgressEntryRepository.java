@@ -1,19 +1,18 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package de.eshg.lib.procedure.domain.repository;
 
 import de.eshg.lib.procedure.domain.model.ProgressEntry;
-import de.eshg.lib.procedure.domain.model.ProgressEntry_;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -31,14 +30,18 @@ public interface ProgressEntryRepository
   @Query(
       """
           SELECT e FROM ProgressEntry e
-          JOIN FETCH e.file as file
-          LEFT JOIN FETCH file.attachments
-          WHERE e.procedureId = :procedureId""")
-  List<ProgressEntry> findAllByProcedureIdAndFetchFileAndAttachments(
-      @Param("procedureId") Long procedureId);
+          JOIN FETCH e.file file
+          LEFT JOIN FETCH treat(file as Image).metaData
+          LEFT JOIN FETCH treat(file as Pdf).metaData
+          LEFT JOIN FETCH treat(file as Mail).metaData
+          LEFT JOIN FETCH file.attachments attachment
+          LEFT JOIN FETCH treat(attachment as Image).metaData
+          LEFT JOIN FETCH treat(attachment as Pdf).metaData
+          WHERE e.procedureId = :procedureId
+      """)
+  List<ProgressEntry> findAllByProcedureIdAndFetchFile(@Param("procedureId") Long procedureId);
 
   @Override
-  @EntityGraph(attributePaths = ProgressEntry_.FILE)
   Page<ProgressEntry> findAll(Specification<ProgressEntry> spec, Pageable pageable);
 
   @Query(
@@ -59,7 +62,6 @@ public interface ProgressEntryRepository
       """
         SELECT progressEntry FROM ProgressEntry progressEntry
         LEFT JOIN FETCH progressEntry.file as file
-        LEFT JOIN FETCH file.attachments
         WHERE progressEntry.procedureId = :procedureId
         AND progressEntry.id != :id
         AND (
@@ -67,9 +69,25 @@ public interface ProgressEntryRepository
         OR
         TREAT(progressEntry as SystemProgressEntry).keyDocumentType = :keyDocumentType
         )
+        ORDER BY
+          COALESCE(TREAT(progressEntry as ManualProgressEntry).keyDocumentVersion, TREAT(progressEntry as SystemProgressEntry).keyDocumentVersion) DESC,
+          progressEntry.id DESC
         """)
-  List<ProgressEntry> findAllByProcedureIdAndKeyDocumentTypeAndNotIdFetchingFileAndAttachments(
+  List<ProgressEntry> findAllByProcedureIdAndKeyDocumentTypeAndNotIdFetchingFile(
       @Param("procedureId") Long procedureId,
       @Param("keyDocumentType") String keyDocumentType,
       @Param("id") Long id);
+
+  @Query(
+      """
+        SELECT progressEntry FROM ProgressEntry progressEntry
+        LEFT JOIN FETCH treat(progressEntry as ProcessedInboxProgressEntry).inboxProcedure
+        LEFT JOIN FETCH progressEntry.file file
+        LEFT JOIN FETCH treat(file as Image).metaData
+        LEFT JOIN FETCH treat(file as Pdf).metaData
+        LEFT JOIN FETCH treat(file as Mail).metaData
+        WHERE progressEntry IN :progressEntries
+        """)
+  List<ProgressEntry> fetchFilesMetaDataAndInboxProcedure(
+      @Param("progressEntries") List<ProgressEntry> progressEntries, Sort sort);
 }

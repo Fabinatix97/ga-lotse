@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -122,7 +122,7 @@ public class DraftMeaslesProtectionService {
     MeaslesProtectionProcedure procedure =
         repository
             .findByExternalId(id)
-            .orElseThrow(() -> new NotFoundException("%s: no such procedure".formatted(id)));
+            .orElseThrow(() -> new NotFoundException("No such procedure"));
     ProcedureStatus procedureStatus = procedure.getProcedureStatus();
     assertProcedureStatus(id, ProcedureStatus.DRAFT, procedureStatus);
     return procedure;

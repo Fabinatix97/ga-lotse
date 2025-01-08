@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -87,5 +87,10 @@ public class Child extends Procedure<Child, ChildTask, Person, Facility> {
   public void addExamination(Examination examination) {
     this.examinations.add(examination);
     examination.setChild(this);
+  }
+
+  public void removeExamination(Examination examination) {
+    this.examinations.remove(examination);
+    examination.setChild(null);
   }
 }

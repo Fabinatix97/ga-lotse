@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,7 +8,6 @@ package de.eshg.inspection.inspection;
 import static de.eshg.rest.service.error.ErrorCode.INSUFFICIENT_USER_RIGHTS;
 
 import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
-import de.eshg.inspection.feature.InspectionFeature;
 import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.inspection.api.*;
 import de.eshg.lib.auditlog.AuditLogger;
@@ -198,7 +197,6 @@ associated reference facility
   public void resolveInspectionDuplicate(
       @Parameter(description = "The id of the inspection") @PathVariable("id") UUID id,
       @RequestBody @Valid ResolveInspectionDuplicateRequest request) {
-    inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.IMPORT);
     reviewService.resolveInspectionDuplicate(id, request.keepInspection());
   }
 
@@ -207,7 +205,6 @@ associated reference facility
   public void resolveFacilityDuplicate(
       @Parameter(description = "The id of the inspection") @PathVariable("id") UUID id,
       @RequestBody @Valid ResolveFacilityDuplicateRequest request) {
-    inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.IMPORT);
     reviewService.resolveFacilityDuplicate(id, request.chosenReferenceId());
   }
 
@@ -215,7 +212,6 @@ associated reference facility
   @Operation(summary = "Get inspection duplicates of an inspection")
   @Transactional(readOnly = true)
   public InspectionDuplicateReviewDto getInspectionDuplicates(@PathVariable("id") UUID externalId) {
-    inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.IMPORT);
     return reviewService.reviewInspectionDuplicates(externalId);
   }
 
@@ -223,7 +219,6 @@ associated reference facility
   @Operation(summary = "Get facility duplicates of an inspection")
   @Transactional(readOnly = true)
   public FacilityDuplicateReviewDto getFacilityDuplicates(@PathVariable("id") UUID externalId) {
-    inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.IMPORT);
     return reviewService.reviewFacilityDuplicates(externalId);
   }
 

@@ -1,9 +1,10 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { ApiGetProcedureDraftResponse } from "@eshg/employee-portal-api/medicalRegistry";
+import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { Stack, Typography } from "@mui/joy";
 import { isDefined } from "remeda";
 
@@ -11,7 +12,6 @@ import { SearchDraftReferencesResponse } from "@/lib/businessModules/medicalRegi
 import { FORM_OPTION_NEW } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/FinalizeDraftSidebar";
 import { SelectCard } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/SelectCard";
 import { mapToOptionalPhoneNumbers } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/helper";
-import { RadioGroupField } from "@/lib/shared/components/formFields/RadioGroupField";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { fullAddress } from "@/lib/shared/helpers/facilityUtils";
 

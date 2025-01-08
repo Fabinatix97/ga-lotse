@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -16,7 +16,7 @@ import { UseFetchInboxProcedure } from "@/lib/shared/api/queries/inboxProcedures
 import { FileCard } from "@/lib/shared/components/FileCard";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { ConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialog";
+import { EmployeePortalConfirmationDialog } from "@/lib/shared/components/confirmationDialog/EmployeePortalConfirmationDialog";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
 import { procedureTypeNames } from "@/lib/shared/components/procedures/constants";
@@ -380,7 +380,7 @@ function InboxProcedureClosureModal({
 
   return (
     <OverlayBoundary>
-      <ConfirmationDialog
+      <EmployeePortalConfirmationDialog
         open
         onClose={onClose}
         onConfirm={handleSubmit}

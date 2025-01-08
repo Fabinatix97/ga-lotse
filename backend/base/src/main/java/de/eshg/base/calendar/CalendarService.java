@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -71,7 +71,7 @@ public class CalendarService {
     Calendar calendar =
         calendarRepository
             .findByResourceId(resourceId)
-            .orElseThrow(() -> notFoundWithResourceId(resourceId));
+            .orElseThrow(() -> new NotFoundException("Calendar with given resource id not found"));
     return CalendarMapper.mapToResourceCalendar(calendar);
   }
 
@@ -130,10 +130,6 @@ public class CalendarService {
             null));
 
     return new GetCalendarsResponse(calendarTypeDtos);
-  }
-
-  private static NotFoundException notFoundWithResourceId(UUID resourceId) {
-    return new NotFoundException("Calendar with resource id %s not found".formatted(resourceId));
   }
 
   @Transactional

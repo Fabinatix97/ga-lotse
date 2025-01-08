@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -399,7 +399,8 @@ public class PersonService {
   }
 
   private List<Person> findAllFilesStates(Set<UUID> fileStateIds) {
-    return personRepository.findAllByExternalIdInAndReferencePersonIsNotNullOrderById(fileStateIds);
+    return personRepository.findAllByExternalIdInAndReferencePersonIsNotNullOrderById(
+        new ArrayList<>(fileStateIds));
   }
 
   private List<Person> findReferencePersonsByKeyAttributes(Collection<Person> fileStates) {

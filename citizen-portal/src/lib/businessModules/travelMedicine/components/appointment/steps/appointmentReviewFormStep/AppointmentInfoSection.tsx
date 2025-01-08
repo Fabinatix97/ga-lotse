@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -17,7 +17,7 @@ export function AppointmentInfoSection() {
   const { t } = useTranslation(["travelMedicine/forms"]);
 
   return (
-    <FormSheet>
+    <FormSheet data-testid="information-content-form">
       <FormSheetTitle>{t("appointmentInfoSection.title")}</FormSheetTitle>
       <Alert
         title={t("appointmentInfoSection.alertHeader")}

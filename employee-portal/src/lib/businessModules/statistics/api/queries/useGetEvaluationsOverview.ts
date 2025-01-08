@@ -1,9 +1,8 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { GetEvaluationsRequest } from "@eshg/employee-portal-api/statistics";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import {
@@ -11,12 +10,15 @@ import {
   useEvaluationApi,
   useEvaluationTemplateApi,
 } from "@/lib/businessModules/statistics/api/clients";
+import { PageRequest } from "@/lib/businessModules/statistics/api/models/pageRequest";
 import { createQueryGetAvailableDataSources } from "@/lib/businessModules/statistics/api/queries/useGetAvailableDataSources";
 import { createQueryGetEvaluationTemplates } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplates";
 import { createQueryGetEvaluations } from "@/lib/businessModules/statistics/api/queries/useGetEvaluations";
+import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 
 export function useGetEvaluationsOverview(
-  evaluationsRequest: GetEvaluationsRequest,
+  pageRequest: PageRequest,
+  filterValues: FilterValue[],
 ) {
   const evaluationsApi = useEvaluationApi();
   const dataSourceApi = useDataSourceApi();
@@ -27,7 +29,7 @@ export function useGetEvaluationsOverview(
     { data: evaluationTemplates },
   ] = useSuspenseQueries({
     queries: [
-      createQueryGetEvaluations(evaluationsApi, evaluationsRequest),
+      createQueryGetEvaluations(evaluationsApi, pageRequest, filterValues),
       createQueryGetAvailableDataSources(dataSourceApi),
       createQueryGetEvaluationTemplates(evaluationTemplateApi),
     ],

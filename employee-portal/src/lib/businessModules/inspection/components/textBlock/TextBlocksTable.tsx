@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -15,13 +15,13 @@ import { useDeleteTextBlock } from "@/lib/businessModules/inspection/api/mutatio
 import { EditTextBlockSidebar } from "@/lib/businessModules/inspection/components/textBlock/EditTextBlockSidebar";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { SearchFilter } from "@/lib/shared/components/tableFilters/SearchFilter";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 const columnHelper = createColumnHelper<ApiTextBlock>();
 

@@ -1,14 +1,15 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
+import { PERSON_FIELD_NAME } from "@eshg/lib-portal/components/formFields/constants";
 
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import {
   ExternalLinkDetailsCell,
   emailHref,
 } from "@/lib/shared/components/detailsSection/ExternalLinkDetailsCell";
-import { PERSON_FIELD_NAME } from "@/lib/shared/components/personSidebar/constants";
 
 interface ContactDataProps {
   subject: {

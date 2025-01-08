@@ -1,14 +1,15 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { EnvironmentIndicator } from "@eshg/lib-portal/components/EnvironmentIndicator";
 import { Stack, Typography, styled } from "@mui/joy";
 
 import { LanguageSwitch } from "@/lib/components/layout/nav/LanguageSwitch";
 import {
-  headerHeightDesktop,
-  headerHeightMobile,
+  appBarHeightDesktop,
+  appBarHeightMobile,
 } from "@/lib/components/layout/theme/sizes";
 import { UserHeading } from "@/lib/components/user/UserHeading";
 import { useTranslation } from "@/lib/i18n/client";
@@ -29,16 +30,19 @@ export function Heading() {
   const { t } = useTranslation();
 
   return (
-    <StyledHeader
-      sx={{ height: { xxs: headerHeightMobile, sm: headerHeightDesktop } }}
-    >
-      <Stack flex={1} justifyContent="space-between" alignItems="center">
-        <Typography level="h1">{t("gaLotseAdminPortal")}</Typography>
-        <Stack alignItems="center" gap={3}>
-          <LanguageSwitch />
-          <UserHeading />
+    <Stack display="flex" flexDirection="column">
+      <EnvironmentIndicator />
+      <StyledHeader
+        sx={{ height: { xxs: appBarHeightMobile, sm: appBarHeightDesktop } }}
+      >
+        <Stack flex={1} justifyContent="space-between" alignItems="center">
+          <Typography level="h1">{t("gaLotseAdminPortal")}</Typography>
+          <Stack alignItems="center" gap={3}>
+            <LanguageSwitch />
+            <UserHeading />
+          </Stack>
         </Stack>
-      </Stack>
-    </StyledHeader>
+      </StyledHeader>
+    </Stack>
   );
 }

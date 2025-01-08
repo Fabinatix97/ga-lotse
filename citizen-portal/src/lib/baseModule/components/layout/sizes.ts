@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,11 +8,8 @@ export interface ContentMargin {
   leftRight: number;
 }
 
-export const headerHeightMobile = "4.75rem"; // 76px
-export const headerHeightDesktop = "9rem"; // 144px
-
-export const bannerHeightMobile = "7.75rem"; // 124px
-export const bannerHeightDesktop = "20rem"; // 320px
+export const appBarHeightMobile = "4.75rem"; // 76px
+export const appBarHeightDesktop = "9rem"; // 144px
 
 export const maxContentWidthDesktop = "1232px";
 export const contentMarginDesktop: ContentMargin = {

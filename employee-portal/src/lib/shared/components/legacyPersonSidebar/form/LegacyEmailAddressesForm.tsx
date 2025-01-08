@@ -1,14 +1,13 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, Grid, IconButton } from "@mui/joy";
 import { FieldArray } from "formik";
-
-import { EmailField } from "@/lib/shared/components/formFields/EmailField";
 
 // See InputArrayField with fieldComponent={EmailField}
 export function LegacyEmailAddressesForm(props: {

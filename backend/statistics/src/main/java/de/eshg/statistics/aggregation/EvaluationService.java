@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,6 +11,7 @@ import static de.eshg.statistics.mapper.EvaluationMapper.mapSortKey;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.domain.model.BaseEntity_;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
+import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.api.ValueType;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
@@ -25,6 +26,7 @@ import de.eshg.statistics.api.completeness.CompletenessOfAttribute;
 import de.eshg.statistics.api.completeness.CompletenessOfBaseAttribute;
 import de.eshg.statistics.api.completeness.CompletenessOfBusinessAttribute;
 import de.eshg.statistics.api.completeness.GetCompletenessDataResponse;
+import de.eshg.statistics.api.datasource.AvailableDataSource;
 import de.eshg.statistics.api.datasource.BusinessDataAttribute;
 import de.eshg.statistics.api.datasource.DataSourceDto;
 import de.eshg.statistics.api.evaluation.AbstractAddEvaluationRequest;
@@ -41,7 +43,10 @@ import de.eshg.statistics.api.evaluation.UpdateEvaluationNameRequest;
 import de.eshg.statistics.api.evaluation.UpdateEvaluationTimeRangeRequest;
 import de.eshg.statistics.api.report.GetReportSeriesEntriesOfEvaluationResponse;
 import de.eshg.statistics.api.report.ReportSeriesDto;
-import de.eshg.statistics.config.OriginalDataAccessConfig;
+import de.eshg.statistics.config.StatisticsConfig;
+import de.eshg.statistics.config.StatisticsConfig.BusinessModuleConfig;
+import de.eshg.statistics.config.StatisticsFeature;
+import de.eshg.statistics.config.StatisticsFeatureToggle;
 import de.eshg.statistics.datatransfer.AnalysisTemplateData;
 import de.eshg.statistics.datatransfer.DiagramTemplateData;
 import de.eshg.statistics.datatransfer.EvaluationTemplateData;
@@ -86,7 +91,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.hibernate.Hibernate;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -98,29 +102,34 @@ import org.springframework.util.CollectionUtils;
 
 @Service
 public class EvaluationService extends AbstractAggregationResultService {
-  private static final String EVALUATION_WITH_ID_NOT_FOUND = "Evaluation with id '%s' not found";
+  private static final String EVALUATION_WITH_ID_NOT_FOUND = "Evaluation with given id not found";
 
   private final EvaluationRepository evaluationRepository;
   private final StatisticsUserService userService;
   private final EvaluationTemplateService evaluationTemplateService;
+  private final DataSourceAggregationService dataSourceAggregationService;
   private final DataSourceValidator dataSourceValidator;
-  private final OriginalDataAccessConfig originalDataAccessConfig;
+  private final BusinessModuleConfig businessModuleConfig;
+  private final StatisticsFeatureToggle statisticsFeatureToggle;
 
   public EvaluationService(
       DataAggregationService dataAggregationService,
       TableRowRepository tableRowRepository,
-      @Value("${eshg.statistics.tablerows.pagesize:500}") int tableRowPageSize,
       EvaluationRepository evaluationRepository,
       StatisticsUserService userService,
       EvaluationTemplateService evaluationTemplateService,
+      DataSourceAggregationService dataSourceAggregationService,
       DataSourceValidator dataSourceValidator,
-      OriginalDataAccessConfig originalDataAccessConfig) {
-    super(dataAggregationService, tableRowRepository, tableRowPageSize);
+      StatisticsConfig statisticsConfig,
+      StatisticsFeatureToggle statisticsFeatureToggle) {
+    super(dataAggregationService, tableRowRepository, statisticsConfig);
     this.evaluationRepository = evaluationRepository;
     this.userService = userService;
     this.evaluationTemplateService = evaluationTemplateService;
+    this.dataSourceAggregationService = dataSourceAggregationService;
     this.dataSourceValidator = dataSourceValidator;
-    this.originalDataAccessConfig = originalDataAccessConfig;
+    this.businessModuleConfig = statisticsConfig.businessModule();
+    this.statisticsFeatureToggle = statisticsFeatureToggle;
   }
 
   @Override
@@ -131,15 +140,14 @@ public class EvaluationService extends AbstractAggregationResultService {
   public Evaluation getEvaluationInternal(UUID evaluationId) {
     return evaluationRepository
         .findByExternalId(evaluationId)
-        .orElseThrow(
-            () -> new NotFoundException(EVALUATION_WITH_ID_NOT_FOUND.formatted(evaluationId)));
+        .orElseThrow(() -> new NotFoundException(EVALUATION_WITH_ID_NOT_FOUND));
   }
 
   @Transactional(readOnly = true)
   public void checkPermissionForEvaluation(UUID evaluationId) {
     Evaluation evaluation = getEvaluationInternal(evaluationId);
     if (accessNotAllowed(evaluation)) {
-      throw new NotFoundException(EVALUATION_WITH_ID_NOT_FOUND.formatted(evaluationId));
+      throw new NotFoundException(EVALUATION_WITH_ID_NOT_FOUND);
     }
   }
 
@@ -152,7 +160,7 @@ public class EvaluationService extends AbstractAggregationResultService {
       return businessModules.stream()
           .anyMatch(
               businessModule ->
-                  !originalDataAccessConfig.originalDataAllowedForCurrentUser(businessModule));
+                  !businessModuleConfig.sensitiveDataAllowedForCurrentUser(businessModule));
     } else {
       return false;
     }
@@ -197,17 +205,29 @@ public class EvaluationService extends AbstractAggregationResultService {
           EvaluationTemplateMapper.mapToDataSourceDto(
               evaluationTemplate.getDataSources().getFirst());
     }
+
+    List<AvailableDataSource> availableDataSources =
+        dataSourceValidator.validateDataSourcesAndGetRelevantAvailableDataSources(
+            List.of(dataSource));
+    DataSourceSensitivity sensitivity =
+        DataSourceValidator.getMostRestrictiveSensitivity(availableDataSources);
     if (!anonymized
-        && !originalDataAccessConfig.originalDataAllowedForCurrentUser(
+        && sensitivity.equals(DataSourceSensitivity.SENSITIVE)
+        && !businessModuleConfig.sensitiveDataAllowedForCurrentUser(
             dataSource.businessModuleName())) {
       throw new BadRequestException(
           "Only anonymous evaluations allowed for data source '%s'".formatted(dataSource.id()));
     }
-    dataSourceValidator.validateDataSourcesAndGetRelevantAvailableDataSources(List.of(dataSource));
+    if (anonymized
+        && !DataSourceValidator.getCanBeAnonymized(availableDataSources)
+        && !statisticsFeatureToggle.isNewFeatureEnabled(StatisticsFeature.FAKE_ANONYMIZATION)) {
+      throw new BadRequestException(
+          "Data source '%s' cannot be anonymized".formatted(dataSource.id()));
+    }
 
     Evaluation evaluation =
         dataAggregationService.createEvaluation(
-            dataSource, name, timeRangeStart, timeRangeEnd, anonymized);
+            dataSource, name, timeRangeStart, timeRangeEnd, sensitivity, anonymized);
     if (evaluationTemplate != null) {
       evaluationTemplate
           .getAnalysisTemplates()
@@ -251,6 +271,8 @@ public class EvaluationService extends AbstractAggregationResultService {
     AggregationResultUtil.validateTimeRange(
         updateEvaluationTimeRangeRequest.timeRange().start(),
         updateEvaluationTimeRangeRequest.timeRange().end());
+    AggregationResultUtil.validateSameSensitivityPossible(
+        evaluation, dataSourceAggregationService.getAvailableDataSources().availableDataSources());
 
     evaluation.setTimeRangeStart(updateEvaluationTimeRangeRequest.timeRange().start());
     evaluation.setTimeRangeEnd(updateEvaluationTimeRangeRequest.timeRange().end());
@@ -273,7 +295,7 @@ public class EvaluationService extends AbstractAggregationResultService {
   public GetEvaluationsResponse getEvaluations(GetEvaluationsRequest getEvaluationsRequest) {
     List<Specification<Evaluation>> specifications = new ArrayList<>();
     GetEvaluationsFilterOptions filterOptions = getEvaluationsRequest.filterOptions();
-    addAnonymizationSpecification(specifications, filterOptions);
+    addDataSensitivitySpecification(specifications, filterOptions);
     if (filterOptions != null) {
       addStatesSpecification(specifications, filterOptions.states());
       addDataSourcesSpecification(specifications, filterOptions.dataSourceIds());
@@ -304,34 +326,48 @@ public class EvaluationService extends AbstractAggregationResultService {
         evaluation -> isTooMuchDataForExportFunction().apply(evaluation));
   }
 
-  private void addAnonymizationSpecification(
+  private void addDataSensitivitySpecification(
       List<Specification<Evaluation>> specifications, GetEvaluationsFilterOptions filterOptions) {
-    if (filterOptions == null || filterOptions.anonymizationValue() == null) {
+    if (filterOptions == null || CollectionUtils.isEmpty(filterOptions.dataSensitivities())) {
       specifications.add(
           Specification.anyOf(
-              anonymousEvaluations(),
-              nonAnonymousEvaluations(
-                  originalDataAccessConfig.getBusinessModulesOriginalDataAllowedForCurrentUser())));
+              equalsDataSensitivitySpecification(StatisticsDataSensitivity.ANONYMOUS),
+              equalsDataSensitivitySpecification(StatisticsDataSensitivity.INTERNAL_USAGE),
+              sensitiveEvaluations(
+                  businessModuleConfig.getBusinessModulesSensitiveDataAllowedForCurrentUser())));
     } else {
-      if (Boolean.TRUE.equals(filterOptions.anonymizationValue())) {
-        specifications.add(anonymousEvaluations());
-      } else {
-        specifications.add(
-            nonAnonymousEvaluations(
-                originalDataAccessConfig.getBusinessModulesOriginalDataAllowedForCurrentUser()));
-      }
+      List<Specification<Evaluation>> dataSensitivitySpecifications = new ArrayList<>();
+      filterOptions
+          .dataSensitivities()
+          .forEach(
+              dataSensitivity -> {
+                switch (dataSensitivity) {
+                  case ANONYMOUS ->
+                      dataSensitivitySpecifications.add(
+                          equalsDataSensitivitySpecification(StatisticsDataSensitivity.ANONYMOUS));
+                  case INTERNAL_USAGE ->
+                      dataSensitivitySpecifications.add(
+                          equalsDataSensitivitySpecification(
+                              StatisticsDataSensitivity.INTERNAL_USAGE));
+                  case SENSITIVE ->
+                      dataSensitivitySpecifications.add(
+                          sensitiveEvaluations(
+                              businessModuleConfig
+                                  .getBusinessModulesSensitiveDataAllowedForCurrentUser()));
+                }
+              });
+      specifications.add(Specification.anyOf(dataSensitivitySpecifications));
     }
   }
 
-  private Specification<Evaluation> anonymousEvaluations() {
+  private Specification<Evaluation> equalsDataSensitivitySpecification(
+      StatisticsDataSensitivity dataSensitivity) {
     return (root, query, criteriaBuilder) ->
         criteriaBuilder.equal(
-            root.get(AbstractAggregationResult_.DATA_SENSITIVITY),
-            StatisticsDataSensitivity.ANONYMOUS);
+            root.get(AbstractAggregationResult_.DATA_SENSITIVITY), dataSensitivity);
   }
 
-  private Specification<Evaluation> nonAnonymousEvaluations(
-      Set<String> allowedBusinessModuleNames) {
+  private Specification<Evaluation> sensitiveEvaluations(Set<String> allowedBusinessModuleNames) {
     return (root, query, criteriaBuilder) -> {
       Assert.notNull(query, "CriteriaQuery must not be null");
       Subquery<TableColumn> subquery = query.subquery(TableColumn.class);
@@ -351,19 +387,13 @@ public class EvaluationService extends AbstractAggregationResultService {
       subquery.where(
           criteriaBuilder.and(tableColumnMemberPredicate, businessModuleNotAllowedPredicate));
 
-      Predicate internalPredicate =
-          criteriaBuilder.equal(
-              root.get(AbstractAggregationResult_.DATA_SENSITIVITY),
-              StatisticsDataSensitivity.INTERNAL_USAGE);
       Predicate sensitivePredicate =
           criteriaBuilder.equal(
               root.get(AbstractAggregationResult_.DATA_SENSITIVITY),
               StatisticsDataSensitivity.SENSITIVE);
 
-      return criteriaBuilder.or(
-          internalPredicate,
-          criteriaBuilder.and(
-              sensitivePredicate, criteriaBuilder.not(criteriaBuilder.exists(subquery))));
+      return criteriaBuilder.and(
+          sensitivePredicate, criteriaBuilder.not(criteriaBuilder.exists(subquery)));
     };
   }
 
@@ -635,7 +665,7 @@ public class EvaluationService extends AbstractAggregationResultService {
     return new GetReportSeriesEntriesOfEvaluationResponse(
         evaluation.getExternalId(),
         evaluation.getName(),
-        evaluation.getDataSensitivity().equals(StatisticsDataSensitivity.ANONYMOUS),
+        EvaluationMapper.mapToApi(evaluation.getDataSensitivity()),
         reportSeriesDtos,
         resolvedUsers);
   }

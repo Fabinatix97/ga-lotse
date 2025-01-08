@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -46,7 +46,7 @@ function buildTabItems(id: string): TabNavigationItem[] {
     },
     {
       tabButtonName: "Verlaufseinträge",
-      href: routes.procedures.byId(id).progressEntries.index,
+      href: routes.procedures.byId(id).progressEntries,
       decorator: <TimelineOutlined />,
     },
   ];

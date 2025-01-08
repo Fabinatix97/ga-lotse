@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -10,22 +10,30 @@ import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Add, CloudUpload, Delete, Edit } from "@mui/icons-material";
 import { Box } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
+import { startTransition, useState } from "react";
 import { isPlainObject } from "remeda";
 
 import { translateDataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import { EvaluationTemplateWithUserInfo } from "@/lib/businessModules/statistics/api/models/evaluationTemplatesOverview";
 import { useDeleteEvaluationTemplate } from "@/lib/businessModules/statistics/api/mutations/useDeleteEvaluationTemplate";
+import { useGetAvailableDataSources } from "@/lib/businessModules/statistics/api/queries/useGetAvailableDataSources";
 import { useGetEvaluationTemplatesOverview } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplatesOverview";
 import { useUpdateEvaluationTemplateSidebar } from "@/lib/businessModules/statistics/components/evaluations/EvaluationTemplateSidebar/UpdateEvaluationTemplateSidebar";
 import { useCreateEvaluationFromTemplateSidebar } from "@/lib/businessModules/statistics/components/evaluations/templates/CreateEvaluationFromTemplateSidebar/CreateEvaluationFromTemplateSidebar";
 import { useEvaluationTemplateDetailsSidebar } from "@/lib/businessModules/statistics/components/evaluations/templates/EvaluationTemplateDetailsSidebar";
+import { createFilterDefinitions } from "@/lib/businessModules/statistics/components/evaluations/templates/filterDefinitions";
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import {
   ActionsItem,
   ActionsMenu,
 } from "@/lib/shared/components/buttons/ActionsMenu";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
+import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
+import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
+import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
+import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
+import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
+import { useFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
@@ -34,6 +42,7 @@ import { UserLink } from "@/lib/shared/components/users/UserLink";
 import { usePagination } from "@/lib/shared/hooks/table/usePagination";
 import { useTableSorting } from "@/lib/shared/hooks/table/useTableSorting";
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 import { useUploadTemplateSidebar } from "./UploadTemplateSidebar/UploadTemplateSidebar";
 
@@ -49,12 +58,28 @@ export function EvaluationTemplatesOverview() {
     },
   });
 
-  const evaluationTemplatesOverview = useGetEvaluationTemplatesOverview({
-    page,
-    pageSize,
-    sortDirection,
-    sortKey,
+  const [filterValues, setFilterValues] = useState<FilterValue[]>([]);
+  const evaluationTemplatesOverview = useGetEvaluationTemplatesOverview(
+    {
+      page,
+      pageSize,
+      sortDirection,
+      sortKey,
+    },
+    filterValues,
+  );
+  const dataSources = useGetAvailableDataSources();
+  const filterSettings = useFilterSettings({
+    definitions: createFilterDefinitions(dataSources),
+    onValuesSubmit: (filterValues) => {
+      startTransition(() => {
+        setFilterValues(filterValues);
+        resetPageNumber();
+      });
+    },
+    showSearch: false,
   });
+
   const writePermission = useHasUserRoleCheck(
     ApiUserRole.StatisticsStatisticsWrite,
   );
@@ -116,7 +141,22 @@ export function EvaluationTemplatesOverview() {
   }
 
   return (
-    <TablePage data-testid="evaluation-templates-overview-table" fullHeight>
+    <TablePage
+      data-testid="evaluation-templates-overview-table"
+      fullHeight
+      controls={
+        <ButtonBar
+          left={<FilterButton {...filterSettings.filterButtonProps} />}
+        />
+      }
+      filterSettings={
+        filterSettings.filterSettingsVisible && (
+          <FilterSettingsSheet {...filterSettings.filterSettingsSheetProps}>
+            <FilterSettings {...filterSettings.filterSettingsProps} />
+          </FilterSettingsSheet>
+        )
+      }
+    >
       <TableSheet
         footer={
           <Pagination

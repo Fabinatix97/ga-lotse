@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -28,6 +28,7 @@ import {
   SectionTitle,
 } from "@/lib/baseModule/components/gdpr/procedure/tiles/SectionTile";
 import {
+  useDownloadBaseModulePackage,
   useDownloadPackageFileByModule,
   useGetGdprDownloadPackagesInfo,
 } from "@/lib/shared/api/queries/gdpr";
@@ -42,18 +43,22 @@ function useFileDownloadForPackage() {
   );
 }
 
+function useFileDownloadForBase(gdprProcedureId: string) {
+  const download = useDownloadBaseModulePackage();
+  return useFileDownload(() => download(gdprProcedureId));
+}
+
 export function GdprDownloadPackagesTile({
   gdprProcedure,
 }: {
   gdprProcedure: ApiGetGdprProcedureResponse;
 }) {
   const responses = useGetGdprDownloadPackagesInfo(gdprProcedure.id);
-  const fileDownload = useFileDownloadForPackage();
+  const businessModuleDownload = useFileDownloadForPackage();
+  const baseDownload = useFileDownloadForBase(gdprProcedure.id);
   const id = useId();
 
-  const isEmpty = responses.every(
-    ({ data }) => data.downloadPackages.length < 1,
-  );
+  const isEmpty = gdprProcedure.centralFileId === undefined;
 
   return (
     <SectionTile id={id}>
@@ -63,6 +68,24 @@ export function GdprDownloadPackagesTile({
         <NoSearchResults info="Keine Daten gefunden." />
       ) : (
         <AccordionGroup variant="outlined" color="primary">
+          <StyledAccordion>
+            <AccordionSummary>Stammdaten</AccordionSummary>
+            <AccordionDetails>
+              <List sx={{ padding: 1 }}>
+                <ListItem>
+                  <ListItemButton
+                    variant="soft"
+                    onClick={() => baseDownload.download()}
+                  >
+                    <ListItemDecorator>
+                      <DownloadIcon />
+                    </ListItemDecorator>
+                    Datenpaket 1
+                  </ListItemButton>
+                </ListItem>
+              </List>
+            </AccordionDetails>
+          </StyledAccordion>
           {responses
             .filter((response) => response.data.downloadPackages.length > 0)
             .map((response) => (
@@ -77,7 +100,7 @@ export function GdprDownloadPackagesTile({
                         <ListItemButton
                           variant="soft"
                           onClick={() =>
-                            fileDownload.download({
+                            businessModuleDownload.download({
                               businessModule: response.data.businessModule,
                               packageId: pkg.id,
                             })
@@ -97,7 +120,8 @@ export function GdprDownloadPackagesTile({
         </AccordionGroup>
       )}
 
-      <HiddenContainer ref={fileDownload.downloadContainerRef} />
+      <HiddenContainer ref={baseDownload.downloadContainerRef} />
+      <HiddenContainer ref={businessModuleDownload.downloadContainerRef} />
     </SectionTile>
   );
 }

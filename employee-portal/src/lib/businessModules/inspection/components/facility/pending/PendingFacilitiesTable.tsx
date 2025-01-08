@@ -1,15 +1,12 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 "use client";
 
 import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
-import {
-  ApiInspectionFeature,
-  ApiObjectType,
-} from "@eshg/employee-portal-api/inspection";
+import { ApiObjectType } from "@eshg/employee-portal-api/inspection";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { addDays, formatISO } from "date-fns";
@@ -18,7 +15,6 @@ import { useMemo, useState } from "react";
 import { procedureStatusNames } from "@/lib/baseModule/api/procedures/enums";
 import { useFacilityApi } from "@/lib/businessModules/inspection/api/clients";
 import { getPendingFacilitiesQuery } from "@/lib/businessModules/inspection/api/queries/facility";
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
 import { useGetObjectTypes } from "@/lib/businessModules/inspection/api/queries/objectTypes";
 import { ExportBannedFacilitiesButton } from "@/lib/businessModules/inspection/components/facility/pending/ExportBannedFacilitiesButton";
 import { NewFacilityButton } from "@/lib/businessModules/inspection/components/facility/pending/NewFacilityButton";
@@ -69,14 +65,13 @@ const initialUserActivity: UserActivityState = { type: "view-table" };
 
 function createFilterDefinitions(
   objectTypes: ApiObjectType[],
-  isImportFeatureEnabled: boolean,
 ): FilterDefinition[] {
   const objectTypeOptions = objectTypes.map((o) => ({
     label: o.name,
     value: o.id,
   }));
 
-  const filterDefinitions: FilterDefinition[] = [
+  return [
     {
       type: "EnumSingle",
       key: "kind",
@@ -117,40 +112,28 @@ function createFilterDefinitions(
       key: "isAfter",
       name: "Begehung nach",
     },
-  ];
-
-  if (isImportFeatureEnabled) {
-    filterDefinitions.push({
+    {
       type: "EnumSingle",
       key: "hasDuplicates",
       name: "Duplikat",
       options: optionsFromRecord(inspectionDuplicateFilterNames),
-    });
-  }
-
-  filterDefinitions.push({
-    type: "EnumSingle",
-    key: "banned",
-    name: "Untersagte Einrichtung",
-    options: optionsFromRecord(inspectionBannedFacilityFilterNames),
-  });
-
-  return filterDefinitions;
+    },
+    {
+      type: "EnumSingle",
+      key: "banned",
+      name: "Untersagte Einrichtung",
+      options: optionsFromRecord(inspectionBannedFacilityFilterNames),
+    },
+  ];
 }
 
 export function PendingFacilitiesTable(
   props: Readonly<{ filter: PendingFacilitiesFilters }>,
 ) {
   const isOfflineFeatureEnabled = useIsOfflineFeatureEnabled();
-  const isImportFeatureEnabled = useIsNewFeatureEnabled(
-    ApiInspectionFeature.Import,
-  );
   const { data: objectTypes } = useGetObjectTypes();
 
-  const filterDefinitions = createFilterDefinitions(
-    objectTypes,
-    isImportFeatureEnabled,
-  );
+  const filterDefinitions = createFilterDefinitions(objectTypes);
   const paramStateProvider = useSearchParamStateProvider(
     filterDefinitions,
     true,
@@ -213,7 +196,6 @@ export function PendingFacilitiesTable(
     openReviewFacilityDuplicateSidebar,
     openReviewInspectionDuplicateSidebar,
     isOfflineFeatureEnabled,
-    isImportFeatureEnabled,
   );
 
   const [userActivity, setUserActivity] =
@@ -256,13 +238,12 @@ export function PendingFacilitiesTable(
 
   return (
     <>
-      {isImportFeatureEnabled &&
-        procedures.numberOfPossibleDuplicates !== 0 && (
-          <PotentialDuplicatesWarning
-            numberOfDuplicates={procedures.numberOfPossibleDuplicates}
-            onFilterForDuplicates={filterForDuplicates}
-          />
-        )}
+      {procedures.numberOfPossibleDuplicates !== 0 && (
+        <PotentialDuplicatesWarning
+          numberOfDuplicates={procedures.numberOfPossibleDuplicates}
+          onFilterForDuplicates={filterForDuplicates}
+        />
+      )}
       <TablePage
         fullHeight
         controls={

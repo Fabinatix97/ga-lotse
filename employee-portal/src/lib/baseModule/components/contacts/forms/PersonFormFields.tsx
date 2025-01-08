@@ -1,22 +1,22 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { ApiBaseFeature } from "@eshg/employee-portal-api/base";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import {
+  GENDER_OPTIONS,
+  SALUTATION_OPTIONS,
+  TITLE_OPTIONS,
+} from "@eshg/lib-portal/components/formFields/constants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { validateLength } from "@eshg/lib-portal/helpers/validators";
 import { Divider, Grid } from "@mui/joy";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { PersonContactFormValues } from "@/lib/baseModule/components/contacts/types";
-import {
-  GENDER_OPTIONS,
-  SALUTATION_OPTIONS,
-  TITLE_OPTIONS,
-} from "@/lib/shared/components/personSidebar/constants";
 
 const fieldName = createFieldNameMapper<PersonContactFormValues>();
 
@@ -65,7 +65,7 @@ export function PersonFormFields() {
         <Grid xxs={12}>
           <InputField
             name={fieldName("externalChatUsername")}
-            label={"Chat Benutzername"}
+            label={"Chat-ID"}
             validate={validateLength(1, 255)}
           />
         </Grid>

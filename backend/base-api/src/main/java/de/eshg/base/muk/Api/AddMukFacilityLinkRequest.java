@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -15,10 +15,10 @@ import java.util.UUID;
         "Request used for establishing a link between a MUK user and a reference facility")
 public record AddMukFacilityLinkRequest(
     @Schema(
-            description = "The id of the mukUser",
+            description = "The 'DatenübermittlerPseudonymId' of the MUK user",
             example = "du-986b2b54ab89cf4ed674ad8c3126b966b54d4872")
         @NotBlank
-        String mukId,
+        String dataTransmitterPseudonymId,
     @Schema(
             description = "The (external) id of the reference facility",
             example = "be9831d4-dc25-48d8-9bfe-4c0b54bfb2c1")

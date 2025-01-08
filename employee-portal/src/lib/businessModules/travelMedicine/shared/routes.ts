@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -43,11 +43,8 @@ export const routes = {
       `${proceduresPath}/${procedureId}/certificates`,
     downloadFile: (fileId: string) =>
       `${proceduresPath}/download-file/${fileId}`,
-    progressEntries: (procedureId: string) => ({
-      index: `${proceduresPath}/${procedureId}/progress-entries`,
-      details: (entryId: string) =>
-        `${proceduresPath}/${procedureId}/progress-entries/${entryId}/details`,
-    }),
+    progressEntries: (procedureId: string) =>
+      `${proceduresPath}/${procedureId}/progress-entries`,
     syncPerson: (
       procedureId: string,
       fileStateId: string,

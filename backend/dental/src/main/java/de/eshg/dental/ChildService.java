@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -12,7 +12,6 @@ import static de.eshg.lib.xlsximport.ImportValidator.validateSheet;
 
 import com.google.common.collect.Iterables;
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.base.SortDirection;
 import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.api.GetFileStateIdsResponse;
@@ -31,6 +30,7 @@ import de.eshg.dental.api.ChildSortKey;
 import de.eshg.dental.api.CreateChildRequest;
 import de.eshg.dental.api.UpdateChildRequest;
 import de.eshg.dental.business.model.ChildWithAugmentedData;
+import de.eshg.dental.business.model.PagedChildren;
 import de.eshg.dental.client.PersonClient;
 import de.eshg.dental.config.DentalProperties;
 import de.eshg.dental.domain.model.Child;
@@ -49,6 +49,7 @@ import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
+import de.eshg.lib.procedure.procedures.ProcedureQuery;
 import de.eshg.lib.procedure.procedures.ProcedureSearchService;
 import de.eshg.lib.xlsximport.FeedbackColumnAccessor;
 import de.eshg.lib.xlsximport.ImportValidator;
@@ -64,22 +65,24 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.stream.Stream;
+import org.apache.commons.text.similarity.FuzzyScore;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.util.Streamable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
@@ -88,6 +91,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ChildService {
 
   private static final Logger log = LoggerFactory.getLogger(ChildService.class);
+  private static final int FUZZY_SEARCH_SCORE_THRESHOLD = 5;
 
   private final Clock clock;
   private final AuditLogger auditLogger;
@@ -98,6 +102,7 @@ public class ChildService {
   private final PersonClient personClient;
   private final ProgressEntryUtil progressEntryUtil;
   private final ProcedureSearchService<Child> procedureSearchService;
+  private final ProcedureQuery procedureQuery;
 
   public ChildService(
       Clock clock,
@@ -108,7 +113,8 @@ public class ChildService {
       DentalProperties dentalProperties,
       PersonClient personClient,
       ProgressEntryUtil progressEntryUtil,
-      ProcedureSearchService<Child> procedureSearchService) {
+      ProcedureSearchService<Child> procedureSearchService,
+      ProcedureQuery procedureQuery) {
     this.clock = clock;
     this.auditLogger = auditLogger;
     this.childRepository = childRepository;
@@ -118,6 +124,7 @@ public class ChildService {
     this.personClient = personClient;
     this.progressEntryUtil = progressEntryUtil;
     this.procedureSearchService = procedureSearchService;
+    this.procedureQuery = procedureQuery;
   }
 
   public Child createChild(CreateChildRequest request) {
@@ -171,8 +178,12 @@ public class ChildService {
                   () ->
                       "Unexpected year of existing child: %s"
                           .formatted(existingOpenChild.getYear()));
-              existingOpenChild.updateProcedureStatus(ProcedureStatus.CLOSED, clock, auditLogger);
+              closeChild(existingOpenChild);
             });
+  }
+
+  private void closeChild(Child child) {
+    child.updateProcedureStatus(ProcedureStatus.CLOSED, clock, auditLogger);
   }
 
   private Optional<Child> findOpenChildWithSamePersonKeyAttributes(CreateChildRequest request) {
@@ -265,43 +276,49 @@ public class ChildService {
     return new ChildWithAugmentedData(child, person, contact);
   }
 
-  public Page<ChildWithAugmentedData> getChildren(
+  public PagedChildren getChildren(
       ChildFilterParameters filterParameters,
       ChildPaginationAndSortParameters paginationAndSortParameters) {
     ChildSpecification childSpecification =
         new ChildSpecification(filterParameters, paginationAndSortParameters);
     ChildPageSpec pageSpec = ChildSpecification.toPageSpec(paginationAndSortParameters);
-    Page<Child> page;
     boolean sortKeyIsPersonAttribute =
         Optional.ofNullable(paginationAndSortParameters.sortKey())
             .map(ChildSortKey::isPersonAttribute)
             .orElse(false);
     if (sortKeyIsPersonAttribute) {
-      page = getChildrenWithPersonAttributeSortKey(paginationAndSortParameters, childSpecification);
+      return getChildrenWithPersonAttributeSortKey(pageSpec, childSpecification);
     } else {
-      page =
-          childRepository.findAll(
-              childSpecification, PageRequest.of(pageSpec.pageNumber(), pageSpec.pageSize()));
+      Pageable pageable = PageRequest.of(pageSpec.pageNumber(), pageSpec.pageSize());
+      Page<Child> page = childRepository.findAll(childSpecification, pageable);
+      List<ChildWithAugmentedData> augmentedChildren =
+          augmentWithChildAndContactData(page.getContent());
+      return new PagedChildren(augmentedChildren, page.getTotalElements());
     }
-
-    Map<UUID, GetPersonFileStateResponse> persons =
-        personClient.fetchPersonDataInBulk(page.toList()).stream()
-            .collect(StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id));
-    Map<UUID, ContactDto> contacts = fetchContactsInBulk(page);
-
-    return page.map(
-        child -> {
-          GetPersonFileStateResponse person = persons.get(child.getChildIdFromCentralFile());
-          Assert.notNull(
-              person, () -> "Failed to resolve child " + child.getChildIdFromCentralFile());
-          ContactDto contact = contacts.get(child.getInstitutionId());
-          Assert.notNull(contact, () -> "Failed to resolve contact " + child.getInstitutionId());
-          return new ChildWithAugmentedData(child, person, contact);
-        });
   }
 
-  private Map<UUID, ContactDto> fetchContactsInBulk(Streamable<Child> children) {
-    List<UUID> institutionIds = children.map(Child::getInstitutionId).stream().distinct().toList();
+  private List<ChildWithAugmentedData> augmentWithChildAndContactData(List<Child> children) {
+    Map<UUID, GetPersonFileStateResponse> persons =
+        personClient.fetchPersonDataInBulk(children).stream()
+            .collect(StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id));
+    Map<UUID, ContactDto> contacts = fetchContactsInBulk(children);
+
+    return children.stream()
+        .map(
+            child -> {
+              GetPersonFileStateResponse person = persons.get(child.getChildIdFromCentralFile());
+              Assert.notNull(
+                  person, () -> "Failed to resolve child " + child.getChildIdFromCentralFile());
+              ContactDto contact = contacts.get(child.getInstitutionId());
+              Assert.notNull(
+                  contact, () -> "Failed to resolve contact " + child.getInstitutionId());
+              return new ChildWithAugmentedData(child, person, contact);
+            })
+        .toList();
+  }
+
+  private Map<UUID, ContactDto> fetchContactsInBulk(List<Child> children) {
+    List<UUID> institutionIds = children.stream().map(Child::getInstitutionId).distinct().toList();
     return contactClient.getBulkContacts(institutionIds, Function.identity());
   }
 
@@ -337,22 +354,23 @@ public class ChildService {
     }
   }
 
-  private Page<Child> getChildrenWithPersonAttributeSortKey(
-      ChildPaginationAndSortParameters paginationAndSortParameters,
-      ChildSpecification childSpecification) {
-    List<Child> allChildren = childRepository.findAll(childSpecification);
+  private PagedChildren getChildrenWithPersonAttributeSortKey(
+      ChildPageSpec pageSpec, ChildSpecification childSpecification) {
+    List<UUID> allChildIds = findAllChildIds(childSpecification);
+
     List<UUID> pagedAndSortedFileStateIds =
         personClient
             .fetchPersonDataInBulk(
-                allChildren,
+                allChildIds,
                 new GetPersonFileStatesSortParameters(
-                    paginationAndSortParameters.sortKey().asPersonsSortKey(),
-                    paginationAndSortParameters.sortDirectionOrFallback(SortDirection.ASC),
-                    paginationAndSortParameters.pageNumberOrFallback(0),
-                    paginationAndSortParameters.pageSizeOrFallback(10)))
+                    pageSpec.sortKey().asPersonsSortKey(),
+                    pageSpec.direction(),
+                    pageSpec.pageNumber(),
+                    pageSpec.pageSize()))
             .stream()
             .map(GetPersonFileStateResponse::id)
             .toList();
+
     List<Child> result =
         childRepository
             .findByRelatedPersonsCentralFileStateIds(
@@ -368,7 +386,13 @@ public class ChildService {
                     }))
             .toList();
 
-    return new PageImpl<>(result, Pageable.ofSize(result.size()), allChildren.size());
+    List<ChildWithAugmentedData> augmentedChildren = augmentWithChildAndContactData(result);
+    return new PagedChildren(augmentedChildren, allChildIds.size());
+  }
+
+  private List<UUID> findAllChildIds(Specification<Child> childSpecification) {
+    return procedureQuery.findAllRelatedPersonFileStateIds(
+        childSpecification, Child.class, Person.PERSON_TYPE_USED_FOR_CHILDREN);
   }
 
   public List<String> getInstitutionGroups(UUID institutionId) {
@@ -422,19 +446,54 @@ public class ChildService {
             .collect(StreamUtil.toLinkedHashMap(Child::getChildIdFromCentralFile));
 
     return personClient.fetchPersonDataInBulk(childrenAtInstitution).stream()
-        .filter(
-            fs -> String.join(" ", fs.firstName(), fs.lastName()).equalsIgnoreCase(searchString))
-        .map(
-            fs -> {
-              Child child = childrenByFileStateIds.get(fs.id());
-              return new ChildResult(
-                  child.getExternalId(),
-                  fs.firstName(),
-                  fs.lastName(),
-                  fs.dateOfBirth(),
-                  child.getGroupName());
-            })
+        .map(fs -> ChildService.computeFuzzyScore(fs, searchString, childrenByFileStateIds))
+        .filter(c -> c.score() > FUZZY_SEARCH_SCORE_THRESHOLD)
+        .sorted(
+            Comparator.comparing(ChildWithScore::score)
+                .reversed()
+                .thenComparing(c -> getFullPersonName(c.fileState()))
+                .thenComparing(c -> c.child().getId()))
+        .map(ChildWithScore::mapToChildResult)
         .toList();
+  }
+
+  public void closeSchoolYear() {
+    List<Child> childrenToClose =
+        childRepository.findByProcedureStatusOrderById(ProcedureStatus.OPEN);
+    log.info(
+        "Closing {} {}",
+        childrenToClose.size(),
+        childrenToClose.size() == 1 ? "child" : "children");
+    for (Child child : childrenToClose) {
+      closeChild(child);
+    }
+  }
+
+  record ChildWithScore(GetPersonFileStateResponse fileState, Child child, int score) {
+
+    private ChildResult mapToChildResult() {
+      return new ChildResult(
+          child().getExternalId(),
+          fileState().firstName(),
+          fileState().lastName(),
+          fileState().dateOfBirth(),
+          child().getGroupName());
+    }
+  }
+
+  private static ChildWithScore computeFuzzyScore(
+      GetPersonFileStateResponse fs, String searchString, Map<UUID, Child> childrenByFileStateIds) {
+    String personName = getFullPersonName(fs);
+    int fuzzyScore = computeFuzzyScore(searchString, personName);
+    return new ChildWithScore(fs, childrenByFileStateIds.get(fs.id()), fuzzyScore);
+  }
+
+  private static String getFullPersonName(GetPersonFileStateResponse fs) {
+    return String.join(" ", fs.firstName(), fs.lastName());
+  }
+
+  static int computeFuzzyScore(String searchString, String personName) {
+    return new FuzzyScore(Locale.GERMAN).fuzzyScore(personName, searchString);
   }
 
   public List<UUID> collectExistingChildIds(List<UUID> childIds) {
@@ -442,5 +501,17 @@ public class ChildService {
       return List.of();
     }
     return childRepository.collectExistingProceduresByExternalIds(childIds);
+  }
+
+  public Stream<ChildWithAugmentedData> findByPersonId(UUID personId) {
+    List<UUID> personFileStateIds =
+        personApi.getPersonFileStateIdsAssociatedWithReferencePerson(personId).fileStateIds();
+
+    return childRepository
+        .findByRelatedPersonsCentralFileStateIds(
+            personFileStateIds, Person.PERSON_TYPE_USED_FOR_CHILDREN)
+        .stream()
+        .filter(child -> child.getChild().getProcedure().getProcedureStatus().isOpen())
+        .map(this::augmentWithDetails);
   }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -105,7 +105,7 @@ async function createLoggedInClient(payload: ILoginParams) {
 
   // Clear stores
   await clearCachedCredentials();
-  await clearMatrixStores();
+  void clearMatrixStores();
 
   // Start SSO, redirect the page to receive the login token.
   // Once the token is received in the search parameters, we can initiate the login process.

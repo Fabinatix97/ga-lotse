@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -43,7 +43,7 @@ import { ChecklistValidationProvider } from "@/lib/businessModules/inspection/co
 import { IncidentsPanel } from "@/lib/businessModules/inspection/components/inspection/execution/incident/IncidentsPanel";
 import { ChecklistSelectSidebar } from "@/lib/businessModules/inspection/components/inspection/planning/checklist/ChecklistSelectSidebar";
 import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared/enums";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export enum InspectionExecutionTabType {
   CHECKLIST,

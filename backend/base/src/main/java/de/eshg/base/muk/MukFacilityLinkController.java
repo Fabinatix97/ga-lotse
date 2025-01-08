@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -47,7 +47,7 @@ public class MukFacilityLinkController implements MukFacilityLinkApi {
             .orElseThrow(
                 () -> new NotFoundException(FacilityController.FACILITY_REFERENCE_NOT_FOUND));
 
-    mukFacilityLinkService.addMukFacilityLink(request.mukId(), refFacility);
+    mukFacilityLinkService.addMukFacilityLink(request.dataTransmitterPseudonymId(), refFacility);
   }
 
   @Override
@@ -55,8 +55,10 @@ public class MukFacilityLinkController implements MukFacilityLinkApi {
   public GetReferenceFacilityResponse getReferenceFacilityLinkedToMukSelfUser() {
     featureToggle.assertNewFeatureIsEnabled(BaseFeature.MUK_FACILITY_LINK);
 
-    String mukId = mukFacilityLinkService.getMukSelfUserId();
-    Facility referenceFacility = mukFacilityLinkService.getReferenceFacility(mukId);
+    String dataTransmitterPseudonymId =
+        mukFacilityLinkService.getMukSelfUserDataTransmitterPseudonymId();
+    Facility referenceFacility =
+        mukFacilityLinkService.getReferenceFacility(dataTransmitterPseudonymId);
 
     return FacilityMapper.mapReferenceFacilityToApi(referenceFacility);
   }

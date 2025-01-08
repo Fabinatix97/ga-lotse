@@ -1,19 +1,19 @@
 {
   "header": {
-    "title": "Impfberatung Anamnesebogen",
-    "stepText": "Schritt {{currentStepIndex}} von {{totalSteps}}"
+    "title": "Vaccination Consultation Medical History form",
+    "stepText": "Step {{currentStepIndex}} of {{totalSteps}}"
   },
   "briefing": {
-    "title": "Fragebogen",
-    "infoText": "Daten zur Anamnese können hier vor dem Untersuchungstermin eingetragen werden. Das Speichern der Eintragungen ist nur einmal möglich und kann später nicht korrigiert werden."
+    "title": "Questionnaire",
+    "infoText": "Medical history data can be entered here before the examination appointment. These entries can be saved once and cannot be corrected later."
   },
   "sidePanel": {
-    "nextStep": "Weiter",
-    "submitMedicalHistory": "Fragebogen absenden",
-    "previousStep": "Zurück",
-    "cancel": "Abbrechen"
+    "nextStep": "Next",
+    "submitMedicalHistory": "Submit Questionnaire",
+    "previousStep": "Back",
+    "cancel": "Cancel"
   },
   "snackbar": {
-    "patchMedicalHistoryConfirmation": "Der Anamnesebogen wurde übermittelt."
+    "patchMedicalHistoryConfirmation": "The medical history form has been submitted."
   }
 }

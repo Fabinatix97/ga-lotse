@@ -1,14 +1,17 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { ApiCountryCode } from "@eshg/employee-portal-api/base";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import {
-  NestedFormProps,
-  NullableFieldValue,
-} from "@eshg/lib-portal/types/form";
+  PersonalInformationFormValues,
+  RequiredDocumentsFormValues,
+} from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
+import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
+import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
+import { validateFile } from "@eshg/lib-portal/helpers/validators";
+import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { Add, DeleteOutlined } from "@mui/icons-material";
 import { Button, Grid, IconButton, Stack, Typography } from "@mui/joy";
 import { FieldArray, useField } from "formik";
@@ -16,22 +19,12 @@ import { Fragment } from "react";
 
 import { useServerConfig } from "@/lib/baseModule/api/queries/config";
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
-import { PersonalInformationFormValues } from "@/lib/businessModules/medicalRegistry/components/procedures/create/PersonalInformationForm";
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
-import { FileType } from "@/lib/shared/components/formFields/file/FileType";
-import { validateFile } from "@/lib/shared/helpers/validators";
 
 const MAX_OTHER_RELEVANT_DOCUMENTS = 3;
 
 interface RequiredDocumentsFormProps extends NestedFormProps {
   enableOptionalDocuments: boolean;
-}
-
-export interface RequiredDocumentsFormValues {
-  license: NullableFieldValue<File>;
-  identificationDocument: NullableFieldValue<File>;
-  workPermit: NullableFieldValue<File>;
-  otherRelevantDocuments: File[];
 }
 
 export function RequiredDocumentsForm(props: RequiredDocumentsFormProps) {

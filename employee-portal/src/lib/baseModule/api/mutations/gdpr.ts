@@ -1,11 +1,12 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import {
   ApiAddCentralFileIdToGdprProcedureRequest,
   ApiAddGdprProcedureRequest,
+  ApiGdprProcedureStatus,
 } from "@eshg/employee-portal-api/base";
 import {
   ApiGdprProcedureType,
@@ -92,8 +93,18 @@ export function useChangeProcedureStatus(id: string, version: number) {
 
 export function useRefreshProcedureStatus(id: string) {
   const gdprProcedureApi = useGdprProcedureApi();
+  const snackbar = useSnackbar();
   return useHandledMutation({
     mutationFn: () => gdprProcedureApi.refreshStatus(id),
+    onSuccess: ({ status }) => {
+      if (status === ApiGdprProcedureStatus.Closed) {
+        snackbar.confirmation("Vorgang ist abgeschlossen.");
+      } else {
+        snackbar.notification(
+          "Noch nicht alle Fachabteilungen haben die notwendige manuelle Freigabe der Daten durchgeführt.",
+        );
+      }
+    },
   });
 }
 

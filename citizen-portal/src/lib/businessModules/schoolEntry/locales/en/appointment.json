@@ -4,7 +4,7 @@
     "title": "Process Closed",
     "message": "The appointment can no longer be changed as the process has been closed."
   },
-  "leave": "Leave My Area",
+  "leave": "Logout",
   "details": {
     "title": "Information",
     "name": "Name",
@@ -13,11 +13,11 @@
     "schoolEntryExamination": "School Enrollment Examination",
     "date": "Date",
     "time": "Time",
-    "clock": "o'clock",
+    "clock": "",
     "duration": "Duration",
     "place": "Location"
   },
-  "preparations": "Preparation for the Appointment",
+  "preparations": "Appointment Preparations",
   "required": {
     "title": "Required Documents",
     "anamnesis": "Completed Parent Questionnaire",
@@ -30,7 +30,7 @@
     "title": "Parent Questionnaire",
     "notSubmitted": "Not yet submitted",
     "submitted": "Submitted",
-    "fillIn": "Fill in Now"
+    "fillIn": "Fill out Now"
   },
   "update": {
     "title": "Can't make the appointment?",

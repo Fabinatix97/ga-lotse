@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -68,7 +68,7 @@ public abstract class File extends BaseEntityWithExternalId implements LockableE
   private int fileSizeBytes;
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "attached_to_mail_id")
   private Mail attachedToMail;
 

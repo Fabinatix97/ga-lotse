@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -672,7 +672,7 @@ public class VaccinationConsultationService {
   private VcService retrieveService(UUID serviceId) {
     return serviceRepository
         .findById(serviceId)
-        .orElseThrow(() -> new NotFoundException("Service not found: " + serviceId));
+        .orElseThrow(() -> new NotFoundException("Service not found"));
   }
 
   private boolean procedureHasPlannedServices(UUID procedureId) {

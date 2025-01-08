@@ -1,11 +1,11 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package de.eshg.medicalregistry.api;
 
-import de.eshg.CustomValidations.EmailAddressConstraint;
+import de.eshg.CustomValidations.MandatoryEmailAddressConstraint;
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.centralfile.api.facility.FacilityContactPersonDto;
 import de.eshg.base.centralfile.api.facility.FacilityDetails;
@@ -21,7 +21,7 @@ public record PracticeReferenceFacilityDto(
     @NotNull UUID id,
     @NotNull long version,
     @NotNull @Size(min = 1, max = 300) String name,
-    List<@EmailAddressConstraint String> emailAddresses,
+    List<@MandatoryEmailAddressConstraint String> emailAddresses,
     List<@NotNull @Size(max = 23) String> phoneNumbers,
     @Valid List<FacilityContactPersonDto> contactPersons,
     @Valid AddressDto contactAddress,

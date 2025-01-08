@@ -1,6 +1,6 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <!--
- Copyright 2024 cronn GmbH
+ Copyright 2025 cronn GmbH
  SPDX-License-Identifier: Apache-2.0
 -->
 
@@ -27,8 +27,7 @@
   <include file="migrations/017_add_download_ids_to_gdpr_procedure.xml"/>
   <include file="migrations/0018_add_right_to_rectification_type.xml"/>
   <include file="migrations/0019_remove-orphaned-addresses.xml"/>
-  <include
-    file="migrations/0020_drop_default_revision_entity_created_by_not_null_contraint.xml"/>
+  <include file="migrations/0020_drop_default_revision_entity_created_by_not_null_contraint.xml"/>
   <include file="migrations/0021_facility_sequence.xml"/>
   <include file="migrations/0022_remove_gdpr_result_enum.xml"/>
   <include file="migrations/0023_add_gdpr_internal_note.xml"/>
@@ -38,4 +37,7 @@
   <include file="migrations/0027_create_table_muk_facility_link.xml"/>
   <include file="migrations/0028_add_mail_to_simple_notification.xml"/>
   <include file="migrations/0029_add_download_package.xml"/>
+  <include file="migrations/0030_create_table_bundid_person_link.xml"/>
+  <include file="migrations/0031_add_index_to_muk_facility_link.xml"/>
+  <include file="migrations/0032_rename_facility_link_muk_id.xml"/>
 </databaseChangeLog>

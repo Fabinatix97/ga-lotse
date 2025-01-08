@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -9,8 +9,8 @@ import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField"
 import { Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
+import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
 import { MedicalHistoryFormData } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/MedicalHistoryForm.config";
-import { SectionGrid } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/SectionGrid";
 import {
   sexWorkTypeOptions,
   sexualContactFactorOptions,
@@ -22,6 +22,7 @@ import {
   FieldSetControl,
 } from "@/lib/shared/components/formFields/CheckboxGroupField";
 import { Legend } from "@/lib/shared/components/formFields/Legend";
+import { validatePositiveInteger } from "@/lib/shared/helpers/validators";
 
 export function SexualOrientationAndContact({
   isForSexWork,
@@ -31,14 +32,13 @@ export function SexualOrientationAndContact({
   const { values } = useFormikContext<MedicalHistoryFormData>();
   return (
     <>
-      <Typography
-        level="title-md"
-        mt={1}
-        id="sexual-orientation-and-contact-title"
-      >
+      <Typography level="h3" mb={3} id="sexual-orientation-and-contact-title">
         Sexuelle Orientierung / Kontakte
       </Typography>
-      <SectionGrid aria-labelledby="sexual-orientation-and-contact-title">
+      <SectionGrid
+        aria-labelledby="sexual-orientation-and-contact-title"
+        columns="1fr 1fr"
+      >
         <SelectField
           name="sexualOrientationAndContact.sexualOrientation"
           label="Sexuelle Orientierung"
@@ -47,6 +47,7 @@ export function SexualOrientationAndContact({
         <NumberField
           name="sexualOrientationAndContact.numberOfSexualPartnersLast12Months"
           label="Anzahl der Sexpartner:innen in den letzten 12 Monaten"
+          validate={validatePositiveInteger}
         />
         <CheckboxGroupField
           name="sexualOrientationAndContact.sexualContactGenders"
@@ -62,7 +63,7 @@ export function SexualOrientationAndContact({
         {isForSexWork ? (
           <>
             <FieldSetControl>
-              <Legend variant="single">Seit wann in Sexarbeit?</Legend>
+              <Legend>Seit wann in Sexarbeit?</Legend>
               <MonthAndYearFields
                 fieldName="sexualOrientationAndContact.startInSexWork"
                 date={values.sexualOrientationAndContact.startInSexWork}

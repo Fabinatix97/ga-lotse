@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -21,6 +21,7 @@ import de.eshg.base.keycloak.differ.Differ;
 import de.eshg.base.keycloak.differ.GroupRepresentationDiffer;
 import de.eshg.base.keycloak.differ.KeycloakDiffer;
 import de.eshg.base.keycloak.differ.ProtocolMapperDiffer;
+import de.eshg.base.keycloak.differ.UserProfileAttributeDiffer;
 import de.eshg.lib.keycloak.KeycloakGroup;
 import de.eshg.lib.keycloak.KeycloakRole;
 import de.eshg.rest.service.error.BadRequestException;
@@ -193,9 +194,7 @@ public class RealmBoundKeycloakClient implements AutoCloseable {
     GroupRepresentation group =
         getGroupsResource().groups(groupName, null, null).stream()
             .filter(groupCandidate -> groupCandidate.getName().equals(groupName))
-            .collect(
-                StreamUtil.toSingleElement(
-                    () -> new NotFoundException("Group '%s' not found.".formatted(groupName))));
+            .collect(StreamUtil.toSingleElement(() -> new NotFoundException("Group not found.")));
     String id = group.getId();
     return getGroupResource(id);
   }
@@ -373,26 +372,78 @@ public class RealmBoundKeycloakClient implements AutoCloseable {
       profileConfig.addGroup(group);
     }
 
-    for (KeycloakUserAttribute attribute : userAttributes) {
-      String attributeName = attribute.getKey();
-      UPAttribute attributeConfig = getUPAttribute(profileConfig, attributeName);
-      attributeConfig.setDisplayName(attribute.getDisplayName());
-      configureAttributeRequired(attribute, attributeConfig);
-      attributeConfig.setGroup(getGroupName(attribute, group));
-      attributeConfig.setPermissions(
-          new UPAttributePermissions(Set.of("user", "admin"), Set.of("user", "admin")));
+    List<UPAttribute> existingAttributes = profileConfig.getAttributes();
+    List<UPAttribute> configuredAttributes = getConfiguredAttributes(userAttributes, group);
 
-      Map<String, Map<String, Object>> validation =
-          Objects.requireNonNullElseGet(attributeConfig.getValidations(), LinkedHashMap::new);
-      for (ValidationRule rule : attribute.validationRules()) {
-        validation.put(rule.ruleId(), rule.toMap());
-      }
-      attributeConfig.setValidations(validation);
+    UserProfileAttributeDiffer attributeDiffer =
+        new UserProfileAttributeDiffer(existingAttributes, configuredAttributes);
 
-      profileConfig.addOrReplaceAttribute(attributeConfig);
+    attributeDiffer
+        .getElementsToDelete()
+        .forEach(attribute -> deleteAttributeFromConfig(attribute, profileConfig));
+    attributeDiffer
+        .getElementsToAdd()
+        .forEach(attribute -> addAttributeToConfig(attribute, profileConfig));
+    attributeDiffer
+        .getElementsToUpdate()
+        .forEach(update -> updateAttributeInConfig(update, profileConfig));
+
+    if (!ListUtils.union(
+            attributeDiffer.getElementsToAdd(),
+            ListUtils.union(
+                attributeDiffer.getElementsToUpdate(), attributeDiffer.getElementsToDelete()))
+        .isEmpty()) {
+      log.info("Sending user profile update request");
+      profileResource.update(profileConfig);
     }
+  }
 
-    profileResource.update(profileConfig);
+  private void deleteAttributeFromConfig(UPAttribute attribute, UPConfig profileConfig) {
+    String attributeName = attribute.getName();
+    log.info("Removing attribute '{}'", attributeName);
+    profileConfig.removeAttribute(attributeName);
+  }
+
+  private void addAttributeToConfig(UPAttribute newAttribute, UPConfig profileConfig) {
+    log.info("Adding attribute '{}'", newAttribute.getName());
+    profileConfig.addOrReplaceAttribute(newAttribute);
+  }
+
+  private void updateAttributeInConfig(ToUpdate<UPAttribute> update, UPConfig profileConfig) {
+    UPAttribute newAttribute = update.newState();
+    log.info(
+        "Attribute '{}' already exists, but update is required:\n{}",
+        newAttribute.getName(),
+        update.multiLineDiff());
+    profileConfig.addOrReplaceAttribute(newAttribute);
+  }
+
+  private List<UPAttribute> getConfiguredAttributes(
+      KeycloakUserAttribute[] userAttributes, UPGroup group) {
+    return Arrays.stream(userAttributes)
+        .map(
+            attribute -> {
+              String attributeName = attribute.getKey();
+              UPAttribute attributeConfig = new UPAttribute(attributeName);
+              attributeConfig.setDisplayName(attribute.getDisplayName());
+              attributeConfig.setRequired(
+                  attribute.isRequired() ? new UPAttributeRequired() : null);
+              attributeConfig.setGroup(getGroupName(attribute, group));
+              attributeConfig.setPermissions(
+                  new UPAttributePermissions(Set.of("user", "admin"), Set.of("user", "admin")));
+              attributeConfig.setValidations(getAttributeValidations(attribute));
+              return attributeConfig;
+            })
+        .toList();
+  }
+
+  private static Map<String, Map<String, Object>> getAttributeValidations(
+      KeycloakUserAttribute attribute) {
+    Map<String, Map<String, Object>> validations = new LinkedHashMap<>();
+    for (ValidationRule rule : attribute.getValidationRules()) {
+      validations.put(rule.ruleId(), rule.toMap());
+    }
+    return validations;
   }
 
   private static String getGroupName(KeycloakUserAttribute attribute, UPGroup group) {
@@ -400,28 +451,6 @@ public class RealmBoundKeycloakClient implements AutoCloseable {
       case DEFAULT -> null;
       case CUSTOM -> group.getName();
     };
-  }
-
-  private void configureAttributeRequired(
-      KeycloakUserAttribute attribute, UPAttribute attributeConfig) {
-    if (attribute.isRequired()) {
-      UPAttributeRequired existingRequiredConfig = attributeConfig.getRequired();
-      UPAttributeRequired requiredConfig =
-          existingRequiredConfig != null ? existingRequiredConfig : new UPAttributeRequired();
-      log.info("Marking user profile attribute '{}' as always required", attribute.getKey());
-      requiredConfig.setRoles(null);
-      attributeConfig.setRequired(requiredConfig);
-    } else {
-      log.info("Marking user profile attribute '{}' as optional", attribute.getKey());
-      attributeConfig.setRequired(null);
-    }
-  }
-
-  private static UPAttribute getUPAttribute(UPConfig profileConfig, String attributeName) {
-    UPAttribute existingAttributeConfig = profileConfig.getAttribute(attributeName);
-    return existingAttributeConfig != null
-        ? existingAttributeConfig
-        : new UPAttribute(attributeName);
   }
 
   public void createOrUpdateRoles(

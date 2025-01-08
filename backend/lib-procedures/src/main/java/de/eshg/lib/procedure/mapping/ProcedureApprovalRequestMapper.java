@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -27,7 +27,7 @@ public final class ProcedureApprovalRequestMapper implements EntityToApprovalReq
   public ApprovalRequestEntityDto toInterfaceType(EntityWithExternalId entity) {
     if (entity instanceof ManualProgressEntry manualProgressEntry) {
       ManualProgressEntryDto progressEntry =
-          ProgressEntryMapper.toInterfaceTypeWithFileReference(manualProgressEntry);
+          ProgressEntryMapper.toInterfaceType(manualProgressEntry);
       userHelper.enrichUsersFirstNamesAndLastNames(progressEntry);
       return progressEntry;
     }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -22,9 +22,9 @@ import {
   SyncBarrier,
   useSyncBarrier,
 } from "@/lib/shared/components/centralFile/sync/SyncBarrier";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 import { useToggle } from "@/lib/shared/hooks/useToggle";
 
 interface PersonDetailsPanelProps {

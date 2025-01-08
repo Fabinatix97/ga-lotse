@@ -1,11 +1,11 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package de.eshg.base.centralfile.api.facility;
 
-import de.eshg.CustomValidations.EmailAddressConstraint;
+import de.eshg.CustomValidations.MandatoryEmailAddressConstraint;
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.centralfile.api.DataOriginDto;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,7 +23,7 @@ public record AddFacilityFileStateRequest(
             example = "be9831d4-dc25-48d8-9bfe-4c0b54bfb2c1")
         UUID referenceFacilityId,
     @NotNull @Size(min = 1, max = 300) String name,
-    List<@EmailAddressConstraint String> emailAddresses,
+    List<@MandatoryEmailAddressConstraint String> emailAddresses,
     List<@NotNull @Size(min = 1, max = 23) String> phoneNumbers,
     @Valid List<FacilityContactPersonDto> contactPersons,
     @Valid AddressDto contactAddress,

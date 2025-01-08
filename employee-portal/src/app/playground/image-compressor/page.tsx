@@ -1,22 +1,22 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 "use client";
 
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { FileLike } from "@eshg/lib-portal/components/formFields/file/validators";
+import { formatFileSize } from "@eshg/lib-portal/helpers/file";
 import { FormLabel, Slider, Stack, Typography } from "@mui/joy";
 import { useQuery } from "@tanstack/react-query";
 import { Formik } from "formik";
 import { useEffect, useState } from "react";
 
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
-import { FileLike } from "@/lib/shared/components/formFields/file/validators";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
-import { formatFileSize } from "@/lib/shared/helpers/file";
 import { compressImage } from "@/lib/shared/helpers/imageCompressor";
 
 export default function PlaygroundImageCompressorPage() {

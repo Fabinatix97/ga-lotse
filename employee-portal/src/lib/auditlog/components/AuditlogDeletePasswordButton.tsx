@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,7 +7,7 @@ import { KeyOffOutlined } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 
 import { useDeleteEmployeeUserKeys } from "@/lib/baseModule/api/mutations/users";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function AuditlogDeletePasswordButton() {
   const { openConfirmationDialog } = useConfirmationDialog();

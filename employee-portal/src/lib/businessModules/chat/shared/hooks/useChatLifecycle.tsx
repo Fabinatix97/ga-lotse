@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -61,7 +61,7 @@ export function useChatLifecycle(
 
   const { configuration } = useChat();
 
-  const baseUrl = configuration.MATRIX_SERVER_URL;
+  const baseUrl = configuration.PUBLIC_MATRIX_SERVER_URL;
 
   const [credentials, setCredentials] = useState<IStoredCredentials>();
   const wasAuthenticated = useRef(false);
@@ -70,7 +70,7 @@ export function useChatLifecycle(
     logger.warn("RESTARTING CHAT");
 
     await deleteCachedCredentials();
-    await clearMatrixStores();
+    void clearMatrixStores();
 
     wasAuthenticated.current = false;
     setClientState(ClientState.Idle);

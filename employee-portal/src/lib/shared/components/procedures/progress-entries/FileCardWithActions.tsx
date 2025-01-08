@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -10,7 +10,6 @@ import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { useSearchParams } from "next/navigation";
 import { useContext, useRef } from "react";
 import { isDefined } from "remeda";
 
@@ -18,13 +17,11 @@ import {
   FileCard,
   FileCardActionProps,
 } from "@/lib/shared/components/FileCard";
-import { buildRouteWithParams } from "@/lib/shared/components/procedures/helper";
 import { useDeletionProps } from "@/lib/shared/components/procedures/progress-entries/hooks/useDeletionProps";
 
 import {
   ProgressEntriesContext,
   useIsReadOnly,
-  useProgressEntriesConfig,
 } from "./ProgressEntriesContext";
 import { mapToFileCardProps } from "./mapper";
 
@@ -61,8 +58,9 @@ function FileCardWithOptionalDetailsLinkAndDownload({
 }: FileCardWithActionsProps & {
   additionalAction?: FileCardActionProps;
 }) {
-  const searchParams = useSearchParams();
-  const { routes, procedureId, useDownloadFile } = useProgressEntriesConfig();
+  const progressEntriesContext = useContext(ProgressEntriesContext);
+  const { useDownloadFile } = progressEntriesContext.config;
+  const { openEntryDetailsSidebar } = progressEntriesContext.action;
   const downloadFile = useDownloadFile();
   const hiddenLinkContainer = useRef<HTMLDivElement>(null);
 
@@ -77,10 +75,7 @@ function FileCardWithOptionalDetailsLinkAndDownload({
   const hasDetailsAction = isDefined(detailsProgressEntryId);
   if (hasDetailsAction) {
     actions.push({
-      onClick: buildRouteWithParams(
-        routes.entryDetails(procedureId, detailsProgressEntryId),
-        searchParams,
-      ),
+      onClick: () => openEntryDetailsSidebar(detailsProgressEntryId),
       indicator: <InfoOutlinedIcon />,
       name: "Details",
       color: "neutral",

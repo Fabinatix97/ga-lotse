@@ -1,10 +1,11 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
 import { ApiFileType } from "@eshg/employee-portal-api/businessProcedures";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatFileSize } from "@eshg/lib-portal/helpers/file";
 import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlined";
 import AudioFileOutlinedIcon from "@mui/icons-material/AudioFileOutlined";
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
@@ -23,8 +24,6 @@ import { SxProps } from "@mui/joy/styles/types";
 import { useRouter } from "next/navigation";
 import { ReactNode, createElement } from "react";
 import { isDefined } from "remeda";
-
-import { formatFileSize } from "@/lib/shared/helpers/file";
 
 import { ActionsMenu } from "./buttons/ActionsMenu";
 

@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -20,7 +20,7 @@ import {
 } from "@/lib/businessModules/measlesProtection/components/procedures/constants";
 import { ReopenProcedureModal } from "@/lib/businessModules/measlesProtection/components/procedures/proceduresTable/ReopenProcedureModal";
 import { useProceduresContext } from "@/lib/businessModules/measlesProtection/shared/ProceduresContext";
-import { ConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialog";
+import { EmployeePortalConfirmationDialog } from "@/lib/shared/components/confirmationDialog/EmployeePortalConfirmationDialog";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
@@ -119,7 +119,7 @@ export function AdditionalInfoSection({
           </Button>
         )}
       </Sheet>
-      <ConfirmationDialog
+      <EmployeePortalConfirmationDialog
         title={"Vorgang abschließen?"}
         description={"Möchten Sie diesen Vorgang wirklich abschließen?"}
         confirmLabel={"Abschließen"}

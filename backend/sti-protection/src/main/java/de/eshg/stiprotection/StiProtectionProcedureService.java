@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -60,7 +60,6 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Root;
-import jakarta.validation.Valid;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
@@ -227,11 +226,11 @@ public class StiProtectionProcedureService {
         .orElseThrow(
             () ->
                 new NotFoundException(
-                    "%s with UUID %s not found"
-                        .formatted(StiProtectionProcedure.class.getSimpleName(), procedureId)));
+                    "%s with given UUID not found"
+                        .formatted(StiProtectionProcedure.class.getSimpleName())));
   }
 
-  public void updatePersonDetails(UUID procedureId, @Valid UpdatePersonDetailsRequest request) {
+  public void updatePersonDetails(UUID procedureId, UpdatePersonDetailsRequest request) {
     StiProtectionProcedure procedure = findProcedureByExternalId(procedureId);
 
     Person person = procedure.getPerson();

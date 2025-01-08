@@ -1,51 +1,32 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { PracticeInformationFormValues } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { BooleanRadioField } from "@eshg/lib-portal/components/formFields/BooleanRadioField";
+import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import {
   validateLength,
   validateNumber,
 } from "@eshg/lib-portal/helpers/validators";
-import {
-  NestedFormProps,
-  OptionalFieldValue,
-} from "@eshg/lib-portal/types/form";
+import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { Grid, Typography } from "@mui/joy";
 import { useField } from "formik";
 
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
-import { EmailField } from "@/lib/shared/components/formFields/EmailField";
 
 interface PracticeInformationFormProps extends NestedFormProps {
   forceProprietaryPractice: boolean;
-}
-
-export interface PracticeInformationFormValues {
-  proprietaryPractice: boolean;
-  practiceName: string;
-  street: string;
-  houseNumber: string;
-  postalCode: string;
-  city: string;
-  phoneNumber: string;
-  email: string;
-  website: OptionalFieldValue<string>;
-  openingHours: OptionalFieldValue<string>;
-  institutionIdentifier: OptionalFieldValue<string>;
-  establishmentNumber: OptionalFieldValue<string>;
-  healthInsuranceAuthorization: boolean;
 }
 
 export function PracticeInformationForm(props: PracticeInformationFormProps) {
   const fieldName = createFieldNameMapper<PracticeInformationFormValues>(
     props.name,
   );
-
   const [proprietaryPractice] = useField<boolean>(
     fieldName("proprietaryPractice"),
   );

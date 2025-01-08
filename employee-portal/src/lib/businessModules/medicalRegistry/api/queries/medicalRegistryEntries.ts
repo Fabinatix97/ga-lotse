@@ -1,15 +1,11 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 "use client";
 
-import {
-  ApiProcedureStatus,
-  ApiProcedureType,
-} from "@eshg/employee-portal-api/businessProcedures";
-import { ApiProfessionalTitle } from "@eshg/employee-portal-api/medicalRegistry";
+import { GetProcedureOverviewRequest } from "@eshg/employee-portal-api/medicalRegistry";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
@@ -17,32 +13,29 @@ import { useMedicalRegistryApi } from "@/lib/businessModules/medicalRegistry/api
 
 import { medicalRegistryApiQueryKey } from "./apiQueryKeys";
 
-interface PageRequest {
-  pageNumber?: number;
-  pageSize?: number;
-  filterByCertificateRequested?: boolean;
-  filterByStatus?: Set<ApiProcedureStatus>;
-  filterByType?: Set<ApiProcedureType>;
-  filterByProfessionalTitle?: Set<ApiProfessionalTitle>;
-}
-
-export function useGetMedicalRegistryProcedureOverviewQuery(page: PageRequest) {
+export function useGetMedicalRegistryProcedureOverviewQuery(
+  request: GetProcedureOverviewRequest | string,
+) {
   const medicalRegistryApi = useMedicalRegistryApi();
+
+  if (typeof request === "string") {
+    return queryOptions({
+      queryFn: () => medicalRegistryApi.searchProcedures1(request),
+      queryKey: medicalRegistryApiQueryKey(["searchProcedures", request]),
+    });
+  }
+
   return queryOptions({
-    queryFn: ({ signal }) =>
-      medicalRegistryApi.getProcedureOverview(
-        page.pageSize,
-        page.pageNumber,
-        page.filterByCertificateRequested,
-        page.filterByStatus,
-        page.filterByType,
-        page.filterByProfessionalTitle,
-        { signal },
-      ),
+    queryFn: () =>
+      medicalRegistryApi
+        .getProcedureOverviewRaw(request)
+        .then(unwrapRawResponse),
     queryKey: medicalRegistryApiQueryKey([
       "getProcedureOverview",
-      page,
-      Array.from(page.filterByStatus ?? []),
+      request,
+      Array.from(request.procedureStatus ?? []),
+      Array.from(request.procedureType ?? []),
+      Array.from(request.professionalTitle ?? []),
     ]),
   });
 }

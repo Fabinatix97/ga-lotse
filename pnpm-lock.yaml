@@ -1,4 +1,4 @@
-# Copyright 2024 cronn GmbH
+# Copyright 2025 cronn GmbH
 # SPDX-License-Identifier: AGPL-3.0-only
 
 lockfileVersion: '9.0'
@@ -118,6 +118,9 @@ catalogs:
     '@fontsource/poppins':
       specifier: 5.1.0
       version: 5.1.0
+    '@fontsource/source-code-pro':
+      specifier: 5.1.0
+      version: 5.1.0
     '@mui/icons-material':
       specifier: 5.16.8
       version: 5.16.8
@@ -219,7 +222,7 @@ importers:
         version: 4.1.4(@typescript-eslint/eslint-plugin@8.16.0(@typescript-eslint/parser@8.16.0(eslint@9.15.0)(typescript@5.7.2))(eslint@9.15.0)(typescript@5.7.2))(eslint@9.15.0)
       next:
         specifier: catalog:next
-        version: 14.2.14(@babel/core@7.25.8)(@playwright/test@1.49.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 14.2.14(@babel/core@7.25.8)(@playwright/test@1.49.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       prettier:
         specifier: catalog:prettier
         version: 3.4.1
@@ -282,7 +285,7 @@ importers:
         version: 1.2.1
       next:
         specifier: catalog:next
-        version: 14.2.14(@babel/core@7.25.8)(@playwright/test@1.49.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 14.2.14(@babel/core@7.25.8)(@playwright/test@1.49.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       pkijs:
         specifier: 3.2.4
         version: 3.2.4
@@ -346,13 +349,13 @@ importers:
         version: 9.1.0(eslint@9.15.0)
       eslint-plugin-import:
         specifier: catalog:eslint
-        version: 2.31.0(@typescript-eslint/parser@8.10.0(eslint@9.15.0)(typescript@5.7.2))(eslint-import-resolver-typescript@3.6.3)(eslint@9.15.0)
+        version: 2.31.0(@typescript-eslint/parser@8.16.0(eslint@9.15.0)(typescript@5.7.2))(eslint@9.15.0)
       eslint-plugin-promise:
         specifier: catalog:eslint
         version: 7.2.1(eslint@9.15.0)
       eslint-plugin-unused-imports:
         specifier: catalog:eslint
-        version: 4.1.4(@typescript-eslint/eslint-plugin@8.16.0(@typescript-eslint/parser@8.10.0(eslint@9.15.0)(typescript@5.7.2))(eslint@9.15.0)(typescript@5.7.2))(eslint@9.15.0)
+        version: 4.1.4(@typescript-eslint/eslint-plugin@8.16.0(@typescript-eslint/parser@8.16.0(eslint@9.15.0)(typescript@5.7.2))(eslint@9.15.0)(typescript@5.7.2))(eslint@9.15.0)
       prettier:
         specifier: catalog:prettier
         version: 3.4.1
@@ -432,7 +435,7 @@ importers:
         version: 1.0.0
       next:
         specifier: catalog:next
-        version: 14.2.14(@babel/core@7.25.8)(@playwright/test@1.49.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 14.2.14(@babel/core@7.25.8)(@playwright/test@1.49.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react:
         specifier: catalog:react
         version: 18.3.1
@@ -525,7 +528,7 @@ importers:
     devDependencies:
       '@axe-core/playwright':
         specifier: 4.10.1
-        version: 4.10.1(playwright-core@1.49.0)
+        version: 4.10.1(playwright-core@1.49.1)
       '@eshg/admin-portal-api':
         specifier: workspace:*
         version: link:../admin-portal-api
@@ -548,8 +551,8 @@ importers:
         specifier: 26.0.6
         version: 26.0.6
       '@playwright/test':
-        specifier: 1.49.0
-        version: 1.49.0
+        specifier: 1.49.1
+        version: 1.49.1
       '@trivago/prettier-plugin-sort-imports':
         specifier: catalog:prettier
         version: 4.3.0(prettier@3.4.1)
@@ -605,7 +608,7 @@ importers:
     dependencies:
       '@ducanh2912/next-pwa':
         specifier: 10.2.9
-        version: 10.2.9(@types/babel__core@7.20.5)(next@14.2.14(@babel/core@7.25.8)(@playwright/test@1.49.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(webpack@5.92.1)
+        version: 10.2.9(@types/babel__core@7.20.5)(next@14.2.14(@babel/core@7.25.8)(@playwright/test@1.49.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(webpack@5.92.1)
       '@emotion/react':
         specifier: catalog:joy
         version: 11.13.5(@types/react@18.3.12)(react@18.3.1)
@@ -619,6 +622,9 @@ importers:
         specifier: workspace:*
         version: link:../lib-portal
       '@fontsource/poppins':
+        specifier: catalog:joy
+        version: 5.1.0
+      '@fontsource/source-code-pro':
         specifier: catalog:joy
         version: 5.1.0
       '@fullcalendar/core':
@@ -689,7 +695,7 @@ importers:
         version: 34.3.1
       next:
         specifier: catalog:next
-        version: 14.2.14(@babel/core@7.25.8)(@playwright/test@1.49.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 14.2.14(@babel/core@7.25.8)(@playwright/test@1.49.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react:
         specifier: catalog:react
         version: 18.3.1
@@ -821,7 +827,7 @@ importers:
         version: 2.4.6(react@18.3.1)
       next:
         specifier: catalog:next
-        version: 14.2.14(@babel/core@7.25.8)(@playwright/test@1.49.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 14.2.14(@babel/core@7.25.8)(@playwright/test@1.49.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react:
         specifier: catalog:react
         version: 18.3.1
@@ -834,6 +840,9 @@ importers:
       uuid:
         specifier: catalog:common
         version: 11.0.3
+      valibot:
+        specifier: catalog:common
+        version: 0.42.1(typescript@5.7.2)
     devDependencies:
       '@eslint/compat':
         specifier: catalog:eslint
@@ -873,13 +882,13 @@ importers:
         version: 9.1.0(eslint@9.15.0)
       eslint-plugin-import:
         specifier: catalog:eslint
-        version: 2.31.0(@typescript-eslint/parser@8.16.0(eslint@9.15.0)(typescript@5.7.2))(eslint@9.15.0)
+        version: 2.31.0(@typescript-eslint/parser@8.10.0(eslint@9.15.0)(typescript@5.7.2))(eslint-import-resolver-typescript@3.6.3)(eslint@9.15.0)
       eslint-plugin-promise:
         specifier: catalog:eslint
         version: 7.2.1(eslint@9.15.0)
       eslint-plugin-unused-imports:
         specifier: catalog:eslint
-        version: 4.1.4(@typescript-eslint/eslint-plugin@8.16.0(@typescript-eslint/parser@8.16.0(eslint@9.15.0)(typescript@5.7.2))(eslint@9.15.0)(typescript@5.7.2))(eslint@9.15.0)
+        version: 4.1.4(@typescript-eslint/eslint-plugin@8.16.0(@typescript-eslint/parser@8.10.0(eslint@9.15.0)(typescript@5.7.2))(eslint@9.15.0)(typescript@5.7.2))(eslint@9.15.0)
       prettier:
         specifier: catalog:prettier
         version: 3.4.1
@@ -2273,6 +2282,9 @@ packages:
   '@fontsource/poppins@5.1.0':
     resolution: {integrity: sha512-tpLXlnNi2fwQjiipvuj4uNFHCdoLA8izRsKdoexZuEzjx0r/g1aKLf4ta6lFgF7L+/+AFdmaXFlUwwvmDzYH+g==}
 
+  '@fontsource/source-code-pro@5.1.0':
+    resolution: {integrity: sha512-aT6pQbwEM/oGyK4Q8XOOknFcrXTAnP+GLVuEADBnB4avOYAOa4U5BG/D5JrTobwckuWyKrbMZ8EdcXPsqizfSw==}
+
   '@fullcalendar/core@6.1.15':
     resolution: {integrity: sha512-BuX7o6ALpLb84cMw1FCB9/cSgF4JbVO894cjJZ6kP74jzbUZNjtwffwRdA+Id8rrLjT30d/7TrkW90k4zbXB5Q==}
 
@@ -2680,8 +2692,8 @@ packages:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
 
-  '@playwright/test@1.49.0':
-    resolution: {integrity: sha512-DMulbwQURa8rNIQrf94+jPJQ4FmOVdpE5ZppRNvWVjvhC+6sOeo28r8MgIpQRYouXRtt/FCCXU7zn20jnHR4Qw==}
+  '@playwright/test@1.49.1':
+    resolution: {integrity: sha512-Ky+BVzPz8pL6PQxHqNRW1k3mIyv933LML7HktS8uik0bUXNCdPhoS/kLihiO1tMf/egaJb4IutXd7UywvXEW+g==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -5693,13 +5705,13 @@ packages:
     resolution: {integrity: sha512-Et9V5QpvBilPFgagJcaKBqXjKrrgF5JL2mSDELk1vvbOTt4fuBhSSsGn9Tcz0TQTfS5GCpXQ31Whrpqeqp0VRg==}
     engines: {node: '>=12.0.0'}
 
-  playwright-core@1.49.0:
-    resolution: {integrity: sha512-R+3KKTQF3npy5GTiKH/T+kdhoJfJojjHESR1YEWhYuEKRVfVaxH3+4+GvXE5xyCngCxhxnykk0Vlah9v8fs3jA==}
+  playwright-core@1.49.1:
+    resolution: {integrity: sha512-BzmpVcs4kE2CH15rWfzpjzVGhWERJfmnXmniSyKeRZUs9Ws65m+RGIi7mjJK/euCegfn3i7jvqWeWyHe9y3Vgg==}
     engines: {node: '>=18'}
     hasBin: true
 
-  playwright@1.49.0:
-    resolution: {integrity: sha512-eKpmys0UFDnfNb3vfsf8Vx2LEOtflgRebl0Im2eQQnYMA4Aqd+Zw8bEOB+7ZKvN76901mRnqdsiOGKxzVTbi7A==}
+  playwright@1.49.1:
+    resolution: {integrity: sha512-VYL8zLoNTBxVOrJBbDuRgDWa3i+mfQgDTrL8Ah9QXZ7ax4Dsj0MSq5bYgytRnDVVe+njoKnfsYkH3HzqVj5UZA==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -7125,10 +7137,10 @@ snapshots:
       '@bufbuild/protobuf': 1.7.2
     optional: true
 
-  '@axe-core/playwright@4.10.1(playwright-core@1.49.0)':
+  '@axe-core/playwright@4.10.1(playwright-core@1.49.1)':
     dependencies:
       axe-core: 4.10.2
-      playwright-core: 1.49.0
+      playwright-core: 1.49.1
 
   '@babel/code-frame@7.25.7':
     dependencies:
@@ -8130,10 +8142,10 @@ snapshots:
 
   '@drauu/core@0.4.2': {}
 
-  '@ducanh2912/next-pwa@10.2.9(@types/babel__core@7.20.5)(next@14.2.14(@babel/core@7.25.8)(@playwright/test@1.49.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(webpack@5.92.1)':
+  '@ducanh2912/next-pwa@10.2.9(@types/babel__core@7.20.5)(next@14.2.14(@babel/core@7.25.8)(@playwright/test@1.49.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(webpack@5.92.1)':
     dependencies:
       fast-glob: 3.3.2
-      next: 14.2.14(@babel/core@7.25.8)(@playwright/test@1.49.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      next: 14.2.14(@babel/core@7.25.8)(@playwright/test@1.49.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       semver: 7.6.3
       webpack: 5.92.1
       workbox-build: 7.1.1(@types/babel__core@7.20.5)
@@ -8513,6 +8525,8 @@ snapshots:
   '@floating-ui/utils@0.2.2': {}
 
   '@fontsource/poppins@5.1.0': {}
+
+  '@fontsource/source-code-pro@5.1.0': {}
 
   '@fullcalendar/core@6.1.15':
     dependencies:
@@ -8997,9 +9011,9 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
-  '@playwright/test@1.49.0':
+  '@playwright/test@1.49.1':
     dependencies:
-      playwright: 1.49.0
+      playwright: 1.49.1
 
   '@polka/url@1.0.0-next.25': {}
 
@@ -12457,7 +12471,7 @@ snapshots:
 
   netmask@2.0.2: {}
 
-  next@14.2.14(@babel/core@7.25.8)(@playwright/test@1.49.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  next@14.2.14(@babel/core@7.25.8)(@playwright/test@1.49.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@next/env': 14.2.14
       '@swc/helpers': 0.5.5
@@ -12478,7 +12492,7 @@ snapshots:
       '@next/swc-win32-arm64-msvc': 14.2.14
       '@next/swc-win32-ia32-msvc': 14.2.14
       '@next/swc-win32-x64-msvc': 14.2.14
-      '@playwright/test': 1.49.0
+      '@playwright/test': 1.49.1
     transitivePeerDependencies:
       - '@babel/core'
       - babel-plugin-macros
@@ -12862,11 +12876,11 @@ snapshots:
       pvutils: 1.1.3
       tslib: 2.6.3
 
-  playwright-core@1.49.0: {}
+  playwright-core@1.49.1: {}
 
-  playwright@1.49.0:
+  playwright@1.49.1:
     dependencies:
-      playwright-core: 1.49.0
+      playwright-core: 1.49.1
     optionalDependencies:
       fsevents: 2.3.2
 

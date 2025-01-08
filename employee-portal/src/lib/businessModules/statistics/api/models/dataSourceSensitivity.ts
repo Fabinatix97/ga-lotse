@@ -1,9 +1,12 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiDataSourceSensitivity } from "@eshg/employee-portal-api/statistics";
+import {
+  ApiDataSourceSensitivity,
+  ApiReportDataSensitivity,
+} from "@eshg/employee-portal-api/statistics";
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
 
 export const DataSourceSensitivity = {
@@ -40,5 +43,31 @@ export function mapDataSourceSensitivityApiToFrontend(
       return DataSourceSensitivity.Anonymous;
     case undefined:
       return undefined;
+  }
+}
+
+export function mapEvaluationDataSourceSensitivityFrontendToApi(
+  dataSourceSensitivity: DataSourceSensitivity,
+) {
+  switch (dataSourceSensitivity) {
+    case DataSourceSensitivity.Sensitive:
+      return ApiDataSourceSensitivity.Sensitive;
+    case DataSourceSensitivity.InternalUsage:
+      return ApiDataSourceSensitivity.InternalUsage;
+    case DataSourceSensitivity.Anonymous:
+      return ApiDataSourceSensitivity.Anonymous;
+  }
+}
+
+export function mapReportDataSourceSensitivityFrontendToApi(
+  dataSourceSensitivity: DataSourceSensitivity,
+) {
+  switch (dataSourceSensitivity) {
+    case "SENSITIVE":
+      throw new Error("Illegal argument!");
+    case DataSourceSensitivity.InternalUsage:
+      return ApiReportDataSensitivity.InternalUsage;
+    case DataSourceSensitivity.Anonymous:
+      return ApiReportDataSensitivity.Anonymous;
   }
 }

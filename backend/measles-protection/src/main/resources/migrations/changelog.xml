@@ -1,6 +1,6 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <!--
- Copyright 2024 cronn GmbH
+ Copyright 2025 cronn GmbH
  SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -52,5 +52,7 @@
   <include
     file="migrations/0037_add_official_medical_service_procedure_type.xml"/>
   <include file="migrations/0038_add_mail_to_simple_notification.xml"/>
+  <include file="migrations/0039_invert_inbox_procedure_relationships.xml"/>
+  <include file="migrations/0040_add_official_medical_service_appointment_type.xml"/>
 
 </databaseChangeLog>

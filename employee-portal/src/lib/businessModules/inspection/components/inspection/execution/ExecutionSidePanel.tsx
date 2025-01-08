@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -26,11 +26,11 @@ import {
   SidePanelNavigationTab,
 } from "@/lib/businessModules/inspection/components/inspection/execution/SidePanelNavigation";
 import { useChecklistValidateContext } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/ChecklistValidateContext";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { SidePanel } from "@/lib/shared/components/sidePanel/SidePanel";
 import { SidePanelTitle } from "@/lib/shared/components/sidePanel/SidePanelTitle";
 import { UserLink } from "@/lib/shared/components/users/UserLink";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 interface ExecutionSidePanelProps {

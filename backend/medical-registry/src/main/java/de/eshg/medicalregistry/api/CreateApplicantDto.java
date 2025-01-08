@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -21,9 +21,9 @@ public class CreateApplicantDto {
   private @NotNull @Size(min = 1, max = 80) String firstName;
   private @NotNull @Size(min = 1, max = 120) String lastName;
   private @NotNull LocalDate dateOfBirth;
-  private @NotNull @Size(min = 1, max = 40) String nameAtBirth;
+  private @Size(min = 1, max = 40) String nameAtBirth;
   private @NotNull @Size(min = 1, max = 50) String placeOfBirth;
-  private @NotNull @EmailAddressConstraint String emailAddress;
+  private @EmailAddressConstraint String emailAddress;
   private @NotNull @Size(min = 1, max = 23) String phoneNumber;
   private @NotNull @Valid ApplicantAddressDto address;
   private @NotNull CountryCode nationality;
@@ -31,17 +31,17 @@ public class CreateApplicantDto {
   public CreateApplicantDto() {}
 
   public CreateApplicantDto(
-      @Size(min = 1, max = 119) String title,
-      @NotNull GenderDto gender,
-      @NotNull @Size(min = 1, max = 80) String firstName,
-      @NotNull @Size(min = 1, max = 120) String lastName,
-      @NotNull LocalDate dateOfBirth,
-      @NotNull @Size(min = 1, max = 40) String nameAtBirth,
-      @NotNull @Size(min = 1, max = 50) String placeOfBirth,
-      @NotNull @EmailAddressConstraint String emailAddress,
-      @NotNull @Size(min = 1, max = 23) String phoneNumber,
-      @NotNull @Valid ApplicantAddressDto address,
-      @NotNull CountryCode nationality) {
+      String title,
+      GenderDto gender,
+      String firstName,
+      String lastName,
+      LocalDate dateOfBirth,
+      String nameAtBirth,
+      String placeOfBirth,
+      String emailAddress,
+      String phoneNumber,
+      ApplicantAddressDto address,
+      CountryCode nationality) {
     this.title = title;
     this.gender = gender;
     this.firstName = firstName;
@@ -53,6 +53,29 @@ public class CreateApplicantDto {
     this.phoneNumber = phoneNumber;
     this.address = address;
     this.nationality = nationality;
+  }
+
+  public CreateApplicantDto(
+      GenderDto gender,
+      String firstName,
+      String lastName,
+      LocalDate dateOfBirth,
+      String placeOfBirth,
+      String phoneNumber,
+      ApplicantAddressDto address,
+      CountryCode nationality) {
+    this(
+        null,
+        gender,
+        firstName,
+        lastName,
+        dateOfBirth,
+        null,
+        placeOfBirth,
+        null,
+        phoneNumber,
+        address,
+        nationality);
   }
 
   public String getTitle() {

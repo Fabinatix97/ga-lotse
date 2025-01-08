@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,8 +7,9 @@
 
 import { ApiProphylaxisSessionSortKey } from "@eshg/employee-portal-api/dental";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { useToggleableState } from "@eshg/lib-portal/hooks/useToggleableState";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 
 import { ProphylaxisSession } from "@/lib/businessModules/dental/api/models/ProphylaxisSession";
 import { useGetProphylaxisSessions } from "@/lib/businessModules/dental/api/queries/prophylaxisSessionApi";
@@ -19,6 +20,7 @@ import {
 import { routes } from "@/lib/businessModules/dental/shared/routes";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
+import { ChipWithTooltip } from "@/lib/shared/components/chip/ChipWithTooltip";
 import { useFilterDictionary } from "@/lib/shared/components/filterSettings/useFilterDictionary";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
@@ -40,7 +42,7 @@ interface ProphylaxisSessionsTableProps {
 }
 
 export function ProphylaxisSessionsTable(props: ProphylaxisSessionsTableProps) {
-  const [activePanel, toggleActivePanel] = useState<"filters" | undefined>();
+  const [activePanel, toggleActivePanel] = useToggleableState<"filters">();
 
   const tableControl = useTableControl({
     serverSideSorting: true,
@@ -146,13 +148,19 @@ const COLUMNS = [
       canNavigate: { parentRow: true },
     },
   }),
-  columnHelper.accessor("institution.name", {
+  columnHelper.accessor("institution", {
     header: "Einrichtung",
-    cell: (props) => props.getValue(),
+    cell: (props) => (
+      <ChipWithTooltip
+        key={props.getValue().id}
+        name={props.getValue().name}
+        hexColor={props.getValue().hexColor}
+        modalTitle="Institution"
+      />
+    ),
     enableSorting: false,
     meta: {
       width: 180,
-      canNavigate: { parentRow: true },
     },
   }),
   columnHelper.accessor("groupName", {

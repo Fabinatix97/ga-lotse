@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -46,7 +46,7 @@ export function SharePinModal({
             </div>
             <CheckboxField
               name="pinShared"
-              label="Ich habe die PIN dem/der Bürger:in mitgeteilt. *"
+              label="Ich habe die PIN dem/der Bürger:in mitgeteilt."
               required="Bitte bestätigen Sie die Weitergabe der PIN."
             />
             <Row justifyContent="end">

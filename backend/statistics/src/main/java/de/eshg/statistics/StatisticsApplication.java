@@ -1,12 +1,12 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 package de.eshg.statistics;
 
 import de.eshg.rest.service.security.config.StatisticsPublicSecurityConfig;
-import de.eshg.statistics.config.OriginalDataAccessConfig;
+import de.eshg.statistics.config.StatisticsConfig;
 import de.eshg.statistics.config.StatisticsFeatureToggle;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
 @Import(StatisticsPublicSecurityConfig.class)
-@EnableConfigurationProperties({StatisticsFeatureToggle.class, OriginalDataAccessConfig.class})
+@EnableConfigurationProperties({StatisticsFeatureToggle.class, StatisticsConfig.class})
 public class StatisticsApplication {
 
   public static final String MODULE_NAME = "Statistikmodul";

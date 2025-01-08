@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -25,6 +25,12 @@ public class ExaminationService {
       ExaminationRepository examinationRepository, ProgressEntryUtil progressEntryUtil) {
     this.examinationRepository = examinationRepository;
     this.progressEntryUtil = progressEntryUtil;
+  }
+
+  Examination findExamination(UUID examinationId) {
+    return examinationRepository
+        .findByExternalId(examinationId)
+        .orElseThrow(ExceptionUtil.notFoundException(Examination.class, examinationId));
   }
 
   Examination findExaminationForUpdate(UUID examinationId) {

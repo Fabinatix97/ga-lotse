@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -18,5 +18,6 @@ public enum AppointmentTypeDto {
   PROOF_SUBMISSION,
   HIV_STI_CONSULTATION,
   SEX_WORK,
-  RESULTS_REVIEW
+  RESULTS_REVIEW,
+  OFFICIAL_MEDICAL_SERVICE
 }

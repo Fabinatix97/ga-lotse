@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -17,7 +17,7 @@
 
   @bottom-right {
     content: "Seite " counter(page) " von " counter(pages);
-    font-family: Poppins, serif;
+    font-family: serif;
     font-size: 11px;
     border-top: darkgray solid 1px;
     vertical-align: top;
@@ -30,7 +30,7 @@
 footer {
   position: running(--var-footerRunning);
   font-size: 9px;
-  font-family: Poppins, serif;
+  font-family: serif;
 }
 
 img {

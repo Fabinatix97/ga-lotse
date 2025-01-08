@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -11,6 +11,7 @@ import { StiProtectionProcedurePageParams } from "@/app/(businessModules)/sti-pr
 import { useStiProcedureQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
 import { Examinations } from "@/lib/businessModules/stiProtection/features/procedures/examination/Examinations";
 import { isProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
+import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 
 export default function StiProtectionProcedureExaminationPage({
   params: { id: procedureId },
@@ -22,7 +23,9 @@ export default function StiProtectionProcedureExaminationPage({
 
   return (
     <DisabledFormProvider disabled={!isOpen}>
-      <Examinations procedureId={procedureId} />
+      <MainContentLayout sx={{ margin: 0, padding: 0 }} fullViewportHeight>
+        <Examinations procedureId={procedureId} />
+      </MainContentLayout>
     </DisabledFormProvider>
   );
 }

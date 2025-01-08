@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -16,10 +16,8 @@ import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
 import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import de.eshg.lib.procedure.model.AbstractFileDto;
-import de.eshg.lib.procedure.model.ConcreteFileDto;
-import de.eshg.lib.procedure.model.ConcreteFileOrFileReference;
+import de.eshg.lib.procedure.model.AbstractFileReferenceDto;
 import de.eshg.lib.procedure.model.FileTypeDto;
-import de.eshg.lib.procedure.model.GenericFileDto;
 import de.eshg.lib.procedure.model.GenericFileReferenceDto;
 import de.eshg.lib.procedure.model.ImageDto;
 import de.eshg.lib.procedure.model.ImageMetaDataDto;
@@ -35,9 +33,7 @@ import de.eshg.lib.procedure.model.PdfMetaDataHistoryDto;
 import de.eshg.lib.procedure.model.ProgressEntryReferenceFilePairDto;
 import de.eshg.lib.procedure.procedures.ProgressEntryReferenceFilePair;
 import de.eshg.mapper.RevisionEntry;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import org.hibernate.Hibernate;
 
 public final class FileMapper {
 
@@ -52,7 +48,7 @@ public final class FileMapper {
     };
   }
 
-  public static ConcreteFileOrFileReference toConcreteInterfaceTypeOrReferenceInterfaceType(
+  public static AbstractFileReferenceDto toConcreteInterfaceTypeOrReferenceInterfaceType(
       File file) {
     if (file == null) {
       return null;
@@ -98,8 +94,8 @@ public final class FileMapper {
     return domainType;
   }
 
-  public static ConcreteFileDto toInterfaceType(File file) {
-    return switch (file) {
+  public static AbstractFileDto toInterfaceType(File file) {
+    return switch (Hibernate.unproxy(file)) {
       case null -> null;
       case Image image -> toInterfaceType(image);
       case Pdf pdf -> toInterfaceType(pdf);
@@ -131,17 +127,8 @@ public final class FileMapper {
     mapCommonFields(mailDto, mail);
 
     mailDto.setMetaData(toInterfaceType(mail.getMetaData()));
-    mailDto.setAttachments(toInterfaceTypes(mail.getAttachments()));
     mailDto.setRemovedInvalidAttachments(mail.getRemovedInvalidAttachments());
     return mailDto;
-  }
-
-  private static List<ConcreteFileDto> toInterfaceTypes(List<File> attachments) {
-    if (attachments == null) {
-      return null;
-    }
-
-    return attachments.stream().map(FileMapper::toInterfaceType).toList();
   }
 
   private static void mapCommonFields(AbstractFileDto fileDto, File file) {
@@ -152,7 +139,6 @@ public final class FileMapper {
     fileDto.setFileName(file.getFileName());
     fileDto.setFileType(toInterfaceType(file.getFileType()));
     fileDto.setFileSizeBytes(file.getFileSizeBytes());
-    fileDto.setAttachedToMail(getAttachedToMailExternalId(file));
     fileDto.setDeleted(file.isDeleted());
     fileDto.setDeletable(file.isDeletable());
     fileDto.setLocked(file.isLocked());
@@ -202,10 +188,6 @@ public final class FileMapper {
       case PDF -> FileTypeDto.PDF;
       case EML -> FileTypeDto.EML;
     };
-  }
-
-  private static UUID getAttachedToMailExternalId(File file) {
-    return Optional.ofNullable(file.getAttachedToMail()).map(File::getExternalId).orElse(null);
   }
 
   static GenericFileReferenceDto toInterfaceTypeAsReference(File file) {
@@ -263,12 +245,6 @@ public final class FileMapper {
 
     return new ProgressEntryReferenceFilePairDto(
         progressEntryReferenceFilePair.progressEntryExternalId(),
-        toGeneralInterfaceType(progressEntryReferenceFilePair.file()));
-  }
-
-  private static GenericFileDto toGeneralInterfaceType(File file) {
-    GenericFileDto fileDto = new GenericFileDto();
-    mapCommonFields(fileDto, file);
-    return fileDto;
+        toInterfaceType(progressEntryReferenceFilePair.file()));
   }
 }

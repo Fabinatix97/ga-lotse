@@ -1,0 +1,72 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1733835693519-1">
+    <addColumn tableName="inbox_procedure">
+      <column name="contact_details_id" type="BIGINT"/>
+    </addColumn>
+    <sql>
+      UPDATE inbox_procedure
+      SET contact_details_id=contact_details.id FROM contact_details
+      WHERE contact_details.inbox_procedure_id = inbox_procedure.id;
+    </sql>
+
+    <addNotNullConstraint columnDataType="bigint"
+      columnName="contact_details_id" tableName="inbox_procedure"
+      validate="true"/>
+    <addUniqueConstraint columnNames="contact_details_id"
+      constraintName="inbox_procedure_contact_details_id_key"
+      tableName="inbox_procedure"/>
+    <addForeignKeyConstraint baseColumnNames="contact_details_id"
+      baseTableName="inbox_procedure"
+      constraintName="fk_inbox_procedure_contact_details" deferrable="false"
+      initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+      referencedColumnNames="id" referencedTableName="contact_details"
+      validate="true"/>
+
+    <dropForeignKeyConstraint baseTableName="contact_details"
+      constraintName="fk_contact_details_inbox_procedure"/>
+    <dropUniqueConstraint
+      constraintName="contact_details_inbox_procedure_id_key"
+      tableName="contact_details"/>
+    <dropColumn columnName="inbox_procedure_id" tableName="contact_details"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1733835693519-2">
+    <addColumn tableName="inbox_procedure">
+      <column name="inbox_progress_entry_id" type="BIGINT"/>
+    </addColumn>
+
+    <sql>
+      UPDATE inbox_procedure
+      SET inbox_progress_entry_id=inbox_progress_entry.id FROM inbox_progress_entry
+      WHERE inbox_progress_entry.inbox_procedure_id = inbox_procedure.id;
+    </sql>
+
+    <addNotNullConstraint columnDataType="bigint"
+      columnName="inbox_progress_entry_id" tableName="inbox_procedure"
+      validate="true"/>
+    <addUniqueConstraint columnNames="inbox_progress_entry_id"
+      constraintName="inbox_procedure_inbox_progress_entry_id_key"
+      tableName="inbox_procedure"/>
+    <addForeignKeyConstraint baseColumnNames="inbox_progress_entry_id"
+      baseTableName="inbox_procedure"
+      constraintName="fk_inbox_procedure_inbox_progress_entry"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="inbox_progress_entry" validate="true"/>
+
+    <dropForeignKeyConstraint baseTableName="inbox_progress_entry"
+      constraintName="fk_inbox_progress_entry_inbox_procedure"/>
+    <dropUniqueConstraint
+      constraintName="inbox_progress_entry_inbox_procedure_id_key"
+      tableName="inbox_progress_entry"/>
+    <dropColumn columnName="inbox_procedure_id"
+      tableName="inbox_progress_entry"/>
+  </changeSet>
+</databaseChangeLog>

@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 cronn GmbH
+ * Copyright 2025 cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -26,11 +26,11 @@ import { PROCEDURE_STATUS } from "@/lib/businessModules/schoolEntry/features/pro
 import { useAddDownloadPackage } from "@/lib/shared/api/mutations/gdpr";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { procedureTypeNames } from "@/lib/shared/components/procedures/constants";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface ValidationTaskProceduresTableProps {
   gdprValidationTaskApi: GdprValidationTaskApiInterface;

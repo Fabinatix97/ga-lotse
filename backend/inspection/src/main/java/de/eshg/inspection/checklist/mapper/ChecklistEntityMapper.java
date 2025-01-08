@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * Copyright 2025 SCOOP Software GmbH, cronn GmbH
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -122,7 +122,7 @@ public class ChecklistEntityMapper {
       if (matchedElement.isPresent()) break;
     }
     return matchedElement.orElseThrow(
-        () -> new NotFoundException("No matching element with ID " + updateId));
+        () -> new NotFoundException("No matching element with given ID"));
   }
 
   private static void mapTextElement(
@@ -295,10 +295,7 @@ public class ChecklistEntityMapper {
     MediaFile imageFile =
         mediaFileRepository
             .findByFileExternalId(updateImageElement.getImageExternalId())
-            .orElseThrow(
-                () ->
-                    new NotFoundException(
-                        "Could not find image with ID " + updateImageElement.getImageExternalId()));
+            .orElseThrow(() -> new NotFoundException("Could not find image with given ID"));
     imageElement.addImage(imageFile);
   }
 
@@ -314,10 +311,7 @@ public class ChecklistEntityMapper {
     MediaFile audioFile =
         mediaFileRepository
             .findByFileExternalId(updateAudioElement.getAudioExternalId())
-            .orElseThrow(
-                () ->
-                    new NotFoundException(
-                        "Could not find audio with ID " + updateAudioElement.getAudioExternalId()));
+            .orElseThrow(() -> new NotFoundException("Could not find audio with given ID"));
     audioElement.addAudio(audioFile);
   }
 
