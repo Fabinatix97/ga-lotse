@@ -5,6 +5,8 @@
 
 import { ApiReportState } from "@eshg/employee-portal-api/statistics";
 
+import { DataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
+
 import {
   Interval,
   ReportSeriesState,
@@ -24,7 +26,7 @@ export interface EvaluationReports {
   title: string;
   reports: ReportData[];
   activeSeries?: ActiveSeriesInfo;
-  anonymized: boolean;
+  sensitive: boolean;
 }
 
 export type ReportData = SingleReport | ReportSeries;
@@ -47,6 +49,7 @@ export interface ReportBase {
   type: Extract<ReportDataType, "SINGLE" | "CHILD">;
   userId: string;
   tooMuchDataForExport: boolean;
+  dataSensitivity: DataSourceSensitivity;
 }
 
 export interface ReportSeries {
@@ -60,6 +63,7 @@ export interface ReportSeries {
   userId: string;
   status: ReportSeriesState;
   isAllItemsDeleting: boolean;
+  dataSensitivity: DataSourceSensitivity;
 }
 
 export interface ReportSeriesItem extends ReportBase {

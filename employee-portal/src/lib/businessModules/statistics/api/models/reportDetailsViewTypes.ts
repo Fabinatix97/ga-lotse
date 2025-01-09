@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
+
 import { Analysis } from "./evaluationDetailsViewTypes";
 import { FlatAttribute } from "./flatAttribute";
 
@@ -20,6 +22,7 @@ export interface ReportDetailsView {
     name: string;
     datasetAmount: number;
     attributeLabels: string[];
+    sensitivity: DataSourceSensitivity;
   };
   analyses: Analysis[];
   attributes: FlatAttribute[];

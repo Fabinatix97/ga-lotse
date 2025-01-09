@@ -40,7 +40,7 @@ import {
   isMessageTypeWithBody,
 } from "@/lib/businessModules/chat/shared/types";
 import {
-  getRoomNameAndCommunicationType,
+  getRoomCommunicationType,
   isGroupRoom,
   shouldShowMessageTeaser,
 } from "@/lib/businessModules/chat/shared/utils";
@@ -101,7 +101,10 @@ export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
 
       const { roomId } = room;
       const sender = currentMatrixClient.getUser(event.getSender() ?? "");
-      const { communicationType } = getRoomNameAndCommunicationType(room);
+      const communicationType = getRoomCommunicationType(
+        matrixClient.current,
+        room,
+      );
 
       if (
         shouldShowMessageTeaser({

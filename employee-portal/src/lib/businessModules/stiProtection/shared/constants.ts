@@ -37,6 +37,9 @@ export const systemProgressEntryTypeTitles: Record<string, string> = {
   PERSON_DETAILS_UPDATED: "Person aktualisiert",
   RAPID_TEST_EXAMINATION_UPDATED: "Schnelltests aktualisiert",
   LABORATORY_TEST_EXAMINATION_UPDATED: "Labortests aktualisiert",
+  APPOINTMENT_REBOOKED: "Termin geändert",
+  APPOINTMENT_CANCELLED: "Termin storniert",
+  CONSULTATION_UPDATED: "Konsultation aktualisiert",
 };
 
 export const CONCERN_VALUES: EnumMap<ApiConcern> = {
@@ -56,7 +59,7 @@ export const APPOINTMENT_TYPES: EnumMap<ApiAppointmentType> = {
   [ApiAppointmentType.Consultation]: "Beratung",
   [ApiAppointmentType.EntryLevel]: "Eingangsstufe",
   [ApiAppointmentType.ProofSubmission]: "Nachweisvorlage",
-  [ApiAppointmentType.HivStiConsultation]: "HIV-STI-Beratung",
+  [ApiAppointmentType.HivStiConsultation]: "HIV-STI Beratung",
   [ApiAppointmentType.SexWork]: "Sexarbeit",
   [ApiAppointmentType.ResultsReview]: "Ergebnisbesprechung",
   [ApiAppointmentType.RegularExamination]: "Regeluntersuchung",

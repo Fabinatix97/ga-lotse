@@ -11,6 +11,8 @@ import de.eshg.base.calendar.api.BusinessCaseEventRequest;
 import de.eshg.base.calendar.api.DetailedEvent;
 import de.eshg.base.calendar.api.EventTimeData;
 import de.eshg.base.calendar.api.GetBusinessCaseEventResponse;
+import de.eshg.base.calendar.api.GetUserCalendarsRequest;
+import de.eshg.base.calendar.api.GetUserCalendarsResponse;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -78,7 +80,11 @@ public class CalendarClient {
   }
 
   private UUID getUserCalendar(UUID userId) {
-    return calendarApiClient.getUserCalendar(userId).calendarId();
+    GetUserCalendarsResponse response =
+        calendarApiClient.getUserCalendars(new GetUserCalendarsRequest(List.of(userId)));
+    return response.userCalendars().isEmpty()
+        ? null
+        : response.userCalendars().getFirst().calendarId();
   }
 
   private DetailedEvent getCalendarEvent(UUID calendarEventId) {

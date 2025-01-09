@@ -63,5 +63,6 @@
   <include file="migrations/0049_add_mail_to_simple_notification.xml"/>
   <include file="migrations/0050_invert_inbox_procedure_relationships.xml"/>
   <include file="migrations/0051_add_official_medical_service_appointment_type.xml"/>
+  <include file="migrations/0052_add_salutation_inbox_procedure.xml"/>
 
 </databaseChangeLog>

@@ -6,7 +6,6 @@
 package de.eshg.base.calendar;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Suppliers;
 import de.eshg.base.calendar.api.DetailedEventWithoutCalendarId;
 import de.eshg.base.calendar.api.EventMetaData;
 import de.eshg.base.calendar.api.EventTimeData;
@@ -16,7 +15,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.*;
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
@@ -24,8 +22,6 @@ import net.fortuna.ical4j.model.*;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Period;
 import net.fortuna.ical4j.model.component.VEvent;
-import org.springframework.core.env.Environment;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -34,37 +30,25 @@ public final class RegionalHolidayCalendar {
   public static final UUID HOLIDAY_CALENDAR_ID =
       UUID.fromString("7ef1e6c5-fffe-4e10-a6cf-b858ab4f568b");
   public static final String HOLIDAY_CALENDAR_NAME = "Feiertage Hessen";
-  private final ResourceLoader loader;
-  private final Environment env;
+  private final CalendarProperties calendarProperties;
   private final Clock clock;
 
-  private Supplier<Calendar> calendarSource;
+  private Calendar calendar;
 
-  public RegionalHolidayCalendar(ResourceLoader loader, Environment env, Clock clock) {
-    this.loader = loader;
-    this.env = env;
+  public RegionalHolidayCalendar(CalendarProperties calendarProperties, Clock clock) {
+    this.calendarProperties = calendarProperties;
     this.clock = clock;
-    reset();
+    initializeCalendar();
   }
 
   @VisibleForTesting
-  void reset() {
-    this.calendarSource =
-        Suppliers.memoize(
-            () -> {
-              try (InputStream calendarIcs =
-                  loader
-                      .getResource(
-                          env.getProperty(
-                              "eshg.calendar.regional-holiday-ics-path",
-                              "classpath:calendar/hessian-public-holidays.ics"))
-                      .getInputStream()) {
-                return new CalendarBuilder().build(calendarIcs);
-              } catch (IOException | ParserException e) {
-                throw new IllegalArgumentException(
-                    "The configured holiday calender could not be parsed.", e);
-              }
-            });
+  void initializeCalendar() {
+    try (InputStream inputStream =
+        this.calendarProperties.getRegionalHolidayIcsPath().getInputStream()) {
+      this.calendar = new CalendarBuilder().build(inputStream);
+    } catch (IOException | ParserException e) {
+      throw new IllegalArgumentException("The configured holiday calender could not be parsed.", e);
+    }
   }
 
   List<DetailedEventWithoutCalendarId> findByDateRangeAndCalendarId(
@@ -72,7 +56,7 @@ public final class RegionalHolidayCalendar {
     LocalDate requestedStart = toLocalDate(startTimeStamp);
     LocalDate requestedEnd = toLocalDate(endTimeStamp);
 
-    return calendarSource.get().getComponents().stream()
+    return calendar.getComponents().stream()
         .filter(VEvent.class::isInstance)
         .map(VEvent.class::cast)
         .flatMap(baseEvent -> materializeRecurrentEvents(baseEvent, requestedStart, requestedEnd))

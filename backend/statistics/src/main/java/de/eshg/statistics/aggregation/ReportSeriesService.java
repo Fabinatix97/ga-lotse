@@ -68,19 +68,19 @@ import org.springframework.util.CollectionUtils;
 public class ReportSeriesService {
   private final ReportSeriesRepository reportSeriesRepository;
   private final EvaluationService evaluationService;
-  private final DataSourceAggregationService dataSourceAggregationService;
+  private final DataSourceValidator dataSourceValidator;
   private final StatisticsUserService userService;
   private final Clock clock;
 
   public ReportSeriesService(
       ReportSeriesRepository reportSeriesRepository,
       EvaluationService evaluationService,
-      DataSourceAggregationService dataSourceAggregationService,
+      DataSourceValidator dataSourceValidator,
       StatisticsUserService userService,
       Clock clock) {
     this.reportSeriesRepository = reportSeriesRepository;
     this.evaluationService = evaluationService;
-    this.dataSourceAggregationService = dataSourceAggregationService;
+    this.dataSourceValidator = dataSourceValidator;
     this.userService = userService;
     this.clock = clock;
   }
@@ -100,7 +100,7 @@ public class ReportSeriesService {
     }
     validateIsNotDeleting(evaluation);
     AggregationResultUtil.validateSameSensitivityPossible(
-        evaluation, dataSourceAggregationService.getAvailableDataSources().availableDataSources());
+        evaluation, dataSourceValidator.getAllAvailableDataSources());
 
     ReportSeries reportSeries =
         switch (addReportSeriesRequest) {

@@ -9,7 +9,6 @@ import static de.eshg.lib.common.SensitivityLevel.PUBLIC;
 
 import de.eshg.domain.model.BaseEntity;
 import de.eshg.lib.common.DataSensitivity;
-import de.eshg.lib.statistics.api.ValueType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -51,7 +50,7 @@ public class TableColumn extends BaseEntity {
 
   @Column(nullable = false)
   @JdbcType(PostgreSQLEnumJdbcType.class)
-  private ValueType valueType;
+  private TableColumnValueType valueType;
 
   @Column private String unit;
 
@@ -134,11 +133,11 @@ public class TableColumn extends BaseEntity {
     this.baseModuleAttributeName = baseModuleAttributeName;
   }
 
-  public ValueType getValueType() {
+  public TableColumnValueType getValueType() {
     return valueType;
   }
 
-  public void setValueType(ValueType valueType) {
+  public void setValueType(TableColumnValueType valueType) {
     this.valueType = valueType;
   }
 
@@ -152,6 +151,12 @@ public class TableColumn extends BaseEntity {
 
   public List<ValueToMeaning> getValueToMeanings() {
     return valueToMeanings;
+  }
+
+  public void setValueToMeanings(List<ValueToMeaning> valueToMeanings) {
+    this.valueToMeanings.forEach(valueToMeaning -> valueToMeaning.setTableColumn(null));
+    this.valueToMeanings.clear();
+    addValueToMeanings(valueToMeanings);
   }
 
   public void addValueToMeanings(List<ValueToMeaning> valueToMeanings) {

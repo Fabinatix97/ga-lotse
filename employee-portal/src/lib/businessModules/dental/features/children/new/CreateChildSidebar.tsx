@@ -5,6 +5,7 @@
 
 "use client";
 
+import { ApiAddContact200Response } from "@eshg/employee-portal-api/base";
 import { ApiCreateChildRequest } from "@eshg/employee-portal-api/dental";
 import { ApiCreatePerson } from "@eshg/employee-portal-api/schoolEntry";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
@@ -23,7 +24,7 @@ import { SearchGroupField } from "@/lib/businessModules/dental/features/prophyla
 import { routes } from "@/lib/businessModules/dental/shared/routes";
 import { BUTTON_SIZE } from "@/lib/businessModules/schoolEntry/features/procedures/new/constants";
 import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
-import { SearchMultipleContactsField } from "@/lib/shared/components/formFields/SearchMultipleContactsField";
+import { SelectContactField } from "@/lib/shared/components/formFields/SelectContactField";
 import { SchoolYearField } from "@/lib/shared/components/formFields/schoolYear";
 import { PersonSidebar } from "@/lib/shared/components/personSidebar/PersonSidebar";
 import { mapToPersonAddRequest } from "@/lib/shared/components/personSidebar/helpers";
@@ -37,18 +38,19 @@ import {
   SearchPersonFormValues,
 } from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
+import { getInstitutionOptionLabel } from "@/lib/shared/helpers/selectOptionMapper";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface DentalSearchForm extends SearchPersonFormValues {
   schoolYear: OptionalFieldValue<number>;
-  institutionId: OptionalFieldValue<string>;
+  institution: ApiAddContact200Response | null;
   groupName: OptionalFieldValue<string>;
 }
 
 const personSearchFormInitialValues: DentalSearchForm = {
   ...defaultSearchPersonValues(),
   schoolYear: "",
-  institutionId: "",
+  institution: null,
   groupName: "",
 };
 
@@ -66,15 +68,17 @@ function DentalSearchFormComponent(
           numberOfYearsInFuture: 1,
         }}
       />
-      <SearchMultipleContactsField
-        name="institutionId"
+      <SelectContactField
+        name="institution"
         label="Einrichtung"
         categories={SCHOOL_OR_DAYCARE}
+        required="Bitte eine Schule/Kita angeben."
+        getOptionLabel={getInstitutionOptionLabel}
       />
       <SearchGroupField
         name="groupName"
         label="Wählen Sie eine Gruppe aus"
-        institutionId={props.values.institutionId}
+        institutionId={props.values.institution?.id ?? ""}
         freeSolo
       />
       <DefaultSearchPersonFormFields />
@@ -140,7 +144,7 @@ export function CreateChildSidebar() {
               await handleCreate(
                 mapToPersonAddRequest(createInputs),
                 searchInputs.schoolYear,
-                searchInputs.institutionId,
+                searchInputs.institution?.id ?? "",
                 searchInputs.groupName,
               );
             }}
@@ -148,7 +152,7 @@ export function CreateChildSidebar() {
               await handleCreate(
                 mapToPersonAddRequest(person),
                 searchInputs.schoolYear,
-                searchInputs.institutionId,
+                searchInputs.institution?.id ?? "",
                 searchInputs.groupName,
               );
             }}

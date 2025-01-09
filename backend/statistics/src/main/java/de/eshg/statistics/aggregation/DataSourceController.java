@@ -33,6 +33,6 @@ public class DataSourceController {
   @ApiResponse(responseCode = "200", description = "The aggregated available data sources")
   @Operation(summary = "Get available data sources")
   GetAvailableDataSourcesResponse getAvailableDataSources() {
-    return dataSourceAggregationService.getAvailableDataSources();
+    return dataSourceAggregationService.getAvailableDataSources(null, true);
   }
 }

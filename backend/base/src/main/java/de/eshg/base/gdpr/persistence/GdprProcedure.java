@@ -20,8 +20,15 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 public class GdprProcedure extends BaseEntityWithExternalId {
+
+  @OneToMany(
+      fetch = FetchType.LAZY,
+      orphanRemoval = true,
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+      mappedBy = CentralFileIdWrapper_.GDPR_PROCEDURE)
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  private UUID centralFileId;
+  @OrderBy
+  private final List<CentralFileIdWrapper> centralFileIdsWrappers = new ArrayList<>();
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
   @Column(nullable = false)
@@ -70,12 +77,17 @@ public class GdprProcedure extends BaseEntityWithExternalId {
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private DownloadPackage centralFileDownload;
 
-  public UUID getCentralFileId() {
-    return centralFileId;
+  public void setCreatedAt(Instant createdAt) {
+    this.createdAt = createdAt;
   }
 
-  public void setCentralFileId(UUID centralFileId) {
-    this.centralFileId = centralFileId;
+  public List<CentralFileIdWrapper> getCentralFileIdsWrappers() {
+    return centralFileIdsWrappers;
+  }
+
+  public void addCentralFileIds(List<CentralFileIdWrapper> newCentralFileIds) {
+    newCentralFileIds.forEach(w -> w.setGdprProcedure(this));
+    centralFileIdsWrappers.addAll(newCentralFileIds);
   }
 
   public GdprProcedureStatus getStatus() {
@@ -100,6 +112,10 @@ public class GdprProcedure extends BaseEntityWithExternalId {
 
   public Instant getModifiedAt() {
     return modifiedAt;
+  }
+
+  public void setModifiedAt(Instant modifiedAt) {
+    this.modifiedAt = modifiedAt;
   }
 
   public Instant getClosedAt() {

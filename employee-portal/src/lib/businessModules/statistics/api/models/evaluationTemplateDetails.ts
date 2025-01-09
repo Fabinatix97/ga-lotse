@@ -7,6 +7,7 @@ import { ApiUser } from "@eshg/employee-portal-api/base";
 
 import { Analysis } from "@/lib/businessModules/statistics/api/models/analysis";
 
+import { AnonymizationOptions } from "./anonymizationOptions";
 import { DataSourceSensitivity } from "./dataSourceSensitivity";
 
 export interface EvaluationTemplateDetails {
@@ -18,7 +19,8 @@ export interface EvaluationTemplateDetails {
   user?: ApiUser;
   attributeLabels: string[];
   analyses: Analysis[];
-  withoutAnonymizationAllowed: boolean;
+  anonymizationOptions: AnonymizationOptions;
+  userMayCreateEvaluation: boolean;
 }
 
 export interface EvaluationTemplateDetailsFromRepository {

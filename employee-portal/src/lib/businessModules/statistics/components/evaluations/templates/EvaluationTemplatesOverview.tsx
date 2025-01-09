@@ -22,7 +22,7 @@ import { useUpdateEvaluationTemplateSidebar } from "@/lib/businessModules/statis
 import { useCreateEvaluationFromTemplateSidebar } from "@/lib/businessModules/statistics/components/evaluations/templates/CreateEvaluationFromTemplateSidebar/CreateEvaluationFromTemplateSidebar";
 import { useEvaluationTemplateDetailsSidebar } from "@/lib/businessModules/statistics/components/evaluations/templates/EvaluationTemplateDetailsSidebar";
 import { createFilterDefinitions } from "@/lib/businessModules/statistics/components/evaluations/templates/filterDefinitions";
-import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
+import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import {
   ActionsItem,
@@ -252,11 +252,12 @@ function evaluationTemplatesColumns(
       cell: (props) => (
         <ActionsMenu
           actionItems={[
-            canWrite(props.row.original.userId) && {
-              label: "Auswertung erstellen",
-              onClick: () => onCreateEvaluation(props.row.original.id),
-              startDecorator: <Add />,
-            },
+            canWrite(props.row.original.userId) &&
+              props.row.original.userMayCreateEvaluation && {
+                label: "Auswertung erstellen",
+                onClick: () => onCreateEvaluation(props.row.original.id),
+                startDecorator: <Add />,
+              },
             canEdit(props.row.original.userId) && {
               label: "Bearbeiten",
               onClick: () => onEdit(props.row.original.id),

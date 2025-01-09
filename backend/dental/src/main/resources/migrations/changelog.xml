@@ -21,5 +21,7 @@
   <include file="migrations/0010_add_mail_to_simple_notification.xml"/>
   <include file="migrations/0011_add_created_and_modified_at_to_prophylaxis_session.xml"/>
   <include file="migrations/0012_invert_inbox_procedure_relationships.xml"/>
+  <include file="migrations/0013_add_procedure_reference_for_statistics.xml"/>
+  <include file="migrations/0014_add_salutation_inbox_procedure.xml"/>
 
 </databaseChangeLog>

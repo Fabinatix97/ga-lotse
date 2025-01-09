@@ -14,6 +14,7 @@ import { IconButton, Stack, Typography } from "@mui/joy";
 import { useState } from "react";
 import { isObjectType } from "remeda";
 
+import { DataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import {
   AnalysisDiagram,
   AnalysisDiagramBarChart,
@@ -28,7 +29,6 @@ import {
 import { useDeleteDiagram } from "@/lib/businessModules/statistics/api/mutations/useDeleteDiagram";
 import { useExportDiagramData } from "@/lib/businessModules/statistics/api/mutations/useExportDiagramData";
 import { useUpdateDiagramSidebar } from "@/lib/businessModules/statistics/components/evaluations/details/UpdateDiagramSidebar/UpdateDiagramSidebar";
-import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
 import { AnalysisDiagramBox } from "@/lib/businessModules/statistics/components/shared/AnalysisAccordion/AnalysisDiagramBox";
 import { BarChart } from "@/lib/businessModules/statistics/components/shared/charts/BarChart";
 import { ChoroplethMap } from "@/lib/businessModules/statistics/components/shared/charts/ChoroplethMap";
@@ -39,6 +39,8 @@ import { PieChart } from "@/lib/businessModules/statistics/components/shared/cha
 import { ScatterChart } from "@/lib/businessModules/statistics/components/shared/charts/ScatterChart";
 import { ImageType } from "@/lib/businessModules/statistics/components/shared/charts/types";
 import { useDataExportGuard } from "@/lib/businessModules/statistics/components/shared/hooks/useDataExportGuard";
+import { canExportDataPermission } from "@/lib/businessModules/statistics/permissions/canExportDataPermission";
+import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
@@ -47,12 +49,12 @@ export function AnalysisChartDiagram(props: {
   analysisDiagram: AnalysisDiagram;
   evaluatedDataAmountTotal: number;
   isReport: boolean;
-  anonymized: boolean;
+  dataSourceSensitivity: DataSourceSensitivity;
 }) {
   const [eChartApi, setEChartApi] = useState<ChartApi | null>(null);
   const updateDiagramSidebar = useUpdateDiagramSidebar();
   const exportData = useExportDiagramData(props.analysisDiagram.diagramId);
-  const dataExportGuard = useDataExportGuard(false);
+  const dataExportGuard = useDataExportGuard();
   const deleteDiagram = useDeleteDiagram(props.analysisDiagram.diagramId);
   const { openConfirmationDialog } = useConfirmationDialog();
   const canWrite = useStatisticsRoleChecks().canWrite();
@@ -148,7 +150,7 @@ export function AnalysisChartDiagram(props: {
 
   const [openFullScreenChart, setOpenFullScreenChart] = useState(false);
   const chart = getChart();
-  const canExportData = props.anonymized;
+  const canExportData = canExportDataPermission(props.dataSourceSensitivity);
 
   return (
     <>
@@ -220,7 +222,8 @@ export function AnalysisChartDiagram(props: {
                   canExportData && {
                     label: "Als XLSX exportieren",
                     startDecorator: <Download />,
-                    onClick: () => dataExportGuard(exportData),
+                    onClick: () =>
+                      dataExportGuard(props.dataSourceSensitivity, exportData),
                   },
                   canWrite &&
                     !props.isReport && {

@@ -9,6 +9,7 @@ import de.eshg.base.department.DepartmentApi;
 import de.eshg.base.department.GetDepartmentInfoResponse;
 import de.eshg.base.department.LocationDto;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DepartmentInfoService {
@@ -23,6 +24,7 @@ public class DepartmentInfoService {
     this.departmentInfoProperties = departmentInfoProperties;
   }
 
+  @Transactional(readOnly = true)
   public GetDepartmentInfoResponse getDepartmentInfo() {
     GetDepartmentInfoResponse baseDepartmentInfo = getDepartmentInfoFromBase();
 

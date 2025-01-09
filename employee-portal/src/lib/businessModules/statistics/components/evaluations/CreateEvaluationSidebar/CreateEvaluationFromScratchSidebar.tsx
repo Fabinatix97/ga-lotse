@@ -3,14 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiStatisticsFeature } from "@eshg/employee-portal-api/statistics";
 import { parseISO } from "date-fns";
 import { Ref } from "react";
 import { groupBy, identity, isDefined } from "remeda";
 
 import { useAddEvaluation } from "@/lib/businessModules/statistics/api/mutations/useAddEvaluation";
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/statistics/api/queries/useStatisticsFeatureToggle";
-import { mapAnonymizedFieldValueToBoolean } from "@/lib/businessModules/statistics/components/evaluations/AnonymizedToggleButtonGroupField";
+import { mapAnonymizedFieldValueToBoolean } from "@/lib/businessModules/statistics/components/evaluations/AnonymizationConfiguration";
 import {
   CategorizedFlatAttribute,
   ChooseAttributesStep,
@@ -29,10 +27,7 @@ import { ConfigureDataSourceStep } from "@/lib/businessModules/statistics/compon
 import { validateConfigureDataSourceStep } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ConfigureDataSourceStep/validateConfigureDataSourceStep";
 import { SummaryStep } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/SummaryStep/SummaryStep";
 import { CreateEvaluationFromScratchFormModel } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/createEvaluationFromScratchFormModel";
-import {
-  ENUM_FALSE_VALUE,
-  ENUM_TRUE_VALUE,
-} from "@/lib/businessModules/statistics/components/evaluations/details/filter/enumFilterMappings";
+import { ENUM_FALSE_VALUE } from "@/lib/businessModules/statistics/components/evaluations/details/filter/enumFilterMappings";
 import { getLastXMonthsTimeRange } from "@/lib/businessModules/statistics/components/evaluations/timeRangeHelper";
 import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
 import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
@@ -50,17 +45,13 @@ export function CreateEvaluationFromScratchSidebar({
   evaluationTemplates: EvaluationTemplateStepAutocompleteEntry[];
   formRef: Ref<SidebarFormHandle>;
 }) {
-  const fakeAnonymizationEnabled = useIsNewFeatureEnabled(
-    ApiStatisticsFeature.FakeAnonymization,
-  );
-
   const initialValues: CreateEvaluationFromScratchFormModel = {
     evaluationName: "",
     timeSpan: getLastXMonthsTimeRange(3),
     evaluationTemplateId: null,
     _dataSourceId: "",
     _selectedAttributeKeys: [],
-    anonymized: fakeAnonymizationEnabled ? ENUM_TRUE_VALUE : ENUM_FALSE_VALUE,
+    anonymized: ENUM_FALSE_VALUE,
   };
   const addEvaluation = useAddEvaluation({
     onSuccess: () => onClose(true),

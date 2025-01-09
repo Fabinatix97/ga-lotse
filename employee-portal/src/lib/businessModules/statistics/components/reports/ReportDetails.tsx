@@ -16,6 +16,7 @@ export function ReportDetails(props: ReportDetailsView) {
     dataSource: props.dataSource.name,
     datasetAmount: props.dataSource.datasetAmount,
     attributeLabels: props.dataSource.attributeLabels,
+    dataSourceSensitivity: props.dataSource.sensitivity,
   };
   return (
     <Stack gap={3} direction={"row"}>
@@ -25,7 +26,7 @@ export function ReportDetails(props: ReportDetailsView) {
           attributes={props.attributes}
           evaluatedDataAmountTotal={props.dataSource.datasetAmount}
           isReport
-          anonymized
+          dataSourceSensitivity={props.dataSource.sensitivity}
         />
       </Box>
       <ReportDetailsTile {...reportDetailsTileProps} />

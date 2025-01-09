@@ -23,10 +23,12 @@ import de.eshg.stiprotection.api.UpdatePersonDetailsRequest;
 import de.eshg.stiprotection.api.VerifyAnonymousUserPinRequest;
 import de.eshg.stiprotection.mapper.AppointmentMapper;
 import de.eshg.stiprotection.mapper.StiProtectionProcedureMapper;
+import de.eshg.stiprotection.persistence.data.AppointmentData;
 import de.eshg.stiprotection.persistence.data.ResultPage;
 import de.eshg.stiprotection.persistence.data.StiProtectionProcedureData;
 import de.eshg.stiprotection.persistence.db.AppointmentHistoryEntry;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
+import de.eshg.stiprotection.persistence.db.StiProtectionSystemProgressEntryType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -147,9 +149,14 @@ public class StiProtectionProcedureController {
     StiProtectionProcedure procedure = stiProtectionService.findProcedureByExternalId(procedureId);
     AppointmentHistoryEntry appointmentHistoryEntry =
         appointmentService.getOpenAppointmentHistoryEntry(procedure);
-    appointmentService.updateAppointment(
-        procedure,
-        AppointmentMapper.toDataType(request, appointmentHistoryEntry.getAppointmentType()));
+    AppointmentData appointmentData =
+        AppointmentMapper.toDataType(request, appointmentHistoryEntry.getAppointmentType());
+    appointmentService.updateAppointment(procedure, appointmentData);
+    String appointmentTimeAsString = appointmentService.getAppointmentTimeAsString(appointmentData);
+    stiProtectionService.addProgressEntry(
+        procedureId,
+        StiProtectionSystemProgressEntryType.APPOINTMENT_REBOOKED,
+        appointmentTimeAsString);
   }
 
   @PostMapping("/{id}/appointment/cancel")
@@ -158,6 +165,8 @@ public class StiProtectionProcedureController {
   public void cancelAppointment(@PathVariable("id") UUID procedureId) {
     StiProtectionProcedure procedure = stiProtectionService.findProcedureByExternalId(procedureId);
     appointmentService.cancelAppointment(procedure);
+    stiProtectionService.addProgressEntry(
+        procedureId, StiProtectionSystemProgressEntryType.APPOINTMENT_CANCELLED);
   }
 
   @PutMapping("/{id}/close")

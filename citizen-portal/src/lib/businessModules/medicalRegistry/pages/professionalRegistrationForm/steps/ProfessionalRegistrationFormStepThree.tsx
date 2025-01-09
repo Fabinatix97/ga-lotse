@@ -76,6 +76,7 @@ export function ProfessionalRegistrationFormStepThree() {
                 </Typography>
                 <BooleanRadioField
                   name={practiceInformationForm("proprietaryPractice")}
+                  dataTestId={"proprietaryPractice"}
                   trueLabel={t("options.yes")}
                   falseLabel={t("options.no")}
                 />
@@ -190,6 +191,7 @@ export function ProfessionalRegistrationFormStepThree() {
             </Typography>
             <BooleanRadioField
               name={employeeInformationForm("employeesEmployed")}
+              dataTestId={"employeesEmployed"}
               trueLabel={t("options.yes")}
               falseLabel={t("options.no")}
             />

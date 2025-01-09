@@ -1,5 +1,6 @@
 plugins {
     id "eshg.java-lib"
+    id "java-test-fixtures"
 }
 
 dependencies {
@@ -17,6 +18,10 @@ dependencies {
     testImplementation testFixtures(project(':business-module-persistence-commons'))
     testImplementation "org.testcontainers:junit-jupiter"
     testImplementation 'org.testcontainers:postgresql'
+
+    testFixturesApi project(':test-commons')
+    testFixturesApi 'org.springframework.boot:spring-boot-test'
+    testFixturesImplementation 'org.assertj:assertj-core'
 
     testRuntimeOnly 'org.postgresql:postgresql'
 }

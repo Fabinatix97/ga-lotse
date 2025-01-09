@@ -18,9 +18,13 @@ export function routes(locale: SupportedLanguage | undefined) {
     },
     organizationPath: {
       index: organizationPath,
+      mukPortal: {
+        overview: `${organizationPath}/mein-bereich/datenschutzrechte`,
+      },
     },
     imprint: `${localePath}/impressum`,
     privacyPolicy: `${localePath}/datenschutz`,
+    data_privacy_rights: `${localePath}/datenschutzrechte`,
     accessibility: `${localePath}/barrierefreiheit`,
     termsOfUse: `${localePath}/nutzungshinweise`,
     contact: `${localePath}/kontakt`,

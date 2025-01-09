@@ -15,7 +15,9 @@ import { hasUserRole } from "@/lib/shared/helpers/accessControl";
 
 import { routes } from "./routes";
 
-export function useSideNavigationItems(): UseSideNavigationItemsResult {
+export function useSideNavigationItems(
+  enabled: boolean,
+): UseSideNavigationItemsResult {
   // our toggles
   const {
     data: informationStatementEnabled,
@@ -23,12 +25,70 @@ export function useSideNavigationItems(): UseSideNavigationItemsResult {
     isLoading: isCitizenPortalInformationStatementLoading,
   } = useIsNewFeatureEnabledUnsuspended(
     ApiTravelMedicineFeature.CitizenPortalInformationStatement,
+    enabled,
   );
 
   const isTravelMedicineError = isErrorCitizenPortalInformationStatement;
 
   // their toggles
   const isInboxEnabled = useIsNewFeatureEnabled(ApiBaseFeature.Inbox);
+
+  if (!enabled) {
+    return { isLoading: false, items: [] };
+  }
+
+  const SUB_NAVIGATION_ITEMS = [
+    {
+      name: "Vorgänge",
+      href: routes.procedures.index,
+      accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),
+    },
+    {
+      name: "Vorgangssuche",
+      href: routes.proceduresSearch.index,
+      accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),
+    },
+    {
+      name: "Terminblöcke",
+      href: routes.appointmentBlockGroups.index,
+      accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),
+    },
+    {
+      name: "Terminarten",
+      href: routes.appointmentTypes.index,
+      accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),
+    },
+    {
+      name: "Anamnese",
+      href: routes.medicalHistoryTemplates.index,
+      accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),
+    },
+    informationStatementEnabled && {
+      name: "Aufklärungsbögen",
+      href: routes.informationStatementTemplates.index,
+      accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),
+    },
+    {
+      name: "Krankheiten",
+      href: routes.diseases.index,
+      accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),
+    },
+    {
+      name: "Impfstoffe",
+      href: routes.vaccines.index,
+      accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),
+    },
+    {
+      name: "Sonstige Leistungen",
+      href: routes.otherServiceTemplates.index,
+      accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),
+    },
+    isInboxEnabled && {
+      name: "Posteingang",
+      href: routes.inbox.index,
+      accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),
+    },
+  ];
 
   return {
     isLoading: isCitizenPortalInformationStatementLoading,
@@ -39,58 +99,7 @@ export function useSideNavigationItems(): UseSideNavigationItemsResult {
         error: isTravelMedicineError
           ? "Bei der Verbindung zum Modul Impfberatung ist ein Fehler aufgetreten."
           : undefined,
-        subItems: [
-          {
-            name: "Vorgänge",
-            href: routes.procedures.index,
-            accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),
-          },
-          {
-            name: "Vorgangssuche",
-            href: routes.proceduresSearch.index,
-            accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),
-          },
-          {
-            name: "Terminblöcke",
-            href: routes.appointmentBlockGroups.index,
-            accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),
-          },
-          {
-            name: "Terminarten",
-            href: routes.appointmentTypes.index,
-            accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),
-          },
-          {
-            name: "Anamnese",
-            href: routes.medicalHistoryTemplates.index,
-            accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),
-          },
-          informationStatementEnabled && {
-            name: "Aufklärungsbögen",
-            href: routes.informationStatementTemplates.index,
-            accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),
-          },
-          {
-            name: "Krankheiten",
-            href: routes.diseases.index,
-            accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),
-          },
-          {
-            name: "Impfstoffe",
-            href: routes.vaccines.index,
-            accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),
-          },
-          {
-            name: "Sonstige Leistungen",
-            href: routes.otherServiceTemplates.index,
-            accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),
-          },
-          isInboxEnabled && {
-            name: "Posteingang",
-            href: routes.inbox.index,
-            accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),
-          },
-        ].filter(isPlainObject),
+        subItems: SUB_NAVIGATION_ITEMS.filter(isPlainObject),
       },
     ],
   };

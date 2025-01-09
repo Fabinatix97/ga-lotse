@@ -107,6 +107,21 @@ public class GdprProcedureController implements GdprProcedureApi {
   }
 
   @Override
+  @Transactional
+  public GetGdprProcedureResponse addGdprProcedureFromCitizenPortal(
+      AddGdprProcedureFromCitizenPortalRequest request) {
+    baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR_ONLINE_PORTAL);
+
+    GdprProcedure procedure = mapToDm(request);
+
+    IdentificationData identificationData = service.getCitizenSelfUserIdentificationData();
+    procedure.setIdentificationData(identificationData);
+
+    GdprProcedure saved = service.add(procedure);
+    return mapGdprProcedureToApi(saved);
+  }
+
+  @Override
   @Transactional(readOnly = true)
   public GetGdprProcedureResponse getGdprProcedure(UUID id) {
     baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR);
@@ -160,11 +175,14 @@ public class GdprProcedureController implements GdprProcedureApi {
 
   private Set<UUID> fetchFileStateIdsFromDb(GdprProcedure procedure) {
     Set<UUID> fileStateIds = new LinkedHashSet<>();
-    fileStateIds.addAll(
-        personRepository.findAllFileStateIdsByReferencePerson(procedure.getCentralFileId()));
+    List<UUID> centralFileIds =
+        procedure.getCentralFileIdsWrappers().stream()
+            .map(CentralFileIdWrapper::getCentralFileId)
+            .toList();
 
-    fileStateIds.addAll(
-        facilityRepository.findAllFileStateIdsByReferenceFacility(procedure.getCentralFileId()));
+    fileStateIds.addAll(personRepository.findAllFileStateIdsByReferencePerson(centralFileIds));
+
+    fileStateIds.addAll(facilityRepository.findAllFileStateIdsByReferenceFacility(centralFileIds));
     return fileStateIds;
   }
 
@@ -283,23 +301,40 @@ public class GdprProcedureController implements GdprProcedureApi {
     List<Person> personMatches = List.of();
     List<Facility> facilityMatches = List.of();
 
+    List<UUID> centralFileIds = procedure.centralFileIds();
     switch (identificationData) {
       case GdprPersonDto person -> {
-        if (procedure.centralFileId() != null) {
-          linkedPersons = List.of(personService.getReferencePerson(procedure.centralFileId()));
-        } else if (procedure.status() == GdprProcedureStatusDto.DRAFT) {
-          personMatches =
+        if (!centralFileIds.isEmpty()) {
+          linkedPersons =
+              personRepository.findAllByExternalIdInAndReferencePersonIsNullOrderById(
+                  centralFileIds);
+        }
+        if (procedure.status() == GdprProcedureStatusDto.DRAFT) {
+          List<UUID> linkedPersonsIds = linkedPersons.stream().map(Person::getExternalId).toList();
+          List<Person> searchMatches =
               personService.fuzzySearchIncludingDeleted(
                   person.firstName(), person.lastName(), person.dateOfBirth());
+          personMatches =
+              searchMatches.stream()
+                  .filter(m -> !linkedPersonsIds.contains(m.getExternalId()))
+                  .toList();
         }
       }
       case GdprFacilityDto facility -> {
-        if (procedure.centralFileId() != null) {
+        if (!centralFileIds.isEmpty()) {
           linkedFacilities =
-              List.of(facilityService.getReferenceFacility(procedure.centralFileId()));
-        } else if (procedure.status() == GdprProcedureStatusDto.DRAFT) {
-          facilityMatches =
+              facilityRepository.findAllByExternalIdInAndReferenceFacilityIsNullOrderById(
+                  centralFileIds);
+        }
+        if (procedure.status() == GdprProcedureStatusDto.DRAFT) {
+          List<UUID> linkedFacilitiesIds =
+              linkedFacilities.stream().map(Facility::getExternalId).toList();
+          List<Facility> searchMatches =
               facilityService.searchReferenceFacilitiesIncludingDeleted(facility.name());
+          facilityMatches =
+              searchMatches.stream()
+                  .filter(m -> !linkedFacilitiesIds.contains(m.getExternalId()))
+                  .toList();
         }
       }
     }
@@ -335,8 +370,10 @@ public class GdprProcedureController implements GdprProcedureApi {
   public GetGdprProcedureResponse addCentralFileIdToGdprProcedure(
       UUID id, AddCentralFileIdToGdprProcedureRequest request) {
     baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR);
+    List<CentralFileIdWrapper> centralFileIds =
+        mapToDm(request.centralFileIds().stream().distinct().toList());
     return mapGdprProcedureToApi(
-        service.addCentralFileIdToGdprProcedure(request.centralFileId(), id, request.version()));
+        service.addCentralFileIdsToGdprProcedure(centralFileIds, id, request.version()));
   }
 
   @Override
@@ -347,11 +384,15 @@ public class GdprProcedureController implements GdprProcedureApi {
     validateCentralFileId(gdprProcedure);
     validateCreatedAt(gdprProcedure);
 
+    List<UUID> refExternalIds =
+        gdprProcedure.getCentralFileIdsWrappers().stream()
+            .map(CentralFileIdWrapper::getCentralFileId)
+            .toList();
     List<UUID> personFileStateIds =
-        personRepository.findAllFileStateIdsByReferencePerson(gdprProcedure.getCentralFileId());
+        personRepository.findAllFileStateIdsByReferencePerson(refExternalIds);
 
     List<UUID> facilityFileStateIds =
-        facilityRepository.findAllFileStateIdsByReferenceFacility(gdprProcedure.getCentralFileId());
+        facilityRepository.findAllFileStateIdsByReferenceFacility(refExternalIds);
 
     return new GetGdprProcedureFileStateIdsResponse(personFileStateIds, facilityFileStateIds);
   }
@@ -364,8 +405,7 @@ public class GdprProcedureController implements GdprProcedureApi {
   }
 
   private static void validateCentralFileId(GdprProcedure gdprProcedure) {
-    UUID centralFileId = gdprProcedure.getCentralFileId();
-    if (centralFileId == null) {
+    if (gdprProcedure.getCentralFileIdsWrappers().isEmpty()) {
       throw new BadRequestException("The GDPR procedure does not have a central file ID set.");
     }
   }

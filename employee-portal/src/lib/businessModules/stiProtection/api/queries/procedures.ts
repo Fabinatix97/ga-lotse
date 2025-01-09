@@ -29,10 +29,14 @@ type PageRequest = Pick<
 type SortingRequest = ManualSortingProps | AutomaticSortingProps;
 
 export function useStiProcedureQuery(procedureId: string) {
+  const options = useStiProcedureQueryOptions(procedureId);
+  return useSuspenseQuery(options);
+}
+
+export function useStiProcedureQueryOptions(procedureId: string) {
   const stiProtectionApi = useStiProtectionProcedureApi();
-  return useSuspenseQuery({
-    queryFn: ({ signal }) =>
-      stiProtectionApi.getStiProcedure(procedureId, { signal }),
+  return queryOptions({
+    queryFn: () => stiProtectionApi.getStiProcedure(procedureId),
     queryKey: stiProtectionProceduresApiQueryKey([procedureId]),
   });
 }

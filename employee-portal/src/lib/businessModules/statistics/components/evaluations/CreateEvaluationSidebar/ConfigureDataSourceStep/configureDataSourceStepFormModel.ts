@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { AnonymizedFieldValue } from "@/lib/businessModules/statistics/components/evaluations/AnonymizedToggleButtonGroupField";
+import { AnonymizedFieldValue } from "@/lib/businessModules/statistics/components/evaluations/AnonymizationConfiguration";
 import { TimeSpan } from "@/lib/shared/components/formFields/TimeSpanField";
 
 export interface ConfigureDataSourceStepFormModel {

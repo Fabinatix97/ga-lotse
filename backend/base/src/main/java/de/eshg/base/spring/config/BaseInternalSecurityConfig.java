@@ -102,6 +102,8 @@ public class BaseInternalSecurityConfig {
   private static void accessCodeUsers(
       AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry
           auth) {
+    auth.requestMatchers(POST, BaseUrls.Base.CITIZEN_ACCESS_CODE_USER_API + "/{id}/verify")
+        .hasRole(EmployeePermissionRole.BASE_ACCESS_CODE_USER_VERIFY.name());
     auth.requestMatchers(GET, BaseUrls.Base.CITIZEN_ACCESS_CODE_USER_API + "/**")
         .hasRole(EmployeePermissionRole.BASE_ACCESS_CODE_USER_ADMIN.name());
     auth.requestMatchers(POST, BaseUrls.Base.CITIZEN_ACCESS_CODE_USER_API + "/**")

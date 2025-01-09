@@ -18,4 +18,9 @@ public record GetFacilityFileStatesRequest(
                 @Schema(description = "A list of Ids for requested Facility File States."))
         @NotNull
         @Size(min = 1)
-        List<UUID> fileStateIds) {}
+        List<UUID> fileStateIds,
+    Boolean checkOutdated) {
+  public GetFacilityFileStatesRequest(List<UUID> fileStateIds) {
+    this(fileStateIds, false);
+  }
+}

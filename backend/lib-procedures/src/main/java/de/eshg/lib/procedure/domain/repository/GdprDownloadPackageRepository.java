@@ -27,4 +27,7 @@ public interface GdprDownloadPackageRepository
   @Query(
       "select g.businessProcedureId from GdprDownloadPackage g where g.externalId in :externalIds")
   List<UUID> findBusinessProcedureIdsByExternalIdIn(Collection<UUID> externalIds);
+
+  boolean existsByBusinessProcedureIdAndExternalIdIn(
+      UUID businessProcedureId, Collection<UUID> externalIds);
 }

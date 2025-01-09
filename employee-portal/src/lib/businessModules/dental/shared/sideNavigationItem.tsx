@@ -32,11 +32,13 @@ const defaultSubItems: SideNavigationSubItem[] = [
   },
 ];
 
-export function useSideNavigationItems(): UseSideNavigationItemsResult {
+export function useSideNavigationItems(
+  enabled: boolean,
+): UseSideNavigationItemsResult {
   const subItems = defaultSubItems;
   return {
     isLoading: false,
-    items: [{ ...sideNavigationItem, subItems }],
+    items: enabled ? [{ ...sideNavigationItem, subItems }] : [],
   };
 }
 

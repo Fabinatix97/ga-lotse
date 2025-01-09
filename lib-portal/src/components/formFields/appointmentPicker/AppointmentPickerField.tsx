@@ -8,7 +8,9 @@ import { SxProps } from "@mui/joy/styles/types";
 import { isSameDay } from "date-fns";
 import { useFormikContext } from "formik";
 import { ReactNode, useState } from "react";
+import { isDate } from "remeda";
 
+import { getPropertyIf } from "../../../helpers/getProperty";
 import { useBaseField } from "../BaseField";
 
 import {
@@ -16,8 +18,8 @@ import {
   MonthSelectionPassThroughProps,
 } from "./AppointmentCalendar";
 import {
-  AppointmentListDescriptionType,
   AppointmentListForDate,
+  AppointmentListLabelType,
   AppointmentListProps,
   useAppointmentList,
 } from "./AppointmentListForDate";
@@ -36,8 +38,7 @@ export interface AppointmentPickerLayoutProps {
 }
 
 export interface AppointmentPickerFieldLabels {
-  listDescription: AppointmentListDescriptionType;
-  listLabel: string;
+  listLabel: AppointmentListLabelType;
   monthSelection: string;
   nextMonth: string;
   prevMonth: string;
@@ -58,6 +59,7 @@ export interface AppointmentPickerFieldProps<T extends Appointment>
   appointmentList?: (props: AppointmentListProps<T>) => ReactNode;
   labels: AppointmentPickerFieldLabels;
 }
+
 export function AppointmentPickerField<T extends Appointment>({
   sx,
   className,
@@ -73,7 +75,6 @@ export function AppointmentPickerField<T extends Appointment>({
   ...props
 }: AppointmentPickerFieldProps<T>) {
   const {
-    listDescription,
     listLabel,
     monthSelection: monthSelectionLabel,
     nextMonth: nextMonthLabel,
@@ -81,9 +82,10 @@ export function AppointmentPickerField<T extends Appointment>({
     requiredDay: requiredDayWarning,
     requiredAppointment: requiredAppointmentWarning,
   } = labels;
-  const { initialValues } = useFormikContext<Record<string, T>>();
+  const { getFieldMeta } = useFormikContext();
+  const { value } = getFieldMeta(props.name);
   const [selectedDay, setSelectedDayRaw] = useState<Date | undefined>(
-    initialValues[props.name]?.start,
+    getPropertyIf(value, "start", isDate),
   );
   const requiredWarning =
     selectedDay == null ? requiredDayWarning : requiredAppointmentWarning;
@@ -95,7 +97,7 @@ export function AppointmentPickerField<T extends Appointment>({
   const listProps = useAppointmentList({
     selectedDay,
     monthAppointments,
-    listDescription,
+    listLabel,
   });
 
   function setSelectedDay(d: Date) {
@@ -127,17 +129,12 @@ export function AppointmentPickerField<T extends Appointment>({
         />
       }
       appointmentList={
-        <FormControl
-          error={field.error}
-          required={field.required}
-          data-testid="appointment-picker-slots"
-        >
+        <FormControl error={field.error} required={field.required}>
           <AppointmentList
             {...listProps}
             field={field}
             date={active ? selectedDay : undefined}
             onAppointmentSelected={onAppointmentSelected}
-            label={listLabel}
           />
           {field.helperText != null && (
             <FormHelperText component="p" sx={{ my: 1 }}>
@@ -156,8 +153,15 @@ function DefaultLayout({
   calendar,
   appointmentList,
 }: AppointmentPickerLayoutProps) {
+  const givenSx = sx == null ? [] : sx instanceof Array ? sx : [sx];
+  const sxProps = [{ margin: 0, padding: 0, border: 0 }, ...givenSx];
   return (
-    <Stack sx={sx} className={className} data-testid="appointment-picker">
+    <Stack
+      component={"fieldset"}
+      sx={sxProps}
+      className={className}
+      aria-label={"Terminkalender"}
+    >
       {calendar}
       {appointmentList}
     </Stack>

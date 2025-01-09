@@ -9,10 +9,11 @@ dependencies {
     implementation project(':lib-contact')
     implementation project(':business-module-persistence-commons')
     implementation project(':lib-xlsx-import')
+    implementation project(":lib-statistics")
 
     implementation 'de.cronn:reflection-util:latest.release'
     implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
-    implementation 'com.google.guava:guava:latest.release'
+    implementation 'com.google.guava:guava'
     implementation 'org.apache.commons:commons-text:latest.release'
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
 
@@ -22,6 +23,7 @@ dependencies {
     testImplementation testFixtures(project(':lib-contact'))
     testImplementation testFixtures(project(':lib-procedures'))
     testImplementation testFixtures(project(':lib-xlsx-import'))
+    testImplementation testFixtures(project(':lib-statistics'))
 }
 
 dockerCompose {

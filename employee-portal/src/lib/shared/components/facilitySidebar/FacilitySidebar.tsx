@@ -30,6 +30,7 @@ import {
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
+import { useResetAlertContextOnChange } from "@/lib/shared/hooks/useResetAlertContextOnChange";
 
 type OptionalSearchFormComponent<TSearchValues> =
   | {
@@ -90,6 +91,8 @@ export function EmbeddedFacilitySidebar<
     DefaultFacilitySearchForm) as ComponentType<FormikProps<TSearchValues>>;
 
   const { state, dispatch } = useFacilitySidebarState(props);
+
+  useResetAlertContextOnChange(state.stage);
 
   function resetForm() {
     dispatch({ type: "RESET" });

@@ -9,4 +9,4 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
-public record GetChildrenWithDetailsResponse(@NotNull @Valid List<ChildDetailsDto> children) {}
+public record GetChildrenWithDetailsResponse(@NotNull @Valid List<ChildDto> children) {}

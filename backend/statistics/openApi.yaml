@@ -3446,7 +3446,7 @@ components:
     StatisticsFeature:
       type: string
       enum:
-      - FAKE_ANONYMIZATION
+      - DUMMY
     TableColumnFilterParameter:
       type: object
       discriminator:

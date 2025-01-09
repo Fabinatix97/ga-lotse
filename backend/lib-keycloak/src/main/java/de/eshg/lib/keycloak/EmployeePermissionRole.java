@@ -170,6 +170,10 @@ public enum EmployeePermissionRole implements PermissionRole {
       "Niederschwellige Zugriffe verwalten",
       "Kann Zugänge mit niederschwelligem Zugriff (Zugangscode für z.B. Terminverschiebung in einem einzelnen Vorgang) in Keycloak erstellen und löschen",
       Module.BASE),
+  BASE_ACCESS_CODE_USER_VERIFY(
+      "Niederschwellige Zugriffe verifizieren",
+      "Kann Geheminisse zu Zugängen mit niederschwelligem Zugriff (Zugangscode für z.B. Terminverschiebung in einem einzelnen Vorgang) mit Keycloak verifizieren",
+      Module.BASE),
 
   STATISTICS_STATISTICS_READ(
       READ_PERMISSION_TEMPLATE.formatted("Statistiken"),
@@ -288,7 +292,8 @@ public enum EmployeePermissionRole implements PermissionRole {
       Module.STI_PROTECTION,
       BASE_PERSONS_READ, // required to access progress entries
       BASE_CALENDAR_BUSINESS_EVENTS_WRITE,
-      BASE_ACCESS_CODE_USER_ADMIN),
+      BASE_ACCESS_CODE_USER_ADMIN,
+      BASE_ACCESS_CODE_USER_VERIFY),
   STI_PROTECTION_MFA("HIV-STI MFA", Module.STI_PROTECTION, STI_PROTECTION_USER),
   STI_PROTECTION_CONSULTANT("HIV-STI Berater", Module.STI_PROTECTION, STI_PROTECTION_USER),
   STI_PROTECTION_PHYSICIAN("HIV-STI Arzt", Module.STI_PROTECTION, STI_PROTECTION_USER),

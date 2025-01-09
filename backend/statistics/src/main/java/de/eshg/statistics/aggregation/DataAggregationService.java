@@ -12,6 +12,7 @@ import de.eshg.base.statistics.api.BaseAttribute;
 import de.eshg.base.statistics.api.BaseDataTableHeader;
 import de.eshg.base.statistics.api.GetBaseStatisticsDataRequest;
 import de.eshg.base.statistics.api.GetBaseStatisticsDataResponse;
+import de.eshg.base.statistics.api.SubjectType;
 import de.eshg.lib.aggregation.BusinessModuleAggregationHelper;
 import de.eshg.lib.aggregation.ClientResponse;
 import de.eshg.lib.auditlog.AuditLogger;
@@ -21,7 +22,6 @@ import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.api.DataTableHeader;
 import de.eshg.lib.statistics.api.GetSpecificDataRequest;
 import de.eshg.lib.statistics.api.GetSpecificDataResponse;
-import de.eshg.lib.statistics.api.SubjectType;
 import de.eshg.lib.statistics.api.ValueType;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorResponseWithLocation;
@@ -39,6 +39,7 @@ import de.eshg.statistics.persistence.entity.Evaluation;
 import de.eshg.statistics.persistence.entity.MinMaxNullUnknownValues;
 import de.eshg.statistics.persistence.entity.StatisticsDataSensitivity;
 import de.eshg.statistics.persistence.entity.TableColumn;
+import de.eshg.statistics.persistence.entity.TableColumnValueType;
 import de.eshg.statistics.persistence.entity.TableRow;
 import de.eshg.statistics.persistence.entity.ValueToMeaning;
 import de.eshg.statistics.persistence.entity.entry.BooleanEntry;
@@ -105,13 +106,22 @@ public class DataAggregationService {
             timeRangeStart,
             timeRangeEnd,
             dataSource.id(),
-            false,
+            anonymized,
             dataSource.attributeCodes().stream().map(BusinessDataAttribute::code).toList(),
             0,
             1);
 
     GetSpecificDataResponse dataFromBusinessModule =
         getDataFromBusinessModule(request, dataSource.businessModuleName());
+
+    if (anonymized && !dataFromBusinessModule.anonymized()) {
+      throw new BadRequestException("Data was not anonymized");
+    }
+    if (!sensitivity.equals(dataFromBusinessModule.sensitivity())) {
+      throw new BadRequestException(
+          "Different sensitivities from business module, datasource %s - data %s"
+              .formatted(sensitivity, dataFromBusinessModule.sensitivity()));
+    }
 
     Map<Integer, Attribute> indexToBaseReferenceAttribute =
         findCentralFileColumns(dataFromBusinessModule.dataTableHeader());
@@ -189,11 +199,8 @@ public class DataAggregationService {
     return IntStream.range(0, dataTableHeader.attributes().size())
         .filter(
             index ->
-                dataTableHeader
-                    .attributes()
-                    .get(index)
-                    .valueType()
-                    .equals(ValueType.CENTRAL_FILE_ID))
+                DataSourceAggregationService.isCentralFileId(
+                    dataTableHeader.attributes().get(index).valueType()))
         .boxed()
         .collect(Collectors.toMap(index -> index, dataTableHeader.attributes()::get));
   }
@@ -207,7 +214,7 @@ public class DataAggregationService {
     indexToBaseReferenceAttribute.forEach(
         (key, value) -> {
           List<String> baseAttributeCodes = codeToBaseAttributeCodes.get(value.code());
-          if (value.subjectType() != null) {
+          if (DataSourceAggregationService.isCentralFileId(value.valueType())) {
             if (baseAttributeCodes == null || baseAttributeCodes.isEmpty()) {
               indexToDataFromBase.put(
                   key,
@@ -218,9 +225,10 @@ public class DataAggregationService {
                       .map(dataRow -> mapToUuid(dataRow.values().get(key)))
                       .filter(Objects::nonNull)
                       .toList();
+              SubjectType subjectType =
+                  DataSourceAggregationService.mapToSubjectType(value.valueType());
               indexToDataFromBase.put(
-                  key,
-                  retrieveDataFromBase(value.subjectType(), baseAttributeCodes, centralFileIds));
+                  key, retrieveDataFromBase(subjectType, baseAttributeCodes, centralFileIds));
             }
           }
         });
@@ -303,7 +311,7 @@ public class DataAggregationService {
     tableColumn.setDataSourceId(dataSourceId);
 
     if (baseModuleAttribute == null) {
-      tableColumn.setValueType(businessModuleAttribute.valueType());
+      tableColumn.setValueType(mapToTableColumnValueType(businessModuleAttribute.valueType()));
       tableColumn.setUnit(businessModuleAttribute.unit());
       tableColumn.addValueToMeanings(
           EvaluationMapper.mapToValueToMeanings(businessModuleAttribute.valueOptions()));
@@ -311,7 +319,7 @@ public class DataAggregationService {
     } else {
       tableColumn.setBaseModuleAttributeCode(baseModuleAttribute.code());
       tableColumn.setBaseModuleAttributeName(baseModuleAttribute.name());
-      tableColumn.setValueType(baseModuleAttribute.valueType());
+      tableColumn.setValueType(mapToTableColumnValueType(baseModuleAttribute.valueType()));
       tableColumn.setUnit(baseModuleAttribute.unit());
       tableColumn.addValueToMeanings(
           EvaluationMapper.mapToValueToMeanings(baseModuleAttribute.valueOptions()));
@@ -328,6 +336,10 @@ public class DataAggregationService {
     return tableColumn;
   }
 
+  private static TableColumnValueType mapToTableColumnValueType(ValueType valueType) {
+    return TableColumnValueType.valueOf(valueType.name());
+  }
+
   private static List<TableColumn> createTableColumnsForBaseAttributes(
       String dataSourceName,
       String businessModuleName,
@@ -336,7 +348,9 @@ public class DataAggregationService {
       List<BaseAttribute> baseAttributes) {
     List<BaseAttribute> responseBaseAttributes =
         baseAttributes.stream()
-            .filter(baseAttribute -> !baseAttribute.valueType().equals(ValueType.CENTRAL_FILE_ID))
+            .filter(
+                baseAttribute ->
+                    !DataSourceAggregationService.isCentralFileId(baseAttribute.valueType()))
             .toList();
     if (responseBaseAttributes.isEmpty()) {
       return Collections.emptyList();
@@ -354,7 +368,8 @@ public class DataAggregationService {
     }
   }
 
-  public void collectTableRows(AbstractAggregationResult aggregationResult) {
+  public void collectTableRows(
+      AbstractAggregationResult aggregationResult, boolean dataNeedsAnonymization) {
     Long tableRowsCount = tableRowRepository.countTableRowByAggregationResult(aggregationResult);
     int page = (int) (tableRowsCount / businessModuleDataRequestPageSize);
     int ignoreTableRowsCount = (int) (tableRowsCount % businessModuleDataRequestPageSize);
@@ -366,13 +381,16 @@ public class DataAggregationService {
             aggregationResult.getTimeRangeStart(),
             aggregationResult.getTimeRangeEnd(),
             firstTableColumn.getDataSourceId(),
-            false,
+            dataNeedsAnonymization,
             attributeCodes,
             page,
             businessModuleDataRequestPageSize);
 
     GetSpecificDataResponse dataFromBusinessModule =
         getDataFromBusinessModule(request, firstTableColumn.getBusinessModuleName());
+
+    validateAnonymizationAndSensitivity(
+        dataNeedsAnonymization, dataFromBusinessModule, aggregationResult.getDataSensitivity());
 
     Map<Integer, Attribute> indexToBaseReferenceAttribute =
         findCentralFileColumns(dataFromBusinessModule.dataTableHeader());
@@ -385,7 +403,7 @@ public class DataAggregationService {
             codeToBaseAttributeCodes,
             dataFromBusinessModule.dataRows());
 
-    validateSameTableColumns(
+    validateAndUpdateTableColumns(
         aggregationResult,
         createTableColumns(
             dataFromBusinessModule.dataSourceName(),
@@ -428,6 +446,22 @@ public class DataAggregationService {
     }
   }
 
+  private static void validateAnonymizationAndSensitivity(
+      boolean dataNeedsAnonymization,
+      GetSpecificDataResponse dataFromBusinessModule,
+      StatisticsDataSensitivity statisticsDataSensitivity) {
+    if (dataNeedsAnonymization && !dataFromBusinessModule.anonymized()) {
+      throw new BadRequestException("Data was not anonymized");
+    }
+    if (!(statisticsDataSensitivity.equals(StatisticsDataSensitivity.ANONYMOUS)
+            && dataFromBusinessModule.anonymized())
+        && !statisticsDataSensitivity.equals(
+            StatisticsDataSensitivity.valueOf(dataFromBusinessModule.sensitivity().name()))) {
+      throw new BadRequestException(
+          "Sensitivity changed to %s".formatted(dataFromBusinessModule.sensitivity()));
+    }
+  }
+
   private static List<String> getBusinessModuleAttributeCodes(
       AbstractAggregationResult aggregationResult) {
     Set<String> codesAdded = new HashSet<>();
@@ -451,7 +485,7 @@ public class DataAggregationService {
     return codeToBaseAttributeCodes;
   }
 
-  private static void validateSameTableColumns(
+  private static void validateAndUpdateTableColumns(
       AbstractAggregationResult aggregationResult, List<TableColumn> newTableColumns) {
     String errorMessage =
         "Different data structure from business module during aggregation %s"
@@ -459,6 +493,17 @@ public class DataAggregationService {
     if (aggregationResult.getTableColumns().size() != newTableColumns.size()) {
       throw new BadRequestException(errorMessage);
     }
+
+    IntStream.range(0, aggregationResult.getTableColumns().size())
+        .forEach(
+            index -> {
+              TableColumn currentTableColumn = aggregationResult.getTableColumns().get(index);
+              TableColumn newTableColumn = newTableColumns.get(index);
+
+              updateValueToMeaningIfAllowed(
+                  currentTableColumn, newTableColumn.getValueToMeanings());
+            });
+
     if (IntStream.range(0, aggregationResult.getTableColumns().size())
         .anyMatch(
             index -> {
@@ -468,6 +513,25 @@ public class DataAggregationService {
               return isDifferentTableColumn(firstTableColumn, secondTableColumn);
             })) {
       throw new BadRequestException(errorMessage);
+    }
+  }
+
+  private static void updateValueToMeaningIfAllowed(
+      TableColumn currentTableColumn, List<ValueToMeaning> valueToMeanings) {
+    if (currentTableColumn.getValueToMeanings().size() < valueToMeanings.size()) {
+      Map<String, String> valueToMeaningMap =
+          valueToMeanings.stream()
+              .collect(Collectors.toMap(ValueToMeaning::getValue, ValueToMeaning::getMeaning));
+
+      if (currentTableColumn.getValueToMeanings().stream()
+          .allMatch(
+              valueToMeaning ->
+                  valueToMeaningMap.get(valueToMeaning.getValue()) != null
+                      && valueToMeaningMap
+                          .get(valueToMeaning.getValue())
+                          .equals(valueToMeaning.getMeaning()))) {
+        currentTableColumn.setValueToMeanings(valueToMeanings);
+      }
     }
   }
 
@@ -528,7 +592,8 @@ public class DataAggregationService {
                       baseAttributes.stream()
                           .filter(
                               baseAttribute ->
-                                  !baseAttribute.valueType().equals(ValueType.CENTRAL_FILE_ID))
+                                  !DataSourceAggregationService.isCentralFileId(
+                                      baseAttribute.valueType()))
                           .toList()
                           .size();
                   mergeInformation.indexToNumberOfBaseColumns().put(index, baseAttributeSize);
@@ -574,7 +639,9 @@ public class DataAggregationService {
 
   private static int getIndexCentralFileId(List<BaseAttribute> attributes) {
     return IntStream.range(0, attributes.size())
-        .filter(index -> attributes.get(index).valueType().equals(ValueType.CENTRAL_FILE_ID))
+        .filter(
+            index ->
+                DataSourceAggregationService.isCentralFileId(attributes.get(index).valueType()))
         .findFirst()
         .orElse(-1);
   }
@@ -628,9 +695,6 @@ public class DataAggregationService {
           case INTEGER -> createIntegerEntry(value);
           case TEXT, VALUE_WITH_OPTIONS -> createTextEntry(value);
           case PROCEDURE_ID -> createUuidEntry(value);
-          case CENTRAL_FILE_ID ->
-              throw new IllegalArgumentException(
-                  "Value type %s not allowed".formatted(ValueType.CENTRAL_FILE_ID.name()));
         };
 
     tableColumn.addCellEntry(cellEntry);
@@ -700,7 +764,7 @@ public class DataAggregationService {
             case DECIMAL -> determineNullUnknownValuesDecimal(tableColumn);
             case INTEGER -> determineNullUnknownValuesInteger(tableColumn);
             case TEXT, VALUE_WITH_OPTIONS -> determineNullUnknownValuesText(tableColumn);
-            case CENTRAL_FILE_ID, PROCEDURE_ID -> null;
+            case PROCEDURE_ID -> null;
           };
       tableColumn.setMinMaxNullUnknownValues(minMaxNullUnknownValues);
     }

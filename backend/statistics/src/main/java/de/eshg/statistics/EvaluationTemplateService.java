@@ -9,7 +9,6 @@ import de.eshg.base.user.api.UserDto;
 import de.eshg.domain.model.BaseEntity_;
 import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.rest.service.error.NotFoundException;
-import de.eshg.statistics.aggregation.DataSourceAggregationService;
 import de.eshg.statistics.aggregation.DataSourceValidator;
 import de.eshg.statistics.api.datasource.AvailableDataSource;
 import de.eshg.statistics.api.evaluationtemplate.AddEvaluationTemplateWithDataSourcesRequest;
@@ -57,19 +56,19 @@ public class EvaluationTemplateService {
   private final StatisticsUserService userService;
   private final Clock clock;
   private final BusinessModuleConfig businessModuleConfig;
-  private final DataSourceAggregationService dataSourceAggregationService;
+  private final DataSourceValidator dataSourceValidator;
 
   public EvaluationTemplateService(
       EvaluationTemplateRepository evaluationTemplateRepository,
       StatisticsUserService userService,
       Clock clock,
       StatisticsConfig statisticsConfig,
-      DataSourceAggregationService dataSourceAggregationService) {
+      DataSourceValidator dataSourceValidator) {
     this.evaluationTemplateRepository = evaluationTemplateRepository;
     this.userService = userService;
     this.clock = clock;
     this.businessModuleConfig = statisticsConfig.businessModule();
-    this.dataSourceAggregationService = dataSourceAggregationService;
+    this.dataSourceValidator = dataSourceValidator;
   }
 
   @Transactional
@@ -110,9 +109,17 @@ public class EvaluationTemplateService {
   @Transactional(readOnly = true)
   public GetAllMinimalEvaluationTemplateInfosResponse getAllEvaluationTemplates() {
     List<EvaluationTemplate> evaluationTemplates = evaluationTemplateRepository.findAll();
+    List<AvailableDataSource> availableDataSources =
+        dataSourceValidator.getAllAvailableDataSources();
 
     return new GetAllMinimalEvaluationTemplateInfosResponse(
         evaluationTemplates.stream()
+            .filter(
+                evaluationTemplate ->
+                    !DataSourceSensitivity.SENSITIVE.equals(
+                            getMostRestrictiveSensitivity(evaluationTemplate, availableDataSources))
+                        || getCanBeAnonymized(evaluationTemplate, availableDataSources)
+                        || sensitiveDataAllowed(evaluationTemplate))
             .sorted(
                 Comparator.comparing(EvaluationTemplate::getName)
                     .thenComparing(EvaluationTemplate::getId))
@@ -148,7 +155,7 @@ public class EvaluationTemplateService {
         evaluationTemplateRepository.findAll(Specification.allOf(specifications), pageRequest);
 
     List<AvailableDataSource> availableDataSources =
-        dataSourceAggregationService.getAvailableDataSources().availableDataSources();
+        dataSourceValidator.getAllAvailableDataSources();
     List<EvaluationTemplateInfoDto> evaluationTemplateDtos =
         evaluationTemplatePage
             .get()
@@ -211,7 +218,7 @@ public class EvaluationTemplateService {
 
   private EvaluationTemplateDto getEvaluationTemplateDto(EvaluationTemplate evaluationTemplate) {
     List<AvailableDataSource> availableDataSources =
-        dataSourceAggregationService.getAvailableDataSources().availableDataSources();
+        dataSourceValidator.getAllAvailableDataSources();
     return EvaluationTemplateMapper.mapToApi(
         evaluationTemplate,
         sensitiveDataAllowed(evaluationTemplate),

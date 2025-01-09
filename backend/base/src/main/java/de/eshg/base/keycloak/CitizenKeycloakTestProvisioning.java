@@ -9,6 +9,7 @@ import static de.eshg.base.keycloak.CitizenKeycloakProvisioning.NAMEID_FORMAT_PE
 import static de.eshg.base.keycloak.KeycloakProvisioning.FALSE;
 import static de.eshg.base.keycloak.KeycloakProvisioning.TRUE;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.eshg.base.keycloak.differ.ComponentRepresentationDiffer;
 import de.eshg.lib.keycloak.*;
 import de.eshg.lib.keycloak.IdpTestUser;
@@ -38,17 +39,20 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning
   private final CitizenKeycloakClient citizenKeycloakClient;
   private final RealmBoundKeycloakClient mukKeycloakClient;
   private final RealmBoundKeycloakClient bundIdKeycloakClient;
+  private final ObjectMapper objectMapper;
 
   public CitizenKeycloakTestProvisioning(
       CitizenKeycloakTestClient citizenKeycloakTestClient,
       CitizenKeycloakClient citizenKeycloakClient,
       KeycloakProperties keycloakProperties,
-      EnvironmentConfig environmentConfig) {
+      EnvironmentConfig environmentConfig,
+      ObjectMapper objectMapper) {
     super(citizenKeycloakTestClient, keycloakProperties, environmentConfig);
     this.citizenKeycloakClient = citizenKeycloakClient;
     this.mukKeycloakClient = new RealmBoundKeycloakClient(keycloakProperties, MUK_TEST_REALM_NAME);
     this.bundIdKeycloakClient =
         new RealmBoundKeycloakClient(keycloakProperties, BUND_ID_TEST_REALM_NAME);
+    this.objectMapper = objectMapper;
   }
 
   @Override
@@ -177,7 +181,7 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning
 
   private void addTestUsersToIdpTestRealm(
       RealmBoundKeycloakClient realmClient, List<KeycloakUser> users) {
-    new KeycloakTestClient(realmClient, keycloakProperties, 16, environmentConfig)
+    new KeycloakTestClient(realmClient, keycloakProperties, 16, environmentConfig, objectMapper)
         .createOrUpdateUsers(users, this::configureIdpTestUser);
   }
 
@@ -199,7 +203,8 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning
     String idpTestRealmName = idpTestRealmClient.realmName;
     idpTestRealmClient.createOrUpdateRealm(idpTestRealmRepresentation);
     idpTestRealmClient.configureUserProfile(
-        ListUtils.union(List.of(TestUserDefaultAttribute.values()), customTestUserAttributes)
+        ListUtils.union(
+                List.of(IdpTestRealmUserDefaultAttribute.values()), customTestUserAttributes)
             .toArray(KeycloakUserAttribute[]::new),
         idpTestRealmName,
         idpTestRealmName);
@@ -324,7 +329,7 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning
     return allUsers;
   }
 
-  private enum TestUserDefaultAttribute implements KeycloakUserAttribute {
+  private enum IdpTestRealmUserDefaultAttribute implements KeycloakUserAttribute {
     USERNAME(
         DEFAULT_ATTRIBUTE_USERNAME,
         KEYCLOAK_VALUE_REF_TEMPLATE.formatted(DEFAULT_ATTRIBUTE_USERNAME),
@@ -347,7 +352,8 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning
     private final String displayName;
     private final List<ValidationRule> validationRules;
 
-    TestUserDefaultAttribute(String key, String displayName, ValidationRule... validationRules) {
+    IdpTestRealmUserDefaultAttribute(
+        String key, String displayName, ValidationRule... validationRules) {
       this.key = key;
       this.displayName = displayName;
       this.validationRules = List.of(validationRules);
@@ -370,6 +376,11 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning
     @Override
     public boolean isRequired() {
       return false;
+    }
+
+    @Override
+    public UserAttributePermissions getPermissions() {
+      return UserAttributePermissions.ALL;
     }
 
     @Override

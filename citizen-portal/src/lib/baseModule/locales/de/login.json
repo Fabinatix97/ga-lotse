@@ -1,0 +1,14 @@
+{
+  "login_dialog": {
+    "person": {
+      "title": "Verlassen unserer Seite",
+      "description": "Sie verlassen jetzt unsere Seite und werden auf die BundID-Seite weitergeleitet. Bitte loggen Sie sich dort mit Ihrem BundID-Konto ein, um Ihre Rechte weiter wahrnehmen zu können.",
+      "submit": "Login mit BundID"
+    },
+    "organization": {
+      "title": "Verlassen unserer Seite",
+      "description": "Sie verlassen jetzt unsere Seite und werden auf die Mein Unternehmenskonto-Seite weitergeleitet. Bitte loggen Sie sich dort mit Ihren ELSTER-Daten ein, um Ihre Rechte weiter wahrnehmen zu können.",
+      "submit": "Login mit Mein Unternehmenskonto"
+    }
+  }
+}

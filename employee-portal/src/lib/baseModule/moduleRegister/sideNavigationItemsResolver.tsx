@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiBusinessModule } from "@eshg/employee-portal-api/base";
+import { mapToObj } from "remeda";
+
+import { useServerConfig } from "@/lib/baseModule/api/queries/config";
 import {
   SideNavItemGroups,
   SideNavigationItem,
@@ -30,32 +34,60 @@ interface UseSideNavigationItemGroupsResult {
 }
 
 export function useResolveSideNavigationItems(): UseSideNavigationItemGroupsResult {
-  const inspectionSideNavigation = useInspectionSideNavigationItems();
-  const schoolEntrySideNavigation = useSchoolEntrySideNavigationItems();
-  const travelMedicineSideNavigation = useTravelMedicineSideNavigationItems();
+  const config = useServerConfig();
+  const activeModules = config.data.activeModules;
+  const activeModulesMap = mapToObj(
+    Object.values(ApiBusinessModule),
+    (module) => [module, activeModules.includes(module)],
+  );
+
+  const inspectionSideNavigation = useInspectionSideNavigationItems(
+    activeModulesMap.INSPECTION,
+  );
+  const schoolEntrySideNavigation = useSchoolEntrySideNavigationItems(
+    activeModulesMap.SCHOOL_ENTRY,
+  );
+  const travelMedicineSideNavigation = useTravelMedicineSideNavigationItems(
+    activeModulesMap.TRAVEL_MEDICINE,
+  );
   const measlesProtectionSideNavigation =
-    useMeaslesProtectionSideNavigationItems();
-  const stiProtectionSideNavigation = useStiProtectionSideNavigationItems();
+    useMeaslesProtectionSideNavigationItems(
+      activeModulesMap.MEASLES_PROTECTION,
+    );
+  const stiProtectionSideNavigation = useStiProtectionSideNavigationItems(
+    activeModulesMap.STI_PROTECTION,
+  );
   const medicalRegistrySideNavigationItems =
-    useMedicalRegistrySideNavigationItems();
+    useMedicalRegistrySideNavigationItems(activeModulesMap.MEDICAL_REGISTRY);
   const statisticsSideNavigation = useStatisticsSideNavigationItems();
   const chatSideNavigation = useChatSideNavigationItems();
   const dashboardItem = useDashboardItem();
   const baseSideNavigation = useBaseSideNavigationItems();
-  const dentalSideNavigationItems = useDentalSideNavigationItems();
+  const dentalSideNavigationItems = useDentalSideNavigationItems(
+    activeModulesMap.DENTAL,
+  );
   const officialMedicalServiceSideNavigationItems =
-    useOfficialMedicalServiceSideNavigationItems();
+    useOfficialMedicalServiceSideNavigationItems(
+      activeModulesMap.OFFICIAL_MEDICAL_SERVICE,
+    );
 
-  const orderedSideNavigationItems: UseSideNavigationItemsResult[] = [
-    schoolEntrySideNavigation,
-    inspectionSideNavigation,
-    travelMedicineSideNavigation,
-    measlesProtectionSideNavigation,
-    stiProtectionSideNavigation,
-    medicalRegistrySideNavigationItems,
-    dentalSideNavigationItems,
-    officialMedicalServiceSideNavigationItems,
+  const businessModules: [ApiBusinessModule, UseSideNavigationItemsResult][] = [
+    [ApiBusinessModule.SchoolEntry, schoolEntrySideNavigation],
+    [ApiBusinessModule.Inspection, inspectionSideNavigation],
+    [ApiBusinessModule.TravelMedicine, travelMedicineSideNavigation],
+    [ApiBusinessModule.MeaslesProtection, measlesProtectionSideNavigation],
+    [ApiBusinessModule.StiProtection, stiProtectionSideNavigation],
+    [ApiBusinessModule.MedicalRegistry, medicalRegistrySideNavigationItems],
+    [ApiBusinessModule.Dental, dentalSideNavigationItems],
+    [
+      ApiBusinessModule.OfficialMedicalService,
+      officialMedicalServiceSideNavigationItems,
+    ],
   ];
+  const orderedSideNavigationItems: UseSideNavigationItemsResult[] =
+    businessModules
+      .filter(([module]) => activeModulesMap[module])
+      .map(([_, items]) => items);
 
   const orderedBaseItems: UseSideNavigationItemsResult[] = [
     baseSideNavigation,

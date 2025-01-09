@@ -30,6 +30,7 @@ import {
   SearchPersonFormValues,
   SearchPersonSidebar,
 } from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
+import { useResetAlertContextOnChange } from "@/lib/shared/hooks/useResetAlertContextOnChange";
 
 import { PersonDetailsSidebar } from "./PersonDetailsSidebar";
 import { AssociatedProceduresSearchResult } from "./search/AssociatedProceduresSearchResult";
@@ -194,6 +195,8 @@ export function PersonSidebar<
   } else {
     activeMode = "search";
   }
+
+  useResetAlertContextOnChange(activeMode);
 
   if (activeMode === "search") {
     return (

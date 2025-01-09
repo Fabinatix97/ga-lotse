@@ -8,7 +8,7 @@ package de.eshg.statistics.aggregation;
 import de.eshg.lib.statistics.StatisticsApi;
 import de.eshg.lib.statistics.api.Attribute;
 import de.eshg.lib.statistics.api.DataRow;
-import de.eshg.lib.statistics.api.DataSource;
+import de.eshg.lib.statistics.api.DataSourceInfo;
 import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.api.DataTableHeader;
 import de.eshg.lib.statistics.api.GetDataSourcesResponse;
@@ -152,7 +152,7 @@ public class SchoolEntrySimulator implements StatisticsApi {
   public GetDataSourcesResponse getAvailableDataSources() {
     return new GetDataSourcesResponse(
         List.of(
-            new DataSource(
+            new DataSourceInfo(
                 DATA_SOURCE_UUID, "ESU", DataSourceSensitivity.SENSITIVE, true, ATTRIBUTE_LIST)));
   }
 

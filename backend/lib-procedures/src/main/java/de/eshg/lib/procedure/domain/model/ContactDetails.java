@@ -25,6 +25,11 @@ public class ContactDetails extends BaseEntity {
   @Column(nullable = false)
   private ContactType contactType;
 
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  @Column(nullable = false)
+  private Salutation salutation;
+
   @DataSensitivity(SensitivityLevel.PROTECTED)
   private String facilityName;
 
@@ -142,5 +147,13 @@ public class ContactDetails extends BaseEntity {
     if (address != null) {
       address.setContactDetails(this);
     }
+  }
+
+  public Salutation getSalutation() {
+    return salutation;
+  }
+
+  public void setSalutation(Salutation salutation) {
+    this.salutation = salutation;
   }
 }

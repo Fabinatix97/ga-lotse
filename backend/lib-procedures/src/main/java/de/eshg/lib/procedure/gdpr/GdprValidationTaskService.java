@@ -279,4 +279,11 @@ public class GdprValidationTaskService<
   public Map<String, String> mapAuditLog(GdprValidationTask task) {
     return Map.of("Prüfauftrag ID", task.getGdprProcedureId().toString());
   }
+
+  public boolean findDownloadPackageByGdprIdAndProcedureId(
+      UUID gdprProcedureId, UUID businessProcedureId) {
+    GetGdprDownloadsResponse downloadIdsFromBase = fetchDownloadIdsFromBase(gdprProcedureId);
+    return downloadPackageRepository.existsByBusinessProcedureIdAndExternalIdIn(
+        businessProcedureId, downloadIdsFromBase.downloadIds());
+  }
 }

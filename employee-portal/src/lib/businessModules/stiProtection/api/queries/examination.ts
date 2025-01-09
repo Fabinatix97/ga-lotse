@@ -15,10 +15,26 @@ function useGetRapidTestExaminationQueryOptions(procedureId: string) {
   return queryOptions({
     queryFn: ({ signal }) =>
       examinationApi.getRapidTestExamination(procedureId, { signal }),
-    queryKey: stiProtectionApiQueryKey(["rapidTests", procedureId]),
+    queryKey: stiProtectionApiQueryKey([procedureId, "rapidTests"]),
   });
 }
 
 export function useGetRapidTestExaminationQuery(procedureId: string) {
   return useSuspenseQuery(useGetRapidTestExaminationQueryOptions(procedureId));
+}
+
+function useGetLaboratoryTestExaminationQueryOptions(procedureId: string) {
+  const examinationApi = useExaminationApi();
+
+  return queryOptions({
+    queryFn: ({ signal }) =>
+      examinationApi.getLaboratoryTestExamination(procedureId, { signal }),
+    queryKey: stiProtectionApiQueryKey(["laboratoryTests", procedureId]),
+  });
+}
+
+export function useGetLaboratoryTestExaminationQuery(procedureId: string) {
+  return useSuspenseQuery(
+    useGetLaboratoryTestExaminationQueryOptions(procedureId),
+  );
 }

@@ -10,7 +10,7 @@ import static java.util.stream.Collectors.toMap;
 
 import de.eshg.base.centralfile.FacilityApi;
 import de.eshg.base.centralfile.PersonApi;
-import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
+import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateIdsByKeyAttributesRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
@@ -90,7 +90,7 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
   public record Result<T>(
       List<T> procedures,
       Map<UUID, GetPersonFileStateResponse> personFileStatesById,
-      Map<UUID, AddFacilityFileStateResponse> facilityFileStatesById) {}
+      Map<UUID, GetFacilityFileStateResponse> facilityFileStatesById) {}
 
   public Result<ProcedureT> searchProcedures(String query) {
     return searchProcedures(query, RELEVANT_STATUS);
@@ -101,7 +101,7 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
 
     Map<UUID, GetPersonFileStateResponse> personFileStatesById =
         collectPersonFileStates(stopWatch, relevantStatus);
-    Map<UUID, AddFacilityFileStateResponse> facilityFileStatesById =
+    Map<UUID, GetFacilityFileStateResponse> facilityFileStatesById =
         collectFacilityFileStates(stopWatch, relevantStatus);
 
     List<ProcedureT> procedures = getProcedures(relevantStatus);
@@ -223,7 +223,7 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
 
   private Function<ProcedureT, SearchableProcedure<ProcedureT>> formatAsSearchable(
       Map<UUID, GetPersonFileStateResponse> personFileStatesById,
-      Map<UUID, AddFacilityFileStateResponse> facilityFileStatesById) {
+      Map<UUID, GetFacilityFileStateResponse> facilityFileStatesById) {
     return procedure ->
         new SearchableProcedure<>(
             procedure, formatAsSearchable(procedure, personFileStatesById, facilityFileStatesById));
@@ -235,7 +235,7 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
     return procedureRepository.findByProcedureStatusIn(relevantStatus);
   }
 
-  private Map<UUID, AddFacilityFileStateResponse> collectFacilityFileStates(
+  private Map<UUID, GetFacilityFileStateResponse> collectFacilityFileStates(
       StopWatch stopWatch, Set<ProcedureStatus> relevantStatus) {
     stopWatch.start("resolve facility file states");
 
@@ -247,12 +247,12 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
       return Map.of();
     }
 
-    Map<UUID, AddFacilityFileStateResponse> facilityFileStatesById =
+    Map<UUID, GetFacilityFileStateResponse> facilityFileStatesById =
         facilityApi
             .getFacilityFileStates(new GetFacilityFileStatesRequest(relatedFacilitiesFileStateIds))
             .facilityFileStates()
             .stream()
-            .collect(toMap(AddFacilityFileStateResponse::id, Function.identity()));
+            .collect(toMap(GetFacilityFileStateResponse::id, Function.identity()));
 
     stopWatch.stop();
 
@@ -285,7 +285,7 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
   private String formatAsSearchable(
       ProcedureT procedure,
       Map<UUID, GetPersonFileStateResponse> personFileStatesById,
-      Map<UUID, AddFacilityFileStateResponse> facilityFileStatesById) {
+      Map<UUID, GetFacilityFileStateResponse> facilityFileStatesById) {
 
     List<GetPersonFileStateResponse> personFileStates =
         procedure.getRelatedPersons().stream()
@@ -294,7 +294,7 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
             .toList();
     String personFileStatesAsString = formatPersonFileStatesAsString(personFileStates);
 
-    List<AddFacilityFileStateResponse> facilityFileStates =
+    List<GetFacilityFileStateResponse> facilityFileStates =
         procedure.getRelatedFacilities().stream()
             .map(RelatedFacility::getCentralFileStateId)
             .map(facilityFileStatesById::get)
@@ -324,7 +324,7 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
   }
 
   private String formatFacilityFileStatesAsString(
-      List<AddFacilityFileStateResponse> facilityFileStates) {
+      List<GetFacilityFileStateResponse> facilityFileStates) {
     return facilityFileStates.stream()
         .map(facilityFileStateSearchableStringFormatter::formatAsSearchable)
         .collect(Collectors.joining(System.lineSeparator()));

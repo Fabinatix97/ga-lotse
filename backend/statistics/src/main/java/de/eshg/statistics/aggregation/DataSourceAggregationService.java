@@ -10,13 +10,15 @@ import static de.eshg.lib.aggregation.AggregationHelper.aggregateErrorResponses;
 import de.eshg.base.statistics.BaseStatisticsApi;
 import de.eshg.base.statistics.api.BaseAttribute;
 import de.eshg.base.statistics.api.BaseAvailableDataSource;
+import de.eshg.base.statistics.api.SubjectType;
 import de.eshg.lib.aggregation.BusinessModuleAggregationHelper;
 import de.eshg.lib.aggregation.BusinessModuleClient;
 import de.eshg.lib.aggregation.ClientResponse;
 import de.eshg.lib.statistics.api.Attribute;
-import de.eshg.lib.statistics.api.DataSource;
+import de.eshg.lib.statistics.api.DataSourceInfo;
 import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.api.GetDataSourcesResponse;
+import de.eshg.lib.statistics.api.ValueType;
 import de.eshg.statistics.api.datasource.AvailableDataSource;
 import de.eshg.statistics.api.datasource.BaseDataSourceAttribute;
 import de.eshg.statistics.api.datasource.BusinessDataSourceAttribute;
@@ -48,10 +50,11 @@ public class DataSourceAggregationService {
   }
 
   public GetAvailableDataSourcesResponse getAvailableDataSources() {
-    return getAvailableDataSources(null);
+    return getAvailableDataSources(null, false);
   }
 
-  public GetAvailableDataSourcesResponse getAvailableDataSources(Set<String> businessModules) {
+  public GetAvailableDataSourcesResponse getAvailableDataSources(
+      Set<String> businessModules, boolean onlyUsableByCurrentUser) {
     List<ClientResponse<GetDataSourcesResponse>> extractedResponses =
         businessModuleAggregationHelper.requestFromBusinessModulesClients(
             businessModules, null, BusinessModuleClient::getAvailableDataSources);
@@ -60,22 +63,41 @@ public class DataSourceAggregationService {
         baseModuleStatisticsApi.getAvailableDataSources().baseAvailableDataSources();
 
     List<AvailableDataSource> availableDataSources =
-        extractedResponses.stream()
-            .filter(clientResponse -> clientResponse.response() != null)
-            .map(
-                clientResponse ->
-                    mapToAvailableDataSources(
-                        clientResponse.response(),
-                        clientResponse.businessModule().name(),
-                        baseAvailableDataSources))
-            .flatMap(Collection::stream)
-            .sorted(
-                Comparator.comparing(AvailableDataSource::businessModuleName)
-                    .thenComparing(AvailableDataSource::name))
-            .toList();
+        getAvailableDataSources(extractedResponses, baseAvailableDataSources);
 
-    return new GetAvailableDataSourcesResponse(
-        availableDataSources, aggregateErrorResponses(extractedResponses));
+    if (onlyUsableByCurrentUser) {
+      List<AvailableDataSource> dataSourcesUsableByCurrentUser =
+          availableDataSources.stream()
+              .filter(
+                  availableDataSource ->
+                      !availableDataSource.sensitivity().equals(DataSourceSensitivity.SENSITIVE)
+                          || availableDataSource.sensitiveDataAllowed()
+                          || availableDataSource.canBeAnonymized())
+              .toList();
+      return new GetAvailableDataSourcesResponse(
+          dataSourcesUsableByCurrentUser, aggregateErrorResponses(extractedResponses));
+    } else {
+      return new GetAvailableDataSourcesResponse(
+          availableDataSources, aggregateErrorResponses(extractedResponses));
+    }
+  }
+
+  private List<AvailableDataSource> getAvailableDataSources(
+      List<ClientResponse<GetDataSourcesResponse>> businessModuleResponses,
+      List<BaseAvailableDataSource> baseAvailableDataSources) {
+    return businessModuleResponses.stream()
+        .filter(clientResponse -> clientResponse.response() != null)
+        .map(
+            clientResponse ->
+                mapToAvailableDataSources(
+                    clientResponse.response(),
+                    clientResponse.businessModule().name(),
+                    baseAvailableDataSources))
+        .flatMap(Collection::stream)
+        .sorted(
+            Comparator.comparing(AvailableDataSource::businessModuleName)
+                .thenComparing(AvailableDataSource::name))
+        .toList();
   }
 
   private List<AvailableDataSource> mapToAvailableDataSources(
@@ -91,7 +113,7 @@ public class DataSourceAggregationService {
 
   private AvailableDataSource mapToAvailableDataSource(
       String businessModule,
-      DataSource dataSource,
+      DataSourceInfo dataSource,
       List<BaseAvailableDataSource> baseAvailableDataSources) {
     return new AvailableDataSource(
         businessModule,
@@ -101,7 +123,8 @@ public class DataSourceAggregationService {
         dataSource.id(),
         dataSource.name(),
         dataSource.sensitivity(),
-        dataSource.canBeAnonymized(),
+        !DataSourceSensitivity.ANONYMOUS.equals(dataSource.sensitivity())
+            && dataSource.canBeAnonymized(),
         mapAndExtendAttributes(dataSource.attributes(), baseAvailableDataSources));
   }
 
@@ -117,11 +140,7 @@ public class DataSourceAggregationService {
         .map(
             attribute -> {
               Optional<BaseAvailableDataSource> baseAvailableDataSource =
-                  baseAvailableDataSources.stream()
-                      .filter(
-                          baseDataSource ->
-                              baseDataSource.subjectType().equals(attribute.subjectType()))
-                      .findFirst();
+                  findBaseAvailableDataSource(baseAvailableDataSources, attribute);
               return new BusinessDataSourceAttribute(
                   attribute.name(),
                   attribute.code(),
@@ -134,6 +153,32 @@ public class DataSourceAggregationService {
                       .orElse(null));
             })
         .toList();
+  }
+
+  private static Optional<BaseAvailableDataSource> findBaseAvailableDataSource(
+      List<BaseAvailableDataSource> baseAvailableDataSources, Attribute attribute) {
+    if (!isCentralFileId(attribute.valueType())) {
+      return Optional.empty();
+    } else {
+      return baseAvailableDataSources.stream()
+          .filter(
+              baseDataSource ->
+                  baseDataSource.subjectType().equals(mapToSubjectType(attribute.valueType())))
+          .findFirst();
+    }
+  }
+
+  static boolean isCentralFileId(ValueType valueType) {
+    return valueType.equals(ValueType.CENTRAL_FILE_ID_PERSON)
+        || valueType.equals(ValueType.CENTRAL_FILE_ID_FACILITY);
+  }
+
+  static SubjectType mapToSubjectType(ValueType valueType) {
+    return switch (valueType) {
+      case ValueType.CENTRAL_FILE_ID_FACILITY -> SubjectType.FACILITY;
+      case ValueType.CENTRAL_FILE_ID_PERSON -> SubjectType.PERSON;
+      default -> throw new IllegalStateException("Unexpected value: " + valueType);
+    };
   }
 
   private static List<BaseDataSourceAttribute> mapToBaseDataSourceAttributes(

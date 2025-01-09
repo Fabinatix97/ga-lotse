@@ -148,6 +148,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ex.getConstraintViolations().stream()
             .map(ConstraintViolation::getPropertyPath)
             .map(Objects::toString)
+            .sorted()
             .collect(Collectors.joining(", "));
     return logAndMapToErrorResponse(
         ex, ErrorCode.CONSTRAINT_VIOLATION, "Constraint violation for " + affectedFields);

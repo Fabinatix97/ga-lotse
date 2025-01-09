@@ -9,7 +9,10 @@ package de.eshg.stiprotection.persistence.db;
 public enum StiProtectionSystemProgressEntryType {
   PERSON_DETAILS_UPDATED("Die Angaben zur Person wurden aktualisiert."),
   RAPID_TEST_EXAMINATION_UPDATED("Die Schnelltests wurden aktualisiert."),
-  LABORATORY_TEST_EXAMINATION_UPDATED("Die Labortests wurden aktualisiert.");
+  LABORATORY_TEST_EXAMINATION_UPDATED("Die Labortests wurden aktualisiert."),
+  APPOINTMENT_REBOOKED("Der Termin wurde verschoben auf den %s."),
+  APPOINTMENT_CANCELLED("Ein Termin wurde storniert."),
+  CONSULTATION_UPDATED("Die Konsultation wurde aktualisiert.");
 
   private final String changeDescription;
 

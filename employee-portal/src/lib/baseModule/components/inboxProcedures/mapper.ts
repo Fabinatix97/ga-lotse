@@ -77,6 +77,7 @@ export function mapInboxProgressEntry(
 
 export function mapContact(values: ContactValues): ApiContactDetails {
   return {
+    salutation: values.salutation,
     firstName: mapOptionalValue(values.firstName),
     lastName: mapOptionalValue(values.lastName),
     title:

@@ -7,11 +7,12 @@ import { Delete, Edit } from "@mui/icons-material";
 import { CircularProgress, Stack } from "@mui/joy";
 import { Suspense, useState } from "react";
 
+import { DataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import { Analysis } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 import { useDeleteAnalysis } from "@/lib/businessModules/statistics/api/mutations/useDeleteAnalysis";
 import { useUpdateAnalysisSidebar } from "@/lib/businessModules/statistics/components/evaluations/details/UpdateAnalysisSidebar/UpdateAnalysisSidebar";
-import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
+import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
@@ -32,7 +33,7 @@ export interface AnalysisAccordionProps {
   evaluatedDataAmountTotal: number;
   onDiagramCreateClicked?: (analysisId: string) => void;
   isReport?: boolean;
-  anonymized: boolean;
+  dataSourceSensitivity: DataSourceSensitivity;
 }
 
 export function AnalysisAccordion(props: AnalysisAccordionProps) {
@@ -93,7 +94,7 @@ export function AnalysisAccordion(props: AnalysisAccordionProps) {
           evaluatedDataAmountTotal={props.evaluatedDataAmountTotal}
           onDiagramCreateClicked={props.onDiagramCreateClicked}
           isReport={isReport}
-          anonymized={props.anonymized}
+          dataSourceSensitivity={props.dataSourceSensitivity}
         />
       ))}
     </Stack>
@@ -108,7 +109,7 @@ interface AnalysisAccordionItemProps {
   evaluatedDataAmountTotal: number;
   onDiagramCreateClicked?: (analysisId: string) => void;
   isReport: boolean;
-  anonymized: boolean;
+  dataSourceSensitivity: DataSourceSensitivity;
 }
 
 function AnalysisAccordionItem(props: AnalysisAccordionItemProps) {
@@ -183,7 +184,7 @@ function AnalysisAccordionItem(props: AnalysisAccordionItemProps) {
               evaluatedDataAmountTotal={props.evaluatedDataAmountTotal}
               onDiagramCreateClicked={props.onDiagramCreateClicked}
               isReport={props.isReport}
-              anonymized={props.anonymized}
+              dataSourceSensitivity={props.dataSourceSensitivity}
             />
           )}
         </Suspense>

@@ -11,7 +11,7 @@ import static java.util.Comparator.comparing;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.citizenuser.CitizenAccessCodeUserApi;
-import de.eshg.base.citizenuser.api.AddCitizenAccessCodeUserRequest;
+import de.eshg.base.citizenuser.api.AddCitizenAccessCodeUserWithDateOfBirthCredentialRequest;
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
@@ -25,6 +25,7 @@ import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.procedure.domain.model.*;
+import de.eshg.lib.procedure.util.ProcedureValidator;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.schoolentry.api.*;
 import de.eshg.schoolentry.business.model.*;
@@ -573,8 +574,9 @@ public class SchoolEntryService {
     }
 
     CitizenAccessCodeUserDto citizenAccessCodeUser =
-        citizenAccessCodeUserApi.addCitizenAccessCodeUser(
-            new AddCitizenAccessCodeUserRequest(procedure.getChildIdFromCentralFile()));
+        citizenAccessCodeUserApi.addCitizenAccessCodeUserWithDateOfBirthCredential(
+            new AddCitizenAccessCodeUserWithDateOfBirthCredentialRequest(
+                procedure.getChildIdFromCentralFile()));
     procedure.setCitizenUserId(citizenAccessCodeUser.userId());
 
     return citizenAccessCodeUser;
@@ -588,7 +590,7 @@ public class SchoolEntryService {
             schoolEntryProcedureRepository
                 .findByExternalIdForUpdate(procedureId)
                 .orElseThrow(ExceptionUtil::procedureNotFoundException);
-        Validator.validateProcedureStatusNotClosed(procedure);
+        ProcedureValidator.validateProcedureStatusNotClosed(procedure);
         if (procedure.getAppointment() != null) {
           stats.countUnmodified();
         } else {
@@ -828,5 +830,15 @@ public class SchoolEntryService {
     persistedWaitingRoom.setStatus(requestedWaitingRoom.getStatus());
 
     waitingRoomRepository.flush();
+  }
+
+  public Stream<ProcedureDetailsData> findByPersonId(UUID personId) {
+    List<UUID> personFileStateIds = personClient.getPersonFileStatesAssociatedWith(personId);
+
+    return schoolEntryProcedureRepository
+        .findByRelatedPersonsCentralFileStateIds(
+            personFileStateIds, Person.PERSON_TYPE_USED_FOR_CHILDREN)
+        .stream()
+        .map(this::augmentWithDetails);
   }
 }

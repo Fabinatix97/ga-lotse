@@ -16,7 +16,7 @@ import {
   DataSource,
   Sensitivity,
 } from "@/lib/businessModules/statistics/components/evaluations/SidebarSummary";
-import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
+import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
 import {
@@ -138,7 +138,8 @@ function EvaluationTemplateDetailsSidebar({
             </Button>
           }
           right={
-            canWrite && (
+            canWrite &&
+            evaluationTemplateDetails.userMayCreateEvaluation && (
               <Button
                 onClick={() => {
                   onClose();

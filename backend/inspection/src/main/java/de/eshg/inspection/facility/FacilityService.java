@@ -280,7 +280,7 @@ public class FacilityService {
             null);
 
     // fetch centralfile data in a bulk query
-    Map<UUID, AddFacilityFileStateResponse> centralFileResponse =
+    Map<UUID, GetFacilityFileStateResponse> centralFileResponse =
         fetchCentralFileData(extractCentralFileStateIds(candidates));
 
     candidates = filterCandidatesBasedOnCentralFileStates(candidates, centralFileResponse.keySet());
@@ -434,11 +434,11 @@ public class FacilityService {
         .orElseThrow(() -> new NotFoundException("Facility not found"));
   }
 
-  public Map<UUID, AddFacilityFileStateResponse> fetchCentralFileData(
+  public Map<UUID, GetFacilityFileStateResponse> fetchCentralFileData(
       List<UUID> centralFileStateIds) {
     if (centralFileStateIds.isEmpty()) return Map.of();
     return facilityClient.getFacilityFileStates(centralFileStateIds).stream()
-        .collect(toUnmodifiableMap(AddFacilityFileStateResponse::id, facility -> facility));
+        .collect(toUnmodifiableMap(GetFacilityFileStateResponse::id, facility -> facility));
   }
 
   private static List<UUID> extractCentralFileStateIds(List<PendingFacilityView> list) {
@@ -454,7 +454,7 @@ public class FacilityService {
   }
 
   private InspPendingFacilityDto createInspPendingFacilityDto(
-      PendingFacilityView view, Map<UUID, AddFacilityFileStateResponse> centralFileData) {
+      PendingFacilityView view, Map<UUID, GetFacilityFileStateResponse> centralFileData) {
     Instant now = clock.instant();
     InspectionAppointment plannedAppointment = getPlannedAppointment(view);
 
@@ -467,7 +467,7 @@ public class FacilityService {
         view.irf() != null
             ? view.irf().getCentralFileStateId()
             : view.facility().getCentralFileStateId();
-    AddFacilityFileStateResponse facilityDto = centralFileData.get(centralFileStateId);
+    GetFacilityFileStateResponse facilityDto = centralFileData.get(centralFileStateId);
     ObjectType objectType = view.facility().getObjectType();
     ObjectTypeRefDto objecttype =
         objectType != null ? new ObjectTypeRefDto(objectType.getId(), objectType.getName()) : null;
@@ -484,12 +484,12 @@ public class FacilityService {
         executionFrom);
   }
 
-  private AddFacilityFileStateResponse creatDummyContactAddressIfEmpty(
-      AddFacilityFileStateResponse facilityDto) {
+  private GetFacilityFileStateResponse creatDummyContactAddressIfEmpty(
+      GetFacilityFileStateResponse facilityDto) {
     if (facilityDto.contactAddress() != null) return facilityDto;
 
     // Build empty Address to prevent crash in facility overview, if base module has none
-    return new AddFacilityFileStateResponse(
+    return new GetFacilityFileStateResponse(
         facilityDto.id(),
         facilityDto.name(),
         facilityDto.emailAddresses(),
@@ -498,6 +498,7 @@ public class FacilityService {
         facilityDto.contactPersons(),
         new DomesticAddressDto(CountryCode.DE, "", "", "", ""),
         facilityDto.differentBillingAddress(),
+        null,
         facilityDto.dataOrigin());
   }
 
@@ -654,7 +655,7 @@ public class FacilityService {
           "Could not find inspection matching the current facility ID " + externalId);
 
     // fetch centralfile data in a bulk query, could be multiple because changes to the facility
-    Map<UUID, AddFacilityFileStateResponse> centralFileData =
+    Map<UUID, GetFacilityFileStateResponse> centralFileData =
         fetchCentralFileData(extractCentralFileStateIds(candidates));
 
     // map to dto

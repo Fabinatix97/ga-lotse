@@ -14,7 +14,7 @@ import de.eshg.schoolentry.business.model.ProcedureDetailsData;
 import de.eshg.schoolentry.domain.model.*;
 import de.eshg.schoolentry.pdf.schoolinfoletter.model.*;
 import de.eshg.schoolentry.pdf.schoolinfoletter.model.SchoolInfoLetterExaminationType.Type;
-import de.eshg.schoolentry.statistics.StatisticsValueMappers;
+import de.eshg.schoolentry.statistics.SopessStatistics;
 import de.eshg.schoolentry.statistics.options.EvaluationResult;
 import java.time.Clock;
 import java.time.format.DateTimeFormatter;
@@ -88,10 +88,7 @@ public class SchoolInfoLetterExaminationMapper {
     return new SchoolInfoLetterSchoolAndPromotionHints(
         mapSopessExaminationResultValue(sopess.getPsychologicalBehaviorResult()),
         mapSopessExaminationResultValue(sopess.getSpeechResult()),
-        StatisticsValueMappers.articulationPointSum()
-            .apply(sopess.getAllArticulationsValues())
-            .map(sum -> sum > 0)
-            .orElse(false),
+        articulationPointSum(sopess),
         prepositionPointsConspicuous(sopess.getPrepositionPoints())
             || pluralPointsConspicuous(sopess.getPluralPoints()),
         mapSopessExaminationResultValue(sopess.getAuditiveProcessingResult()),
@@ -102,6 +99,12 @@ public class SchoolInfoLetterExaminationMapper {
         sopess.getHandednessValue() == HandednessValue.LEFT);
   }
 
+  private static Boolean articulationPointSum(SopessExaminationResult examinationResult) {
+    return SopessStatistics.articulationPointSum(examinationResult.getAllArticulationsValues())
+        .map(sum -> sum > 0)
+        .orElse(false);
+  }
+
   private static boolean mapSopessExaminationResultValue(SopessExaminationResultValue value) {
     return switch (value) {
       case KNOWN, DOCTOR_LETTER, BORDERLINE -> true;
@@ -110,12 +113,11 @@ public class SchoolInfoLetterExaminationMapper {
   }
 
   private static boolean prepositionPointsConspicuous(int prepositionPoints) {
-    return mapEvaluationResult(
-        StatisticsValueMappers.prepositionsAssessment().apply(prepositionPoints));
+    return mapEvaluationResult(SopessStatistics.prepositionsAssessment(prepositionPoints));
   }
 
   private static boolean pluralPointsConspicuous(int pluralPoints) {
-    return mapEvaluationResult(StatisticsValueMappers.pluralsAssessment().apply(pluralPoints));
+    return mapEvaluationResult(SopessStatistics.pluralsAssessment(pluralPoints));
   }
 
   private static boolean mapEvaluationResult(EvaluationResult evaluationResult) {

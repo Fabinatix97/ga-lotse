@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiConsultation } from "@eshg/employee-portal-api/stiProtection";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 
 import {
@@ -13,41 +14,6 @@ import {
 import { GeneralSectionData } from "./GeneralSection";
 import { PregnancySectionData } from "./PregnancySection";
 
-export type ApiGetConsultation200Response = ApiConsultation;
-export interface ApiConsultation {
-  general: {
-    mainReason: string | undefined;
-
-    furtherGenderInfo: string | undefined;
-
-    hasSufficientGermanLanguageSkills: boolean | undefined;
-    isIlliterate: boolean;
-    otherKnownLanguages: string | undefined;
-
-    hasHealthInsurance: boolean | undefined;
-    hasGermanHealthInsurance: boolean;
-
-    hasInsecureResidence: boolean | undefined;
-
-    hasSymptoms: boolean | undefined;
-    symptoms: string | undefined;
-
-    drugUse: string | undefined;
-
-    referral: string | undefined;
-  };
-  pregnancy?: {
-    hasPregnancyRelatedInfo: boolean;
-    lastCytologyTest: Date | undefined;
-    startOfLastPeriod: Date | undefined;
-    numberOfPregnancies: number | undefined;
-    numberOfInducedAbortions: number | undefined;
-    numberOfBirths: number | undefined;
-    numberOfOtherAbortions: number | undefined;
-    numberOfEctopicPregnancies: number | undefined;
-  };
-}
-
 export function mapFormValuesToApi(
   formData: ConsultationFormData,
 ): ApiConsultation {
@@ -55,8 +21,9 @@ export function mapFormValuesToApi(
     general: {
       mainReason: mapOptionalValue(formData.general.mainReason),
       furtherGenderInfo: mapOptionalValue(formData.general.furtherGenderInfo),
-      hasSufficientGermanLanguageSkills:
-        formData.general.hasSufficientGermanLanguageSkills ?? undefined,
+      hasSufficientGermanLanguageSkills: mapYesOrNoToBool(
+        formData.general.hasSufficientGermanLanguageSkills,
+      ),
       isIlliterate: formData.general.isIlliterate,
       otherKnownLanguages: mapOptionalValue(
         formData.general.otherKnownLanguages,
@@ -70,12 +37,13 @@ export function mapFormValuesToApi(
       symptoms: mapOptionalValue(formData.general.symptoms),
       drugUse: mapOptionalValue(formData.general.drugUse),
       referral: mapOptionalValue(formData.general.referral),
+      notes: mapOptionalValue(formData.general.notes),
     },
     pregnancy: {
       hasPregnancyRelatedInfo:
         formData.pregnancy.hasPregnancyRelatedInfo ?? undefined,
-      lastCytologyTest: formData.pregnancy.lastCytologyTest ?? undefined,
-      startOfLastPeriod: formData.pregnancy.startOfLastPeriod ?? undefined,
+      lastCytologyTest: mapOptionalValue(formData.pregnancy.lastCytologyTest),
+      startOfLastPeriod: mapOptionalValue(formData.pregnancy.startOfLastPeriod),
       numberOfPregnancies: mapOptionalValue(
         formData.pregnancy.numberOfPregnancies,
       ),
@@ -93,32 +61,36 @@ export function mapFormValuesToApi(
   };
 }
 export function mapApiToForm(
-  apiData: ApiGetConsultation200Response | undefined,
+  apiData: ApiConsultation | undefined,
 ): ConsultationFormData {
   return {
     general: {
-      mainReason: apiData?.general.mainReason ?? "",
-      furtherGenderInfo: apiData?.general.furtherGenderInfo ?? "",
-      hasSufficientGermanLanguageSkills:
-        apiData?.general.hasSufficientGermanLanguageSkills ?? null,
-      isIlliterate: apiData?.general.isIlliterate ?? false,
-      otherKnownLanguages: apiData?.general.otherKnownLanguages ?? "",
-      hasHealthInsurance: mapBoolToYesOrNo(apiData?.general.hasHealthInsurance),
-      hasGermanHealthInsurance:
-        apiData?.general.hasGermanHealthInsurance ?? false,
-      hasInsecureResidence: mapBoolToYesOrNo(
-        apiData?.general.hasInsecureResidence,
+      mainReason: apiData?.general?.mainReason ?? "",
+      furtherGenderInfo: apiData?.general?.furtherGenderInfo ?? "",
+      hasSufficientGermanLanguageSkills: mapBoolToYesOrNo(
+        apiData?.general?.hasSufficientGermanLanguageSkills,
       ),
-      hasSymptoms: mapBoolToYesOrNo(apiData?.general.hasSymptoms),
-      symptoms: apiData?.general.symptoms ?? "",
-      drugUse: apiData?.general.drugUse ?? "",
-      referral: apiData?.general.referral ?? "",
+      isIlliterate: apiData?.general?.isIlliterate ?? false,
+      otherKnownLanguages: apiData?.general?.otherKnownLanguages ?? "",
+      hasHealthInsurance: mapBoolToYesOrNo(
+        apiData?.general?.hasHealthInsurance,
+      ),
+      hasGermanHealthInsurance:
+        apiData?.general?.hasGermanHealthInsurance ?? false,
+      hasInsecureResidence: mapBoolToYesOrNo(
+        apiData?.general?.hasInsecureResidence,
+      ),
+      hasSymptoms: mapBoolToYesOrNo(apiData?.general?.hasSymptoms),
+      symptoms: apiData?.general?.symptoms ?? "",
+      drugUse: apiData?.general?.drugUse ?? "",
+      referral: apiData?.general?.referral ?? "",
+      notes: apiData?.general?.notes ?? "",
     },
     pregnancy: {
       hasPregnancyRelatedInfo:
         apiData?.pregnancy?.hasPregnancyRelatedInfo ?? false,
-      lastCytologyTest: apiData?.pregnancy?.lastCytologyTest ?? null,
-      startOfLastPeriod: apiData?.pregnancy?.startOfLastPeriod ?? null,
+      lastCytologyTest: apiData?.pregnancy?.lastCytologyTest ?? "",
+      startOfLastPeriod: apiData?.pregnancy?.startOfLastPeriod ?? "",
       numberOfPregnancies: apiData?.pregnancy?.numberOfPregnancies ?? "",
       numberOfInducedAbortions:
         apiData?.pregnancy?.numberOfInducedAbortions ?? "",

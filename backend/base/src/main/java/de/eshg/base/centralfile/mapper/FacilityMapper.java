@@ -72,7 +72,7 @@ public class FacilityMapper {
   }
 
   public static GetFacilityFileStateResponse mapFacilityToGetFacilityFileStateResponse(
-      Facility facility, boolean outdated) {
+      Facility facility, Boolean outdated) {
     return new GetFacilityFileStateResponse(
         facility.getExternalId(),
         facility.getName(),
@@ -87,15 +87,15 @@ public class FacilityMapper {
   }
 
   public static GetFacilityFileStatesResponse mapToGetFacilityFileStatesResponse(
-      List<UUID> queryIds, List<Facility> foundFileStates) {
-    Map<UUID, AddFacilityFileStateResponse> mappedFacilitiesById =
-        mapToApiAndGroupById(foundFileStates);
+      List<UUID> queryIds, List<Facility> foundFileStates, Map<UUID, Boolean> outdated) {
+    Map<UUID, GetFacilityFileStateResponse> mappedFacilitiesById =
+        mapToApiAndGroupById(foundFileStates, outdated);
 
-    List<AddFacilityFileStateResponse> facilityResponses = new ArrayList<>();
+    List<GetFacilityFileStateResponse> facilityResponses = new ArrayList<>();
     List<UUID> notFoundFacilityIds = new ArrayList<>();
 
     for (UUID id : queryIds) {
-      AddFacilityFileStateResponse facilityDto = mappedFacilitiesById.get(id);
+      GetFacilityFileStateResponse facilityDto = mappedFacilitiesById.get(id);
       if (facilityDto != null) {
         facilityResponses.add(facilityDto);
       } else {
@@ -116,11 +116,14 @@ public class FacilityMapper {
         mapAddressToApi(facility.getDifferentBillingAddress()));
   }
 
-  private static Map<UUID, AddFacilityFileStateResponse> mapToApiAndGroupById(
-      List<Facility> facilities) {
+  private static Map<UUID, GetFacilityFileStateResponse> mapToApiAndGroupById(
+      List<Facility> facilities, Map<UUID, Boolean> isOutdated) {
     return facilities.stream()
-        .map(FacilityMapper::mapFacilityFileStateToApi)
-        .collect(Collectors.toMap(AddFacilityFileStateResponse::id, Function.identity()));
+        .map(
+            facility ->
+                FacilityMapper.mapFacilityToGetFacilityFileStateResponse(
+                    facility, isOutdated.getOrDefault(facility.getExternalId(), null)))
+        .collect(Collectors.toMap(GetFacilityFileStateResponse::id, Function.identity()));
   }
 
   private static List<FacilityContactPersonDto> mapContactPersonsToApi(

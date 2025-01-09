@@ -62,8 +62,13 @@ public interface ProgressEntryRepository
       """
         SELECT progressEntry FROM ProgressEntry progressEntry
         LEFT JOIN FETCH progressEntry.file as file
+        LEFT JOIN FETCH treat(file as Image).metaData
+        LEFT JOIN FETCH treat(file as Pdf).metaData
+        LEFT JOIN FETCH treat(file as Mail).metaData
         WHERE progressEntry.procedureId = :procedureId
         AND progressEntry.id != :id
+        AND file is not null
+        AND not file.deleted
         AND (
         TREAT(progressEntry as ManualProgressEntry).keyDocumentType = :keyDocumentType
         OR

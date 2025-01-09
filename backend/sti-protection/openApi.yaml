@@ -1860,6 +1860,47 @@ paths:
       summary: Verify anonymous user PIN for a given STI procedure.
       tags:
       - StiProtectionProcedure
+  /sti-procedures/{procedureId}/consultation:
+    get:
+      operationId: getConsultation
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Consultation"
+          description: OK
+      summary: Get consultation documentation.
+      tags:
+      - Consultation
+    put:
+      operationId: updateConsultation
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Consultation"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Upsert consultation documentation for a STI protection procedure.
+      tags:
+      - Consultation
   /sti-procedures/{procedureId}/examination/laboratory-test:
     get:
       operationId: getLaboratoryTestExamination
@@ -1898,7 +1939,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: Updated all external laboratory tests.
+      summary: Update all external laboratory tests.
       tags:
       - Examination
   /sti-procedures/{procedureId}/examination/rapid-test:
@@ -2734,6 +2775,68 @@ components:
       enum:
       - HIV_STI_CONSULTATION
       - SEX_WORK
+    Consultation:
+      type: object
+      properties:
+        general:
+          $ref: "#/components/schemas/ConsultationGeneralSection"
+        pregnancy:
+          $ref: "#/components/schemas/ConsultationPregnancySection"
+    ConsultationGeneralSection:
+      type: object
+      properties:
+        drugUse:
+          type: string
+        furtherGenderInfo:
+          type: string
+        hasGermanHealthInsurance:
+          type: boolean
+        hasHealthInsurance:
+          type: boolean
+        hasInsecureResidence:
+          type: boolean
+        hasSufficientGermanLanguageSkills:
+          type: boolean
+        hasSymptoms:
+          type: boolean
+        isIlliterate:
+          type: boolean
+        mainReason:
+          type: string
+        notes:
+          type: string
+        otherKnownLanguages:
+          type: string
+        referral:
+          type: string
+        symptoms:
+          type: string
+    ConsultationPregnancySection:
+      type: object
+      properties:
+        hasPregnancyRelatedInfo:
+          type: boolean
+        lastCytologyTest:
+          type: string
+          format: date
+        numberOfBirths:
+          type: integer
+          format: int32
+        numberOfEctopicPregnancies:
+          type: integer
+          format: int32
+        numberOfInducedAbortions:
+          type: integer
+          format: int32
+        numberOfOtherAbortions:
+          type: integer
+          format: int32
+        numberOfPregnancies:
+          type: integer
+          format: int32
+        startOfLastPeriod:
+          type: string
+          format: date
     ContactDetails:
       type: object
       properties:
@@ -2754,10 +2857,13 @@ components:
           type: string
         phoneNumber:
           type: string
+        salutation:
+          $ref: "#/components/schemas/Salutation"
         title:
           $ref: "#/components/schemas/Title"
       required:
       - contactType
+      - salutation
     ContactType:
       type: string
       enum:
@@ -3241,7 +3347,7 @@ components:
       type: object
       properties:
         facilityFileState:
-          $ref: "#/components/schemas/FacilityFileState"
+          $ref: "#/components/schemas/GetFacilityFileStateResponse"
         facilityType:
           $ref: "#/components/schemas/FacilityType"
       required:
@@ -3436,64 +3542,6 @@ components:
           minLength: 1
       required:
       - lastName
-    FacilityFileState:
-      type: object
-      properties:
-        contactAddress:
-          oneOf:
-          - $ref: "#/components/schemas/DomesticAddress"
-          - $ref: "#/components/schemas/PostboxAddress"
-        contactPersons:
-          type: array
-          description: A list of contact persons of the Facility.
-          items:
-            $ref: "#/components/schemas/FacilityContactPerson"
-        dataOrigin:
-          $ref: "#/components/schemas/DataOrigin"
-        differentBillingAddress:
-          oneOf:
-          - $ref: "#/components/schemas/DomesticAddress"
-          - $ref: "#/components/schemas/PostboxAddress"
-        emailAddresses:
-          type: array
-          description: A list of email addresses of the Facility.
-          example: "['mail1@address.de','mail2@address.de','mail3@address.de']"
-          items:
-            type: string
-        id:
-          type: string
-          format: uuid
-          description: The Id of the Facility.
-          example: ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
-        name:
-          type: string
-          description: The name of the Facility.
-          example: Example Facility
-          maxLength: 300
-          minLength: 1
-        phoneNumbers:
-          type: array
-          description: A list of telephone numbers of the Facility.
-          example: "['+4912345678901','+4912345678902','+4912345678903']"
-          items:
-            type: string
-            maxLength: 23
-            minLength: 1
-        referenceVersion:
-          type: integer
-          format: int64
-          description: The version of referenceData that was present when the FileState
-            was created. Can be increased if a newer version is irrelevant for the
-            Procedure and the outdated flag shall be suppressed.
-          example: 1
-      required:
-      - contactPersons
-      - dataOrigin
-      - emailAddresses
-      - id
-      - name
-      - phoneNumbers
-      - referenceVersion
     FacilityType:
       type: string
       enum:
@@ -3843,6 +3891,69 @@ components:
       - persons
       - procedure
       - tasks
+    GetFacilityFileStateResponse:
+      type: object
+      properties:
+        contactAddress:
+          oneOf:
+          - $ref: "#/components/schemas/DomesticAddress"
+          - $ref: "#/components/schemas/PostboxAddress"
+        contactPersons:
+          type: array
+          description: A list of contact persons of the Facility.
+          items:
+            $ref: "#/components/schemas/FacilityContactPerson"
+        dataOrigin:
+          $ref: "#/components/schemas/DataOrigin"
+        differentBillingAddress:
+          oneOf:
+          - $ref: "#/components/schemas/DomesticAddress"
+          - $ref: "#/components/schemas/PostboxAddress"
+        emailAddresses:
+          type: array
+          description: A list of email addresses of the Facility.
+          example: "['mail1@address.de','mail2@address.de','mail3@address.de']"
+          items:
+            type: string
+        id:
+          type: string
+          format: uuid
+          description: Id of the Facility.
+          example: ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
+        name:
+          type: string
+          description: The name of the Facility.
+          example: Example Facility
+          maxLength: 300
+          minLength: 1
+        outdated:
+          type: boolean
+          description: A flag that signals if a File State differs from the referenceFacility
+            it is connected to.
+          example: true
+        phoneNumbers:
+          type: array
+          description: A list of telephone numbers of the Facility.
+          example: "['+4912345678901','+4912345678902','+4912345678903']"
+          items:
+            type: string
+            maxLength: 23
+            minLength: 1
+        referenceVersion:
+          type: integer
+          format: int64
+          description: The version of referenceData that was present when the FileState
+            was created. Can be increased if a newer version is irrelevant for the
+            Procedure and the outdated flag shall be suppressed.
+          example: 1
+      required:
+      - contactPersons
+      - dataOrigin
+      - emailAddresses
+      - id
+      - name
+      - phoneNumbers
+      - referenceVersion
     GetFreeAppointmentsResponse:
       type: object
       properties:
@@ -4311,15 +4422,26 @@ components:
       - totalNumberOfElements
     HepatitisLaboratoryTest:
       type: object
+      description: Used in the context of laboratory test examination to document
+        test results for Hepatitis A and Hepatitis B.
       properties:
         infection:
           type: boolean
+          description: Indicates whether the test is conducted in the context of an
+            infection.
         remark:
           type: string
+          description: Provides additional comments related to the corresponding test.
+          example: HAV-AK IgM-Test
         vaccineTitre:
           type: boolean
+          description: Indicates whether the test is conducted in the context of a
+            vaccination.
         value:
           type: string
+          description: Records a specific measurement or value obtained from the laboratory
+            test results.
+          example: 1.5 U/ml
     HttpMethod:
       type: string
       enum:
@@ -4486,76 +4608,109 @@ components:
       - '@type'
     LaboratoryTest:
       type: object
+      description: Used in the context of laboratory test examinations to document
+        test results.
       properties:
         remark:
           type: string
+          description: Provides additional comments related to the corresponding test.
+          example: "CT-Value: 28.5"
         result:
           type: boolean
+          description: Indicates the outcome of the laboratory test result.
         value:
           type: string
+          description: Records a specific measurement or value obtained from the laboratory
+            test results.
+          example: Chlamydia tr. rRNA Test
     LaboratoryTestExamination:
       type: object
+      description: Used to document the initial request which laboratory tests should
+        be performed and to record the corresponding results.
       properties:
         cancerScreeningTestData:
           $ref: "#/components/schemas/LaboratoryTest"
         cancerScreeningTestRequested:
           type: boolean
+          description: Specifies whether a Cancer Screening laboratory test is requested.
         chlamydiaTestRequested:
           type: boolean
+          description: Specifies whether a Chlamydia laboratory test is requested.
         chlamydiaTestSamples:
           $ref: "#/components/schemas/LaboratoryTestSamples"
         generalRemarks:
           type: string
+          description: Provides general comments related to the laboratory tests.
+          example: Sample processed at Black Mesa Diagnostics Laboratory.
         gonorrheaTestRequested:
           type: boolean
-        gonorrhoeaTestSamples:
+          description: Specifies whether a Gonorrhea laboratory test is requested.
+        gonorrheaTestSamples:
           $ref: "#/components/schemas/LaboratoryTestSamples"
         hadSyphilis:
           type: boolean
+          description: Indicates if the patient was previously infected with Syphilis.
         hepATestData:
           $ref: "#/components/schemas/HepatitisLaboratoryTest"
         hepATestRequested:
           type: boolean
+          description: Specifies whether a Hepatitis A laboratory test is requested.
         hepBTestData:
           $ref: "#/components/schemas/HepatitisLaboratoryTest"
         hepBTestRequested:
           type: boolean
+          description: Specifies whether a Hepatitis B laboratory test is requested.
         hepCTestData:
           $ref: "#/components/schemas/LaboratoryTest"
         hepCTestRequested:
           type: boolean
+          description: Specifies whether a Hepatitis C laboratory test is requested.
         hivTestData:
           $ref: "#/components/schemas/LaboratoryTest"
         hivTestRequested:
           type: boolean
+          description: Specifies whether an HIV laboratory test is requested.
         hpvTestData:
           $ref: "#/components/schemas/LaboratoryTest"
         hpvTestRequested:
           type: boolean
+          description: Specifies whether an HPV laboratory test is requested.
         mpoxTestData:
           $ref: "#/components/schemas/LaboratoryTest"
         mpoxTestRequested:
           type: boolean
+          description: Specifies whether a Mpox laboratory test is requested.
         mycoplasmaTestRequested:
           type: boolean
+          description: Specifies whether a Mycoplasma laboratory test is requested.
         mycoplasmaTestSamples:
           $ref: "#/components/schemas/LaboratoryTestSamples"
         otherTestData:
           $ref: "#/components/schemas/LaboratoryTest"
         otherTestName:
           type: string
+          description: Records the name of the additional laboratory test.
+          example: Ethylglucuronid (LC-MS/MS).
         otherTestRequested:
           type: boolean
+          description: Specifies whether another additional laboratory test is requested.
         sampleBarcode:
           type: string
+          description: Specifies a barcode for tracking the results with the external
+            laboratory.
+          example: "4815162342"
         syphilisTestData:
           $ref: "#/components/schemas/LaboratoryTest"
         syphilisTestRequested:
           type: boolean
+          description: Specifies whether a Syphilis laboratory test is requested.
         testsConducted:
           type: boolean
+          description: Indicates if the tests were conducted and is used for the laboratory
+            status.
         testsPayed:
           type: boolean
+          description: Indicates whether the patient has paid for the tests.
     LaboratoryTestSamples:
       type: object
       properties:
@@ -4563,14 +4718,17 @@ components:
           $ref: "#/components/schemas/LaboratoryTest"
         analSampleRequested:
           type: boolean
+          description: Specifies whether an anal sample is requested.
         oralSampleData:
           $ref: "#/components/schemas/LaboratoryTest"
         oralSampleRequested:
           type: boolean
+          description: Specifies whether an oral sample is requested.
         urethralSampleData:
           $ref: "#/components/schemas/LaboratoryTest"
         urethralSampleRequested:
           type: boolean
+          description: Specifies whether an urethral sample is requested.
     Mail:
       type: object
       allOf:
@@ -5049,7 +5207,6 @@ components:
           format: uuid
       required:
       - createdAt
-      - duration
       - id
     ProcessedInboxProgressEntry:
       type: object
@@ -5153,48 +5310,74 @@ components:
       example: "['CONDOM','PREP']"
     RapidTestData:
       type: object
+      description: Used in the context of rapid test examinations to document test
+        results.
       properties:
         number:
           type: string
+          description: "Represents the test number, which can be numerical, alphanumerical\
+            \ or alphabetical."
+          example: Test-481516
         result:
           type: boolean
+          description: Indicates the outcome of the rapid test result
       required:
       - result
     RapidTestExamination:
       type: object
+      description: Used to document the initial request which laboratory tests should
+        be performed and to record the corresponding results.
       properties:
         bloodPressureData:
           type: string
+          description: Records the measured blood pressure values.
+          example: 120/80 mmHg.
         bloodPressureRequested:
           type: boolean
+          description: Specifies whether blood pressure measurement is requested.
         generalComments:
           type: string
+          description: Provides general comments related to the rapid tests.
+          example: Faint test line observed. Confirmation with laboratory test recommended.
         hivData:
           $ref: "#/components/schemas/RapidTestData"
         hivRequested:
           type: boolean
+          description: Specifies whether an HIV rapid test is requested.
         pregnancyTestData:
           $ref: "#/components/schemas/RapidTestData"
         pregnancyTestRequested:
           type: boolean
+          description: Specifies whether a pregnancy test is requested.
         pulseData:
           type: string
+          description: Is used to document the measured pulse.
+          example: 72 bpm.
         pulseRequested:
           type: boolean
+          description: Specifies whether pulse measurement is requested.
         syphilisData:
           $ref: "#/components/schemas/RapidTestData"
         syphilisRequested:
           type: boolean
+          description: Specifies whether a Syphilis rapid test is requested.
         testsPayed:
           type: boolean
+          description: Indicates whether the patient has paid for the tests.
         ultrasoundData:
           type: string
+          description: Records the results of the ultrasound examination.
+          example: "Gestational age: 12 weeks 3 days."
         ultrasoundRequested:
           type: boolean
+          description: Specifies whether an ultrasound examination is requested.
         urinalysisData:
           type: string
+          description: Is used to document the urinalysis information.
+          example: "Appearance: Clear, Color: Yellow, pH: 6.5."
         urinalysisRequested:
           type: boolean
+          description: Specifies whether an urinalysis is requested.
       required:
       - bloodPressureRequested
       - hivRequested
@@ -5289,9 +5472,6 @@ components:
       - NEVER
     Salutation:
       type: string
-      description: A list of categories for the salutation from which specific salutation
-        phrases can be derived. The choice of salutation is free for every citizen
-        and not dependent on gender.
       enum:
       - NOT_SPECIFIED
       - NEUTRAL

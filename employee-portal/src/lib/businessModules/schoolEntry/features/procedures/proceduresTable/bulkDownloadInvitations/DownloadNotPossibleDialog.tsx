@@ -9,6 +9,8 @@ import {
 } from "@eshg/lib-portal/components/BaseModal";
 import { Typography } from "@mui/joy";
 
+import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
+
 export type DownloadNotPossibleDialogProps = Omit<
   BaseModalProps,
   "children" | "modalTitle"
@@ -18,11 +20,13 @@ export function DownloadNotPossibleDialog(
   props: DownloadNotPossibleDialogProps,
 ) {
   return (
-    <BaseModal modalTitle="Download nicht möglich" color="danger" {...props}>
-      <Typography level="body-md">
-        Keiner der ausgewählten Vorgänge hat einen zugewiesenen Termin. Daher
-        sind keine Einladungen vorhanden.
-      </Typography>
-    </BaseModal>
+    <OverlayBoundary>
+      <BaseModal modalTitle="Download nicht möglich" color="danger" {...props}>
+        <Typography level="body-md">
+          Keiner der ausgewählten Vorgänge hat einen zugewiesenen Termin. Daher
+          sind keine Einladungen vorhanden.
+        </Typography>
+      </BaseModal>
+    </OverlayBoundary>
   );
 }

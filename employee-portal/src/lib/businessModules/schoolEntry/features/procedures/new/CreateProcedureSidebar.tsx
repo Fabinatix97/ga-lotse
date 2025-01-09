@@ -18,7 +18,10 @@ import { Button } from "@mui/joy";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
+import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { useCreateProcedure } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
+import { getProceduresByPersonQuery } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
+import { ProcedureCard } from "@/lib/businessModules/schoolEntry/features/procedures/new/ProcedureCard";
 import { BUTTON_SIZE } from "@/lib/businessModules/schoolEntry/features/procedures/new/constants";
 import { PROCEDURE_TYPE_OPTIONS_EXCLUDING_DRAFT } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
@@ -101,7 +104,7 @@ export function CreateProcedureSidebar() {
       },
     );
   }
-
+  const schoolEntryApi = useSchoolEntryApi();
   return (
     <>
       <Button
@@ -134,6 +137,11 @@ export function CreateProcedureSidebar() {
             searchFormComponent={EsuSearchFormComponent}
             initialSearchState={personSearchFormInitialValues}
             addressRequired
+            associatedProcedures={{
+              getQuery: (personId) =>
+                getProceduresByPersonQuery(schoolEntryApi, personId),
+              cardComponent: ProcedureCard,
+            }}
           />
         )}
       </Sidebar>

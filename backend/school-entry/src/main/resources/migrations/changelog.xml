@@ -79,5 +79,7 @@
   <include file="migrations/0063_add_mail_to_simple_notification.xml"/>
   <include file="migrations/0064_invert_inbox_procedure_relationships.xml"/>
   <include file="migrations/0065_add_official_medical_service_appointment_type.xml"/>
+  <include file="migrations/0066_add_procedure_reference_for_statistics.xml"/>
+  <include file="migrations/0067_add_salutation_inbox_procedure.xml"/>
 
 </databaseChangeLog>

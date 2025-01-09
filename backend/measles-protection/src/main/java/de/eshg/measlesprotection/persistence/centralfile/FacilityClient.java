@@ -7,7 +7,7 @@ package de.eshg.measlesprotection.persistence.centralfile;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.FacilityApi;
-import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
+import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesRequest;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesResponse;
 import de.eshg.lib.procedure.domain.model.Procedure;
@@ -29,7 +29,7 @@ public class FacilityClient {
     this.facilityApi = facilityApi;
   }
 
-  public Map<UUID, AddFacilityFileStateResponse> fetchAllRelatedFacilities(
+  public Map<UUID, GetFacilityFileStateResponse> fetchAllRelatedFacilities(
       List<MeaslesProtectionProcedure> procedures) {
     List<UUID> facilityIdsToFetch =
         procedures.stream()
@@ -49,6 +49,6 @@ public class FacilityClient {
     }
 
     return response.facilityFileStates().stream()
-        .collect(StreamUtil.toLinkedHashMap(AddFacilityFileStateResponse::id));
+        .collect(StreamUtil.toLinkedHashMap(GetFacilityFileStateResponse::id));
   }
 }

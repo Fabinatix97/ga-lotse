@@ -8,6 +8,8 @@ import {
   ApiUser,
 } from "@eshg/employee-portal-api/statistics";
 
+import { DataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
+
 export interface EvaluationOverviewTableItem {
   createdAt: Date;
   id: string;
@@ -18,8 +20,8 @@ export interface EvaluationOverviewTableItem {
   timeRangeStart: Date;
   userId: string;
   user: ApiUser | undefined;
-  anonymized: boolean;
   tooMuchDataForExport: boolean;
+  dataSourceSensitivity: DataSourceSensitivity;
 }
 
 export interface EvaluationOverview {

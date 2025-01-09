@@ -5,8 +5,7 @@
 
 import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
 import CloseIcon from "@mui/icons-material/Close";
-import { Stack, Typography } from "@mui/joy";
-import { isNonNullish } from "remeda";
+import { Stack } from "@mui/joy";
 
 import {
   SectionTile,
@@ -14,11 +13,9 @@ import {
 } from "@/lib/baseModule/components/gdpr/procedure/tiles/SectionTile";
 
 export function CentralFileLinkTile({
-  centralFileId,
   numMatches,
   onAddLink,
 }: {
-  centralFileId?: string;
   numMatches: number;
   onAddLink: (() => void) | false;
 }) {
@@ -32,14 +29,10 @@ export function CentralFileLinkTile({
           : "Keine Datensätze gefunden"}
       </SectionTitle>
       {numMatches > 0 ? (
-        isNonNullish(centralFileId) ? (
-          <Typography>{centralFileId}</Typography>
-        ) : (
-          onAddLink !== false && (
-            <FormAddMoreButton onClick={onAddLink}>
-              Datensatz hinzufügen
-            </FormAddMoreButton>
-          )
+        onAddLink !== false && (
+          <FormAddMoreButton onClick={onAddLink}>
+            Datensatz hinzufügen
+          </FormAddMoreButton>
         )
       ) : (
         <Stack direction={"row"} gap={1} alignItems={"center"}>

@@ -9,7 +9,7 @@ import com.google.common.collect.Iterables;
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.keycloak.CitizenKeycloakClient;
 import de.eshg.keycloak.api.user.KeycloakAttributes;
-import de.eshg.keycloak.api.user.model.CredentialType;
+import de.eshg.keycloak.api.user.model.CredentialTypeDto;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.keycloak.CitizenPermissionRole;
 import de.eshg.mutex.MutexService;
@@ -18,8 +18,6 @@ import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.environment.EnvironmentConfig;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -88,17 +86,17 @@ public class CitizenUserService {
         .toList();
   }
 
-  public UserRepresentation addAccessCodeUser(LocalDate dateOfBirth) {
+  public UserRepresentation addAccessCodeUser() {
     return mutexService.doWithLockedMutex(
-        MUTEX_ACCESS_CODE_USER_WRITE, () -> addAccessCodeUserWhenLocked(dateOfBirth));
+        MUTEX_ACCESS_CODE_USER_WRITE, this::addAccessCodeUserWhenLocked);
   }
 
-  private UserRepresentation addAccessCodeUserWhenLocked(LocalDate dateOfBirth) {
+  private UserRepresentation addAccessCodeUserWhenLocked() {
     UserResource user =
-        citizenKeycloakClient.createUser(getUserRepresentation(getUniqueAccessCode(), dateOfBirth));
+        citizenKeycloakClient.createUser(getUserRepresentation(getUniqueAccessCode()));
     user.roles().realmLevel().add(List.of(getAccessCodeUserRole()));
-
     UserRepresentation representation = user.toRepresentation(true);
+
     auditLogger.log(
         "Benutzerverwaltung Zugangscode",
         "Hinzufügen Benutzer",
@@ -151,35 +149,28 @@ public class CitizenUserService {
         tryNumber);
   }
 
-  private UserRepresentation getUserRepresentation(String accessCode, LocalDate dateOfBirth) {
+  private UserRepresentation getUserRepresentation(String accessCode) {
     UserRepresentation user = new UserRepresentation();
     user.setUsername(ACCESS_CODE_USERNAME_PREFIX + UUID.randomUUID());
     user.setEnabled(true);
     user.setEmailVerified(true);
     Map<String, List<String>> attributes = new LinkedHashMap<>();
     attributes.put(KeycloakAttributes.ACCESS_CODE_ATTRIBUTE, List.of(accessCode));
-    String formattedDateOfBirth = dateOfBirth.format(DateTimeFormatter.ISO_LOCAL_DATE);
-    attributes.put(KeycloakAttributes.DATE_OF_BIRTH_ATTRIBUTE, List.of(formattedDateOfBirth));
     if (testHelperEnabled) {
       environmentConfig.assertIsNotProduction();
       log.warn("Provisioning password for citizen user since test-helper profile is enabled!");
-      setPasswordCredentials(accessCode, formattedDateOfBirth, user);
+      setPasswordCredentials(accessCode, user);
     }
     user.setAttributes(attributes);
     return user;
   }
 
-  private static void setPasswordCredentials(
-      String accessCode, String formattedDateOfBirth, UserRepresentation user) {
+  private static void setPasswordCredentials(String accessCode, UserRepresentation user) {
     CredentialRepresentation passwordCredentials = new CredentialRepresentation();
     passwordCredentials.setType(CredentialRepresentation.PASSWORD);
-    passwordCredentials.setValue(mapToPassword(accessCode, formattedDateOfBirth));
+    passwordCredentials.setValue(accessCode);
     passwordCredentials.setTemporary(false);
     user.setCredentials(List.of(passwordCredentials));
-  }
-
-  private static String mapToPassword(String accessCode, String formattedDateOfBirth) {
-    return accessCode + " " + formattedDateOfBirth;
   }
 
   public String getPasswordOfAccessCodeUser(UserRepresentation user) {
@@ -190,11 +181,7 @@ public class CitizenUserService {
         user.getUsername().startsWith(ACCESS_CODE_USERNAME_PREFIX), "Unexpected username");
 
     Map<String, List<String>> attributes = user.getAttributes();
-    String accessCode =
-        Iterables.getOnlyElement(attributes.get(KeycloakAttributes.ACCESS_CODE_ATTRIBUTE));
-    String formattedDateOfBirth =
-        Iterables.getOnlyElement(attributes.get(KeycloakAttributes.DATE_OF_BIRTH_ATTRIBUTE));
-    return mapToPassword(accessCode, formattedDateOfBirth);
+    return Iterables.getOnlyElement(attributes.get(KeycloakAttributes.ACCESS_CODE_ATTRIBUTE));
   }
 
   public void deleteAccessCodeUser(UUID userId) {
@@ -219,63 +206,11 @@ public class CitizenUserService {
     }
   }
 
-  public UserRepresentation addAnonymousUser(String pin) {
-    return mutexService.doWithLockedMutex(
-        MUTEX_ACCESS_CODE_USER_WRITE, () -> addAnonymousUserWhenLocked(pin));
-  }
-
-  private UserRepresentation addAnonymousUserWhenLocked(String pin) {
-    UserResource user = citizenKeycloakClient.createUser(getAnonymousUserRepresentation(pin));
-    user.roles().realmLevel().add(List.of(getAccessCodeUserRole()));
-
-    UserRepresentation representation = user.toRepresentation(true);
-    addCredential(UUID.fromString(representation.getId()), CredentialType.PIN, pin);
-
-    auditLogger.log(
-        "Benutzerverwaltung Zugangscode",
-        "Hinzufügen anonymer Benutzer",
-        Map.of(
-            "Benutzer ID", representation.getId(),
-            "durch Benutzer", CurrentUserHelper.getCurrentUserIdAsStringGracefully().orElse("-")));
-    return representation;
-  }
-
-  private UserRepresentation getAnonymousUserRepresentation(String pin) {
-    CredentialRepresentation passwordCredentials = new CredentialRepresentation();
-    passwordCredentials.setType(CredentialRepresentation.PASSWORD);
-    passwordCredentials.setValue(pin);
-    passwordCredentials.setTemporary(false);
-
-    String accessCode = getUniqueAccessCode();
-    UserRepresentation rep =
-        new UserRepresentation()
-            .singleAttribute(KeycloakAttributes.ANONYMOUS_USER_ATTRIBUTE, "true")
-            .singleAttribute(KeycloakAttributes.ACCESS_CODE_ATTRIBUTE, accessCode);
-    rep.setUsername(accessCode);
-    rep.setEnabled(true);
-    rep.setEmailVerified(true);
-    rep.setCredentials(List.of(passwordCredentials));
-    return rep;
-  }
-
-  public void deleteAnonymousUser(UUID userId) {
-    try {
-      UserResource user = citizenKeycloakClient.getUserResource(userId.toString());
-      UserRepresentation rep = user.toRepresentation();
-      if (Boolean.parseBoolean(rep.firstAttribute(KeycloakAttributes.ANONYMOUS_USER_ATTRIBUTE))) {
-        throw new BadRequestException("Requested user is not anonymous");
-      }
-      user.remove();
-    } catch (jakarta.ws.rs.NotFoundException e) {
-      throw new NotFoundException("Anonymous access code user not found");
-    }
-  }
-
-  public void addCredential(UUID userId, CredentialType type, String secret) {
+  public void addCredential(UUID userId, CredentialTypeDto type, String secret) {
     citizenKeycloakClient.addCredential(userId, type, secret);
   }
 
-  public void verifyCredential(UUID userId, CredentialType type, String secret) {
+  public void verifyCredential(UUID userId, CredentialTypeDto type, String secret) {
     citizenKeycloakClient.verifyCredential(userId, type, secret);
   }
 }

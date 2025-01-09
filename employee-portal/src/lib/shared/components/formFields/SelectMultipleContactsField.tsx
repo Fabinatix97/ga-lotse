@@ -9,7 +9,7 @@ import { useState } from "react";
 
 import { useSearchContacts } from "@/lib/baseModule/api/queries/contacts";
 import { contactCategoryNamesShort } from "@/lib/baseModule/shared/translations";
-import { mapContactToSelectOptionWithCategory } from "@/lib/shared/helpers/contactCategoryMapper";
+import { mapContactToSelectOptionWithCategory } from "@/lib/shared/helpers/selectOptionMapper";
 
 interface SelectContactFieldProps {
   name: string;

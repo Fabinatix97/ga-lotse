@@ -6,6 +6,9 @@
 package de.eshg.schoolentry.statistics;
 
 import de.eshg.schoolentry.domain.model.*;
+import de.eshg.schoolentry.statistics.attributes.EsuAttributeUtil;
+import de.eshg.schoolentry.statistics.attributes.EsuDevelopmentScreeningAttribute;
+import de.eshg.schoolentry.statistics.options.Child;
 import de.eshg.schoolentry.statistics.options.Disability;
 import de.eshg.schoolentry.statistics.options.DoctorLetterValue;
 import de.eshg.schoolentry.statistics.options.ExaminationResultFourOptions;
@@ -14,10 +17,126 @@ import de.eshg.schoolentry.statistics.options.SchoolRecommendation;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class DevelopmentScreeningStatistics {
+class DevelopmentScreeningStatistics {
   private DevelopmentScreeningStatistics() {}
 
-  static Object getDevelopmentScreeningAttribute(
+  static Object mapAttribute(
+      SchoolEntryProcedure procedure, EsuDevelopmentScreeningAttribute attribute) {
+    return switch (attribute) {
+      case KIND -> getProcedureType(procedure);
+      case GROE ->
+          getDevelopmentScreeningAttributeOrUnknownInteger(
+              procedure, DevelopmentScreening::getHeight);
+      case GROE_PERZ ->
+          getDevelopmentScreeningAttribute(procedure, DevelopmentScreening::getHeightPercentile);
+      case GEWI -> getWeight(procedure);
+      case GEWI_PERZ ->
+          getDevelopmentScreeningAttribute(procedure, DevelopmentScreening::getWeightPercentile);
+      case BMI -> getDevelopmentScreeningAttribute(procedure, DevelopmentScreening::getBmi);
+      case BMI_PERZ ->
+          getDevelopmentScreeningAttribute(procedure, DevelopmentScreening::getBmiPercentile);
+      case RRSYS ->
+          getDevelopmentScreeningAttributeOrUnknownInteger(
+              procedure, DevelopmentScreening::getSystole);
+      case RRDIA ->
+          getDevelopmentScreeningAttributeOrUnknownInteger(
+              procedure, DevelopmentScreening::getDiastole);
+      case KOERPERCHECK -> getAllPhysicalExamination(procedure.getDevelopmentScreeningResult());
+      case EZ ->
+          getExaminationWithDiagnosisResultFourOptionValue(
+              procedure, DevelopmentScreening::getNutritionalCondition);
+      case RM_ERNAEHRUNGSZUSTAND ->
+          getExaminationWithDiagnosisResponseDoctorLetterValue(
+              procedure, DevelopmentScreening::getNutritionalCondition);
+      case NEU ->
+          getExaminationWithDiagnosisResultFourOptionValue(
+              procedure, DevelopmentScreening::getNeurology);
+      case RM_NEUROLOGIE ->
+          getExaminationWithDiagnosisResponseDoctorLetterValue(
+              procedure, DevelopmentScreening::getNeurology);
+      case AHK ->
+          getExaminationWithDiagnosisResultFourOptionValue(
+              procedure, DevelopmentScreening::getRespiratoryCardiovascular);
+      case RM_ATMUNG_HERZ_KREISLAUF ->
+          getExaminationWithDiagnosisResponseDoctorLetterValue(
+              procedure, DevelopmentScreening::getRespiratoryCardiovascular);
+      case DERM ->
+          getExaminationWithDiagnosisResultFourOptionValue(
+              procedure, DevelopmentScreening::getSkin);
+      case RM_HAUT ->
+          getExaminationWithDiagnosisResponseDoctorLetterValue(
+              procedure, DevelopmentScreening::getSkin);
+      case MUSK ->
+          getExaminationWithDiagnosisResultFourOptionValue(
+              procedure, DevelopmentScreening::getMusculatureSkeleton);
+      case RM_MUSKULATUR_SKELETT ->
+          getExaminationWithDiagnosisResponseDoctorLetterValue(
+              procedure, DevelopmentScreening::getMusculatureSkeleton);
+      case ENDO ->
+          getExaminationWithDiagnosisResultFourOptionValue(
+              procedure, DevelopmentScreening::getMetabolism);
+      case RM_ENDO_STOFFW ->
+          getExaminationWithDiagnosisResponseDoctorLetterValue(
+              procedure, DevelopmentScreening::getMetabolism);
+      case ABD ->
+          getExaminationWithDiagnosisResultFourOptionValue(
+              procedure, DevelopmentScreening::getAbdomen);
+      case RM_ABDOMEN ->
+          getExaminationWithDiagnosisResponseDoctorLetterValue(
+              procedure, DevelopmentScreening::getAbdomen);
+      case HNO ->
+          getExaminationWithDiagnosisResultFourOptionValue(
+              procedure, DevelopmentScreening::getEarNoseThroat);
+      case RM_HNO ->
+          getExaminationWithDiagnosisResponseDoctorLetterValue(
+              procedure, DevelopmentScreening::getEarNoseThroat);
+      case HANDCAP -> getAllHandicap(procedure);
+      case CHKR ->
+          getHandicapWithDiagnosisValue(procedure, DevelopmentScreening::getChronicDisease);
+      case DIAGCH1 -> getHandicapIcd10Codes(0, procedure, DevelopmentScreening::getChronicDisease);
+      case DIAGCH2 -> getHandicapIcd10Codes(1, procedure, DevelopmentScreening::getChronicDisease);
+      case DIAGCH3 -> getHandicapIcd10Codes(2, procedure, DevelopmentScreening::getChronicDisease);
+      case BEHI -> getHandicapWithDiagnosisValue(procedure, DevelopmentScreening::getDisability);
+      case BEHIART -> getDisabilityType(procedure);
+      case DIAGB1 -> getHandicapIcd10Codes(0, procedure, DevelopmentScreening::getDisability);
+      case DIAGB2 -> getHandicapIcd10Codes(1, procedure, DevelopmentScreening::getDisability);
+      case DIAGB3 -> getHandicapIcd10Codes(2, procedure, DevelopmentScreening::getDisability);
+      case PSYSOZRISK -> getAllPsychoSozialRisk(procedure.getDevelopmentScreeningResult());
+      case FAMILIE -> getDevelopmentScreeningAttribute(procedure, DevelopmentScreening::getFamily);
+      case NONCOMP ->
+          getDevelopmentScreeningAttribute(procedure, DevelopmentScreening::getNonCompliance);
+      case SOZIAL -> getDevelopmentScreeningAttribute(procedure, DevelopmentScreening::getSocial);
+      case MIGRATION ->
+          getDevelopmentScreeningAttribute(procedure, DevelopmentScreening::getMigration);
+      case SONSTIGES_RISIKO ->
+          getDevelopmentScreeningAttribute(procedure, DevelopmentScreening::getOtherRisk);
+      case MASSN -> getAllSocioEducationalPerformance(procedure.getDevelopmentScreeningResult());
+      case WSPR ->
+          getDevelopmentScreeningAttribute(procedure, DevelopmentScreening::getReIntroduction);
+      case SCHB ->
+          getDevelopmentScreeningAttribute(procedure, DevelopmentScreening::getSchoolCounselling);
+      case MOTO ->
+          getDevelopmentScreeningAttribute(procedure, DevelopmentScreening::getMotorPromotion);
+      case ERZB ->
+          getDevelopmentScreeningAttribute(procedure, DevelopmentScreening::getEducationalAdvice);
+      case SPRF ->
+          getDevelopmentScreeningAttribute(procedure, DevelopmentScreening::getLanguageAdvice);
+      case ERNB ->
+          getDevelopmentScreeningAttribute(procedure, DevelopmentScreening::getNutritionalAdvice);
+      case IMPF ->
+          getDevelopmentScreeningAttribute(procedure, DevelopmentScreening::getVaccinationAdvice);
+      case SOZD ->
+          getDevelopmentScreeningAttribute(procedure, DevelopmentScreening::getSocialService);
+      case SOHI ->
+          getDevelopmentScreeningAttribute(procedure, DevelopmentScreening::getOtherSupport);
+      case INFO -> getDevelopmentScreeningAttribute(procedure, DevelopmentScreening::getInfoLetter);
+      case SCHULEMPF -> getSchoolRecommendation(procedure);
+      case MEHR ->
+          getDevelopmentScreeningAttribute(procedure, DevelopmentScreening::getExtraEffort);
+    };
+  }
+
+  private static Object getDevelopmentScreeningAttribute(
       SchoolEntryProcedure procedure,
       Function<DevelopmentScreening, Object> developmentScreeningGetter) {
     DevelopmentScreening developmentScreeningResult = procedure.getDevelopmentScreeningResult();
@@ -27,7 +146,7 @@ public class DevelopmentScreeningStatistics {
     return developmentScreeningGetter.apply(developmentScreeningResult);
   }
 
-  static Object getDevelopmentScreeningAttributeOrUnknownInteger(
+  private static Object getDevelopmentScreeningAttributeOrUnknownInteger(
       SchoolEntryProcedure procedure,
       Function<DevelopmentScreening, Object> developmentScreeningGetter) {
     DevelopmentScreening developmentScreeningResult = procedure.getDevelopmentScreeningResult();
@@ -38,7 +157,7 @@ public class DevelopmentScreeningStatistics {
         .orElse(EsuAttributeUtil.UNKNOWN_INTEGER_999);
   }
 
-  static Object getWeight(SchoolEntryProcedure procedure) {
+  private static Object getWeight(SchoolEntryProcedure procedure) {
     DevelopmentScreening developmentScreeningResult = procedure.getDevelopmentScreeningResult();
     if (developmentScreeningResult == null) {
       return null;
@@ -47,7 +166,7 @@ public class DevelopmentScreeningStatistics {
         .orElse(EsuAttributeUtil.UNKNOWN_DECIMAL_99_9);
   }
 
-  static Object getDisabilityType(SchoolEntryProcedure procedure) {
+  private static Object getDisabilityType(SchoolEntryProcedure procedure) {
     DevelopmentScreening developmentScreeningResult = procedure.getDevelopmentScreeningResult();
     if (developmentScreeningResult == null) {
       return null;
@@ -55,7 +174,7 @@ public class DevelopmentScreeningStatistics {
     return Disability.convertDisabilityTypeToValue(developmentScreeningResult.getDisabilityType());
   }
 
-  static Object getSchoolRecommendation(SchoolEntryProcedure procedure) {
+  private static Object getSchoolRecommendation(SchoolEntryProcedure procedure) {
     DevelopmentScreening developmentScreeningResult = procedure.getDevelopmentScreeningResult();
     if (developmentScreeningResult == null) {
       return null;
@@ -64,7 +183,7 @@ public class DevelopmentScreeningStatistics {
         developmentScreeningResult.getSchoolRecommendation());
   }
 
-  static String getExaminationWithDiagnosisResultFourOptionValue(
+  private static String getExaminationWithDiagnosisResultFourOptionValue(
       SchoolEntryProcedure procedure,
       Function<DevelopmentScreening, ExaminationWithDiagnosis> getExaminationResult) {
     DevelopmentScreening developmentScreeningResult = procedure.getDevelopmentScreeningResult();
@@ -79,7 +198,7 @@ public class DevelopmentScreeningStatistics {
     }
   }
 
-  static String getExaminationWithDiagnosisResponseDoctorLetterValue(
+  private static String getExaminationWithDiagnosisResponseDoctorLetterValue(
       SchoolEntryProcedure procedure,
       Function<DevelopmentScreening, ExaminationWithDiagnosis> getExaminationResult) {
     DevelopmentScreening developmentScreeningResult = procedure.getDevelopmentScreeningResult();
@@ -95,7 +214,7 @@ public class DevelopmentScreeningStatistics {
     }
   }
 
-  static Object getAllPsychoSozialRisk(DevelopmentScreening developmentScreening) {
+  private static Object getAllPsychoSozialRisk(DevelopmentScreening developmentScreening) {
     if (developmentScreening == null
         || developmentScreening.getFamily() == null
         || developmentScreening.getNonCompliance() == null
@@ -111,7 +230,8 @@ public class DevelopmentScreeningStatistics {
         && developmentScreening.getOtherRisk();
   }
 
-  static Object getAllSocioEducationalPerformance(DevelopmentScreening developmentScreening) {
+  private static Object getAllSocioEducationalPerformance(
+      DevelopmentScreening developmentScreening) {
     if (developmentScreening == null
         || developmentScreening.getReIntroduction() == null
         || developmentScreening.getSchoolCounselling() == null
@@ -137,7 +257,7 @@ public class DevelopmentScreeningStatistics {
         || developmentScreening.getInfoLetter();
   }
 
-  static Object getAllPhysicalExamination(DevelopmentScreening developmentScreening) {
+  private static Object getAllPhysicalExamination(DevelopmentScreening developmentScreening) {
     if (developmentScreening == null
         || valueIsNull(developmentScreening.getNutritionalCondition())
         || valueIsNull(developmentScreening.getNeurology())
@@ -186,7 +306,7 @@ public class DevelopmentScreeningStatistics {
     return result.getResult().getValue() == ExaminationResultValue.OK;
   }
 
-  static Object getAllHandicap(SchoolEntryProcedure procedure) {
+  private static Object getAllHandicap(SchoolEntryProcedure procedure) {
     DevelopmentScreening developmentScreeningResult = procedure.getDevelopmentScreeningResult();
     if (developmentScreeningResult == null
         || valueIsNull(developmentScreeningResult.getDisability())
@@ -202,7 +322,7 @@ public class DevelopmentScreeningStatistics {
     return resultValue == null || resultValue.getResult() == null;
   }
 
-  static Object getHandicapWithDiagnosisValue(
+  private static Object getHandicapWithDiagnosisValue(
       SchoolEntryProcedure procedure,
       Function<DevelopmentScreening, HandicapWithDiagnosis> getExaminationResult) {
     DevelopmentScreening developmentScreeningResult = procedure.getDevelopmentScreeningResult();
@@ -214,7 +334,7 @@ public class DevelopmentScreeningStatistics {
     }
   }
 
-  static String getHandicapIcd10Codes(
+  private static String getHandicapIcd10Codes(
       int index,
       SchoolEntryProcedure procedure,
       Function<DevelopmentScreening, HandicapWithDiagnosis> getExaminationResult) {
@@ -226,5 +346,13 @@ public class DevelopmentScreeningStatistics {
     } else {
       return getExaminationResult.apply(developmentScreeningResult).getIcd10Codes().get(index);
     }
+  }
+
+  private static String getProcedureType(SchoolEntryProcedure procedure) {
+    if (procedure == null) {
+      return null;
+    }
+
+    return Child.convertTypeToValue(procedure.getProcedureType());
   }
 }

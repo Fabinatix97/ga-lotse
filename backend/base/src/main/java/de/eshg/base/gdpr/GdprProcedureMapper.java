@@ -13,6 +13,7 @@ import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.address.PostboxAddressDto;
 import de.eshg.base.address.mapper.AddressMapper;
 import de.eshg.base.centralfile.persistence.entity.BirthDetails;
+import de.eshg.base.gdpr.api.AddGdprProcedureFromCitizenPortalRequest;
 import de.eshg.base.gdpr.api.AddGdprProcedureRequest;
 import de.eshg.base.gdpr.api.GdprFacilityDto;
 import de.eshg.base.gdpr.api.GdprIdentificationDataDto;
@@ -22,6 +23,7 @@ import de.eshg.base.gdpr.api.GdprProcedureStatusDto;
 import de.eshg.base.gdpr.api.GdprProcedureTypeDto;
 import de.eshg.base.gdpr.api.GetGdprProcedureResponse;
 import de.eshg.base.gdpr.api.GetGdprProceduresResponse;
+import de.eshg.base.gdpr.persistence.CentralFileIdWrapper;
 import de.eshg.base.gdpr.persistence.GdprDomesticFacilityAddress;
 import de.eshg.base.gdpr.persistence.GdprDomesticPersonAddress;
 import de.eshg.base.gdpr.persistence.GdprDownload;
@@ -40,6 +42,7 @@ import de.eshg.base.util.MappingUtil;
 import de.eshg.base.util.PaginationUtil;
 import de.eshg.lib.procedure.model.gdpr.GdprValidationTaskTypeDto;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -58,13 +61,18 @@ public class GdprProcedureMapper {
     return new GetGdprProcedureResponse(
         gdprProcedure.getExternalId(),
         gdprProcedure.getVersion(),
-        gdprProcedure.getCentralFileId(),
+        mapToApi(gdprProcedure.getCentralFileIdsWrappers()),
         mapToApi(gdprProcedure.getStatus()),
         mapToApi(gdprProcedure.getType()),
         mapToApi(gdprProcedure.getIdentificationData()),
         gdprProcedure.getCreatedAt(),
+        gdprProcedure.getClosedAt(),
         gdprProcedure.getMatterOfConcern(),
         gdprProcedure.getInternalNote());
+  }
+
+  private static List<UUID> mapToApi(List<CentralFileIdWrapper> wrappers) {
+    return wrappers.stream().map(CentralFileIdWrapper::getCentralFileId).toList();
   }
 
   public static GdprIdentificationDataDto mapToApi(IdentificationData identificationData) {
@@ -146,6 +154,14 @@ public class GdprProcedureMapper {
     return procedure;
   }
 
+  public static GdprProcedure mapToDm(AddGdprProcedureFromCitizenPortalRequest request) {
+    GdprProcedure procedure = new GdprProcedure();
+    procedure.setStatus(GdprProcedureStatus.DRAFT);
+    procedure.setType(mapToDm(request.type()));
+    procedure.setMatterOfConcern(request.matterOfConcern());
+    return procedure;
+  }
+
   public static IdentificationData mapToDm(GdprIdentificationDataDto gdprIdentificationDataDto) {
     return switch (gdprIdentificationDataDto) {
       case GdprPersonDto person -> mapToDm(person);
@@ -173,6 +189,16 @@ public class GdprProcedureMapper {
     gdprFacility.setEmailAddress(facility.emailAddress());
     gdprFacility.setPhoneNumber(facility.phoneNumber());
     return gdprFacility;
+  }
+
+  public static List<CentralFileIdWrapper> mapToDm(List<UUID> centralFileIds) {
+    return centralFileIds.stream().map(GdprProcedureMapper::mapToDm).toList();
+  }
+
+  private static CentralFileIdWrapper mapToDm(UUID centralFileId) {
+    CentralFileIdWrapper centralFileIdWrapper = new CentralFileIdWrapper();
+    centralFileIdWrapper.setCentralFileId(centralFileId);
+    return centralFileIdWrapper;
   }
 
   public static GdprFacilityAddress mapToDmGdprFacilityAddress(AddressDto address) {

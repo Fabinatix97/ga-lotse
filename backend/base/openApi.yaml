@@ -384,26 +384,6 @@ paths:
       summary: Get the user calendar of the current user
       tags:
       - Calendar
-  /calendars/user/{userId}:
-    get:
-      operationId: getUserCalendar
-      parameters:
-      - in: path
-        name: userId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserCalendar"
-          description: "Returns the Calendar with augmented attributes, eg. the id"
-      summary: Get a user calendar
-      tags:
-      - Calendar
   /calendars/{calendarId}/events:
     get:
       description: The search by date is including events with timeRangeEnd = event.start
@@ -438,14 +418,14 @@ paths:
       summary: Get all events in a calendar for a given time range
       tags:
       - CalendarEvent
-  /citizen-access-code-users:
+  /citizen-access-code-users/date-of-birth:
     post:
-      operationId: addCitizenAccessCodeUser
+      operationId: addCitizenAccessCodeUserWithDateOfBirthCredential
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/AddCitizenAccessCodeUserRequest"
+              $ref: "#/components/schemas/AddCitizenAccessCodeUserWithDateOfBirthCredentialRequest"
         required: true
       responses:
         "200":
@@ -454,17 +434,17 @@ paths:
               schema:
                 $ref: "#/components/schemas/CitizenAccessCodeUser"
           description: OK
-      summary: Create a new citizen access code user
+      summary: Create a new citizen access code user with a date of birth credential
       tags:
       - CitizenAccessCodeUser
-  /citizen-access-code-users/anonymous:
+  /citizen-access-code-users/pin:
     post:
-      operationId: addAnonymousUser
+      operationId: addCitizenAccessCodeUserWithPinCredential
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/AddAnonymousUserRequest"
+              $ref: "#/components/schemas/AddCitizenAccessCodeUserWithPinCredentialRequest"
         required: true
       responses:
         "200":
@@ -473,49 +453,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/CitizenAccessCodeUser"
           description: OK
-      summary: Add a new anonymous user identified by an access code
-      tags:
-      - CitizenAccessCodeUser
-  /citizen-access-code-users/anonymous/{id}:
-    delete:
-      operationId: deleteAnonymousUser
-      parameters:
-      - description: Id of the anonymous user
-        example: ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
-        in: path
-        name: id
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          description: OK
-      summary: Delete an anonymous access code user
-      tags:
-      - CitizenAccessCodeUser
-  /citizen-access-code-users/anonymous/{id}/verify:
-    post:
-      operationId: verifyAnonymousUserPin
-      parameters:
-      - description: Id of the anonymous user
-        example: ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
-        in: path
-        name: id
-        required: true
-        schema:
-          type: string
-          format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/VerifyPinRequest"
-        required: true
-      responses:
-        "200":
-          description: OK
-      summary: Verify anonymous access code user PIN
+      summary: Create a new citizen access code user with a pin credential
       tags:
       - CitizenAccessCodeUser
   /citizen-access-code-users/{id}:
@@ -556,6 +494,30 @@ paths:
         "200":
           description: OK
       summary: Delete a citizen access code user
+      tags:
+      - CitizenAccessCodeUser
+  /citizen-access-code-users/{id}/verify:
+    post:
+      operationId: verifyCitizenAccessCodeUserCredentials
+      parameters:
+      - description: Id of the citizen user
+        example: ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyCitizenAccessCodeUserCredentialsRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Verify citizen access code user credentials
       tags:
       - CitizenAccessCodeUser
   /citizen-users/self/permissions:
@@ -1012,7 +974,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/FacilityFileState"
+                $ref: "#/components/schemas/AddFacilityFileStateResponse"
           description: OK
       summary: |
         Add a new facility file state and associate it with a reference facility.
@@ -1094,7 +1056,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/FacilityFileState"
+                $ref: "#/components/schemas/AddFacilityFileStateResponse"
           description: OK
       summary: |
         Create a new facility file state as well as a new associated reference
@@ -1233,7 +1195,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/FacilityFileState"
+                $ref: "#/components/schemas/AddFacilityFileStateResponse"
           description: OK
       summary: |
         Update a differing facility file state by taking over the data from the
@@ -1262,7 +1224,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/FacilityFileState"
+                $ref: "#/components/schemas/AddFacilityFileStateResponse"
           description: OK
       summary: |
         Perform a consistent update of the existent facility file state and its
@@ -1312,7 +1274,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/FacilityFileState"
+                $ref: "#/components/schemas/AddFacilityFileStateResponse"
           description: OK
       summary: |
         Updates reference facility data identified by given id. Sets dataOrigin to DataOrigin.EDIT.
@@ -1398,6 +1360,28 @@ paths:
                 $ref: "#/components/schemas/GetGdprProcedureResponse"
           description: OK
       summary: Add a GDPR procedure
+      tags:
+      - GdprProcedure
+  /gdpr-procedures/citizen-portal:
+    post:
+      operationId: addGdprProcedureFromCitizenPortal
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddGdprProcedureFromCitizenPortalRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetGdprProcedureResponse"
+          description: OK
+      summary: |
+        This endpoint allows authenticated and identified users from the citizen
+        portal to initiate a GDPR procedure. A matter of concern can be added to the
+        request if desired.
       tags:
       - GdprProcedure
   /gdpr-procedures/{id}:
@@ -3992,16 +3976,6 @@ components:
       - lastActiveTime
       - sessionId
       - startTime
-    AddAnonymousUserRequest:
-      type: object
-      properties:
-        pin:
-          type: string
-          description: The PIN for anonymous authorization.
-          example: "654321"
-          pattern: "\\d{6}"
-      required:
-      - pin
     AddBarrierTestHelperResponse:
       type: object
       properties:
@@ -4031,21 +4005,25 @@ components:
     AddCentralFileIdToGdprProcedureRequest:
       type: object
       properties:
-        centralFileId:
-          type: string
-          format: uuid
-          description: The Id of a set of Reference Data from the Central Files that
-            shall be processed in this GDPR procedure.
-          example: be9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
+        centralFileIds:
+          type: array
+          description: The Ids belonging to the Reference Data from the Central Files
+            that shall be processed in this GDPR procedure.
+          example: "[be9831d4-dc25-48d8-9bfe-4c0b54bfb2c1, a37b5d6f-d72b-4e8a-b1b3-8a4c7f0e6b92]"
+          items:
+            type: string
+            format: uuid
+            description: The Ids belonging to the Reference Data from the Central
+              Files that shall be processed in this GDPR procedure.
         version:
           type: integer
           format: int64
           description: "Version of the entity. Each time the entity is changed, it\
             \ is incremented by one."
       required:
-      - centralFileId
+      - centralFileIds
       - version
-    AddCitizenAccessCodeUserRequest:
+    AddCitizenAccessCodeUserWithDateOfBirthCredentialRequest:
       type: object
       properties:
         personFileStateId:
@@ -4055,6 +4033,16 @@ components:
           example: ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
       required:
       - personFileStateId
+    AddCitizenAccessCodeUserWithPinCredentialRequest:
+      type: object
+      properties:
+        pin:
+          type: string
+          description: The PIN for anonymous authorization.
+          example: "654321"
+          pattern: "\\d{6}"
+      required:
+      - pin
     AddFacilityFileStateRequest:
       type: object
       description: Request used for adding facilities from non-external sources
@@ -4104,6 +4092,64 @@ components:
       required:
       - dataOrigin
       - name
+    AddFacilityFileStateResponse:
+      type: object
+      properties:
+        contactAddress:
+          oneOf:
+          - $ref: "#/components/schemas/DomesticAddress"
+          - $ref: "#/components/schemas/PostboxAddress"
+        contactPersons:
+          type: array
+          description: A list of contact persons of the Facility.
+          items:
+            $ref: "#/components/schemas/FacilityContactPerson"
+        dataOrigin:
+          $ref: "#/components/schemas/DataOrigin"
+        differentBillingAddress:
+          oneOf:
+          - $ref: "#/components/schemas/DomesticAddress"
+          - $ref: "#/components/schemas/PostboxAddress"
+        emailAddresses:
+          type: array
+          description: A list of email addresses of the Facility.
+          example: "['mail1@address.de','mail2@address.de','mail3@address.de']"
+          items:
+            type: string
+        id:
+          type: string
+          format: uuid
+          description: The Id of the Facility.
+          example: ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
+        name:
+          type: string
+          description: The name of the Facility.
+          example: Example Facility
+          maxLength: 300
+          minLength: 1
+        phoneNumbers:
+          type: array
+          description: A list of telephone numbers of the Facility.
+          example: "['+4912345678901','+4912345678902','+4912345678903']"
+          items:
+            type: string
+            maxLength: 23
+            minLength: 1
+        referenceVersion:
+          type: integer
+          format: int64
+          description: The version of referenceData that was present when the FileState
+            was created. Can be increased if a newer version is irrelevant for the
+            Procedure and the outdated flag shall be suppressed.
+          example: 1
+      required:
+      - contactPersons
+      - dataOrigin
+      - emailAddresses
+      - id
+      - name
+      - phoneNumbers
+      - referenceVersion
     AddFacilityFileStatesRequest:
       type: object
       description: A list of Facilities that shall be added to the Central Files.
@@ -4138,6 +4184,18 @@ components:
           uniqueItems: true
       required:
       - downloadIds
+    AddGdprProcedureFromCitizenPortalRequest:
+      type: object
+      description: Request used for initiating GDPR procedures from the citizen portal
+      properties:
+        matterOfConcern:
+          type: string
+          description: The matter of concern for the GDPR procedure (relevant only
+            for the right to rectification and right to object
+        type:
+          $ref: "#/components/schemas/GdprProcedureType"
+      required:
+      - type
     AddGdprProcedureRequest:
       type: object
       properties:
@@ -5129,6 +5187,11 @@ components:
       required:
       - emailAddress
       - username
+    CredentialType:
+      type: string
+      enum:
+      - PIN
+      - DATE_OF_BIRTH
     DataOrigin:
       type: string
       description: "A list of possible origins of Persons and Facility in the Central\
@@ -5705,64 +5768,6 @@ components:
             minLength: 0
       required:
       - name
-    FacilityFileState:
-      type: object
-      properties:
-        contactAddress:
-          oneOf:
-          - $ref: "#/components/schemas/DomesticAddress"
-          - $ref: "#/components/schemas/PostboxAddress"
-        contactPersons:
-          type: array
-          description: A list of contact persons of the Facility.
-          items:
-            $ref: "#/components/schemas/FacilityContactPerson"
-        dataOrigin:
-          $ref: "#/components/schemas/DataOrigin"
-        differentBillingAddress:
-          oneOf:
-          - $ref: "#/components/schemas/DomesticAddress"
-          - $ref: "#/components/schemas/PostboxAddress"
-        emailAddresses:
-          type: array
-          description: A list of email addresses of the Facility.
-          example: "['mail1@address.de','mail2@address.de','mail3@address.de']"
-          items:
-            type: string
-        id:
-          type: string
-          format: uuid
-          description: The Id of the Facility.
-          example: ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
-        name:
-          type: string
-          description: The name of the Facility.
-          example: Example Facility
-          maxLength: 300
-          minLength: 1
-        phoneNumbers:
-          type: array
-          description: A list of telephone numbers of the Facility.
-          example: "['+4912345678901','+4912345678902','+4912345678903']"
-          items:
-            type: string
-            maxLength: 23
-            minLength: 1
-        referenceVersion:
-          type: integer
-          format: int64
-          description: The version of referenceData that was present when the FileState
-            was created. Can be increased if a newer version is irrelevant for the
-            Procedure and the outdated flag shall be suppressed.
-          example: 1
-      required:
-      - contactPersons
-      - dataOrigin
-      - emailAddresses
-      - id
-      - name
-      - phoneNumbers
-      - referenceVersion
     FileDeletionApprovalRequestNotification:
       type: object
       allOf:
@@ -6366,12 +6371,13 @@ components:
       - emailAddresses
       - id
       - name
-      - outdated
       - phoneNumbers
       - referenceVersion
     GetFacilityFileStatesRequest:
       type: object
       properties:
+        checkOutdated:
+          type: boolean
         fileStateIds:
           type: array
           description: A list of Ids for requested Facility File States.
@@ -6389,7 +6395,7 @@ components:
           type: array
           description: A list of requested File States of Facilities.
           items:
-            $ref: "#/components/schemas/FacilityFileState"
+            $ref: "#/components/schemas/GetFacilityFileStateResponse"
         notFoundIds:
           type: array
           description: A list containing the IDs of those requested facility file
@@ -6478,12 +6484,22 @@ components:
     GetGdprProcedureResponse:
       type: object
       properties:
-        centralFileId:
+        centralFileIds:
+          type: array
+          description: The list of Ids of a set of Reference Data from the Central
+            Files that shall be processed in this GDPR procedure.
+          example: "[be9831d4-dc25-48d8-9bfe-4c0b54bfb2c1, a37b5d6f-d72b-4e8a-b1b3-8a4c7f0e6b92]"
+          items:
+            type: string
+            format: uuid
+            description: The list of Ids of a set of Reference Data from the Central
+              Files that shall be processed in this GDPR procedure.
+        closedAt:
           type: string
-          format: uuid
-          description: The Id of a set of Reference Data from the Central Files that
-            shall be processed in this GDPR procedure.
-          example: be9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
+          format: date-time
+          description: The date and time of when this GDPR procedure was completed
+            or cancelled.
+          example: 2024-02-01T00:00:00.123456Z
         createdAt:
           type: string
           format: date-time
@@ -6518,6 +6534,7 @@ components:
           description: "Version of the entity. Each time the entity is changed, it\
             \ is incremented by one."
       required:
+      - centralFileIds
       - createdAt
       - id
       - identificationData
@@ -8198,7 +8215,6 @@ components:
           format: uuid
       required:
       - createdAt
-      - duration
       - id
     ProgressEntryDeletionApprovalRequestNotification:
       type: object
@@ -9169,6 +9185,7 @@ components:
       - BASE_PROCEDURE_METRICS_READ
       - BASE_TASKS_READ
       - BASE_ACCESS_CODE_USER_ADMIN
+      - BASE_ACCESS_CODE_USER_VERIFY
       - SCHOOL_ENTRY_ADMIN
       - INSPECTION_NOTIFICATIONS_READ
       - INSPECTION_PROCEDURE_EDIT
@@ -9336,13 +9353,14 @@ components:
       - lastName
       - phoneNumbers
       - titles
-    VerifyPinRequest:
+    VerifyCitizenAccessCodeUserCredentialsRequest:
       type: object
       properties:
-        pin:
+        credentialType:
+          $ref: "#/components/schemas/CredentialType"
+        rawSecret:
           type: string
-          description: The PIN for verification
+          description: The raw secret value for verification
           example: "654321"
-          pattern: "\\d{6}"
       required:
-      - pin
+      - rawSecret

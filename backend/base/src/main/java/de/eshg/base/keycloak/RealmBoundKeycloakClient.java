@@ -13,7 +13,6 @@ import static java.util.function.Function.identity;
 
 import com.google.common.annotations.VisibleForTesting;
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.base.keycloak.KeycloakUserAttribute.ValidationRule;
 import de.eshg.base.keycloak.differ.AuthenticationExecutionRepresentationDiffer;
 import de.eshg.base.keycloak.differ.ClientRepresentationDiffer;
 import de.eshg.base.keycloak.differ.ClientScopeRepresentationDiffer;
@@ -24,6 +23,9 @@ import de.eshg.base.keycloak.differ.ProtocolMapperDiffer;
 import de.eshg.base.keycloak.differ.UserProfileAttributeDiffer;
 import de.eshg.lib.keycloak.KeycloakGroup;
 import de.eshg.lib.keycloak.KeycloakRole;
+import de.eshg.lib.keycloak.KeycloakUserAttribute;
+import de.eshg.lib.keycloak.KeycloakUserAttribute.ValidationRule;
+import de.eshg.lib.keycloak.UserAttributePermissions;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.NotFoundException;
@@ -429,8 +431,10 @@ public class RealmBoundKeycloakClient implements AutoCloseable {
               attributeConfig.setRequired(
                   attribute.isRequired() ? new UPAttributeRequired() : null);
               attributeConfig.setGroup(getGroupName(attribute, group));
+              UserAttributePermissions permissions = attribute.getPermissions();
               attributeConfig.setPermissions(
-                  new UPAttributePermissions(Set.of("user", "admin"), Set.of("user", "admin")));
+                  new UPAttributePermissions(
+                      permissions.viewPermissions(), permissions.editPermissions()));
               attributeConfig.setValidations(getAttributeValidations(attribute));
               return attributeConfig;
             })
@@ -1009,7 +1013,9 @@ public class RealmBoundKeycloakClient implements AutoCloseable {
   }
 
   public List<RoleRepresentation> getRoles() {
-    return getRealm().roles().list();
+    return getRealm().roles().list().stream()
+        .sorted(Comparator.comparing(RoleRepresentation::getName))
+        .toList();
   }
 
   public List<GroupRepresentation> getGroupsWithRealmRoles() {

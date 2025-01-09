@@ -9,7 +9,7 @@ import de.eshg.base.keycloak.differ.IdentityProviderMapperRepresentationDiffer;
 import de.eshg.base.keycloak.differ.IdentityProviderRepresentationDiffer;
 import de.eshg.keycloak.api.user.KeycloakUserApi;
 import de.eshg.keycloak.api.user.model.CredentialRequest;
-import de.eshg.keycloak.api.user.model.CredentialType;
+import de.eshg.keycloak.api.user.model.CredentialTypeDto;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriBuilder;
 import java.net.URI;
@@ -126,12 +126,12 @@ public class CitizenKeycloakClient extends RealmBoundKeycloakClient {
         .toList();
   }
 
-  public void addCredential(UUID userId, CredentialType type, String secret) {
+  public void addCredential(UUID userId, CredentialTypeDto type, String secret) {
     keycloakUserApi.resetCredential(
         realmName, userId.toString(), new CredentialRequest(type, secret));
   }
 
-  public void verifyCredential(UUID userId, CredentialType type, String secret) {
+  public void verifyCredential(UUID userId, CredentialTypeDto type, String secret) {
     keycloakUserApi.verifyCredential(
         realmName, userId.toString(), new CredentialRequest(type, secret));
   }

@@ -5,6 +5,7 @@
 
 import {
   ApiGetFile200Response,
+  ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner,
   ApiInboxProgressEntryFileReference,
   ApiMail,
   ApiProgressEntry,
@@ -30,7 +31,6 @@ import { isDefined } from "remeda";
 import { FileCardWithActions } from "@/lib/shared/components/procedures/progress-entries/FileCardWithActions";
 import { DeletionNote } from "@/lib/shared/components/procedures/progress-entries/FileOrDeletionNote";
 import { LabelValueDisplay } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/LabelValueDisplay";
-import { RelatedProgressEntry } from "@/lib/shared/components/procedures/progress-entries/types";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 type OneOrMoreNodes = ReactNode | ReactNode[];
@@ -177,7 +177,7 @@ export function NewerVersionHint() {
 export function AllKeyDocumentVersions({
   relatedEntries,
 }: {
-  relatedEntries: RelatedProgressEntry[];
+  relatedEntries: ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner[];
 }) {
   return (
     <AccordionGroup
@@ -206,10 +206,13 @@ export function AllKeyDocumentVersions({
                   level="body-sm"
                   fontWeight="500"
                 >{`Version ${entry.keyDocumentVersion}`}</Typography>
-                <FileCardWithActions
-                  detailsProgressEntryId={entry.progressEntryId}
-                  file={entry.fileReference}
-                />
+                {isDefined(entry.fileReference) &&
+                  entry.fileReference.type !== "GenericFileReference" && (
+                    <FileCardWithActions
+                      detailsProgressEntryId={entry.progressEntryId}
+                      file={entry.fileReference}
+                    />
+                  )}
               </Box>
             ))}
           </Stack>

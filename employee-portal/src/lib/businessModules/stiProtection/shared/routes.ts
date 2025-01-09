@@ -18,6 +18,8 @@ export const routes = {
       consultation: `${proceduresPath}/${procedureId}/consultation`,
       anamnesis: `${proceduresPath}/${procedureId}/anamnesis`,
       examination: `${proceduresPath}/${procedureId}/examination`,
+      rapidTest: `${proceduresPath}/${procedureId}/examination/rapid-test`,
+      laboratoryTest: `${proceduresPath}/${procedureId}/examination/laboratory-test`,
       report: `${proceduresPath}/${procedureId}/report`,
       progressEntries: `${proceduresPath}/${procedureId}/progress-entries`,
     }),

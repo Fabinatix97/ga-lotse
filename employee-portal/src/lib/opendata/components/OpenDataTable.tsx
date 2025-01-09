@@ -8,11 +8,10 @@
 import { ApiResource, ApiVersion } from "@eshg/employee-portal-api/opendata";
 import Add from "@mui/icons-material/Add";
 import { Button, Stack } from "@mui/joy";
-import { useParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
-import { routes } from "@/lib/baseModule/shared/routes";
-import { NewEntrySidebar } from "@/lib/opendata/components/NewEntrySidebar";
-import { ViewEntrySidebar } from "@/lib/opendata/components/ViewEntrySidebar";
+import { useEntryDetailsSidebar } from "@/lib/opendata/components/EntryDetailsSidebar";
+import { useNewEntrySidebar } from "@/lib/opendata/components/NewEntrySidebar";
 import { openDataColumns } from "@/lib/opendata/components/openDataColumns";
 import { deleteVersionDialogOptions } from "@/lib/opendata/helper";
 import {
@@ -21,42 +20,50 @@ import {
 } from "@/lib/opendata/hooks/useOpenDataFilterSettings";
 import { useDeleteVersion } from "@/lib/opendata/mutations/opendata";
 import { useGetOpenDocuments } from "@/lib/opendata/queries/opendata";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
+import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
+import { SearchFilter } from "@/lib/shared/components/tableFilters/SearchFilter";
+import {
+  parseOptionalString,
+  parseReadonlyPageParams,
+} from "@/lib/shared/helpers/searchParams";
+import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
-import { useSidebarWithFormRef } from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function OpenDataTable() {
+  const tableControl = useTableControl({ serverSideSorting: true });
   const { openConfirmationDialog } = useConfirmationDialog();
-  const newEntrySidebar = useSidebarWithFormRef({
-    component: NewEntrySidebar,
-  });
+  const newEntrySidebar = useNewEntrySidebar();
+  const entryDetailsSidebar = useEntryDetailsSidebar();
 
+  const searchParams = useSearchParams();
   const filterSettings = useOpenDataFilterSettings();
 
   const deleteVersion = useDeleteVersion();
   const { data } = useGetOpenDocuments({
+    searchString: parseOptionalString(searchParams.get("searchQuery")),
+    ...parseReadonlyPageParams(searchParams),
     ...getOpenDataFilters(filterSettings.activeValues),
   });
 
-  const { id } = useParams();
-  const selectedVersion = data
-    .flatMap((resource) => resource.subRows ?? [])
-    .find((version) => version.data.externalId === id);
-
   function handleAddNewEntry() {
-    newEntrySidebar.open({ prefilledValues: { resourceName: "" } });
+    newEntrySidebar.open({
+      prefilledValues: { resourceName: "", versionName: "" },
+    });
   }
 
   function handleAddNewVersion(entry: ApiResource) {
+    const latestVersionName = entry.versions[0]?.versionName ?? "";
     newEntrySidebar.open({
-      prefilledValues: { resourceName: entry.resourceName },
+      prefilledValues: {
+        resourceName: entry.resourceName,
+        versionName: latestVersionName,
+      },
     });
   }
 
@@ -68,63 +75,64 @@ export function OpenDataTable() {
   }
 
   return (
-    <>
-      <TablePage
-        fullHeight
-        controls={
-          <ButtonBar
-            left={
-              <Stack direction="row" gap={2} flexWrap="wrap-reverse">
-                <FilterButton {...filterSettings.filterButtonProps} />
-                {/* <SearchFilter
-                  tableControl={tableControl}
-                  searchParamName="name"
-                  label="Suche"
-                /> */}
-              </Stack>
-            }
-            right={
-              <Button onClick={handleAddNewEntry} startDecorator={<Add />}>
-                Datensatz anlegen
-              </Button>
-            }
+    <TablePage
+      aria-label="Einträge"
+      fullHeight
+      controls={
+        <Stack
+          direction="row"
+          flexWrap="wrap-reverse"
+          justifyContent="space-between"
+          gap={2}
+        >
+          <Stack direction="row" flexWrap="wrap" gap="inherit">
+            <FilterButton {...filterSettings.filterButtonProps} />
+            <SearchFilter
+              tableControl={tableControl}
+              searchParamName="searchQuery"
+              label="Suche"
+            />
+          </Stack>
+          <Button onClick={handleAddNewEntry} startDecorator={<Add />}>
+            Datensatz anlegen
+          </Button>
+        </Stack>
+      }
+      filterSettings={
+        filterSettings.filterSettingsVisible && (
+          <FilterSettingsSheet {...filterSettings.filterSettingsSheetProps}>
+            <FilterSettings {...filterSettings.filterSettingsProps} />
+          </FilterSettingsSheet>
+        )
+      }
+    >
+      <TableSheet
+        footer={
+          <Pagination
+            totalCount={data.totalElements}
+            {...tableControl.paginationProps}
           />
-        }
-        filterSettings={
-          filterSettings.filterSettingsVisible && (
-            <FilterSettingsSheet {...filterSettings.filterSettingsSheetProps}>
-              <FilterSettings {...filterSettings.filterSettingsProps} />
-            </FilterSettingsSheet>
-          )
         }
       >
-        <TableSheet>
-          <DataTable
-            data={data}
-            columns={openDataColumns({
-              handleAddNewVersion,
-              handleDeleteVersion,
-            })}
-            getSubRows={(row) => row.subRows}
-            rowNavigation={{
-              route: (row) => {
-                const { data, type } = row.original;
-                if (type !== "version") {
-                  return undefined;
-                }
-                return routes.opendata.details(data.externalId);
-              },
-              focusColumnAccessorKey: "name",
-            }}
-          />
-        </TableSheet>
-      </TablePage>
-
-      {selectedVersion && (
-        <OverlayBoundary>
-          <ViewEntrySidebar version={selectedVersion} />
-        </OverlayBoundary>
-      )}
-    </>
+        <DataTable
+          data={data.elements}
+          columns={openDataColumns({
+            handleAddNewVersion,
+            handleDeleteVersion,
+          })}
+          getSubRows={(row) => row.subRows}
+          rowNavigation={{
+            onClick: ({ original }) => {
+              const { type, data } = original;
+              if (type !== "version") {
+                return;
+              }
+              return entryDetailsSidebar.open({ versionId: data.externalId });
+            },
+            focusColumnAccessorKey: "name",
+          }}
+        />
+      </TableSheet>
+    </TablePage>
   );
 }

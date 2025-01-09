@@ -18,8 +18,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -116,12 +119,34 @@ public class FacilityController implements FacilityApi {
   @Transactional(readOnly = true)
   public GetFacilityFileStatesResponse getFacilityFileStates(GetFacilityFileStatesRequest request) {
     List<UUID> queryIds = request.fileStateIds().stream().distinct().toList();
+    Map<UUID, Boolean> outdatedByFileStateId;
 
-    List<Facility> facilityFileStates =
-        facilityRepository
-            .findAllByExternalIdInAndReferenceFacilityIsNotNullOrderByIdWithJoinFetches(queryIds);
+    List<Facility> facilityFileStates;
 
-    return FacilityMapper.mapToGetFacilityFileStatesResponse(queryIds, facilityFileStates);
+    if (Boolean.TRUE.equals(request.checkOutdated())) {
+      facilityFileStates =
+          facilityRepository
+              .findAllByExternalIdInAndReferenceFacilityIsNotNullOrderByIdWithJoinFetches(queryIds);
+
+      outdatedByFileStateId =
+          facilityFileStates.stream()
+              .collect(
+                  Collectors.toMap(
+                      Facility::getExternalId,
+                      facilityFileState ->
+                          FacilityService.isFacilityFileStateOutdated(
+                              facilityFileState, facilityFileState.getReferenceFacility())));
+    } else {
+      facilityFileStates =
+          facilityRepository
+              .findAllFetchingReferenceByExternalIdInAndReferenceFacilityIsNotNullOrderByIdWithJoinFetches(
+                  queryIds);
+
+      outdatedByFileStateId = Collections.emptyMap();
+    }
+
+    return FacilityMapper.mapToGetFacilityFileStatesResponse(
+        queryIds, facilityFileStates, outdatedByFileStateId);
   }
 
   @Override

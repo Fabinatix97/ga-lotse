@@ -87,7 +87,7 @@ public class AggregationResultUtil {
         .toList();
   }
 
-  private static boolean isSameDataSource(
+  public static boolean isSameDataSource(
       TableColumn tableColumn, AvailableDataSource availableDataSource) {
     return tableColumn.getDataSourceId().equals(availableDataSource.id())
         && tableColumn.getBusinessModuleName().equals(availableDataSource.businessModuleName());
@@ -198,7 +198,7 @@ public class AggregationResultUtil {
 
     return switch (filterTableColumn.getValueType()) {
       case BOOLEAN -> !(filter instanceof BooleanFilterParameterDto);
-      case DATE, PROCEDURE_ID, CENTRAL_FILE_ID -> true;
+      case DATE, PROCEDURE_ID -> true;
       case DECIMAL ->
           !(filter instanceof DecimalRangeFilterParameterDto)
               && !(filter instanceof DecimalValueFilterParameterDto);

@@ -7,6 +7,7 @@ import {
   ApiChild,
   ApiGender,
   ApiInstitution,
+  ApiProcedureStatus,
 } from "@eshg/employee-portal-api/dental";
 
 import { BaseEntity, mapBaseEntity } from "@/lib/shared/api/models/BaseEntity";
@@ -21,6 +22,7 @@ export interface Child extends BaseEntity {
   readonly year: number;
   readonly groupName: string;
   readonly institution: ApiInstitution;
+  readonly isClosed: boolean;
 }
 
 export function mapChild(response: ApiChild): Child {
@@ -33,5 +35,6 @@ export function mapChild(response: ApiChild): Child {
     year: response.year,
     groupName: response.groupName,
     institution: mapInstitution(response.institution),
+    isClosed: response.status == ApiProcedureStatus.Closed,
   };
 }

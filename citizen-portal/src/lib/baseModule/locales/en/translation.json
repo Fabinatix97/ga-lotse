@@ -16,7 +16,12 @@
   "health_department_title": "Health Department",
   "most_searched_services_title": "Most Search for Services",
   "common": {
+    "email": "E-Mail",
+    "phone": "Phone",
     "address": "Address",
+    "contact": "Contact",
+    "different_billing_address": "Different Billing Address",
+    "contact_person": "Contact Person",
     "affectedPerson_one": "Affected Person",
     "affectedPerson_other": "Affected Persons",
     "back": "Back",
@@ -27,11 +32,15 @@
     "custodian_one": "Custodian",
     "custodian_other": "Custodians",
     "facility": "Facility",
+    "organization_profile": "Company Profile",
+    "individual_profile": "My Profile",
+    "personal_data": "Personal Data",
     "name": "Name",
     "overview": "Overview",
     "person_one": "Person",
     "person_other": "Persons",
-    "page_loading": "Page loading…"
+    "page_loading": "Page loading…",
+    "leave": "Leave My Area"
   },
   "gender": {
     "not_specified": "Not specified",
@@ -63,5 +72,33 @@
   },
   "error": {
     "title": "Error loading"
+  },
+  "address": {
+    "street_and_housenumber": "Street and House No.",
+    "address_addition": "Address addition",
+    "postbox": "Postbox number",
+    "postal_code": "Postal code",
+    "city": "City",
+    "country": "Country"
+  },
+  "person": {
+    "title": "Title",
+    "salutation": "Salutation",
+    "first_name": "First Name",
+    "last_name": "Name",
+    "gender": "Gender",
+    "date_of_birth": "Date of Birth",
+    "name_at_birth": "Name at Birth",
+    "place_of_birth": "Place of Birth",
+    "country_of_birth": "Country of Birth"
+  },
+  "facility": {
+    "contact_person": {
+      "title": "Title",
+      "salutation": "Salutation",
+      "role": "Role",
+      "first_name": "First Name",
+      "last_name": "Name"
+    }
   }
 }

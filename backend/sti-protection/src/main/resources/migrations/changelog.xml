@@ -40,5 +40,7 @@
   <include file="migrations/0027_add_laboratory_test_examination.xml"/>
   <include file="migrations/0028_invert_inbox_procedure_relationships.xml"/>
   <include file="migrations/0029_add_official_medical_service_appointment_type.xml"/>
+  <include file="migrations/0030_add_consultation.xml"/>
+  <include file="migrations/0031_add_salutation_inbox_procedure.xml"/>
 
 </databaseChangeLog>

@@ -26,6 +26,8 @@ import {
 } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 
+const ADDITIONAL_INFO_MAX_LENGTH = 60;
+
 interface WaitingRoomDetails {
   info: string;
   status: ApiWaitingStatus | null;
@@ -68,6 +70,7 @@ export function WaitingRoomSection({
               label="Zusätzliche Info"
               name="info"
               disabled={!isOpen}
+              maxLength={ADDITIONAL_INFO_MAX_LENGTH}
             />
             <SelectField
               label="Status"

@@ -36,7 +36,7 @@ export function useCreateNewChat() {
           (room) => room.getMyMembership() === KnownMembership.Join.toString(),
         );
       const chatRooms = joinedRooms.map((room) =>
-        getRoomNameAndCommunicationType(room),
+        getRoomNameAndCommunicationType(matrixClient, room),
       );
 
       return findDirectChat({ chatRooms, userId });

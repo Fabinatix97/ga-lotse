@@ -10,6 +10,7 @@ import {
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useReportApi } from "@/lib/businessModules/statistics/api/clients";
+import { mapReportDataSourceSensitivityFrontendToApi } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import {
   FlatAttribute,
   mapTableColumnHeadersToFlatAttributes,
@@ -43,6 +44,9 @@ export function mapToReportDetailsView(
       name: response.tableColumnHeaders[0]!.dataSourceName,
       attributeLabels: attributes.map((it) => it.name),
       datasetAmount: response.totalNumberOfElements,
+      sensitivity: mapReportDataSourceSensitivityFrontendToApi(
+        response.dataSensitivity,
+      ),
     },
     analyses: mapAnalyses(response.analyses, attributes),
     attributes: attributes,

@@ -9,7 +9,7 @@ import static de.eshg.medicalregistry.mapper.ProcedureMapper.mapStatusToDto;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.FacilityApi;
-import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
+import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesRequest;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesResponse;
 import de.eshg.lib.procedure.domain.model.Procedure;
@@ -39,7 +39,7 @@ public class SearchProcedureByPersonMapper
   @Override
   public Map<UUID, List<MedicalRegistryEntrySearchResultDto>> mapToInterface(
       Map<UUID, List<MedicalRegistryProcedure>> domainProcedures) {
-    Map<UUID, AddFacilityFileStateResponse> facilityFileStateById =
+    Map<UUID, GetFacilityFileStateResponse> facilityFileStateById =
         resolveFacilityFileStates(domainProcedures);
     return domainProcedures.entrySet().stream()
         .collect(
@@ -47,7 +47,7 @@ public class SearchProcedureByPersonMapper
                 Entry::getKey, entry -> mapToInterface(entry.getValue(), facilityFileStateById)));
   }
 
-  private Map<UUID, AddFacilityFileStateResponse> resolveFacilityFileStates(
+  private Map<UUID, GetFacilityFileStateResponse> resolveFacilityFileStates(
       Map<UUID, List<MedicalRegistryProcedure>> domainProcedures) {
     List<UUID> fileStateIds = collectFacilityFileStates(domainProcedures);
 
@@ -59,7 +59,7 @@ public class SearchProcedureByPersonMapper
         facilityApi.getFacilityFileStates(new GetFacilityFileStatesRequest(fileStateIds));
 
     return facilityFileStates.facilityFileStates().stream()
-        .collect(StreamUtil.toLinkedHashMap(AddFacilityFileStateResponse::id, Function.identity()));
+        .collect(StreamUtil.toLinkedHashMap(GetFacilityFileStateResponse::id, Function.identity()));
   }
 
   private List<UUID> collectFacilityFileStates(
@@ -75,7 +75,7 @@ public class SearchProcedureByPersonMapper
 
   private List<MedicalRegistryEntrySearchResultDto> mapToInterface(
       List<MedicalRegistryProcedure> value,
-      Map<UUID, AddFacilityFileStateResponse> facilityFileStateById) {
+      Map<UUID, GetFacilityFileStateResponse> facilityFileStateById) {
     return value.stream()
         .map(medicalRegistryEntry -> mapToInterface(medicalRegistryEntry, facilityFileStateById))
         .toList();
@@ -83,7 +83,7 @@ public class SearchProcedureByPersonMapper
 
   public MedicalRegistryEntrySearchResultDto mapToInterface(
       MedicalRegistryProcedure medicalRegistryEntry,
-      Map<UUID, AddFacilityFileStateResponse> facilityFileStateById) {
+      Map<UUID, GetFacilityFileStateResponse> facilityFileStateById) {
     return new MedicalRegistryEntrySearchResultDto(
         medicalRegistryEntry.getExternalId(),
         medicalRegistryEntry.getVersion(),
@@ -95,11 +95,11 @@ public class SearchProcedureByPersonMapper
 
   private List<String> mapToPracticeNames(
       List<Practice> relatedFacilities,
-      Map<UUID, AddFacilityFileStateResponse> facilityFileStateById) {
+      Map<UUID, GetFacilityFileStateResponse> facilityFileStateById) {
     return relatedFacilities.stream()
         .map(RelatedFacility::getCentralFileStateId)
         .map(facilityFileStateById::get)
-        .map(AddFacilityFileStateResponse::name)
+        .map(GetFacilityFileStateResponse::name)
         .toList();
   }
 }

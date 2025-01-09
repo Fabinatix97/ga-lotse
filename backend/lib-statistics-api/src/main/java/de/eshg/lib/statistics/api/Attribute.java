@@ -15,25 +15,7 @@ public record Attribute(
     @NotBlank String name,
     @NotNull String code,
     @NotNull ValueType valueType,
-    SubjectType subjectType,
     String unit,
     @Size(min = 1) @Valid List<ValueOptionInternal> valueOptions,
     @NotBlank String category,
-    @NotNull boolean mandatory) {
-
-  public Attribute(
-      String name, String code, SubjectType subjectType, String category, boolean mandatory) {
-    this(name, code, ValueType.CENTRAL_FILE_ID, subjectType, null, null, category, mandatory);
-  }
-
-  public Attribute(
-      String name,
-      String code,
-      ValueType valueType,
-      String unit,
-      List<ValueOptionInternal> valueOptions,
-      String category,
-      boolean mandatory) {
-    this(name, code, valueType, null, unit, valueOptions, category, mandatory);
-  }
-}
+    @NotNull boolean mandatory) {}

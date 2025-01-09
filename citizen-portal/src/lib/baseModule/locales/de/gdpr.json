@@ -1,0 +1,49 @@
+{
+  "overview": {
+    "title": "Datenschutzrechte gemäß DSGVO",
+    "right_of_access": {
+      "title": "Datenauskunft",
+      "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor Aenean massa.",
+      "button": "Datenauskunft beantragen"
+    },
+    "right_to_erasure": {
+      "title": "Löschanfrage",
+      "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor Aenean massa.",
+      "button": "Daten löschen"
+    },
+    "right_to_object": {
+      "title": "Datenverarbeitung widersprechen",
+      "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor Aenean massa.",
+      "button": "Widerspruch einreichen"
+    },
+    "right_to_rectification": {
+      "title": "Datenkorrektur",
+      "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor Aenean massa.",
+      "button": "Daten korrigieren"
+    }
+  },
+  "entrypoint": {
+    "title": "Selbstauskunft personenbezogene Daten",
+    "intro_section": {
+      "title": "Datenschutzrechte",
+      "description": "Hier wird ein Intro-Text zu der Datenschutzrichtlinien eingefügt. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes.Lorem Ipsum ist ein einfacher Demo-Text für die Print- und Schriftindustrie. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis nato."
+    },
+    "your_rights_section": {
+      "description": "Hier können Sie ganz einfach Ihre gespeicherten personenbezogenen Daten anfordern – entweder online oder, noch besser, persönlich vor Ort beim Gesundheitsamt. Wir freuen uns, Sie dort begrüßen zu dürfen und helfen Ihnen gerne bei der Verifizierung.",
+      "online": {
+        "title": "Online",
+        "internet": {
+          "title": "Internet",
+          "description": "Sie können sich online als Privatperson oder Unternehmen Authentifizieren."
+        },
+        "buttons": {
+          "person": "Als Privatperson",
+          "organization": "Als Unternehmen"
+        }
+      },
+      "in_person": {
+        "title": "Vor Ort"
+      }
+    }
+  }
+}

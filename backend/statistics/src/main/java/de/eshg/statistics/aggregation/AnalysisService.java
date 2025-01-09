@@ -6,7 +6,6 @@
 package de.eshg.statistics.aggregation;
 
 import de.eshg.domain.model.BaseEntity;
-import de.eshg.lib.statistics.api.ValueType;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.statistics.GeoJsonHandler;
@@ -42,6 +41,7 @@ import de.eshg.statistics.persistence.entity.ChartConfiguration;
 import de.eshg.statistics.persistence.entity.Diagram;
 import de.eshg.statistics.persistence.entity.Evaluation;
 import de.eshg.statistics.persistence.entity.TableColumn;
+import de.eshg.statistics.persistence.entity.TableColumnValueType;
 import de.eshg.statistics.persistence.entity.TableRow;
 import de.eshg.statistics.persistence.entity.ValueToMeaning;
 import de.eshg.statistics.persistence.entity.chart.ChoroplethMapConfiguration;
@@ -271,7 +271,10 @@ public class AnalysisService {
     validateTableColumValueOptionOrBoolean(
         tableColumnPrimary,
         errorMessage.formatted(
-            name, ValueType.BOOLEAN, ValueType.VALUE_WITH_OPTIONS, PRIMARY_ATTRIBUTE));
+            name,
+            TableColumnValueType.BOOLEAN,
+            TableColumnValueType.VALUE_WITH_OPTIONS,
+            PRIMARY_ATTRIBUTE));
 
     if (barChartConfiguration.secondaryAttribute() == null) {
       if (barChartConfiguration.grouping() != null || barChartConfiguration.scaling() != null) {
@@ -286,7 +289,10 @@ public class AnalysisService {
       validateTableColumValueOptionOrBoolean(
           tableColumnSecondary,
           errorMessage.formatted(
-              name, ValueType.BOOLEAN, ValueType.VALUE_WITH_OPTIONS, SECONDARY_ATTRIBUTE));
+              name,
+              TableColumnValueType.BOOLEAN,
+              TableColumnValueType.VALUE_WITH_OPTIONS,
+              SECONDARY_ATTRIBUTE));
       validateThatTableColumnsAreDifferent(tableColumnPrimary, tableColumnSecondary, name);
 
       if (barChartConfiguration.grouping() == null || barChartConfiguration.scaling() == null) {
@@ -336,7 +342,8 @@ public class AnalysisService {
         "'%s': HistogramChartConfigurations require an attribute of type %s or %s as '%s'";
     validateTableColumnDecimalOrInteger(
         tableColumnPrimary,
-        errorMessage.formatted(name, ValueType.DECIMAL, ValueType.INTEGER, PRIMARY_ATTRIBUTE));
+        errorMessage.formatted(
+            name, TableColumnValueType.DECIMAL, TableColumnValueType.INTEGER, PRIMARY_ATTRIBUTE));
 
     if (histogramChartConfiguration.secondaryAttribute() == null) {
       if (histogramChartConfiguration.grouping() != null
@@ -352,7 +359,10 @@ public class AnalysisService {
       validateTableColumValueOptionOrBoolean(
           tableColumnSecondary,
           errorMessage.formatted(
-              name, ValueType.BOOLEAN, ValueType.VALUE_WITH_OPTIONS, SECONDARY_ATTRIBUTE));
+              name,
+              TableColumnValueType.BOOLEAN,
+              TableColumnValueType.VALUE_WITH_OPTIONS,
+              SECONDARY_ATTRIBUTE));
 
       if (histogramChartConfiguration.grouping() == null
           || histogramChartConfiguration.scaling() == null) {
@@ -402,7 +412,7 @@ public class AnalysisService {
 
     BigDecimal minimum;
     BigDecimal maximum;
-    if (tableColumnPrimary.getValueType().equals(ValueType.DECIMAL)) {
+    if (tableColumnPrimary.getValueType().equals(TableColumnValueType.DECIMAL)) {
       minimum = tableColumnPrimary.getMinMaxNullUnknownValues().getMinDecimal();
       maximum = tableColumnPrimary.getMinMaxNullUnknownValues().getMaxDecimal();
     } else {
@@ -477,7 +487,8 @@ public class AnalysisService {
     String errorMessage = "'%s': PieChartConfigurations require an attribute of type %s or %s";
     validateTableColumValueOptionOrBoolean(
         tableColumnPrimary,
-        errorMessage.formatted(name, ValueType.BOOLEAN, ValueType.VALUE_WITH_OPTIONS));
+        errorMessage.formatted(
+            name, TableColumnValueType.BOOLEAN, TableColumnValueType.VALUE_WITH_OPTIONS));
   }
 
   private static void validatePointBasedChartConfiguration(
@@ -493,14 +504,22 @@ public class AnalysisService {
     validateTableColumnDecimalOrInteger(
         tableColumnX,
         errorMessage.formatted(
-            name, configName, ValueType.DECIMAL, ValueType.INTEGER, "xAttribute"));
+            name,
+            configName,
+            TableColumnValueType.DECIMAL,
+            TableColumnValueType.INTEGER,
+            "xAttribute"));
 
     TableColumn tableColumnY =
         AggregationResultUtil.getTableColumn(chartConfiguration.yAttribute(), aggregationResult);
     validateTableColumnDecimalOrInteger(
         tableColumnY,
         errorMessage.formatted(
-            name, configName, ValueType.DECIMAL, ValueType.INTEGER, "yAttribute"));
+            name,
+            configName,
+            TableColumnValueType.DECIMAL,
+            TableColumnValueType.INTEGER,
+            "yAttribute"));
 
     if (chartConfiguration.secondaryAttribute() != null) {
       TableColumn tableColumnSecondary =
@@ -512,8 +531,8 @@ public class AnalysisService {
           errorMessage.formatted(
               name,
               configName,
-              ValueType.BOOLEAN,
-              ValueType.VALUE_WITH_OPTIONS,
+              TableColumnValueType.BOOLEAN,
+              TableColumnValueType.VALUE_WITH_OPTIONS,
               SECONDARY_ATTRIBUTE));
     }
   }
@@ -528,36 +547,39 @@ public class AnalysisService {
 
   private static void validateTableColumValueOptionOrBoolean(
       TableColumn tableColumn, String errorMessage) {
-    if (!tableColumn.getValueType().equals(ValueType.VALUE_WITH_OPTIONS)
-        && !tableColumn.getValueType().equals(ValueType.BOOLEAN)) {
+    if (!tableColumn.getValueType().equals(TableColumnValueType.VALUE_WITH_OPTIONS)
+        && !tableColumn.getValueType().equals(TableColumnValueType.BOOLEAN)) {
       throw new BadRequestException(errorMessage);
     }
   }
 
   private static void validateTableColumnDecimalOrInteger(
       TableColumn tableColumn, String errorMessage) {
-    if (!tableColumn.getValueType().equals(ValueType.DECIMAL)
-        && !tableColumn.getValueType().equals(ValueType.INTEGER)) {
+    if (!tableColumn.getValueType().equals(TableColumnValueType.DECIMAL)
+        && !tableColumn.getValueType().equals(TableColumnValueType.INTEGER)) {
       throw new BadRequestException(errorMessage);
     }
   }
 
   private static void validateChoroplethPrimaryAttribute(TableColumn tableColumn) {
-    if (!tableColumn.getValueType().equals(ValueType.VALUE_WITH_OPTIONS)
-        && !tableColumn.getValueType().equals(ValueType.TEXT)) {
+    if (!tableColumn.getValueType().equals(TableColumnValueType.VALUE_WITH_OPTIONS)
+        && !tableColumn.getValueType().equals(TableColumnValueType.TEXT)) {
       throw new BadRequestException(
           "ChoroplethMapConfigurations require an attribute of type %s or %s as 'primaryAttribute'"
-              .formatted(ValueType.VALUE_WITH_OPTIONS, ValueType.TEXT));
+              .formatted(TableColumnValueType.VALUE_WITH_OPTIONS, TableColumnValueType.TEXT));
     }
   }
 
   private static void validateChoroplethSecondaryAttribute(TableColumn tableColumn) {
-    if (!tableColumn.getValueType().equals(ValueType.BOOLEAN)
-        && !tableColumn.getValueType().equals(ValueType.INTEGER)
-        && !tableColumn.getValueType().equals(ValueType.DECIMAL)) {
+    if (!tableColumn.getValueType().equals(TableColumnValueType.BOOLEAN)
+        && !tableColumn.getValueType().equals(TableColumnValueType.INTEGER)
+        && !tableColumn.getValueType().equals(TableColumnValueType.DECIMAL)) {
       throw new BadRequestException(
           "ChoroplethMapConfigurations require an attribute of type %s or %s or %s as 'secondaryAttribute'"
-              .formatted(ValueType.BOOLEAN, ValueType.INTEGER, ValueType.DECIMAL));
+              .formatted(
+                  TableColumnValueType.BOOLEAN,
+                  TableColumnValueType.INTEGER,
+                  TableColumnValueType.DECIMAL));
     }
   }
 
@@ -675,7 +697,7 @@ public class AnalysisService {
       return null;
     }
     List<String> keys;
-    if (tableColumn.getValueType().equals(ValueType.BOOLEAN)) {
+    if (tableColumn.getValueType().equals(TableColumnValueType.BOOLEAN)) {
       keys = List.of("Ja", "Nein");
     } else {
       keys = getValueToMeaningKeys(tableColumn);
@@ -766,7 +788,7 @@ public class AnalysisService {
     if (cellEntry.getValue() == null) {
       return null;
     }
-    if (cellEntry.getTableColumn().getValueType().equals(ValueType.BOOLEAN)) {
+    if (cellEntry.getTableColumn().getValueType().equals(TableColumnValueType.BOOLEAN)) {
       return Boolean.TRUE.equals(cellEntry.getValue()) ? "Ja" : "Nein";
     }
     String stringValue = cellEntry.getValue().toString();
@@ -907,10 +929,10 @@ public class AnalysisService {
     notNullSpecifications.add(TableRowSpecifications.getNotNullSpecification(primaryTableColumn));
     if (secondaryTableColumn != null) {
       switch (secondaryTableColumn.getValueType()) {
-        case ValueType.BOOLEAN ->
+        case TableColumnValueType.BOOLEAN ->
             notNullSpecifications.add(
                 TableRowSpecifications.getNotNullSpecification(secondaryTableColumn));
-        case ValueType.DECIMAL, ValueType.INTEGER ->
+        case TableColumnValueType.DECIMAL, TableColumnValueType.INTEGER ->
             notNullSpecifications.add(
                 TableRowSpecifications.getNotNullAndNotUnknownSpecificationDecimalAndInteger(
                     secondaryTableColumn));
@@ -950,8 +972,8 @@ public class AnalysisService {
 
     String stringValue = cellEntry.getValue().toString();
     return switch (cellEntry.getTableColumn().getValueType()) {
-      case ValueType.TEXT -> stringValue;
-      case ValueType.VALUE_WITH_OPTIONS -> {
+      case TableColumnValueType.TEXT -> stringValue;
+      case TableColumnValueType.VALUE_WITH_OPTIONS -> {
         if (getValueToMeaningKeys(cellEntry.getTableColumn()).contains(stringValue)) {
           yield stringValue;
         } else {
@@ -1120,14 +1142,15 @@ public class AnalysisService {
         .compute(secondaryKey, (k, count) -> Objects.requireNonNull(count) + 1);
   }
 
-  private BigDecimal getValueAsBigDecimal(ValueType valueType, CellEntry cellEntry) {
+  private BigDecimal getValueAsBigDecimal(TableColumnValueType valueType, CellEntry cellEntry) {
     return switch (valueType) {
-      case ValueType.BOOLEAN ->
+      case TableColumnValueType.BOOLEAN ->
           Boolean.TRUE.equals(((BooleanEntry) cellEntry).getBoolValue())
               ? BigDecimal.ONE
               : BigDecimal.ZERO;
-      case ValueType.DECIMAL -> ((DecimalEntry) cellEntry).getBigDecimalValue();
-      case ValueType.INTEGER -> new BigDecimal(((IntegerEntry) cellEntry).getIntegerValue());
+      case TableColumnValueType.DECIMAL -> ((DecimalEntry) cellEntry).getBigDecimalValue();
+      case TableColumnValueType.INTEGER ->
+          new BigDecimal(((IntegerEntry) cellEntry).getIntegerValue());
       default -> throw new IllegalStateException("Unexpected value: " + valueType);
     };
   }

@@ -97,6 +97,10 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
   }
 
   private void gdpr() {
+    requestMatchers(
+            POST,
+            BaseUrls.Base.GDPR_PROCEDURE_API + BaseUrls.Base.GDPR_PROCEDURE_CITIZEN_PORTAL_URL)
+        .hasRole(CitizenPermissionRole.MUK_USER);
     requestMatchers(GET, BaseUrls.Base.GDPR_PROCEDURE_API + "/*/fileStateIds")
         .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW);
     requestMatchers(GET, BaseUrls.Base.GDPR_PROCEDURE_API + "/*/downloads")

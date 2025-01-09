@@ -28,7 +28,7 @@ import static org.springframework.data.jpa.domain.Specification.where;
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.FacilityApi;
 import de.eshg.base.centralfile.PersonApi;
-import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
+import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesRequest;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
@@ -560,9 +560,26 @@ public class ProcedureController<
       return null;
     }
 
-    return Duration.ofMinutes(
-            Math.round(durations.stream().mapToLong(Duration::toMinutes).average().orElseThrow()))
-        .toString();
+    Duration duration =
+        Duration.ofMinutes(
+            Math.round(durations.stream().mapToLong(Duration::toMinutes).average().orElseThrow()));
+    if (isValidDuration(duration)) {
+      return duration.toString();
+    } else {
+      log.warn(
+          "Negative duration for metrics of '{}' from '{}' to '{}'",
+          procedureType,
+          timeRangeStart,
+          timeRangeEnd);
+      return null;
+    }
+  }
+
+  /*
+   * Duration.isNegative only checks the seconds, not the nanos
+   */
+  private static boolean isValidDuration(Duration duration) {
+    return duration.isZero() || duration.isPositive();
   }
 
   @Override
@@ -679,12 +696,12 @@ public class ProcedureController<
 
     List<DetailedFacilityDto> result = new ArrayList<>();
 
-    for (AddFacilityFileStateResponse addFacilityFileStateResponse :
+    for (GetFacilityFileStateResponse getFacilityFileStateResponse :
         facilityFileStatesResponse.facilityFileStates()) {
       FacilityType facilityType =
-          facilityTypeByCentralFileStateId.get(addFacilityFileStateResponse.id());
+          facilityTypeByCentralFileStateId.get(getFacilityFileStateResponse.id());
       FacilityTypeDto facilityTypeDto = FacilityTypeMapper.toInterfaceType(facilityType);
-      result.add(new DetailedFacilityDto(addFacilityFileStateResponse, facilityTypeDto));
+      result.add(new DetailedFacilityDto(getFacilityFileStateResponse, facilityTypeDto));
     }
 
     return result;

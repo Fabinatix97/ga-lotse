@@ -5,6 +5,7 @@
 
 "use client";
 
+import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { DentalChildPageProps } from "@/app/(businessModules)/dental/children/[childId]/layout";
@@ -14,8 +15,14 @@ import { ChildDetailsPage } from "@/lib/businessModules/dental/features/children
 
 export default function DentalChildDetailsPage(props: DentalChildPageProps) {
   const childApi = useChildApi();
-  const { data: child } = useSuspenseQuery(
+  const childResult = useSuspenseQuery(
     getChildDetailsQuery(childApi, props.params.childId),
   );
-  return <ChildDetailsPage child={child} />;
+  const child = childResult.data;
+
+  return (
+    <DisabledFormProvider disabled={child.isClosed}>
+      <ChildDetailsPage child={child} isFetching={childResult.isFetching} />
+    </DisabledFormProvider>
+  );
 }

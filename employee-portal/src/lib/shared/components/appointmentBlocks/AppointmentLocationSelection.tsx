@@ -22,7 +22,7 @@ export function AppointmentLocationSelection(
     <FormGroupGrid>
       <Grid xs={4}>
         <SearchContactField
-          name="locationId"
+          name="location"
           label={translatedCategory}
           category={props.contactCategory}
         />

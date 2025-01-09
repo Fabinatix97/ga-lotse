@@ -132,7 +132,7 @@ export function PersonalInformationForm(props: NestedFormProps) {
       <Grid xxl={6} />
 
       <Grid xxs={6}>
-        <EmailField name={fieldName("email")} label={"Email"} />
+        <EmailField name={fieldName("email")} label={"E-Mail-Adresse"} />
       </Grid>
       <Grid xxl={6} />
 

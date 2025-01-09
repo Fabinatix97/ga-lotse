@@ -17,6 +17,7 @@ import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.TaskType;
+import de.eshg.lib.procedure.util.ProcedureValidator;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.schoolentry.api.*;
@@ -154,6 +155,18 @@ public class SchoolEntryController {
     return ProcedureMapper.mapProcedureToDetailsDto(procedureDetailsData);
   }
 
+  @GetMapping("/by-person-id")
+  @Transactional(readOnly = true)
+  public GetProceduresWithDetailsResponse getProceduresByPersonQuery(
+      @RequestParam(name = "personId") UUID personId) {
+    List<ProcedureDetailsDto> procedures =
+        schoolEntryService
+            .findByPersonId(personId)
+            .map(ProcedureMapper::mapProcedureToDetailsDto)
+            .toList();
+    return new GetProceduresWithDetailsResponse(procedures);
+  }
+
   @PutMapping("/{procedureId}")
   @Transactional
   public ProcedureDetailsDto updateProcedure(
@@ -161,7 +174,7 @@ public class SchoolEntryController {
       @Valid @RequestBody UpdateProcedureRequest request) {
     SchoolEntryProcedure procedure =
         schoolEntryService.findProcedureByExternalIdForUpdate(procedureId, request.version());
-    Validator.validateProcedureStatusNotClosed(procedure);
+    ProcedureValidator.validateProcedureStatusNotClosed(procedure);
 
     SchoolEntryProcedure updatedProcedure = schoolEntryService.updateProcedure(procedure, request);
 
@@ -203,7 +216,7 @@ public class SchoolEntryController {
       @Valid @RequestBody UpdatePersonRequest request) {
     Person child = personService.findChildForUpdate(procedureId, request.version());
     SchoolEntryProcedure procedure = child.getProcedure();
-    Validator.validateProcedureStatusNotClosed(procedure);
+    ProcedureValidator.validateProcedureStatusNotClosed(procedure);
 
     personService.updateChildData(procedure, child, request);
     return augmentAndMap(procedure);
@@ -230,7 +243,7 @@ public class SchoolEntryController {
         personService.findPersonForUpdate(
             procedureId, request.fileStateId(), request.personVersion());
     SchoolEntryProcedure procedure = person.getProcedure();
-    Validator.validateProcedureStatusNotClosed(procedure);
+    ProcedureValidator.validateProcedureStatusNotClosed(procedure);
 
     SchoolEntryProcedure updatedProcedure =
         personService.syncPersonData(procedure, person, request);
@@ -245,7 +258,7 @@ public class SchoolEntryController {
     SchoolEntryProcedure procedure =
         schoolEntryService.findProcedureByExternalIdForUpdate(
             procedureId, request.procedureVersion());
-    Validator.validateProcedureStatusNotClosed(procedure);
+    ProcedureValidator.validateProcedureStatusNotClosed(procedure);
     personService.addCustodianToProcedure(procedure, request.custodian());
     return augmentAndMap(procedure);
   }
@@ -259,7 +272,7 @@ public class SchoolEntryController {
     Person custodian =
         personService.findPersonForUpdate(
             procedureId, custodianCentralFileStateId, request.version());
-    Validator.validateProcedureStatusNotClosed(custodian.getProcedure());
+    ProcedureValidator.validateProcedureStatusNotClosed(custodian.getProcedure());
     personService.updateCustodian(request, custodianCentralFileStateId, custodian);
     return augmentAndMap(custodian.getProcedure());
   }
@@ -273,7 +286,7 @@ public class SchoolEntryController {
     SchoolEntryProcedure procedure =
         schoolEntryService.findProcedureByExternalIdForUpdate(
             procedureId, request.procedureVersion());
-    Validator.validateProcedureStatusNotClosed(procedure);
+    ProcedureValidator.validateProcedureStatusNotClosed(procedure);
     personService.removeCustodian(custodianCentralFileStateId, procedure);
     return augmentAndMap(procedure);
   }
@@ -323,7 +336,7 @@ public class SchoolEntryController {
       @Valid @RequestBody HearingTestResultDto request) {
     HearingTestResult hearingTestResult =
         examinationResultService.findHearingTestResultForUpdate(procedureId, request.version());
-    Validator.validateProcedureStatusNotClosed(hearingTestResult.getProcedure());
+    ProcedureValidator.validateProcedureStatusNotClosed(hearingTestResult.getProcedure());
     Validator.validateUpdateHearingTestResult(request);
 
     examinationResultService.updateHearingTestResult(
@@ -350,7 +363,7 @@ public class SchoolEntryController {
       @Valid @RequestBody EyeExaminationResultDto request) {
     EyeExaminationResult eyeExaminationResult =
         examinationResultService.findEyeExaminationResultForUpdate(procedureId, request.version());
-    Validator.validateProcedureStatusNotClosed(eyeExaminationResult.getProcedure());
+    ProcedureValidator.validateProcedureStatusNotClosed(eyeExaminationResult.getProcedure());
     Validator.validateUpdateEyeExaminationResult(request);
 
     examinationResultService.updateEyeExaminationResult(
@@ -376,7 +389,7 @@ public class SchoolEntryController {
     SopessExaminationResult sopessExaminationResult =
         examinationResultService.findSopessExaminationResultForUpdate(
             procedureId, request.getVersion());
-    Validator.validateProcedureStatusNotClosed(sopessExaminationResult.getProcedure());
+    ProcedureValidator.validateProcedureStatusNotClosed(sopessExaminationResult.getProcedure());
     Validator.validateUpdateSopessExaminationResult(request);
 
     examinationResultService.updateSopessExaminationResult(
@@ -405,7 +418,7 @@ public class SchoolEntryController {
     DevelopmentScreening developmentScreeningResult =
         examinationResultService.findDevelopmentScreeningResultForUpdate(
             procedureId, request.version());
-    Validator.validateProcedureStatusNotClosed(developmentScreeningResult.getProcedure());
+    ProcedureValidator.validateProcedureStatusNotClosed(developmentScreeningResult.getProcedure());
     validator.validateUpdateDevelopmentScreeningResult(request);
 
     examinationResultService.updateDevelopmentScreeningResult(
@@ -431,7 +444,7 @@ public class SchoolEntryController {
       @Valid @RequestBody VaccinationStatusDto request) {
     VaccinationStatus vaccinationStatus =
         examinationResultService.findVaccinationStatusForUpdate(procedureId, request.version());
-    Validator.validateProcedureStatusNotClosed(vaccinationStatus.getProcedure());
+    ProcedureValidator.validateProcedureStatusNotClosed(vaccinationStatus.getProcedure());
 
     examinationResultService.updateVaccinationStatus(
         vaccinationStatus, VaccinationStatusMapper.mapToDomain(request));
@@ -454,7 +467,7 @@ public class SchoolEntryController {
       @PathVariable("procedureId") UUID procedureId, @Valid @RequestBody AnamnesisDto request) {
     Anamnesis anamnesis =
         examinationResultService.findAnamnesisForUpdate(procedureId, request.version());
-    Validator.validateProcedureStatusNotClosed(anamnesis.getProcedure());
+    ProcedureValidator.validateProcedureStatusNotClosed(anamnesis.getProcedure());
     validator.validateAnamnesis(request);
 
     examinationResultService.updateAnamnesis(anamnesis, AnamnesisMapper.mapToDomain(request));
@@ -468,7 +481,7 @@ public class SchoolEntryController {
       @PathVariable("procedureId") UUID procedureId,
       @Valid @RequestBody CreateMedicalReportRequest request) {
     SchoolEntryProcedure procedure = schoolEntryService.findProcedureByExternalId(procedureId);
-    Validator.validateProcedureStatusNotClosed(procedure);
+    ProcedureValidator.validateProcedureStatusNotClosed(procedure);
     ProcedureDetailsData procedureDetailsData = schoolEntryService.augmentWithDetails(procedure);
 
     Pdf pdf = medicalReportGenerator.generateMedicalReport(procedureDetailsData.child(), request);
@@ -492,7 +505,7 @@ public class SchoolEntryController {
       @Valid @RequestBody CreateSchoolInfoLetterRequest request) {
 
     SchoolEntryProcedure procedure = schoolEntryService.findProcedureByExternalId(procedureId);
-    Validator.validateProcedureStatusNotClosed(procedure);
+    ProcedureValidator.validateProcedureStatusNotClosed(procedure);
     ProcedureDetailsData procedureDetailsData = schoolEntryService.augmentWithDetails(procedure);
 
     Pdf pdf =
@@ -526,7 +539,7 @@ public class SchoolEntryController {
     WaitingRoom waitingRoom =
         schoolEntryService.findWaitingRoomForUpdate(procedureId, request.version());
     SchoolEntryProcedure procedure = waitingRoom.getProcedure();
-    Validator.validateProcedureStatusNotClosed(procedure);
+    ProcedureValidator.validateProcedureStatusNotClosed(procedure);
     Validator.validateHasAppointment(procedure);
 
     schoolEntryService.updateWaitingRoomDetails(

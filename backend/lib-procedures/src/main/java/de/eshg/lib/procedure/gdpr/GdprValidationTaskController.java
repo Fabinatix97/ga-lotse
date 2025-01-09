@@ -17,7 +17,7 @@ import de.eshg.base.gdpr.api.GdprIdentificationDataDto;
 import de.eshg.base.gdpr.api.GetGdprDownloadsResponse;
 import de.eshg.base.util.PaginationUtil;
 import de.eshg.domain.model.serialization.SerializationService;
-import de.eshg.domain.model.serialization.ZipFilter;
+import de.eshg.domain.model.serialization.ZipEditor;
 import de.eshg.file.common.CustomMediaTypes;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.api.GdprValidationTaskApi;
@@ -66,18 +66,18 @@ public class GdprValidationTaskController<
   private final GdprValidationTaskService<ProcedureT, TaskT> service;
   private final BaseFeatureTogglesApi baseFeatureTogglesApi;
   private final SerializationService serializationService;
-  private final GdprZipFilterProvider zipFilterProvider;
+  private final AbstractGdprZipEditorProvider zipEditorProvider;
 
   public GdprValidationTaskController(
       GdprValidationTaskService<ProcedureT, TaskT> service,
       BaseFeatureTogglesApi baseFeatureTogglesApi,
       SerializationService serializationService,
-      GdprZipFilterProvider zipFilterProvider,
+      AbstractGdprZipEditorProvider zipEditorProvider,
       AuditLogger auditLogger) {
     this.service = service;
     this.baseFeatureTogglesApi = baseFeatureTogglesApi;
     this.serializationService = serializationService;
-    this.zipFilterProvider = zipFilterProvider;
+    this.zipEditorProvider = zipEditorProvider;
   }
 
   @Override
@@ -108,6 +108,9 @@ public class GdprValidationTaskController<
     GdprValidationTask validationTask = service.getValidationTaskFromDb(gdprProcedureId);
     validateType(validationTask, GdprValidationTaskType.RIGHT_OF_ACCESS);
     validateStatus(validationTask, GdprValidationTaskStatus.OPEN);
+    if (checkDownloadExistsAndLog(gdprProcedureId, businessProcedureId)) {
+      return;
+    }
 
     Procedure<?, ?, ?, ?> procedure = service.getBusinessProcedureFromDb(businessProcedureId);
     List<UUID> fileStateIds =
@@ -118,9 +121,9 @@ public class GdprValidationTaskController<
         businessProcedureId,
         gdprProcedureId);
 
-    ZipFilter zipFilter = zipFilterProvider.create(fileStateIds);
+    ZipEditor zipEditor = zipEditorProvider.create(fileStateIds);
     byte[] zip =
-        serializationService.toZip("DSGVO-Vorgang_" + businessProcedureId, procedure, zipFilter);
+        serializationService.toZip("DSGVO-Vorgang_" + businessProcedureId, procedure, zipEditor);
     UUID downloadId =
         service.createAndSaveDownloadPackage(businessProcedureId, zip).getExternalId();
     service.sendDownloadId(gdprProcedureId, downloadId);
@@ -129,6 +132,18 @@ public class GdprValidationTaskController<
         "Created downloadPackage of procedure(id={}) for gdprProcedure(id={})",
         businessProcedureId,
         gdprProcedureId);
+  }
+
+  private boolean checkDownloadExistsAndLog(UUID gdprProcedureId, UUID businessProcedureId) {
+    boolean downloadExists =
+        service.findDownloadPackageByGdprIdAndProcedureId(gdprProcedureId, businessProcedureId);
+    if (downloadExists) {
+      log.info(
+          "DownloadPackage of procedure(id={}) for gdprProcedure(id={}) already exists",
+          businessProcedureId,
+          gdprProcedureId);
+    }
+    return downloadExists;
   }
 
   private Map<String, String> mapAuditlog(
@@ -174,9 +189,7 @@ public class GdprValidationTaskController<
   @Transactional(readOnly = true)
   public GetGdprDownloadPackagesInfoResponse getGdprDownloadPackagesInfo(UUID gdprProcedureId) {
     assertNewFeatureEnabled(BaseFeature.GDPR, baseFeatureTogglesApi.getFeatureToggles());
-
-    // TODO: Enable validation when GdprValidationTask can be closed via REST-API (ISSUE-6640)
-    // validateGdprValidationTaskIsClosed(gdprProcedureId);
+    validateGdprValidationTaskIsClosed(gdprProcedureId);
 
     GetGdprDownloadsResponse downloadIdsFromBase =
         service.fetchDownloadIdsFromBase(gdprProcedureId);

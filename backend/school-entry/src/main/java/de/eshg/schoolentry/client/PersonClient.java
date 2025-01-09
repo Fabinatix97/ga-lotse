@@ -470,6 +470,10 @@ public class PersonClient {
         .collect(StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id));
   }
 
+  public List<UUID> getPersonFileStatesAssociatedWith(UUID personId) {
+    return personApi.getPersonFileStateIdsAssociatedWithReferencePerson(personId).fileStateIds();
+  }
+
   private static List<UUID> resolveProcedureIds(
       List<UUID> childIds, Map<UUID, SchoolEntryProcedure> proceduresByChildId) {
     return childIds.stream()

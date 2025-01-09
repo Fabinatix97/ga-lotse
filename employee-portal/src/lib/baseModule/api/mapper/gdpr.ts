@@ -40,7 +40,7 @@ export function mapAddCentralFileIdToGdprProcedureRequest(
   procedureVersion: number,
 ): ApiAddCentralFileIdToGdprProcedureRequest {
   return {
-    centralFileId: selectedId,
+    centralFileIds: [selectedId],
     version: procedureVersion,
   };
 }

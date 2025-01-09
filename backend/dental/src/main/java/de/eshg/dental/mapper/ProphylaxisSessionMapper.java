@@ -8,7 +8,6 @@ package de.eshg.dental.mapper;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.dental.api.ChildResult;
-import de.eshg.dental.api.InstitutionDto;
 import de.eshg.dental.api.ProphylaxisSessionDetailsDto;
 import de.eshg.dental.api.ProphylaxisSessionDto;
 import de.eshg.dental.api.ProphylaxisTypeDto;
@@ -31,10 +30,7 @@ public final class ProphylaxisSessionMapper {
     return new ProphylaxisSessionDto(
         session.getExternalId(),
         session.getDateAndTime(),
-        new InstitutionDto(
-            institution.id(),
-            institution.name(),
-            InstitutionHexColorMapper.mapInstitutionContactToHexColor(institution)),
+        InstitutionMapper.mapContactToInstitutionDto(institution),
         session.getGroupName(),
         mapToDto(session.getType()));
   }
@@ -73,10 +69,7 @@ public final class ProphylaxisSessionMapper {
         session.getVersion(),
         session.getExternalId(),
         session.getDateAndTime(),
-        new InstitutionDto(
-            institution.id(),
-            institution.name(),
-            InstitutionHexColorMapper.mapInstitutionContactToHexColor(institution)),
+        InstitutionMapper.mapContactToInstitutionDto(institution),
         session.getGroupName(),
         mapToDto(session.getType()),
         mapToChildResults(prophylaxisSession.participants()));

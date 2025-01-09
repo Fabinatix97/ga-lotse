@@ -14,6 +14,7 @@ export interface BooleanRadioGroupFieldProps {
   allowDeselection?: boolean;
   trueLabel?: ReactNode;
   falseLabel?: ReactNode;
+  dataTestId?: string;
 }
 
 export function BooleanRadioField({
@@ -23,6 +24,7 @@ export function BooleanRadioField({
   allowDeselection = false,
   trueLabel = "Ja",
   falseLabel = "Nein",
+  dataTestId,
 }: BooleanRadioGroupFieldProps) {
   const [field, _, helpers] = useField<boolean | null>(name);
 
@@ -41,6 +43,7 @@ export function BooleanRadioField({
         orientation={orientation}
         name={field.name}
         value={field.value}
+        data-testid={dataTestId}
         onChange={(event) =>
           void helpers.setValue(event.currentTarget.value === "true")
         }

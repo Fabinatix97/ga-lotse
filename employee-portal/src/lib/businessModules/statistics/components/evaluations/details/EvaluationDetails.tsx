@@ -27,12 +27,12 @@ import { EvaluationNameChangeModal } from "@/lib/businessModules/statistics/comp
 import { InformationCards } from "@/lib/businessModules/statistics/components/evaluations/details/InformationCards";
 import { useUpdateEvaluationDataBasisSidebar } from "@/lib/businessModules/statistics/components/evaluations/details/UpdateEvaluationDataBasisSidebar/UpdateEvaluationDataBasisSidebar";
 import { useDeleteEvaluationWithConfirmation } from "@/lib/businessModules/statistics/components/evaluations/useDeleteEvaluationWithConfirmation";
-import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
 import { AnalysisAccordion } from "@/lib/businessModules/statistics/components/shared/AnalysisAccordion/AnalysisAccordion";
-import { useDataExportGuard } from "@/lib/businessModules/statistics/components/shared/hooks/useDataExportGuard";
+import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
+import { useCopy } from "@/lib/shared/hooks/useCopy";
 
 export function EvaluationDetails(
   props: EvaluationDetailsView & { choroplethMaps: GeoShapeInfo[] },
@@ -54,10 +54,10 @@ export function EvaluationDetails(
 
   const { download: exportData, downloadContainerRef } =
     useExportEvaluationData();
-  const dataExportGuard = useDataExportGuard(false);
 
   const { canWrite, canDelete, canUpdateEvaluation } =
     useStatisticsRoleChecks();
+  const copy = useCopy();
 
   function openCreateAnalysisSidebar() {
     createAnalysisSidebar.open({
@@ -101,13 +101,15 @@ export function EvaluationDetails(
     canDelete: canDelete(props.userId),
     canUpdateEvaluation: canUpdateEvaluation(props.userId),
     canWrite: canWrite(),
-    anonymized: props.anonymized,
+    dataSourceSensitivity: props.dataSource.sensitivity,
     start: props.start,
     end: props.end,
     createdAt: props.createdAt,
     createdBy: props.createdBy,
     onAnalysisCreateClicked: openCreateAnalysisSidebar,
     onDataBasisUpdateClicked: openUpdateEvaluationDataBasisSidebar,
+    evaluationId: props.evaluationId,
+    onShareClicked: copy,
     onNameChangeClicked: () => setIsNameChangeModalOpen(true),
     onEvaluationDeleteClicked: () =>
       deleteEvaluationWithConfirmationAndRedirect(
@@ -122,12 +124,10 @@ export function EvaluationDetails(
         timeRangeEnd: props.end,
       }),
     onSaveEvaluationTemplateClicked: openSaveAsEvaluationTemplateSidebar,
-    onDataExport: async () =>
-      dataExportGuard(() =>
-        exportData(
-          { evaluationId: props.evaluationId },
-          { tooMuchDataForExport: props.tooMuchDataForExport },
-        ),
+    onDataExport: () =>
+      exportData(
+        { evaluationId: props.evaluationId },
+        { tooMuchDataForExport: props.tooMuchDataForExport },
       ),
   };
 
@@ -138,7 +138,7 @@ export function EvaluationDetails(
         dataSource: props.dataSource.name,
         datasetAmount: props.dataSource.datasetAmount,
         attributeLabels: props.dataSource.attributeLabels,
-        anonymized: props.anonymized,
+        dataSourceSensitivity: props.dataSource.sensitivity,
       },
     ];
 
@@ -165,7 +165,7 @@ export function EvaluationDetails(
         attributes={props.attributes}
         evaluatedDataAmountTotal={props.dataSource.datasetAmount}
         onDiagramCreateClicked={openCreateDiagramSidebar}
-        anonymized={props.anonymized}
+        dataSourceSensitivity={props.dataSource.sensitivity}
       />
     </Stack>
   );

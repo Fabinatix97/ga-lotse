@@ -5,6 +5,7 @@
 
 package de.eshg.base.keycloak;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.eshg.lib.keycloak.KeycloakGroup;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import java.util.List;
@@ -23,8 +24,9 @@ public class EmployeeKeycloakTestClient extends KeycloakTestClient {
       KeycloakProperties keycloakProperties,
       @Value("${eshg.keycloak.test-client.max-number-of-parallel-threads:8}")
           int maxNumberOfParallelThreads,
-      EnvironmentConfig environmentConfig) {
-    super(client, keycloakProperties, maxNumberOfParallelThreads, environmentConfig);
+      EnvironmentConfig environmentConfig,
+      ObjectMapper objectMapper) {
+    super(client, keycloakProperties, maxNumberOfParallelThreads, environmentConfig, objectMapper);
   }
 
   public UserRepresentation createTemporaryTestUser() {

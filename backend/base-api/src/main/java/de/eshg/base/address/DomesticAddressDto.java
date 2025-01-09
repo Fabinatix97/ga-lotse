@@ -15,7 +15,7 @@ public record DomesticAddressDto(
     @NotNull CountryCode country,
     @Schema(description = "The city in which the address is located.", example = "Berlin")
         @NotNull
-        @Size(min = 1, max = 50)
+        @Size(min = 1, max = MAX_CITY_LENGTH)
         String city,
     @Schema(description = "The postal code of the address.", example = "10115")
         @NotNull
@@ -31,10 +31,10 @@ public record DomesticAddressDto(
             description = "The name of the street of the address, without the house number.",
             example = "Beispielweg")
         @NotNull
-        @Size(min = 1, max = 55)
+        @Size(min = 1, max = MAX_STREET_LENGTH)
         String street,
     @Schema(description = "The house number of the address, including extensions.", example = "1a")
-        @Size(min = 1, max = 11)
+        @Size(min = 1, max = MAX_HOUSE_NUMBER_LENGTH)
         String houseNumber,
     @Schema(description = "A descriptive addition to the address.", example = "2.OG links")
         @Size(min = 1, max = 100)
@@ -42,6 +42,9 @@ public record DomesticAddressDto(
     implements AddressDto {
 
   public static final String SCHEMA_NAME = "DomesticAddress";
+  public static final int MAX_CITY_LENGTH = 50;
+  public static final int MAX_STREET_LENGTH = 55;
+  public static final int MAX_HOUSE_NUMBER_LENGTH = 11;
 
   @Override
   public String type() {

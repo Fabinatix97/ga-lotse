@@ -53,7 +53,7 @@ export function ProcedureDetails(props: ProcedureDetailsProps) {
           />
           {procedure.custodians.map((custodian, index) => (
             <PersonDetailsPanel
-              canDelete
+              isCustodian
               title={`${index + 1}. PSB - Personensorgeberechtigte:r`}
               person={custodian}
               procedure={procedure}

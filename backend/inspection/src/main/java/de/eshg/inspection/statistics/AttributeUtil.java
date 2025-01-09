@@ -7,21 +7,23 @@ package de.eshg.inspection.statistics;
 
 import de.eshg.inspection.inspection.api.InspectionResult;
 import de.eshg.inspection.objecttype.ObjectTypeProperties;
+import de.eshg.inspection.objecttype.persistence.ObjectType;
 import de.eshg.lib.statistics.api.ValueOptionInternal;
+import de.eshg.lib.statistics.attributes.AttributeInfo;
 import java.util.List;
 
-public class AttributeUtil {
+class AttributeUtil {
 
   static final String ATTRIBUTE_CATEGORY_INSPECTION = "Begehung";
   static final String ATTRIBUTE_CATEGORY_FACILITY = "Einrichtung";
 
   private AttributeUtil() {}
 
-  static List<ValueOptionInternal> createObjectTypeOptions(
-      ObjectTypeProperties objectTypeProperties) {
-    return objectTypeProperties.defaultObjectTypes().stream()
-        .map(s -> new ValueOptionInternal(s, s, false))
-        .toList();
+  static void addValueOptions(AttributeInfo attribute, ObjectTypeProperties objectTypeProperties) {
+    List<ValueOptionInternal> valueOptions = attribute.getValueOptions();
+    objectTypeProperties.defaultObjectTypes().stream()
+        .map(value -> new ValueOptionInternal(value, value, false))
+        .forEach(valueOptions::add);
   }
 
   static List<ValueOptionInternal> createResultOptions() {
@@ -33,5 +35,12 @@ public class AttributeUtil {
             InspectionResult.SUCCESSFUL_WITH_INCIDENTS.name(),
             "Erfolgreich mit Beanstandungen",
             false));
+  }
+
+  static String getObjectTypeName(ObjectType objectType) {
+    if (objectType == null) {
+      return null;
+    }
+    return objectType.getName();
   }
 }

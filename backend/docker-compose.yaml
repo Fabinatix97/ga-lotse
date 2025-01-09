@@ -315,6 +315,7 @@ services:
       - de.eshg.base.service-url=http://base:8080
       - de.eshg.business-modules.clients[SCHOOL_ENTRY].url=http://school-entry:8080
       - de.eshg.business-modules.clients[INSPECTION].url=http://inspection:8080
+      - de.eshg.business-modules.clients[DENTAL].url=http://dental:8080
       - de.eshg.auditlog.service-url=http://auditlog:8080
       - de.eshg.centralrepository.service-url=http://central-repository:8080
       - de.eshg.centralrepository.mock-cert-subject-cn=statistics.frankfurt.ga-lotse

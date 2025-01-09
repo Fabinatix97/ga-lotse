@@ -8,7 +8,9 @@ package de.eshg.dental;
 import static de.eshg.lib.xlsximport.util.FileResponseUtil.filename;
 
 import de.eshg.api.commons.InlineParameterObject;
+import de.eshg.dental.api.AnnualInstitutionDto;
 import de.eshg.dental.api.ChildDetailsDto;
+import de.eshg.dental.api.ChildDto;
 import de.eshg.dental.api.ChildFilterParameters;
 import de.eshg.dental.api.ChildPaginationAndSortParameters;
 import de.eshg.dental.api.CreateChildRequest;
@@ -26,6 +28,7 @@ import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.mapper.ChildMapper;
 import de.eshg.dental.mapper.ExaminationMapper;
+import de.eshg.lib.procedure.util.ProcedureValidator;
 import de.eshg.lib.xlsximport.TransactionalWithTimeoutForFileImports;
 import de.eshg.lib.xlsximport.model.ImportResult;
 import de.eshg.lib.xlsximport.util.FileResponseUtil;
@@ -102,33 +105,42 @@ public class ChildController {
   @Transactional(readOnly = true)
   public GetChildrenWithDetailsResponse getChildrenByPerson(
       @RequestParam(name = "personId") UUID personId) {
-    List<ChildDetailsDto> children =
-        childService
-            .findByPersonId(personId)
-            .map(child -> ChildMapper.mapToChildDetailsDto(child, null))
-            .toList();
+    List<ChildDto> children =
+        childService.findByPersonId(personId).map(ChildMapper::mapChildToDto).toList();
     return new GetChildrenWithDetailsResponse(children);
   }
 
   @GetMapping("/{childId}")
   @Transactional(readOnly = true)
   public ChildDetailsDto getChild(@PathVariable("childId") UUID childId) {
-    ChildWithAugmentedData augmentedChildData = childService.findAndAugmentByExternalId(childId);
-    return getChildDetails(augmentedChildData);
+    Child child = childService.findByExternalIdOrThrow(childId);
+    return getChildDetails(child);
   }
 
   @PutMapping("/{childId}")
   @Transactional
   public ChildDetailsDto updateChild(
       @PathVariable("childId") UUID childId, @Valid @RequestBody UpdateChildRequest request) {
+    Child child = childService.findByExternalIdForUpdate(childId);
+
+    ProcedureValidator.validateProcedureStatusNotClosed(child);
     validator.validateInstitution(request.institutionId());
-    ChildWithAugmentedData augmentedChildData = childService.update(childId, request);
-    return getChildDetails(augmentedChildData);
+    childService.update(child, request);
+    return getChildDetails(child);
   }
 
-  private ChildDetailsDto getChildDetails(ChildWithAugmentedData augmentedChildData) {
-    List<Examination> examinations = childService.getAllExaminations(augmentedChildData.child());
-    return ChildMapper.mapToChildDetailsDto(augmentedChildData, examinations);
+  private ChildDetailsDto getChildDetails(Child child) {
+    List<ChildWithAugmentedData> childAndAllPreviousChildren =
+        childService.getChildAndAllPreviousChildren(child);
+
+    List<Examination> examinations = childService.getAllExaminations(childAndAllPreviousChildren);
+
+    List<AnnualInstitutionDto> institutions =
+        childService.getAllInstitutions(childAndAllPreviousChildren);
+
+    ChildWithAugmentedData augmentedChildData = childService.augmentWithDetails(child);
+
+    return ChildMapper.mapToChildDetailsDto(augmentedChildData, examinations, institutions);
   }
 
   @GetMapping("/examination/{examinationId}")

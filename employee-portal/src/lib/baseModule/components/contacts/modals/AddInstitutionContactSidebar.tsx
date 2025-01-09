@@ -15,6 +15,7 @@ import {
   InstitutionContactFormValues,
 } from "@/lib/baseModule/components/contacts/types";
 import { createEmptyAddress } from "@/lib/shared/components/form/address/helpers";
+import { useResetAlertContextOnChange } from "@/lib/shared/hooks/useResetAlertContextOnChange";
 import {
   SidebarWithFormRefProps,
   useSidebarWithFormRef,
@@ -51,6 +52,8 @@ function AddInstitutionContactSidebar({
 }: CreateContactSidebarProps) {
   const [formState, setFormState] =
     useState<AddInstitutionContactSidebarState>(initialState);
+
+  useResetAlertContextOnChange(formState.flowStep);
 
   return (
     <>

@@ -10,6 +10,8 @@ import {
 import { isNonNullish } from "remeda";
 
 import { mapToApiBusinessModule } from "@/lib/businessModules/statistics/api/mapper/mapToApiBusinessModule";
+import { mapToAnonymizationOptions } from "@/lib/businessModules/statistics/api/models/anonymizationOptions";
+import { mapDataSourceSensitivityApiToFrontend } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import { CategorizedFlatAttribute } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ChooseAttributesStep/ChooseAttributesStep";
 import { DataSource } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ChooseDataSourceStep/ChooseDataSourceStep";
 import { getAttributeLabel } from "@/lib/businessModules/statistics/components/evaluations/getAttributeLabel";
@@ -84,6 +86,13 @@ function mapToDataSource(apiDataSource: ApiAvailableDataSource): DataSource {
     id: apiDataSource.id,
     businessModule: apiDataSource.businessModuleName,
     name: apiDataSource.name,
-    withoutAnonymizationAllowed: apiDataSource.sensitiveDataAllowed,
+    sensitivity: mapDataSourceSensitivityApiToFrontend(
+      apiDataSource.sensitivity,
+    ),
+    anonymizationOptions: mapToAnonymizationOptions({
+      canBeAnonymized: apiDataSource.canBeAnonymized,
+      dataSourceSensitivity: apiDataSource.sensitivity,
+      sensitiveDataAllowed: apiDataSource.sensitiveDataAllowed,
+    }),
   };
 }

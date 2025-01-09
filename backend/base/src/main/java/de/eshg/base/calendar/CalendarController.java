@@ -46,11 +46,6 @@ public class CalendarController implements CalendarApi {
   }
 
   @Override
-  public UserCalendar getUserCalendar(UUID userId) {
-    return calendarService.getUserCalendar(userId);
-  }
-
-  @Override
   public UserCalendar getCurrentUserCalendar() {
     return calendarService.getCurrentUserCalendar();
   }

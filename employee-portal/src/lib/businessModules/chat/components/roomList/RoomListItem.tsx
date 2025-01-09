@@ -4,8 +4,7 @@
  */
 
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import NotificationsOffOutlinedIcon from "@mui/icons-material/NotificationsOffOutlined";
-import { Box, Stack, Typography, useTheme } from "@mui/joy";
+import { Box, Stack, Typography } from "@mui/joy";
 import { Room } from "matrix-js-sdk";
 import { useMemo } from "react";
 
@@ -17,6 +16,7 @@ import { CommunicationType } from "@/lib/businessModules/chat/shared/enums";
 import { Message } from "@/lib/businessModules/chat/shared/types";
 import {
   formatChatDate,
+  getDirectMessageRoomMember,
   getMemberAvatarUrl,
   getRoomAvatarUrl,
   isDMRoom,
@@ -39,16 +39,13 @@ export function RoomListItem({
   messageReads,
   unreadNotifications,
 }: Readonly<RoomListItemProps>) {
-  const theme = useTheme();
   const { matrixClient } = useChatClientContext();
   const loggedInUserId = matrixClient.getUserId();
   const parsedDate = formatChatDate(latestMessage?.timestamp);
 
-  // TO DO - finish notification feature
-  const disableNotifications = false;
-
   const dmMember = useMemo(
-    () => (isDMRoom(communicationType) ? room.getAvatarFallbackMember() : null),
+    () =>
+      isDMRoom(communicationType) ? getDirectMessageRoomMember(room) : null,
     [communicationType, room],
   );
 
@@ -79,15 +76,6 @@ export function RoomListItem({
           <Typography noWrap level="title-md" sx={{ minWidth: "4ch" }}>
             <HighlightedText searchQuery={searchQuery} text={room.name} />
           </Typography>
-          {disableNotifications && (
-            <NotificationsOffOutlinedIcon
-              sx={{
-                width: "1.125rem",
-                height: "1.125rem",
-                color: theme.palette.neutral.outlinedDisabledColor,
-              }}
-            />
-          )}
         </Stack>
         {latestMessage?.decrypted ? (
           <Stack direction="row" alignItems="center">

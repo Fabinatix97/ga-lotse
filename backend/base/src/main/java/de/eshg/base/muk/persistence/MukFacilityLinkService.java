@@ -7,10 +7,10 @@ package de.eshg.base.muk.persistence;
 
 import de.eshg.base.centralfile.persistence.entity.Facility;
 import de.eshg.base.keycloak.CitizenKeycloakClient;
-import de.eshg.base.keycloak.CitizenUserAttribute;
 import de.eshg.base.muk.persistence.entity.MukFacilityLink;
 import de.eshg.base.muk.persistence.repository.MukFacilityLinkRepository;
 import de.eshg.lib.auditlog.AuditLogger;
+import de.eshg.lib.keycloak.CitizenUserAttribute;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import java.util.LinkedHashMap;

@@ -4,7 +4,7 @@
  */
 
 import {
-  ApiEvaluationDataSensitivity,
+  ApiDataSourceSensitivity,
   ApiFrequency,
   ApiGetReportSeriesEntriesOfEvaluationResponse,
   ApiReportSeries,
@@ -20,6 +20,7 @@ import {
   ReportingPeriod,
 } from "@/lib/businessModules/statistics/api//models/reportSeriesTypes";
 import { useEvaluationApi } from "@/lib/businessModules/statistics/api/clients";
+import { mapDataSourceSensitivityApiToFrontend } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import {
   ActiveSeriesInfo,
   EvaluationReports,
@@ -83,6 +84,9 @@ function mapSingleReport(apiReportSeries: ApiReportSeries): SingleReport {
     description: apiReportSeries.description,
     userId: apiReportSeries.userId,
     tooMuchDataForExport: apiReportInfo.tooMuchDataForExport,
+    dataSensitivity: mapDataSourceSensitivityApiToFrontend(
+      apiReportInfo.dataSensitivity,
+    ),
   };
 }
 
@@ -98,6 +102,9 @@ function mapSeriesReport(apiReportSeries: ApiReportSeries): ReportSeries {
     status: apiReportSeries.active
       ? ReportSeriesState.Activated
       : ReportSeriesState.Deactivated,
+    dataSensitivity: mapDataSourceSensitivityApiToFrontend(
+      apiReportSeries.reportInfos[0]!.dataSensitivity,
+    ),
     subRows: apiReportSeries.reportInfos.map(
       (reportInfo) =>
         ({
@@ -110,6 +117,9 @@ function mapSeriesReport(apiReportSeries: ApiReportSeries): ReportSeries {
           datasetAmount: reportInfo.totalNumberOfElements,
           status: reportInfo.state,
           tooMuchDataForExport: reportInfo.tooMuchDataForExport,
+          dataSensitivity: mapDataSourceSensitivityApiToFrontend(
+            reportInfo.dataSensitivity,
+          ),
         }) satisfies ReportSeriesItem,
     ),
     isAllItemsDeleting: apiReportSeries.reportInfos.every(
@@ -150,8 +160,7 @@ export function mapToEvaluationReports(
         : mapSingleReport(reportSeriesEntry);
     }),
     activeSeries: mapActiveSeries(response),
-    anonymized:
-      response.dataSensitivity !== ApiEvaluationDataSensitivity.Sensitive,
+    sensitive: response.dataSensitivity === ApiDataSourceSensitivity.Sensitive,
   };
 }
 

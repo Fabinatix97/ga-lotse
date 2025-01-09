@@ -14,6 +14,7 @@ import de.eshg.base.centralfile.persistence.repository.FacilityRepository;
 import de.eshg.base.centralfile.persistence.repository.PersonRepository;
 import de.eshg.base.department.DepartmentConfiguration;
 import de.eshg.base.department.DepartmentController;
+import de.eshg.base.gdpr.persistence.CentralFileIdWrapper;
 import de.eshg.base.gdpr.persistence.GdprFacility;
 import de.eshg.base.gdpr.persistence.GdprPerson;
 import de.eshg.base.gdpr.persistence.GdprProcedure;
@@ -32,7 +33,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -81,12 +81,17 @@ public class GdprRightToObjectLetterGenerator {
   private GdprRightToObjectData buildPersonData(GdprProcedure procedure, GdprPerson gdprPerson) {
     String entity = mapGdprPersonToString(gdprPerson);
     String entityName = "%s %s".formatted(gdprPerson.getFirstName(), gdprPerson.getLastName());
-    UUID centralFileId = procedure.getCentralFileId();
+    List<UUID> centralFileIds =
+        procedure.getCentralFileIdsWrappers().stream()
+            .map(CentralFileIdWrapper::getCentralFileId)
+            .toList();
 
-    Optional<List<FieldRow>> dataset =
+    List<List<FieldRow>> dataset =
         personRepository
-            .findByExternalIdEqualsAndReferencePersonIsNull(centralFileId)
-            .map(this::mapPersonToFields);
+            .findAllByExternalIdInAndReferencePersonIsNullOrderById(centralFileIds)
+            .stream()
+            .map(this::mapPersonToFields)
+            .toList();
 
     return new GdprRightToObjectData(
         procedure.getCreatedAt().atZone(ZoneId.systemDefault()).format(LOCAL_DATE_DE),
@@ -102,12 +107,17 @@ public class GdprRightToObjectLetterGenerator {
       GdprProcedure procedure, GdprFacility gdprFacility) {
     String entity = mapGdprFacilityToString(gdprFacility);
     String entityName = gdprFacility.getName();
-    UUID centralFileId = procedure.getCentralFileId();
+    List<UUID> centralFileIds =
+        procedure.getCentralFileIdsWrappers().stream()
+            .map(CentralFileIdWrapper::getCentralFileId)
+            .toList();
 
-    Optional<List<FieldRow>> dataset =
+    List<List<FieldRow>> dataset =
         facilityRepository
-            .findByExternalIdEqualsAndReferenceFacilityIsNull(centralFileId)
-            .map(this::mapFacilityToFields);
+            .findAllByExternalIdInAndReferenceFacilityIsNullOrderById(centralFileIds)
+            .stream()
+            .map(this::mapFacilityToFields)
+            .toList();
 
     return new GdprRightToObjectData(
         procedure.getCreatedAt().atZone(ZoneId.systemDefault()).format(LOCAL_DATE_DE),
@@ -224,6 +234,10 @@ public class GdprRightToObjectLetterGenerator {
   }
 
   private String mapAddressToString(Address address) {
+    if (address == null) {
+      return null;
+    }
+
     return switch (address) {
       case DomesticAddress domestic ->
           "%s, %s %s"

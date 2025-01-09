@@ -6,10 +6,15 @@
 package de.eshg.statistics.aggregation;
 
 import de.eshg.domain.model.SequencedBaseEntity_;
+import de.eshg.lib.statistics.api.DataSourceSensitivity;
+import de.eshg.rest.service.error.AggregationException;
+import de.eshg.statistics.api.datasource.AvailableDataSource;
 import de.eshg.statistics.config.StatisticsConfig;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
+import de.eshg.statistics.persistence.entity.StatisticsDataSensitivity;
+import de.eshg.statistics.persistence.entity.TableColumn;
 import de.eshg.statistics.persistence.entity.TableRow;
 import de.eshg.statistics.persistence.repository.TableRowRepository;
 import java.util.UUID;
@@ -27,14 +32,17 @@ public abstract class AbstractAggregationResultService {
   private static final long DEFAULT_MAX_DATA_ROW_EXPORTABLE = 10000L;
   private static long maxDataRowExportable = DEFAULT_MAX_DATA_ROW_EXPORTABLE;
 
+  protected final DataSourceValidator dataSourceValidator;
   protected final DataAggregationService dataAggregationService;
   protected final TableRowRepository tableRowRepository;
   private final int tableRowPageSize;
 
   protected AbstractAggregationResultService(
+      DataSourceValidator dataSourceValidator,
       DataAggregationService dataAggregationService,
       TableRowRepository tableRowRepository,
       StatisticsConfig statisticsConfig) {
+    this.dataSourceValidator = dataSourceValidator;
     this.dataAggregationService = dataAggregationService;
     this.tableRowRepository = tableRowRepository;
     this.tableRowPageSize = statisticsConfig.tableRows().pageSize();
@@ -60,6 +68,22 @@ public abstract class AbstractAggregationResultService {
   }
 
   @Transactional(readOnly = true)
+  public boolean getDataNeedsAnonymization(UUID id) {
+    AbstractAggregationResult aggregationResult = getAbstractAggregationResultInternal(id);
+    if (!aggregationResult.getDataSensitivity().equals(StatisticsDataSensitivity.ANONYMOUS)) {
+      return false;
+    }
+    TableColumn firstTableColumn = aggregationResult.getTableColumns().getFirst();
+    AvailableDataSource availableDataSource =
+        dataSourceValidator.getAllAvailableDataSources().stream()
+            .filter(
+                dataSource -> AggregationResultUtil.isSameDataSource(firstTableColumn, dataSource))
+            .findFirst()
+            .orElseThrow(() -> new AggregationException("Data source not found"));
+    return !availableDataSource.sensitivity().equals(DataSourceSensitivity.ANONYMOUS);
+  }
+
+  @Transactional(readOnly = true)
   public AggregationResultStateInformation getStateInformation(UUID id) {
     AbstractAggregationResult aggregationResult = getAbstractAggregationResultInternal(id);
     return new AggregationResultStateInformation(
@@ -73,10 +97,10 @@ public abstract class AbstractAggregationResultService {
   }
 
   @Transactional
-  public void aggregateData(UUID id) {
+  public void aggregateData(UUID id, boolean dataNeedsAnonymization) {
     AbstractAggregationResult aggregationResult = getAbstractAggregationResultInternal(id);
     try {
-      dataAggregationService.collectTableRows(aggregationResult);
+      dataAggregationService.collectTableRows(aggregationResult, dataNeedsAnonymization);
     } catch (Exception exception) {
       log.error("Error while collecting table rows for {}", id, exception);
       aggregationResult.setState(AggregationResultState.FAILED);

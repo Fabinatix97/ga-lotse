@@ -15,17 +15,20 @@ import { Formik, FormikErrors } from "formik";
 import { isDefined, isEmpty, mapToObj } from "remeda";
 
 import { AppointmentTypeConfig } from "@/lib/businessModules/stiProtection/api/models/AppointmentTypeConfig";
+import { useCreateDailyAppointmentBlocksForGroupOptions } from "@/lib/businessModules/stiProtection/api/mutations/appointmentBlocks";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { AppointmentBlockGroupValuesWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
 import { AppointmentBlockGroupFields } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockGroupFields";
 import { AppointmentCountWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
 import { AppointmentStaffSelection } from "@/lib/shared/components/appointmentBlocks/AppointmentStaffSelection";
 import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
+import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { FormSheet } from "@/lib/shared/components/form/FormSheet";
 import { fullName } from "@/lib/shared/components/users/userFormatter";
 import { validateFieldArray } from "@/lib/shared/helpers/validators";
 
+import { mapFormValues } from "./CreateAppointmentBlockGroupForm";
 import { APPOINTMENT_TYPE_OPTIONS } from "./options";
 
 export interface AppointmentBlockGroupValues {
@@ -112,6 +115,9 @@ export function AppointmentBlockGroupForm({
   consultants = [],
   physicians = [],
 }: Readonly<AppointmentBlockGroupFormProps>) {
+  const createDailyAppointmentBlocksForGroupOptions =
+    useCreateDailyAppointmentBlocksForGroupOptions();
+
   const physicianOptions = physicians.map(userToOption);
   const consultantOptions = consultants.map(userToOption);
   const appointmentDurations = Object.fromEntries(
@@ -129,6 +135,12 @@ export function AppointmentBlockGroupForm({
     >
       {({ values, isSubmitting, handleSubmit }) => (
         <FormSheet gap={5} onSubmit={handleSubmit}>
+          <ConfirmLeaveDirtyFormEffect
+            onSaveMutation={{
+              mutationOptions: createDailyAppointmentBlocksForGroupOptions,
+              variableSupplier: () => mapFormValues(values),
+            }}
+          />
           <Stack gap={4}>
             <AppointmentBlockGroupFields
               appointmentBlocksWithDays={values.appointmentBlocks}

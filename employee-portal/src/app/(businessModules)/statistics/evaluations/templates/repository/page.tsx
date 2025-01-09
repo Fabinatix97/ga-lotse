@@ -6,7 +6,7 @@
 "use client";
 
 import { RepositoryEvaluationTemplatesOverview } from "@/lib/businessModules/statistics/components/evaluations/templates/RepositoryEvaluationTemplatesOverview";
-import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
+import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
 
 export default function RepositoryEvaluationTemplatesOverviewPage() {
   const { canWrite } = useStatisticsRoleChecks();

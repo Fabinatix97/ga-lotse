@@ -11,11 +11,15 @@ import {
   Edit,
   FileCopy,
   Menu,
+  Share,
 } from "@mui/icons-material";
 import { Button, Stack } from "@mui/joy";
 import { isPlainObject } from "remeda";
 
+import { DataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
+import { getSharedURL } from "@/lib/businessModules/statistics/components/shared/getSharedURL";
 import { useDataExportGuard } from "@/lib/businessModules/statistics/components/shared/hooks/useDataExportGuard";
+import { canExportDataPermission } from "@/lib/businessModules/statistics/permissions/canExportDataPermission";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import {
@@ -28,11 +32,13 @@ export interface DetailsInformationCardProps {
   canWrite: boolean;
   canDelete: boolean;
   canUpdateEvaluation: boolean;
-  anonymized: boolean;
+  dataSourceSensitivity: DataSourceSensitivity;
   start: Date;
   end: Date;
   createdAt: Date;
   createdBy: string;
+  evaluationId: string;
+  onShareClicked: (id: string) => Promise<void>;
   onAnalysisCreateClicked: () => void;
   onDataBasisUpdateClicked: () => void;
   onNameChangeClicked: () => void;
@@ -43,11 +49,10 @@ export interface DetailsInformationCardProps {
 }
 
 export function DetailsInformationCard(props: DetailsInformationCardProps) {
-  const canExportData = props.anonymized;
-
+  const canExportData = canExportDataPermission(props.dataSourceSensitivity);
   const { canDelete, canUpdateEvaluation, canWrite } = props;
 
-  const dataExportGuard = useDataExportGuard(false);
+  const dataExportGuard = useDataExportGuard();
 
   return (
     <InfoTile
@@ -83,6 +88,17 @@ export function DetailsInformationCard(props: DetailsInformationCardProps) {
         (canUpdateEvaluation || canDelete || canWrite || canExportData) && (
           <ActionsMenu
             actionItems={[
+              {
+                label: "Teilen",
+                onClick: async () =>
+                  await props.onShareClicked(
+                    getSharedURL({
+                      detailLinkId: props.evaluationId,
+                      statisticsSubRoute: "evaluations",
+                    }),
+                  ),
+                startDecorator: <Share />,
+              },
               canUpdateEvaluation && {
                 label: "Name ändern",
                 onClick: () => props.onNameChangeClicked(),
@@ -100,7 +116,10 @@ export function DetailsInformationCard(props: DetailsInformationCardProps) {
               },
               canExportData && {
                 label: "Daten exportieren",
-                onClick: () => dataExportGuard(props.onDataExport),
+                onClick: () =>
+                  dataExportGuard(props.dataSourceSensitivity, () =>
+                    props.onDataExport(),
+                  ),
                 startDecorator: <Download />,
               },
               canDelete &&

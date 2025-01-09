@@ -96,7 +96,7 @@ public class ProcedureAggregationService {
     List<ClientResponse<GetProcedureMetricsResponse>> extractedResponses =
         businessModuleAggregationHelper.requestFromBusinessModules(
             null,
-            BusinessModuleCapability.PROCEDURES,
+            BusinessModuleCapability.PROCEDURE_AND_TASK_METRICS,
             client -> client.getProcedureMetrics(timeRangeStart, timeRangeEnd));
 
     Comparator<ProcedureMetric> moduleComparator =

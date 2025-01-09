@@ -119,7 +119,7 @@ export function ImportDataFields(props: ImportDataFieldsProps) {
         {props.listType !== ImportListType.CitizenList && (
           <Stack gap={1}>
             <SearchContactField
-              name="schoolId"
+              name="school"
               label="Wählen Sie eine Schule aus"
               category={ApiContactCategory.School}
             />
@@ -138,7 +138,7 @@ export function ImportDataFields(props: ImportDataFieldsProps) {
           props.locationSelectionMode ===
             ApiLocationSelectionMode.HealthDepartment && (
             <SearchContactField
-              name="locationId"
+              name="location"
               label="Wählen Sie ein Gesundheitsamt aus"
               category={ApiContactCategory.HealthDepartment}
             />

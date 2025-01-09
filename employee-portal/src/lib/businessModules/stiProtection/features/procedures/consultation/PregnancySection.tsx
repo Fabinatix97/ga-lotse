@@ -10,16 +10,18 @@ import {
 } from "@eshg/lib-portal/components/formFields/BaseField";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
+import { validatePastOrTodayDate } from "@eshg/lib-portal/helpers/validators";
 import { Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
 import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
+import { validateNonNegativeInteger } from "@/lib/shared/helpers/validators";
 
 export interface PregnancySectionData {
   hasPregnancyRelatedInfo: boolean;
-  lastCytologyTest: Date | null;
-  startOfLastPeriod: Date | null;
+  lastCytologyTest: Date | "";
+  startOfLastPeriod: Date | "";
   numberOfPregnancies: number | "";
   numberOfOtherAbortions: number | "";
   numberOfBirths: number | "";
@@ -28,12 +30,12 @@ export interface PregnancySectionData {
 }
 export function PregnancySection() {
   const { getFieldMeta } = useFormikContext();
-  const { value } = getFieldMeta("hasPregnancyRelatedInfo");
+  const { value } = getFieldMeta("pregnancy.hasPregnancyRelatedInfo");
   return (
     <SectionGrid defaultColumn={1}>
       <Typography level="h3">Schwangerschaftsbezogene Angaben</Typography>
       <CheckboxField
-        name="hasPregnancyRelatedInfo"
+        name="pregnancy.hasPregnancyRelatedInfo"
         label="Schwangerschaftsbezogene Angaben erfassen"
       />
       {value ? <PregnancySectionFields /> : null}
@@ -45,34 +47,47 @@ function PregnancySectionFields() {
   return (
     <>
       <Row gap={3}>
-        <DateField name="lastCytologyTest" label="Letzte Zytologie" />
-        <DateField name="startOfLastPeriod" label="1. Tag letzte Mensis" />
+        <DateField
+          name="pregnancy.lastCytologyTest"
+          label="Letzte Zytologie"
+          validate={validatePastOrTodayDate}
+        />
+        <DateField
+          name="pregnancy.startOfLastPeriod"
+          label="1. Tag letzte Mensis"
+          validate={validatePastOrTodayDate}
+        />
       </Row>
       <Row gap={3} sx={{ gridColumnStart: 1, gridColumnEnd: 3 }}>
         <NumberField
           component={NumberFieldWrapper}
-          name="numberOfPregnancies"
+          name="pregnancy.numberOfPregnancies"
           label="Schwangerschaften"
+          validate={validateNonNegativeInteger}
         />
         <NumberField
           component={NumberFieldWrapper}
-          name="numberOfOtherAbortions"
+          name="pregnancy.numberOfOtherAbortions"
           label="Aborte"
+          validate={validateNonNegativeInteger}
         />
         <NumberField
           component={NumberFieldWrapper}
-          name="numberOfBirths"
+          name="pregnancy.numberOfBirths"
           label="Geburten"
+          validate={validateNonNegativeInteger}
         />
         <NumberField
           component={NumberFieldWrapper}
-          name="numberOfInducedAbortions"
+          name="pregnancy.numberOfInducedAbortions"
           label="Interruption"
+          validate={validateNonNegativeInteger}
         />
         <NumberField
           component={NumberFieldWrapper}
-          name="numberOfEctopicPregnancies"
+          name="pregnancy.numberOfEctopicPregnancies"
           label="EUG"
+          validate={validateNonNegativeInteger}
         />
       </Row>
     </>

@@ -6,15 +6,15 @@
 package de.eshg.base.citizenuser;
 
 import de.eshg.base.centralfile.PersonController;
-import de.eshg.base.citizenuser.api.AddAnonymousUserRequest;
-import de.eshg.base.citizenuser.api.AddCitizenAccessCodeUserRequest;
+import de.eshg.base.citizenuser.api.AddCitizenAccessCodeUserWithDateOfBirthCredentialRequest;
+import de.eshg.base.citizenuser.api.AddCitizenAccessCodeUserWithPinCredentialRequest;
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
-import de.eshg.base.citizenuser.api.VerifyPinRequest;
+import de.eshg.base.citizenuser.api.VerifyCitizenAccessCodeUserCredentialsRequest;
 import de.eshg.base.citizenuser.mapper.CitizenAccessCodeUserMapper;
-import de.eshg.keycloak.api.user.model.CredentialType;
+import de.eshg.keycloak.api.user.model.CredentialTypeDto;
 import de.eshg.rest.service.error.NotFoundException;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.http.HttpStatus;
@@ -36,17 +36,33 @@ public class CitizenAccessCodeUserController implements CitizenAccessCodeUserApi
   }
 
   @Override
-  public CitizenAccessCodeUserDto getCitizenAccessCodeUser(UUID userId) {
-    return CitizenAccessCodeUserMapper.mapUserToApi(citizenUserService.getUserByIdOrThrow(userId));
+  public CitizenAccessCodeUserDto addCitizenAccessCodeUserWithDateOfBirthCredential(
+      AddCitizenAccessCodeUserWithDateOfBirthCredentialRequest request) {
+    UserRepresentation createdUser = citizenUserService.addAccessCodeUser();
+    String formattedDateOfBirth =
+        personController
+            .getPersonFileState(request.personFileStateId())
+            .dateOfBirth()
+            .format(DateTimeFormatter.ISO_LOCAL_DATE);
+    citizenUserService.addCredential(
+        UUID.fromString(createdUser.getId()),
+        CredentialTypeDto.DATE_OF_BIRTH,
+        formattedDateOfBirth);
+    return CitizenAccessCodeUserMapper.mapUserToApi(createdUser);
   }
 
   @Override
-  public CitizenAccessCodeUserDto addCitizenAccessCodeUser(
-      AddCitizenAccessCodeUserRequest request) {
-    LocalDate dateOfBirth =
-        personController.getPersonFileState(request.personFileStateId()).dateOfBirth();
-    UserRepresentation createdUser = citizenUserService.addAccessCodeUser(dateOfBirth);
+  public CitizenAccessCodeUserDto addCitizenAccessCodeUserWithPinCredential(
+      AddCitizenAccessCodeUserWithPinCredentialRequest request) {
+    UserRepresentation createdUser = citizenUserService.addAccessCodeUser();
+    citizenUserService.addCredential(
+        UUID.fromString(createdUser.getId()), CredentialTypeDto.PIN, request.pin());
     return CitizenAccessCodeUserMapper.mapUserToApi(createdUser);
+  }
+
+  @Override
+  public CitizenAccessCodeUserDto getCitizenAccessCodeUser(UUID userId) {
+    return CitizenAccessCodeUserMapper.mapUserToApi(citizenUserService.getUserByIdOrThrow(userId));
   }
 
   @Override
@@ -55,20 +71,13 @@ public class CitizenAccessCodeUserController implements CitizenAccessCodeUserApi
   }
 
   @Override
-  public CitizenAccessCodeUserDto addAnonymousUser(AddAnonymousUserRequest request) {
-    UserRepresentation rep = citizenUserService.addAnonymousUser(request.pin());
-    return CitizenAccessCodeUserMapper.mapUserToApi(rep);
-  }
-
-  @Override
-  public void deleteAnonymousUser(UUID userId) {
-    citizenUserService.deleteAnonymousUser(userId);
-  }
-
-  @Override
-  public void verifyAnonymousUserPin(UUID userId, VerifyPinRequest request) {
+  public void verifyCitizenAccessCodeUserCredentials(
+      UUID userId, VerifyCitizenAccessCodeUserCredentialsRequest request) {
     try {
-      citizenUserService.verifyCredential(userId, CredentialType.PIN, request.pin());
+      citizenUserService.verifyCredential(
+          userId,
+          CitizenAccessCodeUserMapper.mapCredentialTypeToApi(request.credentialType()),
+          request.rawSecret());
     } catch (jakarta.ws.rs.NotAuthorizedException e) {
       throw HttpClientErrorException.create(
           HttpStatus.UNAUTHORIZED, e.getMessage(), null, null, null);

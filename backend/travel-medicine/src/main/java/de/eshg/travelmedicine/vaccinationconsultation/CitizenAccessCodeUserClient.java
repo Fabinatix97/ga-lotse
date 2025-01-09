@@ -6,7 +6,7 @@
 package de.eshg.travelmedicine.vaccinationconsultation;
 
 import de.eshg.base.citizenuser.CitizenAccessCodeUserApi;
-import de.eshg.base.citizenuser.api.AddCitizenAccessCodeUserRequest;
+import de.eshg.base.citizenuser.api.AddCitizenAccessCodeUserWithDateOfBirthCredentialRequest;
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
@@ -20,9 +20,9 @@ public class CitizenAccessCodeUserClient {
   }
 
   public CitizenAccessCodeUserDto addCitizenAccessCodeUser(UUID personFileStateId) {
-    AddCitizenAccessCodeUserRequest request =
-        new AddCitizenAccessCodeUserRequest(personFileStateId);
-    return citizenAccessCodeUserApi.addCitizenAccessCodeUser(request);
+    AddCitizenAccessCodeUserWithDateOfBirthCredentialRequest request =
+        new AddCitizenAccessCodeUserWithDateOfBirthCredentialRequest(personFileStateId);
+    return citizenAccessCodeUserApi.addCitizenAccessCodeUserWithDateOfBirthCredential(request);
   }
 
   public CitizenAccessCodeUserDto getCitizenAccessCode(UUID citizenUserId) {

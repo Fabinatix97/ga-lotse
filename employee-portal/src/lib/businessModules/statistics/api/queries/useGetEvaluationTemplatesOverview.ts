@@ -4,15 +4,20 @@
  */
 
 import {
+  ApiDataSourceSensitivity,
   ApiEvaluationTemplateSortKey,
   ApiGetEvaluationTemplatesResponse,
 } from "@eshg/employee-portal-api/statistics";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { isDefined } from "remeda";
 
 import { useEvaluationTemplateApi } from "@/lib/businessModules/statistics/api/clients";
 import { extractFilterValue } from "@/lib/businessModules/statistics/api/mapper/extractFilterValue";
 import { mapDateSpanFilterToApiDateSpan } from "@/lib/businessModules/statistics/api/mapper/mapDateSpanFilterToApiDateSpan";
-import { mapDataSourceSensitivityApiToFrontend } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
+import {
+  DataSourceSensitivity,
+  mapDataSourceSensitivityApiToFrontend,
+} from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import {
   EvaluationTemplateTableView,
   EvaluationTemplateWithUserInfo,
@@ -28,6 +33,27 @@ import { FilterValue } from "@/lib/shared/components/filterSettings/models/Filte
 
 import { evaluationTemplateApiQueryKey } from "./apiQueryKeys";
 
+export function userMayCreateEvaluationFromTemplate(
+  sensitivity: ApiDataSourceSensitivity | undefined,
+  sensitiveDataAllowed: boolean,
+  canBeAnonymized: boolean,
+) {
+  return !(
+    sensitivity === ApiDataSourceSensitivity.Sensitive &&
+    !sensitiveDataAllowed &&
+    !canBeAnonymized
+  );
+}
+
+export function mapTemplateDataSourceSensitivityApiToFrontend(
+  apiDataSourceSensitivity: ApiDataSourceSensitivity | undefined,
+): DataSourceSensitivity | undefined {
+  if (isDefined(apiDataSourceSensitivity)) {
+    return mapDataSourceSensitivityApiToFrontend(apiDataSourceSensitivity);
+  }
+  return undefined;
+}
+
 export function mapEvaluationTemplatesToTableView(
   response: ApiGetEvaluationTemplatesResponse,
 ): EvaluationTemplateTableView {
@@ -35,8 +61,13 @@ export function mapEvaluationTemplatesToTableView(
     return {
       analysisCount: template.analysisCount,
       dataSourceName: template.dataSourceNames[0]!,
-      dataSourceSensitivity: mapDataSourceSensitivityApiToFrontend(
+      dataSourceSensitivity: mapTemplateDataSourceSensitivityApiToFrontend(
         template.templateSensitivityInfo.sensitivity,
+      ),
+      userMayCreateEvaluation: userMayCreateEvaluationFromTemplate(
+        template.templateSensitivityInfo.sensitivity,
+        template.templateSensitivityInfo.sensitiveDataAllowed,
+        template.templateSensitivityInfo.canBeAnonymized,
       ),
       createdAt: template.createdAt,
       id: template.id,

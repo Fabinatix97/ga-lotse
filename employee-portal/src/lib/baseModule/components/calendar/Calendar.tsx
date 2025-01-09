@@ -6,6 +6,7 @@
 "use client";
 
 import { CalendarEventApi } from "@eshg/employee-portal-api/base";
+import { LoadingIndicator } from "@eshg/lib-portal/components/LoadingIndicator";
 import {
   EventSourceFuncArg,
   EventSourceInput,
@@ -194,6 +195,15 @@ export const Calendar = forwardRef<CalendarHandle, CalendarProps>(
       }
     }
 
+    const [eventsLoading, setEventsLoading] = useState<boolean>(false);
+
+    function noEventsContent() {
+      if (eventsLoading) {
+        return <LoadingIndicator />;
+      }
+      return <>Keine Ereignisse anzuzeigen</>;
+    }
+
     return (
       <Stack spacing={2} flex={1}>
         <HeaderToolbar
@@ -232,6 +242,8 @@ export const Calendar = forwardRef<CalendarHandle, CalendarProps>(
               });
             }}
             eventContent={eventContent}
+            loading={setEventsLoading}
+            noEventsContent={noEventsContent}
             initialView={fullCalendarView.type}
             eventClick={(info) => {
               const event = extractExtendedProps(info.event);

@@ -49,6 +49,7 @@ export interface SelectObjectFieldProps<
     props: AutocompleteProps<TValue, TMultiple, false, false>,
   ) => ReactNode;
   sx?: SxProps;
+  endDecorator?: ReactNode;
 }
 
 export function SelectObjectField<
@@ -90,7 +91,13 @@ export function SelectObjectField<
         disabled={disabled || props.disabled}
         onInputChange={props.onInputChange}
         loading={props.loading}
-        endDecorator={props.loading ? <CircularProgress size="sm" /> : null}
+        endDecorator={
+          props.loading ? (
+            <CircularProgress size="sm" />
+          ) : (
+            (props.endDecorator ?? null)
+          )
+        }
         sx={props.sx}
       />
     </FieldComponent>

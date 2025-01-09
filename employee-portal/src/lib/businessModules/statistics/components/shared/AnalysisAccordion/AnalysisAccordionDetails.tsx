@@ -8,6 +8,7 @@ import { Add } from "@mui/icons-material";
 import { Button, Divider, Stack, Typography } from "@mui/joy";
 import { isNonNullish } from "remeda";
 
+import { DataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import {
   Analysis,
   AnalysisBarDiagramConfiguration,
@@ -19,7 +20,6 @@ import {
 } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 import { useGetAnalysis } from "@/lib/businessModules/statistics/api/queries/useGetAnalysis";
-import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
 import { AnalysisChartDiagram } from "@/lib/businessModules/statistics/components/shared/AnalysisAccordion/AnalysisChartDiagram";
 import {
   axisRangeValueNames,
@@ -30,6 +30,7 @@ import {
   orientationValueNames,
   scalingValueNames,
 } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
+import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
 import { LabelValuePair } from "@/lib/shared/components/infoTile/LabelValuePair";
 
 export interface AnalysisAccordionDetailsProps {
@@ -38,7 +39,7 @@ export interface AnalysisAccordionDetailsProps {
   evaluatedDataAmountTotal: number;
   onDiagramCreateClicked?: (analysisId: string) => void;
   isReport: boolean;
-  anonymized: boolean;
+  dataSourceSensitivity: DataSourceSensitivity;
 }
 
 export function AnalysisAccordionDetails(props: AnalysisAccordionDetailsProps) {
@@ -101,7 +102,7 @@ export function AnalysisAccordionDetails(props: AnalysisAccordionDetailsProps) {
               analysisDiagram={it}
               evaluatedDataAmountTotal={props.evaluatedDataAmountTotal}
               isReport={props.isReport}
-              anonymized={props.anonymized}
+              dataSourceSensitivity={props.dataSourceSensitivity}
             />
           </Stack>
         ))}

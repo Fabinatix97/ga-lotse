@@ -45,11 +45,14 @@ public class EvaluationExecution {
 
   public void addEvaluation(UUID evaluationId) {
     try {
+      boolean dataNeedsAnonymization =
+          moduleClientAuthenticator.doWithModuleClientAuthentication(
+              () -> evaluationService.getDataNeedsAnonymization(evaluationId));
       while (evaluationService
           .getAggregationResultState(evaluationId)
           .equals(AggregationResultState.CREATING)) {
         moduleClientAuthenticator.doWithModuleClientAuthentication(
-            () -> workOnEvaluation(evaluationId));
+            () -> workOnEvaluation(evaluationId, dataNeedsAnonymization));
       }
     } catch (Exception e) {
       log.error("Could not complete evaluation", e);
@@ -57,12 +60,13 @@ public class EvaluationExecution {
     }
   }
 
-  private void workOnEvaluation(UUID evaluationId) {
+  private void workOnEvaluation(UUID evaluationId, boolean dataNeedsAnonymization) {
     AggregationResultStateInformation stateInformation =
         evaluationService.getStateInformation(evaluationId);
 
     switch (stateInformation.pendingState()) {
-      case DATA_AGGREGATION -> evaluationService.aggregateData(evaluationId);
+      case DATA_AGGREGATION ->
+          evaluationService.aggregateData(evaluationId, dataNeedsAnonymization);
       case MIN_MAX_DETERMINATION -> evaluationService.minMaxDetermination(evaluationId);
       case ANALYSIS_CONDUCTION -> analysisService.analysisConduction(evaluationId);
       case DIAGRAM_CREATION -> diagramCreationService.diagramRecreation(evaluationId);
@@ -97,11 +101,14 @@ public class EvaluationExecution {
   }
 
   private void updateEvaluationData(UUID evaluationId) {
+    boolean dataNeedsAnonymization =
+        moduleClientAuthenticator.doWithModuleClientAuthentication(
+            () -> evaluationService.getDataNeedsAnonymization(evaluationId));
     while (evaluationService
         .getAggregationResultState(evaluationId)
         .equals(AggregationResultState.UPDATING)) {
       moduleClientAuthenticator.doWithModuleClientAuthentication(
-          () -> workOnEvaluation(evaluationId));
+          () -> workOnEvaluation(evaluationId, dataNeedsAnonymization));
     }
   }
 

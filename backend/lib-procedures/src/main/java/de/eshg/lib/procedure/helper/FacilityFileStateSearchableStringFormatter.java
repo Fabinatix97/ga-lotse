@@ -8,14 +8,14 @@ package de.eshg.lib.procedure.helper;
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.address.PostboxAddressDto;
-import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.FacilityContactPersonDto;
+import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class FacilityFileStateSearchableStringFormatter
-    extends AbstractSearchableStringFormatter<AddFacilityFileStateResponse> {
+    extends AbstractSearchableStringFormatter<GetFacilityFileStateResponse> {
 
   private final FacilityContactPersonSearchableStringFormatter
       facilityContactPersonSearchableStringFormatter =
@@ -27,24 +27,24 @@ public class FacilityFileStateSearchableStringFormatter
           new DomesticAddressDtoSearchableStringFormatter();
 
   @Override
-  protected Class<AddFacilityFileStateResponse> getClazz() {
-    return AddFacilityFileStateResponse.class;
+  protected Class<GetFacilityFileStateResponse> getClazz() {
+    return GetFacilityFileStateResponse.class;
   }
 
   @Override
-  protected List<TypedPropertyFormatter<AddFacilityFileStateResponse, ?>> getPropertyFormatters() {
+  protected List<TypedPropertyFormatter<GetFacilityFileStateResponse, ?>> getPropertyFormatters() {
     return List.of(
-        new TypedPropertyFormatter<>(AddFacilityFileStateResponse::name, Function.identity()),
+        new TypedPropertyFormatter<>(GetFacilityFileStateResponse::name, Function.identity()),
         new TypedPropertyFormatter<>(
-            AddFacilityFileStateResponse::emailAddresses, this::formatListOfStringsByConcatenation),
+            GetFacilityFileStateResponse::emailAddresses, this::formatListOfStringsByConcatenation),
         new TypedPropertyFormatter<>(
-            AddFacilityFileStateResponse::phoneNumbers, this::formatListOfStringsByConcatenation),
+            GetFacilityFileStateResponse::phoneNumbers, this::formatListOfStringsByConcatenation),
         new TypedPropertyFormatter<>(
-            AddFacilityFileStateResponse::contactPersons, this::formatPersons),
+            GetFacilityFileStateResponse::contactPersons, this::formatPersons),
         new TypedPropertyFormatter<>(
-            AddFacilityFileStateResponse::contactAddress, this::formatAddress),
+            GetFacilityFileStateResponse::contactAddress, this::formatAddress),
         new TypedPropertyFormatter<>(
-            AddFacilityFileStateResponse::differentBillingAddress, this::formatAddress));
+            GetFacilityFileStateResponse::differentBillingAddress, this::formatAddress));
   }
 
   private String formatPersons(List<FacilityContactPersonDto> facilityContactPersonDtos) {

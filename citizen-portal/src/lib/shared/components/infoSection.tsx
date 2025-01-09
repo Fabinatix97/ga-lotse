@@ -85,3 +85,22 @@ export function InfoSectionTitle(props: InfoSectionTitleProps) {
     </Typography>
   );
 }
+
+export function InfoSectionField({
+  icon,
+  label,
+  children,
+}: {
+  icon?: ReactNode;
+  label: string;
+  children: ReactNode | string | undefined;
+}) {
+  return (
+    <Grid xxs={1}>
+      <InfoSection icon={icon}>
+        <InfoSectionTitle>{label}</InfoSectionTitle>
+        {children ?? "-"}
+      </InfoSection>
+    </Grid>
+  );
+}

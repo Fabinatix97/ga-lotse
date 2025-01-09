@@ -19,13 +19,22 @@ import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import { SidebarWithFormRefProps } from "@/lib/shared/hooks/useSidebarWithFormRef";
+import {
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
-interface NewEntrySidebarProps extends SidebarWithFormRefProps {
-  prefilledValues: Pick<OpenDataFormValues, "resourceName">;
+export function useNewEntrySidebar() {
+  return useSidebarWithFormRef({
+    component: NewEntrySidebar,
+  });
 }
 
-export function NewEntrySidebar({
+interface NewEntrySidebarProps extends SidebarWithFormRefProps {
+  prefilledValues: Pick<OpenDataFormValues, "resourceName" | "versionName">;
+}
+
+function NewEntrySidebar({
   prefilledValues,
   formRef,
   onClose,
@@ -64,7 +73,7 @@ export function NewEntrySidebar({
 
   const initialValues: OpenDataFormValues = {
     resourceName: prefilledValues.resourceName,
-    versionName: "",
+    versionName: prefilledValues.versionName,
     description: "",
     statisticStartDate: "",
     statisticEndDate: "",

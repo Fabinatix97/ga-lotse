@@ -5,6 +5,7 @@
 
 "use client";
 
+import { ApiAddContact200Response } from "@eshg/employee-portal-api/base";
 import {
   ApiAppointmentType,
   ApiCreateDailyAppointmentBlock,
@@ -50,7 +51,7 @@ const INITIAL_VALUES: CreateAppointmentBlockGroupValues = {
   allAppointmentTypes: [],
   physicians: [],
   mfas: [],
-  locationId: "",
+  location: null,
 };
 
 function mapFormValues(
@@ -62,7 +63,7 @@ function mapFormValues(
     appointmentBlocks: values.appointmentBlocks.map(mapAppointmentBlock),
     physicians: values.physicians,
     mfas: values.mfas,
-    locationId: mapOptionalValue(values.locationId),
+    locationId: mapOptionalValue(values.location)?.id,
   };
 }
 
@@ -83,7 +84,7 @@ export interface CreateAppointmentBlockGroupValues {
   allAppointmentTypes: AppointmentTypeConfig[];
   physicians: string[];
   mfas: string[];
-  locationId: OptionalFieldValue<string>;
+  location: ApiAddContact200Response | null;
 }
 
 export function CreateAppointmentBlockGroupForm() {

@@ -6,7 +6,7 @@ dependencies {
     implementation project(':rest-service-errors')
     implementation 'org.springframework:spring-web'
     implementation 'org.apache.tika:tika-core:latest.release'
-    implementation 'org.verapdf:validation-model-jakarta:latest.release'
+    implementation 'org.verapdf:validation-model-jakarta:1.26.1' // verapdf rolled back a release and thus 1.26.2 is not available anymore
     implementation 'de.cronn:reflection-util:latest.release'
 
     testImplementation project(':test-commons')

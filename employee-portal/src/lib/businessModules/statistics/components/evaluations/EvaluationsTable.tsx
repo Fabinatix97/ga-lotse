@@ -18,6 +18,7 @@ import {
   Edit,
   FileCopy,
   Menu,
+  Share,
 } from "@mui/icons-material";
 import { Box, Button } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
@@ -25,6 +26,10 @@ import { useState } from "react";
 import { isDefined, isPlainObject } from "remeda";
 
 import { useExportEvaluationData } from "@/lib/businessModules/statistics/api/downloads/useExportEvaluationData";
+import {
+  DataSourceSensitivity,
+  translateDataSourceSensitivity,
+} from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import {
   EvaluationOverview,
   EvaluationOverviewTableItem,
@@ -35,8 +40,9 @@ import { useSaveAsEvaluationTemplateSidebar } from "@/lib/businessModules/statis
 import { EvaluationNameChangeModal } from "@/lib/businessModules/statistics/components/evaluations/details/EvaluationNameChangeModal";
 import { createFilterDefinitions } from "@/lib/businessModules/statistics/components/evaluations/filterDefinitions";
 import { useDeleteEvaluationWithConfirmation } from "@/lib/businessModules/statistics/components/evaluations/useDeleteEvaluationWithConfirmation";
-import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
+import { getSharedURL } from "@/lib/businessModules/statistics/components/shared/getSharedURL";
 import { useDataExportGuard } from "@/lib/businessModules/statistics/components/shared/hooks/useDataExportGuard";
+import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
@@ -59,6 +65,7 @@ import {
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { UserLink } from "@/lib/shared/components/users/UserLink";
+import { useCopy } from "@/lib/shared/hooks/useCopy";
 
 import { StateChip } from "./StateChip";
 
@@ -72,19 +79,20 @@ function CreateEvaluationsButton({ onClick }: { onClick: () => void }) {
   );
 }
 
-function columns(
+function columns(functions: {
+  onShareClicked: (id: string) => Promise<void>;
   deleteEvaluationWithConfirmation: (
     id: string,
     evaluationName: string,
-  ) => void,
-  canDelete: (creatorUserId: string) => boolean,
-  canWrite: (creatorUserId: string) => boolean,
-  canUpdateEvaluation: (creatorUserId: string) => boolean,
-  onDuplicate: (item: EvaluationOverviewTableItem) => void,
-  onNameChange: (id: string, name: string) => void,
-  onSaveAsTemplate: (item: EvaluationOverviewTableItem) => void,
-  onExportData: (item: EvaluationOverviewTableItem) => Promise<void>,
-) {
+  ) => void;
+  canDelete: (creatorUserId: string) => boolean;
+  canWrite: (creatorUserId: string) => boolean;
+  canUpdateEvaluation: (creatorUserId: string) => boolean;
+  onDuplicate: (item: EvaluationOverviewTableItem) => void;
+  onNameChange: (id: string, name: string) => void;
+  onSaveAsTemplate: (item: EvaluationOverviewTableItem) => void;
+  onExportData: (item: EvaluationOverviewTableItem) => Promise<void>;
+}) {
   return [
     columnHelper.accessor("name", {
       header: "Name",
@@ -97,6 +105,27 @@ function columns(
     columnHelper.accessor("dataSourceName", {
       header: "Datenquelle",
       enableSorting: false,
+      meta: {
+        canNavigate: {
+          parentRow: true,
+        },
+        width: "8rem",
+      },
+    }),
+    columnHelper.accessor("dataSourceSensitivity", {
+      header: "Sensibilität",
+      cell: (props) => translateDataSourceSensitivity(props.getValue()),
+      meta: {
+        canNavigate: {
+          parentRow: true,
+        },
+        width: "8rem",
+      },
+      enableSorting: false,
+    }),
+    columnHelper.accessor("createdAt", {
+      header: "Erstellt am",
+      cell: (props) => formatDate(props.getValue(), "DE"),
       meta: {
         canNavigate: {
           parentRow: true,
@@ -147,44 +176,61 @@ function columns(
       cell: (props) => (
         <ActionsMenu
           actionItems={[
-            canUpdateEvaluation(props.row.original.userId) && {
+            {
+              label: "Teilen",
+              onClick: async () =>
+                await functions.onShareClicked(
+                  getSharedURL({
+                    detailLinkId: props.row.original.id,
+                    statisticsSubRoute: "evaluations",
+                  }),
+                ),
+              startDecorator: <Share />,
+            },
+            functions.canUpdateEvaluation(props.row.original.userId) && {
               label: "Name ändern",
               onClick: () =>
-                onNameChange(props.row.original.id, props.row.original.name),
+                functions.onNameChange(
+                  props.row.original.id,
+                  props.row.original.name,
+                ),
               disabled:
                 props.row.original.state !== ApiEvaluationState.Completed,
               startDecorator: <Edit />,
             },
-            canWrite(props.row.original.userId) && {
+            functions.canWrite(props.row.original.userId) && {
               label: "Duplizieren",
               onClick: () => {
-                onDuplicate(props.row.original);
+                functions.onDuplicate(props.row.original);
               },
               disabled:
                 props.row.original.state !== ApiEvaluationState.Completed,
               startDecorator: <FileCopy />,
             },
-            canWrite(props.row.original.userId) && {
+            functions.canWrite(props.row.original.userId) && {
               label: "Als Vorlage speichern",
               onClick: () => {
-                onSaveAsTemplate(props.row.original);
+                functions.onSaveAsTemplate(props.row.original);
               },
               disabled:
                 props.row.original.state !== ApiEvaluationState.Completed,
               startDecorator: <Menu />,
             },
-            props.row.original.anonymized && {
+            (props.row.original.dataSourceSensitivity ===
+              DataSourceSensitivity.Anonymous ||
+              props.row.original.dataSourceSensitivity ===
+                DataSourceSensitivity.InternalUsage) && {
               label: "Daten exportieren",
-              onClick: () => onExportData(props.row.original),
+              onClick: () => functions.onExportData(props.row.original),
               disabled:
                 props.row.original.state !== ApiEvaluationState.Completed,
               startDecorator: <Download />,
             },
-            canDelete(props.row.original.userId) &&
+            functions.canDelete(props.row.original.userId) &&
               ({
                 label: "Löschen",
                 onClick: () =>
-                  deleteEvaluationWithConfirmation(
+                  functions.deleteEvaluationWithConfirmation(
                     props.row.original.id,
                     props.row.original.name,
                   ),
@@ -235,13 +281,15 @@ export function EvaluationsTable({
 
   const { download: exportData, downloadContainerRef } =
     useExportEvaluationData();
-  const dataExportGuard = useDataExportGuard(false);
+  const dataExportGuard = useDataExportGuard();
 
   const filterSettings = useFilterSettings({
     definitions: createFilterDefinitions(apiDataSources),
     onValuesSubmit: onFilterValuesChanged,
     showSearch: false,
   });
+
+  const copy = useCopy();
 
   function openDuplicateEvaluationSidebar(item: EvaluationOverviewTableItem) {
     duplicateEvaluationSidebar.open({ originalEvaluation: item });
@@ -294,19 +342,26 @@ export function EvaluationsTable({
             wrapContent
             minWidth="58rem"
             data={evaluationOverview.data}
-            columns={columns(
-              deleteEvaluationWithConfirmation,
-              userPermissions.canDelete,
-              userPermissions.canWrite,
-              userPermissions.canUpdateEvaluation,
-              openDuplicateEvaluationSidebar,
-              (id, name) => setNameChangeAction({ id, name }),
-              (item) => openSaveAsEvaluationTemplateSidebar(item.id),
-              async ({ id, tooMuchDataForExport }) =>
-                dataExportGuard(() =>
+            columns={columns({
+              deleteEvaluationWithConfirmation:
+                deleteEvaluationWithConfirmation,
+              canDelete: userPermissions.canDelete,
+              canWrite: userPermissions.canWrite,
+              canUpdateEvaluation: userPermissions.canUpdateEvaluation,
+              onDuplicate: openDuplicateEvaluationSidebar,
+              onShareClicked: copy,
+              onNameChange: (id, name) => setNameChangeAction({ id, name }),
+              onSaveAsTemplate: (item) =>
+                openSaveAsEvaluationTemplateSidebar(item.id),
+              onExportData: async ({
+                id,
+                tooMuchDataForExport,
+                dataSourceSensitivity,
+              }) =>
+                dataExportGuard(dataSourceSensitivity, () =>
                   exportData({ evaluationId: id }, { tooMuchDataForExport }),
                 ),
-            )}
+            })}
             sorting={manualSortingProps}
             rowNavigation={{
               route: (row) =>

@@ -9,7 +9,7 @@ import static de.eshg.lib.procedure.MapperHelper.mapEnumSet;
 import static de.eshg.measlesprotection.persistence.support.MeaslesProtectionSystemProgressEntryType.CASE_STATUS_CHANGED;
 
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
+import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.domain.model.BaseEntity_;
 import de.eshg.lib.appointmentblock.AppointmentMapper;
 import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
@@ -109,7 +109,7 @@ public class MeaslesProtectionService {
   }
 
   private ProcedureDetailsData augmentProcedure(MeaslesProtectionProcedure procedure) {
-    Map<UUID, AddFacilityFileStateResponse> facilitiesById =
+    Map<UUID, GetFacilityFileStateResponse> facilitiesById =
         facilityClient.fetchAllRelatedFacilities(List.of(procedure));
     ProcedureWithPersonDetailsData personDetails = personClient.augmentWithPersonDetails(procedure);
     return augmentWithFacilityDetails(personDetails, facilitiesById);
@@ -148,7 +148,7 @@ public class MeaslesProtectionService {
     }
 
     List<MeaslesProtectionProcedure> allProcedures = procedures.toList();
-    Map<UUID, AddFacilityFileStateResponse> facilitiesById =
+    Map<UUID, GetFacilityFileStateResponse> facilitiesById =
         facilityClient.fetchAllRelatedFacilities(allProcedures);
 
     List<ProcedureDetailsData> detailsData =
@@ -235,7 +235,7 @@ public class MeaslesProtectionService {
       if (facilityData == null) {
         return NOT_APPLICABLE;
       }
-      AddFacilityFileStateResponse facilityDto = facilityData.facilityDto();
+      GetFacilityFileStateResponse facilityDto = facilityData.facilityDto();
       if (facilityDto == null) {
         return NOT_APPLICABLE;
       }
@@ -245,7 +245,7 @@ public class MeaslesProtectionService {
 
   private static ProcedureDetailsData augmentWithFacilityDetails(
       ProcedureWithPersonDetailsData personDetails,
-      Map<UUID, AddFacilityFileStateResponse> facilitiesById) {
+      Map<UUID, GetFacilityFileStateResponse> facilitiesById) {
     MeaslesProtectionProcedure procedure = personDetails.procedure();
     Optional<UUID> centralFileFacilityId = procedure.getFacilityIdFromCentralFile();
 
@@ -273,16 +273,16 @@ public class MeaslesProtectionService {
   }
 
   private static FacilityData getFacilityData(
-      Map<UUID, AddFacilityFileStateResponse> facilitiesById,
+      Map<UUID, GetFacilityFileStateResponse> facilitiesById,
       MeaslesProtectionProcedure procedure,
       Optional<UUID> centralFileFacilityId) {
-    AddFacilityFileStateResponse facilityFileState =
+    GetFacilityFileStateResponse facilityFileState =
         getFacilityFileState(facilitiesById, centralFileFacilityId);
     return getFacilityData(procedure, facilityFileState);
   }
 
   private static FacilityData getFacilityData(
-      MeaslesProtectionProcedure procedure, AddFacilityFileStateResponse facilityDto) {
+      MeaslesProtectionProcedure procedure, GetFacilityFileStateResponse facilityDto) {
     Optional<Facility> facility = procedure.getFacility();
     if (facilityDto != null && facility.isPresent()) {
       String otherTypeInformation = facility.get().getOtherFacilityTypeInformation();
@@ -294,10 +294,10 @@ public class MeaslesProtectionService {
     }
   }
 
-  private static AddFacilityFileStateResponse getFacilityFileState(
-      Map<UUID, AddFacilityFileStateResponse> facilitiesById,
+  private static GetFacilityFileStateResponse getFacilityFileState(
+      Map<UUID, GetFacilityFileStateResponse> facilitiesById,
       Optional<UUID> centralFileFacilityId) {
-    final AddFacilityFileStateResponse facilityDto;
+    final GetFacilityFileStateResponse facilityDto;
     if (centralFileFacilityId.isPresent()) {
       facilityDto = facilitiesById.get(centralFileFacilityId.get());
       Objects.requireNonNull(facilityDto, "Facility not found: " + centralFileFacilityId);

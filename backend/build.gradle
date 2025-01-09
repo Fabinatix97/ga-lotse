@@ -257,6 +257,9 @@ subprojects {
         dependsOn findUnusedValidationFilesTask
     }
 
+    def springBootVersion = dependencyManagement.managedVersions['org.springframework.boot:spring-boot']
+    assert springBootVersion == "3.4.1": "Remove the dependency overwrite of 'hibernate.version' in gradle.properties since Spring Boot is updated to ${springBootVersion}"
+
     clean {
         delete test.outputs
     }

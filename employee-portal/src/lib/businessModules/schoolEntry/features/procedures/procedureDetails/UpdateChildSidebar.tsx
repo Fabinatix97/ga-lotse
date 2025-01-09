@@ -8,31 +8,34 @@ import {
   mapPersonDetailsToForm,
 } from "@/lib/businessModules/schoolEntry/api/models/Person";
 import { useUpdateChild } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
-import { PersonEditSidebar } from "@/lib/shared/components/personSidebar/PersonEditSidebar";
 import {
   DefaultPersonForm,
   DefaultPersonFormValues,
 } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
+import { PersonSidebarForm } from "@/lib/shared/components/personSidebar/form/PersonSidebarForm";
 import { mapToPersonUpdateRequest } from "@/lib/shared/components/personSidebar/helpers";
-import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
+import {
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
-interface UpdateChildSidebarProps {
-  child: PersonDetails;
-  procedureId: string;
-  open: boolean;
-  onClose: () => void;
+export function useUpdateChildSidebar() {
+  return useSidebarWithFormRef({
+    component: UpdateChildSidebar,
+  });
 }
 
-export function UpdateChildSidebar({
+interface UpdateChildSidebarProps extends SidebarWithFormRefProps {
+  child: PersonDetails;
+  procedureId: string;
+}
+
+function UpdateChildSidebar({
   child,
   procedureId,
-  open,
   onClose,
+  formRef,
 }: UpdateChildSidebarProps) {
-  const { closeSidebar, handleClose, sidebarFormRef } = useSidebarForm({
-    onClose,
-  });
-
   const updateChild = useUpdateChild(procedureId);
 
   async function handleSubmit(values: DefaultPersonFormValues) {
@@ -43,20 +46,20 @@ export function UpdateChildSidebar({
         apiUpdatePersonRequest: request,
       },
       {
-        onSuccess: closeSidebar,
+        onSuccess: () => onClose(true),
       },
     );
   }
 
   return (
-    <PersonEditSidebar
-      open={open}
-      title={"Kind bearbeiten"}
-      onCancel={handleClose}
+    <PersonSidebarForm
+      mode="edit"
+      title="Kind bearbeiten"
+      onCancel={() => onClose(false)}
       onSubmit={handleSubmit}
-      sidebarFormRef={sidebarFormRef}
       initialValues={mapPersonDetailsToForm(child)}
       component={DefaultPersonForm}
+      sidebarFormRef={formRef}
       addressRequired
     />
   );

@@ -5,41 +5,39 @@
 
 package de.eshg.lib.statistics;
 
-import de.eshg.lib.statistics.api.DataSource;
+import de.eshg.lib.statistics.api.DataSourceInfo;
 import de.eshg.lib.statistics.api.GetDataSourcesResponse;
 import de.eshg.lib.statistics.api.GetSpecificDataRequest;
 import de.eshg.lib.statistics.api.GetSpecificDataResponse;
-import de.eshg.lib.statistics.util.DataSourceInfo;
+import de.eshg.lib.statistics.datasource.DataSource;
 import io.swagger.v3.oas.annotations.Hidden;
 import java.util.List;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@ConditionalOnBean(AbstractStatisticsService.class)
 @Hidden
 public class StatisticsController implements StatisticsApi {
-  private final AbstractStatisticsService<?> statisticsService;
+  private final StatisticsService statisticsService;
 
-  public StatisticsController(AbstractStatisticsService<?> statisticsService) {
+  public StatisticsController(StatisticsService statisticsService) {
     this.statisticsService = statisticsService;
   }
 
   @Override
   @Transactional(readOnly = true)
   public GetDataSourcesResponse getAvailableDataSources() {
-    List<DataSourceInfo> dataSourceInfos = statisticsService.getDataSourceMetaInfos();
+    List<DataSource<?>> dataSources = statisticsService.getDataSources();
     return new GetDataSourcesResponse(
-        dataSourceInfos.stream()
+        dataSources.stream()
             .map(
-                dataSourceInfo ->
-                    new DataSource(
-                        dataSourceInfo.id(),
-                        dataSourceInfo.name(),
-                        dataSourceInfo.sensitivity(),
-                        dataSourceInfo.canBeAnonymized(),
-                        statisticsService.getAttributes(dataSourceInfo.id())))
+                dataSource ->
+                    new DataSourceInfo(
+                        dataSource.getId(),
+                        dataSource.getName(),
+                        dataSource.getSensitivity(),
+                        dataSource.isCanBeAnonymized(),
+                        statisticsService.getAttributes(dataSource)))
             .toList());
   }
 

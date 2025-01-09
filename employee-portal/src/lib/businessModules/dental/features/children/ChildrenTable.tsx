@@ -6,7 +6,9 @@
 "use client";
 
 import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
+import { ApiChildSortKey } from "@eshg/employee-portal-api/dental";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { useToggleableState } from "@eshg/lib-portal/hooks/useToggleableState";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 import { ReactNode } from "react";
@@ -16,7 +18,9 @@ import { useGetChildrenQuery } from "@/lib/businessModules/dental/api/queries/ch
 import { routes } from "@/lib/businessModules/dental/shared/routes";
 import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
+import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { ChipWithTooltip } from "@/lib/shared/components/chip/ChipWithTooltip";
+import { useFilterDictionary } from "@/lib/shared/components/filterSettings/useFilterDictionary";
 import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
@@ -24,14 +28,19 @@ import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import {
   getSortDirection,
-  getSortKey,
+  getSortKeyWithSpecificMapping,
 } from "@/lib/shared/components/table/sorting";
 import { formatSchoolYear } from "@/lib/shared/helpers/formatters";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
+import {
+  ChildrenFilterSettings,
+  ChildrenFilters,
+} from "./ChildrenFilterSettings";
+
 const initialSorting: ColumnSort = {
-  id: "id",
-  desc: true,
+  id: "lastName",
+  desc: false,
 };
 
 interface ChildrenTableProps {
@@ -39,6 +48,8 @@ interface ChildrenTableProps {
 }
 
 export function ChildrenTable(props: ChildrenTableProps) {
+  const [activePanel, toggleActivePanel] = useToggleableState<"filters">();
+
   const tableControl = useTableControl({
     serverSideSorting: true,
     sortFieldName: "sortKey",
@@ -46,11 +57,30 @@ export function ChildrenTable(props: ChildrenTableProps) {
     initialSorting: initialSorting,
   });
 
+  const {
+    filterValues,
+    filterFormValues,
+    setFilterFormValue,
+    deleteFilterValue,
+    clearFilterValues,
+    filterButtonProps,
+    filterSettingsSheetProps,
+    activeFilters,
+  } = useFilterDictionary<keyof ChildrenFilters, ChildrenFilters>({
+    onChangeFilters: () => {
+      tableControl.paginationProps.onPageChange(0);
+    },
+  });
+
   const childrenQuery = useGetChildrenQuery({
     pageNumber: tableControl.paginationProps.pageNumber,
     pageSize: tableControl.paginationProps.pageSize,
-    sortKey: getSortKey(tableControl.tableSorting),
+    sortKey: getSortKeyWithSpecificMapping(
+      tableControl.tableSorting,
+      SORT_KEY_MAPPING,
+    ),
     sortDirection: getSortDirection(tableControl.tableSorting),
+    ...filterValues,
   });
 
   const gdprBannerQuery = useGetGdprValidationBannerQuery(
@@ -69,7 +99,33 @@ export function ChildrenTable(props: ChildrenTableProps) {
   return (
     <TablePage
       fullHeight
-      controls={<ButtonBar right={props.buttons} alignItems="flex-end" />}
+      controls={
+        <ButtonBar
+          left={[
+            <FilterButton
+              {...filterButtonProps}
+              key="filterButton"
+              isFilterVisible={activePanel === "filters"}
+              onClick={() => toggleActivePanel("filters")}
+            />,
+          ]}
+          right={props.buttons}
+          alignItems="flex-end"
+        />
+      }
+      filterSettings={
+        activePanel === "filters" && (
+          <ChildrenFilterSettings
+            filterFormValues={filterFormValues}
+            setFilterFormValue={setFilterFormValue}
+            deleteFilterValue={deleteFilterValue}
+            clearFilterValues={clearFilterValues}
+            filterSettingsSheetProps={filterSettingsSheetProps}
+            activeFilters={activeFilters}
+          />
+        )
+      }
+      data-testid="childrenTable"
     >
       <TableSheet
         loading={children.isFetching}
@@ -101,7 +157,7 @@ const COLUMNS = [
   columnHelper.accessor("lastName", {
     header: "Name",
     cell: (props) => props.getValue(),
-    enableSorting: false,
+    enableSorting: true,
     meta: {
       width: 180,
       canNavigate: {
@@ -112,7 +168,7 @@ const COLUMNS = [
   columnHelper.accessor("firstName", {
     header: "Vorname",
     cell: (props) => props.getValue(),
-    enableSorting: false,
+    enableSorting: true,
     meta: {
       width: 180,
       canNavigate: {
@@ -123,9 +179,9 @@ const COLUMNS = [
   columnHelper.accessor("dateOfBirth", {
     header: "Geburtsdatum",
     cell: (props) => formatDate(props.getValue()),
-    enableSorting: false,
+    enableSorting: true,
     meta: {
-      width: 90,
+      width: 120,
       canNavigate: {
         parentRow: true,
       },
@@ -149,7 +205,7 @@ const COLUMNS = [
   columnHelper.accessor("groupName", {
     header: "Gruppe",
     cell: (props) => props.getValue(),
-    enableSorting: false,
+    enableSorting: true,
     meta: {
       width: 50,
       canNavigate: {
@@ -160,7 +216,7 @@ const COLUMNS = [
   columnHelper.accessor("year", {
     header: "Jahr",
     cell: (props) => formatSchoolYear(props.getValue()),
-    enableSorting: false,
+    enableSorting: true,
     meta: {
       width: 50,
       canNavigate: {
@@ -169,3 +225,11 @@ const COLUMNS = [
     },
   }),
 ];
+
+const SORT_KEY_MAPPING: Record<string, ApiChildSortKey> = {
+  firstName: ApiChildSortKey.FirstName,
+  lastName: ApiChildSortKey.LastName,
+  dateOfBirth: ApiChildSortKey.DateOfBirth,
+  groupName: ApiChildSortKey.GroupName,
+  year: ApiChildSortKey.Year,
+};

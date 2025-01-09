@@ -29,7 +29,7 @@ function mapImportChildrenFormValues(
 ): ImportXlsxRequest {
   return {
     file: mapRequiredValue(values.file),
-    institutionId: mapRequiredValue(values.institutionId),
+    institutionId: mapRequiredValue(values.institution).id,
     schoolYear: mapRequiredValue(values.schoolYear),
   };
 }

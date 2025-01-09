@@ -59,7 +59,7 @@ function mapAppointmentBlock(
   };
 }
 
-function mapFormValues(
+export function mapFormValues(
   values: StiProtectionAppointmentValues,
 ): ApiCreateDailyAppointmentBlockGroupRequest {
   return {

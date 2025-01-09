@@ -13,4 +13,4 @@ import java.util.UUID;
 public record ProcedureWithDuration(
     @NotNull UUID id,
     @NotNull Instant createdAt,
-    @NotNull @Schema(description = "A duration in ISO 8601") String duration) {}
+    @Schema(description = "A duration in ISO 8601") String duration) {}

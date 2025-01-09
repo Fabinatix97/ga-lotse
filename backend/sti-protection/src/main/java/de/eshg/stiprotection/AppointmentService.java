@@ -28,6 +28,9 @@ import de.eshg.stiprotection.persistence.db.UserDefinedAppointment;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -209,5 +212,18 @@ public class AppointmentService {
               .formatted(procedure.getExternalId()));
     }
     return appointmentHistoryEntry;
+  }
+
+  public String getAppointmentTimeAsString(AppointmentData appointmentData) {
+    ZonedDateTime zonedDateTimeStart =
+        appointmentData.appointmentStart().atZone(ZoneId.systemDefault());
+    ZonedDateTime zonedDateTimeEnd =
+        zonedDateTimeStart.plusMinutes(appointmentData.durationInMinutes());
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+    String date = zonedDateTimeStart.format(dateFormatter);
+    String timeStart = zonedDateTimeStart.format(timeFormatter);
+    String timeEnd = zonedDateTimeEnd.format(timeFormatter);
+    return "%s von %s bis %s".formatted(date, timeStart, timeEnd);
   }
 }

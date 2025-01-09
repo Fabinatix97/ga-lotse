@@ -13,6 +13,7 @@ import {
   ApprovalRequestApi,
   ArchivingApi,
   Configuration,
+  ConsultationApi,
   ExaminationApi,
   FileApi,
   MedicalHistoryApi,
@@ -101,4 +102,9 @@ export function useCitizenAccessCodeUserApi() {
 export function useExaminationApi() {
   const config = useConfiguration();
   return new ExaminationApi(config);
+}
+
+export function useConsultationApi() {
+  const config = useConfiguration();
+  return new ConsultationApi(config);
 }

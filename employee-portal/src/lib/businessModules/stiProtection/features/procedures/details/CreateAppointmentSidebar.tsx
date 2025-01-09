@@ -12,10 +12,7 @@ import {
   ApiStiProtectionProcedure,
   ApiUpdateAppointmentRequest,
 } from "@eshg/employee-portal-api/stiProtection";
-import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { UnfoldMore } from "@mui/icons-material";
-import { FormLabel, Typography } from "@mui/joy";
 import { differenceInMinutes } from "date-fns";
 import { Formik, FormikHelpers } from "formik";
 import { ReactNode, useMemo, useReducer } from "react";
@@ -24,11 +21,10 @@ import {
   useCreateAppointmentMutation,
   useEditAppointmentMutation,
 } from "@/lib/businessModules/stiProtection/api/mutations/procedures";
-import { appointmentOptionsByConcern } from "@/lib/businessModules/stiProtection/components/appointmentBlocks/options";
 import { AppointmentForm } from "@/lib/businessModules/stiProtection/features/procedures/addNewProcedure/AppointmentForm";
 import {
+  AppointmentFieldSetProps,
   SummaryForm,
-  SummaryFormProps,
 } from "@/lib/businessModules/stiProtection/features/procedures/addNewProcedure/SummaryForm";
 import {
   deleteUndefined,
@@ -70,38 +66,35 @@ export const EDIT_APPOINTMENT_SEARCH_PARAM = "edit-appointment";
 interface SidebarStep {
   title: string;
   subTitle: string;
-  fields: (props: SummaryFormProps) => ReactNode | JSX.Element;
+  fields: (props: AppointmentFieldSetProps) => ReactNode | JSX.Element;
 }
 
 function getSteps({
-  mode = "createAppointment",
-  procedure,
+  mode,
 }: {
   mode?: "createAppointment" | "editAppointment";
-  procedure: ApiStiProtectionProcedure;
 }): SidebarStep[] {
   return [
     {
       title: mode === "editAppointment" ? "Termin ändern" : "Termin buchen",
       subTitle: "Schritt 1 von 2",
-      fields: () => (
-        <>
-          {mode === "createAppointment" && (
-            <AppointmentTypeField procedure={procedure} />
-          )}
-          <AppointmentForm procedure={procedure} />
-        </>
+      fields: ({
+        startingConcern,
+        editAppointmentType,
+      }: AppointmentFieldSetProps) => (
+        <AppointmentForm
+          startingConcern={startingConcern}
+          editAppointmentType={editAppointmentType}
+        />
       ),
     },
     {
       title: "Zusammenfassung",
       subTitle: "Schritt 2 von 2",
-      fields: (props: SummaryFormProps) => (
+      fields: (props: AppointmentFieldSetProps) => (
         <SummaryForm
           {...props}
           appointmentSummary={{ title: "Neuer Termin" }}
-          mode={mode}
-          procedure={procedure}
           show={{ personalData: false }}
         />
       ),
@@ -116,18 +109,19 @@ export function CreateAppointmentSidebar({
     CREATE_APPOINTMENT_SEARCH_PARAM,
     "boolean",
   );
-  const [isOpenEditAppointment, setIsOpenEditAppointment] = useSearchParam(
+  const [editAppointmentType, setEditAppointmentType] = useSearchParam(
     EDIT_APPOINTMENT_SEARCH_PARAM,
-    "boolean",
   );
+
   const steps = useMemo(
     () =>
       getSteps({
-        mode: isOpenEditAppointment ? "editAppointment" : "createAppointment",
-        procedure,
+        mode:
+          editAppointmentType != null ? "editAppointment" : "createAppointment",
       }),
-    [isOpenEditAppointment, procedure],
+    [editAppointmentType],
   );
+
   const lastStepIndex = steps.length - 1;
   const [stepIndex, changeToStep] = useReducer(
     (_index: number, newIndex: number) =>
@@ -145,35 +139,39 @@ export function CreateAppointmentSidebar({
   });
   const editAppointment = useEditAppointmentMutation({
     onSuccess: () => {
-      setIsOpenEditAppointment(false);
+      setEditAppointmentType(null);
       snackbar.confirmation("Der Termin wurde geändert.");
     },
   });
 
   const { sidebarFormRef, handleClose } = useSidebarForm({
     onClose: () => {
-      if (isOpenCreateAppointment) setIsOpenCreateAppointment(false);
-      if (isOpenEditAppointment) setIsOpenEditAppointment(false);
+      if (isOpenCreateAppointment) {
+        setIsOpenCreateAppointment(false);
+      } else {
+        setEditAppointmentType(null);
+      }
       changeToStep(0);
     },
   });
 
   async function handleSubmit(values: CreateAppointmentForm) {
-    if (isOpenEditAppointment) {
+    if (editAppointmentType) {
       await editAppointment.mutateAsync({
         id: procedure.id,
-        data: mapFormToApi(values, "edit") as ApiUpdateAppointmentRequest,
+        data: mapFormToApi(values, "edit"),
       });
     } else {
       await createAppointment.mutateAsync({
         id: procedure.id,
-        data: mapFormToApi(values) as ApiCreateAppointmentRequest,
+        data: mapFormToApi(values, "create"),
       });
     }
   }
 
   const isOnFirstStep = stepIndex === 0;
   const isOnLastStep = stepIndex === lastStepIndex;
+  const appointmentType = editAppointmentType as ApiAppointmentType | undefined;
 
   async function handleNext(
     newValues: CreateAppointmentForm,
@@ -191,7 +189,7 @@ export function CreateAppointmentSidebar({
 
   return (
     <Sidebar
-      open={isOpenCreateAppointment || isOpenEditAppointment}
+      open={isOpenCreateAppointment || editAppointmentType != null}
       onClose={handleClose}
     >
       <Formik initialValues={initialValues} onSubmit={handleNext}>
@@ -201,6 +199,8 @@ export function CreateAppointmentSidebar({
               jumpToAppointmentSelection={() => {
                 changeToStep(0);
               }}
+              startingConcern={procedure.concern}
+              editAppointmentType={appointmentType}
             />
           </SidebarContent>
           <SidebarActions>
@@ -219,30 +219,15 @@ export function CreateAppointmentSidebar({
   );
 }
 
-function AppointmentTypeField({
-  procedure,
-}: {
-  procedure: ApiStiProtectionProcedure;
-}) {
-  return (
-    <SingleAutocompleteField
-      label={
-        <FormLabel>
-          <Typography level="title-md">Terminart</Typography>
-        </FormLabel>
-      }
-      name="appointmentType"
-      required="Bitte eine Terminart auswählen"
-      options={appointmentOptionsByConcern(procedure.concern)}
-      popupIcon={<UnfoldMore />}
-    />
-  );
-}
-
 function mapFormToApi(
   form: CreateAppointmentForm,
-  type: "create" | "edit" = "create",
-): ApiCreateAppointmentRequest | ApiUpdateAppointmentRequest {
+  type: "create",
+): ApiCreateAppointmentRequest;
+function mapFormToApi(
+  form: CreateAppointmentForm,
+  type: "edit",
+): ApiUpdateAppointmentRequest;
+function mapFormToApi(form: CreateAppointmentForm, type: "edit" | "create") {
   if (type === "create" && !form.appointmentType) {
     throw new Error("Appointment type must be defined");
   }

@@ -5,6 +5,7 @@
 
 package de.eshg.base.keycloak;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.eshg.base.citizenuser.CitizenUserService;
 import de.eshg.lib.keycloak.Realm;
 import de.eshg.lib.keycloak.UsernamePassword;
@@ -27,8 +28,9 @@ public class CitizenKeycloakTestClient extends KeycloakTestClient {
       CitizenUserService citizenUserService,
       @Value("${eshg.keycloak.test-client.max-number-of-parallel-threads:8}")
           int maxNumberOfParallelThreads,
-      EnvironmentConfig environmentConfig) {
-    super(client, keycloakProperties, maxNumberOfParallelThreads, environmentConfig);
+      EnvironmentConfig environmentConfig,
+      ObjectMapper objectMapper) {
+    super(client, keycloakProperties, maxNumberOfParallelThreads, environmentConfig, objectMapper);
     this.citizenUserService = citizenUserService;
   }
 

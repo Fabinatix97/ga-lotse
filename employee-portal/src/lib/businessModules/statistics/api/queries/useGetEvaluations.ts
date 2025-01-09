@@ -4,7 +4,6 @@
  */
 
 import {
-  ApiEvaluationDataSensitivity,
   ApiEvaluationSortKey,
   ApiEvaluationState,
   ApiGetEvaluationsResponse,
@@ -16,6 +15,7 @@ import { useEvaluationApi } from "@/lib/businessModules/statistics/api/clients";
 import { extractFilterValue } from "@/lib/businessModules/statistics/api/mapper/extractFilterValue";
 import { mapDateSpanFilterToApiDateSpan } from "@/lib/businessModules/statistics/api/mapper/mapDateSpanFilterToApiDateSpan";
 import { mapTimeRangeEndApiToFrontend } from "@/lib/businessModules/statistics/api/mapper/mapTimeRangeEnd";
+import { mapDataSourceSensitivityApiToFrontend } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import {
   DataSourceSensitivity,
   mapEvaluationDataSourceSensitivityFrontendToApi,
@@ -136,10 +136,9 @@ function mapGetEvaluations(
           timeRangeEnd: mapTimeRangeEndApiToFrontend(evaluation.timeRangeEnd),
           user: apiGetEvaluationsResponse.resolvedUsers[evaluation.userId],
           dataSourceName: evaluation.dataSourceNames[0]!,
-          //TODO: Display sensitivity instead of anonymized
-          anonymized:
-            evaluation.dataSensitivity !==
-            ApiEvaluationDataSensitivity.Sensitive,
+          dataSourceSensitivity: mapDataSourceSensitivityApiToFrontend(
+            evaluation.dataSensitivity,
+          ),
           tooMuchDataForExport: evaluation.tooMuchDataForExport,
         }) satisfies EvaluationOverviewTableItem,
     ),

@@ -26,6 +26,7 @@ import {
   User,
 } from "matrix-js-sdk";
 import {
+  filter,
   forEach,
   isEmpty,
   isNonNullish,
@@ -68,65 +69,52 @@ export function findDirectChat({
 
 // This is the 'official' method to distinguish direct messages from public rooms: https://github.com/matrix-org/matrix-js-sdk/issues/720#issuecomment-421578418
 export function getRoomNameAndCommunicationType(
+  matrixClient: MatrixClient,
   room: Room,
-): RoomWithCommunicationType {
+) {
   return {
     room,
-    communicationType: getRoomCommunicationType(undefined, undefined, room),
+    communicationType: getRoomCommunicationType(matrixClient, room),
   };
 }
 
 export function getRoomCommunicationType(
-  matrixClient?: MatrixClient,
-  roomId?: string,
-  room?: Room,
+  matrixClient: MatrixClient,
+  room: Room,
 ) {
-  let currentRoom: Room | null = room ?? null;
-  let communicationType = CommunicationType.PublicRoom;
+  const type = room.getDMInviter() ? "directMessage" : "room";
 
-  if (!room && matrixClient) {
-    currentRoom = matrixClient.getRoom(roomId);
+  if (type === "directMessage") {
+    return CommunicationType.DirectMessage;
   }
 
-  if (currentRoom) {
-    const type = currentRoom.getDMInviter() ? "directMessage" : "room";
+  const allMembers = room.getMembers();
 
-    if (type === "directMessage") {
-      communicationType = CommunicationType.DirectMessage;
-    }
+  if (type === "room" && allMembers.length <= 2) {
+    const someDMInviter = allMembers.some((m) => m.getDMInviter());
 
-    const allMembers = currentRoom.getMembers();
-
-    if (type === "room" && allMembers.length <= 2) {
-      const someDMInviter = allMembers.some((m) => m.getDMInviter());
-
-      if (someDMInviter) {
-        communicationType = CommunicationType.DirectMessage;
-      } else {
-        const otherMember = allMembers.find(
-          (m) => !isStrictEqual(m.userId, currentRoom.myUserId),
-        );
-        const isRoomNameAndOtherMemberEqual = isStrictEqual(
-          otherMember?.name,
-          currentRoom.name,
-        );
-        if (isRoomNameAndOtherMemberEqual) {
-          communicationType = CommunicationType.DirectMessage;
-        }
+    if (someDMInviter) {
+      return CommunicationType.DirectMessage;
+    } else {
+      const otherMember = allMembers.find(
+        (m) => !isStrictEqual(m.userId, room.myUserId),
+      );
+      const isRoomNameAndOtherMemberEqual = isStrictEqual(
+        otherMember?.name,
+        room.name,
+      );
+      if (isRoomNameAndOtherMemberEqual) {
+        return CommunicationType.DirectMessage;
       }
     }
   }
-  if (matrixClient && roomId) {
-    const directMessageRooms = getDMRooms(
-      matrixClient,
-      matrixClient.getUserId(),
-    );
-    if (directMessageRooms?.includes(roomId)) {
-      communicationType = CommunicationType.DirectMessage;
-    }
+
+  const directMessageRooms = getDMRooms(matrixClient, matrixClient.getUserId());
+  if (directMessageRooms?.includes(room.roomId)) {
+    return CommunicationType.DirectMessage;
   }
 
-  return communicationType;
+  return CommunicationType.PublicRoom;
 }
 
 export function shouldShowMessageTeaser({
@@ -380,6 +368,17 @@ export function getMemberAvatarUrl(
   return imageUrl;
 }
 
+export function getDirectMessageRoomMember(room: Room) {
+  const members = room?.getMembers();
+
+  if (members?.length) {
+    return filter(
+      members,
+      (m) => !isStrictEqual(m.userId, room?.myUserId),
+    )?.[0];
+  }
+}
+
 export async function leaveRoom(matrixClient: MatrixClient, roomId?: string) {
   if (!roomId) return;
   try {
@@ -582,4 +581,11 @@ export async function setDMRoom(
   if (!modified) return;
 
   await client.setAccountData(EventType.Direct, Object.fromEntries(dmRoomMap));
+}
+
+export function isMembershipChanged(mEvent: MatrixEvent): boolean {
+  return (
+    mEvent.getContent().membership !== mEvent.getPrevContent().membership ||
+    mEvent.getContent().reason !== mEvent.getPrevContent().reason
+  );
 }

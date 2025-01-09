@@ -58,7 +58,7 @@ export function GdprDownloadPackagesTile({
   const baseDownload = useFileDownloadForBase(gdprProcedure.id);
   const id = useId();
 
-  const isEmpty = gdprProcedure.centralFileId === undefined;
+  const isEmpty = gdprProcedure.centralFileIds.length === 0;
 
   return (
     <SectionTile id={id}>

@@ -8,6 +8,7 @@ import {
   ApiReportDataSensitivity,
 } from "@eshg/employee-portal-api/statistics";
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
+import { isDefined } from "remeda";
 
 export const DataSourceSensitivity = {
   Sensitive: "SENSITIVE",
@@ -26,24 +27,23 @@ const DATA_SOURCE_SENSITIVITY_TRANSLATION: EnumMap<DataSourceSensitivity> = {
 export function translateDataSourceSensitivity(
   dataSourceSensitivity: DataSourceSensitivity | undefined,
 ) {
-  return dataSourceSensitivity !== undefined
+  return isDefined(dataSourceSensitivity)
     ? DATA_SOURCE_SENSITIVITY_TRANSLATION[dataSourceSensitivity]
     : "Unbekannt";
 }
 
+const SENSITIVITY_MAP: Record<ApiDataSourceSensitivity, DataSourceSensitivity> =
+  {
+    [ApiDataSourceSensitivity.Sensitive]: DataSourceSensitivity.Sensitive,
+    [ApiDataSourceSensitivity.InternalUsage]:
+      DataSourceSensitivity.InternalUsage,
+    [ApiDataSourceSensitivity.Anonymous]: DataSourceSensitivity.Anonymous,
+  };
+
 export function mapDataSourceSensitivityApiToFrontend(
-  apiDataSourceSensitivity: ApiDataSourceSensitivity | undefined,
-) {
-  switch (apiDataSourceSensitivity) {
-    case ApiDataSourceSensitivity.Sensitive:
-      return DataSourceSensitivity.Sensitive;
-    case ApiDataSourceSensitivity.InternalUsage:
-      return DataSourceSensitivity.InternalUsage;
-    case ApiDataSourceSensitivity.Anonymous:
-      return DataSourceSensitivity.Anonymous;
-    case undefined:
-      return undefined;
-  }
+  apiDataSourceSensitivity: ApiDataSourceSensitivity,
+): DataSourceSensitivity {
+  return SENSITIVITY_MAP[apiDataSourceSensitivity];
 }
 
 export function mapEvaluationDataSourceSensitivityFrontendToApi(

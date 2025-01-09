@@ -8,6 +8,7 @@ package de.eshg.lib.common;
 public enum BusinessModuleCapability {
   PROCEDURES,
   TASKS,
+  PROCEDURE_AND_TASK_METRICS,
   NOTIFICATIONS,
   CALENDAR,
   CONTACT_MERGED_EVENT_CALLBACK

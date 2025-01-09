@@ -13,14 +13,12 @@ import { mapApiCalendarsToCalendarInfo } from "./calendarDisplay";
 import { EventWithCalendarId } from "./calendarMapper";
 import { useAddAbsenceSidebar } from "./sidebar/AddAbsenceSidebar";
 import { useEditAbsenceSidebar } from "./sidebar/EditAbsenceSidebar";
-import { SettingsSidebar } from "./sidebar/SettingsSidebar";
+import { useSettingsSidebar } from "./sidebar/SettingsSidebar";
 import { useViewEventSidebar } from "./sidebar/ViewEventSidebar";
 
 export function UserCalendar(props: {
   calendarsResponse: ApiGetRelevantCalendarsResponse;
 }) {
-  const [settingsSidebarOpen, setSettingsSidebarOpen] = useState(false);
-
   const { userCalendarId, calendars } = useMemo(
     () => mapApiCalendarsToCalendarInfo(props.calendarsResponse),
     [props.calendarsResponse],
@@ -33,6 +31,7 @@ export function UserCalendar(props: {
   const addAbsenceSidebar = useAddAbsenceSidebar();
   const editAbsenceSidebar = useEditAbsenceSidebar();
   const viewEventSidebar = useViewEventSidebar();
+  const settingsSidebar = useSettingsSidebar();
 
   const calendarRef = useRef<CalendarHandle>(null);
 
@@ -61,6 +60,14 @@ export function UserCalendar(props: {
     });
   }
 
+  function openSettingsSidebar() {
+    settingsSidebar.open({
+      calendars,
+      initialDisplayedCalenderIds: displayedCalendarIds,
+      onDisplayedCalendarIdsChanged: setDisplayedCalendarIds,
+    });
+  }
+
   return (
     <>
       <Calendar
@@ -79,14 +86,7 @@ export function UserCalendar(props: {
             openViewEventSidebar(event);
           }
         }}
-        onSettingsButtonClick={() => setSettingsSidebarOpen(true)}
-      />
-      <SettingsSidebar
-        open={settingsSidebarOpen}
-        closeSidebar={() => setSettingsSidebarOpen(false)}
-        calendars={calendars}
-        displayedCalendarIds={displayedCalendarIds}
-        setDisplayedCalendarIds={setDisplayedCalendarIds}
+        onSettingsButtonClick={openSettingsSidebar}
       />
     </>
   );

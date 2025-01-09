@@ -4,13 +4,10 @@
  */
 
 import { ApiContactCategory } from "@eshg/employee-portal-api/base";
-import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
 import { SearchOutlined } from "@mui/icons-material";
-import { useState } from "react";
 
-import { useSearchContacts } from "@/lib/baseModule/api/queries/contacts";
 import { contactCategoryNames } from "@/lib/baseModule/shared/translations";
-import { mapContactToSelectOption } from "@/lib/shared/helpers/contactCategoryMapper";
+import { SelectContactField } from "@/lib/shared/components/formFields/SelectContactField";
 
 interface SearchContactFieldProps {
   name: string;
@@ -28,26 +25,16 @@ const requiredMessage: Record<ApiContactCategory, string> = {
 };
 
 export function SearchContactField(props: SearchContactFieldProps) {
-  const [contactName, setContactName] = useState("");
-  const categories = new Set<ApiContactCategory>();
-  categories.add(props.category);
-  const searchContacts = useSearchContacts(contactName, categories);
-  const schools = searchContacts.isSuccess ? searchContacts.data.elements : [];
-  const options = schools.map(mapContactToSelectOption);
-
   const translatedCategory = contactCategoryNames[props.category];
 
   return (
-    <SingleAutocompleteField
+    <SelectContactField
       name={props.name}
       label={props.label}
-      required={requiredMessage[props.category]}
-      options={options}
+      categories={new Set([props.category])}
       placeholder={`${translatedCategory} suchen`}
+      required={requiredMessage[props.category]}
       endDecorator={<SearchOutlined />}
-      loading={searchContacts.isLoading}
-      onInputChange={(_, newInputValue) => setContactName(newInputValue)}
-      disableFiltering
     />
   );
 }

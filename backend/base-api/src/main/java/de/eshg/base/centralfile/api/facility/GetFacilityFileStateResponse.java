@@ -35,7 +35,6 @@ public record GetFacilityFileStateResponse(
             description =
                 "A flag that signals if a File State differs from the referenceFacility it is connected to.",
             example = "true")
-        @NotNull
-        boolean outdated,
+        Boolean outdated,
     @NotNull DataOriginDto dataOrigin)
     implements FacilityDetails {}

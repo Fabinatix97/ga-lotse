@@ -12,7 +12,6 @@ import de.eshg.base.user.api.UserDto;
 import de.eshg.domain.model.BaseEntity_;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.lib.statistics.api.DataSourceSensitivity;
-import de.eshg.lib.statistics.api.ValueType;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
@@ -45,8 +44,6 @@ import de.eshg.statistics.api.report.GetReportSeriesEntriesOfEvaluationResponse;
 import de.eshg.statistics.api.report.ReportSeriesDto;
 import de.eshg.statistics.config.StatisticsConfig;
 import de.eshg.statistics.config.StatisticsConfig.BusinessModuleConfig;
-import de.eshg.statistics.config.StatisticsFeature;
-import de.eshg.statistics.config.StatisticsFeatureToggle;
 import de.eshg.statistics.datatransfer.AnalysisTemplateData;
 import de.eshg.statistics.datatransfer.DiagramTemplateData;
 import de.eshg.statistics.datatransfer.EvaluationTemplateData;
@@ -66,6 +63,7 @@ import de.eshg.statistics.persistence.entity.Evaluation;
 import de.eshg.statistics.persistence.entity.MinMaxNullUnknownValues;
 import de.eshg.statistics.persistence.entity.StatisticsDataSensitivity;
 import de.eshg.statistics.persistence.entity.TableColumn;
+import de.eshg.statistics.persistence.entity.TableColumnValueType;
 import de.eshg.statistics.persistence.entity.TableColumn_;
 import de.eshg.statistics.persistence.entity.TableRow;
 import de.eshg.statistics.persistence.entity.evaluationtemplate.EvaluationTemplate;
@@ -107,10 +105,7 @@ public class EvaluationService extends AbstractAggregationResultService {
   private final EvaluationRepository evaluationRepository;
   private final StatisticsUserService userService;
   private final EvaluationTemplateService evaluationTemplateService;
-  private final DataSourceAggregationService dataSourceAggregationService;
-  private final DataSourceValidator dataSourceValidator;
   private final BusinessModuleConfig businessModuleConfig;
-  private final StatisticsFeatureToggle statisticsFeatureToggle;
 
   public EvaluationService(
       DataAggregationService dataAggregationService,
@@ -118,18 +113,13 @@ public class EvaluationService extends AbstractAggregationResultService {
       EvaluationRepository evaluationRepository,
       StatisticsUserService userService,
       EvaluationTemplateService evaluationTemplateService,
-      DataSourceAggregationService dataSourceAggregationService,
       DataSourceValidator dataSourceValidator,
-      StatisticsConfig statisticsConfig,
-      StatisticsFeatureToggle statisticsFeatureToggle) {
-    super(dataAggregationService, tableRowRepository, statisticsConfig);
+      StatisticsConfig statisticsConfig) {
+    super(dataSourceValidator, dataAggregationService, tableRowRepository, statisticsConfig);
     this.evaluationRepository = evaluationRepository;
     this.userService = userService;
     this.evaluationTemplateService = evaluationTemplateService;
-    this.dataSourceAggregationService = dataSourceAggregationService;
-    this.dataSourceValidator = dataSourceValidator;
     this.businessModuleConfig = statisticsConfig.businessModule();
-    this.statisticsFeatureToggle = statisticsFeatureToggle;
   }
 
   @Override
@@ -218,9 +208,7 @@ public class EvaluationService extends AbstractAggregationResultService {
       throw new BadRequestException(
           "Only anonymous evaluations allowed for data source '%s'".formatted(dataSource.id()));
     }
-    if (anonymized
-        && !DataSourceValidator.getCanBeAnonymized(availableDataSources)
-        && !statisticsFeatureToggle.isNewFeatureEnabled(StatisticsFeature.FAKE_ANONYMIZATION)) {
+    if (anonymized && !DataSourceValidator.getCanBeAnonymized(availableDataSources)) {
       throw new BadRequestException(
           "Data source '%s' cannot be anonymized".formatted(dataSource.id()));
     }
@@ -272,7 +260,7 @@ public class EvaluationService extends AbstractAggregationResultService {
         updateEvaluationTimeRangeRequest.timeRange().start(),
         updateEvaluationTimeRangeRequest.timeRange().end());
     AggregationResultUtil.validateSameSensitivityPossible(
-        evaluation, dataSourceAggregationService.getAvailableDataSources().availableDataSources());
+        evaluation, dataSourceValidator.getAllAvailableDataSources());
 
     evaluation.setTimeRangeStart(updateEvaluationTimeRangeRequest.timeRange().start());
     evaluation.setTimeRangeEnd(updateEvaluationTimeRangeRequest.timeRange().end());
@@ -586,7 +574,9 @@ public class EvaluationService extends AbstractAggregationResultService {
 
     List<CompletenessOfAttribute> completenessOfAttributes =
         evaluation.getTableColumns().stream()
-            .filter(tableColumn -> !tableColumn.getValueType().equals(ValueType.PROCEDURE_ID))
+            .filter(
+                tableColumn ->
+                    !tableColumn.getValueType().equals(TableColumnValueType.PROCEDURE_ID))
             .map(
                 tableColumn ->
                     getCompletenessOfAttribute(tableColumn, evaluation.getNumberOfTableRows()))

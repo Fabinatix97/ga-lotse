@@ -139,7 +139,7 @@ public class EmployeeOmsProcedureService {
             EmployeeOmsProcedureSpecification.toPageSpec(paginationAndSortParameters));
 
     Map<UUID, GetPersonFileStateResponse> personMap = getPersonMap(omsProcedures.getContent());
-    Map<UUID, AddFacilityFileStateResponse> facilityMap =
+    Map<UUID, GetFacilityFileStateResponse> facilityMap =
         getFacilityMap(omsProcedures.getContent());
 
     List<EmployeeOmsProcedureOverviewDto> omsProcedureOverviewDtos =
@@ -312,7 +312,7 @@ public class EmployeeOmsProcedureService {
         .collect(Collectors.toMap(GetPersonFileStateResponse::id, person -> person));
   }
 
-  private Map<UUID, AddFacilityFileStateResponse> getFacilityMap(List<OmsProcedure> omsProcedures) {
+  private Map<UUID, GetFacilityFileStateResponse> getFacilityMap(List<OmsProcedure> omsProcedures) {
     List<UUID> centralFileStateIds =
         omsProcedures.stream()
             .map(OmsProcedure::getFacility)
@@ -329,7 +329,7 @@ public class EmployeeOmsProcedureService {
         facilityClient.getFacilityFileStates(new GetFacilityFileStatesRequest(centralFileStateIds));
 
     return facilityFileStatesResponse.facilityFileStates().stream()
-        .collect(Collectors.toMap(AddFacilityFileStateResponse::id, facility -> facility));
+        .collect(Collectors.toMap(GetFacilityFileStateResponse::id, facility -> facility));
   }
 
   private GetPersonFileStateResponse getPersonForOmsProcedure(
@@ -340,8 +340,8 @@ public class EmployeeOmsProcedureService {
     return personMap.get(omsProcedure.findAffectedPerson().getCentralFileStateId());
   }
 
-  private AddFacilityFileStateResponse getFacilityForOmsProcedure(
-      OmsProcedure omsProcedure, Map<UUID, AddFacilityFileStateResponse> facilityMap) {
+  private GetFacilityFileStateResponse getFacilityForOmsProcedure(
+      OmsProcedure omsProcedure, Map<UUID, GetFacilityFileStateResponse> facilityMap) {
     return omsProcedure
         .getFacility()
         .map(facility -> facilityMap.get(facility.getCentralFileStateId()))

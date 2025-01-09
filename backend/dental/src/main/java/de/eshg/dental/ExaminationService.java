@@ -11,6 +11,7 @@ import de.eshg.dental.domain.repository.ExaminationRepository;
 import de.eshg.dental.util.ChildSystemProgressEntryType;
 import de.eshg.dental.util.ExceptionUtil;
 import de.eshg.dental.util.ProgressEntryUtil;
+import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.validation.ValidationUtil;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
@@ -30,13 +31,13 @@ public class ExaminationService {
   Examination findExamination(UUID examinationId) {
     return examinationRepository
         .findByExternalId(examinationId)
-        .orElseThrow(ExceptionUtil.notFoundException(Examination.class, examinationId));
+        .orElseThrow(ExaminationService::examinationNotFoundException);
   }
 
   Examination findExaminationForUpdate(UUID examinationId) {
     return examinationRepository
         .findOneByExternalIdForUpdate(examinationId)
-        .orElseThrow(ExceptionUtil.notFoundException(Examination.class, examinationId));
+        .orElseThrow(ExaminationService::examinationNotFoundException);
   }
 
   void updateExamination(Examination examination, UpdateExaminationRequest request) {
@@ -45,5 +46,9 @@ public class ExaminationService {
     progressEntryUtil.addSystemProgressEntry(
         examination.getChild(), ChildSystemProgressEntryType.EXAMINATION_MODIFIED);
     examinationRepository.flush();
+  }
+
+  private static NotFoundException examinationNotFoundException() {
+    return ExceptionUtil.notFoundException(Examination.class);
   }
 }

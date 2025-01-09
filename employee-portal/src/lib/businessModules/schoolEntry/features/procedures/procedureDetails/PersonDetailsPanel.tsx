@@ -7,11 +7,12 @@ import { SxProps } from "@mui/joy/styles/types";
 
 import { PersonDetails } from "@/lib/businessModules/schoolEntry/api/models/Person";
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
-import { useRemoveCustodian } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
-import { UpdateChildSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/UpdateChildSidebar";
-import { UpdateCustodianSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/UpdateCustodianSidebar";
+import { useUpdateChildSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/UpdateChildSidebar";
+import {
+  UpdateCustodianSidebar,
+  useDeleteCustodianWithConfirmation,
+} from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/UpdateCustodianSidebar";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import {
   ActionsItem,
   ActionsMenu,
@@ -24,15 +25,14 @@ import {
 } from "@/lib/shared/components/centralFile/sync/SyncBarrier";
 import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
-import { useToggle } from "@/lib/shared/hooks/useToggle";
+import { useSidebarWithFormRef } from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 interface PersonDetailsPanelProps {
   title: string;
   person: PersonDetails;
   procedure: ProcedureDetails;
   name: string;
-  canDelete?: boolean;
+  isCustodian?: boolean;
 }
 
 const COLUMN_STYLE: SxProps = { flexGrow: 1, maxWidth: "calc(100%/3)" };
@@ -42,42 +42,38 @@ export function PersonDetailsPanel({
   person,
   procedure,
   name,
-  canDelete = false,
+  isCustodian = false,
 }: PersonDetailsPanelProps) {
-  const [editing, toggle] = useToggle(false);
   const syncRoute = routes.procedures
     .byId(procedure.id)
     .syncPerson(person.fileStateId, person.version);
 
-  const { openConfirmationDialog } = useConfirmationDialog();
-  const removeCustodian = useRemoveCustodian(procedure.id, person.fileStateId);
   const { syncBarrier } = useSyncBarrier(syncRoute, person);
 
-  async function handleConfirm() {
-    await removeCustodian.mutateAsync({
-      procedureVersion: procedure.version,
-    });
-  }
+  const updateChildSidebar = useUpdateChildSidebar();
+  const updateCustodianSidebar = useSidebarWithFormRef({
+    component: UpdateCustodianSidebar,
+  });
 
-  function handleDelete() {
-    openConfirmationDialog({
-      title: "Personensorgeberechtigte:n entfernen?",
-      description: "Diese Aktion kann nicht rückgängig gemacht werden",
-      confirmLabel: "Entfernen",
-      color: "danger",
-      onConfirm: handleConfirm,
-    });
-  }
-
+  const { deleteCustodian } = useDeleteCustodianWithConfirmation(
+    procedure.id,
+    person.fileStateId,
+  );
   const custodianActions: ActionsItem[] = [
     {
       label: "Bearbeiten",
-      onClick: syncBarrier(toggle),
+      onClick: syncBarrier(() =>
+        updateCustodianSidebar.open({
+          custodian: person,
+          procedureId: procedure.id,
+          procedureVersion: procedure.version,
+        }),
+      ),
     },
     {
       label: "Entfernen",
       color: "danger",
-      onClick: handleDelete,
+      onClick: () => deleteCustodian({ procedureVersion: procedure.version }),
     },
   ];
 
@@ -89,12 +85,17 @@ export function PersonDetailsPanel({
         buttons={
           procedure.isClosed ? undefined : (
             <SyncBarrier outdated={person.outdated} syncHref={syncRoute}>
-              {canDelete ? (
+              {isCustodian ? (
                 <ActionsMenu actionItems={custodianActions} />
               ) : (
                 <EditButton
-                  aria-label="Person bearbeiten"
-                  onClick={syncBarrier(toggle)}
+                  aria-label="Kind bearbeiten"
+                  onClick={syncBarrier(() =>
+                    updateChildSidebar.open({
+                      procedureId: procedure.id,
+                      child: person,
+                    }),
+                  )}
                 />
               )}
             </SyncBarrier>
@@ -103,25 +104,6 @@ export function PersonDetailsPanel({
       >
         <CentralFilePersonDetails person={person} columnSx={COLUMN_STYLE} />
       </DetailsSection>
-
-      <OverlayBoundary>
-        {canDelete ? (
-          <UpdateCustodianSidebar
-            custodian={person}
-            procedureId={procedure.id}
-            open={editing}
-            onClose={toggle}
-            onDelete={handleDelete}
-          />
-        ) : (
-          <UpdateChildSidebar
-            open={editing}
-            onClose={toggle}
-            child={person}
-            procedureId={procedure.id}
-          />
-        )}
-      </OverlayBoundary>
     </ContentPanel>
   );
 }

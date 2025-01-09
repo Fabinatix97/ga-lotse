@@ -9,4 +9,4 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
-public record GetDataSourcesResponse(@Valid @NotNull List<DataSource> dataSources) {}
+public record GetDataSourcesResponse(@Valid @NotNull List<DataSourceInfo> dataSources) {}

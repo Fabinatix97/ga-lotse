@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.IdentityProviderMapperRepresentation;
 import org.keycloak.representations.idm.IdentityProviderRepresentation;
 import org.keycloak.representations.idm.RealmRepresentation;
@@ -48,6 +49,8 @@ public class CitizenKeycloakProvisioning extends KeycloakProvisioning<CitizenKey
       "urn:oasis:names:tc:SAML:2.0:nameid-format:transient";
   public static final String ATTRIBUTE_NAME_FORMAT = "attribute.name.format";
   public static final String INHERIT = "INHERIT";
+  public static final String BUND_ID_ACR_HIGH = "STORK-QAA-Level-4";
+  public static final String ACR_LOA_SINGLE_MAPPING_TEMPLATE = "{\"%s\":\"%s\"}";
 
   public CitizenKeycloakProvisioning(
       CitizenKeycloakClient citizenKeycloakClient,
@@ -72,15 +75,25 @@ public class CitizenKeycloakProvisioning extends KeycloakProvisioning<CitizenKey
     createOrUpdateRoles(permissionRoles);
     createOrUpdateEshgClientScope(permissionRoles);
     disableDefaultClients();
-    keycloakClient.createOrUpdateClients(List.of(buildEshgAuthServiceClient()));
+    createOrUpdateClients();
     createOrUpdateDefaultRoleComposites();
     configureUserProfile(CitizenUserAttribute.values());
+  }
+
+  private void createOrUpdateClients() {
+    ClientRepresentation authServiceClient = buildEshgAuthServiceClient();
+    authServiceClient
+        .getAttributes()
+        .put("acr.loa.map", ACR_LOA_SINGLE_MAPPING_TEMPLATE.formatted(BUND_ID_ACR_HIGH, 4));
+    authServiceClient.getAttributes().put("default.acr.values", BUND_ID_ACR_HIGH);
+    keycloakClient.createOrUpdateClients(List.of(authServiceClient));
   }
 
   @Override
   protected void configureRealm(RealmRepresentation realmRepresentation) {
     super.configureRealm(realmRepresentation);
     this.configureBruteForceProtection(realmRepresentation);
+    this.configureDefaultPasswordPolicies(realmRepresentation);
   }
 
   private void configureBruteForceProtection(RealmRepresentation realm) {
@@ -89,6 +102,10 @@ public class CitizenKeycloakProvisioning extends KeycloakProvisioning<CitizenKey
     realm.setMaxDeltaTimeSeconds(lockoutSeconds);
     realm.setWaitIncrementSeconds(lockoutSeconds);
     realm.setMaxFailureWaitSeconds(lockoutSeconds);
+  }
+
+  private void configureDefaultPasswordPolicies(RealmRepresentation realmRepresentation) {
+    realmRepresentation.setPasswordPolicy(null);
   }
 
   private void disableDefaultClients() {

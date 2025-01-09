@@ -48,6 +48,7 @@ import { Appointment } from "@/lib/businessModules/travelMedicine/api/models/App
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
+import { SelectContactField } from "@/lib/shared/components/formFields/SelectContactField";
 import { SchoolYearField } from "@/lib/shared/components/formFields/schoolYear";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
@@ -56,8 +57,6 @@ import {
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
 } from "@/lib/shared/hooks/useSidebarWithFormRef";
-
-import { SelectContactField } from "./SelectContactField";
 
 export function useUpdateProcedureSidebar(): UseSidebarWithFormRefResult<UpdateProcedureSidebarProps> {
   return useSidebarWithFormRef({
@@ -202,13 +201,13 @@ function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
               <SelectContactField
                 name="school"
                 label="Schule"
-                category={ApiContactCategory.School}
+                categories={new Set([ApiContactCategory.School])}
               />
               {isHealthDepartmentSelectionMode(locationSelectionMode) && (
                 <SelectContactField
                   name="location"
                   label="Gesundheitsamt"
-                  category={ApiContactCategory.HealthDepartment}
+                  categories={new Set([ApiContactCategory.HealthDepartment])}
                 />
               )}
               <Divider />

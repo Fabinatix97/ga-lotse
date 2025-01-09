@@ -21,7 +21,7 @@ dependencies {
     implementation 'org.apache.xmlgraphics:batik-svggen:latest.release'
     implementation 'org.apache.xmlgraphics:batik-dom:latest.release'
 
-    implementation 'com.google.guava:guava:latest.release'
+    implementation 'com.google.guava:guava'
     implementation 'org.apache.commons:commons-csv:latest.release'
     implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
@@ -36,6 +36,7 @@ dependencies {
     testImplementation 'com.google.zxing:javase:latest.release'
     testImplementation testFixtures(project(':lib-document-generator'))
     testImplementation testFixtures(project(':lib-xlsx-import'))
+    testImplementation testFixtures(project(':lib-statistics'))
 }
 
 dockerCompose {

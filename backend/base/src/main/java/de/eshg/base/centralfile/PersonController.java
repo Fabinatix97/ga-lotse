@@ -195,15 +195,21 @@ public class PersonController implements PersonApi {
       return Pageable.unpaged(Sort.by(fallbackSortOrder));
     }
 
-    Sort.Direction direction = mapSortDirection(sortParameters);
-    Sort.Order primarySortAttribute = mapSortKey(sortParameters);
-
-    Sort.Order primarySortOrder = primarySortAttribute.with(direction);
+    Sort sort = Sort.by(getSortOrderOrders(sortParameters, fallbackSortOrder));
 
     return PageRequest.of(
-        sortParameters.pageNumberOrFallback(0),
-        sortParameters.pageSizeOrFallback(25),
-        Sort.by(primarySortOrder, fallbackSortOrder.with(direction)));
+        sortParameters.pageNumberOrFallback(0), sortParameters.pageSizeOrFallback(25), sort);
+  }
+
+  private static List<Sort.Order> getSortOrderOrders(
+      GetPersonFileStatesSortParameters sortParameters, Sort.Order fallbackSortOrder) {
+    List<Sort.Order> primarySortAttribute = mapSortKey(sortParameters);
+
+    List<Sort.Order> sortOrders = new ArrayList<>(primarySortAttribute);
+    sortOrders.add(fallbackSortOrder);
+
+    Sort.Direction direction = mapSortDirection(sortParameters);
+    return sortOrders.stream().map(order -> order.with(direction)).toList();
   }
 
   private static Sort.Direction mapSortDirection(GetPersonFileStatesSortParameters sortParameters) {
@@ -213,12 +219,15 @@ public class PersonController implements PersonApi {
     };
   }
 
-  private static Sort.Order mapSortKey(GetPersonFileStatesSortParameters sortParameters) {
+  private static List<Sort.Order> mapSortKey(GetPersonFileStatesSortParameters sortParameters) {
+    Sort.Order firstName = Sort.Order.by(Person_.FIRST_NAME).ignoreCase();
+    Sort.Order lastName = Sort.Order.by(Person_.LAST_NAME).ignoreCase();
+    Sort.Order dateOfBirth =
+        Sort.Order.by(Person_.BIRTH_DETAILS + "." + BirthDetails_.DATE_OF_BIRTH);
     return switch (sortParameters.sortKey()) {
-      case FIRST_NAME -> Sort.Order.by(Person_.FIRST_NAME).ignoreCase();
-      case LAST_NAME -> Sort.Order.by(Person_.LAST_NAME).ignoreCase();
-      case DATE_OF_BIRTH ->
-          Sort.Order.by(Person_.BIRTH_DETAILS + "." + BirthDetails_.DATE_OF_BIRTH);
+      case FIRST_NAME -> List.of(firstName, lastName, dateOfBirth);
+      case LAST_NAME -> List.of(lastName, firstName, dateOfBirth);
+      case DATE_OF_BIRTH -> List.of(dateOfBirth, lastName, firstName);
     };
   }
 

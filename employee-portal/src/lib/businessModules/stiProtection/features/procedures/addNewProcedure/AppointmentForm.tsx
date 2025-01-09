@@ -6,21 +6,29 @@
 import {
   ApiAppointmentBookingType,
   ApiAppointmentType,
-  ApiStiProtectionProcedure,
+  ApiConcern,
 } from "@eshg/employee-portal-api/stiProtection";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import {
   AppointmentPickerField,
   FIELD_LABELS_DE,
 } from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentPickerField";
-import { Button, Grid, Radio, Sheet, Stack, Typography } from "@mui/joy";
+import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
+import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
+import { UnfoldMore } from "@mui/icons-material";
+import { Box, Button, FormLabel, Stack, Typography } from "@mui/joy";
 import { addMinutes, startOfHour } from "date-fns";
 import { useFormikContext } from "formik";
-import { useEffect, useId, useState } from "react";
+import { useState } from "react";
 
 import { useGetFreeAppointments } from "@/lib/businessModules/stiProtection/api/queries/appointmentBlocks";
+import {
+  RadioSheetOption,
+  RadioSheets,
+} from "@/lib/businessModules/stiProtection/components/RadioSheets";
+import { appointmentOptionsByConcern } from "@/lib/businessModules/stiProtection/components/appointmentBlocks/options";
 import { CreateAppointmentForm } from "@/lib/businessModules/stiProtection/features/procedures/details/CreateAppointmentSidebar";
 import { concernToAppointmentType } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { DateTimeField } from "@/lib/shared/components/formFields/DateTimeField";
@@ -31,153 +39,103 @@ import {
 
 import { AddNewProcedureForm } from "./AddNewProcedureSidebar";
 
+export type CombinedAppointmentForm = Partial<
+  AddNewProcedureForm & CreateAppointmentForm
+>;
+
 function ConnectedAppointmentPicker({
   name,
-  active,
+  appointmentType,
 }: {
   name: string;
-  active?: boolean;
+  appointmentType: ApiAppointmentType | undefined;
 }) {
   const {
-    values: { appointmentType, blockAppointment },
-  } = useFormikContext<AddNewProcedureForm | CreateAppointmentForm>();
+    values: { blockAppointment },
+  } = useFormikContext<CombinedAppointmentForm>();
+
   const initialMonth = blockAppointment?.start ?? null;
   const [currentMonth, setCurrentMonth] = useState(initialMonth ?? new Date());
   const now = new Date();
   const freeAppointments = useGetFreeAppointments({
-    appointmentType: appointmentType as ApiAppointmentType,
+    appointmentType,
     earliestDate: startOfHour(now),
   });
   const monthAppointments = freeAppointments.data ?? [];
 
   return (
-    <AppointmentPickerField
-      name={name}
-      active={active}
-      currentMonth={currentMonth}
-      setCurrentMonth={setCurrentMonth}
-      monthAppointments={monthAppointments}
-      required={true}
-      labels={FIELD_LABELS_DE}
-    />
+    <Box
+      sx={(theme) => ({
+        background: "white",
+        padding: 2,
+        marginTop: 1,
+        borderRadius: theme.radius.md,
+      })}
+    >
+      <AppointmentPickerField
+        sx={{ width: "min-content" }}
+        name={name}
+        currentMonth={currentMonth}
+        setCurrentMonth={setCurrentMonth}
+        monthAppointments={monthAppointments}
+        required={true}
+        labels={FIELD_LABELS_DE}
+      />
+    </Box>
   );
 }
 
 export function AppointmentForm({
-  procedure,
-}: Readonly<{ procedure?: ApiStiProtectionProcedure }>) {
-  const appointmentBlockDescriptionId = useId();
-  const { values, setFieldValue } = useFormikContext<
-    AddNewProcedureForm | CreateAppointmentForm
-  >();
+  startingConcern,
+  editAppointmentType,
+}: Readonly<{
+  startingConcern?: ApiConcern;
+  editAppointmentType?: ApiAppointmentType;
+}>) {
+  const { values } = useFormikContext<CombinedAppointmentForm>();
 
-  const blockSectionSelected =
-    values.appointmentBookingType ===
-    ApiAppointmentBookingType.AppointmentBlock;
   const customSectionSelected =
     values.appointmentBookingType === ApiAppointmentBookingType.UserDefined;
 
-  useEffect(() => {
-    if (!values.blockAppointment) {
-      return;
-    }
-    void setFieldValue(
-      "appointmentBookingType",
-      ApiAppointmentBookingType.AppointmentBlock,
-    );
-  }, [values.blockAppointment, setFieldValue]);
-  useEffect(() => {
-    if (!values.customAppointmentDate && !values.customAppointmentDuration) {
-      return;
-    }
-    void setFieldValue(
-      "appointmentBookingType",
-      ApiAppointmentBookingType.UserDefined,
-    );
-  }, [
-    values.customAppointmentDate,
-    values.customAppointmentDuration,
-    setFieldValue,
-  ]);
+  const appointmentType =
+    editAppointmentType ??
+    mapOptionalValue(values.appointmentType) ??
+    ifDefined(mapOptionalValue(values.concern), concernToAppointmentType);
 
-  useEffect(() => {
-    let appointmentType: ApiAppointmentType | undefined;
-    const [openAppointment] = procedure
-      ? procedure.appointmentHistory.filter(
-          ({ appointmentStatus }) => appointmentStatus === "OPEN",
-        )
-      : [];
-
-    if (openAppointment?.appointmentType) {
-      appointmentType = openAppointment?.appointmentType;
-    } else if (values.concern) {
-      appointmentType = concernToAppointmentType(values.concern);
-    }
-
-    if (appointmentType) void setFieldValue("appointmentType", appointmentType);
-  }, [setFieldValue, values.concern, procedure]);
+  const showAppointmentTypePicker =
+    editAppointmentType == null && startingConcern != null;
 
   return (
-    <RadioGroupField
-      name="appointmentBookingType"
-      required="Bitte eine Buchungsart auswählen"
-    >
-      <Stack gap={2}>
-        <Sheet
-          aria-current={blockSectionSelected}
-          onClick={() =>
-            setFieldValue(
-              "appointmentBookingType",
-              ApiAppointmentBookingType.AppointmentBlock,
-            )
-          }
-          aria-description="Termin aus Terminblock wählen"
+    <Stack gap={3}>
+      {showAppointmentTypePicker ? (
+        <AppointmentTypeField concern={startingConcern} />
+      ) : null}
+      <div>
+        {showAppointmentTypePicker ? (
+          <Typography level="body-md">Termin auswählen</Typography>
+        ) : null}
+        <RadioSheets
+          name="appointmentBookingType"
+          required="Bitte eine Buchungsart auswählen"
         >
-          <Grid container spacing={3} direction="row">
-            <Grid>
-              <Radio
-                sx={{ flexBasis: "max-content" }}
-                name="appointmentBookingType"
-                value={ApiAppointmentBookingType.AppointmentBlock}
-              />
-            </Grid>
-            <Grid xxs={10}>
-              <Stack>
-                <Typography
-                  id={appointmentBlockDescriptionId}
-                  style={{ marginBottom: "16px" }}
-                >
-                  Aus Terminblock
-                </Typography>
-                <Row justifyContent="center" flex={1}>
-                  <ConnectedAppointmentPicker
-                    name="blockAppointment"
-                    active={blockSectionSelected}
-                  />
-                </Row>
-              </Stack>
-            </Grid>
-          </Grid>
-        </Sheet>
-        <Sheet
-          aria-current={customSectionSelected}
-          onClick={() =>
-            setFieldValue(
-              "appointmentBookingType",
-              ApiAppointmentBookingType.UserDefined,
-            )
-          }
-          aria-description="Frei wählbarer Zeitraum für den Termin"
-        >
-          <Row>
-            <Radio
-              id="appointmentTypeCustom"
-              name="appointmentBookingType"
-              value={ApiAppointmentBookingType.UserDefined}
+          <RadioSheetOption
+            name="appointmentBookingType"
+            value={ApiAppointmentBookingType.AppointmentBlock}
+            label="Aus Terminblock"
+          >
+            <ConnectedAppointmentPicker
+              appointmentType={appointmentType}
+              name="blockAppointment"
             />
-            <Stack gap={1}>
+          </RadioSheetOption>
+          <RadioSheetOption
+            label="Individueller Termin"
+            name="appointmentBookingType"
+            value={ApiAppointmentBookingType.UserDefined}
+          >
+            <Stack gap={1} mt={2}>
               <DateTimeField
-                label="Individueller Termin"
+                label="Datum und Zeit"
                 name="customAppointmentDate"
                 validate={validateTodayOrFutureDate}
                 required={
@@ -186,7 +144,7 @@ export function AppointmentForm({
               />
               <CustomAppointmentQuickButtons />
               <NumberField
-                label="Termin Dauer in Min."
+                label="Termindauer in Minuten"
                 name="customAppointmentDuration"
                 min={0}
                 validate={validateNonNegativeInteger}
@@ -195,10 +153,10 @@ export function AppointmentForm({
                 }
               />
             </Stack>
-          </Row>
-        </Sheet>
-      </Stack>
-    </RadioGroupField>
+          </RadioSheetOption>
+        </RadioSheets>
+      </div>
+    </Stack>
   );
 }
 
@@ -252,5 +210,21 @@ function CustomAppointmentQuickButtons() {
         in 30m
       </Button>
     </Row>
+  );
+}
+
+function AppointmentTypeField({ concern }: Readonly<{ concern?: ApiConcern }>) {
+  return (
+    <SingleAutocompleteField
+      label={
+        <FormLabel>
+          <Typography level="title-md">Terminart</Typography>
+        </FormLabel>
+      }
+      name="appointmentType"
+      required="Bitte eine Terminart auswählen"
+      options={appointmentOptionsByConcern(concern)}
+      popupIcon={<UnfoldMore />}
+    />
   );
 }

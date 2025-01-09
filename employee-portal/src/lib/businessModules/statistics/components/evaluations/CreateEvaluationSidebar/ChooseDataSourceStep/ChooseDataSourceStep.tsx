@@ -8,6 +8,8 @@ import { Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
 import { mapToApiBusinessModule } from "@/lib/businessModules/statistics/api/mapper/mapToApiBusinessModule";
+import { AnonymizationOptions } from "@/lib/businessModules/statistics/api/models/anonymizationOptions";
+import { DataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import { ChooseDataSourceStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ChooseDataSourceStep/chooseDataSourceStepFormModel";
 import { SelectableCard } from "@/lib/shared/components/cards/SelectableCard";
 import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
@@ -16,7 +18,8 @@ export interface DataSource {
   id: string;
   businessModule: string;
   name: string;
-  withoutAnonymizationAllowed: boolean;
+  sensitivity: DataSourceSensitivity;
+  anonymizationOptions: AnonymizationOptions;
 }
 
 export function ChooseDataSourceStep(props: { dataSources: DataSource[] }) {

@@ -90,7 +90,7 @@ public class FacilityMapper {
 
   public static List<ExportedBannedFacility> mapFacilitiesToExportedBannedFacility(
       List<Facility> facilities,
-      Map<UUID, AddFacilityFileStateResponse> baseFacilityMap,
+      Map<UUID, GetFacilityFileStateResponse> baseFacilityMap,
       ZoneId zoneId) {
 
     if (facilities.isEmpty()) {
@@ -106,7 +106,7 @@ public class FacilityMapper {
   }
 
   private static ExportedBannedFacility mapFacilityToExportedBannedFacility(
-      Facility facility, AddFacilityFileStateResponse baseFacility, ZoneId zoneId) {
+      Facility facility, GetFacilityFileStateResponse baseFacility, ZoneId zoneId) {
 
     LocalDate dateOfBanning = LocalDate.ofInstant(facility.getLastInspected(), zoneId);
 
@@ -156,7 +156,7 @@ public class FacilityMapper {
 
   static InspPendingFacilityDto createInspPendingFacilityDto(
       PendingFacilityView view,
-      AddFacilityFileStateResponse facilityDto,
+      GetFacilityFileStateResponse facilityDto,
       InspPendingFacilityKind kind,
       Instant plannedFrom,
       ObjectTypeRefDto objecttype,

@@ -20,6 +20,7 @@ public record MedicalRegistryEntryDto(
     @NotNull UUID id,
     @NotEmpty String lastName,
     @NotEmpty String firstName,
+    ProfessionalTitleDto professionalTitle,
     @NotNull LocalDate dateOfBirth,
     @NotNull @Valid ApplicantAddressDto address,
     @NotNull boolean certificateRequested,

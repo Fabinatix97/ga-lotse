@@ -56,6 +56,9 @@ export function mapSingleReports(
     type: isChild ? ReportDataType.Child : ReportDataType.Single,
     dataSourceName: reportSeries.dataSourceNames[0]!,
     tooMuchDataForExport: singleReport.tooMuchDataForExport,
+    dataSensitivity: mapReportDataSourceSensitivityFrontendToApi(
+      singleReport.dataSensitivity,
+    ),
   };
 }
 
@@ -90,6 +93,9 @@ export function mapToReportsOverview(
           type: ReportDataType.Series,
           userId: reportSeries.userId,
           dataSourceName: reportSeries.dataSourceNames[0]!,
+          dataSensitivity: mapReportDataSourceSensitivityFrontendToApi(
+            reportSeries.reportInfos[0]!.dataSensitivity,
+          ),
         } satisfies ReportSeriesOverview;
     }
   });

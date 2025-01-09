@@ -64,7 +64,7 @@ public class TaskMetricsController {
     List<ClientResponse<GetTaskMetricsResponse>> clientResponses =
         businessModuleAggregationHelper.requestFromBusinessModulesClients(
             Set.of(businessModuleName),
-            BusinessModuleCapability.TASKS,
+            BusinessModuleCapability.PROCEDURE_AND_TASK_METRICS,
             client -> client.getTaskMetrics(procedureType, timeRangeStart, timeRangeEnd));
     if (clientResponses.isEmpty() || clientResponses.getFirst().response() == null) {
       throw new IllegalStateException("Could not retrieve data from business module");

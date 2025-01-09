@@ -28,6 +28,14 @@ export interface FeatureToggleQueryOptions<
   throwOnError?: boolean;
 }
 
+export interface UnsuspendedFeatureToggleQueryOptions<
+  TName extends string,
+  TValue,
+  TResponse extends FeatureToggles<TName> = FeatureToggles<TName>,
+> extends FeatureToggleQueryOptions<TName, TValue, TResponse> {
+  enabled?: boolean;
+}
+
 export function selectEnabledNewFeature<TName extends string>(name: TName) {
   return (featureToggles: FeatureToggles<TName>) =>
     featureToggles.enabledNewFeatures.has(name);
@@ -55,7 +63,7 @@ export function useGetFeatureToggleUnsuspended<
   TValue,
   TResponse extends FeatureToggles<TName>,
 >(
-  options: FeatureToggleQueryOptions<TName, TValue, TResponse>,
+  options: UnsuspendedFeatureToggleQueryOptions<TName, TValue, TResponse>,
 ): UseQueryResult<TValue> {
   return useQuery({
     throwOnError: false,

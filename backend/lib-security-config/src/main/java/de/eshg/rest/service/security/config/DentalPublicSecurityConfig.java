@@ -16,7 +16,7 @@ public final class DentalPublicSecurityConfig extends AbstractPublicSecurityConf
 
     grantAccessToLibProceduresUrls(
         EmployeePermissionRole.DENTAL_ADMIN, ModuleLeaderRole.DENTAL_LEADER);
-
+    grantAccessToStatistics();
     requestMatchers(
             BaseUrls.Dental.CHILD_CONTROLLER + "/**",
             BaseUrls.Dental.PROPHYLAXIS_SESSION_CONTROLLER + "/**")

@@ -39,10 +39,15 @@ const inboxNavigationItem: SideNavigationSubItem = {
   accessCheck: hasUserRole(ApiUserRole.MeaslesProtectionAdmin),
 };
 
-export function useSideNavigationItems(): UseSideNavigationItemsResult {
+export function useSideNavigationItems(
+  enabled: boolean,
+): UseSideNavigationItemsResult {
   const isInboxEnabled = useIsNewFeatureEnabled(ApiBaseFeature.Inbox);
   const subItems = isInboxEnabled
     ? [...defaultSubItems, inboxNavigationItem]
     : defaultSubItems;
-  return { isLoading: false, items: [{ ...sideNavigationItem, subItems }] };
+  return {
+    isLoading: false,
+    items: enabled ? [{ ...sideNavigationItem, subItems }] : [],
+  };
 }

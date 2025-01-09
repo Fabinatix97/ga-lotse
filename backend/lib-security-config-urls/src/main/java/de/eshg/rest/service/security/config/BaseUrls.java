@@ -62,6 +62,8 @@ public final class BaseUrls {
     public static final String DEPARTMENT_API_SECURITY_TXT_PGP_KEY = "/security-txt-public-key";
     public static final String CONTACT_PARSE_VCARD_URL = "/parse-vcard";
     public static final String GDPR_PROCEDURE_API = "/gdpr-procedures";
+    public static final String GDPR_PROCEDURE_CITIZEN_PORTAL_URL = "/citizen-portal";
+
     public static final String FACILITY_API = "/facilities";
     public static final String FACILITY_FILE_STATE_URL = "/centralfilestates";
     public static final String FACILITY_EXTERNAL_DATA_SOURCE_URL = "/external-source";

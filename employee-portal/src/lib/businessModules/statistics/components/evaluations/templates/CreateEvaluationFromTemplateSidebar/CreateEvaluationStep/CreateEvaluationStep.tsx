@@ -3,15 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiStatisticsFeature } from "@eshg/employee-portal-api/statistics";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Divider, Stack, Typography } from "@mui/joy";
 
 import { EvaluationTemplateDetails } from "@/lib/businessModules/statistics/api/models/evaluationTemplateDetails";
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/statistics/api/queries/useStatisticsFeatureToggle";
-import { AnonymizedToggleButtonGroupField } from "@/lib/businessModules/statistics/components/evaluations/AnonymizedToggleButtonGroupField";
+import { AnonymizationConfiguration } from "@/lib/businessModules/statistics/components/evaluations/AnonymizationConfiguration";
 import {
   Analyses,
   Attributes,
@@ -27,10 +25,6 @@ export function CreateEvaluationStep({
   evaluationTemplateDetails: EvaluationTemplateDetails;
 }) {
   const fieldName = createFieldNameMapper<CreateEvaluationStepFormModel>();
-
-  const fakeAnonymizationEnabled = useIsNewFeatureEnabled(
-    ApiStatisticsFeature.FakeAnonymization,
-  );
 
   return (
     <Stack gap={3}>
@@ -48,17 +42,12 @@ export function CreateEvaluationStep({
         label="Betrachtungszeitraum"
       />
       <Divider />
-      {fakeAnonymizationEnabled && (
-        <>
-          <AnonymizedToggleButtonGroupField
-            name={fieldName("anonymized")}
-            withoutAnonymizationAllowed={
-              evaluationTemplateDetails.withoutAnonymizationAllowed
-            }
-          />
-          <Divider />
-        </>
-      )}
+      <AnonymizationConfiguration
+        name={fieldName("anonymized")}
+        sensitivity={evaluationTemplateDetails.dataSourceSensitivity}
+        anonymizationOptions={evaluationTemplateDetails.anonymizationOptions}
+      />
+      <Divider />
       <Typography level="h3" component="span">
         Zusammenfassung
       </Typography>

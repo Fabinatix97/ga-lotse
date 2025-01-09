@@ -38,22 +38,17 @@ interface GetFreeAppointmentsArgs {
 }
 export function useGetFreeAppointments(request: GetFreeAppointmentsArgs) {
   const appointmentBlockApi = useAppointmentBlockApi();
-  let appointmentType = request.appointmentType;
-  if (!appointmentType) {
-    appointmentType = ApiAppointmentType.HivStiConsultation;
-  }
-  const modifiedRequest = { ...request, appointmentType };
-
   return useQuery({
-    queryKey: appointmentBlockApiQueryKey([
-      "freeAppointments",
-      modifiedRequest,
-    ]),
-    queryFn: () =>
-      appointmentBlockApi.getFreeAppointments(
-        modifiedRequest.appointmentType,
-        modifiedRequest.earliestDate,
-      ),
+    queryKey: appointmentBlockApiQueryKey(["freeAppointments", request]),
+    queryFn: () => {
+      if (request.appointmentType == null) {
+        throw Error("Appointment type not specified");
+      }
+      return appointmentBlockApi.getFreeAppointments(
+        request.appointmentType,
+        request.earliestDate,
+      );
+    },
     select: (data) => data.appointments,
     enabled: request.appointmentType != null,
   });

@@ -11,16 +11,20 @@ import { hasUserRole } from "@/lib/shared/helpers/accessControl";
 
 import { routes } from "./routes";
 
-export function useSideNavigationItems(): UseSideNavigationItemsResult {
+export function useSideNavigationItems(
+  enabled: boolean,
+): UseSideNavigationItemsResult {
   return {
     isLoading: false,
-    items: [
-      {
-        name: "Medizinalaufsicht",
-        decorator: <MedicalServicesOutlined />,
-        href: routes.procedures.index,
-        accessCheck: hasUserRole(ApiUserRole.MedicalRegistryAdmin),
-      },
-    ],
+    items: enabled
+      ? [
+          {
+            name: "Medizinalaufsicht",
+            decorator: <MedicalServicesOutlined />,
+            href: routes.procedures.index,
+            accessCheck: hasUserRole(ApiUserRole.MedicalRegistryAdmin),
+          },
+        ]
+      : [],
   };
 }

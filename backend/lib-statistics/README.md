@@ -24,14 +24,10 @@ If the business module supports anonymization (see below `canBeAnonymized` = tru
 
 For each data source the anonymization should only happen in one place.
 
-## AbstractStatisticsService
+## StatisticsService
 
-A bean extending the [AbstractStatisticsService](src/main/java/de/eshg/lib/statistics/AbstractStatisticsService.java) is required.
-The service requires a `ProcedureRepository` bean.
-
-### getDataSourceMetaInfos
-Each business module can provide a list of `DataSourceInfo`.
-Each `DataSourceInfo` should have a globally unique id. This id must not change.
+Each business module must provide data sources as Spring beans (type `DataSource`).
+Each `DataSource` should have a globally unique id. This id must not change.
 A name is also needed for the UI.
 The `DataSourceSensitivity` is needed to determine what can be done with the data
 in the statistics module.
@@ -44,32 +40,6 @@ IMPORTANT: `canBeAnonymized` can only be true if the business module has an algo
 anonymization of the data. 
 `canBeAnonymized` should always be false if `DataSourceSensitivity` = `ANONYMOUS`.
 
-### getDataSourceIdToAttributeInfos
-A list of `AttributeInfo`s belongs to each `DataSourceInfo`.
-The codes of the attributes must be unique for each `DataSourceInfo`.
-
-### AttributeInfo - ValueType
-Each `AttributeInfo` has a `ValueType` which indicates the type of the attribute. There are two special kinds of `ValueType`.
-
-`ValueType.PROCEDURE_ID` - If there is a corresponding procedure the frontend will create a link to this procedure for this data row.
-
-`ValueType.CENTRAL_FILE_ID` - an attribute of this type should be provided if there is a reference to a subject in the central file.
-
-### getSubjectType
-Here the subject type for `AttributeInfo`s with `ValueType.CENTRAL_FILE_ID` must be provided.
-If no such attribute is provided the method can return `null`.
-
-### isProcedureBasedDataSource
-Decides if the data source is based on procedures. This is the standard case in which pagination is already handled.
-
-If `true` is returned the method `getSpecificValue` is called for each relevant procedure.
-
-If `false` is returned the method `getSpecificDataNotProcedureBased` is called.
-
-### getProcedureSpecification 
-Can be overwritten to define a more specific query.
-
-### getSpecificValue
 Based on the available data sources the user will select the wanted statistics data fields. The values should fit to
 the corresponding `AttributeInfo`. `null` is also a valid value.
 
@@ -80,14 +50,7 @@ the corresponding `AttributeInfo`. `null` is also a valid value.
 * TEXT: java.lang.String
 * VALUE_WITH_OPTIONS: java.lang.String, one value of the provided options
 * PROCEDURE_ID: java.util.UUID
-* CENTRAL_FILE_ID: java.util.UUID
-
-### getSpecificDataNotProcedureBased
-Must be overwritten for data sources that are not based on procedures (`isProcedureBasedDataSource` returns `false`).
-
-Pagination and the creation of the correct data rows must be handled explicitly.
+* CENTRAL_FILE_ID_PERSON & CENTRAL_FILE_ID_FACILITY: java.util.UUID
 
 ## ValueOptionInternal
 None or only one option can be an explicit value that the information is not provided for the attribute (`isUnknownValue=true`).
-
-There must not be an unknown value for `ValueType` BOOLEAN, PROCEDURE_ID and CENTRAL_FILE_ID.

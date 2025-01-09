@@ -8,6 +8,7 @@ import {
   ApiInboxProcedureAddress,
   ApiInboxProcedureStatus,
 } from "@eshg/employee-portal-api/businessProcedures";
+import { SALUTATION_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Button, Divider, Stack, Typography } from "@mui/joy";
 import { ReactElement, useState } from "react";
@@ -268,6 +269,7 @@ function ContactSection({ inboxProcedure }: ApiGetInboxProcedureResponse) {
     contactDetails.title !== undefined
       ? titleNames[contactDetails.title]
       : undefined;
+  const salutationName = SALUTATION_VALUES[contactDetails.salutation];
 
   return (
     <>
@@ -301,6 +303,15 @@ function ContactSection({ inboxProcedure }: ApiGetInboxProcedureResponse) {
             name: "dateOfBirth",
             label: "Geburtstag",
             value: formatDate(contactDetails.dateOfBirth),
+          },
+        ]}
+      />
+      <DetailsGroup
+        labeledValues={[
+          {
+            name: "salutation",
+            label: "Anrede",
+            value: salutationName,
           },
         ]}
       />

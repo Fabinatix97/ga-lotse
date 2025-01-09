@@ -10,10 +10,7 @@ import {
 import { Chip } from "@mui/joy";
 import { isDefined } from "remeda";
 
-import {
-  useFilteredAndSortedRelatedEntries,
-  useProgressEntriesConfig,
-} from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
+import { useProgressEntriesConfig } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import { systemProgressEntryTypeTitles } from "@/lib/shared/components/procedures/progress-entries/constants";
 import { displayTriggerer } from "@/lib/shared/components/procedures/progress-entries/helper";
 import {
@@ -36,16 +33,14 @@ export function SystemProgressEntryDetails({
   const titleSuffix =
     systemProgressEntryTypeTitles[entry.systemProgressEntryType];
 
-  const relatedEntries = useFilteredAndSortedRelatedEntries(
-    relatedKeyDocumentProgressEntries,
-  );
-
   const { keyDocumentVersion } = entry;
   const showNewerVersionHint =
     isDefined(keyDocumentVersion) &&
-    isDefined(relatedEntries) &&
-    relatedEntries.some(
-      (relatedEntry) => relatedEntry.keyDocumentVersion > keyDocumentVersion,
+    isDefined(relatedKeyDocumentProgressEntries) &&
+    relatedKeyDocumentProgressEntries.some(
+      (relatedEntry) =>
+        isDefined(relatedEntry.keyDocumentVersion) &&
+        relatedEntry.keyDocumentVersion,
     );
 
   return (
@@ -68,9 +63,12 @@ export function SystemProgressEntryDetails({
               }
             />
             {showNewerVersionHint && <NewerVersionHint />}
-            {isDefined(relatedEntries) && relatedEntries.length > 0 && (
-              <AllKeyDocumentVersions relatedEntries={relatedEntries} />
-            )}
+            {isDefined(relatedKeyDocumentProgressEntries) &&
+              relatedKeyDocumentProgressEntries.length > 0 && (
+                <AllKeyDocumentVersions
+                  relatedEntries={relatedKeyDocumentProgressEntries}
+                />
+              )}
           </>
         ),
       }}

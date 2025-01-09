@@ -3,28 +3,37 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Chip, List, ListItem, Radio, RadioGroup, Typography } from "@mui/joy";
+import {
+  Chip,
+  Divider,
+  List,
+  ListItem,
+  Radio,
+  RadioGroup,
+  Typography,
+  useTheme,
+} from "@mui/joy";
 import { endOfDay, isWithinInterval, startOfDay } from "date-fns";
+import { useId } from "react";
 
+import { ifDefined } from "../../../helpers/ifDefined";
 import { useBaseField } from "../BaseField";
 
 import { Appointment } from "./AppointmentPickerField";
-import { dateFullForm, timeForm } from "./helpers";
+import { timeForm } from "./helpers";
 
-export type AppointmentListDescriptionType =
-  | ((date: string) => string)
-  | string;
+export type AppointmentListLabelType = ((date: Date) => string) | string;
 
 export interface UseAppointmentListProps<T extends Appointment> {
   selectedDay: Date | undefined;
   monthAppointments: T[];
-  listDescription: AppointmentListDescriptionType;
+  listLabel: AppointmentListLabelType;
 }
 export function useAppointmentList<T extends Appointment>({
   selectedDay,
   monthAppointments,
-  listDescription,
-}: UseAppointmentListProps<T>): { appointments: T[]; description: string } {
+  listLabel,
+}: UseAppointmentListProps<T>): { appointments: T[]; label: string } {
   const currentDayInterval = selectedDay
     ? {
         start: startOfDay(selectedDay),
@@ -38,13 +47,13 @@ export function useAppointmentList<T extends Appointment>({
           .sort()
       : [];
 
-  const stringListDescription =
-    typeof listDescription === "function"
-      ? listDescription(dateFullForm.format(selectedDay))
-      : listDescription;
+  const stringListLabel =
+    typeof listLabel === "function"
+      ? (ifDefined(selectedDay, listLabel) ?? "")
+      : listLabel;
 
   return {
-    description: stringListDescription,
+    label: stringListLabel,
     appointments: dayAppointments,
   };
 }
@@ -54,7 +63,6 @@ export interface AppointmentListProps<T extends Appointment> {
   field: ReturnType<typeof useBaseField<T | null>>;
   appointments: T[];
   onAppointmentSelected?: (d: T) => unknown;
-  description: string;
   label: string;
 }
 export function AppointmentListForDate<T extends Appointment>({
@@ -62,9 +70,10 @@ export function AppointmentListForDate<T extends Appointment>({
   field,
   appointments,
   onAppointmentSelected,
-  description,
   label,
 }: AppointmentListProps<T>) {
+  const theme = useTheme();
+  const labelId = useId();
   const hasAppointments = appointments.length > 0;
   if (!hasAppointments || !date) {
     return null;
@@ -79,15 +88,18 @@ export function AppointmentListForDate<T extends Appointment>({
 
   return (
     <RadioGroup>
-      <Typography level="title-md" my={2}>
-        {label}
+      <Divider sx={{ my: 2 }} />
+      <Typography component="label" my={2} id={labelId}>
+        <Typography component="span" level="title-md">
+          {label}
+        </Typography>
       </Typography>
       <List
+        aria-describedby={labelId}
         orientation="horizontal"
         wrap
         size="sm"
         sx={{ marginBottom: "16px", gap: "8px", padding: 0 }}
-        aria-description={description}
       >
         {appointments.map((apt) => {
           const isSelected = field.input.value === apt;
@@ -97,19 +109,43 @@ export function AppointmentListForDate<T extends Appointment>({
               key={apt.start.getTime()}
             >
               <Chip
-                variant={isSelected ? "soft" : "plain"}
+                variant={isSelected ? "solid" : "soft"}
                 color={isSelected ? "primary" : "neutral"}
-                sx={{ minWidth: "56px", textAlign: "center" }}
+                sx={{
+                  minWidth: "56px",
+                  textAlign: "center",
+                  paddingX: 2,
+                }}
               >
                 <Radio
-                  component={"time"}
-                  dateTime={apt.start.toTimeString().slice(0, 5)}
                   disableIcon
                   overlay
+                  slotProps={{
+                    action: {
+                      sx: { border: "none" },
+                    },
+                  }}
                   value={apt.start}
+                  color="primary"
                   checked={isSelected}
                   onChange={createOnSelected(apt)}
-                  label={timeForm.format(apt.start)}
+                  label={
+                    <Typography
+                      component={"time"}
+                      dateTime={apt.start.toTimeString().slice(0, 5)}
+                      level="title-md"
+                      sx={{
+                        color: isSelected ? "white" : undefined,
+                        ".MuiListItem-root:hover &": {
+                          color: isSelected ? "black" : undefined,
+                        },
+                        fontSize: theme.fontSize.md,
+                        fontWeight: theme.fontWeight.md,
+                      }}
+                    >
+                      {timeForm.format(apt.start)}
+                    </Typography>
+                  }
                 />
               </Chip>
             </ListItem>

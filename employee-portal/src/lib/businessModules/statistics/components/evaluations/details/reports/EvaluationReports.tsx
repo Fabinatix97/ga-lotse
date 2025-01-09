@@ -40,13 +40,11 @@ import {
   UpdateReportSidebarReportInfo,
   useUpdateReportSidebar,
 } from "@/lib/businessModules/statistics/components/evaluations/details/reports/UpdateReportSidebar/UpdateReportSidebar";
-import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
-import {
-  getReportActionItems,
-  getSharedURL,
-} from "@/lib/businessModules/statistics/components/reports/getReportActionItems";
+import { getReportActionItems } from "@/lib/businessModules/statistics/components/reports/getReportActionItems";
 import { useDeleteWithConfirmation } from "@/lib/businessModules/statistics/components/reports/useDeleteWithConfirmation";
+import { getSharedURL } from "@/lib/businessModules/statistics/components/shared/getSharedURL";
 import { useDataExportGuard } from "@/lib/businessModules/statistics/components/shared/hooks/useDataExportGuard";
+import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
@@ -149,9 +147,11 @@ function columns(
                   type: "share",
                   action: async () =>
                     await share(
-                      getSharedURL(
-                        (data as SingleReport | ReportSeriesItem).reportId,
-                      ),
+                      getSharedURL({
+                        detailLinkId: (data as SingleReport | ReportSeriesItem)
+                          .reportId,
+                        statisticsSubRoute: "reports",
+                      }),
                     ),
                 },
                 {
@@ -203,7 +203,7 @@ export function EvaluationReports({
   const { deleteReportSeriesWithConfirmation, deleteReportWithConfirmation } =
     useDeleteWithConfirmation();
   const { download: exportData, downloadContainerRef } = useExportReportData();
-  const dataExportGuard = useDataExportGuard(false);
+  const dataExportGuard = useDataExportGuard();
   const deactivateReportSeries = useDeactivateReportSeries();
   const userPermissions = useStatisticsRoleChecks();
 
@@ -234,7 +234,34 @@ export function EvaluationReports({
     });
   }
 
-  return data.anonymized ? (
+  return data.sensitive ? (
+    <Card
+      variant="plain"
+      sx={{
+        alignSelf: "center",
+        borderRadius: "lg",
+        padding: 3,
+        gap: 3,
+        alignItems: "center",
+      }}
+    >
+      <CardContent sx={{ alignItems: "center", gap: 2 }}>
+        <NotInterestedOutlined sx={{ width: 130, height: 130 }} />
+        <Typography level="h1">Reports nicht verfügbar</Typography>
+        <Typography level="body-md">
+          Reports für Auswertungen mit sensiblen Daten stehen nicht zur
+          Verfügung.
+        </Typography>
+      </CardContent>
+      <CardActions sx={{ padding: 0 }}>
+        <InternalLinkButton
+          href={routes.evaluations.details(data.evaluationId).index}
+        >
+          Zu den Analysen
+        </InternalLinkButton>
+      </CardActions>
+    </Card>
+  ) : (
     <>
       <HiddenContainer ref={downloadContainerRef} />
 
@@ -274,7 +301,7 @@ export function EvaluationReports({
                   openUpdateReportSidebar,
                   copy,
                   async (item) =>
-                    dataExportGuard(() =>
+                    dataExportGuard(item.dataSensitivity, () =>
                       exportData(
                         { reportId: item.reportId },
                         { tooMuchDataForExport: item.tooMuchDataForExport },
@@ -323,32 +350,5 @@ export function EvaluationReports({
         </Stack>
       </Stack>
     </>
-  ) : (
-    <Card
-      variant="plain"
-      sx={{
-        alignSelf: "center",
-        borderRadius: "lg",
-        padding: 3,
-        gap: 3,
-        alignItems: "center",
-      }}
-    >
-      <CardContent sx={{ alignItems: "center", gap: 2 }}>
-        <NotInterestedOutlined sx={{ width: 130, height: 130 }} />
-        <Typography level="h1">Reports nicht verfügbar</Typography>
-        <Typography level="body-md">
-          Reports für Auswertungen mit nicht anonymisierten Daten stehen nicht
-          zur Verfügung.
-        </Typography>
-      </CardContent>
-      <CardActions sx={{ padding: 0 }}>
-        <InternalLinkButton
-          href={routes.evaluations.details(data.evaluationId).index}
-        >
-          Zu den Analysen
-        </InternalLinkButton>
-      </CardActions>
-    </Card>
   );
 }

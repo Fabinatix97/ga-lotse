@@ -16,10 +16,8 @@ import {
   ApiGetProcedureApprovalRequestsResponse,
   ApiGetProgressEntriesResponseProgressEntriesInner,
   ApiGetProgressEntryResponse,
-  ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner,
   ApiManualProgressEntry,
   ApiPatchManualProgressEntryRequest,
-  ApiProgressEntry,
   ApiProgressEntryClass,
   ApiProgressEntryReferenceFilePair,
   ApiUpdateFileMetaDataRequest,
@@ -178,12 +176,3 @@ export interface ProgressEntriesFilters {
   progressEntryType?: Set<string>;
   progressEntryClass?: Set<ApiProgressEntryClass>;
 }
-
-interface RelatedEntry extends Omit<ApiProgressEntry, "fileReference"> {
-  fileReference: ApiGetFile200Response;
-  keyDocumentVersion: number;
-}
-
-export type RelatedProgressEntry =
-  ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner &
-    RelatedEntry;

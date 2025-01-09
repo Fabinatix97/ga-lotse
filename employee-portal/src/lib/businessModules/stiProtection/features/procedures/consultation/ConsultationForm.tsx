@@ -5,7 +5,10 @@
 
 "use client";
 
-import { ApiStiProtectionProcedure } from "@eshg/employee-portal-api/stiProtection";
+import {
+  ApiConsultation,
+  ApiStiProtectionProcedure,
+} from "@eshg/employee-portal-api/stiProtection";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
@@ -22,7 +25,6 @@ import { TextareaField } from "@/lib/shared/components/formFields/TextareaField"
 import { GeneralSection } from "./GeneralSection";
 import { PregnancySection } from "./PregnancySection";
 import {
-  ApiGetConsultation200Response,
   ConsultationFormData,
   mapApiToForm,
   mapFormValuesToApi,
@@ -36,27 +38,26 @@ export const AutoWidthHorizontalField = styled(HorizontalField)({
 
 export function ConsultationForm({
   procedure: stiProcedure,
+  consultation,
 }: Readonly<{
   procedure: ApiStiProtectionProcedure;
-  consultation?: ApiGetConsultation200Response | null;
+  consultation: ApiConsultation;
 }>) {
-  const consultation = undefined;
   const snackbar = useSnackbar();
-  const upsertConsultation = useUpsertConsultation({
+  const upsertConsultation = useUpsertConsultation(stiProcedure.id, {
     onSuccess: () => {
-      snackbar.confirmation("Die Anamnese wurde erfolgreich erstellt.");
+      snackbar.confirmation("Die Konsultation wurde erfolgreich gespeichert.");
     },
     onError: () => {
-      snackbar.error("Die Anamnese konnte nicht erstellt werden.");
+      snackbar.error("Die Konsultation konnte nicht gespeichert werden.");
     },
   });
 
   function onSubmit(values: ConsultationFormData) {
-    return upsertConsultation.mutateAsync({
-      id: stiProcedure.id,
-      consultation: mapFormValuesToApi(values),
-    });
+    const consultation = mapFormValuesToApi(values);
+    return upsertConsultation.mutateAsync(consultation);
   }
+
   return (
     <Formik initialValues={mapApiToForm(consultation)} onSubmit={onSubmit}>
       {({ isSubmitting }) => (
@@ -81,7 +82,7 @@ export function ConsultationForm({
                 width: "100%",
               }}
             >
-              <Typography level="h3" mb={5}>
+              <Typography level="h3" mb={3}>
                 Zusatzinfos
               </Typography>
               <TextareaField

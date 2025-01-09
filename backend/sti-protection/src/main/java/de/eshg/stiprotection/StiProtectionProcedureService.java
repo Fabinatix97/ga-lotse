@@ -13,8 +13,11 @@ import static de.eshg.stiprotection.pdf.identification.DocumentParameters.toDocu
 import static de.eshg.stiprotection.persistence.db.StiProtectionSystemProgressEntryType.PERSON_DETAILS_UPDATED;
 
 import de.eshg.base.calendar.api.TimeRange;
-import de.eshg.base.citizenuser.api.AddAnonymousUserRequest;
+import de.eshg.base.citizenuser.CitizenAccessCodeUserApi;
+import de.eshg.base.citizenuser.api.AddCitizenAccessCodeUserWithPinCredentialRequest;
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
+import de.eshg.base.citizenuser.api.CredentialTypeDto;
+import de.eshg.base.citizenuser.api.VerifyCitizenAccessCodeUserCredentialsRequest;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
@@ -46,7 +49,6 @@ import de.eshg.stiprotection.pdf.identification.AnonymousIdentificationDocumentS
 import de.eshg.stiprotection.pdf.identification.ConsultationAppointment;
 import de.eshg.stiprotection.pdf.identification.Department;
 import de.eshg.stiprotection.pdf.identification.DocumentSender;
-import de.eshg.stiprotection.persistence.anonymoususer.AnonymousUserClient;
 import de.eshg.stiprotection.persistence.data.ResultPage;
 import de.eshg.stiprotection.persistence.data.StiProtectionProcedureData;
 import de.eshg.stiprotection.persistence.db.Person;
@@ -80,7 +82,7 @@ public class StiProtectionProcedureService {
   private final AuditLogger auditLogger;
   private final AnonymousIdentificationDocumentService documentService;
   private final DepartmentClient departmentClient;
-  private final AnonymousUserClient anonymousUserClient;
+  private final CitizenAccessCodeUserApi citizenAccessCodeUserApi;
 
   public StiProtectionProcedureService(
       AppointmentService appointmentService,
@@ -89,14 +91,14 @@ public class StiProtectionProcedureService {
       AuditLogger auditLogger,
       AnonymousIdentificationDocumentService documentService,
       DepartmentClient departmentClient,
-      AnonymousUserClient anonymousUserClient) {
+      CitizenAccessCodeUserApi citizenAccessCodeUserApi) {
     this.appointmentService = appointmentService;
     this.repository = procedures;
     this.clock = clock;
     this.auditLogger = auditLogger;
     this.documentService = documentService;
     this.departmentClient = departmentClient;
-    this.anonymousUserClient = anonymousUserClient;
+    this.citizenAccessCodeUserApi = citizenAccessCodeUserApi;
   }
 
   public StiProtectionProcedure createProcedure(CreateProcedureRequest request) {
@@ -213,7 +215,7 @@ public class StiProtectionProcedureService {
         procedure.getUserDefinedAppointment(),
         procedure.getAppointmentHistory(),
         procedure.getWaitingRoom(),
-        anonymousUserClient.getAccessCode(anonymousUserId));
+        citizenAccessCodeUserApi.getCitizenAccessCodeUser(anonymousUserId).accessCode());
   }
 
   public StiProtectionProcedureData getProcedure(UUID procedureId) {
@@ -286,7 +288,8 @@ public class StiProtectionProcedureService {
     if (anonymousUserId == null) {
       throw new BadRequestException("Anonymous user not registered");
     }
-    String accessCode = anonymousUserClient.getAccessCode(anonymousUserId);
+    String accessCode =
+        citizenAccessCodeUserApi.getCitizenAccessCodeUser(anonymousUserId).accessCode();
     if (!StringUtils.hasText(accessCode)) {
       throw new BadRequestException("Access code cannot be null or blank");
     }
@@ -299,7 +302,8 @@ public class StiProtectionProcedureService {
       throw new BadRequestException("User already registered.");
     }
     CitizenAccessCodeUserDto user =
-        anonymousUserClient.addAnonymousUser(new AddAnonymousUserRequest(pin));
+        citizenAccessCodeUserApi.addCitizenAccessCodeUserWithPinCredential(
+            new AddCitizenAccessCodeUserWithPinCredentialRequest(pin));
     procedure.getPerson().setAnonymousUserId(user.userId());
   }
 
@@ -307,19 +311,23 @@ public class StiProtectionProcedureService {
     StiProtectionProcedure procedure = findProcedureByExternalId(procedureId);
     Person person = procedure.getPerson();
     try {
-      anonymousUserClient.verifyAnonymousUserPin(person.getAnonymousUserId(), pin);
+      citizenAccessCodeUserApi.verifyCitizenAccessCodeUserCredentials(
+          person.getAnonymousUserId(),
+          new VerifyCitizenAccessCodeUserCredentialsRequest(CredentialTypeDto.PIN, pin));
     } catch (HttpClientErrorException.BadRequest e) {
       throw new BadRequestException("Invalid credentials");
     }
   }
 
   public void addProgressEntry(
-      UUID procedureId, StiProtectionSystemProgressEntryType progressEntryType) {
+      UUID procedureId,
+      StiProtectionSystemProgressEntryType progressEntryType,
+      String... changeDescriptionArgs) {
     StiProtectionProcedure procedure = findProcedureByExternalId(procedureId);
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             progressEntryType.name(),
-            progressEntryType.getChangeDescription(),
+            progressEntryType.getChangeDescription().formatted((Object[]) changeDescriptionArgs),
             TriggerType.SYSTEM_AUTOMATIC);
     procedure.addProgressEntry(progressEntry);
   }

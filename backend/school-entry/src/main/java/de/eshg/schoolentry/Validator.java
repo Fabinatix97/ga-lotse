@@ -527,13 +527,6 @@ public class Validator {
     }
   }
 
-  static void validateProcedureStatusNotClosed(SchoolEntryProcedure procedure) {
-    if (ProcedureStatus.isClosed(procedure.getProcedureStatus())) {
-      throw new BadRequestException(
-          "Procedure %s is closed and cannot be updated.".formatted(procedure.getExternalId()));
-    }
-  }
-
   static void validateProcedureStatusIsClosed(SchoolEntryProcedure procedure) {
     if (!ProcedureStatus.isClosed(procedure.getProcedureStatus())) {
       throw new BadRequestException(

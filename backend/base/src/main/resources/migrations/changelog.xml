@@ -40,4 +40,7 @@
   <include file="migrations/0030_create_table_bundid_person_link.xml"/>
   <include file="migrations/0031_add_index_to_muk_facility_link.xml"/>
   <include file="migrations/0032_rename_facility_link_muk_id.xml"/>
+  <include file="migrations/0033_gdpr_procedure_enable_multiple_central_file_ids.xml"/>
+
+
 </databaseChangeLog>

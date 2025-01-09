@@ -393,7 +393,7 @@ async function prefetchAll({
   promises.push(
     queryClient.fetchQuery({
       queryKey: configApiQueryKey(["getConfig"]),
-      queryFn: () => configApi.getConfigRaw(getHeadersForOfflineCaching()),
+      queryFn: () => configApi.getConfig(getHeadersForOfflineCaching()),
     }),
   );
   // 2.2 pre-fetch useGetDepartment()

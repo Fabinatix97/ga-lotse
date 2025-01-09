@@ -61,13 +61,6 @@ public interface CalendarApi {
   GetResourceCalendarsResponse getResourceCalendars(
       @Valid @RequestBody GetResourceCalendarsRequest getResourceCalendarsRequest);
 
-  @GetExchange(value = USER_CALENDAR_URL + "/{userId}", accept = APPLICATION_JSON_VALUE)
-  @Operation(summary = "Get a user calendar")
-  @ApiResponse(
-      responseCode = "200",
-      description = "Returns the Calendar with augmented attributes, eg. the id")
-  UserCalendar getUserCalendar(@PathVariable(name = "userId") UUID userId);
-
   @GetExchange(value = USER_CALENDAR_URL + "/self", accept = APPLICATION_JSON_VALUE)
   @Operation(summary = "Get the user calendar of the current user")
   @ApiResponse(

@@ -7,18 +7,19 @@ import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { createColumnHelper } from "@tanstack/react-table";
 
 import { translateReportType } from "@/lib/businessModules/statistics/api/mapper/translateReportType";
+import { translateDataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import {
   ReportOverviewTableRow,
   ReportSeriesItemOverview,
   ReportSeriesOverview,
   SingleReportOverview,
 } from "@/lib/businessModules/statistics/api/models/reportsOverviewTypes";
+import { getSharedURL } from "@/lib/businessModules/statistics/components/shared/getSharedURL";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 
 import {
   DeleteReportOrSeries,
   getReportActionItems,
-  getSharedURL,
 } from "./getReportActionItems";
 
 const columnHelper = createColumnHelper<ReportOverviewTableRow>();
@@ -52,6 +53,12 @@ export function getReportsOverviewColumns(
       meta,
       enableSorting: false,
     }),
+    columnHelper.accessor("dataSensitivity", {
+      header: "Sensibilität",
+      cell: (props) => translateDataSourceSensitivity(props.getValue()),
+      meta,
+      enableSorting: false,
+    }),
     columnHelper.accessor("timeRangeStart", {
       header: "Start",
       cell: (props) => formatDate(props.getValue(), "DE"),
@@ -81,13 +88,14 @@ export function getReportsOverviewColumns(
                 type: "share",
                 action: async () =>
                   await share(
-                    getSharedURL(
-                      (
+                    getSharedURL({
+                      detailLinkId: (
                         props.row.original as
                           | SingleReportOverview
                           | ReportSeriesItemOverview
                       ).reportId,
-                    ),
+                      statisticsSubRoute: "reports",
+                    }),
                   ),
               },
               {

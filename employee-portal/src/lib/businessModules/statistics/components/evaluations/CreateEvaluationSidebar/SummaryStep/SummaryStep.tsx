@@ -12,7 +12,7 @@ import { useGetEvaluationTemplateDetails } from "@/lib/businessModules/statistic
 import {
   AnonymizedFieldValue,
   anonymizedFieldValueNames,
-} from "@/lib/businessModules/statistics/components/evaluations/AnonymizedToggleButtonGroupField";
+} from "@/lib/businessModules/statistics/components/evaluations/AnonymizationConfiguration";
 import { SummaryStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/SummaryStep/summaryStepFormModel";
 import { CreateEvaluationFromScratchFormModel } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/createEvaluationFromScratchFormModel";
 import {

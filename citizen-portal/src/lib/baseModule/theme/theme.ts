@@ -305,5 +305,10 @@ export const theme = extendTheme({
         }),
       },
     },
+    JoyModal: {
+      styleOverrides: {
+        backdrop: noBackdrop,
+      },
+    },
   },
 });

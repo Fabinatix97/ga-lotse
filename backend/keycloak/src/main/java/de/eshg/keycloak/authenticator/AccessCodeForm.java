@@ -8,6 +8,7 @@ package de.eshg.keycloak.authenticator;
 import static org.keycloak.authentication.authenticators.util.AuthenticatorUtils.getDisabledByBruteForceEventError;
 
 import de.eshg.keycloak.api.user.KeycloakAttributes;
+import de.eshg.keycloak.credentialprovider.DateOfBirthCredentialModel;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ import org.keycloak.events.Errors;
 import org.keycloak.forms.login.LoginFormsProvider;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
+import org.keycloak.models.UserCredentialModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.models.utils.FormMessage;
 import org.keycloak.protocol.oidc.OIDCLoginProtocol;
@@ -97,8 +99,14 @@ public class AccessCodeForm extends AbstractFormAuthenticator {
                 // Is submitted in the format yyyy-mm-dd from the html input tag with type=date
                 String dateOfBirth = formData.getFirst(DATE_OF_BIRTH_FIELD);
                 if (!isDisabled
-                    && dateOfBirth.equals(
-                        user.getFirstAttribute(KeycloakAttributes.DATE_OF_BIRTH_ATTRIBUTE))) {
+                    && (user.credentialManager()
+                            .isValid(
+                                new UserCredentialModel(
+                                    null, DateOfBirthCredentialModel.TYPE, dateOfBirth))
+                        // Todo(ISSUE-7041): Remove. For accounts in prod that still save the date
+                        // of birth as attribute
+                        || dateOfBirth.equals(
+                            user.getFirstAttribute(KeycloakAttributes.DATE_OF_BIRTH_ATTRIBUTE)))) {
                   context.setUser(user);
                   context.success();
                 } else {
@@ -135,7 +143,6 @@ public class AccessCodeForm extends AbstractFormAuthenticator {
       AuthenticationFlowContext context,
       MultivaluedMap<String, String> formData,
       Map<String, String> errors) {
-
     LoginFormsProvider form = context.form();
     formData.keySet().stream()
         .filter(name -> StringUtil.isNotBlank(formData.getFirst(name)))

@@ -6,8 +6,12 @@
 package de.eshg.base.keycloak;
 
 import static de.eshg.base.keycloak.differ.KeycloakDiffer.toJson;
+import static de.eshg.lib.keycloak.UserAttributePermissions.ADMIN_ONLY;
 import static java.util.function.Function.identity;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.keycloak.differ.Differ;
 import de.eshg.base.user.mapper.UserMapper;
@@ -27,6 +31,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.keycloak.admin.client.resource.*;
 import org.keycloak.representations.idm.*;
+import org.keycloak.representations.userprofile.config.UPAttribute;
+import org.keycloak.representations.userprofile.config.UPAttributePermissions;
+import org.keycloak.representations.userprofile.config.UPConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.AnyNestedCondition;
@@ -42,6 +49,7 @@ public class KeycloakTestClient {
 
   protected final KeycloakProperties keycloakProperties;
   protected final EnvironmentConfig environmentConfig;
+  private final ObjectMapper objectMapper;
   private final int maxNumberOfParallelThreads;
 
   protected static final class TestHelperOrTestUserProvisioningEnabled extends AnyNestedCondition {
@@ -61,12 +69,14 @@ public class KeycloakTestClient {
       RealmBoundKeycloakClient keycloakClient,
       KeycloakProperties keycloakProperties,
       int maxNumberOfParallelThreads,
-      EnvironmentConfig environmentConfig) {
+      EnvironmentConfig environmentConfig,
+      ObjectMapper objectMapper) {
     environmentConfig.assertIsNotProduction();
     this.keycloakClient = keycloakClient;
     this.keycloakProperties = keycloakProperties;
     this.maxNumberOfParallelThreads = maxNumberOfParallelThreads;
     this.environmentConfig = environmentConfig;
+    this.objectMapper = objectMapper;
   }
 
   public void createOrRecreateClient(ClientRepresentation clientRepresentation) {
@@ -130,6 +140,15 @@ public class KeycloakTestClient {
 
   public void createOrUpdateUsers(
       List<KeycloakUser> configuredUsers, BiConsumer<UserRepresentation, KeycloakUser> userUpdate) {
+    doWithAllUserAttributesEditable(() -> createOrUpdateUsersInternal(configuredUsers, userUpdate));
+
+    resetUserPasswords(configuredUsers);
+
+    addOrRemoveUserRoleMappings(configuredUsers);
+  }
+
+  private void createOrUpdateUsersInternal(
+      List<KeycloakUser> configuredUsers, BiConsumer<UserRepresentation, KeycloakUser> userUpdate) {
     UsersResource usersResource = keycloakClient.getRealm().users();
     List<UserRepresentation> existingUsers =
         keycloakClient.getUsers(Integer.MAX_VALUE).stream().filter(this::hasEshgEmail).toList();
@@ -150,10 +169,6 @@ public class KeycloakTestClient {
           createdUser.getRequiredActions().clear();
           userResource.update(createdUser);
         });
-
-    resetUserPasswords(configuredUsers);
-
-    addOrRemoveUserRoleMappings(configuredUsers);
   }
 
   private boolean hasEshgEmail(UserRepresentation userRepresentation) {
@@ -207,6 +222,47 @@ public class KeycloakTestClient {
           throw new RuntimeException("Failed to %s concurrently".formatted(description), e);
         }
       }
+    }
+  }
+
+  private void doWithAllUserAttributesEditable(Runnable runnable) {
+    UserProfileResource profileResource = keycloakClient.getRealm().users().userProfile();
+    UPConfig profileConfig = profileResource.getConfiguration();
+
+    List<UPAttribute> originalAttributes = profileConfig.getAttributes();
+    List<UPAttribute> temporarilyEditableAttributes =
+        getTemporarilyEditableAttributes(originalAttributes);
+
+    try {
+      log.info("Temporarily configuring user profile attributes to be admin editable");
+      profileConfig.setAttributes(temporarilyEditableAttributes);
+      profileResource.update(profileConfig);
+      runnable.run();
+    } finally {
+      log.info("Reverting user profile attributes configuration to their original state");
+      profileConfig.setAttributes(originalAttributes);
+      profileResource.update(profileConfig);
+    }
+  }
+
+  private List<UPAttribute> getTemporarilyEditableAttributes(List<UPAttribute> originalAttributes) {
+    List<UPAttribute> temporaryEditableAttributes;
+    temporaryEditableAttributes = copyAttributes(originalAttributes);
+    temporaryEditableAttributes.forEach(
+        attribute ->
+            attribute.setPermissions(
+                new UPAttributePermissions(
+                    ADMIN_ONLY.viewPermissions(), ADMIN_ONLY.editPermissions())));
+    return temporaryEditableAttributes;
+  }
+
+  private List<UPAttribute> copyAttributes(List<UPAttribute> originalAttributes) {
+    try {
+      return objectMapper.readValue(
+          objectMapper.writeValueAsString(originalAttributes), new TypeReference<>() {});
+    } catch (JsonProcessingException e) {
+      throw new IllegalStateException(
+          "Failed to de-/serialize user profile attributes for copying", e);
     }
   }
 

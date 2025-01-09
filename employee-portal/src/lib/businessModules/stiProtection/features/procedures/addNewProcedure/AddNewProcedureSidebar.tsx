@@ -16,19 +16,23 @@ import {
 import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
 import { COUNTRY_CODE_OPTIONS } from "@eshg/lib-portal/components/formFields/countryCodes";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { differenceInMinutes } from "date-fns";
 import { Formik, FormikHelpers } from "formik";
 import { useRouter } from "next/navigation";
 import { useReducer, useState } from "react";
 
-import { useCreateStiProcedureMutation } from "@/lib/businessModules/stiProtection/api/mutations/procedures";
-import { CreateAppointmentForm } from "@/lib/businessModules/stiProtection/features/procedures/details/CreateAppointmentSidebar";
+import {
+  useCreateStiProcedureMutation,
+  useCreateStiProcedureOptions,
+} from "@/lib/businessModules/stiProtection/api/mutations/procedures";
 import { CONCERN_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";
 import {
   deleteUndefined,
   optionalInt,
 } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
+import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { SelectableCardsField } from "@/lib/shared/components/formFields/SelectableCardsField";
@@ -38,13 +42,13 @@ import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
 
-import { AppointmentForm } from "./AppointmentForm";
+import { AppointmentForm, CombinedAppointmentForm } from "./AppointmentForm";
 import {
   PersonalDataForm,
   personalDataFormValidation,
 } from "./PersonalDataForm";
 import { SharePinModal } from "./SharePinModal";
-import { SummaryForm, SummaryFormProps } from "./SummaryForm";
+import { AppointmentFieldSetProps, SummaryForm } from "./SummaryForm";
 
 export const CONCERN_OPTIONS = Object.entries(CONCERN_VALUES).map(
   ([value, label]) => ({
@@ -79,7 +83,7 @@ const steps = [
   {
     title: "Zusammenfassung",
     subTitle: "Schritt 4 von 4",
-    fields: (props: SummaryFormProps) => <SummaryForm {...props} />,
+    fields: (props: AppointmentFieldSetProps) => <SummaryForm {...props} />,
   },
 ];
 
@@ -128,6 +132,7 @@ export function AddNewProcedureSidebar() {
   const step = steps[stepIndex]!;
 
   const snackbar = useSnackbar();
+  const addNewProcedureOptions = useCreateStiProcedureOptions();
   const addNewProcedure = useCreateStiProcedureMutation({
     onSuccess: (data: ApiCreateProcedureResponse) => {
       setIsOpen(false);
@@ -174,28 +179,38 @@ export function AddNewProcedureSidebar() {
           onSubmit={handleNext}
           validate={step.validate}
         >
-          <SidebarForm ref={sidebarFormRef}>
-            <SidebarContent title={step.title} subtitle={step.subTitle}>
-              <Fields
-                jumpToAppointmentSelection={() => {
-                  changeToStep(1);
-                }}
-                jumpToPersonalData={() => {
-                  changeToStep(2);
+          {({ values }) => (
+            <SidebarForm ref={sidebarFormRef}>
+              <ConfirmLeaveDirtyFormEffect
+                onSaveMutation={{
+                  mutationOptions: addNewProcedureOptions,
+                  variableSupplier: () => mapFormToApi(values),
                 }}
               />
-            </SidebarContent>
-            <SidebarActions>
-              <MultiFormButtonBar
-                submitting={addNewProcedure.isPending}
-                onCancel={handleClose}
-                onBack={
-                  isOnFirstStep ? undefined : () => changeToStep(stepIndex - 1)
-                }
-                submitLabel={isOnLastStep ? "Vorgang anlegen" : "Weiter"}
-              />
-            </SidebarActions>
-          </SidebarForm>
+              <SidebarContent title={step.title} subtitle={step.subTitle}>
+                <Fields
+                  jumpToAppointmentSelection={() => {
+                    changeToStep(1);
+                  }}
+                  jumpToPersonalData={() => {
+                    changeToStep(2);
+                  }}
+                />
+              </SidebarContent>
+              <SidebarActions>
+                <MultiFormButtonBar
+                  submitting={addNewProcedure.isPending}
+                  onCancel={handleClose}
+                  onBack={
+                    isOnFirstStep
+                      ? undefined
+                      : () => changeToStep(stepIndex - 1)
+                  }
+                  submitLabel={isOnLastStep ? "Vorgang anlegen" : "Weiter"}
+                />
+              </SidebarActions>
+            </SidebarForm>
+          )}
         </Formik>
       </Sidebar>
       <SharePinModal pinToShare={dataToShare?.pin} onShared={pinIsShared} />
@@ -244,13 +259,10 @@ function mapFormToApi(form: AddNewProcedureForm): ApiCreateProcedureRequest {
   });
 }
 
-export function getAppointmentDate(
-  form: AddNewProcedureForm | CreateAppointmentForm,
-) {
-  const customAppointmentDate =
-    form.customAppointmentDate !== ""
-      ? new Date(form.customAppointmentDate)
-      : undefined;
+export function getAppointmentDate(form: CombinedAppointmentForm) {
+  const customAppointmentDate = isNonEmptyString(form.customAppointmentDate)
+    ? new Date(form.customAppointmentDate)
+    : undefined;
   const date =
     form.appointmentBookingType === ApiAppointmentBookingType.AppointmentBlock
       ? form.blockAppointment?.start

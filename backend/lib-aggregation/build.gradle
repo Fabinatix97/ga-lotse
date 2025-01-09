@@ -1,6 +1,6 @@
 plugins {
-    id("eshg.java-lib")
-    id("java-test-fixtures")
+    id "eshg.java-lib"
+    id "java-test-fixtures"
 }
 
 dependencies {

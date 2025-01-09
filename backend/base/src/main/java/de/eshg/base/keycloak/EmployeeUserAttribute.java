@@ -6,6 +6,8 @@
 package de.eshg.base.keycloak;
 
 import de.eshg.base.SalutationDto;
+import de.eshg.lib.keycloak.KeycloakUserAttribute;
+import de.eshg.lib.keycloak.UserAttributePermissions;
 import java.util.Arrays;
 import java.util.List;
 
@@ -67,10 +69,19 @@ public enum EmployeeUserAttribute implements KeycloakUserAttribute {
   private final String displayName;
   private final boolean required;
   private final Group group;
+  private final UserAttributePermissions permissions;
   private final List<ValidationRule> validationRules;
 
   EmployeeUserAttribute(String key, String displayName, ValidationRule... validationRules) {
-    this(key, displayName, false, Group.CUSTOM, validationRules);
+    this(key, displayName, UserAttributePermissions.ADMIN_ONLY, validationRules);
+  }
+
+  EmployeeUserAttribute(
+      String key,
+      String displayName,
+      UserAttributePermissions permissions,
+      ValidationRule... validationRules) {
+    this(key, displayName, false, Group.CUSTOM, permissions, validationRules);
   }
 
   EmployeeUserAttribute(
@@ -79,10 +90,21 @@ public enum EmployeeUserAttribute implements KeycloakUserAttribute {
       boolean required,
       Group group,
       ValidationRule... validationRules) {
+    this(key, displayName, required, group, UserAttributePermissions.ADMIN_ONLY, validationRules);
+  }
+
+  EmployeeUserAttribute(
+      String key,
+      String displayName,
+      boolean required,
+      Group group,
+      UserAttributePermissions permissions,
+      ValidationRule... validationRules) {
     this.key = key;
     this.displayName = displayName;
     this.required = required;
     this.group = group;
+    this.permissions = permissions;
     this.validationRules = List.of(validationRules);
   }
 
@@ -104,6 +126,11 @@ public enum EmployeeUserAttribute implements KeycloakUserAttribute {
   @Override
   public boolean isRequired() {
     return required;
+  }
+
+  @Override
+  public UserAttributePermissions getPermissions() {
+    return permissions;
   }
 
   @Override

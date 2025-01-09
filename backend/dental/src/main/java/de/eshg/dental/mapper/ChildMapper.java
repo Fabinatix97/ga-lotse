@@ -5,11 +5,11 @@
 
 package de.eshg.dental.mapper;
 
+import de.eshg.dental.api.AnnualInstitutionDto;
 import de.eshg.dental.api.ChildDetailsDto;
 import de.eshg.dental.api.ChildDto;
 import de.eshg.dental.api.CreateChildRequest;
 import de.eshg.dental.api.ExaminationDto;
-import de.eshg.dental.api.InstitutionDto;
 import de.eshg.dental.business.model.ChildWithAugmentedData;
 import de.eshg.dental.business.model.ImportChildData;
 import de.eshg.dental.domain.model.Child;
@@ -29,8 +29,12 @@ public final class ChildMapper {
   }
 
   public static ChildDetailsDto mapToChildDetailsDto(
-      ChildWithAugmentedData child, List<Examination> examinations) {
-    if (child == null) return null;
+      ChildWithAugmentedData child,
+      List<Examination> examinations,
+      List<AnnualInstitutionDto> institutions) {
+    if (child == null) {
+      return null;
+    }
     return new ChildDetailsDto(
         child.child().getExternalId(),
         child.child().getVersion(),
@@ -52,11 +56,8 @@ public final class ChildMapper {
         child.personData().differentBillingAddress(),
         child.child().getYear().getValue(),
         child.child().getGroupName(),
-        new InstitutionDto(
-            child.contact().id(),
-            child.contact().name(),
-            InstitutionHexColorMapper.mapInstitutionContactToHexColor(child.contact())),
-        mapToDto(examinations));
+        mapToDto(examinations),
+        institutions == null ? List.of() : institutions);
   }
 
   public static ChildDto mapChildToDto(ChildWithAugmentedData child) {
@@ -68,10 +69,8 @@ public final class ChildMapper {
         child.personData().dateOfBirth(),
         child.child().getYear().getValue(),
         child.child().getGroupName(),
-        new InstitutionDto(
-            child.contact().id(),
-            child.contact().name(),
-            InstitutionHexColorMapper.mapInstitutionContactToHexColor(child.contact())));
+        InstitutionMapper.mapContactToInstitutionDto(child.contact()),
+        ProcedureMapper.toInterfaceType(child.child().getProcedureStatus()));
   }
 
   private static List<ExaminationDto> mapToDto(List<Examination> examinations) {

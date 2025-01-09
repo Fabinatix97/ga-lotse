@@ -1,0 +1,40 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="GA-Lotse" id="1734527704870-1">
+        <createTable tableName="consultation">
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="main_reason" type="TEXT"/>
+            <column name="procedure_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_consultation"/>
+            </column>
+            <column name="drug_use" type="TEXT"/>
+            <column name="further_gender_info" type="TEXT"/>
+            <column name="has_german_health_insurance" type="BOOLEAN"/>
+            <column name="has_health_insurance" type="BOOLEAN"/>
+            <column name="has_insecure_residence" type="BOOLEAN"/>
+            <column name="has_sufficient_german_language_skills" type="BOOLEAN"/>
+            <column name="has_symptoms" type="BOOLEAN"/>
+            <column name="is_illiterate" type="BOOLEAN"/>
+            <column name="notes" type="TEXT"/>
+            <column name="other_known_languages" type="TEXT"/>
+            <column name="referral" type="TEXT"/>
+            <column name="symptoms" type="TEXT"/>
+            <column name="has_pregnancy_related_info" type="BOOLEAN"/>
+            <column name="last_cytology_test" type="date"/>
+            <column name="number_of_births" type="INTEGER"/>
+            <column name="number_of_ectopic_pregnancies" type="INTEGER"/>
+            <column name="number_of_induced_abortions" type="INTEGER"/>
+            <column name="number_of_other_abortions" type="INTEGER"/>
+            <column name="number_of_pregnancies" type="INTEGER"/>
+            <column name="start_of_last_period" type="date"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="procedure_id" baseTableName="consultation" constraintName="fk_consultation_sti_protection_procedure" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="sti_protection_procedure" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

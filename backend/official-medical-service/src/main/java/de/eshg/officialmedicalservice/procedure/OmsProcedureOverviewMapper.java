@@ -5,7 +5,7 @@
 
 package de.eshg.officialmedicalservice.procedure;
 
-import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
+import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.lib.auditlog.AuditLogger;
@@ -67,7 +67,7 @@ public class OmsProcedureOverviewMapper {
   public EmployeeOmsProcedureOverviewDto toInterfaceType(
       OmsProcedure procedure,
       GetPersonFileStateResponse affectedPerson,
-      AddFacilityFileStateResponse facility) {
+      GetFacilityFileStateResponse facility) {
     String firstName = null;
     String lastName = null;
     LocalDate dateOfBirth = null;

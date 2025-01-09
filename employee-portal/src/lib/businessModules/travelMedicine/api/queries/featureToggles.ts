@@ -9,6 +9,7 @@ import {
 } from "@eshg/employee-portal-api/travelMedicine";
 import {
   FeatureToggleQueryOptions,
+  UnsuspendedFeatureToggleQueryOptions,
   selectDisabledOldFeature,
   selectEnabledNewFeature,
   useGetFeatureToggle,
@@ -44,22 +45,25 @@ function useGetTravelMedicineFeatureToggle<TValue>(
 
 export function useIsNewFeatureEnabledUnsuspended(
   name: ApiTravelMedicineFeature,
+  enabled: boolean,
 ): UseQueryResult<boolean> {
-  const enabledNewFeatureQuery = useEnabledNewFeatureToggleQuery(name);
+  const enabledNewFeatureQuery = useEnabledNewFeatureToggleQuery(name, enabled);
   return useGetFeatureToggleUnsuspended(enabledNewFeatureQuery);
 }
 
 function useEnabledNewFeatureToggleQuery(
   name: ApiTravelMedicineFeature,
+  enabled?: boolean,
 ): FeatureToggleQueryOptions<ApiTravelMedicineFeature, boolean> {
-  return useFeatureToggleQuery(selectEnabledNewFeature(name));
+  return useFeatureToggleQuery(selectEnabledNewFeature(name), enabled);
 }
 
 function useFeatureToggleQuery<TValue>(
   select: (
     featureToggles: ApiGetTravelMedicineFeatureTogglesResponse,
   ) => TValue,
-): FeatureToggleQueryOptions<ApiTravelMedicineFeature, TValue> {
+  enabled?: boolean,
+): UnsuspendedFeatureToggleQueryOptions<ApiTravelMedicineFeature, TValue> {
   const featureTogglesApi = useFeatureTogglesApi();
   return {
     queryKey: travelMedicineFeatureTogglesPublicApiQueryKey([
@@ -67,5 +71,6 @@ function useFeatureToggleQuery<TValue>(
     ]),
     queryFn: () => featureTogglesApi.getFeatureToggles(),
     select,
+    enabled,
   };
 }

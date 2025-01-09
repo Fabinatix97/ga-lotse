@@ -21,7 +21,10 @@ import { Formik } from "formik";
 import { useEffect, useState } from "react";
 
 import { theme } from "@/lib/baseModule/theme/theme";
-import { useUpsertMedicalHistory } from "@/lib/businessModules/stiProtection/api/mutations/medicalHistory";
+import {
+  useUpsertMedicalHistory,
+  useUpsertMedicalHistoryOptions,
+} from "@/lib/businessModules/stiProtection/api/mutations/medicalHistory";
 import {
   MedicalHistoryDocumentLanguage,
   useGetMedicalHistoryDocumentQuery,
@@ -30,6 +33,7 @@ import { SectionGrid } from "@/lib/businessModules/stiProtection/components/proc
 import { CONCERN_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { StickyBottomButtonBar } from "@/lib/shared/components/buttons/StickyBottomButtonBar";
+import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
 import {
@@ -68,16 +72,7 @@ export function MedicalHistoryForm({
   procedure: ApiStiProtectionProcedure;
   medicalHistory?: ApiGetMedicalHistory200Response | null;
 }>) {
-  const upsertMedicalHistory = useUpsertMedicalHistory();
-
   const formTitle = `Anamnesebogen ${CONCERN_VALUES[stiProcedure.concern]}`;
-
-  function onSubmit(values: MedicalHistoryFormData) {
-    return upsertMedicalHistory.mutateAsync({
-      id: stiProcedure.id,
-      medicalHistory: mapFormValuesToApi(stiProcedure, values),
-    });
-  }
   const isForSexWork = stiProcedure.concern === "SEX_WORK";
 
   const [openFile, setOpenFile] = useState<boolean>(false);
@@ -86,14 +81,8 @@ export function MedicalHistoryForm({
     fileInfo.concern ?? ApiConcern.HivStiConsultation,
     fileInfo.language ?? "DE",
   );
-
-  function fetchMedicalHistoryDocument(
-    concern: ApiConcern,
-    language: MedicalHistoryDocumentLanguage,
-  ) {
-    setFileInfo({ concern, language });
-    setOpenFile(true);
-  }
+  const upsertMedicalHistoryOptions = useUpsertMedicalHistoryOptions();
+  const upsertMedicalHistory = useUpsertMedicalHistory();
 
   useEffect(() => {
     if (!openFile || !isFetched || !data) {
@@ -108,6 +97,21 @@ export function MedicalHistoryForm({
     setOpenFile(false);
   }, [openFile, isFetched, data, fileInfo, fileInfo.fileURL]);
 
+  function fetchMedicalHistoryDocument(
+    concern: ApiConcern,
+    language: MedicalHistoryDocumentLanguage,
+  ) {
+    setFileInfo({ concern, language });
+    setOpenFile(true);
+  }
+
+  function onSubmit(values: MedicalHistoryFormData) {
+    return upsertMedicalHistory.mutateAsync({
+      id: stiProcedure.id,
+      medicalHistory: mapFormValuesToApi(stiProcedure, values),
+    });
+  }
+
   return (
     <Formik
       initialValues={
@@ -117,8 +121,17 @@ export function MedicalHistoryForm({
       }
       onSubmit={onSubmit}
     >
-      {({ isSubmitting }) => (
+      {({ isSubmitting, values }) => (
         <FormPlus>
+          <ConfirmLeaveDirtyFormEffect
+            onSaveMutation={{
+              mutationOptions: upsertMedicalHistoryOptions({
+                id: stiProcedure.id,
+                medicalHistory: mapFormValuesToApi(stiProcedure, values),
+              }),
+              variableSupplier: () => mapFormValuesToApi(stiProcedure, values),
+            }}
+          />
           <Sheet sx={{ overflow: "auto", margin: theme.spacing(3) }}>
             <Typography level="h2" mb={5}>
               {formTitle}

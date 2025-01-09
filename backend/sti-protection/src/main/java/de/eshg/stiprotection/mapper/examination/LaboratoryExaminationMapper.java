@@ -87,7 +87,7 @@ public class LaboratoryExaminationMapper {
     entity.setChlamydiaTestSamples(
         LaboratoryTestDataMapper.toDatabaseType(dto.chlamydiaTestSamples()));
     entity.setGonorrheaTestSamples(
-        LaboratoryTestDataMapper.toDatabaseType(dto.gonorrhoeaTestSamples()));
+        LaboratoryTestDataMapper.toDatabaseType(dto.gonorrheaTestSamples()));
     entity.setMycoplasmaTestSamples(
         LaboratoryTestDataMapper.toDatabaseType(dto.mycoplasmaTestSamples()));
     entity.setCancerScreeningData(

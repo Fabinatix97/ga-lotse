@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiSalutation } from "@eshg/employee-portal-api/base";
 import { ApiContactType } from "@eshg/employee-portal-api/businessProcedures";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
@@ -32,6 +33,7 @@ import {
 import { CreateInboxProcedureValues } from "./CreateInboxProcedureForm";
 
 export const EMPTY_CONTACT_VALUES: ContactValues = {
+  salutation: ApiSalutation.NotSpecified,
   type: "",
   facilityName: "",
   firstName: "",
@@ -43,6 +45,7 @@ export const EMPTY_CONTACT_VALUES: ContactValues = {
 
 export interface ContactValues {
   type: OptionalFieldValue<ApiContactType>;
+  salutation: ApiSalutation;
   facilityName: string;
   firstName: string;
   lastName: string;

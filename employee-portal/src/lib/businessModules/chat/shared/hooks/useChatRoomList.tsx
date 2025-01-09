@@ -92,8 +92,10 @@ export function useChatRoomList() {
         joinedRooms.map(async (room) => {
           const membershipStatus = room.getMyMembership();
           if (membershipStatus === "invite") return;
-          const roomWithCommunicationType =
-            getRoomNameAndCommunicationType(room);
+          const roomWithCommunicationType = getRoomNameAndCommunicationType(
+            matrixClient,
+            room,
+          );
           const latestMessage = await getLatestMessage(room);
           return { ...roomWithCommunicationType, latestMessage: latestMessage };
         }),
@@ -105,7 +107,10 @@ export function useChatRoomList() {
       await Promise.all(
         invitations.map(async (invitation) => {
           await matrixClient.joinRoom(invitation.roomId);
-          const roomWithType = getRoomNameAndCommunicationType(invitation);
+          const roomWithType = getRoomNameAndCommunicationType(
+            matrixClient,
+            invitation,
+          );
           if (
             roomWithType.communicationType === CommunicationType.DirectMessage
           ) {
@@ -126,7 +131,7 @@ export function useChatRoomList() {
   useEffect(() => {
     async function onMyMembership(room: Room, membership: string) {
       const latestMessage = await getLatestMessage(room);
-      const roomWithType = getRoomNameAndCommunicationType(room);
+      const roomWithType = getRoomNameAndCommunicationType(matrixClient, room);
       if (roomWithType.communicationType === CommunicationType.DirectMessage) {
         // set room as direct
         await setDMRoom(matrixClient, room.roomId, matrixClient.getUserId());
@@ -162,7 +167,7 @@ export function useChatRoomList() {
       const room = matrixClient.getRoom(roomId);
       if (!room) return;
       const latestMessage = await getLatestMessage(room);
-      const roomWithType = getRoomNameAndCommunicationType(room);
+      const roomWithType = getRoomNameAndCommunicationType(matrixClient, room);
       setRoomList((prevState) =>
         prevState.map((prevRoom) =>
           prevRoom.room.roomId === room.roomId
@@ -216,7 +221,7 @@ export function useChatRoomList() {
   // Subscribe to room timeline
   useEffect(() => {
     async function onMembership({ room }: RoomEventDetails) {
-      const updatedRoom = getRoomNameAndCommunicationType(room);
+      const updatedRoom = getRoomNameAndCommunicationType(matrixClient, room);
       const latestMessage = await getLatestMessage(room);
 
       setRoomList((prevState) =>
@@ -238,8 +243,8 @@ export function useChatRoomList() {
       );
     }
 
-    function onRoomTimelineSync(event: MatrixEvent, room: Room) {
-      const updatedRoom = getRoomNameAndCommunicationType(room);
+    function onRoomTimelineSync(_: MatrixEvent, room: Room) {
+      const updatedRoom = getRoomNameAndCommunicationType(matrixClient, room);
       setRoomList((prevState) =>
         prevState.map((prevRoom) =>
           prevRoom.room.roomId === room.roomId

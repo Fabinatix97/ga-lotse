@@ -9,7 +9,6 @@ import { FormControl, FormLabel, Select } from "@mui/joy";
 import { isDefined } from "remeda";
 
 import { PROPHYLAXIS_TYPE_OPTIONS } from "@/lib/businessModules/dental/features/prophylaxisSessions/options";
-import { SearchInstitutionFilter } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/SearchInstitutionFilter";
 import { ResetButton } from "@/lib/shared/components/ResetButton";
 import { ActiveFilter } from "@/lib/shared/components/filterSettings/ActiveFilter";
 import { FilterSettingsContent } from "@/lib/shared/components/filterSettings/FilterSettingsContent";
@@ -17,6 +16,7 @@ import {
   FilterSettingsSheet,
   FilterSettingsSheetProps,
 } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
+import { SearchInstitutionFilter } from "@/lib/shared/components/filterSettings/SearchInstitutionFilter";
 import { SetDictionaryFilterFn } from "@/lib/shared/components/filterSettings/useFilterDictionary";
 
 export type ProphylaxisSessionFilters = Pick<

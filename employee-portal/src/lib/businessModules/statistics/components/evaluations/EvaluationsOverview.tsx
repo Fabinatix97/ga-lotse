@@ -23,7 +23,7 @@ export function EvaluationsOverview() {
   const { sortKey, sortDirection, manualSortingProps } = useTableSorting({
     onSortingChange: () => resetPageNumber(),
     initialSorting: {
-      id: "timeRangeStart",
+      id: "createdAt",
       desc: true,
     },
   });

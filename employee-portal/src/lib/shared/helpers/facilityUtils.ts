@@ -5,8 +5,8 @@
 
 import {
   ApiAddFacilityFileStateRequest,
+  ApiAddFacilityFileStateResponse,
   ApiFacilityContactPerson,
-  ApiFacilityFileState,
 } from "@eshg/employee-portal-api/base";
 import { ApiDataOrigin } from "@eshg/employee-portal-api/inspection";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
@@ -85,7 +85,7 @@ export function mapFacilityFormValuesToApiAddFacilityFileStateRequest(
 }
 
 export function mapApiFacilityStateToFacilityFormValues(
-  data: ApiFacilityFileState,
+  data: ApiAddFacilityFileStateResponse,
 ): DefaultFacilityFormValues & { billingAddress?: void } {
   return {
     name: data.name,

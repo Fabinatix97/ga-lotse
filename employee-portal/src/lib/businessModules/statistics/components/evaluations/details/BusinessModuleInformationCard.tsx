@@ -5,6 +5,10 @@
 
 import { Stack } from "@mui/joy";
 
+import {
+  DataSourceSensitivity,
+  translateDataSourceSensitivity,
+} from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { LabelValuePair } from "@/lib/shared/components/infoTile/LabelValuePair";
 
@@ -13,7 +17,7 @@ export interface BusinessModuleInformationCardProps {
   dataSource: string;
   datasetAmount: number;
   attributeLabels: string[];
-  anonymized: boolean;
+  dataSourceSensitivity: DataSourceSensitivity;
 }
 
 export function BusinessModuleInformationCard(
@@ -25,8 +29,8 @@ export function BusinessModuleInformationCard(
       value: props.dataSource,
     },
     {
-      label: "Anonymisierung der Daten",
-      value: props.anonymized === true ? "Ja" : "Nein",
+      label: "Sensibilität",
+      value: translateDataSourceSensitivity(props.dataSourceSensitivity),
     },
     {
       label: "Datensätze",

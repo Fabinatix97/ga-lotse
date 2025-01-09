@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 public record GetGdprProcedureResponse(
@@ -24,9 +25,11 @@ public record GetGdprProcedureResponse(
         long version,
     @Schema(
             description =
-                "The Id of a set of Reference Data from the Central Files that shall be processed in this GDPR procedure.",
-            example = "be9831d4-dc25-48d8-9bfe-4c0b54bfb2c1")
-        UUID centralFileId,
+                "The list of Ids of a set of Reference Data from the Central Files that shall be processed in this GDPR procedure.",
+            example =
+                "[be9831d4-dc25-48d8-9bfe-4c0b54bfb2c1, a37b5d6f-d72b-4e8a-b1b3-8a4c7f0e6b92]")
+        @NotNull
+        List<UUID> centralFileIds,
     @NotNull GdprProcedureStatusDto status,
     @NotNull GdprProcedureTypeDto type,
     @NotNull @Valid GdprIdentificationDataDto identificationData,
@@ -35,6 +38,11 @@ public record GetGdprProcedureResponse(
             example = "2024-02-01T00:00:00.123456Z")
         @NotNull
         Instant createdAt,
+    @Schema(
+            description =
+                "The date and time of when this GDPR procedure was completed or cancelled.",
+            example = "2024-02-01T00:00:00.123456Z")
+        Instant closedAt,
     @Schema(
             description =
                 "The matter of concern for this GDPR procedure, only relevant for right to correction and right to objection.",

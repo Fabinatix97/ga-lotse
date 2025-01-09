@@ -8,7 +8,7 @@ package de.eshg.inspection.config;
 import static de.eshg.inspection.inspection.InspectionMapper.mapToInspectionTitle;
 import static de.eshg.inspection.inspection.InspectionMapper.mapToTaskSummary;
 
-import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
+import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.domain.model.SequencedBaseEntity;
 import de.eshg.inspection.facility.FacilityClient;
 import de.eshg.inspection.inspection.persistence.Inspection;
@@ -67,11 +67,11 @@ class InspectionSummaryProvider implements SummaryProvider<InspectionTask, Inspe
       return Map.of();
     }
 
-    List<AddFacilityFileStateResponse> facilityFileStates =
+    List<GetFacilityFileStateResponse> facilityFileStates =
         facilityClient.getFacilityFileStates(fileStateIds);
 
     return facilityFileStates.stream()
         .collect(
-            Collectors.toMap(AddFacilityFileStateResponse::id, AddFacilityFileStateResponse::name));
+            Collectors.toMap(GetFacilityFileStateResponse::id, GetFacilityFileStateResponse::name));
   }
 }

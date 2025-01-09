@@ -3,17 +3,25 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiCreateDailyAppointmentBlockGroupRequest } from "@eshg/employee-portal-api/stiProtection";
+import {
+  ApiCreateAppointmentBlockGroupResponse,
+  ApiCreateDailyAppointmentBlockGroupRequest,
+} from "@eshg/employee-portal-api/stiProtection";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { useMutation } from "@tanstack/react-query";
+import { MutationOptions, useMutation } from "@tanstack/react-query";
 
 import { useAppointmentBlockApi } from "@/lib/businessModules/stiProtection/api/clients";
 import { appointmentBlockApiQueryKey } from "@/lib/businessModules/stiProtection/api/queries/apiQueryKeys";
 
-export function useCreateDailyAppointmentBlocksForGroup() {
+export function useCreateDailyAppointmentBlocksForGroupOptions(): MutationOptions<
+  ApiCreateAppointmentBlockGroupResponse,
+  Error,
+  ApiCreateDailyAppointmentBlockGroupRequest
+> {
   const appointmentBlockGroupsApi = useAppointmentBlockApi();
   const snackbar = useSnackbar();
-  return useMutation({
+
+  return {
     mutationFn: (request: ApiCreateDailyAppointmentBlockGroupRequest) =>
       appointmentBlockGroupsApi.createDailyAppointmentBlocksForGroup(request),
     onSuccess: () => {
@@ -23,5 +31,11 @@ export function useCreateDailyAppointmentBlocksForGroup() {
       snackbar.error("Der Terminblock konnte nicht angelegt werden.");
     },
     mutationKey: appointmentBlockApiQueryKey(["appointmentBlockGroups"]),
-  });
+  };
+}
+
+export function useCreateDailyAppointmentBlocksForGroup() {
+  const createDailyAppointmentBlocksForGroupOptions =
+    useCreateDailyAppointmentBlocksForGroupOptions();
+  return useMutation(createDailyAppointmentBlocksForGroupOptions);
 }

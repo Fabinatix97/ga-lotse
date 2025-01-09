@@ -15,9 +15,30 @@ import {
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { MutationPassThrough } from "@eshg/lib-portal/types/query";
+import { MutationOptions } from "@tanstack/react-query";
 
 import { useStiProtectionProcedureApi } from "@/lib/businessModules/stiProtection/api/clients";
 import { stiProtectionApiQueryKey } from "@/lib/businessModules/stiProtection/api/queries/apiQueryKeys";
+
+export function useCreateStiProcedureOptions({
+  onSuccess,
+  onError,
+}: MutationPassThrough<
+  ApiCreateProcedureRequest,
+  ApiCreateProcedureResponse
+> = {}): MutationOptions<
+  ApiCreateProcedureResponse,
+  Error,
+  ApiCreateProcedureRequest
+> {
+  const api = useStiProtectionProcedureApi();
+  return {
+    mutationFn: (data: ApiCreateProcedureRequest) => api.createProcedure(data),
+    mutationKey: stiProtectionApiQueryKey(["procedures"]),
+    onSuccess,
+    onError,
+  };
+}
 
 export function useCreateStiProcedureMutation({
   onSuccess,

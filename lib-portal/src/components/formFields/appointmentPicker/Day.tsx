@@ -29,11 +29,12 @@ export interface DayProps
 
 export const DaysGrid = styled("div")`
   display: grid;
-  column-gap: 16px;
-  row-gap: 8px;
+  gap: 8px;
   grid-template-columns: repeat(7, 36px);
-  grid-template-rows: repeat(6, 36px);
+  grid-template-rows: repeat(7, 40px);
   text-align: center;
+  justify-content: space-between;
+  width: 320px;
 `;
 
 export function Day({
@@ -63,31 +64,35 @@ export function Day({
   );
 
   return (
-    <Button
-      aria-selected={isSelected || undefined}
-      aria-label={dateInMonthForm.format(date)}
-      disabled={!hasAppointments}
-      color={isSelected ? "primary" : "neutral"}
-      variant={isSelected ? "solid" : "plain"}
-      sx={{
-        ...grayOut,
-        ...boldProp,
-        ...selectedStyles,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-      onClick={() => onDateSelected(date)}
-      {...boldProp}
+    <Stack
+      sx={{ alignItems: "center" }}
+      component={"time"}
+      dateTime={formatISO(date, { representation: "date" })}
     >
-      <Stack
-        component={"time"}
-        dateTime={formatISO(date, { representation: "date" })}
+      <Button
+        aria-selected={isSelected || undefined}
+        aria-label={dateInMonthForm.format(date)}
+        disabled={!hasAppointments}
+        color={isSelected ? "primary" : "neutral"}
+        variant={isSelected ? "solid" : "plain"}
+        sx={{
+          ...grayOut,
+          ...boldProp,
+          ...selectedStyles,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          margin: "2px",
+          minHeight: "32px",
+          width: "32px",
+        }}
+        onClick={() => onDateSelected(date)}
+        {...boldProp}
       >
         {date.getDate()}
-        {hasAppointments && !isSelected && <AppointmentMarker aria-hidden />}
-      </Stack>
-    </Button>
+      </Button>
+      {hasAppointments && <AppointmentMarker aria-hidden />}
+    </Stack>
   );
 }
 

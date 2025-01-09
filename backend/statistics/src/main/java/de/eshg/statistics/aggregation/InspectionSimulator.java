@@ -8,13 +8,12 @@ package de.eshg.statistics.aggregation;
 import de.eshg.lib.statistics.StatisticsApi;
 import de.eshg.lib.statistics.api.Attribute;
 import de.eshg.lib.statistics.api.DataRow;
-import de.eshg.lib.statistics.api.DataSource;
+import de.eshg.lib.statistics.api.DataSourceInfo;
 import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.api.DataTableHeader;
 import de.eshg.lib.statistics.api.GetDataSourcesResponse;
 import de.eshg.lib.statistics.api.GetSpecificDataRequest;
 import de.eshg.lib.statistics.api.GetSpecificDataResponse;
-import de.eshg.lib.statistics.api.SubjectType;
 import de.eshg.lib.statistics.api.ValueOptionInternal;
 import de.eshg.lib.statistics.api.ValueType;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -44,8 +43,7 @@ public class InspectionSimulator implements StatisticsApi {
       new Attribute(
           "Einrichtung",
           "EINRICHTUNG",
-          ValueType.CENTRAL_FILE_ID,
-          SubjectType.FACILITY,
+          ValueType.CENTRAL_FILE_ID_FACILITY,
           null,
           null,
           "Einrichtung",
@@ -53,11 +51,13 @@ public class InspectionSimulator implements StatisticsApi {
   public static final Attribute LOCATION_ATTRIBUTE =
       new Attribute(
           "Ort der Begehung", "ORT", ValueType.TEXT, null, null, ATTRIBUTE_CATEGORY, true);
+  public static final List<Attribute> ATTRIBUTE_LIST_INSPECTION =
+      List.of(PROCEDURE_ID_ATTRIBUTE, FACILITY_ATTRIBUTE, LOCATION_ATTRIBUTE);
   public static final UUID DATA_SOURCE_UUID =
       UUID.fromString("d1bf2c30-192f-426d-8ab3-aa9991dec726");
   public static final UUID DATA_SOURCE_UUID_2 =
       UUID.fromString("cdbf9a5c-a6d1-4b18-9013-b976e0fbf288");
-  private static final Attribute RESULT_ATTRIBUTE =
+  public static final Attribute RESULT_ATTRIBUTE =
       new Attribute(
           "Ergebnis Begehung",
           "ERGEBNIS",
@@ -68,6 +68,8 @@ public class InspectionSimulator implements StatisticsApi {
               new ValueOptionInternal("F", "Mangelhaft", false)),
           ATTRIBUTE_CATEGORY,
           true);
+  public static final List<Attribute> ATTRIBUTE_LIST_INSPECTION2 =
+      List.of(PROCEDURE_ID_ATTRIBUTE, LOCATION_ATTRIBUTE, RESULT_ATTRIBUTE);
   private static final UUID FIRST_UUID = UUID.fromString("7efebca3-1780-4ec0-9ff6-df15afeccfbf");
   private static final UUID SECOND_UUID = UUID.fromString("de31b6bd-b704-460b-a276-b4f53824a03c");
 
@@ -77,18 +79,18 @@ public class InspectionSimulator implements StatisticsApi {
   public GetDataSourcesResponse getAvailableDataSources() {
     return new GetDataSourcesResponse(
         List.of(
-            new DataSource(
+            new DataSourceInfo(
                 DATA_SOURCE_UUID,
                 "INSPECTION",
                 DataSourceSensitivity.INTERNAL_USAGE,
                 false,
-                List.of(PROCEDURE_ID_ATTRIBUTE, FACILITY_ATTRIBUTE, LOCATION_ATTRIBUTE)),
-            new DataSource(
+                ATTRIBUTE_LIST_INSPECTION),
+            new DataSourceInfo(
                 DATA_SOURCE_UUID_2,
                 "INSPECTION2",
                 DataSourceSensitivity.INTERNAL_USAGE,
                 false,
-                List.of(LOCATION_ATTRIBUTE, RESULT_ATTRIBUTE))));
+                ATTRIBUTE_LIST_INSPECTION2)));
   }
 
   @Override
@@ -100,8 +102,7 @@ public class InspectionSimulator implements StatisticsApi {
           getSpecificDataRequest.timeRangeEnd(),
           DataSourceSensitivity.INTERNAL_USAGE,
           false,
-          new DataTableHeader(
-              List.of(PROCEDURE_ID_ATTRIBUTE, FACILITY_ATTRIBUTE, LOCATION_ATTRIBUTE)),
+          new DataTableHeader(ATTRIBUTE_LIST_INSPECTION),
           List.of(new DataRow(Arrays.asList(FIRST_UUID, FACILITY_UUID, "Frankfurt"))),
           1);
     } else {
@@ -111,8 +112,7 @@ public class InspectionSimulator implements StatisticsApi {
           getSpecificDataRequest.timeRangeEnd(),
           DataSourceSensitivity.INTERNAL_USAGE,
           false,
-          new DataTableHeader(
-              List.of(PROCEDURE_ID_ATTRIBUTE, RESULT_ATTRIBUTE, LOCATION_ATTRIBUTE)),
+          new DataTableHeader(ATTRIBUTE_LIST_INSPECTION2),
           List.of(
               new DataRow(Arrays.asList(FIRST_UUID, "I", "Schulkantine")),
               new DataRow(Arrays.asList(SECOND_UUID, "F", "Tattoostudio"))),

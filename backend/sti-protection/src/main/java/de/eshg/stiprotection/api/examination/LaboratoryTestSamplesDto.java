@@ -10,9 +10,12 @@ import jakarta.validation.Valid;
 
 @Schema(name = "LaboratoryTestSamples")
 public record LaboratoryTestSamplesDto(
-    Boolean oralSampleRequested,
+    @Schema(description = "Specifies whether an oral sample is requested.")
+        Boolean oralSampleRequested,
     @Valid LaboratoryTestDto oralSampleData,
-    Boolean urethralSampleRequested,
+    @Schema(description = "Specifies whether an urethral sample is requested.")
+        Boolean urethralSampleRequested,
     @Valid LaboratoryTestDto urethralSampleData,
-    Boolean analSampleRequested,
+    @Schema(description = "Specifies whether an anal sample is requested.")
+        Boolean analSampleRequested,
     @Valid LaboratoryTestDto analSampleData) {}

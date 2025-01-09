@@ -23,6 +23,7 @@ import de.eshg.base.centralfile.api.person.GetPersonFileStatesSortParameters;
 import de.eshg.base.centralfile.api.person.PersonDetailsDto;
 import de.eshg.base.centralfile.api.person.PersonKeyAttributes;
 import de.eshg.base.contact.api.ContactDto;
+import de.eshg.dental.api.AnnualInstitutionDto;
 import de.eshg.dental.api.ChildFilterParameters;
 import de.eshg.dental.api.ChildPaginationAndSortParameters;
 import de.eshg.dental.api.ChildResult;
@@ -41,6 +42,7 @@ import de.eshg.dental.importer.ChildColumn;
 import de.eshg.dental.importer.ChildImporter;
 import de.eshg.dental.importer.ChildRowReader;
 import de.eshg.dental.mapper.ChildMapper;
+import de.eshg.dental.mapper.InstitutionMapper;
 import de.eshg.dental.util.ChildPageSpec;
 import de.eshg.dental.util.ChildSystemProgressEntryType;
 import de.eshg.dental.util.ExceptionUtil;
@@ -56,6 +58,7 @@ import de.eshg.lib.xlsximport.ImportValidator;
 import de.eshg.lib.xlsximport.XlsxNormalizer;
 import de.eshg.lib.xlsximport.model.ImportResult;
 import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.validation.ValidationUtil;
 import java.io.IOException;
 import java.io.InputStream;
@@ -214,19 +217,40 @@ public class ChildService {
                 Map.Entry::getKey, result -> Iterables.getOnlyElement(result.getValue())));
   }
 
-  public List<Examination> getAllExaminations(Child child) {
-    return getChildAndAllPreviousChildren(child).stream()
+  public List<Examination> getAllExaminations(
+      List<ChildWithAugmentedData> childAndAllPreviousChildren) {
+    return childAndAllPreviousChildren.stream()
+        .map(ChildWithAugmentedData::child)
         .map(Child::getExaminations)
         .flatMap(Collection::stream)
         .sorted(Comparator.comparing(Examination::getDateAndTime).reversed())
         .toList();
   }
 
-  private List<Child> getChildAndAllPreviousChildren(Child child) {
+  public List<AnnualInstitutionDto> getAllInstitutions(
+      List<ChildWithAugmentedData> childAndAllPreviousChildren) {
+
+    return childAndAllPreviousChildren.stream()
+        .map(
+            child ->
+                new AnnualInstitutionDto(
+                    child.child().getExternalId(),
+                    InstitutionMapper.mapContactToInstitutionDto(child.contact()),
+                    child.child().getYear().getValue(),
+                    child.child().getGroupName()))
+        .sorted(Comparator.comparingInt(AnnualInstitutionDto::year).reversed())
+        .toList();
+  }
+
+  List<ChildWithAugmentedData> getChildAndAllPreviousChildren(Child child) {
     UUID childIdFromCentralFile = child.getChildIdFromCentralFile();
     GetFileStateIdsResponse response =
         personApi.getPersonFileStateIdsAssociatedWithFileState(childIdFromCentralFile);
-    return childRepository.findByRelatedPersonsCentralFileStateId(response.fileStateIds());
+
+    List<Child> childAndAllPreviousChildren =
+        childRepository.findByRelatedPersonsCentralFileStateId(response.fileStateIds());
+
+    return augmentWithChildAndContactData(childAndAllPreviousChildren);
   }
 
   private List<UUID> addChildren(
@@ -260,12 +284,16 @@ public class ChildService {
     return response.personFileStateIds();
   }
 
-  ChildWithAugmentedData findAndAugmentByExternalId(UUID childId) {
-    Child child =
-        childRepository
-            .findByExternalId(childId)
-            .orElseThrow(ExceptionUtil.childNotFoundException(childId));
-    return augmentWithDetails(child);
+  public Child findByExternalIdOrThrow(UUID childId) {
+    return childRepository
+        .findByExternalId(childId)
+        .orElseThrow(ChildService::childNotFoundException);
+  }
+
+  public Child findByExternalIdForUpdate(UUID childId) {
+    return childRepository
+        .findByExternalIdForUpdate(childId)
+        .orElseThrow(ChildService::childNotFoundException);
   }
 
   public ChildWithAugmentedData augmentWithDetails(Child child) {
@@ -399,12 +427,7 @@ public class ChildService {
     return childRepository.findDistinctInstitutionGroups(institutionId);
   }
 
-  public ChildWithAugmentedData update(UUID childId, UpdateChildRequest request) {
-    Child child =
-        childRepository
-            .findByExternalIdForUpdate(childId)
-            .orElseThrow(ExceptionUtil.childNotFoundException(childId));
-
+  public void update(Child child, UpdateChildRequest request) {
     ValidationUtil.validateVersion(request.version(), child);
 
     boolean updateGroup = !Objects.equals(request.groupName(), child.getGroupName());
@@ -427,8 +450,6 @@ public class ChildService {
     }
 
     childRepository.flush();
-
-    return augmentWithDetails(child);
   }
 
   private void addSystemProgressEntry(
@@ -513,5 +534,9 @@ public class ChildService {
         .stream()
         .filter(child -> child.getChild().getProcedure().getProcedureStatus().isOpen())
         .map(this::augmentWithDetails);
+  }
+
+  private static NotFoundException childNotFoundException() {
+    return ExceptionUtil.notFoundException(Child.class);
   }
 }

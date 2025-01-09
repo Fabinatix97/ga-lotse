@@ -56,7 +56,7 @@ public final class ProfessionalMapper {
         mapToDto(professionInformation.getEmploymentStatus()));
   }
 
-  private static ProfessionalTitleDto mapToDto(ProfessionalTitle professionalTitle) {
+  public static ProfessionalTitleDto mapToDto(ProfessionalTitle professionalTitle) {
     if (professionalTitle == null) {
       return null;
     }

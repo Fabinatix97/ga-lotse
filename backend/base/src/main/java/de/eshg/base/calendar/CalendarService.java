@@ -88,6 +88,12 @@ public class CalendarService {
   }
 
   @Transactional
+  public UserCalendar getCurrentUserCalendar() {
+    UUID userId = CurrentUserHelper.getCurrentUserId();
+    return getUserCalendarInternal(userId);
+  }
+
+  @Transactional
   public UserCalendar getUserCalendar(UUID userId) {
     return getUserCalendarInternal(userId);
   }
@@ -101,12 +107,6 @@ public class CalendarService {
   private Calendar addUserCalendar(UUID userId) {
     userService.getUserByIdOrThrow(userId);
     return calendarRepository.save(CalendarMapper.mapToDomain(userId));
-  }
-
-  @Transactional
-  public UserCalendar getCurrentUserCalendar() {
-    UUID userId = CurrentUserHelper.getCurrentUserId();
-    return getUserCalendarInternal(userId);
   }
 
   @Transactional(readOnly = true)

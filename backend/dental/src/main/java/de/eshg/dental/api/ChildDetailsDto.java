@@ -5,6 +5,7 @@
 
 package de.eshg.dental.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.base.address.AddressDto;
@@ -12,9 +13,11 @@ import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,5 +43,14 @@ public record ChildDetailsDto(
     @Valid AddressDto differentBillingAddress,
     @NotNull int year,
     @NotNull String groupName,
-    @NotNull @Valid InstitutionDto institution,
-    @NotNull @Valid List<ExaminationDto> examinations) {}
+    @NotNull @Valid List<ExaminationDto> examinations,
+    @NotEmpty @Valid List<AnnualInstitutionDto> institutions) {
+
+  @JsonIgnore
+  public InstitutionDto getCurrentInstitution() {
+    return institutions.stream()
+        .max(Comparator.comparing(AnnualInstitutionDto::year))
+        .map(AnnualInstitutionDto::institution)
+        .orElseThrow();
+  }
+}

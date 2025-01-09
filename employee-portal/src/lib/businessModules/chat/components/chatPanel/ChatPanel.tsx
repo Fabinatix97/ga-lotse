@@ -61,7 +61,7 @@ export function ChatPanel({
   const [alert, setAlert] = useState<AlertProps>();
   const selectedRoom = matrixClient.getRoom(roomId ?? undefined);
   const roomWithCommunicationType = selectedRoom
-    ? getRoomNameAndCommunicationType(selectedRoom)
+    ? getRoomNameAndCommunicationType(matrixClient, selectedRoom)
     : undefined;
   const directMessageRooms = getDMRooms(matrixClient, matrixClient.getUserId());
   const wasDMRoom = roomId && directMessageRooms?.includes(roomId);

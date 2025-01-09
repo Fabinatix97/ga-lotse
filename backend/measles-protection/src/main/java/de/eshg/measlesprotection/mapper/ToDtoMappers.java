@@ -5,8 +5,8 @@
 
 package de.eshg.measlesprotection.mapper;
 
-import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.FacilityDetails;
+import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
@@ -92,7 +92,7 @@ public final class ToDtoMappers {
   }
 
   private static List<FacilityContactPersonDto> toFacilityContactPersonsDto(
-      AddFacilityFileStateResponse facilityDto) {
+      GetFacilityFileStateResponse facilityDto) {
     return facilityDto.contactPersons().stream()
         .map(
             facilityContactPerson ->

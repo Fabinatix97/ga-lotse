@@ -5,10 +5,10 @@
 
 package de.eshg.measlesprotection.persistence.centralfile;
 
-import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
+import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.measlesprotection.api.MPFacilityTypeDto;
 
 public record FacilityData(
     MPFacilityTypeDto facilityType,
-    AddFacilityFileStateResponse facilityDto,
+    GetFacilityFileStateResponse facilityDto,
     String otherFacilityTypeInformation) {}

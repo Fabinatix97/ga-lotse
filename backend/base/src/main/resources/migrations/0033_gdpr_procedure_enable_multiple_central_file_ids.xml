@@ -1,0 +1,35 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1733849212413-1">
+    <createTable tableName="central_file_id_wrapper">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_central_file_id_wrapper"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="central_file_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="gdpr_procedure_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1733849212413-2">
+    <addForeignKeyConstraint baseColumnNames="gdpr_procedure_id" baseTableName="central_file_id_wrapper" constraintName="fk_central_file_id_wrapper_gdpr_procedure" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="gdpr_procedure" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1733849212413-3">
+    <dropColumn columnName="central_file_id" tableName="gdpr_procedure"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1733849212413-4">
+    <createIndex indexName="idx_central_file_id_wrapper_gdpr_procedure_id" tableName="central_file_id_wrapper">
+      <column name="gdpr_procedure_id"/>
+    </createIndex>
+  </changeSet>
+</databaseChangeLog>

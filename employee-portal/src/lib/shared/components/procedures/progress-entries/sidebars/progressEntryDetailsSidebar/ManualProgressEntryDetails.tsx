@@ -19,7 +19,6 @@ import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 import {
   ProgressEntriesContext,
-  useFilteredAndSortedRelatedEntries,
   useIsReadOnly,
   useProgressEntriesConfig,
 } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
@@ -229,9 +228,6 @@ function ManualProgressEntryDetailsTemplate({
   const { keyDocumentTypes } = useProgressEntriesConfig();
 
   const isReadOnly = useIsReadOnly();
-  const relatedEntries = useFilteredAndSortedRelatedEntries(
-    relatedKeyDocumentProgressEntries,
-  );
   const deletionProps = useDeletionProps();
   const DeleteProgressEntryModal = deletionProps.EntryModal;
   const { openEntryDeletionModal } = useContext(ProgressEntriesContext).action;
@@ -239,9 +235,11 @@ function ManualProgressEntryDetailsTemplate({
   const { keyDocumentVersion } = entry;
   const showNewerVersionHint =
     isDefined(keyDocumentVersion) &&
-    isDefined(relatedEntries) &&
-    relatedEntries.some(
-      (relatedEntry) => relatedEntry.keyDocumentVersion > keyDocumentVersion,
+    isDefined(relatedKeyDocumentProgressEntries) &&
+    relatedKeyDocumentProgressEntries.some(
+      (relatedEntry) =>
+        isDefined(relatedEntry.keyDocumentVersion) &&
+        relatedEntry.keyDocumentVersion > keyDocumentVersion,
     );
 
   return (
@@ -263,9 +261,12 @@ function ManualProgressEntryDetailsTemplate({
                 }
               />
               {showNewerVersionHint && <NewerVersionHint />}
-              {isDefined(relatedEntries) && relatedEntries.length > 0 && (
-                <AllKeyDocumentVersions relatedEntries={relatedEntries} />
-              )}
+              {isDefined(relatedKeyDocumentProgressEntries) &&
+                relatedKeyDocumentProgressEntries.length > 0 && (
+                  <AllKeyDocumentVersions
+                    relatedEntries={relatedKeyDocumentProgressEntries}
+                  />
+                )}
             </>
           ),
           end: elements.fileDescription,

@@ -4708,10 +4708,13 @@ components:
           type: string
         phoneNumber:
           type: string
+        salutation:
+          $ref: "#/components/schemas/Salutation"
         title:
           $ref: "#/components/schemas/Title"
       required:
       - contactType
+      - salutation
     ContactType:
       type: string
       enum:
@@ -5106,7 +5109,7 @@ components:
       type: object
       properties:
         facilityFileState:
-          $ref: "#/components/schemas/FacilityFileState"
+          $ref: "#/components/schemas/GetFacilityFileStateResponse"
         facilityType:
           $ref: "#/components/schemas/FacilityType"
       required:
@@ -5578,64 +5581,6 @@ components:
       required:
       - existingFacilities
       - importedFacility
-    FacilityFileState:
-      type: object
-      properties:
-        contactAddress:
-          oneOf:
-          - $ref: "#/components/schemas/DomesticAddress"
-          - $ref: "#/components/schemas/PostboxAddress"
-        contactPersons:
-          type: array
-          description: A list of contact persons of the Facility.
-          items:
-            $ref: "#/components/schemas/FacilityContactPerson"
-        dataOrigin:
-          $ref: "#/components/schemas/DataOrigin"
-        differentBillingAddress:
-          oneOf:
-          - $ref: "#/components/schemas/DomesticAddress"
-          - $ref: "#/components/schemas/PostboxAddress"
-        emailAddresses:
-          type: array
-          description: A list of email addresses of the Facility.
-          example: "['mail1@address.de','mail2@address.de','mail3@address.de']"
-          items:
-            type: string
-        id:
-          type: string
-          format: uuid
-          description: The Id of the Facility.
-          example: ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
-        name:
-          type: string
-          description: The name of the Facility.
-          example: Example Facility
-          maxLength: 300
-          minLength: 1
-        phoneNumbers:
-          type: array
-          description: A list of telephone numbers of the Facility.
-          example: "['+4912345678901','+4912345678902','+4912345678903']"
-          items:
-            type: string
-            maxLength: 23
-            minLength: 1
-        referenceVersion:
-          type: integer
-          format: int64
-          description: The version of referenceData that was present when the FileState
-            was created. Can be increased if a newer version is irrelevant for the
-            Procedure and the outdated flag shall be suppressed.
-          example: 1
-      required:
-      - contactPersons
-      - dataOrigin
-      - emailAddresses
-      - id
-      - name
-      - phoneNumbers
-      - referenceVersion
     FacilityForDuplicateReview:
       type: object
       properties:
@@ -6040,7 +5985,6 @@ components:
       - emailAddresses
       - id
       - name
-      - outdated
       - phoneNumbers
       - referenceVersion
     GetGdprDownloadPackagesInfoResponse:
@@ -7908,7 +7852,6 @@ components:
           format: uuid
       required:
       - createdAt
-      - duration
       - id
     ProcessedInboxProgressEntry:
       type: object

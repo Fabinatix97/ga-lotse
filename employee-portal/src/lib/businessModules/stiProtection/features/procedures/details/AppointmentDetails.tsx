@@ -52,10 +52,11 @@ export function AppointmentDetails({
     CREATE_APPOINTMENT_SEARCH_PARAM,
     "boolean",
   );
-  const [_isOpenEditAppointment, setIsOpenEditAppointment] = useSearchParam(
+
+  const [_editAppointmentType, setEditAppointmentType] = useSearchParam(
     EDIT_APPOINTMENT_SEARCH_PARAM,
-    "boolean",
   );
+
   const { openCancelDialog } = useConfirmationDialog();
   const tableControl = useTableControl({
     serverSideSorting: false,
@@ -81,8 +82,8 @@ export function AppointmentDetails({
     });
   }
 
-  function handleEditAppointment() {
-    setIsOpenEditAppointment(true);
+  function handleEditAppointment(appointmentType: string) {
+    setEditAppointmentType(appointmentType);
   }
 
   return (
@@ -125,7 +126,7 @@ const columnHelper = createColumnHelper<ApiAppointmentHistoryEntry>();
 function appointmentDetailsColumns(
   _procedure: ApiStiProtectionProcedure,
   onCancelAppointment: () => void,
-  onEditAppointment: () => void,
+  onEditAppointment: (appointmentType: string) => void,
 ) {
   function createActionButtons(
     appointmentHistoryEntry: ApiAppointmentHistoryEntry,
@@ -134,7 +135,8 @@ function appointmentDetailsColumns(
       ? [
           {
             label: "Termin ändern",
-            onClick: onEditAppointment,
+            onClick: () =>
+              onEditAppointment(appointmentHistoryEntry.appointmentType),
             startDecorator: <EditCalendar />,
           },
           {

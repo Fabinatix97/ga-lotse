@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiBaseFeature } from "@eshg/citizen-portal-api/base";
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Box, Stack, Typography, styled } from "@mui/joy";
 
+import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { useRoutes } from "@/lib/baseModule/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 import { MobileBreakpoint, byBreakpoint } from "@/lib/shared/breakpoints";
@@ -46,6 +48,9 @@ function FooterLink({ children, href }: FooterLinkProps) {
 export function Footer(props: DepartmentInfoProps) {
   const { t } = useTranslation("footer");
   const routes = useRoutes();
+  const isGdprFeatureEnabled = useIsNewFeatureEnabled(
+    ApiBaseFeature.GdprOnlinePortal,
+  );
 
   return (
     <Box
@@ -75,6 +80,11 @@ export function Footer(props: DepartmentInfoProps) {
           <FooterLink href={routes.privacyPolicy}>
             {t("privacy_policy_link")}
           </FooterLink>
+          {isGdprFeatureEnabled && (
+            <FooterLink href={routes.data_privacy_rights}>
+              {t("data_privacy_rights_link")}
+            </FooterLink>
+          )}
           <FooterLink href={routes.accessibility}>
             {t("accessibility_link")}
           </FooterLink>

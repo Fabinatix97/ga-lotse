@@ -5,7 +5,10 @@
 
 "use client";
 
-import { GetProcedureOverviewRequest } from "@eshg/employee-portal-api/medicalRegistry";
+import {
+  GetProcedureOverviewRequest,
+  MedicalRegistryApi,
+} from "@eshg/employee-portal-api/medicalRegistry";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
@@ -13,18 +16,20 @@ import { useMedicalRegistryApi } from "@/lib/businessModules/medicalRegistry/api
 
 import { medicalRegistryApiQueryKey } from "./apiQueryKeys";
 
-export function useGetMedicalRegistryProcedureOverviewQuery(
-  request: GetProcedureOverviewRequest | string,
+export function getMedicalRegistrySearchQuery(
+  medicalRegistryApi: MedicalRegistryApi,
+  searchQuery: string,
 ) {
-  const medicalRegistryApi = useMedicalRegistryApi();
+  return queryOptions({
+    queryFn: () => medicalRegistryApi.searchProcedures1(searchQuery),
+    queryKey: medicalRegistryApiQueryKey(["searchProcedures", searchQuery]),
+  });
+}
 
-  if (typeof request === "string") {
-    return queryOptions({
-      queryFn: () => medicalRegistryApi.searchProcedures1(request),
-      queryKey: medicalRegistryApiQueryKey(["searchProcedures", request]),
-    });
-  }
-
+export function getMedicalRegistryOverviewQuery(
+  medicalRegistryApi: MedicalRegistryApi,
+  request: GetProcedureOverviewRequest,
+) {
   return queryOptions({
     queryFn: () =>
       medicalRegistryApi

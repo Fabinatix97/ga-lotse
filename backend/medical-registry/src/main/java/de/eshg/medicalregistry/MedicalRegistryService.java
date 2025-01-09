@@ -178,7 +178,7 @@ public class MedicalRegistryService {
     }
   }
 
-  public MedicalRegistryProcedure confirmProcedure(
+  public MedicalRegistryEntry confirmProcedure(
       MedicalRegistryEntryChange draftMedicalRegistryEntry,
       ProfessionalReferencePersonDto professionalReferencePerson,
       PracticeReferenceFacilityDto practiceReferenceFacility,
@@ -186,29 +186,29 @@ public class MedicalRegistryService {
     log.info(
         "Confirming draft medical registry entry {}", draftMedicalRegistryEntry.getExternalId());
 
-    MedicalRegistryEntry medicalRegistryProcedure =
+    MedicalRegistryEntry medicalRegistryEntry =
         Optional.ofNullable(mergeTarget).orElseGet(this::createMedicalRegistryEntry);
 
-    copyValuesFromDraft(draftMedicalRegistryEntry, medicalRegistryProcedure);
+    copyValuesFromDraft(draftMedicalRegistryEntry, medicalRegistryEntry);
 
     updateOrConfirmProfessional(
         draftMedicalRegistryEntry.getProfessional(),
-        medicalRegistryProcedure,
+        medicalRegistryEntry,
         professionalReferencePerson);
 
     updateOrConfirmPractice(
         draftMedicalRegistryEntry.getRelatedFacilities(),
-        medicalRegistryProcedure,
+        medicalRegistryEntry,
         practiceReferenceFacility);
 
-    updateProfessionInformation(draftMedicalRegistryEntry, medicalRegistryProcedure);
+    updateProfessionInformation(draftMedicalRegistryEntry, medicalRegistryEntry);
 
     if (DEREGISTRATION_TYPE_OF_CHANGES.contains(draftMedicalRegistryEntry.getTypeOfChange())) {
-      medicalRegistryProcedure.updateProcedureStatus(ProcedureStatus.CLOSED, clock, auditLogger);
+      medicalRegistryEntry.updateProcedureStatus(ProcedureStatus.CLOSED, clock, auditLogger);
     }
 
     if (mergeTarget == null) {
-      medicalRegistryProcedureRepository.save(medicalRegistryProcedure);
+      medicalRegistryProcedureRepository.save(medicalRegistryEntry);
     }
 
     log.info(
@@ -216,7 +216,7 @@ public class MedicalRegistryService {
         draftMedicalRegistryEntry.getExternalId());
     procedureDeletionService.deleteAndWriteToCemetery(draftMedicalRegistryEntry);
 
-    return medicalRegistryProcedure;
+    return medicalRegistryEntry;
   }
 
   private void updateProfessionInformation(

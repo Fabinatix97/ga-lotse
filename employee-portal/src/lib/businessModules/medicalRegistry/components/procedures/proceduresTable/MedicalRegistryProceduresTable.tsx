@@ -10,13 +10,19 @@ import {
   ApiApplicantAddress,
   ApiMedicalRegistryEntry,
 } from "@eshg/employee-portal-api/medicalRegistry";
+import { professionalTitleNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useSearchParams } from "next/navigation";
 import { useReducer } from "react";
+import { isDefined } from "remeda";
 
-import { useGetMedicalRegistryProcedureOverviewQuery } from "@/lib/businessModules/medicalRegistry/api/queries/medicalRegistryEntries";
+import { useMedicalRegistryApi } from "@/lib/businessModules/medicalRegistry/api/clients";
+import {
+  getMedicalRegistryOverviewQuery,
+  getMedicalRegistrySearchQuery,
+} from "@/lib/businessModules/medicalRegistry/api/queries/medicalRegistryEntries";
 import { MedicalRegistryProcedureChip } from "@/lib/businessModules/medicalRegistry/components/procedures/MedicalRegistryProcedureChip";
 import {
   getMedicalRegistryEntryFilters,
@@ -64,12 +70,26 @@ function getProceduresColumns() {
         },
       },
     }),
+    columnHelper.accessor("professionalTitle", {
+      header: "Berufsbezeichnung",
+      cell: (props) => {
+        const title = props.getValue();
+        return isDefined(title) && professionalTitleNames[title];
+      },
+      enableSorting: false,
+      meta: {
+        width: 180,
+        canNavigate: {
+          parentRow: true,
+        },
+      },
+    }),
     columnHelper.accessor("dateOfBirth", {
       header: "Geburtsdatum",
       cell: ({ getValue }) => formatDate(getValue()),
       enableSorting: false,
       meta: {
-        width: 180,
+        width: 150,
         canNavigate: {
           parentRow: true,
         },
@@ -91,7 +111,7 @@ function getProceduresColumns() {
       cell: ({ getValue }) => (getValue() ? "Ja" : "Nein"),
       enableSorting: false,
       meta: {
-        width: 270,
+        width: 210,
         canNavigate: {
           parentRow: true,
         },
@@ -151,13 +171,17 @@ export function MedicalRegistryProceduresTable() {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("name") ?? "";
 
-  const proceduresQuery = useGetMedicalRegistryProcedureOverviewQuery(
+  const medicalRegistryApi = useMedicalRegistryApi();
+
+  const proceduresQuery =
     activePanel === "entrySearch"
-      ? searchQuery
-      : {
+      ? getMedicalRegistrySearchQuery(medicalRegistryApi, searchQuery)
+      : getMedicalRegistryOverviewQuery(medicalRegistryApi, {
           ...getMedicalRegistryEntryFilters(filterSettings.activeValues),
-        },
-  );
+          pageSize: tableControl.paginationProps.pageSize,
+          pageNumber: tableControl.paginationProps.pageNumber,
+        });
+
   const gdprBannerQuery = useGetGdprValidationBannerQuery(
     ApiBusinessModule.MedicalRegistry,
   );
@@ -193,14 +217,15 @@ export function MedicalRegistryProceduresTable() {
         )
       }
     >
-      {" "}
       <TableSheet
         loading={isLoading}
         footer={
-          <Pagination
-            totalCount={totalElements}
-            {...tableControl.paginationProps}
-          />
+          activePanel !== "entrySearch" && (
+            <Pagination
+              totalCount={totalElements}
+              {...tableControl.paginationProps}
+            />
+          )
         }
       >
         <DataTable

@@ -89,8 +89,8 @@ public class ReviewService {
         facilityClient.getFacilityFileStates(fileStateIds.stream().toList()).stream()
             .collect(
                 toMap(
-                    AddFacilityFileStateResponse::id,
-                    AddFacilityFileStateResponse::name,
+                    GetFacilityFileStateResponse::id,
+                    GetFacilityFileStateResponse::name,
                     (v1, v2) -> v1));
 
     String inspectionTitle = mapIdToName.getOrDefault(inspection.getCentralFileStateId(), "");

@@ -123,7 +123,6 @@ function AltAppointmentList<T extends Appointment>({
   appointments,
   onAppointmentSelected,
   label,
-  description,
 }: AppointmentListProps<T>) {
   const hasAppointments = appointments.length > 0;
   if (!hasAppointments || !date) {
@@ -147,7 +146,6 @@ function AltAppointmentList<T extends Appointment>({
         wrap
         size="sm"
         sx={{ marginBottom: "16px", gap: "8px", padding: 0 }}
-        aria-description={description}
       >
         {appointments.map((apt) => {
           const isSelected = field.input.value === apt;

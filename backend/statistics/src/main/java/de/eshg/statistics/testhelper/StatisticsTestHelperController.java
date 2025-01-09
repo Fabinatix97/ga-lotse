@@ -68,9 +68,6 @@ public class StatisticsTestHelperController extends TestHelperController
   public UUID createEvaluation(
       @PathVariable("businessModuleName") String businessModuleName,
       @PathVariable("anonymized") boolean anonymized) {
-    if (!statisticsFeatureToggle.isNewFeatureEnabled(StatisticsFeature.FAKE_ANONYMIZATION)) {
-      statisticsFeatureToggle.enableNewFeature(StatisticsFeature.FAKE_ANONYMIZATION);
-    }
     return switch (businessModuleName) {
       case "SCHOOL_ENTRY" -> statisticsPopulator.addEvaluationSchoolEntry(anonymized);
       case "INSPECTION" -> statisticsPopulator.addEvaluationInspection(anonymized);

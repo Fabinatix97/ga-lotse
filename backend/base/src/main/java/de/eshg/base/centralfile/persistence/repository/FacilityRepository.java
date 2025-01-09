@@ -42,6 +42,8 @@ public interface FacilityRepository
 
   List<Facility> findAllByExternalIdInAndReferenceFacilityIsNotNullOrderById(Collection<UUID> ids);
 
+  List<Facility> findAllByExternalIdInAndReferenceFacilityIsNullOrderById(Collection<UUID> ids);
+
   @Query("select f.referenceFacility from Facility f where f.externalId = :fileStateIdExternalId")
   Optional<Facility> findReferenceFacilityByFileStateExternalId(UUID fileStateIdExternalId);
 
@@ -77,8 +79,9 @@ public interface FacilityRepository
       "select f from Facility f left join fetch f.contactPersons where f in :facilities order by f.id")
   List<Facility> findAllInOrderByIdJoinFetchingContactPersons(List<Facility> facilities);
 
-  default List<Facility> findAllByExternalIdInAndReferenceFacilityIsNotNullOrderByIdWithJoinFetches(
-      List<UUID> ids) {
+  default List<Facility>
+      findAllFetchingReferenceByExternalIdInAndReferenceFacilityIsNotNullOrderByIdWithJoinFetches(
+          List<UUID> ids) {
     List<Facility> facilities =
         findAllByExternalIdInAndReferenceFacilityIsNotNullOrderByIdJoinFetchingEmailAddressesContactAddressAndDifferentBillingAddress(
             ids);
@@ -89,12 +92,36 @@ public interface FacilityRepository
 
   @Query(
       """
+        select f from Facility f
+        left join fetch f.contactPersons
+        left join fetch f.referenceFacility
+        left join fetch f.referenceFacility.contactAddress
+        left join fetch f.referenceFacility.differentBillingAddress
+        where f in :facilities
+        order by f.id
+        """)
+  List<Facility> findAllInOrderByIdJoinFetchingContactPersonsReferenceFacility(
+      List<Facility> facilities);
+
+  default List<Facility> findAllByExternalIdInAndReferenceFacilityIsNotNullOrderByIdWithJoinFetches(
+      List<UUID> ids) {
+    List<Facility> facilities =
+        findAllByExternalIdInAndReferenceFacilityIsNotNullOrderByIdJoinFetchingEmailAddressesContactAddressAndDifferentBillingAddress(
+            ids);
+    facilities = findAllInOrderByIdJoinFetchingPhoneNumbers(facilities);
+    facilities = findAllInOrderByIdJoinFetchingContactPersonsReferenceFacility(facilities);
+    return facilities;
+  }
+
+  @Query(
+      """
     select fileState.externalId from Facility fileState
     join Facility ref on fileState.referenceFacility.id = ref.id
-    where ref.externalId = :refExternalId
+    where ref.externalId in :refExternalIds
     order by fileState.id
     """)
-  List<UUID> findAllFileStateIdsByReferenceFacility(@Param("refExternalId") UUID refExternalId);
+  List<UUID> findAllFileStateIdsByReferenceFacility(
+      @Param("refExternalIds") List<UUID> refExternalIds);
 
   @Transactional
   @Modifying

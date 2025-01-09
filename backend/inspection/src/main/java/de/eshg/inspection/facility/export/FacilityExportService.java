@@ -5,7 +5,7 @@
 
 package de.eshg.inspection.facility.export;
 
-import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
+import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.inspection.facility.FacilityMapper;
 import de.eshg.inspection.facility.FacilityService;
 import de.eshg.inspection.facility.persistence.Facility;
@@ -54,7 +54,7 @@ public class FacilityExportService {
     List<Facility> facilities =
         facilityRepository.findAllByBannedTrueOrderByLastInspectedAscIdAsc();
 
-    Map<UUID, AddFacilityFileStateResponse> baseFacilityMap =
+    Map<UUID, GetFacilityFileStateResponse> baseFacilityMap =
         facilityService.fetchCentralFileData(extractCentralFileStateIds(facilities));
 
     return FacilityMapper.mapFacilitiesToExportedBannedFacility(

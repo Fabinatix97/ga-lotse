@@ -63,7 +63,7 @@ public class FacilityClient {
         () -> facilityApi.getFacilityFileStateIdsWithSameReferenceFacility(id).fileStateIds());
   }
 
-  public List<AddFacilityFileStateResponse> getFacilityFileStates(List<UUID> fileStateIds) {
+  public List<GetFacilityFileStateResponse> getFacilityFileStates(List<UUID> fileStateIds) {
     return getFacilityFileStatesWithNotFound(fileStateIds).facilityFileStates();
   }
 

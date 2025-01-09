@@ -24,6 +24,7 @@ export interface EvaluationTemplateWithUserInfo extends EvaluationTemplate {
   userId: string;
   analysisCount: number;
   user: ApiUser | undefined;
+  userMayCreateEvaluation: boolean;
 }
 
 export interface EvaluationTemplateFromRepository extends EvaluationTemplate {

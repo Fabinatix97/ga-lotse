@@ -8,9 +8,12 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useEvaluationTemplateApi } from "@/lib/businessModules/statistics/api/clients";
 import { mapAttributesToLabels } from "@/lib/businessModules/statistics/api/mapper/mapAttributesToLabels";
-import { mapDataSourceSensitivityApiToFrontend } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
+import { mapToAnonymizationOptions } from "@/lib/businessModules/statistics/api/models/anonymizationOptions";
 import { EvaluationTemplateDetails } from "@/lib/businessModules/statistics/api/models/evaluationTemplateDetails";
 import { evaluationTemplateApiQueryKey } from "@/lib/businessModules/statistics/api/queries/apiQueryKeys";
+import { userMayCreateEvaluationFromTemplate } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplatesOverview";
+
+import { mapTemplateDataSourceSensitivityApiToFrontend } from "./useGetEvaluationTemplatesOverview";
 
 export function mapToEvaluationTemplateDetails(
   result: ApiEvaluationTemplate,
@@ -19,8 +22,13 @@ export function mapToEvaluationTemplateDetails(
     name: result.name,
     description: result.description,
     dataSourceName: result.dataSources[0]!.dataSourceName,
-    dataSourceSensitivity: mapDataSourceSensitivityApiToFrontend(
+    dataSourceSensitivity: mapTemplateDataSourceSensitivityApiToFrontend(
       result.templateSensitivityInfo.sensitivity,
+    ),
+    userMayCreateEvaluation: userMayCreateEvaluationFromTemplate(
+      result.templateSensitivityInfo.sensitivity,
+      result.templateSensitivityInfo.sensitiveDataAllowed,
+      result.templateSensitivityInfo.canBeAnonymized,
     ),
     createdAt: result.createdAt,
     user: result.user,
@@ -31,8 +39,11 @@ export function mapToEvaluationTemplateDetails(
       name: it.name,
       diagramTitles: it.diagramTitles,
     })),
-    withoutAnonymizationAllowed:
-      result.templateSensitivityInfo.sensitiveDataAllowed,
+    anonymizationOptions: mapToAnonymizationOptions({
+      canBeAnonymized: result.templateSensitivityInfo.canBeAnonymized,
+      dataSourceSensitivity: result.templateSensitivityInfo.sensitivity,
+      sensitiveDataAllowed: result.templateSensitivityInfo.sensitiveDataAllowed,
+    }),
   };
 }
 

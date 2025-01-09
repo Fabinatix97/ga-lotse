@@ -74,7 +74,7 @@ public class ExaminationController {
   }
 
   @PutMapping("/laboratory-test")
-  @Operation(summary = "Updated all external laboratory tests.")
+  @Operation(summary = "Update all external laboratory tests.")
   @Transactional
   public void updateLaboratoryTestExamination(
       @PathVariable("procedureId") UUID procedureId,

@@ -5,19 +5,15 @@
 
 "use client";
 
-import {
-  ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner,
-  ApiProcedureStatus,
-} from "@eshg/employee-portal-api/businessProcedures";
+import { ApiProcedureStatus } from "@eshg/employee-portal-api/businessProcedures";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { createContext, useContext, useState } from "react";
-import { isDefined } from "remeda";
 
 import { buildName } from "@/lib/shared/components/procedures/progress-entries/helper";
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
-import { ProgressEntriesConfig, RelatedProgressEntry } from "./types";
+import { ProgressEntriesConfig } from "./types";
 
 interface ProgressEntriesContextProps {
   config: ProgressEntriesConfig;
@@ -137,25 +133,4 @@ export function useResolvedUserName(userId?: string) {
 
   const user = approvalRequestsResponse?.resolvedUsers?.[userId];
   return buildName(user?.firstName, user?.lastName);
-}
-
-export function useFilteredAndSortedRelatedEntries(
-  relatedKeyDocumentProgressEntries: ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner[],
-) {
-  return relatedKeyDocumentProgressEntries
-    .filter(hasUndeletedFileAndKeyDocumentVersion)
-    .toSorted(
-      (entry1, entry2) => entry2.keyDocumentVersion - entry1.keyDocumentVersion,
-    );
-}
-
-function hasUndeletedFileAndKeyDocumentVersion(
-  entry: ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner,
-): entry is RelatedProgressEntry {
-  return (
-    isDefined(entry.fileReference) &&
-    !entry.fileReference.deleted &&
-    entry.fileReference.type !== "GenericFileReference" &&
-    isDefined(entry.keyDocumentVersion)
-  );
 }

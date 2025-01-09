@@ -52,8 +52,8 @@ function mapSchoolFormValues(
 ): ImportSchoolListRequest {
   return {
     ...mapCitizenFormValues(values),
-    schoolId: mapRequiredValue(values.schoolId),
-    locationId: mapOptionalValue(values.locationId),
+    schoolId: mapRequiredValue(values.school).id,
+    locationId: mapOptionalValue(values.location)?.id,
   };
 }
 
@@ -62,6 +62,6 @@ function mapPastProcedureFormValues(
 ): ImportPastProcedureListRequest {
   return {
     ...mapCitizenFormValues(values),
-    schoolId: mapRequiredValue(values.schoolId),
+    schoolId: mapRequiredValue(values.school).id,
   };
 }

@@ -16,7 +16,12 @@
   "health_department_title": "Gesundheitsamt",
   "most_searched_services_title": "Meistgesuchte Services",
   "common": {
+    "email": "E-Mail",
+    "phone": "Telefon",
     "address": "Adresse",
+    "contact": "Kontakt",
+    "different_billing_address": "Abweichende Rechnungsadresse",
+    "contact_person": "Kontaktperson",
     "affectedPerson_one": "Betroffene Person",
     "affectedPerson_other": "Betroffene Personen",
     "back": "Zurück",
@@ -27,11 +32,15 @@
     "custodian_one": "Sorgeberechtigte Person",
     "custodian_other": "Sorgeberechtigte Personen",
     "facility": "Einrichtung",
+    "organization_profile": "Unternehmensprofil",
+    "individual_profile": "Mein Profil",
+    "personal_data": "Persönliche Daten",
     "name": "Name",
     "overview": "Übersicht",
     "person_one": "Person",
     "person_other": "Personen",
-    "page_loading": "Seite wird geladen…"
+    "page_loading": "Seite wird geladen…",
+    "leave": "Mein Bereich verlassen"
   },
   "gender": {
     "not_specified": "Keine Angabe",
@@ -63,5 +72,33 @@
   },
   "error": {
     "title": "Fehler beim Laden"
+  },
+  "address": {
+    "street_and_housenumber": "Straße und Haus Nr.",
+    "address_addition": "Adresszusatz",
+    "postbox": "Postfachnummer",
+    "postal_code": "Postleitzahl",
+    "city": "Ort",
+    "country": "Land"
+  },
+  "person": {
+    "title": "Titel",
+    "salutation": "Anrede",
+    "first_name": "Vorname",
+    "last_name": "Name",
+    "gender": "Geschlecht",
+    "date_of_birth": "Geburtsdatum",
+    "name_at_birth": "Geburtsname",
+    "place_of_birth": "Geburtsort",
+    "country_of_birth": "Geburtsland"
+  },
+  "facility": {
+    "contact_person": {
+      "title": "Titel",
+      "salutation": "Anrede",
+      "role": "Rolle",
+      "first_name": "Vorname",
+      "last_name": "Name"
+    }
   }
 }

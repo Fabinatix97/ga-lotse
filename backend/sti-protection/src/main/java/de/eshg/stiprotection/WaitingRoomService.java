@@ -6,10 +6,10 @@
 package de.eshg.stiprotection;
 
 import de.eshg.base.SortDirection;
+import de.eshg.base.citizenuser.CitizenAccessCodeUserApi;
 import de.eshg.stiprotection.api.waitingroom.WaitingRoomProcedurePaginationAndSortParameters;
 import de.eshg.stiprotection.api.waitingroom.WaitingRoomSortKey;
 import de.eshg.stiprotection.mapper.waitingroom.WaitingRoomMapper;
-import de.eshg.stiprotection.persistence.anonymoususer.AnonymousUserClient;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedureRepository;
 import de.eshg.stiprotection.persistence.db.waitingroom.WaitingRoom;
@@ -26,15 +26,15 @@ public class WaitingRoomService {
 
   private final StiProtectionProcedureService stiProtectionProcedureService;
   private final StiProtectionProcedureRepository stiProtectionProcedureRepository;
-  private final AnonymousUserClient anonymousUserClient;
+  private final CitizenAccessCodeUserApi citizenAccessCodeUserApi;
 
   public WaitingRoomService(
       StiProtectionProcedureService stiProtectionProcedureService,
       StiProtectionProcedureRepository stiProtectionProcedureRepository,
-      AnonymousUserClient anonymousUserClient) {
+      CitizenAccessCodeUserApi citizenAccessCodeUserApi) {
     this.stiProtectionProcedureService = stiProtectionProcedureService;
     this.stiProtectionProcedureRepository = stiProtectionProcedureRepository;
-    this.anonymousUserClient = anonymousUserClient;
+    this.citizenAccessCodeUserApi = citizenAccessCodeUserApi;
   }
 
   public Page<StiProtectionProcedure> getWaitingRoomProcedures(
@@ -51,7 +51,9 @@ public class WaitingRoomService {
   }
 
   public String getAccessCode(StiProtectionProcedure procedure) {
-    return anonymousUserClient.getAccessCode(procedure.getPerson().getAnonymousUserId());
+    return citizenAccessCodeUserApi
+        .getCitizenAccessCodeUser(procedure.getPerson().getAnonymousUserId())
+        .accessCode();
   }
 
   public WaitingRoom getOrCreateWaitingRoom(UUID procedureId) {

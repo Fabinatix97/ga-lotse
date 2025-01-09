@@ -25,6 +25,7 @@ import de.eshg.lib.procedure.domain.repository.FileRepository;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
 import de.eshg.lib.procedure.helper.UserHelper;
 import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import java.util.LinkedHashSet;
@@ -59,6 +60,7 @@ public class FileStorageService {
   File updateFileMetaData(UUID fileId, MetaData metaData) {
     File file = findFileForModificationOrThrow(fileId);
     validateNotAttachedToClosedProcedure(file);
+    validateEditorIsCreator(file);
 
     switch (file) {
       case Image image -> updateMetaData(image, metaData);
@@ -72,6 +74,13 @@ public class FileStorageService {
     fileRepository.flush();
 
     return file;
+  }
+
+  private void validateEditorIsCreator(File file) {
+    if (!CurrentUserHelper.getCurrentUserId().equals(file.getCreatedBy())) {
+      throw new BadRequestException(
+          ErrorCode.INSUFFICIENT_USER_RIGHTS, "Only file creators can edit metadata");
+    }
   }
 
   private void updateMetaData(Image image, MetaData metaData) {

@@ -9,7 +9,6 @@ import de.eshg.base.SortDirection;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.lib.statistics.api.DataRow;
 import de.eshg.lib.statistics.api.ValueOptionInternal;
-import de.eshg.lib.statistics.api.ValueType;
 import de.eshg.statistics.api.TableColumnHeader;
 import de.eshg.statistics.api.attributes.AbstractTableColumnHeaderAttribute;
 import de.eshg.statistics.api.attributes.BooleanAttribute;
@@ -34,6 +33,7 @@ import de.eshg.statistics.persistence.entity.Evaluation;
 import de.eshg.statistics.persistence.entity.MinMaxNullUnknownValues;
 import de.eshg.statistics.persistence.entity.StatisticsDataSensitivity;
 import de.eshg.statistics.persistence.entity.TableColumn;
+import de.eshg.statistics.persistence.entity.TableColumnValueType;
 import de.eshg.statistics.persistence.entity.TableRow;
 import de.eshg.statistics.persistence.entity.ValueToMeaning;
 import java.util.Collections;
@@ -118,7 +118,7 @@ public class EvaluationMapper {
   }
 
   private static AbstractTableColumnHeaderAttribute mapNonCentralFileIdAttribute(
-      ValueType valueType,
+      TableColumnValueType valueType,
       String attributeName,
       String attributeCode,
       String unit,
@@ -150,9 +150,6 @@ public class EvaluationMapper {
           new ValueWithOptionsAttribute(
               attributeName, attributeCode, mapMeaningsToApi(valueToMeanings));
       case PROCEDURE_ID -> new ProcedureIdAttribute(attributeName, attributeCode);
-      case CENTRAL_FILE_ID ->
-          throw new IllegalArgumentException(
-              "Value type %s not allowed for mapping".formatted(ValueType.CENTRAL_FILE_ID.name()));
     };
   }
 

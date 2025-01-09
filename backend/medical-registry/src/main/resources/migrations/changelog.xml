@@ -10,5 +10,6 @@
 
   <include file="migrations/0001_initial.xml"/>
   <include file="migrations/0002_invert_inbox_procedure_relationships.xml"/>
+  <include file="migrations/0003_add_salutation_inbox_procedure.xml"/>
 
 </databaseChangeLog>

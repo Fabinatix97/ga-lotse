@@ -15,6 +15,7 @@ import de.eshg.lib.procedure.domain.model.InboxProcedure;
 import de.eshg.lib.procedure.domain.model.InboxProcedureStatus;
 import de.eshg.lib.procedure.domain.model.InboxProgressEntry;
 import de.eshg.lib.procedure.domain.model.InboxProgressEntryType;
+import de.eshg.lib.procedure.domain.model.Salutation;
 import de.eshg.lib.procedure.domain.model.Title;
 import de.eshg.lib.procedure.model.AbstractFileReferenceDto;
 import de.eshg.lib.procedure.model.ContactDetailsDto;
@@ -26,6 +27,7 @@ import de.eshg.lib.procedure.model.InboxProcedureDto;
 import de.eshg.lib.procedure.model.InboxProcedureStatusDto;
 import de.eshg.lib.procedure.model.InboxProgressEntryDto;
 import de.eshg.lib.procedure.model.InboxProgressEntryTypeDto;
+import de.eshg.lib.procedure.model.SalutationDto;
 import de.eshg.lib.procedure.model.TitleDto;
 import java.time.Clock;
 import java.util.function.Function;
@@ -72,6 +74,7 @@ public final class InboxProcedureMapper {
 
   private static ContactDetails toDomainType(ContactDetailsDto contactDetails) {
     ContactDetails domainType = new ContactDetails();
+    domainType.setSalutation(toDomainType(contactDetails.salutation()));
     domainType.setContactType(toDomainType(contactDetails.contactType()));
     domainType.setFacilityName(contactDetails.facilityName());
     domainType.setFirstName(contactDetails.firstName());
@@ -82,6 +85,15 @@ public final class InboxProcedureMapper {
     domainType.setPhoneNumber(contactDetails.phoneNumber());
     domainType.addAddress(toDomainType(contactDetails.address()));
     return domainType;
+  }
+
+  private static Salutation toDomainType(SalutationDto salutation) {
+    return switch (salutation) {
+      case FEMALE -> Salutation.FEMALE;
+      case MALE -> Salutation.MALE;
+      case NEUTRAL -> Salutation.NEUTRAL;
+      case NOT_SPECIFIED -> Salutation.NOT_SPECIFIED;
+    };
   }
 
   private static ContactType toDomainType(ContactTypeDto contactType) {
@@ -166,6 +178,7 @@ public final class InboxProcedureMapper {
 
   private static ContactDetailsDto toInterfaceType(ContactDetails contactDetails) {
     return new ContactDetailsDto(
+        toInterfaceType(contactDetails.getSalutation()),
         toInterfaceType(contactDetails.getContactType()),
         contactDetails.getFacilityName(),
         contactDetails.getFirstName(),
@@ -175,6 +188,15 @@ public final class InboxProcedureMapper {
         contactDetails.getEmailAddress(),
         contactDetails.getPhoneNumber(),
         toInterfaceType(contactDetails.getAddress()));
+  }
+
+  private static SalutationDto toInterfaceType(Salutation salutation) {
+    return switch (salutation) {
+      case FEMALE -> SalutationDto.FEMALE;
+      case MALE -> SalutationDto.MALE;
+      case NOT_SPECIFIED -> SalutationDto.NOT_SPECIFIED;
+      case NEUTRAL -> SalutationDto.NEUTRAL;
+    };
   }
 
   private static ContactTypeDto toInterfaceType(ContactType contactType) {

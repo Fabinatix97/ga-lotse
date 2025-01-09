@@ -12,6 +12,7 @@ import java.time.LocalDate;
 
 @Schema(name = "ContactDetails")
 public record ContactDetailsDto(
+    @NotNull SalutationDto salutation,
     @NotNull ContactTypeDto contactType,
     String facilityName,
     String firstName,

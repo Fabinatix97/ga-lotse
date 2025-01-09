@@ -5,11 +5,14 @@
 
 "use client";
 
-import { ApiGetGdprProcedureResponse } from "@eshg/employee-portal-api/base";
+import {
+  ApiGdprProcedureStatus,
+  ApiGetGdprProcedureResponse,
+} from "@eshg/employee-portal-api/base";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { Chip } from "@mui/joy";
-import { createColumnHelper } from "@tanstack/react-table";
+import { CellContext, createColumnHelper } from "@tanstack/react-table";
 import { addMonths } from "date-fns";
 
 import { gdprProcedureStatusColor } from "@/lib/baseModule/components/gdpr/constants";
@@ -18,9 +21,6 @@ import {
   typeTranslation,
 } from "@/lib/baseModule/components/gdpr/i18n";
 import { formatDurationFromNowUntil } from "@/lib/shared/helpers/dateTime";
-
-// Art. 12 Abs. 3 DSGVO
-const gdprMaxDurationMonths = 1;
 
 const columnHelper = createColumnHelper<ApiGetGdprProcedureResponse>();
 export const columns = [
@@ -68,10 +68,7 @@ export const columns = [
     id: "dueDate",
     header: "Frist",
     enableSorting: false,
-    cell: (cell) =>
-      formatDurationFromNowUntil(
-        addMonths(cell.getValue(), gdprMaxDurationMonths),
-      ) ?? "Abgelaufen",
+    cell: (cell) => dueDate(cell),
     meta: {
       width: "20ch",
       canNavigate: {
@@ -91,3 +88,23 @@ export const columns = [
     },
   }),
 ];
+
+// Art. 12 Abs. 3 DSGVO
+const gdprMaxDurationMonths = 1;
+
+const closedStatus: ApiGdprProcedureStatus[] = [
+  ApiGdprProcedureStatus.Closed,
+  ApiGdprProcedureStatus.Aborted,
+];
+
+function dueDate(cell: CellContext<ApiGetGdprProcedureResponse, Date>) {
+  if (closedStatus.includes(cell.row.original.status)) {
+    return null;
+  }
+
+  return (
+    formatDurationFromNowUntil(
+      addMonths(cell.getValue(), gdprMaxDurationMonths),
+    ) ?? "Abgelaufen"
+  );
+}

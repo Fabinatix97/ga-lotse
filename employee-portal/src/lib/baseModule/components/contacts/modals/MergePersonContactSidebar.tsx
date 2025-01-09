@@ -9,6 +9,7 @@ import { useState } from "react";
 import { PersonContactCard } from "@/lib/baseModule/components/contacts/forms/card/PersonContactCard";
 import { MergePersonContactForm } from "@/lib/baseModule/components/contacts/forms/merge/MergePersonContactForm";
 import { SelectMergeTargetForm } from "@/lib/baseModule/components/contacts/forms/merge/SelectMergeTargetForm";
+import { useResetAlertContextOnChange } from "@/lib/shared/hooks/useResetAlertContextOnChange";
 import {
   SidebarWithFormRefProps,
   useSidebarWithFormRef,
@@ -42,6 +43,8 @@ export function MergePersonContactSidebar(
   const [state, setState] = useState<SidebarState>({
     stage: "select",
   });
+
+  useResetAlertContextOnChange(state.stage);
 
   if (state.stage === "select") {
     return (

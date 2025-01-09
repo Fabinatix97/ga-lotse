@@ -82,10 +82,6 @@ public class TableRowSpecifications {
       case INTEGER -> IntegerEntry_.INTEGER_VALUE;
       case TEXT, VALUE_WITH_OPTIONS -> TextEntry_.TEXT_VALUE;
       case PROCEDURE_ID -> UuidEntry_.UUID_VALUE;
-      case CENTRAL_FILE_ID ->
-          throw new IllegalStateException(
-              "Persisted central file id in %s"
-                  .formatted(tableColumn.getAggregationResult().getExternalId()));
     };
   }
 

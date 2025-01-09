@@ -3,14 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiStatisticsFeature } from "@eshg/employee-portal-api/statistics";
 import { parseISO } from "date-fns";
 import { useRouter } from "next/navigation";
 
+import { AnonymizationOptions } from "@/lib/businessModules/statistics/api/models/anonymizationOptions";
 import { useAddEvaluation } from "@/lib/businessModules/statistics/api/mutations/useAddEvaluation";
 import { useGetEvaluationTemplateDetails } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplateDetails";
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/statistics/api/queries/useStatisticsFeatureToggle";
-import { mapAnonymizedFieldValueToBoolean } from "@/lib/businessModules/statistics/components/evaluations/AnonymizedToggleButtonGroupField";
+import { mapAnonymizedFieldValueToBoolean } from "@/lib/businessModules/statistics/components/evaluations/AnonymizationConfiguration";
 import {
   ENUM_FALSE_VALUE,
   ENUM_TRUE_VALUE,
@@ -43,10 +42,6 @@ function CreateEvaluationFromTemplateSidebar(
 ) {
   const router = useRouter();
 
-  const fakeAnonymizationEnabled = useIsNewFeatureEnabled(
-    ApiStatisticsFeature.FakeAnonymization,
-  );
-
   const evaluationTemplateDetails = useGetEvaluationTemplateDetails(
     props.evaluationTemplateId,
   );
@@ -74,9 +69,11 @@ function CreateEvaluationFromTemplateSidebar(
       onSubmit={onSubmit}
       initialValues={{
         name: "",
-        anonymized: fakeAnonymizationEnabled
-          ? ENUM_TRUE_VALUE
-          : ENUM_FALSE_VALUE,
+        anonymized:
+          evaluationTemplateDetails.anonymizationOptions ===
+          AnonymizationOptions.NotAnonymizable
+            ? ENUM_FALSE_VALUE
+            : ENUM_TRUE_VALUE,
         timeSpan: getLastXMonthsTimeRange(3),
       }}
       formRef={props.formRef}

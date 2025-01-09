@@ -24,7 +24,7 @@ export function useGetMedicalHistoryQueryOptions(procedureId: string) {
         .catch((_error: Error) => {
           return null;
         }),
-    queryKey: stiProtectionApiQueryKey(["medicalHistory", procedureId]),
+    queryKey: stiProtectionApiQueryKey([procedureId, "medicalHistory"]),
   });
 }
 

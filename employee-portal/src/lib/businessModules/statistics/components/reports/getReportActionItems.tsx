@@ -7,20 +7,12 @@ import { Delete, Download, Edit, Share } from "@mui/icons-material";
 import { isDefined } from "remeda";
 
 import { ReportDataType } from "@/lib/businessModules/statistics/api/models/evaluationReports";
-import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { ActionsItem } from "@/lib/shared/components/buttons/ActionsMenu";
 
 type OptionalActionItem =
   | { type: "share"; action: () => Promise<void> }
   | { type: "update"; action: () => void }
   | { type: "export"; action: () => Promise<void> };
-
-export function getSharedURL(detailLinkId: string) {
-  return new URL(
-    routes.reports.details(detailLinkId).index,
-    window.location.origin,
-  ).href;
-}
 
 export interface DeleteReportOrSeries {
   deleteReportWithConfirmation: (reportId: string) => void;

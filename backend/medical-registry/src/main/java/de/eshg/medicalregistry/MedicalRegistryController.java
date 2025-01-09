@@ -13,8 +13,8 @@ import static de.eshg.medicalregistry.mapper.ProcedureMapper.mapToDto;
 import static de.eshg.rest.service.security.config.BaseUrls.MedicalRegistry.CITIZEN_PORTAL_ENDPOINT;
 
 import de.eshg.api.commons.InlineParameterObject;
-import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.FacilityDetails;
+import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.user.UserApi;
 import de.eshg.file.common.FileType;
@@ -41,6 +41,8 @@ import de.eshg.medicalregistry.domain.model.MedicalRegistryEntryChange;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryProcedure;
 import de.eshg.medicalregistry.domain.model.Professional;
 import de.eshg.medicalregistry.domain.model.TypeOfChange;
+import de.eshg.medicalregistry.featuretoggle.MedicalRegistryFeature;
+import de.eshg.medicalregistry.featuretoggle.MedicalRegistryFeatureToggle;
 import de.eshg.medicalregistry.mapper.EntryMapper;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
@@ -93,6 +95,7 @@ public class MedicalRegistryController {
   private final MedicalRegistryService medicalRegistryService;
   private final PersonService personService;
   private final FacilityService facilityService;
+  private final MedicalRegistryFeatureToggle featureToggle;
   private final MedicalRegistryGuard medicalRegistryGuard;
   private final Validator validator;
   private final AuditLogger auditLogger;
@@ -103,6 +106,7 @@ public class MedicalRegistryController {
       MedicalRegistryService medicalRegistryService,
       PersonService personService,
       FacilityService facilityService,
+      MedicalRegistryFeatureToggle featureToggle,
       MedicalRegistryGuard medicalRegistryGuard,
       Validator validator,
       AuditLogger auditLogger,
@@ -111,6 +115,7 @@ public class MedicalRegistryController {
     this.medicalRegistryService = medicalRegistryService;
     this.personService = personService;
     this.facilityService = facilityService;
+    this.featureToggle = featureToggle;
     this.medicalRegistryGuard = medicalRegistryGuard;
     this.validator = validator;
     this.auditLogger = auditLogger;
@@ -208,6 +213,8 @@ public class MedicalRegistryController {
       @RequestPart(name = REQUEST_PARAM_NAME_OTHER_RELEVANT_DOCUMENTS, required = false)
           @Size(max = MAX_OTHER_RELEVANT_DOCUMENTS)
           List<MultipartFile> otherRelevantDocuments) {
+
+    featureToggle.assertNewFeatureIsEnabled(MedicalRegistryFeature.CITIZEN_PORTAL_ENABLED);
 
     medicalRegistryGuard.guard();
 
@@ -352,7 +359,7 @@ public class MedicalRegistryController {
         facilityService
             .findPracticeDetails(medicalRegistryProcedure.getRelatedFacilities())
             .stream()
-            .collect(Collectors.toMap(AddFacilityFileStateResponse::id, facility -> facility));
+            .collect(Collectors.toMap(GetFacilityFileStateResponse::id, facility -> facility));
 
     auditLogProcedureDetailAccess(procedureId);
 

@@ -4,27 +4,23 @@
  */
 
 import {
+  ApiAppointmentType,
   ApiConcern,
-  ApiStiProtectionProcedure,
 } from "@eshg/employee-portal-api/stiProtection";
 import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { COUNTRY_CODE_LABELS } from "@eshg/lib-portal/components/formFields/countryCodes";
+import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
 import { EditOutlined } from "@mui/icons-material";
 import { Divider, IconButton, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
-import { ReactNode, useId, useMemo } from "react";
+import { ReactNode, useId } from "react";
 
-import { CreateAppointmentForm } from "@/lib/businessModules/stiProtection/features/procedures/details/CreateAppointmentSidebar";
-import {
-  APPOINTMENT_TYPES,
-  CONCERN_VALUES,
-} from "@/lib/businessModules/stiProtection/shared/constants";
-import { getOpenAppointmentsFromProcedure } from "@/lib/businessModules/stiProtection/shared/helpers";
+import { APPOINTMENT_TYPES } from "@/lib/businessModules/stiProtection/shared/constants";
+import { concernToAppointmentType } from "@/lib/businessModules/stiProtection/shared/helpers";
 
-import {
-  AddNewProcedureForm,
-  getAppointmentDate,
-} from "./AddNewProcedureSidebar";
+import { getAppointmentDate } from "./AddNewProcedureSidebar";
+import { CombinedAppointmentForm } from "./AppointmentForm";
 
 const germanDateFormatter = Intl.DateTimeFormat("de-DE", {
   day: "2-digit",
@@ -34,23 +30,24 @@ const germanDateFormatter = Intl.DateTimeFormat("de-DE", {
 const germanTimeFormatter = Intl.DateTimeFormat("de-DE", {
   timeStyle: "short",
 });
-export interface SummaryFormProps {
+export interface AppointmentFieldSetProps {
   jumpToAppointmentSelection: () => void;
   jumpToPersonalData?: () => void;
+  startingConcern?: ApiConcern;
+  editAppointmentType?: ApiAppointmentType;
+}
+
+export interface SummaryFormProps extends AppointmentFieldSetProps {
   appointmentSummary?: {
     title: string;
   };
-  mode?: "addNewProcedure" | "createAppointment" | "editAppointment";
-  procedure?: ApiStiProtectionProcedure;
   show?: {
     appointment?: boolean;
     personalData?: boolean;
   };
 }
 
-function formatAppointmentDate(
-  form: AddNewProcedureForm | CreateAppointmentForm,
-) {
+function formatAppointmentDate(form: CombinedAppointmentForm) {
   const date = getAppointmentDate(form);
   if (!date) {
     return;
@@ -64,34 +61,17 @@ export function SummaryForm({
   appointmentSummary = {
     title: "Termin",
   },
-  mode = "addNewProcedure",
-  procedure,
+  startingConcern,
+  editAppointmentType,
   show = {
     personalData: true,
   },
 }: SummaryFormProps) {
-  const { values } = useFormikContext<
-    AddNewProcedureForm | CreateAppointmentForm
-  >();
+  const { values } = useFormikContext<CombinedAppointmentForm>();
   const dateAndTime = formatAppointmentDate(values);
-  const appointmentTypeValue = useMemo(() => {
-    let appointmentType = "";
-
-    if (procedure && mode !== "addNewProcedure") {
-      if (values.appointmentType && mode === "createAppointment") {
-        appointmentType = APPOINTMENT_TYPES[values.appointmentType];
-      } else {
-        const [openAppointment] = getOpenAppointmentsFromProcedure(procedure);
-
-        if (openAppointment) {
-          appointmentType = APPOINTMENT_TYPES[openAppointment?.appointmentType];
-        }
-      }
-    } else if (values.concern) {
-      appointmentType = CONCERN_VALUES[values.concern as ApiConcern];
-    }
-    return appointmentType;
-  }, [mode, procedure, values.appointmentType, values.concern]);
+  const concern = mapOptionalValue(values.concern) ?? startingConcern;
+  const appointmentType =
+    editAppointmentType ?? ifDefined(concern, concernToAppointmentType);
 
   return (
     <Stack gap={2}>
@@ -103,7 +83,10 @@ export function SummaryForm({
         }}
         title={appointmentSummary.title}
       />
-      <LabelValuePair label="Terminart" value={appointmentTypeValue} />
+      <LabelValuePair
+        label="Terminart"
+        value={ifDefined(appointmentType, (t) => APPOINTMENT_TYPES[t])}
+      />
       <LabelValuePair label="Datum und Zeit" value={dateAndTime} />
 
       {show.personalData && "gender" in values && (

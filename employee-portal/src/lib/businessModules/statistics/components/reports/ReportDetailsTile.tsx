@@ -11,22 +11,23 @@ import { isNonNullish } from "remeda";
 import { simpleToolbarHeight } from "@/lib/baseModule/components/layout/sizes";
 import { useHeaderHeights } from "@/lib/baseModule/components/layout/useHeaderHeights";
 import { useExportReportData } from "@/lib/businessModules/statistics/api/downloads/useExportReportData";
+import {
+  DataSourceSensitivity,
+  translateDataSourceSensitivity,
+} from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import { ReportDataType } from "@/lib/businessModules/statistics/api/models/evaluationReports";
 import { useUpdateReportSidebar } from "@/lib/businessModules/statistics/components/evaluations/details/reports/UpdateReportSidebar/UpdateReportSidebar";
-import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
 import { useDeleteWithConfirmation } from "@/lib/businessModules/statistics/components/reports/useDeleteWithConfirmation";
+import { getSharedURL } from "@/lib/businessModules/statistics/components/shared/getSharedURL";
 import { useDataExportGuard } from "@/lib/businessModules/statistics/components/shared/hooks/useDataExportGuard";
+import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { LabelValuePair } from "@/lib/shared/components/infoTile/LabelValuePair";
 import { formatDateRangeNumeric } from "@/lib/shared/helpers/dateTime";
 import { useCopy } from "@/lib/shared/hooks/useCopy";
 
-import {
-  DeleteReport,
-  getReportActionItems,
-  getSharedURL,
-} from "./getReportActionItems";
+import { DeleteReport, getReportActionItems } from "./getReportActionItems";
 
 export interface ReportDetailsTileProps {
   id: string;
@@ -43,6 +44,7 @@ export interface ReportDetailsTileProps {
   attributeLabels: string[];
   userId: string | undefined;
   tooMuchDataForExport: boolean;
+  dataSourceSensitivity: DataSourceSensitivity;
 }
 
 export function ReportDetailsTile(props: ReportDetailsTileProps) {
@@ -54,7 +56,7 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
   });
 
   const { download: exportData, downloadContainerRef } = useExportReportData();
-  const dataExportGuard = useDataExportGuard(false);
+  const dataExportGuard = useDataExportGuard();
   const { headerHeightDesktop } = useHeaderHeights();
 
   function openUpdateReportSidebar() {
@@ -101,12 +103,18 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
                     },
                     {
                       type: "share",
-                      action: async () => await copy(getSharedURL(props.id)),
+                      action: async () =>
+                        await copy(
+                          getSharedURL({
+                            detailLinkId: props.id,
+                            statisticsSubRoute: "reports",
+                          }),
+                        ),
                     },
                     {
                       type: "export",
                       action: async () =>
-                        dataExportGuard(() =>
+                        dataExportGuard(props.dataSourceSensitivity, () =>
                           exportData(
                             { reportId: props.id },
                             {
@@ -154,6 +162,12 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
             <Divider />
             <Stack gap={1}>
               <LabelValuePair label="Datenquelle" value={props.dataSource} />
+              <LabelValuePair
+                label="Sensibilität"
+                value={translateDataSourceSensitivity(
+                  props.dataSourceSensitivity,
+                )}
+              />
               <LabelValuePair
                 label="Datensätze"
                 value={props.datasetAmount.toString()}

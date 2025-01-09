@@ -26,6 +26,7 @@ import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { fullAddress } from "@/lib/shared/helpers/facilityUtils";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
+import { useResetAlertContextOnChange } from "@/lib/shared/hooks/useResetAlertContextOnChange";
 
 type CentralFileData =
   | ApiGetReferencePersonResponse
@@ -113,6 +114,8 @@ function LinkCentralFileSidebar<TMatch extends CentralFileData>({
 }: LinkCentralFileSidebarProps<TMatch>) {
   const [selected, setSelected] = useState<TMatch>();
   const { openConfirmationDialog } = useConfirmationDialog();
+
+  useResetAlertContextOnChange(selected);
 
   const addCentralFileIdToGdprProcedure =
     useAddCentralFileIdToGdprProcedure(procedureId);

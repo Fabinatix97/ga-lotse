@@ -13,10 +13,10 @@ import { useExportReportData } from "@/lib/businessModules/statistics/api/downlo
 import { ReportDataType } from "@/lib/businessModules/statistics/api/models/evaluationReports";
 import { ReportOverviewTableRow } from "@/lib/businessModules/statistics/api/models/reportsOverviewTypes";
 import { useGetReportsOverview } from "@/lib/businessModules/statistics/api/queries/useGetReportsOverview";
-import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
 import { createFilterDefinitions } from "@/lib/businessModules/statistics/components/reports/filterDefinitions";
 import { useDeleteWithConfirmation } from "@/lib/businessModules/statistics/components/reports/useDeleteWithConfirmation";
 import { useDataExportGuard } from "@/lib/businessModules/statistics/components/shared/hooks/useDataExportGuard";
+import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
@@ -40,7 +40,6 @@ export function ReportsOverview() {
   const { deleteReportWithConfirmation, deleteReportSeriesWithConfirmation } =
     useDeleteWithConfirmation();
   const { download: exportData, downloadContainerRef } = useExportReportData();
-  const dataExportGuard = useDataExportGuard(false);
   const userPermissions = useStatisticsRoleChecks();
 
   const { resetPageNumber, page, pageSize, getPaginationProps } =
@@ -57,6 +56,8 @@ export function ReportsOverview() {
     },
     filterValues,
   );
+  const dataExportGuard = useDataExportGuard();
+
   const filterSettings = useFilterSettings({
     definitions: createFilterDefinitions(dataSources),
     onValuesSubmit: (filterValues) => {
@@ -104,7 +105,7 @@ export function ReportsOverview() {
             deleteReportWithConfirmation,
             deleteReportSeriesWithConfirmation,
             async (item) =>
-              dataExportGuard(() =>
+              dataExportGuard(item.dataSensitivity, () =>
                 exportData(
                   { reportId: item.reportId },
                   { tooMuchDataForExport: item.tooMuchDataForExport },

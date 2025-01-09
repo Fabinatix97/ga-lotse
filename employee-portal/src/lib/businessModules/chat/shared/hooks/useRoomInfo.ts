@@ -5,11 +5,12 @@
 
 import { Room, RoomMember } from "matrix-js-sdk";
 import { useCallback, useMemo } from "react";
-import { filter, find, isStrictEqual } from "remeda";
+import { find, isStrictEqual } from "remeda";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { CommunicationType } from "@/lib/businessModules/chat/shared/enums";
 import {
+  getDirectMessageRoomMember,
   getMemberAvatarUrl,
   getRoomAdmins,
   getRoomAvatarUrl,
@@ -31,17 +32,14 @@ export function useRoomInfo(roomId?: string): RoomInfo {
   const { matrixClient } = useChatClientContext();
 
   const room = matrixClient.getRoom(roomId);
-  const communicationType = getRoomCommunicationType(matrixClient, roomId);
+  const communicationType = room
+    ? getRoomCommunicationType(matrixClient, room)
+    : CommunicationType.PublicRoom;
   const roomCreator = useMemo(() => getRoomCreator(room), [room]);
 
   const getDMRoomMember = useCallback(() => {
-    const members = room?.getMembers();
-
-    if (members?.length && isDMRoom(communicationType)) {
-      return filter(
-        members,
-        (m) => !isStrictEqual(m.userId, room?.myUserId),
-      )?.[0];
+    if (room && isDMRoom(communicationType)) {
+      return getDirectMessageRoomMember(room);
     }
   }, [communicationType, room]);
 

@@ -35,6 +35,7 @@ dependencies {
     testImplementation testFixtures(project(':lib-procedures'))
     testImplementation testFixtures(project(':lib-document-generator'))
     testImplementation testFixtures(project(':lib-xlsx-import'))
+    testImplementation testFixtures(project(':lib-statistics'))
 }
 
 dockerCompose {

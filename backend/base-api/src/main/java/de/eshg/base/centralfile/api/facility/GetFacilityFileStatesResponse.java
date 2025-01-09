@@ -17,7 +17,7 @@ public record GetFacilityFileStatesResponse(
             arraySchema = @Schema(description = "A list of requested File States of Facilities."))
         @Valid
         @NotNull
-        List<AddFacilityFileStateResponse> facilityFileStates,
+        List<GetFacilityFileStateResponse> facilityFileStates,
     @ArraySchema(
             arraySchema =
                 @Schema(

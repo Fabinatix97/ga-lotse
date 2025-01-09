@@ -18,6 +18,7 @@ import { MobileBreakpoint } from "@/lib/shared/breakpoints";
 
 interface ContentSheetProps extends Pick<SheetProps, "sx">, RequiresChildren {
   "data-testid"?: string;
+  missingTitle?: boolean;
 }
 
 const SectionTitleId = createContext<string | undefined>(undefined);
@@ -26,7 +27,7 @@ export function ContentSheet(props: ContentSheetProps) {
   const titleId = useId();
   return (
     <Sheet
-      component="section"
+      component={props.missingTitle ? "div" : "section"}
       sx={{
         [theme.breakpoints.down(MobileBreakpoint.Down)]: {
           borderRadius: 0,
@@ -34,7 +35,7 @@ export function ContentSheet(props: ContentSheetProps) {
         ...props.sx,
       }}
       data-testid={props["data-testid"]}
-      aria-labelledby={titleId}
+      aria-labelledby={props.missingTitle ? undefined : titleId}
     >
       <SectionTitleId.Provider value={titleId}>
         <Stack gap={3}>{props.children}</Stack>

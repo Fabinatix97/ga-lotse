@@ -171,7 +171,6 @@ export function GDPRProcedureDetails({
         </SheetQueryBoundary>
         {procedure.status === ApiGdprProcedureStatus.Draft && (
           <CentralFileLinkTile
-            centralFileId={procedure.centralFileId}
             numMatches={personMatches.length + facilityMatches.length}
             onAddLink={hasWritePerms && (() => openLinkSidebar())}
           />

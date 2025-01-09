@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiChildDetails } from "@eshg/employee-portal-api/dental";
+import { ApiChild } from "@eshg/employee-portal-api/dental";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { InternalLinkIconButton } from "@eshg/lib-portal/components/navigation/InternalLinkIconButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
@@ -17,7 +17,7 @@ import {
 } from "@/lib/shared/components/procedures/constants";
 import { formatSchoolYear } from "@/lib/shared/helpers/formatters";
 
-export function ChildProcedureCard(props: { procedure: ApiChildDetails }) {
+export function ChildProcedureCard(props: { procedure: ApiChild }) {
   const child = props.procedure;
 
   return (

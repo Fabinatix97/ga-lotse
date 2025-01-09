@@ -9,7 +9,7 @@ import static org.keycloak.models.UserModel.COMPARE_BY_USERNAME;
 
 import de.eshg.keycloak.api.user.model.BulkGetUsersRequest;
 import de.eshg.keycloak.api.user.model.CredentialRequest;
-import de.eshg.keycloak.api.user.model.CredentialType;
+import de.eshg.keycloak.api.user.model.CredentialTypeDto;
 import de.eshg.keycloak.api.user.model.GetActiveSessionResponse;
 import de.eshg.keycloak.api.user.model.GetGroupMembersRequest;
 import de.eshg.keycloak.api.user.model.GetGroupMembersResponse;
@@ -162,13 +162,20 @@ public class ExtendedUserResource {
   public void verifyCredential(
       @PathParam("id") String id, @Valid @RequestBody CredentialRequest request) {
     auth.users().requireQuery();
-    validateCredentialType(request);
+    validateVerifiableCredentialType(request);
 
     UserModel user = getUserByIdOrThrow(session.users(), id, false);
     CredentialInput credentialInput =
         new UserCredentialModel(null, request.type().getName(), request.rawSecret(), true);
     if (!user.credentialManager().isValid(credentialInput)) {
       throw new NotAuthorizedException("Invalid credential");
+    }
+  }
+
+  private void validateVerifiableCredentialType(CredentialRequest request) {
+    List<CredentialTypeDto> manageableCredentials = List.of(CredentialTypeDto.PIN);
+    if (!manageableCredentials.contains(request.type())) {
+      throw new NotAuthorizedException("Credential type cannot be verified by this endpoint");
     }
   }
 
@@ -179,7 +186,7 @@ public class ExtendedUserResource {
   public void resetCredential(
       @PathParam("id") String id, @Valid @RequestBody CredentialRequest request) {
     auth.users().requireManage();
-    validateCredentialType(request);
+    validateManageableCredentialType(request);
 
     UserModel user = getUserByIdOrThrow(session.users(), id, false);
     CredentialInput credentialInput =
@@ -187,8 +194,9 @@ public class ExtendedUserResource {
     user.credentialManager().updateCredential(credentialInput);
   }
 
-  private void validateCredentialType(CredentialRequest request) {
-    List<CredentialType> manageableCredentials = List.of(CredentialType.PIN, CredentialType.DOB);
+  private void validateManageableCredentialType(CredentialRequest request) {
+    List<CredentialTypeDto> manageableCredentials =
+        List.of(CredentialTypeDto.PIN, CredentialTypeDto.DATE_OF_BIRTH);
     if (!manageableCredentials.contains(request.type())) {
       throw new NotAuthorizedException("Credential type cannot be managed by this endpoint");
     }

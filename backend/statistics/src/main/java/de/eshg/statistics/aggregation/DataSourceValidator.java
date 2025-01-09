@@ -35,6 +35,10 @@ public class DataSourceValidator {
     this.dataSourceAggregationService = dataSourceAggregationService;
   }
 
+  public List<AvailableDataSource> getAllAvailableDataSources() {
+    return dataSourceAggregationService.getAvailableDataSources().availableDataSources();
+  }
+
   public List<AvailableDataSource> validateDataSourcesAndGetRelevantAvailableDataSources(
       List<DataSourceDto> dataSources) {
     List<AvailableDataSource> relevantAvailableDataSources =
@@ -49,7 +53,7 @@ public class DataSourceValidator {
     validateBusinessModulesExist(relevantBusinessModules);
 
     GetAvailableDataSourcesResponse availableDataSources =
-        dataSourceAggregationService.getAvailableDataSources(relevantBusinessModules);
+        dataSourceAggregationService.getAvailableDataSources(relevantBusinessModules, false);
 
     handleErrorResponses(availableDataSources);
 

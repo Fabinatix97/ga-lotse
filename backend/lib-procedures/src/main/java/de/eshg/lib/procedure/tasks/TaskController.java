@@ -47,6 +47,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
@@ -56,6 +58,7 @@ import org.springframework.web.client.HttpClientErrorException;
 public class TaskController<
         TaskT extends Task<ProcedureT>, ProcedureT extends Procedure<ProcedureT, TaskT, ?, ?>>
     implements TaskApi, TaskMetricsApi {
+  private static final Logger log = LoggerFactory.getLogger(TaskController.class);
 
   private final TaskService taskService;
   private final TaskRepository<TaskT> taskRepository;
@@ -213,14 +216,25 @@ public class TaskController<
   }
 
   private List<ProcedureWithDuration> mapToProcedureWithDurationList(List<ProcedureT> procedures) {
-    return procedures.stream()
-        .map(
-            procedure ->
-                new ProcedureWithDuration(
-                    procedure.getExternalId(),
-                    procedure.getCreatedAt(),
-                    Duration.between(procedure.getCreatedAt(), procedure.getClosedAt()).toString()))
-        .toList();
+    return procedures.stream().map(this::mapToProcedureWithDuration).toList();
+  }
+
+  private <TaskT extends Task<ProcedureT>, ProcedureT extends Procedure<ProcedureT, TaskT, ?, ?>>
+      ProcedureWithDuration mapToProcedureWithDuration(ProcedureT procedure) {
+    Duration duration = Duration.between(procedure.getCreatedAt(), procedure.getClosedAt());
+    String durationString;
+    if (isValidDuration(duration)) {
+      durationString = duration.toString();
+    } else {
+      log.warn(
+          "Negative duration for procedure '{}': createdAt '{}' - closedAt '{}'",
+          procedure.getExternalId(),
+          procedure.getCreatedAt(),
+          procedure.getClosedAt());
+      durationString = null;
+    }
+    return new ProcedureWithDuration(
+        procedure.getExternalId(), procedure.getCreatedAt(), durationString);
   }
 
   private TaskMetric getTaskMetric(
@@ -278,8 +292,26 @@ public class TaskController<
       return null;
     }
 
-    return Duration.ofMinutes(
-            Math.round(durations.stream().mapToLong(Duration::toMinutes).average().orElseThrow()))
-        .toString();
+    Duration duration =
+        Duration.ofMinutes(
+            Math.round(durations.stream().mapToLong(Duration::toMinutes).average().orElseThrow()));
+    if (isValidDuration(duration)) {
+      return duration.toString();
+    } else {
+      log.warn(
+          "Negative duration for metrics of '{}' - '{}' from '{}' to '{}'",
+          procedureType,
+          taskType,
+          timeRangeStart,
+          timeRangeEnd);
+      return null;
+    }
+  }
+
+  /*
+   * Duration.isNegative only checks the seconds, not the nanos
+   */
+  private static boolean isValidDuration(Duration duration) {
+    return duration.isZero() || duration.isPositive();
   }
 }

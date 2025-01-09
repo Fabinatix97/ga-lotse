@@ -18,6 +18,7 @@ dependencies {
     implementation project(':lib-mutex')
     implementation project(':file-commons')
     implementation project(':lib-aggregation')
+    implementation project(':rest-oauth-client-commons')
 
     implementation 'com.bucket4j:bucket4j-core:latest.release'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
@@ -25,7 +26,7 @@ dependencies {
     implementation 'org.apache.commons:commons-collections4:latest.release'
     implementation libs.keycloak.client.admin.client
     implementation 'io.github.java-diff-utils:java-diff-utils:latest.release'
-    implementation 'com.google.guava:guava:latest.release'
+    implementation 'com.google.guava:guava'
     implementation('org.mnode.ical4j:ical4j:latest.release') {
         exclude group: "com.github.erosb", module: "json-sKema"
         exclude group: "commons-codec", module: "commons-codec"

@@ -76,7 +76,7 @@ public class SerializationService {
     return toZip(dataFileBaseName, entity, (n, z) -> {});
   }
 
-  public byte[] toZip(String dataFileBaseName, EntityWithExternalId entity, ZipFilter zipFilter) {
+  public byte[] toZip(String dataFileBaseName, EntityWithExternalId entity, ZipEditor zipEditor) {
     ZipFileWrapper zipFileWrapper = new ZipFileWrapper();
 
     FileContentSerializer fileContentSerializer =
@@ -90,10 +90,10 @@ public class SerializationService {
                 objectMapper, zipFileWrapper::addEntry, zipFileWrapper::getCollisionFreeFileName));
 
     JsonNode jsonNode = toJsonNode(entity, objectMapper);
-    zipFilter.filter(jsonNode, zipFileWrapper);
+    zipEditor.filter(jsonNode, zipFileWrapper);
     String jsonNodeAsCsv = jsonNodeToCsv(entity.getClass().getSimpleName(), jsonNode);
     zipFileWrapper.addEntry(dataFileBaseName + ".csv", jsonNodeAsCsv.getBytes());
-    zipFilter.filter(jsonNode, zipFileWrapper);
+    zipEditor.filter(jsonNode, zipFileWrapper);
 
     return zipFileWrapper.asByteArray();
   }

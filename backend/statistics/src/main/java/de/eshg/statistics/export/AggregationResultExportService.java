@@ -8,7 +8,6 @@ package de.eshg.statistics.export;
 import static de.eshg.statistics.StatisticsApplication.MODULE_NAME;
 
 import de.eshg.lib.auditlog.AuditLogger;
-import de.eshg.lib.statistics.api.ValueType;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.statistics.aggregation.AbstractAggregationResultService;
@@ -18,6 +17,7 @@ import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.Evaluation;
 import de.eshg.statistics.persistence.entity.StatisticsDataSensitivity;
 import de.eshg.statistics.persistence.entity.TableColumn;
+import de.eshg.statistics.persistence.entity.TableColumnValueType;
 import de.eshg.statistics.persistence.entity.TableRow;
 import de.eshg.statistics.persistence.entity.report.Report;
 import de.eshg.statistics.persistence.entity.report.ReportSeries;
@@ -119,7 +119,7 @@ public class AggregationResultExportService {
   }
 
   private static boolean isRelevantTableColumn(TableColumn tableColumn) {
-    return !tableColumn.getValueType().equals(ValueType.PROCEDURE_ID);
+    return !tableColumn.getValueType().equals(TableColumnValueType.PROCEDURE_ID);
   }
 
   private static void addLegendForTableColumn(
@@ -166,7 +166,7 @@ public class AggregationResultExportService {
     return cellTypeMap;
   }
 
-  private CellType getCellType(ValueType valueType) {
+  private CellType getCellType(TableColumnValueType valueType) {
     return switch (valueType) {
       case BOOLEAN -> CellType.BOOLEAN;
       case DATE, TEXT, VALUE_WITH_OPTIONS -> CellType.STRING;

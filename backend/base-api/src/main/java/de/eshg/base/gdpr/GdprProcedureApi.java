@@ -8,6 +8,7 @@ package de.eshg.base.gdpr;
 import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.base.gdpr.api.AddCentralFileIdToGdprProcedureRequest;
 import de.eshg.base.gdpr.api.AddGdprDownloadsRequest;
+import de.eshg.base.gdpr.api.AddGdprProcedureFromCitizenPortalRequest;
 import de.eshg.base.gdpr.api.AddGdprProcedureRequest;
 import de.eshg.base.gdpr.api.CancelGdprProcedureRequest;
 import de.eshg.base.gdpr.api.CloseGdprProcedureRequest;
@@ -42,6 +43,19 @@ public interface GdprProcedureApi {
   @ApiResponse(responseCode = "200")
   @Operation(summary = "Add a GDPR procedure")
   GetGdprProcedureResponse addGdprProcedure(@RequestBody @Valid AddGdprProcedureRequest request);
+
+  @PostExchange(BaseUrls.Base.GDPR_PROCEDURE_CITIZEN_PORTAL_URL)
+  @ApiResponse(responseCode = "200")
+  @Operation(
+      summary =
+          """
+  This endpoint allows authenticated and identified users from the citizen
+  portal to initiate a GDPR procedure. A matter of concern can be added to the
+  request if desired.
+  """)
+  GetGdprProcedureResponse addGdprProcedureFromCitizenPortal(
+      @RequestBody @Valid AddGdprProcedureFromCitizenPortalRequest request)
+      throws NoSuchFieldException;
 
   @GetExchange("/{id}")
   @ApiResponse(responseCode = "200")

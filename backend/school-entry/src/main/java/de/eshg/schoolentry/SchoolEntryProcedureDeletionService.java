@@ -43,6 +43,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaDelete;
 import jakarta.persistence.criteria.Root;
+import jakarta.persistence.metamodel.SingularAttribute;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -106,36 +107,36 @@ public class SchoolEntryProcedureDeletionService
 
     cemeteryService.writeToCemetery(procedures);
 
-    deleteDependentEntitiesForProcedures(SchoolEntryTask.class, Task_.PROCEDURE, internalIds);
-    deleteDependentEntitiesForProcedures(Person.class, RelatedPerson_.PROCEDURE, internalIds);
-    deleteDependentEntitiesForProcedures(Facility.class, RelatedFacility_.PROCEDURE, internalIds);
+    deleteDependentEntitiesForProcedures(SchoolEntryTask.class, Task_.procedure, internalIds);
+    deleteDependentEntitiesForProcedures(Person.class, RelatedPerson_.procedure, internalIds);
+    deleteDependentEntitiesForProcedures(Facility.class, RelatedFacility_.procedure, internalIds);
     deleteProgressEntries(internalIds);
 
-    deleteDependentEntitiesForProcedures(Anamnesis.class, Anamnesis_.PROCEDURE, internalIds);
+    deleteDependentEntitiesForProcedures(Anamnesis.class, Anamnesis_.procedure, internalIds);
     deleteDependentEntitiesForProcedures(
-        HearingTestResult.class, HearingTestResult_.PROCEDURE, internalIds);
+        HearingTestResult.class, HearingTestResult_.procedure, internalIds);
     deleteDependentEntitiesForProcedures(
-        EyeExaminationResult.class, EyeExaminationResult_.PROCEDURE, internalIds);
+        EyeExaminationResult.class, EyeExaminationResult_.procedure, internalIds);
     deleteDependentEntitiesForProcedures(
-        SopessExaminationResult.class, SopessExaminationResult_.PROCEDURE, internalIds);
+        SopessExaminationResult.class, SopessExaminationResult_.procedure, internalIds);
     deleteDependentEntitiesForProcedures(
-        DevelopmentScreening.class, DevelopmentScreening_.PROCEDURE, internalIds);
+        DevelopmentScreening.class, DevelopmentScreening_.procedure, internalIds);
     deleteDependentEntitiesForProcedures(
-        VaccinationStatus.class, VaccinationStatus_.PROCEDURE, internalIds);
-    deleteDependentEntitiesForProcedures(WaitingRoom.class, WaitingRoom_.PROCEDURE, internalIds);
+        VaccinationStatus.class, VaccinationStatus_.procedure, internalIds);
+    deleteDependentEntitiesForProcedures(WaitingRoom.class, WaitingRoom_.procedure, internalIds);
 
     procedureRepository.deleteAllInBatch(procedures);
   }
 
-  private <T> void deleteDependentEntitiesForProcedures(
+  @SuppressWarnings("rawtypes")
+  private <T, P extends Procedure> void deleteDependentEntitiesForProcedures(
       Class<T> dependentEntityClass,
-      String procedureAttributeName,
+      SingularAttribute<? super T, P> procedureAttribute,
       List<Long> internalProcedureIds) {
     delete(
         dependentEntityClass,
         (delete, root) ->
-            delete.where(
-                root.join(procedureAttributeName).get(Procedure_.ID).in(internalProcedureIds)));
+            delete.where(root.get(procedureAttribute).get(Procedure_.id).in(internalProcedureIds)));
   }
 
   private void deleteProgressEntries(List<Long> internalProcedureIds) {

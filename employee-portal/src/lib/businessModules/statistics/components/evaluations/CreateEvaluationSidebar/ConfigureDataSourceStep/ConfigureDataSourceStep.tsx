@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiStatisticsFeature } from "@eshg/employee-portal-api/statistics";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
+import { AnonymizationOptions } from "@/lib/businessModules/statistics/api/models/anonymizationOptions";
+import { DataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import { useGetEvaluationTemplateDetails } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplateDetails";
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/statistics/api/queries/useStatisticsFeatureToggle";
-import { AnonymizedToggleButtonGroupField } from "@/lib/businessModules/statistics/components/evaluations/AnonymizedToggleButtonGroupField";
+import { AnonymizationConfiguration } from "@/lib/businessModules/statistics/components/evaluations/AnonymizationConfiguration";
 import { ChooseDataSourceStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ChooseDataSourceStep/chooseDataSourceStepFormModel";
 import { ChooseEvaluationTemplateStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ChooseEvaluationTemplateStep/chooseEvaluationTemplateStepFormModel";
 import { ConfigureDataSourceStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ConfigureDataSourceStep/configureDataSourceStepFormModel";
@@ -24,7 +24,13 @@ export function ConfigureDataSourceStep() {
 
   return (
     <Stack gap={3}>
-      {values.dataSource && <DataSource name={values.dataSource.name} />}
+      {values.dataSource && (
+        <DataSource
+          name={values.dataSource.name}
+          sensitivity={values.dataSource.sensitivity}
+          anonymizationOptions={values.dataSource.anonymizationOptions}
+        />
+      )}
       {values._dataSourceId === "CHOOSE_EVALUATION_TEMPLATE" && (
         <OverlayBoundary>
           <DataSourceFromTemplate
@@ -38,15 +44,11 @@ export function ConfigureDataSourceStep() {
 
 function DataSource(props: {
   name: string;
-  templateWithoutAnonymizationAllowed?: boolean;
+  sensitivity: DataSourceSensitivity | undefined;
+  anonymizationOptions: AnonymizationOptions;
 }) {
   const fieldName = createFieldNameMapper<ConfigureDataSourceStepFormModel>();
-  const { values } = useFormikContext<
-    ChooseDataSourceStepFormModel & ChooseEvaluationTemplateStepFormModel
-  >();
-  const fakeAnonymizationEnabled = useIsNewFeatureEnabled(
-    ApiStatisticsFeature.FakeAnonymization,
-  );
+
   return (
     <>
       <Typography level="h3" component="h2">
@@ -56,27 +58,23 @@ function DataSource(props: {
         name={fieldName("timeSpan")}
         label="Betrachtungszeitraum"
       />
-      {fakeAnonymizationEnabled && (
-        <AnonymizedToggleButtonGroupField
-          withoutAnonymizationAllowed={
-            props.templateWithoutAnonymizationAllowed ??
-            values.dataSource?.withoutAnonymizationAllowed ??
-            false
-          }
-          name={fieldName("anonymized")}
-        />
-      )}
+      <AnonymizationConfiguration
+        sensitivity={props.sensitivity}
+        name={fieldName("anonymized")}
+        anonymizationOptions={props.anonymizationOptions}
+      />
     </>
   );
 }
 
 function DataSourceFromTemplate(props: { evaluationTemplateId: string }) {
-  const { dataSourceName, withoutAnonymizationAllowed } =
+  const { dataSourceName, dataSourceSensitivity, anonymizationOptions } =
     useGetEvaluationTemplateDetails(props.evaluationTemplateId);
   return (
     <DataSource
       name={dataSourceName}
-      templateWithoutAnonymizationAllowed={withoutAnonymizationAllowed}
+      sensitivity={dataSourceSensitivity}
+      anonymizationOptions={anonymizationOptions}
     />
   );
 }

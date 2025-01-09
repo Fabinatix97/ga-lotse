@@ -19,7 +19,7 @@ import { usePresence } from "@/lib/businessModules/chat/shared/hooks/usePresence
 import { useSendMessage } from "@/lib/businessModules/chat/shared/hooks/useSendMessage";
 import { Message, Presence } from "@/lib/businessModules/chat/shared/types";
 import {
-  getRoomNameAndCommunicationType,
+  getRoomCommunicationType,
   getStatusColor,
   isDMRoom,
   markAllMessagesAsRead,
@@ -37,7 +37,7 @@ export function MessageNotification({
   usePresence(sender?.userId);
   const { matrixClient } = useChatClientContext();
   const room = matrixClient.getRoom(message.roomId)!;
-  const { communicationType } = getRoomNameAndCommunicationType(room);
+  const communicationType = getRoomCommunicationType(matrixClient, room);
   const {
     userSettings: { sharePresence },
   } = useChat();

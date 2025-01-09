@@ -23,6 +23,7 @@ import de.eshg.dental.domain.repository.ChildRepository;
 import de.eshg.dental.domain.repository.ProphylaxisSessionRepository;
 import de.eshg.dental.mapper.ProphylaxisSessionMapper;
 import de.eshg.lib.contact.ContactClient;
+import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.validation.ValidationUtil;
@@ -82,8 +83,8 @@ public class ProphylaxisSessionService {
   private void addExaminationsForChildren(
       CreateProphylaxisSessionRequest request, ProphylaxisSession session) {
     List<Child> children =
-        childRepository.findByInstitutionIdAndGroupNameOrderById(
-            request.institutionId(), request.groupName());
+        childRepository.findByInstitutionIdAndGroupNameAndProcedureStatusOrderById(
+            request.institutionId(), request.groupName(), ProcedureStatus.OPEN);
     if (children.isEmpty()) {
       throw new BadRequestException("The requested group does not contain any children.");
     }

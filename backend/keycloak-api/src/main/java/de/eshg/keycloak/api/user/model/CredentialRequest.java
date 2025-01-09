@@ -5,4 +5,4 @@
 
 package de.eshg.keycloak.api.user.model;
 
-public record CredentialRequest(CredentialType type, String rawSecret) {}
+public record CredentialRequest(CredentialTypeDto type, String rawSecret) {}

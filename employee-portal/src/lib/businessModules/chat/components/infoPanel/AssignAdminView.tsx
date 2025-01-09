@@ -101,51 +101,59 @@ export function AssignAdminView({
             onSubmit={handleSubmit}
             enableReinitialize={true}
           >
-            <FormPlus>
-              {joinedMembers.map(({ member }) => {
-                return (
-                  <Stack
-                    key={`['${member.userId}']`}
-                    direction="row"
-                    justifyContent="space-between"
-                    marginBottom={2}
-                  >
-                    <Stack direction="row" alignItems="center" gap={1}>
-                      <ChatAvatar
-                        avatarUrl={null}
-                        userId={member.userId}
-                        name={member.name}
-                        size="sm"
-                      />
-                      <Typography level="title-sm">{member.name}</Typography>
+            {({ initialValues }) => (
+              <FormPlus>
+                {Object.keys(initialValues).map((id) => {
+                  const memberInfo = joinedMembers.find(
+                    (member) => member.member.userId === id,
+                  );
+                  const member = memberInfo?.member;
+                  if (!member) return null;
+
+                  return (
+                    <Stack
+                      key={`['${member.userId}']`}
+                      direction="row"
+                      justifyContent="space-between"
+                      marginBottom={2}
+                    >
+                      <Stack direction="row" alignItems="center" gap={1}>
+                        <ChatAvatar
+                          avatarUrl={null}
+                          userId={member.userId}
+                          name={member.name}
+                          size="sm"
+                        />
+                        <Typography level="title-sm">{member.name}</Typography>
+                      </Stack>
+                      {initialValues[member.userId] ? (
+                        <Switch checked={true} size="lg" disabled />
+                      ) : (
+                        <SwitchField name={`['${member.userId}']`} label="" />
+                      )}
                     </Stack>
-                    {initialValues[member.userId] ? (
-                      <Switch checked={true} size="lg" disabled />
-                    ) : (
-                      <SwitchField name={`['${member.userId}']`} label="" />
-                    )}
-                  </Stack>
-                );
-              })}
-              <Stack
-                direction="row"
-                justifyContent="space-between"
-                gap={2}
-                marginTop={3}
-              >
-                <Button
-                  type="buttom"
-                  variant="soft"
-                  onClick={onCancel}
-                  fullWidth
+                  );
+                })}
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  gap={2}
+                  marginTop={3}
                 >
-                  Abbrechen
-                </Button>
-                <Button type="submit" fullWidth>
-                  Speichern
-                </Button>
-              </Stack>
-            </FormPlus>
+                  <Button
+                    type="buttom"
+                    variant="soft"
+                    onClick={onCancel}
+                    fullWidth
+                  >
+                    Abbrechen
+                  </Button>
+                  <Button type="submit" fullWidth>
+                    Speichern
+                  </Button>
+                </Stack>
+              </FormPlus>
+            )}
           </Formik>
         </Stack>
       </Box>

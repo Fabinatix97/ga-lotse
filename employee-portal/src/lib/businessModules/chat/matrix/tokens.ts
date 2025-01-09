@@ -17,7 +17,6 @@ import {
   idbSave,
 } from "@/lib/businessModules/chat/matrix/idb";
 import { getPickleKey } from "@/lib/businessModules/chat/matrix/pickling";
-import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { IStoredCredentials } from "@/lib/businessModules/chat/shared/types";
 
 const ACCESS_TOKEN_STORAGE_KEY = "mx_access_token";
@@ -234,43 +233,5 @@ export async function clearMatrixStores(): Promise<void> {
   const temporaryMatrixClient = createClient({
     baseUrl: "",
   });
-
-  const promises: Promise<void>[] = [];
-
-  promises.push(temporaryMatrixClient.store.deleteAllData());
-
-  async function deleteRustSdkStore(): Promise<void> {
-    let indexedDB: IDBFactory | undefined;
-    try {
-      indexedDB = getIDBFactory();
-      if (!indexedDB) return;
-    } catch {
-      return;
-    }
-
-    for (const dbName of [
-      `matrix-js-sdk::matrix-sdk-crypto`,
-      `matrix-js-sdk::matrix-sdk-crypto-meta`,
-    ]) {
-      const prom = new Promise((resolve) => {
-        const req = indexedDB.deleteDatabase(dbName);
-        req.onsuccess = (): void => {
-          resolve(0);
-          logger.info("Crypto DB deleted");
-        };
-        req.onerror = (): void => {
-          resolve(0);
-          logger.info("Crypto DB deletion failed");
-        };
-        req.onblocked = (): void => {
-          req.result?.close();
-          logger.info("Crypto DB is blocked");
-        };
-      });
-      await prom;
-    }
-  }
-
-  promises.push(deleteRustSdkStore());
-  await Promise.all(promises);
+  await temporaryMatrixClient.clearStores();
 }

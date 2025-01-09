@@ -7,7 +7,6 @@ import {
   ApiAnalysis,
   ApiAnalysisChartConfiguration,
   ApiAttributeSelection,
-  ApiEvaluationDataSensitivity,
   ApiGetDetailPageInformationResponse,
   EvaluationApi,
 } from "@eshg/employee-portal-api/statistics";
@@ -17,6 +16,7 @@ import { useEvaluationApi } from "@/lib/businessModules/statistics/api/clients";
 import { mapAttributeSelectionToKey } from "@/lib/businessModules/statistics/api/mapper/mapAttributeSelectionKey";
 import { mapTimeRangeEndApiToFrontend } from "@/lib/businessModules/statistics/api/mapper/mapTimeRangeEnd";
 import { mapToApiBusinessModule } from "@/lib/businessModules/statistics/api/mapper/mapToApiBusinessModule";
+import { mapDataSourceSensitivityApiToFrontend } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import {
   Analysis,
   AnalysisDiagramConfiguration,
@@ -150,14 +150,13 @@ export function mapToEvaluationDetailsView(
       ),
       attributeLabels: attributes.map((it) => it.name),
       datasetAmount: result.totalNumberOfElements,
+      sensitivity: mapDataSourceSensitivityApiToFrontend(
+        result.evaluationInfo.dataSensitivity,
+      ),
     },
     attributes: attributes,
     analyses: mapAnalyses(result.analyses, attributes),
     userId: result.user?.userId,
-    //TODO: Display sensitivity instead of anonymized
-    anonymized:
-      result.evaluationInfo.dataSensitivity !==
-      ApiEvaluationDataSensitivity.Sensitive,
     tooMuchDataForExport: result.evaluationInfo.tooMuchDataForExport,
   } satisfies EvaluationDetailsView;
 }

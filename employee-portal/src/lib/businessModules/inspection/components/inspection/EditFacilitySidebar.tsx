@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiFacilityFileState } from "@eshg/employee-portal-api/inspection";
+import { ApiGetFacilityFileStateResponse } from "@eshg/employee-portal-api/inspection";
 
 import {
   DefaultFacilityFormValues,
@@ -22,7 +22,7 @@ export function useEditFacilitySidebar() {
 }
 
 interface EditFacilitySidebarProps extends SidebarWithFormRefProps {
-  facility: ApiFacilityFileState;
+  facility: ApiGetFacilityFileStateResponse;
   onSave: (facility: DefaultFacilityFormValues) => Promise<void>;
 }
 

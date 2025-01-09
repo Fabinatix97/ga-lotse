@@ -15,6 +15,7 @@ import de.eshg.base.statistics.api.BaseDataTableHeader;
 import de.eshg.base.statistics.api.GetBaseDataSourcesResponse;
 import de.eshg.base.statistics.api.GetBaseStatisticsDataRequest;
 import de.eshg.base.statistics.api.GetBaseStatisticsDataResponse;
+import de.eshg.base.statistics.api.SubjectType;
 import de.eshg.base.statistics.options.GenderOptions;
 import de.eshg.base.street.DistrictDto;
 import de.eshg.base.street.SearchStreetResponse;
@@ -22,7 +23,6 @@ import de.eshg.base.street.StreetController;
 import de.eshg.base.util.Gender;
 import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.statistics.api.DataRow;
-import de.eshg.lib.statistics.api.SubjectType;
 import de.eshg.lib.statistics.api.ValueType;
 import de.eshg.rest.service.error.BadRequestException;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -104,7 +104,7 @@ public class StatisticsController implements BaseStatisticsApi {
           new BaseDataTableHeader(Collections.emptyList()), null);
     }
 
-    List<BaseAttribute> attributes = getAttributes(relevantCommonAttributes);
+    List<BaseAttribute> attributes = getAttributes(relevantCommonAttributes, SubjectType.PERSON);
 
     List<Person> persons =
         personRepository.findAllByExternalIdInAndReferencePersonIsNotNullOrderById(
@@ -147,18 +147,21 @@ public class StatisticsController implements BaseStatisticsApi {
     return attributeOptional.orElse(null);
   }
 
-  private static List<BaseAttribute> getAttributes(List<? extends CommonAttribute> baseAttributes) {
+  private static List<BaseAttribute> getAttributes(
+      List<? extends CommonAttribute> baseAttributes, SubjectType subjectType) {
+    ValueType valueType = mapToValueType(subjectType);
     List<BaseAttribute> attributes = new ArrayList<>();
     attributes.add(
-        new BaseAttribute(
-            ValueType.CENTRAL_FILE_ID.name(),
-            ValueType.CENTRAL_FILE_ID.name(),
-            ValueType.CENTRAL_FILE_ID,
-            null,
-            null,
-            true));
+        new BaseAttribute(valueType.name(), valueType.name(), valueType, null, null, true));
     baseAttributes.forEach(baseAttribute -> attributes.add(mapToAttribute(baseAttribute)));
     return attributes;
+  }
+
+  private static ValueType mapToValueType(SubjectType subjectType) {
+    return switch (subjectType) {
+      case PERSON -> ValueType.CENTRAL_FILE_ID_PERSON;
+      case FACILITY -> ValueType.CENTRAL_FILE_ID_FACILITY;
+    };
   }
 
   private DataRow createDataRow(Person person, List<CommonAttribute> commonAttributes) {
@@ -285,7 +288,7 @@ public class StatisticsController implements BaseStatisticsApi {
       return new GetBaseStatisticsDataResponse(
           new BaseDataTableHeader(Collections.emptyList()), null);
     }
-    List<BaseAttribute> attributes = getAttributes(relevantAddressAttributes);
+    List<BaseAttribute> attributes = getAttributes(relevantAddressAttributes, SubjectType.FACILITY);
 
     List<Facility> facilities =
         facilityRepository.findAllByExternalIdInAndReferenceFacilityIsNotNullOrderById(

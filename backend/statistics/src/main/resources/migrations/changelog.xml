@@ -48,4 +48,5 @@
     <include file="migrations/0038_rename_statistic_to_evaluation.xml"/>
     <include file="migrations/0039_use_lib_scheduling.xml"/>
     <include file="migrations/0040_replace_anonymized_with_data_sensitivity.xml"/>
+    <include file="migrations/0041_introduce_table_column_value_type.xml"/>
 </databaseChangeLog>

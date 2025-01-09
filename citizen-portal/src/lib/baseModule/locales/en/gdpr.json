@@ -1,0 +1,49 @@
+{
+  "overview": {
+    "title": "Rights in accordance with GDPR",
+    "right_of_access": {
+      "title": "Right of Access",
+      "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor Aenean massa.",
+      "button": "Request your data"
+    },
+    "right_to_erasure": {
+      "title": "Right to Erasure",
+      "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor Aenean massa.",
+      "button": "Delete your data"
+    },
+    "right_to_object": {
+      "title": "Right to Object",
+      "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor Aenean massa.",
+      "button": "Object to proceedings"
+    },
+    "right_to_rectification": {
+      "title": "Right to Rectification",
+      "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor Aenean massa.",
+      "button": "Request correction"
+    }
+  },
+  "entrypoint": {
+    "title": "Self-Disclosure Personal Data",
+    "intro_section": {
+      "title": "Data Protection Rights",
+      "description": "This section contains an introductory text about the privacy policy. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes. Lorem Ipsum is a simple demo text for the print and typography industry. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis nato."
+    },
+    "your_rights_section": {
+      "description": "Here you can easily request your stored personal data – either online or, even better, in person at the public health office. We look forward to welcoming you there and are happy to assist you with the verification process.",
+      "online": {
+        "title": "Online",
+        "internet": {
+          "title": "Internet",
+          "description": "You can authenticate yourself online as an individual or a company."
+        },
+        "buttons": {
+          "person": "As an Individual",
+          "organization": "As a Company"
+        }
+      },
+      "in_person": {
+        "title": "In Person"
+      }
+    }
+  }
+}

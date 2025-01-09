@@ -50,7 +50,9 @@ const inboxNavigationItem: SideNavigationSubItem = {
   accessCheck: hasUserRole(ApiUserRole.SchoolEntryAdmin),
 };
 
-export function useSideNavigationItems(): UseSideNavigationItemsResult {
+export function useSideNavigationItems(
+  enabled: boolean,
+): UseSideNavigationItemsResult {
   const isInboxEnabled = useIsNewFeatureEnabled(ApiBaseFeature.Inbox);
 
   const configApi = useConfigApi();
@@ -61,7 +63,12 @@ export function useSideNavigationItems(): UseSideNavigationItemsResult {
   } = useQuery({
     ...getLocationSelectionModeQuery(configApi),
     throwOnError: false,
+    enabled,
   });
+
+  if (!enabled) {
+    return { isLoading: false, items: [] };
+  }
 
   const hasLocationMode =
     locationSelectionMode !== ApiLocationSelectionMode.None;

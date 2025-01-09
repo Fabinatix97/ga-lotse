@@ -71,6 +71,7 @@ public class ReportService extends AbstractAggregationResultService {
   private static final Logger log = LoggerFactory.getLogger(ReportService.class);
 
   public ReportService(
+      DataSourceValidator dataSourceValidator,
       DataAggregationService dataAggregationService,
       TableRowRepository tableRowRepository,
       StatisticsConfig statisticsConfig,
@@ -79,7 +80,7 @@ public class ReportService extends AbstractAggregationResultService {
       StatisticsUserService userService,
       Clock clock,
       AnalysisService analysisService) {
-    super(dataAggregationService, tableRowRepository, statisticsConfig);
+    super(dataSourceValidator, dataAggregationService, tableRowRepository, statisticsConfig);
     this.reportRepository = reportRepository;
     this.reportSeriesRepository = reportSeriesRepository;
     this.userService = userService;

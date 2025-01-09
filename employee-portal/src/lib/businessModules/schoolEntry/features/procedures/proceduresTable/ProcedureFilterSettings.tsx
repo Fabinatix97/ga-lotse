@@ -16,7 +16,6 @@ import { isDefined, isEmpty } from "remeda";
 import { Label } from "@/lib/businessModules/schoolEntry/api/models/Label";
 import { PROCEDURE_TYPE_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 import { LabelAutocomplete } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/LabelAutocomplete";
-import { SearchInstitutionFilter } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/SearchInstitutionFilter";
 import { ResetButton } from "@/lib/shared/components/ResetButton";
 import { ActiveFilter } from "@/lib/shared/components/filterSettings/ActiveFilter";
 import { FilterSettingsContent } from "@/lib/shared/components/filterSettings/FilterSettingsContent";
@@ -24,6 +23,7 @@ import {
   FilterSettingsSheet,
   FilterSettingsSheetProps,
 } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
+import { SearchInstitutionFilter } from "@/lib/shared/components/filterSettings/SearchInstitutionFilter";
 import { SetDictionaryFilterFn } from "@/lib/shared/components/filterSettings/useFilterDictionary";
 import { SchoolYearAutocomplete } from "@/lib/shared/components/formFields/schoolYear";
 

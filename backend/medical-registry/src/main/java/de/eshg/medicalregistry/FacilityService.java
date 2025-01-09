@@ -53,7 +53,7 @@ public class FacilityService {
     this.facilityApi = facilityApi;
   }
 
-  List<AddFacilityFileStateResponse> findPracticeDetails(List<Practice> practices) {
+  List<GetFacilityFileStateResponse> findPracticeDetails(List<Practice> practices) {
     if (CollectionUtils.isEmpty(practices)) {
       return List.of();
     }

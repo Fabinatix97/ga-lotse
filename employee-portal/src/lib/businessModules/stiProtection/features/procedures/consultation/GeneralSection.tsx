@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { Typography, useTheme } from "@mui/joy";
 
 import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
@@ -19,7 +18,7 @@ export interface GeneralSectionData {
 
   furtherGenderInfo: string;
 
-  hasSufficientGermanLanguageSkills: boolean | null;
+  hasSufficientGermanLanguageSkills: YesOrNoFieldData;
   isIlliterate: boolean;
   otherKnownLanguages: string;
 
@@ -34,6 +33,7 @@ export interface GeneralSectionData {
   drugUse: string;
 
   referral: string;
+  notes: string;
 }
 
 export function GeneralSection() {
@@ -74,7 +74,7 @@ export function GeneralSection() {
           label="Versichert in Deutschland"
         />
       </YesOrNoWithFollowUp>
-      <InputField
+      <YesOrNoWithFollowUp
         name="general.hasInsecureResidence"
         label="Unsicherer Aufenthalt?"
       />

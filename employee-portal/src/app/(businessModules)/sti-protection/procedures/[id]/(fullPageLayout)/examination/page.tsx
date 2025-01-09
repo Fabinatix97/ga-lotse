@@ -5,27 +5,15 @@
 
 "use client";
 
-import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
+import { redirect } from "next/navigation";
 
 import { StiProtectionProcedurePageParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(fullPageLayout)/layout";
-import { useStiProcedureQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
-import { Examinations } from "@/lib/businessModules/stiProtection/features/procedures/examination/Examinations";
-import { isProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
+import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 
 export default function StiProtectionProcedureExaminationPage({
   params: { id: procedureId },
 }: Readonly<{
   params: StiProtectionProcedurePageParams;
 }>) {
-  const { data: procedure } = useStiProcedureQuery(procedureId);
-  const isOpen = isProcedureOpen(procedure);
-
-  return (
-    <DisabledFormProvider disabled={!isOpen}>
-      <MainContentLayout sx={{ margin: 0, padding: 0 }} fullViewportHeight>
-        <Examinations procedureId={procedureId} />
-      </MainContentLayout>
-    </DisabledFormProvider>
-  );
+  redirect(routes.procedures.byId(procedureId).rapidTest);
 }

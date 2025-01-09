@@ -13,6 +13,7 @@ import {
   ApiScaling,
 } from "@eshg/employee-portal-api/statistics";
 
+import { DataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 
 export enum DiagramType {
@@ -44,11 +45,11 @@ export interface EvaluationDetailsView {
     module: ApiBusinessModule;
     datasetAmount: number;
     attributeLabels: string[];
+    sensitivity: DataSourceSensitivity;
   };
   analyses: Analysis[];
   attributes: FlatAttribute[];
   userId: string | undefined;
-  anonymized: boolean;
   tooMuchDataForExport: boolean;
 }
 

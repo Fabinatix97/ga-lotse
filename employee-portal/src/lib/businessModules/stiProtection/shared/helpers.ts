@@ -10,6 +10,7 @@ import {
   ApiStiProtectionProcedure,
   ApiStiProtectionProcedureOverview,
 } from "@eshg/employee-portal-api/stiProtection";
+import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 
 export function concernToAppointmentType(
   concern: ApiConcern | "RESULTS_REVIEW",
@@ -76,6 +77,25 @@ export function guardValue<T>(
   value: T,
 ): T | undefined {
   return guard ? value : undefined;
+}
+
+export function mapOptionalString(
+  input: string | undefined,
+): string | undefined {
+  if (input === undefined) {
+    return;
+  }
+  return isNonEmptyString(input) ? input : undefined;
+}
+
+export function mapOptionalBool(
+  input: boolean | undefined,
+): boolean | undefined {
+  return input === true ? input : undefined;
+}
+
+export function areAllValuesUndefined(obj: Record<string, unknown>): boolean {
+  return Object.values(obj).every((value) => value === undefined);
 }
 
 export function getOpenAppointmentsFromProcedure(

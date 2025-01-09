@@ -28,10 +28,12 @@ import { routes } from "@/lib/businessModules/chat/shared/routes";
 import {
   ChatSystemMessage,
   Message,
+  RoomWithCommunicationType,
 } from "@/lib/businessModules/chat/shared/types";
 import {
   getReadReceipts,
   getRoomNameAndCommunicationType,
+  isMembershipChanged,
   shouldShowMessageTeaser,
   sortMessages,
 } from "@/lib/businessModules/chat/shared/utils";
@@ -49,18 +51,19 @@ export function useRoomTimeline(roomId: string) {
     () => matrixClient.getUserId(),
     [matrixClient],
   );
-  const room = useRef(
-    currentRoom ? getRoomNameAndCommunicationType(currentRoom) : null,
-  );
+  const room = useRef<RoomWithCommunicationType | null>(null);
+  if (room?.current === null && currentRoom) {
+    room.current = getRoomNameAndCommunicationType(matrixClient, currentRoom);
+  }
   const showMessageTeaser = useMessageTeaser();
-  const timelineWindow = useRef<TimelineWindow>(
-    room.current
-      ? new TimelineWindow(
-          matrixClient,
-          room.current.room.getUnfilteredTimelineSet(),
-        )
-      : null,
-  );
+  const timelineWindow = useRef<TimelineWindow | null>(null);
+  if (timelineWindow.current === null && room.current) {
+    timelineWindow.current = new TimelineWindow(
+      matrixClient,
+      room.current.room.getUnfilteredTimelineSet(),
+    );
+  }
+
   const hasInitialData = useRef(false);
 
   const getMembership = useCallback(
@@ -201,6 +204,9 @@ export function useRoomTimeline(roomId: string) {
           return { removed: messageId };
         }
         case "m.room.member": {
+          const membershipChanged = isMembershipChanged(event);
+          if (!membershipChanged) return;
+
           const membership = getMembership(event);
           const senderUser = sender ? room?.getMember(sender) : undefined;
           return {

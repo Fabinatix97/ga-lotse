@@ -20,7 +20,20 @@ export function useGetOpenDocuments(request: GetOpenDocumentsRequest) {
       openDataApi
         .getOpenDocumentsRaw(request)
         .then(unwrapRawResponse)
-        .then(({ elements }) => elements.map(mapToOpenDataRow)),
+        .then(({ elements, totalElements, totalPages }) => ({
+          elements: elements.map(mapToOpenDataRow),
+          totalElements,
+          totalPages,
+        })),
+  });
+}
+
+export function useGetVersion(versionId: string) {
+  const openDataApi = useOpenDataApi();
+
+  return useSuspenseQuery({
+    queryKey: openDataApiQueryKey(["getVersion", versionId]),
+    queryFn: () => openDataApi.getVersion(versionId),
   });
 }
 

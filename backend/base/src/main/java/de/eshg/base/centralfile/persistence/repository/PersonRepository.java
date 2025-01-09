@@ -110,6 +110,8 @@ public interface PersonRepository
     """)
   List<Person> findAllByExternalIdInAndReferencePersonIsNotNullOrderById(List<UUID> ids);
 
+  List<Person> findAllByExternalIdInAndReferencePersonIsNullOrderById(List<UUID> ids);
+
   @Query("select p.referencePerson from Person p where p.externalId = :fileStateId")
   Optional<Person> findReferencePersonByFileStateId(UUID fileStateId);
 
@@ -127,10 +129,11 @@ public interface PersonRepository
       """
 select fileState.externalId from Person fileState
 join Person ref on fileState.referencePerson.id = ref.id
-where ref.externalId = :refExternalId
+where ref.externalId in :refExternalIds
 order by fileState.id
 """)
-  List<UUID> findAllFileStateIdsByReferencePerson(@Param("refExternalId") UUID refExternalId);
+  List<UUID> findAllFileStateIdsByReferencePerson(
+      @Param("refExternalIds") List<UUID> refExternalIds);
 
   @Query(
       """

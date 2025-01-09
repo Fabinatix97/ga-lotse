@@ -40,6 +40,20 @@ export function useGetContactQuery(id: string) {
   });
 }
 
+export function useGetOptionalContact(id?: string) {
+  const contactApi = useContactApi();
+  return useQuery({
+    queryKey: contactApiQueryKey(["getContact", id]),
+    queryFn: async (): Promise<Contact> => {
+      if (id === undefined) {
+        throw Error("Query must only be enabled if id is defined.");
+      }
+      return await contactApi.getContact(id);
+    },
+    enabled: id !== undefined,
+  });
+}
+
 export function useGetContactHistoryQuery(request: GetContactHistoryRequest) {
   const contactApi = useContactApi();
   return useSuspenseQuery({

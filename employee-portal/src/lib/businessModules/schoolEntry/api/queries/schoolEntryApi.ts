@@ -12,6 +12,7 @@ import {
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledBackgroundQuery } from "@eshg/lib-portal/api/useHandledBackgroundQuery";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { isDefined } from "remeda";
 
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { mapAnamnesis } from "@/lib/businessModules/schoolEntry/api/models/Anamnesis";
@@ -52,6 +53,23 @@ export function getProcedureQuery(
     queryKey: schoolEntryApiQueryKey(["getProcedure", procedureId]),
     queryFn: () => schoolEntryApi.getProcedure(procedureId),
     select: mapProcedureDetails,
+  });
+}
+
+export function getProceduresByPersonQuery(
+  schoolEntryApi: SchoolEntryApi,
+  personId: string | undefined,
+) {
+  return queryOptions({
+    queryKey: schoolEntryApiQueryKey(["getProceduresByPerson", personId]),
+    queryFn: () =>
+      isDefined(personId)
+        ? schoolEntryApi
+            .getProceduresByPersonQueryRaw({ personId })
+            .then(unwrapRawResponse)
+        : Promise.reject(new Error("Expected personId to be defined")),
+    select: (response) => response.procedures,
+    enabled: isDefined(personId),
   });
 }
 
