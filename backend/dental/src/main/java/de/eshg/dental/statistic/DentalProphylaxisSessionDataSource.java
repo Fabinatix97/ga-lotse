@@ -60,9 +60,13 @@ public class DentalProphylaxisSessionDataSource
       DentalProphylaxisSessionAttributes attribute,
       TimeRange timeRange) {
     return switch (attribute) {
-      case INSTITUTION_ID -> prophylaxisSession.getInstitutionId();
-      case SCHOOL_YEAR -> getSchoolYear(prophylaxisSession);
-      case GROUP_NAME -> prophylaxisSession.getGroupName();
+      case EINRICHTUNG -> prophylaxisSession.getInstitutionId();
+      case SCHULJAHR -> getSchoolYear(prophylaxisSession);
+      case GRUPPE -> prophylaxisSession.getGroupName();
+      case TYP -> prophylaxisSession.getType().name();
+      case ANZAHL_KINDER -> prophylaxisSession.getExaminations().size();
+      case REIHENUNTERSUCHUNG -> prophylaxisSession.isScreening();
+      case FLUORIDIERUNGSLACK -> prophylaxisSession.getFluoridationVarnish();
     };
   }
 

@@ -7,11 +7,14 @@ package de.eshg.dental.business.model;
 
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.contact.api.ContactDto;
-import de.eshg.dental.domain.model.Child;
+import de.eshg.base.user.api.UserDto;
+import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.domain.model.ProphylaxisSession;
 import java.util.Map;
+import java.util.UUID;
 
 public record ProphylaxisSessionWithAugmentedData(
     ProphylaxisSession prophylaxisSession,
     ContactDto institution,
-    Map<Child, GetPersonFileStateResponse> participants) {}
+    Map<Examination, GetPersonFileStateResponse> participants,
+    Map<UUID, UserDto> users) {}

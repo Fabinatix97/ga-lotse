@@ -90,12 +90,16 @@ function useRowNavigation<TData>({
   }
 
   if ("onClick" in rowNavigation) {
+    const rowNavigationOnClick = rowNavigation.onClick(row);
     return {
       rowNavigationRoute: undefined,
       handleNavigate: () => {
-        rowNavigation.onClick(row);
+        if (isDefined(rowNavigationOnClick)) {
+          rowNavigationOnClick();
+        }
       },
-      cellCanNavigate: (cell) => canNavigate(row, cell),
+      cellCanNavigate: (cell) =>
+        isDefined(rowNavigationOnClick) && canNavigate(row, cell),
     };
   }
 

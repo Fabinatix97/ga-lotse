@@ -20,9 +20,6 @@ public class TaskAggregationSpecificationBuilder {
   private Set<BusinessModule> businessModules;
   private Set<TaskTypeDto> taskTypes;
   private Set<TaskStatusDto> taskStatuses;
-  private Boolean hasDueAt;
-  private Boolean isOverdue;
-  private Boolean wasAssignedByOther;
   private GetTasksSortByDto sortBy = GetTasksSortByDto.PRIORITY;
   private GetTasksSortOrderDto sortOrder = GetTasksSortOrderDto.ASC;
   private Integer limit = 50;
@@ -54,21 +51,6 @@ public class TaskAggregationSpecificationBuilder {
     return this;
   }
 
-  public TaskAggregationSpecificationBuilder setHasDueAt(Boolean hasDueAt) {
-    this.hasDueAt = hasDueAt;
-    return this;
-  }
-
-  public TaskAggregationSpecificationBuilder setIsOverdue(Boolean isOverdue) {
-    this.isOverdue = isOverdue;
-    return this;
-  }
-
-  public TaskAggregationSpecificationBuilder setWasAssignedByOther(Boolean wasAssignedByOther) {
-    this.wasAssignedByOther = wasAssignedByOther;
-    return this;
-  }
-
   public TaskAggregationSpecificationBuilder setSortBy(GetTasksSortByDto sortBy) {
     this.sortBy = sortBy;
     return this;
@@ -96,9 +78,6 @@ public class TaskAggregationSpecificationBuilder {
         businessModules,
         taskTypes,
         taskStatuses,
-        hasDueAt,
-        isOverdue,
-        wasAssignedByOther,
         sortBy,
         sortOrder,
         limit,

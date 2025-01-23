@@ -208,11 +208,12 @@ Get the difference between the requested file state and its associated reference
           """
 Create a new person file state as well as a new associated reference person,
 without any matching to existing data.
-This endpoint is intended for users from the citizen portal.
-As long as no verification by the health department has taken place (see
-endpoint 'updateReferencePerson'), these data will remain in an untrusted status
-in which they are neither part of search results nor used in other processes
-such as automatic linking.
+This endpoint requires a valid authentication from the citizen portal.
+The created data are labelled as external and are thus regarded as temporary,
+unconfirmed and untrustworthy. It must undergo a verification process performed
+by a health office employee before it can be used for any official processes.
+The only exception to this are GDPR-related procedures, where the data may be
+used immediately.
 """)
   AddPersonFileStateResponse addPersonFromExternalSource(
       @RequestBody @Valid ExternalAddPersonFileStateRequest request);

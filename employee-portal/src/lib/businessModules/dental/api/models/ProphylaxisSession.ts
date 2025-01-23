@@ -4,9 +4,10 @@
  */
 
 import {
+  ApiFluoridationVarnish,
   ApiProphylaxisSession,
   ApiProphylaxisType,
-} from "@eshg/employee-portal-api/dental";
+} from "@eshg/dental-api";
 
 import { BaseEntity } from "@/lib/shared/api/models/BaseEntity";
 
@@ -17,6 +18,8 @@ export interface ProphylaxisSession extends BaseEntity {
   institution: Institution;
   groupName: string;
   type: ApiProphylaxisType;
+  screening: boolean;
+  fluoridationVarnish?: ApiFluoridationVarnish;
 }
 
 export function mapProphylaxisSession(

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiContactType } from "@eshg/employee-portal-api/base";
+import { ApiContactType } from "@eshg/base-api";
 import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
 import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import {

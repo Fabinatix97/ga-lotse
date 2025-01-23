@@ -61,7 +61,6 @@ interface VaccineFormProps {
   initialValues: VaccineFormValues;
   formRef: Ref<SidebarFormHandle>;
   title: string;
-  defaultBatchIdEnabled: boolean;
   submitButtonLabel: string;
   onSubmit: (values: VaccineFormValues) => Promise<void>;
   onCancel: () => void;
@@ -185,13 +184,11 @@ export function VaccineForm(props: Readonly<VaccineFormProps>) {
                 validate={validateNonNegativeNumberWithAtMostTwoDecimalDigits}
                 required={"Bitte einen Preis angeben"}
               />
-              {props.defaultBatchIdEnabled && (
-                <InputField
-                  name="currentBatchId"
-                  label="Aktuelle Chargennummer"
-                  validate={validateBatchId}
-                />
-              )}
+              <InputField
+                name="currentBatchId"
+                label="Aktuelle Chargennummer"
+                validate={validateBatchId}
+              />
               <Stack gap={2} rowGap={2}>
                 <FieldArray name="offsets">
                   {({ push, remove }) => (

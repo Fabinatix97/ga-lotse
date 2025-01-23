@@ -9,7 +9,7 @@ import {
   ApiInstitutionContact,
   ApiPersonContact,
   ApiSalutation,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 
 import {

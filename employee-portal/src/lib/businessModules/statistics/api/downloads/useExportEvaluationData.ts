@@ -10,12 +10,12 @@ import { useDataExportWithSizeCheck } from "@/lib/businessModules/statistics/api
 
 export function useExportEvaluationData() {
   const dataExportApi = useDataExportApi();
-  const { download, downloadContainerRef } = useFileDownload(
+  const { download } = useFileDownload(
     ({ evaluationId }: { evaluationId: string }) =>
       dataExportApi.exportEvaluationDataRaw({
         evaluationId,
       }),
   );
 
-  return useDataExportWithSizeCheck({ download, downloadContainerRef });
+  return useDataExportWithSizeCheck({ download });
 }

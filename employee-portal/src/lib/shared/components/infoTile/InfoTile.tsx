@@ -16,9 +16,11 @@ export interface InfoTileProps extends RequiresChildren {
   onEdit?: () => void;
   footer?: ReactNode;
   controls?: ReactNode;
+  "data-testid"?: string;
 }
 
 export function InfoTile({
+  "data-testid": testId,
   name,
   title,
   onEdit,
@@ -27,7 +29,7 @@ export function InfoTile({
   controls,
 }: InfoTileProps) {
   return (
-    <InformationSheet>
+    <InformationSheet data-testid={testId}>
       <Box flexGrow={1}>
         <DetailsSection
           data-testid={name}

@@ -28,9 +28,12 @@ export function PasswordField(props: Readonly<PasswordInputProps>) {
       onBlur={() => setVisible(false)}
       endDecorator={
         <IconButton
-          style={{
+          sx={{
             backgroundColor: "transparent",
             color: theme.palette.text.primary,
+            "&:hover": {
+              backgroundColor: "transparent",
+            },
           }}
           label={props.visibilityLabel ?? (visible ? "Verstecken" : "Anzeigen")}
           disabled={false}

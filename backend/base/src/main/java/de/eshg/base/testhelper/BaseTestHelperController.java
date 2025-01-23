@@ -13,6 +13,7 @@ import de.eshg.base.feature.BaseFeatureToggle;
 import de.eshg.base.inventory.api.GetInventoryItemsResponse;
 import de.eshg.base.keycloak.CitizenKeycloakClient;
 import de.eshg.base.keycloak.MasterKeycloakProvisioning;
+import de.eshg.base.notification.AuditLogNotificationJob;
 import de.eshg.base.resource.api.GetResourcesResponse;
 import de.eshg.base.testhelper.api.CitizenUserDto;
 import de.eshg.base.testhelper.api.CreateCalendarTestEventsRequest;
@@ -55,6 +56,7 @@ public class BaseTestHelperController extends TestHelperController
   private final AuditLogTestHelperService auditLogTestHelperService;
   private final BusinessModulesConfigurationProperties businessModulesConfigurationProperties;
   private final CitizenKeycloakClient citizenKeycloakClient;
+  private final AuditLogNotificationJob auditLogNotificationJob;
 
   public BaseTestHelperController(
       BaseTestHelperService baseTestHelperService,
@@ -63,7 +65,8 @@ public class BaseTestHelperController extends TestHelperController
       AuditLogTestHelperService auditLogTestHelperService,
       EnvironmentConfig environmentConfig,
       BusinessModulesConfigurationProperties businessModulesConfigurationProperties,
-      CitizenKeycloakClient citizenKeycloakClient) {
+      CitizenKeycloakClient citizenKeycloakClient,
+      AuditLogNotificationJob auditLogNotificationJob) {
     super(baseTestHelperService, environmentConfig);
     this.baseTestHelperService = baseTestHelperService;
     this.baseFeatureToggle = baseFeatureToggle;
@@ -71,6 +74,7 @@ public class BaseTestHelperController extends TestHelperController
     this.auditLogTestHelperService = auditLogTestHelperService;
     this.businessModulesConfigurationProperties = businessModulesConfigurationProperties;
     this.citizenKeycloakClient = citizenKeycloakClient;
+    this.auditLogNotificationJob = auditLogNotificationJob;
   }
 
   @Override
@@ -135,8 +139,8 @@ public class BaseTestHelperController extends TestHelperController
   }
 
   @Override
-  public UserDto createTemporaryUser() {
-    return baseTestHelperService.createTemporaryTestUser();
+  public UserDto createTemporaryUser(String group) {
+    return baseTestHelperService.createTemporaryTestUser(group);
   }
 
   @Override
@@ -222,5 +226,10 @@ public class BaseTestHelperController extends TestHelperController
   @Override
   public void runArchivingJob() {
     auditLogTestHelperService.runArchivingJob();
+  }
+
+  @Override
+  public void runAuditlogNotificationJob() {
+    auditLogNotificationJob.run();
   }
 }

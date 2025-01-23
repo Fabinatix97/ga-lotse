@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/base-api";
 import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
 import { ApiGetProcedure200Response } from "@eshg/employee-portal-api/measlesProtection";
 import { Row } from "@eshg/lib-portal/components/Row";

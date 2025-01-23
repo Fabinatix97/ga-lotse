@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiProcedureStatus } from "@eshg/employee-portal-api/base";
+import { ApiProcedureStatus } from "@eshg/base-api";
 
 export const procedureStatusNames = {
   [ApiProcedureStatus.Draft]: "Entwurf",

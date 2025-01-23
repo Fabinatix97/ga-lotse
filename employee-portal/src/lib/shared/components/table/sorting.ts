@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiSortDirection } from "@eshg/employee-portal-api/base";
+import { ApiSortDirection } from "@eshg/base-api";
 
 import { CustomSortingProps } from "@/lib/shared/hooks/searchParams/useTableControl";
 

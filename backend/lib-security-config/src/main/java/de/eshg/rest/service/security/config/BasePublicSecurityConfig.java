@@ -9,6 +9,7 @@ import static org.springframework.http.HttpMethod.*;
 
 import de.eshg.lib.keycloak.CitizenPermissionRole;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
+import de.eshg.rest.service.security.config.BaseUrls.Base;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,8 +19,9 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
     super("base");
     calendarsAndEvents();
     users();
+    citizenUsers();
     mukFacilityLinks();
-    bundIdPersonLinkS();
+    bundIdPersonLinks();
     notifications();
     inventory();
     resources();
@@ -33,6 +35,11 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
     department();
     features();
     config();
+    icd10codes();
+  }
+
+  private void citizenUsers() {
+    requestMatchers(GET, BaseUrls.Base.CITIZEN_USER_API + "/self").permitAll();
   }
 
   private void mukFacilityLinks() {
@@ -42,12 +49,12 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
         .hasRole(EmployeePermissionRole.BASE_MUK_FACILITY_LINK_WRITE);
   }
 
-  private void bundIdPersonLinkS() {
+  private void bundIdPersonLinks() {
     requestMatchers(
             GET, BaseUrls.Base.BUNDID_PERSON_LINK_API + BaseUrls.Base.BUNDID_SELF_USER_PERSON)
         .hasRole(CitizenPermissionRole.BUND_ID_USER);
     requestMatchers(POST, BaseUrls.Base.BUNDID_PERSON_LINK_API)
-        .hasRole(EmployeePermissionRole.BASE_BUNDID_PERSON_LINK_WRITE);
+        .hasRole(EmployeePermissionRole.BASE_BUND_ID_PERSON_LINK_WRITE);
   }
 
   private void proceduresAndTasks() {
@@ -90,6 +97,8 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
             EmployeePermissionRole.BASE_FACILITIES_READ,
             EmployeePermissionRole.PROCEDURE_ARCHIVE,
             EmployeePermissionRole.PROCEDURE_ARCHIVE_ADMIN);
+    requestMatchers(GET, BaseUrls.Base.FACILITY_API + "/centralfilestates/*/diff")
+        .hasRole(EmployeePermissionRole.BASE_FACILITIES_READ);
     requestMatchers(POST, BaseUrls.Base.FACILITY_API + "/reference/*/update")
         .hasAnyRole(
             EmployeePermissionRole.BASE_FACILITIES_WRITE,
@@ -97,16 +106,44 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
   }
 
   private void gdpr() {
+    requestMatchers(GET, BaseUrls.Base.GDPR_PROCEDURE_API + "/*/central-file-download-package")
+        .hasAnyRole(
+            EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ,
+            CitizenPermissionRole.BUND_ID_USER,
+            CitizenPermissionRole.MUK_USER);
+    requestMatchers(GET, BaseUrls.Base.GDPR_PROCEDURE_API + "/*/downloads")
+        .hasAnyRole(
+            EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW,
+            CitizenPermissionRole.BUND_ID_USER,
+            CitizenPermissionRole.MUK_USER);
+    requestMatchers(GET, BaseUrls.Base.GDPR_PROCEDURE_API + "/*")
+        .hasAnyRole(
+            EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ,
+            EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW,
+            CitizenPermissionRole.BUND_ID_USER,
+            CitizenPermissionRole.MUK_USER);
+    gdprOnlinePortal();
+    gdprEmployee();
+  }
+
+  private void gdprOnlinePortal() {
     requestMatchers(
             POST,
             BaseUrls.Base.GDPR_PROCEDURE_API + BaseUrls.Base.GDPR_PROCEDURE_CITIZEN_PORTAL_URL)
-        .hasRole(CitizenPermissionRole.MUK_USER);
+        .hasAnyRole(CitizenPermissionRole.BUND_ID_USER, CitizenPermissionRole.MUK_USER);
+  }
+
+  private void gdprEmployee() {
     requestMatchers(GET, BaseUrls.Base.GDPR_PROCEDURE_API + "/*/fileStateIds")
-        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW);
-    requestMatchers(GET, BaseUrls.Base.GDPR_PROCEDURE_API + "/*/downloads")
         .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW);
     requestMatchers(POST, BaseUrls.Base.GDPR_PROCEDURE_API + "/*/downloads")
         .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW);
+    requestMatchers(
+            GET,
+            BaseUrls.Base.GDPR_PROCEDURE_API
+                + BaseUrls.Base.GDPR_PROCEDURE_CITIZEN_PORTAL_URL
+                + "/self/linked-gdpr-procedures")
+        .hasAnyRole(CitizenPermissionRole.BUND_ID_USER, CitizenPermissionRole.MUK_USER);
     requestMatchers(GET, BaseUrls.Base.GDPR_PROCEDURE_API + "/**")
         .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ);
     requestMatchers(POST, BaseUrls.Base.GDPR_PROCEDURE_API + "/**")
@@ -281,5 +318,10 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
 
   private void config() {
     requestMatchers(GET, BaseUrls.Base.PUBLIC_CONFIG_API).permitAll();
+  }
+
+  private void icd10codes() {
+    requestMatchers(GET, Base.ICD_10_CODES_API).permitAll();
+    requestMatchers(POST, Base.ICD_10_CODES_API).permitAll();
   }
 }

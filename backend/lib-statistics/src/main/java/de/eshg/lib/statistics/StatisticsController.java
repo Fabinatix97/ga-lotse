@@ -42,7 +42,7 @@ public class StatisticsController implements StatisticsApi {
   }
 
   @Override
-  @Transactional(readOnly = true)
+  @Transactional
   public GetSpecificDataResponse getSpecificData(GetSpecificDataRequest getSpecificDataRequest) {
     return statisticsService.getSpecificData(getSpecificDataRequest);
   }

@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiImportStatistics,
-  ImportXlsxRequest,
-} from "@eshg/employee-portal-api/dental";
+import { ApiImportStatistics, ImportXlsxRequest } from "@eshg/dental-api";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
 

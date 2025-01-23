@@ -7,7 +7,7 @@ import {
   ApiAddFacilityFileStateRequest,
   ApiAddFacilityFileStateResponse,
   ApiFacilityContactPerson,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { ApiDataOrigin } from "@eshg/employee-portal-api/inspection";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { isNullish } from "remeda";

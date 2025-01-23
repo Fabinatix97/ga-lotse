@@ -132,7 +132,7 @@ export function EChart(props: {
         },
         grid: {
           top: 64,
-          bottom: 48,
+          bottom: 56,
         },
         series: seriesOld,
       });
@@ -174,7 +174,7 @@ export function EChart(props: {
       },
       grid: {
         top: 64,
-        bottom: 48,
+        bottom: 56,
       },
       color: [
         "#226FB0",

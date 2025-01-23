@@ -11,11 +11,13 @@ import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.base.contact.ContactApi;
 import de.eshg.base.contact.api.*;
+import de.eshg.base.icd10.Icd10CodeApi;
+import de.eshg.base.icd10.api.Icd10CodeDto;
+import de.eshg.base.icd10.api.SearchIcd10CodesResponse;
 import de.eshg.base.testhelper.BaseTestHelperApi;
 import de.eshg.lib.appointmentblock.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.lib.appointmentblock.testhelper.AppointmentBlockGroupsPopulator;
-import de.eshg.schoolentry.Icd10CodeController;
 import de.eshg.schoolentry.LabelController;
 import de.eshg.schoolentry.SchoolEntryController;
 import de.eshg.schoolentry.api.*;
@@ -47,7 +49,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
   private final SchoolEntryController schoolEntryController;
   private final SchoolEntryProcedureRepository schoolEntryProcedureRepository;
   private final LabelController labelController;
-  private final Icd10CodeController icd10CodeController;
+  private final Icd10CodeApi icd10CodeApi;
   private final BaseTestHelperApi baseTestHelperApi;
   private final ContactApi contactApi;
   private final AppointmentBlockProperties appointmentBlockProperties;
@@ -63,7 +65,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
       BaseTestHelperApi baseTestHelperApi,
       @SuppressWarnings("unused") // Used to define a dependency
           AppointmentBlockGroupsPopulator appointmentBlockGroupsPopulator,
-      Icd10CodeController icd10CodeController,
+      Icd10CodeApi icd10CodeApi,
       ContactApi contactApi,
       AppointmentBlockProperties appointmentBlockProperties) {
     super(
@@ -77,7 +79,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
     this.schoolEntryProcedureRepository = schoolEntryProcedureRepository;
     this.labelController = labelController;
     this.baseTestHelperApi = baseTestHelperApi;
-    this.icd10CodeController = icd10CodeController;
+    this.icd10CodeApi = icd10CodeApi;
     this.contactApi = contactApi;
     this.appointmentBlockProperties = appointmentBlockProperties;
   }
@@ -453,7 +455,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
         .flatMap(
             searchString -> {
               SearchIcd10CodesResponse searchResponse =
-                  icd10CodeController.searchIcd10Codes(searchString, List.of());
+                  icd10CodeApi.searchIcd10Codes(searchString, List.of());
               return searchResponse.codes().stream();
             })
         .map(Icd10CodeDto::code)

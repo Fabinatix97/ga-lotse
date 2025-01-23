@@ -10,6 +10,7 @@ import static de.eshg.base.keycloak.EmployeeUserAttribute.AUDIT_LOG_ENCRYPTED_PR
 import static de.eshg.base.keycloak.EmployeeUserAttribute.AUDIT_LOG_KEY_IDENTIFIER;
 import static de.eshg.base.keycloak.EmployeeUserAttribute.AUDIT_LOG_PUBLIC_KEY;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.keycloak.EmployeeKeycloakClient;
 import de.eshg.base.keycloak.EventFilterConfig;
 import de.eshg.base.keycloak.KeycloakEventType;
@@ -23,13 +24,16 @@ import de.eshg.keycloak.api.user.model.GetActiveSessionResponse;
 import de.eshg.keycloak.api.user.model.KeycloakApiGroupMemberDto;
 import de.eshg.keycloak.api.user.model.KeycloakApiUserDto;
 import de.eshg.lib.auditlog.AuditLogger;
+import de.eshg.lib.common.BusinessModule;
 import de.eshg.lib.keycloak.ModuleLeaderGroup;
+import de.eshg.lib.keycloak.ModuleMemberGroup;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.keycloak.admin.client.resource.GroupResource;
 import org.keycloak.admin.client.resource.RealmResource;
@@ -269,5 +273,23 @@ public class UserService {
       UserRepresentation user, int offset, int limit, Set<KeycloakEventType> types) {
     return employeeKeycloakClient.getUserEvents(
         new EventFilterConfig(user.getId(), null, types, null, null, offset, limit));
+  }
+
+  public Set<BusinessModule> getSelfBusinessModules() {
+    Set<ModuleMemberGroup> selfMemberGroups =
+        getUserKeycloakGroups().stream()
+            .map(ModuleMemberGroup::fromValueGracefullyOrNull)
+            .filter(Objects::nonNull)
+            .collect(StreamUtil.toLinkedHashSet());
+
+    return Arrays.stream(BusinessModule.values())
+        .filter(UserService.isSelfBusinessModuleFilter(selfMemberGroups))
+        .collect(StreamUtil.toLinkedHashSet());
+  }
+
+  private static Predicate<BusinessModule> isSelfBusinessModuleFilter(
+      Set<ModuleMemberGroup> selfMemberGroups) {
+    return businessModule ->
+        selfMemberGroups.contains(KeycloakMapper.mapModuleToGroup(businessModule));
   }
 }

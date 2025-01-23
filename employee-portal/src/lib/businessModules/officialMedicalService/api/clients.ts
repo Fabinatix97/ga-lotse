@@ -7,6 +7,7 @@ import {
   AppointmentBlockApi,
   AppointmentTypeApi,
   ApprovalRequestApi,
+  ConcernApi,
   Configuration,
   EmployeeOmsProcedureApi,
   FileApi,
@@ -50,4 +51,9 @@ export function useApprovalRequestApi() {
 export function useEmployeeOmsProcedureApi() {
   const configuration = useConfiguration();
   return new EmployeeOmsProcedureApi(configuration);
+}
+
+export function useConcernApi() {
+  const configuration = useConfiguration();
+  return new ConcernApi(configuration);
 }

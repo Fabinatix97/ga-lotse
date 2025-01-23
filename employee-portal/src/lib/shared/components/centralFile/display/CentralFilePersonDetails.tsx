@@ -3,16 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  ApiCountryCode,
-  ApiGender,
-  ApiSalutation,
-} from "@eshg/employee-portal-api/base";
+import { ApiCountryCode, ApiGender, ApiSalutation } from "@eshg/base-api";
 import {
   PERSON_FIELD_NAME,
   SALUTATION_VALUES,
 } from "@eshg/lib-portal/components/formFields/constants";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { calculateAge } from "@eshg/lib-portal/helpers/dateTime";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Stack } from "@mui/joy";
@@ -27,7 +24,6 @@ import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsCol
 import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
 import { ExternalLinkDetailsCell } from "@/lib/shared/components/detailsSection/ExternalLinkDetailsCell";
 import { BaseAddress } from "@/lib/shared/helpers/address";
-import { translateCountry } from "@/lib/shared/helpers/i18n";
 
 export interface CentralFilePerson {
   readonly firstName: string;

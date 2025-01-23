@@ -4,7 +4,6 @@
  */
 
 import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
-import { HiddenContainer } from "@eshg/lib-portal/components/HiddenContainer";
 import type { SvgIconComponent } from "@mui/icons-material";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import FileDownloadOutlined from "@mui/icons-material/FileDownloadOutlined";
@@ -17,7 +16,7 @@ import {
   Stack,
   Typography,
 } from "@mui/joy";
-import { PropsWithChildren, useRef } from "react";
+import { PropsWithChildren } from "react";
 
 import { ImportProcessResult } from "@/lib/businessModules/inspection/api/mutations/processImport";
 import { PotentialDuplicatesFilterProps } from "@/lib/businessModules/inspection/components/facility/pending/PotentialDuplicatesWarning";
@@ -140,28 +139,19 @@ function Section({
 }
 
 function FileDownload({ file }: Readonly<{ file: File }>) {
-  const downloadContainerRef = useRef<HTMLDivElement>(null);
-
   function handleDownload() {
-    const downloadContainer = downloadContainerRef.current;
-    if (downloadContainer === null) {
-      throw new Error("Download container is not initialized");
-    }
-    downloadFileAndOpen(file, downloadContainer);
+    downloadFileAndOpen(file);
   }
 
   return (
-    <>
-      <Button
-        onClick={handleDownload}
-        variant="soft"
-        color="warning"
-        startDecorator={<FileDownloadOutlined />}
-        sx={{ justifyContent: "flex-start" }}
-      >
-        {file.name}
-      </Button>
-      <HiddenContainer ref={downloadContainerRef} />
-    </>
+    <Button
+      onClick={handleDownload}
+      variant="soft"
+      color="warning"
+      startDecorator={<FileDownloadOutlined />}
+      sx={{ justifyContent: "flex-start" }}
+    >
+      {file.name}
+    </Button>
   );
 }

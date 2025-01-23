@@ -13,7 +13,7 @@ export function useExportDiagramData(diagramId: string) {
   const mutation = useHandledMutation({
     mutationFn: () => dataExportApi.exportDiagramData(diagramId),
     onSuccess: (result) =>
-      downloadFileAndOpen(new File([result], "Diagramm.xlsx"), document.body),
+      downloadFileAndOpen(new File([result], "Diagramm.xlsx")),
   });
 
   return () => {

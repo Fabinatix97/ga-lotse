@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiGetReferenceFacilityResponse } from "@eshg/employee-portal-api/base";
+import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
 import { AlertProps } from "@eshg/lib-portal/components/Alert";
 import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";

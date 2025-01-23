@@ -9,6 +9,10 @@ import de.eshg.base.address.persistence.embeddable.EmbeddableDomesticAddress;
 import de.eshg.base.centralfile.persistence.entity.*;
 import de.eshg.base.centralfile.persistence.repository.FacilityRepository;
 import de.eshg.base.centralfile.persistence.repository.PersonRepository;
+import de.eshg.base.contact.persistence.ContactService;
+import de.eshg.base.contact.persistence.entity.Contact;
+import de.eshg.base.contact.persistence.entity.InstitutionContact;
+import de.eshg.base.contact.persistence.entity.InstitutionContactCategory;
 import de.eshg.base.statistics.api.BaseAttribute;
 import de.eshg.base.statistics.api.BaseAvailableDataSource;
 import de.eshg.base.statistics.api.BaseDataTableHeader;
@@ -42,14 +46,17 @@ public class StatisticsController implements BaseStatisticsApi {
   private final FacilityRepository facilityRepository;
   private final PersonRepository personRepository;
   private final StreetController streetController;
+  private final ContactService contactService;
 
   public StatisticsController(
       FacilityRepository facilityRepository,
       PersonRepository personRepository,
-      StreetController streetController) {
+      StreetController streetController,
+      ContactService contactService) {
     this.facilityRepository = facilityRepository;
     this.personRepository = personRepository;
     this.streetController = streetController;
+    this.contactService = contactService;
   }
 
   @Override
@@ -63,7 +70,9 @@ public class StatisticsController implements BaseStatisticsApi {
                         Arrays.stream(PersonAttribute.values()),
                         Arrays.stream(AddressAttribute.values())))),
             new BaseAvailableDataSource(
-                SubjectType.FACILITY, mapToAttributes(Arrays.stream(AddressAttribute.values())))));
+                SubjectType.FACILITY, mapToAttributes(Arrays.stream(AddressAttribute.values()))),
+            new BaseAvailableDataSource(
+                SubjectType.CONTACT, mapToAttributes(Arrays.stream(ContactAttributes.values())))));
   }
 
   private List<BaseAttribute> mapToAttributes(Stream<CommonAttribute> commonAttributeStream) {
@@ -84,21 +93,27 @@ public class StatisticsController implements BaseStatisticsApi {
   @Transactional(readOnly = true)
   public GetBaseStatisticsDataResponse getSpecificData(
       GetBaseStatisticsDataRequest getSpecificDataRequest) {
-    if (getSpecificDataRequest.dataSourceName().equals(SubjectType.PERSON.name())) {
-      return getPersonFileStateResponse(getSpecificDataRequest);
-    } else if (getSpecificDataRequest.dataSourceName().equals(SubjectType.FACILITY.name())) {
-      return getFacilityFileStateResponse(getSpecificDataRequest);
-    } else {
-      throw new BadRequestException(
-          "Data source with name '%s' not found"
-              .formatted(getSpecificDataRequest.dataSourceName()));
-    }
+    SubjectType subjectType =
+        Arrays.stream(SubjectType.values())
+            .filter(sT -> sT.name().equals(getSpecificDataRequest.dataSourceName()))
+            .findFirst()
+            .orElseThrow(
+                () ->
+                    new BadRequestException(
+                        "Data source with name '%s' not found"
+                            .formatted(getSpecificDataRequest.dataSourceName())));
+
+    return switch (subjectType) {
+      case PERSON -> getPersonFileStateResponse(getSpecificDataRequest);
+      case FACILITY -> getFacilityFileStateResponse(getSpecificDataRequest);
+      case CONTACT -> getContactResponse(getSpecificDataRequest);
+    };
   }
 
   private GetBaseStatisticsDataResponse getPersonFileStateResponse(
       GetBaseStatisticsDataRequest getSpecificDataRequest) {
     List<CommonAttribute> relevantCommonAttributes =
-        getRelevantBaseAttributes(getSpecificDataRequest.attributeCodes());
+        getRelevantPersonAttributes(getSpecificDataRequest.attributeCodes());
     if (relevantCommonAttributes.isEmpty()) {
       return new GetBaseStatisticsDataResponse(
           new BaseDataTableHeader(Collections.emptyList()), null);
@@ -115,36 +130,27 @@ public class StatisticsController implements BaseStatisticsApi {
     return new GetBaseStatisticsDataResponse(new BaseDataTableHeader(attributes), dataRows);
   }
 
-  private List<CommonAttribute> getRelevantBaseAttributes(List<String> attributeCodes) {
+  private List<CommonAttribute> getRelevantPersonAttributes(List<String> attributeCodes) {
     List<CommonAttribute> commonAttributes = new ArrayList<>();
     for (String attributeCode : attributeCodes) {
-      PersonAttribute personAttribute = getPersonAttribute(attributeCode);
-      if (personAttribute != null) {
-        commonAttributes.add(personAttribute);
+      Optional<PersonAttribute> personAttributeOptional =
+          getAttribute(attributeCode, PersonAttribute.values());
+      if (personAttributeOptional.isPresent()) {
+        commonAttributes.add(personAttributeOptional.get());
         continue;
       }
-      AddressAttribute addressAttribute = getAddressAttribute(attributeCode);
-      if (addressAttribute != null) {
-        commonAttributes.add(addressAttribute);
-      }
+      Optional<AddressAttribute> addressAttributeOptional =
+          getAttribute(attributeCode, AddressAttribute.values());
+      addressAttributeOptional.ifPresent(commonAttributes::add);
     }
     return commonAttributes;
   }
 
-  private static PersonAttribute getPersonAttribute(String attributeCode) {
-    Optional<PersonAttribute> attributeOptional =
-        Arrays.stream(PersonAttribute.values())
-            .filter(attribute -> attribute.getCode().equals(attributeCode))
-            .findFirst();
-    return attributeOptional.orElse(null);
-  }
-
-  private static AddressAttribute getAddressAttribute(String attributeCode) {
-    Optional<AddressAttribute> attributeOptional =
-        Arrays.stream(AddressAttribute.values())
-            .filter(attribute -> attribute.getCode().equals(attributeCode))
-            .findFirst();
-    return attributeOptional.orElse(null);
+  private static <T extends CommonAttribute> Optional<T> getAttribute(
+      String attributeCode, T[] values) {
+    return Arrays.stream(values)
+        .filter(attribute -> attribute.getCode().equals(attributeCode))
+        .findFirst();
   }
 
   private static List<BaseAttribute> getAttributes(
@@ -159,8 +165,9 @@ public class StatisticsController implements BaseStatisticsApi {
 
   private static ValueType mapToValueType(SubjectType subjectType) {
     return switch (subjectType) {
-      case PERSON -> ValueType.CENTRAL_FILE_ID_PERSON;
+      case CONTACT -> ValueType.CONTACT_ID;
       case FACILITY -> ValueType.CENTRAL_FILE_ID_FACILITY;
+      case PERSON -> ValueType.CENTRAL_FILE_ID_PERSON;
     };
   }
 
@@ -304,10 +311,9 @@ public class StatisticsController implements BaseStatisticsApi {
   private List<AddressAttribute> getRelevantAddressAttributes(List<String> attributeCodes) {
     List<AddressAttribute> addressAttributes = new ArrayList<>();
     for (String attributeCode : attributeCodes) {
-      AddressAttribute addressAttribute = getAddressAttribute(attributeCode);
-      if (addressAttribute != null) {
-        addressAttributes.add(addressAttribute);
-      }
+      Optional<AddressAttribute> addressAttributeOptional =
+          getAttribute(attributeCode, AddressAttribute.values());
+      addressAttributeOptional.ifPresent(addressAttributes::add);
     }
     return addressAttributes;
   }
@@ -341,6 +347,69 @@ public class StatisticsController implements BaseStatisticsApi {
       return new BasicAddressInfo(
           facilityAddress.getCountry(), facilityAddress.getCity(), facilityAddress.getPostalCode());
     }
+  }
+
+  private GetBaseStatisticsDataResponse getContactResponse(
+      GetBaseStatisticsDataRequest getSpecificDataRequest) {
+    List<ContactAttributes> relevantContactAttributes =
+        getRelevantContactAttributes(getSpecificDataRequest.attributeCodes());
+    if (relevantContactAttributes.isEmpty()) {
+      return new GetBaseStatisticsDataResponse(
+          new BaseDataTableHeader(Collections.emptyList()), null);
+    }
+
+    List<BaseAttribute> attributes = getAttributes(relevantContactAttributes, SubjectType.CONTACT);
+
+    List<Contact> contacts = contactService.findAllById(getSpecificDataRequest.centralFileIds());
+    List<DataRow> dataRows =
+        contacts.stream()
+            .map(contact -> createDataRow(contact, relevantContactAttributes))
+            .toList();
+
+    return new GetBaseStatisticsDataResponse(new BaseDataTableHeader(attributes), dataRows);
+  }
+
+  private List<ContactAttributes> getRelevantContactAttributes(List<String> attributeCodes) {
+    List<ContactAttributes> contactAttributes = new ArrayList<>();
+    for (String attributeCode : attributeCodes) {
+      Optional<ContactAttributes> contactAttributeOptional =
+          getAttribute(attributeCode, ContactAttributes.values());
+      contactAttributeOptional.ifPresent(contactAttributes::add);
+    }
+    return contactAttributes;
+  }
+
+  private DataRow createDataRow(Contact contact, List<ContactAttributes> contactAttributes) {
+    List<Object> values = new ArrayList<>();
+    values.add(contact.getExternalId());
+
+    for (ContactAttributes contactAttribute : contactAttributes) {
+      Object value;
+      if (contact instanceof InstitutionContact institutionContact) {
+        value =
+            switch (contactAttribute) {
+              case NAME -> institutionContact.getName();
+              case OBJECT_TYPE -> mapContactObjectType(institutionContact.getCategory());
+            };
+      } else {
+        value = null;
+      }
+
+      values.add(value);
+    }
+
+    return new DataRow(values);
+  }
+
+  private String mapContactObjectType(InstitutionContactCategory category) {
+    return switch (category) {
+      case LABORATORY -> "LABORATORY";
+      case SCHOOL -> "SCHOOL";
+      case DOCTORS_OFFICE -> "DOCTORS_OFFICE";
+      case HEALTH_DEPARTMENT -> "HEALTH_DEPARTMENT";
+      case MISC -> "MISC";
+      case DAYCARE -> "DAYCARE";
+    };
   }
 
   private record BasicAddressInfo(CountryCode countryCode, String city, String postalCode) {}

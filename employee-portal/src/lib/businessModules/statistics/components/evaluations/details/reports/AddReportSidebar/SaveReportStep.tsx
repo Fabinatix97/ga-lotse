@@ -4,24 +4,25 @@
  */
 
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Divider, Stack, Typography } from "@mui/joy";
 
 import { AddReportFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/reports/AddReportSidebar/addReportFormModel";
+import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import { TimeSpanField } from "@/lib/shared/components/formFields/TimeSpanField";
 
-export function SaveReportStep() {
-  const fieldName = createFieldNameMapper<AddReportFormModel>();
+export function SaveReportStep(
+  props: SidebarStepContentProps<AddReportFormModel>,
+) {
   return (
     <Stack gap={3}>
       <Stack gap={2}>
         <InputField
-          name={fieldName("name")}
+          name={props.fieldName("name")}
           label="Name"
           required="Bitte Name angeben."
         />
         <InputField
-          name={fieldName("description")}
+          name={props.fieldName("description")}
           label="Beschreibung"
           placeholder="Optional"
         />
@@ -30,7 +31,7 @@ export function SaveReportStep() {
       <Typography level="h3" component="h2">
         Betrachtungszeitraum
       </Typography>
-      <TimeSpanField name="timeSpan" />
+      <TimeSpanField name={props.fieldName("timeSpan")} />
     </Stack>
   );
 }

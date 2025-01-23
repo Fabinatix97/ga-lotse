@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiDetailedEventWithoutCalendarId } from "@eshg/employee-portal-api/base";
+import { ApiDetailedEventWithoutCalendarId } from "@eshg/base-api";
 import { Box, Button, Divider, Stack, Typography } from "@mui/joy";
 import { isDefined } from "remeda";
 

@@ -4,14 +4,11 @@
  */
 
 import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
-import { RefObject } from "react";
 
 export function useDataExportWithSizeCheck<TParams>({
   download,
-  downloadContainerRef,
 }: {
   download: (params: TParams) => Promise<void>;
-  downloadContainerRef: RefObject<HTMLDivElement>;
 }) {
   const { error } = useAlert();
 
@@ -30,5 +27,5 @@ export function useDataExportWithSizeCheck<TParams>({
     }
   }
 
-  return { download: downloadWithSideCheck, downloadContainerRef };
+  return { download: downloadWithSideCheck };
 }

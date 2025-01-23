@@ -5,7 +5,12 @@
 
 "use client";
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/base-api";
+import { moduleUserGroup } from "@eshg/dental/shared/moduleUserGroup";
+import {
+  keyDocumentTypes,
+  systemProgressEntryTypeTitles,
+} from "@eshg/dental/shared/progressEntries";
 
 import { DentalChildPageParams } from "@/app/(businessModules)/dental/children/[childId]/layout";
 import { useDownloadDentalFile } from "@/lib/businessModules/dental/api/downloads/files";
@@ -29,11 +34,6 @@ import {
   useFetchProgressEntryDetails,
   useGetManualProgressEntryHistory,
 } from "@/lib/businessModules/dental/api/queries/progressEntryApi";
-import {
-  keyDocumentTypes,
-  systemProgressEntryTypeTitles,
-} from "@/lib/businessModules/dental/shared/constants";
-import { moduleUserGroup } from "@/lib/businessModules/dental/shared/moduleUserGroup";
 import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
 import { ProgressEntriesUrlParams } from "@/lib/shared/components/procedures/progress-entries/types";
 

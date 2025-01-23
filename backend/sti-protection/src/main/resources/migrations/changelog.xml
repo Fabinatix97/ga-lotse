@@ -14,16 +14,14 @@
   <include file="migrations/0004_add_medical_registry_procedure_types.xml"/>
   <include file="migrations/0005_medical_histories.xml"/>
   <include file="migrations/0006_remove_key_document_type_enum.xml"/>
-  <include
-    file="migrations/0007_make_file_and_manual_progress_entry_owning_side_of_approval_requests.xml"/>
+  <include file="migrations/0007_make_file_and_manual_progress_entry_owning_side_of_approval_requests.xml"/>
   <include file="migrations/0008_add_system_progress_entry_keydocument.xml"/>
   <include file="migrations/0009_add_calendar_event_id.xml"/>
   <include file="migrations/0010_cemetery_sequence.xml"/>
   <include file="migrations/0011_shedlock.xml"/>
   <include file="migrations/0012_add_waiting_room.xml"/>
   <include file="migrations/0013_extend_medical_histories.xml"/>
-  <include
-    file="migrations/0014_move_subject_and_message_text_to_mail_metadata.xml"/>
+  <include file="migrations/0014_move_subject_and_message_text_to_mail_metadata.xml"/>
   <include file="migrations/0015_add_gdpr_validation_task.xml"/>
   <include file="migrations/0016_add_started_at.xml"/>
   <include file="migrations/0017_drop_not_null_constraints.xml"/>
@@ -34,13 +32,23 @@
   <include file="migrations/0022_add_rapid_test_examination.xml"/>
   <include file="migrations/0023_refactor_medical_history.xml"/>
   <include file="migrations/0024_add_dental_as_procedure_type.xml"/>
-  <include
-    file="migrations/0025_add_official_medical_service_procedure_type.xml"/>
+  <include file="migrations/0025_add_official_medical_service_procedure_type.xml"/>
   <include file="migrations/0026_add_mail_to_simple_notification.xml"/>
   <include file="migrations/0027_add_laboratory_test_examination.xml"/>
   <include file="migrations/0028_invert_inbox_procedure_relationships.xml"/>
   <include file="migrations/0029_add_official_medical_service_appointment_type.xml"/>
   <include file="migrations/0030_add_consultation.xml"/>
   <include file="migrations/0031_add_salutation_inbox_procedure.xml"/>
+  <include file="migrations/0032_add_diagnosis.xml"/>
+  <include file="migrations/0033_add_oms_task_type.xml"/>
+  <include file="migrations/0034_refactor_medication.xml"/>
+  <include file="migrations/0035_make_appointment_block_users_non_nullable.xml"/>
+  <include file="migrations/0036_add_hep_result.xml"/>
+  <include file="migrations/0037_add_icd10_codes_to_diagnosis.xml"/>
+  <include file="migrations/0038_compute_procedure_lab_status.xml"/>
+  <include file="migrations/0039_add_tests_conducted_date.xml"/>
+  <include file="migrations/0040_add_cemetery_delete_at.xml"/>
+  <include file="migrations/0041_add_countrycodes.xml"/>
+  <include file="migrations/0042_add_previous_file_state_id_to_system_progress_entry.xml"/>
 
 </databaseChangeLog>

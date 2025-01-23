@@ -5,7 +5,10 @@
 
 package de.eshg.officialmedicalservice.testhelper.api;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.util.Map;
 import java.util.UUID;
 
-public record PostPopulateProcedureResponse(@NotNull UUID procedureId, UUID facilityId) {}
+public record PostPopulateProcedureResponse(
+    @NotNull UUID procedureId, UUID facilityId, @NotNull @Valid Map<String, UUID> appointments) {}

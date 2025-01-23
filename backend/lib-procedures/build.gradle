@@ -36,7 +36,7 @@ dependencies {
     implementation 'org.apache.tika:tika-parser-pdf-module'
     implementation 'com.drewnoakes:metadata-extractor:latest.release'
     implementation 'org.eclipse.angus:jakarta.mail:latest.release'
-    implementation 'org.verapdf:validation-model-jakarta:1.26.1' // verapdf rolled back a release and thus 1.26.2 is not available anymore
+    implementation 'org.verapdf:validation-model-jakarta:latest.release'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate6'
 
     implementation 'org.bouncycastle:bcpkix-jdk18on:latest.release'

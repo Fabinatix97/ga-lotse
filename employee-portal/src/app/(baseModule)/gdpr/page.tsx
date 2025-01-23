@@ -10,17 +10,17 @@ import {
   ApiGdprProcedureType,
   ApiSortDirection,
   GetGdprProceduresRequest,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
+import {
+  parseOptionalEnum,
+  parseReadonlyPageParams,
+} from "@eshg/lib-portal/helpers/searchParams";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 
 import { GDPRTable } from "@/lib/baseModule/components/gdpr/overview/GDPRTable";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
-import {
-  parseOptionalEnum,
-  parseReadonlyPageParams,
-} from "@/lib/shared/helpers/searchParams";
 
 function parseSearchParams(
   searchParams: ReadonlyURLSearchParams,

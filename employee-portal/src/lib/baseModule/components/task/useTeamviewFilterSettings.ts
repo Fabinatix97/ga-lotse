@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiUser } from "@eshg/employee-portal-api/base";
+import { ApiUser } from "@eshg/base-api";
 import { Dispatch, SetStateAction, startTransition } from "react";
 
 import { TeamviewFilters } from "@/lib/shared/api/queries/tasks";

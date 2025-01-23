@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/base-api";
 import { ApiGetProcedure200Response } from "@eshg/employee-portal-api/measlesProtection";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { createContext, useContext, useState } from "react";

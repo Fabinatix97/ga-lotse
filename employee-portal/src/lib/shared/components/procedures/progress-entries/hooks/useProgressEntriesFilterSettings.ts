@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiUser } from "@eshg/employee-portal-api/base";
+import { ApiUser } from "@eshg/base-api";
 import { ApiProgressEntryClassFromJSON } from "@eshg/employee-portal-api/businessProcedures";
 import { Dispatch, SetStateAction, startTransition } from "react";
 

@@ -14,7 +14,10 @@ import { isNonNullish } from "remeda";
 import { useAnalysisApi } from "@/lib/businessModules/statistics/api/clients";
 import { mapKeyToAttributeSelection } from "@/lib/businessModules/statistics/api/mapper/mapAttributeSelectionKey";
 import { DiagramType } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
-import { CreateAnalysisFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/createAnalysisFormModel";
+import {
+  ConfigureChartFormModel,
+  CreateAnalysisFormModel,
+} from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/createAnalysisFormModel";
 
 function mapSelectionKeyToBoolean(selectionKey: string | null) {
   if (isNonNullish(selectionKey) && selectionKey !== "") {
@@ -23,29 +26,33 @@ function mapSelectionKeyToBoolean(selectionKey: string | null) {
   return false;
 }
 
-export function mapModelToChartConfiguration(
-  model: CreateAnalysisFormModel,
-): ApiAddAnalysisRequestChartConfiguration {
-  switch (model.diagramType) {
+export function mapModelToChartConfiguration({
+  diagramType,
+  chartConfigurationModel,
+}: {
+  diagramType: DiagramType;
+  chartConfigurationModel: ConfigureChartFormModel;
+}): ApiAddAnalysisRequestChartConfiguration {
+  switch (diagramType) {
     case DiagramType.BAR_CHART: {
       const hasSecondaryAttribute = mapSelectionKeyToBoolean(
-        model.configureBarChartFormModel.secondaryAttributeSelectionKey,
+        chartConfigurationModel.secondaryAttribute,
       );
       return {
         type: "BarChartConfiguration",
-        orientation: model.configureBarChartFormModel.orientation,
+        orientation: chartConfigurationModel.orientation,
         grouping: hasSecondaryAttribute
-          ? model.configureBarChartFormModel.grouping
+          ? chartConfigurationModel.grouping
           : undefined,
         scaling: hasSecondaryAttribute
-          ? model.configureBarChartFormModel.scaling
+          ? chartConfigurationModel.scaling
           : undefined,
         primaryAttribute: mapKeyToAttributeSelection(
-          model.configureBarChartFormModel.primaryAttributeSelectionKey!,
+          chartConfigurationModel.primaryAttribute!,
         ),
         secondaryAttribute: hasSecondaryAttribute
           ? mapKeyToAttributeSelection(
-              model.configureBarChartFormModel.secondaryAttributeSelectionKey!,
+              chartConfigurationModel.secondaryAttribute!,
             )
           : undefined,
       };
@@ -54,96 +61,84 @@ export function mapModelToChartConfiguration(
       return {
         type: "PieChartConfiguration",
         attribute: mapKeyToAttributeSelection(
-          model.configurePieChartFormModel.primaryAttribute!,
+          chartConfigurationModel.primaryAttribute!,
         ),
       };
     case DiagramType.HISTOGRAM_CHART: {
       const hasSecondaryAttribute = mapSelectionKeyToBoolean(
-        model.configureHistogramChartFormModel.secondaryAttribute,
+        chartConfigurationModel.secondaryAttribute,
       );
       return {
         type: "HistogramChartConfiguration",
         primaryAttribute: mapKeyToAttributeSelection(
-          model.configureHistogramChartFormModel.primaryAttribute!,
+          chartConfigurationModel.primaryAttribute!,
         ),
         secondaryAttribute: hasSecondaryAttribute
           ? mapKeyToAttributeSelection(
-              model.configureHistogramChartFormModel.secondaryAttribute!,
+              chartConfigurationModel.secondaryAttribute!,
             )
           : undefined,
         scaling: hasSecondaryAttribute
-          ? model.configureHistogramChartFormModel.scaling
+          ? chartConfigurationModel.scaling
           : undefined,
         grouping: hasSecondaryAttribute
-          ? model.configureHistogramChartFormModel.grouping
+          ? chartConfigurationModel.grouping
           : undefined,
-        binningMode: model.configureHistogramChartFormModel.binning,
+        binningMode: chartConfigurationModel.binning,
         numberOfBins:
-          model.configureHistogramChartFormModel.binning === "MANUAL"
-            ? model.configureHistogramChartFormModel.bins
+          chartConfigurationModel.binning === "MANUAL"
+            ? chartConfigurationModel.bins
             : undefined,
       };
     }
     case DiagramType.CHOROPLETH_CHART: {
       const hasSecondaryAttribute = mapSelectionKeyToBoolean(
-        model.configureChoroplethChartFormModel.secondaryAttributeSelectionKey,
+        chartConfigurationModel.secondaryAttribute,
       );
       return {
         type: "AddChoroplethMapConfiguration",
-        geoShapeId: model.configureChoroplethChartFormModel.geoShapeId!,
+        geoShapeId: chartConfigurationModel.geoShapeId!,
         calculation: hasSecondaryAttribute
-          ? model.configureChoroplethChartFormModel.characteristicParameter
+          ? chartConfigurationModel.characteristicParameter
           : undefined,
-        colorScheme: model.configureChoroplethChartFormModel.colorScheme,
+        colorScheme: chartConfigurationModel.colorScheme,
         primaryAttribute: mapKeyToAttributeSelection(
-          model.configureChoroplethChartFormModel.geoReferencedAttributeKey!,
+          chartConfigurationModel.geoReferencedAttribute!,
         ),
-        secondaryAttribute: model.configureChoroplethChartFormModel
-          .secondaryAttributeSelectionKey
+        secondaryAttribute: chartConfigurationModel.secondaryAttribute
           ? mapKeyToAttributeSelection(
-              model.configureChoroplethChartFormModel
-                .secondaryAttributeSelectionKey,
+              chartConfigurationModel.secondaryAttribute,
             )
           : undefined,
       };
     }
     case DiagramType.SCATTER_CHART: {
-      const hasSecondaryAttribute =
-        model.configureScatterChartFormModel.secondaryAttribute;
+      const hasSecondaryAttribute = chartConfigurationModel.secondaryAttribute;
       return {
         type: "ScatterChartConfiguration",
-        range: model.configureScatterChartFormModel.axisRange,
+        range: chartConfigurationModel.axisRange,
         secondaryAttribute: hasSecondaryAttribute
           ? mapKeyToAttributeSelection(
-              model.configureScatterChartFormModel.secondaryAttribute!,
+              chartConfigurationModel.secondaryAttribute!,
             )
           : undefined,
-        trendLine: model.configureScatterChartFormModel.trendline,
-        xAttribute: mapKeyToAttributeSelection(
-          model.configureScatterChartFormModel.xAxis!,
-        ),
-        yAttribute: mapKeyToAttributeSelection(
-          model.configureScatterChartFormModel.yAxis!,
-        ),
+        trendLine: chartConfigurationModel.trendline,
+        xAttribute: mapKeyToAttributeSelection(chartConfigurationModel.xAxis!),
+        yAttribute: mapKeyToAttributeSelection(chartConfigurationModel.yAxis!),
       };
     }
     case DiagramType.LINE_CHART: {
-      const hasSecondaryAttribute =
-        model.configureLineChartFormModel.secondaryAttribute;
+      const hasSecondaryAttribute = chartConfigurationModel.secondaryAttribute;
       return {
         type: "LineChartConfiguration",
-        range: model.configureLineChartFormModel.axisRange,
+        range: chartConfigurationModel.axisRange,
         secondaryAttribute: hasSecondaryAttribute
           ? mapKeyToAttributeSelection(
-              model.configureLineChartFormModel.secondaryAttribute!,
+              chartConfigurationModel.secondaryAttribute!,
             )
           : undefined,
-        xAttribute: mapKeyToAttributeSelection(
-          model.configureLineChartFormModel.xAxis!,
-        ),
-        yAttribute: mapKeyToAttributeSelection(
-          model.configureLineChartFormModel.yAxis!,
-        ),
+        xAttribute: mapKeyToAttributeSelection(chartConfigurationModel.xAxis!),
+        yAttribute: mapKeyToAttributeSelection(chartConfigurationModel.yAxis!),
       };
     }
   }
@@ -164,8 +159,11 @@ export function useAddAnalysis(evaluationId: string, onClose: () => void) {
       .mutateAsync(
         {
           evaluationId: evaluationId,
-          name: model.name.trim(),
-          chartConfiguration: mapModelToChartConfiguration(model),
+          name: model[2].name.trim(),
+          chartConfiguration: mapModelToChartConfiguration({
+            diagramType: model[0].diagramType,
+            chartConfigurationModel: model[1],
+          }),
         },
         {
           onSuccess: onClose,

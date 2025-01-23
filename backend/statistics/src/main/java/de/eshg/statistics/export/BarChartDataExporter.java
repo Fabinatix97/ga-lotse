@@ -9,6 +9,7 @@ import de.eshg.statistics.persistence.entity.chart.BarChartConfiguration;
 import de.eshg.statistics.persistence.entity.diagramdata.BarChartData;
 import de.eshg.statistics.persistence.entity.diagramdata.BarGroupData;
 import de.eshg.statistics.persistence.entity.diagramdata.KeyToCount;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.poi.ss.usermodel.CellType;
@@ -24,8 +25,12 @@ public class BarChartDataExporter {
       BarChartData barChartData,
       BarChartConfiguration barChartConfiguration) {
     if (barChartConfiguration.getSecondaryAttributeSelection() != null) {
-      List<KeyToCount> keyToCountsSample =
-          barChartData.getBarGroupDatas().getFirst().getKeyToCounts();
+      List<KeyToCount> keyToCountsSample;
+      if (barChartData.getBarGroupDatas().isEmpty()) {
+        keyToCountsSample = Collections.emptyList();
+      } else {
+        keyToCountsSample = barChartData.getBarGroupDatas().getFirst().getKeyToCounts();
+      }
       addDataHeader(sheet, rowCounter.getAndIncrement(), keyToCountsSample);
     }
     for (BarGroupData barGroupData : barChartData.getBarGroupDatas()) {

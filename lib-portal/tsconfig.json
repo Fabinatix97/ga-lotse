@@ -1,10 +1,5 @@
 {
-  "extends": "../config/tsconfig.lib.json",
-  "references": [
-    {
-      "path": "../employee-portal-api"
-    }
-  ],
+  "extends": "../config/tsconfig.lib-legacy.json",
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "esnext"],
     "jsx": "react-jsx"

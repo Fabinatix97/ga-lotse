@@ -8,9 +8,11 @@ package de.eshg.officialmedicalservice.person;
 import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateRequest;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
+import de.eshg.base.centralfile.api.person.GetPersonDiffResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesResponse;
+import de.eshg.base.centralfile.api.person.SyncFileStateRequest;
 import de.eshg.base.centralfile.api.person.UpdatePersonRequest;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
@@ -44,6 +46,16 @@ public class PersonClient {
   public AddPersonFileStateResponse updatePersonFileStateAndReference(
       UUID id, UpdatePersonRequest request) {
     return doAndForwardErrorCodes(() -> personApi.updatePersonFileStateAndReference(id, request));
+  }
+
+  public UUID syncAffectedPerson(UUID fileStateId, long referenceVersion) {
+    return doAndForwardErrorCodes(
+        () ->
+            personApi.syncFileState(fileStateId, new SyncFileStateRequest(referenceVersion)).id());
+  }
+
+  public GetPersonDiffResponse getAffectedPersonDiff(UUID fileStateId) {
+    return doAndForwardErrorCodes(() -> personApi.getPersonDiff(fileStateId));
   }
 
   private <T> T doAndForwardErrorCodes(Supplier<T> action) {

@@ -26,6 +26,8 @@ public class MedicalRegistryProperties {
 
   @Positive private int maxNumberOfImportRows = 4_005;
 
+  @Positive private int maxImageSideLength = 5_000;
+
   @NotNull private URI privacyNoticeLocation;
   @NotNull private URI privacyPolicyLocation;
 
@@ -59,6 +61,14 @@ public class MedicalRegistryProperties {
 
   public void setMaxNumberOfImportRows(int maxNumberOfImportRows) {
     this.maxNumberOfImportRows = maxNumberOfImportRows;
+  }
+
+  public int getMaxImageSideLength() {
+    return maxImageSideLength;
+  }
+
+  public void setMaxImageSideLength(int maxImageSideLength) {
+    this.maxImageSideLength = maxImageSideLength;
   }
 
   public URI getPrivacyNoticeLocation() {

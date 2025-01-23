@@ -298,6 +298,22 @@ paths:
           type: integer
           format: int32
           minimum: 1
+      - in: query
+        name: searchFirstName
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: searchLastName
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: searchDateOfBirth
+        required: false
+        schema:
+          type: string
+          format: date
       responses:
         "200":
           content:
@@ -710,27 +726,6 @@ paths:
       summary: Add a GDPR validation task
       tags:
       - GdprValidationTask
-  /gdpr-validation-tasks/download-packages/{id}:
-    get:
-      operationId: getGdprDownloadPackage
-      parameters:
-      - in: path
-        name: id
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                type: string
-                format: binary
-          description: OK
-      summary: Get Gdpr Download Package by its id
-      tags:
-      - GdprValidationTask
   /gdpr-validation-tasks/notification-banner:
     get:
       operationId: getGdprNotificationBanner
@@ -745,6 +740,28 @@ paths:
       tags:
       - GdprValidationTask
   /gdpr-validation-tasks/{gdprProcedureId}:
+    delete:
+      operationId: deleteGdprValidationTaskAndDownloadPackages
+      parameters:
+      - in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteDownloadPackagesRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Delete the GDPR validation task with gdprProcedureId and GDPR download
+        packages with ids from request
+      tags:
+      - GdprValidationTask
     get:
       operationId: getGdprValidationTask
       parameters:
@@ -783,6 +800,29 @@ paths:
                 $ref: "#/components/schemas/GetGdprValidationTaskDetailsResponse"
           description: OK
       summary: Get a GDPR validation task by id
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/{gdprProcedureId}/business-procedures/{businessProcedureId}:
+    delete:
+      operationId: deleteBusinessProcedure
+      parameters:
+      - in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: businessProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      summary: Delete the businessProcedure with businessProcedureId for validationTask
+        with gdprProcedureId with type right of erasure
       tags:
       - GdprValidationTask
   /gdpr-validation-tasks/{gdprProcedureId}/business-procedures/{businessProcedureId}/downloadPackage:
@@ -842,6 +882,33 @@ paths:
                 $ref: "#/components/schemas/GetGdprDownloadPackagesInfoResponse"
           description: OK
       summary: Get approved Gdpr Download Packages by Gdpr Procedure Id
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/{gdprProcedureId}/download-packages/{downloadId}:
+    get:
+      operationId: getGdprDownloadPackage
+      parameters:
+      - in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: downloadId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+          description: OK
+      summary: Get Gdpr Download Package by the gdprProcedureId and its downloadId
       tags:
       - GdprValidationTask
   /inbox-procedures:
@@ -1049,34 +1116,6 @@ paths:
           type: string
           format: uuid
       - description: |
-          Only procedures are returned where the assigneeId of none of the task equals `notAssignedToId`.
-          If not submitted, no filtering takes place.
-        in: query
-        name: notAssignedToId
-        required: false
-        schema:
-          type: string
-          format: uuid
-      - description: |
-          Only procedures are returned where the user is or was assigned to at least one task (at least one assigneeId equals `onceAssignedToId` in taskHistory for at least one task).
-          If not submitted, no filtering takes place.
-        in: query
-        name: onceAssignedToId
-        required: false
-        schema:
-          type: string
-          format: uuid
-      - description: |
-          Filter logic:
-          - In case of `true` only procedures are returned where all tasks are unassigned
-          - In case of `false` only procedures are returned which have at least one assigned task
-          - If not submitted, no filtering takes place
-        in: query
-        name: unassigned
-        required: false
-        schema:
-          type: boolean
-      - description: |
           Filter logic:
           - If `procedureType` is submitted, only procedures are returned which have one of the submitted types.
           - If not submitted, no filtering takes place
@@ -1100,15 +1139,6 @@ paths:
           items:
             $ref: "#/components/schemas/ProcedureStatus"
           uniqueItems: true
-      - description: |
-          Filter logic:
-          - If `createdInYear` is set, only procedures are returned which were created in that year
-          - If not submitted, no filtering takes place
-        in: query
-        name: createdInYear
-        required: false
-        schema:
-          type: string
       - description: |
           The following sorting options are available:
           - `CREATED_AT`: Sorting by createdAt attribute
@@ -1744,6 +1774,25 @@ paths:
           description: OK
       tags:
       - ProphylaxisSession
+  /statistics/procedure-ids:
+    post:
+      operationId: getProcedureIds
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetProcedureIdsRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetProcedureIdsResponse"
+          description: OK
+      summary: Get procedure ids for procedure references
+      tags:
+      - StatisticsProcedureReference
   /task-metrics:
     get:
       operationId: getTaskMetrics
@@ -1811,21 +1860,6 @@ paths:
           items:
             $ref: "#/components/schemas/TaskStatus"
           uniqueItems: true
-      - in: query
-        name: hasDueAt
-        required: false
-        schema:
-          type: boolean
-      - in: query
-        name: isOverdue
-        required: false
-        schema:
-          type: boolean
-      - in: query
-        name: wasAssignedByOther
-        required: false
-        schema:
-          type: boolean
       - in: query
         name: sortKey
         required: true
@@ -2463,6 +2497,10 @@ components:
           type: string
           maxLength: 80
           minLength: 1
+        fluoridationConsents:
+          type: array
+          items:
+            $ref: "#/components/schemas/FluoridationConsent"
         gender:
           $ref: "#/components/schemas/Gender"
         groupName:
@@ -2513,6 +2551,7 @@ components:
       - fileStateId
       - fileStateOutdated
       - firstName
+      - fluoridationConsents
       - gender
       - groupName
       - id
@@ -2523,7 +2562,7 @@ components:
       - status
       - version
       - year
-    ChildResult:
+    ChildSearchResult:
       type: object
       properties:
         dateOfBirth:
@@ -2531,6 +2570,8 @@ components:
           format: date
         firstName:
           type: string
+        gender:
+          $ref: "#/components/schemas/Gender"
         groupName:
           type: string
         id:
@@ -2600,7 +2641,8 @@ components:
       - FACILITY
     CountryCode:
       type: string
-      description: List of country codes in ISO 3166-1 alpha-2 format.
+      description: "List of country codes in ISO 3166-1 alpha-2 format. With custom\
+        \ extensions for stateless, non-standard countries, and unknown countries."
       enum:
       - AD
       - AE
@@ -2851,6 +2893,9 @@ components:
       - ZA
       - ZM
       - ZW
+      - XK
+      - UNKNOWN
+      - STATELESS
     CreateApprovalRequestRequest:
       type: object
       properties:
@@ -2978,18 +3023,35 @@ components:
         dateAndTime:
           type: string
           format: date-time
+        dentistIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+        fluoridationVarnish:
+          $ref: "#/components/schemas/FluoridationVarnish"
         groupName:
           type: string
         institutionId:
           type: string
           format: uuid
+        screening:
+          type: boolean
         type:
           $ref: "#/components/schemas/ProphylaxisType"
+        zfaIds:
+          type: array
+          items:
+            type: string
+            format: uuid
       required:
       - dateAndTime
+      - dentistIds
       - groupName
       - institutionId
+      - screening
       - type
+      - zfaIds
     CreateProphylaxisSessionResponse:
       type: object
       properties:
@@ -3024,6 +3086,25 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Population"
+    DeleteDownloadPackagesRequest:
+      type: object
+      properties:
+        downloadIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - downloadIds
+    DentalExaminationResult:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+      required:
+      - '@type'
     DetailedFacility:
       type: object
       properties:
@@ -3121,6 +3202,10 @@ components:
           type: string
         prophylaxisType:
           $ref: "#/components/schemas/ProphylaxisType"
+        result:
+          oneOf:
+          - $ref: "#/components/schemas/FluoridationExaminationResult"
+          - $ref: "#/components/schemas/ScreeningExaminationResult"
         version:
           type: integer
           format: int64
@@ -3129,6 +3214,19 @@ components:
       - id
       - prophylaxisType
       - version
+    ExistingUser:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/PerformingPerson"
+      - type: object
+        properties:
+          firstName:
+            type: string
+          lastName:
+            type: string
+      required:
+      - firstName
+      - lastName
     ExportArchivingRelevantProceduresRequest:
       type: object
       properties:
@@ -3209,6 +3307,36 @@ components:
       - PNG
       - PDF
       - EML
+    FluoridationConsent:
+      type: object
+      properties:
+        consented:
+          type: boolean
+        dateOfConsent:
+          type: string
+          format: date
+        hasAllergy:
+          type: boolean
+      required:
+      - consented
+      - dateOfConsent
+    FluoridationExaminationResult:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/DentalExaminationResult"
+      - type: object
+        properties:
+          fluorideVarnishApplied:
+            type: boolean
+      required:
+      - fluorideVarnishApplied
+    FluoridationVarnish:
+      type: string
+      enum:
+      - A
+      - B
+      - C
+      - D
     GdprDownloadPackageInfo:
       type: object
       properties:
@@ -3227,6 +3355,10 @@ components:
             oneOf:
             - $ref: "#/components/schemas/DomesticAddress"
             - $ref: "#/components/schemas/PostboxAddress"
+          dataTransmitterPseudonymId:
+            type: string
+            description: The 'DatenübermittlerPseudonymId' of the MUK user
+            example: du-986b2b54ab89cf4ed674ad8c3126b966b54d4872
           emailAddress:
             type: string
             description: The email addresses of the Facility.
@@ -3267,6 +3399,10 @@ components:
             oneOf:
             - $ref: "#/components/schemas/DomesticAddress"
             - $ref: "#/components/schemas/PostboxAddress"
+          bpk2:
+            type: string
+            description: The bpk2 of the BundId user
+            example: VnMEBMXsiCWZ34v1JCulQABe6-ts1yDSrbH3zII8BF0
           dateOfBirth:
             type: string
             format: date
@@ -3770,6 +3906,28 @@ components:
       required:
       - fileDetails
       - procedureId
+    GetProcedureIdsRequest:
+      type: object
+      properties:
+        procedureReferences:
+          type: array
+          items:
+            type: string
+            format: uuid
+          maxItems: 200
+          minItems: 1
+      required:
+      - procedureReferences
+    GetProcedureIdsResponse:
+      type: object
+      properties:
+        referenceToId:
+          type: object
+          additionalProperties:
+            type: string
+            format: uuid
+      required:
+      - referenceToId
     GetProcedureMetricsResponse:
       type: object
       properties:
@@ -4319,10 +4477,20 @@ components:
       required:
       - '@type'
       - changedAt
+    NonExistingUser:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/PerformingPerson"
     Operation:
       type: string
       enum:
       - DELETE
+    OralHygieneStatus:
+      type: string
+      enum:
+      - EXCELLENT
+      - GOOD
+      - POOR
     PatchManualProgressEntryRequest:
       type: object
       properties:
@@ -4373,6 +4541,15 @@ components:
             $ref: "#/components/schemas/PdfMetaData"
       required:
       - changedAt
+    PerformingPerson:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+      required:
+      - '@type'
     PersonType:
       type: string
       enum:
@@ -4648,6 +4825,8 @@ components:
         dateAndTime:
           type: string
           format: date-time
+        fluoridationVarnish:
+          $ref: "#/components/schemas/FluoridationVarnish"
         groupName:
           type: string
         id:
@@ -4655,6 +4834,8 @@ components:
           format: uuid
         institution:
           $ref: "#/components/schemas/Institution"
+        screening:
+          type: boolean
         type:
           $ref: "#/components/schemas/ProphylaxisType"
       required:
@@ -4662,13 +4843,51 @@ components:
       - groupName
       - id
       - institution
+      - screening
       - type
+    ProphylaxisSessionChildExamination:
+      type: object
+      properties:
+        childId:
+          type: string
+          format: uuid
+        dateOfBirth:
+          type: string
+          format: date
+        examinationResult:
+          oneOf:
+          - $ref: "#/components/schemas/FluoridationExaminationResult"
+          - $ref: "#/components/schemas/ScreeningExaminationResult"
+        firstName:
+          type: string
+        fluoridationConsent:
+          type: boolean
+        gender:
+          $ref: "#/components/schemas/Gender"
+        groupName:
+          type: string
+        lastName:
+          type: string
+      required:
+      - childId
+      - dateOfBirth
+      - firstName
+      - groupName
+      - lastName
     ProphylaxisSessionDetails:
       type: object
       properties:
         dateAndTime:
           type: string
           format: date-time
+        dentists:
+          type: array
+          items:
+            oneOf:
+            - $ref: "#/components/schemas/ExistingUser"
+            - $ref: "#/components/schemas/NonExistingUser"
+        fluoridationVarnish:
+          $ref: "#/components/schemas/FluoridationVarnish"
         groupName:
           type: string
         id:
@@ -4679,20 +4898,31 @@ components:
         participants:
           type: array
           items:
-            $ref: "#/components/schemas/ChildResult"
+            $ref: "#/components/schemas/ProphylaxisSessionChildExamination"
+        screening:
+          type: boolean
         type:
           $ref: "#/components/schemas/ProphylaxisType"
         version:
           type: integer
           format: int64
+        zfas:
+          type: array
+          items:
+            oneOf:
+            - $ref: "#/components/schemas/ExistingUser"
+            - $ref: "#/components/schemas/NonExistingUser"
       required:
       - dateAndTime
+      - dentists
       - groupName
       - id
       - institution
       - participants
+      - screening
       - type
       - version
+      - zfas
     ProphylaxisSessionPopulationResult:
       type: object
       properties:
@@ -4713,6 +4943,8 @@ components:
       - TYPE
       - GROUP_NAME
       - DATE_AND_TIME
+      - SCREENING
+      - FLUORIDATION_VARNISH
     ProphylaxisType:
       type: string
       description: Type of the prophylaxis
@@ -4731,13 +4963,25 @@ components:
       - NEUTRAL
       - FEMALE
       - MALE
+    ScreeningExaminationResult:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/DentalExaminationResult"
+      - type: object
+        properties:
+          fluorideVarnishApplied:
+            type: boolean
+          oralHygieneStatus:
+            $ref: "#/components/schemas/OralHygieneStatus"
+      required:
+      - fluorideVarnishApplied
     SearchChildrenResponse:
       type: object
       properties:
         children:
           type: array
           items:
-            $ref: "#/components/schemas/ChildResult"
+            $ref: "#/components/schemas/ChildSearchResult"
       required:
       - children
     SelfAssignTaskRequest:
@@ -4769,6 +5013,9 @@ components:
           keyDocumentVersion:
             type: integer
             format: int32
+          previousFileStateId:
+            type: string
+            format: uuid
           systemProgressEntryType:
             type: string
           triggerType:
@@ -4895,6 +5142,7 @@ components:
       - TRAVEL_MEDICINE
       - MEASLES_PROTECTION
       - STI_PROTECTION
+      - OFFICIAL_MEDICAL_SERVICE
     TestHelperClockSetRequest:
       type: object
       properties:
@@ -4969,6 +5217,8 @@ components:
     UpdateChildRequest:
       type: object
       properties:
+        fluoridationConsent:
+          $ref: "#/components/schemas/FluoridationConsent"
         groupName:
           type: string
         institutionId:
@@ -4986,6 +5236,10 @@ components:
       properties:
         note:
           type: string
+        result:
+          oneOf:
+          - $ref: "#/components/schemas/FluoridationExaminationResult"
+          - $ref: "#/components/schemas/ScreeningExaminationResult"
         version:
           type: integer
           format: int64
@@ -5011,8 +5265,12 @@ components:
         dateAndTime:
           type: string
           format: date-time
+        fluoridationVarnish:
+          $ref: "#/components/schemas/FluoridationVarnish"
         groupName:
           type: string
+        screening:
+          type: boolean
         type:
           $ref: "#/components/schemas/ProphylaxisType"
         version:
@@ -5021,6 +5279,7 @@ components:
       required:
       - dateAndTime
       - groupName
+      - screening
       - type
       - version
     User:

@@ -37,6 +37,7 @@ export function generateMetadata(
   return {
     title: baseTranslations.de.site_title,
     description: baseTranslations.de.site_description,
+    keywords: baseTranslations.de.site_keywords,
     alternates: { canonical: canonicalURL },
   };
 }

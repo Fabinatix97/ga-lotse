@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetGdprProcedureResponse } from "@eshg/employee-portal-api/base";
+import { ApiGetGdprProcedureResponse } from "@eshg/base-api";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";

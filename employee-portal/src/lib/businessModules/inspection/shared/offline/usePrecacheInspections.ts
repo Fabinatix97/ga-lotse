@@ -11,7 +11,7 @@ import {
   DepartmentApi,
   PublicConfigApi,
   UserApi,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import {
   ChecklistApi,
   EditorApi,
@@ -156,6 +156,8 @@ export function usePrecacheInspections() {
   );
 }
 
+type PromiseSupplier<T = unknown> = () => Promise<T>;
+
 async function prefetchAll({
   inspectionIds,
   queryClient,
@@ -195,7 +197,7 @@ async function prefetchAll({
 }) {
   // 1. pre-fetch inspection procedure related queries
   for (const inspectionId of inspectionIds) {
-    const inspPromises: Promise<unknown>[] = [];
+    const inspPromises: PromiseSupplier<unknown>[] = [];
     const headers = getHeadersForOfflineCaching(inspectionId);
 
     // 1.1 pre-fetch useGetInspection()
@@ -213,7 +215,7 @@ async function prefetchAll({
     });
 
     // 1.3 pre-fetch useGetAvailableCLDVs()
-    inspPromises.push(
+    inspPromises.push(() =>
       queryClient.fetchQuery({
         queryKey: getAvailableCLDVsQueryKey(inspectionId),
         queryFn: () => inspectionApi.getAvailableCLDs(inspectionId, headers),
@@ -221,7 +223,7 @@ async function prefetchAll({
     );
 
     // 1.4 pre-fetch useGetIncidents()
-    inspPromises.push(
+    inspPromises.push(() =>
       queryClient.fetchQuery({
         queryKey: incidentsApiQueryKey(["getIncidents", { inspectionId }]),
         queryFn: () => incidentApi.getIncidents(inspectionId, headers),
@@ -229,26 +231,26 @@ async function prefetchAll({
     );
 
     // 1.5 pre-fetch useLoadEditor(reportId, inspectionId) and downloadReport
-    if (isNonNullish(inspection.reportId)) {
+    const reportId = inspection.reportId;
+    if (isNonNullish(reportId)) {
       inspPromises.push(
-        queryClient.fetchQuery({
-          queryKey: editorApiQueryKey([
-            "loadEditor",
-            { reportId: inspection.reportId, inspectionId },
-          ]),
-          queryFn: () => editorApi.loadEditor(inspection.reportId!, headers),
-        }),
-        inspectionApi.downloadReport(inspection.reportId, headers),
+        () =>
+          queryClient.fetchQuery({
+            queryKey: editorApiQueryKey([
+              "loadEditor",
+              { reportId: inspection.reportId, inspectionId },
+            ]),
+            queryFn: () => editorApi.loadEditor(inspection.reportId!, headers),
+          }),
+        () => inspectionApi.downloadReport(reportId, headers),
       );
     }
 
     // 1.6 pre-fetch download report file
-    if (isNonNullish(inspection.reportInfo)) {
-      inspPromises.push(
-        fileApi.downloadFileRaw(
-          { fileId: inspection.reportInfo.fileContentId },
-          headers,
-        ),
+    const reportInfo = inspection.reportInfo;
+    if (isNonNullish(reportInfo)) {
+      inspPromises.push(() =>
+        fileApi.downloadFileRaw({ fileId: reportInfo.fileContentId }, headers),
       );
     }
 
@@ -259,7 +261,9 @@ async function prefetchAll({
       .filter((element) => element.type === "IMAGE")
       .flatMap(({ imageMetaData }) => imageMetaData)
       .forEach(({ imageID }) => {
-        inspPromises.push(checklistApi.checklistGetFile(imageID, headers));
+        inspPromises.push(() =>
+          checklistApi.checklistGetFile(imageID, headers),
+        );
       });
     checklists.checklists
       .flatMap(({ sections }) => sections)
@@ -267,7 +271,9 @@ async function prefetchAll({
       .filter((element) => element.type === "AUDIO")
       .flatMap(({ audioMetaData }) => audioMetaData)
       .forEach(({ audioID }) => {
-        inspPromises.push(checklistApi.checklistGetFile(audioID, headers));
+        inspPromises.push(() =>
+          checklistApi.checklistGetFile(audioID, headers),
+        );
       });
 
     // 1.8 pre-fetch useFetchProgressEntries() aka useFetchProgressEntriesTemplate()
@@ -299,7 +305,7 @@ async function prefetchAll({
     });
     // 1.8.2 pre-fetch useFetchProgressEntryDetailsTemplate()
     for (const { progressEntryId: entryId } of pgResponse.progressEntries) {
-      inspPromises.push(
+      inspPromises.push(() =>
         queryClient.fetchQuery({
           queryKey: progressEntryApiQueryKey([
             "fetchProgressEntryDetails",
@@ -313,7 +319,7 @@ async function prefetchAll({
       );
     }
     // 1.8.3 pre-fetch progress entries file details
-    inspPromises.push(
+    inspPromises.push(() =>
       queryClient.fetchQuery({
         queryKey: pgQueryKey(["procedureFileDetails"]),
         queryFn: () =>
@@ -321,7 +327,7 @@ async function prefetchAll({
       }),
     );
     // 1.8.4 pre-fetch progress entries procedure details
-    inspPromises.push(
+    inspPromises.push(() =>
       queryClient.fetchQuery({
         queryKey: pgQueryKey(["detailedProcedure"]),
         queryFn: () => procedureApi.getDetailedProcedure(inspectionId, headers),
@@ -329,7 +335,7 @@ async function prefetchAll({
     );
     // 1.8.5 fetch progress entries approval requests if needed
     if (fetchApprovalRequests) {
-      inspPromises.push(
+      inspPromises.push(() =>
         queryClient.fetchQuery({
           queryKey: pgQueryKey(["approvalRequests"]),
           queryFn: () =>
@@ -339,14 +345,14 @@ async function prefetchAll({
     }
 
     // 1.9 pre-fetch useGetPacklists()
-    inspPromises.push(
+    inspPromises.push(() =>
       queryClient.fetchQuery({
         queryKey: getPacklistsQueryKey(inspectionId),
         queryFn: () => packlistApi.getPacklists(inspectionId, headers),
       }),
     );
     // 1.9.1 pre-fetch useGetAvailablePLDRs()
-    inspPromises.push(
+    inspPromises.push(() =>
       queryClient.fetchQuery({
         queryKey: getAvailablePLDRsQueryKey(inspectionId),
         queryFn: () => inspectionApi.getAvailablePLDs(inspectionId, headers),
@@ -368,7 +374,7 @@ async function prefetchAll({
     });
 
     // 1.11 pre-fetch useGetFacilityHistory()
-    inspPromises.push(
+    inspPromises.push(() =>
       queryClient.fetchQuery({
         queryKey: facilityApiQueryKey([
           "getFacilityHistory",
@@ -386,18 +392,18 @@ async function prefetchAll({
     await executeInChunks(inspPromises);
   }
 
-  const promises: Promise<unknown>[] = [];
+  const promises: PromiseSupplier[] = [];
 
   // 2. pre-fetch general api requests
   // 2.1 pre-fetch useServerConfig()
-  promises.push(
+  promises.push(() =>
     queryClient.fetchQuery({
       queryKey: configApiQueryKey(["getConfig"]),
       queryFn: () => configApi.getConfig(getHeadersForOfflineCaching()),
     }),
   );
   // 2.2 pre-fetch useGetDepartment()
-  promises.push(
+  promises.push(() =>
     queryClient.fetchQuery({
       queryKey: getDepartmentQueryKey(),
       queryFn: () =>
@@ -405,7 +411,7 @@ async function prefetchAll({
     }),
   );
   // 2.3 pre-fetch useGetUsersByGroupQuery(moduleUserGroup.group)
-  promises.push(
+  promises.push(() =>
     queryClient.fetchQuery({
       queryKey: userApiQueryKey(["getUsersByGroup", moduleUserGroup.group]),
       queryFn: () =>
@@ -415,31 +421,24 @@ async function prefetchAll({
         ),
     }),
   );
-  // 2.4 pre-fetch useGetSelfUser
-  promises.push(
+  // 2.4 pre-fetch getSelfUserAndAccess
+  promises.push(() =>
     queryClient.fetchQuery({
-      queryKey: userApiQueryKey(["getSelfUser"]),
-      queryFn: () => userApi.getSelfUser(getHeadersForOfflineCaching()),
-    }),
-  );
-  // 2.5 pre-fetch getSelfUserPermissions
-  promises.push(
-    queryClient.fetchQuery({
-      queryKey: userApiQueryKey(["getSelfUserPermissions"]),
+      queryKey: userApiQueryKey(["getSelfUserAndAccess"]),
       queryFn: () =>
-        userApi.getSelfUserPermissions(getHeadersForOfflineCaching()),
+        userApi.getSelfUserAndAccess(getHeadersForOfflineCaching()),
     }),
   );
-  // 2.6 pre-fetch useGetBaseFeatureToggle
-  promises.push(
+  // 2.5 pre-fetch useGetBaseFeatureToggle
+  promises.push(() =>
     queryClient.fetchQuery({
       queryKey: baseFeatureTogglesApiQueryKey(["getFeatureToggles"]),
       queryFn: () =>
         baseFeatureTogglesApi.getFeatureToggles(getHeadersForOfflineCaching()),
     }),
   );
-  // 2.7 pre-fetch inspection's useFeatureToggleQuery
-  promises.push(
+  // 2.6 pre-fetch inspection's useFeatureToggleQuery
+  promises.push(() =>
     queryClient.fetchQuery({
       queryKey: inspectionFeatureTogglesApiQueryKey(["getFeatureToggles"]),
       queryFn: () =>
@@ -464,20 +463,21 @@ function precachePage(url: string, preCacheForOfflineModeHeaders: RequestInit) {
   const headers = new Headers(preCacheForOfflineModeHeaders.headers);
   headers.set("RSC", "1");
   return [
-    fetch(new Request(url, preCacheForOfflineModeHeaders)),
-    fetch(
-      new Request(url, {
-        ...preCacheForOfflineModeHeaders,
-        headers,
-      }),
-    ),
+    () => fetch(new Request(url, preCacheForOfflineModeHeaders)),
+    () =>
+      fetch(
+        new Request(url, {
+          ...preCacheForOfflineModeHeaders,
+          headers,
+        }),
+      ),
   ];
 }
 
 /** Execute promises in chunks of 8, to prevent overflow and rate limiting. */
-async function executeInChunks<T>(promises: Promise<T>[]) {
+async function executeInChunks(promises: PromiseSupplier[]) {
   const chunks = chunkArray(promises, 8);
   for (const chunk of chunks) {
-    await Promise.all(chunk);
+    await Promise.all(chunk.map((supplier) => supplier()));
   }
 }

@@ -85,6 +85,8 @@ public class EmployeeKeycloakTestProvisioning extends KeycloakTestProvisioning {
   private String mapTechnicalGroupToFirstName(TechnicalGroup group) {
     return switch (group) {
       case SCHOOL_ENTRY_MFA -> "Leon";
+      case DENTIST -> "Max";
+      case ZFA -> "Markus";
       case SCHOOL_ENTRY_PHYSICIAN -> "Aaron";
       case TRAVEL_MEDICINE_MFA -> "Laura";
       case TRAVEL_MEDICINE_PHYSICIAN -> "Kai";
@@ -98,6 +100,8 @@ public class EmployeeKeycloakTestProvisioning extends KeycloakTestProvisioning {
   private String mapTechnicalGroupToLastName(TechnicalGroup group) {
     return switch (group) {
       case SCHOOL_ENTRY_MFA -> "Hermann";
+      case DENTIST -> "Schuster";
+      case ZFA -> "Scholl";
       case SCHOOL_ENTRY_PHYSICIAN -> "Müller";
       case TRAVEL_MEDICINE_MFA -> "Schmitt";
       case TRAVEL_MEDICINE_PHYSICIAN -> "Schulz";

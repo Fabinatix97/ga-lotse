@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGdprPerson, ApiSalutation } from "@eshg/employee-portal-api/base";
+import { ApiGdprPerson, ApiSalutation } from "@eshg/base-api";
 import {
   PERSON_FIELD_NAME,
   SALUTATION_VALUES,
 } from "@eshg/lib-portal/components/formFields/constants";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
-import { Stack } from "@mui/joy";
+import VerifiedIcon from "@mui/icons-material/VerifiedOutlined";
+import { Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
 import {
@@ -73,6 +74,17 @@ export function GdprPersonDataTile({
             label={PERSON_FIELD_NAME.dateOfBirth}
             value={formatDate(identity.dateOfBirth)}
           />
+          {identity.bpk2 && (
+            <DetailsCell
+              name="bpk2"
+              label="BundID"
+              value={
+                <Typography startDecorator={<VerifiedIcon color="success" />}>
+                  Authentifiziert
+                </Typography>
+              }
+            />
+          )}
         </DetailsColumn>
 
         <BaseAddressDetails address={identity.address} sx={columnSx} />

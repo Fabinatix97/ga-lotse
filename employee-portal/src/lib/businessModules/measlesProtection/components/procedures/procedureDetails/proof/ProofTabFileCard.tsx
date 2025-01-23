@@ -7,7 +7,6 @@ import { ApiAbstractFile } from "@eshg/employee-portal-api/measlesProtection";
 import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
 import { FileDownloadOutlined } from "@mui/icons-material";
 import { Box } from "@mui/joy";
-import { useRef } from "react";
 
 import { useFileApi } from "@/lib/businessModules/measlesProtection/api/clients";
 import { useGetFile } from "@/lib/businessModules/measlesProtection/api/queries/files";
@@ -34,12 +33,9 @@ export function ProofTabFileCard({
     fileApi.downloadFileRaw({ fileId }),
   );
 
-  const hiddenLinkContainer = useRef<HTMLDivElement>(null);
-
   async function downloadFileOnClick() {
     const downloadedFile = await downloadFile(fileId);
-    if (hiddenLinkContainer.current !== null)
-      downloadFileAndOpen(downloadedFile, hiddenLinkContainer.current);
+    downloadFileAndOpen(downloadedFile);
   }
 
   const downloadActionProps: FileCardActionProps = {
@@ -56,7 +52,6 @@ export function ProofTabFileCard({
         actions={[downloadActionProps]}
         sx={{ overflow: "auto" }}
       />
-      <div ref={hiddenLinkContainer} style={{ display: "hidden" }}></div>
     </Box>
   );
 }

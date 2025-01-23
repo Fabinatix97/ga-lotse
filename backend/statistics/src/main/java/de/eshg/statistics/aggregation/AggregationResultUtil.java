@@ -198,7 +198,7 @@ public class AggregationResultUtil {
 
     return switch (filterTableColumn.getValueType()) {
       case BOOLEAN -> !(filter instanceof BooleanFilterParameterDto);
-      case DATE, PROCEDURE_ID -> true;
+      case DATE, PROCEDURE_REFERENCE -> true;
       case DECIMAL ->
           !(filter instanceof DecimalRangeFilterParameterDto)
               && !(filter instanceof DecimalValueFilterParameterDto);

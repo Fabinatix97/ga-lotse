@@ -19,7 +19,7 @@ public record DomesticAddressDto(
         String city,
     @Schema(description = "The postal code of the address.", example = "10115")
         @NotNull
-        @Size(min = 1, max = 20)
+        @Size(min = 1, max = MAX_POSTAL_CODE_LENGTH)
         String postalCode,
     @Schema(
             description =
@@ -43,6 +43,7 @@ public record DomesticAddressDto(
 
   public static final String SCHEMA_NAME = "DomesticAddress";
   public static final int MAX_CITY_LENGTH = 50;
+  public static final int MAX_POSTAL_CODE_LENGTH = 20;
   public static final int MAX_STREET_LENGTH = 55;
   public static final int MAX_HOUSE_NUMBER_LENGTH = 11;
 

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { COUNTRY_CODE_LABELS } from "@eshg/lib-portal/components/formFields/countryCodes";
+import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 
 import { useStiProcedureQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
 import {
@@ -21,7 +21,7 @@ export function ProcedureTabHeader({
       <TabNavigationHeaderTypography>AZ</TabNavigationHeaderTypography>
       <TabNavigationHeaderTypography>
         {procedure.person.countryOfBirth
-          ? COUNTRY_CODE_LABELS[procedure.person.countryOfBirth]
+          ? translateCountry(procedure.person.countryOfBirth)
           : "-"}
       </TabNavigationHeaderTypography>
       <TabNavigationHeaderTypography>

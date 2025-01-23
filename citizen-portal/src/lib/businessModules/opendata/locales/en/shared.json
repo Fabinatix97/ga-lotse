@@ -1,0 +1,16 @@
+{
+  "notAvailable": {
+    "title": "Page not available",
+    "message": "This page is not activated."
+  },
+  "sources": {
+    "INSPECTION": "Inspection",
+    "SCHOOL_ENTRY": "School entry examination",
+    "TRAVEL_MEDICINE": "Travel medicine",
+    "MEASLES_PROTECTION": "Measles protection",
+    "STI_PROTECTION": "HIV-STI protection",
+    "MEDICAL_REGISTRY": "Medical registry",
+    "DENTAL": "Dental service",
+    "OFFICIAL_MEDICAL_SERVICE": "Official medical service"
+  }
+}

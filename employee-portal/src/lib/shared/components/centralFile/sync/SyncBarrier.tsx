@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ApiFacilitySync } from "@eshg/employee-portal-api/officialMedicalService";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { useRouter } from "next/navigation";
 
@@ -24,7 +25,10 @@ export function SyncBarrier(props: SyncBarrierProps & RequiresChildren) {
   );
 }
 
-export function useSyncBarrier(syncRoute: string, person: PersonDetails) {
+export function useSyncBarrier(
+  syncRoute: string,
+  person: PersonDetails | ApiFacilitySync,
+) {
   const { openConfirmationDialog } = useConfirmationDialog();
   const router = useRouter();
   return {

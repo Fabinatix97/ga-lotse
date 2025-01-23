@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiHistoryEntryType, ApiUser } from "@eshg/employee-portal-api/base";
+import { ApiHistoryEntryType, ApiUser } from "@eshg/base-api";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { Button, Stack, Typography } from "@mui/joy";
 import { useRouter } from "next/navigation";

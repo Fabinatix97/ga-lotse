@@ -6,5 +6,7 @@
 import { SaveDiagramStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateDiagramSidebar/SaveDiagramStep/saveDiagramStepFormModel";
 import { SetFiltersStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateDiagramSidebar/SetFiltersStep/setFiltersStepFormModel";
 
-export type CreateDiagramFormModel = SetFiltersStepFormModel &
-  SaveDiagramStepFormModel;
+export type CreateDiagramFormModel = [
+  SetFiltersStepFormModel,
+  SaveDiagramStepFormModel,
+];

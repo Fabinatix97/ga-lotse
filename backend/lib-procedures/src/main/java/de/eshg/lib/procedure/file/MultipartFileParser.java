@@ -9,28 +9,28 @@ import static de.eshg.lib.procedure.file.FileFactory.createImageWithMetaData;
 import static de.eshg.lib.procedure.file.FileFactory.createPdfWithMetaData;
 
 import de.eshg.file.common.FileTypeDetector;
+import de.eshg.file.common.FileValidator;
+import de.eshg.file.common.ImageRewriter;
 import de.eshg.file.common.PdfAConformanceValidator;
 import de.eshg.lib.procedure.domain.model.*;
-import de.eshg.lib.procedure.model.FileMetaDataDto;
 import de.eshg.rest.service.error.BadRequestException;
 import java.io.IOException;
-import java.util.Optional;
 import org.springframework.web.multipart.MultipartFile;
 
 public final class MultipartFileParser {
-
   private MultipartFileParser() {}
 
-  public static File parseFile(MultipartFile file) throws IOException {
+  public static File validateAndParseFile(MultipartFile file, int maxImageSideLength)
+      throws IOException {
     if (file == null) {
       return null;
     }
-
+    FileValidator.validate(file);
     ProcedureFileType fileType = parseProcedureFileType(file);
     return switch (fileType) {
-      case JPEG, PNG -> parseImage(fileType, file);
+      case JPEG, PNG -> parseImage(fileType, file, maxImageSideLength);
       case PDF -> parsePdf(file);
-      case EML -> parseEmail(file);
+      case EML -> parseEmail(file, maxImageSideLength);
     };
   }
 
@@ -56,37 +56,27 @@ public final class MultipartFileParser {
     }
   }
 
-  private static Image parseImage(ProcedureFileType fileType, MultipartFile file)
-      throws IOException {
-    byte[] fileContent = file.getBytes();
-    String fileName = FileExtensionEnricher.enrich(file.getOriginalFilename(), fileType);
-
+  private static Image parseImage(
+      ProcedureFileType fileType, MultipartFile file, int maxImageSideLength) throws IOException {
+    byte[] fileContent =
+        ImageRewriter.validateAndRewriteImageFile(
+            file, fileType.getCommonFileType().getMediaType(), maxImageSideLength);
     ImageMetaData imageMetaData = ImageMetaDataExtractor.fromFileContent(fileContent);
-    return createImageWithMetaData(fileName, fileType, fileContent, imageMetaData);
+    return createImageWithMetaData(
+        file.getOriginalFilename(), fileType, fileContent, imageMetaData);
   }
 
   private static Pdf parsePdf(MultipartFile file) throws IOException {
     byte[] fileContent = file.getBytes();
-    String fileName =
-        FileExtensionEnricher.enrich(file.getOriginalFilename(), ProcedureFileType.PDF);
-
     PdfAConformanceValidator.validate(fileContent);
-
     PdfMetaData pdfMetaData = PdfMetaDataExtractor.fromFileContent(fileContent);
-    return createPdfWithMetaData(fileName, fileContent, pdfMetaData);
+    return createPdfWithMetaData(file.getOriginalFilename(), fileContent, pdfMetaData);
   }
 
-  private static Mail parseEmail(MultipartFile file) throws IOException {
+  private static Mail parseEmail(MultipartFile file, int maxImageSideLength) throws IOException {
     byte[] fileContent = file.getBytes();
-    String fileName =
-        FileExtensionEnricher.enrich(file.getOriginalFilename(), ProcedureFileType.EML);
-
-    Mail mail = EmlParser.parse(fileContent);
-    mail.setFileName(fileName);
+    Mail mail = EmlParser.parse(fileContent, maxImageSideLength);
+    mail.setFileName(file.getOriginalFilename());
     return mail;
-  }
-
-  private static String getDescriptionOrElseNull(FileMetaDataDto fileMetaData) {
-    return Optional.ofNullable(fileMetaData).map(FileMetaDataDto::getDescription).orElse(null);
   }
 }

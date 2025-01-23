@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { type ApiGetReferencePersonResponse } from "@eshg/employee-portal-api/base";
+import { type ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
   ApiAppointmentBookingType,
   ApiAppointmentType,

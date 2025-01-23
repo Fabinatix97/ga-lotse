@@ -7,8 +7,8 @@ package de.eshg.file.common;
 
 import de.eshg.rest.service.error.BadRequestException;
 import java.io.IOException;
-import java.io.InputStream;
 import org.apache.tika.Tika;
+import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
 public class FileTypeDetector {
@@ -20,13 +20,14 @@ public class FileTypeDetector {
   }
 
   public static FileType getSupportedFileTypeOrThrow(MultipartFile file) throws IOException {
-    String contentType = new Tika().detect(file.getBytes(), file.getOriginalFilename());
-    return getFileType(contentType);
-  }
-
-  public static FileType getSupportedFileTypeOrThrow(InputStream fileInputStream)
-      throws IOException {
-    String contentType = new Tika().detect(fileInputStream);
+    String contentType = new Tika().detect(file.getInputStream());
+    if (MediaType.TEXT_PLAIN_VALUE.equals(contentType)) {
+      FileType fileType =
+          getFileType(new Tika().detect(file.getInputStream(), file.getOriginalFilename()));
+      if (isConsistentWithTextFile(fileType)) {
+        return fileType;
+      }
+    }
     return getFileType(contentType);
   }
 
@@ -43,5 +44,9 @@ public class FileTypeDetector {
     }
 
     return fileType;
+  }
+
+  private static boolean isConsistentWithTextFile(FileType fileType) {
+    return fileType == FileType.CSV;
   }
 }

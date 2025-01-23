@@ -7,6 +7,7 @@
 
 import { ApiTravelType } from "@eshg/employee-portal-api/travelMedicine";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { Stack } from "@mui/joy";
 import { isEmpty } from "remeda";
 
@@ -19,7 +20,6 @@ import {
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
-import { translateCountry } from "@/lib/shared/helpers/i18n";
 
 interface TravelDataTileProps {
   initialValues: CreateProcedureValues;

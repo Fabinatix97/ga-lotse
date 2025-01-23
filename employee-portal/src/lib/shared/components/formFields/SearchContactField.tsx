@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiContactCategory } from "@eshg/employee-portal-api/base";
+import { ApiContactCategory } from "@eshg/base-api";
 import { SearchOutlined } from "@mui/icons-material";
 
 import { contactCategoryNames } from "@/lib/baseModule/shared/translations";

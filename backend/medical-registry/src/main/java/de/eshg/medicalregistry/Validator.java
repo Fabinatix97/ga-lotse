@@ -7,8 +7,6 @@ package de.eshg.medicalregistry;
 
 import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.centralfile.api.person.GetReferencePersonResponse;
-import de.eshg.file.common.FileType;
-import de.eshg.file.common.FileTypeDetector;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.medicalregistry.api.ProfessionalReferencePersonDto;
 import de.eshg.medicalregistry.domain.model.FullMedicalRegistryEntryChange;
@@ -16,9 +14,6 @@ import de.eshg.medicalregistry.domain.model.MedicalRegistryEntry;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntryChange;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryProcedure;
 import de.eshg.rest.service.error.BadRequestException;
-import de.eshg.rest.service.error.ErrorCode;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import org.springframework.stereotype.Component;
@@ -63,20 +58,6 @@ public class Validator {
       boolean employeesEmployed, MultipartFile employeeList) {
     if (employeesEmployed && employeeList == null) {
       throw new BadRequestException("Employee list is mandatory if employees are employed.");
-    }
-  }
-
-  public static void validateFileType(MultipartFile multipartFile, FileType allowedFileType) {
-    try {
-      FileType actualFileType = FileTypeDetector.getSupportedFileTypeOrThrow(multipartFile);
-      if (actualFileType != allowedFileType) {
-        throw new BadRequestException(
-            ErrorCode.INVALID_FILE,
-            String.format(
-                "The file type of %s is not %s.", multipartFile.getName(), allowedFileType));
-      }
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
     }
   }
 

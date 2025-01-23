@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBusinessModule, ApiUserRole } from "@eshg/employee-portal-api/base";
+import { moduleUserGroup as dentalModuleUserGroup } from "@eshg/dental/shared/moduleUserGroup";
+import { ModuleUserGroupConfig } from "@eshg/lib-employee-portal/types/module";
 
-import { moduleUserGroup as dentalModuleUserGroup } from "@/lib/businessModules/dental/shared/moduleUserGroup";
 import { moduleUserGroup as inspectionModuleUserGroup } from "@/lib/businessModules/inspection/shared/moduleUserGroup";
 import { moduleUserGroup as measlesProtectionModuleUserGroup } from "@/lib/businessModules/measlesProtection/shared/moduleUserGroup";
 import { moduleUserGroup as officialMedicalServiceModuleUserGroup } from "@/lib/businessModules/officialMedicalService/shared/moduleUserGroup";
@@ -13,17 +13,6 @@ import { moduleUserGroup as schoolEntryModuleUserGroup } from "@/lib/businessMod
 import { moduleUserGroup as statisticsModuleUserGroup } from "@/lib/businessModules/statistics/shared/moduleUserGroup";
 import { moduleUserGroup as stiProtectionModuleUserGroup } from "@/lib/businessModules/stiProtection/shared/moduleUserGroup";
 import { moduleUserGroup as travelMedicineModuleUserGroup } from "@/lib/businessModules/travelMedicine/shared/moduleUserGroup";
-
-export interface ModuleUserGroupConfig {
-  group: `[System] ${string}`;
-  /**
-   * Not all modules are business modules in the sense that they have procedures and tasks.
-   * For example, the Statistics module.
-   * In such a case, the value of businessModule is undefined.
-   */
-  businessModule: ApiBusinessModule | undefined;
-  leaderRole: ApiUserRole;
-}
 
 export const businessModuleUserGroups: ModuleUserGroupConfig[] = [
   inspectionModuleUserGroup,

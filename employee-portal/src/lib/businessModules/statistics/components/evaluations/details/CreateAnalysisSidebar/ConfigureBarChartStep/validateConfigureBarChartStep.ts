@@ -4,18 +4,17 @@
  */
 
 import { FormikErrors } from "formik";
+import { isNonNullish } from "remeda";
 
-import { DiagramType } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
-import { CreateAnalysisFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/createAnalysisFormModel";
+import { ConfigureChartFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/createAnalysisFormModel";
 
 export function validateConfigureBarChartStep(
-  model: CreateAnalysisFormModel,
+  model: ConfigureChartFormModel,
 ): FormikErrors<object> | undefined {
   if (
-    model.diagramType === DiagramType.BAR_CHART &&
-    model.configureBarChartFormModel.primaryAttributeSelectionKey ===
-      model.configureBarChartFormModel.secondaryAttributeSelectionKey &&
-    model.configureBarChartFormModel.primaryAttributeSelectionKey !== null
+    isNonNullish(model.primaryAttribute) &&
+    model.primaryAttribute !== "" &&
+    model.primaryAttribute === model.secondaryAttribute
   ) {
     return {
       attributesMayNotMatch:

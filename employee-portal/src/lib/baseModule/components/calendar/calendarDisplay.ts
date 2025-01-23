@@ -6,7 +6,7 @@
 import {
   ApiGetRelevantCalendarsResponse,
   ApiUserGroupCalendarInfo,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { flatMap, map, pipe, uniqueBy } from "remeda";
 
 import { theme } from "@/lib/baseModule/theme/theme";

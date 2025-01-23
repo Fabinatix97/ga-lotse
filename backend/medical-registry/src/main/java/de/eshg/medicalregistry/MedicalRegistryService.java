@@ -13,14 +13,12 @@ import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
-import de.eshg.lib.procedure.domain.model.File;
+import de.eshg.lib.procedure.domain.model.Image;
 import de.eshg.lib.procedure.domain.model.ImageMetaData;
-import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.lib.procedure.domain.model.TriggerType;
-import de.eshg.lib.procedure.file.FileFactory;
 import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
 import de.eshg.lib.procedure.progressentry.ProgressEntryService;
 import de.eshg.medicalregistry.api.CreateFullChangeRequest;
@@ -49,8 +47,6 @@ import de.eshg.medicalregistry.importer.MedicalRegistryRow;
 import de.eshg.medicalregistry.mapper.CreationMapper;
 import de.eshg.medicalregistry.mapper.EntryMapper;
 import de.eshg.validation.ValidationUtil;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.Collections;
@@ -382,14 +378,14 @@ public class MedicalRegistryService {
   private void addSystemProgressEntryFile(
       MedicalRegistryEntryChange procedure, DocumentData document, TriggerType triggerType) {
     String description = document.description();
-    File file = buildJpeg(document);
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             MedicalRegistrySystemProgressEntryType.DOCUMENT_UPLOAD.name(),
             description,
             triggerType,
             Optional.ofNullable(document.keyDocumentType()).map(Enum::name).orElse(null));
-    progressEntryService.addSystemProgressEntry(procedure, progressEntry, file);
+    progressEntryService.addSystemProgressEntry(
+        procedure, progressEntry, withCurrentTimestamp(document.file()));
   }
 
   private void addSystemProgressEntryAboutRequestForWrittenConfirmationIfNecessary(
@@ -404,16 +400,11 @@ public class MedicalRegistryService {
     }
   }
 
-  private File buildJpeg(DocumentData document) {
+  private Image withCurrentTimestamp(Image image) {
     ImageMetaData metaData = new ImageMetaData();
     metaData.setCreatedDate(Instant.now(clock));
-
-    try {
-      return FileFactory.createImageWithMetaData(
-          document.fileName(), ProcedureFileType.JPEG, document.file().getBytes(), metaData);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    image.addMetaData(metaData);
+    return image;
   }
 
   private MedicalRegistryEntry createMedicalRegistryEntry() {

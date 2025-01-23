@@ -14,8 +14,11 @@ import java.util.UUID;
     description =
         "Request used for establishing a link between a BundId user and a reference person")
 public record AddBundIdPersonLinkRequest(
-    @Schema(description = "The id of the bundId user", example = "To be added") @NotBlank
-        String bundId,
+    @Schema(
+            description = "The bPK2 of the bundId user",
+            example = "VnMEBMXsiCWZ34v1JCulQABe6-ts1yDSrbH3zII8BF0")
+        @NotBlank
+        String bpk2,
     @Schema(
             description = "The (external) id of the reference person",
             example = "be9831d4-dc25-48d8-9bfe-4c0b54bfb2c1")

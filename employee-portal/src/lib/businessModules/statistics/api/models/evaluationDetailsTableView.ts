@@ -11,6 +11,10 @@ import {
   mapTableData,
 } from "@/lib/businessModules/statistics/api/models/evaluationDetailsTableData";
 import {
+  ProcedureReferences,
+  mapProcedureReferences,
+} from "@/lib/businessModules/statistics/api/models/evaluationDetailsTableProcedureReferences";
+import {
   FlatAttribute,
   mapTableColumnHeadersToFlatAttributes,
 } from "@/lib/businessModules/statistics/api/models/flatAttribute";
@@ -21,6 +25,7 @@ export interface EvaluationDetailsTableView {
   timeRangeEnd: Date;
   attributes: FlatAttribute[];
   tableData: EvaluationDetailsTableRow[];
+  procedureReferences: ProcedureReferences | undefined;
   totalNumberOfElements: number;
 }
 
@@ -30,6 +35,7 @@ export function mapEvaluationToTableView(
   const attributes = mapTableColumnHeadersToFlatAttributes(
     evaluation.tableColumnHeaders,
   );
+  const tableData = mapTableData(evaluation.dataRows, attributes);
 
   return {
     evaluationName: evaluation.evaluationInfo.name,
@@ -38,7 +44,8 @@ export function mapEvaluationToTableView(
       evaluation.evaluationInfo.timeRangeEnd,
     ),
     attributes,
-    tableData: mapTableData(evaluation.dataRows, attributes),
+    tableData,
+    procedureReferences: mapProcedureReferences({ tableData, attributes }),
     totalNumberOfElements: evaluation.totalNumberOfElements,
   };
 }

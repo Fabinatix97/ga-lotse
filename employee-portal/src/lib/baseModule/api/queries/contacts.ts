@@ -9,7 +9,7 @@ import {
   ApiSearchContactsResponse,
   GetContactHistoryRequest,
   GetContactsRequest,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import {
   keepPreviousData,
@@ -126,9 +126,13 @@ export const SCHOOL_OR_DAYCARE = new Set<ApiContactCategory>([
 ]);
 
 export function useSearchSchoolOrDaycare(institutionName: string) {
-  const [debouncedInstitutionName] = useDebounce(institutionName, 250, {
-    trailing: true,
-  });
+  const [debouncedInstitutionName] = useDebounce(
+    institutionName,
+    institutionName === "" ? 0 : 250,
+    {
+      trailing: true,
+    },
+  );
 
   return useSearchContactsQuery(
     {

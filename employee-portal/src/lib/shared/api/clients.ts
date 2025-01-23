@@ -3,15 +3,24 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ConfigurationParameters } from "@eshg/base-api";
 import {
   ApiBusinessModule,
-  Configuration,
+  Configuration as BusinessProceduresConfiguration,
   GdprValidationTaskApi,
 } from "@eshg/employee-portal-api/businessProcedures";
+import {
+  Configuration as LibStatisticsConfiguration,
+  StatisticsProcedureReferenceApi,
+} from "@eshg/employee-portal-api/libStatistics";
 import {
   ApiConfiguration,
   useApiConfiguration,
 } from "@eshg/lib-portal/api/ApiProvider";
+
+type ConfigurationConstructor<TConfiguration> = new (
+  params: ConfigurationParameters,
+) => TConfiguration;
 
 const businessModuleBackendUrls = {
   [ApiBusinessModule.SchoolEntry]: "PUBLIC_SCHOOL_ENTRY_BACKEND_URL",
@@ -26,9 +35,10 @@ const businessModuleBackendUrls = {
     "PUBLIC_OFFICIAL_MEDICAL_SERVICE_BACKEND_URL",
 } as const satisfies Record<ApiBusinessModule, keyof ApiConfiguration>;
 
-export function useConfigurationByBusinessModule(
+export function useConfigurationByBusinessModule<TConfiguration>(
   businessModule: ApiBusinessModule,
-) {
+  Configuration: ConfigurationConstructor<TConfiguration>,
+): TConfiguration {
   const configurationParameters = useApiConfiguration(
     businessModuleBackendUrls[businessModule],
   );
@@ -37,6 +47,19 @@ export function useConfigurationByBusinessModule(
 }
 
 export function useGdprValidationTaskApi(businessModule: ApiBusinessModule) {
-  const configuration = useConfigurationByBusinessModule(businessModule);
+  const configuration = useConfigurationByBusinessModule(
+    businessModule,
+    BusinessProceduresConfiguration,
+  );
   return new GdprValidationTaskApi(configuration);
+}
+
+export function useStatisticsProcedureReferenceApi(
+  businessModule: ApiBusinessModule,
+) {
+  const configuration = useConfigurationByBusinessModule(
+    businessModule,
+    LibStatisticsConfiguration,
+  );
+  return new StatisticsProcedureReferenceApi(configuration);
 }

@@ -83,7 +83,7 @@ export function InboxProceduresTable(props: InboxProceduresTableProps) {
           sorting={tableControl.tableSorting}
           columns={inboxProcedureColumns}
           rowNavigation={{
-            onClick: (row) =>
+            onClick: (row) => () =>
               detailsSidebar.open({
                 ...props,
                 inboxProcedureId: row.original.inboxProcedureId,

@@ -5,8 +5,9 @@
 
 "use client";
 
+import { ApiChildSortKey } from "@eshg/dental-api";
+import { routes } from "@eshg/dental/shared/routes";
 import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
-import { ApiChildSortKey } from "@eshg/employee-portal-api/dental";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { useToggleableState } from "@eshg/lib-portal/hooks/useToggleableState";
 import { useSuspenseQueries } from "@tanstack/react-query";
@@ -15,7 +16,6 @@ import { ReactNode } from "react";
 
 import { Child } from "@/lib/businessModules/dental/api/models/Child";
 import { useGetChildrenQuery } from "@/lib/businessModules/dental/api/queries/childApi";
-import { routes } from "@/lib/businessModules/dental/shared/routes";
 import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
@@ -23,6 +23,12 @@ import { ChipWithTooltip } from "@/lib/shared/components/chip/ChipWithTooltip";
 import { useFilterDictionary } from "@/lib/shared/components/filterSettings/useFilterDictionary";
 import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
+import {
+  PersonSearchForm,
+  PersonSearchFormValues,
+  TogglePersonSearchButton,
+  usePersonSearch,
+} from "@/lib/shared/components/personSearch/PersonSearchForm";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
@@ -48,7 +54,9 @@ interface ChildrenTableProps {
 }
 
 export function ChildrenTable(props: ChildrenTableProps) {
-  const [activePanel, toggleActivePanel] = useToggleableState<"filters">();
+  const [activePanel, toggleActivePanel] = useToggleableState<PanelName>();
+
+  const personSearch = usePersonSearch();
 
   const tableControl = useTableControl({
     serverSideSorting: true,
@@ -69,6 +77,7 @@ export function ChildrenTable(props: ChildrenTableProps) {
   } = useFilterDictionary<keyof ChildrenFilters, ChildrenFilters>({
     onChangeFilters: () => {
       tableControl.paginationProps.onPageChange(0);
+      personSearch.reset();
     },
   });
 
@@ -81,6 +90,7 @@ export function ChildrenTable(props: ChildrenTableProps) {
     ),
     sortDirection: getSortDirection(tableControl.tableSorting),
     ...filterValues,
+    ...personSearch.searchParams,
   });
 
   const gdprBannerQuery = useGetGdprValidationBannerQuery(
@@ -96,6 +106,12 @@ export function ChildrenTable(props: ChildrenTableProps) {
     businessModule: ApiBusinessModule.Dental,
   });
 
+  function handleChangePersonSearch(formValues: PersonSearchFormValues) {
+    tableControl.paginationProps.onPageChange(0);
+    clearFilterValues();
+    personSearch.setValues(formValues);
+  }
+
   return (
     <TablePage
       fullHeight
@@ -108,10 +124,24 @@ export function ChildrenTable(props: ChildrenTableProps) {
               isFilterVisible={activePanel === "filters"}
               onClick={() => toggleActivePanel("filters")}
             />,
+            <TogglePersonSearchButton
+              {...personSearch.buttonProps}
+              key="personSearchButton"
+              expanded={activePanel === "personSearch"}
+              onClick={() => toggleActivePanel("personSearch")}
+            />,
           ]}
           right={props.buttons}
           alignItems="flex-end"
         />
+      }
+      search={
+        activePanel === "personSearch" && (
+          <PersonSearchForm
+            {...personSearch.formProps}
+            onChange={handleChangePersonSearch}
+          />
+        )
       }
       filterSettings={
         activePanel === "filters" && (
@@ -154,8 +184,8 @@ export function ChildrenTable(props: ChildrenTableProps) {
 
 const columnHelper = createColumnHelper<Child>();
 const COLUMNS = [
-  columnHelper.accessor("lastName", {
-    header: "Name",
+  columnHelper.accessor("firstName", {
+    header: "Vorname",
     cell: (props) => props.getValue(),
     enableSorting: true,
     meta: {
@@ -165,8 +195,8 @@ const COLUMNS = [
       },
     },
   }),
-  columnHelper.accessor("firstName", {
-    header: "Vorname",
+  columnHelper.accessor("lastName", {
+    header: "Nachname",
     cell: (props) => props.getValue(),
     enableSorting: true,
     meta: {
@@ -225,6 +255,8 @@ const COLUMNS = [
     },
   }),
 ];
+
+type PanelName = "filters" | "personSearch";
 
 const SORT_KEY_MAPPING: Record<string, ApiChildSortKey> = {
   firstName: ApiChildSortKey.FirstName,

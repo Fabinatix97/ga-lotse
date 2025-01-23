@@ -9,8 +9,12 @@ import com.google.common.collect.Sets;
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.contact.api.ContactDto;
+import de.eshg.base.user.UserApi;
+import de.eshg.base.user.api.GetUsersRequest;
+import de.eshg.base.user.api.UserDto;
 import de.eshg.dental.api.CreateProphylaxisSessionRequest;
 import de.eshg.dental.api.ProphylaxisSessionPaginationAndSortParameters;
+import de.eshg.dental.api.ProphylaxisSessionRequest;
 import de.eshg.dental.api.UpdateProphylaxisSessionParticipantsRequest;
 import de.eshg.dental.api.UpdateProphylaxisSessionRequest;
 import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedData;
@@ -35,6 +39,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -53,6 +58,7 @@ public class ProphylaxisSessionService {
   private final PersonClient personClient;
   private final Clock clock;
   private final Validator validator;
+  private final UserApi userApi;
 
   public ProphylaxisSessionService(
       ProphylaxisSessionRepository prophylaxisSessionRepository,
@@ -60,21 +66,23 @@ public class ProphylaxisSessionService {
       ChildRepository childRepository,
       PersonClient personClient,
       Clock clock,
-      Validator validator) {
+      Validator validator,
+      UserApi userApi) {
     this.prophylaxisSessionRepository = prophylaxisSessionRepository;
     this.contactClient = contactClient;
     this.childRepository = childRepository;
     this.personClient = personClient;
     this.clock = clock;
     this.validator = validator;
+    this.userApi = userApi;
   }
 
   public ProphylaxisSession createProphylaxisSession(CreateProphylaxisSessionRequest request) {
     ProphylaxisSession session = new ProphylaxisSession();
-    session.setDateAndTime(request.dateAndTime());
+    mapProphylaxisSessionRequest(session, request);
     session.setInstitutionId(request.institutionId());
-    session.setGroupName(request.groupName());
-    session.setType(ProphylaxisSessionMapper.mapToDomain(request.type()));
+    session.setDentistIds(request.dentistIds());
+    session.setZfaIds(request.zfaIds());
     addExaminationsForChildren(request, session);
     prophylaxisSessionRepository.save(session);
     return session;
@@ -138,18 +146,41 @@ public class ProphylaxisSessionService {
       UUID prophylaxisSessionId) {
     ProphylaxisSession prophylaxisSession = findProphylaxisSession(prophylaxisSessionId);
 
+    List<Examination> examinations = prophylaxisSession.getExaminations();
     Map<UUID, GetPersonFileStateResponse> fileStatesById =
-        personClient.fetchPersonDataInBulk(prophylaxisSession.getParticipants()).stream()
-            .collect(StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id));
-    Map<Child, GetPersonFileStateResponse> participantMap =
-        prophylaxisSession.getParticipants().stream()
+        fetchPersonFileStatesInBulk(examinations);
+
+    Map<Examination, GetPersonFileStateResponse> examinationMap =
+        examinations.stream()
             .collect(
                 StreamUtil.toLinkedHashMap(
                     Function.identity(),
-                    child -> fileStatesById.get(child.getChildIdFromCentralFile())));
+                    examination ->
+                        fileStatesById.get(examination.getChild().getChildIdFromCentralFile())));
 
     ContactDto contact = contactClient.getContact(prophylaxisSession.getInstitutionId());
-    return new ProphylaxisSessionWithAugmentedData(prophylaxisSession, contact, participantMap);
+    Map<UUID, UserDto> usersMap =
+        userApi
+            .getUsersBulk(
+                new GetUsersRequest(
+                    Stream.concat(
+                            prophylaxisSession.getDentistIds().stream(),
+                            prophylaxisSession.getZfaIds().stream())
+                        .toList(),
+                    true))
+            .users()
+            .stream()
+            .collect(StreamUtil.toLinkedHashMap(UserDto::userId));
+    return new ProphylaxisSessionWithAugmentedData(
+        prophylaxisSession, contact, examinationMap, usersMap);
+  }
+
+  private Map<UUID, GetPersonFileStateResponse> fetchPersonFileStatesInBulk(
+      List<Examination> examinations) {
+    List<Child> children = examinations.stream().map(Examination::getChild).toList();
+
+    return personClient.fetchPersonDataInBulk(children).stream()
+        .collect(StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id));
   }
 
   private Map<UUID, ContactDto> fetchContactsInBulk(Streamable<ProphylaxisSession> sessions) {
@@ -181,9 +212,6 @@ public class ProphylaxisSessionService {
       }
       for (UUID id : idsToRemove) {
         removeChildFromProphylaxisSession(id, persistedProphylaxisSession);
-      }
-      if (persistedProphylaxisSession.getExaminations().isEmpty()) {
-        throw new BadRequestException("Prophylaxis session may not remain without participants.");
       }
       persistedProphylaxisSession.setModifiedAt(Instant.now(clock));
       prophylaxisSessionRepository.flush();
@@ -234,12 +262,20 @@ public class ProphylaxisSessionService {
     validator.validateGroupAtInstitutionExists(
         persistedProphylaxisSession.getInstitutionId(), updateRequest.groupName());
 
-    persistedProphylaxisSession.setDateAndTime(updateRequest.dateAndTime());
-    persistedProphylaxisSession.setGroupName(updateRequest.groupName());
-    persistedProphylaxisSession.setType(ProphylaxisSessionMapper.mapToDomain(updateRequest.type()));
+    mapProphylaxisSessionRequest(persistedProphylaxisSession, updateRequest);
 
     prophylaxisSessionRepository.flush();
 
     return getProphylaxisSessionWithDetails(persistedProphylaxisSession.getExternalId());
+  }
+
+  private void mapProphylaxisSessionRequest(
+      ProphylaxisSession session, ProphylaxisSessionRequest request) {
+    session.setDateAndTime(request.dateAndTime());
+    session.setGroupName(request.groupName());
+    session.setType(ProphylaxisSessionMapper.mapToDomain(request.type()));
+    session.setScreening(request.screening());
+    session.setFluoridationVarnish(
+        ProphylaxisSessionMapper.mapToDomain(request.fluoridationVarnish()));
   }
 }

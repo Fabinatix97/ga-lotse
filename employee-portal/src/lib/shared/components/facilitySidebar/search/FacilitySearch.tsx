@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import type { ApiGetReferenceFacilityResponse } from "@eshg/employee-portal-api/base";
+import type { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
 import { Button } from "@mui/joy";
 import { ReactNode, useEffect, useState } from "react";
 

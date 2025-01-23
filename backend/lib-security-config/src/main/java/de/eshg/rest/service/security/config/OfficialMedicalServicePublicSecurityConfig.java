@@ -27,7 +27,9 @@ public class OfficialMedicalServicePublicSecurityConfig
     requestMatchers(BaseUrls.OfficialMedicalService.CITIZEN_AUTH_API + "/**")
         .hasRole(CitizenPermissionRole.ACCESS_CODE_USER);
 
-    requestMatchers(BaseUrls.OfficialMedicalService.EMPLOYEE_API + "/**")
+    requestMatchers(
+            BaseUrls.OfficialMedicalService.EMPLOYEE_API + "/**",
+            BaseUrls.EVENT_METADATA_API + "/**")
         .hasRole(EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_ADMIN);
   }
 }

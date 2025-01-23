@@ -3,78 +3,90 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Stack, Typography } from "@mui/joy";
-import { useFormikContext } from "formik";
 
 import { AnonymizationOptions } from "@/lib/businessModules/statistics/api/models/anonymizationOptions";
 import { DataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import { useGetEvaluationTemplateDetails } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplateDetails";
 import { AnonymizationConfiguration } from "@/lib/businessModules/statistics/components/evaluations/AnonymizationConfiguration";
-import { ChooseDataSourceStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ChooseDataSourceStep/chooseDataSourceStepFormModel";
-import { ChooseEvaluationTemplateStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ChooseEvaluationTemplateStep/chooseEvaluationTemplateStepFormModel";
+import { DataSource } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ChooseDataSourceStep/ChooseDataSourceStep";
 import { ConfigureDataSourceStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ConfigureDataSourceStep/configureDataSourceStepFormModel";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
+import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import { TimeSpanField } from "@/lib/shared/components/formFields/TimeSpanField";
 
-export function ConfigureDataSourceStep() {
-  const { values } = useFormikContext<
-    ChooseDataSourceStepFormModel & ChooseEvaluationTemplateStepFormModel
-  >();
-
-  return (
-    <Stack gap={3}>
-      {values.dataSource && (
-        <DataSource
-          name={values.dataSource.name}
-          sensitivity={values.dataSource.sensitivity}
-          anonymizationOptions={values.dataSource.anonymizationOptions}
-        />
-      )}
-      {values._dataSourceId === "CHOOSE_EVALUATION_TEMPLATE" && (
-        <OverlayBoundary>
-          <DataSourceFromTemplate
-            evaluationTemplateId={values.evaluationTemplateId!}
-          />
-        </OverlayBoundary>
-      )}
-    </Stack>
-  );
+export interface ConfigureDataSourceStepProps
+  extends SidebarStepContentProps<ConfigureDataSourceStepFormModel> {
+  isEvaluationTemplateBranch: boolean;
+  dataSource?: DataSource;
+  evaluationTemplateId?: string;
+  explicitStartAndEnd: boolean;
 }
 
-function DataSource(props: {
-  name: string;
-  sensitivity: DataSourceSensitivity | undefined;
-  anonymizationOptions: AnonymizationOptions;
-}) {
-  const fieldName = createFieldNameMapper<ConfigureDataSourceStepFormModel>();
-
+export function ConfigureDataSourceStep(props: ConfigureDataSourceStepProps) {
   return (
     <>
-      <Typography level="h3" component="h2">
-        {props.name}
-      </Typography>
-      <TimeSpanField
-        name={fieldName("timeSpan")}
-        label="Betrachtungszeitraum"
-      />
-      <AnonymizationConfiguration
-        sensitivity={props.sensitivity}
-        name={fieldName("anonymized")}
-        anonymizationOptions={props.anonymizationOptions}
-      />
+      {props.isEvaluationTemplateBranch ? (
+        <ConfigureDataSourceFromTemplate
+          evaluationTemplateId={props.evaluationTemplateId!}
+          {...props}
+        />
+      ) : (
+        <ConfigureDataSource
+          name={props.dataSource!.name}
+          sensitivity={props.dataSource!.sensitivity}
+          anonymizationOptions={props.dataSource!.anonymizationOptions}
+          {...props}
+        />
+      )}
     </>
   );
 }
 
-function DataSourceFromTemplate(props: { evaluationTemplateId: string }) {
+interface ConfigureDataSourceProps
+  extends SidebarStepContentProps<ConfigureDataSourceStepFormModel> {
+  name: string;
+  sensitivity: DataSourceSensitivity | undefined;
+  anonymizationOptions: AnonymizationOptions;
+  explicitStartAndEnd: boolean;
+}
+
+function ConfigureDataSource(props: ConfigureDataSourceProps) {
+  return (
+    <Stack gap={3}>
+      <Typography level="h3" component="h2">
+        {props.name}
+      </Typography>
+      <TimeSpanField
+        name={props.fieldName("timeSpan")}
+        label="Betrachtungszeitraum"
+        initialExplicitStartAndEndChecked={props.explicitStartAndEnd}
+      />
+      <AnonymizationConfiguration
+        sensitivity={props.sensitivity}
+        name={props.fieldName("anonymized")}
+        anonymizationOptions={props.anonymizationOptions}
+      />
+    </Stack>
+  );
+}
+
+interface ConfigureDataSourceFromTemplateProps
+  extends SidebarStepContentProps<ConfigureDataSourceStepFormModel> {
+  evaluationTemplateId: string;
+  explicitStartAndEnd: boolean;
+}
+
+function ConfigureDataSourceFromTemplate(
+  props: ConfigureDataSourceFromTemplateProps,
+) {
   const { dataSourceName, dataSourceSensitivity, anonymizationOptions } =
     useGetEvaluationTemplateDetails(props.evaluationTemplateId);
   return (
-    <DataSource
+    <ConfigureDataSource
       name={dataSourceName}
       sensitivity={dataSourceSensitivity}
       anonymizationOptions={anonymizationOptions}
+      {...props}
     />
   );
 }

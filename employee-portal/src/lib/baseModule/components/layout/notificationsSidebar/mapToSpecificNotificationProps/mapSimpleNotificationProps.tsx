@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiSimpleNotification } from "@eshg/employee-portal-api/base";
+import { ApiSimpleNotification } from "@eshg/base-api";
 import { Typography } from "@mui/joy";
 
 import { SpecificNotificationProps } from "./specificNotificationProps";

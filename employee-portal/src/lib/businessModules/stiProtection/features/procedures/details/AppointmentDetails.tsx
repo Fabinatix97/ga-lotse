@@ -19,6 +19,7 @@ import {
   APPOINTMENT_TYPES,
   appointmentStatusColor,
 } from "@/lib/businessModules/stiProtection/shared/constants";
+import { createOnlyIfProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
 import {
   ActionsItem,
   ActionsMenu,
@@ -86,6 +87,7 @@ export function AppointmentDetails({
     setEditAppointmentType(appointmentType);
   }
 
+  const onlyIfOpen = createOnlyIfProcedureOpen(procedure);
   return (
     <Sheet>
       <DetailsSection title="Termine">
@@ -108,14 +110,16 @@ export function AppointmentDetails({
         </TablePage>
       </DetailsSection>
       <Stack display={"flex"} alignItems={"flex-start"}>
-        <Button
-          variant="plain"
-          aria-label="Termin buchen"
-          onClick={() => setIsOpenCreateAppointment(true)}
-          startDecorator={<CalendarAddDay />}
-        >
-          Termin buchen
-        </Button>
+        {onlyIfOpen(
+          <Button
+            variant="plain"
+            aria-label="Termin buchen"
+            onClick={() => setIsOpenCreateAppointment(true)}
+            startDecorator={<CalendarAddDay />}
+          >
+            Termin buchen
+          </Button>,
+        )}
       </Stack>
     </Sheet>
   );

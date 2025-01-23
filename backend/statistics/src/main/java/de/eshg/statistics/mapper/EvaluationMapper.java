@@ -11,12 +11,12 @@ import de.eshg.lib.statistics.api.DataRow;
 import de.eshg.lib.statistics.api.ValueOptionInternal;
 import de.eshg.statistics.api.TableColumnHeader;
 import de.eshg.statistics.api.attributes.AbstractTableColumnHeaderAttribute;
+import de.eshg.statistics.api.attributes.BaseModuleIdAttribute;
 import de.eshg.statistics.api.attributes.BooleanAttribute;
-import de.eshg.statistics.api.attributes.CentralFileIdAttribute;
 import de.eshg.statistics.api.attributes.DateAttribute;
 import de.eshg.statistics.api.attributes.DecimalAttribute;
 import de.eshg.statistics.api.attributes.IntegerAttribute;
-import de.eshg.statistics.api.attributes.ProcedureIdAttribute;
+import de.eshg.statistics.api.attributes.ProcedureReferenceAttribute;
 import de.eshg.statistics.api.attributes.TextAttribute;
 import de.eshg.statistics.api.attributes.ValueOption;
 import de.eshg.statistics.api.attributes.ValueWithOptionsAttribute;
@@ -71,7 +71,7 @@ public class EvaluationMapper {
           tableColumn.getBusinessModuleName(),
           tableColumn.getDataSourceId(),
           tableColumn.getDataSourceName(),
-          mapNonCentralFileIdAttribute(
+          mapNonBaseModuleIdAttribute(
               tableColumn.getValueType(),
               tableColumn.getBusinessModuleAttributeName(),
               tableColumn.getBusinessModuleAttributeCode(),
@@ -84,10 +84,10 @@ public class EvaluationMapper {
           tableColumn.getBusinessModuleName(),
           tableColumn.getDataSourceId(),
           tableColumn.getDataSourceName(),
-          new CentralFileIdAttribute(
+          new BaseModuleIdAttribute(
               tableColumn.getBusinessModuleAttributeName(),
               tableColumn.getBusinessModuleAttributeCode(),
-              mapNonCentralFileIdAttribute(
+              mapNonBaseModuleIdAttribute(
                   tableColumn.getValueType(),
                   tableColumn.getBaseModuleAttributeName(),
                   tableColumn.getBaseModuleAttributeCode(),
@@ -117,7 +117,7 @@ public class EvaluationMapper {
     }
   }
 
-  private static AbstractTableColumnHeaderAttribute mapNonCentralFileIdAttribute(
+  private static AbstractTableColumnHeaderAttribute mapNonBaseModuleIdAttribute(
       TableColumnValueType valueType,
       String attributeName,
       String attributeCode,
@@ -149,7 +149,7 @@ public class EvaluationMapper {
       case VALUE_WITH_OPTIONS ->
           new ValueWithOptionsAttribute(
               attributeName, attributeCode, mapMeaningsToApi(valueToMeanings));
-      case PROCEDURE_ID -> new ProcedureIdAttribute(attributeName, attributeCode);
+      case PROCEDURE_REFERENCE -> new ProcedureReferenceAttribute(attributeName, attributeCode);
     };
   }
 

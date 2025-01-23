@@ -5,5 +5,6 @@
 
 import { CreateEvaluationStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/templates/CreateEvaluationFromTemplateSidebar/CreateEvaluationStep/createEvaluationStepFormModel";
 
-export type CreateEvaluationFromTemplateFormModel =
-  CreateEvaluationStepFormModel;
+export type CreateEvaluationFromTemplateFormModel = [
+  CreateEvaluationStepFormModel,
+];

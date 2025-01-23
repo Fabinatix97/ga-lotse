@@ -18,11 +18,14 @@ import {
   FormLabel,
   FormLabelProps,
   Stack,
+  styled,
 } from "@mui/joy";
 import { ChangeEvent, ReactNode, useId, useRef } from "react";
 import { isDefined, isFunction, isString } from "remeda";
 
 import { FileButton, FileInputButton } from "./buttonVariants";
+
+const HiddenInput = styled("input")({ display: "none" });
 
 const DEFAULT_PLACEHOLDER = "Datei auswählen";
 
@@ -121,7 +124,7 @@ export function FileField(props: Readonly<FileFieldProps>) {
         >
           {fileName ?? placeholder}
         </UploadButton>
-        <input
+        <HiddenInput
           ref={fileInputRef}
           id={fileInputId}
           type="file"
@@ -131,7 +134,6 @@ export function FileField(props: Readonly<FileFieldProps>) {
           required={field.required}
           onChange={handleChange}
           tabIndex={-1}
-          style={{ display: "none" }}
         />
         {isDefined(field.helperText) && (
           <FormHelperText id={`${fileInputId}-helper-text`}>

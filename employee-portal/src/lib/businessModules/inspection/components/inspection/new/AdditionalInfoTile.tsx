@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiUser, ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUser, ApiUserRole } from "@eshg/base-api";
 import {
   ApiInspFacility,
   ApiInspection,

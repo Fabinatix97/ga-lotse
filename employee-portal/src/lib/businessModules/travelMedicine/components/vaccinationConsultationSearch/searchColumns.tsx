@@ -20,8 +20,8 @@ const columnHelper: ColumnHelper<ApiVaccinationConsultationSearch> =
 
 export function searchColumns() {
   return [
-    columnHelper.accessor("lastName", {
-      header: "Nachname",
+    columnHelper.accessor("firstName", {
+      header: "Vorname",
       meta: {
         width: 150,
         canNavigate: {
@@ -29,8 +29,8 @@ export function searchColumns() {
         },
       },
     }),
-    columnHelper.accessor("firstName", {
-      header: "Vorname",
+    columnHelper.accessor("lastName", {
+      header: "Nachname",
       meta: {
         width: 150,
         canNavigate: {

@@ -5,14 +5,17 @@
 
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { Stack, Typography } from "@mui/joy";
-import { useFormikContext } from "formik";
 
 import { mapToApiBusinessModule } from "@/lib/businessModules/statistics/api/mapper/mapToApiBusinessModule";
 import { AnonymizationOptions } from "@/lib/businessModules/statistics/api/models/anonymizationOptions";
 import { DataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
-import { ChooseDataSourceStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ChooseDataSourceStep/chooseDataSourceStepFormModel";
+import { CategorizedFlatAttribute } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ChooseAttributesStep/ChooseAttributesStep";
+import { CHOOSE_EVALUATION_TEMPLATE } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/CreateEvaluationFromScratchSidebar";
+import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import { SelectableCard } from "@/lib/shared/components/cards/SelectableCard";
 import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
+
+import { ChooseDataSourceStepFormModel } from "./chooseDataSourceStepFormModel";
 
 export interface DataSource {
   id: string;
@@ -20,29 +23,27 @@ export interface DataSource {
   name: string;
   sensitivity: DataSourceSensitivity;
   anonymizationOptions: AnonymizationOptions;
+  attributes: CategorizedFlatAttribute[];
 }
 
-export function ChooseDataSourceStep(props: { dataSources: DataSource[] }) {
-  const { setFieldValue } = useFormikContext<ChooseDataSourceStepFormModel>();
+export interface ChooseDataSourceStepProps
+  extends SidebarStepContentProps<ChooseDataSourceStepFormModel> {
+  dataSources: DataSource[];
+}
 
+export function ChooseDataSourceStep(props: ChooseDataSourceStepProps) {
   return (
     <Stack flexDirection="column" gap={1}>
       <Stack flexDirection="column" gap={2}>
         <Typography>Datenquelle wählen:</Typography>
         <RadioGroupField
-          name="_dataSourceId"
-          onChange={(id) => {
-            void setFieldValue(
-              "dataSource",
-              props.dataSources.find((it) => it.id === id),
-            );
-          }}
+          name={props.fieldName("dataSourceId")}
           required="Bitte Vorlage oder Datenquelle auswählen"
         >
           <Stack gap={2}>
             <SelectableCard
-              value="CHOOSE_EVALUATION_TEMPLATE"
-              forGroupName="_dataSourceId"
+              value={CHOOSE_EVALUATION_TEMPLATE}
+              forGroupName={props.fieldName("dataSourceId")}
             >
               <Typography level="title-md">Vorlage anwenden</Typography>
             </SelectableCard>
@@ -50,7 +51,7 @@ export function ChooseDataSourceStep(props: { dataSources: DataSource[] }) {
               <SelectableCard
                 key={dataSource.id}
                 value={dataSource.id}
-                forGroupName="_dataSourceId"
+                forGroupName={props.fieldName("dataSourceId")}
               >
                 <Stack gap={0.5}>
                   <Typography level="title-md">

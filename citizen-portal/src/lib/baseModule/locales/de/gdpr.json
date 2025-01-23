@@ -45,5 +45,46 @@
         "title": "Vor Ort"
       }
     }
+  },
+  "contact_form": {
+    "title": "Informationen korrigieren",
+    "description": "Sehen Sie einen Fehler in Ihren Informationen?\nHier können Sie mit uns Kontakt aufnehmen, um Ihre Informationen zu korrigieren.",
+    "success": "Ihre Anfrage wurde empfangen.",
+    "open": "Kontaktieren",
+    "input_label": "Ihre Nachricht",
+    "required_input": "Bitte angeben.",
+    "cancel": "Abbrechen",
+    "preview": "Prüfen",
+    "submit": "Absenden",
+    "change_input": "Eingabe ändern"
+  },
+  "start_procedure_dialog": {
+    "RIGHT_OF_ACCESS": {
+      "title": "Datenauskunft",
+      "description": "Wir leiten einen Prozess zur Abfrage folgender Daten ein:",
+      "submit": "Datenauskunft beantragen"
+    },
+    "RIGHT_TO_ERASURE": {
+      "title": "Löschanfrage",
+      "description": "Diese Aktion kann nicht rückgängig gemacht werden. Wir leiten einen Prozess zur Löschung folgender Daten ein:",
+      "submit": "Löschung anfragen"
+    },
+    "RIGHT_TO_OBJECT": {
+      "title": "Datenverarbeitung widersprechen",
+      "description": "Bitte nennen Sie uns ihr Anliegen des Widerspruchs.",
+      "matterOfConcern": "Anliegen",
+      "submit": "Widerspruch einreichen"
+    },
+    "RIGHT_TO_RECTIFICATION": {
+      "title": "Datenkorrektur",
+      "description": "Sie werden auf Ihr Profil weitergeleitet. Dort können Sie eine Korrektur beantragen.",
+      "submit": "Zum Profil"
+    }
+  },
+  "confirmation": {
+    "RIGHT_OF_ACCESS": "Datenauskunft erfolgreich beantragt.",
+    "RIGHT_TO_ERASURE": "Löschauftrag erfolgreich gesendet.",
+    "RIGHT_TO_OBJECT": "Daten widerspruch erfolgreich gesendet.",
+    "RIGHT_TO_RECTIFICATION": "Datenkorrektur erfolgreich gesendet."
   }
 }

@@ -12,7 +12,9 @@ public enum StiProtectionSystemProgressEntryType {
   LABORATORY_TEST_EXAMINATION_UPDATED("Die Labortests wurden aktualisiert."),
   APPOINTMENT_REBOOKED("Der Termin wurde verschoben auf den %s."),
   APPOINTMENT_CANCELLED("Ein Termin wurde storniert."),
-  CONSULTATION_UPDATED("Die Konsultation wurde aktualisiert.");
+  MEDICAL_HISTORY_UPDATED("Der Anamnesebogen wurde aktualisiert."),
+  CONSULTATION_UPDATED("Die Konsultation wurde aktualisiert."),
+  DIAGNOSIS_UPDATED("Die Diagnose wurde aktualisiert.");
 
   private final String changeDescription;
 

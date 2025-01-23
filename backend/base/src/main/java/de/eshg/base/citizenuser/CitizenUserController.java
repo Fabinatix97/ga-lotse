@@ -7,9 +7,11 @@ package de.eshg.base.citizenuser;
 
 import de.eshg.base.citizenuser.api.CitizenUserRoleDto;
 import de.eshg.base.citizenuser.api.GetCitizenPermissionsResponse;
+import de.eshg.base.citizenuser.api.GetCitizenSelfUserResponse;
 import de.eshg.base.citizenuser.mapper.CitizenUserMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.*;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,5 +34,13 @@ public class CitizenUserController implements CitizenUserApi {
             .sorted()
             .toList();
     return new GetCitizenPermissionsResponse(roles);
+  }
+
+  @Override
+  public GetCitizenSelfUserResponse getCitizenSelfUser() {
+    UserRepresentation selfUserRepresentation =
+        citizenUserService.getCitizenSelfUserRepresentation();
+
+    return CitizenUserMapper.mapUserRepresentationToCitizenUserNames(selfUserRepresentation);
   }
 }

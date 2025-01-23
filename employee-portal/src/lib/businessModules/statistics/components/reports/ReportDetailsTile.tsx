@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { HiddenContainer } from "@eshg/lib-portal/components/HiddenContainer";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Divider, Sheet, Stack, Typography } from "@mui/joy";
 import { isNonNullish } from "remeda";
@@ -55,7 +54,7 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
     redirectRoute: routes.reports.index,
   });
 
-  const { download: exportData, downloadContainerRef } = useExportReportData();
+  const { download: exportData } = useExportReportData();
   const dataExportGuard = useDataExportGuard();
   const { headerHeightDesktop } = useHeaderHeights();
 
@@ -73,113 +72,109 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
   const copy = useCopy();
 
   return (
-    <>
-      <HiddenContainer ref={downloadContainerRef} />
-
-      <Stack
-        gap={3}
-        flex={1}
-        alignSelf="start"
-        alignItems="end"
-        position="sticky"
-        top={`calc(${headerHeightDesktop} + ${simpleToolbarHeight} + 1.5rem)`}
-      >
-        <Sheet sx={{ padding: 3 }} data-testid="report-details-tile">
-          <Stack gap={3}>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Typography level="h3" component="h2">
-                Report-Details
-              </Typography>
-              <ActionsMenu
-                actionItems={getReportActionItems(
-                  [
-                    {
-                      type: "update",
-                      action: openUpdateReportSidebar,
-                    },
-                    {
-                      type: "share",
-                      action: async () =>
-                        await copy(
-                          getSharedURL({
-                            detailLinkId: props.id,
-                            statisticsSubRoute: "reports",
-                          }),
-                        ),
-                    },
-                    {
-                      type: "export",
-                      action: async () =>
-                        dataExportGuard(props.dataSourceSensitivity, () =>
-                          exportData(
-                            { reportId: props.id },
-                            {
-                              tooMuchDataForExport: props.tooMuchDataForExport,
-                            },
-                          ),
-                        ),
-                    },
-                  ],
-                  isNonNullish(props.numberInSeries) ? "CHILD" : "SINGLE",
+    <Stack
+      gap={3}
+      flex={1}
+      alignSelf="start"
+      alignItems="end"
+      position="sticky"
+      top={`calc(${headerHeightDesktop} + ${simpleToolbarHeight} + 1.5rem)`}
+    >
+      <Sheet sx={{ padding: 3 }} data-testid="report-details-tile">
+        <Stack gap={3}>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography level="h3" component="h2">
+              Report-Details
+            </Typography>
+            <ActionsMenu
+              actionItems={getReportActionItems(
+                [
                   {
-                    deleteReportWithConfirmation: deleteReportWithConfirmation,
-                    reportId: props.id,
-                  } satisfies DeleteReport,
-                  canWrite,
-                  canDelete,
-                  false,
-                )}
-                slotProps={{ root: { variant: "outlined", color: "primary" } }}
-              />
-            </Stack>
-            {isNonNullish(props.description) && (
-              <Stack gap={3}>
-                <Typography level="body-md">{props.description}</Typography>
-                <Divider />
-              </Stack>
-            )}
-            <Stack gap={1}>
-              <LabelValuePair
-                label="Betrachtungszeitraum"
-                value={formatDateRangeNumeric(props.start, props.end)}
-              />
-              <LabelValuePair
-                label="Erstellungsdatum"
-                value={formatDate(props.createdAt, "DE")}
-              />
-              {isNonNullish(props.numberInSeries) && (
-                <LabelValuePair label="Ausgabe" value={props.numberInSeries} />
+                    type: "update",
+                    action: openUpdateReportSidebar,
+                  },
+                  {
+                    type: "share",
+                    action: async () =>
+                      await copy(
+                        getSharedURL({
+                          detailLinkId: props.id,
+                          statisticsSubRoute: "reports",
+                        }),
+                      ),
+                  },
+                  {
+                    type: "export",
+                    action: async () =>
+                      dataExportGuard(props.dataSourceSensitivity, () =>
+                        exportData(
+                          { reportId: props.id },
+                          {
+                            tooMuchDataForExport: props.tooMuchDataForExport,
+                          },
+                        ),
+                      ),
+                  },
+                ],
+                isNonNullish(props.numberInSeries) ? "CHILD" : "SINGLE",
+                {
+                  deleteReportWithConfirmation: deleteReportWithConfirmation,
+                  reportId: props.id,
+                } satisfies DeleteReport,
+                canWrite,
+                canDelete,
+                false,
               )}
-              <LabelValuePair
-                label="Erstellt von"
-                value={`${props.createdBy}${isNonNullish(props.numberInSeries) ? " (automatisiert)" : ""}`}
-              />
-            </Stack>
-            <Divider />
-            <Stack gap={1}>
-              <LabelValuePair label="Datenquelle" value={props.dataSource} />
-              <LabelValuePair
-                label="Sensibilität"
-                value={translateDataSourceSensitivity(
-                  props.dataSourceSensitivity,
-                )}
-              />
-              <LabelValuePair
-                label="Datensätze"
-                value={props.datasetAmount.toString()}
-              />
-              <LabelValuePair
-                label="Attribute"
-                value={props.attributeLabels.join(", ")}
-              />
-            </Stack>
+              slotProps={{ root: { variant: "outlined", color: "primary" } }}
+            />
           </Stack>
-        </Sheet>
-      </Stack>
-    </>
+          {isNonNullish(props.description) && (
+            <Stack gap={3}>
+              <Typography level="body-md">{props.description}</Typography>
+              <Divider />
+            </Stack>
+          )}
+          <Stack gap={1}>
+            <LabelValuePair
+              label="Betrachtungszeitraum"
+              value={formatDateRangeNumeric(props.start, props.end)}
+            />
+            <LabelValuePair
+              label="Erstellungsdatum"
+              value={formatDate(props.createdAt, "DE")}
+            />
+            {isNonNullish(props.numberInSeries) && (
+              <LabelValuePair label="Ausgabe" value={props.numberInSeries} />
+            )}
+            <LabelValuePair
+              label="Erstellt von"
+              value={`${props.createdBy}${isNonNullish(props.numberInSeries) ? " (automatisiert)" : ""}`}
+            />
+          </Stack>
+          <Divider />
+          <Stack gap={1}>
+            <LabelValuePair label="Datenquelle" value={props.dataSource} />
+            <LabelValuePair
+              label="Sensibilität"
+              value={translateDataSourceSensitivity(
+                props.dataSourceSensitivity,
+              )}
+            />
+            <LabelValuePair
+              label="Datensätze"
+              value={props.datasetAmount.toString()}
+            />
+            <LabelValuePair
+              label="Attribute"
+              value={props.attributeLabels.join(", ")}
+            />
+          </Stack>
+        </Stack>
+      </Sheet>
+    </Stack>
   );
 }

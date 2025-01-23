@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  ApiGetPersonDiffResponse,
-  ApiPersonDetails,
-} from "@eshg/employee-portal-api/base";
+import { ApiGetPersonDiffResponse, ApiPersonDetails } from "@eshg/base-api";
 import {
   GENDER_VALUES,
   PERSON_FIELD_NAME,
@@ -14,6 +11,7 @@ import {
   getOptionalTitle,
 } from "@eshg/lib-portal/components/formFields/constants";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { Stack } from "@mui/joy";
 import { isDefined } from "remeda";
 
@@ -31,7 +29,6 @@ import {
 } from "@/lib/shared/components/centralFile/sync/SyncFormGrid";
 import { SyncBaseAddressSection } from "@/lib/shared/components/centralFile/sync/sections/SyncBaseAddressSection";
 import { SyncListSection } from "@/lib/shared/components/centralFile/sync/sections/SyncListSection";
-import { translateCountry } from "@/lib/shared/helpers/i18n";
 
 export function BasePersonDiffForm({
   diff,

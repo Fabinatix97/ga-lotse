@@ -12,8 +12,6 @@ import de.eshg.travelmedicine.citizenauth.api.PatchInformationStatementRequest;
 import de.eshg.travelmedicine.document.api.DocumentContentDto;
 import de.eshg.travelmedicine.document.informationstatement.InformationStatementService;
 import de.eshg.travelmedicine.document.medicalhistory.MedicalHistoryService;
-import de.eshg.travelmedicine.featuretoggle.TravelMedicineFeature;
-import de.eshg.travelmedicine.featuretoggle.TravelMedicineFeatureToggle;
 import de.eshg.travelmedicine.vaccinationconsultation.VaccinationConsultationService;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetAppointmentDetailsResponse;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetCitizenAppointmentOverviewResponse;
@@ -52,18 +50,15 @@ public class CitizenAuthController {
 
   private static final long MAX_SIGNATURE_SIZE = 1024L * 1024L;
 
-  private final TravelMedicineFeatureToggle featureToggle;
   private final VaccinationConsultationService vaccinationConsultationService;
   private final InformationStatementService informationStatementService;
 
   private final MedicalHistoryService medicalHistoryService;
 
   public CitizenAuthController(
-      TravelMedicineFeatureToggle featureToggle,
       VaccinationConsultationService vaccinationConsultationService,
       InformationStatementService informationStatementService,
       MedicalHistoryService medicalHistoryService) {
-    this.featureToggle = featureToggle;
     this.vaccinationConsultationService = vaccinationConsultationService;
     this.informationStatementService = informationStatementService;
     this.medicalHistoryService = medicalHistoryService;
@@ -75,7 +70,6 @@ public class CitizenAuthController {
   @Transactional(readOnly = true)
   public GetCitizenAppointmentOverviewResponse getProcedureAppointments(
       @AuthenticationPrincipal Jwt principal) {
-    featureToggle.assertNewFeatureIsEnabled(TravelMedicineFeature.CITIZEN_PORTAL_PROCEDURE);
     return vaccinationConsultationService.getProcedureStepAppointments(getCitizenUserId(principal));
   }
 
@@ -87,7 +81,6 @@ public class CitizenAuthController {
       @AuthenticationPrincipal Jwt principal,
       @PathVariable("procedureId") UUID procedureId,
       @PathVariable("procedureStepId") UUID procedureStepId) {
-    featureToggle.assertNewFeatureIsEnabled(TravelMedicineFeature.CITIZEN_PORTAL_PROCEDURE);
     return vaccinationConsultationService.getAppointmentDetails(
         getCitizenUserId(principal), procedureId, procedureStepId);
   }
@@ -103,7 +96,6 @@ public class CitizenAuthController {
       @AuthenticationPrincipal Jwt principal,
       @PathVariable("procedureId") UUID procedureId,
       @PathVariable("procedureStepId") UUID procedureStepId) {
-    featureToggle.assertNewFeatureIsEnabled(TravelMedicineFeature.CITIZEN_PORTAL_PROCEDURE);
     vaccinationConsultationService.cancelAppointmentByCitizen(
         getCitizenUserId(principal), procedureId, procedureStepId);
   }
@@ -120,7 +112,6 @@ public class CitizenAuthController {
       @AuthenticationPrincipal Jwt principal,
       @PathVariable("procedureId") UUID procedureId,
       @PathVariable("procedureStepId") UUID procedureStepId) {
-    featureToggle.assertNewFeatureIsEnabled(TravelMedicineFeature.CITIZEN_PORTAL_PROCEDURE);
     return medicalHistoryService.getMedicalHistoryForCitizenPortal(
         getCitizenUserId(principal), procedureId, procedureStepId);
   }
@@ -138,7 +129,6 @@ public class CitizenAuthController {
       @PathVariable("procedureId") UUID procedureId,
       @PathVariable("procedureStepId") UUID procedureStepId,
       @RequestBody @Valid DocumentContentDto patchMedicalHistoryContent) {
-    featureToggle.assertNewFeatureIsEnabled(TravelMedicineFeature.CITIZEN_PORTAL_PROCEDURE);
     medicalHistoryService.patchMedicalHistoryForCitizenPortal(
         getCitizenUserId(principal), procedureId, procedureStepId, patchMedicalHistoryContent);
   }
@@ -156,7 +146,6 @@ public class CitizenAuthController {
       @PathVariable("procedureId") UUID procedureId,
       @PathVariable("procedureStepId") UUID procedureStepId,
       @RequestBody @Valid AppointmentDto appointmentDto) {
-    featureToggle.assertNewFeatureIsEnabled(TravelMedicineFeature.CITIZEN_PORTAL_PROCEDURE);
     vaccinationConsultationService.bookCitizenAppointmentByCitizen(
         getCitizenUserId(principal), procedureId, procedureStepId, appointmentDto);
   }
@@ -167,8 +156,6 @@ public class CitizenAuthController {
   public DocumentContentDto getCitizenInformationStatement(
       @AuthenticationPrincipal Jwt principal,
       @PathVariable("informationStatementId") UUID informationStatementId) {
-    featureToggle.assertNewFeatureIsEnabled(
-        TravelMedicineFeature.CITIZEN_PORTAL_INFORMATION_STATEMENT);
     return informationStatementService.getInformationStatementForCitizenPortal(
         getCitizenUserId(principal), informationStatementId);
   }
@@ -184,8 +171,6 @@ public class CitizenAuthController {
       @RequestPart("patchInformationStatementContent") @Valid
           PatchInformationStatementRequest patchInformationStatementContent,
       @RequestPart(name = "signature") MultipartFile signature) {
-    featureToggle.assertNewFeatureIsEnabled(
-        TravelMedicineFeature.CITIZEN_PORTAL_INFORMATION_STATEMENT);
     if (signature != null && signature.getSize() > MAX_SIGNATURE_SIZE) {
       throw new BadRequestException("Size of signature image too large.");
     }

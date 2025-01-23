@@ -33,7 +33,7 @@ export function YearFilter(props: YearFilterProps) {
     <YearInput
       value={props.value?.selectedValue ?? ""}
       onChange={(event) => handleChange(event.target.value)}
-      style={{ width: "100%" }}
+      sx={{ width: "100%" }}
     />
   );
 }

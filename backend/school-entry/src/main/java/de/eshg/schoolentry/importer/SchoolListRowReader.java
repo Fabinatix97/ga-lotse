@@ -14,9 +14,9 @@ import de.eshg.schoolentry.business.model.ImportChildData;
 import java.util.List;
 import org.apache.poi.ss.usermodel.Sheet;
 
-public class SchoolListRowReader extends RowReader<SchoolListRow, SchoolListColumn> {
+class SchoolListRowReader extends RowReader<SchoolListRow, SchoolListColumn> {
 
-  public SchoolListRowReader(Sheet sheet, List<SchoolListColumn> actualColumns) {
+  SchoolListRowReader(Sheet sheet, List<SchoolListColumn> actualColumns) {
     super(sheet, actualColumns, SchoolListRow::new);
   }
 

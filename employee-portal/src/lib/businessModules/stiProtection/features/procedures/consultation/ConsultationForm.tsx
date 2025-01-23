@@ -9,17 +9,17 @@ import {
   ApiConsultation,
   ApiStiProtectionProcedure,
 } from "@eshg/employee-portal-api/stiProtection";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { Divider, Sheet, Typography, styled } from "@mui/joy";
+import { Divider, Sheet, Typography } from "@mui/joy";
 import { Formik } from "formik";
 
 import { useUpsertConsultation } from "@/lib/businessModules/stiProtection/api/mutations/consultation";
-import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
-import { StickyBottomButtonBar } from "@/lib/shared/components/buttons/StickyBottomButtonBar";
+import {
+  SidecarFormLayout,
+  SidecarSheet,
+} from "@/lib/businessModules/stiProtection/features/procedures/SidecarFormLayout";
+import { TabStickyBottomButtonBar } from "@/lib/businessModules/stiProtection/features/procedures/TabStickyBottomButtonBar";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
 import { GeneralSection } from "./GeneralSection";
@@ -30,21 +30,15 @@ import {
   mapFormValuesToApi,
 } from "./helpers";
 
-export const AutoWidthHorizontalField = styled(HorizontalField)({
-  ".MuiStack-root": {
-    justifyContent: "space-between",
-  },
-});
-
 export function ConsultationForm({
-  procedure: stiProcedure,
+  procedure,
   consultation,
 }: Readonly<{
   procedure: ApiStiProtectionProcedure;
   consultation: ApiConsultation;
 }>) {
   const snackbar = useSnackbar();
-  const upsertConsultation = useUpsertConsultation(stiProcedure.id, {
+  const upsertConsultation = useUpsertConsultation(procedure.id, {
     onSuccess: () => {
       snackbar.confirmation("Die Konsultation wurde erfolgreich gespeichert.");
     },
@@ -60,82 +54,31 @@ export function ConsultationForm({
 
   return (
     <Formik initialValues={mapApiToForm(consultation)} onSubmit={onSubmit}>
-      {({ isSubmitting }) => (
-        <FormPlus>
-          <FormWithSidecarLayout>
-            <Sheet>
-              <Typography level="h2" mb={5}>
-                Konsultation
-              </Typography>
+      <FormPlus>
+        <SidecarFormLayout>
+          <Sheet>
+            <Typography level="h2" mb={5}>
+              Konsultation
+            </Typography>
 
-              <GeneralSection />
+            <GeneralSection />
 
-              <Divider sx={(theme) => ({ my: theme.spacing(5) })} />
+            <Divider sx={(theme) => ({ my: theme.spacing(5) })} />
 
-              <PregnancySection />
-            </Sheet>
-            <Sheet
-              sx={{
-                position: "sticky",
-                alignSelf: "start",
-                top: "12rem",
-                width: "100%",
-              }}
-            >
-              <Typography level="h3" mb={3}>
-                Zusatzinfos
-              </Typography>
-              <TextareaField
-                name="general.notes"
-                label="Allgemeine Bemerkungen"
-              />
-            </Sheet>
-          </FormWithSidecarLayout>
-          <ConsultationStickyBottomButtonBar
-            stiProcedure={stiProcedure}
-            isSubmitting={isSubmitting}
-          />
-        </FormPlus>
-      )}
+            <PregnancySection />
+          </Sheet>
+          <SidecarSheet>
+            <Typography level="h3" mb={3}>
+              Zusatzinfos
+            </Typography>
+            <TextareaField
+              name="general.notes"
+              label="Allgemeine Bemerkungen"
+            />
+          </SidecarSheet>
+        </SidecarFormLayout>
+        <TabStickyBottomButtonBar procedure={procedure} />
+      </FormPlus>
     </Formik>
-  );
-}
-
-const FormWithSidecarLayout = styled("div")(({ theme }) => ({
-  display: "grid",
-  gridTemplateColumns: "9fr 3fr",
-  gap: theme.spacing(3),
-  margin: theme.spacing(3),
-  [theme.breakpoints.down("lg")]: {
-    display: "flex",
-    flexDirection: "column",
-  },
-}));
-
-interface ConsultationStickyBottomButtonBarProps {
-  stiProcedure: ApiStiProtectionProcedure;
-  isSubmitting: boolean;
-}
-
-function ConsultationStickyBottomButtonBar(
-  props: ConsultationStickyBottomButtonBarProps,
-) {
-  const { stiProcedure, isSubmitting } = props;
-
-  return (
-    <StickyBottomButtonBar
-      sx={{ padding: "0.75rem 1.5rem" }}
-      right={
-        <>
-          <InternalLinkButton
-            href={routes.procedures.byId(stiProcedure.id).details}
-            variant="plain"
-          >
-            Abbrechen
-          </InternalLinkButton>
-          <SubmitButton submitting={isSubmitting}>Speichern</SubmitButton>
-        </>
-      }
-    ></StickyBottomButtonBar>
   );
 }

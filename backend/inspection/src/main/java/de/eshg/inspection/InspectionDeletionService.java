@@ -9,8 +9,8 @@ import de.eshg.base.centralfile.FacilityApi;
 import de.eshg.base.centralfile.PersonApi;
 import de.eshg.inspection.inspection.persistence.Inspection;
 import de.eshg.inspection.inspection.persistence.InspectionRepository;
+import de.eshg.lib.procedure.cemetery.CemeteryService;
 import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
-import de.eshg.lib.procedure.util.CemeteryService;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBusinessModule } from "@eshg/employee-portal-api/base";
+import { ApiBusinessModule } from "@eshg/base-api";
 import {
   ApiAttributeSelection,
   ApiTableColumnHeader,
@@ -17,7 +17,7 @@ type ApiAttribute = ApiTableColumnHeader["attribute"];
 /** All non-nested ApiAttributes */
 type FlatApiAttribute = Exclude<
   ApiAttribute,
-  { type: "CentralFileIdAttribute" }
+  { type: "BaseModuleIdAttribute" }
 >;
 
 export type FlatAttribute = FlatApiAttribute & {
@@ -31,7 +31,7 @@ function mapTableColumnHeaderToAttributeSelection(
   return {
     businessModuleAttributeCode: header.attribute.code,
     baseModuleAttributeCode:
-      header.attribute.type === "CentralFileIdAttribute"
+      header.attribute.type === "BaseModuleIdAttribute"
         ? header.attribute.baseAttribute.code
         : undefined,
     businessModuleName: header.businessModule,
@@ -48,10 +48,10 @@ export function mapTableColumnHeadersToFlatAttributes(
     );
     const businessModule = header.businessModule;
 
-    if (header.attribute.type === "CentralFileIdAttribute") {
-      if (header.attribute.baseAttribute.type === "CentralFileIdAttribute") {
+    if (header.attribute.type === "BaseModuleIdAttribute") {
+      if (header.attribute.baseAttribute.type === "BaseModuleIdAttribute") {
         throw new Error(
-          "Base attributes must not be of type CentralFileIdAttribute",
+          "Base attributes must not be of type BaseModuleIdAttribute",
         );
       }
       return {

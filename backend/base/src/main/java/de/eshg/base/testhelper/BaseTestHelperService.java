@@ -14,9 +14,17 @@ import de.eshg.base.calendar.api.UserCalendar;
 import de.eshg.base.citizenuser.AccessCodeGenerator;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.contact.api.SearchContactsResponse;
+import de.eshg.base.icd10.persistence.entity.Icd10Code;
+import de.eshg.base.icd10.persistence.entity.Icd10Group;
 import de.eshg.base.inventory.api.GetInventoryItemsResponse;
 import de.eshg.base.inventory.api.InventoryItemDto;
-import de.eshg.base.keycloak.*;
+import de.eshg.base.keycloak.CitizenKeycloakTestClient;
+import de.eshg.base.keycloak.CitizenKeycloakTestProvisioning;
+import de.eshg.base.keycloak.EmployeeKeycloakTestClient;
+import de.eshg.base.keycloak.KeycloakProperties;
+import de.eshg.base.keycloak.KeycloakProvisioning;
+import de.eshg.base.keycloak.KeycloakTestClient;
+import de.eshg.base.keycloak.KeycloakTestProvisioning;
 import de.eshg.base.resource.api.GetResourcesResponse;
 import de.eshg.base.resource.api.ResourceDto;
 import de.eshg.base.testhelper.api.CreateCalendarTestEventsRequest;
@@ -28,7 +36,11 @@ import de.eshg.lib.common.TimeoutConstants;
 import de.eshg.lib.keycloak.EmployeeTestUser;
 import de.eshg.lib.keycloak.Realm;
 import de.eshg.lib.keycloak.UsernamePassword;
-import de.eshg.testhelper.*;
+import de.eshg.testhelper.AccessToken;
+import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
+import de.eshg.testhelper.DatabaseResetHelper;
+import de.eshg.testhelper.DefaultTestHelperService;
+import de.eshg.testhelper.ResettableProperties;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.interception.TestRequestInterceptor;
 import de.eshg.testhelper.population.BasePopulator;
@@ -80,6 +92,7 @@ public class BaseTestHelperService extends DefaultTestHelperService {
   private final InventoryPopulator inventoryPopulator;
   private final ContactPopulator contactPopulator;
   private final SchoolContactPopulator schoolContactPopulator;
+  private final Icd10CodeTestHelper icd10CodeTestHelper;
 
   private final Map<UsernamePassword, AccessToken> cachedAccessTokens = new ConcurrentHashMap<>();
 
@@ -102,7 +115,8 @@ public class BaseTestHelperService extends DefaultTestHelperService {
       SchoolContactPopulator schoolContactPopulator,
       EnvironmentConfig environmentConfig,
       HealthDepartmentContactPopulator healthDepartmentContactPopulator,
-      UserControllerRateLimiter userControllerRateLimiter) {
+      UserControllerRateLimiter userControllerRateLimiter,
+      Icd10CodeTestHelper icd10CodeTestHelper) {
     super(
         databaseResetHelper,
         testRequestInterceptor,
@@ -123,12 +137,19 @@ public class BaseTestHelperService extends DefaultTestHelperService {
     this.citizenKeycloakTestProvisioning = citizenKeycloakTestProvisioning;
     this.healthDepartmentContactPopulator = healthDepartmentContactPopulator;
     this.userControllerRateLimiter = userControllerRateLimiter;
+    this.icd10CodeTestHelper = icd10CodeTestHelper;
   }
 
   @Override
   public Instant reset() throws Exception {
     this.userControllerRateLimiter.reset();
+    this.icd10CodeTestHelper.repopulateIcd10CodesIfNecessary();
     return super.reset();
+  }
+
+  @Override
+  protected String[] getTablesToExclude() {
+    return new String[] {Icd10Code.TABLE_NAME, Icd10Group.TABLE_NAME};
   }
 
   public void resetKeycloak() {
@@ -156,8 +177,12 @@ public class BaseTestHelperService extends DefaultTestHelperService {
   }
 
   public UserDto createTemporaryTestUser() {
+    return this.createTemporaryTestUser(null);
+  }
+
+  public UserDto createTemporaryTestUser(String group) {
     environmentConfig.assertIsNotProduction();
-    UserRepresentation testUser = employeeKeycloakTestClient.createTemporaryTestUser();
+    UserRepresentation testUser = employeeKeycloakTestClient.createTemporaryTestUser(group);
     return UserMapper.mapUserToApi(testUser);
   }
 

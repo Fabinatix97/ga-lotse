@@ -5,7 +5,6 @@
 
 "use client";
 
-import { DownloadButton } from "@eshg/lib-portal/api/files/DownloadButton";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import FileDownloadOutlined from "@mui/icons-material/FileDownloadOutlined";
 import RemoveRedEyeOutlined from "@mui/icons-material/RemoveRedEyeOutlined";
@@ -22,15 +21,14 @@ export function ReportDownloadButtons({
 
   return (
     <>
-      <DownloadButton
-        downloadContainerRef={reportFile.downloadContainerRef}
-        onDownload={() => reportFile.download()}
+      <Button
+        onClick={() => reportFile.download()}
         variant="plain"
         color="neutral"
         startDecorator={<FileDownloadOutlined />}
       >
         Download
-      </DownloadButton>
+      </Button>
       {!isSafari() && (
         // Safari does not support previewing blob URLs.
         //  Because the normal download already gives a preview in Safari, we just hide the button.

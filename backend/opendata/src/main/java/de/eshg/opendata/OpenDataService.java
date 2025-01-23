@@ -6,6 +6,7 @@
 package de.eshg.opendata;
 
 import de.eshg.file.common.FileTypeDetector;
+import de.eshg.file.common.FileValidator;
 import de.eshg.file.common.PdfAConformanceValidator;
 import de.eshg.opendata.api.PostOpenDocumentRequest;
 import de.eshg.opendata.api.ResourceDto;
@@ -156,6 +157,7 @@ public class OpenDataService {
 
   private OpenDataFileType getFileTypeAndValidateFile(MultipartFile file) {
     try {
+      FileValidator.validate(file);
       OpenDataFileType fileType =
           OpenDataMapper.mapToOpenDataFileType(FileTypeDetector.getSupportedFileTypeOrThrow(file));
 

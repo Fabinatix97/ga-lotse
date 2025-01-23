@@ -1,0 +1,23 @@
+{
+  "pageTitle": "Open Data",
+  "detailsSectionTitle": "Details",
+  "resource": {
+    "title": "Resource",
+    "fileSize": "Size",
+    "fileFormat": "Format",
+    "publicationDate": "Published",
+    "version": "Version",
+    "download": "Download {{fileType}}"
+  },
+  "information": {
+    "title": "Information about this record",
+    "source": "Source",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "fileName": "File name",
+    "fileType": "File type",
+    "licence": "Licence",
+    "termsOfUse": "Terms of use",
+    "termsOfUseLink": "Open Data - Terms of use"
+  }
+}

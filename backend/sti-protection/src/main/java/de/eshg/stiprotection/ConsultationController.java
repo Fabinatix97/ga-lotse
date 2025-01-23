@@ -10,6 +10,7 @@ import de.eshg.stiprotection.api.consultation.ConsultationDto;
 import de.eshg.stiprotection.mapper.consultation.ConsultationMapper;
 import de.eshg.stiprotection.persistence.db.StiProtectionSystemProgressEntryType;
 import de.eshg.stiprotection.persistence.db.consultation.Consultation;
+import de.eshg.stiprotection.util.ProgressEntryUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -30,13 +31,12 @@ public class ConsultationController {
       BaseUrls.StiProtection.PROCEDURE_CONTROLLER + "/{procedureId}/consultation";
 
   private final ConsultationService consultationService;
-  private final StiProtectionProcedureService stiProtectionProcedureService;
+  private final ProgressEntryUtil progressEntryUtil;
 
   public ConsultationController(
-      ConsultationService consultationService,
-      StiProtectionProcedureService stiProtectionProcedureService) {
+      ConsultationService consultationService, ProgressEntryUtil progressEntryUtil) {
     this.consultationService = consultationService;
-    this.stiProtectionProcedureService = stiProtectionProcedureService;
+    this.progressEntryUtil = progressEntryUtil;
   }
 
   @GetMapping
@@ -54,7 +54,7 @@ public class ConsultationController {
       @Valid @RequestBody ConsultationDto consultationDto) {
     Consultation consultation = consultationService.getOrCreateConsultation(procedureId);
     ConsultationMapper.update(consultationDto, consultation);
-    stiProtectionProcedureService.addProgressEntry(
+    progressEntryUtil.addProgressEntry(
         procedureId, StiProtectionSystemProgressEntryType.CONSULTATION_UPDATED);
   }
 }

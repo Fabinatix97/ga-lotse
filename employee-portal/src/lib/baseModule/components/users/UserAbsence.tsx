@@ -8,7 +8,7 @@
 import {
   ApiDetailedEventWithoutCalendarId,
   ApiEventType,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import DateRangeIcon from "@mui/icons-material/DateRangeOutlined";
 import { List, ListItem, Sheet, Stack, Typography } from "@mui/joy";

@@ -11,6 +11,8 @@ import de.eshg.dental.statistic.model.Group;
 import de.eshg.lib.statistics.attributes.AttributeData;
 import de.eshg.lib.statistics.attributes.AttributeInfo;
 import de.eshg.lib.statistics.attributes.CentralFileIdPersonAttribute;
+import de.eshg.lib.statistics.attributes.ContactIdAttribute;
+import de.eshg.lib.statistics.attributes.IntegerAttribute;
 import de.eshg.lib.statistics.attributes.ProcedureAttribute;
 import de.eshg.lib.statistics.attributes.ValueWithOptionsAttribute;
 
@@ -23,16 +25,28 @@ public enum DentalChildAttributes implements AttributeInfo {
       new CentralFileIdPersonAttribute(
           "Kind", "CHILD_CENTRAL_FILE_ID", DentalChildAttributes.CATEGORY_CHILD, true)),
 
-  CHILD_GROUP(
+  EINRICHTUNG(
+      new ContactIdAttribute(
+          "Einrichtung", "EINRICHTUNG", DentalChildAttributes.CATEGORY_CHILD, true)),
+
+  GRUPPE(
       new ValueWithOptionsAttribute(
           "Gruppe",
-          "CHILD_GROUP",
+          "GRUPPE",
           convertToValueOptions(Group.values()),
           DentalChildAttributes.CATEGORY_CHILD,
+          true)),
+
+  ANZAHL_PROPHYLAXEN(
+      new IntegerAttribute(
+          "Anzahl Prophylaxeimpulse",
+          "ANZAHL_PROPHYLAXEN",
+          DentalChildAttributes.CATEGORY_PROPHYLAXIS,
           true)),
   ;
 
   static final String CATEGORY_CHILD = "Kind";
+  static final String CATEGORY_PROPHYLAXIS = "Prophylaxe";
   static final String CATEGORY_PROCEDURE_REFERENCE = "Vorgangsreferenz";
 
   private final AttributeData attribute;

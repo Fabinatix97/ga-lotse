@@ -81,7 +81,7 @@ public class TableRowSpecifications {
       case DECIMAL -> DecimalEntry_.BIG_DECIMAL_VALUE;
       case INTEGER -> IntegerEntry_.INTEGER_VALUE;
       case TEXT, VALUE_WITH_OPTIONS -> TextEntry_.TEXT_VALUE;
-      case PROCEDURE_ID -> UuidEntry_.UUID_VALUE;
+      case PROCEDURE_REFERENCE -> UuidEntry_.UUID_VALUE;
     };
   }
 

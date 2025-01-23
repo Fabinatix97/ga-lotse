@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBusinessModule } from "@eshg/employee-portal-api/base";
+import { ApiBusinessModule } from "@eshg/base-api";
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 
 import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";

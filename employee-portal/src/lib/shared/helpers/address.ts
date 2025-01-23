@@ -9,7 +9,7 @@ import {
   ApiPostboxAddress,
   instanceOfApiDomesticAddress,
   instanceOfApiPostboxAddress,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { isNonNullish } from "remeda";
 
 export type BaseAddressType = "DomesticAddress" | "PostboxAddress";

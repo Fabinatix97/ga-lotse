@@ -7,9 +7,9 @@ package de.eshg.schoolentry.statistics.attributes;
 
 import de.eshg.lib.statistics.attributes.AttributeData;
 import de.eshg.lib.statistics.attributes.CentralFileIdPersonAttribute;
+import de.eshg.lib.statistics.attributes.ContactIdAttribute;
 import de.eshg.lib.statistics.attributes.DateAttribute;
 import de.eshg.lib.statistics.attributes.ProcedureAttribute;
-import de.eshg.lib.statistics.attributes.TextAttribute;
 import de.eshg.lib.statistics.attributes.ValueWithOptionsAttribute;
 
 public enum EsuChildAttributes implements EsuAttributes {
@@ -21,15 +21,7 @@ public enum EsuChildAttributes implements EsuAttributes {
       new CentralFileIdPersonAttribute(
           "Kind", "CHILD_CENTRAL_FILE_ID", EsuChildAttributes.CATEGORY_CHILD, true)),
 
-  SCHULE(new TextAttribute("Name der Schule", "SCHULE", EsuChildAttributes.CATEGORY_CHILD, false)),
-
-  SCHULNR(
-      new TextAttribute(
-          "Schulnummer Schulamt",
-          "SCHULNR",
-          EsuAttributeUtil.createUnknownOption("9999"),
-          EsuChildAttributes.CATEGORY_CHILD,
-          false)),
+  SCHULE(new ContactIdAttribute("Schule", "SCHULE", EsuChildAttributes.CATEGORY_CHILD, false)),
 
   WOHND(
       new DateAttribute(

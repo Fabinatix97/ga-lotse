@@ -14,10 +14,12 @@ import jakarta.persistence.*;
 @Entity
 @Table(
     indexes = {
-      @Index(columnList = "reference_facility_id"),
+      @Index(columnList = MukFacilityLink.REFERENCE_FACILITY_ID),
       @Index(columnList = "data_transmitter_pseudonym_id")
     })
 public class MukFacilityLink extends BaseEntity {
+
+  public static final String REFERENCE_FACILITY_ID = "reference_facility_id";
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @Column(nullable = false)
@@ -25,6 +27,8 @@ public class MukFacilityLink extends BaseEntity {
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @OneToOne(optional = false, fetch = FetchType.LAZY)
+  @JoinColumn(name = REFERENCE_FACILITY_ID)
+  @MapsId
   private Facility referenceFacility;
 
   public String getDataTransmitterPseudonymId() {

@@ -7,11 +7,12 @@ package de.eshg.travelmedicine.document.informationstatement;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.eshg.file.common.FileValidator;
+import de.eshg.file.common.ImageRewriter;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
 import de.eshg.lib.procedure.file.FileFactory;
-import de.eshg.lib.procedure.util.FileValidator;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.travelmedicine.citizenauth.api.PatchInformationStatementRequest;
@@ -78,6 +79,7 @@ public class InformationStatementService {
   private final DocumentGenerator documentGenerator;
   private final SignatureRepository signatureRepository;
   private final ProgressEntryService progressEntryService;
+  private final InformationStatementProperties informationStatementProperties;
 
   public InformationStatementService(
       ProcedureAccessor procedureAccessor,
@@ -92,8 +94,10 @@ public class InformationStatementService {
       DepartmentInfoService departmentInfoService,
       DocumentGenerator documentGenerator,
       SignatureRepository signatureRepository,
-      ProgressEntryService progressEntryService) {
+      ProgressEntryService progressEntryService,
+      InformationStatementProperties informationStatementProperties) {
     this.progressEntryService = progressEntryService;
+    this.informationStatementProperties = informationStatementProperties;
     Assert.isTrue(
         informationStatementResource.exists(), informationStatementResource + " does not exist");
     this.procedureAccessor = procedureAccessor;
@@ -161,14 +165,14 @@ public class InformationStatementService {
     statementToPatch.setCitizenHasAnswered(true);
 
     if (signature != null) {
-      MediaType mediaType = FileValidator.validate(signature);
-      if (MediaType.IMAGE_PNG != mediaType) {
-        throw new BadRequestException("Signature must be media type image/png");
-      }
       try {
         TravelMedicineSignature travelMedicineSignature =
             new TravelMedicineSignature(
-                patchInformationStatementRequest.signer(), signature.getBytes());
+                patchInformationStatementRequest.signer(),
+                ImageRewriter.validateAndRewriteImageFile(
+                    signature,
+                    validateMediaTypePng(FileValidator.validate(signature)),
+                    informationStatementProperties.getMaxImageSideLength()));
         signatureRepository.save(travelMedicineSignature);
         SignatureValidator.generateSignatureHash(travelMedicineSignature);
         statementToPatch.setSignature(travelMedicineSignature);
@@ -179,6 +183,13 @@ public class InformationStatementService {
 
     progressEntryService.createProgressEntryForAnswerInformationStatementByCitizen(
         statementToPatch.getVaccinationConsultation(), statementToPatch.getTitle());
+  }
+
+  private MediaType validateMediaTypePng(MediaType mediaType) {
+    if (MediaType.IMAGE_PNG != mediaType) {
+      throw new BadRequestException("Signature must be media type image/png");
+    }
+    return mediaType;
   }
 
   public List<UUID> addInformationStatements(

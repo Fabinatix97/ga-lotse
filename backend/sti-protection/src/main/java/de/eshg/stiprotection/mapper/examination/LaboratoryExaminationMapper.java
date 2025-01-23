@@ -7,6 +7,7 @@ package de.eshg.stiprotection.mapper.examination;
 
 import de.eshg.stiprotection.api.examination.LaboratoryTestExaminationDto;
 import de.eshg.stiprotection.persistence.db.examination.LaboratoryTestExamination;
+import java.util.Objects;
 
 public class LaboratoryExaminationMapper {
 
@@ -20,7 +21,7 @@ public class LaboratoryExaminationMapper {
     return new LaboratoryTestExaminationDto(
         entity.getSampleBarCode(),
         entity.getGeneralRemarks(),
-        entity.getTestsConducted(),
+        Objects.nonNull(entity.getTestsConductedDate()) ? true : null,
         entity.getTestsPayed(),
         entity.getHivRequested(),
         entity.getSyphilisRequested(),
@@ -64,7 +65,6 @@ public class LaboratoryExaminationMapper {
 
     entity.setSampleBarCode(dto.sampleBarcode());
     entity.setGeneralRemarks(dto.generalRemarks());
-    entity.setTestsConducted(dto.testsConducted());
     entity.setTestsPayed(dto.testsPayed());
     entity.setHivRequested(dto.hivTestRequested());
     entity.setSyphilisRequested(dto.syphilisTestRequested());

@@ -85,15 +85,15 @@ export function PersonSearchForm(props: PersonSearchFormProps) {
       {({ resetForm }) => (
         <SearchFormSheet id={props.id} data-testid="personSearch">
           <InputField
-            name="lastName"
-            label="Name"
-            required="Bitte Namen eingeben"
-          />
-          <InsertLinkOutlined />
-          <InputField
             label="Vorname"
             name="firstName"
             required="Bitte Vornamen eingeben"
+          />
+          <InsertLinkOutlined />
+          <InputField
+            name="lastName"
+            label="Nachname"
+            required="Bitte Nachnamen eingeben"
           />
           <InsertLinkOutlined />
           <DateField
@@ -160,14 +160,14 @@ interface PersonSearchParams {
 }
 
 export interface PersonSearchFormValues {
-  lastName: string;
   firstName: string;
+  lastName: string;
   dateOfBirth: string;
 }
 
 const INITIAL_FORM_VALUES: PersonSearchFormValues = {
-  lastName: "",
   firstName: "",
+  lastName: "",
   dateOfBirth: "",
 };
 
@@ -182,8 +182,8 @@ export function usePersonSearch() {
   function setValues(newFormValues: PersonSearchFormValues): void {
     setFormValues(newFormValues);
     setSearchParams({
-      searchLastName: newFormValues.lastName,
       searchFirstName: newFormValues.firstName,
+      searchLastName: newFormValues.lastName,
       searchDateOfBirth: toUtcDate(newFormValues.dateOfBirth),
     });
   }

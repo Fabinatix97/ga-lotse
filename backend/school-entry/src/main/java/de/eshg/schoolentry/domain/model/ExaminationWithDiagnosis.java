@@ -7,6 +7,7 @@ package de.eshg.schoolentry.domain.model;
 
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.OrderColumn;
@@ -19,7 +20,10 @@ public class ExaminationWithDiagnosis {
 
   private ExaminationResult result;
 
-  @ElementCollection @OrderColumn private List<String> icd10Codes = new ArrayList<>();
+  @ElementCollection
+  @Column(name = "icd10_code", nullable = false)
+  @OrderColumn
+  private List<String> icd10Codes = new ArrayList<>();
 
   public ExaminationResult getResult() {
     return result;

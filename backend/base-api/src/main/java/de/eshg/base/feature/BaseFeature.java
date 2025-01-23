@@ -6,7 +6,6 @@
 package de.eshg.base.feature;
 
 public enum BaseFeature {
-  TASK_METRICS,
   CHAT_USERNAME,
   SEARCH_PROCEDURES,
   INBOX,

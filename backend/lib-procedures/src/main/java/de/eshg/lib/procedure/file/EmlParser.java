@@ -8,12 +8,15 @@ package de.eshg.lib.procedure.file;
 import static de.eshg.file.common.FileType.JPEG;
 import static de.eshg.file.common.FileType.PDF;
 import static de.eshg.file.common.FileType.PNG;
+import static de.eshg.file.common.FileValidator.FILE_REGEX_PATTERN;
+import static de.eshg.file.common.FileValidator.isContentTypeValid;
 import static jakarta.mail.Part.ATTACHMENT;
 import static org.springframework.http.MediaType.TEXT_HTML_VALUE;
 import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
 import de.eshg.file.common.FileType;
 import de.eshg.file.common.FileTypeDetector;
+import de.eshg.file.common.ImageRewriter;
 import de.eshg.lib.procedure.domain.model.File;
 import de.eshg.lib.procedure.domain.model.FileContent;
 import de.eshg.lib.procedure.domain.model.Mail;
@@ -41,8 +44,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class EmlParser {
 
@@ -50,7 +56,7 @@ class EmlParser {
 
   private EmlParser() {}
 
-  static Mail parse(byte[] file) {
+  static Mail parse(byte[] file, int maxImageSideLength) {
     try (InputStream inputStream = new ByteArrayInputStream(file)) {
       Session session = Session.getDefaultInstance(new Properties());
       Message message = new FixedMessageIdMimeMessage(session, inputStream);
@@ -61,7 +67,7 @@ class EmlParser {
 
       int removedInvalidAttachments = removeAndCountInvalidAttachments(message);
       parsedMail.setRemovedInvalidAttachments(removedInvalidAttachments);
-      extractAttachments(message).forEach(parsedMail::addAttachment);
+      extractAttachments(message, maxImageSideLength).forEach(parsedMail::addAttachment);
 
       FileContent fileContent = new FileContent();
       byte[] content = extractContent(message);
@@ -141,7 +147,7 @@ class EmlParser {
 
     int removedInvalidAttachments = 0;
     for (BodyPart bodyPart : getAttachmentBodyParts(content)) {
-      if (!isValidAttachment(parseFileType(bodyPart))) {
+      if (!isValidAttachment(getValidFileTypeOrNull(bodyPart))) {
         content.removeBodyPart(bodyPart);
         removedInvalidAttachments++;
       }
@@ -150,6 +156,17 @@ class EmlParser {
     message.saveChanges();
 
     return removedInvalidAttachments;
+  }
+
+  private static FileType getValidFileTypeOrNull(Part part) throws IOException, MessagingException {
+    FileType fileType = parseFileType(part);
+    if (fileType != null
+        && isContentTypeValid(part.getContentType(), fileType)
+        && fileType.hasValidFileExtension(FilenameUtils.getExtension(part.getFileName()))) {
+      return fileType;
+    } else {
+      return null;
+    }
   }
 
   private static FileType parseFileType(Part part) throws IOException, MessagingException {
@@ -162,7 +179,7 @@ class EmlParser {
     return IOUtils.toByteArray(part.getInputStream());
   }
 
-  private static List<File> extractAttachments(Message message)
+  private static List<File> extractAttachments(Message message, int maxImageSideLength)
       throws MessagingException, IOException {
     if (!(message.getContent() instanceof MimeMultipart content)) {
       return Collections.emptyList();
@@ -172,12 +189,22 @@ class EmlParser {
     for (BodyPart bodyPart : getAttachmentBodyParts(content)) {
       File file =
           createFile(
-              bodyPart.getFileName(),
+              sanitizeAttachmentName(bodyPart.getFileName()),
               FileTypeMapper.mapToProcedureFileType(parseFileType(bodyPart)),
-              parseFileContent(bodyPart));
+              parseFileContent(bodyPart),
+              maxImageSideLength);
       files.add(file);
     }
     return files;
+  }
+
+  private static String sanitizeAttachmentName(String originalFilename) {
+    if (StringUtils.isBlank(originalFilename)
+        || !(FILE_REGEX_PATTERN.matcher(originalFilename).matches())) {
+      return "Renamed_" + UUID.randomUUID() + "." + FilenameUtils.getExtension(originalFilename);
+    } else {
+      return originalFilename;
+    }
   }
 
   private static List<BodyPart> getAttachmentBodyParts(MimeMultipart content)
@@ -207,12 +234,22 @@ class EmlParser {
     return fileType != null && VALID_ATTACHMENT_FILE_TYPES.contains(fileType);
   }
 
-  private static File createFile(String fileName, ProcedureFileType fileType, byte[] fileContent)
+  private static File createFile(
+      String fileName, ProcedureFileType fileType, byte[] fileContent, int maxImageSideLength)
       throws IOException {
     return switch (fileType) {
-      case JPEG, PNG ->
-          FileFactory.createImageWithMetaData(
-              fileName, fileType, fileContent, ImageMetaDataExtractor.fromFileContent(fileContent));
+      case JPEG, PNG -> {
+        byte[] rewrittenImage =
+            ImageRewriter.validateAndRewriteImageFile(
+                new ByteArrayInputStream(fileContent),
+                fileType.getCommonFileType().getMediaType(),
+                maxImageSideLength);
+        yield FileFactory.createImageWithMetaData(
+            fileName,
+            fileType,
+            rewrittenImage,
+            ImageMetaDataExtractor.fromFileContent(rewrittenImage));
+      }
       case PDF ->
           FileFactory.createPdfWithMetaData(
               fileName, fileContent, PdfMetaDataExtractor.fromFileContent(fileContent));

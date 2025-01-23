@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiCountryCode, ApiGender } from "@eshg/employee-portal-api/base";
+import { ApiCountryCode, ApiGender } from "@eshg/base-api";
 import {
   ApiEmploymentStatus,
   ApiEmploymentType,

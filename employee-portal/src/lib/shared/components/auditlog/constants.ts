@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ApiBusinessModule } from "@eshg/base-api";
 import { ApiAuditLogSource } from "@eshg/employee-portal-api/auditlog/models";
-import { ApiBusinessModule } from "@eshg/employee-portal-api/base";
 
 import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
 

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/base-api";
 import { ApiObjectType } from "@eshg/employee-portal-api/inspection";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";

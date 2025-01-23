@@ -8,7 +8,7 @@
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { FileLike } from "@eshg/lib-portal/components/formFields/file/validators";
 import { formatFileSize } from "@eshg/lib-portal/helpers/file";
-import { FormLabel, Slider, Stack, Typography } from "@mui/joy";
+import { FormLabel, Slider, Stack, Typography, styled } from "@mui/joy";
 import { useQuery } from "@tanstack/react-query";
 import { Formik } from "formik";
 import { useEffect, useState } from "react";
@@ -18,6 +18,8 @@ import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLay
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 import { compressImage } from "@/lib/shared/helpers/imageCompressor";
+
+const StyledImage = styled("img")({ width: "100%" });
 
 export default function PlaygroundImageCompressorPage() {
   const [originalFile, setOriginalFile] = useState<File | null>(null);
@@ -64,7 +66,7 @@ export default function PlaygroundImageCompressorPage() {
       <MainContentLayout>
         <Stack gap={4}>
           <Formik initialValues={{ file: null }} onSubmit={handleFormChange}>
-            <FormPlus style={{ display: "contents" }}>
+            <FormPlus>
               <FileField label="File" name="file" onChange={handleFileChange} />
             </FormPlus>
           </Formik>
@@ -101,12 +103,7 @@ export default function PlaygroundImageCompressorPage() {
                   {`Size: ${formatFileSize(originalFile.size)} (${originalFile.size} bytes)`}
                 </Typography>
                 {originalFileUrl && (
-                  // eslint-disable-next-line @next/next/no-img-element -- using <Image /> would be overkill here
-                  <img
-                    src={originalFileUrl}
-                    alt="Original"
-                    style={{ width: "100%" }}
-                  />
+                  <StyledImage src={originalFileUrl} alt="Original" />
                 )}
               </Stack>
               <Stack gap={2}>
@@ -118,12 +115,7 @@ export default function PlaygroundImageCompressorPage() {
                   </Typography>
                 )}
                 {compressedFileUrl && (
-                  // eslint-disable-next-line @next/next/no-img-element -- using <Image /> would be overkill here
-                  <img
-                    src={compressedFileUrl}
-                    alt="Compressed"
-                    style={{ width: "100%" }}
-                  />
+                  <StyledImage src={compressedFileUrl} alt="Compressed" />
                 )}
               </Stack>
             </Stack>

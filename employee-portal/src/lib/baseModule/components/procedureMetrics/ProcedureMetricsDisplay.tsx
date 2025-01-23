@@ -5,7 +5,6 @@
 
 "use client";
 
-import { ApiBaseFeature } from "@eshg/employee-portal-api/base";
 import { ApiProcedureMetric } from "@eshg/employee-portal-api/inspection";
 import {
   CheckOutlined,
@@ -19,7 +18,6 @@ import { endOfToday } from "date-fns";
 import { startTransition, useState } from "react";
 import { unique } from "remeda";
 
-import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { useAggregateProcedureMetricsQuery } from "@/lib/baseModule/api/queries/procedures";
 import { routes } from "@/lib/baseModule/shared/routes";
 import { FlashCard } from "@/lib/shared/components/cards/FlashCard";
@@ -41,8 +39,6 @@ export function ProcedureMetricsDisplay() {
     timeRangeStart,
     timeRangeEnd,
   });
-
-  const taskMetricsEnabled = useIsNewFeatureEnabled(ApiBaseFeature.TaskMetrics);
 
   function sumProcedureCounts(
     givenType: keyof Pick<
@@ -127,12 +123,10 @@ export function ProcedureMetricsDisplay() {
                 }}
                 rowNavigation={{
                   route: (row) =>
-                    taskMetricsEnabled
-                      ? routes.metrics.details(
-                          row.original.businessModule,
-                          row.original.procedureType,
-                        )
-                      : undefined,
+                    routes.metrics.details(
+                      row.original.businessModule,
+                      row.original.procedureType,
+                    ),
                   focusColumnAccessorKey: "procedureType",
                 }}
               />

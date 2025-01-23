@@ -33,7 +33,7 @@ export function DateFilter(props: DateFilterProps) {
       type="date"
       value={props.value?.selectedValue ?? ""}
       onChange={(event) => handleChange(event.target.value)}
-      style={{ width: "100%" }}
+      sx={{ width: "100%" }}
     />
   );
 }

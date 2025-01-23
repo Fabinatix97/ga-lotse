@@ -517,8 +517,22 @@ public class AnalysisMapper {
   }
 
   private static DiagramDataDto mapToApi(LineOrScatterChartData lineOrScatterChartData) {
-    boolean isSimple = lineOrScatterChartData.getDataPointGroups().getFirst().getKey() == null;
-    if (lineOrScatterChartData.isLineChart()) {
+    ChartConfiguration chartConfiguration =
+        Hibernate.unproxy(
+            lineOrScatterChartData.getDiagram().getAnalysis().getChartConfiguration(),
+            ChartConfiguration.class);
+
+    boolean isSimple;
+    boolean isLineChart;
+    if (chartConfiguration instanceof LineChartConfiguration lineChartConfiguration) {
+      isSimple = lineChartConfiguration.getSecondaryAttributeSelection() == null;
+      isLineChart = true;
+    } else {
+      isSimple =
+          ((ScatterChartConfiguration) chartConfiguration).getSecondaryAttributeSelection() == null;
+      isLineChart = false;
+    }
+    if (isLineChart) {
       if (isSimple) {
         return new LineChartDataSimpleDto(
             mapToDataPoints(lineOrScatterChartData.getDataPointGroups().getFirst()));

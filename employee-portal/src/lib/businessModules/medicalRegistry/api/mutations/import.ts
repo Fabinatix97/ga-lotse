@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiResponse } from "@eshg/employee-portal-api/base";
+import { ApiResponse } from "@eshg/base-api";
 import {
   ApiImportStatistics,
   ApiImportStatisticsFromJSON,

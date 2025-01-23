@@ -12,7 +12,9 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface GdprDownloadPackageRepository
     extends JpaRepository<GdprDownloadPackage, Long>,
@@ -30,4 +32,9 @@ public interface GdprDownloadPackageRepository
 
   boolean existsByBusinessProcedureIdAndExternalIdIn(
       UUID businessProcedureId, Collection<UUID> externalIds);
+
+  @Transactional
+  @Modifying
+  @Query("delete from GdprDownloadPackage g where g.externalId in :externalIds")
+  int deleteAllByExternalIdIn(Collection<UUID> externalIds);
 }

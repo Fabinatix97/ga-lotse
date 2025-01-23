@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBaseFeature, ApiUser } from "@eshg/employee-portal-api/base";
+import { ApiBaseFeature, ApiUser } from "@eshg/base-api";
 import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 import { InternalLinkIconButton } from "@eshg/lib-portal/components/navigation/InternalLinkIconButton";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
@@ -42,7 +42,7 @@ const userColumns = [
     },
   }),
   columnHelper.accessor("lastName", {
-    header: "Name",
+    header: "Nachname",
     sortingFn: (a, b) => sortUsersByName(a.original, b.original),
     cell: (props) => props.getValue(),
     meta: {

@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiBaseFeature } from "@eshg/employee-portal-api/base";
+import { ApiBaseFeature } from "@eshg/base-api";
 
 import { OpenDataTable } from "@/lib/opendata/components/OpenDataTable";
 import { ToggledPage } from "@/lib/shared/components/ToggledPage";

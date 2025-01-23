@@ -121,6 +121,13 @@ public class UserController implements UserApi {
   }
 
   @Override
+  public SelfUserDto getSelfUserAndAccess() {
+    UserDto user = getSelfUser();
+    List<UserRoleDto> roles = getSelfUserPermissions();
+    return new SelfUserDto(user, roles);
+  }
+
+  @Override
   public UserDto getSelfUser() {
     return UserMapper.mapUserToApi(userService.getSelfUser());
   }
@@ -170,16 +177,13 @@ public class UserController implements UserApi {
     userService.deleteEmployeeUserKeys();
   }
 
-  @Override
-  public GetPermissionsResponse getSelfUserPermissions() {
-    List<UserRoleDto> roles =
-        userService.getUserKeycloakRoles().stream()
-            .map(UserMapper::mapKeycloakRoleToApi)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .sorted()
-            .toList();
-    return new GetPermissionsResponse(roles);
+  private List<UserRoleDto> getSelfUserPermissions() {
+    return userService.getUserKeycloakRoles().stream()
+        .map(UserMapper::mapKeycloakRoleToApi)
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .sorted()
+        .toList();
   }
 
   @Override

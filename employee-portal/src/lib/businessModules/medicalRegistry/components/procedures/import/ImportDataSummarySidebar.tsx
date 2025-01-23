@@ -7,7 +7,6 @@
 
 import { ApiImportStatistics } from "@eshg/employee-portal-api/medicalRegistry";
 import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
-import { HiddenContainer } from "@eshg/lib-portal/components/HiddenContainer";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import {
   ErrorOutlineOutlined,
@@ -24,7 +23,6 @@ import {
   Stack,
   Typography,
 } from "@mui/joy";
-import { useRef } from "react";
 
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
@@ -158,28 +156,19 @@ function DownloadFileButton({
   file,
   children,
 }: RequiresChildren & { file: File }) {
-  const downloadContainerRef = useRef<HTMLDivElement>(null);
-
   function download() {
-    const downloadContainer = downloadContainerRef.current;
-    if (downloadContainer === null) {
-      throw new Error("Download container is not initialized");
-    }
-    downloadFileAndOpen(file, downloadContainer);
+    downloadFileAndOpen(file);
   }
 
   return (
-    <>
-      <Button
-        variant="soft"
-        color="warning"
-        startDecorator={<FileDownloadOutlined />}
-        onClick={() => download()}
-        sx={{ justifyContent: "flex-start" }}
-      >
-        {children}
-      </Button>
-      <HiddenContainer ref={downloadContainerRef} />
-    </>
+    <Button
+      variant="soft"
+      color="warning"
+      startDecorator={<FileDownloadOutlined />}
+      onClick={() => download()}
+      sx={{ justifyContent: "flex-start" }}
+    >
+      {children}
+    </Button>
   );
 }

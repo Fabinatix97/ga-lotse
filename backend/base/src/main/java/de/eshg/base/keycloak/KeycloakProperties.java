@@ -165,7 +165,6 @@ public record KeycloakProperties(
       @NotNull Boolean enabled,
       String entityId,
       String singleSignOnServiceUrl,
-      String singleLogoutServiceUrl,
       String signingCertificate,
       String signatureAlgorithm,
       String encryptionAlgorithm) {
@@ -178,9 +177,6 @@ public record KeycloakProperties(
             .ifPresent(validationErrorMessages::add);
         validateNotBlankAttributeForEnabledConfig(
                 singleSignOnServiceUrl, "singleSignOnServiceUrl", IdentityProvider.class)
-            .ifPresent(validationErrorMessages::add);
-        validateNotBlankAttributeForEnabledConfig(
-                singleLogoutServiceUrl, "singleLogoutServiceUrl", IdentityProvider.class)
             .ifPresent(validationErrorMessages::add);
         validateNotBlankAttributeForEnabledConfig(
                 signingCertificate, "signingCertificate", IdentityProvider.class)
@@ -199,7 +195,7 @@ public record KeycloakProperties(
     }
 
     public IdentityProvider(boolean enabled) {
-      this(enabled, null, null, null, null, null, null);
+      this(enabled, null, null, null, null, null);
     }
   }
 

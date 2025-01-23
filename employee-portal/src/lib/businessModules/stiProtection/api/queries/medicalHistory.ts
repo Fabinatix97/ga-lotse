@@ -7,7 +7,7 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useMedicalHistoryApi } from "@/lib/businessModules/stiProtection/api/clients";
 
-import { stiProtectionApiQueryKey } from "./apiQueryKeys";
+import { proceduresQueryKey } from "./apiQueryKeys";
 
 export function useGetMedicalHistoryQueryOptions(procedureId: string) {
   const medicalHistoryApi = useMedicalHistoryApi();
@@ -24,7 +24,7 @@ export function useGetMedicalHistoryQueryOptions(procedureId: string) {
         .catch((_error: Error) => {
           return null;
         }),
-    queryKey: stiProtectionApiQueryKey([procedureId, "medicalHistory"]),
+    queryKey: proceduresQueryKey([procedureId, "medicalHistory"]),
   });
 }
 

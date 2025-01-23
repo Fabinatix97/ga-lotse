@@ -19,14 +19,9 @@ const columnHelper: ColumnHelper<ApiVaccine> = createColumnHelper<ApiVaccine>();
 interface VaccineTableColumnsProps {
   deleteEntry: (entryId: string, vaccineName: string) => void;
   editEntry: (vaccine: ApiVaccine) => void;
-  defaultBatchIdEnabled: boolean;
 }
 
-export function columns({
-  deleteEntry,
-  editEntry,
-  defaultBatchIdEnabled,
-}: VaccineTableColumnsProps) {
+export function columns({ deleteEntry, editEntry }: VaccineTableColumnsProps) {
   return [
     columnHelper.accessor("name", {
       header: "Name",
@@ -46,12 +41,9 @@ export function columns({
           locale: "de-DE",
         }),
     }),
-    defaultBatchIdEnabled
-      ? columnHelper.accessor("currentBatchId", {
-          header: "Aktuelle Chargennummer",
-          enableHiding: defaultBatchIdEnabled,
-        })
-      : undefined,
+    columnHelper.accessor("currentBatchId", {
+      header: "Aktuelle Chargennummer",
+    }),
     columnHelper.accessor("createdAt", {
       header: "Erstellt am",
       cell: (props) => formatDateTime(props.getValue()),

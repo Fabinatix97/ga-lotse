@@ -52,7 +52,7 @@ class InspectionProcedureRowReader extends RowReader<InspectionImporterRow, Insp
   private final ImportPersister importPersister;
   private final Clock clock;
 
-  public InspectionProcedureRowReader(
+  InspectionProcedureRowReader(
       Sheet sheet,
       List<InspectionListColumn> actualColumns,
       ImportPersister importPersister,

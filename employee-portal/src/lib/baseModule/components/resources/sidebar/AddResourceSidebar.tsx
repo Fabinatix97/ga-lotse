@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiLabel } from "@eshg/employee-portal-api/base";
+import { ApiLabel } from "@eshg/base-api";
 import { useRouter } from "next/navigation";
 
 import { mapAddResourceRequest } from "@/lib/baseModule/api/mapper/resources";

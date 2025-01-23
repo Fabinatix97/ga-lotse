@@ -10,7 +10,6 @@ import de.eshg.rest.service.security.CurrentUserHelper;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.TimeMeter;
-import java.time.Clock;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -20,11 +19,11 @@ import org.springframework.stereotype.Component;
 public class UserControllerRateLimiter {
   private final RateLimitProperties properties;
   private final ConcurrentMap<UUID, Bucket> suggestUserBuckets = new ConcurrentHashMap<>();
-  private final TimeMeter clockAwareTimeMeter;
+  private final TimeMeter timeMeter;
 
-  public UserControllerRateLimiter(RateLimitProperties properties, Clock clock) {
+  public UserControllerRateLimiter(RateLimitProperties properties, TimeMeter timeMeter) {
     this.properties = properties;
-    this.clockAwareTimeMeter = new ClockAwareTimeMeter(clock);
+    this.timeMeter = timeMeter;
   }
 
   public void reset() {
@@ -51,7 +50,7 @@ public class UserControllerRateLimiter {
         (key) ->
             Bucket.builder()
                 .addLimit(getSuggestUserBandwidth())
-                .withCustomTimePrecision(this.clockAwareTimeMeter)
+                .withCustomTimePrecision(timeMeter)
                 .build());
   }
 
@@ -63,18 +62,5 @@ public class UserControllerRateLimiter {
 
   private static boolean isRateLimitReached(Bucket bucket) {
     return !bucket.tryConsume(1);
-  }
-
-  private record ClockAwareTimeMeter(Clock clock) implements TimeMeter {
-
-    @Override
-    public long currentTimeNanos() {
-      return clock.millis() * 1_000_000;
-    }
-
-    @Override
-    public boolean isWallClockBased() {
-      return true;
-    }
   }
 }

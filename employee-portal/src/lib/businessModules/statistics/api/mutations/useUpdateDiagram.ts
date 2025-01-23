@@ -31,7 +31,7 @@ export function useUpdateDiagram(
     mutationFn: (model: UpdateDiagramFormModel) =>
       api.updateDiagram(
         diagramId,
-        mapSaveDiagramFormModelToUpdateDiagramApiModel(model),
+        mapSaveDiagramFormModelToUpdateDiagramApiModel(model[0]),
       ),
     onSuccess: () => {
       onSuccess();

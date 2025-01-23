@@ -3,187 +3,114 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import {
-  formatDate,
-  formatDateTime,
-} from "@eshg/lib-portal/formatters/dateTime";
-import { Add } from "@mui/icons-material";
-import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import { Button, Stack, Typography } from "@mui/joy";
-import { createColumnHelper } from "@tanstack/react-table";
+import { ApiExistingUser, ApiPerformingPerson } from "@eshg/dental-api";
+import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import { Person } from "@mui/icons-material";
+import { Stack, Typography } from "@mui/joy";
 
+import { ProphylaxisSessionParticipantsTable } from "@/lib/businessModules/dental/features/prophylaxisSessions/ProphylaxisSessionParticipantsTable";
+import { useProphylaxisSessionStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/store/ProphylaxisSessionStoreProvider";
 import {
-  ChildResult,
-  ProphylaxisSessionDetails as ProphylaxisSessionDetailsType,
-} from "@/lib/businessModules/dental/api/models/ProphylaxisSessionDetails";
-import { useUpdateProphylaxisSessionParticipants } from "@/lib/businessModules/dental/api/mutations/prophylaxisSessionApi";
-import { useAddChildToProphylaxisSessionSidebar } from "@/lib/businessModules/dental/features/prophylaxisSessions/AddChildToProphylaxisSessionSidebar";
-import { PROPHYLAXIS_TYPES } from "@/lib/businessModules/dental/features/prophylaxisSessions/translations";
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
+  PROPHYLAXIS_TYPES,
+  fluoridationDescription,
+} from "@/lib/businessModules/dental/features/prophylaxisSessions/translations";
 import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
+import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
+import { displayBoolean } from "@/lib/shared/helpers/booleans";
 
-interface ProphylaxisSessionDetailsProps {
-  prophylaxisSession: ProphylaxisSessionDetailsType;
-}
-
-const columnHelper = createColumnHelper<ChildResult>();
-
-function columnDefs(onRemoveParticipant: (participantId: string) => void) {
-  return [
-    columnHelper.accessor("lastName", {
-      header: "Name",
-      cell: (props) => props.getValue(),
-      enableSorting: false,
-      meta: {
-        width: 120,
-      },
-    }),
-    columnHelper.accessor("firstName", {
-      header: "Vorname",
-      cell: (props) => props.getValue(),
-      enableSorting: false,
-      meta: {
-        width: 120,
-      },
-    }),
-    columnHelper.accessor("dateOfBirth", {
-      header: "Geburtsdatum",
-      cell: (props) => formatDate(props.getValue()),
-      enableSorting: false,
-      meta: {
-        width: 120,
-      },
-    }),
-    columnHelper.accessor("groupName", {
-      header: "Gruppe",
-      cell: (props) => props.getValue(),
-      enableSorting: false,
-      meta: {
-        width: 90,
-      },
-    }),
-    columnHelper.display({
-      header: "Aktionen",
-      id: "actions",
-      cell: (props) => (
-        <ActionsMenu
-          actionItems={[
-            {
-              label: "Entfernen",
-              startDecorator: <DeleteIcon />,
-              onClick: () => onRemoveParticipant(props.row.original.id),
-              color: "danger",
-            },
-          ]}
-        />
-      ),
-      meta: {
-        width: 80,
-        cellStyle: "button",
-        textAlign: "right",
-      },
-    }),
-  ];
-}
-
-export function ProphylaxisSessionDetails(
-  props: ProphylaxisSessionDetailsProps,
-) {
-  const { mutateAsync: updateParticipants } =
-    useUpdateProphylaxisSessionParticipants(props.prophylaxisSession.id);
-  const { openConfirmationDialog } = useConfirmationDialog();
-  const sidebar = useAddChildToProphylaxisSessionSidebar();
-  const snackbar = useSnackbar();
-
-  function handleRemoveParticipant(childExternalId: string) {
-    openConfirmationDialog({
-      color: "danger",
-      title: "Kind entfernen?",
-      confirmLabel: "Entfernen",
-      description: "Möchten Sie das Kind aus der Prophylaxe entfernen?",
-      onConfirm: async () => {
-        await updateParticipants(
-          {
-            version: props.prophylaxisSession.version,
-            participants: props.prophylaxisSession.participants
-              .map((childResult) => childResult.id)
-              .filter((id) => id !== childExternalId),
-          },
-          {
-            onSuccess: () => {
-              snackbar.confirmation("Kind erfolgreich entfernt.");
-            },
-          },
-        );
-      },
-    });
-  }
+export function ProphylaxisSessionDetails() {
+  const prophylaxisSession = useProphylaxisSessionStore((state) => state);
 
   return (
     <Stack gap={4}>
       <ContentPanel testId="prophylaxis-session-panel">
         <DetailsSection
-          title="Allg. Informationen"
+          title="Allgemeine Informationen"
           data-testid="prophylaxis-details"
         >
-          <DetailsColumn>
-            <DetailsCell
-              label="Datum"
-              value={formatDateTime(props.prophylaxisSession.dateAndTime)}
-            />
-            <DetailsCell
-              label="Einrichtung"
-              value={props.prophylaxisSession.institution.name}
-            />
-            <DetailsCell
-              label="Gruppe"
-              value={props.prophylaxisSession.groupName}
-            />
-            <DetailsCell
-              label="Typ"
-              value={PROPHYLAXIS_TYPES[props.prophylaxisSession.type]}
-            />
-          </DetailsColumn>
+          <DetailsRow>
+            <DetailsColumn>
+              <DetailsCell
+                label="Datum"
+                value={formatDateTime(prophylaxisSession.dateAndTime)}
+              />
+              <DetailsCell
+                label="Einrichtung"
+                value={prophylaxisSession.institution.name}
+              />
+              <DetailsCell
+                label="Gruppe"
+                value={prophylaxisSession.groupName}
+              />
+            </DetailsColumn>
+            <DetailsColumn>
+              <DetailsCell
+                label="Typ"
+                value={PROPHYLAXIS_TYPES[prophylaxisSession.type]}
+              />
+              <DetailsCell
+                label="Reihenuntersuchung"
+                value={displayBoolean(prophylaxisSession.screening)}
+              />
+              <DetailsCell
+                label="Teilnehmer"
+                value={prophylaxisSession.participants.length}
+              />
+              <DetailsCell
+                label="Fluoridierung"
+                value={fluoridationDescription(
+                  prophylaxisSession.fluoridationVarnish,
+                )}
+              />
+            </DetailsColumn>
+            <DetailsColumn>
+              <DetailsCell
+                label="Zahnarzt/-ärztin"
+                value={
+                  <PerformingPersons persons={prophylaxisSession.dentists} />
+                }
+              />
+              <DetailsCell
+                label="ZFA"
+                value={<PerformingPersons persons={prophylaxisSession.zfas} />}
+              />
+            </DetailsColumn>
+          </DetailsRow>
         </DetailsSection>
       </ContentPanel>
       <ContentPanel>
-        <TablePage
-          controls={
-            <ButtonBar
-              left={
-                <Typography level="h4" component="h2" marginBottom={1}>
-                  Teilnehmende Kinder
-                </Typography>
-              }
-              right={
-                <Button
-                  startDecorator={<Add />}
-                  onClick={() =>
-                    sidebar.open({
-                      prophylaxisSession: props.prophylaxisSession,
-                    })
-                  }
-                >
-                  Kind hinzufügen
-                </Button>
-              }
-            />
-          }
-        >
-          <DataTable
-            data={props.prophylaxisSession.participants}
-            columns={columnDefs(handleRemoveParticipant)}
-          />
-        </TablePage>
+        <ProphylaxisSessionParticipantsTable />
       </ContentPanel>
     </Stack>
   );
+}
+
+function PerformingPersons(props: { persons: ApiPerformingPerson[] }) {
+  return (
+    <Stack>
+      {props.persons.map((person, i) =>
+        isExistingUser(person) ? (
+          <Stack key={i} direction="row" gap={1}>
+            <Person size="sm" />
+            {formatPersonName(person)}
+          </Stack>
+        ) : (
+          <Stack key={i} direction="row" gap={1}>
+            <Person size="sm" color="neutral" />
+            <Typography color="neutral">Gelöschter Nutzer</Typography>
+          </Stack>
+        ),
+      )}
+    </Stack>
+  );
+}
+
+function isExistingUser(
+  person: ApiPerformingPerson,
+): person is ApiExistingUser {
+  return person.type === "ExistingUser";
 }

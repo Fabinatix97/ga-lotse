@@ -6,7 +6,7 @@
 import {
   type ApiGetReferencePersonResponse,
   ApiProcedureStatus,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { FormikErrors } from "formik";
 import { ReactNode, useEffect, useRef, useState } from "react";

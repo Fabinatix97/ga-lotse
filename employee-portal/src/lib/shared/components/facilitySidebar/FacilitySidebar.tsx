@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiGetReferenceFacilityResponse } from "@eshg/employee-portal-api/base";
+import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
 import { LoadingIndicator } from "@eshg/lib-portal/components/LoadingIndicator";
 import { FormikProps } from "formik";
 import { ComponentType, ReactNode, Ref } from "react";

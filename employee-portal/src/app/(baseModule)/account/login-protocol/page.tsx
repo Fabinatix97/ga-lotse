@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiUserEvent, ApiUserEventType } from "@eshg/employee-portal-api/base";
+import { ApiUserEvent, ApiUserEventType } from "@eshg/base-api";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import ChevronLeft from "@mui/icons-material/ChevronLeft";
 import ChevronRight from "@mui/icons-material/ChevronRight";

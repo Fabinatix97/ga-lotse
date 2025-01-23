@@ -14,7 +14,7 @@ import {
   ApiTaskStatus,
   ApiTaskType,
   ApiUser,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { queryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";

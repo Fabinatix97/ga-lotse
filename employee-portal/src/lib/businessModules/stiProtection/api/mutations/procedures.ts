@@ -7,7 +7,6 @@ import {
   ApiCreateAppointmentRequest,
   ApiCreateProcedureRequest,
   ApiCreateProcedureResponse,
-  ApiStiProtectionProcedure,
   ApiUpdateAppointmentRequest,
   ApiUpdatePersonDetailsRequest,
   CancelAppointmentRequest,
@@ -59,7 +58,7 @@ export function useCreateStiProcedureMutation({
 export function useCloseProcedureMutation({
   onSuccess,
   onError,
-}: MutationPassThrough<string, ApiStiProtectionProcedure> = {}) {
+}: MutationPassThrough<string, void> = {}) {
   const api = useStiProtectionProcedureApi();
   return useHandledMutation({
     mutationFn: (id: string) => api.closeProcedure(id),
@@ -72,7 +71,7 @@ export function useCloseProcedureMutation({
 export function useCloseProcedure({
   onSuccess,
   onError,
-}: MutationPassThrough<string, ApiStiProtectionProcedure> = {}) {
+}: MutationPassThrough<string, void> = {}) {
   const snackbar = useSnackbar();
   return useCloseProcedureMutation({
     onSuccess(data, variables, context) {
@@ -86,7 +85,7 @@ export function useCloseProcedure({
 export function useReopenProcedureMutation({
   onSuccess,
   onError,
-}: MutationPassThrough<string, ApiStiProtectionProcedure> = {}) {
+}: MutationPassThrough<string, void> = {}) {
   const api = useStiProtectionProcedureApi();
   return useHandledMutation({
     mutationFn: (id: string) => api.reopenProcedure(id),
@@ -99,7 +98,7 @@ export function useReopenProcedureMutation({
 export function useReopenProcedure({
   onSuccess,
   onError,
-}: MutationPassThrough<string, ApiStiProtectionProcedure> = {}) {
+}: MutationPassThrough<string, void> = {}) {
   const snackbar = useSnackbar();
   return useReopenProcedureMutation({
     onSuccess(data, variables, context) {
@@ -118,10 +117,7 @@ interface UpdatePersonDetailsParams {
 export function useUpdatePersonDetailsMutation({
   onSuccess,
   onError,
-}: MutationPassThrough<
-  UpdatePersonDetailsParams,
-  ApiStiProtectionProcedure
-> = {}) {
+}: MutationPassThrough<UpdatePersonDetailsParams, void> = {}) {
   const api = useStiProtectionProcedureApi();
 
   return useHandledMutation({
@@ -136,10 +132,7 @@ export function useUpdatePersonDetailsMutation({
 export function useUpdatePersonDetails({
   onSuccess,
   onError,
-}: MutationPassThrough<
-  UpdatePersonDetailsParams,
-  ApiStiProtectionProcedure
-> = {}) {
+}: MutationPassThrough<UpdatePersonDetailsParams, void> = {}) {
   return useUpdatePersonDetailsMutation({
     onSuccess(data, variables, context) {
       onSuccess?.(data, variables, context);

@@ -146,10 +146,12 @@ public class InspectionService {
     inspection.setType(request.type());
     inspection.setModifiedBy(CurrentUserHelper.getCurrentUserId());
     inspection.setPhase(InspectionPhase.PLANNING);
-    inspection.updateProcedureStatus(ProcedureStatus.IN_PROGRESS, clock, auditLogger);
+
+    Instant now = Instant.now(clock);
+    inspection.updateProcedureStatus(ProcedureStatus.IN_PROGRESS, now, auditLogger);
 
     // create planning task (without appointment)
-    InspectionTask planningTask = InspectionTask.newPlanningTask(request.assigneeId(), clock);
+    InspectionTask planningTask = InspectionTask.newPlanningTask(request.assigneeId(), now);
     inspection.addTask(planningTask);
 
     addManualProgressEntry(request.progressEntryText(), inspection);

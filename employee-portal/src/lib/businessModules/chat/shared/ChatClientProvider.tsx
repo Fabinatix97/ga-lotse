@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiGetDepartmentInfoResponse } from "@eshg/employee-portal-api/base";
+import { ApiGetDepartmentInfoResponse } from "@eshg/base-api";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import {
   MatrixClient,

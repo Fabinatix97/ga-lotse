@@ -10,11 +10,14 @@ import { useAnalysisApi } from "@/lib/businessModules/statistics/api/clients";
 import { mapFilterValuesToEvaluationFilters } from "@/lib/businessModules/statistics/api/mapper/mapFilterValuesToEvaluationFilters";
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 import { mapSaveDiagramFormModelToUpdateDiagramApiModel } from "@/lib/businessModules/statistics/api/mutations/useUpdateDiagram";
-import { CreateDiagramFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateDiagramSidebar/createDiagramFormModel";
+import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 
-export interface UseAddDiagramParams extends CreateDiagramFormModel {
+export interface UseAddDiagramParams {
   analysisId: string;
   attributes: FlatAttribute[];
+  filterValues: FilterValue[];
+  title: string;
+  description: string;
 }
 
 export function useAddDiagram() {

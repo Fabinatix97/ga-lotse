@@ -74,7 +74,11 @@ public class LaboratoryTestDataMapper {
     }
 
     return new HepatitisLaboratoryTestDto(
-        entity.getInfection(), entity.getVaccineTitre(), entity.getValue(), entity.getRemark());
+        entity.getResult(),
+        entity.getInfection(),
+        entity.getVaccineTitre(),
+        entity.getValue(),
+        entity.getRemark());
   }
 
   public static HepatitisLaboratoryTestData toDatabaseType(HepatitisLaboratoryTestDto dto) {
@@ -83,6 +87,7 @@ public class LaboratoryTestDataMapper {
     }
 
     HepatitisLaboratoryTestData entity = new HepatitisLaboratoryTestData();
+    entity.setResult(dto.result());
     entity.setInfection(dto.infection());
     entity.setVaccineTitre(dto.vaccineTitre());
     entity.setValue(dto.value());

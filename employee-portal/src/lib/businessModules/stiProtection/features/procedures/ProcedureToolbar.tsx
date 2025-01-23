@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/base-api";
 import {
   FormatListBulletedOutlined,
   MedicalServicesOutlined,
@@ -58,12 +58,12 @@ function buildTabItems(id: string): TabNavigationItem[] {
     },
     {
       tabButtonName: "Untersuchung",
-      href: routes.procedures.byId(id).examination,
+      href: routes.procedures.byId(id).rapidTest,
       decorator: <MedicalServicesOutlined />,
     },
     {
-      tabButtonName: "Bericht",
-      href: routes.procedures.byId(id).report,
+      tabButtonName: "Diagnose",
+      href: routes.procedures.byId(id).diagnosis,
       decorator: <SubjectOutlined />,
     },
     {

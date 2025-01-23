@@ -7,17 +7,25 @@ package de.eshg.dental.mapper;
 
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.contact.api.ContactDto;
-import de.eshg.dental.api.ChildResult;
+import de.eshg.base.user.api.UserDto;
+import de.eshg.dental.api.ExistingUserDto;
+import de.eshg.dental.api.FluoridationVarnishDto;
+import de.eshg.dental.api.NonExistingUserDto;
+import de.eshg.dental.api.PerformingPersonDto;
+import de.eshg.dental.api.ProphylaxisSessionChildExamination;
 import de.eshg.dental.api.ProphylaxisSessionDetailsDto;
 import de.eshg.dental.api.ProphylaxisSessionDto;
 import de.eshg.dental.api.ProphylaxisTypeDto;
 import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedData;
 import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedInstitution;
-import de.eshg.dental.domain.model.Child;
+import de.eshg.dental.domain.model.Examination;
+import de.eshg.dental.domain.model.FluoridationVarnish;
 import de.eshg.dental.domain.model.ProphylaxisSession;
 import de.eshg.dental.domain.model.ProphylaxisType;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public final class ProphylaxisSessionMapper {
 
@@ -32,7 +40,9 @@ public final class ProphylaxisSessionMapper {
         session.getDateAndTime(),
         InstitutionMapper.mapContactToInstitutionDto(institution),
         session.getGroupName(),
-        mapToDto(session.getType()));
+        mapToDto(session.getType()),
+        session.isScreening(),
+        mapToDto(session.getFluoridationVarnish()));
   }
 
   public static ProphylaxisTypeDto mapToDto(ProphylaxisType type) {
@@ -65,6 +75,7 @@ public final class ProphylaxisSessionMapper {
       ProphylaxisSessionWithAugmentedData prophylaxisSession) {
     ProphylaxisSession session = prophylaxisSession.prophylaxisSession();
     ContactDto institution = prophylaxisSession.institution();
+    Map<UUID, UserDto> userMap = prophylaxisSession.users();
     return new ProphylaxisSessionDetailsDto(
         session.getVersion(),
         session.getExternalId(),
@@ -72,26 +83,65 @@ public final class ProphylaxisSessionMapper {
         InstitutionMapper.mapContactToInstitutionDto(institution),
         session.getGroupName(),
         mapToDto(session.getType()),
-        mapToChildResults(prophylaxisSession.participants()));
+        session.isScreening(),
+        mapToDto(session.getFluoridationVarnish()),
+        mapToChildExaminations(prophylaxisSession.participants()),
+        mapPersons(session.getDentistIds(), userMap),
+        mapPersons(session.getZfaIds(), userMap));
   }
 
-  private static List<ChildResult> mapToChildResults(
-      Map<Child, GetPersonFileStateResponse> fileStateResponses) {
+  private static List<ProphylaxisSessionChildExamination> mapToChildExaminations(
+      Map<Examination, GetPersonFileStateResponse> fileStateResponses) {
     if (fileStateResponses == null) {
       return List.of();
     }
     return fileStateResponses.entrySet().stream()
-        .map(ProphylaxisSessionMapper::mapToChildResult)
+        .map(entry -> mapToChildExamination(entry.getKey(), entry.getValue()))
         .toList();
   }
 
-  private static ChildResult mapToChildResult(
-      Map.Entry<Child, GetPersonFileStateResponse> fileStateResponse) {
-    return new ChildResult(
-        fileStateResponse.getKey().getExternalId(),
-        fileStateResponse.getValue().firstName(),
-        fileStateResponse.getValue().lastName(),
-        fileStateResponse.getValue().dateOfBirth(),
-        fileStateResponse.getKey().getGroupName());
+  private static ProphylaxisSessionChildExamination mapToChildExamination(
+      Examination examination, GetPersonFileStateResponse fileStateResponse) {
+    return new ProphylaxisSessionChildExamination(
+        examination.getChild().getExternalId(),
+        fileStateResponse.firstName(),
+        fileStateResponse.lastName(),
+        fileStateResponse.dateOfBirth(),
+        examination.getChild().getGroupName().trim(),
+        fileStateResponse.gender(),
+        examination.getChild().getCurrentFluoridationConsent(),
+        ExaminationMapper.mapToDto(examination.getResult()));
+  }
+
+  private static List<? extends PerformingPersonDto> mapPersons(
+      List<UUID> dentistOrZfaIds, Map<UUID, UserDto> userMap) {
+    return dentistOrZfaIds.stream()
+        .map(
+            userId ->
+                Optional.ofNullable(userMap.get(userId))
+                    .<PerformingPersonDto>map(
+                        user -> new ExistingUserDto(user.firstName(), user.lastName()))
+                    .orElse(new NonExistingUserDto()))
+        .toList();
+  }
+
+  public static FluoridationVarnishDto mapToDto(FluoridationVarnish fluoridationVarnish) {
+    return switch (fluoridationVarnish) {
+      case null -> null;
+      case A -> FluoridationVarnishDto.A;
+      case B -> FluoridationVarnishDto.B;
+      case C -> FluoridationVarnishDto.C;
+      case D -> FluoridationVarnishDto.D;
+    };
+  }
+
+  public static FluoridationVarnish mapToDomain(FluoridationVarnishDto dto) {
+    return switch (dto) {
+      case null -> null;
+      case A -> FluoridationVarnish.A;
+      case B -> FluoridationVarnish.B;
+      case C -> FluoridationVarnish.C;
+      case D -> FluoridationVarnish.D;
+    };
   }
 }

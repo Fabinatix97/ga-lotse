@@ -3,12 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiContactCategory,
-  ApiResponse,
-} from "@eshg/employee-portal-api/base";
+import { ApiContactCategory, ApiResponse } from "@eshg/base-api";
 import { ApiLocationSelectionMode } from "@eshg/employee-portal-api/schoolEntry";
-import { DownloadLink } from "@eshg/lib-portal/api/files/DownloadLink";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
@@ -70,14 +66,13 @@ function DownloadListTemplateButton(props: DownloadListTemplateButtonProps) {
   const templateFile = useFileDownload(downloadFn);
 
   return (
-    <DownloadLink
-      downloadContainerRef={templateFile.downloadContainerRef}
+    <ButtonLink
       startDecorator={<FileDownload />}
       fontSize="sm"
-      onDownload={() => templateFile.download()}
+      onClick={() => templateFile.download()}
     >
       {linkText}
-    </DownloadLink>
+    </ButtonLink>
   );
 }
 

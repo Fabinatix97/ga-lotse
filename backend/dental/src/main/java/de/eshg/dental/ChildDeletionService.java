@@ -11,8 +11,8 @@ import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.domain.model.ProphylaxisSession;
 import de.eshg.dental.domain.repository.ChildRepository;
+import de.eshg.lib.procedure.cemetery.CemeteryService;
 import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
-import de.eshg.lib.procedure.util.CemeteryService;
 import org.springframework.stereotype.Component;
 
 @Component

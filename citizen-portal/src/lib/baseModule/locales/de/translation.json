@@ -11,8 +11,9 @@
       "subheader": "Das {{name}} bietet umfangreiche Leistungen zum Schutz und zur Wiederherstellung der Gesundheit an."
     }
   },
-  "site_title": "Online-Portal",
-  "site_description": "Von Bürgern für Bürger",
+  "site_title": "Gesundheitsamt",
+  "site_description": "Umfangreiche Leistungen zum Schutz und zur Wiederherstellung der Gesundheit",
+  "site_keywords": "Services, Dienstleistungen, Einschulungsuntersuchung, Reisemedizinische Beratung, Amtsärztlicher Dienst, GA-Lotse, Galotse",
   "health_department_title": "Gesundheitsamt",
   "most_searched_services_title": "Meistgesuchte Services",
   "common": {

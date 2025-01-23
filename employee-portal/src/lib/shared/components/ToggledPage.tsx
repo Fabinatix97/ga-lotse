@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiBaseFeature } from "@eshg/employee-portal-api/base";
+import { ApiBaseFeature } from "@eshg/base-api";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 

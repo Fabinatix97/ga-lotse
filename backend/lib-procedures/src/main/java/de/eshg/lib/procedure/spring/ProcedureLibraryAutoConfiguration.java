@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import de.eshg.base.feature.BaseFeatureTogglesApi;
 import de.eshg.domain.model.serialization.SerializationService;
 import de.eshg.lib.procedure.audit.AuditService;
+import de.eshg.lib.procedure.cemetery.CemeteryConfiguration;
 import de.eshg.lib.procedure.file.FileController;
 import de.eshg.lib.procedure.file.FileDeletionApprovalRequestNotificationService;
 import de.eshg.lib.procedure.file.FileDeletionRequestApprovalRequestDecisionHandler;
@@ -19,8 +20,8 @@ import de.eshg.lib.procedure.gdpr.GdprValidationTaskController;
 import de.eshg.lib.procedure.gdpr.GdprValidationTaskService;
 import de.eshg.lib.procedure.helper.UserHelper;
 import de.eshg.lib.procedure.housekeeping.archiving.ArchivingConfiguration;
-import de.eshg.lib.procedure.housekeeping.cemetery.CemeteryHousekeepingConfiguration;
 import de.eshg.lib.procedure.housekeeping.inbox.InboxProcedureCleanupJob;
+import de.eshg.lib.procedure.inbox.InboxConfiguration;
 import de.eshg.lib.procedure.inbox.InboxProcedureController;
 import de.eshg.lib.procedure.inbox.InboxProcedureService;
 import de.eshg.lib.procedure.mapping.ProcedureApprovalRequestMapper;
@@ -47,16 +48,12 @@ import de.eshg.lib.procedure.procedures.ProcedureController;
 import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
 import de.eshg.lib.procedure.procedures.ProcedureQuery;
 import de.eshg.lib.procedure.procedures.ProcedureSearchService;
-import de.eshg.lib.procedure.progressentry.ManualProgressEntryDeletionApprovalRequestHandler;
-import de.eshg.lib.procedure.progressentry.ManualProgressEntryDeletionApprovalRequestNotificationService;
-import de.eshg.lib.procedure.progressentry.ProgressEntryController;
-import de.eshg.lib.procedure.progressentry.ProgressEntryService;
+import de.eshg.lib.procedure.progressentry.ProgressEntryConfiguration;
 import de.eshg.lib.procedure.tasks.TaskController;
 import de.eshg.lib.procedure.tasks.TaskDueAtReminderNotificationService;
-import de.eshg.lib.procedure.tasks.TaskServiceImpl;
+import de.eshg.lib.procedure.tasks.TaskService;
 import de.eshg.lib.procedure.tasks.TaskTeamOverviewService;
 import de.eshg.lib.procedure.util.BusinessDayService;
-import de.eshg.lib.procedure.util.CemeteryService;
 import org.openapitools.jackson.nullable.JsonNullableModule;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -75,20 +72,17 @@ import org.springframework.scheduling.annotation.EnableScheduling;
     matchIfMissing = true)
 @AutoConfigureAfter(JpaRepositoriesAutoConfiguration.class)
 @Import({
-  ManualProgressEntryDeletionApprovalRequestNotificationService.class,
-  ProgressEntryController.class,
-  ProgressEntryService.class,
-  ManualProgressEntryDeletionApprovalRequestHandler.class,
+  ProgressEntryConfiguration.class,
   ProcedureApprovalRequestMapper.class,
   FileController.class,
   FileDeletionRequestApprovalRequestDecisionHandler.class,
   FileDeletionApprovalRequestNotificationService.class,
-  InboxProcedureService.class,
+  InboxConfiguration.class,
   FileStorageService.class,
   ProcedureController.class,
   ProcedureLibraryEnrichingMapper.class,
   TaskController.class,
-  TaskServiceImpl.class,
+  TaskService.class,
   TaskTeamOverviewService.class,
   TaskDueAtReminderNotificationService.class,
   BusinessDayService.class,
@@ -99,9 +93,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
   ProcedureSearchService.class,
   ProcedureQuery.class,
   ProcedureDeletionService.class,
-  CemeteryService.class,
+  CemeteryConfiguration.class,
   SerializationService.class,
-  CemeteryHousekeepingConfiguration.class,
   DefaultProcedureAsSearchableStringFormatter.class,
   ApprovalRequestMailJob.class,
   ApprovalRequestMailService.class,

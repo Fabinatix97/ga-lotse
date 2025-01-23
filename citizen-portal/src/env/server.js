@@ -5,6 +5,7 @@
 
 // @ts-check
 import {
+  deploymentTypeSchema,
   environmentTypeSchema,
   nodeEnvSchema,
   urlSchema,
@@ -25,6 +26,7 @@ const schema = object({
   NODE_ENV: nodeEnvSchema,
 
   PUBLIC_ENVIRONMENT_TYPE: environmentTypeSchema,
+  PUBLIC_DEPLOYMENT_TYPE: deploymentTypeSchema,
 
   PORT: optional(string(), "3001"),
 
@@ -35,6 +37,7 @@ const schema = object({
   PUBLIC_TRAVEL_MEDICINE_BACKEND_URL: urlSchema,
   PUBLIC_OFFICIAL_MEDICAL_SERVICE_BACKEND_URL: urlSchema,
   PUBLIC_MEDICAL_REGISTRY_BACKEND_URL: urlSchema,
+  PUBLIC_OPEN_DATA_BACKEND_URL: urlSchema,
 
   MARKDOWN_PAGE_DIRECTORY: string(),
 });

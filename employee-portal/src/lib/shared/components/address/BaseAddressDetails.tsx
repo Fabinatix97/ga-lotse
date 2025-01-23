@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { SxProps } from "@mui/joy/styles/types/theme";
 import { isNonNullish } from "remeda";
 
@@ -14,7 +15,6 @@ import {
   isDomesticAddress,
   isPostboxAddress,
 } from "@/lib/shared/helpers/address";
-import { translateCountry } from "@/lib/shared/helpers/i18n";
 
 interface BaseAddressDetailsProps {
   address: BaseAddress;

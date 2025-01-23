@@ -13,6 +13,7 @@ import {
   REPLAY_ABORTED,
   REPLAY_DONE,
   REPLAY_FAILED,
+  REPLAY_FAILED_WITH_401,
   REPLAY_STARTED,
   SYNC,
   createQueueBroadCastChannelEndpoint,
@@ -47,6 +48,10 @@ export function useServiceWorkerSyncQueue() {
           setSyncing(false);
           void queryClient.invalidateQueries();
           snackbar.confirmation("Daten mit Server synchronisiert");
+          break;
+        case REPLAY_FAILED_WITH_401:
+          // Use browser reload to trigger redirect to Keycloak
+          window.location.reload();
           break;
         case DELETE_FILE_FAILED_WITH_404:
           snackbar.error("Datei konnte nicht gelöscht werden (nicht gefunden)");

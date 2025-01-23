@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/base-api";
 import { ApiProcedureType } from "@eshg/employee-portal-api/businessProcedures";
 
 import { UseBulkUpdateProceduresArchivingRelevance } from "@/lib/shared/api/mutations/archiving";

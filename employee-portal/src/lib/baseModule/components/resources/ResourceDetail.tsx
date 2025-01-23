@@ -10,7 +10,7 @@ import {
   ApiLabel,
   ApiResource,
   ApiUserRole,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { Add } from "@mui/icons-material";
 import { Button, Stack, Typography } from "@mui/joy";
 

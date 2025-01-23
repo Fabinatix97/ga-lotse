@@ -23,7 +23,11 @@ public record GdprFacilityDto(
         String emailAddress,
     @Schema(description = "The phone number of the Facility.", example = "+491234567890")
         @Size(min = 1, max = 23)
-        String phoneNumber)
+        String phoneNumber,
+    @Schema(
+            description = "The 'DatenübermittlerPseudonymId' of the MUK user",
+            example = "du-986b2b54ab89cf4ed674ad8c3126b966b54d4872")
+        String dataTransmitterPseudonymId)
     implements GdprIdentificationDataDto {
   public static final String SCHEMA_NAME = "GdprFacility";
 
@@ -33,6 +37,6 @@ public record GdprFacilityDto(
   }
 
   public GdprFacilityDto(String name, AddressDto address) {
-    this(name, address, null, null);
+    this(name, address, null, null, null);
   }
 }

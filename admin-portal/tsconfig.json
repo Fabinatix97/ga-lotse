@@ -1,13 +1,5 @@
 {
   "extends": "../config/tsconfig.next.json",
-  "references": [
-    {
-      "path": "../admin-portal-api"
-    },
-    {
-      "path": "../lib-portal"
-    }
-  ],
   "compilerOptions": {
     "target": "es6",
     "outDir": "./build/dist",

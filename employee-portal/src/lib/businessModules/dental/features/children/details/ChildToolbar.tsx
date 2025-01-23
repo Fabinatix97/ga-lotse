@@ -5,7 +5,8 @@
 
 "use client";
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/base-api";
+import { routes } from "@eshg/dental/shared/routes";
 import {
   FormatListBulletedOutlined,
   TextSnippetOutlined,
@@ -15,7 +16,6 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useChildApi } from "@/lib/businessModules/dental/api/clients";
 import { getChildDetailsQuery } from "@/lib/businessModules/dental/api/queries/childApi";
-import { routes } from "@/lib/businessModules/dental/shared/routes";
 import { PersonToolbarHeader } from "@/lib/shared/components/layout/PersonToolbarHeader";
 import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
 import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";

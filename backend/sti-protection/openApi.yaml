@@ -603,27 +603,6 @@ paths:
       summary: Add a GDPR validation task
       tags:
       - GdprValidationTask
-  /gdpr-validation-tasks/download-packages/{id}:
-    get:
-      operationId: getGdprDownloadPackage
-      parameters:
-      - in: path
-        name: id
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                type: string
-                format: binary
-          description: OK
-      summary: Get Gdpr Download Package by its id
-      tags:
-      - GdprValidationTask
   /gdpr-validation-tasks/notification-banner:
     get:
       operationId: getGdprNotificationBanner
@@ -638,6 +617,28 @@ paths:
       tags:
       - GdprValidationTask
   /gdpr-validation-tasks/{gdprProcedureId}:
+    delete:
+      operationId: deleteGdprValidationTaskAndDownloadPackages
+      parameters:
+      - in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteDownloadPackagesRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Delete the GDPR validation task with gdprProcedureId and GDPR download
+        packages with ids from request
+      tags:
+      - GdprValidationTask
     get:
       operationId: getGdprValidationTask
       parameters:
@@ -676,6 +677,29 @@ paths:
                 $ref: "#/components/schemas/GetGdprValidationTaskDetailsResponse"
           description: OK
       summary: Get a GDPR validation task by id
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/{gdprProcedureId}/business-procedures/{businessProcedureId}:
+    delete:
+      operationId: deleteBusinessProcedure
+      parameters:
+      - in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: businessProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      summary: Delete the businessProcedure with businessProcedureId for validationTask
+        with gdprProcedureId with type right of erasure
       tags:
       - GdprValidationTask
   /gdpr-validation-tasks/{gdprProcedureId}/business-procedures/{businessProcedureId}/downloadPackage:
@@ -735,6 +759,33 @@ paths:
                 $ref: "#/components/schemas/GetGdprDownloadPackagesInfoResponse"
           description: OK
       summary: Get approved Gdpr Download Packages by Gdpr Procedure Id
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/{gdprProcedureId}/download-packages/{downloadId}:
+    get:
+      operationId: getGdprDownloadPackage
+      parameters:
+      - in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: downloadId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+          description: OK
+      summary: Get Gdpr Download Package by the gdprProcedureId and its downloadId
       tags:
       - GdprValidationTask
   /inbox-procedures:
@@ -942,34 +993,6 @@ paths:
           type: string
           format: uuid
       - description: |
-          Only procedures are returned where the assigneeId of none of the task equals `notAssignedToId`.
-          If not submitted, no filtering takes place.
-        in: query
-        name: notAssignedToId
-        required: false
-        schema:
-          type: string
-          format: uuid
-      - description: |
-          Only procedures are returned where the user is or was assigned to at least one task (at least one assigneeId equals `onceAssignedToId` in taskHistory for at least one task).
-          If not submitted, no filtering takes place.
-        in: query
-        name: onceAssignedToId
-        required: false
-        schema:
-          type: string
-          format: uuid
-      - description: |
-          Filter logic:
-          - In case of `true` only procedures are returned where all tasks are unassigned
-          - In case of `false` only procedures are returned which have at least one assigned task
-          - If not submitted, no filtering takes place
-        in: query
-        name: unassigned
-        required: false
-        schema:
-          type: boolean
-      - description: |
           Filter logic:
           - If `procedureType` is submitted, only procedures are returned which have one of the submitted types.
           - If not submitted, no filtering takes place
@@ -993,15 +1016,6 @@ paths:
           items:
             $ref: "#/components/schemas/ProcedureStatus"
           uniqueItems: true
-      - description: |
-          Filter logic:
-          - If `createdInYear` is set, only procedures are returned which were created in that year
-          - If not submitted, no filtering takes place
-        in: query
-        name: createdInYear
-        required: false
-        schema:
-          type: string
       - description: |
           The following sorting options are available:
           - `CREATED_AT`: Sorting by createdAt attribute
@@ -1542,7 +1556,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/GetStiProtectionProceduresResponse"
+                $ref: "#/components/schemas/GetProceduresOverviewResponse"
           description: OK
       summary: Get sorted and paginated STI procedures.
       tags:
@@ -1784,10 +1798,6 @@ paths:
           format: uuid
       responses:
         "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/StiProtectionProcedure"
           description: OK
       summary: Close an STI procedure.
       tags:
@@ -1810,10 +1820,6 @@ paths:
         required: true
       responses:
         "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/StiProtectionProcedure"
           description: OK
       summary: Update the person details of an STI procedure.
       tags:
@@ -1830,10 +1836,6 @@ paths:
           format: uuid
       responses:
         "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/StiProtectionProcedure"
           description: OK
       summary: Re-open an STI procedure.
       tags:
@@ -1901,6 +1903,47 @@ paths:
       summary: Upsert consultation documentation for a STI protection procedure.
       tags:
       - Consultation
+  /sti-procedures/{procedureId}/diagnosis:
+    get:
+      operationId: getDiagnosis
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Diagnosis"
+          description: OK
+      summary: Get diagnosis.
+      tags:
+      - Diagnosis
+    put:
+      operationId: updateDiagnosis
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Diagnosis"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Update or insert diagnosis data of STI protection procedure.
+      tags:
+      - Diagnosis
   /sti-procedures/{procedureId}/examination/laboratory-test:
     get:
       operationId: getLaboratoryTestExamination
@@ -2023,7 +2066,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: Update medical history of STI protection procedure.
+      summary: Update or insert medical history of STI protection procedure.
       tags:
       - MedicalHistory
   /sti-procedures/{procedureId}/waiting-room:
@@ -2115,21 +2158,6 @@ paths:
           items:
             $ref: "#/components/schemas/TaskStatus"
           uniqueItems: true
-      - in: query
-        name: hasDueAt
-        required: false
-        schema:
-          type: boolean
-      - in: query
-        name: isOverdue
-        required: false
-        schema:
-          type: boolean
-      - in: query
-        name: wasAssignedByOther
-        required: false
-        schema:
-          type: boolean
       - in: query
         name: sortKey
         required: true
@@ -2777,6 +2805,8 @@ components:
       - SEX_WORK
     Consultation:
       type: object
+      description: "Documents detailed patient information, including anamnesis review,\
+        \ medical history, and referrals."
       properties:
         general:
           $ref: "#/components/schemas/ConsultationGeneralSection"
@@ -2784,59 +2814,103 @@ components:
           $ref: "#/components/schemas/ConsultationPregnancySection"
     ConsultationGeneralSection:
       type: object
+      description: "General patient details, including language proficiency, gender\
+        \ information and health insurance data."
       properties:
         drugUse:
           type: string
+          description: Records the patient's drug use or consumption.
+          example: The patient reports occasional consumption of alcohol.
         furtherGenderInfo:
           type: string
+          description: Additional gender-related information.
+          example: The patient identifies as non-binary and prefers the pronouns they/them.
         hasGermanHealthInsurance:
           type: boolean
+          description: Indicates whether the patient has German health insurance.
         hasHealthInsurance:
           type: boolean
+          description: Indicates whether the patient has any form of health insurance.
         hasInsecureResidence:
           type: boolean
+          description: Indicates whether the patient's residency status is insecure.
         hasSufficientGermanLanguageSkills:
           type: boolean
+          description: Indicates whether the patient has sufficient German language
+            skills.
         hasSymptoms:
           type: boolean
+          description: Indicates whether the patient has any symptoms.
         isIlliterate:
           type: boolean
+          description: Indicates whether the patient is illiterate.
         mainReason:
           type: string
+          description: Primary reason for the patient's consultation.
+          example: The patient is seeking a routine check-up to address mild abdominal
+            discomfort.
         notes:
           type: string
+          description: Optional field for additional remarks or comments during the
+            consultation.
+          example: The patient was advised to follow up in two weeks for further monitoring
+            of symptoms.
         otherKnownLanguages:
           type: string
+          description: Other languages the patient can speak or understand.
+          example: Spanish and French.
         referral:
           type: string
+          description: Details any referral made to another department or specialist.
+          example: The patient has been referred to the gynecology department.
         symptoms:
           type: string
+          description: Details the symptoms reported by the patient.
+          example: The patient reports persistent headaches and dizziness over the
+            past week.
     ConsultationPregnancySection:
       type: object
+      description: "Pregnancy-related details, including the number of previous pregnancies\
+        \ and abortions."
       properties:
         hasPregnancyRelatedInfo:
           type: boolean
+          description: Indicates whether pregnancy-related information is provided.
         lastCytologyTest:
           type: string
           format: date
+          description: Date of the patient's most recent cytology test.
+          example: 2023-05-08
         numberOfBirths:
           type: integer
           format: int32
+          description: Total number of births the patient had.
+          example: 3
         numberOfEctopicPregnancies:
           type: integer
           format: int32
+          description: "Number of ectopic pregnancies, developed outside the uterus."
+          example: 1
         numberOfInducedAbortions:
           type: integer
           format: int32
+          description: Number of induced abortions the patient had.
+          example: 2
         numberOfOtherAbortions:
           type: integer
           format: int32
+          description: Number of abortions due to other reasons.
+          example: 1
         numberOfPregnancies:
           type: integer
           format: int32
+          description: Total number of pregnancies the patient had.
+          example: 6
         startOfLastPeriod:
           type: string
           format: date
+          description: Start date of the patient's last menstrual period.
+          example: 2024-12-01
     ContactDetails:
       type: object
       properties:
@@ -2871,7 +2945,8 @@ components:
       - FACILITY
     CountryCode:
       type: string
-      description: List of country codes in ISO 3166-1 alpha-2 format.
+      description: "List of country codes in ISO 3166-1 alpha-2 format. With custom\
+        \ extensions for stateless, non-standard countries, and unknown countries."
       enum:
       - AD
       - AE
@@ -3122,6 +3197,9 @@ components:
       - ZA
       - ZM
       - ZW
+      - XK
+      - UNKNOWN
+      - STATELESS
     CreateAppointmentBlockGroupResponse:
       type: object
       properties:
@@ -3343,6 +3421,16 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Population"
+    DeleteDownloadPackagesRequest:
+      type: object
+      properties:
+        downloadIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - downloadIds
     DetailedFacility:
       type: object
       properties:
@@ -3374,6 +3462,30 @@ components:
           $ref: "#/components/schemas/Task"
       required:
       - task
+    Diagnosis:
+      type: object
+      properties:
+        findings:
+          type: array
+          items:
+            $ref: "#/components/schemas/Icd10Code"
+        generalRemarks:
+          type: string
+        medications:
+          type: array
+          items:
+            $ref: "#/components/schemas/Medication"
+        otherTestTypeName:
+          type: string
+        results:
+          type: string
+        resultsCommunicated:
+          type: boolean
+        testTypes:
+          type: array
+          items:
+            $ref: "#/components/schemas/TestType"
+          uniqueItems: true
     DomesticAddress:
       type: object
       allOf:
@@ -3582,6 +3694,10 @@ components:
             oneOf:
             - $ref: "#/components/schemas/DomesticAddress"
             - $ref: "#/components/schemas/PostboxAddress"
+          dataTransmitterPseudonymId:
+            type: string
+            description: The 'DatenübermittlerPseudonymId' of the MUK user
+            example: du-986b2b54ab89cf4ed674ad8c3126b966b54d4872
           emailAddress:
             type: string
             description: The email addresses of the Facility.
@@ -3622,6 +3738,10 @@ components:
             oneOf:
             - $ref: "#/components/schemas/DomesticAddress"
             - $ref: "#/components/schemas/PostboxAddress"
+          bpk2:
+            type: string
+            description: The bpk2 of the BundId user
+            example: VnMEBMXsiCWZ34v1JCulQABe6-ts1yDSrbH3zII8BF0
           dateOfBirth:
             type: string
             format: date
@@ -4196,6 +4316,25 @@ components:
             $ref: "#/components/schemas/ProcedureMetric"
       required:
       - procedureMetrics
+    GetProceduresOverviewResponse:
+      type: object
+      properties:
+        procedures:
+          type: array
+          items:
+            $ref: "#/components/schemas/StiProtectionProcedureOverview"
+        totalElements:
+          type: integer
+          format: int64
+          description: The total amount of elements
+        totalPages:
+          type: integer
+          format: int32
+          description: The total number of pages
+      required:
+      - procedures
+      - totalElements
+      - totalPages
     GetProceduresResponse:
       type: object
       properties:
@@ -4316,25 +4455,6 @@ components:
       enum:
       - ASC
       - DESC
-    GetStiProtectionProceduresResponse:
-      type: object
-      properties:
-        procedures:
-          type: array
-          items:
-            $ref: "#/components/schemas/StiProtectionProcedureOverview"
-        totalElements:
-          type: integer
-          format: int64
-          description: The total amount of elements
-        totalPages:
-          type: integer
-          format: int32
-          description: The total number of pages
-      required:
-      - procedures
-      - totalElements
-      - totalPages
     GetStiProtectionProceduresSortBy:
       type: string
       default: CREATED_AT
@@ -4344,6 +4464,7 @@ components:
       - CONCERN
       - YEAR_OF_BIRTH
       - GENDER
+      - LAB_STATUS
     GetStiProtectionProceduresSortOrder:
       type: string
       default: ASC
@@ -4433,6 +4554,9 @@ components:
           type: string
           description: Provides additional comments related to the corresponding test.
           example: HAV-AK IgM-Test
+        result:
+          type: boolean
+          description: Indicates the outcome of the laboratory test result.
         vaccineTitre:
           type: boolean
           description: Indicates whether the test is conducted in the context of a
@@ -4453,6 +4577,24 @@ components:
       - DELETE
       - OPTIONS
       - TRACE
+    Icd10Code:
+      type: object
+      properties:
+        code:
+          type: string
+          description: ICD-10 code or ICD-10 group code
+          example: A00
+        isGroup:
+          type: boolean
+          description: "If true, the returned code specifies an ICD-10 code group."
+        title:
+          type: string
+          description: ICD-10 code title
+          example: Cholera
+      required:
+      - code
+      - isGroup
+      - title
     Image:
       type: object
       allOf:
@@ -4606,6 +4748,12 @@ components:
           format: int32
       required:
       - '@type'
+    LabStatus:
+      type: string
+      enum:
+      - OPEN
+      - IN_PROGRESS
+      - CLOSED
     LaboratoryTest:
       type: object
       description: Used in the context of laboratory test examinations to document
@@ -4850,6 +4998,20 @@ components:
           type: string
       required:
       - '@type'
+    Medication:
+      type: object
+      properties:
+        dose:
+          type: string
+        name:
+          type: string
+        prescriptionDate:
+          type: string
+          format: date
+      required:
+      - dose
+      - name
+      - prescriptionDate
     MetaData:
       type: object
       discriminator:
@@ -5650,6 +5812,8 @@ components:
         id:
           type: string
           format: uuid
+        labStatus:
+          $ref: "#/components/schemas/LabStatus"
         person:
           $ref: "#/components/schemas/Person"
         status:
@@ -5661,6 +5825,7 @@ components:
       - concern
       - createdAt
       - id
+      - labStatus
       - person
       - status
     StiProtectionProcedureOverview:
@@ -5682,16 +5847,20 @@ components:
         id:
           type: string
           format: uuid
+        labStatus:
+          $ref: "#/components/schemas/LabStatus"
         status:
           $ref: "#/components/schemas/ProcedureStatus"
         yearOfBirth:
           type: integer
           format: int32
       required:
+      - accessCode
       - concern
       - createdAt
       - gender
       - id
+      - labStatus
       - status
       - yearOfBirth
     StiProtectionProcedurePopulationRequest:
@@ -5727,6 +5896,9 @@ components:
           keyDocumentVersion:
             type: integer
             format: int32
+          previousFileStateId:
+            type: string
+            format: uuid
           systemProgressEntryType:
             type: string
           triggerType:
@@ -5853,6 +6025,7 @@ components:
       - TRAVEL_MEDICINE
       - MEASLES_PROTECTION
       - STI_PROTECTION
+      - OFFICIAL_MEDICAL_SERVICE
     TestHelperClockSetRequest:
       type: object
       properties:
@@ -5912,6 +6085,13 @@ components:
           type: string
         urlPatternFilter:
           type: string
+    TestType:
+      type: string
+      enum:
+      - WESTERN_BLOT
+      - P24
+      - PCR
+      - OTHER
     Title:
       type: string
       enum:

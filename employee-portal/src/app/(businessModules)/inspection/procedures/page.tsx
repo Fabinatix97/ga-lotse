@@ -5,12 +5,13 @@
 
 "use client";
 
+import { SearchParams } from "@eshg/lib-portal/helpers/searchParams";
+
 import { PendingFacilitiesOfflineTable } from "@/lib/businessModules/inspection/components/facility/pending/PendingFacilitiesOfflineTable";
 import { PendingFacilitiesTableWrapper } from "@/lib/businessModules/inspection/components/facility/pending/PendingFacilitiesTableWrapper";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
-import { SearchParams } from "@/lib/shared/helpers/searchParams";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 export default function InspectionProceduresPage(

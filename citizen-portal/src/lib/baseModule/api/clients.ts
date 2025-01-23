@@ -7,6 +7,7 @@ import {
   BaseFeatureTogglesApi,
   BundIdPersonLinkApi,
   Configuration,
+  GdprProcedureApi,
   MukFacilityLinkApi,
 } from "@eshg/citizen-portal-api/base";
 import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
@@ -28,4 +29,8 @@ export function useMukFacilityLinkApi() {
 
 export function useBundIdPersonLinkApi() {
   return new BundIdPersonLinkApi(useConfiguration());
+}
+
+export function useGdprProcedureApi() {
+  return new GdprProcedureApi(useConfiguration());
 }

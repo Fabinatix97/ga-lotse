@@ -9,8 +9,8 @@ import {
 } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
 
 export interface ConfigureChoroplethChartFormModel {
-  geoReferencedAttributeKey: string | null;
-  secondaryAttributeSelectionKey: string | null;
+  geoReferencedAttribute: string | null;
+  secondaryAttribute: string | null;
   characteristicParameter: DiagramCharacteristicParameter;
   colorScheme: DiagramColorScheme;
   geoShapeId: string | null;

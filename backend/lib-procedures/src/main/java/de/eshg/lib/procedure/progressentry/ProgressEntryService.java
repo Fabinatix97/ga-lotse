@@ -6,12 +6,13 @@
 package de.eshg.lib.procedure.progressentry;
 
 import static de.eshg.lib.procedure.MapperHelper.mapAndSet;
-import static de.eshg.lib.procedure.file.MultipartFileParser.parseFile;
+import static de.eshg.lib.procedure.file.MultipartFileParser.validateAndParseFile;
 
 import de.eshg.file.common.PdfAConformanceValidator;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.foureyes.domain.repository.GenericApprovalRequestRepository;
 import de.eshg.lib.procedure.audit.AuditService;
+import de.eshg.lib.procedure.cemetery.CemeteryService;
 import de.eshg.lib.procedure.domain.model.File;
 import de.eshg.lib.procedure.domain.model.KeyDocumentAware;
 import de.eshg.lib.procedure.domain.model.ManualProgressEntry;
@@ -35,7 +36,6 @@ import de.eshg.lib.procedure.model.ManualProgressEntryDto;
 import de.eshg.lib.procedure.model.ManualProgressEntryHistoryDto;
 import de.eshg.lib.procedure.model.ManualProgressEntryTypeDto;
 import de.eshg.lib.procedure.model.PatchManualProgressEntryRequest;
-import de.eshg.lib.procedure.util.CemeteryService;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.NotFoundException;
@@ -74,6 +74,7 @@ public class ProgressEntryService<P extends Procedure<P, ?, ?, ?>> {
   private final CemeteryService cemeteryService;
   private final AuditService auditService;
   private final UserHelper userHelper;
+  private final ProgressEntryProperties progressEntryProperties;
   private final AuditLogger auditLogger;
 
   public ProgressEntryService(
@@ -84,6 +85,7 @@ public class ProgressEntryService<P extends Procedure<P, ?, ?, ?>> {
       CemeteryService cemeteryService,
       AuditService auditService,
       UserHelper userHelper,
+      ProgressEntryProperties progressEntryProperties,
       AuditLogger auditLogger) {
 
     this.procedureRepository = procedureRepository;
@@ -93,6 +95,7 @@ public class ProgressEntryService<P extends Procedure<P, ?, ?, ?>> {
     this.cemeteryService = cemeteryService;
     this.auditService = auditService;
     this.userHelper = userHelper;
+    this.progressEntryProperties = progressEntryProperties;
     this.auditLogger = auditLogger;
   }
 
@@ -111,7 +114,10 @@ public class ProgressEntryService<P extends Procedure<P, ?, ?, ?>> {
   @Transactional(propagation = Propagation.MANDATORY)
   public SystemProgressEntry addSystemProgressEntry(
       P procedure, SystemProgressEntry systemProgressEntry, MultipartFile file) throws IOException {
-    return addSystemProgressEntry(procedure, systemProgressEntry, parseFile(file));
+    return addSystemProgressEntry(
+        procedure,
+        systemProgressEntry,
+        validateAndParseFile(file, progressEntryProperties.getMaxImageSideLength()));
   }
 
   @Transactional(propagation = Propagation.MANDATORY)
@@ -156,7 +162,7 @@ public class ProgressEntryService<P extends Procedure<P, ?, ?, ?>> {
       MultipartFileParser.validateProgressEntryTypeSupportsFileType(manualProgressEntry, fileType);
       validateKeyDocumentsUniformFileTypes(manualProgressEntry, fileType);
 
-      File parsedFile = parseFile(file);
+      File parsedFile = validateAndParseFile(file, progressEntryProperties.getMaxImageSideLength());
       Optional.ofNullable(fileMetaData)
           .map(FileMetaDataDto::getDescription)
           .ifPresent(parsedFile.getMetaData()::setDescription);

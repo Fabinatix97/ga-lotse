@@ -888,6 +888,19 @@ public class VaccinationConsultationService {
         log.warn("Error while deleting citizen access code user.", e);
       }
 
+    ProcedureStep initialProcedureStep =
+        procedureStepRepository
+            .findInitialProcedureStep(procedureId)
+            .orElseThrow(() -> new IllegalStateException("No initial procedure step available"));
+
+    if (vaccinationConsultation.getCreatedBy() == CreatedByUserType.CITIZEN_PORTAL
+        && !(initialProcedureStep.getUserDefinedAppointment() != null
+            && initialProcedureStep.getUserDefinedAppointment().isCancelled())) {
+      PatientDto patientDto = personClient.getPatientFromCentralFile(centralFileStateId);
+      notificationService.notifyCancelledByEmployee(
+          patientDto, initialProcedureStep.getAppointment().getAppointmentStart());
+    }
+
     vaccinationConsultationRepository.deleteById(vaccinationConsultation.getId());
   }
 

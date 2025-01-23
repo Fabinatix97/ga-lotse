@@ -8,7 +8,7 @@ import {
   ApiConcern,
 } from "@eshg/employee-portal-api/stiProtection";
 import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
-import { COUNTRY_CODE_LABELS } from "@eshg/lib-portal/components/formFields/countryCodes";
+import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
 import { EditOutlined } from "@mui/icons-material";
@@ -30,6 +30,7 @@ const germanDateFormatter = Intl.DateTimeFormat("de-DE", {
 const germanTimeFormatter = Intl.DateTimeFormat("de-DE", {
   timeStyle: "short",
 });
+
 export interface AppointmentFieldSetProps {
   jumpToAppointmentSelection: () => void;
   jumpToPersonalData?: () => void;
@@ -110,8 +111,7 @@ export function SummaryForm({
           <LabelValuePair
             label="Geburtsland"
             value={
-              values.countryOfBirth &&
-              COUNTRY_CODE_LABELS[values.countryOfBirth]
+              values.countryOfBirth && translateCountry(values.countryOfBirth)
             }
           />
           <LabelValuePair

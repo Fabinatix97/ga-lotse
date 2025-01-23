@@ -24,6 +24,7 @@ export function DisplayAccessCode({
 
   return (
     <Row
+      component="span"
       aria-label={parts.join(" ")}
       gap={0.5}
       fontFamily="code"

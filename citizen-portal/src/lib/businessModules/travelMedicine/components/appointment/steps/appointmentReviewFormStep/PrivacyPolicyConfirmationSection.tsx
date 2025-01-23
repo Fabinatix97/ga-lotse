@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DownloadLink } from "@eshg/lib-portal/api/files/DownloadLink";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { Stack } from "@mui/joy";
 
 import { useCitizenPublicApi } from "@/lib/businessModules/travelMedicine/api/clients";
@@ -27,13 +27,12 @@ export function PrivacyPolicyConfirmationSection() {
         name="confirmPrivacyNotice"
         label={t("confirmationSection.fields.confirmPrivacyNotice")}
         descriptionText={
-          <DownloadLink
-            downloadContainerRef={privacyNoticeFile.downloadContainerRef}
+          <ButtonLink
             fontSize="sm"
-            onDownload={() => privacyNoticeFile.download()}
+            onClick={() => privacyNoticeFile.download()}
           >
             {t("confirmationSection.fields.privacyNotice")}
-          </DownloadLink>
+          </ButtonLink>
         }
         required={t("confirmationSection.fields.confirmPrivacyNotice_required")}
       />
@@ -41,13 +40,12 @@ export function PrivacyPolicyConfirmationSection() {
         name="confirmPrivacyPolicy"
         label={t("confirmationSection.fields.confirmPrivacyPolicy")}
         descriptionText={
-          <DownloadLink
-            downloadContainerRef={privacyPolicyFile.downloadContainerRef}
+          <ButtonLink
             fontSize="sm"
-            onDownload={() => privacyPolicyFile.download()}
+            onClick={() => privacyPolicyFile.download()}
           >
             {t("confirmationSection.fields.privacyPolicy")}
-          </DownloadLink>
+          </ButtonLink>
         }
         required={t("confirmationSection.fields.confirmPrivacyPolicy_required")}
       />

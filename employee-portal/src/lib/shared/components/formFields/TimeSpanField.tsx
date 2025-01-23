@@ -24,6 +24,10 @@ export interface TimeSpan {
   end: string;
 }
 
+export function isEqualTimeSpan(timeSpan1: TimeSpan, timeSpan2: TimeSpan) {
+  return timeSpan1.start === timeSpan2.start && timeSpan1.end === timeSpan2.end;
+}
+
 export interface TimeSpanFieldProps
   extends Omit<FieldProps<TimeSpan>, "label"> {
   initialExplicitStartAndEndChecked?: boolean;

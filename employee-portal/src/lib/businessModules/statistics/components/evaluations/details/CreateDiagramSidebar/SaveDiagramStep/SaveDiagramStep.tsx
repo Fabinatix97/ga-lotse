@@ -4,23 +4,26 @@
  */
 
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Stack } from "@mui/joy";
 
 import { SaveDiagramStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateDiagramSidebar/SaveDiagramStep/saveDiagramStepFormModel";
+import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
-export function SaveDiagramStep() {
-  const fieldName = createFieldNameMapper<SaveDiagramStepFormModel>();
-
+export function SaveDiagramStep(
+  props: SidebarStepContentProps<SaveDiagramStepFormModel>,
+) {
   return (
     <Stack gap={2}>
       <InputField
-        name={fieldName("title")}
+        name={props.fieldName("title")}
         label="Diagrammtitel"
         required="Bitte Titel angeben."
       />
-      <TextareaField name={fieldName("description")} label="Beschreibung" />
+      <TextareaField
+        name={props.fieldName("description")}
+        label="Beschreibung"
+      />
     </Stack>
   );
 }

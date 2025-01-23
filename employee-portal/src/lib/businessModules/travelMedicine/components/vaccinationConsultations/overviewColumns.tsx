@@ -57,8 +57,8 @@ function formatBookingType(bookingType: ApiAppointmentBookingType | undefined) {
 
 export function appointmentOverviewEntriesColumns() {
   return [
-    columnHelper.accessor("lastName", {
-      header: "Name",
+    columnHelper.accessor("firstName", {
+      header: "Vorname",
       meta: {
         width: 150,
         canNavigate: {
@@ -66,8 +66,8 @@ export function appointmentOverviewEntriesColumns() {
         },
       },
     }),
-    columnHelper.accessor("firstName", {
-      header: "Vorname",
+    columnHelper.accessor("lastName", {
+      header: "Nachname",
       meta: {
         width: 150,
         canNavigate: {

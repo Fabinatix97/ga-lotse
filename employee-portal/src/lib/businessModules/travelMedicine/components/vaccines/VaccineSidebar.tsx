@@ -34,7 +34,6 @@ interface VaccineSidebarProps extends SidebarWithFormRefProps {
   vaccine?: ApiVaccine;
   unusedInventoryVaccines: ApiInventoryVaccineWithoutRmbiVaccine[];
   allDiseases: ApiDisease[];
-  defaultBatchIdEnabled: boolean;
 }
 
 function VaccineSidebar(props: Readonly<VaccineSidebarProps>) {
@@ -68,9 +67,7 @@ function VaccineSidebar(props: Readonly<VaccineSidebarProps>) {
       inventoryVaccineId: values.inventoryVaccineId,
       fee: values.fee,
       offsets: values.offsets,
-      currentBatchId: props.defaultBatchIdEnabled
-        ? values.currentBatchId
-        : undefined,
+      currentBatchId: values.currentBatchId,
     };
     const reaction = {
       onSuccess: () => {
@@ -95,7 +92,6 @@ function VaccineSidebar(props: Readonly<VaccineSidebarProps>) {
       initialValues={mapInitialVaccineFormValues(props.vaccine)}
       formRef={props.formRef}
       title={props.vaccine ? "Impfstoff bearbeiten" : "Impfstoff hinzufügen"}
-      defaultBatchIdEnabled={props.defaultBatchIdEnabled}
       submitButtonLabel={props.vaccine ? "Speichern" : "Hinzufügen"}
       onSubmit={handleSubmit}
       onCancel={props.onClose}

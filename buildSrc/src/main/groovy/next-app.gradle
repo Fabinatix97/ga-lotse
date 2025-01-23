@@ -14,7 +14,6 @@ plugins {
 interface NextPluginConfiguration {
   Property<String> getPort()
   Property<String> getSonarProjectKey()
-  Property<String> getApiProject()
 }
 
 def srcDir = "${projectDir}/src"
@@ -36,11 +35,6 @@ typescript {
   // ⚠⚠⚠ Note ⚠⚠⚠: Please adjust the tsconfig.json when changing includes/excludes here
   include = ['**/*.ts', '**/*.tsx', '**/*.js']
   additionalExcludes = ['next-env.d.ts', '.next']
-}
-
-tasks.named('prepareEnvironment').configure {
-  dependsOn project(nextExtension.apiProject.get()).tasks.named('assemble')
-  dependsOn project(":lib-portal").tasks.named('assemble')
 }
 
 tasks.named('lint').configure {

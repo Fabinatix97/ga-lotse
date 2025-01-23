@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiGetRelevantCalendarsResponse } from "@eshg/employee-portal-api/base";
+import { ApiGetRelevantCalendarsResponse } from "@eshg/base-api";
 import { useMemo, useRef, useState } from "react";
 
 import { Calendar, CalendarHandle } from "./Calendar";

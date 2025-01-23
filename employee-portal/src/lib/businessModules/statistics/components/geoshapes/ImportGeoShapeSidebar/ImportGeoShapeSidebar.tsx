@@ -5,7 +5,10 @@
 
 import { useAddGeoShape } from "@/lib/businessModules/statistics/api/mutations/useAddGeoShape";
 import { ImportGeoShapeStep } from "@/lib/businessModules/statistics/components/geoshapes/ImportGeoShapeSidebar/ImportGeoShapeStep";
-import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
+import {
+  SidebarStepper,
+  createStepContent,
+} from "@/lib/shared/components/SidebarStepper/SidebarStepper";
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
@@ -31,8 +34,8 @@ function ImportGeoShapeSidebar(props: SidebarWithFormRefProps) {
 
   const addGeoShape = useAddGeoShape();
 
-  async function handleSubmit(values: AddGeoShapeValues) {
-    await addGeoShape(values, {
+  async function handleSubmit(values: [AddGeoShapeValues]) {
+    await addGeoShape(values[0], {
       onSuccess: () => props.onClose(true),
     });
   }
@@ -40,17 +43,16 @@ function ImportGeoShapeSidebar(props: SidebarWithFormRefProps) {
   return (
     <SidebarStepper
       onClose={props.onClose}
-      onSubmit={handleSubmit}
-      initialValues={initialValues}
       formRef={props.formRef}
+      onSubmit={handleSubmit}
       steps={[
-        {
-          type: "StandardStep",
-          step: {
-            title: "Daten importieren",
-            content: <ImportGeoShapeStep />,
-          },
-        },
+        () => ({
+          title: "Daten importieren",
+          content: createStepContent({
+            component: ImportGeoShapeStep,
+          }),
+          initialValues,
+        }),
       ]}
     />
   );

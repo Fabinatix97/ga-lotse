@@ -6,6 +6,7 @@
 package de.eshg.base.statistics.api;
 
 public enum SubjectType {
-  PERSON,
-  FACILITY
+  CONTACT,
+  FACILITY,
+  PERSON
 }

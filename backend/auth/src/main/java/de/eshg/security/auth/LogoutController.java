@@ -65,14 +65,22 @@ public class LogoutController {
     CsrfToken csrfToken = csrfTokenRepository.generateToken(request);
     csrfTokenRepository.saveToken(csrfToken, request, response);
 
-    Cookie csrfTokenCookie = new Cookie(CSRF_TOKEN_COOKIE_NAME, csrfToken.getToken());
-    csrfTokenCookie.setMaxAge(Math.toIntExact(CSRF_TOKEN_MAX_AGE.toSeconds()));
-    csrfTokenCookie.setPath(AuthServiceSecurityConfig.LOGOUT_URL);
-    csrfTokenCookie.setHttpOnly(true);
-    csrfTokenCookie.setAttribute("SameSite", "Strict");
-    csrfTokenCookie.setSecure(request.getScheme().equals("https"));
+    String value = csrfToken.getToken();
+    Cookie csrfTokenCookie =
+        createLogoutCsrfTokenCookie(value, CSRF_TOKEN_MAX_AGE, request.getScheme());
     response.addCookie(csrfTokenCookie);
 
     return ResponseEntity.status(HttpStatus.FOUND).location(keycloakLogoutUrl).build();
+  }
+
+  public static Cookie createLogoutCsrfTokenCookie(
+      String value, Duration maxAge, String requestScheme) {
+    Cookie csrfTokenCookie = new Cookie(CSRF_TOKEN_COOKIE_NAME, value);
+    csrfTokenCookie.setMaxAge(Math.toIntExact(maxAge.toSeconds()));
+    csrfTokenCookie.setPath(AuthServiceSecurityConfig.LOGOUT_URL);
+    csrfTokenCookie.setHttpOnly(true);
+    csrfTokenCookie.setAttribute("SameSite", "Strict");
+    csrfTokenCookie.setSecure(requestScheme.equals("https"));
+    return csrfTokenCookie;
   }
 }

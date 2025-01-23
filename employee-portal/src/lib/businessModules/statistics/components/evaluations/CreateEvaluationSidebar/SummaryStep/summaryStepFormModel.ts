@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export interface SummaryStepFormModel {
+import { FormikValues } from "formik";
+
+export interface SummaryStepFormModel extends FormikValues {
   evaluationName: string;
 }

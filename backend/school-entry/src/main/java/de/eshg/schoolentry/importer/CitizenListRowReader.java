@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.poi.ss.usermodel.Sheet;
 
-public class CitizenListRowReader extends RowReader<CitizenListRow, CitizenListColumn> {
+class CitizenListRowReader extends RowReader<CitizenListRow, CitizenListColumn> {
 
   private static final AddressColumns<CitizenListColumn> CHILD_ADDRESS_COLUMNS =
       new AddressColumns<>(STREET, HOUSE_NUMBER, POSTAL_CODE, CITY, ADDRESS_ADDITION);
@@ -55,7 +55,7 @@ public class CitizenListRowReader extends RowReader<CitizenListRow, CitizenListC
               SALUTATION_CUSTODIAN_2,
               GENDER_CUSTODIAN_2));
 
-  public CitizenListRowReader(Sheet sheet, List<CitizenListColumn> actualColumns) {
+  CitizenListRowReader(Sheet sheet, List<CitizenListColumn> actualColumns) {
     super(sheet, actualColumns, CitizenListRow::new);
   }
 

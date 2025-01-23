@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGdprFacility } from "@eshg/employee-portal-api/base";
+import { ApiGdprFacility } from "@eshg/base-api";
 import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
-import { Stack } from "@mui/joy";
+import VerifiedIcon from "@mui/icons-material/VerifiedOutlined";
+import { Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
 import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
@@ -30,7 +31,18 @@ export function GdprFacilityDataTile({
         divider={<ResponsiveDivider />}
       >
         <DetailsColumn sx={columnSx}>
-          <DetailsCell name={"name"} label={"Name"} value={identity.name} />
+          <DetailsCell name="name" label="Name" value={identity.name} />
+          {identity.dataTransmitterPseudonymId && (
+            <DetailsCell
+              name="dataTransmitterPseudonymId"
+              label="Mein Unternehmenskonto"
+              value={
+                <Typography startDecorator={<VerifiedIcon color="success" />}>
+                  Authentifiziert
+                </Typography>
+              }
+            />
+          )}
         </DetailsColumn>
 
         <BaseAddressDetails address={identity.address} sx={columnSx} />

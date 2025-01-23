@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/base-api";
+import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
 import { isPlainObject } from "remeda";
 
 import {
@@ -12,7 +13,6 @@ import {
 } from "@/lib/baseModule/components/layout/sideNavigation/types";
 import { StethoscopeIcon } from "@/lib/businessModules/officialMedicalService/components/icons/StethoscopeIcon";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
-import { hasUserRole } from "@/lib/shared/helpers/accessControl";
 
 const NAVIGATION_ITEMS: SideNavigationItem[] = [
   {

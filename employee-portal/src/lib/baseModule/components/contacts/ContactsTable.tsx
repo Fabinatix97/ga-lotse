@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiContactType, ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiContactType, ApiUserRole } from "@eshg/base-api";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import AddIcon from "@mui/icons-material/Add";

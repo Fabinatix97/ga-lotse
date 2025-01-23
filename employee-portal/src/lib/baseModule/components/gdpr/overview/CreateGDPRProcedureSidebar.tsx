@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiGdprProcedureType,
-  ApiSalutation,
-} from "@eshg/employee-portal-api/base";
+import { ApiGdprProcedureType, ApiSalutation } from "@eshg/base-api";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";

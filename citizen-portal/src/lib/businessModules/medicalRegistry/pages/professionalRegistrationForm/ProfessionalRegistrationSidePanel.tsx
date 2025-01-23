@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DownloadLink } from "@eshg/lib-portal/api/files/DownloadLink";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import {
   DataPrivacyFormValues,
   WrittenConfirmationFormValues,
 } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm";
 import { BooleanRadioField } from "@eshg/lib-portal/components/formFields/BooleanRadioField";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
@@ -140,13 +140,12 @@ function PrivacyPolicyConfirmationForm() {
         name={dataPrivacyForm("agreedDataPrivacyNotice")}
         label={t("stepFour.sidePanel.label.agreedDataPrivacyNotice")}
         descriptionText={
-          <DownloadLink
-            downloadContainerRef={privacyNoticeFile.downloadContainerRef}
+          <ButtonLink
             fontSize="sm"
-            onDownload={() => privacyNoticeFile.download()}
+            onClick={() => privacyNoticeFile.download()}
           >
             {t("stepFour.sidePanel.links.dataPrivacyNotice")}
-          </DownloadLink>
+          </ButtonLink>
         }
         required={t("validations.confirmation")}
       />
@@ -155,13 +154,12 @@ function PrivacyPolicyConfirmationForm() {
         name={dataPrivacyForm("agreedDataPrivacyPolicy")}
         label={t("stepFour.sidePanel.label.agreedDataPrivacyPolicy")}
         descriptionText={
-          <DownloadLink
-            downloadContainerRef={privacyPolicyFile.downloadContainerRef}
+          <ButtonLink
             fontSize="sm"
-            onDownload={() => privacyPolicyFile.download()}
+            onClick={() => privacyPolicyFile.download()}
           >
             {t("stepFour.sidePanel.links.dataPrivacyPolicy")}
-          </DownloadLink>
+          </ButtonLink>
         }
         required={t("validations.confirmation")}
       />

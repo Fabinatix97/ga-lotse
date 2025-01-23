@@ -5,10 +5,6 @@
 
 package de.eshg.schoolentry.importer;
 
-import static de.eshg.lib.xlsximport.ImportValidator.validateFileExistsAndHasCorrectType;
-import static de.eshg.lib.xlsximport.ImportValidator.validateHeaderExists;
-import static de.eshg.lib.xlsximport.ImportValidator.validateNumberOfRows;
-import static de.eshg.lib.xlsximport.ImportValidator.validateSheet;
 import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.MERGED_DATA_FROM_CITIZEN_LIST;
 import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.MERGED_DATA_FROM_SCHOOL_LIST;
 
@@ -16,9 +12,8 @@ import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.person.PersonKeyAttributes;
 import de.eshg.lib.procedure.procedures.ProcedureSearchService;
 import de.eshg.lib.xlsximport.FeedbackColumnAccessor;
-import de.eshg.lib.xlsximport.ImportValidator;
 import de.eshg.lib.xlsximport.XlsxColumn;
-import de.eshg.lib.xlsximport.XlsxNormalizer;
+import de.eshg.lib.xlsximport.XlsxImport;
 import de.eshg.lib.xlsximport.model.ImportResult;
 import de.eshg.schoolentry.LabelService;
 import de.eshg.schoolentry.SchoolEntryProcedureDeletionService;
@@ -38,8 +33,6 @@ import de.eshg.schoolentry.domain.model.Label;
 import de.eshg.schoolentry.domain.model.Person;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure_;
-import de.eshg.schoolentry.domain.repository.Icd10CodeRepository;
-import de.eshg.schoolentry.domain.repository.Icd10GroupRepository;
 import de.eshg.schoolentry.domain.repository.SchoolEntryProcedureRepository;
 import de.eshg.schoolentry.util.ExceptionUtil;
 import de.eshg.schoolentry.util.ProcedureTypeAssignmentHelper;
@@ -47,12 +40,9 @@ import de.eshg.schoolentry.util.ProgressEntryUtil;
 import de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType;
 import jakarta.persistence.criteria.Path;
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.Year;
 import java.util.*;
-import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
@@ -74,8 +64,6 @@ public class ImportService {
   private final ProgressEntryUtil progressEntryUtil;
   private final SchoolEntryProperties schoolEntryProperties;
   private final ProcedureTypeAssignmentHelper procedureTypeAssignmentHelper;
-  private final Icd10CodeRepository icd10CodeRepository;
-  private final Icd10GroupRepository icd10GroupRepository;
   private final SchoolEntryProcedureRepository schoolEntryProcedureRepository;
 
   public ImportService(
@@ -88,8 +76,6 @@ public class ImportService {
       ProgressEntryUtil progressEntryUtil,
       SchoolEntryProperties schoolEntryProperties,
       ProcedureTypeAssignmentHelper procedureTypeAssignmentHelper,
-      Icd10CodeRepository icd10CodeRepository,
-      Icd10GroupRepository icd10GroupRepository,
       SchoolEntryProcedureRepository schoolEntryProcedureRepository) {
     this.validator = validator;
     this.schoolEntryService = schoolEntryService;
@@ -97,8 +83,6 @@ public class ImportService {
     this.schoolEntryProcedureDeletionService = schoolEntryProcedureDeletionService;
     this.schoolEntryProperties = schoolEntryProperties;
     this.procedureTypeAssignmentHelper = procedureTypeAssignmentHelper;
-    this.icd10CodeRepository = icd10CodeRepository;
-    this.icd10GroupRepository = icd10GroupRepository;
     this.schoolEntryProcedureRepository = schoolEntryProcedureRepository;
     this.procedureSearchService = procedureSearchService;
     this.personClient = personClient;
@@ -108,82 +92,106 @@ public class ImportService {
   public ImportResult importProceduresFromFile(
       MultipartFile file, ImportType importType, UUID schoolId, UUID locationId, Year schoolYear)
       throws IOException {
-
-    validateFileExistsAndHasCorrectType(file);
     validator.validateSchoolYear(schoolYear);
 
-    try (InputStream inputStream = file.getInputStream();
-        XSSFWorkbook workbook = new XSSFWorkbook(inputStream)) {
+    return switch (importType) {
+      case CITIZEN_LIST ->
+          processWorkbook(
+              file,
+              CitizenListColumn.values(),
+              (sheet, actualColumns) ->
+                  newCitizenListImporter(
+                      importType, schoolId, locationId, schoolYear, sheet, actualColumns));
 
-      validateSheet(workbook);
-      Sheet sheet = workbook.getSheetAt(0);
+      case SCHOOL_LIST ->
+          processWorkbook(
+              file,
+              SchoolListColumn.values(),
+              (sheet, actualColumns) ->
+                  newSchoolListImporter(
+                      importType, schoolId, locationId, schoolYear, sheet, actualColumns));
 
-      validateNumberOfRows(sheet, schoolEntryProperties.getMaxNumberOfImportRows());
-      validateHeaderExists(sheet);
-
-      try (XlsxNormalizer xlsxNormalizer = new XlsxNormalizer()) {
-        XSSFSheet normalizedSheet = xlsxNormalizer.normalize(sheet);
-
-        SchoolEntryImporter<? extends SchoolEntryRow<?>, ? extends XlsxColumn, ?>
-            schoolEntryImporter =
-                createImporter(importType, schoolId, locationId, schoolYear, normalizedSheet);
-
-        return schoolEntryImporter.process();
-      }
-    }
+      case PAST_PROCEDURE_LIST ->
+          processWorkbook(
+              file,
+              PastProcedureListColumn.values(),
+              (sheet, actualColumns) ->
+                  newPastProcedureListImporter(schoolId, schoolYear, sheet, actualColumns));
+    };
   }
 
-  private SchoolEntryImporter<? extends SchoolEntryRow<?>, ? extends XlsxColumn, ?> createImporter(
+  @FunctionalInterface
+  private interface ImporterProvider<C extends XlsxColumn> {
+    SchoolEntryImporter<?, C, ?> provide(XSSFSheet sheet, List<C> actualColumns);
+  }
+
+  private <C extends XlsxColumn> ImportResult processWorkbook(
+      MultipartFile file, C[] expectedColumns, ImporterProvider<C> importerProvider)
+      throws IOException {
+    return XlsxImport.processWorkbook(
+        file,
+        schoolEntryProperties.getMaxNumberOfImportRows(),
+        expectedColumns,
+        (sheet, actualColumns) -> {
+          SchoolEntryImporter<?, C, ?> schoolEntryImporter =
+              importerProvider.provide(sheet, actualColumns);
+          return schoolEntryImporter.process();
+        });
+  }
+
+  private CitizenOrSchoolListImporter<CitizenListRow, CitizenListColumn> newCitizenListImporter(
       ImportType importType,
       UUID schoolId,
       UUID locationId,
       Year schoolYear,
-      XSSFSheet normalizedSheet) {
+      XSSFSheet sheet,
+      List<CitizenListColumn> actualColumns) {
+    return new CitizenOrSchoolListImporter<>(
+        sheet,
+        new CitizenListRowReader(sheet, actualColumns),
+        new FeedbackColumnAccessor(actualColumns),
+        importType,
+        new CitizenListRowValueMapper(),
+        schoolId,
+        locationId,
+        schoolYear,
+        this,
+        schoolEntryProperties);
+  }
 
-    return switch (importType) {
-      case CITIZEN_LIST -> {
-        List<CitizenListColumn> actualColumns =
-            ImportValidator.validateHeaderFormat(CitizenListColumn.values(), normalizedSheet);
-        yield new CitizenOrSchoolListImporter<>(
-            normalizedSheet,
-            new CitizenListRowReader(normalizedSheet, actualColumns),
-            new FeedbackColumnAccessor(actualColumns),
-            importType,
-            new CitizenListRowValueMapper(),
-            schoolId,
-            locationId,
-            schoolYear,
-            this,
-            schoolEntryProperties);
-      }
-      case SCHOOL_LIST -> {
-        List<SchoolListColumn> actualColumns =
-            ImportValidator.validateHeaderFormat(SchoolListColumn.values(), normalizedSheet);
-        yield new CitizenOrSchoolListImporter<>(
-            normalizedSheet,
-            new SchoolListRowReader(normalizedSheet, actualColumns),
-            new FeedbackColumnAccessor(actualColumns),
-            importType,
-            new SchoolListRowValueMapper(schoolYear, procedureTypeAssignmentHelper),
-            schoolId,
-            locationId,
-            schoolYear,
-            this,
-            schoolEntryProperties);
-      }
-      case PAST_PROCEDURE_LIST -> {
-        List<PastProcedureListColumn> actualColumns =
-            ImportValidator.validateHeaderFormat(PastProcedureListColumn.values(), normalizedSheet);
-        yield new PastProcedureListImporter(
-            normalizedSheet,
-            new PastProcedureListRowReader(
-                normalizedSheet, actualColumns, icd10CodeRepository, icd10GroupRepository),
-            new FeedbackColumnAccessor(actualColumns),
-            schoolId,
-            schoolYear,
-            this);
-      }
-    };
+  private CitizenOrSchoolListImporter<SchoolListRow, SchoolListColumn> newSchoolListImporter(
+      ImportType importType,
+      UUID schoolId,
+      UUID locationId,
+      Year schoolYear,
+      XSSFSheet sheet,
+      List<SchoolListColumn> actualColumns) {
+    return new CitizenOrSchoolListImporter<>(
+        sheet,
+        new SchoolListRowReader(sheet, actualColumns),
+        new FeedbackColumnAccessor(actualColumns),
+        importType,
+        new SchoolListRowValueMapper(schoolYear, procedureTypeAssignmentHelper),
+        schoolId,
+        locationId,
+        schoolYear,
+        this,
+        schoolEntryProperties);
+  }
+
+  private PastProcedureListImporter newPastProcedureListImporter(
+      UUID schoolId,
+      Year schoolYear,
+      XSSFSheet sheet,
+      List<PastProcedureListColumn> actualColumns) {
+    return new PastProcedureListImporter(
+        sheet,
+        new PastProcedureListRowReader(sheet, actualColumns),
+        new FeedbackColumnAccessor(actualColumns),
+        schoolId,
+        schoolYear,
+        this,
+        validator);
   }
 
   List<UUID> collectExistingProcedures(Collection<UUID> externalIds) {

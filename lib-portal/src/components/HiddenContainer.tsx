@@ -3,15 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+"use client";
+
 import { styled } from "@mui/joy";
-import { forwardRef } from "react";
+import { HTMLAttributes } from "react";
 
 const VisuallyHiddenContainer = styled("div")({
   display: "none",
 });
 
-export const HiddenContainer = forwardRef<HTMLDivElement>(
-  function HiddenContainer(props, ref) {
-    return <VisuallyHiddenContainer ref={ref} aria-hidden="true" />;
-  },
-);
+export function HiddenContainer({
+  id,
+}: Pick<HTMLAttributes<HTMLDivElement>, "id">) {
+  return <VisuallyHiddenContainer id={id} aria-hidden="true" />;
+}

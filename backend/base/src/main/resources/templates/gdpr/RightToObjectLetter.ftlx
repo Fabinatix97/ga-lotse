@@ -134,6 +134,7 @@
 
       .related-entity {
         padding: 1rem;
+        margin-bottom: 1rem;
 
         border-left: 2px solid #21BBEF;
         background-color: #EBEBEB;

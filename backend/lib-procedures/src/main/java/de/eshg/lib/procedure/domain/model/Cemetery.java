@@ -29,6 +29,10 @@ public class Cemetery extends SequencedBaseEntity {
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @Column(nullable = false)
+  private Instant deleteAt;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  @Column(nullable = false)
   private String type;
 
   @DataSensitivity(SensitivityLevel.PROTECTED)
@@ -50,6 +54,14 @@ public class Cemetery extends SequencedBaseEntity {
 
   public void setCreatedAt(Instant createdAt) {
     this.createdAt = createdAt;
+  }
+
+  public Instant getDeleteAt() {
+    return deleteAt;
+  }
+
+  public void setDeleteAt(Instant deleteAt) {
+    this.deleteAt = deleteAt;
   }
 
   public String getType() {

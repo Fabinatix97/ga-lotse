@@ -7,7 +7,7 @@ import {
   ApiGdprProcedureStatus,
   ApiGdprProcedureType,
   ApiGetGdprProcedureResponse,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
@@ -223,7 +223,8 @@ function RefreshStatusButton({
 
   const isVisible =
     procedure.status === ApiGdprProcedureStatus.InProgress &&
-    procedure.type === ApiGdprProcedureType.OfAccess;
+    (procedure.type === ApiGdprProcedureType.OfAccess ||
+      procedure.type === ApiGdprProcedureType.ToErasure);
 
   return (
     isVisible && (

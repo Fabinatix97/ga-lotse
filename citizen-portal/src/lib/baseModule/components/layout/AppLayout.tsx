@@ -5,6 +5,7 @@
 
 /* eslint @next/next/no-head-element: 0 */
 import { ApiProvider } from "@eshg/lib-portal/api/ApiProvider";
+import { HiddenDownloadContainer } from "@eshg/lib-portal/api/files/HiddenDownloadContainer";
 import { EnvironmentTypeProvider } from "@eshg/lib-portal/components/EnvironmentTypeProvider";
 import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 import { ConfirmationDialogProvider } from "@eshg/lib-portal/components/confirmationDialog/ConfirmationDialogProvider";
@@ -62,6 +63,8 @@ export function AppLayout({
                 </NavigationProvider>
               </SnackbarProvider>
             </EnvironmentTypeProvider>
+
+            <HiddenDownloadContainer />
           </ThemeProvider>
         </I18nProvider>
       </body>

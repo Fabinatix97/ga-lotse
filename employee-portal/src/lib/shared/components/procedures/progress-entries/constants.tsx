@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { systemProgressEntryTypeTitles as dentalSystemProgressEntryTypeTitles } from "@eshg/dental/shared/progressEntries";
 import {
   ApiInboxProgressEntryType,
   ApiManualProgressEntryType,
@@ -20,10 +21,10 @@ import {
 } from "@mui/icons-material";
 import { ReactNode } from "react";
 
-import { systemProgressEntryTypeTitles as dentalSystemProgressEntryTypeTitles } from "@/lib/businessModules/dental/shared/constants";
 import { systemProgressEntryTypeTitles as inspectionSystemProgressEntryTypeTitles } from "@/lib/businessModules/inspection/shared/constants";
 import { systemProgressEntryTypeTitles as measlesProtectionSystemProgressEntryTypeTitles } from "@/lib/businessModules/measlesProtection/shared/constants";
 import { systemProgressEntryTypeTitles as medicalRegistrySystemProgressEntryTypeTitles } from "@/lib/businessModules/medicalRegistry/shared/constants";
+import { systemProgressEntryTypeTitles as officialMedicalServiceSystemProgressEntryTypeTitles } from "@/lib/businessModules/officialMedicalService/shared/constants";
 import { systemProgressEntryTypeTitles as schoolEntrySystemProgressEntryTypeTitles } from "@/lib/businessModules/schoolEntry/shared/constants";
 import { systemProgressEntryTypeTitles as stiProtectionSystemProgressEntryTypeTitles } from "@/lib/businessModules/stiProtection/shared/constants";
 import { systemProgressEntryTypeTitles as travelMedicineSystemProgressEntryTypeTitles } from "@/lib/businessModules/travelMedicine/shared/constants";
@@ -90,6 +91,7 @@ export const systemProgressEntryTypeTitles: Record<string, string> = {
   ...stiProtectionSystemProgressEntryTypeTitles,
   ...medicalRegistrySystemProgressEntryTypeTitles,
   ...dentalSystemProgressEntryTypeTitles,
+  ...officialMedicalServiceSystemProgressEntryTypeTitles,
 };
 
 export const inboxProgressEntryTitles = {

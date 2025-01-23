@@ -5,6 +5,7 @@
 
 "use client";
 
+import { getLastPage } from "@eshg/lib-portal/helpers/paginationHelper";
 import {
   ChevronLeft,
   ChevronRight,
@@ -15,11 +16,7 @@ import { SelectProps, Stack, Typography } from "@mui/joy";
 
 import { IconButton } from "./IconButton";
 import { RowsPerPageSelect } from "./RowsPerPageSelect";
-import {
-  getCurrentCountText,
-  getLastPage,
-  getPageSizeOptions,
-} from "./paginationHelper";
+import { getCurrentCountText, getPageSizeOptions } from "./paginationHelper";
 
 export interface PaginationProps {
   totalCount: number;

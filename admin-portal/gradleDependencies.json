@@ -1,0 +1,3 @@
+{
+  "dependencies": [":admin-portal-api", ":lib-portal"]
+}

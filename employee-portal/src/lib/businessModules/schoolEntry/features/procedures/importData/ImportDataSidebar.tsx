@@ -5,13 +5,11 @@
 
 "use client";
 
-import { ApiAddContact200Response } from "@eshg/employee-portal-api/base";
+import { ApiAddContact200Response } from "@eshg/base-api";
 import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
-import { HiddenContainer } from "@eshg/lib-portal/components/HiddenContainer";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
 import type { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Formik } from "formik";
-import { useRef } from "react";
 
 import { useImportData } from "@/lib/businessModules/schoolEntry/api/mutations/importApi";
 import {
@@ -57,8 +55,6 @@ function ImportDataSidebar(props: SidebarWithFormRefProps) {
     data: importResult,
     isSuccess,
   } = useImportData();
-  const downloadContainerRef = useRef<HTMLDivElement>(null);
-
   async function handleSubmit(values: ImportDataValues) {
     await importData(
       {
@@ -71,48 +67,43 @@ function ImportDataSidebar(props: SidebarWithFormRefProps) {
       {
         onSuccess: ({ file }) => {
           // Automatic download
-          if (downloadContainerRef.current) {
-            downloadFileAndOpen(file, downloadContainerRef.current);
-          }
+          downloadFileAndOpen(file);
         },
       },
     );
   }
 
   return (
-    <>
-      <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
-        {({ values, setFieldValue, setTouched }) => (
-          <ImportDataForm
-            formRef={props.formRef}
-            onClose={props.onClose}
-            importResult={importResult}
-            wasImportSuccessful={isSuccess}
-            title={
+    <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
+      {({ values, setFieldValue, setTouched }) => (
+        <ImportDataForm
+          formRef={props.formRef}
+          onClose={props.onClose}
+          importResult={importResult}
+          wasImportSuccessful={isSuccess}
+          title={
+            values.listType === ImportListType.PastProcedureList
+              ? "Abgeschlossene Untersuchungen importieren"
+              : "Daten importieren"
+          }
+          isImportWithMerge={
+            !(
+              isDirectProcedureTypeAssignmentOnImport ||
               values.listType === ImportListType.PastProcedureList
-                ? "Abgeschlossene Untersuchungen importieren"
-                : "Daten importieren"
+            )
+          }
+        >
+          <ImportDataFields
+            listType={values.listType}
+            locationSelectionMode={locationSelectionMode}
+            isDirectProcedureTypeAssignmentOnImport={
+              isDirectProcedureTypeAssignmentOnImport
             }
-            isImportWithMerge={
-              !(
-                isDirectProcedureTypeAssignmentOnImport ||
-                values.listType === ImportListType.PastProcedureList
-              )
-            }
-          >
-            <ImportDataFields
-              listType={values.listType}
-              locationSelectionMode={locationSelectionMode}
-              isDirectProcedureTypeAssignmentOnImport={
-                isDirectProcedureTypeAssignmentOnImport
-              }
-              setFieldValue={setFieldValue}
-              setTouched={setTouched}
-            />
-          </ImportDataForm>
-        )}
-      </Formik>
-      <HiddenContainer ref={downloadContainerRef} />
-    </>
+            setFieldValue={setFieldValue}
+            setTouched={setTouched}
+          />
+        </ImportDataForm>
+      )}
+    </Formik>
   );
 }

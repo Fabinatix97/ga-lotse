@@ -1,0 +1,44 @@
+import com.github.gradle.node.pnpm.task.PnpmTask
+import de.eshg.frontend.IncludesAndExcludes
+import de.eshg.frontend.TypescriptDefaults
+
+def typescriptExtension = project.extensions.create('typescript', IncludesAndExcludes)
+def distDir = layout.buildDirectory.dir('dist')
+
+def getTypescriptInputFiles = {
+  return fileTree(projectDir) {
+    include typescriptExtension.include.get()
+    exclude TypescriptDefaults.getAllExcludes(typescriptExtension.additionalExcludes)
+  }
+}
+
+tasks.register('compile', PnpmTask) {
+  group = 'package'
+  dependsOn 'prepareEnvironment'
+  mustRunAfter 'compileCheck'
+
+  inputs.files "${rootDir}/config/tsconfig.base.json"
+  inputs.files "${projectDir}/tsconfig.json"
+  inputs.files getTypescriptInputFiles()
+
+  outputs.dir distDir
+
+  args = ['tsc']
+
+  doFirst {
+    delete distDir // TODO: exclude *.tsbuildinfo from deletion to enable incremental builds
+  }
+}
+
+tasks.register('compileCheck', PnpmTask) {
+  group = 'verification'
+  dependsOn 'prepareEnvironment'
+
+  inputs.files "${rootDir}/config/tsconfig.base.json"
+  inputs.files "${projectDir}/tsconfig.json"
+  inputs.files getTypescriptInputFiles()
+
+  outputs.dir distDir
+
+  args = ['tsc', '--noEmit']
+}

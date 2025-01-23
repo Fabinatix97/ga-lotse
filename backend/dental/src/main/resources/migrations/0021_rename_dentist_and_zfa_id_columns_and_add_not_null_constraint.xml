@@ -1,0 +1,26 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1736849930134-5">
+    <renameColumn tableName="prophylaxis_session_dentist_ids"
+                  oldColumnName="dentist_ids" newColumnName="dentist_id"/>
+    <renameColumn tableName="prophylaxis_session_zfa_ids"
+                  oldColumnName="zfa_ids" newColumnName="zfa_id"/>
+    <renameColumn tableName="prophylaxis_session_dentist_ids"
+                  oldColumnName="dentist_ids_order" newColumnName="dentist_id_order"/>
+    <renameColumn tableName="prophylaxis_session_zfa_ids"
+                  oldColumnName="zfa_ids_order" newColumnName="zfa_id_order"/>
+
+    <sql>delete from prophylaxis_session_dentist_ids where dentist_id is null</sql>
+    <sql>delete from prophylaxis_session_zfa_ids where zfa_id is null</sql>
+
+    <addNotNullConstraint tableName="prophylaxis_session_dentist_ids"
+                          columnName="dentist_id"/>
+    <addNotNullConstraint tableName="prophylaxis_session_zfa_ids"
+                          columnName="zfa_id"/>
+  </changeSet>
+</databaseChangeLog>

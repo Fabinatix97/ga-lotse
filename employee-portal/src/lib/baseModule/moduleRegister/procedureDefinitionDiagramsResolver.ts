@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiBusinessModule,
-  ApiProcedureType,
-} from "@eshg/employee-portal-api/base";
+import { ApiBusinessModule, ApiProcedureType } from "@eshg/base-api";
 import { StaticImageData } from "next/image";
 
 import inspectionProcedureDefinitionDiagram from "@/lib/businessModules/inspection/shared/procedureDefinition.svg";

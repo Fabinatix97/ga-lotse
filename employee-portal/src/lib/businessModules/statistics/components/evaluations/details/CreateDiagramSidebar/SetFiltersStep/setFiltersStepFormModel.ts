@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FormikValues } from "formik";
+
 import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 
-export interface SetFiltersStepFormModel {
+export interface SetFiltersStepFormModel extends FormikValues {
   filterValues: FilterValue[];
 }

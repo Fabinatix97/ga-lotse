@@ -9,6 +9,7 @@ import static de.eshg.lib.keycloak.EmployeePermissionRole.AUDITLOG_FILE_SEND;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.AUDITLOG_PUBLIC_KEYS_READ;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_ACCESS_CODE_USER_ADMIN;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_FACILITIES_DELETE;
+import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_GDPR_VALIDATION_TASK_CLEANUP;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_MAIL_SEND;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_PERSONS_DELETE;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.STANDARD_EMPLOYEE;
@@ -20,7 +21,7 @@ import org.apache.commons.collections4.ListUtils;
 
 public enum ModuleClient {
   AUDITLOG("auditlog", List.of(AUDITLOG_PUBLIC_KEYS_READ)),
-  BASE("base"),
+  BASE("base", List.of(BASE_GDPR_VALIDATION_TASK_CLEANUP)),
   CHAT_MANAGEMENT("chat-management"),
   CITIZEN_AUTH("citizen-auth"),
   EMPLOYEE_AUTH("employee-auth"),

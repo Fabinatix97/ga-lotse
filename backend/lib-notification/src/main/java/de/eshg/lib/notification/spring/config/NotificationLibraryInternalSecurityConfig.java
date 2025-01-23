@@ -8,7 +8,6 @@ package de.eshg.lib.notification.spring.config;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.lib.notification.NotificationApi;
 import de.eshg.rest.service.security.AuthorizationCustomizer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,12 +18,7 @@ public class NotificationLibraryInternalSecurityConfig {
 
   @Bean
   public AuthorizationCustomizer notificationAuthorizationCustomizer(
-      @Qualifier(NOTIFICATION_ACCESS_ROLE) @Autowired(required = false)
-          EmployeePermissionRole notificationAccessRole) {
-
-    if (notificationAccessRole == null) {
-      return auth -> auth.requestMatchers(NotificationApi.BASE_URL + "/**").denyAll();
-    }
+      @Qualifier(NOTIFICATION_ACCESS_ROLE) EmployeePermissionRole notificationAccessRole) {
 
     return auth ->
         auth.requestMatchers(NotificationApi.BASE_URL + "/**")

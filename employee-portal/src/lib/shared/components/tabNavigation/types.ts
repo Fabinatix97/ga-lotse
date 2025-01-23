@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { AccessCheck } from "@eshg/lib-employee-portal/helpers/accessControl";
 import { ColorPaletteProp } from "@mui/joy";
 import { ReactNode } from "react";
-
-import { AccessCheck } from "@/lib/shared/helpers/accessControl";
 
 export interface TabNavigationItem {
   tabButtonName: string;

@@ -5,6 +5,7 @@
 
 import {
   ApiEmployeeOmsProcedureDetails,
+  ApiFacilitySync,
   ApiProcedureStatus,
 } from "@eshg/employee-portal-api/officialMedicalService";
 import { Sheet } from "@mui/joy";
@@ -13,8 +14,13 @@ import { isDefined } from "remeda";
 
 import { AddFacility } from "@/lib/businessModules/officialMedicalService/components/procedures/details/AddFacility";
 import { UpdateFacilitySidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/UpdateFacilitySidebar";
+import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { EditButton } from "@/lib/shared/components/buttons/EditButton";
 import { CentralFileFacilityDetails } from "@/lib/shared/components/centralFile/display/CentralFileFacilityDetails";
+import {
+  SyncBarrier,
+  useSyncBarrier,
+} from "@/lib/shared/components/centralFile/sync/SyncBarrier";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { useSidebarWithFormRef } from "@/lib/shared/hooks/useSidebarWithFormRef";
 
@@ -32,8 +38,28 @@ export function FacilityPanel({
     component: UpdateFacilitySidebar,
   });
 
+  const syncRoute =
+    procedure.facility?.facilitySync !== undefined
+      ? routes.procedures
+          .byId(procedure.id)
+          .syncFacility(
+            procedure.facility.facilitySync.fileStateId,
+            procedure.facility.facilitySync.version,
+          )
+      : "";
+  const facilitySync: ApiFacilitySync = {
+    fileStateId: procedure.facility?.facilitySync?.fileStateId ?? "",
+    version: procedure.facility?.facilitySync?.version ?? 0,
+    outdated: procedure.facility?.facilitySync?.outdated ?? false,
+  };
+  const { syncBarrier } = useSyncBarrier(syncRoute, facilitySync);
+
   function procedureClosed() {
     return procedure.status === ApiProcedureStatus.Closed;
+  }
+
+  function procedureDraft() {
+    return procedure.status === ApiProcedureStatus.Draft;
   }
 
   return (
@@ -43,23 +69,28 @@ export function FacilityPanel({
         buttons={
           isDefined(procedure.facility) &&
           !procedureClosed() && (
-            <EditButton
-              aria-label="Auftraggeber bearbeiten"
-              onClick={() =>
-                updateFacilitySidebar.open({
-                  procedureId: procedure.id,
-                  facility: procedure.facility!,
-                })
-              }
-            />
+            <SyncBarrier
+              outdated={procedure.facility?.facilitySync?.outdated ?? false}
+              syncHref={syncRoute}
+            >
+              <EditButton
+                aria-label="Auftraggeber bearbeiten"
+                onClick={syncBarrier(() =>
+                  updateFacilitySidebar.open({
+                    procedureId: procedure.id,
+                    facility: procedure.facility!,
+                  }),
+                )}
+              />
+            </SyncBarrier>
           )
         }
       >
-        {!isDefined(procedure.facility) ? (
+        {procedureDraft() && !isDefined(procedure.facility) ? (
           <AddFacility id={procedure.id} />
         ) : (
           <CentralFileFacilityDetails
-            facility={{ ...procedure.facility }}
+            facility={{ ...procedure.facility! }}
             columnSx={COLUMN_STYLE}
           ></CentralFileFacilityDetails>
         )}

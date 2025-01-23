@@ -249,7 +249,7 @@ public class BusinessModuleClient
   }
 
   @Override
-  public ResponseEntity<Resource> getGdprDownloadPackage(UUID id) {
+  public ResponseEntity<Resource> getGdprDownloadPackage(UUID downloadId, UUID gdprProcedureId) {
     return ResponseEntity.ok().body(new ByteArrayResource(new byte[] {}));
   }
 
@@ -259,9 +259,19 @@ public class BusinessModuleClient
   }
 
   @Override
+  public void deleteBusinessProcedure(UUID gdprProcedureId, UUID businessProcedureId) {}
+
+  @Override
   public GetAllValidationTasksResponse getAllGdprValidationTasks(
       GdprValidationTaskFilterParameters parameters) {
     return gdprValidationTaskApiDelegate.getAllGdprValidationTasks(parameters);
+  }
+
+  @Override
+  public void deleteGdprValidationTaskAndDownloadPackages(
+      UUID gdprProcedureId, DeleteDownloadPackagesRequest request) {
+    gdprValidationTaskApiDelegate.deleteGdprValidationTaskAndDownloadPackages(
+        gdprProcedureId, request);
   }
 
   public void broadcastContactsMergedEvent(UUID mergedFromId, UUID mergedIntoId) {

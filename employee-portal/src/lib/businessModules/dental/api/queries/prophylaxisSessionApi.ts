@@ -7,7 +7,7 @@ import {
   GetProphylaxisSessionRequest,
   GetProphylaxisSessionsRequest,
   ProphylaxisSessionApi,
-} from "@eshg/employee-portal-api/dental";
+} from "@eshg/dental-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
@@ -48,14 +48,4 @@ export function getProphylaxisSessionQuery(
         .then(unwrapRawResponse),
     select: mapProphylaxisSessionDetails,
   });
-}
-
-export function useGetProphylaxisSession(
-  request: GetProphylaxisSessionRequest,
-) {
-  const prophylaxisSessionApi = useProphylaxisSessionApi();
-
-  return useSuspenseQuery(
-    getProphylaxisSessionQuery(prophylaxisSessionApi, request),
-  );
 }

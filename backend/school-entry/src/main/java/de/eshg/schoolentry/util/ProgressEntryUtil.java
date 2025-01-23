@@ -11,6 +11,7 @@ import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.lib.procedure.progressentry.ProgressEntryService;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
+import java.util.UUID;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -73,5 +74,17 @@ public class ProgressEntryUtil {
     progressEntry.setKeyDocumentType(documentType.name());
 
     progressEntryService.addSystemProgressEntry(procedure, progressEntry, file);
+  }
+
+  public void addProgressEntryWithPreviousFileStateId(
+      SchoolEntryProcedure procedure,
+      SchoolEntrySystemProgressEntryType progressEntryType,
+      UUID previousFileStateId) {
+    SystemProgressEntry progressEntry =
+        SystemProgressEntryFactory.createSystemProgressEntry(
+            progressEntryType.name(), TriggerType.SYSTEM_AUTOMATIC);
+    progressEntry.setPreviousFileStateId(previousFileStateId);
+
+    progressEntryService.addSystemProgressEntry(procedure, progressEntry);
   }
 }

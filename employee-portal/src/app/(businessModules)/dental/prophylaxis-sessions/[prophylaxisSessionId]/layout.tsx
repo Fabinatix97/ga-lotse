@@ -3,11 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+"use client";
+
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { PropsWithChildren } from "react";
 
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
+import { useProphylaxisSessionApi } from "@/lib/businessModules/dental/api/clients";
+import { getProphylaxisSessionQuery } from "@/lib/businessModules/dental/api/queries/prophylaxisSessionApi";
+import { ProphylaxisSessionStoreProvider } from "@/lib/businessModules/dental/features/prophylaxisSessions/store/ProphylaxisSessionStoreProvider";
 
 export type ProphylaxisSessionPageProps = Readonly<{
   params: ProphylaxisSessionPageParams;
@@ -20,9 +23,16 @@ interface ProphylaxisSessionPageParams {
 export default function ProphylaxisSessionPageLayout(
   props: PropsWithChildren<ProphylaxisSessionPageProps>,
 ) {
+  const prophylaxisSessionApi = useProphylaxisSessionApi();
+  const { data: prophylaxisSession } = useSuspenseQuery(
+    getProphylaxisSessionQuery(prophylaxisSessionApi, {
+      prophylaxisSessionId: props.params.prophylaxisSessionId,
+    }),
+  );
+
   return (
-    <StickyToolbarLayout toolbar={<Toolbar title="Prophylaxe" />}>
-      <MainContentLayout fullViewportHeight>{props.children}</MainContentLayout>
-    </StickyToolbarLayout>
+    <ProphylaxisSessionStoreProvider prophylaxisSession={prophylaxisSession}>
+      {props.children}
+    </ProphylaxisSessionStoreProvider>
   );
 }

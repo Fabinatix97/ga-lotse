@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1736778385161-1">
+        <!-- icd10group -->
+        <createTable tableName="icd10group">
+            <column name="group_start" type="TEXT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_icd10group"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="group_end" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint constraintName="icd10group_group_end_key" tableName="icd10group" columnNames="group_end"/>
+        <addUniqueConstraint constraintName="icd10group_title_key" tableName="icd10group" columnNames="title"/>
+
+        <!-- icd10code -->
+        <createTable tableName="icd10code">
+            <column name="code" type="TEXT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_icd10code"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="code_without_dot" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="group_id" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex indexName="idx_icd10code_group_id" tableName="icd10code">
+            <column name="group_id"/>
+        </createIndex>
+
+        <addUniqueConstraint constraintName="icd10code_code_without_dot_key" tableName="icd10code" columnNames="code_without_dot"/>
+
+        <addForeignKeyConstraint constraintName="fk_icd10code_icd10group"
+                                 baseTableName="icd10code" baseColumnNames="group_id"
+                                 referencedTableName="icd10group" referencedColumnNames="group_start"/>
+  </changeSet>
+</databaseChangeLog>

@@ -12,7 +12,7 @@ import {
   ApiGetReferenceFacilityResponse,
   ApiGetReferencePersonResponse,
   ApiUserRole,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 import { Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
@@ -43,6 +43,7 @@ import { GdprFacilityDataTile } from "./tiles/GdprFacilityDataTile";
 
 interface GDPRProcedureDetailsProps {
   procedure: ApiGetGdprProcedureResponse;
+  hasDownload: boolean;
   personMatches: ApiGetReferencePersonResponse[];
   facilityMatches: ApiGetReferenceFacilityResponse[];
   linkedPersons: ApiGetReferencePersonResponse[];
@@ -56,6 +57,7 @@ const COLUMN_STYLE: SxProps = {
 
 export function GDPRProcedureDetails({
   procedure,
+  hasDownload,
   personMatches,
   facilityMatches,
   linkedPersons,
@@ -166,7 +168,10 @@ export function GDPRProcedureDetails({
         >
           {procedure.status === ApiGdprProcedureStatus.Closed &&
             procedure.type === ApiGdprProcedureType.OfAccess && (
-              <GdprDownloadPackagesTile gdprProcedure={procedure} />
+              <GdprDownloadPackagesTile
+                gdprProcedure={procedure}
+                hasDownload={hasDownload}
+              />
             )}
         </SheetQueryBoundary>
         {procedure.status === ApiGdprProcedureStatus.Draft && (

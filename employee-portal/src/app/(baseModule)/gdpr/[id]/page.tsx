@@ -25,6 +25,7 @@ export default function GDPRProcedurePage({
       <MainContentLayout>
         <GDPRProcedureDetails
           procedure={data.procedure}
+          hasDownload={data.hasCentralFileDownload}
           personMatches={data.personMatches}
           facilityMatches={data.facilityMatches}
           linkedPersons={data.linkedCentralFilePersons}

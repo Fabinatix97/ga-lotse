@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { GetSelfEventsRequest } from "@eshg/employee-portal-api/base";
+import { ApiSelfUser, GetSelfEventsRequest } from "@eshg/base-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
 import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
@@ -55,13 +55,22 @@ export function useGetUserOverviewPageQuery() {
   });
 }
 
-export function useGetSelfUser() {
+function useGetSelfUserAndAccess<T>(select: (selfUser: ApiSelfUser) => T) {
   const userApi = useUserApi();
   return useSuspenseQuery({
-    queryKey: userApiQueryKey(["getSelfUser"]),
-    queryFn: () => userApi.getSelfUser(),
+    queryKey: userApiQueryKey(["getSelfUserAndAccess"]),
+    queryFn: () => userApi.getSelfUserAndAccess(),
     staleTime: 60_000,
+    select,
   });
+}
+
+export function useGetSelfUser() {
+  return useGetSelfUserAndAccess((selfUser) => selfUser.user);
+}
+
+export function useGetSelfUserPermissions() {
+  return useGetSelfUserAndAccess((selfUser) => selfUser.roles);
 }
 
 export function useGetSelfGroupsQueryOptions() {
@@ -78,16 +87,6 @@ export function useGetSelfLeadersQueryOptions() {
   return queryOptions({
     queryKey: userApiQueryKey(["getSelfTeamLeaders"]),
     queryFn: () => userApi.getSelfLeaders(),
-    staleTime: 60_000,
-  });
-}
-
-export function useGetSelfUserPermissions() {
-  const userApi = useUserApi();
-  return useSuspenseQuery({
-    queryKey: userApiQueryKey(["getSelfUserPermissions"]),
-    queryFn: () => userApi.getSelfUserPermissions(),
-    select: (response) => response.permissions,
     staleTime: 60_000,
   });
 }

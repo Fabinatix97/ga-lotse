@@ -49,4 +49,6 @@
     <include file="migrations/0039_use_lib_scheduling.xml"/>
     <include file="migrations/0040_replace_anonymized_with_data_sensitivity.xml"/>
     <include file="migrations/0041_introduce_table_column_value_type.xml"/>
+    <include file="migrations/0042_store_procedure_references_instead_of_ids.xml"/>
+    <include file="migrations/0043_remove_linechart_column.xml"/>
 </databaseChangeLog>

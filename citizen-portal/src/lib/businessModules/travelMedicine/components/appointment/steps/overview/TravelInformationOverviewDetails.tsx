@@ -23,10 +23,12 @@ import {
   TRAVEL_TYPES,
 } from "@/lib/businessModules/travelMedicine/helpers/translations";
 import { useTranslation } from "@/lib/i18n/client";
+import { useTranslateCountry } from "@/lib/i18n/useTranslateCountry";
 
 export function TravelInformationOverviewDetails() {
   const { t } = useTranslation(["travelMedicine/forms"]);
   const { values } = useFormikContext<InitialAppointmentFormValues>();
+  const { translateCountry } = useTranslateCountry();
 
   const travelDurationLabel = t(
     "appointmentOverviewSection.values.travelDuration",
@@ -65,6 +67,7 @@ export function TravelInformationOverviewDetails() {
               travelDestinationsLabel,
               travelDestinationsTranslation(
                 values.travelInformation.travelDestinations,
+                translateCountry,
               ),
             )}
           </Typography>

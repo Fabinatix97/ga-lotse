@@ -5,7 +5,6 @@
 
 "use client";
 
-import { HiddenContainer } from "@eshg/lib-portal/components/HiddenContainer";
 import { Box } from "@mui/joy";
 import { startTransition, useState } from "react";
 
@@ -39,7 +38,7 @@ export function ReportsOverview() {
 
   const { deleteReportWithConfirmation, deleteReportSeriesWithConfirmation } =
     useDeleteWithConfirmation();
-  const { download: exportData, downloadContainerRef } = useExportReportData();
+  const { download: exportData } = useExportReportData();
   const userPermissions = useStatisticsRoleChecks();
 
   const { resetPageNumber, page, pageSize, getPaginationProps } =
@@ -95,8 +94,6 @@ export function ReportsOverview() {
       }
     >
       <TableSheet footer={<Pagination {...paginationProps} />}>
-        <HiddenContainer ref={downloadContainerRef} />
-
         <DataTable
           striped={false}
           wrapContent

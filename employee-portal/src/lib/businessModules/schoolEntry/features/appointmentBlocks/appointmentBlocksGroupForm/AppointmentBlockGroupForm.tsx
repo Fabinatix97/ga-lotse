@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiUser } from "@eshg/employee-portal-api/base";
+import { ApiUser } from "@eshg/base-api";
 import { ApiLocationSelectionMode } from "@eshg/employee-portal-api/schoolEntry";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { Divider, Stack } from "@mui/joy";

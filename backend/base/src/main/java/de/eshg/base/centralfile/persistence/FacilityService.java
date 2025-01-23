@@ -63,16 +63,22 @@ public class FacilityService {
   }
 
   public List<Facility> searchReferenceFacilities(String name) {
-    return searchReferenceFacilities(name, false);
+    return searchReferenceFacilities(name, false, false);
   }
 
   public List<Facility> searchReferenceFacilitiesIncludingDeleted(String name) {
-    return searchReferenceFacilities(name, true);
+    return searchReferenceFacilities(name, true, false);
   }
 
-  private List<Facility> searchReferenceFacilities(String name, boolean includeDeleted) {
+  public List<Facility> searchReferenceFacilitiesIncludingDeletedAndExternal(String name) {
+    return searchReferenceFacilities(name, true, true);
+  }
+
+  private List<Facility> searchReferenceFacilities(
+      String name, boolean includeDeleted, boolean includeExternal) {
     fuzzySearchHelper.setSimilarityThreshold(getSimilarityThreshold(name));
-    FacilitySearchSpecification spec = new FacilitySearchSpecification(name, includeDeleted);
+    FacilitySearchSpecification spec =
+        new FacilitySearchSpecification(name, includeDeleted, includeExternal);
     return facilityRepository.findAll(spec);
   }
 
@@ -280,15 +286,6 @@ public class FacilityService {
     return possibleMatches.stream()
         .filter(f -> FacilityMatcher.isFacilityMatch(f, facility))
         .collect(StreamUtil.toSingleOptionalElement());
-  }
-
-  public Optional<Facility> findPartiallyMatchingReferenceFacility(Facility facility) {
-    List<Facility> possibleMatches =
-        facilityRepository.findReferenceFacilityByName(facility.getName());
-    return possibleMatches.stream()
-        .filter(
-            f -> AddressMatcher.isAddressMatch(f.getContactAddress(), facility.getContactAddress()))
-        .min(Comparator.comparing(Facility::getId));
   }
 
   public static boolean isFacilityFileStateOutdated(

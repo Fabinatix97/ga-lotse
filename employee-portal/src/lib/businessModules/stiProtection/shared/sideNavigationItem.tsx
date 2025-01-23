@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/base-api";
+import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
 
 import {
   SideNavigationSubItem,
   UseSideNavigationItemsResult,
 } from "@/lib/baseModule/components/layout/sideNavigation/types";
 import { HivOutlined } from "@/lib/shared/components/icons/HivOutlined";
-import { hasUserRole } from "@/lib/shared/helpers/accessControl";
 
 import { routes } from "./routes";
 

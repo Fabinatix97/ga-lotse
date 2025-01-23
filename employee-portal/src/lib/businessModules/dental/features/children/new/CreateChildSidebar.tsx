@@ -5,8 +5,9 @@
 
 "use client";
 
-import { ApiAddContact200Response } from "@eshg/employee-portal-api/base";
-import { ApiCreateChildRequest } from "@eshg/employee-portal-api/dental";
+import { ApiAddContact200Response } from "@eshg/base-api";
+import { ApiCreateChildRequest } from "@eshg/dental-api";
+import { routes } from "@eshg/dental/shared/routes";
 import { ApiCreatePerson } from "@eshg/employee-portal-api/schoolEntry";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
@@ -21,7 +22,6 @@ import { useCreateChild } from "@/lib/businessModules/dental/api/mutations/child
 import { getChildrenByPersonQuery } from "@/lib/businessModules/dental/api/queries/childApi";
 import { ChildProcedureCard } from "@/lib/businessModules/dental/features/children/new/ChildProcedureCard";
 import { SearchGroupField } from "@/lib/businessModules/dental/features/prophylaxisSessions/SearchGroupField";
-import { routes } from "@/lib/businessModules/dental/shared/routes";
 import { BUTTON_SIZE } from "@/lib/businessModules/schoolEntry/features/procedures/new/constants";
 import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
 import { SelectContactField } from "@/lib/shared/components/formFields/SelectContactField";

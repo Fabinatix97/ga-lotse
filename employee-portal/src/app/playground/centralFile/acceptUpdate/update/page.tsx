@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiGetPersonDiffResponse } from "@eshg/employee-portal-api/base";
+import { ApiGetPersonDiffResponse } from "@eshg/base-api";
 import { Stack } from "@mui/joy";
 import { useRouter } from "next/navigation";
 

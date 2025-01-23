@@ -47,6 +47,9 @@ public class GdprPerson extends IdentificationData {
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private GdprPersonAddress contactAddress;
 
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  private String bpk2;
+
   public String getFirstName() {
     return firstName;
   }
@@ -109,5 +112,13 @@ public class GdprPerson extends IdentificationData {
 
   public void setContactAddress(GdprPersonAddress contactAddress) {
     this.contactAddress = contactAddress;
+  }
+
+  public String getBpk2() {
+    return bpk2;
+  }
+
+  public void setBpk2(String bpk2) {
+    this.bpk2 = bpk2;
   }
 }

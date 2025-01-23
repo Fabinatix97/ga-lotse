@@ -3,24 +3,22 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FormikErrors } from "formik";
+import { FormikErrors, FormikValues } from "formik";
 import { ReactElement } from "react";
 
-export type SidebarStep<T> = StandardSidebarStep<T> | BranchingSidebarStep<T>;
+export type SidebarStep<
+  TStepFormModel extends FormikValues,
+  TStepperFormModel,
+> = (prevStepsValues: TStepperFormModel) => SidebarStepProps<TStepFormModel>;
 
-interface SidebarStepProps<T> {
+interface SidebarStepProps<TStepFormModel extends FormikValues> {
   title: string;
-  content: ReactElement;
-  validator?: (model: T) => FormikErrors<object> | undefined;
-  disableContinue?: ((model: T) => boolean) | boolean;
+  content: (values: TStepFormModel) => ReactElement;
+  initialValues: TStepFormModel;
+  validator?: (model: TStepFormModel) => FormikErrors<object> | undefined;
 }
 
-export interface StandardSidebarStep<T> {
-  type: "StandardStep";
-  step: SidebarStepProps<T>;
-}
-
-export interface BranchingSidebarStep<T> {
-  type: "BranchingStep";
-  branch: (model: T) => SidebarStepProps<T>;
+export interface SidebarStepContentProps<T extends FormikValues> {
+  values: T;
+  fieldName: (fieldName: string & keyof T) => string;
 }

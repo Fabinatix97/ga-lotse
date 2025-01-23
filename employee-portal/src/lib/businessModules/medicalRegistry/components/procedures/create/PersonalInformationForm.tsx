@@ -10,13 +10,13 @@ import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { PhoneNumberField } from "@eshg/lib-portal/components/formFields/PhoneNumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
-import { COUNTRY_CODE_OPTIONS } from "@eshg/lib-portal/components/formFields/countryCodes";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { validateLength } from "@eshg/lib-portal/helpers/validators";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { Grid, Typography } from "@mui/joy";
 
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
+import { CountryField } from "@/lib/shared/components/formFields/CountryField";
 
 export function PersonalInformationForm(props: NestedFormProps) {
   const fieldName = createFieldNameMapper<PersonalInformationFormValues>(
@@ -112,11 +112,10 @@ export function PersonalInformationForm(props: NestedFormProps) {
       <Grid xxl={6} />
 
       <Grid xxs={6}>
-        <SelectField
+        <CountryField
           name={fieldName("country")}
           label={"Land"}
           required={requiredFieldMessage}
-          options={COUNTRY_CODE_OPTIONS}
         />
       </Grid>
       <Grid xxl={6} />
@@ -154,11 +153,10 @@ export function PersonalInformationForm(props: NestedFormProps) {
       <Grid xxl={6} />
 
       <Grid xxs={6}>
-        <SelectField
+        <CountryField
           name={fieldName("nationality")}
           label={"Staatsangehörigkeit"}
           required={requiredFieldMessage}
-          options={COUNTRY_CODE_OPTIONS}
         />
       </Grid>
     </>

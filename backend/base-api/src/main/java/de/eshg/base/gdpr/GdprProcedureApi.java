@@ -14,6 +14,7 @@ import de.eshg.base.gdpr.api.CancelGdprProcedureRequest;
 import de.eshg.base.gdpr.api.CloseGdprProcedureRequest;
 import de.eshg.base.gdpr.api.DeleteGdprDownloadsRequest;
 import de.eshg.base.gdpr.api.GdprProcedureFilterParameters;
+import de.eshg.base.gdpr.api.GetCitizenSelfUsersGdprProceduresResponse;
 import de.eshg.base.gdpr.api.GetGdprDownloadsResponse;
 import de.eshg.base.gdpr.api.GetGdprProcedureDetailsPageResponse;
 import de.eshg.base.gdpr.api.GetGdprProcedureFileStateIdsResponse;
@@ -38,6 +39,7 @@ import org.springframework.web.service.annotation.*;
 public interface GdprProcedureApi {
   String BASE_URL = BaseUrls.Base.GDPR_PROCEDURE_API;
   String REFRESH_URL_SUFFIX = "/{id}/refresh-status";
+  String SELF_LINKED_GDPR_PROCEDURES = "/self/linked-gdpr-procedures";
 
   @PostExchange
   @ApiResponse(responseCode = "200")
@@ -49,13 +51,18 @@ public interface GdprProcedureApi {
   @Operation(
       summary =
           """
-  This endpoint allows authenticated and identified users from the citizen
-  portal to initiate a GDPR procedure. A matter of concern can be added to the
-  request if desired.
+  This endpoint allows authenticated MUK and BundID users to initiate a GDPR
+  procedure via the citizen portal initiate a GDPR procedure. A matter of
+  concern can be added to the request if desired.
   """)
   GetGdprProcedureResponse addGdprProcedureFromCitizenPortal(
-      @RequestBody @Valid AddGdprProcedureFromCitizenPortalRequest request)
-      throws NoSuchFieldException;
+      @RequestBody @Valid AddGdprProcedureFromCitizenPortalRequest request);
+
+  @GetExchange(BaseUrls.Base.GDPR_PROCEDURE_CITIZEN_PORTAL_URL + SELF_LINKED_GDPR_PROCEDURES)
+  @ApiResponse(responseCode = "200")
+  @Operation(
+      summary = "Get the GDPR procedures linked with the citizen user which is currently active")
+  GetCitizenSelfUsersGdprProceduresResponse getCitizenSelfUserLinkedGdprProcedures();
 
   @GetExchange("/{id}")
   @ApiResponse(responseCode = "200")

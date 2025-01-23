@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Stack, Typography } from "@mui/joy";
 import { ReactElement } from "react";
 
@@ -13,6 +12,7 @@ import {
   diagramTypeIcons,
   diagramTypeNames,
 } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
+import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import { SelectableCardsField } from "@/lib/shared/components/formFields/SelectableCardsField";
 
 function DiagramSelectableCard({ diagramType }: { diagramType: DiagramType }) {
@@ -25,9 +25,9 @@ function DiagramSelectableCard({ diagramType }: { diagramType: DiagramType }) {
   );
 }
 
-export function SelectDiagramStep() {
-  const fieldName = createFieldNameMapper<SelectDiagramStepFormModel>();
-
+export function SelectDiagramStep(
+  props: SidebarStepContentProps<SelectDiagramStepFormModel>,
+) {
   const options: {
     value: DiagramType;
     content: ReactElement;
@@ -71,7 +71,7 @@ export function SelectDiagramStep() {
       </Typography>
 
       <SelectableCardsField
-        name={fieldName("diagramType")}
+        name={props.fieldName("diagramType")}
         required="Bitte Darstellungsform wählen."
         options={options}
       />

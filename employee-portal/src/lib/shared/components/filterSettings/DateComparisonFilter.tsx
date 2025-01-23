@@ -77,7 +77,7 @@ export function DateComparisonFilter(props: DateComparisonFilterProps) {
           type="date"
           value={props.value?.value ?? ""}
           onChange={(event) => handleChange(event.target.value)}
-          style={{ width: "100%" }}
+          sx={{ width: "100%" }}
         />
       </FormControl>
     </Stack>

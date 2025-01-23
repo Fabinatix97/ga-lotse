@@ -22,7 +22,6 @@ dependencies {
     implementation 'org.apache.xmlgraphics:batik-dom:latest.release'
 
     implementation 'com.google.guava:guava'
-    implementation 'org.apache.commons:commons-csv:latest.release'
     implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
 

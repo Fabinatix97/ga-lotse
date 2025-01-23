@@ -7,8 +7,8 @@ package de.eshg.stiprotection;
 
 import de.eshg.base.centralfile.FacilityApi;
 import de.eshg.base.centralfile.PersonApi;
+import de.eshg.lib.procedure.cemetery.CemeteryService;
 import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
-import de.eshg.lib.procedure.util.CemeteryService;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedureRepository;

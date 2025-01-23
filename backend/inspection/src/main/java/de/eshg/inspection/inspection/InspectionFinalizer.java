@@ -142,7 +142,7 @@ public class InspectionFinalizer {
     addProgressEntryForFinalization(inspection);
     inspection.setPhase(InspectionPhase.CREATING_REPORT_AND_INVOICE);
     inspection.getExecutionTaskOrThrow().setTaskStatus(TaskStatus.CLOSED);
-    inspection.createReportTask(clock);
+    inspection.createReportTask(clock.instant());
     inspectionValidator.generateSignatureHash(signature, inspection.getPhase());
     inspectionValidator.generateChecklistHashes(inspection.getChecklists(), inspection.getPhase());
     inspectionUpdater.updateModified(inspection);

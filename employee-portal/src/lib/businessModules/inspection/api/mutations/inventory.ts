@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiErrorCode } from "@eshg/employee-portal-api/base";
+import { ApiErrorCode } from "@eshg/base-api";
 import { ModifyInventoryRequest } from "@eshg/employee-portal-api/inspection";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";

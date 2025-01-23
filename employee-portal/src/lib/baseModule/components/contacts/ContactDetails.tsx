@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBaseFeature, ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiBaseFeature, ApiUserRole } from "@eshg/base-api";
 import {
   GENDER_VALUES,
   SALUTATION_VALUES,

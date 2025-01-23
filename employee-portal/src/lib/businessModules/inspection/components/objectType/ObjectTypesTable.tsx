@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/base-api";
 import { ApiObjectType } from "@eshg/employee-portal-api/inspection";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 
@@ -71,7 +71,7 @@ export function ObjectTypesTable() {
           rowNavigation={
             canEdit
               ? {
-                  onClick: (row) => {
+                  onClick: (row) => () => {
                     sidebar.open({ objectType: row.original });
                   },
                   focusColumnAccessorKey: "name",

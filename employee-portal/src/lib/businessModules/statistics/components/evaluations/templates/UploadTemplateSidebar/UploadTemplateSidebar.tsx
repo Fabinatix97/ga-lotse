@@ -8,7 +8,10 @@ import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { useGetSelfUser } from "@/lib/baseModule/api/queries/users";
 import { useUploadEvaluationTemplate } from "@/lib/businessModules/statistics/api/mutations/useUploadEvaluationTemplate";
 import { useGetEvaluationTemplateDetails } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplateDetails";
-import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
+import {
+  SidebarStepper,
+  createStepContent,
+} from "@/lib/shared/components/SidebarStepper/SidebarStepper";
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
@@ -35,33 +38,29 @@ function UploadTemplateSidebar(props: UploadTemplateSidebarProps) {
   );
   const uploadTemplate = useUploadEvaluationTemplate(() => props.onClose(true));
 
-  async function onSubmit(model: UploadTemplateFormModel) {
-    await uploadTemplate(props.templateId, model);
+  async function onSubmit(model: [UploadTemplateFormModel]) {
+    await uploadTemplate(props.templateId, model[0]);
   }
 
   return (
     <SidebarStepper
       onClose={props.onClose}
-      onSubmit={onSubmit}
-      initialValues={{
-        name: evaluationTemplateDetails.name,
-        description: evaluationTemplateDetails.description ?? "",
-        contact: `${formatPersonName(selfUser)} (${selfUser.email})`,
-      }}
       formRef={props.formRef}
       saveLabel="Hochladen"
+      onSubmit={onSubmit}
       steps={[
-        {
-          type: "StandardStep",
-          step: {
-            title: "Auswertungsvorlage hochladen",
-            content: (
-              <UploadTemplateStep
-                evaluationTemplateDetails={evaluationTemplateDetails}
-              />
-            ),
+        () => ({
+          title: "Auswertungsvorlage hochladen",
+          content: createStepContent({
+            component: UploadTemplateStep,
+            componentProps: { evaluationTemplateDetails },
+          }),
+          initialValues: {
+            name: evaluationTemplateDetails.name,
+            description: evaluationTemplateDetails.description ?? "",
+            contact: `${formatPersonName(selfUser)} (${selfUser.email})`,
           },
-        },
+        }),
       ]}
     />
   );

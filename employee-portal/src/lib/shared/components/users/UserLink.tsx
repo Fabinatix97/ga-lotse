@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiUser } from "@eshg/employee-portal-api/base";
+import { ApiUser } from "@eshg/base-api";
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import { isNonNullish } from "remeda";
 

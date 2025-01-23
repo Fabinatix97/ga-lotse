@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiLabel } from "@eshg/employee-portal-api/base";
+import { ApiLabel } from "@eshg/base-api";
 import { Add as AddIcon } from "@mui/icons-material";
 import { Chip, Dropdown, Menu, MenuButton, MenuItem, Stack } from "@mui/joy";
 

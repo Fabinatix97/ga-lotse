@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
     description =
         "Used in the context of laboratory test examination to document test results for Hepatitis A and Hepatitis B.")
 public record HepatitisLaboratoryTestDto(
+    @Schema(description = "Indicates the outcome of the laboratory test result.") Boolean result,
     @Schema(description = "Indicates whether the test is conducted in the context of an infection.")
         Boolean infection,
     @Schema(

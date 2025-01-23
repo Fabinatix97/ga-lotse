@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { routes } from "@eshg/dental/shared/routes";
 import { redirect } from "next/navigation";
 
 import { ProphylaxisSessionPageProps } from "@/app/(businessModules)/dental/prophylaxis-sessions/[prophylaxisSessionId]/layout";
-import { routes } from "@/lib/businessModules/dental/shared/routes";
 
 export default function ProphylaxisSessionIndexPage(
   props: ProphylaxisSessionPageProps,

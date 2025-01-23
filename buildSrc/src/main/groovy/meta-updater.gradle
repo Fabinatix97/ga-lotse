@@ -1,0 +1,36 @@
+import com.github.gradle.node.pnpm.task.PnpmTask
+
+tasks.register('checkProjectReferences', PnpmTask) {
+  dependsOn rootProject.tasks.installDependencies
+  inputs.dir "${rootDir}/.meta-updater"
+  inputs.file "${rootDir}/pnpm-workspace.yaml"
+  subprojects {
+    if (file("${projectDir}/package.json").exists() && file("${projectDir}/tsconfig.json").exists()) {
+      inputs.file "${projectDir}/package.json"
+      inputs.file "${projectDir}/tsconfig.json"
+      if (file("${projectDir}/gradleDependencies.json").exists()) {
+        inputs.file "${projectDir}/gradleDependencies.json"
+      }
+    }
+  }
+  outputs.upToDateWhen { true }
+  args = ['meta-updater', '--test']
+}
+
+tasks.register('updateProjectReferences', PnpmTask) {
+  dependsOn rootProject.tasks.installDependencies
+  inputs.dir "${rootDir}/.meta-updater"
+  inputs.file "${rootDir}/pnpm-workspace.yaml"
+  subprojects {
+    if (file("${projectDir}/package.json").exists() && file("${projectDir}/tsconfig.json").exists()) {
+      inputs.file "${projectDir}/package.json"
+      inputs.file "${projectDir}/tsconfig.json"
+      if (file("${projectDir}/gradleDependencies.json").exists()) {
+        inputs.file "${projectDir}/gradleDependencies.json"
+      }
+      outputs.file "${projectDir}/tsconfig.json"
+      outputs.file "${projectDir}/gradleDependencies.json"
+    }
+  }
+  args = ['meta-updater']
+}

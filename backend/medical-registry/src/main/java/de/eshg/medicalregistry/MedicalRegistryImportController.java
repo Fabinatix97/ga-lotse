@@ -5,28 +5,21 @@
 
 package de.eshg.medicalregistry;
 
-import static de.eshg.lib.xlsximport.ImportValidator.validateFileExistsAndHasCorrectType;
-import static de.eshg.lib.xlsximport.ImportValidator.validateHeaderExists;
-import static de.eshg.lib.xlsximport.ImportValidator.validateNumberOfRows;
-import static de.eshg.lib.xlsximport.ImportValidator.validateSheet;
 import static de.eshg.lib.xlsximport.util.FileResponseUtil.filename;
 import static de.eshg.lib.xlsximport.util.FileResponseUtil.getTemplateFileResponse;
 
 import de.eshg.file.common.CustomMediaTypes;
-import de.eshg.lib.xlsximport.XlsxNormalizer;
+import de.eshg.lib.xlsximport.XlsxImport;
 import de.eshg.lib.xlsximport.model.ImportResult;
 import de.eshg.lib.xlsximport.util.FileResponseUtil;
 import de.eshg.medicalregistry.config.MedicalRegistryProperties;
+import de.eshg.medicalregistry.importer.MedicalRegistryColumn;
 import de.eshg.medicalregistry.importer.MedicalRegistryImporter;
 import de.eshg.rest.service.security.config.BaseUrls.MedicalRegistry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.UncheckedIOException;
 import java.time.Clock;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -78,42 +71,25 @@ public class MedicalRegistryImportController {
   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @Transactional(timeout = 300)
   public ResponseEntity<MultiValueMap<String, Object>> importData(
-      @RequestPart("file") MultipartFile file) {
+      @RequestPart("file") MultipartFile file) throws IOException {
     log.info("Importing file ({} bytes)", file.getSize());
-    validateFileExistsAndHasCorrectType(file);
-    try (InputStream inputStream = file.getInputStream();
-        XSSFWorkbook workbook = new XSSFWorkbook(inputStream)) {
-      validateSheet(workbook);
 
-      Sheet sheet = workbook.getSheetAt(0);
-
-      validateNumberOfRows(sheet, medicalRegistryProperties.getMaxNumberOfImportRows());
-      validateHeaderExists(sheet);
-
-      ImportResult result = log(normalizeAndImport(sheet));
-
-      return FileResponseUtil.mapImportResultToMultipartResponse(result, filename(clock));
-    } catch (IOException e) {
-      throw new UncheckedIOException("Error during parsing of uploaded file", e);
-    }
-  }
-
-  private static ImportResult log(ImportResult result) {
+    ImportResult result =
+        XlsxImport.processWorkbook(
+            file,
+            medicalRegistryProperties.getMaxNumberOfImportRows(),
+            MedicalRegistryColumn.values(),
+            (sheet, actualColumns) -> {
+              MedicalRegistryImporter importer =
+                  new MedicalRegistryImporter(
+                      sheet, actualColumns, medicalRegistryService, IMPORTER_BATCH_SIZE);
+              return importer.process();
+            });
     log.info(
         "Import finished: Total lines: {}, lines successfully imported: {}, lines failed: {}",
         result.statistics().total(),
         result.statistics().created(),
         result.statistics().failed());
-    return result;
-  }
-
-  private ImportResult normalizeAndImport(Sheet sheet) {
-    try (XlsxNormalizer xlsxNormalizer = new XlsxNormalizer()) {
-      return new MedicalRegistryImporter(
-              xlsxNormalizer.normalize(sheet), medicalRegistryService, IMPORTER_BATCH_SIZE)
-          .process();
-    } catch (IOException e) {
-      throw new UncheckedIOException("Error during normalizing xlsx sheet", e);
-    }
+    return FileResponseUtil.mapImportResultToMultipartResponse(result, filename(clock));
   }
 }

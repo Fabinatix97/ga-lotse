@@ -21,7 +21,7 @@ public record TaskDto(
     @NotNull UUID procedureId,
     @NotNull BusinessModule businessModule,
     @NotNull UUID taskId,
-    @NotNull Long version,
+    @NotNull long version,
     @NotNull Instant createdAt,
     @NotNull Instant modifiedAt,
     Instant dueAt,

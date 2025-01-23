@@ -6,8 +6,6 @@
 package de.eshg.travelmedicine.template.informationstatementtemplate;
 
 import de.eshg.rest.service.security.config.BaseUrls;
-import de.eshg.travelmedicine.featuretoggle.TravelMedicineFeature;
-import de.eshg.travelmedicine.featuretoggle.TravelMedicineFeatureToggle;
 import de.eshg.travelmedicine.template.informationstatementtemplate.api.GetInformationStatementTemplatesResponse;
 import de.eshg.travelmedicine.template.informationstatementtemplate.api.InformationStatementTemplateDto;
 import de.eshg.travelmedicine.template.informationstatementtemplate.api.InformationStatementTemplateRequest;
@@ -37,21 +35,16 @@ public class InformationStatementTemplateController {
       BaseUrls.TravelMedicine.INFORMATION_STATEMENT_TEMPLATE_CONTROLLER;
 
   private final InformationStatementTemplateService informationStatementTemplateService;
-  private final TravelMedicineFeatureToggle featureToggle;
 
   public InformationStatementTemplateController(
-      InformationStatementTemplateService informationStatementTemplateService,
-      TravelMedicineFeatureToggle featureToggle) {
+      InformationStatementTemplateService informationStatementTemplateService) {
     this.informationStatementTemplateService = informationStatementTemplateService;
-    this.featureToggle = featureToggle;
   }
 
   @GetMapping
   @Operation(summary = "Gets all InformationStatementTemplates")
   @Transactional(readOnly = true)
   public GetInformationStatementTemplatesResponse getAllInformationStatementTemplates() {
-    featureToggle.assertNewFeatureIsEnabled(
-        TravelMedicineFeature.CITIZEN_PORTAL_INFORMATION_STATEMENT);
     return informationStatementTemplateService.readAllInformationStatementTemplates();
   }
 
@@ -60,8 +53,6 @@ public class InformationStatementTemplateController {
   @Transactional(readOnly = true)
   public InformationStatementTemplateDto getOneInformationStatementTemplate(
       @PathVariable("id") UUID id) {
-    featureToggle.assertNewFeatureIsEnabled(
-        TravelMedicineFeature.CITIZEN_PORTAL_INFORMATION_STATEMENT);
     return informationStatementTemplateService.readOneInformationStatementTemplate(id);
   }
 
@@ -70,8 +61,6 @@ public class InformationStatementTemplateController {
   @Transactional
   public InformationStatementTemplateDto postInformationStatementTemplate(
       @Valid @RequestBody InformationStatementTemplateRequest request) {
-    featureToggle.assertNewFeatureIsEnabled(
-        TravelMedicineFeature.CITIZEN_PORTAL_INFORMATION_STATEMENT);
     return informationStatementTemplateService.createInformationStatementTemplate(request);
   }
 
@@ -81,8 +70,6 @@ public class InformationStatementTemplateController {
   public InformationStatementTemplateDto putInformationStatementTemplate(
       @PathVariable("id") UUID id,
       @Valid @RequestBody InformationStatementTemplateRequest request) {
-    featureToggle.assertNewFeatureIsEnabled(
-        TravelMedicineFeature.CITIZEN_PORTAL_INFORMATION_STATEMENT);
     return informationStatementTemplateService.updateInformationStatementTemplate(id, request);
   }
 
@@ -90,8 +77,6 @@ public class InformationStatementTemplateController {
   @Operation(summary = "Deletes InformationStatementTemplate by ID")
   @Transactional
   public void deleteInformationStatementTemplateById(@PathVariable("id") UUID id) {
-    featureToggle.assertNewFeatureIsEnabled(
-        TravelMedicineFeature.CITIZEN_PORTAL_INFORMATION_STATEMENT);
     informationStatementTemplateService.deleteInformationStatementTemplate(id);
   }
 }

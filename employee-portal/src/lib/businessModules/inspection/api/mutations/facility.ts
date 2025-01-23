@@ -113,7 +113,6 @@ export function useExportBannedFacilities() {
             formatDate(new Date(), "de-DE").replaceAll(".", "-") +
             ".xlsx",
         ),
-        document.body,
       ),
     onError: () =>
       snackbar.error("Fehler beim Export der untersagten Einrichtungen"),

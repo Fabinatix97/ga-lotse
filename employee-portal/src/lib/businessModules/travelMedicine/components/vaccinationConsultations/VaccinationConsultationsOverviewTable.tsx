@@ -152,15 +152,15 @@ export function VaccinationConsultationsOverviewTable(
           <Stack direction="row" gap={4} flexWrap="wrap">
             <Stack direction="row" gap={1} alignItems="center" flexWrap="wrap">
               <TextInputClientFilter
-                placeholder={"Name"}
-                type={"search"}
-                setInputField={setLastName}
-                sx={{ height: "36px" }}
-              />
-              <TextInputClientFilter
                 placeholder={"Vorname"}
                 type={"search"}
                 setInputField={setFirstName}
+                sx={{ height: "36px" }}
+              />
+              <TextInputClientFilter
+                placeholder={"Nachname"}
+                type={"search"}
+                setInputField={setLastName}
                 sx={{ height: "36px" }}
               />
               <TextInputClientFilter

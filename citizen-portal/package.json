@@ -30,6 +30,7 @@
     "react-i18next": "catalog:i18next",
     "remeda": "catalog:common",
     "server-only": "catalog:common",
+    "use-debounce": "catalog:common",
     "valibot": "catalog:common"
   },
   "devDependencies": {

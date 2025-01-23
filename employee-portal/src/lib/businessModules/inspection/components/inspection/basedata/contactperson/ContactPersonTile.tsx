@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiFacilityContactPerson } from "@eshg/employee-portal-api/base";
+import { ApiFacilityContactPerson } from "@eshg/base-api";
 import { SALUTATION_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { Grid } from "@mui/joy";
 import { isNonNullish } from "remeda";
@@ -77,7 +77,7 @@ export function ContactPersonTile({
             {isNonNullish(contactPerson?.lastName) && (
               <DetailsCell
                 name="surname"
-                label="Name"
+                label="Nachname"
                 value={contactPerson.lastName}
               />
             )}

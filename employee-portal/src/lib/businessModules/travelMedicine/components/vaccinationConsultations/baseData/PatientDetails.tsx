@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetReferencePersonResponse } from "@eshg/employee-portal-api/base";
+import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
   ApiGender,
   ApiPatient,
@@ -15,6 +15,7 @@ import {
   getOptionalTitle,
 } from "@eshg/lib-portal/components/formFields/constants";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Divider, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
@@ -29,7 +30,6 @@ import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { BaseAddress } from "@/lib/shared/helpers/address";
-import { translateCountry } from "@/lib/shared/helpers/i18n";
 
 export interface PatientDetailsProps {
   title: string;

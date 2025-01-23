@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiResource, ApiResourceType } from "@eshg/employee-portal-api/base";
+import { ApiResource, ApiResourceType } from "@eshg/base-api";
 
 export interface ResourceUpdateFormValues {
   id: ApiResource["id"];

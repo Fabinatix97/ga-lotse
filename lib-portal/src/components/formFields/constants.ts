@@ -3,11 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  ApiGender,
-  ApiPersonFileState,
-  ApiSalutation,
-} from "@eshg/employee-portal-api/base";
+import { ApiGender, ApiPersonFileState, ApiSalutation } from "@eshg/base-api";
 import { isDefined } from "remeda";
 
 import { buildEnumOptions } from "../../helpers/form";
@@ -68,7 +64,7 @@ export const PERSON_FIELD_NAME = {
   salutation: "Anrede",
   title: "Titel",
   firstName: "Vorname",
-  lastName: "Name",
+  lastName: "Nachname",
   dateOfBirth: "Geburtsdatum",
   gender: "Geschlecht",
   nameAtBirth: "Geburtsname",

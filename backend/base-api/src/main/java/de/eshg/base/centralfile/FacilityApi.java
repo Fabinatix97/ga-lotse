@@ -182,9 +182,10 @@ Create a new facility file state as well as a new associated reference
 facility, without any matching to existing data.
 This endpoint requires a valid authentication from the citizen portal.
 The created data are labelled as external and are thus regarded as temporary,
-unconfirmed and untrustworthy.
-It is intended that the data first has to run through a verification process
-performed by a health office employee before it can be used for further purposes.
+unconfirmed and untrustworthy. It must undergo a verification process performed
+by a health office employee before it can be used for any official processes.
+The only exception to this are GDPR-related procedures, where the data may be
+used immediately.
 """)
   AddFacilityFileStateResponse addFacilityFromExternalSource(
       @RequestBody @Valid ExternalAddFacilityFileStateRequest request);

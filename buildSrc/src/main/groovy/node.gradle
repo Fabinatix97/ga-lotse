@@ -3,18 +3,19 @@ plugins {
 }
 
 node {
-  version = '22.11.0'
-  pnpmVersion = '9.14.2'
+  version = '22.13.0'
+  pnpmVersion = '9.15.3'
   download = true
   workDir = file("${rootProject.projectDir}/.gradle/nodejs")
   pnpmWorkDir = file("${rootProject.projectDir}/.gradle/pnpm")
 }
 
 ext {
-  nodeDockerImage = "node:${node.version.get()}-alpine@sha256:c9bb43423a6229aeddf3d16ae6aaa0ff71a0b2951ce18ec8fedb6f5d766cf286"
+  nodeDockerImage = "node:${node.version.get()}-alpine@sha256:f2dc6eea95f787e25f173ba9904c9d0647ab2506178c7b5b7c5a3d02bc4af145"
 }
 
 tasks.register('cleanDependencies', Delete) {
+  group = 'workspace'
   delete "${projectDir}/node_modules"
 }
 

@@ -7,6 +7,7 @@ package de.eshg.schoolentry;
 
 import de.eshg.base.centralfile.FacilityApi;
 import de.eshg.base.centralfile.PersonApi;
+import de.eshg.lib.procedure.cemetery.CemeteryService;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.Procedure_;
 import de.eshg.lib.procedure.domain.model.ProgressEntry;
@@ -17,7 +18,6 @@ import de.eshg.lib.procedure.domain.model.RelatedPerson_;
 import de.eshg.lib.procedure.domain.model.Task_;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
 import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
-import de.eshg.lib.procedure.util.CemeteryService;
 import de.eshg.schoolentry.client.PersonClient;
 import de.eshg.schoolentry.domain.model.Anamnesis;
 import de.eshg.schoolentry.domain.model.Anamnesis_;

@@ -9,7 +9,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Locale;
 
 // ISO 3166-1
-@Schema(name = "CountryCode", description = "List of country codes in ISO 3166-1 alpha-2 format.")
+@Schema(
+    name = "CountryCode",
+    description =
+        "List of country codes in ISO 3166-1 alpha-2 format. With custom extensions for stateless, non-standard countries, and unknown countries.")
 public enum CountryCode {
   AD,
   AE,
@@ -259,9 +262,23 @@ public enum CountryCode {
   YT,
   ZA,
   ZM,
-  ZW;
+  ZW,
+  // Custom definitions
+  XK,
+  UNKNOWN,
+  STATELESS,
+  ;
 
   public static String getCountryName(CountryCode countryCode) {
+    return switch (countryCode) {
+      case XK -> "Kosovo";
+      case UNKNOWN -> "Unbekanntes Land";
+      case STATELESS -> "Staatenlos";
+      default -> getCountryNameWithLocale(countryCode);
+    };
+  }
+
+  private static String getCountryNameWithLocale(CountryCode countryCode) {
     Locale locale = new Locale.Builder().setRegion(countryCode.name()).setLanguage("DE").build();
     return locale.getDisplayCountry(locale);
   }

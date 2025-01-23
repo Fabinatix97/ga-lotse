@@ -7,7 +7,7 @@ import {
   ApiAddInventoryItemRequest,
   ApiInventoryItem,
   ApiUpdateInventoryItemRequest,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import {
   mapOptionalValue,
   mapRequiredValue,

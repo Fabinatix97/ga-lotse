@@ -13,13 +13,14 @@ import de.eshg.base.SortDirection;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonsSortKey;
 import de.eshg.lib.contact.ContactClient;
+import de.eshg.lib.procedure.api.ProcedureSearchParameters;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.procedures.ProcedureQuery;
 import de.eshg.lib.procedure.procedures.ProcedureSearchService;
+import de.eshg.lib.procedure.util.ProcedureValidator;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.schoolentry.api.ProcedureFilterParameters;
 import de.eshg.schoolentry.api.ProcedurePaginationAndSortParameters;
-import de.eshg.schoolentry.api.ProcedureSearchParameters;
 import de.eshg.schoolentry.api.SchoolDto;
 import de.eshg.schoolentry.api.SchoolEntryProcedureSortKey;
 import de.eshg.schoolentry.api.WaitingRoomProcedurePaginationAndSortParameters;
@@ -151,7 +152,7 @@ public class ProcedureOverviewService {
       validator.validateSchoolYear(Year.of(filterParameters.schoolYearFilter()));
     }
 
-    if (Validator.hasNonNullValue(searchParameters)) {
+    if (ProcedureValidator.hasNonNullValue(searchParameters)) {
       List<SchoolEntryProcedure> allProcedures =
           procedureSearchService.searchProceduresByPerson(
               searchParameters.searchFirstName(),

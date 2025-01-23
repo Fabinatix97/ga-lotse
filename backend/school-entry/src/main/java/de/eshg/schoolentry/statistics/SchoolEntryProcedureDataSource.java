@@ -157,7 +157,7 @@ public class SchoolEntryProcedureDataSource
       case CHILD_CENTRAL_FILE_ID -> procedure.getChildIdFromCentralFile();
       case KIH ->
           AnamnesisStatistics.getAnamnesisAttribute(procedure, Anamnesis::getNumberOfSiblings);
-      case SCHULE, SCHULNR -> null; // TODO ISSUE-7153
+      case SCHULE -> procedure.getSchoolId();
       case WOHND -> getInGermanySinceAttribute(procedure);
     };
   }

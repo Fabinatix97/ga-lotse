@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/base-api";
 
 import { useGetSelfUser } from "@/lib/baseModule/api/queries/users";
 import { useHasUserRolesCheck } from "@/lib/shared/hooks/useAccessControl";

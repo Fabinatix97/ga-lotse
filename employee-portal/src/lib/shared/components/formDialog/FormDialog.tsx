@@ -43,11 +43,7 @@ export function FormDialog<T extends FormikValues>({
               <Typography textColor="text.secondary">{description}</Typography>
               {children}
               <Stack sx={{ paddingTop: 2 }}>
-                <Stack
-                  direction="row"
-                  spacing={2}
-                  style={{ marginLeft: "auto" }}
-                >
+                <Stack direction="row" spacing={2} sx={{ marginLeft: "auto" }}>
                   <Button
                     size="sm"
                     variant="outlined"

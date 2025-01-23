@@ -5,6 +5,7 @@
 
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import { calculateAge } from "@eshg/lib-portal/helpers/dateTime";
 
 import {
   TabNavigationHeader,
@@ -19,6 +20,7 @@ interface Person {
 
 interface PersonToolbarHeaderProps {
   person: Person;
+  showAge?: boolean;
 }
 
 export function PersonToolbarHeader(props: PersonToolbarHeaderProps) {
@@ -32,6 +34,11 @@ export function PersonToolbarHeader(props: PersonToolbarHeaderProps) {
       <TabNavigationHeaderTypography>
         Geb. {formatDate(person.dateOfBirth)}
       </TabNavigationHeaderTypography>
+      {props.showAge && (
+        <TabNavigationHeaderTypography>
+          Alter: {calculateAge(person.dateOfBirth)}
+        </TabNavigationHeaderTypography>
+      )}
     </TabNavigationHeader>
   );
 }

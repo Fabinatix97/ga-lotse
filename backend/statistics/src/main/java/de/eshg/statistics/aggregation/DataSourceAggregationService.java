@@ -157,7 +157,7 @@ public class DataSourceAggregationService {
 
   private static Optional<BaseAvailableDataSource> findBaseAvailableDataSource(
       List<BaseAvailableDataSource> baseAvailableDataSources, Attribute attribute) {
-    if (!isCentralFileId(attribute.valueType())) {
+    if (!isBaseModuleId(attribute.valueType())) {
       return Optional.empty();
     } else {
       return baseAvailableDataSources.stream()
@@ -168,15 +168,17 @@ public class DataSourceAggregationService {
     }
   }
 
-  static boolean isCentralFileId(ValueType valueType) {
+  static boolean isBaseModuleId(ValueType valueType) {
     return valueType.equals(ValueType.CENTRAL_FILE_ID_PERSON)
-        || valueType.equals(ValueType.CENTRAL_FILE_ID_FACILITY);
+        || valueType.equals(ValueType.CENTRAL_FILE_ID_FACILITY)
+        || valueType.equals(ValueType.CONTACT_ID);
   }
 
   static SubjectType mapToSubjectType(ValueType valueType) {
     return switch (valueType) {
       case ValueType.CENTRAL_FILE_ID_FACILITY -> SubjectType.FACILITY;
       case ValueType.CENTRAL_FILE_ID_PERSON -> SubjectType.PERSON;
+      case ValueType.CONTACT_ID -> SubjectType.CONTACT;
       default -> throw new IllegalStateException("Unexpected value: " + valueType);
     };
   }

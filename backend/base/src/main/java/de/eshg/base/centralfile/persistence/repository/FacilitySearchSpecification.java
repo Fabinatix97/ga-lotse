@@ -23,24 +23,31 @@ public class FacilitySearchSpecification implements Specification<Facility> {
 
   private final String nameQuery;
   private final boolean includeDeleted;
+  private final boolean includeExternal;
 
   public FacilitySearchSpecification(String nameQuery) {
     this.nameQuery = nameQuery;
     this.includeDeleted = false;
+    this.includeExternal = false;
   }
 
   public FacilitySearchSpecification(String nameQuery, boolean includeDeleted) {
     this.nameQuery = nameQuery;
     this.includeDeleted = includeDeleted;
+    this.includeExternal = false;
+  }
+
+  public FacilitySearchSpecification(
+      String nameQuery, boolean includeDeleted, boolean includeExternal) {
+    this.nameQuery = nameQuery;
+    this.includeDeleted = includeDeleted;
+    this.includeExternal = includeExternal;
   }
 
   @Override
   public Predicate toPredicate(
       Root<Facility> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
     List<Predicate> conjunctions = new ArrayList<>();
-    conjunctions.add(
-        builder.notEqual(
-            root.get(Facility_.dataOrigin), builder.literal(DataOrigin.EXTERNAL.name())));
 
     List<Predicate> conjunctionsNameQuery = getNamePredicates(root, builder);
     conjunctions.add(builder.and(conjunctionsNameQuery.toArray(Predicate[]::new)));
@@ -50,6 +57,12 @@ public class FacilitySearchSpecification implements Specification<Facility> {
 
     if (!includeDeleted) {
       conjunctions.add(builder.isNull(root.get(Facility_.deleteAt)));
+    }
+
+    if (!includeExternal) {
+      conjunctions.add(
+          builder.notEqual(
+              root.get(Facility_.dataOrigin), builder.literal(DataOrigin.EXTERNAL.name())));
     }
 
     query.orderBy(getSortingExpression(root, builder));

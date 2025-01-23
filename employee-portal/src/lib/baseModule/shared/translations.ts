@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiContactCategory } from "@eshg/employee-portal-api/base";
+import { ApiContactCategory } from "@eshg/base-api";
 
 export const contactCategoryNames: Record<ApiContactCategory, string> = {
   [ApiContactCategory.Laboratory]: "Labor",

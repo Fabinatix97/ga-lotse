@@ -101,7 +101,10 @@ interface RowRouteNavigation<TData> extends RowNavigationBase<TData> {
   route: (row: Row<TData>) => string | undefined;
 }
 interface RowClickNavigation<TData> extends RowNavigationBase<TData> {
-  onClick: (row: Row<TData>) => void;
+  /**
+   * onClick accepts a nested function. It will only handle the action if the function is returned. When undefined, the row will be shown as not navigable.
+   */
+  onClick: (row: Row<TData>) => (() => void) | undefined;
 }
 
 export interface DataTableProps<TData> {

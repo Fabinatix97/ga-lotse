@@ -5,6 +5,7 @@
 
 import { ApiConsultation } from "@eshg/employee-portal-api/stiProtection";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
 
 import {
   mapBoolToYesOrNo,
@@ -42,8 +43,14 @@ export function mapFormValuesToApi(
     pregnancy: {
       hasPregnancyRelatedInfo:
         formData.pregnancy.hasPregnancyRelatedInfo ?? undefined,
-      lastCytologyTest: mapOptionalValue(formData.pregnancy.lastCytologyTest),
-      startOfLastPeriod: mapOptionalValue(formData.pregnancy.startOfLastPeriod),
+      lastCytologyTest: ifDefined(
+        mapOptionalValue(formData.pregnancy.lastCytologyTest),
+        (a) => new Date(a),
+      ),
+      startOfLastPeriod: ifDefined(
+        mapOptionalValue(formData.pregnancy.startOfLastPeriod),
+        (a) => new Date(a),
+      ),
       numberOfPregnancies: mapOptionalValue(
         formData.pregnancy.numberOfPregnancies,
       ),
@@ -89,8 +96,10 @@ export function mapApiToForm(
     pregnancy: {
       hasPregnancyRelatedInfo:
         apiData?.pregnancy?.hasPregnancyRelatedInfo ?? false,
-      lastCytologyTest: apiData?.pregnancy?.lastCytologyTest ?? "",
-      startOfLastPeriod: apiData?.pregnancy?.startOfLastPeriod ?? "",
+      lastCytologyTest:
+        apiData?.pregnancy?.lastCytologyTest?.toISOString().slice(0, 10) ?? "",
+      startOfLastPeriod:
+        apiData?.pregnancy?.startOfLastPeriod?.toISOString().slice(0, 10) ?? "",
       numberOfPregnancies: apiData?.pregnancy?.numberOfPregnancies ?? "",
       numberOfInducedAbortions:
         apiData?.pregnancy?.numberOfInducedAbortions ?? "",

@@ -15,12 +15,14 @@ import de.eshg.base.address.mapper.AddressMapper;
 import de.eshg.base.centralfile.persistence.entity.BirthDetails;
 import de.eshg.base.gdpr.api.AddGdprProcedureFromCitizenPortalRequest;
 import de.eshg.base.gdpr.api.AddGdprProcedureRequest;
+import de.eshg.base.gdpr.api.CitizenUsersGdprProcedureDto;
 import de.eshg.base.gdpr.api.GdprFacilityDto;
 import de.eshg.base.gdpr.api.GdprIdentificationDataDto;
 import de.eshg.base.gdpr.api.GdprPersonDto;
 import de.eshg.base.gdpr.api.GdprProcedureSortKey;
 import de.eshg.base.gdpr.api.GdprProcedureStatusDto;
 import de.eshg.base.gdpr.api.GdprProcedureTypeDto;
+import de.eshg.base.gdpr.api.GetCitizenSelfUsersGdprProceduresResponse;
 import de.eshg.base.gdpr.api.GetGdprProcedureResponse;
 import de.eshg.base.gdpr.api.GetGdprProceduresResponse;
 import de.eshg.base.gdpr.persistence.CentralFileIdWrapper;
@@ -41,6 +43,7 @@ import de.eshg.base.gdpr.persistence.IdentificationData;
 import de.eshg.base.util.MappingUtil;
 import de.eshg.base.util.PaginationUtil;
 import de.eshg.lib.procedure.model.gdpr.GdprValidationTaskTypeDto;
+import de.eshg.rest.service.error.BadRequestException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -92,7 +95,8 @@ public class GdprProcedureMapper {
         person.getBirthDetails().dateOfBirth(),
         mapToApi(person.getContactAddress()),
         person.getEmailAddress(),
-        person.getPhoneNumber());
+        person.getPhoneNumber(),
+        person.getBpk2());
   }
 
   public static GdprFacilityDto mapToApi(GdprFacility facility) {
@@ -100,7 +104,8 @@ public class GdprProcedureMapper {
         facility.getName(),
         mapToApi(facility.getContactAddress()),
         facility.getEmailAddress(),
-        facility.getPhoneNumber());
+        facility.getPhoneNumber(),
+        facility.getDataTransmitterPseudonymId());
   }
 
   public static AddressDto mapToApi(GdprFacilityAddress contactAddress) {
@@ -179,6 +184,9 @@ public class GdprProcedureMapper {
     gdprPerson.setLastName(person.lastName());
     gdprPerson.setPhoneNumber(person.phoneNumber());
     gdprPerson.setContactAddress(mapToDmGdprPersonAddress(person.address()));
+    if (person.bpk2() != null) {
+      throw new BadRequestException("Cannot set bkp2 using the API.");
+    }
     return gdprPerson;
   }
 
@@ -188,6 +196,9 @@ public class GdprProcedureMapper {
     gdprFacility.setContactAddress(mapToDmGdprFacilityAddress(facility.address()));
     gdprFacility.setEmailAddress(facility.emailAddress());
     gdprFacility.setPhoneNumber(facility.phoneNumber());
+    if (facility.dataTransmitterPseudonymId() != null) {
+      throw new BadRequestException("Cannot set dataTransmitterPseudonymId using the API.");
+    }
     return gdprFacility;
   }
 
@@ -240,6 +251,24 @@ public class GdprProcedureMapper {
     return new GetGdprProceduresResponse(
         procedures.stream().map(GdprProcedureMapper::mapGdprProcedureToApi).toList(),
         procedures.getTotalElements());
+  }
+
+  public static GetCitizenSelfUsersGdprProceduresResponse mapCitizenGdprProceduresToApi(
+      List<GdprProcedure> procedures) {
+    List<CitizenUsersGdprProcedureDto> responses =
+        procedures.stream().map(GdprProcedureMapper::mapProcedureToCitizenApi).toList();
+    return new GetCitizenSelfUsersGdprProceduresResponse(responses);
+  }
+
+  private static CitizenUsersGdprProcedureDto mapProcedureToCitizenApi(GdprProcedure procedure) {
+    return new CitizenUsersGdprProcedureDto(
+        procedure.getExternalId(),
+        GdprProcedureMapper.mapToApi(procedure.getType()),
+        GdprProcedureMapper.mapToApi(procedure.getStatus()),
+        procedure.getMatterOfConcern(),
+        procedure.getCentralFileDownload() != null,
+        procedure.getCreatedAt(),
+        procedure.getClosedAt());
   }
 
   public static PaginationUtil.PageSpec mapToPageSpec(

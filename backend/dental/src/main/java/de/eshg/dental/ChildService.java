@@ -5,11 +5,6 @@
 
 package de.eshg.dental;
 
-import static de.eshg.lib.xlsximport.ImportValidator.validateFileExistsAndHasCorrectType;
-import static de.eshg.lib.xlsximport.ImportValidator.validateHeaderExists;
-import static de.eshg.lib.xlsximport.ImportValidator.validateNumberOfRows;
-import static de.eshg.lib.xlsximport.ImportValidator.validateSheet;
-
 import com.google.common.collect.Iterables;
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.PersonApi;
@@ -26,7 +21,7 @@ import de.eshg.base.contact.api.ContactDto;
 import de.eshg.dental.api.AnnualInstitutionDto;
 import de.eshg.dental.api.ChildFilterParameters;
 import de.eshg.dental.api.ChildPaginationAndSortParameters;
-import de.eshg.dental.api.ChildResult;
+import de.eshg.dental.api.ChildSearchResult;
 import de.eshg.dental.api.ChildSortKey;
 import de.eshg.dental.api.CreateChildRequest;
 import de.eshg.dental.api.UpdateChildRequest;
@@ -36,6 +31,7 @@ import de.eshg.dental.client.PersonClient;
 import de.eshg.dental.config.DentalProperties;
 import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
+import de.eshg.dental.domain.model.FluoridationConsent;
 import de.eshg.dental.domain.model.Person;
 import de.eshg.dental.domain.repository.ChildRepository;
 import de.eshg.dental.importer.ChildColumn;
@@ -49,22 +45,23 @@ import de.eshg.dental.util.ExceptionUtil;
 import de.eshg.dental.util.ProgressEntryUtil;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.contact.ContactClient;
+import de.eshg.lib.procedure.api.ProcedureSearchParameters;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.procedures.ProcedureQuery;
 import de.eshg.lib.procedure.procedures.ProcedureSearchService;
+import de.eshg.lib.procedure.util.ProcedureValidator;
 import de.eshg.lib.xlsximport.FeedbackColumnAccessor;
-import de.eshg.lib.xlsximport.ImportValidator;
-import de.eshg.lib.xlsximport.XlsxNormalizer;
+import de.eshg.lib.xlsximport.XlsxImport;
 import de.eshg.lib.xlsximport.model.ImportResult;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.validation.ValidationUtil;
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.Clock;
 import java.time.Year;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -77,9 +74,6 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import org.apache.commons.text.similarity.FuzzyScore;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -197,6 +191,27 @@ public class ChildService {
     return Optional.ofNullable(result.get(personKeyAttributes));
   }
 
+  private Optional<ChildWithAugmentedData> findLatestChildWithSearchParameters(
+      ProcedureSearchParameters searchParameters) {
+    PersonKeyAttributes personKeyAttributes =
+        new PersonKeyAttributes(
+            searchParameters.searchFirstName(),
+            searchParameters.searchLastName(),
+            searchParameters.searchDateOfBirth());
+
+    List<Child> children =
+        procedureSearchService
+            .searchProceduresByPersons(
+                Set.of(personKeyAttributes),
+                Person.PERSON_TYPE_USED_FOR_CHILDREN,
+                null,
+                Person.class)
+            .getOrDefault(personKeyAttributes, Collections.emptyList());
+
+    Optional<Child> latestChild = children.stream().max(Comparator.comparing(Child::getId));
+    return latestChild.map(this::augmentWithDetails);
+  }
+
   public Map<PersonKeyAttributes, Child> findOpenChildrenWithSamePersonKeyAttributes(
       Set<PersonKeyAttributes> personKeyAttributes) {
     if (personKeyAttributes.isEmpty()) {
@@ -224,6 +239,16 @@ public class ChildService {
         .map(Child::getExaminations)
         .flatMap(Collection::stream)
         .sorted(Comparator.comparing(Examination::getDateAndTime).reversed())
+        .toList();
+  }
+
+  public List<FluoridationConsent> getAllFluoridationConsents(
+      List<ChildWithAugmentedData> childAndAllPreviousChildren) {
+    return childAndAllPreviousChildren.stream()
+        .map(ChildWithAugmentedData::child)
+        .map(Child::getFluoridationConsents)
+        .flatMap(Collection::stream)
+        .sorted(Comparator.comparing(FluoridationConsent::dateOfConsent).reversed())
         .toList();
   }
 
@@ -306,7 +331,15 @@ public class ChildService {
 
   public PagedChildren getChildren(
       ChildFilterParameters filterParameters,
-      ChildPaginationAndSortParameters paginationAndSortParameters) {
+      ChildPaginationAndSortParameters paginationAndSortParameters,
+      ProcedureSearchParameters searchParameters) {
+
+    if (ProcedureValidator.hasNonNullValue(searchParameters)) {
+      List<ChildWithAugmentedData> child =
+          findLatestChildWithSearchParameters(searchParameters).stream().toList();
+      return new PagedChildren(child, child.size());
+    }
+
     ChildSpecification childSpecification =
         new ChildSpecification(filterParameters, paginationAndSortParameters);
     ChildPageSpec pageSpec = ChildSpecification.toPageSpec(paginationAndSortParameters);
@@ -352,34 +385,21 @@ public class ChildService {
 
   public ImportResult importChildrenFromFile(MultipartFile file, UUID institutionId, Year year)
       throws IOException {
-
-    validateFileExistsAndHasCorrectType(file);
-
-    try (InputStream inputStream = file.getInputStream();
-        XSSFWorkbook workbook = new XSSFWorkbook(inputStream)) {
-
-      validateSheet(workbook);
-      Sheet sheet = workbook.getSheetAt(0);
-
-      validateNumberOfRows(sheet, dentalProperties.getMaxNumberOfImportRows());
-      validateHeaderExists(sheet);
-
-      try (XlsxNormalizer xlsxNormalizer = new XlsxNormalizer()) {
-        XSSFSheet normalizedSheet = xlsxNormalizer.normalize(sheet);
-
-        List<ChildColumn> actualColumns =
-            ImportValidator.validateHeaderFormat(ChildColumn.values(), normalizedSheet);
-        ChildImporter importer =
-            new ChildImporter(
-                normalizedSheet,
-                new ChildRowReader(normalizedSheet, actualColumns),
-                new FeedbackColumnAccessor(actualColumns, ChildColumn.CHILD_ID.getHeader()),
-                institutionId,
-                year,
-                this);
-        return importer.process();
-      }
-    }
+    return XlsxImport.processWorkbook(
+        file,
+        dentalProperties.getMaxNumberOfImportRows(),
+        ChildColumn.values(),
+        (sheet, actualColumns) -> {
+          ChildImporter importer =
+              new ChildImporter(
+                  sheet,
+                  new ChildRowReader(sheet, actualColumns),
+                  new FeedbackColumnAccessor(actualColumns, ChildColumn.CHILD_ID.getHeader()),
+                  institutionId,
+                  year,
+                  this);
+          return importer.process();
+        });
   }
 
   private PagedChildren getChildrenWithPersonAttributeSortKey(
@@ -449,6 +469,19 @@ public class ChildService {
       addSystemProgressEntry(child, ChildSystemProgressEntryType.GROUP_MODIFIED);
     }
 
+    FluoridationConsent requestedFluoridationConsent =
+        ChildMapper.mapFluoridationToDomain(request.fluoridationConsent());
+    List<FluoridationConsent> persistedFluoridationConsents = child.getFluoridationConsents();
+    boolean updateFluoridationConsent =
+        requestedFluoridationConsent != null
+            && (persistedFluoridationConsents.isEmpty()
+                || !Objects.equals(
+                    requestedFluoridationConsent, persistedFluoridationConsents.getLast()));
+
+    if (updateFluoridationConsent) {
+      child.addFluoridationConsent(requestedFluoridationConsent);
+    }
+
     childRepository.flush();
   }
 
@@ -457,7 +490,7 @@ public class ChildService {
     progressEntryUtil.addSystemProgressEntry(child, childSystemProgressEntryType);
   }
 
-  public List<ChildResult> searchChildren(UUID institutionId, String searchString) {
+  public List<ChildSearchResult> searchChildren(UUID institutionId, String searchString) {
     List<Child> childrenAtInstitution =
         childRepository.findByInstitutionIdAndProcedureStatusOrderById(
             institutionId, ProcedureStatus.OPEN);
@@ -474,7 +507,7 @@ public class ChildService {
                 .reversed()
                 .thenComparing(c -> getFullPersonName(c.fileState()))
                 .thenComparing(c -> c.child().getId()))
-        .map(ChildWithScore::mapToChildResult)
+        .map(ChildWithScore::mapToChildSearchResult)
         .toList();
   }
 
@@ -492,13 +525,14 @@ public class ChildService {
 
   record ChildWithScore(GetPersonFileStateResponse fileState, Child child, int score) {
 
-    private ChildResult mapToChildResult() {
-      return new ChildResult(
+    private ChildSearchResult mapToChildSearchResult() {
+      return new ChildSearchResult(
           child().getExternalId(),
           fileState().firstName(),
           fileState().lastName(),
           fileState().dateOfBirth(),
-          child().getGroupName());
+          child().getGroupName().trim(),
+          fileState().gender());
     }
   }
 

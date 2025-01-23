@@ -23,8 +23,8 @@ export const progressEntryApiQueryKey = queryKeyFactory(
   stiProtectionApiQueryKey(["progressEntryApi"]),
 );
 
-export const stiProtectionProceduresApiQueryKey = queryKeyFactory(
-  stiProtectionApiQueryKey(["stiProcedures"]),
+export const proceduresQueryKey = queryKeyFactory(
+  stiProtectionApiQueryKey(["procedures"]),
 );
 
 export const appointmentTypesApiQueryKey = queryKeyFactory(

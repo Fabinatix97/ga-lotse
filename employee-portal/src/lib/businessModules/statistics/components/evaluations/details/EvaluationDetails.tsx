@@ -5,7 +5,6 @@
 
 "use client";
 
-import { HiddenContainer } from "@eshg/lib-portal/components/HiddenContainer";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import { Stack } from "@mui/joy";
 import { useRouter } from "next/navigation";
@@ -52,8 +51,7 @@ export function EvaluationDetails(
       router.push(routes.evaluations.index);
     });
 
-  const { download: exportData, downloadContainerRef } =
-    useExportEvaluationData();
+  const { download: exportData } = useExportEvaluationData();
 
   const { canWrite, canDelete, canUpdateEvaluation } =
     useStatisticsRoleChecks();
@@ -144,8 +142,6 @@ export function EvaluationDetails(
 
   return (
     <Stack gap={6}>
-      <HiddenContainer ref={downloadContainerRef} />
-
       <OverlayBoundary>
         <EvaluationNameChangeModal
           open={isNameChangeModalOpen}

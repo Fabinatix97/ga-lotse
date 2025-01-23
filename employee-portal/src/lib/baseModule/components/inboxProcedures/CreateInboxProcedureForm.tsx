@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiBaseFeature,
-  ApiBusinessModule,
-} from "@eshg/employee-portal-api/base";
+import { ApiBaseFeature, ApiBusinessModule } from "@eshg/base-api";
 import { ApiProcedureType } from "@eshg/employee-portal-api/businessProcedures";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";

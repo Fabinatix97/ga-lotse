@@ -5,7 +5,7 @@
 
 "use client";
 
-import { UpdateExaminationRequest } from "@eshg/employee-portal-api/dental";
+import { UpdateExaminationRequest } from "@eshg/dental-api";
 import {
   mapOptionalValue,
   parseOptionalValue,

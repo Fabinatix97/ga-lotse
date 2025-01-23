@@ -60,7 +60,9 @@ public class NotificationAggregationService {
             .toList();
     return aggregateNotifications(
         businessModuleAggregationHelper.requestFromBusinessModules(
-            null, BusinessModuleCapability.NOTIFICATIONS, BusinessModuleClient::getNotifications),
+            userService.getSelfBusinessModules(),
+            BusinessModuleCapability.NOTIFICATIONS,
+            BusinessModuleClient::getNotifications),
         baseModuleNotifications);
   }
 
@@ -73,7 +75,7 @@ public class NotificationAggregationService {
             .toList();
     return aggregateNotifications(
         businessModuleAggregationHelper.requestFromBusinessModules(
-            null,
+            userService.getSelfBusinessModules(),
             BusinessModuleCapability.NOTIFICATIONS,
             BusinessModuleClient::getUnreadNotifications),
         unreadBaseModuleNotifications);
@@ -125,7 +127,7 @@ public class NotificationAggregationService {
     return new MarkNotificationsAsReadResponse(
         aggregateErrorResponses(
             businessModuleAggregationHelper.requestFromBusinessModules(
-                null,
+                userService.getSelfBusinessModules(),
                 BusinessModuleCapability.NOTIFICATIONS,
                 client -> {
                   client.markNotificationsAsRead(markNotificationsAsReadRequest);

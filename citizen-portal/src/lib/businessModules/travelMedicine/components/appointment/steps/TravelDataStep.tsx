@@ -19,7 +19,6 @@ import {
 import { VACCINATION_CONSULTATION_TRAVEL_TIME_UNITS } from "@/lib/businessModules/travelMedicine/helpers/options";
 import { validateTodayOrFutureDate } from "@/lib/businessModules/travelMedicine/helpers/validators";
 import { useTranslation } from "@/lib/i18n/client";
-import { countryOptions } from "@/lib/shared/helpers/countryOption";
 
 export function TravelDataStep() {
   const { t } = useTranslation(["travelMedicine/forms"]);
@@ -39,7 +38,6 @@ export function TravelDataStep() {
               ? t("travelDataFormContent.fields.travelDestinations_required")
               : undefined
           }
-          options={countryOptions()}
         />
         <DateField
           name={"travelInformation.travelStartDate"}

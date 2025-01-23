@@ -12,5 +12,5 @@ public enum TableColumnValueType {
   INTEGER,
   TEXT,
   VALUE_WITH_OPTIONS,
-  PROCEDURE_ID
+  PROCEDURE_REFERENCE
 }

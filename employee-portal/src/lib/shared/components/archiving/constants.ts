@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiArchivingRelevance } from "@eshg/employee-portal-api/base";
+import { ApiArchivingRelevance } from "@eshg/base-api";
 
 export const archivingRelevanceNames = {
   [ApiArchivingRelevance.Default]: "Standard",

@@ -8,7 +8,6 @@ import {
   ApiEvaluationInfo,
   ApiEvaluationState,
 } from "@eshg/employee-portal-api/statistics";
-import { HiddenContainer } from "@eshg/lib-portal/components/HiddenContainer";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import {
@@ -100,6 +99,7 @@ function columns(functions: {
         canNavigate: {
           parentRow: true,
         },
+        width: "10rem",
       },
     }),
     columnHelper.accessor("dataSourceName", {
@@ -109,7 +109,7 @@ function columns(functions: {
         canNavigate: {
           parentRow: true,
         },
-        width: "8rem",
+        width: "10rem",
       },
     }),
     columnHelper.accessor("dataSourceSensitivity", {
@@ -140,7 +140,7 @@ function columns(functions: {
         canNavigate: {
           parentRow: true,
         },
-        width: "10rem",
+        width: "8rem",
       },
     }),
     columnHelper.accessor("timeRangeEnd", {
@@ -150,13 +150,16 @@ function columns(functions: {
         canNavigate: {
           parentRow: true,
         },
-        width: "10rem",
+        width: "8rem",
       },
     }),
     columnHelper.accessor("user", {
       header: "Erstellt von",
       enableSorting: false,
       cell: (props) => <UserLink user={props.getValue()} />,
+      meta: {
+        width: "10rem",
+      },
     }),
     columnHelper.accessor("state", {
       header: "Status",
@@ -279,8 +282,7 @@ export function EvaluationsTable({
   const deleteEvaluationWithConfirmation =
     useDeleteEvaluationWithConfirmation();
 
-  const { download: exportData, downloadContainerRef } =
-    useExportEvaluationData();
+  const { download: exportData } = useExportEvaluationData();
   const dataExportGuard = useDataExportGuard();
 
   const filterSettings = useFilterSettings({
@@ -395,8 +397,6 @@ export function EvaluationsTable({
           />
         </OverlayBoundary>
       )}
-
-      <HiddenContainer ref={downloadContainerRef} />
     </>
   );
 }

@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiUser } from "@eshg/employee-portal-api/base";
+import { ApiUser } from "@eshg/base-api";
 import { ApiPacklistDefinitionRevision } from "@eshg/employee-portal-api/inspection";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { FactCheckOutlined } from "@mui/icons-material";

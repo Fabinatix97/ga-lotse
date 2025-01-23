@@ -3,12 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiBusinessModule,
-  ApiProcedureStatus,
-} from "@eshg/employee-portal-api/base";
+import { ApiBusinessModule, ApiProcedureStatus } from "@eshg/base-api";
+import { routes as dentalRoutes } from "@eshg/dental/shared/routes";
 
-import { routes as dentalRoutes } from "@/lib/businessModules/dental/shared/routes";
 import { routes as inspectionRoutes } from "@/lib/businessModules/inspection/shared/routes";
 import { routes as measlesProtectionRoutes } from "@/lib/businessModules/measlesProtection/shared/routes";
 import { routes as medicalRegistryRoutes } from "@/lib/businessModules/medicalRegistry/shared/routes";
@@ -39,7 +36,7 @@ export function resolveProcedureDetailsRoute({
       }
       return measlesProtectionRoutes.procedures.details(procedureId).index;
     case "STI_PROTECTION":
-      return stiProtectionRoutes.procedures.byId(procedureId).index;
+      return stiProtectionRoutes.procedures.byId(procedureId).details;
     case "MEDICAL_REGISTRY":
       return medicalRegistryRoutes.procedures.byId(procedureId).index;
     case "DENTAL":
@@ -64,11 +61,11 @@ export function resolveProcedureProgressEntriesRoute(
       return measlesProtectionRoutes.procedures.details(procedureId)
         .progressEntries;
     case "STI_PROTECTION":
-      return stiProtectionRoutes.procedures.byId(procedureId).index;
+      return stiProtectionRoutes.procedures.byId(procedureId).details;
     case "MEDICAL_REGISTRY":
       return medicalRegistryRoutes.procedures.byId(procedureId).index;
     case "DENTAL":
-      throw new Error("TODO ISSUE-6770");
+      return dentalRoutes.children.byId(procedureId).progressEntries;
     case "OFFICIAL_MEDICAL_SERVICE":
       return officialMedicalServiceRoutes.procedures.byId(procedureId)
         .progressEntries;

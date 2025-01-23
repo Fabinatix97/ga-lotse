@@ -9,5 +9,7 @@ public enum ProphylaxisSessionSortKey {
   ID,
   TYPE,
   GROUP_NAME,
-  DATE_AND_TIME
+  DATE_AND_TIME,
+  SCREENING,
+  FLUORIDATION_VARNISH,
 }

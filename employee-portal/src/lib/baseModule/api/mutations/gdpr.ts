@@ -7,7 +7,7 @@ import {
   ApiAddCentralFileIdToGdprProcedureRequest,
   ApiAddGdprProcedureRequest,
   ApiGdprProcedureStatus,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import {
   ApiGdprProcedureType,
   GdprValidationTaskApiInterface,

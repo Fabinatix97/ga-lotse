@@ -6,7 +6,7 @@
 import {
   Configuration as BaseConfiguration,
   CitizenAccessCodeUserApi,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import {
   AppointmentBlockApi,
   AppointmentTypeApi,
@@ -14,6 +14,7 @@ import {
   ArchivingApi,
   Configuration,
   ConsultationApi,
+  DiagnosisApi,
   ExaminationApi,
   FileApi,
   MedicalHistoryApi,
@@ -107,4 +108,9 @@ export function useExaminationApi() {
 export function useConsultationApi() {
   const config = useConfiguration();
   return new ConsultationApi(config);
+}
+
+export function useDiagnosisApi() {
+  const config = useConfiguration();
+  return new DiagnosisApi(config);
 }

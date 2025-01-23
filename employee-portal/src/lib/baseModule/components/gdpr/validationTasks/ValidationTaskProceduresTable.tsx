@@ -23,7 +23,10 @@ import { useTransition } from "react";
 import { useCloseValidationTaskDialog } from "@/lib/baseModule/components/gdpr/validationTasks/UseCloseValidationTaskDialog";
 import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";
 import { PROCEDURE_STATUS } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
-import { useAddDownloadPackage } from "@/lib/shared/api/mutations/gdpr";
+import {
+  useAddDownloadPackage,
+  useDeleteBusinessProcedure,
+} from "@/lib/shared/api/mutations/gdpr";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { procedureTypeNames } from "@/lib/shared/components/procedures/constants";
@@ -50,9 +53,10 @@ export function ValidationTaskProceduresTable({
   loading,
 }: Readonly<ValidationTaskProceduresTableProps>) {
   const [isPendingUpdate, startTransition] = useTransition();
-  const addDownloadPackage = useAddDownloadPackage(
+  const addDownloadPackage = useAddDownloadPackage(gdprValidationTaskApi);
+
+  const deleteBusinessProcedure = useDeleteBusinessProcedure(
     gdprValidationTaskApi,
-    gdprProcedureType,
   );
 
   const { openCloseValidationTaskDialog } = useCloseValidationTaskDialog({
@@ -65,12 +69,19 @@ export function ValidationTaskProceduresTable({
   const columns = useColumns({
     gdprProcedureType,
     onStatusChange: (event) => {
-      startTransition(() =>
-        addDownloadPackage.mutate({
-          gdprProcedureId,
-          businessModuleProcedureId: event.businessModuleProcedureId,
-        }),
-      );
+      startTransition(() => {
+        if (gdprProcedureType === ApiGdprProcedureType.OfAccess) {
+          addDownloadPackage.mutate({
+            gdprProcedureId,
+            businessModuleProcedureId: event.businessModuleProcedureId,
+          });
+        } else {
+          deleteBusinessProcedure.mutate({
+            gdprProcedureId,
+            businessModuleProcedureId: event.businessModuleProcedureId,
+          });
+        }
+      });
     },
   });
 

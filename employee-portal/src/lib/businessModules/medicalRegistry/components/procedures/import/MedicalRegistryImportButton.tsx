@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/base-api";
 import { FileUploadOutlined } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 

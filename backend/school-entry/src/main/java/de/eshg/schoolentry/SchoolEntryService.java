@@ -271,7 +271,11 @@ public class SchoolEntryService {
       SopessExaminationResult sopessExaminationResult,
       DevelopmentScreening developmentScreening) {
     SchoolEntryProcedure schoolEntryProcedure = new SchoolEntryProcedure();
-    schoolEntryProcedure.updateProcedureStatus(initialProcedureStatus, clock, auditLogger);
+
+    // We set the createdAt explicitly to make sure that it is not after closedAt
+    Instant now = Instant.now(clock);
+    schoolEntryProcedure.setCreatedAt(now);
+    schoolEntryProcedure.updateProcedureStatus(initialProcedureStatus, now, auditLogger);
     schoolEntryProcedure.setProcedureType(type);
     schoolEntryProcedure.setSchoolId(schoolId);
     schoolEntryProcedure.setLocationId(locationId);

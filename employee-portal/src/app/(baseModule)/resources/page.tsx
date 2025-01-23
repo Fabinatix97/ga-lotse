@@ -10,18 +10,18 @@ import {
   ApiResourceType,
   ApiSortDirection,
   GetResourcesRequest,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
+import {
+  parseOptionalEnum,
+  parseOptionalString,
+  parseReadonlyPageParams,
+} from "@eshg/lib-portal/helpers/searchParams";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 
 import { ResourcesTable } from "@/lib/baseModule/components/resources/ResourcesTable";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
-import {
-  parseOptionalEnum,
-  parseOptionalString,
-  parseReadonlyPageParams,
-} from "@/lib/shared/helpers/searchParams";
 
 function parseSearchParams(
   searchParams: ReadonlyURLSearchParams,

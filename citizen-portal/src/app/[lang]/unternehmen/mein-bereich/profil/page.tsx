@@ -5,11 +5,14 @@
 
 "use client";
 
+import { ApiGetReferenceFacilityResponse } from "@eshg/citizen-portal-api/base";
+import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { Grid } from "@mui/joy";
 import { isDefined } from "remeda";
 
 import { useGetLinkedReferenceFacility } from "@/lib/baseModule/api/queries/mukFacilityLink";
+import { GdprContactForm } from "@/lib/baseModule/components/gdpr/form/GdprContactForm";
 import { useTranslation } from "@/lib/i18n/client";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { AddressFields } from "@/lib/shared/components/centralFile/AddressFields";
@@ -22,6 +25,7 @@ import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
+import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
 import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
 
 export default function OrganizationProfilePage() {
@@ -33,64 +37,80 @@ export default function OrganizationProfilePage() {
       <PageContent>
         <PageTitle>{t("common.organization_profile")}</PageTitle>
 
-        {linkedFacility === "not found" ? (
-          <ContentSheet>
-            <ContentSheetTitle>Platzhalter</ContentSheetTitle>
-            Hier könnte Ihre Werbung stehen.
-          </ContentSheet>
-        ) : (
-          <>
-            <ContentSheet>
-              <ContentSheetTitle>{linkedFacility.name}</ContentSheetTitle>
-
-              <Grid
-                container
-                spacing={2}
-                columns={byBreakpoint({ mobile: 1, desktop: 2 })}
-              >
-                <BaseFacilityFields facility={linkedFacility} />
-              </Grid>
-            </ContentSheet>
-
-            {isDefined(linkedFacility.differentBillingAddress) && (
-              <ContentSheet>
-                <ContentSheetTitle>
-                  {t("common.different_billing_address")}
-                </ContentSheetTitle>
-                <Grid
-                  container
-                  spacing={2}
-                  columns={byBreakpoint({ mobile: 1, desktop: 2 })}
-                >
-                  <AddressFields
-                    address={linkedFacility.differentBillingAddress}
-                  />
-                </Grid>
-              </ContentSheet>
-            )}
-
-            {linkedFacility.contactPersons.map((contactPerson, index) => (
-              <ContentSheet key={index}>
-                <ContentSheetTitle>
-                  {t("common.contact_person")}
-                  {" - "}
-                  {formatPersonName({
-                    firstName: contactPerson.firstName,
-                    lastName: contactPerson.lastName,
-                  })}
-                </ContentSheetTitle>
-                <Grid
-                  container
-                  spacing={2}
-                  columns={byBreakpoint({ mobile: 1, desktop: 2 })}
-                >
-                  <ContactPersonFields contactPerson={contactPerson} />
-                </Grid>
-              </ContentSheet>
-            ))}
-          </>
-        )}
+        <QueryBoundary>
+          <TwoColumnGrid
+            content={<ProfileContent linkedFacility={linkedFacility} />}
+            sidePanel={<GdprContactForm />}
+          />
+        </QueryBoundary>
       </PageContent>
     </PageLayout>
+  );
+}
+
+function ProfileContent({
+  linkedFacility,
+}: {
+  linkedFacility: ApiGetReferenceFacilityResponse | "not found";
+}) {
+  const { t } = useTranslation("translation");
+  if (linkedFacility === "not found") {
+    return (
+      <ContentSheet>
+        <ContentSheetTitle>Platzhalter</ContentSheetTitle>
+        Hier könnte Ihre Werbung stehen.
+      </ContentSheet>
+    );
+  }
+
+  return (
+    <div>
+      <ContentSheet>
+        <ContentSheetTitle>{linkedFacility.name}</ContentSheetTitle>
+
+        <Grid
+          container
+          spacing={2}
+          columns={byBreakpoint({ mobile: 1, desktop: 2 })}
+        >
+          <BaseFacilityFields facility={linkedFacility} />
+        </Grid>
+      </ContentSheet>
+
+      {isDefined(linkedFacility.differentBillingAddress) && (
+        <ContentSheet>
+          <ContentSheetTitle>
+            {t("common.different_billing_address")}
+          </ContentSheetTitle>
+          <Grid
+            container
+            spacing={2}
+            columns={byBreakpoint({ mobile: 1, desktop: 2 })}
+          >
+            <AddressFields address={linkedFacility.differentBillingAddress} />
+          </Grid>
+        </ContentSheet>
+      )}
+
+      {linkedFacility.contactPersons.map((contactPerson, index) => (
+        <ContentSheet key={index}>
+          <ContentSheetTitle>
+            {t("common.contact_person")}
+            {" - "}
+            {formatPersonName({
+              firstName: contactPerson.firstName,
+              lastName: contactPerson.lastName,
+            })}
+          </ContentSheetTitle>
+          <Grid
+            container
+            spacing={2}
+            columns={byBreakpoint({ mobile: 1, desktop: 2 })}
+          >
+            <ContactPersonFields contactPerson={contactPerson} />
+          </Grid>
+        </ContentSheet>
+      ))}
+    </div>
   );
 }

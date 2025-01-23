@@ -26,4 +26,5 @@ public record StiProtectionProcedureOverviewDto(
     CountryCode countryOfBirth,
     @NotNull GenderDto gender,
     @Valid AppointmentDto appointment,
-    String accessCode) {}
+    @NotNull String accessCode,
+    @NotNull LabStatusDto labStatus) {}

@@ -14,8 +14,6 @@ import de.eshg.lib.xlsximport.RowReader;
 import de.eshg.schoolentry.api.CountryCodeDto;
 import de.eshg.schoolentry.business.model.*;
 import de.eshg.schoolentry.domain.model.*;
-import de.eshg.schoolentry.domain.repository.Icd10CodeRepository;
-import de.eshg.schoolentry.domain.repository.Icd10GroupRepository;
 import de.eshg.schoolentry.mapper.AnamnesisMapper;
 import java.time.LocalDate;
 import java.time.Period;
@@ -23,26 +21,22 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.BiConsumer;
-import java.util.stream.Stream;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.data.domain.Range;
 
-public class PastProcedureListRowReader
-    extends RowReader<PastProcedureListRow, PastProcedureListColumn> {
+class PastProcedureListRowReader extends RowReader<PastProcedureListRow, PastProcedureListColumn> {
 
-  private final Icd10CodeRepository icd10CodeRepository;
-  private final Icd10GroupRepository icd10GroupRepository;
-  public static final String DATE_FORMAT = "^\\d{2}\\.\\d{4}$";
+  private static final String DATE_FORMAT = "^\\d{2}\\.\\d{4}$";
 
-  public PastProcedureListRowReader(
-      Sheet sheet,
-      List<PastProcedureListColumn> actualColumns,
-      Icd10CodeRepository icd10CodeRepository,
-      Icd10GroupRepository icd10GroupRepository) {
+  static final List<PastProcedureListColumn> DISABILITY_ICD10_COLUMNS =
+      List.of(DISABILITY_ICD10_1, DISABILITY_ICD10_2, DISABILITY_ICD10_3);
+
+  static final List<PastProcedureListColumn> CHRONIC_DISEASE_ICD10_COLUMNS =
+      List.of(CHRONIC_DISEASE_ICD10_1, CHRONIC_DISEASE_ICD10_2, CHRONIC_DISEASE_ICD10_3);
+
+  PastProcedureListRowReader(Sheet sheet, List<PastProcedureListColumn> actualColumns) {
     super(sheet, actualColumns, PastProcedureListRow::new);
-    this.icd10CodeRepository = icd10CodeRepository;
-    this.icd10GroupRepository = icd10GroupRepository;
   }
 
   @Override
@@ -688,76 +682,48 @@ public class PastProcedureListRowReader
   private HandicapWithDiagnosis readChronicDisease(
       ColumnAccessor<PastProcedureListColumn> col, ErrorHandler errorHandler) {
     return readHandicapWithDiagnosis(
-        col,
-        CHRONIC_DISEASE,
-        CHRONIC_DISEASE_ICD10_1,
-        CHRONIC_DISEASE_ICD10_2,
-        CHRONIC_DISEASE_ICD10_3,
-        errorHandler);
+        col, CHRONIC_DISEASE, CHRONIC_DISEASE_ICD10_COLUMNS, errorHandler);
   }
 
   private HandicapWithDiagnosis readDisability(
       ColumnAccessor<PastProcedureListColumn> col, ErrorHandler errorHandler) {
-    return readHandicapWithDiagnosis(
-        col, DISABILITY, DISABILITY_ICD10_1, DISABILITY_ICD10_2, DISABILITY_ICD10_3, errorHandler);
+    return readHandicapWithDiagnosis(col, DISABILITY, DISABILITY_ICD10_COLUMNS, errorHandler);
   }
 
   private HandicapWithDiagnosis readHandicapWithDiagnosis(
       ColumnAccessor<PastProcedureListColumn> col,
-      PastProcedureListColumn column,
-      PastProcedureListColumn diagnosis1,
-      PastProcedureListColumn diagnosis2,
-      PastProcedureListColumn diagnosis3,
+      PastProcedureListColumn hasDiagnosisColumn,
+      List<PastProcedureListColumn> icd10Columns,
       ErrorHandler errorHandler) {
-    Cell cell = col.get(column);
-    Cell cellDiagnosis1 = col.get(diagnosis1);
-    Cell cellDiagnosis2 = col.get(diagnosis2);
-    Cell cellDiagnosis3 = col.get(diagnosis3);
-    boolean value = cellAsBoolean(col, column, errorHandler);
-    String icd10Code1 = cellAsString(col, diagnosis1, true, false, errorHandler);
-    String icd10Code2 = cellAsString(col, diagnosis2, true, false, errorHandler);
-    String icd10Code3 = cellAsString(col, diagnosis3, true, false, errorHandler);
-    List<String> icd10Codes =
-        Stream.of(icd10Code1, icd10Code2, icd10Code3)
-            .filter(Objects::nonNull)
-            .sorted(String::compareTo)
+    List<String> icd10CodesIncludingNulls =
+        icd10Columns.stream()
+            .map(icd10Column -> readIcd10Value(col, icd10Column, errorHandler))
             .toList();
 
-    if (value && icd10Codes.isEmpty()) {
-      errorHandler.handleError(cell, "Ungültiger Wert (Diagnosen erwartet, wenn Ja angegeben)");
-      return null;
-    }
+    List<String> icd10Codes = icd10CodesIncludingNulls.stream().filter(Objects::nonNull).toList();
 
-    Map<Cell, String> icd10CodesByCells = new LinkedHashMap<>();
-    icd10CodesByCells.put(cellDiagnosis1, icd10Code1);
-    icd10CodesByCells.put(cellDiagnosis2, icd10Code2);
-    icd10CodesByCells.put(cellDiagnosis3, icd10Code3);
-
-    boolean errorInICD10 = false;
-
-    for (Map.Entry<Cell, String> icd10CodeByCell : icd10CodesByCells.entrySet()) {
-      String icd10Code = icd10CodeByCell.getValue();
-      if (icd10Code != null
-          && !icd10CodeRepository.existsByCodeWithoutDot(icd10Code)
-          && !icd10GroupRepository.existsByGroupStartAndGroupEnd(icd10Code)) {
-        errorHandler.handleError(
-            icd10CodeByCell.getKey(),
-            "Ungültiger Wert (ICD-10 Code %s existiert nicht)".formatted(icd10Code));
-        errorInICD10 = true;
-      }
-    }
-
-    if (!value && !icd10Codes.isEmpty()) {
-      errorHandler.handleError(cell, "Ungültiger Wert (Ja erwartet, da Diagnosen angegeben)");
-      return null;
+    Cell hasDiagnosisCell = col.get(hasDiagnosisColumn);
+    boolean hasDiagnosis = cellAsBoolean(col, hasDiagnosisColumn, errorHandler);
+    if (hasDiagnosis && icd10Codes.isEmpty()) {
+      errorHandler.handleError(
+          hasDiagnosisCell, "Ungültiger Wert (Diagnosen erwartet, wenn Ja angegeben)");
+    } else if (!hasDiagnosis && !icd10Codes.isEmpty()) {
+      errorHandler.handleError(
+          hasDiagnosisCell, "Ungültiger Wert (Ja erwartet, da Diagnosen angegeben)");
     }
 
     HandicapWithDiagnosis handicapWithDiagnosis = new HandicapWithDiagnosis();
-    handicapWithDiagnosis.setResult(value);
-    if (!errorInICD10) {
-      handicapWithDiagnosis.setIcd10Codes(icd10Codes);
-    }
+    handicapWithDiagnosis.setResult(hasDiagnosis);
+    handicapWithDiagnosis.setIcd10Codes(icd10Codes);
+    handicapWithDiagnosis.setIcd10CodesIncludingNulls(icd10CodesIncludingNulls);
     return handicapWithDiagnosis;
+  }
+
+  private String readIcd10Value(
+      ColumnAccessor<PastProcedureListColumn> col,
+      PastProcedureListColumn icd10Column,
+      ErrorHandler errorHandler) {
+    return cellAsString(col, icd10Column, true, false, errorHandler);
   }
 
   private DisabilityType readDisabilityType(

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiCountryCode } from "@eshg/employee-portal-api/base";
+import { ApiCountryCode } from "@eshg/base-api";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { isNullish } from "remeda";
 

@@ -1,0 +1,23 @@
+{
+  "pageTitle": "Open Data",
+  "aboutSection": {
+    "title": "Was sind „Offene Daten” und welches Konzept steckt dahinter?",
+    "text": "Offene Daten sind Daten, auf die alle frei zugreifen, diese nutzen, verändern und teilen können. Der Begriff Offene Daten oder Open Data wird dabei hier synonym verwendet. Alle diese Daten stehen unter einer freien Lizenz zur Verfügung und sind frei nutzbar. Die offenen Daten sind dabei maschinenlesbar und stehen in offenen Formaten zur Verfügung. Das Offenlegen der Daten erhöht die Transparenz des Verwaltungshandelns und schafft neue Dienstleistungen, die die Verwaltung allein nicht schaffen könnte."
+  },
+  "filterSection": {
+    "search": "Suche",
+    "topic": "Thema",
+    "selectTopic": "Thema auswählen",
+    "year": "Jahr",
+    "yearPlaceholder": "Jahr (JJJJ)",
+    "fileType": "Datentyp",
+    "removeFilter": "Entfernen",
+    "resetAllFilters": "Filter Zurücksetzen"
+  },
+  "resultSection": {
+    "results": "Ergebnisse",
+    "foundSingular": "{{totalElements}} Ergebnis gefunden",
+    "foundPlural": "{{totalElements}} Ergebnisse gefunden",
+    "version": "Version"
+  }
+}

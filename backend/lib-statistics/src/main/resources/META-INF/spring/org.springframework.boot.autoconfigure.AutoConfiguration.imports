@@ -1,1 +1,2 @@
 de.eshg.lib.statistics.spring.config.StatisticsLibraryAutoConfiguration
+de.eshg.lib.statistics.spring.config.StatisticsLibraryDomainModelAutoConfiguration

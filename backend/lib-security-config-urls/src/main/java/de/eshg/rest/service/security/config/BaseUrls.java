@@ -30,6 +30,7 @@ public final class BaseUrls {
 
     public static final String USER_SELF_URL = "/self";
     public static final String CITIZEN_USER_API = "/citizen-users";
+    public static final String CITIZEN_USER_SELF_URL = "/self";
     public static final String CITIZEN_ACCESS_CODE_USER_API = "/citizen-access-code-users";
     public static final String CALENDAR_API = "/calendars";
     public static final String CALENDAR_API_GLOBAL_CALENDAR_URL = "/global";
@@ -76,6 +77,7 @@ public final class BaseUrls {
     public static final String TASK_API = "/tasks";
     public static final String PROCEDURE_CONFIG_API = "/procedure-config";
     public static final String PUBLIC_CONFIG_API = "/public/config";
+    public static final String ICD_10_CODES_API = "/icd10-codes";
 
     private Base() {}
   }
@@ -109,7 +111,6 @@ public final class BaseUrls {
     public static final String VALUE_EVALUATOR_CONTROLLER = "/value-evaluation";
     public static final String LABEL_CONTROLLER = "/school-entry-labels";
     public static final String COUNTRY_CODES_CONTROLLER = "/country-codes";
-    public static final String ICD_10_CODE_CONTROLLER = "/icd10-codes";
     public static final String IMPORT_CONTROLLER = "/import";
 
     private SchoolEntry() {}
@@ -208,10 +209,6 @@ public final class BaseUrls {
     public static final String ARCHIVING_API = "/archiving";
     public static final String TASKS_TEAM_VIEW = TASKS_API + "/team-view";
     public static final String GDPR_VALIDATION_TASK_API = "/gdpr-validation-tasks";
-    public static final String GDPR_VALIDATION_TASK_API_DOWNLOAD_INFO =
-        "/gdpr-validation-tasks/{gdprProcedureId}/download-packages";
-    public static final String GDPR_VALIDATION_TASK_API_DOWNLOAD =
-        "/gdpr-validation-tasks/download-packages/{id}";
 
     private ProcedureLibrary() {}
   }

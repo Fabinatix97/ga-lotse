@@ -74,5 +74,8 @@
   <include file="migrations/0058_invert_inbox_procedure_relationships.xml"/>
   <include file="migrations/0059_add_procedure_reference_for_statistics.xml"/>
   <include file="migrations/0060_add_salutation_inbox_procedure.xml"/>
+  <include file="migrations/0061_add_oms_task_type.xml"/>
+  <include file="migrations/0062_add_cemetery_delete_at.xml"/>
+  <include file="migrations/0063_add_previous_file_state_id_to_system_progress_entry.xml"/>
 
 </databaseChangeLog>

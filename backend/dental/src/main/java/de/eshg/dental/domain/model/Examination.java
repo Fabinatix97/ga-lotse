@@ -9,10 +9,13 @@ import de.cronn.reflection.util.PropertyUtils;
 import de.eshg.domain.model.BaseEntityWithExternalId;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.beans.PropertyDescriptor;
@@ -35,6 +38,14 @@ public class Examination extends BaseEntityWithExternalId {
   @ManyToOne(optional = false)
   @JoinColumn(name = "prophylaxis_session_id")
   private ProphylaxisSession prophylaxisSession;
+
+  @OneToOne(
+      optional = true,
+      fetch = FetchType.EAGER,
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+      orphanRemoval = true)
+  @JoinColumn(nullable = true)
+  private ExaminationResult result;
 
   private String note;
 
@@ -60,6 +71,17 @@ public class Examination extends BaseEntityWithExternalId {
 
   public void setNote(String note) {
     this.note = note;
+  }
+
+  public ExaminationResult getResult() {
+    return result;
+  }
+
+  public void setResult(ExaminationResult result) {
+    if (result != null) {
+      result.setExamination(this);
+    }
+    this.result = result;
   }
 
   public Instant getDateAndTime() {

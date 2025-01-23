@@ -5,10 +5,7 @@
 
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import {
-  buildEnumOptions,
-  createFieldNameMapper,
-} from "@eshg/lib-portal/helpers/form";
+import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { Divider, Stack, Typography } from "@mui/joy";
 
 import {
@@ -17,6 +14,7 @@ import {
   REPORTING_PERIOD_TRANSLATION,
   ReportingPeriod,
 } from "@/lib/businessModules/statistics/api/models/reportSeriesTypes";
+import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
 import {
@@ -24,18 +22,19 @@ import {
   getStartDateOptions as getStartMonthOptions,
 } from "./automateReportFormModel";
 
-export function AutomateReportStep() {
-  const fieldName = createFieldNameMapper<AutomateReportFormModel>();
+export function AutomateReportStep(
+  props: SidebarStepContentProps<AutomateReportFormModel>,
+) {
   return (
     <Stack gap={3}>
       <Stack gap={2}>
         <InputField
-          name={fieldName("name")}
+          name={props.fieldName("name")}
           label="Name"
           required="Bitte Name angeben."
         />
         <TextareaField
-          name={fieldName("description")}
+          name={props.fieldName("description")}
           label="Beschreibung"
           placeholder="Optional"
           minRows={1}
@@ -47,12 +46,12 @@ export function AutomateReportStep() {
       </Typography>
       <Stack gap={2}>
         <SelectField
-          name={fieldName("interval")}
+          name={props.fieldName("interval")}
           label="Intervall"
           options={buildEnumOptions<Interval>(INTERVAL_TRANSLATION)}
         />
         <SelectField
-          name={fieldName("startMonth")}
+          name={props.fieldName("startMonth")}
           label="Startdatum der Automatisierung"
           options={getStartMonthOptions()}
         />
@@ -62,7 +61,7 @@ export function AutomateReportStep() {
         Betrachtungszeitraum
       </Typography>
       <SelectField
-        name={fieldName("reportingPeriod")}
+        name={props.fieldName("reportingPeriod")}
         label="Betrachtungszeitraum"
         options={buildEnumOptions<ReportingPeriod>(
           REPORTING_PERIOD_TRANSLATION,

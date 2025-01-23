@@ -5,10 +5,17 @@
 
 import { styled } from "@mui/joy";
 
-export const SectionGrid = styled("section")<{
+export const SectionGrid = styled("section", {
+  shouldForwardProp(propName) {
+    return !["columns", "defaultColumn", "breakpoint"].includes(
+      propName as string,
+    );
+  },
+})<{
   columns?: string;
   defaultColumn?: number;
-}>(({ theme, defaultColumn, columns }) => ({
+  breakpoint?: "xxl" | "xl" | "lg" | "md";
+}>(({ theme, defaultColumn, columns, breakpoint }) => ({
   display: "grid",
   rowGap: theme.spacing(5),
   columnGap: theme.spacing(3),
@@ -18,7 +25,7 @@ export const SectionGrid = styled("section")<{
     gridColumn: defaultColumn,
   },
 
-  [theme.breakpoints.down("lg")]: {
+  [theme.breakpoints.down(breakpoint ?? "lg")]: {
     display: "flex",
     flexDirection: "column",
   },

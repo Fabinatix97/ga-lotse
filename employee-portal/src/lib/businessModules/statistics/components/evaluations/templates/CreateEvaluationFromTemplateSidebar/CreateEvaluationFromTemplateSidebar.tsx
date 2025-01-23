@@ -19,12 +19,17 @@ import { validateCreateEvaluationStep } from "@/lib/businessModules/statistics/c
 import { CreateEvaluationFromTemplateFormModel } from "@/lib/businessModules/statistics/components/evaluations/templates/CreateEvaluationFromTemplateSidebar/createEvaluationFromTemplateFormModel";
 import { getLastXMonthsTimeRange } from "@/lib/businessModules/statistics/components/evaluations/timeRangeHelper";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
-import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
+import {
+  SidebarStepper,
+  createStepContent,
+} from "@/lib/shared/components/SidebarStepper/SidebarStepper";
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
 } from "@/lib/shared/hooks/useSidebarWithFormRef";
+
+import { CreateEvaluationStepFormModel } from "./CreateEvaluationStep/createEvaluationStepFormModel";
 
 export function useCreateEvaluationFromTemplateSidebar(): UseSidebarWithFormRefResult<CreateEvaluationFromTemplateSidebarProps> {
   return useSidebarWithFormRef({
@@ -56,40 +61,37 @@ function CreateEvaluationFromTemplateSidebar(
     await addEvaluation({
       type: "AddEvaluationWithTemplateRequest",
       templateId: props.evaluationTemplateId,
-      name: model.name,
-      anonymized: mapAnonymizedFieldValueToBoolean(model.anonymized),
-      timeRangeStart: parseISO(model.timeSpan.start),
-      timeRangeEnd: parseISO(model.timeSpan.end),
+      name: model[0].name,
+      anonymized: mapAnonymizedFieldValueToBoolean(model[0].anonymized),
+      timeRangeStart: parseISO(model[0].timeSpan.start),
+      timeRangeEnd: parseISO(model[0].timeSpan.end),
     });
   }
 
   return (
     <SidebarStepper
       onClose={props.onClose}
-      onSubmit={onSubmit}
-      initialValues={{
-        name: "",
-        anonymized:
-          evaluationTemplateDetails.anonymizationOptions ===
-          AnonymizationOptions.NotAnonymizable
-            ? ENUM_FALSE_VALUE
-            : ENUM_TRUE_VALUE,
-        timeSpan: getLastXMonthsTimeRange(3),
-      }}
       formRef={props.formRef}
+      onSubmit={onSubmit}
       steps={[
-        {
-          type: "StandardStep",
-          step: {
-            title: "Auswertung erstellen",
-            content: (
-              <CreateEvaluationStep
-                evaluationTemplateDetails={evaluationTemplateDetails}
-              />
-            ),
-            validator: validateCreateEvaluationStep,
-          },
-        },
+        () => ({
+          title: "Auswertung erstellen",
+          content: createStepContent({
+            component: CreateEvaluationStep,
+            componentProps: { evaluationTemplateDetails },
+          }),
+          initialValues: {
+            name: "",
+            anonymized:
+              evaluationTemplateDetails.anonymizationOptions ===
+              AnonymizationOptions.NotAnonymizable
+                ? ENUM_FALSE_VALUE
+                : ENUM_TRUE_VALUE,
+            timeSpan: getLastXMonthsTimeRange(3),
+          } as CreateEvaluationStepFormModel,
+          validator: validateCreateEvaluationStep,
+          onSubmit,
+        }),
       ]}
     />
   );

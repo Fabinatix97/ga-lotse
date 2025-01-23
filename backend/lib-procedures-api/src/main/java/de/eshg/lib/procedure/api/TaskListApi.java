@@ -28,13 +28,10 @@ public interface TaskListApi {
   class QueryParameter {
     private QueryParameter() {}
 
-    public static final String WAS_ASSIGNED_BY_OTHER = "wasAssignedByOther";
-    public static final String IS_OVERDUE = "isOverdue";
     public static final String ASSIGNEE_ID = "assigneeId";
     public static final String ASSIGNED_BY_ID = "assignedById";
     public static final String TASK_TYPE = "taskTypes";
     public static final String TASK_STATUS = "taskStatus";
-    public static final String HAS_DUE_AT = "hasDueAt";
     public static final String SORT_KEY = "sortKey";
     public static final String SORT_ORDER = "sortOrder";
     public static final String LIMIT = "limit";

@@ -131,11 +131,10 @@ interface RapidTestExaminationProps {
 
 export function RapidTestExamination(props: RapidTestExaminationProps) {
   const { procedureId, rapidTestExamination: rapidTests } = props;
-  const upsertRapidTests = useUpsertRapidTest();
+  const upsertRapidTests = useUpsertRapidTest(procedureId);
 
   function onSubmit(values: RapidTestExaminationData) {
     return upsertRapidTests.mutateAsync({
-      id: procedureId,
       rapidTests: mapFormValuesToApi(values),
     });
   }

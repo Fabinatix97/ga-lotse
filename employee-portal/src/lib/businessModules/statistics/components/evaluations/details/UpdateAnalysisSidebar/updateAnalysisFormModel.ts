@@ -5,4 +5,4 @@
 
 import { SaveAnalysisStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/SaveAnalysisStep/saveAnalysisStepFormModel";
 
-export type UpdateAnalysisFormModel = SaveAnalysisStepFormModel;
+export type UpdateAnalysisFormModel = [SaveAnalysisStepFormModel];

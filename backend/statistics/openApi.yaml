@@ -1711,6 +1711,30 @@ components:
       - code
       - displayName
       - name
+    BaseModuleIdAttribute:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractTableColumnHeaderAttribute"
+      - type: object
+        properties:
+          baseAttribute:
+            oneOf:
+            - $ref: "#/components/schemas/BaseModuleIdAttribute"
+            - $ref: "#/components/schemas/BooleanAttribute"
+            - $ref: "#/components/schemas/DateAttribute"
+            - $ref: "#/components/schemas/DecimalAttribute"
+            - $ref: "#/components/schemas/IntegerAttribute"
+            - $ref: "#/components/schemas/ProcedureReferenceAttribute"
+            - $ref: "#/components/schemas/TextAttribute"
+            - $ref: "#/components/schemas/ValueWithOptionsAttribute"
+          code:
+            type: string
+          name:
+            type: string
+      required:
+      - baseAttribute
+      - code
+      - name
     BinningMode:
       type: string
       enum:
@@ -1796,30 +1820,6 @@ components:
       enum:
       - MEAN
       - SUM
-    CentralFileIdAttribute:
-      type: object
-      allOf:
-      - $ref: "#/components/schemas/AbstractTableColumnHeaderAttribute"
-      - type: object
-        properties:
-          baseAttribute:
-            oneOf:
-            - $ref: "#/components/schemas/BooleanAttribute"
-            - $ref: "#/components/schemas/CentralFileIdAttribute"
-            - $ref: "#/components/schemas/DateAttribute"
-            - $ref: "#/components/schemas/DecimalAttribute"
-            - $ref: "#/components/schemas/IntegerAttribute"
-            - $ref: "#/components/schemas/ProcedureIdAttribute"
-            - $ref: "#/components/schemas/TextAttribute"
-            - $ref: "#/components/schemas/ValueWithOptionsAttribute"
-          code:
-            type: string
-          name:
-            type: string
-      required:
-      - baseAttribute
-      - code
-      - name
     ChoroplethMapConfiguration:
       type: object
       allOf:
@@ -3226,7 +3226,7 @@ components:
       required:
       - numberOfPopulatedEntities
       - totalNumberOfEntities
-    ProcedureIdAttribute:
+    ProcedureReferenceAttribute:
       type: object
       allOf:
       - $ref: "#/components/schemas/AbstractTableColumnHeaderAttribute"
@@ -3461,12 +3461,12 @@ components:
       properties:
         attribute:
           oneOf:
+          - $ref: "#/components/schemas/BaseModuleIdAttribute"
           - $ref: "#/components/schemas/BooleanAttribute"
-          - $ref: "#/components/schemas/CentralFileIdAttribute"
           - $ref: "#/components/schemas/DateAttribute"
           - $ref: "#/components/schemas/DecimalAttribute"
           - $ref: "#/components/schemas/IntegerAttribute"
-          - $ref: "#/components/schemas/ProcedureIdAttribute"
+          - $ref: "#/components/schemas/ProcedureReferenceAttribute"
           - $ref: "#/components/schemas/TextAttribute"
           - $ref: "#/components/schemas/ValueWithOptionsAttribute"
         businessModule:

@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBaseFeature, ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiBaseFeature, ApiUserRole } from "@eshg/base-api";
+import {
+  hasUserRole,
+  noCheck,
+} from "@eshg/lib-employee-portal/helpers/accessControl";
 import {
   CalendarTodayOutlined,
   ContactsOutlined,
@@ -24,7 +28,6 @@ import {
   SideNavigationItem,
   UseSideNavigationItemsResult,
 } from "@/lib/baseModule/components/layout/sideNavigation/types";
-import { hasUserRole, noCheck } from "@/lib/shared/helpers/accessControl";
 
 import { routes } from "./shared/routes";
 

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetAggregatedNotificationsResponse } from "@eshg/employee-portal-api/base";
+import { ApiGetAggregatedNotificationsResponse } from "@eshg/base-api";
 import { InfoOutlined } from "@mui/icons-material";
 import { Button, Stack, Typography } from "@mui/joy";
 import { isNonNullish } from "remeda";

@@ -6,7 +6,10 @@
 import { useAddEvaluationTemplate } from "@/lib/businessModules/statistics/api/mutations/useAddEvaluationTemplate";
 import { useGetEvaluationDetails } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationDetails";
 import { SaveEvaluationTemplateStep } from "@/lib/businessModules/statistics/components/evaluations/EvaluationTemplateSidebar/SaveEvaluationTemplateStep/SaveEvaluationTemplateStep";
-import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
+import {
+  SidebarStepper,
+  createStepContent,
+} from "@/lib/shared/components/SidebarStepper/SidebarStepper";
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
@@ -34,26 +37,22 @@ function SaveAsEvaluationTemplateSidebar({
   return (
     <SidebarStepper
       onClose={onClose}
-      onSubmit={(model) =>
-        addEvaluationTemplate(evaluationId, model).then(() => void 0)
-      }
-      initialValues={{
-        name: "",
-        description: "",
-      }}
       formRef={formRef}
+      onSubmit={(model) =>
+        addEvaluationTemplate(evaluationId, model[0]).then(() => void 0)
+      }
       steps={[
-        {
-          type: "StandardStep",
-          step: {
-            title: "Vorlage speichern",
-            content: (
-              <SaveEvaluationTemplateStep
-                evaluationDetails={evaluationDetails}
-              />
-            ),
+        () => ({
+          title: "Vorlage speichern",
+          content: createStepContent({
+            component: SaveEvaluationTemplateStep,
+            componentProps: { evaluationDetails },
+          }),
+          initialValues: {
+            name: "",
+            description: "",
           },
-        },
+        }),
       ]}
     />
   );

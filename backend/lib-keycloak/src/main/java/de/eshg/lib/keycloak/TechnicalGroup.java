@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.List;
 
 public enum TechnicalGroup implements KeycloakGroup {
+  DENTIST("Zahnarzt", EmployeePermissionRole.DENTAL_ADMIN),
+  ZFA("ZFA", EmployeePermissionRole.DENTAL_ADMIN),
   SCHOOL_ENTRY_PHYSICIAN("ESU-Arzt", EmployeePermissionRole.SCHOOL_ENTRY_ADMIN),
   SCHOOL_ENTRY_MFA("ESU-MFA", EmployeePermissionRole.SCHOOL_ENTRY_ADMIN),
   TRAVEL_MEDICINE_PHYSICIAN("RMBI-Arzt", EmployeePermissionRole.TRAVEL_MEDICINE_ADMIN),

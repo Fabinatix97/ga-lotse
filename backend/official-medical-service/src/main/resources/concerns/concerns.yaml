@@ -1,0 +1,45 @@
+# Copyright 2025 cronn GmbH
+# SPDX-License-Identifier: Apache-2.0
+
+- # Kategorie: Studenten
+  category_de: Studenten
+  category_en: students
+  concerns:
+    - # Prüfungsfähigkeit
+      concern_de: Prüfungsfähigkeit
+      concern_en: Examination eligibility
+      description_de: Anlass zur Erstellung eines Gutachtens über die Prüfungsfähigkeit eines Studenten. Nur für in Frankfurt Studierende.
+      description_en: concern for certificates of examination eligibility. Only responsible for students at a Frankfurt university.
+      high_priority: true
+- # Kategorie: Beamte
+  category_de: Beamte
+  category_en: civil servant
+  concerns:
+    - # Dienstfähigkeitsbeurteilungen
+      concern_de: Dienstfähigkeitsbeurteilungen
+      concern_en: Certificate for call of duty
+      description_de: Anlass zur Erstellung eines Gutachtens über die Dienstfähigkeitsbeurteilungen einer Person, bevor eine Verbeamtung durchgeführt wird.
+      description_en: concern for certificates of eligibilty to be announced as civil_servant.
+      high_priority: false
+    - # Beamtenpriorisierung
+      concern_de: Beamtenpriorisierung
+      concern_en: Prioritization of civil servants
+      description_de: Anlass in Kategorie Beamte mit hoher Priorität
+      description_en: concern in category civil servant with high priority
+      high_priority: true
+- # Kategorie: Sonstiges
+  category_de: Sonstiges
+  category_en: Miscellaneous
+  concerns:
+    - # Vorzeitige Pensionierung
+      concern_de: Vorzeitige Pensionierung
+      concern_en: Early retirement
+      description_de: Beschreibung Vorzeitige Pensionierung
+      description_en: Description Early retirement
+      high_priority: false
+    - # Überprüfung längerer Krankschreibungen
+      concern_de: Überprüfung längerer Krankschreibungen
+      concern_en: Review of longer sick notes
+      description_de: Beschreibung Überprüfung längerer Krankschreibungen
+      description_en: Description Review of longer sick notes
+      high_priority: false

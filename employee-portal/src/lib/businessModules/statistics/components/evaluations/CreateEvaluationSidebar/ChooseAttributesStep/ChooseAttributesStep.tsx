@@ -4,16 +4,15 @@
  */
 
 import { Stack } from "@mui/joy";
-import { useFormikContext } from "formik";
-import { ChangeEvent } from "react";
 import { groupBy } from "remeda";
 
-import { CreateEvaluationFromScratchFormModel } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/createEvaluationFromScratchFormModel";
+import { ChooseAttributeStepOrChooseEvaluationStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/createEvaluationFromScratchFormModel";
 import {
   SearchableGroup,
   SearchableGroupItem,
   SearchableGroups,
 } from "@/lib/shared/components/SearchableGroups";
+import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import {
   CheckboxField,
   CheckboxFieldProps,
@@ -28,16 +27,16 @@ export interface CategorizedFlatAttribute {
   baseCode?: string;
   code: string;
   name: string;
+  key: string;
 }
 
-export function ChooseAttributesStep(props: {
+export interface ChooseAttributesStepProps
+  extends SidebarStepContentProps<ChooseAttributeStepOrChooseEvaluationStepFormModel> {
   attributes: CategorizedFlatAttribute[];
-}) {
-  const { values, setFieldValue } = useFormikContext<
-    CreateEvaluationFromScratchFormModel & {
-      _selectedAttributeKeys: string[];
-    }
-  >();
+  dataSourceName: string;
+}
+
+export function ChooseAttributesStep(props: ChooseAttributesStepProps) {
   const groupedAttributes = groupBy(
     props.attributes,
     (attribute) => attribute.category,
@@ -47,63 +46,37 @@ export function ChooseAttributesStep(props: {
     Object.entries(groupedAttributes).map(([category, attributes]) => ({
       name: category,
       inAccordion: true,
-      items: attributes.flatMap(mapToCheckboxGroupItem),
+      items: attributes.flatMap((attribute) =>
+        mapToCheckboxGroupItem(
+          attribute,
+          props.fieldName("selectedAttributeKeys"),
+        ),
+      ),
     }));
-
-  function setSelectedAttributes(event: ChangeEvent<HTMLInputElement>) {
-    const attributeMap = new Map(
-      props.attributes.map((it) => [mapAttributeToKey(it), it]),
-    );
-    const value = attributeMap.get(event.target.value)!;
-    const checked = event.target.checked;
-
-    let attributes = [];
-    if (checked) {
-      if (!values.selectedAttributes) {
-        attributes = [value];
-      } else {
-        attributes = [...values.selectedAttributes, value];
-      }
-    } else {
-      attributes = values.selectedAttributes!.filter(
-        (it) => mapAttributeToKey(it) !== mapAttributeToKey(value),
-      );
-    }
-    void setFieldValue("selectedAttributes", attributes, false);
-  }
 
   return (
     <Stack>
       <SearchableGroups
         groups={searchableCheckboxGroups}
-        label={values.dataSource!.name}
+        label={props.dataSourceName}
         placeholder="Attribut suchen"
         startExpanded={searchableCheckboxGroups.length === 1}
-        renderItem={(item) => (
-          <CheckboxField
-            {...item.checkboxFieldProps}
-            onChange={setSelectedAttributes}
-          />
-        )}
+        renderItem={(item) => <CheckboxField {...item.checkboxFieldProps} />}
       />
     </Stack>
   );
 }
 
-function mapAttributeToKey(attribute: CategorizedFlatAttribute) {
-  return `${attribute.code}_${attribute.baseCode}`;
-}
-
 function mapToCheckboxGroupItem(
   attribute: CategorizedFlatAttribute,
+  fieldName: string,
 ): SearchableCheckboxGroupItem | SearchableCheckboxGroupItem[] {
-  const key = mapAttributeToKey(attribute);
   return {
-    key: key,
+    key: attribute.key,
     searchableValue: attribute.name,
     checkboxFieldProps: {
-      name: "_selectedAttributeKeys",
-      representingValue: key,
+      name: fieldName,
+      representingValue: attribute.key,
       label: attribute.name,
     },
   };

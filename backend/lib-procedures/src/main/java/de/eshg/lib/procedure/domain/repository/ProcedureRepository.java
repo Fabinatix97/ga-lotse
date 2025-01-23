@@ -203,6 +203,24 @@ public interface ProcedureRepository<ProcedureT extends Procedure<ProcedureT, ?,
 
   @Query(
       """
+      SELECT procedure from #{#entityName} procedure
+      WHERE procedure.externalId = :externalId
+      AND EXISTS (
+          SELECT 1 FROM procedure.relatedPersons person
+          WHERE person.centralFileStateId IN :centralFileStateIds
+      )
+      OR procedure.externalId = :externalId
+      AND EXISTS (
+          SELECT 1 FROM procedure.relatedFacilities facility
+          WHERE facility.centralFileStateId IN :centralFileStateIds
+      )
+    """)
+  Optional<ProcedureT> getByExternalIdAndFileStateIds(
+      @Param("externalId") UUID externalId,
+      @Param("centralFileStateIds") Collection<UUID> centralFileStateIds);
+
+  @Query(
+      """
         SELECT procedure from #{#entityName} procedure
         WHERE EXISTS (
             SELECT 1 FROM procedure.relatedPersons person

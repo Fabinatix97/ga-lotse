@@ -23,6 +23,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.service.annotation.DeleteExchange;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
@@ -33,11 +34,14 @@ public interface GdprValidationTaskApi {
   String NOTIFICATION_BANNER_URL_SUFFIX = "/notification-banner";
   String VALIDATION_TASK_URL_SUFFIX = "/{gdprProcedureId}";
   String BUSINESS_PROCEDURES_URL_SUFFIX = VALIDATION_TASK_URL_SUFFIX + "/business-procedures";
+  String BUSINESS_PROCEDURE_URL_SUFFIX =
+      VALIDATION_TASK_URL_SUFFIX + "/business-procedures/{businessProcedureId}";
   String DOWNLOAD_PACKAGE_URL_SUFFIX =
-      BUSINESS_PROCEDURES_URL_SUFFIX + "/{businessProcedureId}/downloadPackage";
+      VALIDATION_TASK_URL_SUFFIX + "/business-procedures/{businessProcedureId}/downloadPackage";
   String GET_DOWNLOAD_PACKAGES_INFO_URL_SUFFIX = VALIDATION_TASK_URL_SUFFIX + "/download-packages";
-  String GET_DOWNLOAD_PACKAGE_URL_SUFFIX = "/download-packages/{id}";
-  String CLOSE_PROCEDURE_URL_SUFFIX = VALIDATION_TASK_URL_SUFFIX + "/close";
+  String GET_DOWNLOAD_PACKAGE_URL_SUFFIX =
+      VALIDATION_TASK_URL_SUFFIX + "/download-packages/{downloadId}";
+  String CLOSE_PROCEDURE_URL_SUFFIX = "/{gdprProcedureId}/close";
 
   @PostExchange
   @ApiResponse(responseCode = "200", description = "Add a GDPR validation task")
@@ -76,6 +80,15 @@ public interface GdprValidationTaskApi {
       @Parameter(description = "The Id of the GDPR procedure.") @PathVariable("gdprProcedureId")
           UUID gdprProcedureId);
 
+  @DeleteExchange(BUSINESS_PROCEDURE_URL_SUFFIX)
+  @ApiResponse(responseCode = "200")
+  @Operation(
+      summary =
+          "Delete the businessProcedure with businessProcedureId for validationTask with gdprProcedureId with type right of erasure")
+  void deleteBusinessProcedure(
+      @PathVariable("gdprProcedureId") UUID gdprProcedureId,
+      @PathVariable("businessProcedureId") UUID businessProcedureId);
+
   @GetExchange(GET_DOWNLOAD_PACKAGES_INFO_URL_SUFFIX)
   @ApiResponse(responseCode = "200")
   @Operation(summary = "Get approved Gdpr Download Packages by Gdpr Procedure Id")
@@ -84,12 +97,23 @@ public interface GdprValidationTaskApi {
 
   @GetExchange(GET_DOWNLOAD_PACKAGE_URL_SUFFIX)
   @ApiResponse(responseCode = "200")
-  @Operation(summary = "Get Gdpr Download Package by its id")
-  ResponseEntity<Resource> getGdprDownloadPackage(@PathVariable(name = "id") UUID id);
+  @Operation(summary = "Get Gdpr Download Package by the gdprProcedureId and its downloadId")
+  ResponseEntity<Resource> getGdprDownloadPackage(
+      @PathVariable(name = "gdprProcedureId") UUID gdprProcedureId,
+      @PathVariable(name = "downloadId") UUID downloadId);
 
   @GetExchange
   @ApiResponse(responseCode = "200")
   @Operation(summary = "Get all GDPR validation tasks")
   GetAllValidationTasksResponse getAllGdprValidationTasks(
       @InlineParameterObject @ParameterObject @Valid GdprValidationTaskFilterParameters parameters);
+
+  @DeleteExchange(VALIDATION_TASK_URL_SUFFIX)
+  @ApiResponse(responseCode = "200")
+  @Operation(
+      summary =
+          "Delete the GDPR validation task with gdprProcedureId and GDPR download packages with ids from request")
+  void deleteGdprValidationTaskAndDownloadPackages(
+      @PathVariable(name = "gdprProcedureId") UUID gdprProcedureId,
+      @RequestBody @Valid DeleteDownloadPackagesRequest request);
 }

@@ -30,7 +30,7 @@ public final class AuthorizationTestUtil {
   private static final String DEFAULT_PATH_PARAM_VALUE = "1";
 
   private static final List<String> DEFAULT_IGNORED_PATH_PREFIXES =
-      List.of("/api-docs", "/swagger-ui", "/test-helper", "/simulator");
+      List.of("/api-docs", "/test-helper", "/simulator");
 
   /**
    * See {@link

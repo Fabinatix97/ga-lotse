@@ -10,7 +10,7 @@ import {
   type ApiTaskStatus,
   type ApiTaskType,
   ApiUser,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { isDefined } from "remeda";
 

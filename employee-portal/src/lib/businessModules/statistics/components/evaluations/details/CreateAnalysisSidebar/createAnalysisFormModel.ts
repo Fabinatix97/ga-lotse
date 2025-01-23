@@ -12,12 +12,15 @@ import { ConfigureScatterChartFormModel } from "@/lib/businessModules/statistics
 import { SaveAnalysisStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/SaveAnalysisStep/saveAnalysisStepFormModel";
 import { SelectDiagramStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/SelectDiagramStep/selectDiagramStepFormModel";
 
-export type CreateAnalysisFormModel = SelectDiagramStepFormModel &
-  SaveAnalysisStepFormModel & {
-    configureBarChartFormModel: ConfigureBarChartFormModel;
-    configurePieChartFormModel: ConfigurePieChartFormModel;
-    configureScatterChartFormModel: ConfigureScatterChartFormModel;
-    configureLineChartFormModel: ConfigureLineChartFormModel;
-    configureHistogramChartFormModel: ConfigureHistogramChartFormModel;
-    configureChoroplethChartFormModel: ConfigureChoroplethChartFormModel;
-  };
+export type CreateAnalysisFormModel = [
+  SelectDiagramStepFormModel,
+  ConfigureChartFormModel,
+  SaveAnalysisStepFormModel,
+];
+
+export type ConfigureChartFormModel = ConfigureBarChartFormModel &
+  ConfigurePieChartFormModel &
+  ConfigureScatterChartFormModel &
+  ConfigureLineChartFormModel &
+  ConfigureHistogramChartFormModel &
+  ConfigureChoroplethChartFormModel;

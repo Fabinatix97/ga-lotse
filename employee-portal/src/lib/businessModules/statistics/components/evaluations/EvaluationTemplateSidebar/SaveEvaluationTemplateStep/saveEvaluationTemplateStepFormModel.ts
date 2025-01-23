@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export interface SaveEvaluationTemplateStepFormModel {
+import { FormikValues } from "formik";
+
+export interface SaveEvaluationTemplateStepFormModel extends FormikValues {
   name: string;
   description: string;
 }

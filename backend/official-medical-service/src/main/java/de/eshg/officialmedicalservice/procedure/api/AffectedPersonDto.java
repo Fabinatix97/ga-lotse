@@ -32,4 +32,5 @@ public record AffectedPersonDto(
     @Size(min = 1, max = 50) String placeOfBirth,
     @Size(min = 1, max = 119) String title,
     GenderDto gender,
-    @NotNull @Valid AddressDto contactAddress) {}
+    @NotNull @Valid AddressDto contactAddress,
+    @Valid AffectedPersonSyncDto affectedPersonSync) {}

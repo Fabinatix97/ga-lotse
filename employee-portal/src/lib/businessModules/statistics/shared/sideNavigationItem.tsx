@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/base-api";
+import {
+  hasAnyUserRoles,
+  hasUserRole,
+} from "@eshg/lib-employee-portal/helpers/accessControl";
 import { BarChartOutlined } from "@mui/icons-material";
 import { isPlainObject } from "remeda";
 
 import { UseSideNavigationItemsResult } from "@/lib/baseModule/components/layout/sideNavigation/types";
-import {
-  hasAnyUserRoles,
-  hasUserRole,
-} from "@/lib/shared/helpers/accessControl";
 
 import { routes } from "./routes";
 

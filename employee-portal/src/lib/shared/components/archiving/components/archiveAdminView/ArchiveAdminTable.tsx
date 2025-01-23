@@ -8,7 +8,6 @@ import {
   ApiGetRelevantArchivableProceduresSortBy,
 } from "@eshg/employee-portal-api/businessProcedures";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
-import { HiddenContainer } from "@eshg/lib-portal/components/HiddenContainer";
 import { formatFileSize } from "@eshg/lib-portal/helpers/file";
 import { DeleteOutlined, DownloadOutlined } from "@mui/icons-material";
 import { Button } from "@mui/joy";
@@ -63,8 +62,9 @@ export function ArchiveAdminTable(props: ArchiveAdminTableProps) {
   const bulkUpdateProceduresArchivingRelevance =
     props.useBulkUpdateProceduresArchivingRelevance();
 
-  const { downloadContainerRef, download: downloadRelevantProcedures } =
-    useFileDownload(exportRelevantProcedures.mutateAsync);
+  const { download: downloadRelevantProcedures } = useFileDownload(
+    exportRelevantProcedures.mutateAsync,
+  );
 
   const { openConfirmationDialog } = useConfirmationDialog();
 
@@ -112,65 +112,62 @@ export function ArchiveAdminTable(props: ArchiveAdminTableProps) {
   }
 
   return (
-    <>
-      <TablePage
-        fullHeight
-        controls={
-          <ButtonBar
-            left={<FilterButton {...filterSettings.filterButtonProps} />}
-            right={
-              totalElements > 0 ? (
-                <>
-                  <Button
-                    onClick={handleDeleteAction}
-                    disabled={bulkUpdateProceduresArchivingRelevance.isPending}
-                    loading={bulkUpdateProceduresArchivingRelevance.isPending}
-                    loadingPosition="start"
-                    variant="outlined"
-                    startDecorator={<DeleteOutlined />}
-                  >
-                    Alle löschen
-                  </Button>
-                  <Button
-                    onClick={handleExportAction}
-                    disabled={exportRelevantProcedures.isPending}
-                    loading={exportRelevantProcedures.isPending}
-                    loadingPosition="start"
-                    startDecorator={<DownloadOutlined />}
-                  >
-                    Alle als ZIP exportieren
-                  </Button>
-                </>
-              ) : undefined
-            }
-          />
-        }
-        filterSettings={
-          filterSettings.filterSettingsVisible && (
-            <FilterSettingsSheet {...filterSettings.filterSettingsSheetProps}>
-              <FilterSettings {...filterSettings.filterSettingsProps} />
-            </FilterSettingsSheet>
-          )
-        }
-        data-testid="archiveAdminTable"
-      >
-        <TableSheet
-          footer={
-            <Pagination
-              totalCount={totalElements}
-              {...tableControl.paginationProps}
-            />
+    <TablePage
+      fullHeight
+      controls={
+        <ButtonBar
+          left={<FilterButton {...filterSettings.filterButtonProps} />}
+          right={
+            totalElements > 0 ? (
+              <>
+                <Button
+                  onClick={handleDeleteAction}
+                  disabled={bulkUpdateProceduresArchivingRelevance.isPending}
+                  loading={bulkUpdateProceduresArchivingRelevance.isPending}
+                  loadingPosition="start"
+                  variant="outlined"
+                  startDecorator={<DeleteOutlined />}
+                >
+                  Alle löschen
+                </Button>
+                <Button
+                  onClick={handleExportAction}
+                  disabled={exportRelevantProcedures.isPending}
+                  loading={exportRelevantProcedures.isPending}
+                  loadingPosition="start"
+                  startDecorator={<DownloadOutlined />}
+                >
+                  Alle als ZIP exportieren
+                </Button>
+              </>
+            ) : undefined
           }
-        >
-          <DataTable
-            data={procedures}
-            columns={archiveAdminTableColumns}
-            sorting={tableControl.tableSorting}
-            enableSortingRemoval={false}
+        />
+      }
+      filterSettings={
+        filterSettings.filterSettingsVisible && (
+          <FilterSettingsSheet {...filterSettings.filterSettingsSheetProps}>
+            <FilterSettings {...filterSettings.filterSettingsProps} />
+          </FilterSettingsSheet>
+        )
+      }
+      data-testid="archiveAdminTable"
+    >
+      <TableSheet
+        footer={
+          <Pagination
+            totalCount={totalElements}
+            {...tableControl.paginationProps}
           />
-        </TableSheet>
-      </TablePage>
-      <HiddenContainer ref={downloadContainerRef} />
-    </>
+        }
+      >
+        <DataTable
+          data={procedures}
+          columns={archiveAdminTableColumns}
+          sorting={tableControl.tableSorting}
+          enableSortingRemoval={false}
+        />
+      </TableSheet>
+    </TablePage>
   );
 }

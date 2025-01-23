@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiCountryCode } from "@eshg/employee-portal-api/base";
+import { ApiCountryCode } from "@eshg/base-api";
 import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
+import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { FieldProps } from "@eshg/lib-portal/types/form";
 import ErrorIcon from "@mui/icons-material/ErrorOutline";
 import {
@@ -24,7 +25,6 @@ import { BaseAddressDetails } from "@/lib/shared/components/address/BaseAddressD
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
 import { BaseAddressFormInputs } from "@/lib/shared/components/form/address/helpers";
-import { translateCountry } from "@/lib/shared/helpers/i18n";
 import { join } from "@/lib/shared/helpers/strings";
 
 interface AddressSelectOption {

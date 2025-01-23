@@ -4,7 +4,7 @@
  */
 
 import { ApiStiProtectionProcedure } from "@eshg/employee-portal-api/stiProtection";
-import { DownloadLink } from "@eshg/lib-portal/api/files/DownloadLink";
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { Sheet, Stack } from "@mui/joy";
 
 import { useAnonymousIdentificationDocumentQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
@@ -34,14 +34,11 @@ export function AnonIdentityDocumentCard({
             valueIsDiv
             value={
               <Stack direction="row" gap={1}>
-                <DownloadLink
-                  downloadContainerRef={
-                    anonymousIdentificationDocument.downloadContainerRef
-                  }
-                  onDownload={() => anonymousIdentificationDocument.download()}
+                <ButtonLink
+                  onClick={() => anonymousIdentificationDocument.download()}
                 >
                   PDF herunterladen
-                </DownloadLink>
+                </ButtonLink>
               </Stack>
             }
           />

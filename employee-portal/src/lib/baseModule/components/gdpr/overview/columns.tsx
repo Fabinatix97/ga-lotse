@@ -8,7 +8,7 @@
 import {
   ApiGdprProcedureStatus,
   ApiGetGdprProcedureResponse,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { Chip } from "@mui/joy";

@@ -212,8 +212,8 @@ export function ProceduresTable(props: ProceduresTableProps) {
 
 const columnHelper = createColumnHelper<Procedure>();
 const COLUMNS = [
-  columnHelper.accessor("child.lastName", {
-    header: "Name",
+  columnHelper.accessor("child.firstName", {
+    header: "Vorname",
     cell: (props) => props.getValue(),
     enableSorting: true,
     meta: {
@@ -223,8 +223,8 @@ const COLUMNS = [
       },
     },
   }),
-  columnHelper.accessor("child.firstName", {
-    header: "Vorname",
+  columnHelper.accessor("child.lastName", {
+    header: "Nachname",
     cell: (props) => props.getValue(),
     enableSorting: true,
     meta: {

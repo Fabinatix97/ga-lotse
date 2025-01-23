@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiCentralFileIdAttributeAllOfBaseAttribute } from "@eshg/employee-portal-api/statistics";
+import { ApiBaseModuleIdAttributeAllOfBaseAttribute } from "@eshg/employee-portal-api/statistics";
 
 export const ImageType = {
   SVG: "svg",
@@ -12,4 +12,4 @@ export const ImageType = {
 
 export type ImageType = (typeof ImageType)[keyof typeof ImageType];
 
-export type AttributeType = ApiCentralFileIdAttributeAllOfBaseAttribute["type"];
+export type AttributeType = ApiBaseModuleIdAttributeAllOfBaseAttribute["type"];

@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
-
-import { useGetSelfUserPermissions } from "@/lib/baseModule/api/queries/users";
+import { ApiUserRole } from "@eshg/base-api";
 import {
   AccessCheck,
   checkAccess,
   hasUserRole,
-} from "@/lib/shared/helpers/accessControl";
+} from "@eshg/lib-employee-portal/helpers/accessControl";
+
+import { useGetSelfUserPermissions } from "@/lib/baseModule/api/queries/users";
 
 export function useAccessControl() {
   const { data: selfUserPermissions } = useGetSelfUserPermissions();

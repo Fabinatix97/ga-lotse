@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  ApiAddContact200Response,
-  ApiContactCategory,
-} from "@eshg/employee-portal-api/base";
+import { ApiAddContact200Response, ApiContactCategory } from "@eshg/base-api";
 import {
   SelectObjectField,
   SelectObjectFieldValue,

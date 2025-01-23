@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiGetReferenceFacilityResponse } from "@eshg/employee-portal-api/base";
+import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
 import {
   type ApiInspAddFacilityResponse,
   ApiProcedureStatus,

@@ -15,8 +15,6 @@ public interface CommonAttribute {
 
   String getCode();
 
-  boolean isAccessibleForCountyOffice();
-
   ValueType getType();
 
   List<ValueOptionInternal> getValueOptions();

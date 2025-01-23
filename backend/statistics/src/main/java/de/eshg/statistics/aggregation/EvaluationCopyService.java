@@ -321,7 +321,6 @@ public class EvaluationCopyService {
 
           case LineOrScatterChartData lineOrScatterChartData -> {
             LineOrScatterChartData lineOrScatterChartDataCopy = new LineOrScatterChartData();
-            lineOrScatterChartDataCopy.setLineChart(lineOrScatterChartData.isLineChart());
             lineOrScatterChartDataCopy.addDataPointGroups(
                 copyDataPointGroups(lineOrScatterChartData.getDataPointGroups()));
             yield lineOrScatterChartDataCopy;

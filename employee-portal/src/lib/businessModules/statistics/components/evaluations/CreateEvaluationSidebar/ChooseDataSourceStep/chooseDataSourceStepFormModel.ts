@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DataSource } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ChooseDataSourceStep/ChooseDataSourceStep";
+import { FormikValues } from "formik";
 
-export interface ChooseDataSourceStepFormModel {
+export interface ChooseDataSourceStepFormModel extends FormikValues {
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  _dataSourceId?: string | "CHOOSE_EVALUATION_TEMPLATE";
-  dataSource?: DataSource;
+  dataSourceId?: string | "CHOOSE_EVALUATION_TEMPLATE";
 }

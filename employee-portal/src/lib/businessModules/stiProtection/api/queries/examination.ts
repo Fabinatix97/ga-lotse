@@ -29,7 +29,7 @@ function useGetLaboratoryTestExaminationQueryOptions(procedureId: string) {
   return queryOptions({
     queryFn: ({ signal }) =>
       examinationApi.getLaboratoryTestExamination(procedureId, { signal }),
-    queryKey: stiProtectionApiQueryKey(["laboratoryTests", procedureId]),
+    queryKey: stiProtectionApiQueryKey([procedureId, "laboratoryTests"]),
   });
 }
 

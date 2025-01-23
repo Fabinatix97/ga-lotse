@@ -10,7 +10,7 @@ import {
   ApiSalutation,
   ApiUser,
   ApiUserGroup,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { SALUTATION_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
@@ -124,7 +124,7 @@ export function UserProfileDetails({
               />
               <DetailsCell
                 name={"lastName"}
-                label={"Name"}
+                label={"Nachname"}
                 value={user.lastName}
               />
               <DetailsCell

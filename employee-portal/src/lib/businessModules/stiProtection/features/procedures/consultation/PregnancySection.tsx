@@ -20,8 +20,8 @@ import { validateNonNegativeInteger } from "@/lib/shared/helpers/validators";
 
 export interface PregnancySectionData {
   hasPregnancyRelatedInfo: boolean;
-  lastCytologyTest: Date | "";
-  startOfLastPeriod: Date | "";
+  lastCytologyTest: string;
+  startOfLastPeriod: string;
   numberOfPregnancies: number | "";
   numberOfOtherAbortions: number | "";
   numberOfBirths: number | "";

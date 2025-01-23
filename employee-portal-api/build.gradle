@@ -7,9 +7,9 @@ def backendDir = rootProject.layout.projectDirectory.dir('backend')
 openapiGenerator {
   inputSpecs = [
     'auditlog'              : backendDir.file('auditlog/openApi.yaml'),
-    'base'                  : backendDir.file('base/openApi.yaml'),
     'businessProcedures'    : backendDir.file('lib-procedures/openApi.yaml'),
     'libEditor'             : backendDir.file('lib-editor/openApi.yaml'),
+    'libStatistics'         : backendDir.file('lib-statistics/openApi.yaml'),
     'inspection'            : backendDir.file('inspection/openApi.yaml'),
     'measlesProtection'     : backendDir.file('measles-protection/openApi.yaml'),
     'opendata'              : backendDir.file('opendata/openApi.yaml'),
@@ -19,7 +19,6 @@ openapiGenerator {
     'chatManagement'        : backendDir.file('chat-management/openApi.yaml'),
     'stiProtection'         : backendDir.file('sti-protection/openApi.yaml'),
     'medicalRegistry'       : backendDir.file('medical-registry/openApi.yaml'),
-    'dental'                : backendDir.file('dental/openApi.yaml'),
     'officialMedicalService': backendDir.file('official-medical-service/openApi.yaml')
   ]
 }

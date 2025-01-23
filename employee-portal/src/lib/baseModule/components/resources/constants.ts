@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiResourceType } from "@eshg/employee-portal-api/base";
+import { ApiResourceType } from "@eshg/base-api";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
 
 export const resourceTypeNames = {

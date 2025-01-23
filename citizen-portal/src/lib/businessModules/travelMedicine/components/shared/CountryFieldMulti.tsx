@@ -13,6 +13,8 @@ import { Close } from "@mui/icons-material";
 import { Autocomplete, AutocompleteProps, Chip } from "@mui/joy";
 import { isString } from "remeda";
 
+import { useTranslateCountry } from "@/lib/i18n/useTranslateCountry";
+
 type JoyUiSelectValue = AutocompleteProps<
   SelectionOption,
   true,
@@ -22,7 +24,6 @@ type JoyUiSelectValue = AutocompleteProps<
 type SelectFieldValue = NonNullable<JoyUiSelectValue>;
 
 interface CountryFieldMultiProps extends FieldProps<SelectFieldValue> {
-  options: SelectOption[];
   placeholder?: string;
 }
 
@@ -33,6 +34,8 @@ export interface SelectionOption {
 
 export function CountryFieldMulti(props: CountryFieldMultiProps) {
   const field = useBaseField(props);
+  const { countryOptions } = useTranslateCountry();
+  const countries = countryOptions();
 
   function setValue(newValue: (string | SelectOption)[]) {
     const labelNames = newValue.map((v) => (isString(v) ? v : v.value));
@@ -69,7 +72,7 @@ export function CountryFieldMulti(props: CountryFieldMultiProps) {
         }}
         onBlur={field.input.onBlur}
         placeholder={props.placeholder}
-        options={props.options}
+        options={countries}
         getOptionLabel={(value) => (isString(value) ? value : value.label)}
         getOptionKey={(value) => (isString(value) ? value : value.value)}
         renderTags={(options, getTagProps) =>
@@ -83,7 +86,7 @@ export function CountryFieldMulti(props: CountryFieldMultiProps) {
               {...getTagProps({ index })}
               key={index}
             >
-              {props.options.find((a) => a.value === item)!.label}
+              {countries.find((a) => a.value === item)!.label}
             </Chip>
           ))
         }

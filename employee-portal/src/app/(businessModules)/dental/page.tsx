@@ -3,10 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { redirect } from "next/navigation";
+import { DentalIndexPage } from "@eshg/dental/pages/DentalIndexPage";
 
-import { routes } from "@/lib/businessModules/dental/shared/routes";
-
-export default function DentalIndexPage() {
-  redirect(routes.children.overview);
-}
+export default DentalIndexPage;

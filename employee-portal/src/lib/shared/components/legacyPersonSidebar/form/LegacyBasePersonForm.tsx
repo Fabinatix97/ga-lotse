@@ -3,11 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  ApiCountryCode,
-  ApiGender,
-  ApiSalutation,
-} from "@eshg/employee-portal-api/base";
+import { ApiCountryCode, ApiGender, ApiSalutation } from "@eshg/base-api";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";

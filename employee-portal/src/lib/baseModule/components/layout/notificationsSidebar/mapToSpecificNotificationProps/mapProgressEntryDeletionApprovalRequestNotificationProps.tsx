@@ -7,7 +7,7 @@ import {
   ApiManualProgressEntryType,
   ApiProgressEntryDeletionApprovalRequestNotification,
   ApiUser,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { Typography } from "@mui/joy";
 
 import { ProgressEntryInternalLink } from "@/lib/baseModule/components/layout/notificationsSidebar/mapToSpecificNotificationProps/ProgressEntryInternalLink";

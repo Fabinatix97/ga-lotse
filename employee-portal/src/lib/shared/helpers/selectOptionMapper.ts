@@ -6,7 +6,7 @@
 import {
   ApiAddContact200Response,
   ApiInstitutionContact,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 
 import { contactCategoryNamesShort } from "@/lib/baseModule/shared/translations";

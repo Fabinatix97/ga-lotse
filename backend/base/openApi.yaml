@@ -520,6 +520,19 @@ paths:
       summary: Verify citizen access code user credentials
       tags:
       - CitizenAccessCodeUser
+  /citizen-users/self:
+    get:
+      operationId: getCitizenSelfUser
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetCitizenSelfUserResponse"
+          description: OK
+      summary: Get the name of the citizen user which is currently active
+      tags:
+      - CitizenUser
   /citizen-users/self/permissions:
     get:
       operationId: getCitizenSelfUserPermissions
@@ -1063,9 +1076,10 @@ paths:
         facility, without any matching to existing data.
         This endpoint requires a valid authentication from the citizen portal.
         The created data are labelled as external and are thus regarded as temporary,
-        unconfirmed and untrustworthy.
-        It is intended that the data first has to run through a verification process
-        performed by a health office employee before it can be used for further purposes.
+        unconfirmed and untrustworthy. It must undergo a verification process performed
+        by a health office employee before it can be used for any official processes.
+        The only exception to this are GDPR-related procedures, where the data may be
+        used immediately.
       tags:
       - Facility
   /facilities/centralfilestates/mark-for-deletion:
@@ -1379,9 +1393,23 @@ paths:
                 $ref: "#/components/schemas/GetGdprProcedureResponse"
           description: OK
       summary: |
-        This endpoint allows authenticated and identified users from the citizen
-        portal to initiate a GDPR procedure. A matter of concern can be added to the
-        request if desired.
+        This endpoint allows authenticated MUK and BundID users to initiate a GDPR
+        procedure via the citizen portal initiate a GDPR procedure. A matter of
+        concern can be added to the request if desired.
+      tags:
+      - GdprProcedure
+  /gdpr-procedures/citizen-portal/self/linked-gdpr-procedures:
+    get:
+      operationId: getCitizenSelfUserLinkedGdprProcedures
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetCitizenSelfUsersGdprProceduresResponse"
+          description: OK
+      summary: Get the GDPR procedures linked with the citizen user which is currently
+        active
       tags:
       - GdprProcedure
   /gdpr-procedures/{id}:
@@ -1692,6 +1720,55 @@ paths:
       summary: Start the GDPR procedure
       tags:
       - GdprProcedure
+  /icd10-codes:
+    get:
+      operationId: searchIcd10Codes
+      parameters:
+      - description: "Search for a string within the ICD-10 codes, groups and their\
+          \ title. The search supports a fuzzy search mechanism."
+        in: query
+        name: searchString
+        required: false
+        schema:
+          type: string
+          default: ""
+          description: "Search for a string within the ICD-10 codes, groups and their\
+            \ title. The search supports a fuzzy search mechanism."
+      - in: query
+        name: codes
+        required: false
+        schema:
+          type: array
+          default: []
+          items:
+            type: string
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SearchIcd10CodesResponse"
+          description: OK
+      summary: Search in the ICD-10 catalogue.
+      tags:
+      - Icd10Code
+    post:
+      operationId: findAllIcd10Codes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FindIcd10CodesRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/FindIcd10CodesResponse"
+          description: OK
+      tags:
+      - Icd10Code
   /inventoryItems:
     get:
       operationId: getInventoryItems
@@ -2360,11 +2437,12 @@ paths:
       summary: |
         Create a new person file state as well as a new associated reference person,
         without any matching to existing data.
-        This endpoint is intended for users from the citizen portal.
-        As long as no verification by the health department has taken place (see
-        endpoint 'updateReferencePerson'), these data will remain in an untrusted status
-        in which they are neither part of search results nor used in other processes
-        such as automatic linking.
+        This endpoint requires a valid authentication from the citizen portal.
+        The created data are labelled as external and are thus regarded as temporary,
+        unconfirmed and untrustworthy. It must undergo a verification process performed
+        by a health office employee before it can be used for any official processes.
+        The only exception to this are GDPR-related procedures, where the data may be
+        used immediately.
       tags:
       - Person
   /persons/centralfilestates/mark-for-deletion:
@@ -3025,36 +3103,6 @@ paths:
             $ref: "#/components/schemas/TaskStatus"
           uniqueItems: true
       - description: |
-          Filter logic:
-          - In case of "true" only tasks with a due date are returned.
-          - In case of "false" only tasks without a due date are returned.
-          - If not submitted, no filtering takes place
-        in: query
-        name: hasDueAt
-        required: false
-        schema:
-          type: boolean
-      - description: |
-          Filter logic:
-          - In case of "true" only tasks  which dueDate is in the past are returned.
-          - In case of "false" only tasks which due date is **not** in the past or which don't have a due date are returned.
-          - If not submitted, no filtering takes place
-        in: query
-        name: isOverdue
-        required: false
-        schema:
-          type: boolean
-      - description: |
-          Filter logic:
-          - In case of "true" only tasks are returned where assignee and the user who assigned the tasks are unequal
-          - In case of "false" only tasks are returned where assignee and the user who assigned the tasks are equal
-          - If not submitted, no filtering takes place
-        in: query
-        name: wasAssignedByOther
-        required: false
-        schema:
-          type: boolean
-      - description: |
           The following sorting options are available:
           - PRIORITY: First tasks with a dueDate are listed and sorted by DueDate. Afterwards tasks without a dueDate are listed and sorted by createdAt
           - CREATED_AT: Sorting by createdAt attribute
@@ -3125,6 +3173,14 @@ paths:
   /test-helper/audit-log-storage:
     delete:
       operationId: clearAuditLogStorageDirectory
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/auditlog-notification-job:
+    post:
+      operationId: runAuditlogNotificationJob
       responses:
         "200":
           description: OK
@@ -3227,6 +3283,12 @@ paths:
   /test-helper/keycloak/user/create-temporary:
     post:
       operationId: createTemporaryUser
+      parameters:
+      - in: query
+        name: group
+        required: false
+        schema:
+          type: string
       responses:
         "200":
           content:
@@ -3778,17 +3840,18 @@ paths:
       summary: Get the team leaders of the currently active user
       tags:
       - User
-  /users/self/permissions:
+  /users/self/with-access:
     get:
-      operationId: getSelfUserPermissions
+      operationId: getSelfUserAndAccess
       responses:
         "200":
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/GetPermissionsResponse"
+                $ref: "#/components/schemas/SelfUser"
           description: OK
-      summary: Get the permissions of the user which is currently active
+      summary: "Get the user which is currently active, including all roles assigned\
+        \ to this user"
       tags:
       - User
   /users/suggest:
@@ -3990,17 +4053,17 @@ components:
       description: Request used for establishing a link between a BundId user and
         a reference person
       properties:
-        bundId:
+        bpk2:
           type: string
-          description: The id of the bundId user
-          example: To be added
+          description: The bPK2 of the bundId user
+          example: VnMEBMXsiCWZ34v1JCulQABe6-ts1yDSrbH3zII8BF0
         referencePersonId:
           type: string
           format: uuid
           description: The (external) id of the reference person
           example: be9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
       required:
-      - bundId
+      - bpk2
       - referencePersonId
     AddCentralFileIdToGdprProcedureRequest:
       type: object
@@ -4192,6 +4255,8 @@ components:
           type: string
           description: The matter of concern for the GDPR procedure (relevant only
             for the right to rectification and right to object
+          maxLength: 10000
+          minLength: 0
         type:
           $ref: "#/components/schemas/GdprProcedureType"
       required:
@@ -4656,7 +4721,6 @@ components:
     BaseFeature:
       type: string
       enum:
-      - TASK_METRICS
       - CHAT_USERNAME
       - SEARCH_PROCEDURES
       - INBOX
@@ -4702,6 +4766,20 @@ components:
           minimum: 1
       required:
       - bookingCount
+    BundIdUserAttributes:
+      type: object
+      description: The BundId attributes of a user
+      properties:
+        address:
+          $ref: "#/components/schemas/DomesticAddress"
+        firstName:
+          type: string
+        lastName:
+          type: string
+      required:
+      - address
+      - firstName
+      - lastName
     BusinessCaseEventRequest:
       type: object
       properties:
@@ -4802,6 +4880,45 @@ components:
       - ACCESS_CODE_USER
       - MUK_USER
       - BUND_ID_USER
+    CitizenUsersGdprProcedure:
+      type: object
+      description: The core data of a GdprProcedure used in a response to a query
+        by a CitizenUser
+      properties:
+        closedAt:
+          type: string
+          format: date-time
+          description: The date and time of when this GDPR procedure was completed
+            or cancelled.
+          example: 2024-02-01T00:00:00.123456Z
+        createdAt:
+          type: string
+          format: date-time
+          description: The date and time of when the GDPR procedure was created.
+          example: 2024-02-01T00:00:00.123456Z
+        hasDownloads:
+          type: boolean
+          description: Whether this procedure has available downloads.
+          example: true
+        id:
+          type: string
+          format: uuid
+          description: The Id of the GDPR procedure.
+          example: ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
+        matterOfConcern:
+          type: string
+          description: The matter of concern specified by the requesting user.
+          example: Please stop all procedures related to my personal information.
+        status:
+          $ref: "#/components/schemas/GdprProcedureStatus"
+        type:
+          $ref: "#/components/schemas/GdprProcedureType"
+      required:
+      - createdAt
+      - hasDownloads
+      - id
+      - status
+      - type
     CloseGdprProcedureRequest:
       type: object
       properties:
@@ -4908,7 +5025,8 @@ components:
       - INSTITUTION
     CountryCode:
       type: string
-      description: List of country codes in ISO 3166-1 alpha-2 format.
+      description: "List of country codes in ISO 3166-1 alpha-2 format. With custom\
+        \ extensions for stateless, non-standard countries, and unknown countries."
       enum:
       - AD
       - AE
@@ -5159,6 +5277,9 @@ components:
       - ZA
       - ZM
       - ZW
+      - XK
+      - UNKNOWN
+      - STATELESS
     CreateCalendarTestEventsRequest:
       type: object
       properties:
@@ -5788,6 +5909,24 @@ components:
       - fileName
       - id
       - procedureId
+    FindIcd10CodesRequest:
+      type: object
+      properties:
+        codes:
+          type: array
+          items:
+            type: string
+      required:
+      - codes
+    FindIcd10CodesResponse:
+      type: object
+      properties:
+        existingCodes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Icd10Code"
+      required:
+      - existingCodes
     GdprFacility:
       type: object
       allOf:
@@ -5798,6 +5937,10 @@ components:
             oneOf:
             - $ref: "#/components/schemas/DomesticAddress"
             - $ref: "#/components/schemas/PostboxAddress"
+          dataTransmitterPseudonymId:
+            type: string
+            description: The 'DatenübermittlerPseudonymId' of the MUK user
+            example: du-986b2b54ab89cf4ed674ad8c3126b966b54d4872
           emailAddress:
             type: string
             description: The email addresses of the Facility.
@@ -5838,6 +5981,10 @@ components:
             oneOf:
             - $ref: "#/components/schemas/DomesticAddress"
             - $ref: "#/components/schemas/PostboxAddress"
+          bpk2:
+            type: string
+            description: The bpk2 of the BundId user
+            example: VnMEBMXsiCWZ34v1JCulQABe6-ts1yDSrbH3zII8BF0
           dateOfBirth:
             type: string
             format: date
@@ -6111,6 +6258,22 @@ components:
             $ref: "#/components/schemas/CitizenUserRole"
       required:
       - permissions
+    GetCitizenSelfUserResponse:
+      type: object
+      properties:
+        selfBundIdUserNameDto:
+          $ref: "#/components/schemas/BundIdUserAttributes"
+        selfMukUserNameDto:
+          $ref: "#/components/schemas/MukUserAttributes"
+    GetCitizenSelfUsersGdprProceduresResponse:
+      type: object
+      properties:
+        gdprProcedures:
+          type: array
+          items:
+            $ref: "#/components/schemas/CitizenUsersGdprProcedure"
+      required:
+      - gdprProcedures
     GetConfigurationResponse:
       type: object
       properties:
@@ -6439,6 +6602,8 @@ components:
             from the Central Files for this GDPR procedure.
           items:
             $ref: "#/components/schemas/GetReferenceFacilityResponse"
+        hasCentralFileDownload:
+          type: boolean
         linkedCentralFileFacilities:
           type: array
           description: Reference Data of Facilities from the Central File that has
@@ -6461,6 +6626,7 @@ components:
           $ref: "#/components/schemas/GetGdprProcedureResponse"
       required:
       - facilityMatches
+      - hasCentralFileDownload
       - linkedCentralFileFacilities
       - linkedCentralFilePersons
       - personMatches
@@ -6602,16 +6768,6 @@ components:
               contact
       required:
       - contactIds
-    GetPermissionsResponse:
-      type: object
-      properties:
-        permissions:
-          type: array
-          description: A list of requested user permissions
-          items:
-            $ref: "#/components/schemas/UserRole"
-      required:
-      - permissions
     GetPersonDiffResponse:
       type: object
       properties:
@@ -7343,6 +7499,24 @@ components:
       - DELETE
       - OPTIONS
       - TRACE
+    Icd10Code:
+      type: object
+      properties:
+        code:
+          type: string
+          description: ICD-10 code or ICD-10 group code
+          example: A00
+        isGroup:
+          type: boolean
+          description: "If true, the returned code specifies an ICD-10 code group."
+        title:
+          type: string
+          description: ICD-10 code title
+          example: Cholera
+      required:
+      - code
+      - isGroup
+      - title
     ImportInstitutionContactResponse:
       type: object
       properties:
@@ -7710,6 +7884,17 @@ components:
             $ref: "#/components/schemas/ErrorResponseWithLocation"
       required:
       - errorResponses
+    MukUserAttributes:
+      type: object
+      description: The MUK attributes of a user
+      properties:
+        address:
+          $ref: "#/components/schemas/DomesticAddress"
+        facilityName:
+          type: string
+      required:
+      - address
+      - facilityName
     PersonContact:
       type: object
       allOf:
@@ -8387,6 +8572,15 @@ components:
       required:
       - elements
       - totalNumberOfElements
+    SearchIcd10CodesResponse:
+      type: object
+      properties:
+        codes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Icd10Code"
+      required:
+      - codes
     SearchReferenceFacilitiesResponse:
       type: object
       properties:
@@ -8416,6 +8610,19 @@ components:
           uniqueItems: true
       required:
       - cityDistricts
+    SelfUser:
+      type: object
+      properties:
+        roles:
+          type: array
+          description: A list of assigned roles for this user
+          items:
+            $ref: "#/components/schemas/UserRole"
+        user:
+          $ref: "#/components/schemas/User"
+      required:
+      - roles
+      - user
     SendEmailNotificationRequest:
       type: object
       properties:
@@ -8627,6 +8834,7 @@ components:
       - TRAVEL_MEDICINE
       - MEASLES_PROTECTION
       - STI_PROTECTION
+      - OFFICIAL_MEDICAL_SERVICE
     TestHelperClockSetRequest:
       type: object
       properties:
@@ -9230,6 +9438,7 @@ components:
       - MEDICAL_REGISTRY_IMPORT
       - OFFICIAL_MEDICAL_SERVICE_LEADER
       - OFFICIAL_MEDICAL_SERVICE_ADMIN
+      - BASE_GDPR_VALIDATION_TASK_CLEANUP
     VCardAddress:
       type: object
       properties:

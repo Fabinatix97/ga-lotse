@@ -13,14 +13,12 @@ export const routes = {
   procedures: {
     index: `${proceduresPath}`,
     byId: (procedureId: string) => ({
-      index: `${proceduresPath}/${procedureId}`,
       details: `${proceduresPath}/${procedureId}/details`,
       consultation: `${proceduresPath}/${procedureId}/consultation`,
       anamnesis: `${proceduresPath}/${procedureId}/anamnesis`,
-      examination: `${proceduresPath}/${procedureId}/examination`,
       rapidTest: `${proceduresPath}/${procedureId}/examination/rapid-test`,
       laboratoryTest: `${proceduresPath}/${procedureId}/examination/laboratory-test`,
-      report: `${proceduresPath}/${procedureId}/report`,
+      diagnosis: `${proceduresPath}/${procedureId}/diagnosis`,
       progressEntries: `${proceduresPath}/${procedureId}/progress-entries`,
     }),
   },

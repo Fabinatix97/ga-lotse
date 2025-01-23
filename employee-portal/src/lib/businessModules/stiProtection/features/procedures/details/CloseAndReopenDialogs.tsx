@@ -4,26 +4,37 @@
  */
 
 import {
+  ApiAppointmentHistoryEntry,
   ApiStiProtectionProcedure,
   ApiStiProtectionProcedureOverview,
 } from "@eshg/employee-portal-api/stiProtection";
-import { COUNTRY_CODE_LABELS } from "@eshg/lib-portal/components/formFields/countryCodes";
-import { styled } from "@mui/joy";
+import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
+import { Typography, styled } from "@mui/joy";
 import { useState } from "react";
 
 import {
   useCloseProcedure,
   useReopenProcedure,
 } from "@/lib/businessModules/stiProtection/api/mutations/procedures";
+import { useStiProcedureQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
+import { APPOINTMENT_TYPES } from "@/lib/businessModules/stiProtection/shared/constants";
 import { isProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { EmployeePortalConfirmationDialog } from "@/lib/shared/components/confirmationDialog/EmployeePortalConfirmationDialog";
 
+import { formatAppointmentTime } from "./AdditionalDataSection";
+
 type Procedure = ApiStiProtectionProcedure | ApiStiProtectionProcedureOverview;
+
 interface CloseAndReopenConfirmationDialogProps {
   open: boolean;
   onClose: () => void;
   onConfirm: () => Promise<void>;
   procedure: Procedure | undefined;
+}
+
+interface CloseWithOpenAppointmentsConfirmationDialogProps
+  extends Omit<CloseAndReopenConfirmationDialogProps, "procedure"> {
+  openAppointment: ApiAppointmentHistoryEntry;
 }
 
 export interface UseCloseAndReopenConfirmationDialog {
@@ -76,7 +87,23 @@ export function CloseConfirmationDialog({
   open,
   onClose,
   onConfirm,
+  procedure,
 }: CloseAndReopenConfirmationDialogProps) {
+  const { data: appointmentDetails } = useStiProcedureQuery(procedure?.id);
+  const openAppointment = appointmentDetails.appointmentHistory.find(
+    (t) => t.appointmentStatus === "OPEN",
+  );
+  if (openAppointment) {
+    return (
+      <CloseWithOpenAppointmentConfirmationDialog
+        openAppointment={openAppointment}
+        open={open}
+        onClose={onClose}
+        onConfirm={onConfirm}
+      />
+    );
+  }
+
   return (
     <EmployeePortalConfirmationDialog
       title="Vorgang abschließen?"
@@ -87,6 +114,33 @@ export function CloseConfirmationDialog({
       onClose={onClose}
       onConfirm={onConfirm}
     />
+  );
+}
+
+export function CloseWithOpenAppointmentConfirmationDialog({
+  open,
+  onClose,
+  onConfirm,
+  openAppointment,
+}: CloseWithOpenAppointmentsConfirmationDialogProps) {
+  return (
+    <EmployeePortalConfirmationDialog
+      title="Vorgang abschließen nur mit Terminstornierung möglich"
+      description="Der Vorgang enthält einen offenen Termin. Um den Vorgang zu schließen, müssen Sie folgenden Termin stornieren."
+      confirmLabel="Stornieren & Abschließen"
+      color="danger"
+      open={open}
+      onClose={onClose}
+      onConfirm={onConfirm}
+    >
+      <Typography level="body-md" fontWeight={600}>
+        <time dateTime={openAppointment.appointmentStart.toISOString()}>
+          {formatAppointmentTime(openAppointment.appointmentStart)}
+        </time>
+        <br />
+        {APPOINTMENT_TYPES[openAppointment.appointmentType]}
+      </Typography>
+    </EmployeePortalConfirmationDialog>
   );
 }
 
@@ -123,7 +177,7 @@ export function ReopenConfirmationDialog({
           <th scope="row">Geburtsland</th>
           <td>
             {personDetails.countryOfBirth &&
-              COUNTRY_CODE_LABELS[personDetails.countryOfBirth]}
+              translateCountry(personDetails.countryOfBirth)}
           </td>
         </tr>
       </DetailsTable>
@@ -134,10 +188,12 @@ export function ReopenConfirmationDialog({
 const DetailsTable = styled("table")`
   width: max-content;
   text-align: left;
+
   & th {
     font-weight: 400;
     padding-right: ${({ theme }) => theme.spacing(4)};
   }
+
   & td {
     font-weight: ${({ theme }) => theme.fontWeight.lg};
   }

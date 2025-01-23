@@ -119,7 +119,7 @@ public class AggregationResultExportService {
   }
 
   private static boolean isRelevantTableColumn(TableColumn tableColumn) {
-    return !tableColumn.getValueType().equals(TableColumnValueType.PROCEDURE_ID);
+    return !tableColumn.getValueType().equals(TableColumnValueType.PROCEDURE_REFERENCE);
   }
 
   private static void addLegendForTableColumn(

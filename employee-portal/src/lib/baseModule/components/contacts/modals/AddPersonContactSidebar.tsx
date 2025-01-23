@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiPersonContact } from "@eshg/employee-portal-api/base";
+import { ApiPersonContact } from "@eshg/base-api";
 import { useState } from "react";
 
 import { ContactEntityForm } from "@/lib/baseModule/components/contacts/forms/ContactEntityForm";

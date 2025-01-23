@@ -17,5 +17,5 @@ public interface CemeteryRepository extends JpaRepository<Cemetery, Long> {
 
   Stream<Cemetery> findAllByOrderById();
 
-  long deleteByCreatedAtBefore(Instant createdAt);
+  long deleteByDeleteAtBefore(Instant deleteAt);
 }

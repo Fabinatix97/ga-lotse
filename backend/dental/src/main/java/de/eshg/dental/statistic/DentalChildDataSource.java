@@ -37,7 +37,9 @@ public class DentalChildDataSource extends ProcedureDataSource<Child, DentalChil
     return switch (attribute) {
       case PROCEDURE_ID -> child.getExternalId();
       case CHILD_CENTRAL_FILE_ID -> child.getChildIdFromCentralFile();
-      case CHILD_GROUP -> getGroup(child.getGroupName());
+      case EINRICHTUNG -> child.getInstitutionId();
+      case GRUPPE -> getGroup(child.getGroupName());
+      case ANZAHL_PROPHYLAXEN -> child.getExaminations().size();
     };
   }
 

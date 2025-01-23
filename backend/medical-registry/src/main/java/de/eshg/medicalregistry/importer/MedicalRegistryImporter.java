@@ -7,7 +7,6 @@ package de.eshg.medicalregistry.importer;
 
 import de.eshg.lib.xlsximport.FeedbackColumnAccessor;
 import de.eshg.lib.xlsximport.ImportStatus;
-import de.eshg.lib.xlsximport.ImportValidator;
 import de.eshg.lib.xlsximport.Importer;
 import de.eshg.lib.xlsximport.RowData;
 import de.eshg.medicalregistry.MedicalRegistryService;
@@ -26,8 +25,11 @@ public class MedicalRegistryImporter extends Importer<MedicalRegistryRow, Medica
   private final int batchSize;
 
   public MedicalRegistryImporter(
-      XSSFSheet sheet, MedicalRegistryService medicalRegistryService, int batchSize) {
-    super(sheet, new MedicalRegistryRowReader(sheet), feedbackColumnAccessor(sheet));
+      XSSFSheet sheet,
+      List<MedicalRegistryColumn> actualColumns,
+      MedicalRegistryService medicalRegistryService,
+      int batchSize) {
+    super(sheet, new MedicalRegistryRowReader(sheet), new FeedbackColumnAccessor(actualColumns));
     this.medicalRegistryService = medicalRegistryService;
     if (batchSize < 1 || batchSize > 10_000) {
       throw new IllegalArgumentException("batchSize must be between 1 and 10_000");
@@ -77,10 +79,5 @@ public class MedicalRegistryImporter extends Importer<MedicalRegistryRow, Medica
       writeStatus(row, ImportStatus.EXCEPTION);
       stats.countFailed();
     }
-  }
-
-  private static FeedbackColumnAccessor feedbackColumnAccessor(XSSFSheet sheet) {
-    return new FeedbackColumnAccessor(
-        ImportValidator.validateHeaderFormat(MedicalRegistryColumn.values(), sheet));
   }
 }

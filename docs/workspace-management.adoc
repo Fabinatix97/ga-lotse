@@ -1,0 +1,40 @@
+= Workspace Management
+:sectnums:
+
+== Managing packages
+
+=== Creating a new workspace package
+
+1. Create a new folder in `/packages` with the desired package name
+2. Create all files required to integrate the new package into the workspace. You can use existing packages of the same type as template.
+- minimum required files: `package.json`, `tsconfig.json`, `build.gradle`
+- further files depending on the package type (e.g. `eslint.config.js`)
+3. Add the new package as dependency to all dependent apps and packages, using the link:https://pnpm.io/workspaces#workspace-protocol-workspace)[workspace protocol]
+4. Update the project references by running `./gradlew :updateProjectReferences`
+
+== Managing dependencies
+
+=== Adding a workspace package as dependency
+
+In order to add a new workspace package, run the `addWorkspaceDependency` task on the dependent project:
+
+.Example
+[,bash]
+----
+./gradlew :employee-portal:addWorkspaceDependency -Ppackage=base-api
+----
+
+The task automatically updates all project references.
+
+=== Updating project references
+
+Whenever internal packages are added as a dependency to another internal package, the project references on TypeScript and Gradle level need to be updated accordingly.
+
+The pipeline automatically checks if all project references are up-to-date and will fail otherwise.
+
+To update all project references, run
+
+[,bash]
+----
+./gradlew :updateProjectReferences
+----

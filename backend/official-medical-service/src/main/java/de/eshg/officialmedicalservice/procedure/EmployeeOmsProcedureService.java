@@ -5,6 +5,10 @@
 
 package de.eshg.officialmedicalservice.procedure;
 
+import static de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory.createSystemProgressEntry;
+import static de.eshg.officialmedicalservice.concern.ConcernMapper.mapToConcernDto;
+import static de.eshg.officialmedicalservice.concern.ConcernMapper.mapToEntity;
+
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesRequest;
@@ -13,11 +17,15 @@ import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesResponse;
+import de.eshg.base.user.api.UserDto;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.model.FacilityType;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.RelatedPerson;
+import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
+import de.eshg.officialmedicalservice.appointment.OmsAppointmentMapper;
+import de.eshg.officialmedicalservice.concern.ConcernMapper;
 import de.eshg.officialmedicalservice.facility.FacilityClient;
 import de.eshg.officialmedicalservice.facility.FacilityMapper;
 import de.eshg.officialmedicalservice.person.PersonClient;
@@ -30,13 +38,19 @@ import de.eshg.officialmedicalservice.procedure.api.EmployeeOmsProcedurePaginati
 import de.eshg.officialmedicalservice.procedure.api.EmployeePagedOmsProcedures;
 import de.eshg.officialmedicalservice.procedure.api.FacilityDto;
 import de.eshg.officialmedicalservice.procedure.api.PatchAffectedPersonRequest;
+import de.eshg.officialmedicalservice.procedure.api.PatchConcernRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchEmployeeOmsProcedureFacilityRequest;
+import de.eshg.officialmedicalservice.procedure.api.PatchEmployeeOmsProcedurePhysicianRequest;
 import de.eshg.officialmedicalservice.procedure.api.PostEmployeeOmsProcedureFacilityRequest;
 import de.eshg.officialmedicalservice.procedure.api.PostEmployeeOmsProcedureRequest;
+import de.eshg.officialmedicalservice.procedure.api.SyncAffectedPersonRequest;
+import de.eshg.officialmedicalservice.procedure.api.SyncFacilityRequest;
+import de.eshg.officialmedicalservice.procedure.persistence.entity.Concern;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.Facility;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedureRepository;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.Person;
+import de.eshg.officialmedicalservice.user.UserClient;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
@@ -57,24 +71,33 @@ import org.springframework.transaction.annotation.Transactional;
 public class EmployeeOmsProcedureService {
   private final OmsProcedureRepository omsProcedureRepository;
   private final OmsProcedureOverviewMapper omsProcedureOverviewMapper;
+  private final OmsAppointmentMapper omsAppointmentMapper;
   private final PersonClient personClient;
   private final FacilityClient facilityClient;
+  private final UserClient userClient;
   private final Clock clock;
   private final AuditLogger auditLogger;
+  private final ProgressEntryService progressEntryService;
 
   public EmployeeOmsProcedureService(
       OmsProcedureRepository omsProcedureRepository,
       OmsProcedureOverviewMapper omsProcedureOverviewMapper,
+      OmsAppointmentMapper omsAppointmentMapper,
       PersonClient personClient,
       FacilityClient facilityClient,
       Clock clock,
-      AuditLogger auditLogger) {
+      AuditLogger auditLogger,
+      UserClient userClient,
+      ProgressEntryService progressEntryService) {
     this.omsProcedureRepository = omsProcedureRepository;
     this.omsProcedureOverviewMapper = omsProcedureOverviewMapper;
+    this.omsAppointmentMapper = omsAppointmentMapper;
     this.personClient = personClient;
     this.facilityClient = facilityClient;
     this.clock = clock;
     this.auditLogger = auditLogger;
+    this.userClient = userClient;
+    this.progressEntryService = progressEntryService;
   }
 
   @Transactional
@@ -85,7 +108,7 @@ public class EmployeeOmsProcedureService {
 
     OmsProcedure procedure =
         omsProcedureOverviewMapper.toDomainType(
-            request, CurrentUserHelper.getCurrentUserId(), affectedPersonBaseResponse);
+            request, CurrentUserHelper.getCurrentUserId(), affectedPersonBaseResponse, null);
 
     omsProcedureRepository.save(procedure);
 
@@ -121,12 +144,19 @@ public class EmployeeOmsProcedureService {
           FacilityMapper.mapToFacilityDto(facilityFileState, facilityFromCentralFile.getVersion());
     }
 
+    UUID physicianId = omsProcedureAndAffectedPerson.omsProcedure.getPhysicianId();
+    Optional<UserDto> physician = userClient.retrievePhysician(physicianId);
+
     return new EmployeeOmsProcedureDetailsDto(
         omsProcedureAndAffectedPerson.omsProcedure.getExternalId(),
         ProcedureMapper.toInterfaceType(
             omsProcedureAndAffectedPerson.omsProcedure.getProcedureStatus()),
         omsProcedureAndAffectedPerson.affectedPerson,
-        facility);
+        facility,
+        mapToConcernDto(omsProcedureAndAffectedPerson.omsProcedure.getConcern()),
+        physician.orElse(null),
+        omsAppointmentMapper.toInterfaceType(
+            omsProcedureAndAffectedPerson.omsProcedure.getAppointments()));
   }
 
   @Transactional(readOnly = true)
@@ -141,6 +171,7 @@ public class EmployeeOmsProcedureService {
     Map<UUID, GetPersonFileStateResponse> personMap = getPersonMap(omsProcedures.getContent());
     Map<UUID, GetFacilityFileStateResponse> facilityMap =
         getFacilityMap(omsProcedures.getContent());
+    Map<UUID, UserDto> physicianMap = userClient.getPhysiciansMap();
 
     List<EmployeeOmsProcedureOverviewDto> omsProcedureOverviewDtos =
         omsProcedures.getContent().stream()
@@ -149,7 +180,8 @@ public class EmployeeOmsProcedureService {
                     omsProcedureOverviewMapper.toInterfaceType(
                         omsProcedure,
                         getPersonForOmsProcedure(omsProcedure, personMap),
-                        getFacilityForOmsProcedure(omsProcedure, facilityMap)))
+                        getFacilityForOmsProcedure(omsProcedure, facilityMap),
+                        getPhysicianForOmsProcedure(omsProcedure, physicianMap)))
             .toList();
 
     return new EmployeePagedOmsProcedures(
@@ -157,9 +189,56 @@ public class EmployeeOmsProcedureService {
   }
 
   @Transactional
+  public void abortDraftProcedure(UUID externalId) {
+    OmsProcedure omsProcedure = loadOmsProcedure(externalId);
+
+    if (omsProcedure.getProcedureStatus() != ProcedureStatus.DRAFT) {
+      throw new BadRequestException("Procedure is not in DRAFT status");
+    }
+
+    omsProcedureRepository.deleteById(omsProcedure.getId());
+  }
+
+  @Transactional
+  public void acceptDraftProcedure(UUID externalId) {
+    OmsProcedure omsProcedure = loadOmsProcedureForUpdate(externalId);
+
+    if (omsProcedure.getProcedureStatus() != ProcedureStatus.DRAFT) {
+      throw new BadRequestException("Procedure is not in DRAFT status");
+    }
+    requireFacility(omsProcedure);
+    requireConcern(omsProcedure);
+
+    omsProcedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
+    omsProcedure.addProgressEntry(
+        createSystemProgressEntry(
+            OmsProgressEntryType.PROCEDURE_STARTED.name(), TriggerType.EMPLOYEE));
+  }
+
+  @Transactional
+  public void closeOpenProcedure(UUID externalID) {
+    OmsProcedure omsProcedure = loadOmsProcedureForUpdate(externalID);
+
+    if (omsProcedure.getProcedureStatus() == ProcedureStatus.CLOSED) {
+      throw new BadRequestException("Procedure is already in CLOSED status");
+    }
+    if (omsProcedure.getProcedureStatus() != ProcedureStatus.OPEN) {
+      throw new BadRequestException("Procedure is not in OPEN status");
+    }
+
+    // ToDo require all appointments closed
+
+    omsProcedure.updateProcedureStatus(ProcedureStatus.CLOSED, clock, auditLogger);
+  }
+
+  @Transactional
   public void updateAffectedPerson(
       UUID externalId, PatchAffectedPersonRequest patchAffectedPersonRequest) {
     OmsProcedure omsProcedure = loadOmsProcedureForUpdate(externalId);
+
+    if (omsProcedure.getProcedureStatus() == ProcedureStatus.CLOSED) {
+      throw new BadRequestException("Affected person can not be edited in CLOSED status");
+    }
 
     Person person = omsProcedure.findAffectedPerson();
 
@@ -185,11 +264,27 @@ public class EmployeeOmsProcedureService {
   }
 
   @Transactional
+  public void syncAffectedPerson(UUID externalId, SyncAffectedPersonRequest request) {
+    OmsProcedure procedure = loadOmsProcedureForUpdate(externalId);
+
+    if (procedure.getProcedureStatus() == ProcedureStatus.CLOSED) {
+      throw new BadRequestException("Affected person can not be synced in CLOSED status");
+    }
+
+    Person person = procedure.getRelatedPersons().getFirst();
+    UUID updateFileStateId =
+        personClient.syncAffectedPerson(person.getCentralFileStateId(), request.referenceVersion());
+    person.setCentralFileStateId(updateFileStateId);
+
+    progressEntryService.createProgressEntryForSyncAffectedPerson(procedure);
+  }
+
+  @Transactional
   public UUID addFacility(UUID externalId, PostEmployeeOmsProcedureFacilityRequest request) {
     OmsProcedure procedure = loadOmsProcedure(externalId);
 
     if (procedure.getProcedureStatus() != ProcedureStatus.DRAFT) {
-      throw new BadRequestException("Facility con only be added in DRAFT status");
+      throw new BadRequestException("Facility can only be added in DRAFT status");
     }
     if (procedure.getFacility().isPresent()) {
       throw new BadRequestException("Procedure already has a facility");
@@ -213,6 +308,10 @@ public class EmployeeOmsProcedureService {
     if (procedure.getProcedureStatus() == ProcedureStatus.CLOSED) {
       throw new BadRequestException("Facility can not be edited in CLOSED status");
     }
+    if (procedure.getProcedureStatus() != ProcedureStatus.DRAFT) {
+      throw new BadRequestException("Facility can only be synced in DRAFT status");
+    }
+
     Optional<Facility> optionalFacility = procedure.getFacility();
     if (optionalFacility.isEmpty()) {
       throw new BadRequestException("Procedure doesn't have a facility");
@@ -239,25 +338,65 @@ public class EmployeeOmsProcedureService {
   }
 
   @Transactional
-  public void startProcedure(UUID externalId) {
-    OmsProcedure procedure = loadOmsProcedure(externalId);
+  public void syncFacilityData(UUID externalId, SyncFacilityRequest request) {
+    OmsProcedure procedure = loadOmsProcedureForUpdate(externalId);
 
-    if (procedure.getProcedureStatus() == ProcedureStatus.OPEN) {
-      throw new BadRequestException("Procedure already started");
+    if (procedure.getProcedureStatus() == ProcedureStatus.CLOSED) {
+      throw new BadRequestException("Facility can not be synced in CLOSED status");
+    }
+    if (procedure.getProcedureStatus() != ProcedureStatus.DRAFT) {
+      throw new BadRequestException("Facility can only be synced in DRAFT status");
     }
 
-    procedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
+    Optional<Facility> optionalFacility = procedure.getFacility();
+    if (optionalFacility.isEmpty()) {
+      throw new BadRequestException("Procedure doesn't have a facility");
+    }
+    Facility facility = optionalFacility.get();
+
+    UUID updatedFileStateId =
+        facilityClient.syncFacility(facility.getCentralFileStateId(), request.referenceVersion());
+    facility.setCentralFileStateId(updatedFileStateId);
+
+    progressEntryService.createProgressEntryForSyncFacility(procedure);
   }
 
   @Transactional
-  public void closeProcedure(UUID externalId) {
+  public UUID modifyPhysician(UUID externalId, PatchEmployeeOmsProcedurePhysicianRequest request) {
     OmsProcedure procedure = loadOmsProcedure(externalId);
 
     if (procedure.getProcedureStatus() == ProcedureStatus.CLOSED) {
-      throw new BadRequestException("Procedure already closed");
+      throw new BadRequestException("A physician can not be set in CLOSED status");
     }
 
-    procedure.updateProcedureStatus(ProcedureStatus.CLOSED, clock, auditLogger);
+    UUID newPhysicianId = request.physicianId();
+    UserDto newPhysician =
+        userClient.validateUser(newPhysicianId, userClient.getTechnicalGroupPhysicians());
+
+    procedure.setPhysicianId(newPhysicianId);
+    progressEntryService.createProgressEntryForModifiedPhysician(procedure, newPhysician);
+    return newPhysicianId;
+  }
+
+  @Transactional
+  public void updateOmsProcedureConcern(UUID externalId, PatchConcernRequest request) {
+    OmsProcedure omsProcedure = loadOmsProcedureForUpdate(externalId);
+
+    if (omsProcedure.getProcedureStatus() == ProcedureStatus.CLOSED) {
+      throw new BadRequestException("Concern can not be edited in CLOSED status");
+    }
+    if (omsProcedure.getProcedureStatus() != ProcedureStatus.DRAFT) {
+      throw new BadRequestException("Procedure is not in DRAFT status");
+    }
+
+    Concern existingConcern = omsProcedure.getConcern();
+
+    if (existingConcern != null) {
+      ValidationUtil.validateVersion(request.concern().version(), existingConcern);
+      ConcernMapper.mapOntoExistingEntity(request.concern(), existingConcern);
+    } else {
+      omsProcedure.setConcern(mapToEntity(request.concern()));
+    }
   }
 
   private OmsProcedure loadOmsProcedure(UUID externalId) {
@@ -274,7 +413,6 @@ public class EmployeeOmsProcedureService {
 
   private OmsProcedureAndAffectedPerson getOmsProcedureAndAffectedPerson(UUID externalId) {
     OmsProcedure omsProcedure = loadOmsProcedure(externalId);
-
     Person person = omsProcedure.findAffectedPerson();
 
     GetPersonFileStateResponse personFileStateResponse =
@@ -346,6 +484,23 @@ public class EmployeeOmsProcedureService {
         .getFacility()
         .map(facility -> facilityMap.get(facility.getCentralFileStateId()))
         .orElse(null);
+  }
+
+  private void requireFacility(OmsProcedure omsProcedure) {
+    if (omsProcedure.getFacility().isEmpty()) {
+      throw new BadRequestException("Procedure is missing a facility");
+    }
+  }
+
+  private void requireConcern(OmsProcedure omsProcedure) {
+    if (omsProcedure.getConcern() == null) {
+      throw new BadRequestException("Procedure is missing a concern");
+    }
+  }
+
+  private UserDto getPhysicianForOmsProcedure(
+      OmsProcedure omsProcedure, Map<UUID, UserDto> physicianMap) {
+    return Optional.ofNullable(omsProcedure.getPhysicianId()).map(physicianMap::get).orElse(null);
   }
 
   private record OmsProcedureAndAffectedPerson(

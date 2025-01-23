@@ -8,7 +8,7 @@ import {
   ApiGetReferencePersonResponse,
   ApiPersonDetails,
   instanceOfApiGetReferencePersonResponse,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import {
   dropBlankStrings,

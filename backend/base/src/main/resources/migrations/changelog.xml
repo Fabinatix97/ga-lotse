@@ -41,6 +41,11 @@
   <include file="migrations/0031_add_index_to_muk_facility_link.xml"/>
   <include file="migrations/0032_rename_facility_link_muk_id.xml"/>
   <include file="migrations/0033_gdpr_procedure_enable_multiple_central_file_ids.xml"/>
-
+  <include file="migrations/0034_update_identification_data.xml"/>
+  <include file="migrations/0035_rename_bundId_person_link_id.xml"/>
+  <include file="migrations/0036_add_icd10_codes.xml"/>
+  <include file="migrations/0037_add_maps-id-to-muk-facility-link.xml"/>
+  <include file="migrations/0038_shedlock.xml"/>
+  <include file="migrations/0039-add-countrycodes.xml"/>
 
 </databaseChangeLog>

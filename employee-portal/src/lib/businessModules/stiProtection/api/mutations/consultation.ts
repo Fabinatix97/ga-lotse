@@ -8,7 +8,7 @@ import { MutationPassThrough } from "@eshg/lib-portal/types/query";
 import { useMutation } from "@tanstack/react-query";
 
 import { useConsultationApi } from "@/lib/businessModules/stiProtection/api/clients";
-import { stiProtectionProceduresApiQueryKey } from "@/lib/businessModules/stiProtection/api/queries/apiQueryKeys";
+import { proceduresQueryKey } from "@/lib/businessModules/stiProtection/api/queries/apiQueryKeys";
 
 export function useUpsertConsultation(
   procedureId: string,
@@ -18,7 +18,7 @@ export function useUpsertConsultation(
   return useMutation({
     mutationFn: (consultation) =>
       api.updateConsultation(procedureId, consultation),
-    mutationKey: stiProtectionProceduresApiQueryKey([procedureId]),
+    mutationKey: proceduresQueryKey([procedureId, "consultation"]),
     ...passThrough,
   });
 }

@@ -24,15 +24,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class WaitingRoomService {
 
-  private final StiProtectionProcedureService stiProtectionProcedureService;
+  private final StiProtectionProcedureFinder procedureFinder;
   private final StiProtectionProcedureRepository stiProtectionProcedureRepository;
   private final CitizenAccessCodeUserApi citizenAccessCodeUserApi;
 
   public WaitingRoomService(
-      StiProtectionProcedureService stiProtectionProcedureService,
+      StiProtectionProcedureFinder procedureFinder,
       StiProtectionProcedureRepository stiProtectionProcedureRepository,
       CitizenAccessCodeUserApi citizenAccessCodeUserApi) {
-    this.stiProtectionProcedureService = stiProtectionProcedureService;
+    this.procedureFinder = procedureFinder;
     this.stiProtectionProcedureRepository = stiProtectionProcedureRepository;
     this.citizenAccessCodeUserApi = citizenAccessCodeUserApi;
   }
@@ -57,8 +57,7 @@ public class WaitingRoomService {
   }
 
   public WaitingRoom getOrCreateWaitingRoom(UUID procedureId) {
-    StiProtectionProcedure procedure =
-        stiProtectionProcedureService.findProcedureByExternalId(procedureId);
+    StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
     return Objects.requireNonNullElseGet(
         procedure.getWaitingRoom(),
         () -> {

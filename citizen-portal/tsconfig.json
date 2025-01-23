@@ -1,13 +1,5 @@
 {
   "extends": "../config/tsconfig.next.json",
-  "references": [
-    {
-      "path": "../citizen-portal-api"
-    },
-    {
-      "path": "../lib-portal"
-    }
-  ],
   "compilerOptions": {
     "outDir": "./build/dist",
     "paths": {

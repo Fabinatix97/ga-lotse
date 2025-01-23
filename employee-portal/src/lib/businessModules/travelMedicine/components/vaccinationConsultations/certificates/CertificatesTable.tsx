@@ -15,7 +15,6 @@ import { ReceiptOutlined } from "@mui/icons-material";
 import AddOutlined from "@mui/icons-material/AddOutlined";
 import { Button, Stack, Typography } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
-import { useRef, useState } from "react";
 
 import { useDownloadTravelMedicineFile } from "@/lib/businessModules/travelMedicine/api/download/files";
 import {
@@ -37,8 +36,6 @@ export function CertificatesTable({
 }>) {
   const snackbar = useSnackbar();
   const downloadFile = useDownloadTravelMedicineFile();
-  const hiddenLinkContainer = useRef<HTMLDivElement>(null);
-  useState(false);
 
   const [
     { data: tableData },
@@ -73,9 +70,7 @@ export function CertificatesTable({
           certificate.certificateFileId,
         );
 
-        if (hiddenLinkContainer.current !== null) {
-          downloadFileAndOpen(downloadedFile, hiddenLinkContainer.current);
-        }
+        downloadFileAndOpen(downloadedFile);
       }
     } catch {
       snackbar.error("Der Download der Bescheinigung ist fehlgeschlagen.");
@@ -83,36 +78,33 @@ export function CertificatesTable({
   }
 
   return (
-    <>
-      <TablePage
-        fullHeight
-        controls={
-          !isProcedureClosed() ? (
-            <ButtonBar
-              right={
-                <Button
-                  sx={{ py: 1 / 2 }}
-                  startDecorator={<AddOutlined />}
-                  onClick={openCertificateSideBar}
-                  data-testid="create-certificate-buttonbar"
-                >
-                  Bescheinigung erstellen
-                </Button>
-              }
-            />
-          ) : null
-        }
-      >
-        <TableSheet>
-          <DataTable
-            data={tableData.certificates}
-            columns={columns(downloadCertificate)}
-            noDataComponent={() => <NoCertificatesAvailable />}
+    <TablePage
+      fullHeight
+      controls={
+        !isProcedureClosed() ? (
+          <ButtonBar
+            right={
+              <Button
+                sx={{ py: 1 / 2 }}
+                startDecorator={<AddOutlined />}
+                onClick={openCertificateSideBar}
+                data-testid="create-certificate-buttonbar"
+              >
+                Bescheinigung erstellen
+              </Button>
+            }
           />
-        </TableSheet>
-      </TablePage>
-      <div ref={hiddenLinkContainer} style={{ display: "hidden" }}></div>
-    </>
+        ) : null
+      }
+    >
+      <TableSheet>
+        <DataTable
+          data={tableData.certificates}
+          columns={columns(downloadCertificate)}
+          noDataComponent={() => <NoCertificatesAvailable />}
+        />
+      </TableSheet>
+    </TablePage>
   );
 
   function NoCertificatesAvailable() {

@@ -11,7 +11,7 @@ import {
   ProcedureApi,
   ProgressEntryApi,
   ProphylaxisSessionApi,
-} from "@eshg/employee-portal-api/dental";
+} from "@eshg/dental-api";
 import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 
 function useConfiguration() {

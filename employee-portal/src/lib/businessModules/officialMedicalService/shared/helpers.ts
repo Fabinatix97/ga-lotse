@@ -6,7 +6,7 @@
 import {
   ApiAddPersonFileStateRequest,
   ApiGetReferenceFacilityResponse,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import {
   ApiAffectedPerson,
   ApiFacility,

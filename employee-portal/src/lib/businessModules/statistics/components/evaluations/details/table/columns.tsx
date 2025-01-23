@@ -7,6 +7,7 @@ import { InternalLinkIconButton } from "@eshg/lib-portal/components/navigation/I
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { Stack } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
+import { isDefined } from "remeda";
 
 import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";
 import { EvaluationDetailsTableRow } from "@/lib/businessModules/statistics/api/models/evaluationDetailsTableData";
@@ -15,9 +16,17 @@ import { mapRawValueToTableCell } from "@/lib/businessModules/statistics/compone
 
 const columnHelper = createColumnHelper<EvaluationDetailsTableRow>();
 
-export function evaluationColumns(flatAttributes: FlatAttribute[]) {
+export function evaluationColumns({
+  flatAttributes,
+  resolveProcedureId,
+}: {
+  flatAttributes: FlatAttribute[];
+  resolveProcedureId: (
+    procedureReferenceId: string | undefined,
+  ) => string | undefined;
+}) {
   const dataColumns = flatAttributes
-    .filter((attribute) => attribute.type !== "ProcedureIdAttribute")
+    .filter((attribute) => attribute.type !== "ProcedureReferenceAttribute")
     .map((attribute) => {
       return columnHelper.accessor(attribute.key, {
         header: attribute.name,
@@ -34,27 +43,33 @@ export function evaluationColumns(flatAttributes: FlatAttribute[]) {
     });
 
   const procedureLinkColumns = flatAttributes
-    .filter((attribute) => attribute.type === "ProcedureIdAttribute")
+    .filter((attribute) => attribute.type === "ProcedureReferenceAttribute")
     .map((attribute) => {
       return columnHelper.accessor(attribute.key, {
         header: "",
         cell: (props) => {
-          return (
+          const procedureReferenceId = props.getValue() as string | undefined;
+          const procedureId = resolveProcedureId(procedureReferenceId);
+          const href = isDefined(procedureId)
+            ? resolveProcedureDetailsRoute({
+                businessModule: attribute.businessModule,
+                procedureId,
+              })
+            : undefined;
+
+          return isDefined(href) ? (
             <Stack direction="row" justifyContent={"flex-end"}>
               <InternalLinkIconButton
                 variant="plain"
                 color="primary"
                 size="sm"
-                href={resolveProcedureDetailsRoute({
-                  businessModule: attribute.businessModule,
-                  procedureId: props.getValue() as string,
-                })}
+                href={href}
                 aria-label="Vorgangsdetails"
               >
                 <ArrowForwardIosIcon />
               </InternalLinkIconButton>
             </Stack>
-          );
+          ) : undefined;
         },
         enableSorting: false,
         meta: {

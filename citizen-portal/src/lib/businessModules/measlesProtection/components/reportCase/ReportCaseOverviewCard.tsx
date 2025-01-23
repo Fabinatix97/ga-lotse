@@ -7,7 +7,7 @@ import {
   ApiReportingReason,
   ApiRoleStatus,
 } from "@eshg/citizen-portal-api/measlesProtection";
-import { DownloadLink } from "@eshg/lib-portal/api/files/DownloadLink";
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import {
   Business,
@@ -244,13 +244,12 @@ function DataAndPrivacySection({
         label={t("data_and_privacy.confirm_privacy_notice")}
         required={t("data_and_privacy.confirm_required")}
         descriptionText={
-          <DownloadLink
-            downloadContainerRef={privacyNoticeFile.downloadContainerRef}
+          <ButtonLink
             fontSize="sm"
-            onDownload={() => privacyNoticeFile.download()}
+            onClick={() => privacyNoticeFile.download()}
           >
             {t("data_and_privacy.privacy_notice")}
-          </DownloadLink>
+          </ButtonLink>
         }
       />
       <ConfirmationCheckboxField
@@ -258,13 +257,12 @@ function DataAndPrivacySection({
         label={t("data_and_privacy.confirm_privacy_policy")}
         required={t("data_and_privacy.confirm_required")}
         descriptionText={
-          <DownloadLink
-            downloadContainerRef={privacyPolicyFile.downloadContainerRef}
+          <ButtonLink
             fontSize="sm"
-            onDownload={() => privacyPolicyFile.download()}
+            onClick={() => privacyPolicyFile.download()}
           >
             {t("data_and_privacy.privacy_policy")}
-          </DownloadLink>
+          </ButtonLink>
         }
       />
     </Stack>

@@ -12,10 +12,19 @@ import jakarta.persistence.Embeddable;
 @Embeddable
 @DataSensitivity(SensitivityLevel.SENSITIVE)
 public class HepatitisLaboratoryTestData {
+  private Boolean result;
   private Boolean infection;
   private Boolean vaccineTitre;
   private String value;
   private String remark;
+
+  public Boolean getResult() {
+    return result;
+  }
+
+  public void setResult(Boolean result) {
+    this.result = result;
+  }
 
   public Boolean getInfection() {
     return infection;

@@ -9,7 +9,7 @@ import {
   ApiProcedureType,
   ApiTaskStatus,
   ApiTaskType,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { ChipProps } from "@mui/joy";
 
 export const businessModuleNames = {
@@ -69,6 +69,7 @@ export const taskTypeNames = {
   [ApiTaskType.TravelMedicine]: "Reisemedizinische Beratung und Impfungen",
   [ApiTaskType.MeaslesProtection]: "Masernschutzimpfung",
   [ApiTaskType.StiProtection]: "HIV-STI-Schutz",
+  [ApiTaskType.OfficialMedicalService]: "Amtsärztlicher Dienst",
 } satisfies Record<ApiTaskType, string>;
 
 export const taskStatusNames = {

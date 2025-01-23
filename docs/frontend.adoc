@@ -183,3 +183,4 @@ This is a https://nextjs.org/[Next.js] project bootstrapped with https://github.
 - link:content-security-policy-header.adoc[Content Security Policy (CSP) Header]
 - link:forms.adoc[Forms]
 - link:styling.adoc[Styling]
+- link:workspace-management.adoc[Workspace Management]

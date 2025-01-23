@@ -5,15 +5,14 @@
 
 package de.eshg.officialmedicalservice.testhelper;
 
-import de.eshg.base.user.UserApi;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
 import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import de.eshg.lib.appointmentblock.api.CreateDailyAppointmentBlockDto;
 import de.eshg.lib.appointmentblock.api.CreateDailyAppointmentBlockGroupRequest;
 import de.eshg.lib.appointmentblock.api.DayOfWeekDto;
-import de.eshg.lib.keycloak.TechnicalGroup;
 import de.eshg.officialmedicalservice.testhelper.api.PostPopulateAdministrativeResponse;
+import de.eshg.officialmedicalservice.user.UserClient;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.population.PopulateWithAccessTokenHelper;
 import java.time.Clock;
@@ -25,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,20 +33,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class TestPopulateAdministrativeService {
 
   public static final String OMS_NOW_KEY = "Amtsärtzlicher Dienst_heute_09_Uhr";
-  public static final String OMS_PHYSICIANS = "Amtsärtzlicher Dienst_Ärzte";
 
   private final AppointmentBlockService appointmentBlockService;
-  private final UserApi userApiClient;
   private final Clock clock;
   private final PopulateWithAccessTokenHelper populateWithAccessTokenHelper;
+  private final UserClient userClient;
 
   public TestPopulateAdministrativeService(
       AppointmentBlockService appointmentBlockService,
-      UserApi userApiClient,
+      UserClient userClient,
       Clock clock,
       PopulateWithAccessTokenHelper populateWithAccessTokenHelper) {
     this.appointmentBlockService = appointmentBlockService;
-    this.userApiClient = userApiClient;
+    this.userClient = userClient;
     this.clock = clock;
     this.populateWithAccessTokenHelper = populateWithAccessTokenHelper;
   }
@@ -55,29 +54,26 @@ public class TestPopulateAdministrativeService {
   public PostPopulateAdministrativeResponse populateAdministrative() {
     return populateWithAccessTokenHelper.doWithAccessToken(
         () -> {
-          Map<String, List<UUID>> physicians = getPhysicians();
+          Map<String, UUID> physicians = createPhysicians();
           Map<String, UUID> appointmentBlockGroups = createAppointmentBlockGroups(physicians);
 
           return new PostPopulateAdministrativeResponse(appointmentBlockGroups, physicians);
         });
   }
 
-  private Map<String, List<UUID>> getPhysicians() {
-    List<UUID> physicians =
-        userApiClient
-            .getUsersByGroup(TechnicalGroup.OFFICIAL_MEDICAL_SERVICE_PHYSICIANS.getKeycloakName())
-            .users()
-            .stream()
-            .map(UserDto::userId)
-            .toList();
-
-    Map<String, List<UUID>> physiciansGroup = new LinkedHashMap<>();
-    physiciansGroup.put(OMS_PHYSICIANS, physicians);
-    return physiciansGroup;
+  private Map<String, UUID> createPhysicians() {
+    return userClient.getPhysicians().stream()
+        .collect(
+            Collectors.toMap(
+                userDto ->
+                    userDto.firstName() + userDto.lastName(), // test data keys: firstnameLastname
+                UserDto::userId,
+                (key, conflictingKey) -> key,
+                LinkedHashMap::new));
   }
 
-  private Map<String, UUID> createAppointmentBlockGroups(Map<String, List<UUID>> physicians) {
-    UUID physician = physicians.get(OMS_PHYSICIANS).getFirst();
+  private Map<String, UUID> createAppointmentBlockGroups(Map<String, UUID> physicians) {
+    UUID physician = physicians.get("TinaHoffmann");
 
     Instant startBlock_omsNow =
         ZonedDateTime.now(clock)

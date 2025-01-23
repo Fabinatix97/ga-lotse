@@ -16,7 +16,7 @@ public abstract class RowData<R extends RowData<R>> {
   private boolean valid = true;
   private boolean mergeable = false;
 
-  Row getXlsxRow() {
+  public Row getXlsxRow() {
     return xlsxRow;
   }
 

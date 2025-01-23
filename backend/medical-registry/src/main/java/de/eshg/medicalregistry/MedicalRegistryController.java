@@ -19,11 +19,13 @@ import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.user.UserApi;
 import de.eshg.file.common.FileType;
 import de.eshg.lib.auditlog.AuditLogger;
+import de.eshg.lib.procedure.domain.model.Image;
+import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.domain.model.TriggerType;
+import de.eshg.lib.procedure.file.MultipartFileParser;
 import de.eshg.lib.procedure.procedures.ProcedureSearchService;
-import de.eshg.lib.procedure.util.FileValidator;
 import de.eshg.medicalregistry.api.ConfirmProcedureRequest;
 import de.eshg.medicalregistry.api.CreateFullChangeRequest;
 import de.eshg.medicalregistry.api.CreateProcedureRequest;
@@ -36,6 +38,7 @@ import de.eshg.medicalregistry.api.MedicalRegistryEntryDto;
 import de.eshg.medicalregistry.api.ProcedureReferenceDto;
 import de.eshg.medicalregistry.business.model.DocumentData;
 import de.eshg.medicalregistry.business.model.MedicalRegistryKeyDocumentType;
+import de.eshg.medicalregistry.config.MedicalRegistryProperties;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntry;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntryChange;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryProcedure;
@@ -45,12 +48,15 @@ import de.eshg.medicalregistry.featuretoggle.MedicalRegistryFeature;
 import de.eshg.medicalregistry.featuretoggle.MedicalRegistryFeatureToggle;
 import de.eshg.medicalregistry.mapper.EntryMapper;
 import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -101,6 +107,7 @@ public class MedicalRegistryController {
   private final AuditLogger auditLogger;
   private final UserApi userApi;
   private final ProcedureSearchService<MedicalRegistryProcedure> searchService;
+  private final MedicalRegistryProperties medicalRegistryProperties;
 
   public MedicalRegistryController(
       MedicalRegistryService medicalRegistryService,
@@ -111,7 +118,8 @@ public class MedicalRegistryController {
       Validator validator,
       AuditLogger auditLogger,
       UserApi userApi,
-      ProcedureSearchService<MedicalRegistryProcedure> searchService) {
+      ProcedureSearchService<MedicalRegistryProcedure> searchService,
+      MedicalRegistryProperties medicalRegistryProperties) {
     this.medicalRegistryService = medicalRegistryService;
     this.personService = personService;
     this.facilityService = facilityService;
@@ -121,6 +129,7 @@ public class MedicalRegistryController {
     this.auditLogger = auditLogger;
     this.userApi = userApi;
     this.searchService = searchService;
+    this.medicalRegistryProperties = medicalRegistryProperties;
   }
 
   @PostMapping("/{procedureId}/confirm")
@@ -279,11 +288,6 @@ public class MedicalRegistryController {
             employeeList,
             otherRelevantDocuments);
 
-    for (DocumentData document : providedDocuments) {
-      FileValidator.validate(document.file());
-      Validator.validateFileType(document.file(), FileType.JPEG);
-    }
-
     MedicalRegistryEntryChange procedure =
         medicalRegistryService.createProcedure(
             request, providedDocuments, triggerType, procedureType);
@@ -291,7 +295,7 @@ public class MedicalRegistryController {
     return procedure.getExternalId();
   }
 
-  private static List<DocumentData> getProvidedDocuments(
+  private List<DocumentData> getProvidedDocuments(
       MultipartFile professionalLicenseCertificate,
       MultipartFile identificationDocument,
       MultipartFile workPermit,
@@ -426,7 +430,7 @@ public class MedicalRegistryController {
     return new GetMedicalRegistryEntries(1, searchResult.procedures().size(), entryDtos);
   }
 
-  private static void addIfProvided(
+  private void addIfProvided(
       MultipartFile multipartFile,
       String filename,
       String description,
@@ -434,7 +438,31 @@ public class MedicalRegistryController {
       List<DocumentData> providedDocuments) {
     if (multipartFile != null) {
       providedDocuments.add(
-          new DocumentData(filename, description, keyDocumentType, multipartFile));
+          new DocumentData(
+              description, keyDocumentType, rename(validateAndParseFile(multipartFile), filename)));
+    }
+  }
+
+  private static Image rename(Image image, String filename) {
+    image.setFileName(filename);
+    return image;
+  }
+
+  private Image validateAndParseFile(MultipartFile multipartFile) {
+    try {
+      if (MultipartFileParser.validateAndParseFile(
+                  multipartFile, medicalRegistryProperties.getMaxImageSideLength())
+              instanceof Image image
+          && ProcedureFileType.JPEG == image.getFileType()) {
+        return image;
+      } else {
+        throw new BadRequestException(
+            ErrorCode.INVALID_FILE,
+            String.format(
+                "The file type of %s is not %s.", multipartFile.getName(), ProcedureFileType.JPEG));
+      }
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
     }
   }
 

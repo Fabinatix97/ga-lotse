@@ -74,7 +74,7 @@ export function InspectionHistoryTable(
           sorting={tableControl.tableSorting}
           striped
           rowNavigation={{
-            onClick: handleClick,
+            onClick: (row) => () => handleClick(row),
             focusColumnAccessorKey: "name",
           }}
         />

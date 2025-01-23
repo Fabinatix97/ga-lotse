@@ -51,6 +51,7 @@ export function Footer(props: DepartmentInfoProps) {
   const isGdprFeatureEnabled = useIsNewFeatureEnabled(
     ApiBaseFeature.GdprOnlinePortal,
   );
+  const isOpenDataEnabled = useIsNewFeatureEnabled(ApiBaseFeature.OpenData);
 
   return (
     <Box
@@ -91,6 +92,11 @@ export function Footer(props: DepartmentInfoProps) {
           <FooterLink href={routes.termsOfUse}>
             {t("terms_of_use_link")}
           </FooterLink>
+          {isOpenDataEnabled && (
+            <FooterLink href={routes.openData}>
+              {t("open_data_link")}
+            </FooterLink>
+          )}
           <FooterLink href={routes.contact}>{t("contact_link")}</FooterLink>
         </Stack>
       </ResponsiveContainer>

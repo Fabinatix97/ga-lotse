@@ -69,10 +69,6 @@ public class AppointmentService {
   }
 
   public void cancelAppointment(StiProtectionProcedure procedure) {
-    if (procedure.getAppointment() == null && procedure.getUserDefinedAppointment() == null) {
-      throw new BadRequestException(
-          "Procedure %s has no outstanding appointment".formatted(procedure.getExternalId()));
-    }
     deleteAppointmentCalendarEvent(procedure);
     procedure.setAppointment(null);
     procedure.setCalendarEventId(null);
@@ -147,8 +143,9 @@ public class AppointmentService {
   }
 
   private void deleteAppointmentCalendarEvent(StiProtectionProcedure procedure) {
-    if (procedure.getCalendarEventId() != null) {
-      calendarEventApi.deleteBusinessCaseEvent(procedure.getCalendarEventId());
+    UUID calendarEventId = procedure.getCalendarEventId();
+    if (calendarEventId != null) {
+      calendarEventApi.deleteBusinessCaseEvent(calendarEventId);
       procedure.setCalendarEventId(null);
     }
   }
@@ -200,8 +197,11 @@ public class AppointmentService {
   }
 
   private void cancelAppointmentHistoryEntry(StiProtectionProcedure procedure) {
-    AppointmentHistoryEntry appointmentHistoryEntry = procedure.getAppointmentHistory().getLast();
-    appointmentHistoryEntry.setAppointmentStatus(AppointmentStatus.CANCELLED);
+    List<AppointmentHistoryEntry> appointmentHistory = procedure.getAppointmentHistory();
+    if (!appointmentHistory.isEmpty()) {
+      AppointmentHistoryEntry appointmentHistoryEntry = appointmentHistory.getLast();
+      appointmentHistoryEntry.setAppointmentStatus(AppointmentStatus.CANCELLED);
+    }
   }
 
   public AppointmentHistoryEntry getOpenAppointmentHistoryEntry(StiProtectionProcedure procedure) {

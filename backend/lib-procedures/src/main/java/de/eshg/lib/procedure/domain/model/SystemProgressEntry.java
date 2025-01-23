@@ -40,6 +40,10 @@ public non-sealed class SystemProgressEntry extends ProgressEntry
   @DataSensitivity(SensitivityLevel.PUBLIC)
   private Integer keyDocumentVersion;
 
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @Column(unique = true)
+  private UUID previousFileStateId;
+
   public String getSystemProgressEntryType() {
     return systemProgressEntryType;
   }
@@ -70,6 +74,14 @@ public non-sealed class SystemProgressEntry extends ProgressEntry
 
   public void setChangeDescription(String changeDescription) {
     this.changeDescription = changeDescription;
+  }
+
+  public UUID getPreviousFileStateId() {
+    return previousFileStateId;
+  }
+
+  public void setPreviousFileStateId(UUID previousFileStateId) {
+    this.previousFileStateId = previousFileStateId;
   }
 
   @Override

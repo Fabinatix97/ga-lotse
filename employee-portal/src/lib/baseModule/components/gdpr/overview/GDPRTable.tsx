@@ -5,10 +5,7 @@
 
 "use client";
 
-import {
-  ApiUserRole,
-  GetGdprProceduresRequest,
-} from "@eshg/employee-portal-api/base";
+import { ApiUserRole, GetGdprProceduresRequest } from "@eshg/base-api";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/joy";
 

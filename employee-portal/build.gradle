@@ -7,7 +7,6 @@ plugins {
 next {
   port = '3000'
   sonarProjectKey = project.findProperty("sonar-project-key-employee-portal")
-  apiProject = ':employee-portal-api'
 }
 
 nextLoadingFiles {

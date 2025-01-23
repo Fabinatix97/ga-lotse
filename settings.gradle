@@ -13,3 +13,16 @@ include 'e2e-api'
 include 'lib-portal'
 include 'performance-test'
 include 'k8s'
+
+// include all projects under '/packages' as project
+new File("$rootDir/packages").listFiles().each {
+  def packageName = it.name
+  def packagePath = it.path
+
+  if (it.isDirectory() && new File("${packagePath}/package.json").exists()) {
+    include packageName
+    // explicitly set nested projectDir to prevent creating pseudo-project ':packages'
+    project(":${packageName}").projectDir = file(packagePath)
+  }
+}
+

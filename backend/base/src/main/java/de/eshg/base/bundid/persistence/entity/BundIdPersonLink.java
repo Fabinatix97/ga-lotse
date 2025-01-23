@@ -20,12 +20,12 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(indexes = {@Index(columnList = "reference_person_id"), @Index(columnList = "bund_id")})
+@Table(indexes = {@Index(columnList = "reference_person_id"), @Index(columnList = "bpk2")})
 public class BundIdPersonLink extends BaseEntity {
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @Column(nullable = false)
-  private String bundId;
+  private String bpk2;
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @OneToOne(optional = false, fetch = FetchType.LAZY)
@@ -33,12 +33,12 @@ public class BundIdPersonLink extends BaseEntity {
   @MapsId
   private Person referencePerson;
 
-  public String getBundId() {
-    return bundId;
+  public String getBpk2() {
+    return bpk2;
   }
 
-  public void setBundId(String bundId) {
-    this.bundId = bundId;
+  public void setBpk2(String bpk2) {
+    this.bpk2 = bpk2;
   }
 
   public Person getReferencePerson() {

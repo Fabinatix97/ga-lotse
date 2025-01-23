@@ -172,6 +172,7 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
     } catch (IOException e) {
       throw new UncheckedIOException("Unable to read audit log files", e);
     } catch (InvalidKeyException | javax.crypto.AEADBadTagException e) {
+      log.error("Invalid decryption key", e);
       throw new BadRequestException("Invalid decryption key");
     } catch (GeneralSecurityException e) {
       throw new AuditLogDecryptionException("Unable to decrypt audit log", e);
@@ -248,6 +249,8 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
         source, date, selfUser.userId(), Instant.now(clock))) {
       throw new BadRequestException(
           ErrorCode.INSUFFICIENT_USER_RIGHTS,
+          "Access was not granted for audit log of %s of %s to user %s"
+              .formatted(source, date, selfUser.username()),
           "Access was not granted for audit log of %s of %s to user with id %s"
               .formatted(source, date, selfUser.userId()));
     }
@@ -526,6 +529,8 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
     Path ivFilePath = getPathOfCorrespondingIvFile(auditLogFilePath);
     if (!Files.isRegularFile(ivFilePath)) {
       throw new BadRequestException(
+          "Unable to decrypt audit log for %s of %s"
+              .formatted(readAuditLogFileRequest.date(), readAuditLogFileRequest.source().name()),
           "No initialization vector file found for %s of %s"
               .formatted(readAuditLogFileRequest.date(), readAuditLogFileRequest.source().name()));
     }
@@ -540,6 +545,7 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
 
     if (!Files.isRegularFile(auditLogFilePath)) {
       throw new BadRequestException(
+          "No log found for %s of %s".formatted(date, source.name()),
           "No log file found for %s of %s".formatted(date, source.name()));
     }
 
@@ -554,6 +560,7 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
     Path dateAndServiceSpecificDir = serviceSpecificDir.resolve(getFormatted(date));
     if (!Files.isDirectory(dateAndServiceSpecificDir)) {
       throw new BadRequestException(
+          "Log for %s for %s does not exist".formatted(source.name(), date),
           "Log storage directory for %s for %s does not exist".formatted(source.name(), date));
     }
 
@@ -569,6 +576,7 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
     Path serviceSpecificLogStorageDir = logStorageDir.resolve(source.name());
     if (!Files.isDirectory(serviceSpecificLogStorageDir)) {
       throw new BadRequestException(
+          "Log for %s does not exist".formatted(source.name()),
           "Log storage directory for %s does not exist".formatted(source.name()));
     }
     return serviceSpecificLogStorageDir;
@@ -684,6 +692,7 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
     Path userSpecificDir = getUserSpecificDir(uuid, source, date);
     if (!Files.isDirectory(userSpecificDir)) {
       throw new BadRequestException(
+          "Log for the specified user for %s for %s does not exist".formatted(source.name(), date),
           "Log storage directory for user %s for %s for %s does not exist"
               .formatted(uuid, source.name(), date));
     }
@@ -762,6 +771,10 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
   private void throwBadRequestExceptionBecauseFileAlreadyExists(
       AddAuditLogFileRequest addAuditLogFileRequest) {
     throw new BadRequestException(
+        "Audit log for %s of %s already exists"
+            .formatted(
+                addAuditLogFileRequest.date().format(DateTimeFormatter.ISO_LOCAL_DATE),
+                addAuditLogFileRequest.source()),
         "Audit log file for %s of %s already exists"
             .formatted(
                 addAuditLogFileRequest.date().format(DateTimeFormatter.ISO_LOCAL_DATE),

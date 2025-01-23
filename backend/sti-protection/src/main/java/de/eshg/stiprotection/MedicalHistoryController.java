@@ -9,7 +9,9 @@ import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.stiprotection.api.medicalhistory.CreateMedicalHistoryRequest;
 import de.eshg.stiprotection.api.medicalhistory.MedicalHistoryDto;
 import de.eshg.stiprotection.mapper.medicalhistory.MedicalHistoryMapper;
+import de.eshg.stiprotection.persistence.db.StiProtectionSystemProgressEntryType;
 import de.eshg.stiprotection.persistence.db.medicalhistory.MedicalHistory;
+import de.eshg.stiprotection.util.ProgressEntryUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -30,9 +32,12 @@ public class MedicalHistoryController {
       BaseUrls.StiProtection.PROCEDURE_CONTROLLER + "/{procedureId}/medical-history";
 
   private final MedicalHistoryService medicalHistoryService;
+  private final ProgressEntryUtil progressEntryUtil;
 
-  public MedicalHistoryController(MedicalHistoryService medicalHistoryService) {
+  public MedicalHistoryController(
+      MedicalHistoryService medicalHistoryService, ProgressEntryUtil progressEntryUtil) {
     this.medicalHistoryService = medicalHistoryService;
+    this.progressEntryUtil = progressEntryUtil;
   }
 
   @GetMapping
@@ -44,12 +49,14 @@ public class MedicalHistoryController {
   }
 
   @PutMapping
-  @Operation(summary = "Update medical history of STI protection procedure.")
+  @Operation(summary = "Update or insert medical history of STI protection procedure.")
   @Transactional
   public void updateMedicalHistory(
       @PathVariable("procedureId") UUID procedureId,
       @Valid @RequestBody CreateMedicalHistoryRequest request) {
     MedicalHistory medicalHistory = medicalHistoryService.getOrCreateMedicalHistory(procedureId);
     MedicalHistoryMapper.update(request.medicalHistory(), medicalHistory);
+    progressEntryUtil.addProgressEntry(
+        procedureId, StiProtectionSystemProgressEntryType.MEDICAL_HISTORY_UPDATED);
   }
 }

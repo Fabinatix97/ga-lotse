@@ -168,6 +168,7 @@ export const eslintNextConfigs = {
         "src/middleware.ts",
         "src/app/**/{layout,page,loading,not-found,error,global-error,route,template,default}.tsx",
         "src/app/loading.template.tsx",
+        "src/app/{robots,sitemap}.ts",
       ],
       rules: {
         "import/no-default-export": "off",

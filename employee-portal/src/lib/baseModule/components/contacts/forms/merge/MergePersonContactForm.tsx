@@ -3,11 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiGender,
-  ApiPersonContact,
-  ApiSalutation,
-} from "@eshg/employee-portal-api/base";
+import { ApiGender, ApiPersonContact, ApiSalutation } from "@eshg/base-api";
 import {
   InputArrayField,
   getIndexLabel,

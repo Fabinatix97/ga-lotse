@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/base-api";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 

@@ -15,6 +15,7 @@ import java.util.List;
 
 public record GetGdprProcedureDetailsPageResponse(
     @NotNull @Valid GetGdprProcedureResponse procedure,
+    @NotNull boolean hasCentralFileDownload,
     @ArraySchema(
             arraySchema =
                 @Schema(

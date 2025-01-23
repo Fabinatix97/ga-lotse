@@ -9,8 +9,8 @@ import {
   UpdatePersonDetailsRequest,
 } from "@eshg/employee-portal-api/stiProtection";
 import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
-import { COUNTRY_CODE_OPTIONS } from "@eshg/lib-portal/components/formFields/countryCodes";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { countryOptions } from "@eshg/lib-portal/helpers/countryOption";
 import { Formik } from "formik";
 
 import { useUpdatePersonDetails } from "@/lib/businessModules/stiProtection/api/mutations/procedures";
@@ -40,7 +40,9 @@ export const EDIT_PERSONAL_DATA_SEARCH_PARAM = "edit-person-details";
 
 export function EditPersonalDataSidebar({
   procedure,
-}: Readonly<{ procedure: ApiStiProtectionProcedure }>) {
+}: Readonly<{
+  procedure: ApiStiProtectionProcedure;
+}>) {
   const [isOpen, setIsOpen] = useSearchParam(
     EDIT_PERSONAL_DATA_SEARCH_PARAM,
     "boolean",
@@ -48,7 +50,7 @@ export function EditPersonalDataSidebar({
 
   const snackbar = useSnackbar();
   const updatePersonDetails = useUpdatePersonDetails({
-    onSuccess: (_data: ApiStiProtectionProcedure) => {
+    onSuccess: (_data: void) => {
       setIsOpen(false);
       snackbar.confirmation("Angaben zur Person erfolgreich aktualisiert");
     },
@@ -97,7 +99,7 @@ function mapFormToApi(
   }
 
   return deleteUndefined({
-    countryOfBirth: COUNTRY_CODE_OPTIONS.find(
+    countryOfBirth: countryOptions().find(
       (t) => t.value === form.countryOfBirth,
     )?.value,
     gender: GENDER_OPTIONS.find((t) => t.value === form.gender)?.value as

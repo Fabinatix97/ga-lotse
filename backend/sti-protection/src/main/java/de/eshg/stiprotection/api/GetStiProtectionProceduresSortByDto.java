@@ -13,5 +13,6 @@ public enum GetStiProtectionProceduresSortByDto {
   STATUS,
   CONCERN,
   YEAR_OF_BIRTH,
-  GENDER
+  GENDER,
+  LAB_STATUS
 }

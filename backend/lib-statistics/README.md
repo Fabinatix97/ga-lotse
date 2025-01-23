@@ -6,9 +6,13 @@ The statistics API ensures that statistics data of a business module can be retr
 ## Quick start
 
 The statistics library is by default autoconfigured, see
-[StatisticsLibraryAutoConfiguration](src/main/java/de/eshg/lib/statistics/spring/config/StatisticsLibraryAutoConfiguration.java).
+[StatisticsLibraryAutoConfiguration](src/main/java/de/eshg/lib/statistics/spring/config/StatisticsLibraryAutoConfiguration.java)
+and
+[StatisticsLibraryDomainModelAutoConfiguration](src/main/java/de/eshg/lib/statistics/spring/config/StatisticsLibraryDomainModelAutoConfiguration.java)..
 
-This contains the permission role for the API endpoints. The role `STATISTICS_STATISTICS_WRITE` is used because reading
+A liquibase migration is needed for `ProcedureReferenceForStatistics` and the `StatisticsProcedureReferenceHousekeeping` with `shedlock`.
+
+The role `STATISTICS_STATISTICS_WRITE` is used for most endpoints because reading
 statistics information from a business module should only be done by users who can write statistics in the statistics module.
 
 ## Anonymization
@@ -50,7 +54,7 @@ the corresponding `AttributeInfo`. `null` is also a valid value.
 * TEXT: java.lang.String
 * VALUE_WITH_OPTIONS: java.lang.String, one value of the provided options
 * PROCEDURE_ID: java.util.UUID
-* CENTRAL_FILE_ID_PERSON & CENTRAL_FILE_ID_FACILITY: java.util.UUID
+* CENTRAL_FILE_ID_PERSON & CENTRAL_FILE_ID_FACILITY & CONTACT_ID: java.util.UUID
 
 ## ValueOptionInternal
 None or only one option can be an explicit value that the information is not provided for the attribute (`isUnknownValue=true`).

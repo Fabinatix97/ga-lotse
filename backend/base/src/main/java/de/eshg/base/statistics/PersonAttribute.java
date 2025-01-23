@@ -12,21 +12,19 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public enum PersonAttribute implements CommonAttribute {
-  MONTH_OF_BIRTH("Geburtsmonat", "Geburtsmonat", false, createMonthOptions(), true),
+  MONTH_OF_BIRTH("Geburtsmonat", "Geburtsmonat", createMonthOptions(), true),
 
-  YEAR_OF_BIRTH("Geburtsjahr", "Geburtsjahr", false, ValueType.INTEGER, true),
+  YEAR_OF_BIRTH("Geburtsjahr", "Geburtsjahr", ValueType.INTEGER, true),
 
-  PLACE_OF_BIRTH("Geburtsort", "Geburtsort", false, ValueType.TEXT, true),
+  PLACE_OF_BIRTH("Geburtsort", "Geburtsort", ValueType.TEXT, true),
 
-  COUNTRY_OF_BIRTH_ISO("Geburtsland LKZ", "Geburtsland LKZ", false, ValueType.TEXT, true),
+  COUNTRY_OF_BIRTH_ISO("Geburtsland LKZ", "Geburtsland LKZ", ValueType.TEXT, true),
 
-  GESCHL("Geschlecht", "Geschl", true, GenderOptions.convertToValueOptions(), true);
+  GESCHL("Geschlecht", "Geschl", GenderOptions.convertToValueOptions(), true);
 
   private final String name;
 
   private final String code;
-
-  private final boolean accessibleForCountyOffice;
 
   private final ValueType type;
 
@@ -37,40 +35,23 @@ public enum PersonAttribute implements CommonAttribute {
   PersonAttribute(
       String name,
       String code,
-      boolean accessibleForCountyOffice,
       ValueType type,
       List<ValueOptionInternal> valueOptions,
       boolean mandatory) {
     this.name = name;
     this.code = code;
-    this.accessibleForCountyOffice = accessibleForCountyOffice;
     this.type = type;
     this.valueOptions = valueOptions;
     this.mandatory = mandatory;
   }
 
-  PersonAttribute(
-      String name,
-      String code,
-      boolean accessibleForCountyOffice,
-      ValueType type,
-      boolean mandatory) {
-    this(name, code, accessibleForCountyOffice, type, null, mandatory);
+  PersonAttribute(String name, String code, ValueType type, boolean mandatory) {
+    this(name, code, type, null, mandatory);
   }
 
   PersonAttribute(
-      String name,
-      String code,
-      boolean accessibleForCountyOffice,
-      List<ValueOptionInternal> valueOptions,
-      boolean mandatory) {
-    this(
-        name,
-        code,
-        accessibleForCountyOffice,
-        ValueType.VALUE_WITH_OPTIONS,
-        valueOptions,
-        mandatory);
+      String name, String code, List<ValueOptionInternal> valueOptions, boolean mandatory) {
+    this(name, code, ValueType.VALUE_WITH_OPTIONS, valueOptions, mandatory);
   }
 
   @Override
@@ -81,11 +62,6 @@ public enum PersonAttribute implements CommonAttribute {
   @Override
   public String getCode() {
     return code;
-  }
-
-  @Override
-  public boolean isAccessibleForCountyOffice() {
-    return accessibleForCountyOffice;
   }
 
   @Override

@@ -44,16 +44,16 @@ public class CentralFileCleanupService {
 
   private void deleteExpiredPersonFileStates(Instant expirationTime) {
     log.info(
-        "Starting clean-up job for person entries in the central file marked for deletion with an expiration time before "
-            + expirationTime);
+        "Starting clean-up job for person entries in the central file marked for deletion with an expiration time before {}",
+        expirationTime);
     int personsDeleted = personService.deleteExpiredFileStatesAndReferences(expirationTime);
     log.info("Successfully deleted {} person entries", personsDeleted);
   }
 
   private void deleteExpiredFacilityFileStates(Instant expirationTime) {
     log.info(
-        "Starting clean-up job for facility entries in the central file marked for deletion with an expiration time before "
-            + expirationTime);
+        "Starting clean-up job for facility entries in the central file marked for deletion with an expiration time before {}",
+        expirationTime);
     int facilitiesDeleted = facilityService.deleteExpiredFileStatesAndReferences(expirationTime);
     log.info("Successfully deleted {} facility entries", facilitiesDeleted);
   }

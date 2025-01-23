@@ -6,6 +6,7 @@
 package de.eshg.base.citizenuser;
 
 import de.eshg.base.citizenuser.api.GetCitizenPermissionsResponse;
+import de.eshg.base.citizenuser.api.GetCitizenSelfUserResponse;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,4 +22,9 @@ public interface CitizenUserApi {
   @ApiResponse(responseCode = "200")
   @Operation(summary = "Get the permissions of the user which is currently active")
   GetCitizenPermissionsResponse getCitizenSelfUserPermissions();
+
+  @GetExchange(BaseUrls.Base.CITIZEN_USER_SELF_URL)
+  @ApiResponse(responseCode = "200")
+  @Operation(summary = "Get the name of the citizen user which is currently active")
+  GetCitizenSelfUserResponse getCitizenSelfUser();
 }

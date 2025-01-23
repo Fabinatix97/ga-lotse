@@ -6,7 +6,7 @@
 import {
   ApiFacilityContactPerson,
   ApiGetReferenceFacilityResponse,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import {
   SALUTATION_VALUES,
   getOptionalTitle,

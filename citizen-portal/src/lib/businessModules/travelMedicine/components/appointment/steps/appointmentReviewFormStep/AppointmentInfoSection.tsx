@@ -14,7 +14,7 @@ import {
 import { useTranslation } from "@/lib/i18n/client";
 
 export function AppointmentInfoSection() {
-  const { t } = useTranslation(["travelMedicine/forms"]);
+  const { t, i18n } = useTranslation(["travelMedicine/forms"]);
 
   return (
     <FormSheet data-testid="information-content-form">
@@ -26,7 +26,9 @@ export function AppointmentInfoSection() {
       />
       <Typography>
         <Trans
-          i18nKey={t("appointmentInfoSection.infoText")}
+          i18nKey="appointmentInfoSection.infoText"
+          ns="travelMedicine/forms"
+          i18n={i18n}
           components={{
             t1: <Typography level="body-md" fontWeight="bold" />,
           }}

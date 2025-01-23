@@ -9,7 +9,7 @@ import {
   ApiGdprPerson,
   instanceOfApiGdprFacility,
   instanceOfApiGdprPerson,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { ApiGdprValidationTaskIdentificationData } from "@eshg/employee-portal-api/businessProcedures";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 

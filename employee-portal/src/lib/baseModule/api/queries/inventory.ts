@@ -7,7 +7,7 @@ import {
   GetInventoryItemsRequest,
   InventoryApi,
   LabelApi,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import {
   queryOptions,

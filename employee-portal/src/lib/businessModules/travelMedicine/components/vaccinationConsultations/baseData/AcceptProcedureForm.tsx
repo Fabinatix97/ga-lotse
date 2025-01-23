@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetReferencePersonResponse } from "@eshg/employee-portal-api/base";
+import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import { ApiPatient } from "@eshg/employee-portal-api/travelMedicine";
 import { ComponentType, Ref, useState } from "react";
 import { isDefined } from "remeda";

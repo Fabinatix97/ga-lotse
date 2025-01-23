@@ -437,6 +437,57 @@ paths:
       summary: Get opening hours.
       tags:
       - CitizenPublic
+  /employee/appointments/{id}/book:
+    patch:
+      operationId: bookAppointment
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookingInfo"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Create a booking for an appointment
+      tags:
+      - OmsAppointment
+  /employee/appointments/{id}/cancel:
+    patch:
+      operationId: cancelAppointment
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      summary: Cancel an appointment
+      tags:
+      - OmsAppointment
+  /employee/concerns:
+    get:
+      operationId: getAllConcerns
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetConcernsResponse"
+          description: OK
+      summary: Get all available concerns
+      tags:
+      - Concern
   /employee/procedures:
     get:
       operationId: getAllEmployeeProcedures
@@ -492,6 +543,103 @@ paths:
                 format: uuid
           description: OK
       summary: Save a new employee oms procedure
+      tags:
+      - EmployeeOmsProcedure
+  /employee/procedures/{id}:
+    delete:
+      operationId: abortDraftProcedure
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      summary: Abort draft oms procedure
+      tags:
+      - EmployeeOmsProcedure
+  /employee/procedures/{id}/accept-draft:
+    patch:
+      operationId: acceptDraftProcedure
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      summary: Accept draft oms procedure
+      tags:
+      - EmployeeOmsProcedure
+  /employee/procedures/{id}/appointment:
+    post:
+      operationId: postAppointment
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostOmsAppointmentRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+          description: OK
+      summary: Create a new appointment
+      tags:
+      - EmployeeOmsProcedure
+  /employee/procedures/{id}/close:
+    patch:
+      operationId: closeOpenProcedure
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      summary: Close open oms procedure
+      tags:
+      - EmployeeOmsProcedure
+  /employee/procedures/{id}/concern:
+    patch:
+      operationId: updateOmsProcedureConcern
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchConcernRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Update concern of an oms procedure
       tags:
       - EmployeeOmsProcedure
   /employee/procedures/{id}/details:
@@ -582,6 +730,55 @@ paths:
       summary: Get details of an oms procedure
       tags:
       - EmployeeOmsProcedure
+  /employee/procedures/{id}/physician:
+    patch:
+      operationId: patchPhysician
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchEmployeeOmsProcedurePhysicianRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+          description: OK
+      summary: Updates the associated physician of a draft oms procedure
+      tags:
+      - EmployeeOmsProcedure
+  /employee/procedures/{id}/sync-facility:
+    put:
+      operationId: syncFacilityData
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SyncFacilityRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Synchronize facility data
+      tags:
+      - EmployeeOmsProcedure
   /employee/procedures/{procedureId}/affected-person:
     patch:
       operationId: updateAffectedPerson
@@ -602,6 +799,28 @@ paths:
         "200":
           description: OK
       summary: Update affected person in an oms procedure
+      tags:
+      - EmployeeOmsProcedure
+  /employee/procedures/{procedureId}/sync-affected-person:
+    put:
+      operationId: syncAffectedPerson
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SyncAffectedPersonRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Synchronize affected person data
       tags:
       - EmployeeOmsProcedure
   /files/{fileId}:
@@ -796,27 +1015,6 @@ paths:
       summary: Add a GDPR validation task
       tags:
       - GdprValidationTask
-  /gdpr-validation-tasks/download-packages/{id}:
-    get:
-      operationId: getGdprDownloadPackage
-      parameters:
-      - in: path
-        name: id
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                type: string
-                format: binary
-          description: OK
-      summary: Get Gdpr Download Package by its id
-      tags:
-      - GdprValidationTask
   /gdpr-validation-tasks/notification-banner:
     get:
       operationId: getGdprNotificationBanner
@@ -831,6 +1029,28 @@ paths:
       tags:
       - GdprValidationTask
   /gdpr-validation-tasks/{gdprProcedureId}:
+    delete:
+      operationId: deleteGdprValidationTaskAndDownloadPackages
+      parameters:
+      - in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteDownloadPackagesRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Delete the GDPR validation task with gdprProcedureId and GDPR download
+        packages with ids from request
+      tags:
+      - GdprValidationTask
     get:
       operationId: getGdprValidationTask
       parameters:
@@ -869,6 +1089,29 @@ paths:
                 $ref: "#/components/schemas/GetGdprValidationTaskDetailsResponse"
           description: OK
       summary: Get a GDPR validation task by id
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/{gdprProcedureId}/business-procedures/{businessProcedureId}:
+    delete:
+      operationId: deleteBusinessProcedure
+      parameters:
+      - in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: businessProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      summary: Delete the businessProcedure with businessProcedureId for validationTask
+        with gdprProcedureId with type right of erasure
       tags:
       - GdprValidationTask
   /gdpr-validation-tasks/{gdprProcedureId}/business-procedures/{businessProcedureId}/downloadPackage:
@@ -928,6 +1171,33 @@ paths:
                 $ref: "#/components/schemas/GetGdprDownloadPackagesInfoResponse"
           description: OK
       summary: Get approved Gdpr Download Packages by Gdpr Procedure Id
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/{gdprProcedureId}/download-packages/{downloadId}:
+    get:
+      operationId: getGdprDownloadPackage
+      parameters:
+      - in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: downloadId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+          description: OK
+      summary: Get Gdpr Download Package by the gdprProcedureId and its downloadId
       tags:
       - GdprValidationTask
   /inbox-procedures:
@@ -1135,34 +1405,6 @@ paths:
           type: string
           format: uuid
       - description: |
-          Only procedures are returned where the assigneeId of none of the task equals `notAssignedToId`.
-          If not submitted, no filtering takes place.
-        in: query
-        name: notAssignedToId
-        required: false
-        schema:
-          type: string
-          format: uuid
-      - description: |
-          Only procedures are returned where the user is or was assigned to at least one task (at least one assigneeId equals `onceAssignedToId` in taskHistory for at least one task).
-          If not submitted, no filtering takes place.
-        in: query
-        name: onceAssignedToId
-        required: false
-        schema:
-          type: string
-          format: uuid
-      - description: |
-          Filter logic:
-          - In case of `true` only procedures are returned where all tasks are unassigned
-          - In case of `false` only procedures are returned which have at least one assigned task
-          - If not submitted, no filtering takes place
-        in: query
-        name: unassigned
-        required: false
-        schema:
-          type: boolean
-      - description: |
           Filter logic:
           - If `procedureType` is submitted, only procedures are returned which have one of the submitted types.
           - If not submitted, no filtering takes place
@@ -1186,15 +1428,6 @@ paths:
           items:
             $ref: "#/components/schemas/ProcedureStatus"
           uniqueItems: true
-      - description: |
-          Filter logic:
-          - If `createdInYear` is set, only procedures are returned which were created in that year
-          - If not submitted, no filtering takes place
-        in: query
-        name: createdInYear
-        required: false
-        schema:
-          type: string
       - description: |
           The following sorting options are available:
           - `CREATED_AT`: Sorting by createdAt attribute
@@ -1765,21 +1998,6 @@ paths:
             $ref: "#/components/schemas/TaskStatus"
           uniqueItems: true
       - in: query
-        name: hasDueAt
-        required: false
-        schema:
-          type: boolean
-      - in: query
-        name: isOverdue
-        required: false
-        schema:
-          type: boolean
-      - in: query
-        name: wasAssignedByOther
-        required: false
-        schema:
-          type: boolean
-      - in: query
         name: sortKey
         required: true
         schema:
@@ -2164,6 +2382,8 @@ components:
     AffectedPerson:
       type: object
       properties:
+        affectedPersonSync:
+          $ref: "#/components/schemas/AffectedPersonSync"
         contactAddress:
           oneOf:
           - $ref: "#/components/schemas/DomesticAddress"
@@ -2216,6 +2436,21 @@ components:
       - firstName
       - lastName
       - version
+    AffectedPersonSync:
+      type: object
+      properties:
+        fileStateId:
+          type: string
+          format: uuid
+        outdated:
+          type: boolean
+        version:
+          type: integer
+          format: int64
+      required:
+      - fileStateId
+      - outdated
+      - version
     Appointment:
       type: object
       description: Appointment of a procedure.
@@ -2245,6 +2480,21 @@ components:
       required:
       - id
       - name
+    AppointmentPopulation:
+      type: object
+      properties:
+        key:
+          type: string
+        request:
+          $ref: "#/components/schemas/PostOmsAppointmentRequest"
+      required:
+      - key
+      - request
+    AppointmentState:
+      type: string
+      enum:
+      - OPEN
+      - CLOSED
     AppointmentType:
       type: string
       enum:
@@ -2370,6 +2620,33 @@ components:
       required:
       - assignee
       - taskVersion
+    BookingInfo:
+      type: object
+      properties:
+        bookingType:
+          $ref: "#/components/schemas/BookingType"
+        duration:
+          type: integer
+          format: int32
+        start:
+          type: string
+          format: date-time
+      required:
+      - bookingType
+      - duration
+      - start
+    BookingState:
+      type: string
+      enum:
+      - BOOKABLE
+      - BOOKED
+      - CANCELLED
+      - WITHDRAWN
+    BookingType:
+      type: string
+      enum:
+      - APPOINTMENT_BLOCK
+      - USER_DEFINED
     BulkUpdateProceduresArchivingRelevanceRequest:
       type: object
       properties:
@@ -2455,6 +2732,77 @@ components:
             format: uuid
       required:
       - inUse
+    Concern:
+      type: object
+      properties:
+        categoryNameDe:
+          type: string
+        categoryNameEn:
+          type: string
+        descriptionDe:
+          type: string
+        descriptionEn:
+          type: string
+        highPriority:
+          type: boolean
+        nameDe:
+          type: string
+        nameEn:
+          type: string
+        version:
+          type: integer
+          format: int64
+      required:
+      - categoryNameDe
+      - categoryNameEn
+      - descriptionDe
+      - descriptionEn
+      - highPriority
+      - nameDe
+      - nameEn
+      - version
+    ConcernCategoryConfig:
+      type: object
+      properties:
+        concerns:
+          type: array
+          items:
+            $ref: "#/components/schemas/ConcernConfig"
+        nameDe:
+          type: string
+        nameEn:
+          type: string
+      required:
+      - concerns
+      - nameDe
+      - nameEn
+    ConcernConfig:
+      type: object
+      properties:
+        descriptionDe:
+          type: string
+        descriptionEn:
+          type: string
+        highPriority:
+          type: boolean
+        nameDe:
+          type: string
+        nameEn:
+          type: string
+      required:
+      - descriptionDe
+      - descriptionEn
+      - highPriority
+      - nameDe
+      - nameEn
+    ConcernTestDataConfig:
+      type: string
+      enum:
+      - EXAMINATION_ELIGIBILITY
+      - CERTIFICATE_FOR_CALL_OF_DUTY
+      - PRIORITIZATION_OF_CIVIL_SERVANTS
+      - EARLY_RETIREMENT
+      - REVIEW_OF_LONGER_SICK_NOTES
     ContactDetails:
       type: object
       properties:
@@ -2489,7 +2837,8 @@ components:
       - FACILITY
     CountryCode:
       type: string
-      description: List of country codes in ISO 3166-1 alpha-2 format.
+      description: "List of country codes in ISO 3166-1 alpha-2 format. With custom\
+        \ extensions for stateless, non-standard countries, and unknown countries."
       enum:
       - AD
       - AE
@@ -2740,6 +3089,9 @@ components:
       - ZA
       - ZM
       - ZW
+      - XK
+      - UNKNOWN
+      - STATELESS
     CreateAppointmentBlockGroupResponse:
       type: object
       properties:
@@ -2888,6 +3240,16 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Population"
+    DeleteDownloadPackagesRequest:
+      type: object
+      properties:
+        downloadIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - downloadIds
     DetailedFacility:
       type: object
       properties:
@@ -2977,15 +3339,24 @@ components:
       properties:
         affectedPerson:
           $ref: "#/components/schemas/AffectedPerson"
+        appointments:
+          type: array
+          items:
+            $ref: "#/components/schemas/OmsAppointment"
+        concern:
+          $ref: "#/components/schemas/Concern"
         facility:
           $ref: "#/components/schemas/Facility"
         id:
           type: string
           format: uuid
+        physician:
+          $ref: "#/components/schemas/User"
         status:
           $ref: "#/components/schemas/ProcedureStatus"
       required:
       - affectedPerson
+      - appointments
       - id
       - status
     EmployeeOmsProcedureHeader:
@@ -3009,6 +3380,8 @@ components:
     EmployeeOmsProcedureOverview:
       type: object
       properties:
+        concern:
+          $ref: "#/components/schemas/Concern"
         dateOfBirth:
           type: string
           format: date
@@ -3020,6 +3393,8 @@ components:
           type: string
           format: uuid
         lastName:
+          type: string
+        physicianName:
           type: string
         status:
           $ref: "#/components/schemas/ProcedureStatus"
@@ -3058,6 +3433,8 @@ components:
           type: array
           items:
             type: string
+        facilitySync:
+          $ref: "#/components/schemas/FacilitySync"
         name:
           type: string
         phoneNumbers:
@@ -3117,6 +3494,21 @@ components:
           minLength: 1
       required:
       - lastName
+    FacilitySync:
+      type: object
+      properties:
+        fileStateId:
+          type: string
+          format: uuid
+        outdated:
+          type: boolean
+        version:
+          type: integer
+          format: int64
+      required:
+      - fileStateId
+      - outdated
+      - version
     FacilityType:
       type: string
       enum:
@@ -3157,6 +3549,10 @@ components:
             oneOf:
             - $ref: "#/components/schemas/DomesticAddress"
             - $ref: "#/components/schemas/PostboxAddress"
+          dataTransmitterPseudonymId:
+            type: string
+            description: The 'DatenübermittlerPseudonymId' of the MUK user
+            example: du-986b2b54ab89cf4ed674ad8c3126b966b54d4872
           emailAddress:
             type: string
             description: The email addresses of the Facility.
@@ -3197,6 +3593,10 @@ components:
             oneOf:
             - $ref: "#/components/schemas/DomesticAddress"
             - $ref: "#/components/schemas/PostboxAddress"
+          bpk2:
+            type: string
+            description: The bpk2 of the BundId user
+            example: VnMEBMXsiCWZ34v1JCulQABe6-ts1yDSrbH3zII8BF0
           dateOfBirth:
             type: string
             format: date
@@ -3443,6 +3843,15 @@ components:
       required:
       - archivingDetails
       - gracePeriodMonths
+    GetConcernsResponse:
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            $ref: "#/components/schemas/ConcernCategoryConfig"
+      required:
+      - categories
     GetDepartmentInfoResponse:
       type: object
       properties:
@@ -4350,6 +4759,29 @@ components:
       required:
       - '@type'
       - changedAt
+    OmsAppointment:
+      type: object
+      properties:
+        appointmentId:
+          type: string
+          format: uuid
+        appointmentState:
+          $ref: "#/components/schemas/AppointmentState"
+        appointmentType:
+          $ref: "#/components/schemas/AppointmentType"
+        bookingState:
+          $ref: "#/components/schemas/BookingState"
+        duration:
+          type: integer
+          format: int32
+        start:
+          type: string
+          format: date-time
+      required:
+      - appointmentId
+      - appointmentState
+      - appointmentType
+      - bookingState
     Operation:
       type: string
       enum:
@@ -4361,6 +4793,13 @@ components:
           $ref: "#/components/schemas/AffectedPerson"
       required:
       - affectedPerson
+    PatchConcernRequest:
+      type: object
+      properties:
+        concern:
+          $ref: "#/components/schemas/Concern"
+      required:
+      - concern
     PatchEmployeeOmsProcedureFacilityRequest:
       type: object
       properties:
@@ -4368,6 +4807,14 @@ components:
           $ref: "#/components/schemas/Facility"
       required:
       - updatedFacility
+    PatchEmployeeOmsProcedurePhysicianRequest:
+      type: object
+      properties:
+        physicianId:
+          type: string
+          format: uuid
+      required:
+      - physicianId
     PatchManualProgressEntryRequest:
       type: object
       properties:
@@ -4452,6 +4899,15 @@ components:
           $ref: "#/components/schemas/AffectedPerson"
       required:
       - affectedPerson
+    PostOmsAppointmentRequest:
+      type: object
+      properties:
+        appointmentType:
+          $ref: "#/components/schemas/AppointmentType"
+        bookingInfo:
+          $ref: "#/components/schemas/BookingInfo"
+      required:
+      - appointmentType
     PostPopulateAdministrativeResponse:
       type: object
       properties:
@@ -4460,21 +4916,32 @@ components:
           additionalProperties:
             type: string
             format: uuid
-        physicians:
+        physiciansCreated:
           type: object
           additionalProperties:
-            type: array
-            items:
-              type: string
-              format: uuid
+            type: string
+            format: uuid
       required:
       - appointmentBlockGroupsCreated
-      - physicians
+      - physiciansCreated
     PostPopulateProcedureRequest:
       type: object
       properties:
+        appointments:
+          type: array
+          items:
+            $ref: "#/components/schemas/AppointmentPopulation"
+        cancelledAppointments:
+          type: array
+          items:
+            type: string
+        concern:
+          $ref: "#/components/schemas/ConcernTestDataConfig"
         facility:
           $ref: "#/components/schemas/PostEmployeeOmsProcedureFacilityRequest"
+        physician:
+          type: string
+          format: uuid
         procedureData:
           $ref: "#/components/schemas/PostEmployeeOmsProcedureRequest"
         targetState:
@@ -4484,6 +4951,11 @@ components:
     PostPopulateProcedureResponse:
       type: object
       properties:
+        appointments:
+          type: object
+          additionalProperties:
+            type: string
+            format: uuid
         facilityId:
           type: string
           format: uuid
@@ -4491,6 +4963,7 @@ components:
           type: string
           format: uuid
       required:
+      - appointments
       - procedureId
     PostboxAddress:
       type: object
@@ -4756,6 +5229,38 @@ components:
       enum:
       - ASC
       - DESC
+    SyncAffectedPersonRequest:
+      type: object
+      properties:
+        fileStateId:
+          type: string
+          format: uuid
+        personVersion:
+          type: integer
+          format: int64
+        referenceVersion:
+          type: integer
+          format: int64
+      required:
+      - fileStateId
+      - personVersion
+      - referenceVersion
+    SyncFacilityRequest:
+      type: object
+      properties:
+        facilityVersion:
+          type: integer
+          format: int64
+        fileStateId:
+          type: string
+          format: uuid
+        referenceVersion:
+          type: integer
+          format: int64
+      required:
+      - facilityVersion
+      - fileStateId
+      - referenceVersion
     SystemProgressEntry:
       type: object
       allOf:
@@ -4769,6 +5274,9 @@ components:
           keyDocumentVersion:
             type: integer
             format: int32
+          previousFileStateId:
+            type: string
+            format: uuid
           systemProgressEntryType:
             type: string
           triggerType:
@@ -4895,6 +5403,7 @@ components:
       - TRAVEL_MEDICINE
       - MEASLES_PROTECTION
       - STI_PROTECTION
+      - OFFICIAL_MEDICAL_SERVICE
     TestHelperClockSetRequest:
       type: object
       properties:

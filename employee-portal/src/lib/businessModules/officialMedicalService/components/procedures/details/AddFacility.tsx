@@ -3,15 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetReferenceFacilityResponse } from "@eshg/employee-portal-api/base";
-import { Add } from "@mui/icons-material";
-import { Button } from "@mui/joy";
+import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
+import { InfoOutlined } from "@mui/icons-material";
+import { Alert, Stack } from "@mui/joy";
 import { useState } from "react";
 
 import { usePostFacility } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
 import { mapToDefaultFacilityFormValues } from "@/lib/businessModules/officialMedicalService/shared/helpers";
 import { FacilitySidebar } from "@/lib/shared/components/facilitySidebar/FacilitySidebar";
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
+import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
 import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
 
 export function AddFacility({ id }: Readonly<{ id: string }>) {
@@ -53,15 +54,14 @@ export function AddFacility({ id }: Readonly<{ id: string }>) {
 
   return (
     <>
-      <div>
-        <Button
-          startDecorator={<Add />}
-          variant="plain"
-          onClick={() => setSidebarOpen(true)}
-        >
+      <Stack gap={2} sx={{ pt: 1 }}>
+        <Alert color={"warning"} startDecorator={<InfoOutlined />}>
+          Um einen Vorgang anzulegen, muss ein Auftraggeber ergänzt werden.
+        </Alert>
+        <InfoTileAddButton onClick={() => setSidebarOpen(true)}>
           Hinzufügen
-        </Button>
-      </div>
+        </InfoTileAddButton>
+      </Stack>
       <FacilitySidebar
         title="Auftraggeber hinzufügen"
         submitLabel="Speichern"

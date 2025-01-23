@@ -176,7 +176,7 @@ public class VaccineService {
   private List<InventoryItemDto> getInventoryVaccines() {
     GetInventoryItemsResponse response =
         inventoryApi.getInventoryItems(
-            new InventoryItemFilterParameters(null, VACCINE, null, null, null, null, null));
+            new InventoryItemFilterParameters(null, VACCINE, null, null, null, null, 500));
     return response.elements();
   }
 

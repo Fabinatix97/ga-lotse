@@ -260,11 +260,10 @@ export function LaboratoryTestExamination(
   props: LaboratoryTestExaminationProps,
 ) {
   const { procedureId, laboratoryTestExamination: laboratoryTests } = props;
-  const upsertLaboratoryTests = useUpsertLaboratoryTest();
+  const upsertLaboratoryTests = useUpsertLaboratoryTest(procedureId);
 
   function onSubmit(values: LaboratoryTestExaminationData) {
     return upsertLaboratoryTests.mutateAsync({
-      id: procedureId,
       laboratoryTests: mapFormValuesToApi(values),
     });
   }
@@ -349,21 +348,21 @@ export function LaboratoryTestExamination(
                       <Divider />
                       <HepatitisLaboratoryTest
                         dataPath={"hepATestData"}
-                        testRequestedPath={"hepATest.requested"}
+                        testRequestedPath={"hepATestRequested"}
                         label={"Hepatitis A"}
                         bottomField={<HepatitisInfo variant="A" />}
                       />
                       <Divider />
                       <HepatitisLaboratoryTest
                         dataPath={"hepBTestData"}
-                        testRequestedPath={"hepBTest.requested"}
+                        testRequestedPath={"hepBTestRequested"}
                         label={"Hepatitis B"}
                         bottomField={<HepatitisInfo variant="B" />}
                       />
                       <Divider />
                       <LaboratoryTestWithBooleanResult
                         dataPath={"hepCTestData"}
-                        testRequestedPath={"hepCTest.requested"}
+                        testRequestedPath={"hepCTestRequested"}
                         label={"Hepatitis C"}
                         bottomField={<HepatitisInfo variant="C" />}
                       />

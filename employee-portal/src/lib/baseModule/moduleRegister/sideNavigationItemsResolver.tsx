@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBusinessModule } from "@eshg/employee-portal-api/base";
+import { ApiBusinessModule } from "@eshg/base-api";
+import { useSideNavigationItems as useDentalSideNavigationItems } from "@eshg/dental/shared/useSideNavigationItems";
 import { mapToObj } from "remeda";
 
 import { useServerConfig } from "@/lib/baseModule/api/queries/config";
@@ -17,7 +18,6 @@ import {
   useDashboardItem,
 } from "@/lib/baseModule/sideNavigationItems";
 import { useSideNavigationItems as useChatSideNavigationItems } from "@/lib/businessModules/chat/shared/sideNavigationItem";
-import { useSideNavigationItems as useDentalSideNavigationItems } from "@/lib/businessModules/dental/shared/sideNavigationItem";
 import { useSideNavigationItems as useInspectionSideNavigationItems } from "@/lib/businessModules/inspection/shared/sideNavigationItem";
 import { useSideNavigationItems as useMeaslesProtectionSideNavigationItems } from "@/lib/businessModules/measlesProtection/shared/sideNavigationItem";
 import { useSideNavigationItems as useMedicalRegistrySideNavigationItems } from "@/lib/businessModules/medicalRegistry/shared/sideNavigationItem";

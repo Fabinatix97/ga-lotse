@@ -576,7 +576,7 @@ public class EvaluationService extends AbstractAggregationResultService {
         evaluation.getTableColumns().stream()
             .filter(
                 tableColumn ->
-                    !tableColumn.getValueType().equals(TableColumnValueType.PROCEDURE_ID))
+                    !tableColumn.getValueType().equals(TableColumnValueType.PROCEDURE_REFERENCE))
             .map(
                 tableColumn ->
                     getCompletenessOfAttribute(tableColumn, evaluation.getNumberOfTableRows()))

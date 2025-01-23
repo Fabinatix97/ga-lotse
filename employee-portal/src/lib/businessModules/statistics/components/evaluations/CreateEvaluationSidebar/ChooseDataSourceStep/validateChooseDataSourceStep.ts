@@ -11,7 +11,7 @@ export function validateChooseDataSourceStep(
   return (model: ChooseDataSourceStepFormModel) => {
     if (
       amountEvaluationTemplates === 0 &&
-      model._dataSourceId === "CHOOSE_EVALUATION_TEMPLATE"
+      model.dataSourceId === "CHOOSE_EVALUATION_TEMPLATE"
     ) {
       return {
         noTemplates: "Keine Vorlagen vorhanden",

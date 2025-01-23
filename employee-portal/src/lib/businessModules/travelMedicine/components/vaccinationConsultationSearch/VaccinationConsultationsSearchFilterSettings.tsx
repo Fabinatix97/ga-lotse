@@ -103,18 +103,6 @@ export function VaccinationConsultationsSearchFilterSettings(
         }
       >
         <FormControl>
-          <FormLabel>Nachname</FormLabel>
-          <Input
-            type="text"
-            value={props.filterFormValues.lastName ?? ""}
-            onChange={(lastName) => {
-              const value = lastName.target.value;
-              props.setFilterFormValue("lastName", value);
-              if (value === "") props.deleteFilterValue("lastName");
-            }}
-          />
-        </FormControl>
-        <FormControl>
           <FormLabel>Vorname</FormLabel>
           <Input
             type="text"
@@ -123,6 +111,18 @@ export function VaccinationConsultationsSearchFilterSettings(
               const value = firstName.target.value;
               props.setFilterFormValue("firstName", value);
               if (value === "") props.deleteFilterValue("firstName");
+            }}
+          />
+        </FormControl>
+        <FormControl>
+          <FormLabel>Nachname</FormLabel>
+          <Input
+            type="text"
+            value={props.filterFormValues.lastName ?? ""}
+            onChange={(lastName) => {
+              const value = lastName.target.value;
+              props.setFilterFormValue("lastName", value);
+              if (value === "") props.deleteFilterValue("lastName");
             }}
           />
         </FormControl>

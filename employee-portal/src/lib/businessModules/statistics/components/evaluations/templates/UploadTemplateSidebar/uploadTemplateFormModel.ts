@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export interface UploadTemplateFormModel {
+import { FormikValues } from "formik";
+
+export interface UploadTemplateFormModel extends FormikValues {
   name: string;
   description: string;
   contact: string;

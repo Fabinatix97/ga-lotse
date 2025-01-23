@@ -13,6 +13,7 @@ import de.eshg.stiprotection.mapper.examination.RapidTestExaminationMapper;
 import de.eshg.stiprotection.persistence.db.StiProtectionSystemProgressEntryType;
 import de.eshg.stiprotection.persistence.db.examination.LaboratoryTestExamination;
 import de.eshg.stiprotection.persistence.db.examination.RapidTestExamination;
+import de.eshg.stiprotection.util.ProgressEntryUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -33,13 +34,12 @@ public class ExaminationController {
       BaseUrls.StiProtection.PROCEDURE_CONTROLLER + "/{procedureId}/examination";
 
   private final ExaminationService examinationService;
-  private final StiProtectionProcedureService stiProtectionProcedureService;
+  private final ProgressEntryUtil progressEntryUtil;
 
   public ExaminationController(
-      ExaminationService examinationService,
-      StiProtectionProcedureService stiProtectionProcedureService) {
+      ExaminationService examinationService, ProgressEntryUtil progressEntryUtil) {
     this.examinationService = examinationService;
-    this.stiProtectionProcedureService = stiProtectionProcedureService;
+    this.progressEntryUtil = progressEntryUtil;
   }
 
   @GetMapping("/rapid-test")
@@ -60,7 +60,7 @@ public class ExaminationController {
     RapidTestExamination rapidTestExamination =
         examinationService.getOrCreateRapidTestExamination(procedureId);
     RapidTestExaminationMapper.update(rapidTestExaminationDto, rapidTestExamination);
-    stiProtectionProcedureService.addProgressEntry(
+    progressEntryUtil.addProgressEntry(
         procedureId, StiProtectionSystemProgressEntryType.RAPID_TEST_EXAMINATION_UPDATED);
   }
 
@@ -82,7 +82,9 @@ public class ExaminationController {
     LaboratoryTestExamination laboratoryTestExamination =
         examinationService.getOrCreateLaboratoryTestExamination(procedureId);
     LaboratoryExaminationMapper.update(laboratoryExaminationDto, laboratoryTestExamination);
-    stiProtectionProcedureService.addProgressEntry(
+    examinationService.updateTestsConductedDate(
+        laboratoryExaminationDto.testsConducted(), laboratoryTestExamination);
+    progressEntryUtil.addProgressEntry(
         procedureId, StiProtectionSystemProgressEntryType.LABORATORY_TEST_EXAMINATION_UPDATED);
   }
 }

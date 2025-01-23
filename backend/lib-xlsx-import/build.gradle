@@ -23,4 +23,5 @@ dependencies {
     testFixturesImplementation 'org.eclipse.angus:jakarta.mail:latest.release'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation project(':business-module-commons')
 }

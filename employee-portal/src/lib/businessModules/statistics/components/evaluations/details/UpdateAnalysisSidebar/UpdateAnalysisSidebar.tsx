@@ -5,9 +5,10 @@
 
 import { useUpdateAnalysis } from "@/lib/businessModules/statistics/api/mutations/useUpdateAnalysis";
 import { SaveAnalysisStep } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/SaveAnalysisStep/SaveAnalysisStep";
-import { UpdateAnalysisFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/UpdateAnalysisSidebar/updateAnalysisFormModel";
-import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
-import { SidebarStep } from "@/lib/shared/components/SidebarStepper/sidebarStep";
+import {
+  SidebarStepper,
+  createStepContent,
+} from "@/lib/shared/components/SidebarStepper/SidebarStepper";
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
@@ -33,22 +34,17 @@ function UpdateAnalysisSidebar(props: UpdateAnalysisSidebarProps) {
   return (
     <SidebarStepper
       onClose={props.onClose}
-      onSubmit={updateAnalysis}
-      initialValues={{
-        name: props.name,
-      }}
       formRef={props.formRef}
-      steps={
-        [
-          {
-            type: "StandardStep",
-            step: {
-              title: "Anpassung speichern",
-              content: <SaveAnalysisStep />,
-            },
-          },
-        ] satisfies SidebarStep<UpdateAnalysisFormModel>[]
-      }
+      onSubmit={updateAnalysis}
+      steps={[
+        () => ({
+          title: "Anpassung speichern",
+          content: createStepContent({
+            component: SaveAnalysisStep,
+          }),
+          initialValues: { name: props.name },
+        }),
+      ]}
     />
   );
 }

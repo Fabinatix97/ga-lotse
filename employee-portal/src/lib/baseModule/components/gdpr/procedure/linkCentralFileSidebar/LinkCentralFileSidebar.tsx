@@ -6,7 +6,7 @@
 import {
   ApiGetReferenceFacilityResponse,
   ApiGetReferencePersonResponse,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { Stack } from "@mui/joy";
 import { Formik } from "formik";

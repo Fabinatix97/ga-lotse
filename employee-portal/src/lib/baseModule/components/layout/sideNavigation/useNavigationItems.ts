@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { AccessCheck } from "@eshg/lib-employee-portal/helpers/accessControl";
+
 import { useResolveSideNavigationItems } from "@/lib/baseModule/moduleRegister/sideNavigationItemsResolver";
-import { AccessCheck } from "@/lib/shared/helpers/accessControl";
 import { useAccessControl } from "@/lib/shared/hooks/useAccessControl";
 
 import { SideNavigationItem, UseSideNavigationItemGroupsResult } from "./types";

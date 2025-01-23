@@ -5,6 +5,8 @@
 
 package de.eshg.stiprotection.persistence.db;
 
+import static java.lang.Boolean.TRUE;
+
 import de.eshg.lib.appointmentblock.EntityWithAppointment;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.common.DataSensitivity;
@@ -12,6 +14,7 @@ import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.stiprotection.persistence.db.consultation.Consultation;
 import de.eshg.stiprotection.persistence.db.consultation.Consultation_;
+import de.eshg.stiprotection.persistence.db.diagnosis.Diagnosis;
 import de.eshg.stiprotection.persistence.db.examination.LaboratoryTestExamination;
 import de.eshg.stiprotection.persistence.db.examination.LaboratoryTestExamination_;
 import de.eshg.stiprotection.persistence.db.examination.RapidTestExamination;
@@ -29,9 +32,12 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderColumn;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Transient;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
@@ -79,6 +85,14 @@ public class StiProtectionProcedure
       fetch = FetchType.LAZY)
   private Consultation consultation;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  @OneToOne(
+      mappedBy = "procedure",
+      cascade = CascadeType.PERSIST,
+      orphanRemoval = true,
+      fetch = FetchType.LAZY)
+  private Diagnosis diagnosis;
+
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @OneToOne(orphanRemoval = true, cascade = CascadeType.PERSIST)
   private Appointment appointment;
@@ -110,6 +124,11 @@ public class StiProtectionProcedure
       orphanRemoval = true,
       fetch = FetchType.LAZY)
   private WaitingRoom waitingRoom;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  @Column(nullable = false)
+  private LabStatus labStatus;
 
   @Transient
   public Person getPerson() {
@@ -185,6 +204,21 @@ public class StiProtectionProcedure
     this.consultation = consultation;
   }
 
+  public Diagnosis getDiagnosis() {
+    return diagnosis;
+  }
+
+  public void setDiagnosis(Diagnosis diagnosis) {
+    if (diagnosis == null) {
+      if (this.diagnosis != null) {
+        this.diagnosis.setProcedure(null);
+      }
+    } else {
+      diagnosis.setProcedure(this);
+    }
+    this.diagnosis = diagnosis;
+  }
+
   public Appointment getAppointment() {
     return appointment;
   }
@@ -236,5 +270,22 @@ public class StiProtectionProcedure
   public void setWaitingRoom(WaitingRoom waitingRoom) {
     this.waitingRoom = waitingRoom;
     waitingRoom.setProcedure(this);
+  }
+
+  @PrePersist
+  @PreUpdate
+  public void computeLabStatus() {
+    labStatus = LabStatus.OPEN;
+    if (laboratoryTestExamination != null
+        && Objects.nonNull(laboratoryTestExamination.getTestsConductedDate())) {
+      labStatus = LabStatus.IN_PROGRESS;
+    }
+    if (diagnosis != null && TRUE.equals(diagnosis.getResultsCommunicated())) {
+      labStatus = LabStatus.CLOSED;
+    }
+  }
+
+  public LabStatus getLabStatus() {
+    return labStatus;
   }
 }

@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiGetReferenceFacilityResponse } from "@eshg/employee-portal-api/base";
+import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
 import { Button, Stack, Typography } from "@mui/joy";
 import { useState } from "react";
 

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiGetReferenceFacilityResponse } from "@eshg/employee-portal-api/base";
+import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
 import { useEffect, useReducer } from "react";
 
 import { useSearchReferenceFacilitiesQuery } from "@/lib/baseModule/api/queries/facility";

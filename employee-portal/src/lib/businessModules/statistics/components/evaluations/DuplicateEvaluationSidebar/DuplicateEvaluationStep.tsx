@@ -5,21 +5,22 @@
 
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Divider, Stack, Typography } from "@mui/joy";
 
+import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { formatDateRangeNumeric } from "@/lib/shared/helpers/dateTime";
 
 import { OriginalEvaluation } from "./DuplicateEvaluationSidebar";
 import { DuplicateEvaluationFormModel } from "./duplicateEvaluationFormModel";
 
-export function DuplicateEvaluationStep(props: {
+export interface DuplicateEvaluationStepProps
+  extends SidebarStepContentProps<DuplicateEvaluationFormModel> {
   originalEvaluation: OriginalEvaluation;
   defaultNewEvaluationName: string;
-}) {
-  const fieldName = createFieldNameMapper<DuplicateEvaluationFormModel>();
+}
 
+export function DuplicateEvaluationStep(props: DuplicateEvaluationStepProps) {
   return (
     <Stack gap={3}>
       <Stack gap={1}>
@@ -29,7 +30,7 @@ export function DuplicateEvaluationStep(props: {
         />
       </Stack>
       <InputField
-        name={fieldName("name")}
+        name={props.fieldName("name")}
         label="Name des Duplikats"
         placeholder={props.defaultNewEvaluationName}
       />

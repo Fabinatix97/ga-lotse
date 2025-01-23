@@ -7,7 +7,10 @@ import { ReportDataType } from "@/lib/businessModules/statistics/api/models/eval
 import { useUpdateReport } from "@/lib/businessModules/statistics/api/mutations/useUpdateReport";
 import { UpdateReportStep } from "@/lib/businessModules/statistics/components/evaluations/details/reports/UpdateReportSidebar/UpdateReportStep";
 import { UpdateReportFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/reports/UpdateReportSidebar/updateReportFormModel";
-import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
+import {
+  SidebarStepper,
+  createStepContent,
+} from "@/lib/shared/components/SidebarStepper/SidebarStepper";
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
@@ -38,8 +41,8 @@ function UpdateReportSidebar({
 }: UpdateReportSidebarProps) {
   const updateReport = useUpdateReport(() => onClose(true));
 
-  async function onSubmit(model: UpdateReportFormModel) {
-    return updateReport(report.seriesId, model);
+  async function onSubmit(model: [UpdateReportFormModel]) {
+    return updateReport(report.seriesId, model[0]);
   }
 
   const initialValues = {
@@ -50,20 +53,19 @@ function UpdateReportSidebar({
   return (
     <SidebarStepper
       onClose={onClose}
-      onSubmit={onSubmit}
-      initialValues={initialValues}
       formRef={formRef}
+      onSubmit={onSubmit}
       steps={[
-        {
-          type: "StandardStep",
-          step: {
-            title:
-              report.type === ReportDataType.Series
-                ? "Serie bearbeiten"
-                : "Report bearbeiten",
-            content: <UpdateReportStep />,
-          },
-        },
+        () => ({
+          title:
+            report.type === ReportDataType.Series
+              ? "Serie bearbeiten"
+              : "Report bearbeiten",
+          content: createStepContent({
+            component: UpdateReportStep,
+          }),
+          initialValues,
+        }),
       ]}
     />
   );

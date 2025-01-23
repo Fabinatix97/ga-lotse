@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBaseFeature, ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiBaseFeature, ApiUserRole } from "@eshg/base-api";
 import { ApiLocationSelectionMode } from "@eshg/employee-portal-api/schoolEntry";
+import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
 import { WcOutlined } from "@mui/icons-material";
 import { useQuery } from "@tanstack/react-query";
 
@@ -15,7 +16,6 @@ import {
 } from "@/lib/baseModule/components/layout/sideNavigation/types";
 import { useConfigApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { getLocationSelectionModeQuery } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
-import { hasUserRole } from "@/lib/shared/helpers/accessControl";
 
 import { routes } from "./routes";
 

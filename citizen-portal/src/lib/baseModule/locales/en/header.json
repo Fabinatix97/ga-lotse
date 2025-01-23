@@ -7,11 +7,6 @@
     "person_link": "Private Person",
     "org_link": "Organisation"
   },
-  "private_person_menu": {
-    "school_entry_link": "School Entry Examination",
-    "measles_protection_link": "Measles Protection",
-    "travel_medicine_link": "Travel Medicine Advice"
-  },
   "org_menu": {
     "measles_protection_link": "Masernschutz"
   }

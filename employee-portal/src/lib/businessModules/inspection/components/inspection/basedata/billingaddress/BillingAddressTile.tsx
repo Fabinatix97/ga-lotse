@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAddFacilityFileStateRequestContactAddress } from "@eshg/employee-portal-api/base";
+import { ApiAddFacilityFileStateRequestContactAddress } from "@eshg/base-api";
 import { Grid } from "@mui/joy";
 import { isDefined, isNonNullish } from "remeda";
 

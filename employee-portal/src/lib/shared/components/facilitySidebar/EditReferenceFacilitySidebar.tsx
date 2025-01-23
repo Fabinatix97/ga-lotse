@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiGetReferenceFacilityResponse } from "@eshg/employee-portal-api/base";
+import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
 import { isDefined } from "remeda";
 
 import { useUpdateReferenceFacility } from "@/lib/baseModule/api/mutations/facility";

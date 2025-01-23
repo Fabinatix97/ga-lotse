@@ -17,8 +17,8 @@ import de.eshg.statistics.api.AttributeSelectionDto;
 import de.eshg.statistics.api.GetDetailPageInformationResponse;
 import de.eshg.statistics.api.TableColumnHeader;
 import de.eshg.statistics.api.attributes.AbstractTableColumnHeaderAttribute;
+import de.eshg.statistics.api.attributes.BaseModuleIdAttribute;
 import de.eshg.statistics.api.attributes.BooleanAttribute;
-import de.eshg.statistics.api.attributes.CentralFileIdAttribute;
 import de.eshg.statistics.api.attributes.DecimalAttribute;
 import de.eshg.statistics.api.attributes.IntegerAttribute;
 import de.eshg.statistics.api.attributes.ValueWithOptionsAttribute;
@@ -108,7 +108,7 @@ public class StatisticsPopulator {
                     "SCHOOL_ENTRY",
                     UUID.fromString("5bee6747-9cbc-423c-a192-ad978d45970c"),
                     List.of(
-                        new BusinessDataAttribute("PROCEDURE_ID", null),
+                        new BusinessDataAttribute("PROCEDURE_REFERENCE", null),
                         new BusinessDataAttribute(
                             "CHILD_CENTRAL_FILE_ID",
                             List.of("Geburtsmonat", "Geburtsjahr", "Geschl", "ORT")),
@@ -180,7 +180,7 @@ public class StatisticsPopulator {
                     "INSPECTION",
                     UUID.fromString("f0ac7a7b-dfa7-4a1a-9409-a7588da26531"),
                     List.of(
-                        new BusinessDataAttribute("PROCEDURE_ID", null),
+                        new BusinessDataAttribute("PROCEDURE_REFERENCE", null),
                         new BusinessDataAttribute(
                             "FACILITY_CENTRAL_FILE_ID", List.of("LAND", "ORT", "PLZ", "BEZ")),
                         new BusinessDataAttribute("YEAR_OF_INSPECTION", null),
@@ -610,7 +610,7 @@ public class StatisticsPopulator {
   private static AttributeSelectionDto getAttributeSelectionDto(
       AbstractTableColumnHeaderAttribute attribute, String businessModuleName, UUID dataSourceId) {
     String baseCode =
-        attribute instanceof CentralFileIdAttribute cf ? cf.baseAttribute().code() : null;
+        attribute instanceof BaseModuleIdAttribute cf ? cf.baseAttribute().code() : null;
     return new AttributeSelectionDto(businessModuleName, dataSourceId, attribute.code(), baseCode);
   }
 }

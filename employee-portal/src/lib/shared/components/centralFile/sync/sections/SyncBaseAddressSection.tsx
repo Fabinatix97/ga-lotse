@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiDiffAddress } from "@eshg/employee-portal-api/base";
+import { ApiDiffAddress } from "@eshg/base-api";
+import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { Stack } from "@mui/joy";
 import { isDefined } from "remeda";
 
@@ -19,7 +20,6 @@ import {
   isDomesticAddress,
   isPostboxAddress,
 } from "@/lib/shared/helpers/address";
-import { translateCountry } from "@/lib/shared/helpers/i18n";
 import { join } from "@/lib/shared/helpers/strings";
 
 export function SyncBaseAddressSection({

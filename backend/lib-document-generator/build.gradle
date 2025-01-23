@@ -19,5 +19,5 @@ dependencies {
     testFixturesImplementation 'org.slf4j:slf4j-api'
     testFixturesImplementation 'org.springframework:spring-context'
     testFixturesImplementation 'org.springframework.boot:spring-boot-autoconfigure'
-    testFixturesImplementation 'org.verapdf:validation-model-jakarta:1.26.1' // verapdf rolled back a release and thus 1.26.2 is not available anymore
+    testFixturesImplementation 'org.verapdf:validation-model-jakarta:latest.release'
 }

@@ -17,9 +17,14 @@ import { ConfigurePieChartStep } from "@/lib/businessModules/statistics/componen
 import { ConfigureScatterChartStep } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/ConfigureScatterChartStep/ConfigureScatterChartStep";
 import { SaveAnalysisStep } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/SaveAnalysisStep/SaveAnalysisStep";
 import { SelectDiagramStep } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/SelectDiagramStep/SelectDiagramStep";
-import { CreateAnalysisFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/createAnalysisFormModel";
-import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
-import { SidebarStep } from "@/lib/shared/components/SidebarStepper/sidebarStep";
+import {
+  ConfigureChartFormModel,
+  CreateAnalysisFormModel,
+} from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/createAnalysisFormModel";
+import {
+  SidebarStepper,
+  createStepContent,
+} from "@/lib/shared/components/SidebarStepper/SidebarStepper";
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
@@ -45,51 +50,26 @@ function CreateAnalysisSidebar({
   choroplethMaps,
   formRef,
 }: CreateAnalysisSidebarProps) {
-  const initialValues: CreateAnalysisFormModel = {
-    diagramType: DiagramType.BAR_CHART,
-    name: "",
-    configureBarChartFormModel: {
-      scaling: "ABSOLUTE",
-      orientation: "VERTICAL",
-      grouping: "GROUPED",
-      primaryAttributeSelectionKey: null,
-      secondaryAttributeSelectionKey: null,
-    },
-    configurePieChartFormModel: {
-      primaryAttribute: null,
-    },
-    configureScatterChartFormModel: {
-      xAxis: null,
-      yAxis: null,
-      secondaryAttribute: null,
-      axisRange: "ADAPTED",
-      trendline: false,
-    },
-    configureLineChartFormModel: {
-      xAxis: null,
-      yAxis: null,
-      secondaryAttribute: null,
-      axisRange: "ADAPTED",
-    },
-    configureHistogramChartFormModel: {
-      scaling: "ABSOLUTE",
-      grouping: "GROUPED",
-      binning: "AUTO",
-      primaryAttribute: null,
-      secondaryAttribute: null,
-      bins: 8,
-    },
-    configureChoroplethChartFormModel: {
-      geoShapeId: null,
-      colorScheme: "UNIFORM",
-      characteristicParameter: "MEAN",
-      geoReferencedAttributeKey: null,
-      secondaryAttributeSelectionKey: null,
-    },
-  };
-
   const addAnalysis = useAddAnalysis(evaluationId, () => onClose(true));
   const addDiagram = useAddDiagram();
+
+  const initialChartConfigurationValues: ConfigureChartFormModel = {
+    primaryAttribute: null,
+    secondaryAttribute: null,
+    xAxis: null,
+    yAxis: null,
+    geoReferencedAttribute: null,
+    geoShapeId: null,
+    scaling: "ABSOLUTE",
+    orientation: "VERTICAL",
+    grouping: "GROUPED",
+    axisRange: "ADAPTED",
+    trendline: false,
+    binning: "AUTO",
+    bins: 8,
+    colorScheme: "UNIFORM",
+    characteristicParameter: "MEAN",
+  };
 
   async function createAnalysisAndDiagramWithoutFilters(
     model: CreateAnalysisFormModel,
@@ -112,74 +92,83 @@ function CreateAnalysisSidebar({
   return (
     <SidebarStepper
       onClose={onClose}
-      onSubmit={createAnalysisAndDiagramWithoutFilters}
-      initialValues={initialValues}
       formRef={formRef}
-      steps={
-        [
-          {
-            type: "StandardStep",
-            step: {
-              title: "Darstellung wählen",
-              content: <SelectDiagramStep />,
-            },
-          },
-          {
-            type: "BranchingStep",
-            branch: (model) => {
-              switch (model.diagramType) {
-                case DiagramType.CHOROPLETH_CHART:
-                  return {
-                    title: "Choroplethenkarte konfigurieren",
-                    content: (
-                      <ConfigureChoroplethChartStep
-                        attributes={attributes}
-                        choroplethMaps={choroplethMaps}
-                      />
-                    ),
-                  };
-                case DiagramType.BAR_CHART:
-                  return {
-                    title: "Balkendiagramm konfigurieren",
-                    content: <ConfigureBarChartStep attributes={attributes} />,
-                    validator: validateConfigureBarChartStep,
-                  };
-                case DiagramType.PIE_CHART:
-                  return {
-                    title: "Kreisdiagramm konfigurieren",
-                    content: <ConfigurePieChartStep attributes={attributes} />,
-                  };
-                case DiagramType.SCATTER_CHART:
-                  return {
-                    title: "Streudiagramm konfigurieren",
-                    content: (
-                      <ConfigureScatterChartStep attributes={attributes} />
-                    ),
-                  };
-                case DiagramType.LINE_CHART:
-                  return {
-                    title: "Liniendiagramm konfigurieren",
-                    content: <ConfigureLineChartStep attributes={attributes} />,
-                  };
-                case DiagramType.HISTOGRAM_CHART:
-                  return {
-                    title: "Histogramm konfigurieren",
-                    content: (
-                      <ConfigureHistogramChartStep attributes={attributes} />
-                    ),
-                  };
-              }
-            },
-          },
-          {
-            type: "StandardStep",
-            step: {
-              title: "Analyse speichern",
-              content: <SaveAnalysisStep />,
-            },
-          },
-        ] satisfies SidebarStep<CreateAnalysisFormModel>[]
-      }
+      onSubmit={createAnalysisAndDiagramWithoutFilters}
+      steps={[
+        () => ({
+          title: "Darstellung wählen",
+          content: createStepContent({
+            component: SelectDiagramStep,
+          }),
+          initialValues: { diagramType: DiagramType.BAR_CHART },
+        }),
+        (prevStepsValues) => {
+          switch (prevStepsValues[0].diagramType) {
+            case DiagramType.CHOROPLETH_CHART:
+              return {
+                title: "Choroplethenkarte konfigurieren",
+                content: createStepContent({
+                  component: ConfigureChoroplethChartStep,
+                  componentProps: { attributes, choroplethMaps },
+                }),
+                initialValues: initialChartConfigurationValues,
+              };
+            case DiagramType.BAR_CHART:
+              return {
+                title: "Balkendiagramm konfigurieren",
+                content: createStepContent({
+                  component: ConfigureBarChartStep,
+                  componentProps: { attributes },
+                }),
+                initialValues: initialChartConfigurationValues,
+                validator: validateConfigureBarChartStep,
+              };
+            case DiagramType.PIE_CHART:
+              return {
+                title: "Kreisdiagramm konfigurieren",
+                content: createStepContent({
+                  component: ConfigurePieChartStep,
+                  componentProps: { attributes },
+                }),
+                initialValues: initialChartConfigurationValues,
+              };
+            case DiagramType.SCATTER_CHART:
+              return {
+                title: "Streudiagramm konfigurieren",
+                content: createStepContent({
+                  component: ConfigureScatterChartStep,
+                  componentProps: { attributes },
+                }),
+                initialValues: initialChartConfigurationValues,
+              };
+            case DiagramType.LINE_CHART:
+              return {
+                title: "Liniendiagramm konfigurieren",
+                content: createStepContent({
+                  component: ConfigureLineChartStep,
+                  componentProps: { attributes },
+                }),
+                initialValues: initialChartConfigurationValues,
+              };
+            case DiagramType.HISTOGRAM_CHART:
+              return {
+                title: "Histogramm konfigurieren",
+                content: createStepContent({
+                  component: ConfigureHistogramChartStep,
+                  componentProps: { attributes },
+                }),
+                initialValues: initialChartConfigurationValues,
+              };
+          }
+        },
+        () => ({
+          title: "Analyse speichern",
+          content: createStepContent({
+            component: SaveAnalysisStep,
+          }),
+          initialValues: { name: "" },
+        }),
+      ]}
     />
   );
 }

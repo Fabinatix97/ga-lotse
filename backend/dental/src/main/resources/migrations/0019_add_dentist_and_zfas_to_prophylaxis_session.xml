@@ -1,0 +1,55 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet author="GA-Lotse" id="1736257981756-5">
+    <validCheckSum>9:f4f75207aa380b43e0e7153cf2b05c93</validCheckSum>
+    <delete tableName="examination"/>
+    <delete tableName="prophylaxis_session"/>
+    <createTable tableName="prophylaxis_session_dentist_ids">
+      <column name="prophylaxis_session_id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+                     primaryKeyName="pk_prophylaxis_session_dentist_ids"/>
+      </column>
+      <column name="dentist_ids" type="UUID"/>
+      <column name="dentist_ids_order" type="INTEGER">
+        <constraints nullable="false" primaryKey="true"
+                     primaryKeyName="pk_prophylaxis_session_dentist_ids"/>
+      </column>
+    </createTable>
+    <createTable tableName="prophylaxis_session_zfa_ids">
+      <column name="prophylaxis_session_id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+                     primaryKeyName="pk_prophylaxis_session_zfa_ids"/>
+      </column>
+      <column name="zfa_ids" type="UUID"/>
+      <column name="zfa_ids_order" type="INTEGER">
+        <constraints nullable="false" primaryKey="true"
+                     primaryKeyName="pk_prophylaxis_session_zfa_ids"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint baseColumnNames="prophylaxis_session_id"
+                             baseTableName="prophylaxis_session_dentist_ids"
+                             constraintName="fk_prophylaxis_session_dentist_ids_prophylaxis_session"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="prophylaxis_session"
+                             validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="prophylaxis_session_id"
+                             baseTableName="prophylaxis_session_zfa_ids"
+                             constraintName="fk_prophylaxis_session_zfa_ids_prophylaxis_session"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="prophylaxis_session"
+                             validate="true"/>
+  </changeSet>
+</databaseChangeLog>

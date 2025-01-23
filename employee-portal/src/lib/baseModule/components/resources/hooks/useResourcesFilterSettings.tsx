@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiLabel, ApiResourceType } from "@eshg/employee-portal-api/base";
+import { ApiLabel, ApiResourceType } from "@eshg/base-api";
 import { Stack } from "@mui/joy";
 import { useState } from "react";
 import { isDefined } from "remeda";

@@ -5,7 +5,8 @@
 
 "use client";
 
-import { ApiTaskStatus } from "@eshg/employee-portal-api/base";
+import { ApiTaskStatus } from "@eshg/base-api";
+import { SearchParams } from "@eshg/lib-portal/helpers/searchParams";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { useState } from "react";
 
@@ -32,7 +33,6 @@ import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import { SearchParams } from "@/lib/shared/helpers/searchParams";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
 import { tasksColumns } from "./taskOverviewColumns";

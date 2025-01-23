@@ -10,12 +10,15 @@ import de.eshg.dental.api.ChildDetailsDto;
 import de.eshg.dental.api.ChildDto;
 import de.eshg.dental.api.CreateChildRequest;
 import de.eshg.dental.api.ExaminationDto;
+import de.eshg.dental.api.FluoridationConsentDto;
 import de.eshg.dental.business.model.ChildWithAugmentedData;
 import de.eshg.dental.business.model.ImportChildData;
 import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
+import de.eshg.dental.domain.model.FluoridationConsent;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,10 +34,12 @@ public final class ChildMapper {
   public static ChildDetailsDto mapToChildDetailsDto(
       ChildWithAugmentedData child,
       List<Examination> examinations,
+      List<FluoridationConsent> fluoridationConsents,
       List<AnnualInstitutionDto> institutions) {
     if (child == null) {
       return null;
     }
+
     return new ChildDetailsDto(
         child.child().getExternalId(),
         child.child().getVersion(),
@@ -56,8 +61,9 @@ public final class ChildMapper {
         child.personData().differentBillingAddress(),
         child.child().getYear().getValue(),
         child.child().getGroupName(),
-        mapToDto(examinations),
-        institutions == null ? List.of() : institutions);
+        mapExaminationsToDto(examinations),
+        institutions == null ? List.of() : institutions,
+        mapFluoridationToDto(fluoridationConsents));
   }
 
   public static ChildDto mapChildToDto(ChildWithAugmentedData child) {
@@ -73,11 +79,32 @@ public final class ChildMapper {
         ProcedureMapper.toInterfaceType(child.child().getProcedureStatus()));
   }
 
-  private static List<ExaminationDto> mapToDto(List<Examination> examinations) {
+  private static List<ExaminationDto> mapExaminationsToDto(List<Examination> examinations) {
     if (examinations == null) {
       return List.of();
     }
     return examinations.stream().map(ExaminationMapper::mapToDto).toList();
+  }
+
+  private static List<FluoridationConsentDto> mapFluoridationToDto(
+      List<FluoridationConsent> fluoridationConsent) {
+    if (fluoridationConsent == null) {
+      return new ArrayList<>();
+    }
+    return fluoridationConsent.stream()
+        .map(f -> new FluoridationConsentDto(f.dateOfConsent(), f.consented(), f.hasAllergy()))
+        .toList();
+  }
+
+  public static FluoridationConsent mapFluoridationToDomain(
+      FluoridationConsentDto fluoridationConsent) {
+    if (fluoridationConsent == null) {
+      return null;
+    }
+    return new FluoridationConsent(
+        fluoridationConsent.dateOfConsent(),
+        fluoridationConsent.consented(),
+        fluoridationConsent.hasAllergy());
   }
 
   public static CreateChildRequest mapImportDataToCreateChildRequest(

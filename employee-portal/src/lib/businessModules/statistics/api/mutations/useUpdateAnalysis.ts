@@ -19,7 +19,7 @@ export function useUpdateAnalysis(
   const mutation = useHandledMutation({
     mutationFn: (model: UpdateAnalysisFormModel) =>
       api.updateAnalysis(analysisId, {
-        name: model.name.trim(),
+        name: model[0].name.trim(),
       }),
     onSuccess: () => {
       onSuccess();

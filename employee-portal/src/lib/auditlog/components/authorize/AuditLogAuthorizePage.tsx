@@ -5,6 +5,8 @@
 
 "use client";
 
+import { SearchParams } from "@eshg/lib-portal/helpers/searchParams";
+
 import { useAuditLogAuthorizeSidebar } from "@/lib/auditlog/components/authorize/AuditLogAuthorizeSidebar";
 import { auditLogAuthorizeColumns } from "@/lib/auditlog/components/authorize/auditLogAuthorizeColumns";
 import { useAuditLogAdminFilterSettings } from "@/lib/auditlog/components/authorize/useAuditLogAdminFilterSettings";
@@ -17,7 +19,6 @@ import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import { SearchParams } from "@/lib/shared/helpers/searchParams";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
 export function AuditLogAuthorizePage(
@@ -63,7 +64,7 @@ export function AuditLogAuthorizePage(
           data={response.logs}
           columns={auditLogAuthorizeColumns}
           rowNavigation={{
-            onClick: (row) =>
+            onClick: (row) => () =>
               authorizeSidebar.open({
                 source: row.original.auditLogSource,
                 date: row.original.createdAt,

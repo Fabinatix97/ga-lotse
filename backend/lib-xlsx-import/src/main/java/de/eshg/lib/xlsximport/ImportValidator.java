@@ -13,10 +13,8 @@ import java.util.stream.StreamSupport;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.multipart.MultipartFile;
 
 public class ImportValidator {
 
@@ -27,67 +25,13 @@ public class ImportValidator {
 
   private ImportValidator() {}
 
-  public static void validateFileExistsAndHasCorrectType(MultipartFile file) {
-    if (!file.getResource().exists()) {
-      throw new BadRequestException(
-          ErrorCode.INVALID_FILE, "The file %s does not exist.".formatted(file.getName()));
-    }
-    if (!Objects.requireNonNull(file.getOriginalFilename()).endsWith(".xlsx")) {
-      throw new BadRequestException(ErrorCode.INVALID_FILE, "The file type is not xlsx.");
-    }
-  }
-
-  public static void validateSheet(XSSFWorkbook workbook) {
-    if (workbook.getNumberOfSheets() != 1) {
-      throw new BadRequestException(
-          ErrorCode.INVALID_FILE, "Invalid file structure. Exactly one sheet is required.");
-    }
-  }
-
-  public static void validateNumberOfRows(Sheet sheet, int maxNumberOfImportRows) {
-    if (sheet.getPhysicalNumberOfRows() > maxNumberOfImportRows) {
-      throw new BadRequestException(
-          ErrorCode.XLSX_TOO_MANY_ROWS,
-          "Invalid file structure. At most %s rows are allowed.".formatted(maxNumberOfImportRows));
-    }
-  }
-
-  public static void validateHeaderExists(Sheet sheet) {
-    Row headerRow = sheet.getRow(0);
-    if (headerRow == null) {
-      throw new BadRequestException(
-          ErrorCode.INVALID_FILE, "Invalid file structure. Missing header row.");
-    }
-  }
-
-  public static void validateConsistencyBetweenHeaderAndRows(
-      Sheet sheet, int headerRowNumberOfColumns) {
-    for (Row row : sheet) {
-      if (row.getRowNum() == 0) {
-        // skip the header
-        continue;
-      }
-      if (row.getLastCellNum() > headerRowNumberOfColumns) {
-        log.error(
-            "row {} has more data columns than header columns: {} > {}",
-            row.getRowNum(),
-            row.getLastCellNum(),
-            headerRowNumberOfColumns);
-        throw new BadRequestException(
-            ErrorCode.INVALID_FILE,
-            "Invalid file structure. Number of columns in header and data rows does not match.");
-      }
-    }
-  }
-
-  public static <T extends XlsxColumn> List<T> validateHeaderFormat(
-      T[] expectedColumns, XSSFSheet sheet) {
+  static <C extends XlsxColumn> List<C> validateHeaderFormat(C[] expectedColumns, XSSFSheet sheet) {
     Row headerRow = sheet.getRow(0);
     XSSFCellStyle headerCellStyle = XlsxUtil.createHeaderCellStyle(sheet);
-    List<T> foundColumns = new ArrayList<>();
+    List<C> foundColumns = new ArrayList<>();
     int initialNumberOfColumns = 0;
 
-    for (T column : expectedColumns) {
+    for (C column : expectedColumns) {
       if (validateHeaderCellIsPresent(headerRow.getCell(foundColumns.size()), column)) {
         foundColumns.add(column);
         initialNumberOfColumns++;
@@ -139,5 +83,25 @@ public class ImportValidator {
     }
     XlsxUtil.writeValue(cell, value, cellStyle);
     return cell;
+  }
+
+  private static void validateConsistencyBetweenHeaderAndRows(
+      Sheet sheet, int headerRowNumberOfColumns) {
+    for (Row row : sheet) {
+      if (row.getRowNum() == 0) {
+        // skip the header
+        continue;
+      }
+      if (row.getLastCellNum() > headerRowNumberOfColumns) {
+        log.error(
+            "row {} has more data columns than header columns: {} > {}",
+            row.getRowNum(),
+            row.getLastCellNum(),
+            headerRowNumberOfColumns);
+        throw new BadRequestException(
+            ErrorCode.INVALID_FILE,
+            "Invalid file structure. Number of columns in header and data rows does not match.");
+      }
+    }
   }
 }

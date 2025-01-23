@@ -7,7 +7,7 @@ import {
   ApiBaseEventRequest,
   ApiDetailedEventWithoutCalendarId,
   ApiEventType,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { EventInput } from "@fullcalendar/core/index.js";
 import { eachDayOfInterval, isAfter, isSameDay, max, min } from "date-fns";
 

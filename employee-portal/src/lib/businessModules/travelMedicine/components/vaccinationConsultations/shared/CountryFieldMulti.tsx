@@ -7,8 +7,7 @@ import {
   MultiAutocompleteField,
   MultiAutocompleteFieldProps,
 } from "@eshg/lib-portal/components/formFields/autocomplete/MultiAutocompleteField";
-
-import { countryOptions } from "@/lib/shared/helpers/i18n";
+import { countryOptions } from "@eshg/lib-portal/helpers/countryOption";
 
 interface CountryFieldMultiProps
   extends Omit<MultiAutocompleteFieldProps, "options"> {

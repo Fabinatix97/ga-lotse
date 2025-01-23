@@ -7,6 +7,7 @@ package de.eshg.base.centralfile.persistence.repository;
 
 import de.eshg.base.centralfile.persistence.entity.DataOrigin;
 import de.eshg.base.centralfile.persistence.entity.Facility;
+import de.eshg.base.centralfile.persistence.entity.Facility_;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
@@ -40,6 +41,7 @@ public interface FacilityRepository
 
   Optional<Facility> findByExternalIdEqualsAndReferenceFacilityIsNull(UUID id);
 
+  @EntityGraph(attributePaths = {Facility_.MUK_FACILITY_LINK})
   List<Facility> findAllByExternalIdInAndReferenceFacilityIsNotNullOrderById(Collection<UUID> ids);
 
   List<Facility> findAllByExternalIdInAndReferenceFacilityIsNullOrderById(Collection<UUID> ids);
@@ -57,19 +59,14 @@ public interface FacilityRepository
     """)
   boolean isReferenceFacilityObsolete(UUID externalId);
 
-  @Query(
-      """
-        select f from Facility f
-        left join fetch f.emailAddresses
-        left join fetch f.contactAddress
-        left join fetch f.differentBillingAddress
-        where f.externalId in :ids
-        and f.referenceFacility is not null
-        order by f.id
-        """)
-  List<Facility>
-      findAllByExternalIdInAndReferenceFacilityIsNotNullOrderByIdJoinFetchingEmailAddressesContactAddressAndDifferentBillingAddress(
-          List<UUID> ids);
+  @EntityGraph(
+      attributePaths = {
+        Facility_.EMAIL_ADDRESSES,
+        Facility_.CONTACT_ADDRESS,
+        Facility_.DIFFERENT_BILLING_ADDRESS,
+        Facility_.MUK_FACILITY_LINK
+      })
+  List<Facility> findAllByExternalIdInAndReferenceFacilityIsNotNullOrderById(List<UUID> ids);
 
   @Query(
       "select f from Facility f left join fetch f.phoneNumbers where f in :facilities order by f.id")
@@ -82,9 +79,7 @@ public interface FacilityRepository
   default List<Facility>
       findAllFetchingReferenceByExternalIdInAndReferenceFacilityIsNotNullOrderByIdWithJoinFetches(
           List<UUID> ids) {
-    List<Facility> facilities =
-        findAllByExternalIdInAndReferenceFacilityIsNotNullOrderByIdJoinFetchingEmailAddressesContactAddressAndDifferentBillingAddress(
-            ids);
+    List<Facility> facilities = findAllByExternalIdInAndReferenceFacilityIsNotNullOrderById(ids);
     facilities = findAllInOrderByIdJoinFetchingPhoneNumbers(facilities);
     facilities = findAllInOrderByIdJoinFetchingContactPersons(facilities);
     return facilities;
@@ -97,19 +92,19 @@ public interface FacilityRepository
         left join fetch f.referenceFacility
         left join fetch f.referenceFacility.contactAddress
         left join fetch f.referenceFacility.differentBillingAddress
+        left join fetch f.referenceFacility.mukFacilityLink
         where f in :facilities
         order by f.id
         """)
-  List<Facility> findAllInOrderByIdJoinFetchingContactPersonsReferenceFacility(
+  List<Facility> findAllByOrderByIdJoinFetchContactPersonsAndReferenceFacilityAttributes(
       List<Facility> facilities);
 
   default List<Facility> findAllByExternalIdInAndReferenceFacilityIsNotNullOrderByIdWithJoinFetches(
       List<UUID> ids) {
-    List<Facility> facilities =
-        findAllByExternalIdInAndReferenceFacilityIsNotNullOrderByIdJoinFetchingEmailAddressesContactAddressAndDifferentBillingAddress(
-            ids);
+    List<Facility> facilities = findAllByExternalIdInAndReferenceFacilityIsNotNullOrderById(ids);
     facilities = findAllInOrderByIdJoinFetchingPhoneNumbers(facilities);
-    facilities = findAllInOrderByIdJoinFetchingContactPersonsReferenceFacility(facilities);
+    facilities =
+        findAllByOrderByIdJoinFetchContactPersonsAndReferenceFacilityAttributes(facilities);
     return facilities;
   }
 

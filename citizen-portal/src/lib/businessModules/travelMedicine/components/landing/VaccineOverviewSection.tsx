@@ -17,9 +17,9 @@ export function VaccineOverviewSection() {
   const diseases = useGetAllDiseasesCitizen().data.diseases;
 
   return (
-    <ContentSheet>
-      <ContentSheetTitle>{t("vaccionation.title")}</ContentSheetTitle>
-      {diseases && (
+    diseases.length > 0 && (
+      <ContentSheet>
+        <ContentSheetTitle>{t("vaccination.title")}</ContentSheetTitle>
         <List
           marker="disc"
           sx={{
@@ -34,7 +34,7 @@ export function VaccineOverviewSection() {
             <ListItem key={`vaccine[${el.name}.${index}]`}>{el.name}</ListItem>
           ))}
         </List>
-      )}
-    </ContentSheet>
+      </ContentSheet>
+    )
   );
 }

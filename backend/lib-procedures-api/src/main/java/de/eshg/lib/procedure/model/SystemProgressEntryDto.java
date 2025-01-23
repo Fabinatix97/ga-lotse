@@ -26,6 +26,8 @@ public final class SystemProgressEntryDto extends ProgressEntryDto
   private String triggeredByUserFirstName;
   private String triggeredByUserLastName;
 
+  private UUID previousFileStateId;
+
   public String getSystemProgressEntryType() {
     return systemProgressEntryType;
   }
@@ -105,5 +107,13 @@ public final class SystemProgressEntryDto extends ProgressEntryDto
 
   public void setKeyDocumentType(String keyDocumentType) {
     this.keyDocumentType = keyDocumentType;
+  }
+
+  public UUID getPreviousFileStateId() {
+    return previousFileStateId;
+  }
+
+  public void setPreviousFileStateId(UUID previousFileStateId) {
+    this.previousFileStateId = previousFileStateId;
   }
 }

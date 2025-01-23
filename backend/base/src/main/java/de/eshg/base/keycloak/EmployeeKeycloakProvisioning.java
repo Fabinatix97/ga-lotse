@@ -69,7 +69,7 @@ public class EmployeeKeycloakProvisioning extends KeycloakProvisioning<EmployeeK
 
     EmployeePermissionRole[] permissionRoles = EmployeePermissionRole.values();
     createOrUpdateRoles(permissionRoles);
-    createOrUpdateEshgClientScope(permissionRoles);
+    createOrUpdateEshgClientScope(List.of(), permissionRoles);
     createOrUpdateDefaultRoleComposites();
     createOrUpdateClients();
     createOrUpdateGroups();
@@ -198,7 +198,7 @@ public class EmployeeKeycloakProvisioning extends KeycloakProvisioning<EmployeeK
             Map.of(
                 "backchannel.logout.url",
                 UriComponentsBuilder.fromUri(synapseUrl)
-                    .replacePath("_synapse/client/oidc/backchannel_logout")
+                    .path("/_synapse/client/oidc/backchannel_logout")
                     .toUriString(),
                 "backchannel.logout.revoke.offline.tokens",
                 FALSE,
@@ -208,7 +208,7 @@ public class EmployeeKeycloakProvisioning extends KeycloakProvisioning<EmployeeK
     clientRepresentation.setRedirectUris(
         List.of(
             UriComponentsBuilder.fromUri(synapseUrl)
-                .replacePath("_synapse/client/oidc/callback")
+                .path("/_synapse/client/oidc/callback")
                 .toUriString()));
 
     return clientRepresentation;

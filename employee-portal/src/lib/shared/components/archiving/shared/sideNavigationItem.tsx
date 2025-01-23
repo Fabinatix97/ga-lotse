@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/base-api";
+import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
 import { Inventory2Outlined } from "@mui/icons-material";
 
 import { SideNavigationItem } from "@/lib/baseModule/components/layout/sideNavigation/types";
-import { hasUserRole } from "@/lib/shared/helpers/accessControl";
 
 import { routes } from "./routes";
 

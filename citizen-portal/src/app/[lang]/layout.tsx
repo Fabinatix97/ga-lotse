@@ -34,5 +34,6 @@ export function generateMetadata(
   return {
     title: translations.site_title,
     description: translations.site_description,
+    keywords: translations.site_keywords,
   };
 }

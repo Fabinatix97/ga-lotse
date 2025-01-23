@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export interface ChooseEvaluationTemplateStepFormModel {
-  evaluationTemplateId: string | null;
+import { FormikValues } from "formik";
+
+export interface ChooseEvaluationTemplateStepFormModel extends FormikValues {
+  evaluationTemplateId?: string;
 }

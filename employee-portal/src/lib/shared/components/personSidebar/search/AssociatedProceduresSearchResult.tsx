@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiGetReferencePersonResponse } from "@eshg/employee-portal-api/base";
+import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import ArrowBackIosOutlined from "@mui/icons-material/ArrowBackIosOutlined";
 import { Button, Stack, Typography } from "@mui/joy";

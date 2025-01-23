@@ -41,6 +41,21 @@ public class ZipUtil {
     return new byte[0];
   }
 
+  public static List<String> listZipEntries(byte[] content) {
+    try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(content);
+        ZipInputStream zipInputStream = new ZipInputStream(byteArrayInputStream)) {
+      List<String> zipEntries = new ArrayList<>();
+      for (ZipEntry zipEntry = zipInputStream.getNextEntry();
+          zipEntry != null;
+          zipEntry = zipInputStream.getNextEntry()) {
+        zipEntries.add(zipEntry.getName());
+      }
+      return zipEntries;
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
   public static String listZipContent(byte[] content) {
     return listZipContent(content, Collections.emptyList());
   }

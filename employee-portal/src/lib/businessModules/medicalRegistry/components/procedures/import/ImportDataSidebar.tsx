@@ -6,7 +6,6 @@
 "use client";
 
 import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
-import { HiddenContainer } from "@eshg/lib-portal/components/HiddenContainer";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
 import { Formik } from "formik";
 import { forwardRef, useCallback, useImperativeHandle, useRef } from "react";
@@ -49,7 +48,6 @@ const ImportDataSidebar = forwardRef<TryAbortCallback, DrawerProps>(
   function ImportDataSidebar({ onClose }, ref) {
     const { openConfirmationDialog } = useConfirmationDialog();
     const importData = useImportData();
-    const downloadContainerRef = useRef<HTMLDivElement>(null);
 
     const { status, isPending, abort: abortImport } = importData;
     const tryAbort = useCallback<TryAbortCallback>(
@@ -84,9 +82,7 @@ const ImportDataSidebar = forwardRef<TryAbortCallback, DrawerProps>(
         {
           onSuccess: ({ file }) => {
             // Automatic download
-            if (downloadContainerRef.current) {
-              downloadFileAndOpen(file, downloadContainerRef.current);
-            }
+            downloadFileAndOpen(file);
           },
         },
       );
@@ -121,7 +117,6 @@ const ImportDataSidebar = forwardRef<TryAbortCallback, DrawerProps>(
             <ImportDataFormSidebar onClose={handleClose} />
           </Formik>
         )}
-        <HiddenContainer ref={downloadContainerRef} />
       </>
     );
   },

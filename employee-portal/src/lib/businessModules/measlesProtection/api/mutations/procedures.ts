@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiGetReferencePersonResponse } from "@eshg/employee-portal-api/base";
+import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
   ApiAccessRestriction,
   ApiAccessRestrictionLetter,

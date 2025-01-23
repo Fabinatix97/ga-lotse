@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiErrorCode } from "@eshg/employee-portal-api/base";
+import { ApiErrorCode } from "@eshg/base-api";
 
 import { PortalErrorCode } from "./PortalErrorCode";
 

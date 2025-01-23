@@ -12,6 +12,7 @@ public abstract sealed class AttributeData
     permits BooleanAttribute,
         CentralFileIdFacilityAttribute,
         CentralFileIdPersonAttribute,
+        ContactIdAttribute,
         DateAttribute,
         DecimalAttribute,
         IntegerAttribute,

@@ -5,27 +5,20 @@
 
 package de.eshg.inspection.importer;
 
-import static de.eshg.lib.xlsximport.ImportValidator.validateFileExistsAndHasCorrectType;
-import static de.eshg.lib.xlsximport.ImportValidator.validateHeaderExists;
-import static de.eshg.lib.xlsximport.ImportValidator.validateNumberOfRows;
-import static de.eshg.lib.xlsximport.ImportValidator.validateSheet;
 import static java.util.Map.Entry.comparingByKey;
 import static java.util.stream.Collectors.joining;
 
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.xlsximport.FeedbackColumnAccessor;
-import de.eshg.lib.xlsximport.ImportValidator;
-import de.eshg.lib.xlsximport.XlsxNormalizer;
+import de.eshg.lib.xlsximport.XlsxImport;
 import de.eshg.lib.xlsximport.model.ImportResult;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.Clock;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -58,42 +51,29 @@ public class ImporterService {
    * @return An ImportResultDto object that contains the results of the import operation.
    */
   public ImportResult importProcesses(MultipartFile file) throws IOException {
-    validateFileExistsAndHasCorrectType(file);
-
-    try (InputStream inputStream = file.getInputStream();
-        XSSFWorkbook workbook = new XSSFWorkbook(inputStream)) {
-      validateSheet(workbook);
-
-      XSSFSheet sheet = workbook.getSheetAt(0);
-      validateNumberOfRows(sheet, importProperties.getMaxNumberOfImportRows());
-      validateHeaderExists(sheet);
-
-      return importProcesses(sheet, file.getOriginalFilename());
-    }
+    return XlsxImport.processWorkbook(
+        file,
+        importProperties.getMaxNumberOfImportRows(),
+        InspectionListColumn.values(),
+        (sheet, actualColumns) ->
+            importProcesses(sheet, actualColumns, file.getOriginalFilename()));
   }
 
-  private ImportResult importProcesses(XSSFSheet sheet, String originalFilename)
+  private ImportResult importProcesses(
+      XSSFSheet sheet, List<InspectionListColumn> actualColumns, String originalFilename)
       throws IOException {
-    try (XlsxNormalizer xlsxNormalizer = new XlsxNormalizer()) {
-      XSSFSheet normalizedSheet = xlsxNormalizer.normalize(sheet);
+    InspectionImporter importer =
+        new InspectionImporter(
+            sheet,
+            new InspectionProcedureRowReader(sheet, actualColumns, importPersister, clock),
+            new FeedbackColumnAccessor(actualColumns),
+            importPersister);
 
-      List<InspectionListColumn> actualColumns =
-          ImportValidator.validateHeaderFormat(InspectionListColumn.values(), normalizedSheet);
+    ImportResult importResult = importer.process();
 
-      InspectionImporter importer =
-          new InspectionImporter(
-              normalizedSheet,
-              new InspectionProcedureRowReader(
-                  normalizedSheet, actualColumns, importPersister, clock),
-              new FeedbackColumnAccessor(actualColumns),
-              importPersister);
+    logResult(importResult, importer, originalFilename);
 
-      ImportResult importResult = importer.process();
-
-      logResult(importResult, importer, originalFilename);
-
-      return importResult;
-    }
+    return importResult;
   }
 
   private void logResult(

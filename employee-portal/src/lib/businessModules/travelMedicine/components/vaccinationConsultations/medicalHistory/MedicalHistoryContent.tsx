@@ -17,7 +17,7 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import { Button, IconButton, Stack } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 import { useDownloadMedicalHistoryPdf } from "@/lib/businessModules/travelMedicine/api/download/files";
 import {
@@ -39,7 +39,6 @@ export function MedicalHistoriesContent({
 
   const resetAlertContext = useResetAlertContext();
   const downloadMedicalHistoryPdf = useDownloadMedicalHistoryPdf();
-  const hiddenLinkContainer = useRef<HTMLDivElement>(null);
 
   const [{ data: allMedicalHistories }, { data: status }] = useSuspenseQueries({
     queries: [
@@ -72,9 +71,7 @@ export function MedicalHistoriesContent({
       procedureId,
       medicalHistoryId,
     );
-    if (hiddenLinkContainer.current !== null) {
-      downloadFileAndOpen(downloadedFile, hiddenLinkContainer.current);
-    }
+    downloadFileAndOpen(downloadedFile);
   }
 
   useEffect(() => {
@@ -171,7 +168,6 @@ export function MedicalHistoriesContent({
           </SidePanelNav>
         </SidePanel>
       </Stack>
-      <div ref={hiddenLinkContainer} style={{ display: "hidden" }}></div>
     </Stack>
   );
 }

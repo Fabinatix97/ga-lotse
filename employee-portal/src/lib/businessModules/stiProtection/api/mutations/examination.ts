@@ -11,48 +11,45 @@ import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvid
 import { useMutation } from "@tanstack/react-query";
 
 import { useExaminationApi } from "@/lib/businessModules/stiProtection/api/clients";
-import { stiProtectionProceduresApiQueryKey } from "@/lib/businessModules/stiProtection/api/queries/apiQueryKeys";
+import { proceduresQueryKey } from "@/lib/businessModules/stiProtection/api/queries/apiQueryKeys";
 
-export function useUpsertRapidTest() {
+export function useUpsertRapidTest(procedureId: string) {
   const examinationApi = useExaminationApi();
   const snackbar = useSnackbar();
 
   return useMutation({
-    mutationFn: ({
-      id,
-      rapidTests,
-    }: {
-      id: string;
-      rapidTests: ApiRapidTestExamination;
-    }) => examinationApi.updateRapidTestExamination(id, rapidTests),
+    mutationFn: ({ rapidTests }: { rapidTests: ApiRapidTestExamination }) =>
+      examinationApi.updateRapidTestExamination(procedureId, rapidTests),
     onSuccess: () => {
       snackbar.confirmation("Die Schnelltests wurden erfolgreich gespeichert.");
     },
     onError: () => {
       snackbar.error("Die Schnelltests konnten nicht gespeichert werden.");
     },
-    mutationKey: stiProtectionProceduresApiQueryKey(["rapidTests"]),
+    mutationKey: proceduresQueryKey([procedureId, "rapidTests"]),
   });
 }
 
-export function useUpsertLaboratoryTest() {
+export function useUpsertLaboratoryTest(procedureId: string) {
   const examinationApi = useExaminationApi();
   const snackbar = useSnackbar();
 
   return useMutation({
     mutationFn: ({
-      id,
       laboratoryTests,
     }: {
-      id: string;
       laboratoryTests: ApiLaboratoryTestExamination;
-    }) => examinationApi.updateLaboratoryTestExamination(id, laboratoryTests),
+    }) =>
+      examinationApi.updateLaboratoryTestExamination(
+        procedureId,
+        laboratoryTests,
+      ),
     onSuccess: () => {
       snackbar.confirmation("Die Labortests wurden erfolgreich gespeichert.");
     },
     onError: () => {
       snackbar.error("Die Labortests konnten nicht gespeichert werden.");
     },
-    mutationKey: stiProtectionProceduresApiQueryKey(["laboratoryTests"]),
+    mutationKey: proceduresQueryKey([procedureId, "laboratoryTests"]),
   });
 }

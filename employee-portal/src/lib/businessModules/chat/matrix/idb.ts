@@ -4,7 +4,6 @@
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 /* eslint-disable @typescript-eslint/prefer-promise-reject-errors */
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 

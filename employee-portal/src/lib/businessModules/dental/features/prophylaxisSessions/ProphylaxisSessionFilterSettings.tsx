@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { GetProphylaxisSessionsRequest } from "@eshg/employee-portal-api/dental";
+import { GetProphylaxisSessionsRequest } from "@eshg/dental-api";
 import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { FormControl, FormLabel, Select } from "@mui/joy";
 import { isDefined } from "remeda";

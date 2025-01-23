@@ -14,21 +14,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class ConsultationService {
 
-  private final StiProtectionProcedureService stiProtectionProcedureService;
+  private final StiProtectionProcedureFinder procedureFinder;
 
-  public ConsultationService(StiProtectionProcedureService stiProtectionProcedureService) {
-    this.stiProtectionProcedureService = stiProtectionProcedureService;
+  public ConsultationService(StiProtectionProcedureFinder procedureFinder) {
+    this.procedureFinder = procedureFinder;
   }
 
   public Consultation getConsultation(UUID procedureId) {
-    StiProtectionProcedure procedure =
-        stiProtectionProcedureService.findProcedureByExternalId(procedureId);
+    StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
     return procedure.getConsultation();
   }
 
   public Consultation getOrCreateConsultation(UUID procedureId) {
-    StiProtectionProcedure procedure =
-        stiProtectionProcedureService.findProcedureByExternalId(procedureId);
+    StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
     return Objects.requireNonNullElseGet(
         procedure.getConsultation(),
         () -> {

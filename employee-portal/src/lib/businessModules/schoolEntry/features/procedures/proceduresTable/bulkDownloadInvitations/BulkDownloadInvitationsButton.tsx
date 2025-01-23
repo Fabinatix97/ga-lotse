@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { HiddenContainer } from "@eshg/lib-portal/components/HiddenContainer";
 import { InsertDriveFileOutlined } from "@mui/icons-material";
 
 import { Procedure } from "@/lib/businessModules/schoolEntry/api/models/Procedure";
@@ -24,7 +23,6 @@ export function BulkDownloadInvitationsButton(
   const {
     startDownload,
     isPending,
-    downloadContainerRef,
     downloadNotPossibleDialogProps,
     partialDownloadDialogProps,
   } = useBulkDownloadInvitations();
@@ -46,7 +44,6 @@ export function BulkDownloadInvitationsButton(
         {...partialDownloadDialogProps}
         isPending={isPending}
       />
-      <HiddenContainer ref={downloadContainerRef} />
     </>
   );
 }

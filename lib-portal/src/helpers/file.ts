@@ -4,9 +4,7 @@
  */
 
 export function fileNameIsValid(file: File) {
-  return /^[A-Za-z0-9][A-Za-z0-9\-_ .]*[A-Za-z0-9\-_]*\.[A-Za-z0-9]+$/.test(
-    file.name,
-  );
+  return /^([A-Za-z0-9\-_]+\.[A-Za-z0-9]+)$/.test(file.name);
 }
 
 export function fileNameIsTooLong(file: File) {

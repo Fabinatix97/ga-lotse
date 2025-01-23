@@ -5,17 +5,25 @@
 
 package de.eshg.schoolentry;
 
+import static de.eshg.lib.procedure.util.ProcedureValidator.hasNonNullValue;
 import static de.eshg.schoolentry.SchoolEntryCitizenController.MAX_ALLOWED_APPOINTMENT_CHANGES;
 import static de.eshg.schoolentry.api.SopessExaminationResultValueDto.*;
 import static de.eshg.schoolentry.util.ValueEvaluatorUtil.*;
 
+import com.google.common.collect.Sets;
+import de.cronn.commons.lang.StreamUtil;
 import de.cronn.reflection.util.PropertyUtils;
 import de.cronn.reflection.util.TypedPropertyGetter;
 import de.eshg.base.contact.api.InstitutionContactCategoryDto;
+import de.eshg.base.icd10.Icd10CodeApi;
+import de.eshg.base.icd10.api.FindIcd10CodesRequest;
+import de.eshg.base.icd10.api.FindIcd10CodesResponse;
+import de.eshg.base.icd10.api.Icd10CodeDto;
 import de.eshg.lib.appointmentblock.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.lib.contact.ContactClient;
+import de.eshg.lib.procedure.api.ProcedureSearchParameters;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.rest.service.error.BadRequestException;
@@ -26,16 +34,19 @@ import de.eshg.schoolentry.api.citizen.CitizenAnamnesisDto;
 import de.eshg.schoolentry.business.model.ChildData;
 import de.eshg.schoolentry.business.model.ProcedureDetailsData;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
-import de.eshg.schoolentry.domain.repository.Icd10CodeRepository;
-import de.eshg.schoolentry.domain.repository.Icd10GroupRepository;
 import de.eshg.schoolentry.util.ExceptionUtil;
 import java.beans.PropertyDescriptor;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.Year;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -56,20 +67,17 @@ public class Validator {
               PhysicalExaminationDto::getAbdomen,
               PhysicalExaminationDto::getEarNoseThroat);
 
-  private final Icd10CodeRepository icd10CodeRepository;
-  private final Icd10GroupRepository icd10GroupRepository;
+  private final Icd10CodeApi icd10CodeClient;
   private final ContactClient contactClient;
   private final Clock clock;
   private final AppointmentBlockProperties appointmentBlockProperties;
 
   public Validator(
-      Icd10CodeRepository icd10CodeRepository,
-      Icd10GroupRepository icd10GroupRepository,
+      Icd10CodeApi icd10CodeClient,
       ContactClient contactClient,
       Clock clock,
       AppointmentBlockProperties appointmentBlockProperties) {
-    this.icd10CodeRepository = icd10CodeRepository;
-    this.icd10GroupRepository = icd10GroupRepository;
+    this.icd10CodeClient = icd10CodeClient;
     this.contactClient = contactClient;
     this.clock = clock;
     this.appointmentBlockProperties = appointmentBlockProperties;
@@ -81,24 +89,6 @@ public class Validator {
       throw new BadRequestException(
           "Filter parameters and search parameters can not be used in the same request.");
     }
-  }
-
-  static void validateSearchParametersAreComplete(ProcedureSearchParameters searchParameters) {
-    if (hasNonNullValue(searchParameters)
-        && (searchParameters.searchFirstName() == null
-            || searchParameters.searchLastName() == null
-            || searchParameters.searchDateOfBirth() == null)) {
-      throw new BadRequestException(
-          "If search parameters are used, all of firstName, lastName and dateOfBirth have to be provided.");
-    }
-  }
-
-  static boolean hasNonNullValue(Record object) {
-    return PropertyUtils.getPropertyDescriptors(object).stream()
-        .filter(descriptor -> !PropertyUtils.isDeclaredInClass(descriptor, Object.class))
-        .filter(PropertyUtils::isReadable)
-        .map(prop -> PropertyUtils.read(object, prop))
-        .anyMatch(Objects::nonNull);
   }
 
   public void validateSchoolYear(Year schoolYear) {
@@ -377,8 +367,15 @@ public class Validator {
     validateExaminationResultConsistency(request.physicalExamination());
     validateHandicapConsistency(request.handicap());
 
-    validateIcd10CodesExist(request.physicalExamination());
-    validateIcd10CodesExist(request.handicap());
+    List<String> icd10Codes = collectIcd10Codes(request);
+    validateIcd10CodesExist(icd10Codes);
+  }
+
+  private static List<String> collectIcd10Codes(DevelopmentScreeningResultDto request) {
+    return Stream.concat(
+            collectIcd10Codes(request.handicap()), collectIcd10Codes(request.physicalExamination()))
+        .distinct()
+        .toList();
   }
 
   static void validateWeightIsNonNegative(Double weight) {
@@ -443,29 +440,47 @@ public class Validator {
     }
   }
 
-  private void validateIcd10CodesExist(PhysicalExaminationDto physicalExaminationDto) {
-    EXAMINATION_WITH_DIAGNOSIS_PROPERTIES.stream()
+  private static Stream<String> collectIcd10Codes(PhysicalExaminationDto physicalExaminationDto) {
+    return EXAMINATION_WITH_DIAGNOSIS_PROPERTIES.stream()
         .map(propertyGetter -> propertyGetter.get(physicalExaminationDto))
         .filter(Objects::nonNull)
         .map(ExaminationWithDiagnosisDto::icd10Codes)
-        .forEach(this::validateIcd10CodesExist);
+        .flatMap(Collection::stream);
   }
 
-  private void validateIcd10CodesExist(HandicapDto handicap) {
-    validateIcd10CodesExist(handicap.chronicDisease().icd10Codes());
-    validateIcd10CodesExist(handicap.disability().icd10Codes());
+  private static Stream<String> collectIcd10Codes(HandicapDto handicap) {
+    return Stream.concat(
+        streamNullable(handicap.chronicDisease().icd10Codes()),
+        streamNullable(handicap.disability().icd10Codes()));
   }
 
-  private void validateIcd10CodesExist(List<String> icd10Codes) {
-    if (icd10Codes == null) {
-      return;
+  private static Stream<String> streamNullable(List<String> strings) {
+    if (strings == null) {
+      return Stream.empty();
     }
-    for (String icd10Code : icd10Codes) {
-      if (!icd10CodeRepository.existsByCodeWithoutDot(icd10Code)
-          && !icd10GroupRepository.existsByGroupStartAndGroupEnd(icd10Code)) {
-        throw new BadRequestException("ICD-10 Code %s does not exist.".formatted(icd10Code));
-      }
+    return strings.stream();
+  }
+
+  private void validateIcd10CodesExist(Collection<String> icd10Codes) {
+    Set<String> missingCodes = validateIcd10Codes(icd10Codes);
+    if (!missingCodes.isEmpty()) {
+      throw new BadRequestException("ICD-10 codes %s do not exist.".formatted(missingCodes));
     }
+  }
+
+  public Set<String> validateIcd10Codes(Collection<String> icd10Codes) {
+    if (icd10Codes.isEmpty()) {
+      return Set.of();
+    }
+    FindIcd10CodesResponse validateResponse =
+        icd10CodeClient.findAllIcd10Codes(new FindIcd10CodesRequest(new ArrayList<>(icd10Codes)));
+
+    Set<String> existingCodes =
+        validateResponse.existingCodes().stream()
+            .map(Icd10CodeDto::code)
+            .collect(StreamUtil.toLinkedHashSet());
+
+    return Sets.difference(new LinkedHashSet<>(icd10Codes), existingCodes);
   }
 
   public void validateLocationIdForImport(UUID locationId) {

@@ -11,6 +11,5 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public enum VaccinationDto {
   HEPATITIS_A,
   HEPATITIS_B,
-
   HPV,
 }

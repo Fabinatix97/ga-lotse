@@ -5,10 +5,7 @@
 
 "use client";
 
-import {
-  ApiBusinessModule,
-  ApiProcedureType,
-} from "@eshg/employee-portal-api/base";
+import { ApiBusinessModule, ApiProcedureType } from "@eshg/base-api";
 
 import { TaskMetricsDisplay } from "@/lib/baseModule/components/procedureMetrics/taskMetrics/TaskMetricsDisplay";
 import { routes } from "@/lib/baseModule/shared/routes";

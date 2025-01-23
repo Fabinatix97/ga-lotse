@@ -11,9 +11,10 @@ import { useGetFilterTemplateFilters } from "@/lib/businessModules/statistics/ap
 import { useGetFilterTemplates } from "@/lib/businessModules/statistics/api/queries/useGetFilterTemplates";
 import { SaveDiagramStep } from "@/lib/businessModules/statistics/components/evaluations/details/CreateDiagramSidebar/SaveDiagramStep/SaveDiagramStep";
 import { SetFiltersStep } from "@/lib/businessModules/statistics/components/evaluations/details/CreateDiagramSidebar/SetFiltersStep/SetFiltersStep";
-import { CreateDiagramFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateDiagramSidebar/createDiagramFormModel";
-import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
-import { SidebarStep } from "@/lib/shared/components/SidebarStepper/sidebarStep";
+import {
+  SidebarStepper,
+  createStepContent,
+} from "@/lib/shared/components/SidebarStepper/SidebarStepper";
 import { UseFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { UseFilterTemplateProps } from "@/lib/shared/components/filterSettings/useFilterTemplate";
 import {
@@ -21,6 +22,8 @@ import {
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
 } from "@/lib/shared/hooks/useSidebarWithFormRef";
+
+import { CreateDiagramFormModel } from "./createDiagramFormModel";
 
 export function useCreateDiagramSidebar(): UseSidebarWithFormRefResult<CreateDiagramSidebarProps> {
   return useSidebarWithFormRef({
@@ -35,12 +38,6 @@ interface CreateDiagramSidebarProps extends SidebarWithFormRefProps {
 }
 
 function CreateDiagramSidebar(props: CreateDiagramSidebarProps) {
-  const initialValues: CreateDiagramFormModel = {
-    title: "",
-    description: "",
-    filterValues: [],
-  };
-
   const createDiagram = useAddDiagram();
   const addFilterTemplate = useAddFilterTemplate(props.attributes);
   const deleteFilterTemplate = useDeleteFilterTemplate();
@@ -61,12 +58,16 @@ function CreateDiagramSidebar(props: CreateDiagramSidebarProps) {
     };
   }
 
-  async function onSubmit(model: CreateDiagramFormModel): Promise<void> {
+  async function saveDiagramStepOnSubmit(
+    model: CreateDiagramFormModel,
+  ): Promise<void> {
     await createDiagram(
       {
         analysisId: props.analysisId,
         attributes: props.attributes,
-        ...model,
+        filterValues: model[0].filterValues,
+        title: model[1].title,
+        description: model[1].description,
       },
       {
         onSuccess: () => props.onClose(true),
@@ -77,32 +78,33 @@ function CreateDiagramSidebar(props: CreateDiagramSidebarProps) {
   return (
     <SidebarStepper
       onClose={props.onClose}
-      onSubmit={onSubmit}
-      initialValues={initialValues}
       formRef={props.formRef}
-      steps={
-        [
-          {
-            type: "StandardStep",
-            step: {
-              title: "Filter für Diagramm festlegen",
-              content: (
-                <SetFiltersStep
-                  attributes={props.attributes}
-                  getUseFilterTemplateProps={getUseFilterTemplateProps}
-                />
-              ),
+      onSubmit={saveDiagramStepOnSubmit}
+      steps={[
+        () => ({
+          title: "Filter für Diagramm festlegen",
+          content: createStepContent({
+            component: SetFiltersStep,
+            componentProps: {
+              attributes: props.attributes,
+              getUseFilterTemplateProps,
             },
+          }),
+          initialValues: {
+            filterValues: [],
           },
-          {
-            type: "StandardStep",
-            step: {
-              title: "Diagramm speichern",
-              content: <SaveDiagramStep />,
-            },
+        }),
+        () => ({
+          title: "Diagramm speichern",
+          content: createStepContent({
+            component: SaveDiagramStep,
+          }),
+          initialValues: {
+            title: "",
+            description: "",
           },
-        ] satisfies SidebarStep<CreateDiagramFormModel>[]
-      }
+        }),
+      ]}
     />
   );
 }

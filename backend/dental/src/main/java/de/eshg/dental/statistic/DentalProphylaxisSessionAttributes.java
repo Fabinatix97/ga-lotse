@@ -5,30 +5,61 @@
 
 package de.eshg.dental.statistic;
 
+import de.eshg.dental.domain.model.FluoridationVarnish;
+import de.eshg.dental.domain.model.ProphylaxisType;
+import de.eshg.lib.statistics.api.ValueOptionInternal;
 import de.eshg.lib.statistics.attributes.AttributeData;
 import de.eshg.lib.statistics.attributes.AttributeInfo;
+import de.eshg.lib.statistics.attributes.BooleanAttribute;
+import de.eshg.lib.statistics.attributes.ContactIdAttribute;
 import de.eshg.lib.statistics.attributes.IntegerAttribute;
 import de.eshg.lib.statistics.attributes.TextAttribute;
+import de.eshg.lib.statistics.attributes.ValueWithOptionsAttribute;
+import java.util.Arrays;
+import java.util.List;
 
 public enum DentalProphylaxisSessionAttributes implements AttributeInfo {
-  INSTITUTION_ID(
-      new TextAttribute(
-          "ID der Einrichtung",
-          "INSTITUTION_ID",
-          DentalProphylaxisSessionAttributes.CATEGORY,
-          true)),
+  EINRICHTUNG(
+      new ContactIdAttribute(
+          "Einrichtung", "EINRICHTUNG", DentalProphylaxisSessionAttributes.CATEGORY, true)),
 
-  SCHOOL_YEAR(
+  SCHULJAHR(
       new IntegerAttribute(
-          "Schuljahr der Untersuchung",
-          "SCHOOL_YEAR",
+          "Schuljahr der Prophylaxe",
+          "SCHULJAHR",
           DentalProphylaxisSessionAttributes.CATEGORY,
           true)),
 
-  GROUP_NAME(
+  GRUPPE(
       new TextAttribute(
-          "Name der Gruppe", "GROUP_NAME", DentalProphylaxisSessionAttributes.CATEGORY, true)),
-  ;
+          "Name der Gruppe", "GRUPPE", DentalProphylaxisSessionAttributes.CATEGORY, true)),
+
+  TYP(
+      new ValueWithOptionsAttribute(
+          "Typ der Prophylaxe",
+          "TYP",
+          getTypeValueOptions(),
+          DentalProphylaxisSessionAttributes.CATEGORY,
+          true)),
+
+  ANZAHL_KINDER(
+      new IntegerAttribute(
+          "Anzahl Kinder", "ANZAHL_KINDER", DentalProphylaxisSessionAttributes.CATEGORY, true)),
+
+  REIHENUNTERSUCHUNG(
+      new BooleanAttribute(
+          "Reihenuntersuchung",
+          "REIHENUNTERSUCHUNG",
+          DentalProphylaxisSessionAttributes.CATEGORY,
+          true)),
+
+  FLUORIDIERUNGSLACK(
+      new ValueWithOptionsAttribute(
+          "Fluoridierungslack",
+          "FLUORIDIERUNGSLACK",
+          getFluoridationVarnishValueOptions(),
+          DentalProphylaxisSessionAttributes.CATEGORY,
+          false));
 
   static final String CATEGORY = "Prophylaxe";
 
@@ -41,5 +72,19 @@ public enum DentalProphylaxisSessionAttributes implements AttributeInfo {
   @Override
   public AttributeData getAttributeData() {
     return attribute;
+  }
+
+  private static List<ValueOptionInternal> getTypeValueOptions() {
+    return enumToValueOptionList(ProphylaxisType.values());
+  }
+
+  private static List<ValueOptionInternal> getFluoridationVarnishValueOptions() {
+    return enumToValueOptionList(FluoridationVarnish.values());
+  }
+
+  private static <E extends Enum<E>> List<ValueOptionInternal> enumToValueOptionList(E[] values) {
+    return Arrays.stream(values)
+        .map(value -> new ValueOptionInternal(value.name(), value.name(), false))
+        .toList();
   }
 }

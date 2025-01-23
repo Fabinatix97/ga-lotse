@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiActiveUserSession } from "@eshg/employee-portal-api/base";
+import { ApiActiveUserSession } from "@eshg/base-api";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import LaptopIcon from "@mui/icons-material/Laptop";
 import LogoutIcon from "@mui/icons-material/Logout";

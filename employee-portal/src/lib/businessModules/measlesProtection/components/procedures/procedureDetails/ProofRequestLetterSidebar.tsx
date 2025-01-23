@@ -190,7 +190,7 @@ function CreateProofRequestLetterSidebarForm({
             header={
               <Typography
                 textColor={"text.secondary"}
-                style={{
+                sx={{
                   fontSize: "16px",
                   fontWeight: "600",
                 }}
@@ -263,7 +263,7 @@ function PreviewProofRequestLetterSidebarForm({
             header={
               <Typography
                 textColor={"text.secondary"}
-                style={{
+                sx={{
                   fontSize: "16px",
                   fontWeight: "600",
                 }}
@@ -283,12 +283,16 @@ function PreviewProofRequestLetterSidebarForm({
                 disabled={false}
                 label={"In neuem Tab öffnen"}
                 onClick={openFile}
-                style={{ backgroundColor: "transparent", padding: "4px 16px" }}
+                sx={{
+                  backgroundColor: "transparent",
+                  padding: "4px 16px",
+                  "&:hover": { backgroundColor: "transparent" },
+                }}
               >
                 <Stack direction="row" spacing={1}>
                   <Typography
                     textColor={"text.primary"}
-                    style={{
+                    sx={{
                       fontSize: "16px",
                       fontWeight: "600",
                     }}
@@ -296,7 +300,7 @@ function PreviewProofRequestLetterSidebarForm({
                     In neuem Tab öffnen
                   </Typography>
                   <TabOutlined
-                    style={{
+                    sx={{
                       width: "24px",
                       height: "24px",
                     }}

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiLabel } from "@eshg/employee-portal-api/base";
+import { ApiLabel } from "@eshg/base-api";
 import { Chip, ChipProps, Stack } from "@mui/joy";
 
 import { MoreLabelsButton } from "@/lib/baseModule/components/labels/MoreLabelsButton";

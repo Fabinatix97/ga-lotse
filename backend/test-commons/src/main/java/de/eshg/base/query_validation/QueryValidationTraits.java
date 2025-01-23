@@ -8,6 +8,7 @@ package de.eshg.base.query_validation;
 import de.cronn.assertions.validationfile.junit5.JUnit5ValidationFileAssertions;
 import de.cronn.assertions.validationfile.normalization.ValidationNormalizer;
 import de.cronn.commons.lang.Action;
+import de.eshg.normalization.ByteArrayReplacer;
 import de.eshg.normalization.UuidNormalizer;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -53,7 +54,7 @@ public interface QueryValidationTraits extends JUnit5ValidationFileAssertions {
   }
 
   default ValidationNormalizer defaultValidationNormalizerForQueryCapturing() {
-    return new UuidNormalizer();
+    return new UuidNormalizer().and(new ByteArrayReplacer());
   }
 
   default <T> T captureQueryAndCompareWithFile(

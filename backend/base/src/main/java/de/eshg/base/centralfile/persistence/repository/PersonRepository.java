@@ -67,7 +67,7 @@ public interface PersonRepository
         select * from person p
         where p.reference_person_id is null
         and   (:includeDeleted = true or p.delete_at is null)
-        and   p.data_origin <> 'EXTERNAL'::DataOrigin
+        and   (:includeExternal = true or p.data_origin <> 'EXTERNAL'::DataOrigin)
         and   p.date_of_birth = :dateOfBirth
         and   normalize_text(p.first_name) % normalize_text(:firstName)
         and   normalize_text(p.last_name) % normalize_text(:lastName)
@@ -82,7 +82,8 @@ public interface PersonRepository
       @Param("dateOfBirth") LocalDate dateOfBirth,
       @Param("firstNameThreshold") double firstNameThreshold,
       @Param("lastNameThreshold") double lastNameThreshold,
-      @Param("includeDeleted") boolean includeDeleted);
+      @Param("includeDeleted") boolean includeDeleted,
+      @Param("includeExternal") boolean includeExternal);
 
   Optional<Person> findByExternalId(UUID externalId);
 

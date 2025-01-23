@@ -80,6 +80,7 @@ export function validateMonth(value: string) {
 export function validateLength(
   startInclusive: number,
   endInclusive: number,
+  renderError?: (startIncluding: number, endInclusive: number) => string,
 ): Validator<OptionalFieldValue<string>> {
   return (value: OptionalFieldValue<string>) => {
     if (isNullish(value) || isEmpty(value)) {
@@ -92,7 +93,9 @@ export function validateLength(
       return undefined;
     }
 
-    return `Bitte eine Textlänge zwischen ${startInclusive} und ${endInclusive} Zeichen angeben.`;
+    return renderError
+      ? renderError(startInclusive, endInclusive)
+      : `Bitte eine Textlänge zwischen ${startInclusive} und ${endInclusive} Zeichen angeben.`;
   };
 }
 

@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiUser } from "@eshg/base-api";
 import {
   ApiAuditLogSource,
   ApiGetAuditLogGrantedAccessesResponse,
 } from "@eshg/employee-portal-api/auditlog";
-import { ApiUser } from "@eshg/employee-portal-api/base";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { List, ListItem, Sheet, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";

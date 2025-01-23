@@ -12,6 +12,12 @@ export const routes = defineRoutes("/official-medical-service", (omsPath) => ({
       defineRoutes(proceduresPath(`/${procedureId}`), (procedurePath) => ({
         details: procedurePath("/details"),
         progressEntries: procedurePath("/progress-entries"),
+        syncAffectedPerson: (fileStateId: string, personVersion: number) =>
+          procedurePath(
+            `/sync-affected-person/${fileStateId}/${personVersion}`,
+          ),
+        syncFacility: (fileStateId: string, facilityVersion: number) =>
+          procedurePath(`/sync-facility/${fileStateId}/${facilityVersion}`),
       })),
   })),
   appointmentBlockGroups: defineRoutes(

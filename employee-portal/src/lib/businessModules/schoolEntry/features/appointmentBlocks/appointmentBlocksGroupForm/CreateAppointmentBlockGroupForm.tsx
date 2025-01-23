@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiAddContact200Response } from "@eshg/employee-portal-api/base";
+import { ApiAddContact200Response } from "@eshg/base-api";
 import {
   ApiAppointmentType,
   ApiCreateDailyAppointmentBlock,

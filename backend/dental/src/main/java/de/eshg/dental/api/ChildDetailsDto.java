@@ -44,7 +44,8 @@ public record ChildDetailsDto(
     @NotNull int year,
     @NotNull String groupName,
     @NotNull @Valid List<ExaminationDto> examinations,
-    @NotEmpty @Valid List<AnnualInstitutionDto> institutions) {
+    @NotEmpty @Valid List<AnnualInstitutionDto> institutions,
+    @NotNull @Valid List<FluoridationConsentDto> fluoridationConsents) {
 
   @JsonIgnore
   public InstitutionDto getCurrentInstitution() {

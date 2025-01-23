@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { CategorizedFlatAttribute } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ChooseAttributesStep/ChooseAttributesStep";
+import { FormikValues } from "formik";
 
-export interface ChooseAttributesStepFormModel {
-  selectedAttributes?: CategorizedFlatAttribute[];
-  _selectedAttributeKeys: string[];
+export interface ChooseAttributesStepFormModel extends FormikValues {
+  selectedAttributeKeys?: string[];
 }

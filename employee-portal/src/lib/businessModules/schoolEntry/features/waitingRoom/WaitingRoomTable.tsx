@@ -76,8 +76,8 @@ export function WaitingRoomTable() {
 
 const columnHelper = createColumnHelper<WaitingRoomProcedure>();
 const COLUMNS = [
-  columnHelper.accessor("child.lastName", {
-    header: "Name",
+  columnHelper.accessor("child.firstName", {
+    header: "Vorname",
     cell: (props) => props.getValue(),
     enableSorting: true,
     meta: {
@@ -87,8 +87,8 @@ const COLUMNS = [
       width: 180,
     },
   }),
-  columnHelper.accessor("child.firstName", {
-    header: "Vorname",
+  columnHelper.accessor("child.lastName", {
+    header: "Nachname",
     cell: (props) => props.getValue(),
     enableSorting: true,
     meta: {

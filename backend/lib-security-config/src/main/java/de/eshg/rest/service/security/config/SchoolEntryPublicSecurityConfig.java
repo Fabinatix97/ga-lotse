@@ -18,7 +18,7 @@ public final class SchoolEntryPublicSecurityConfig extends AbstractPublicSecurit
     super("school-entry");
 
     grantAccessToLibAppointmentBlockUrls(EmployeePermissionRole.SCHOOL_ENTRY_ADMIN, false);
-    grantAccessToStatistics();
+    grantAccessToStatistics(EmployeePermissionRole.SCHOOL_ENTRY_ADMIN);
     grantAccessToLibProceduresUrls(
         EmployeePermissionRole.SCHOOL_ENTRY_ADMIN, ModuleLeaderRole.SCHOOL_ENTRY_LEADER);
 
@@ -46,7 +46,6 @@ public final class SchoolEntryPublicSecurityConfig extends AbstractPublicSecurit
     requestMatchers(
             BaseUrls.SchoolEntry.SCHOOL_ENTRY_CONTROLLER + "/**",
             BaseUrls.SchoolEntry.LABEL_CONTROLLER + "/**",
-            BaseUrls.SchoolEntry.ICD_10_CODE_CONTROLLER + "/**",
             BaseUrls.SchoolEntry.IMPORT_CONTROLLER + "/**",
             BaseUrls.EVENT_METADATA_API + "/**")
         .hasRole(EmployeePermissionRole.SCHOOL_ENTRY_ADMIN);

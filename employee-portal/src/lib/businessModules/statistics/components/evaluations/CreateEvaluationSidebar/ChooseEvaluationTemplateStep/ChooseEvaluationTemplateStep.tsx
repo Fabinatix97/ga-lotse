@@ -6,19 +6,18 @@
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { OpenInNewOutlined } from "@mui/icons-material";
 import { Divider, Sheet, Stack, Typography } from "@mui/joy";
-import { useFormikContext } from "formik";
 
 import { useGetEvaluationTemplateDetails } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplateDetails";
-import { ChooseEvaluationTemplateStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ChooseEvaluationTemplateStep/chooseEvaluationTemplateStepFormModel";
+import { ChooseAttributeStepOrChooseEvaluationStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/createEvaluationFromScratchFormModel";
 import {
   Analyses,
   Attributes,
   DataSource,
 } from "@/lib/businessModules/statistics/components/evaluations/SidebarSummary";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
+import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 
 export interface EvaluationTemplateStepAutocompleteEntry {
@@ -26,15 +25,16 @@ export interface EvaluationTemplateStepAutocompleteEntry {
   name: string;
 }
 
+export interface ChooseEvaluationTemplateStepProps
+  extends SidebarStepContentProps<ChooseAttributeStepOrChooseEvaluationStepFormModel> {
+  evaluationTemplates: EvaluationTemplateStepAutocompleteEntry[];
+}
+
 export function ChooseEvaluationTemplateStep({
   evaluationTemplates,
-}: {
-  evaluationTemplates: EvaluationTemplateStepAutocompleteEntry[];
-}) {
-  const fieldName =
-    createFieldNameMapper<ChooseEvaluationTemplateStepFormModel>();
-  const { values } = useFormikContext<ChooseEvaluationTemplateStepFormModel>();
-
+  fieldName,
+  values,
+}: ChooseEvaluationTemplateStepProps) {
   const autocompleteOptions = evaluationTemplates.map((it) => ({
     value: it.id,
     label: it.name,

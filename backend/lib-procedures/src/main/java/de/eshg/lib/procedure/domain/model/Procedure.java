@@ -130,6 +130,11 @@ public abstract class Procedure<
 
   public void updateProcedureStatus(
       ProcedureStatus procedureStatus, Clock clock, AuditLogger auditLogger) {
+    updateProcedureStatus(procedureStatus, Instant.now(clock), auditLogger);
+  }
+
+  public void updateProcedureStatus(
+      ProcedureStatus procedureStatus, Instant now, AuditLogger auditLogger) {
     if (Objects.equals(this.procedureStatus, procedureStatus)) {
       return;
     }
@@ -150,7 +155,7 @@ public abstract class Procedure<
     }
 
     if (isClosed(procedureStatus)) {
-      this.closedAt = Instant.now(clock);
+      this.closedAt = now;
       addProgressEntry(createSystemProgressEntry(CLOSED, TriggerType.EMPLOYEE));
     }
 

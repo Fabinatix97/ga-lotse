@@ -5,14 +5,14 @@
 
 "use client";
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/base-api";
+import { SearchParams } from "@eshg/lib-portal/helpers/searchParams";
 
 import { AuditLogAuthorizePage } from "@/lib/auditlog/components/authorize/AuditLogAuthorizePage";
 import { RestrictedPage } from "@/lib/shared/components/RestrictedPage";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
-import { SearchParams } from "@/lib/shared/helpers/searchParams";
 
 export default function AuditLogAuthorizeAccessPage(
   props: Readonly<{

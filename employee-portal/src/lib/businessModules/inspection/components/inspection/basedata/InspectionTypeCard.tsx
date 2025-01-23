@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/base-api";
 import { ApiInspection } from "@eshg/employee-portal-api/inspection";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";

@@ -8,7 +8,7 @@ import {
   ApiSalutation,
   ApiUser,
   ApiUserGroup,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { PhoneNumberField } from "@eshg/lib-portal/components/formFields/PhoneNumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";

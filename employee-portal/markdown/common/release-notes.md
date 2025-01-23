@@ -2,6 +2,28 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 1.6
+_15.01.2025_
+
+Siebter Release der Anwendung GA-Lotse.
+
+### Grundmodul
+
+* Aufgabenkennzahlen
+
+### Reisemedizinische Impfberatung
+
+* Default Chargennummern für Impfstoffe
+* Bürgerportalvorgänge
+  * Vorgangsanlage
+  * Terminbuchung und -absage
+  * Ausfüllen der Anamnese
+  * Emailbenachrichtigungen
+* Aufklärungsbögen
+  * Vorlageneditor
+  * Zuweisung zu Vorgängen
+  * Beantwortung im Bürgerportal
+
 ## GA-Lotse 1.5
 
 _18.12.2024_

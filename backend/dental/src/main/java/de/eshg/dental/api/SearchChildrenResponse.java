@@ -9,4 +9,4 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
-public record SearchChildrenResponse(@NotNull @Valid List<ChildResult> children) {}
+public record SearchChildrenResponse(@NotNull @Valid List<ChildSearchResult> children) {}

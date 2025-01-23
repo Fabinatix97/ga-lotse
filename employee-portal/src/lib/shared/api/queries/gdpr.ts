@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiBaseFeature } from "@eshg/employee-portal-api/base";
+import { ApiBaseFeature } from "@eshg/base-api";
 import {
   ApiBusinessModule,
   ApiGdprDownloadPackageInfo,
@@ -13,6 +13,8 @@ import {
   GetAllGdprValidationTasksRequest,
 } from "@eshg/employee-portal-api/businessProcedures";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
+import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
 import { queryOptions, useSuspenseQueries } from "@tanstack/react-query";
 import assert from "assert";
 import { isDefined } from "remeda";
@@ -97,13 +99,21 @@ function getGdprDownloadPackagesInfoQuery(
       gdprProcedureId,
       enabled,
     ]),
-    queryFn: (): Promise<
+    queryFn: async (): Promise<
       "disabled" | ApiGetGdprDownloadPackagesInfoResponse
     > => {
       if (enabled) {
-        return taskApi.getGdprDownloadPackagesInfo(gdprProcedureId);
+        try {
+          return await taskApi.getGdprDownloadPackagesInfo(gdprProcedureId);
+        } catch (e: unknown) {
+          const resolved = resolveError(e);
+          if (resolved.errorCode === PortalErrorCode.NotFound) {
+            return "disabled";
+          }
+          throw e;
+        }
       } else {
-        return Promise.resolve("disabled");
+        return "disabled";
       }
     },
     select: (data): DownloadPackagesQueryResponse => {
@@ -122,7 +132,10 @@ function getGdprDownloadPackagesInfoQuery(
   });
 }
 
-export function useGetGdprDownloadPackagesInfo(gdprProcedureId: string) {
+export function useGetGdprDownloadPackagesInfo(
+  gdprProcedureId: string,
+  enabled: boolean,
+) {
   const { data: config } = useServerConfig();
   const queries = businessModules.map((module) => {
     // Using hooks in a loop is allowed here, since the businessModules array is constant.
@@ -132,7 +145,7 @@ export function useGetGdprDownloadPackagesInfo(gdprProcedureId: string) {
       gdprValidationTaskApi,
       module,
       gdprProcedureId,
-      config.activeModules.includes(module),
+      enabled && config.activeModules.includes(module),
     );
   });
 
@@ -149,7 +162,11 @@ export function useDownloadPackageFileByModule() {
     api: useGdprValidationTaskApi(module),
   }));
 
-  function downloadPackage(businessModule: ApiBusinessModule, id: string) {
+  function downloadPackage(
+    businessModule: ApiBusinessModule,
+    gdprProcedureId: string,
+    downloadId: string,
+  ) {
     const resolved = moduleApiHooks.find(
       ({ module }) => module === businessModule,
     )!;
@@ -157,7 +174,10 @@ export function useDownloadPackageFileByModule() {
       isDefined(resolved),
       `Module mapping for API should be defined for business module ${businessModule}`,
     );
-    return resolved.api.getGdprDownloadPackageRaw({ id });
+    return resolved.api.getGdprDownloadPackageRaw({
+      gdprProcedureId,
+      downloadId,
+    });
   }
 
   return downloadPackage;

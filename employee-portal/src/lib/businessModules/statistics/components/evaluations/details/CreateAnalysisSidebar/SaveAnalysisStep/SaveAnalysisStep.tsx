@@ -4,18 +4,18 @@
  */
 
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Stack } from "@mui/joy";
 
 import { SaveAnalysisStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/SaveAnalysisStep/saveAnalysisStepFormModel";
+import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 
-export function SaveAnalysisStep() {
-  const fieldName = createFieldNameMapper<SaveAnalysisStepFormModel>();
-
+export function SaveAnalysisStep(
+  props: SidebarStepContentProps<SaveAnalysisStepFormModel>,
+) {
   return (
     <Stack gap={2}>
       <InputField
-        name={fieldName("name")}
+        name={props.fieldName("name")}
         label="Name der Analyse"
         required="Bitte Name angeben."
       />

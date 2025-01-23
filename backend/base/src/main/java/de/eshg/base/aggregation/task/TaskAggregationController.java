@@ -69,36 +69,6 @@ public class TaskAggregationController {
       @RequestParam(name = "taskStatus", required = false)
           @Parameter(description = "Filter on task status")
           Set<TaskStatusDto> taskStatuses,
-      @RequestParam(name = "hasDueAt", required = false)
-          @Parameter(
-              description =
-                  """
-                  Filter logic:
-                  - In case of "true" only tasks with a due date are returned.
-                  - In case of "false" only tasks without a due date are returned.
-                  - If not submitted, no filtering takes place
-                  """)
-          Boolean hasDueAt,
-      @RequestParam(name = "isOverdue", required = false)
-          @Parameter(
-              description =
-                  """
-                  Filter logic:
-                  - In case of "true" only tasks  which dueDate is in the past are returned.
-                  - In case of "false" only tasks which due date is **not** in the past or which don't have a due date are returned.
-                  - If not submitted, no filtering takes place
-                  """)
-          Boolean isOverdue,
-      @RequestParam(name = "wasAssignedByOther", required = false)
-          @Parameter(
-              description =
-                  """
-                  Filter logic:
-                  - In case of "true" only tasks are returned where assignee and the user who assigned the tasks are unequal
-                  - In case of "false" only tasks are returned where assignee and the user who assigned the tasks are equal
-                  - If not submitted, no filtering takes place
-                  """)
-          Boolean wasAssignedByOther,
       @RequestParam(name = "sortBy", required = false, defaultValue = "PRIORITY")
           @Parameter(
               description =
@@ -136,9 +106,6 @@ public class TaskAggregationController {
             .setBusinessModules(businessModules)
             .setTaskTypes(taskTypes)
             .setTaskStatus(taskStatuses)
-            .setHasDueAt(hasDueAt)
-            .setIsOverdue(isOverdue)
-            .setWasAssignedByOther(wasAssignedByOther)
             .setSortBy(sortBy)
             .setSortOrder(sortOrder)
             .setLimit(limit)

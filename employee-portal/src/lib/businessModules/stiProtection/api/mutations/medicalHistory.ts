@@ -8,45 +8,28 @@ import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvid
 import { MutationOptions, useMutation } from "@tanstack/react-query";
 
 import { useMedicalHistoryApi } from "@/lib/businessModules/stiProtection/api/clients";
-import { stiProtectionProceduresApiQueryKey } from "@/lib/businessModules/stiProtection/api/queries/apiQueryKeys";
+import { proceduresQueryKey } from "@/lib/businessModules/stiProtection/api/queries/apiQueryKeys";
 
-interface UpsertMedicalHistoryParams {
-  id: string;
-  medicalHistory: ApiCreateMedicalHistoryRequest;
-}
-
-export function useUpsertMedicalHistoryOptions(): (
-  params: UpsertMedicalHistoryParams,
-) => MutationOptions<void, Error, UpsertMedicalHistoryParams> {
+export function useUpsertMedicalHistoryOptions(
+  procedureId: string,
+): MutationOptions<void, Error, ApiCreateMedicalHistoryRequest> {
   const medicalHistoryApi = useMedicalHistoryApi();
   const snackbar = useSnackbar();
 
-  return ({ id, medicalHistory }: UpsertMedicalHistoryParams) => ({
-    mutationFn: () =>
-      medicalHistoryApi.updateMedicalHistory(id, medicalHistory),
-    mutationKey: stiProtectionProceduresApiQueryKey(["medicalHistory"]),
+  return {
+    mutationFn: (medicalHistory: ApiCreateMedicalHistoryRequest) =>
+      medicalHistoryApi.updateMedicalHistory(procedureId, medicalHistory),
+    mutationKey: proceduresQueryKey([procedureId, "medicalHistory"]),
     onSuccess: () => {
       snackbar.confirmation("Die Anamnese wurde erfolgreich gespeichert.");
     },
     onError: () => {
       snackbar.error("Die Anamnese konnte nicht gespeichert werden.");
     },
-  });
+  };
 }
 
-export function useUpsertMedicalHistory() {
-  const medicalHistoryApi = useMedicalHistoryApi();
-  const snackbar = useSnackbar();
-
-  return useMutation({
-    mutationFn: ({ id, medicalHistory }: UpsertMedicalHistoryParams) =>
-      medicalHistoryApi.updateMedicalHistory(id, medicalHistory),
-    onSuccess: () => {
-      snackbar.confirmation("Die Anamnese wurde erfolgreich gespeichert.");
-    },
-    onError: () => {
-      snackbar.error("Die Anamnese konnte nicht gespeichert werden.");
-    },
-    mutationKey: stiProtectionProceduresApiQueryKey(["medicalHistory"]),
-  });
+export function useUpsertMedicalHistory(procedureId: string) {
+  const options = useUpsertMedicalHistoryOptions(procedureId);
+  return useMutation(options);
 }

@@ -21,7 +21,7 @@ interface ValuesByBreakpoint<TValue> {
 /**
  * Defines isolated values for the mobile and desktop breakpoint
  */
-export function byBreakpoint<TValue>(values: ValuesByBreakpoint<TValue>) {
+export function byBreakpoint<const TValue>(values: ValuesByBreakpoint<TValue>) {
   return {
     [MobileBreakpoint.Up]: values.mobile,
     [DesktopBreakpoint.Up]: values.desktop,

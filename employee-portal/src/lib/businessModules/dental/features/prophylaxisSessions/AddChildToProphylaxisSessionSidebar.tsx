@@ -25,10 +25,8 @@ import { Formik } from "formik";
 import { ReactNode } from "react";
 import { useDebounce } from "use-debounce";
 
-import {
-  ChildResult,
-  ProphylaxisSessionDetails,
-} from "@/lib/businessModules/dental/api/models/ProphylaxisSessionDetails";
+import { ChildExamination } from "@/lib/businessModules/dental/api/models/ChildExamination";
+import { ChildSearchResult } from "@/lib/businessModules/dental/api/models/ChildSearchResult";
 import { useUpdateProphylaxisSessionParticipants } from "@/lib/businessModules/dental/api/mutations/prophylaxisSessionApi";
 import { useSearchChildren } from "@/lib/businessModules/dental/api/queries/childApi";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
@@ -61,19 +59,28 @@ const INITIAL_VALUES: AddChildToProphylaxisSessionSidebarFormFields = {
 };
 
 interface AddChildToProphylaxisSessionSidebarProps extends DrawerProps {
-  prophylaxisSession: ProphylaxisSessionDetails;
+  prophylaxisSessionId: string;
+  prophylaxisSessionVersion: number;
+  institutionId: string;
+  allParticipants: ChildExamination[];
 }
 
 function AddChildToProphylaxisSessionSidebar(
   props: AddChildToProphylaxisSessionSidebarProps,
 ) {
-  const { prophylaxisSession, onClose } = props;
+  const {
+    prophylaxisSessionId,
+    prophylaxisSessionVersion,
+    institutionId,
+    allParticipants,
+    onClose,
+  } = props;
   const { mutateAsync: updateParticipants } =
-    useUpdateProphylaxisSessionParticipants(prophylaxisSession.id);
+    useUpdateProphylaxisSessionParticipants(prophylaxisSessionId);
   const snackbar = useSnackbar();
 
-  const participantsIds = prophylaxisSession.participants.map(
-    (child) => child.id,
+  const participantsIds = allParticipants.map(
+    (childExamination) => childExamination.childId,
   );
 
   async function handleSubmit(
@@ -81,7 +88,7 @@ function AddChildToProphylaxisSessionSidebar(
   ) {
     await updateParticipants(
       {
-        version: prophylaxisSession.version,
+        version: prophylaxisSessionVersion,
         participants: [...participantsIds, mapRequiredValue(values.selected)],
       },
       {
@@ -106,7 +113,7 @@ function AddChildToProphylaxisSessionSidebar(
                 autoFocus
               />
               <SearchChildrenResults
-                institutionId={props.prophylaxisSession.institution.id}
+                institutionId={institutionId}
                 searchString={values.searchString}
                 participantsIds={participantsIds}
               />
@@ -142,7 +149,7 @@ function SearchChildrenResults(props: {
     isSuccess,
   } = useSearchChildren(institutionId, debouncedSearchString);
 
-  function childToResultCardProps(child: ChildResult): ResultCardProps {
+  function childToResultCardProps(child: ChildSearchResult): ResultCardProps {
     const alreadyParticipating = participantsIds.includes(child.id);
     return {
       child,
@@ -169,7 +176,7 @@ function SearchChildrenResults(props: {
 }
 
 interface ResultCardProps {
-  child: ChildResult;
+  child: ChildSearchResult;
   badge?: ReactNode;
   disabled?: boolean;
 }

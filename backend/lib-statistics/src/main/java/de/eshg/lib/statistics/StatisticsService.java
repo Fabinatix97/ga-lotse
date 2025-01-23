@@ -16,6 +16,7 @@ import de.eshg.lib.statistics.attributes.AttributeInfo;
 import de.eshg.lib.statistics.attributes.BooleanAttribute;
 import de.eshg.lib.statistics.attributes.CentralFileIdFacilityAttribute;
 import de.eshg.lib.statistics.attributes.CentralFileIdPersonAttribute;
+import de.eshg.lib.statistics.attributes.ContactIdAttribute;
 import de.eshg.lib.statistics.attributes.DateAttribute;
 import de.eshg.lib.statistics.attributes.DecimalAttribute;
 import de.eshg.lib.statistics.attributes.IntegerAttribute;
@@ -23,10 +24,13 @@ import de.eshg.lib.statistics.attributes.ProcedureAttribute;
 import de.eshg.lib.statistics.attributes.TextAttribute;
 import de.eshg.lib.statistics.attributes.ValueWithOptionsAttribute;
 import de.eshg.lib.statistics.datasource.DataSource;
+import de.eshg.lib.statistics.persistence.ProcedureReferenceForStatistics;
+import de.eshg.lib.statistics.persistence.ProcedureReferenceForStatisticsRepository;
 import de.eshg.lib.statistics.util.DataRowPage;
 import de.eshg.lib.statistics.util.TimeRange;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -36,10 +40,14 @@ import org.springframework.util.Assert;
 
 @Service
 public class StatisticsService {
+  private final ProcedureReferenceForStatisticsRepository procedureReferenceForStatisticsRepository;
   private final List<DataSource<?>> dataSources;
 
-  public StatisticsService(List<DataSource<?>> dataSources) {
+  public StatisticsService(
+      ProcedureReferenceForStatisticsRepository procedureReferenceForStatisticsRepository,
+      List<DataSource<?>> dataSources) {
     Assert.notEmpty(dataSources, "dataSources must not be empty");
+    this.procedureReferenceForStatisticsRepository = procedureReferenceForStatisticsRepository;
     this.dataSources =
         dataSources.stream().sorted(Comparator.comparing(DataSource::getName)).toList();
   }
@@ -72,9 +80,10 @@ public class StatisticsService {
       case IntegerAttribute ignored -> ValueType.INTEGER;
       case CentralFileIdFacilityAttribute ignored -> ValueType.CENTRAL_FILE_ID_FACILITY;
       case CentralFileIdPersonAttribute ignored -> ValueType.CENTRAL_FILE_ID_PERSON;
+      case ContactIdAttribute ignored -> ValueType.CONTACT_ID;
       case DateAttribute ignored -> ValueType.DATE;
       case DecimalAttribute ignored -> ValueType.DECIMAL;
-      case ProcedureAttribute ignored -> ValueType.PROCEDURE_ID;
+      case ProcedureAttribute ignored -> ValueType.PROCEDURE_REFERENCE;
       case TextAttribute ignored -> ValueType.TEXT;
       case ValueWithOptionsAttribute ignored -> ValueType.VALUE_WITH_OPTIONS;
     };
@@ -140,12 +149,18 @@ public class StatisticsService {
       return DataRowPage.empty();
     }
 
-    return dataSource.getDataRowPage(
-        requestedAttributeInfos,
-        dataTableHeader,
-        TimeRange.fromRequest(getSpecificDataRequest),
-        getSpecificDataRequest.page(),
-        getSpecificDataRequest.pageSize());
+    List<ProcedureReferenceForStatistics> procedureReferences = new ArrayList<>();
+    DataRowPage dataRowPage =
+        dataSource.getDataRowPage(
+            requestedAttributeInfos,
+            dataTableHeader,
+            TimeRange.fromRequest(getSpecificDataRequest),
+            getSpecificDataRequest.page(),
+            getSpecificDataRequest.pageSize(),
+            procedureReferences);
+
+    procedureReferenceForStatisticsRepository.saveAll(procedureReferences);
+    return dataRowPage;
   }
 
   private DataTableHeader getDataTableHeader(

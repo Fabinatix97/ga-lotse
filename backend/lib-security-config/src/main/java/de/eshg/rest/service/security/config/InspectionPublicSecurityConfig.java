@@ -23,7 +23,7 @@ public final class InspectionPublicSecurityConfig extends AbstractPublicSecurity
     // specific rights, then for `/checklists/**` with a lesser right.
     //
 
-    grantAccessToStatistics();
+    grantAccessToStatistics(EmployeePermissionRole.INSPECTION_PROCEDURE_EDIT);
     objectType();
     checklistDefinitionCentralRepository();
     checklistDefinition();

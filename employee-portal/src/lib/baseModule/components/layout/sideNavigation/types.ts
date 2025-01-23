@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { AccessCheck } from "@eshg/lib-employee-portal/helpers/accessControl";
 import { ReactNode } from "react";
-
-import { AccessCheck } from "@/lib/shared/helpers/accessControl";
 
 export interface SideNavigationItemWithoutSubItems {
   name: string;

@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
@@ -133,13 +134,7 @@ public class TaskAggregationService {
         client ->
             client.getTasks(
                 new GetTasksFilterOptions(
-                    tas.assigneeId(),
-                    tas.assignedById(),
-                    tas.taskTypes(),
-                    tas.taskStatuses(),
-                    tas.hasDueAt(),
-                    tas.isOverdue(),
-                    tas.wasAssignedByOther()),
+                    tas.assigneeId(), tas.assignedById(), tas.taskTypes(), tas.taskStatuses()),
                 new GetTasksSortOptions(tas.sortBy(), tas.sortOrder()),
                 tas.limit() + tas.offset()));
   }
@@ -151,6 +146,8 @@ public class TaskAggregationService {
   private List<ClientResponse<TaskResponse>> requestTasksFromBusinessModules(
       Set<BusinessModule> businessModules, Function<BusinessModuleClient, TaskResponse> getTasks) {
     return businessModuleAggregationHelper.requestFromBusinessModules(
-        businessModules, BusinessModuleCapability.TASKS, getTasks);
+        Optional.ofNullable(businessModules).orElseGet(userService::getSelfBusinessModules),
+        BusinessModuleCapability.TASKS,
+        getTasks);
   }
 }

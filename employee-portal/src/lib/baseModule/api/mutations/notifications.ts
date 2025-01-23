@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiMarkNotificationsAsReadRequest } from "@eshg/employee-portal-api/base";
+import { ApiMarkNotificationsAsReadRequest } from "@eshg/base-api";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 
 import { useNotificationAggregationApi } from "@/lib/baseModule/api/clients";

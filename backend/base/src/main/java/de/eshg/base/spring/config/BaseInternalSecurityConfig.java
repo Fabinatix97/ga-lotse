@@ -33,7 +33,7 @@ public class BaseInternalSecurityConfig {
   private static final String ARCHIVE_DELETION = "/archive-deletion";
 
   @Bean
-  public AuthorizationCustomizer authorizationCustomizer() {
+  AuthorizationCustomizer authorizationCustomizer() {
     return auth -> {
       users(auth);
       citizenUsers(auth);
@@ -58,9 +58,6 @@ public class BaseInternalSecurityConfig {
           .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE.name());
       auth.requestMatchers(StreetApi.BASE_URL + "/**")
           .hasRole(EmployeePermissionRole.STANDARD_EMPLOYEE.name());
-
-      // To be removed together with the simulators, when we start calling actual services
-      auth.requestMatchers("/simulator/**").authenticated();
     };
   }
 

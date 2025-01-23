@@ -5,7 +5,6 @@
 
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Divider, Stack, Typography } from "@mui/joy";
 
 import { EvaluationDetails } from "@/lib/businessModules/statistics/api/models/evaluationDetails";
@@ -15,16 +14,18 @@ import {
   Attributes,
   DataSource,
 } from "@/lib/businessModules/statistics/components/evaluations/SidebarSummary";
+import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
+
+export interface SaveEvaluationTemplateStepProps
+  extends SidebarStepContentProps<SaveEvaluationTemplateStepFormModel> {
+  evaluationDetails: EvaluationDetails;
+}
 
 export function SaveEvaluationTemplateStep({
   evaluationDetails,
-}: {
-  evaluationDetails: EvaluationDetails;
-}) {
-  const fieldName =
-    createFieldNameMapper<SaveEvaluationTemplateStepFormModel>();
-
+  fieldName,
+}: SaveEvaluationTemplateStepProps) {
   return (
     <Stack gap={3}>
       <Stack gap={2}>

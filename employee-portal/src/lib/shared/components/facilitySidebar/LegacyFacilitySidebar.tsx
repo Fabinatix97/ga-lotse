@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { type ApiGetReferenceFacilityResponse } from "@eshg/employee-portal-api/base";
+import { type ApiGetReferenceFacilityResponse } from "@eshg/base-api";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { ReactNode, useEffect, useRef, useState } from "react";

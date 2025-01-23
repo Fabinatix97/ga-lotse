@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/base-api";
 
 import { EditInspectionPageParams } from "@/app/(businessModules)/inspection/procedures/[id]/layout";
 import { useDownloadTravelMedicineFile } from "@/lib/businessModules/travelMedicine/api/download/files";

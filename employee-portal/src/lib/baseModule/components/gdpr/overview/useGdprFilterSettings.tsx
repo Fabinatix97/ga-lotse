@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGdprProcedureType } from "@eshg/employee-portal-api/base";
+import { ApiGdprProcedureType } from "@eshg/base-api";
 import { Stack, ToggleButtonGroup, Typography } from "@mui/joy";
 import { useState } from "react";
 import { isDefined } from "remeda";

@@ -10,6 +10,7 @@ import de.eshg.medicalregistry.domain.repository.MedicalRegistryProcedureReposit
 import de.eshg.rest.service.error.RateLimitReachedException;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
+import io.github.bucket4j.TimeMeter;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,7 +22,8 @@ public class MedicalRegistryGuard {
 
   public MedicalRegistryGuard(
       MedicalRegistryProperties medicalRegistryProperties,
-      MedicalRegistryProcedureRepository medicalRegistryProcedureRepository) {
+      MedicalRegistryProcedureRepository medicalRegistryProcedureRepository,
+      TimeMeter timeMeter) {
     this.medicalRegistryProperties = medicalRegistryProperties;
     this.medicalRegistryProcedureRepository = medicalRegistryProcedureRepository;
 
@@ -33,7 +35,7 @@ public class MedicalRegistryGuard {
                 medicalRegistryProperties.getRateLimitIntervalMinutes())
             .build();
 
-    bucket = Bucket.builder().addLimit(bandwidth).build();
+    bucket = Bucket.builder().withCustomTimePrecision(timeMeter).addLimit(bandwidth).build();
   }
 
   public void guard() {

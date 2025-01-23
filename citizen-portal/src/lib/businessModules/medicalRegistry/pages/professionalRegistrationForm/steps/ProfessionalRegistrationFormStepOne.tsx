@@ -14,7 +14,6 @@ import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { PhoneNumberField } from "@eshg/lib-portal/components/formFields/PhoneNumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
-import { COUNTRY_CODE_OPTIONS } from "@eshg/lib-portal/components/formFields/countryCodes";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { validateLength } from "@eshg/lib-portal/helpers/validators";
 import { Grid, Typography } from "@mui/joy";
@@ -24,6 +23,7 @@ import { requiredFieldMessageKey } from "@/lib/businessModules/medicalRegistry/p
 import { SelectionOption } from "@/lib/businessModules/travelMedicine/components/shared/CountryFieldMulti";
 import { useTranslation } from "@/lib/i18n/client";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
+import { CountryField } from "@/lib/shared/components/form/CountryField";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 
@@ -50,17 +50,6 @@ export function ProfessionalRegistrationFormStepOne() {
         return {
           value: option.value,
           label: t(`options.gender.${option.value}`),
-        };
-      }),
-    [t],
-  );
-
-  const translatedCountryCodeOptions: SelectionOption[] = useMemo(
-    () =>
-      COUNTRY_CODE_OPTIONS.map((option) => {
-        return {
-          value: option.value,
-          label: t(`options.countries.${option.value}`),
         };
       }),
     [t],
@@ -153,11 +142,10 @@ export function ProfessionalRegistrationFormStepOne() {
             />
           </Grid>
           <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
-            <SelectField
+            <CountryField
               name={personalInformationForm("nationality")}
               label={t("stepOne.contentSheetTwo.label.nationality")}
               required={t(requiredFieldMessageKey)}
-              options={translatedCountryCodeOptions}
             />
           </Grid>
           <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
@@ -193,11 +181,10 @@ export function ProfessionalRegistrationFormStepOne() {
             />
           </Grid>
           <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
-            <SelectField
+            <CountryField
               name={personalInformationForm("country")}
               label={t("stepOne.contentSheetTwo.label.country")}
               required={t(requiredFieldMessageKey)}
-              options={translatedCountryCodeOptions}
             />
           </Grid>
           <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>

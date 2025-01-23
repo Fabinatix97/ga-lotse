@@ -18,7 +18,7 @@ export async function MarkdownPage({
   pageType,
   title,
 }: {
-  pageType: "imprint" | "accessibility" | "privacy";
+  pageType: "imprint" | "accessibility" | "privacy" | "opendata";
   title: string;
 }) {
   const filePath = path.join(

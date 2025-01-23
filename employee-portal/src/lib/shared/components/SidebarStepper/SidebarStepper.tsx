@@ -4,100 +4,147 @@
  */
 
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
+import { ConfirmationDialogOptions } from "@eshg/lib-portal/components/confirmationDialog/ConfirmationDialogProvider";
 import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Button, DialogTitle, Stack, Typography } from "@mui/joy";
-import { Formik, FormikErrors, FormikValues } from "formik";
-import { useState } from "react";
-import { isBoolean } from "remeda";
+import { Formik, FormikProps, FormikValues } from "formik";
+import {
+  ComponentType,
+  ReactElement,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { isDefined, isNonNullish } from "remeda";
 
 import { SidebarWithFormRefProps } from "@/lib/shared//hooks/useSidebarWithFormRef";
-import { SidebarStep } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
-export interface SidebarStepperProps<T> extends SidebarWithFormRefProps {
-  onSubmit: (result: T) => Promise<void>;
-  initialValues: T;
-  steps: SidebarStep<T>[];
+import { SidebarStep, SidebarStepContentProps } from "./sidebarStep";
+
+export interface SidebarStepperProps<TStepperFormModel extends FormikValues[]>
+  extends SidebarWithFormRefProps {
+  steps: {
+    [K in keyof TStepperFormModel]: SidebarStep<
+      TStepperFormModel[K],
+      TStepperFormModel
+    >;
+  };
+  onSubmit: (formModel: TStepperFormModel) => Promise<void>;
   saveLabel?: string;
+  confirmationDialog?: Omit<ConfirmationDialogOptions, "onConfirm">;
 }
 
-export function SidebarStepper<T extends FormikValues>({
+export function createStepContent<
+  TStepFormModel extends FormikValues,
+  TComponentProps extends SidebarStepContentProps<TStepFormModel>,
+>({
+  component,
+  componentProps,
+}: {
+  component: ComponentType<TComponentProps>;
+  componentProps?: Omit<TComponentProps, "values" | "fieldName">;
+}): (values: TStepFormModel) => ReactElement {
+  function stepContent(values: TStepFormModel) {
+    const Component = component;
+    const fieldName = createFieldNameMapper<TStepFormModel>();
+    const props = {
+      ...componentProps,
+      values,
+      fieldName,
+    } as TComponentProps;
+    return <Component {...props} />;
+  }
+  return stepContent;
+}
+
+export function SidebarStepper<TStepperFormModel extends FormikValues[]>({
   onClose,
-  onSubmit,
-  initialValues,
-  steps,
   saveLabel = "Speichern",
+  steps,
+  onSubmit,
+  confirmationDialog,
   formRef,
-}: SidebarStepperProps<T>) {
-  const [stepIndex, setStepIndex] = useState(0);
-  const alert = useAlert();
-
-  const currentStep = steps[stepIndex]!;
-
-  function stepProps(values: T) {
-    switch (currentStep.type) {
-      case "StandardStep":
-        return currentStep.step;
-      case "BranchingStep":
-        return currentStep.branch(values);
-    }
+}: SidebarStepperProps<TStepperFormModel>) {
+  interface StepperState {
+    values: (FormikValues | undefined)[];
+    stepIndex: number;
   }
 
-  const isDisabledPreviousStep = stepIndex <= 0;
+  const { openConfirmationDialog } = useConfirmationDialog();
+  const totalNumberOfSteps = Object.keys(steps).length;
+  const [stepperState, setStepperState] = useState<StepperState>({
+    values: Array.from({ length: totalNumberOfSteps }),
+    stepIndex: 0,
+  });
+  const alert = useAlert();
+  const formikRef = useRef<FormikProps<FormikValues>>(null);
 
-  function onNextStep(
-    validateForm: () => Promise<FormikErrors<T>>,
-    values: T,
-    setFieldTouched: (
-      field: string,
-      isTouched?: boolean,
-      shouldValidate?: boolean,
-    ) => Promise<void | FormikErrors<T>>,
-  ) {
-    // Touch fields such that the validation is shown
-    Object.entries(values)
-      .filter(([, value]) => value !== null)
-      .forEach(([key, value]) => {
-        if (typeof value === "object") {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-          Object.keys(value).forEach(
-            (it) => void setFieldTouched(`${key}.${it}`, true, false),
-          );
-        } else {
-          void setFieldTouched(key, true, false);
-        }
-      });
+  const currentStep = steps[stepperState.stepIndex]!;
+  const currentStepProps = currentStep(
+    stepperState.values as TStepperFormModel,
+  );
 
-    void validateForm().then((errors) => {
-      const stepErrors = stepProps(values).validator?.(values);
-      if (
-        Object.values(errors).length > 0 ||
-        (stepErrors && Object.values(stepErrors).length > 0)
-      ) {
-        return;
-      }
-
-      setStepIndex(stepIndex + 1);
-      alert.close();
+  function changeCurrentStepInStepperValues(values: FormikValues | undefined) {
+    return stepperState.values.map((prevStepperValues, index) => {
+      return stepperState.stepIndex === index ? values : prevStepperValues;
     });
   }
+
+  const isDisabledPreviousStep = stepperState.stepIndex <= 0;
 
   function onPreviousStep() {
     if (isDisabledPreviousStep) {
       return;
     }
-    setStepIndex(stepIndex - 1);
-    alert.close();
+    setStepperState((prevState) => ({
+      values: changeCurrentStepInStepperValues(undefined),
+      stepIndex: prevState.stepIndex - 1,
+    }));
+    //Close the alert after unsuccessful API call.
+    if (isNonNullish(formRef) && "current" in formRef) {
+      formRef.current?.resetErrors();
+    }
   }
+
+  //This is to make sure the form is considered dirty if stepIndex > 0, so we get a cancellation modal on close
+  useEffect(() => {
+    if (isNonNullish(formikRef.current) && stepperState.stepIndex > 0) {
+      void formikRef.current.setFieldValue(
+        "isNotFirstSidebar",
+        Math.random(),
+        false,
+      );
+    }
+  }, [formikRef, stepperState.stepIndex]);
+
+  const isLastStep = stepperState.stepIndex + 1 === totalNumberOfSteps;
 
   return (
     <Formik
-      initialValues={initialValues}
-      onSubmit={onSubmit}
+      initialValues={
+        stepperState.values[stepperState.stepIndex] ??
+        currentStepProps.initialValues
+      }
+      innerRef={formikRef}
+      onSubmit={async (values) => {
+        const nextStepperValues = changeCurrentStepInStepperValues(values);
+
+        if (isLastStep) {
+          await onSubmit(nextStepperValues as TStepperFormModel);
+        }
+
+        setStepperState((prevState) => ({
+          values: nextStepperValues,
+          stepIndex: prevState.stepIndex + 1,
+        }));
+      }}
       validate={(model) => {
-        const errors = stepProps(model).validator?.(model);
+        const errors = currentStepProps.validator?.(model);
         if (errors === undefined) {
           alert.close();
         } else {
@@ -112,23 +159,9 @@ export function SidebarStepper<T extends FormikValues>({
         }
         return errors;
       }}
+      key={stepperState.stepIndex}
     >
-      {({
-        validateForm,
-        isSubmitting,
-        handleSubmit,
-        values,
-        setFieldTouched,
-      }) => {
-        const currentStepProps = stepProps(values);
-        const continueOrSubmitIsDisabled =
-          currentStepProps.disableContinue !== undefined &&
-          (isBoolean(currentStepProps.disableContinue)
-            ? currentStepProps.disableContinue
-            : currentStepProps.disableContinue(values));
-
-        const isDisabledNextStep =
-          stepIndex >= steps.length - 1 || continueOrSubmitIsDisabled;
+      {({ isSubmitting, values, handleSubmit, isValid }) => {
         return (
           <SidebarForm ref={formRef}>
             <SidebarContent
@@ -141,15 +174,16 @@ export function SidebarStepper<T extends FormikValues>({
                   >
                     {currentStepProps.title}
                   </DialogTitle>
-                  {steps.length > 1 && (
+                  {totalNumberOfSteps > 1 && (
                     <Typography level="title-md" textColor="text.secondary">
-                      Schritt {stepIndex + 1} von {steps.length}
+                      Schritt {stepperState.stepIndex + 1} von{" "}
+                      {totalNumberOfSteps}
                     </Typography>
                   )}
                 </Stack>
               }
             >
-              {currentStepProps.content}
+              {currentStepProps.content(values)}
             </SidebarContent>
             <SidebarActions>
               <Stack direction="row" justifyContent="space-between">
@@ -159,34 +193,34 @@ export function SidebarStepper<T extends FormikValues>({
                   </Button>
                 </Stack>
                 <Stack direction="row">
-                  {steps.length > 1 && (
+                  {totalNumberOfSteps > 1 && (
                     <Button
                       variant="soft"
                       color="neutral"
                       sx={{ marginRight: 2 }}
                       onClick={onPreviousStep}
-                      disabled={isDisabledPreviousStep}
+                      disabled={isDisabledPreviousStep || isSubmitting}
                     >
                       Zurück
                     </Button>
                   )}
-                  {stepIndex + 1 < steps.length && (
+                  {isLastStep && isDefined(confirmationDialog) ? (
                     <Button
                       onClick={() => {
-                        onNextStep(validateForm, values, setFieldTouched);
+                        if (isValid) {
+                          openConfirmationDialog({
+                            ...confirmationDialog,
+                            onConfirm: handleSubmit,
+                          });
+                        }
                       }}
-                      disabled={isDisabledNextStep}
-                    >
-                      Weiter
-                    </Button>
-                  )}
-                  {stepIndex + 1 === steps.length && (
-                    <SubmitButton
-                      submitting={isSubmitting}
-                      onClick={() => handleSubmit()}
-                      disabled={continueOrSubmitIsDisabled}
+                      loading={isSubmitting}
                     >
                       {saveLabel}
+                    </Button>
+                  ) : (
+                    <SubmitButton submitting={isSubmitting}>
+                      {isLastStep ? saveLabel : "Weiter"}
                     </SubmitButton>
                   )}
                 </Stack>

@@ -11,6 +11,7 @@ import {
 } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
 import { PERSON_FIELD_NAME } from "@eshg/lib-portal/components/formFields/constants";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { Stack } from "@mui/joy";
 import { isDefined } from "remeda";
 
@@ -23,7 +24,6 @@ import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 import { streetAndHouseNumber } from "@/lib/shared/helpers/facilityUtils";
-import { translateCountry } from "@/lib/shared/helpers/i18n";
 
 const PROFESSIONAL_FIELD_NAME = {
   ...PERSON_FIELD_NAME,

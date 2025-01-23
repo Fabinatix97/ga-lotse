@@ -6,7 +6,7 @@
 import {
   ApiGetAggregatedNotificationsResponseNotificationsInner,
   ApiUser,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 
 import { mapFileDeletionApprovalRequestNotificationProps } from "@/lib/baseModule/components/layout/notificationsSidebar/mapToSpecificNotificationProps/mapFileDeletionApprovalRequestNotificationProps";
 import { mapProgressEntryDeletionApprovalRequestNotificationProps } from "@/lib/baseModule/components/layout/notificationsSidebar/mapToSpecificNotificationProps/mapProgressEntryDeletionApprovalRequestNotificationProps";

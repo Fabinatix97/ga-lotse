@@ -6,7 +6,7 @@
 import type {
   ApiAddFacilityFileStateRequestContactAddress,
   ApiGetReferencePersonResponse,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { Stack, Typography } from "@mui/joy";

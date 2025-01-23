@@ -9,8 +9,6 @@ import static de.eshg.lib.procedure.api.ProcedureApi.QueryParameter.PROCEDURE_TY
 import static de.eshg.lib.procedure.api.ProcedureMetricsApi.QueryParameter.TIME_RANGE_END;
 import static de.eshg.lib.procedure.api.ProcedureMetricsApi.QueryParameter.TIME_RANGE_START;
 
-import de.eshg.base.feature.BaseFeature;
-import de.eshg.base.feature.BaseFeatureToggle;
 import de.eshg.base.util.TimeRangeValidator;
 import de.eshg.lib.aggregation.BusinessModuleAggregationHelper;
 import de.eshg.lib.aggregation.ClientResponse;
@@ -36,13 +34,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "TaskMetrics")
 public class TaskMetricsController {
   private final BusinessModuleAggregationHelper businessModuleAggregationHelper;
-  private final BaseFeatureToggle baseFeatureToggle;
 
-  public TaskMetricsController(
-      BusinessModuleAggregationHelper businessModuleAggregationHelper,
-      BaseFeatureToggle baseFeatureToggle) {
+  public TaskMetricsController(BusinessModuleAggregationHelper businessModuleAggregationHelper) {
     this.businessModuleAggregationHelper = businessModuleAggregationHelper;
-    this.baseFeatureToggle = baseFeatureToggle;
   }
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -55,8 +49,6 @@ public class TaskMetricsController {
       @RequestParam(name = TIME_RANGE_START) Instant timeRangeStart,
       @RequestParam(name = TIME_RANGE_END) Instant timeRangeEnd,
       @RequestParam(name = "businessModuleName") String businessModuleName) {
-    baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.TASK_METRICS);
-
     businessModuleAggregationHelper.validateBusinessModuleIsRegistered(businessModuleName);
     TimeRangeValidator.validateTimeRange(
         timeRangeStart, timeRangeEnd, ProcedureMetricsApi.MAXIMUM_DAYS_METRICS);

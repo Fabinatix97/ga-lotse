@@ -732,27 +732,6 @@ paths:
       summary: Add a GDPR validation task
       tags:
       - GdprValidationTask
-  /gdpr-validation-tasks/download-packages/{id}:
-    get:
-      operationId: getGdprDownloadPackage
-      parameters:
-      - in: path
-        name: id
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                type: string
-                format: binary
-          description: OK
-      summary: Get Gdpr Download Package by its id
-      tags:
-      - GdprValidationTask
   /gdpr-validation-tasks/notification-banner:
     get:
       operationId: getGdprNotificationBanner
@@ -767,6 +746,28 @@ paths:
       tags:
       - GdprValidationTask
   /gdpr-validation-tasks/{gdprProcedureId}:
+    delete:
+      operationId: deleteGdprValidationTaskAndDownloadPackages
+      parameters:
+      - in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteDownloadPackagesRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Delete the GDPR validation task with gdprProcedureId and GDPR download
+        packages with ids from request
+      tags:
+      - GdprValidationTask
     get:
       operationId: getGdprValidationTask
       parameters:
@@ -805,6 +806,29 @@ paths:
                 $ref: "#/components/schemas/GetGdprValidationTaskDetailsResponse"
           description: OK
       summary: Get a GDPR validation task by id
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/{gdprProcedureId}/business-procedures/{businessProcedureId}:
+    delete:
+      operationId: deleteBusinessProcedure
+      parameters:
+      - in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: businessProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      summary: Delete the businessProcedure with businessProcedureId for validationTask
+        with gdprProcedureId with type right of erasure
       tags:
       - GdprValidationTask
   /gdpr-validation-tasks/{gdprProcedureId}/business-procedures/{businessProcedureId}/downloadPackage:
@@ -866,38 +890,33 @@ paths:
       summary: Get approved Gdpr Download Packages by Gdpr Procedure Id
       tags:
       - GdprValidationTask
-  /icd10-codes:
+  /gdpr-validation-tasks/{gdprProcedureId}/download-packages/{downloadId}:
     get:
-      operationId: searchIcd10Codes
+      operationId: getGdprDownloadPackage
       parameters:
-      - description: "Search for a string within the ICD-10 codes, groups and their\
-          \ title. The search supports a fuzzy search mechanism."
-        in: query
-        name: searchString
-        required: false
+      - in: path
+        name: gdprProcedureId
+        required: true
         schema:
           type: string
-          default: ""
-          description: "Search for a string within the ICD-10 codes, groups and their\
-            \ title. The search supports a fuzzy search mechanism."
-      - in: query
-        name: codes
-        required: false
+          format: uuid
+      - in: path
+        name: downloadId
+        required: true
         schema:
-          type: array
-          default: []
-          items:
-            type: string
+          type: string
+          format: uuid
       responses:
         "200":
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/SearchIcd10CodesResponse"
+                type: string
+                format: binary
           description: OK
-      summary: Search in the ICD-10 catalogue.
+      summary: Get Gdpr Download Package by the gdprProcedureId and its downloadId
       tags:
-      - Icd10Code
+      - GdprValidationTask
   /import/citizen-list:
     post:
       operationId: importCitizenList
@@ -1259,34 +1278,6 @@ paths:
           type: string
           format: uuid
       - description: |
-          Only procedures are returned where the assigneeId of none of the task equals `notAssignedToId`.
-          If not submitted, no filtering takes place.
-        in: query
-        name: notAssignedToId
-        required: false
-        schema:
-          type: string
-          format: uuid
-      - description: |
-          Only procedures are returned where the user is or was assigned to at least one task (at least one assigneeId equals `onceAssignedToId` in taskHistory for at least one task).
-          If not submitted, no filtering takes place.
-        in: query
-        name: onceAssignedToId
-        required: false
-        schema:
-          type: string
-          format: uuid
-      - description: |
-          Filter logic:
-          - In case of `true` only procedures are returned where all tasks are unassigned
-          - In case of `false` only procedures are returned which have at least one assigned task
-          - If not submitted, no filtering takes place
-        in: query
-        name: unassigned
-        required: false
-        schema:
-          type: boolean
-      - description: |
           Filter logic:
           - If `procedureType` is submitted, only procedures are returned which have one of the submitted types.
           - If not submitted, no filtering takes place
@@ -1310,15 +1301,6 @@ paths:
           items:
             $ref: "#/components/schemas/ProcedureStatus"
           uniqueItems: true
-      - description: |
-          Filter logic:
-          - If `createdInYear` is set, only procedures are returned which were created in that year
-          - If not submitted, no filtering takes place
-        in: query
-        name: createdInYear
-        required: false
-        schema:
-          type: string
       - description: |
           The following sorting options are available:
           - `CREATED_AT`: Sorting by createdAt attribute
@@ -2763,6 +2745,25 @@ paths:
           description: OK
       tags:
       - Label
+  /statistics/procedure-ids:
+    post:
+      operationId: getProcedureIds
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetProcedureIdsRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetProcedureIdsResponse"
+          description: OK
+      summary: Get procedure ids for procedure references
+      tags:
+      - StatisticsProcedureReference
   /task-metrics:
     get:
       operationId: getTaskMetrics
@@ -2830,21 +2831,6 @@ paths:
           items:
             $ref: "#/components/schemas/TaskStatus"
           uniqueItems: true
-      - in: query
-        name: hasDueAt
-        required: false
-        schema:
-          type: boolean
-      - in: query
-        name: isOverdue
-        required: false
-        schema:
-          type: boolean
-      - in: query
-        name: wasAssignedByOther
-        required: false
-        schema:
-          type: boolean
       - in: query
         name: sortKey
         required: true
@@ -3905,7 +3891,8 @@ components:
       - FACILITY
     CountryCode:
       type: string
-      description: List of country codes in ISO 3166-1 alpha-2 format.
+      description: "List of country codes in ISO 3166-1 alpha-2 format. With custom\
+        \ extensions for stateless, non-standard countries, and unknown countries."
       enum:
       - AD
       - AE
@@ -4156,6 +4143,9 @@ components:
       - ZA
       - ZM
       - ZW
+      - XK
+      - UNKNOWN
+      - STATELESS
     CreateAppointmentBlockGroupResponse:
       type: object
       properties:
@@ -4475,6 +4465,16 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Population"
+    DeleteDownloadPackagesRequest:
+      type: object
+      properties:
+        downloadIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - downloadIds
     DeleteProcedureRequest:
       type: object
       properties:
@@ -4918,6 +4918,10 @@ components:
             oneOf:
             - $ref: "#/components/schemas/DomesticAddress"
             - $ref: "#/components/schemas/PostboxAddress"
+          dataTransmitterPseudonymId:
+            type: string
+            description: The 'DatenübermittlerPseudonymId' of the MUK user
+            example: du-986b2b54ab89cf4ed674ad8c3126b966b54d4872
           emailAddress:
             type: string
             description: The email addresses of the Facility.
@@ -4958,6 +4962,10 @@ components:
             oneOf:
             - $ref: "#/components/schemas/DomesticAddress"
             - $ref: "#/components/schemas/PostboxAddress"
+          bpk2:
+            type: string
+            description: The bpk2 of the BundId user
+            example: VnMEBMXsiCWZ34v1JCulQABe6-ts1yDSrbH3zII8BF0
           dateOfBirth:
             type: string
             format: date
@@ -5642,6 +5650,28 @@ components:
       required:
       - fileDetails
       - procedureId
+    GetProcedureIdsRequest:
+      type: object
+      properties:
+        procedureReferences:
+          type: array
+          items:
+            type: string
+            format: uuid
+          maxItems: 200
+          minItems: 1
+      required:
+      - procedureReferences
+    GetProcedureIdsResponse:
+      type: object
+      properties:
+        referenceToId:
+          type: object
+          additionalProperties:
+            type: string
+            format: uuid
+      required:
+      - referenceToId
     GetProcedureMetricsResponse:
       type: object
       properties:
@@ -6006,24 +6036,6 @@ components:
       - DELETE
       - OPTIONS
       - TRACE
-    Icd10Code:
-      type: object
-      properties:
-        code:
-          type: string
-          description: ICD-10 code or ICD-10 group code
-          example: A00
-        isGroup:
-          type: boolean
-          description: "If true, the returned code specifies an ICD-10 code group."
-        title:
-          type: string
-          description: ICD-10 code title
-          example: Cholera
-      required:
-      - code
-      - isGroup
-      - title
     IllnessAndAccidentInfo:
       type: object
       properties:
@@ -7539,15 +7551,6 @@ components:
           format: int32
       required:
       - evaluation
-    SearchIcd10CodesResponse:
-      type: object
-      properties:
-        codes:
-          type: array
-          items:
-            $ref: "#/components/schemas/Icd10Code"
-      required:
-      - codes
     SelfAssignTaskRequest:
       type: object
       properties:
@@ -7687,6 +7690,9 @@ components:
           keyDocumentVersion:
             type: integer
             format: int32
+          previousFileStateId:
+            type: string
+            format: uuid
           systemProgressEntryType:
             type: string
           triggerType:
@@ -7813,6 +7819,7 @@ components:
       - TRAVEL_MEDICINE
       - MEASLES_PROTECTION
       - STI_PROTECTION
+      - OFFICIAL_MEDICAL_SERVICE
     TestHelperClockSetRequest:
       type: object
       properties:

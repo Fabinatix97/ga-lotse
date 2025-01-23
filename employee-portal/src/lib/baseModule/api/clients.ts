@@ -12,6 +12,7 @@ import {
   DepartmentApi,
   FacilityApi,
   GdprProcedureApi,
+  Icd10CodeApi,
   InventoryApi,
   LabelApi,
   NotificationAggregationApi,
@@ -23,7 +24,7 @@ import {
   TaskAggregationApi,
   TaskMetricsApi,
   UserApi,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 
 function useConfiguration() {
@@ -121,4 +122,9 @@ export function useDepartmentApi() {
 export function useConfigApi() {
   const configuration = useConfiguration();
   return new PublicConfigApi(configuration);
+}
+
+export function useIcd10CodeApi() {
+  const configuration = useConfiguration();
+  return new Icd10CodeApi(configuration);
 }

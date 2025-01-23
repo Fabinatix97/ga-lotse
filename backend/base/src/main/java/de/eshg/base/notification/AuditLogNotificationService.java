@@ -53,10 +53,22 @@ public class AuditLogNotificationService {
       return;
     }
 
-    if (userService.getAllPublicEmployeeUserKeys().size()
+    int configuredAuditlogKeys = userService.getAllPublicEmployeeUserKeys().size();
+
+    if (configuredAuditlogKeys == 0) {
+      createNoAuditlogKeyConfiguredNotifications();
+      return;
+    }
+
+    if (configuredAuditlogKeys
         < auditLogNotificationProperties.getMinimalConfiguredAuditlogKeys()) {
       createTooFewAuditlogKeysConfiguredNotification();
     }
+  }
+
+  private void createNoAuditlogKeyConfiguredNotifications() {
+    saveAndSendMails(
+        getUserAdminIds().stream().map(this::mapToNoAuditlogKeyConfiguredNotification).toList());
   }
 
   private void createTooFewAuditlogKeysConfiguredNotification() {
@@ -110,7 +122,16 @@ public class AuditLogNotificationService {
         adminId,
         "Fehlende Betriebsrat Nutzer",
         """
-      Aktuell existiert kein User mit Betriebsratsrolle, der sich einen Public Key für die Auditlog-Verschlüsselung generiert hat. Daher kann derzeit KEIN Auditlog geschrieben werden.
+      Aktuell existiert kein User mit Betriebsratsrolle. Daher kann derzeit KEIN Auditlog geschrieben werden.
       """);
+  }
+
+  private SimpleNotification mapToNoAuditlogKeyConfiguredNotification(UUID adminId) {
+    return new SimpleNotification(
+        adminId,
+        "Kein Schlüssel konfiguriert",
+        """
+    Aktuell existiert kein User mit Betriebsratsrolle, der sich einen Public Key für die Auditlog-Verschlüsselung generiert hat. Daher kann derzeit KEIN Auditlog geschrieben werden.
+    """);
   }
 }

@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiProcedure } from "@eshg/employee-portal-api/base";
+import { ApiProcedure } from "@eshg/base-api";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { Chip } from "@mui/joy";
 import { SortingState, createColumnHelper } from "@tanstack/react-table";

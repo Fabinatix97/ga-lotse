@@ -22,7 +22,6 @@ import {
   PatientFormValues,
   TravelInformationFormValues,
 } from "@/lib/businessModules/travelMedicine/components/appointment/types";
-import { translateCountry } from "@/lib/shared/helpers/countryOption";
 
 export function mapToApiPostCitizenVaccinationConsultationRequest(
   data: InitialAppointmentFormValues,
@@ -104,7 +103,10 @@ export function formatTravelStartDate(label: string, travelStartDate: string) {
   return `${label} ${travelStartDate}`;
 }
 
-export function travelDestinationsTranslation(destinations: ApiCountryCode[]) {
+export function travelDestinationsTranslation(
+  destinations: ApiCountryCode[],
+  translateCountry: (countryCode: ApiCountryCode) => string,
+) {
   const translatedCountries: string[] = [];
   destinations.map((destination) =>
     translatedCountries.push(translateCountry(destination)),

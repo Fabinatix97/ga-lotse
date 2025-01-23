@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ConfigurationParameters } from "@eshg/employee-portal-api/base";
+import { ConfigurationParameters } from "@eshg/base-api";
 import {
   Mutation,
   MutationCache,

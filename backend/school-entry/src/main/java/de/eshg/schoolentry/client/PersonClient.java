@@ -27,6 +27,8 @@ import de.eshg.schoolentry.business.model.*;
 import de.eshg.schoolentry.domain.model.Person;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.mapper.PersonMapper;
+import de.eshg.schoolentry.util.ProgressEntryUtil;
+import de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,9 +53,11 @@ public class PersonClient {
 
   private final PersonApi personApi;
   private final Map<UUID, GetPersonFileStateResponse> personCache = new ConcurrentHashMap<>();
+  private final ProgressEntryUtil progressEntryUtil;
 
-  public PersonClient(PersonApi personApi) {
+  public PersonClient(PersonApi personApi, ProgressEntryUtil progressEntryUtil) {
     this.personApi = personApi;
+    this.progressEntryUtil = progressEntryUtil;
   }
 
   public List<ProcedureIds> createPersonsInCentralFile(
@@ -380,11 +384,6 @@ public class PersonClient {
     return new ProcedureWithChildData(procedure, childData);
   }
 
-  public UUID updateChild(UUID fileStateId, UpdatePersonRequest request) {
-    return updatePersonFileStateAndReference(
-        fileStateId, PersonMapper.mapToPersonDetailsDto(request));
-  }
-
   public List<UUID> updateChildren(List<ResolvedMergeProcedureData> mergeDataList) {
     if (mergeDataList.isEmpty()) {
       return List.of();
@@ -457,6 +456,12 @@ public class PersonClient {
       UUID newCentralFileStateId = result.newFileStateId();
       SchoolEntryProcedure procedure = updatedProceduresByChildId.get(previousCentralFileStateId);
       procedure.getChild().setCentralFileStateId(newCentralFileStateId);
+      if (!Objects.equals(previousCentralFileStateId, newCentralFileStateId)) {
+        progressEntryUtil.addProgressEntryWithPreviousFileStateId(
+            procedure,
+            SchoolEntrySystemProgressEntryType.CHILD_MODIFIED,
+            previousCentralFileStateId);
+      }
     }
 
     return resolveProcedureIds(failedPersonIds, updatedProceduresByChildId);

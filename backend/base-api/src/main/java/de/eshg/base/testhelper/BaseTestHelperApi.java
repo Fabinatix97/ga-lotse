@@ -24,6 +24,7 @@ import de.eshg.testhelper.api.TestHelperLoginRequest;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.DeleteExchange;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
@@ -67,7 +68,7 @@ public interface BaseTestHelperApi extends TestHelperApi, LoginProvider {
   void invalidateAllKeycloakSessions();
 
   @PostExchange("/keycloak/user/create-temporary")
-  UserDto createTemporaryUser();
+  UserDto createTemporaryUser(@RequestParam(required = false) String group);
 
   @DeleteExchange("/keycloak/user/{userName}")
   void deleteKeycloakUser(@PathVariable("userName") String userName);
@@ -90,4 +91,7 @@ public interface BaseTestHelperApi extends TestHelperApi, LoginProvider {
 
   @GetExchange("/idp-user/{nameId}")
   CitizenUserDto getIdpUser(@PathVariable("nameId") String nameId);
+
+  @PostExchange("auditlog-notification-job")
+  void runAuditlogNotificationJob();
 }

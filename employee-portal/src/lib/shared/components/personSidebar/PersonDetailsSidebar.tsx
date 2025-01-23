@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiGetReferencePersonResponse } from "@eshg/employee-portal-api/base";
+import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
   GENDER_VALUES,
   SALUTATION_VALUES,
   getOptionalTitle,
 } from "@eshg/lib-portal/components/formFields/constants";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Divider, Stack } from "@mui/joy";
 import { Formik } from "formik";
@@ -22,7 +23,6 @@ import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButton
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import { translateCountry } from "@/lib/shared/helpers/i18n";
 
 export interface PersonDetailsSidebarProps {
   title: string;

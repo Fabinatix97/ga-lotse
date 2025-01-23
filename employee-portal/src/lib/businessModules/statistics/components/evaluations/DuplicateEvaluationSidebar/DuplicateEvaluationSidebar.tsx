@@ -5,9 +5,10 @@
 
 import { useDuplicateEvaluation } from "@/lib/businessModules/statistics/api/mutations/useDuplicateEvaluation";
 import { DuplicateEvaluationFormModel } from "@/lib/businessModules/statistics/components/evaluations/DuplicateEvaluationSidebar/duplicateEvaluationFormModel";
-import { UpdateDiagramFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/UpdateDiagramSidebar/updateDiagramFormModel";
-import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
-import { SidebarStep } from "@/lib/shared/components/SidebarStepper/sidebarStep";
+import {
+  SidebarStepper,
+  createStepContent,
+} from "@/lib/shared/components/SidebarStepper/SidebarStepper";
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
@@ -39,9 +40,9 @@ function DuplicateEvaluationSidebar(props: DuplicateEvaluationSidebarProps) {
   });
   const defaultNewEvaluationName = `${props.originalEvaluation.name} - Kopie`;
 
-  async function handleSubmit(model: DuplicateEvaluationFormModel) {
+  async function handleSubmit(model: [DuplicateEvaluationFormModel]) {
     const newEvaluationName =
-      model.name === "" ? defaultNewEvaluationName : model.name;
+      model[0].name === "" ? defaultNewEvaluationName : model[0].name;
     await duplicateEvaluation({
       originalEvaluationId: props.originalEvaluation.id,
       clonedEvaluationName: newEvaluationName,
@@ -51,27 +52,23 @@ function DuplicateEvaluationSidebar(props: DuplicateEvaluationSidebarProps) {
   return (
     <SidebarStepper
       onClose={props.onClose}
-      onSubmit={handleSubmit}
-      initialValues={{
-        name: "",
-      }}
       formRef={props.formRef}
-      steps={
-        [
-          {
-            type: "StandardStep",
-            step: {
-              title: "Auswertung duplizieren",
-              content: (
-                <DuplicateEvaluationStep
-                  originalEvaluation={props.originalEvaluation}
-                  defaultNewEvaluationName={defaultNewEvaluationName}
-                />
-              ),
+      onSubmit={handleSubmit}
+      steps={[
+        () => ({
+          title: "Auswertung duplizieren",
+          content: createStepContent({
+            component: DuplicateEvaluationStep,
+            componentProps: {
+              originalEvaluation: props.originalEvaluation,
+              defaultNewEvaluationName: defaultNewEvaluationName,
             },
+          }),
+          initialValues: {
+            name: "",
           },
-        ] satisfies SidebarStep<UpdateDiagramFormModel>[]
-      }
+        }),
+      ]}
     />
   );
 }

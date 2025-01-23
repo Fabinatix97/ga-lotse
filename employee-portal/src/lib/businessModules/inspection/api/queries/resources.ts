@@ -7,7 +7,7 @@ import {
   ApiGetBlockingEventsOfResourcesResponse,
   ApiResourceType,
   GetResourcesRequest,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useSuspenseQuery } from "@tanstack/react-query";
 

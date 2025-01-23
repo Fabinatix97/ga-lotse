@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiResponse } from "@eshg/employee-portal-api/base";
+import { ApiResponse } from "@eshg/base-api";
 
 export interface ImportDataResult<TStatistics> {
   file: File;

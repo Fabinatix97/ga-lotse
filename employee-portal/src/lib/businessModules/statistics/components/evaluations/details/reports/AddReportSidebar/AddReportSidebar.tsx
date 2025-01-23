@@ -7,7 +7,10 @@ import { useAddReport } from "@/lib/businessModules/statistics/api/mutations/use
 import { SaveReportStep } from "@/lib/businessModules/statistics/components/evaluations/details/reports/AddReportSidebar/SaveReportStep";
 import { AddReportFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/reports/AddReportSidebar/addReportFormModel";
 import { getLastXMonthsTimeRange } from "@/lib/businessModules/statistics/components/evaluations/timeRangeHelper";
-import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
+import {
+  SidebarStepper,
+  createStepContent,
+} from "@/lib/shared/components/SidebarStepper/SidebarStepper";
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
@@ -40,18 +43,17 @@ function AddReportSidebar({
   return (
     <SidebarStepper
       onClose={onClose}
-      onSubmit={(model) => addReport(evaluationId, model)}
-      initialValues={initialValues}
       formRef={formRef}
       saveLabel="Erstellen"
+      onSubmit={(model) => addReport(evaluationId, model[0])}
       steps={[
-        {
-          type: "StandardStep",
-          step: {
-            title: "Report erstellen",
-            content: <SaveReportStep />,
-          },
-        },
+        () => ({
+          title: "Report erstellen",
+          content: createStepContent({
+            component: SaveReportStep,
+          }),
+          initialValues,
+        }),
       ]}
     />
   );

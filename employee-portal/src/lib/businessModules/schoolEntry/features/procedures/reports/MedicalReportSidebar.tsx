@@ -4,7 +4,6 @@
  */
 
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
-import { HiddenContainer } from "@eshg/lib-portal/components/HiddenContainer";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { BooleanSelectField } from "@eshg/lib-portal/components/formFields/BooleanSelectField";
 import { validateLength } from "@eshg/lib-portal/helpers/validators";
@@ -45,9 +44,7 @@ const initialValues: MedicalReportValues = {
 
 function MedicalReportSidebar(props: MedicalReportSidebarProps) {
   const createMedicalReport = useCreateMedicalReport(props.procedureId);
-  const { downloadContainerRef, download } = useFileDownload(
-    createMedicalReport.mutateAsync,
-  );
+  const { download } = useFileDownload(createMedicalReport.mutateAsync);
 
   async function handleSubmit(values: MedicalReportValues) {
     await download(values);
@@ -55,52 +52,45 @@ function MedicalReportSidebar(props: MedicalReportSidebarProps) {
   }
 
   return (
-    <>
-      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-        {({ isSubmitting, handleSubmit }) => (
-          <SidebarForm ref={props.formRef} onSubmit={handleSubmit}>
-            <SidebarContent title="Arztbrief erstellen">
-              <Stack gap={2}>
-                <BooleanSelectField
-                  name="isVisio"
-                  label="Brief für"
-                  required="Bitte wählen Sie aus an wen der Brief gerichtet ist."
-                  labelTrue="Augenarzt:in"
-                  labelFalse="Arzt:in"
-                />
-                <TextareaField
-                  name="remark"
-                  label="Bemerkung"
-                  validate={validateLength(1, 600)}
-                  required="Bitte eine Bemerkung angeben."
-                  sxTextarea={{ minHeight: "473px" }}
-                />
-              </Stack>
-            </SidebarContent>
-            <SidebarActions>
-              <ButtonBar
-                left={
-                  <Button
-                    variant="plain"
-                    color="primary"
-                    onClick={() => props.onClose()}
-                  >
-                    Abbrechen
-                  </Button>
-                }
-                right={
-                  <>
-                    <SubmitButton submitting={isSubmitting}>
-                      Erstellen
-                    </SubmitButton>
-                    <HiddenContainer ref={downloadContainerRef} />
-                  </>
-                }
+    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+      {({ isSubmitting, handleSubmit }) => (
+        <SidebarForm ref={props.formRef} onSubmit={handleSubmit}>
+          <SidebarContent title="Arztbrief erstellen">
+            <Stack gap={2}>
+              <BooleanSelectField
+                name="isVisio"
+                label="Brief für"
+                required="Bitte wählen Sie aus an wen der Brief gerichtet ist."
+                labelTrue="Augenarzt:in"
+                labelFalse="Arzt:in"
               />
-            </SidebarActions>
-          </SidebarForm>
-        )}
-      </Formik>
-    </>
+              <TextareaField
+                name="remark"
+                label="Bemerkung"
+                validate={validateLength(1, 600)}
+                required="Bitte eine Bemerkung angeben."
+                sxTextarea={{ minHeight: "473px" }}
+              />
+            </Stack>
+          </SidebarContent>
+          <SidebarActions>
+            <ButtonBar
+              left={
+                <Button
+                  variant="plain"
+                  color="primary"
+                  onClick={() => props.onClose()}
+                >
+                  Abbrechen
+                </Button>
+              }
+              right={
+                <SubmitButton submitting={isSubmitting}>Erstellen</SubmitButton>
+              }
+            />
+          </SidebarActions>
+        </SidebarForm>
+      )}
+    </Formik>
   );
 }

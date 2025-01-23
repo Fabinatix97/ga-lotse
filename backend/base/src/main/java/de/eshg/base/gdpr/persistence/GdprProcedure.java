@@ -54,7 +54,9 @@ public class GdprProcedure extends BaseEntityWithExternalId {
   @DataSensitivity(SensitivityLevel.PROTECTED)
   private Instant closedAt;
 
-  @OneToOne(cascade = CascadeType.PERSIST)
+  @OneToOne(
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+      orphanRemoval = true)
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private IdentificationData identificationData;
 
@@ -67,13 +69,16 @@ public class GdprProcedure extends BaseEntityWithExternalId {
   @OneToMany(
       fetch = FetchType.LAZY,
       mappedBy = GdprDownload_.GDPR_PROCEDURE,
-      cascade = CascadeType.PERSIST,
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
       orphanRemoval = true)
   @OrderBy
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private final List<GdprDownload> downloads = new ArrayList<>();
 
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+  @OneToOne(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+      orphanRemoval = true)
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private DownloadPackage centralFileDownload;
 

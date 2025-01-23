@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiInstitutionContact,
-  ApiPersonContact,
-} from "@eshg/employee-portal-api/base";
+import { ApiInstitutionContact, ApiPersonContact } from "@eshg/base-api";
 import { isDefined } from "remeda";
 
 import { contactDiscriminatorToEnum } from "@/lib/baseModule/components/contacts/constants";

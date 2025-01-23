@@ -7,16 +7,10 @@ import { AppointmentSection } from "@/lib/businessModules/travelMedicine/compone
 import { VaccineOverviewSection } from "@/lib/businessModules/travelMedicine/components/landing/VaccineOverviewSection";
 import { GridColumnStack } from "@/lib/shared/components/layout/grid";
 
-interface LandingpageSidePanelProps {
-  citizenPortalProcedureEnabled: boolean;
-}
-
-export function LandingpageSidePanel(
-  props: Readonly<LandingpageSidePanelProps>,
-) {
+export function LandingpageSidePanel() {
   return (
     <GridColumnStack>
-      {props.citizenPortalProcedureEnabled && <AppointmentSection />}
+      <AppointmentSection />
       <VaccineOverviewSection />
     </GridColumnStack>
   );

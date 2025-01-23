@@ -16,6 +16,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
+import java.time.LocalDate;
 
 @Entity
 @DataSensitivity(SensitivityLevel.SENSITIVE)
@@ -30,7 +31,7 @@ public class LaboratoryTestExamination extends GenericEntity<Long> {
   // General
   private String sampleBarCode;
   private String generalRemarks;
-  private Boolean testsConducted;
+  private LocalDate testsConductedDate;
   private Boolean testsPayed;
 
   // Tests
@@ -61,6 +62,7 @@ public class LaboratoryTestExamination extends GenericEntity<Long> {
 
   private Boolean hadSyphilis;
 
+  @AttributeOverride(name = "result", column = @Column(name = "hepA_result"))
   @AttributeOverride(name = "infection", column = @Column(name = "hepA_infection"))
   @AttributeOverride(name = "vaccineTitre", column = @Column(name = "hepA_vaccine_titre"))
   @AttributeOverride(name = "value", column = @Column(name = "hepA_value"))
@@ -68,6 +70,7 @@ public class LaboratoryTestExamination extends GenericEntity<Long> {
   @Embedded
   private HepatitisLaboratoryTestData hepAData;
 
+  @AttributeOverride(name = "result", column = @Column(name = "hepB_result"))
   @AttributeOverride(name = "infection", column = @Column(name = "hepB_infection"))
   @AttributeOverride(name = "vaccineTitre", column = @Column(name = "hepB_vaccine_titre"))
   @AttributeOverride(name = "value", column = @Column(name = "hepB_value"))
@@ -273,12 +276,12 @@ public class LaboratoryTestExamination extends GenericEntity<Long> {
     this.generalRemarks = generalRemarks;
   }
 
-  public Boolean getTestsConducted() {
-    return testsConducted;
+  public LocalDate getTestsConductedDate() {
+    return testsConductedDate;
   }
 
-  public void setTestsConducted(Boolean testsConducted) {
-    this.testsConducted = testsConducted;
+  public void setTestsConductedDate(LocalDate testsConductedDate) {
+    this.testsConductedDate = testsConductedDate;
   }
 
   public Boolean getTestsPayed() {

@@ -6,9 +6,14 @@
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { Stack, Typography } from "@mui/joy";
 
+import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import { TimeSpanField } from "@/lib/shared/components/formFields/TimeSpanField";
 
-export function UpdateEvaluationDataBasisStep() {
+import { UpdateEvaluationDataBasisFormModel } from "./updateEvaluationDataBasisFormModel";
+
+export function UpdateEvaluationDataBasisStep(
+  props: SidebarStepContentProps<UpdateEvaluationDataBasisFormModel>,
+) {
   return (
     <Stack gap={3}>
       <Alert
@@ -21,7 +26,7 @@ export function UpdateEvaluationDataBasisStep() {
       </Typography>
       <TimeSpanField
         initialExplicitStartAndEndChecked={true}
-        name="timeSpan"
+        name={props.fieldName("timeSpan")}
         label="Betrachtungszeitraum"
       />
     </Stack>

@@ -13,6 +13,7 @@ import { useConsultationQueryOptions } from "@/lib/businessModules/stiProtection
 import { useStiProcedureQueryOptions } from "@/lib/businessModules/stiProtection/api/queries/procedures";
 import { ConsultationForm } from "@/lib/businessModules/stiProtection/features/procedures/consultation/ConsultationForm";
 import { isProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
+import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 
 export default function ConsultationPage({
   params: { id: procedureId },
@@ -31,7 +32,9 @@ export default function ConsultationPage({
 
   return (
     <DisabledFormProvider disabled={!isOpen}>
-      <ConsultationForm procedure={procedure} consultation={consultation} />
+      <MainContentLayout sx={{ margin: 0, padding: 0 }} fullViewportHeight>
+        <ConsultationForm procedure={procedure} consultation={consultation} />
+      </MainContentLayout>
     </DisabledFormProvider>
   );
 }

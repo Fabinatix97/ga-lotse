@@ -4,23 +4,24 @@
  */
 
 import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Stack } from "@mui/joy";
 
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
-import { ConfigurePieChartFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/ConfigurePieChartStep/configurePieChartFormModel";
+import { ConfigureChartFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/createAnalysisFormModel";
 import { mapAttributeToAutocompleteSelectionOption } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/mapAttribute";
 import { isBooleanOrValueWithOptions } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
 import { AutocompleteSelectOption } from "@/lib/shared/components/AutocompleteSelectOptions";
+import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
+
+export interface ConfigurePieChartStepProps
+  extends SidebarStepContentProps<ConfigureChartFormModel> {
+  attributes: FlatAttribute[];
+}
 
 export function ConfigurePieChartStep({
   attributes,
-}: {
-  attributes: FlatAttribute[];
-}) {
-  const fieldName = createFieldNameMapper<ConfigurePieChartFormModel>(
-    "configurePieChartFormModel",
-  );
+  fieldName,
+}: ConfigurePieChartStepProps) {
   const primaryAttributes: AutocompleteSelectOption[] = attributes.map(
     mapAttributeToAutocompleteSelectionOption((attr) =>
       isBooleanOrValueWithOptions(attr.type),

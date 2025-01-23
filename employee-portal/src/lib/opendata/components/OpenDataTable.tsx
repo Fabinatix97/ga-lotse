@@ -6,6 +6,10 @@
 "use client";
 
 import { ApiResource, ApiVersion } from "@eshg/employee-portal-api/opendata";
+import {
+  parseOptionalString,
+  parseReadonlyPageParams,
+} from "@eshg/lib-portal/helpers/searchParams";
 import Add from "@mui/icons-material/Add";
 import { Button, Stack } from "@mui/joy";
 import { useSearchParams } from "next/navigation";
@@ -28,10 +32,6 @@ import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { SearchFilter } from "@/lib/shared/components/tableFilters/SearchFilter";
-import {
-  parseOptionalString,
-  parseReadonlyPageParams,
-} from "@/lib/shared/helpers/searchParams";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
@@ -127,7 +127,8 @@ export function OpenDataTable() {
               if (type !== "version") {
                 return;
               }
-              return entryDetailsSidebar.open({ versionId: data.externalId });
+              return () =>
+                entryDetailsSidebar.open({ versionId: data.externalId });
             },
             focusColumnAccessorKey: "name",
           }}

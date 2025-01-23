@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiHistoryEntryType } from "@eshg/employee-portal-api/base";
+import { ApiHistoryEntryType } from "@eshg/base-api";
 import AddIcon from "@mui/icons-material/AddOutlined";
 import DeleteIcon from "@mui/icons-material/DeleteOutlineRounded";
 import EditIcon from "@mui/icons-material/EditOutlined";

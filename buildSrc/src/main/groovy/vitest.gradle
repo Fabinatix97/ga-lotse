@@ -16,6 +16,7 @@ def testSrcDir = "${projectDir}/src"
 tasks.named('check').configure { dependsOn 'test' }
 
 tasks.register('test', PnpmTask) {
+  group = 'verification'
   dependsOn 'prepareEnvironment'
   environment = testEnvironment
   inputs.files testConfigFiles
@@ -27,6 +28,7 @@ tasks.register('test', PnpmTask) {
 }
 
 tasks.register('testWatch', PnpmTask) {
+  group = 'verification'
   dependsOn 'prepareEnvironment'
   environment = testEnvironment
   args = ['vitest', 'watch']

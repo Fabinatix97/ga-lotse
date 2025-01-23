@@ -8,6 +8,7 @@ package de.eshg.officialmedicalservice.procedure;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
+import de.eshg.base.user.api.UserDto;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.model.PersonType;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
@@ -15,6 +16,7 @@ import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.domain.model.TaskStatus;
 import de.eshg.lib.procedure.domain.model.TaskType;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
+import de.eshg.officialmedicalservice.concern.ConcernMapper;
 import de.eshg.officialmedicalservice.procedure.api.EmployeeOmsProcedureOverviewDto;
 import de.eshg.officialmedicalservice.procedure.api.PostEmployeeOmsProcedureRequest;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
@@ -39,7 +41,8 @@ public class OmsProcedureOverviewMapper {
   public OmsProcedure toDomainType(
       PostEmployeeOmsProcedureRequest request,
       UUID currentUserId,
-      AddPersonFileStateResponse affectedPersonBaseResponse) {
+      AddPersonFileStateResponse affectedPersonBaseResponse,
+      UUID physicianId) {
 
     OmsProcedure procedure = new OmsProcedure();
 
@@ -50,7 +53,7 @@ public class OmsProcedureOverviewMapper {
     if (currentUserId != null) {
       omsTask.assign(currentUserId, currentUserId, Instant.now(clock));
     }
-    omsTask.setTaskType(TaskType.TRAVEL_MEDICINE);
+    omsTask.setTaskType(TaskType.OFFICIAL_MEDICAL_SERVICE);
     omsTask.setTaskStatus(TaskStatus.OPEN);
     procedure.addTask(omsTask);
 
@@ -61,17 +64,21 @@ public class OmsProcedureOverviewMapper {
 
     procedure.getRelatedPersons().add(affectedPerson);
 
+    procedure.setPhysicianId(physicianId);
+
     return procedure;
   }
 
   public EmployeeOmsProcedureOverviewDto toInterfaceType(
       OmsProcedure procedure,
       GetPersonFileStateResponse affectedPerson,
-      GetFacilityFileStateResponse facility) {
+      GetFacilityFileStateResponse facility,
+      UserDto physician) {
     String firstName = null;
     String lastName = null;
     LocalDate dateOfBirth = null;
     String facilityName = null;
+    String physicianName = null;
     if (affectedPerson != null) {
       firstName = affectedPerson.firstName();
       lastName = affectedPerson.lastName();
@@ -80,13 +87,17 @@ public class OmsProcedureOverviewMapper {
     if (facility != null) {
       facilityName = facility.name();
     }
-
+    if (physician != null) {
+      physicianName = physician.firstName() + " " + physician.lastName();
+    }
     return new EmployeeOmsProcedureOverviewDto(
         procedure.getExternalId(),
         ProcedureMapper.toInterfaceType(procedure.getProcedureStatus()),
         firstName,
         lastName,
         dateOfBirth,
-        facilityName);
+        facilityName,
+        ConcernMapper.mapToConcernDto(procedure.getConcern()),
+        physicianName);
   }
 }

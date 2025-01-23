@@ -1,0 +1,54 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1736410895212-1">
+    <createTable tableName="examination_result">
+      <column name="type" type="VARCHAR(31)">
+        <constraints nullable="false"/>
+      </column>
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_examination_result"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="fluoride_varnish_applied" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="fluoridation_examination_result">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_fluoridation_examination_result"/>
+      </column>
+    </createTable>
+
+    <ext:createPostgresEnumType name="oralhygienestatus" values="EXCELLENT, GOOD, POOR"/>
+
+    <createTable tableName="screening_examination_result">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_screening_examination_result"/>
+      </column>
+      <column name="oral_hygiene_status" type="ORALHYGIENESTATUS"/>
+    </createTable>
+
+    <addColumn tableName="examination">
+      <column name="result_id" type="BIGINT"/>
+    </addColumn>
+
+    <addUniqueConstraint tableName="examination" columnNames="result_id" constraintName="examination_result_id_key"/>
+
+    <addForeignKeyConstraint baseTableName="examination" baseColumnNames="result_id" constraintName="fk_examination_examination_result"
+                             referencedTableName="examination_result" referencedColumnNames="id"/>
+
+    <addForeignKeyConstraint baseTableName="fluoridation_examination_result" baseColumnNames="id" constraintName="fk_fluoridation_examination_result_examination_result"
+                             referencedTableName="examination_result" referencedColumnNames="id"/>
+
+    <addForeignKeyConstraint baseTableName="screening_examination_result" baseColumnNames="id" constraintName="fk_screening_examination_result_examination_result"
+                             referencedTableName="examination_result" referencedColumnNames="id"/>
+  </changeSet>
+</databaseChangeLog>

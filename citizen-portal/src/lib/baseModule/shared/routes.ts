@@ -15,11 +15,16 @@ export function routes(locale: SupportedLanguage | undefined) {
     index: "/",
     citizenPath: {
       index: citizenPath,
+      bundIdPortal: {
+        overview: `${citizenPath}/mein-bereich/datenschutzrechte`,
+        profile: `${citizenPath}/mein-bereich/profil`,
+      },
     },
     organizationPath: {
       index: organizationPath,
       mukPortal: {
         overview: `${organizationPath}/mein-bereich/datenschutzrechte`,
+        profile: `${organizationPath}/mein-bereich/profil`,
       },
     },
     imprint: `${localePath}/impressum`,
@@ -27,6 +32,7 @@ export function routes(locale: SupportedLanguage | undefined) {
     data_privacy_rights: `${localePath}/datenschutzrechte`,
     accessibility: `${localePath}/barrierefreiheit`,
     termsOfUse: `${localePath}/nutzungshinweise`,
+    openData: `${localePath}/opendata`,
     contact: `${localePath}/kontakt`,
   } as const;
 }

@@ -39,7 +39,9 @@ export const systemProgressEntryTypeTitles: Record<string, string> = {
   LABORATORY_TEST_EXAMINATION_UPDATED: "Labortests aktualisiert",
   APPOINTMENT_REBOOKED: "Termin geändert",
   APPOINTMENT_CANCELLED: "Termin storniert",
+  MEDICAL_HISTORY_UPDATED: "Anamnesebogen aktualisiert",
   CONSULTATION_UPDATED: "Konsultation aktualisiert",
+  DIAGNOSIS_UPDATED: "Diagnose aktualisiert",
 };
 
 export const CONCERN_VALUES: EnumMap<ApiConcern> = {

@@ -1,0 +1,39 @@
+/**
+ * Copyright 2025 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import {
+  SingleAutocompleteField,
+  SingleAutocompleteFieldProps,
+} from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
+import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
+
+import { useTranslation } from "@/lib/i18n/client";
+import { useTranslateCountry } from "@/lib/i18n/useTranslateCountry";
+
+interface CountryFieldProps
+  extends Omit<SingleAutocompleteFieldProps, "options" | "validate"> {
+  label: string;
+}
+
+export function CountryField(props: CountryFieldProps) {
+  const { countryOptions } = useTranslateCountry();
+  const options = countryOptions();
+  const { t } = useTranslation("validation");
+  return (
+    <SingleAutocompleteField
+      {...props}
+      options={options}
+      validate={(value) => {
+        if (
+          isEmptyString(value) ||
+          options.find((opt) => opt.value === value)
+        ) {
+          return undefined;
+        }
+        return t("select_country", { label: props.label });
+      }}
+    />
+  );
+}

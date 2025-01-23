@@ -8,10 +8,12 @@ package de.eshg.officialmedicalservice.facility;
 import de.eshg.base.centralfile.FacilityApi;
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateRequest;
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
+import de.eshg.base.centralfile.api.facility.GetFacilityDiffResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesRequest;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesResponse;
 import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
+import de.eshg.base.centralfile.api.person.SyncFileStateRequest;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.ErrorResponse;
@@ -45,6 +47,18 @@ public class FacilityClient {
       UUID id, PutFacilityRequest request) {
     return doAndForwardErrorCodes(
         () -> facilityApi.updateFacilityFileStateAndReference(id, request));
+  }
+
+  public UUID syncFacility(UUID fileStateId, long referenceVersion) {
+    return doAndForwardErrorCodes(
+        () ->
+            facilityApi
+                .syncFacilityFileState(fileStateId, new SyncFileStateRequest(referenceVersion))
+                .id());
+  }
+
+  public GetFacilityDiffResponse getFacilityDiff(UUID fileStateId) {
+    return doAndForwardErrorCodes(() -> facilityApi.getFacilityDiff(fileStateId));
   }
 
   private <T> T doAndForwardErrorCodes(Supplier<T> action) {

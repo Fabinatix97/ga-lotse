@@ -19,6 +19,7 @@ import {
   REPLAY_ABORTED,
   REPLAY_DONE,
   REPLAY_FAILED,
+  REPLAY_FAILED_WITH_401,
   REPLAY_STARTED,
   SYNC,
   createQueueBroadCastChannelEndpoint,
@@ -85,6 +86,8 @@ async function onSync({ queue }: { queue: Queue }) {
     if (errorMessage) {
       if (errorMessage === PROCESS_ABORTED) {
         queueChannel.postMessage(REPLAY_ABORTED);
+      } else if (errorMessage === REPLAY_FAILED_WITH_401) {
+        queueChannel.postMessage(REPLAY_FAILED_WITH_401);
       } else {
         queueChannel.postMessage(REPLAY_FAILED);
       }
@@ -118,6 +121,9 @@ function handleHttpError(
   ) {
     // ignore 404 on delete file
     queueChannel.postMessage(DELETE_FILE_FAILED_WITH_404);
+  } else if (response.status === 401) {
+    // unauthorized (probably session time out)
+    return REPLAY_FAILED_WITH_401;
   } else {
     return response.statusText || `HTTP ${response.status}`;
   }

@@ -13,8 +13,8 @@ import CountryIcon from "@mui/icons-material/PublicOutlined";
 import { isDefined, join } from "remeda";
 
 import { useTranslation } from "@/lib/i18n/client";
+import { useTranslateCountry } from "@/lib/i18n/useTranslateCountry";
 import { InfoSectionField } from "@/lib/shared/components/infoSection";
-import { translateCountry } from "@/lib/shared/helpers/countryOption";
 
 export function AddressFields({
   address,
@@ -22,6 +22,8 @@ export function AddressFields({
   address: NonNullable<ApiGetReferenceFacilityResponse["contactAddress"]>;
 }) {
   const { t } = useTranslation("translation");
+  const { translateCountry } = useTranslateCountry();
+
   return (
     <>
       {address.type === "DomesticAddress" && (

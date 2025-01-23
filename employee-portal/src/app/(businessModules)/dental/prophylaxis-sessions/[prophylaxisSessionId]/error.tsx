@@ -5,6 +5,17 @@
 
 "use client";
 
-import { NextErrorBoundary } from "@eshg/lib-portal/components/boundaries/NextErrorBoundary";
+import {
+  NextErrorBoundary,
+  NextErrorBoundaryProps,
+} from "@eshg/lib-portal/components/boundaries/NextErrorBoundary";
 
-export default NextErrorBoundary;
+import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
+
+export default function ProphylaxisSessionError(props: NextErrorBoundaryProps) {
+  return (
+    <MainContentLayout fullViewportHeight>
+      <NextErrorBoundary {...props} />
+    </MainContentLayout>
+  );
+}

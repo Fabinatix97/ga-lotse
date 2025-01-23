@@ -5,7 +5,7 @@
 
 "use client";
 
-import { CalendarEventApi } from "@eshg/employee-portal-api/base";
+import { CalendarEventApi } from "@eshg/base-api";
 import { LoadingIndicator } from "@eshg/lib-portal/components/LoadingIndicator";
 import {
   EventSourceFuncArg,

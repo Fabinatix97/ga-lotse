@@ -115,7 +115,7 @@ export default function PlaygroundMainContentLayoutPage() {
               data={data}
               columns={columns}
               rowNavigation={{
-                onClick: (row) => {
+                onClick: (row) => () => {
                   alert(`Row with name '${row.original.name}' clicked`);
                 },
                 focusColumnAccessorKey: "name",

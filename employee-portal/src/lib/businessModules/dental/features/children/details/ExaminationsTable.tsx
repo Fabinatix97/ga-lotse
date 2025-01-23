@@ -5,12 +5,13 @@
 
 "use client";
 
+import { routes } from "@eshg/dental/shared/routes";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 
 import { Examination } from "@/lib/businessModules/dental/api/models/Examination";
+import { ExaminationStatusChip } from "@/lib/businessModules/dental/features/examinations/ExaminationStatusChip";
 import { PROPHYLAXIS_TYPES } from "@/lib/businessModules/dental/features/prophylaxisSessions/translations";
-import { routes } from "@/lib/businessModules/dental/shared/routes";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
@@ -39,6 +40,14 @@ const COLUMNS = [
   columnHelper.accessor("note", {
     header: "Bemerkung",
     cell: (props) => props.getValue(),
+    enableSorting: false,
+    meta: {
+      canNavigate: { parentRow: true },
+    },
+  }),
+  columnHelper.accessor("status", {
+    header: "Status",
+    cell: (props) => <ExaminationStatusChip status={props.getValue()} />,
     enableSorting: false,
     meta: {
       canNavigate: { parentRow: true },

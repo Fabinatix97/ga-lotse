@@ -67,6 +67,12 @@ public interface UserApi {
           "Get resources for the user management page. Includes the self user, self user groups, and members of those groups.")
   GetUserManagementPageResponse getUserManagementPage();
 
+  @GetExchange(SELF_URL + "/with-access")
+  @ApiResponse(responseCode = "200")
+  @Operation(
+      summary = "Get the user which is currently active, including all roles assigned to this user")
+  SelfUserDto getSelfUserAndAccess();
+
   @GetExchange(SELF_URL)
   @ApiResponse(responseCode = "200")
   @Operation(summary = "Get the user which is currently active")
@@ -107,11 +113,6 @@ public interface UserApi {
       summary =
           "Delete the key pair (used for audit log access) from the user which is currently active")
   void deleteEmployeeUserKeys();
-
-  @GetExchange(SELF_URL + "/permissions")
-  @ApiResponse(responseCode = "200")
-  @Operation(summary = "Get the permissions of the user which is currently active")
-  GetPermissionsResponse getSelfUserPermissions();
 
   @GetExchange(SELF_URL + "/groups")
   @ApiResponse(responseCode = "200")

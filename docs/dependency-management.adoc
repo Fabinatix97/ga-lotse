@@ -83,12 +83,15 @@ Adjust the version in the `wrapper` task configuration in link:../build.gradle[b
 This should result in an updated `gradle/wrapper/gradle-wrapper.properties` and
 potentially in changed wrapper scripts (`gradlew`, `gradlew.bat`) in the project root.
 
-The gitlab pipeline does not use the gradle wrapper but the gradle version installed in the stage image.
+The gitlab pipeline does not use the gradle wrapper but the gradle version installed in the stage image (based on https://hub.docker.com/_/gradle).
 The `GRADLE_BASE_IMAGE_HASH` variable needs to be updated with a hash corresponding to the new version.
 The hash can be obtained by "inspecting" the desired image.
 For example: `docker inspect --format='{{.RepoDigests}}' gradle:8.8.0-jdk21-jammy`
-(only the part after `sha256:` is needed - take care to run it on the appropriate version!)
+(only the part after `sha256:` is needed - take care to run it on the appropriate version!).
+Also make sure to use the multiplatform image.
+
+image::assets/multiplatform_gradle_base_image.png[]
 
 You will also need to push an extended base image based on the gradle image to the gitlab container repository,
-see  link:../resources/gradle-docker-stage-image/README.md[resources/gradle-docker-stage-image/README.md]
-This image is used during the e2e test as it needs both gradle and docker.
+see  link:../resources/gradle-docker-cosign-image/README.md[resources/gradle-docker-cosign-image/README.md].
+This image is used in our gitlab pipelines.

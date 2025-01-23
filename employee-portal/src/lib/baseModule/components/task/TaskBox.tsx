@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiTask } from "@eshg/employee-portal-api/base";
+import { ApiTask } from "@eshg/base-api";
 import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 import { Chip, Sheet, Stack, Typography } from "@mui/joy";
 import { isDefined } from "remeda";

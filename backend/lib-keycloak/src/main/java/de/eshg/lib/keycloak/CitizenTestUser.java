@@ -5,7 +5,28 @@
 
 package de.eshg.lib.keycloak;
 
+import static de.eshg.lib.keycloak.CitizenUserAttribute.BUND_ID_BIRTH_DATE;
+import static de.eshg.lib.keycloak.CitizenUserAttribute.BUND_ID_BIRTH_NAME;
+import static de.eshg.lib.keycloak.CitizenUserAttribute.BUND_ID_B_PK_2;
+import static de.eshg.lib.keycloak.CitizenUserAttribute.BUND_ID_COUNTRY;
+import static de.eshg.lib.keycloak.CitizenUserAttribute.BUND_ID_GENDER;
+import static de.eshg.lib.keycloak.CitizenUserAttribute.BUND_ID_LOCALITY_NAME;
+import static de.eshg.lib.keycloak.CitizenUserAttribute.BUND_ID_PERSONAL_TITLE;
+import static de.eshg.lib.keycloak.CitizenUserAttribute.BUND_ID_PLACE_OF_BIRTH;
+import static de.eshg.lib.keycloak.CitizenUserAttribute.BUND_ID_POSTAL_ADDRESS;
+import static de.eshg.lib.keycloak.CitizenUserAttribute.BUND_ID_POSTAL_CODE;
+import static de.eshg.lib.keycloak.CitizenUserAttribute.BUND_ID_TELEPHONE_NUMBER;
+import static de.eshg.lib.keycloak.CitizenUserAttribute.MUK_ADDRESS_ADDRESS_ADDITION;
+import static de.eshg.lib.keycloak.CitizenUserAttribute.MUK_ADDRESS_CITY;
+import static de.eshg.lib.keycloak.CitizenUserAttribute.MUK_ADDRESS_COUNTRY;
+import static de.eshg.lib.keycloak.CitizenUserAttribute.MUK_ADDRESS_HOUSE_NUMBER;
+import static de.eshg.lib.keycloak.CitizenUserAttribute.MUK_ADDRESS_POSTAL_CODE;
+import static de.eshg.lib.keycloak.CitizenUserAttribute.MUK_ADDRESS_STREET;
+import static de.eshg.lib.keycloak.CitizenUserAttribute.MUK_DATA_TRANSMITTER_PSEUDONYM_ID;
+import static de.eshg.lib.keycloak.CitizenUserAttribute.MUK_FACILITY_NAME;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,21 +39,21 @@ public enum CitizenTestUser implements KeycloakUser {
       "USER",
       List.of(CitizenPermissionRole.MUK_USER),
       Map.of(
-          "muk.dataTransmitterPseudonymId",
+          MUK_DATA_TRANSMITTER_PSEUDONYM_ID,
           "du-986b2b54ab89cf4ed674ad8c3126b966b54d4872",
-          "muk.facilityName",
+          MUK_FACILITY_NAME,
           "Test GmbH",
-          "muk.address.street",
+          MUK_ADDRESS_STREET,
           "Test Straße",
-          "muk.address.houseNumber",
+          MUK_ADDRESS_HOUSE_NUMBER,
           "Test Nr",
-          "muk.address.postalCode",
+          MUK_ADDRESS_POSTAL_CODE,
           "Test PLZ",
-          "muk.address.city",
+          MUK_ADDRESS_CITY,
           "Test Stadt",
-          "muk.address.addition",
+          MUK_ADDRESS_ADDRESS_ADDITION,
           "EG",
-          "muk.address.country",
+          MUK_ADDRESS_COUNTRY,
           "DE")),
   MUK_DUMMY_USER_MINIMAL(
       "muk-dummy-user-minimal",
@@ -41,23 +62,17 @@ public enum CitizenTestUser implements KeycloakUser {
       "MUK USER",
       List.of(CitizenPermissionRole.MUK_USER),
       Map.of(
-          "muk.dataTransmitterPseudonymId",
-          "4f-c2b94d217d8d399a142d85c593e17c98b4b91",
-          "muk.facilityName",
-          "Andorra Test Facility",
-          "muk.address.street",
-          "Avinguda de Meritxell",
-          "muk.address.city",
-          "Andorra la Vella",
-          "muk.address.country",
-          "AD")),
+          MUK_DATA_TRANSMITTER_PSEUDONYM_ID, "4f-c2b94d217d8d399a142d85c593e17c98b4b91",
+          MUK_FACILITY_NAME, "Andorra Test Facility",
+          MUK_ADDRESS_STREET, "Avinguda de Meritxell",
+          MUK_ADDRESS_CITY, "Andorra la Vella")),
   MUK_DUMMY_USER_MISSING_ATTRIBUTES(
       "muk-dummy-user-missing-attributes",
       "password",
       "MUK User",
       "with missing attributes",
       List.of(CitizenPermissionRole.MUK_USER),
-      Map.of()),
+      Map.of(MUK_DATA_TRANSMITTER_PSEUDONYM_ID, "9d-e7a52b3a47d7b129b834d1c745f6c78d98a2b0")),
   MUK_DUMMY_USER_FOR_LENGTH_RESTRICTIONS(
       "muk-dummy-user-for-length-restrictions",
       "password",
@@ -65,26 +80,94 @@ public enum CitizenTestUser implements KeycloakUser {
       "USER",
       List.of(CitizenPermissionRole.MUK_USER),
       Map.of(
-          "muk.dataTransmitterPseudonymId",
-          "du-986b2b54ab89cf4ed674ad8c3126b966b54d4872",
-          "muk.facilityName",
-          "Test GmbH",
-          "muk.address.street",
-          "Friedrichstraße 1234, Gebäude 5678, Apartment 91011, Block 12, Etage 34",
-          "muk.address.houseNumber",
-          "Friedrichstraße 1234, Gebäude 5678, Apartment 91011, Block 12, Etage 34",
-          "muk.address.postalCode",
-          "Test PLZ",
-          "muk.address.city",
-          "Friedrichstraße 1234, Gebäude 5678, Apartment 91011, Block 12, Etage 34",
-          "muk.address.country",
-          "DE")),
-  BUND_ID_USER(
-      "de93489238",
+          MUK_DATA_TRANSMITTER_PSEUDONYM_ID, "du-986b2b54ab89cf4ed674ad8c3126b966b54d4872",
+          MUK_FACILITY_NAME, "Test GmbH",
+          MUK_ADDRESS_STREET,
+              "Friedrichstraße 1234, Gebäude 5678, Apartment 91011, Block 12, Etage 34",
+          MUK_ADDRESS_HOUSE_NUMBER,
+              "Friedrichstraße 1234, Gebäude 5678, Apartment 91011, Block 12, Etage 34",
+          MUK_ADDRESS_POSTAL_CODE, "Test PLZ",
+          MUK_ADDRESS_CITY,
+              "Friedrichstraße 1234, Gebäude 5678, Apartment 91011, Block 12, Etage 34",
+          MUK_ADDRESS_COUNTRY, "DE")),
+  BUND_ID_DUMMY_USER(
+      "bund-id-dummy-user",
       "password",
       "BundId",
       "User",
       List.of(CitizenPermissionRole.BUND_ID_USER),
+      Map.ofEntries(
+          Map.entry(BUND_ID_B_PK_2, "a_iGbROEXA1929XK2feAgOUjdzfp2UsDaNofeI5pocv4"),
+          Map.entry(BUND_ID_POSTAL_ADDRESS, "Test Straße 23A"),
+          Map.entry(BUND_ID_POSTAL_CODE, "12345"),
+          Map.entry(BUND_ID_LOCALITY_NAME, "Test Wohnort"),
+          Map.entry(BUND_ID_COUNTRY, "DE"),
+          Map.entry(BUND_ID_GENDER, "Male"),
+          Map.entry(BUND_ID_BIRTH_DATE, "1975-03-23"),
+          Map.entry(BUND_ID_PLACE_OF_BIRTH, "Test Geburtsort DE"),
+          Map.entry(BUND_ID_BIRTH_NAME, "Test Geburtsname"),
+          Map.entry(BUND_ID_TELEPHONE_NUMBER, "+49 432 123456"),
+          Map.entry(BUND_ID_PERSONAL_TITLE, "Dr"))),
+  BUND_ID_DUMMY_USER_MINIMAL(
+      "bund-id-dummy-user-minimal",
+      "password",
+      "Minimal",
+      "BundId USER",
+      List.of(CitizenPermissionRole.BUND_ID_USER),
+      Map.of(
+          BUND_ID_B_PK_2,
+          "x_AbcD9kLmNzQ3pT8v0zJxRUp7wL6eIjF1wKq4mOaV",
+          BUND_ID_POSTAL_ADDRESS,
+          "Mörkvägen 7",
+          BUND_ID_POSTAL_CODE,
+          "86345",
+          BUND_ID_LOCALITY_NAME,
+          "Sundsvall",
+          BUND_ID_BIRTH_DATE,
+          "1987-04-03",
+          BUND_ID_PLACE_OF_BIRTH,
+          "Sundsvall/ Västernorrland")),
+  BUND_ID_USER_MISSING_ATTRIBUTES(
+      "bund-id-dummy-user-missing-attributes",
+      "password",
+      "BundId User",
+      "with missing attributes",
+      List.of(CitizenPermissionRole.BUND_ID_USER),
+      Map.of(BUND_ID_B_PK_2, "b_wRtPLOPZ7483YN5hfBqKVjdxs1XpTnQwSgL8yFuzm9")),
+  BUND_ID_USER_FOR_LENGTH_RESTRICTIONS(
+      "bund-id-dummy-user-for-length-restrictions",
+      "password",
+      "Gustav-Försvarare-Van-Dalarna-Kallraven-Vinterstjärna-Mörkström-Ödesprins-På-Himlens-Berget-Månlys-Vägfarare-Från-Frostdal-Vid-Stormhaven",
+      "Skogsdal-Himmelriksdahl-Vinterström-Stormvakt-Mörkberg-Frostvåg-Nordlunds-Kallvik-Kapellgrensson-Vägenfrån-Mörka-Ödelandskap-Sjöforsens-Hjärtskog",
+      List.of(CitizenPermissionRole.BUND_ID_USER),
+      Map.ofEntries(
+          Map.entry(BUND_ID_B_PK_2, "OKYUQ-yFYLC1Qhp770Sy8wI8OvzI8348CFovB_Ay_PU"),
+          Map.entry(
+              BUND_ID_POSTAL_ADDRESS,
+              "Isgatan 134 Lägenhet 3, Kallskogen vid Stormyrarna, 95213 Vinterdal"),
+          Map.entry(
+              BUND_ID_POSTAL_CODE,
+              "Isgatan 134 Lägenhet 3, Kallskogen vid Stormyrarna, 95213 Vinterdal"),
+          Map.entry(
+              BUND_ID_LOCALITY_NAME,
+              "Isgatan 134 Lägenhet 3, Kallskogen vid Stormyrarna, 95213 Vinterdal"),
+          Map.entry(BUND_ID_COUNTRY, "SE"),
+          Map.entry(BUND_ID_GENDER, "Male"),
+          Map.entry(BUND_ID_BIRTH_DATE, "1975-03-23"),
+          Map.entry(
+              BUND_ID_PLACE_OF_BIRTH,
+              "Isgatan 134 Lägenhet 3, Kallskogen vid Stormyrarna, 95213 Vinterdal"),
+          Map.entry(BUND_ID_BIRTH_NAME, "With length restrictions"),
+          Map.entry(BUND_ID_TELEPHONE_NUMBER, "012345678901234567890123456789"),
+          Map.entry(
+              BUND_ID_PERSONAL_TITLE,
+              "Vorbestehender Schattenmeister der gefrorenen Sümpfe und Wälder von Mörkdal, oberster Hüter der Nachtgeister und temporärer Führer der Eisbären von Vinterdal"))),
+  USER_WITH_MUK_AND_BUND_ID_ROLES_ONLY(
+      "authorized-only-user",
+      "password",
+      "Cititen user",
+      "with bundId and Muk Roles only",
+      List.of(CitizenPermissionRole.BUND_ID_USER, CitizenPermissionRole.MUK_USER),
       Map.of());
 
   private final String username;
@@ -101,14 +184,19 @@ public enum CitizenTestUser implements KeycloakUser {
       String firstName,
       String lastName,
       List<CitizenPermissionRole> roles,
-      Map<String, String> additionalAttributes) {
+      Map<CitizenUserAttribute, String> additionalAttributes) {
     this.username = username;
     this.email = username + TEST_USER_EMAIL_POSTFIX;
     this.password = password;
     this.firstName = firstName;
     this.lastName = lastName;
     this.roles = new ArrayList<>(roles);
-    this.additionalAttributes = additionalAttributes;
+
+    this.additionalAttributes = new HashMap<>();
+    for (Map.Entry<CitizenUserAttribute, String> entry : additionalAttributes.entrySet()) {
+      CitizenUserAttribute citizenUserAttribute = entry.getKey();
+      this.additionalAttributes.put(citizenUserAttribute.getKey(), entry.getValue());
+    }
   }
 
   @Override

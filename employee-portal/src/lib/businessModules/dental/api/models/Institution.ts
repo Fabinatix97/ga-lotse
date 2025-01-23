@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiAnnualInstitution,
-  ApiInstitution,
-} from "@eshg/employee-portal-api/dental";
+import { ApiAnnualInstitution, ApiInstitution } from "@eshg/dental-api";
 
 import { BaseEntity, mapBaseEntity } from "@/lib/shared/api/models/BaseEntity";
 

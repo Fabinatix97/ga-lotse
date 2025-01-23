@@ -8,7 +8,7 @@ import {
   GetEventsOfCalendarRequest,
   GetResourceRequest,
   GetResourcesRequest,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { endOfToday, startOfToday } from "date-fns";
 

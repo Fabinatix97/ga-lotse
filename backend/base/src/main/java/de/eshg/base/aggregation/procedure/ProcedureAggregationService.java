@@ -7,6 +7,7 @@ package de.eshg.base.aggregation.procedure;
 
 import static de.eshg.lib.aggregation.BusinessModuleAggregationHelper.aggregateErrorResponses;
 
+import de.eshg.base.user.UserService;
 import de.eshg.base.util.TimeRangeValidator;
 import de.eshg.lib.aggregation.BusinessModuleAggregationHelper;
 import de.eshg.lib.aggregation.BusinessModuleClient;
@@ -25,10 +26,12 @@ import org.springframework.stereotype.Service;
 public class ProcedureAggregationService {
 
   private final BusinessModuleAggregationHelper businessModuleAggregationHelper;
+  private final UserService userService;
 
   public ProcedureAggregationService(
-      BusinessModuleAggregationHelper businessModuleAggregationHelper) {
+      BusinessModuleAggregationHelper businessModuleAggregationHelper, UserService userService) {
     this.businessModuleAggregationHelper = businessModuleAggregationHelper;
+    this.userService = userService;
   }
 
   GetAggregatedRecentProceduresResponse aggregateSelfRecentProcedures(
@@ -64,7 +67,8 @@ public class ProcedureAggregationService {
       Function<BusinessModuleClient, GetRecentProceduresResponse> getRecentProceduresFunction) {
     List<ClientResponse<GetRecentProceduresResponse>> procedureResponses =
         businessModuleAggregationHelper.requestFromBusinessModules(
-            filteringBusinessModules,
+            Optional.ofNullable(filteringBusinessModules)
+                .orElseGet(userService::getSelfBusinessModules),
             BusinessModuleCapability.PROCEDURES,
             getRecentProceduresFunction);
     List<ProcedureDto> aggregatedProcedures = aggregateProcedures(procedureResponses, limit);

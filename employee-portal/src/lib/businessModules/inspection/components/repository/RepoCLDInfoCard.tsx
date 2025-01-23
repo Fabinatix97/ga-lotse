@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/base-api";
 import { ApiChecklistDefinitionVersion } from "@eshg/employee-portal-api/inspection";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";

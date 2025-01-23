@@ -19,6 +19,7 @@ dependencies {
     implementation project(':file-commons')
     implementation project(':lib-aggregation')
     implementation project(':rest-oauth-client-commons')
+    implementation project(':lib-scheduling')
 
     implementation 'com.bucket4j:bucket4j-core:latest.release'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
@@ -35,9 +36,6 @@ dependencies {
     }
 
     implementation 'com.googlecode.ez-vcard:ez-vcard:latest.release'
-    implementation 'net.javacrumbs.shedlock:shedlock-spring:latest.release'
-    implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:latest.release'
-
 
     implementation 'com.opencsv:opencsv:latest.release'
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
@@ -51,6 +49,7 @@ dependencies {
     testImplementation testFixtures(project(":base-api"))
     testImplementation testFixtures(project(':lib-document-generator'))
 
+    testImplementation 'org.apache.commons:commons-csv:latest.release'
     testImplementation 'com.tngtech.archunit:archunit-junit5:latest.release'
     testImplementation('com.squareup.okhttp3:mockwebserver:latest.release') {
         exclude group: "junit", module: "junit"

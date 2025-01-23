@@ -8,11 +8,11 @@ import {
   ApiPostboxAddress,
 } from "@eshg/employee-portal-api/measlesProtection";
 import { Row } from "@eshg/lib-portal/components/Row";
+import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { Stack } from "@mui/joy";
 
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { BaseAddress } from "@/lib/shared/helpers/address";
-import { translateCountry } from "@/lib/shared/helpers/i18n";
 
 interface AddressDetailsProps {
   address?: BaseAddress;

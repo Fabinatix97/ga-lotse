@@ -7,17 +7,21 @@ package de.eshg.dental.domain.model;
 
 import static de.eshg.lib.common.SensitivityLevel.PROTECTED;
 import static de.eshg.lib.common.SensitivityLevel.PSEUDONYMIZED;
+import static de.eshg.lib.common.SensitivityLevel.SENSITIVE;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
+import jakarta.persistence.OrderColumn;
 import java.time.Year;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import org.hibernate.annotations.BatchSize;
@@ -45,6 +49,11 @@ public class Child extends Procedure<Child, ChildTask, Person, Facility> {
   @BatchSize(size = 100)
   @OrderBy
   private final List<Examination> examinations = new ArrayList<>();
+
+  @DataSensitivity(SENSITIVE)
+  @ElementCollection
+  @OrderColumn
+  private final List<FluoridationConsent> fluoridationConsents = new ArrayList<>();
 
   public UUID getChildIdFromCentralFile() {
     return getChild().getCentralFileStateId();
@@ -92,5 +101,20 @@ public class Child extends Procedure<Child, ChildTask, Person, Facility> {
   public void removeExamination(Examination examination) {
     this.examinations.remove(examination);
     examination.setChild(null);
+  }
+
+  public List<FluoridationConsent> getFluoridationConsents() {
+    return fluoridationConsents;
+  }
+
+  public Boolean getCurrentFluoridationConsent() {
+    return fluoridationConsents.stream()
+        .max(Comparator.comparing(FluoridationConsent::dateOfConsent))
+        .map(FluoridationConsent::consented)
+        .orElse(null);
+  }
+
+  public void addFluoridationConsent(FluoridationConsent fluoridationConsent) {
+    this.fluoridationConsents.add(fluoridationConsent);
   }
 }

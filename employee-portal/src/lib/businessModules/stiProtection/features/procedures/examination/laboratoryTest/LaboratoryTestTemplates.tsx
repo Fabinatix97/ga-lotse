@@ -80,8 +80,7 @@ export function mapLaboratoryTestFormDataToApi(
   }
 }
 
-export interface HepatitisLaboratoryTestData
-  extends Omit<LaboratoryTestData, "result"> {
+export interface HepatitisLaboratoryTestData extends LaboratoryTestData {
   infection?: boolean;
   vaccineTitre?: boolean;
 }
@@ -90,6 +89,7 @@ export const defaultHepatitisLaboratoryTestFormData = {
   infection: false,
   vaccineTitre: false,
   value: "",
+  result: null,
   remark: "",
 };
 
@@ -103,6 +103,7 @@ export function mapApiHepatitisLaboratoryTestToFormData(
     infection: responseData.infection ?? false,
     vaccineTitre: responseData.vaccineTitre ?? false,
     value: responseData.value ?? "",
+    result: mapBoolToYesOrNo(responseData.result),
     remark: responseData.remark ?? "",
   };
 }
@@ -118,6 +119,7 @@ export function mapHepatitisLaboratoryTestFormDataToApi(
     infection: mapOptionalBool(formData.infection),
     vaccineTitre: mapOptionalBool(formData.vaccineTitre),
     value: mapOptionalString(formData.value),
+    result: mapYesOrNoToBool(formData.result ?? ""),
     remark: mapOptionalString(formData.remark),
   };
 
@@ -257,7 +259,11 @@ export function LaboratoryTestWithBooleanResult(
           negativeLabel={"Negativ"}
           positiveLabel={positiveFieldLabel}
         />
-        <InputField name={`${dataPath}.value`} label={"Wert"} />
+        <InputField
+          sx={{ gridColumn: 2 }}
+          name={`${dataPath}.value`}
+          label={"Wert"}
+        />
       </SubRow>
       <TextareaField
         sx={{ gridColumn: 1 }}
@@ -288,18 +294,22 @@ export function HepatitisLaboratoryTest(props: HepatitsLaboratoryTestProps) {
 
   return (
     <LaboratoryTest label={label} testRequestedPath={testRequestedPath}>
-      <SubRow>
-        <CheckboxField
-          sx={{ justifyItems: "center" }}
-          name={`${dataPath}.infection`}
-          label={"Infektion"}
+      <SubRow sx={{ gridColumn: 1 }}>
+        <YesOrNoWithFollowUp
+          name={`${dataPath}.result`}
+          label={"Ergebnis"}
+          negativeLabel={"Negativ"}
+          positiveLabel={"Positiv"}
         />
-        <CheckboxField name={`${dataPath}.vaccineTitre`} label={"Impftiter"} />
         <InputField
-          sx={{ gridColumn: 3 }}
+          sx={{ gridColumn: 2 }}
           name={`${dataPath}.value`}
           label={"Wert"}
         />
+      </SubRow>
+      <SubRow sx={{ gridColumn: 1, display: "flex" }}>
+        <CheckboxField name={`${dataPath}.infection`} label={"Infektion"} />
+        <CheckboxField name={`${dataPath}.vaccineTitre`} label={"Impftiter"} />
       </SubRow>
       <TextareaField
         sx={{ gridColumn: 1 }}

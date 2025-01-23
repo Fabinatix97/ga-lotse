@@ -9,7 +9,7 @@ import {
   ApiTaskStatus,
   ApiTaskType,
   ApiUser,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import {
   ApiManualProgressEntryType,
   ApiProgressEntryClass,

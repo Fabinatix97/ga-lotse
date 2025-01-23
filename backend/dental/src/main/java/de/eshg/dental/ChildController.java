@@ -26,8 +26,10 @@ import de.eshg.dental.business.model.ChildWithAugmentedData;
 import de.eshg.dental.business.model.PagedChildren;
 import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
+import de.eshg.dental.domain.model.FluoridationConsent;
 import de.eshg.dental.mapper.ChildMapper;
 import de.eshg.dental.mapper.ExaminationMapper;
+import de.eshg.lib.procedure.api.ProcedureSearchParameters;
 import de.eshg.lib.procedure.util.ProcedureValidator;
 import de.eshg.lib.xlsximport.TransactionalWithTimeoutForFileImports;
 import de.eshg.lib.xlsximport.model.ImportResult;
@@ -93,9 +95,13 @@ public class ChildController {
   public GetChildrenResponse getChildren(
       @InlineParameterObject @ParameterObject @Valid ChildFilterParameters filterParameters,
       @InlineParameterObject @ParameterObject @Valid
-          ChildPaginationAndSortParameters paginationAndSortParameters) {
+          ChildPaginationAndSortParameters paginationAndSortParameters,
+      @InlineParameterObject @ParameterObject @Valid ProcedureSearchParameters searchParameters) {
+    Validator.validateOnlyOneOfSearchAndFilterParametersAreSet(filterParameters, searchParameters);
+    ProcedureValidator.validateSearchParametersAreComplete(searchParameters);
+
     PagedChildren pagedChildren =
-        childService.getChildren(filterParameters, paginationAndSortParameters);
+        childService.getChildren(filterParameters, paginationAndSortParameters, searchParameters);
     return new GetChildrenResponse(
         pagedChildren.stream().map(ChildMapper::mapChildToDto).toList(),
         pagedChildren.totalNumberOfChildren());
@@ -125,6 +131,7 @@ public class ChildController {
 
     ProcedureValidator.validateProcedureStatusNotClosed(child);
     validator.validateInstitution(request.institutionId());
+    validator.validateFluoridationConsent(request.fluoridationConsent());
     childService.update(child, request);
     return getChildDetails(child);
   }
@@ -134,13 +141,16 @@ public class ChildController {
         childService.getChildAndAllPreviousChildren(child);
 
     List<Examination> examinations = childService.getAllExaminations(childAndAllPreviousChildren);
+    List<FluoridationConsent> fluoridationConsents =
+        childService.getAllFluoridationConsents(childAndAllPreviousChildren);
 
     List<AnnualInstitutionDto> institutions =
         childService.getAllInstitutions(childAndAllPreviousChildren);
 
     ChildWithAugmentedData augmentedChildData = childService.augmentWithDetails(child);
 
-    return ChildMapper.mapToChildDetailsDto(augmentedChildData, examinations, institutions);
+    return ChildMapper.mapToChildDetailsDto(
+        augmentedChildData, examinations, fluoridationConsents, institutions);
   }
 
   @GetMapping("/examination/{examinationId}")

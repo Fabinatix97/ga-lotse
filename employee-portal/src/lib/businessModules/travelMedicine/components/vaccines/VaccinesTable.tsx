@@ -5,14 +5,12 @@
 
 "use client";
 
-import { ApiTravelMedicineFeature } from "@eshg/employee-portal-api/travelMedicine";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { useDeleteVaccine } from "@/lib/businessModules/travelMedicine/api/mutations/vaccines";
 import { useGetAllDiseasesQuery } from "@/lib/businessModules/travelMedicine/api/queries/diseaseApi";
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/travelMedicine/api/queries/featureToggles";
 import {
   useGetAllVaccinesQuery,
   useGetUnusedInventoryVaccinesQuery,
@@ -37,9 +35,6 @@ export function VaccinesTable() {
       useGetAllDiseasesQuery(),
     ],
   });
-  const defaultBatchIdEnabled = useIsNewFeatureEnabled(
-    ApiTravelMedicineFeature.DefaultBatchId,
-  );
 
   const vaccineSidebar = useVaccineSidebar();
 
@@ -76,7 +71,6 @@ export function VaccinesTable() {
                     unusedInventoryVaccines:
                       unusedInventoryVaccines.inventoryVaccineWithoutRmbiVaccineList,
                     allDiseases: allDiseases,
-                    defaultBatchIdEnabled: defaultBatchIdEnabled,
                   })
                 }
               >
@@ -97,9 +91,7 @@ export function VaccinesTable() {
                   unusedInventoryVaccines:
                     unusedInventoryVaccines.inventoryVaccineWithoutRmbiVaccineList,
                   allDiseases: allDiseases,
-                  defaultBatchIdEnabled: defaultBatchIdEnabled,
                 }),
-              defaultBatchIdEnabled: defaultBatchIdEnabled,
             })}
           />
         </TableSheet>

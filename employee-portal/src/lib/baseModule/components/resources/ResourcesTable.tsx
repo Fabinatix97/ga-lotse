@@ -5,10 +5,7 @@
 
 "use client";
 
-import {
-  ApiUserRole,
-  GetResourcesRequest,
-} from "@eshg/employee-portal-api/base";
+import { ApiUserRole, GetResourcesRequest } from "@eshg/base-api";
 import AddIcon from "@mui/icons-material/Add";
 import { Button, Stack } from "@mui/joy";
 

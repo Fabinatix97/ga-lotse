@@ -47,7 +47,7 @@ public class BundIdPersonLinkController implements BundIdPersonLinkApi {
             .findByExternalId(request.referencePersonId())
             .orElseThrow(() -> new NotFoundException(PersonController.REFERENCE_PERSON_NOT_FOUND));
 
-    bundIdPersonLinkService.addBundIdPersonLink(request.bundId(), refPerson);
+    bundIdPersonLinkService.addBundIdPersonLink(request.bpk2(), refPerson);
   }
 
   @Override
@@ -55,8 +55,8 @@ public class BundIdPersonLinkController implements BundIdPersonLinkApi {
   public GetReferencePersonResponse getReferencePersonLinkedToBundIdSelfUser() {
     featureToggle.assertNewFeatureIsEnabled(BaseFeature.BUNDID_PERSON_LINK);
 
-    String bundId = bundIdPersonLinkService.getBundIdSelfUserId();
-    Person referencePerson = bundIdPersonLinkService.getReferencePersons(bundId);
+    String bpk2 = bundIdPersonLinkService.getBundIdSelfUserBPK2();
+    Person referencePerson = bundIdPersonLinkService.getReferencePerson(bpk2);
 
     return PersonMapper.mapReferencePersonToApi(referencePerson);
   }

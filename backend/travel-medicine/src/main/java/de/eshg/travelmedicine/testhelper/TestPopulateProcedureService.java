@@ -6,7 +6,6 @@
 package de.eshg.travelmedicine.testhelper;
 
 import static de.eshg.lib.procedure.model.ProcedureStatusDto.*;
-import static de.eshg.travelmedicine.featuretoggle.TravelMedicineFeature.CITIZEN_PORTAL_INFORMATION_STATEMENT;
 import static de.eshg.travelmedicine.testhelper.TestHelperUtil.answerDocumentContent;
 
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
@@ -23,7 +22,6 @@ import de.eshg.travelmedicine.citizenauth.api.PatchInformationStatementRequest;
 import de.eshg.travelmedicine.citizenpublic.api.PostCitizenVaccinationConsultationRequest;
 import de.eshg.travelmedicine.document.api.DocumentContentDto;
 import de.eshg.travelmedicine.document.informationstatement.InformationStatementService;
-import de.eshg.travelmedicine.featuretoggle.TravelMedicineFeatureToggle;
 import de.eshg.travelmedicine.testhelper.api.CertificatePopulationDto;
 import de.eshg.travelmedicine.testhelper.api.CitizenPortalCredentialsDto;
 import de.eshg.travelmedicine.testhelper.api.InformationStatementPopulationDto;
@@ -73,7 +71,6 @@ public class TestPopulateProcedureService {
 
   private final CitizenAccessCodeUserClient citizenAccessCodeUserClient;
   private final UserApi userApi;
-  private final TravelMedicineFeatureToggle featureToggle;
   private final SecurityContextHolderStrategy securityContextHolderStrategy =
       SecurityContextHolder.getContextHolderStrategy();
 
@@ -85,8 +82,7 @@ public class TestPopulateProcedureService {
       CertificateService certificateService,
       InformationStatementService informationStatementService,
       UserApi userApi,
-      CitizenAccessCodeUserClient citizenAccessCodeUserClient,
-      TravelMedicineFeatureToggle featureToggle) {
+      CitizenAccessCodeUserClient citizenAccessCodeUserClient) {
     this.vaccinationConsultationService = vaccinationConsultationService;
     this.vaccinationConsultationRepository = vaccinationConsultationRepository;
     this.procedureStepService = procedureStepService;
@@ -95,7 +91,6 @@ public class TestPopulateProcedureService {
     this.informationStatementService = informationStatementService;
     this.citizenAccessCodeUserClient = citizenAccessCodeUserClient;
     this.userApi = userApi;
-    this.featureToggle = featureToggle;
   }
 
   @Transactional
@@ -379,8 +374,7 @@ public class TestPopulateProcedureService {
       UUID citizenUserId,
       List<InformationStatementPopulationDto> informationStatementPopulations) {
     Map<String, UUID> informationStatementMap = new LinkedHashMap<>();
-    if (featureToggle.isNewFeatureEnabled(CITIZEN_PORTAL_INFORMATION_STATEMENT)
-        && informationStatementPopulations != null) {
+    if (informationStatementPopulations != null) {
       informationStatementPopulations.forEach(
           informationStatementPopulationDto -> {
             UUID informationStatementId =

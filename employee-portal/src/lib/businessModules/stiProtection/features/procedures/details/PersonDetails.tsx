@@ -4,7 +4,7 @@
  */
 
 import { ApiStiProtectionProcedure } from "@eshg/employee-portal-api/stiProtection";
-import { COUNTRY_CODE_LABELS } from "@eshg/lib-portal/components/formFields/countryCodes";
+import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { Sheet, Stack } from "@mui/joy";
 
 import { GENDER_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";
@@ -20,7 +20,9 @@ import { EDIT_PERSONAL_DATA_SEARCH_PARAM } from "./EditPersonalDataSidebar";
 
 export function PersonDetails({
   procedure,
-}: Readonly<{ procedure: ApiStiProtectionProcedure }>) {
+}: Readonly<{
+  procedure: ApiStiProtectionProcedure;
+}>) {
   const [_isOpenEditPersonDetails, setIsOpenEditPersonDetails] = useSearchParam(
     EDIT_PERSONAL_DATA_SEARCH_PARAM,
     "boolean",
@@ -60,7 +62,7 @@ export function PersonDetails({
               label="Geburtsland"
               value={
                 procedure.person.countryOfBirth
-                  ? COUNTRY_CODE_LABELS[procedure.person.countryOfBirth]
+                  ? translateCountry(procedure.person.countryOfBirth)
                   : undefined
               }
             />

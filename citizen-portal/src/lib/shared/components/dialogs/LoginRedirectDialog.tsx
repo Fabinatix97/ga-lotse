@@ -42,7 +42,13 @@ export function LoginRedirectDialog(props: Readonly<LoginRedirectDialogProps>) {
         >
           {t("translation:common.cancel")}
         </Button>
-        <InternalLinkButton href={routes.organizationPath.mukPortal.overview}>
+        <InternalLinkButton
+          href={
+            props.type === "organization"
+              ? routes.organizationPath.mukPortal.overview
+              : routes.citizenPath.bundIdPortal.overview
+          }
+        >
           {dialogText("submit")}
         </InternalLinkButton>
       </Stack>

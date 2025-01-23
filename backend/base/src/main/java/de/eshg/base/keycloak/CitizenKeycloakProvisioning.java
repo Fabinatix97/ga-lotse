@@ -73,7 +73,8 @@ public class CitizenKeycloakProvisioning extends KeycloakProvisioning<CitizenKey
     createOrUpdateIdentityProviders();
     CitizenPermissionRole[] permissionRoles = CitizenPermissionRole.values();
     createOrUpdateRoles(permissionRoles);
-    createOrUpdateEshgClientScope(permissionRoles);
+    createOrUpdateEshgClientScope(
+        List.of(getBundIdBpk2Mapper(), getMukDataTransmitterPseudonymIdMapper()), permissionRoles);
     disableDefaultClients();
     createOrUpdateClients();
     createOrUpdateDefaultRoleComposites();
@@ -271,43 +272,44 @@ public class CitizenKeycloakProvisioning extends KeycloakProvisioning<CitizenKey
     identityProvider.setAlias(idpAlias);
     identityProvider.setDisplayName(idpDisplayName);
     identityProvider.setProviderId("saml");
-    identityProvider.setConfig(
-        Map.ofEntries(
-            entry("allowCreate", TRUE),
-            entry(
-                "entityId",
-                "%s/realms/%s"
-                    .formatted(keycloakProperties.url(), keycloakProperties.citizenRealm().name())),
-            entry("idpEntityId", idpConfig.entityId()),
-            entry("singleSignOnServiceUrl", idpConfig.singleSignOnServiceUrl()),
-            entry("singleLogoutServiceUrl", idpConfig.singleLogoutServiceUrl()),
-            entry("backchannelSupported", FALSE),
-            entry("nameIDPolicyFormat", nameIdPolicy.policyFormat()),
-            entry("principalType", nameIdPolicy.principalType()),
-            entry("postBindingResponse", TRUE),
-            entry("postBindingAuthnRequest", TRUE),
-            entry("postBindingLogout", TRUE),
-            entry("wantAuthnRequestsSigned", TRUE),
-            entry("wantAssertionsSigned", FALSE),
-            entry("wantAssertionsEncrypted", TRUE),
-            entry("forceAuthn", FALSE),
-            entry("validateSignature", TRUE),
-            entry("signSpMetadata", TRUE),
-            entry("loginHint", FALSE),
-            entry("allowedClockSkew", String.valueOf(0)),
-            entry("attributeConsumingServiceIndex", String.valueOf(0)),
-            entry("signingCertificate", idpConfig.signingCertificate()),
-            entry("signatureAlgorithm", idpConfig.signatureAlgorithm()),
-            entry("encryptionAlgorithm", idpConfig.encryptionAlgorithm()),
-            entry("xmlSigKeyInfoKeyNameTransformer", "KEY_ID"),
-            entry("addExtensionsElementWithKeyInfo", FALSE),
-            entry(SYNC_MODE, "FORCE")));
+    Map<String, String> config =
+        new LinkedHashMap<>(
+            Map.ofEntries(
+                entry("allowCreate", TRUE),
+                entry(
+                    "entityId",
+                    "%s/realms/%s"
+                        .formatted(
+                            keycloakProperties.url(), keycloakProperties.citizenRealm().name())),
+                entry("idpEntityId", idpConfig.entityId()),
+                entry("singleSignOnServiceUrl", idpConfig.singleSignOnServiceUrl()),
+                entry("backchannelSupported", FALSE),
+                entry("nameIDPolicyFormat", nameIdPolicy.policyFormat()),
+                entry("principalType", nameIdPolicy.principalType()),
+                entry("postBindingResponse", TRUE),
+                entry("postBindingAuthnRequest", TRUE),
+                entry("postBindingLogout", TRUE),
+                entry("wantAuthnRequestsSigned", TRUE),
+                entry("wantAssertionsSigned", FALSE),
+                entry("wantAssertionsEncrypted", TRUE),
+                entry("forceAuthn", TRUE),
+                entry("validateSignature", TRUE),
+                entry("signSpMetadata", TRUE),
+                entry("loginHint", FALSE),
+                entry("allowedClockSkew", String.valueOf(0)),
+                entry("attributeConsumingServiceIndex", String.valueOf(0)),
+                entry("signingCertificate", idpConfig.signingCertificate()),
+                entry("signatureAlgorithm", idpConfig.signatureAlgorithm()),
+                entry("encryptionAlgorithm", idpConfig.encryptionAlgorithm()),
+                entry("xmlSigKeyInfoKeyNameTransformer", "KEY_ID"),
+                entry("addExtensionsElementWithKeyInfo", FALSE),
+                entry(SYNC_MODE, "FORCE")));
 
     if (StringUtils.isNotBlank(nameIdPolicy.principalAttribute())) {
-      Map<String, String> config = new LinkedHashMap<>(identityProvider.getConfig());
       config.put("principalAttribute", nameIdPolicy.principalAttribute());
-      identityProvider.setConfig(config);
     }
+
+    identityProvider.setConfig(config);
     return identityProvider;
   }
 

@@ -5,19 +5,10 @@
 
 "use client";
 
-import { ApiTravelMedicineFeature } from "@eshg/employee-portal-api/travelMedicine";
-
 import { InformationStatementsTable } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/informationStatements/InformationStatementsTable";
-import { ToggledPage } from "@/lib/businessModules/travelMedicine/shared/ToggledPage";
 
 export default function InformationStatementsPage({
   params,
 }: Readonly<{ params: { id: string } }>) {
-  return (
-    <ToggledPage
-      feature={ApiTravelMedicineFeature.CitizenPortalInformationStatement}
-    >
-      <InformationStatementsTable procedureId={params.id} />
-    </ToggledPage>
-  );
+  return <InformationStatementsTable procedureId={params.id} />;
 }

@@ -11,6 +11,7 @@ import de.eshg.base.centralfile.api.facility.FacilityDetailsDto;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
 import de.eshg.officialmedicalservice.procedure.api.FacilityDto;
+import de.eshg.officialmedicalservice.procedure.api.FacilitySyncDto;
 
 public class FacilityMapper {
 
@@ -55,6 +56,10 @@ public class FacilityMapper {
         facilityFileState.emailAddresses(),
         facilityFileState.phoneNumbers(),
         facilityFileState.contactPersons(),
-        facilityFileState.contactAddress());
+        facilityFileState.contactAddress(),
+        new FacilitySyncDto(
+            facilityFileState.id(),
+            facilityFileState.referenceVersion(),
+            facilityFileState.outdated()));
   }
 }

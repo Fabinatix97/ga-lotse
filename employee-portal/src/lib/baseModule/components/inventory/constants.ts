@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiInventoryItemType } from "@eshg/employee-portal-api/base";
+import { ApiInventoryItemType } from "@eshg/base-api";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 
 export const inventoryItemTypeNames = {

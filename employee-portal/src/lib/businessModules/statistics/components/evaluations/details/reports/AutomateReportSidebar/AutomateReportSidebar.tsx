@@ -8,7 +8,10 @@ import {
   ReportingPeriod,
 } from "@/lib/businessModules/statistics/api/models/reportSeriesTypes";
 import { useAddAutoReportSeries } from "@/lib/businessModules/statistics/api/mutations/useAddAutoReportSeries";
-import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
+import {
+  SidebarStepper,
+  createStepContent,
+} from "@/lib/shared/components/SidebarStepper/SidebarStepper";
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
@@ -49,18 +52,17 @@ function AutomateReportSidebar({
   return (
     <SidebarStepper
       onClose={onClose}
-      onSubmit={(model) => addAutoReportSeries(evaluationId, model)}
-      initialValues={initialValues}
       formRef={formRef}
       saveLabel="Speichern"
+      onSubmit={(model) => addAutoReportSeries(evaluationId, model[0])}
       steps={[
-        {
-          type: "StandardStep",
-          step: {
-            title: "Report automatisieren",
-            content: <AutomateReportStep />,
-          },
-        },
+        () => ({
+          title: "Report automatisieren",
+          content: createStepContent({
+            component: AutomateReportStep,
+          }),
+          initialValues,
+        }),
       ]}
     />
   );

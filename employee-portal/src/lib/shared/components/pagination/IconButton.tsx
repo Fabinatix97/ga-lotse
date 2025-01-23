@@ -5,14 +5,13 @@
 
 import { ButtonProps, IconButton as JoyIconButton } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
-import { CSSProperties, PropsWithChildren } from "react";
+import { PropsWithChildren } from "react";
 
 export function IconButton(
   props: PropsWithChildren<{
     disabled: boolean;
     label: string;
     onClick: () => void;
-    style?: CSSProperties;
     sx?: SxProps;
     variant?: ButtonProps["variant"];
   }>,
@@ -25,7 +24,6 @@ export function IconButton(
       variant={props.variant ?? "soft"}
       size="sm"
       onClick={props.onClick}
-      style={props.style}
       sx={props.sx}
     >
       {props.children}

@@ -9,7 +9,7 @@ import {
   ApiResource,
   ApiResourceType,
   ApiResourceTypeFromJSON,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import type { ApiInspectionTravelTime } from "@eshg/employee-portal-api/inspection";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";

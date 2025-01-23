@@ -124,7 +124,7 @@ public class DataAggregationService {
     }
 
     Map<Integer, Attribute> indexToBaseReferenceAttribute =
-        findCentralFileColumns(dataFromBusinessModule.dataTableHeader());
+        findBaseModuleIdColumns(dataFromBusinessModule.dataTableHeader());
 
     Map<String, List<String>> codeToBaseAttributeCodes =
         dataSource.attributeCodes().stream()
@@ -195,11 +195,11 @@ public class DataAggregationService {
     return getSpecificDataResponse;
   }
 
-  private static Map<Integer, Attribute> findCentralFileColumns(DataTableHeader dataTableHeader) {
+  private static Map<Integer, Attribute> findBaseModuleIdColumns(DataTableHeader dataTableHeader) {
     return IntStream.range(0, dataTableHeader.attributes().size())
         .filter(
             index ->
-                DataSourceAggregationService.isCentralFileId(
+                DataSourceAggregationService.isBaseModuleId(
                     dataTableHeader.attributes().get(index).valueType()))
         .boxed()
         .collect(Collectors.toMap(index -> index, dataTableHeader.attributes()::get));
@@ -214,13 +214,13 @@ public class DataAggregationService {
     indexToBaseReferenceAttribute.forEach(
         (key, value) -> {
           List<String> baseAttributeCodes = codeToBaseAttributeCodes.get(value.code());
-          if (DataSourceAggregationService.isCentralFileId(value.valueType())) {
+          if (DataSourceAggregationService.isBaseModuleId(value.valueType())) {
             if (baseAttributeCodes == null || baseAttributeCodes.isEmpty()) {
               indexToDataFromBase.put(
                   key,
                   new BaseStatisticsData(new BaseDataTableHeader(Collections.emptyList()), null));
             } else {
-              List<UUID> centralFileIds =
+              List<UUID> baseModuleIds =
                   dataRows.stream()
                       .map(dataRow -> mapToUuid(dataRow.values().get(key)))
                       .filter(Objects::nonNull)
@@ -228,7 +228,7 @@ public class DataAggregationService {
               SubjectType subjectType =
                   DataSourceAggregationService.mapToSubjectType(value.valueType());
               indexToDataFromBase.put(
-                  key, retrieveDataFromBase(subjectType, baseAttributeCodes, centralFileIds));
+                  key, retrieveDataFromBase(subjectType, baseAttributeCodes, baseModuleIds));
             }
           }
         });
@@ -251,9 +251,9 @@ public class DataAggregationService {
   }
 
   private BaseStatisticsData retrieveDataFromBase(
-      SubjectType subjectType, List<String> attributeCodes, List<UUID> centralFileIds) {
+      SubjectType subjectType, List<String> attributeCodes, List<UUID> baseModuleIds) {
     GetBaseStatisticsDataRequest baseStatisticsDataRequest =
-        new GetBaseStatisticsDataRequest(subjectType.name(), attributeCodes, centralFileIds);
+        new GetBaseStatisticsDataRequest(subjectType.name(), attributeCodes, baseModuleIds);
 
     GetBaseStatisticsDataResponse specificData =
         baseModuleStatisticsApi.getSpecificData(baseStatisticsDataRequest);
@@ -350,7 +350,7 @@ public class DataAggregationService {
         baseAttributes.stream()
             .filter(
                 baseAttribute ->
-                    !DataSourceAggregationService.isCentralFileId(baseAttribute.valueType()))
+                    !DataSourceAggregationService.isBaseModuleId(baseAttribute.valueType()))
             .toList();
     if (responseBaseAttributes.isEmpty()) {
       return Collections.emptyList();
@@ -393,7 +393,7 @@ public class DataAggregationService {
         dataNeedsAnonymization, dataFromBusinessModule, aggregationResult.getDataSensitivity());
 
     Map<Integer, Attribute> indexToBaseReferenceAttribute =
-        findCentralFileColumns(dataFromBusinessModule.dataTableHeader());
+        findBaseModuleIdColumns(dataFromBusinessModule.dataTableHeader());
 
     Map<String, List<String>> codeToBaseAttributeCodes =
         getCodeToBaseAttributeCodesMap(aggregationResult.getTableColumns());
@@ -425,13 +425,21 @@ public class DataAggregationService {
       relevantDataRows = Collections.emptyList();
     }
 
+    MergeInformation mergeInformation =
+        createMergeInformation(
+            dataFromBusinessModule.dataTableHeader(),
+            indexToBaseReferenceAttribute,
+            indexToBaseData);
+    Map<Integer, Map<UUID, DataRow>> indexToBaseModuleIdRows =
+        createIndexToBaseModuleIdRows(indexToBaseData);
+
     for (DataRow dataRow : relevantDataRows) {
-      createAndAddTableRow(
-          aggregationResult,
-          dataFromBusinessModule.dataTableHeader(),
-          dataRow,
-          indexToBaseReferenceAttribute,
-          indexToBaseData);
+      aggregationResult.addTableRow(
+          createMergedTableRow(
+              dataRow,
+              indexToBaseModuleIdRows,
+              mergeInformation,
+              aggregationResult.getTableColumns()));
     }
 
     aggregationResult.setNumberOfTableRows(tableRowsCount + relevantDataRows.size());
@@ -567,10 +575,8 @@ public class DataAggregationService {
     }
   }
 
-  private void createAndAddTableRow(
-      AbstractAggregationResult aggregationResult,
+  private static MergeInformation createMergeInformation(
       DataTableHeader dataTableHeader,
-      DataRow dataRow,
       Map<Integer, Attribute> indexToBaseReferenceAttribute,
       Map<Integer, BaseStatisticsData> indexToBaseData) {
     MergeInformation mergeInformation =
@@ -592,7 +598,7 @@ public class DataAggregationService {
                       baseAttributes.stream()
                           .filter(
                               baseAttribute ->
-                                  !DataSourceAggregationService.isCentralFileId(
+                                  !DataSourceAggregationService.isBaseModuleId(
                                       baseAttribute.valueType()))
                           .toList()
                           .size();
@@ -601,54 +607,50 @@ public class DataAggregationService {
               }
             });
 
-    Map<Integer, Map<UUID, DataRow>> indexToCentralFileIdRows =
-        indexToBaseData.entrySet().stream()
-            .collect(
-                Collectors.toMap(
-                    Map.Entry::getKey,
-                    entry ->
-                        createCentralFileIdMap(
-                            entry.getValue().dataTableHeader().attributes(),
-                            entry.getValue().dataRows())));
-
-    aggregationResult.addTableRow(
-        createMergedTableRow(
-            dataRow,
-            indexToCentralFileIdRows,
-            mergeInformation,
-            aggregationResult.getTableColumns()));
+    return mergeInformation;
   }
 
-  private Map<UUID, DataRow> createCentralFileIdMap(
+  private static Map<Integer, Map<UUID, DataRow>> createIndexToBaseModuleIdRows(
+      Map<Integer, BaseStatisticsData> indexToBaseData) {
+    return indexToBaseData.entrySet().stream()
+        .collect(
+            Collectors.toMap(
+                Map.Entry::getKey,
+                entry ->
+                    createBaseModuleIdMap(
+                        entry.getValue().dataTableHeader().attributes(),
+                        entry.getValue().dataRows())));
+  }
+
+  private static Map<UUID, DataRow> createBaseModuleIdMap(
       List<BaseAttribute> attributes, List<DataRow> dataRows) {
     if (dataRows == null) {
       return new HashMap<>();
     }
 
-    int indexCentralFileId = getIndexCentralFileId(attributes);
-    Map<UUID, DataRow> centralFileIdToRow = new HashMap<>();
+    int indexBaseModuleId = getIndexBaseModuleId(attributes);
+    Map<UUID, DataRow> baseModuleIdToRow = new HashMap<>();
     dataRows.forEach(
         row -> {
           List<Object> objects = new ArrayList<>(row.values());
-          UUID uuid = mapToUuid(objects.remove(indexCentralFileId));
-          centralFileIdToRow.put(uuid, new DataRow(objects));
+          UUID uuid = mapToUuid(objects.remove(indexBaseModuleId));
+          baseModuleIdToRow.put(uuid, new DataRow(objects));
         });
 
-    return centralFileIdToRow;
+    return baseModuleIdToRow;
   }
 
-  private static int getIndexCentralFileId(List<BaseAttribute> attributes) {
+  private static int getIndexBaseModuleId(List<BaseAttribute> attributes) {
     return IntStream.range(0, attributes.size())
         .filter(
-            index ->
-                DataSourceAggregationService.isCentralFileId(attributes.get(index).valueType()))
+            index -> DataSourceAggregationService.isBaseModuleId(attributes.get(index).valueType()))
         .findFirst()
         .orElse(-1);
   }
 
   private static TableRow createMergedTableRow(
       DataRow dataRow,
-      Map<Integer, Map<UUID, DataRow>> indexToCentralFileIdRows,
+      Map<Integer, Map<UUID, DataRow>> indexToBaseModuleIdRows,
       MergeInformation mergeInformation,
       List<TableColumn> tableColumns) {
     List<Object> values = new ArrayList<>();
@@ -657,7 +659,7 @@ public class DataAggregationService {
             index -> {
               Object value = dataRow.values().get(index);
               if (mergeInformation.baseReferenceIndexes().contains(index)) {
-                Map<UUID, DataRow> uuidDataRowMap = indexToCentralFileIdRows.get(index);
+                Map<UUID, DataRow> uuidDataRowMap = indexToBaseModuleIdRows.get(index);
                 UUID uuid = mapToUuid(value);
                 if (uuid == null || uuidDataRowMap.get(uuid) == null) {
                   addNullValues(values, mergeInformation.indexToNumberOfBaseColumns.get(index));
@@ -694,7 +696,7 @@ public class DataAggregationService {
           case DECIMAL -> createDecimalEntry(value);
           case INTEGER -> createIntegerEntry(value);
           case TEXT, VALUE_WITH_OPTIONS -> createTextEntry(value);
-          case PROCEDURE_ID -> createUuidEntry(value);
+          case PROCEDURE_REFERENCE -> createUuidEntry(value);
         };
 
     tableColumn.addCellEntry(cellEntry);
@@ -764,7 +766,7 @@ public class DataAggregationService {
             case DECIMAL -> determineNullUnknownValuesDecimal(tableColumn);
             case INTEGER -> determineNullUnknownValuesInteger(tableColumn);
             case TEXT, VALUE_WITH_OPTIONS -> determineNullUnknownValuesText(tableColumn);
-            case PROCEDURE_ID -> null;
+            case PROCEDURE_REFERENCE -> null;
           };
       tableColumn.setMinMaxNullUnknownValues(minMaxNullUnknownValues);
     }

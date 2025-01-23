@@ -1,0 +1,44 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1736778365065-1">
+    <renameColumn tableName="development_screening_abdomen_icd10codes" oldColumnName="abdomen_icd10codes" newColumnName="icd10_code"/>
+    <renameColumn tableName="development_screening_chronic_disease_icd10codes" oldColumnName="chronic_disease_icd10codes" newColumnName="icd10_code"/>
+    <renameColumn tableName="development_screening_disability_icd10codes" oldColumnName="disability_icd10codes" newColumnName="icd10_code"/>
+    <renameColumn tableName="development_screening_ear_nose_throat_icd10codes" oldColumnName="ear_nose_throat_icd10codes" newColumnName="icd10_code"/>
+    <renameColumn tableName="development_screening_metabolism_icd10codes" oldColumnName="metabolism_icd10codes" newColumnName="icd10_code"/>
+    <renameColumn tableName="development_screening_musculature_skeleton_icd10codes" oldColumnName="musculature_skeleton_icd10codes" newColumnName="icd10_code"/>
+    <renameColumn tableName="development_screening_neurology_icd10codes" oldColumnName="neurology_icd10codes" newColumnName="icd10_code"/>
+    <renameColumn tableName="development_screening_nutritional_condition_icd10codes" oldColumnName="nutritional_condition_icd10codes" newColumnName="icd10_code"/>
+    <renameColumn tableName="development_screening_respiratory_cardiovascular_icd10codes" oldColumnName="respiratory_cardiovascular_icd10codes" newColumnName="icd10_code"/>
+    <renameColumn tableName="development_screening_skin_icd10codes" oldColumnName="skin_icd10codes" newColumnName="icd10_code"/>
+
+    <sql>delete from development_screening_abdomen_icd10codes where icd10_code is null</sql>
+    <sql>delete from development_screening_chronic_disease_icd10codes where icd10_code is null</sql>
+    <sql>delete from development_screening_disability_icd10codes where icd10_code is null</sql>
+    <sql>delete from development_screening_ear_nose_throat_icd10codes where icd10_code is null</sql>
+    <sql>delete from development_screening_metabolism_icd10codes where icd10_code is null</sql>
+    <sql>delete from development_screening_musculature_skeleton_icd10codes where icd10_code is null</sql>
+    <sql>delete from development_screening_neurology_icd10codes where icd10_code is null</sql>
+    <sql>delete from development_screening_nutritional_condition_icd10codes where icd10_code is null</sql>
+    <sql>delete from development_screening_respiratory_cardiovascular_icd10codes where icd10_code is null</sql>
+    <sql>delete from development_screening_skin_icd10codes where icd10_code is null</sql>
+
+    <addNotNullConstraint tableName="development_screening_abdomen_icd10codes" columnName="icd10_code" columnDataType="clob"/>
+    <addNotNullConstraint tableName="development_screening_chronic_disease_icd10codes" columnName="icd10_code" columnDataType="clob"/>
+    <addNotNullConstraint tableName="development_screening_disability_icd10codes" columnName="icd10_code" columnDataType="clob"/>
+    <addNotNullConstraint tableName="development_screening_ear_nose_throat_icd10codes" columnName="icd10_code" columnDataType="clob"/>
+    <addNotNullConstraint tableName="development_screening_metabolism_icd10codes" columnName="icd10_code" columnDataType="clob"/>
+    <addNotNullConstraint tableName="development_screening_musculature_skeleton_icd10codes" columnName="icd10_code" columnDataType="clob"/>
+    <addNotNullConstraint tableName="development_screening_neurology_icd10codes" columnName="icd10_code" columnDataType="clob"/>
+    <addNotNullConstraint tableName="development_screening_nutritional_condition_icd10codes" columnName="icd10_code" columnDataType="clob"/>
+    <addNotNullConstraint tableName="development_screening_respiratory_cardiovascular_icd10codes" columnName="icd10_code" columnDataType="clob"/>
+    <addNotNullConstraint tableName="development_screening_skin_icd10codes" columnName="icd10_code" columnDataType="clob"/>
+  </changeSet>
+</databaseChangeLog>

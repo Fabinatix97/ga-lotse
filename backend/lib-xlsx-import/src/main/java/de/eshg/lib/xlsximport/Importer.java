@@ -16,6 +16,7 @@ import static java.util.function.Predicate.not;
 
 import de.eshg.lib.xlsximport.model.ImportResult;
 import de.eshg.lib.xlsximport.model.ImportStatistics;
+import de.eshg.lib.xlsximport.util.ByteArrayFilenameResource;
 import de.eshg.lib.xlsximport.util.XlsxUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,7 +33,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
 public abstract class Importer<R extends RowData<R>, C extends XlsxColumn> {
@@ -165,7 +166,8 @@ public abstract class Importer<R extends RowData<R>, C extends XlsxColumn> {
   private ImportResult mapImportResult() throws IOException {
     try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
       sheet.getWorkbook().write(outputStream);
-      ByteArrayResource resource = new ByteArrayResource(outputStream.toByteArray());
+      Resource resource =
+          new ByteArrayFilenameResource("Datenimport.xlsx", outputStream.toByteArray());
 
       return new ImportResult(stats.mapToDto(), resource);
     }

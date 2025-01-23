@@ -3,7 +3,7 @@
 # https://element-hq.github.io/synapse/latest/usage/configuration/config_documentation.html
 
 server_name: "synapse.local.dev"
-public_baseurl: "http://localhost:8008"
+public_baseurl: "http://localhost:4000/api/synapse"
 
 pid_file: /data/homeserver.pid
 listeners:

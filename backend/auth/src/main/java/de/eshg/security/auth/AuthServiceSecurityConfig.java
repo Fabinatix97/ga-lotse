@@ -132,7 +132,7 @@ public class AuthServiceSecurityConfig {
                     .logoutUrl(LOGOUT_URL)
                     .logoutRequestMatcher(LOGOUT_REQUEST_MATCHER)
                     .logoutSuccessHandler(logoutSuccessHandler(clientRegistrationRepository))
-                    .deleteCookies(LogoutController.CSRF_TOKEN_COOKIE_NAME))
+                    .addLogoutHandler(new LogoutCsrfTokenCookieClearingLogoutHandler()))
         .csrf(
             csrf ->
                 csrf.csrfTokenRepository(csrfTokenRepository)

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import type { ApiGetReferencePersonResponse } from "@eshg/employee-portal-api/base";
+import type { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import { AlertProps } from "@eshg/lib-portal/components/Alert";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { Formik, FormikErrors } from "formik";

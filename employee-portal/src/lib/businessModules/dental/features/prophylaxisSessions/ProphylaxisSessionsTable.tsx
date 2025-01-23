@@ -5,7 +5,8 @@
 
 "use client";
 
-import { ApiProphylaxisSessionSortKey } from "@eshg/employee-portal-api/dental";
+import { ApiProphylaxisSessionSortKey } from "@eshg/dental-api";
+import { routes } from "@eshg/dental/shared/routes";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { useToggleableState } from "@eshg/lib-portal/hooks/useToggleableState";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
@@ -17,7 +18,7 @@ import {
   ProphylaxisSessionFilterSettings,
   ProphylaxisSessionFilters,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/ProphylaxisSessionFilterSettings";
-import { routes } from "@/lib/businessModules/dental/shared/routes";
+import { fluoridationDescription } from "@/lib/businessModules/dental/features/prophylaxisSessions/translations";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { ChipWithTooltip } from "@/lib/shared/components/chip/ChipWithTooltip";
@@ -30,6 +31,7 @@ import {
   getSortDirection,
   getSortKeyWithSpecificMapping,
 } from "@/lib/shared/components/table/sorting";
+import { displayBoolean } from "@/lib/shared/helpers/booleans";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
 const initialSorting: ColumnSort = {
@@ -181,10 +183,30 @@ const COLUMNS = [
       canNavigate: { parentRow: true },
     },
   }),
+  columnHelper.accessor("screening", {
+    header: "Reihenuntersuchung",
+    cell: (props) => displayBoolean(props.getValue()),
+    enableSorting: true,
+    meta: {
+      width: 120,
+      canNavigate: { parentRow: true },
+    },
+  }),
+  columnHelper.accessor("fluoridationVarnish", {
+    header: "Fluoridierung",
+    cell: (props) => fluoridationDescription(props.getValue()),
+    enableSorting: true,
+    meta: {
+      width: 120,
+      canNavigate: { parentRow: true },
+    },
+  }),
 ];
 
 const SORT_KEY_MAPPING: Record<string, ApiProphylaxisSessionSortKey> = {
   dateAndTime: ApiProphylaxisSessionSortKey.DateAndTime,
   groupName: ApiProphylaxisSessionSortKey.GroupName,
   type: ApiProphylaxisSessionSortKey.Type,
+  screening: ApiProphylaxisSessionSortKey.Screening,
+  fluoridationVarnish: ApiProphylaxisSessionSortKey.FluoridationVarnish,
 };

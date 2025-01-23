@@ -69,13 +69,15 @@ public class MukFacilityLinkService {
         .firstAttribute(CitizenUserAttribute.MUK_DATA_TRANSMITTER_PSEUDONYM_ID.getKey());
   }
 
-  public Facility getReferenceFacility(String dataTransmitterPseudonymId) {
-    MukFacilityLink mukFacilityLink =
-        mukFacilityLinkRepository
-            .findByDataTransmitterPseudonymId(dataTransmitterPseudonymId)
-            .orElseThrow(() -> new NotFoundException("Muk Facility Link not found"));
+  public Optional<Facility> getReferenceFacilityGracefully(String dataTransmitterPseudonymId) {
+    return mukFacilityLinkRepository
+        .findByDataTransmitterPseudonymId(dataTransmitterPseudonymId)
+        .map(MukFacilityLink::getReferenceFacility);
+  }
 
-    return mukFacilityLink.getReferenceFacility();
+  public Facility getReferenceFacility(String dataTransmitterPseudonymId) {
+    return getReferenceFacilityGracefully(dataTransmitterPseudonymId)
+        .orElseThrow(() -> new NotFoundException("Muk Facility Link not found"));
   }
 
   private void writeAuditLog(Map<String, String> attributes) {

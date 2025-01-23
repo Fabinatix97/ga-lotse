@@ -29,12 +29,12 @@ import java.util.Set;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 
-public class MedicalRegistryRowReader extends RowReader<MedicalRegistryRow, MedicalRegistryColumn> {
+class MedicalRegistryRowReader extends RowReader<MedicalRegistryRow, MedicalRegistryColumn> {
 
   private static final ValidatorFactory validatorFactory =
       Validation.buildDefaultValidatorFactory();
 
-  protected MedicalRegistryRowReader(Sheet sheet) {
+  MedicalRegistryRowReader(Sheet sheet) {
     super(sheet, Arrays.asList(MedicalRegistryColumn.values()), MedicalRegistryRow::new);
   }
 

@@ -4,40 +4,30 @@
  */
 
 import {
-  ApiChildResult,
+  ApiPerformingPerson,
   ApiProphylaxisSessionDetails,
-} from "@eshg/employee-portal-api/dental";
+} from "@eshg/dental-api";
 
+import { ChildExamination, mapChildExamination } from "./ChildExamination";
 import {
   ProphylaxisSession,
   mapProphylaxisSession,
-} from "@/lib/businessModules/dental/api/models/ProphylaxisSession";
-
-export interface ChildResult {
-  readonly id: string;
-  readonly firstName: string;
-  readonly lastName: string;
-  readonly dateOfBirth: Date;
-  readonly groupName: string;
-}
+} from "./ProphylaxisSession";
 
 export interface ProphylaxisSessionDetails extends ProphylaxisSession {
   version: number;
-  participants: ChildResult[];
-}
-
-function mapChildKeyAttributes(participant: ApiChildResult): ChildResult {
-  return {
-    ...participant,
-  };
+  participants: ChildExamination[];
+  dentists: ApiPerformingPerson[];
+  zfas: ApiPerformingPerson[];
 }
 
 export function mapProphylaxisSessionDetails(
   response: ApiProphylaxisSessionDetails,
 ): ProphylaxisSessionDetails {
   return {
+    ...response,
     ...mapProphylaxisSession(response),
-    participants: response.participants.map(mapChildKeyAttributes),
+    participants: response.participants.map(mapChildExamination),
     version: response.version,
   };
 }

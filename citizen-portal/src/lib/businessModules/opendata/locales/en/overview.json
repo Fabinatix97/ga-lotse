@@ -1,0 +1,23 @@
+{
+  "pageTitle": "Open Data",
+  "aboutSection": {
+    "title": "What is “Open Data”?",
+    "text": "Open data is data that anyone can freely access, use, modify and share. All of this data is available under a free license and can be used freely. Open data is machine-readable and is available in open formats. The disclosure of data increases transparency of administrative actions and creates new services that the administration could not create on its own."
+  },
+  "filterSection": {
+    "search": "Search",
+    "topic": "Topic",
+    "selectTopic": "Choose topic",
+    "year": "Year",
+    "yearPlaceholder": "Year (YYYY)",
+    "fileType": "File type",
+    "removeFilter": "Remove",
+    "resetAllFilters": "Reset Filters"
+  },
+  "resultSection": {
+    "results": "Results",
+    "foundSingular": "{{totalElements}} result found",
+    "foundPlural": "{{totalElements}} results found",
+    "version": "Version"
+  }
+}

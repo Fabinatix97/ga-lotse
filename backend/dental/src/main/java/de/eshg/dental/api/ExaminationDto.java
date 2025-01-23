@@ -6,6 +6,7 @@
 package de.eshg.dental.api;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.UUID;
@@ -16,4 +17,5 @@ public record ExaminationDto(
     @NotNull long version,
     @NotNull Instant dateAndTime,
     @NotNull ProphylaxisTypeDto prophylaxisType,
-    String note) {}
+    String note,
+    @Valid ExaminationResultDto result) {}

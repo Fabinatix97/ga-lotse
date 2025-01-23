@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SearchReferenceFacilitiesRequest } from "@eshg/employee-portal-api/base";
+import { SearchReferenceFacilitiesRequest } from "@eshg/base-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useFacilityApi } from "@/lib/baseModule/api/clients";
 import { facilityApiQueryKey } from "@/lib/baseModule/api/queries/apiQueryKey";
@@ -23,5 +23,13 @@ export function useSearchReferenceFacilitiesQuery(
     queryFn: () =>
       facilityApi.searchReferenceFacilitiesRaw(request).then(unwrapRawResponse),
     enabled: options.enabled,
+  });
+}
+
+export function useGetFacilityFileStateDiff(id: string) {
+  const facilityApi = useFacilityApi();
+  return useSuspenseQuery({
+    queryKey: facilityApiQueryKey(["getFacilityFileStateDiff", id]),
+    queryFn: () => facilityApi.getFacilityDiff(id),
   });
 }

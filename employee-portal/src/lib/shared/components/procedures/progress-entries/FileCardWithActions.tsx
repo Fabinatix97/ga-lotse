@@ -10,7 +10,7 @@ import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { useContext, useRef } from "react";
+import { useContext } from "react";
 import { isDefined } from "remeda";
 
 import {
@@ -62,12 +62,10 @@ function FileCardWithOptionalDetailsLinkAndDownload({
   const { useDownloadFile } = progressEntriesContext.config;
   const { openEntryDetailsSidebar } = progressEntriesContext.action;
   const downloadFile = useDownloadFile();
-  const hiddenLinkContainer = useRef<HTMLDivElement>(null);
 
   async function downloadFileOnClick() {
     const downloadedFile = await downloadFile(file.fileId);
-    if (hiddenLinkContainer.current !== null)
-      downloadFileAndOpen(downloadedFile, hiddenLinkContainer.current);
+    downloadFileAndOpen(downloadedFile);
   }
 
   const actions: FileCardActionProps[] = [];
@@ -94,12 +92,7 @@ function FileCardWithOptionalDetailsLinkAndDownload({
     color: "neutral",
   });
 
-  return (
-    <>
-      <FileCard {...mapToFileCardProps(file)} actions={actions} />
-      <div ref={hiddenLinkContainer} style={{ display: "hidden" }}></div>
-    </>
-  );
+  return <FileCard {...mapToFileCardProps(file)} actions={actions} />;
 }
 
 function FileCardWithOptionalDetailsLinkAndDeleteAndDownload({

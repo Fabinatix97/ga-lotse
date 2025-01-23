@@ -7,7 +7,7 @@ import {
   ApiImportPersonContactResponse,
   ApiPersonContact,
   ApiVCardPersonContact,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { Ref, useState } from "react";
 import { isDefined } from "remeda";
 

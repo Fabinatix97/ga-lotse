@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { GetChildrenRequest } from "@eshg/employee-portal-api/dental";
+import { GetChildrenRequest } from "@eshg/dental-api";
 import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { useHasChanged } from "@eshg/lib-portal/hooks/useHasChanged";
-import { FormControl, FormLabel, Select } from "@mui/joy";
+import { CircularProgress, FormControl, FormLabel, Select } from "@mui/joy";
 import { useEffect } from "react";
 import { isDefined } from "remeda";
 
@@ -99,13 +99,16 @@ export function ChildrenFilterSettings(props: ChildrenFilterSettingsProps) {
               props.setFilterFormValue("groupNameFilter", newValue);
             }}
             endDecorator={
-              isDefined(props.filterFormValues.groupNameFilter) ? (
-                <ResetButton
-                  onReset={() => {
-                    props.setFilterFormValue("groupNameFilter", undefined);
-                  }}
-                />
-              ) : undefined
+              <>
+                {searchGroups.isLoading ? <CircularProgress size="sm" /> : null}
+                {isDefined(props.filterFormValues.groupNameFilter) ? (
+                  <ResetButton
+                    onReset={() => {
+                      props.setFilterFormValue("groupNameFilter", undefined);
+                    }}
+                  />
+                ) : null}
+              </>
             }
           >
             <SelectOptions options={groupOptions} />

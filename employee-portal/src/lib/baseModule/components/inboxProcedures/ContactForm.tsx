@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiSalutation } from "@eshg/employee-portal-api/base";
+import { ApiSalutation } from "@eshg/base-api";
 import { ApiContactType } from "@eshg/employee-portal-api/businessProcedures";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";

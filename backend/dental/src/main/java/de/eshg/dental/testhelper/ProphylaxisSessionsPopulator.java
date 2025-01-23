@@ -9,16 +9,25 @@ import static de.eshg.base.util.ClassNameUtil.getClassNameAsPropertyKey;
 
 import de.eshg.base.contact.ContactApi;
 import de.eshg.base.testhelper.BaseTestHelperApi;
+import de.eshg.base.user.UserApi;
+import de.eshg.base.user.api.UserDto;
 import de.eshg.dental.ChildController;
 import de.eshg.dental.ProphylaxisSessionController;
 import de.eshg.dental.api.CreateProphylaxisSessionRequest;
 import de.eshg.dental.api.CreateProphylaxisSessionResponse;
+import de.eshg.dental.api.ExaminationResultDto;
+import de.eshg.dental.api.FluoridationExaminationResultDto;
+import de.eshg.dental.api.FluoridationVarnishDto;
+import de.eshg.dental.api.OralHygieneStatusDto;
 import de.eshg.dental.api.ProphylaxisTypeDto;
+import de.eshg.dental.api.ScreeningExaminationResultDto;
 import de.eshg.dental.api.UpdateExaminationRequest;
 import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
+import de.eshg.dental.domain.model.ProphylaxisSession;
 import de.eshg.dental.domain.repository.ExaminationRepository;
 import de.eshg.dental.domain.repository.ProphylaxisSessionRepository;
+import de.eshg.lib.keycloak.TechnicalGroup;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.ListWithTotalNumber;
@@ -43,6 +52,7 @@ public class ProphylaxisSessionsPopulator
   private final ProphylaxisSessionRepository prophylaxisSessionRepository;
   private final ExaminationRepository examinationRepository;
   private final ChildController childController;
+  private final UserApi userApi;
 
   public ProphylaxisSessionsPopulator(
       PopulationProperties properties,
@@ -56,7 +66,8 @@ public class ProphylaxisSessionsPopulator
       @SuppressWarnings("unused") // Used to define a dependency
           ChildrenPopulator childrenPopulator,
       ExaminationRepository examinationRepository,
-      ChildController childController) {
+      ChildController childController,
+      UserApi userApi) {
     super(
         properties,
         clock,
@@ -70,6 +81,7 @@ public class ProphylaxisSessionsPopulator
     this.prophylaxisSessionRepository = prophylaxisSessionRepository;
     this.examinationRepository = examinationRepository;
     this.childController = childController;
+    this.userApi = userApi;
   }
 
   @Override
@@ -99,10 +111,25 @@ public class ProphylaxisSessionsPopulator
 
     UUID institutionId = randomSchoolOrDaycare(faker);
     String groupName = randomGroupAtInstitution(faker, institutionId);
+    List<UUID> dentistIds =
+        userApi.getUsersByGroup(TechnicalGroup.DENTIST.getKeycloakName()).users().stream()
+            .map(UserDto::userId)
+            .toList();
+    List<UUID> zfaIds =
+        userApi.getUsersByGroup(TechnicalGroup.ZFA.getKeycloakName()).users().stream()
+            .map(UserDto::userId)
+            .toList();
 
     CreateProphylaxisSessionRequest createProphylaxisSessionRequest =
         new CreateProphylaxisSessionRequest(
-            date, institutionId, groupName, randomProphylaxisType(faker));
+            date,
+            institutionId,
+            groupName,
+            randomProphylaxisType(faker),
+            faker.random().nextBoolean(),
+            randomFluoridationVarnish(faker),
+            dentistIds,
+            zfaIds);
 
     randomExaminations(faker);
 
@@ -122,14 +149,35 @@ public class ProphylaxisSessionsPopulator
     return randomElement(faker, ProphylaxisTypeDto.values());
   }
 
+  private static FluoridationVarnishDto randomFluoridationVarnish(Faker faker) {
+    return optional(faker, randomElement(faker, FluoridationVarnishDto.values()));
+  }
+
   private void randomExaminations(Faker faker) {
     List<Examination> someExaminations =
         randomElements(faker, examinationRepository.findAllByChildStatus(ProcedureStatus.OPEN));
 
     for (Examination examination : someExaminations) {
       UpdateExaminationRequest request =
-          new UpdateExaminationRequest(examination.getVersion(), faker.coffee().notes());
+          new UpdateExaminationRequest(
+              examination.getVersion(),
+              faker.coffee().notes(),
+              optional(faker, randomResult(faker, examination)));
       childController.updateExamination(examination.getExternalId(), request);
+    }
+  }
+
+  private static ExaminationResultDto randomResult(Faker faker, Examination examination) {
+    ProphylaxisSession prophylaxisSession = examination.getProphylaxisSession();
+    boolean hasFluoridationVarnish = prophylaxisSession.hasFluoridationVarnish();
+    if (prophylaxisSession.isScreening()) {
+      return new ScreeningExaminationResultDto(
+          hasFluoridationVarnish && faker.bool().bool(),
+          optional(faker, randomElement(faker, OralHygieneStatusDto.values())));
+    } else if (hasFluoridationVarnish) {
+      return new FluoridationExaminationResultDto(faker.bool().bool());
+    } else {
+      return null;
     }
   }
 

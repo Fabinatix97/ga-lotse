@@ -159,17 +159,27 @@ public class PersonService {
 
   public List<Person> fuzzySearch(String firstName, String lastName, LocalDate dateOfBirth) {
     configureSimilarityThreshold(firstName, lastName);
-    return fuzzySearch(firstName, lastName, dateOfBirth, false);
+    return fuzzySearch(firstName, lastName, dateOfBirth, false, false);
+  }
+
+  public List<Person> fuzzySearchIncludingDeletedAndExternal(
+      String firstName, String lastName, LocalDate dateOfBirth) {
+    configureSimilarityThreshold(firstName, lastName);
+    return fuzzySearch(firstName, lastName, dateOfBirth, true, true);
   }
 
   public List<Person> fuzzySearchIncludingDeleted(
       String firstName, String lastName, LocalDate dateOfBirth) {
     configureSimilarityThreshold(firstName, lastName);
-    return fuzzySearch(firstName, lastName, dateOfBirth, true);
+    return fuzzySearch(firstName, lastName, dateOfBirth, true, false);
   }
 
   private List<Person> fuzzySearch(
-      String firstName, String lastName, LocalDate dateOfBirth, boolean includeDeleted) {
+      String firstName,
+      String lastName,
+      LocalDate dateOfBirth,
+      boolean includeDeleted,
+      boolean includeExternal) {
     configureSimilarityThreshold(firstName, lastName);
     return personRepository.fuzzySearchReferencePersons(
         firstName,
@@ -177,7 +187,8 @@ public class PersonService {
         dateOfBirth,
         getSimilarityThreshold(firstName),
         getSimilarityThreshold(lastName),
-        includeDeleted);
+        includeDeleted,
+        includeExternal);
   }
 
   private void configureSimilarityThreshold(String firstName, String lastName) {

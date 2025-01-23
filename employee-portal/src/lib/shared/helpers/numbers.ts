@@ -36,7 +36,3 @@ export function formatCurrency(
     }).format(fee);
   }
 }
-
-export function safeIntOrUndefined(num: number): number | undefined {
-  return Number.isSafeInteger(num) ? num : undefined;
-}

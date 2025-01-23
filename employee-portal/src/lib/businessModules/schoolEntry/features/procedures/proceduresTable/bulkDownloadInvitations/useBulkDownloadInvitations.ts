@@ -5,7 +5,7 @@
 
 import { DownloadInvitationsRequest } from "@eshg/employee-portal-api/schoolEntry";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
-import { RefObject, useState } from "react";
+import { useState } from "react";
 import { doNothing } from "remeda";
 
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
@@ -22,14 +22,13 @@ export interface UseBulkDownloadInvitationsResult {
   isPending: boolean;
   downloadNotPossibleDialogProps: DownloadNotPossibleDialogProps;
   partialDownloadDialogProps: Omit<PartialDownloadDialogProps, "isPending">;
-  downloadContainerRef: RefObject<HTMLDivElement>;
 }
 
 export function useBulkDownloadInvitations(): UseBulkDownloadInvitationsResult {
   const schoolEntryApi = useSchoolEntryApi();
   const [downloadNotPossibleDialogOpen, setDownloadNotPossibleDialogOpen] =
     useState(false);
-  const { downloadContainerRef, download, isPending } = useFileDownload(
+  const { download, isPending } = useFileDownload(
     (request: DownloadInvitationsRequest) =>
       schoolEntryApi.downloadInvitationsRaw(request),
   );
@@ -99,7 +98,6 @@ export function useBulkDownloadInvitations(): UseBulkDownloadInvitationsResult {
   return {
     startDownload,
     isPending,
-    downloadContainerRef,
     downloadNotPossibleDialogProps: {
       open: downloadNotPossibleDialogOpen,
       onClose: () => setDownloadNotPossibleDialogOpen(false),

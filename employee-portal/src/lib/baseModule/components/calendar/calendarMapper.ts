@@ -8,7 +8,7 @@ import {
   ApiBaseEventType,
   ApiDetailedEventWithoutCalendarId,
   ApiEventType,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { DayHeaderContentArg, EventInput } from "@fullcalendar/core/index.js";
 import { EventImpl } from "@fullcalendar/core/internal";
 import { addDays, startOfDay } from "date-fns";

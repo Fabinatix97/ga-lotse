@@ -19,8 +19,6 @@ import de.eshg.travelmedicine.citizenpublic.api.GetOpeningHoursResponse;
 import de.eshg.travelmedicine.citizenpublic.api.PostCitizenVaccinationConsultationRequest;
 import de.eshg.travelmedicine.disease.DiseaseService;
 import de.eshg.travelmedicine.disease.api.GetDiseasesResponse;
-import de.eshg.travelmedicine.featuretoggle.TravelMedicineFeature;
-import de.eshg.travelmedicine.featuretoggle.TravelMedicineFeatureToggle;
 import de.eshg.travelmedicine.vaccinationconsultation.VaccinationConsultationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -57,7 +55,6 @@ public class CitizenPublicController {
   private final AppointmentBlockService appointmentBlockService;
   private final AppointmentTypeService appointmentTypeService;
   private final VaccinationConsultationService vaccinationConsultationService;
-  private final TravelMedicineFeatureToggle featureToggle;
   private final DepartmentInfoService departmentInfoService;
   private final Resource privacyNotice;
   private final Resource privacyPolicy;
@@ -69,7 +66,6 @@ public class CitizenPublicController {
       AppointmentBlockService appointmentBlockService,
       AppointmentTypeService appointmentTypeService,
       VaccinationConsultationService vaccinationConsultationService,
-      TravelMedicineFeatureToggle featureToggle,
       DepartmentInfoService departmentInfoService,
       @Value("${de.eshg.travel-medicine.privacy-notice-location}") Resource privacyNotice,
       @Value("${de.eshg.travel-medicine.privacy-policy-location}") Resource privacyPolicy,
@@ -79,7 +75,6 @@ public class CitizenPublicController {
     this.appointmentBlockService = appointmentBlockService;
     this.appointmentTypeService = appointmentTypeService;
     this.vaccinationConsultationService = vaccinationConsultationService;
-    this.featureToggle = featureToggle;
     this.departmentInfoService = departmentInfoService;
     this.privacyNotice = privacyNotice;
     this.privacyPolicy = privacyPolicy;
@@ -100,7 +95,6 @@ public class CitizenPublicController {
   public GetFreeAppointmentsResponse getFreeAppointmentsForCitizen(
       @RequestParam(name = "appointmentType") AppointmentTypeDto appointmentType,
       @RequestParam(name = "earliestDate", required = false) Instant earliestDate) {
-    featureToggle.assertNewFeatureIsEnabled(TravelMedicineFeature.CITIZEN_PORTAL_PROCEDURE);
     if (earliestDate != null && earliestDate.isBefore(Instant.now(clock))) {
       earliestDate = Instant.now(clock);
     }
@@ -115,7 +109,6 @@ public class CitizenPublicController {
   @GetMapping("/appointment-types")
   @Transactional(readOnly = true)
   public GetAppointmentTypesResponse getAppointmentTypesForCitizen() {
-    featureToggle.assertNewFeatureIsEnabled(TravelMedicineFeature.CITIZEN_PORTAL_PROCEDURE);
     return appointmentTypeService.getAppointmentTypes();
   }
 
@@ -125,7 +118,6 @@ public class CitizenPublicController {
   public UUID postVaccinationConsultationForCitizen(
       @RequestBody @Valid
           PostCitizenVaccinationConsultationRequest postCitizenVaccinationConsultationRequest) {
-    featureToggle.assertNewFeatureIsEnabled(TravelMedicineFeature.CITIZEN_PORTAL_PROCEDURE);
     return vaccinationConsultationService.createProcedure(
         postCitizenVaccinationConsultationRequest);
   }

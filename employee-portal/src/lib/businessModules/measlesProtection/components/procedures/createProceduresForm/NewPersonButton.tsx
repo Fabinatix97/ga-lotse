@@ -5,7 +5,7 @@
 
 "use client";
 
-import type { ApiGetReferencePersonResponse } from "@eshg/employee-portal-api/base";
+import type { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import { type ApiAffectedPersonDetails } from "@eshg/employee-portal-api/measlesProtection";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";

@@ -7,6 +7,7 @@ package de.eshg.schoolentry.domain.model;
 
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.OrderColumn;
@@ -19,7 +20,13 @@ public class HandicapWithDiagnosis {
 
   private Boolean result;
 
-  @ElementCollection @OrderColumn private List<String> icd10Codes = new ArrayList<>();
+  @ElementCollection
+  @Column(name = "icd10_code", nullable = false)
+  @OrderColumn
+  private List<String> icd10Codes = new ArrayList<>();
+
+  // Used for XLSX import
+  private transient List<String> icd10CodesIncludingNulls;
 
   public Boolean getResult() {
     return result;
@@ -35,5 +42,13 @@ public class HandicapWithDiagnosis {
 
   public void setIcd10Codes(List<String> icd10Codes) {
     this.icd10Codes = icd10Codes;
+  }
+
+  public List<String> getIcd10CodesIncludingNulls() {
+    return icd10CodesIncludingNulls;
+  }
+
+  public void setIcd10CodesIncludingNulls(List<String> icd10CodesIncludingNulls) {
+    this.icd10CodesIncludingNulls = icd10CodesIncludingNulls;
   }
 }

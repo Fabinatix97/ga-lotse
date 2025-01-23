@@ -6,7 +6,6 @@
 package de.eshg.base.keycloak;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.eshg.lib.keycloak.KeycloakGroup;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import java.util.List;
 import org.keycloak.admin.client.resource.UserResource;
@@ -33,7 +32,7 @@ public class EmployeeKeycloakTestClient extends KeycloakTestClient {
     return createTemporaryTestUser(null);
   }
 
-  public UserRepresentation createTemporaryTestUser(KeycloakGroup keycloakGroup) {
+  public UserRepresentation createTemporaryTestUser(String keycloakGroupName) {
     UserRepresentation representation = new UserRepresentation();
     representation.setEnabled(true);
     representation.setUsername(TEMPORARY_TEST_USER_USERNAME);
@@ -41,8 +40,8 @@ public class EmployeeKeycloakTestClient extends KeycloakTestClient {
     representation.setLastName("TestUser");
     representation.setEmail("temporary_test_user@eshg.de");
     representation.setEmailVerified(true);
-    if (keycloakGroup != null) {
-      representation.setGroups(List.of(keycloakGroup.getKeycloakName()));
+    if (keycloakGroupName != null) {
+      representation.setGroups(List.of(keycloakGroupName));
     } else {
       representation.setGroups(List.of());
     }

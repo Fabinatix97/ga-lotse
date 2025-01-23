@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiUser } from "@eshg/employee-portal-api/base";
+import { ApiUser } from "@eshg/base-api";
 import { Badge, DialogTitle, Stack, Typography } from "@mui/joy";
 
 import { UserAvatar } from "@/lib/baseModule/components/users/UserAvatar";

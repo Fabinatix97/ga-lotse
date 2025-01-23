@@ -81,8 +81,10 @@ export function MedicalHistoryForm({
     fileInfo.concern ?? ApiConcern.HivStiConsultation,
     fileInfo.language ?? "DE",
   );
-  const upsertMedicalHistoryOptions = useUpsertMedicalHistoryOptions();
-  const upsertMedicalHistory = useUpsertMedicalHistory();
+  const upsertMedicalHistoryOptions = useUpsertMedicalHistoryOptions(
+    stiProcedure.id,
+  );
+  const upsertMedicalHistory = useUpsertMedicalHistory(stiProcedure.id);
 
   useEffect(() => {
     if (!openFile || !isFetched || !data) {
@@ -106,10 +108,9 @@ export function MedicalHistoryForm({
   }
 
   function onSubmit(values: MedicalHistoryFormData) {
-    return upsertMedicalHistory.mutateAsync({
-      id: stiProcedure.id,
-      medicalHistory: mapFormValuesToApi(stiProcedure, values),
-    });
+    return upsertMedicalHistory.mutateAsync(
+      mapFormValuesToApi(stiProcedure, values),
+    );
   }
 
   return (
@@ -125,10 +126,7 @@ export function MedicalHistoryForm({
         <FormPlus>
           <ConfirmLeaveDirtyFormEffect
             onSaveMutation={{
-              mutationOptions: upsertMedicalHistoryOptions({
-                id: stiProcedure.id,
-                medicalHistory: mapFormValuesToApi(stiProcedure, values),
-              }),
+              mutationOptions: upsertMedicalHistoryOptions,
               variableSupplier: () => mapFormValuesToApi(stiProcedure, values),
             }}
           />

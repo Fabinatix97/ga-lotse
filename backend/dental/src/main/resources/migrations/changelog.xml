@@ -15,13 +15,23 @@
   <include file="migrations/0005_prophylaxis_type.xml"/>
   <include file="migrations/0006_procedures.xml"/>
   <include file="migrations/0007_child_procedure.xml"/>
-  <include
-    file="migrations/0008_add_official_medical_service_procedure_type.xml"/>
+  <include file="migrations/0008_add_official_medical_service_procedure_type.xml"/>
   <include file="migrations/0009_prophylaxis_with_children.xml"/>
   <include file="migrations/0010_add_mail_to_simple_notification.xml"/>
   <include file="migrations/0011_add_created_and_modified_at_to_prophylaxis_session.xml"/>
   <include file="migrations/0012_invert_inbox_procedure_relationships.xml"/>
   <include file="migrations/0013_add_procedure_reference_for_statistics.xml"/>
   <include file="migrations/0014_add_salutation_inbox_procedure.xml"/>
+  <include file="migrations/0015_add_fluoridation.xml"/>
+  <include file="migrations/0016_add_screening.xml"/>
+  <include file="migrations/0017_add_oms_task_type.xml"/>
+  <include file="migrations/0018_examination_results.xml"/>
+  <include file="migrations/0019_add_dentist_and_zfas_to_prophylaxis_session.xml"/>
+  <include file="migrations/0020_use_lib_scheduling_for_statistics.xml"/>
+  <include file="migrations/0021_rename_dentist_and_zfa_id_columns_and_add_not_null_constraint.xml"/>
+  <include file="migrations/0022_add_fluoridation_varnish.xml"/>
+  <include file="migrations/0023_add_cemetery_delete_at.xml"/>
+  <include file="migrations/0024_add_allergy_to_fluoridation_consent.xml"/>
+  <include file="migrations/0025_add_previous_file_state_id_to_system_progress_entry.xml"/>
 
 </databaseChangeLog>

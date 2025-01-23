@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiBaseEventRequest,
-  DeleteBaseEventRequest,
-} from "@eshg/employee-portal-api/base";
+import { ApiBaseEventRequest, DeleteBaseEventRequest } from "@eshg/base-api";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { isDefined } from "remeda";
 

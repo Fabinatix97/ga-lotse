@@ -1,0 +1,16 @@
+{
+  "notAvailable": {
+    "title": "Seite nicht verfügbar",
+    "message": "Die aufgerufene Seite ist nicht freigeschaltet."
+  },
+  "sources": {
+    "INSPECTION": "Begehung",
+    "SCHOOL_ENTRY": "Einschulungsuntersuchung",
+    "TRAVEL_MEDICINE": "Reisemedizinische Beratung und Impfungen",
+    "MEASLES_PROTECTION": "Masernschutzimpfung",
+    "STI_PROTECTION": "HIV-STI Schutz",
+    "MEDICAL_REGISTRY": "Medizinalaufsicht",
+    "DENTAL": "Zahnärztlicher Dienst",
+    "OFFICIAL_MEDICAL_SERVICE": "Amtsärztlicher Dienst"
+  }
+}

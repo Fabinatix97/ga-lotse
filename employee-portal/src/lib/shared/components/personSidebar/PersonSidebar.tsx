@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiGetReferencePersonResponse } from "@eshg/employee-portal-api/base";
+import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import { DefaultError, UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { ComponentType, ReactNode, Ref, useEffect, useState } from "react";
 import { isDefined } from "remeda";
@@ -63,10 +63,7 @@ type CreateFormProps<TSearchValues, TCreateValues> =
 interface AssociatedProceduresProps<TProcedure> {
   getQuery: (
     personId: string | undefined,
-  ) => Pick<
-    UseQueryOptions<unknown, DefaultError, TProcedure[]>,
-    "queryKey" | "queryFn"
-  >;
+  ) => UseQueryOptions<any, DefaultError, TProcedure[], any>; // eslint-disable-line @typescript-eslint/no-explicit-any
   cardComponent: (props: { procedure: TProcedure }) => ReactNode;
 }
 
@@ -168,9 +165,10 @@ export function PersonSidebar<
 
   const associatedProcedures = props.associatedProcedures;
   const getAssociatedProceduresQuery = useQuery<
-    unknown,
+    any, // eslint-disable-line @typescript-eslint/no-explicit-any
     DefaultError,
-    TProcedure[]
+    TProcedure[],
+    any // eslint-disable-line @typescript-eslint/no-explicit-any
   >(
     isDefined(associatedProcedures)
       ? associatedProcedures.getQuery(state.selectedPerson?.id)

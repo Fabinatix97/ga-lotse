@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBaseFeature, ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiBaseFeature, ApiUserRole } from "@eshg/base-api";
+import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
 import { HubOutlined } from "@mui/icons-material";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
@@ -11,7 +12,6 @@ import {
   SideNavigationSubItem,
   UseSideNavigationItemsResult,
 } from "@/lib/baseModule/components/layout/sideNavigation/types";
-import { hasUserRole } from "@/lib/shared/helpers/accessControl";
 
 import { routes } from "./routes";
 

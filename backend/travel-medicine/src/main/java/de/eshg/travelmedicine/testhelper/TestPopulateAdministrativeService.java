@@ -5,7 +5,6 @@
 
 package de.eshg.travelmedicine.testhelper;
 
-import static de.eshg.travelmedicine.featuretoggle.TravelMedicineFeature.*;
 import static de.eshg.travelmedicine.template.informationstatementtemplate.api.InformationStatementTemplateStateDto.DRAFT;
 import static de.eshg.travelmedicine.template.informationstatementtemplate.api.InformationStatementTemplateStateDto.FINAL;
 
@@ -377,52 +376,49 @@ public class TestPopulateAdministrativeService {
    - measles has no template assigned
    */
   private Map<String, UUID> createInformationStatementTemplates(Map<String, UUID> diseases) {
-    if (featureToggle.isNewFeatureEnabled(CITIZEN_PORTAL_INFORMATION_STATEMENT)) {
-      InformationStatementTemplateDto emptyDto =
-          informationStatementTemplateService.createInformationStatementTemplate(
-              new InformationStatementTemplateRequest(
-                  "Empty Template Name",
-                  "Empty Template Title",
-                  DRAFT,
-                  null,
-                  createTemplateContent()));
-      InformationStatementTemplateDto standardDto =
-          informationStatementTemplateService.createInformationStatementTemplate(
-              new InformationStatementTemplateRequest(
-                  "Standard Template Name",
-                  "Standard Template Title",
-                  FINAL,
-                  List.of(
-                      diseases.get(CHOLERA_DISEASE_KEY),
-                      diseases.get(MALARIA_DISEASE_KEY),
-                      diseases.get(MEASLES_DISEASE_KEY)),
-                  createTemplateContent()));
-      InformationStatementTemplateDto choleraFinalDto =
-          informationStatementTemplateService.createInformationStatementTemplate(
-              new InformationStatementTemplateRequest(
-                  "Cholera Final Template Name",
-                  "Cholera Final Template Title",
-                  FINAL,
-                  List.of(diseases.get(CHOLERA_DISEASE_KEY)),
-                  createTemplateContent()));
-      InformationStatementTemplateDto choleraDraftDto =
-          informationStatementTemplateService.createInformationStatementTemplate(
-              new InformationStatementTemplateRequest(
-                  "Cholera Draft Template Name",
-                  "Cholera Draft Template Title",
-                  DRAFT,
-                  List.of(diseases.get(CHOLERA_DISEASE_KEY)),
-                  createTemplateContent()));
+    InformationStatementTemplateDto emptyDto =
+        informationStatementTemplateService.createInformationStatementTemplate(
+            new InformationStatementTemplateRequest(
+                "Empty Template Name",
+                "Empty Template Title",
+                DRAFT,
+                null,
+                createTemplateContent()));
+    InformationStatementTemplateDto standardDto =
+        informationStatementTemplateService.createInformationStatementTemplate(
+            new InformationStatementTemplateRequest(
+                "Standard Template Name",
+                "Standard Template Title",
+                FINAL,
+                List.of(
+                    diseases.get(CHOLERA_DISEASE_KEY),
+                    diseases.get(MALARIA_DISEASE_KEY),
+                    diseases.get(MEASLES_DISEASE_KEY)),
+                createTemplateContent()));
+    InformationStatementTemplateDto choleraFinalDto =
+        informationStatementTemplateService.createInformationStatementTemplate(
+            new InformationStatementTemplateRequest(
+                "Cholera Final Template Name",
+                "Cholera Final Template Title",
+                FINAL,
+                List.of(diseases.get(CHOLERA_DISEASE_KEY)),
+                createTemplateContent()));
+    InformationStatementTemplateDto choleraDraftDto =
+        informationStatementTemplateService.createInformationStatementTemplate(
+            new InformationStatementTemplateRequest(
+                "Cholera Draft Template Name",
+                "Cholera Draft Template Title",
+                DRAFT,
+                List.of(diseases.get(CHOLERA_DISEASE_KEY)),
+                createTemplateContent()));
 
-      Map<String, UUID> informationStatementTemplates = new LinkedHashMap<>();
-      informationStatementTemplates.put(EMPTY_IST_KEY, emptyDto.id());
-      informationStatementTemplates.put(STANDARD_IST_KEY, standardDto.id());
-      informationStatementTemplates.put(CHOLERA_FINAL_IST_KEY, choleraFinalDto.id());
-      informationStatementTemplates.put(CHOLERA_DRAFT_IST_KEY, choleraDraftDto.id());
+    Map<String, UUID> informationStatementTemplates = new LinkedHashMap<>();
+    informationStatementTemplates.put(EMPTY_IST_KEY, emptyDto.id());
+    informationStatementTemplates.put(STANDARD_IST_KEY, standardDto.id());
+    informationStatementTemplates.put(CHOLERA_FINAL_IST_KEY, choleraFinalDto.id());
+    informationStatementTemplates.put(CHOLERA_DRAFT_IST_KEY, choleraDraftDto.id());
 
-      return informationStatementTemplates;
-    }
-    return Map.of();
+    return informationStatementTemplates;
   }
 
   private TemplateContentDto createTemplateContent() {

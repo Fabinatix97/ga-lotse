@@ -4,23 +4,24 @@
  */
 
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Stack } from "@mui/joy";
 
 import { UpdateReportFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/reports/UpdateReportSidebar/updateReportFormModel";
+import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 
-export function UpdateReportStep() {
-  const fieldName = createFieldNameMapper<UpdateReportFormModel>();
+export function UpdateReportStep(
+  props: SidebarStepContentProps<UpdateReportFormModel>,
+) {
   return (
     <Stack gap={3}>
       <Stack gap={2}>
         <InputField
-          name={fieldName("name")}
+          name={props.fieldName("name")}
           label="Name"
           required="Bitte Name angeben."
         />
         <InputField
-          name={fieldName("description")}
+          name={props.fieldName("description")}
           label="Beschreibung"
           placeholder="Optional"
         />

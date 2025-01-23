@@ -10,7 +10,7 @@ import {
   ApiProcedureStatus,
   ApiProcedureType,
   ApiProcedureWithDuration,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import {
   CheckOutlined,
   HourglassEmptyOutlined,

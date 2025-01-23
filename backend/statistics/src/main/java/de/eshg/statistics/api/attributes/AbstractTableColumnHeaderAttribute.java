@@ -19,13 +19,13 @@ import jakarta.validation.constraints.NotNull;
     include = JsonTypeInfo.As.EXISTING_PROPERTY)
 @JsonSubTypes({
   @JsonSubTypes.Type(value = BooleanAttribute.class, name = BooleanAttribute.SCHEMA_NAME),
-  @JsonSubTypes.Type(
-      value = CentralFileIdAttribute.class,
-      name = CentralFileIdAttribute.SCHEMA_NAME),
+  @JsonSubTypes.Type(value = BaseModuleIdAttribute.class, name = BaseModuleIdAttribute.SCHEMA_NAME),
   @JsonSubTypes.Type(value = DateAttribute.class, name = DateAttribute.SCHEMA_NAME),
   @JsonSubTypes.Type(value = DecimalAttribute.class, name = DecimalAttribute.SCHEMA_NAME),
   @JsonSubTypes.Type(value = IntegerAttribute.class, name = IntegerAttribute.SCHEMA_NAME),
-  @JsonSubTypes.Type(value = ProcedureIdAttribute.class, name = ProcedureIdAttribute.SCHEMA_NAME),
+  @JsonSubTypes.Type(
+      value = ProcedureReferenceAttribute.class,
+      name = ProcedureReferenceAttribute.SCHEMA_NAME),
   @JsonSubTypes.Type(value = TextAttribute.class, name = TextAttribute.SCHEMA_NAME),
   @JsonSubTypes.Type(
       value = ValueWithOptionsAttribute.class,
@@ -33,11 +33,11 @@ import jakarta.validation.constraints.NotNull;
 })
 public sealed interface AbstractTableColumnHeaderAttribute
     permits BooleanAttribute,
-        CentralFileIdAttribute,
+        BaseModuleIdAttribute,
         DateAttribute,
         DecimalAttribute,
         IntegerAttribute,
-        ProcedureIdAttribute,
+        ProcedureReferenceAttribute,
         TextAttribute,
         ValueWithOptionsAttribute {
   @Hidden

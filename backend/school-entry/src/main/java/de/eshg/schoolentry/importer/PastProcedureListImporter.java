@@ -11,6 +11,7 @@ import static de.eshg.lib.xlsximport.ImportStatus.MERGED_SUCCESSFULLY;
 import de.eshg.base.centralfile.api.person.PersonKeyAttributes;
 import de.eshg.lib.xlsximport.FeedbackColumnAccessor;
 import de.eshg.lib.xlsximport.RowReader;
+import de.eshg.schoolentry.Validator;
 import de.eshg.schoolentry.business.model.ImportPastProcedureData;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import java.time.Year;
@@ -31,6 +32,7 @@ public class PastProcedureListImporter
 
   private final PastProcedureListRowValueMapper rowValueMapper;
   private final List<UUID> mergeCandidatesToBeDeleted;
+  private final Icd10Validation icd10Validation;
 
   public PastProcedureListImporter(
       XSSFSheet sheet,
@@ -38,10 +40,12 @@ public class PastProcedureListImporter
       FeedbackColumnAccessor feedbackColumnAccessor,
       UUID schoolId,
       Year schoolYear,
-      ImportService importService) {
+      ImportService importService,
+      Validator validator) {
     super(sheet, rowReader, feedbackColumnAccessor, schoolId, schoolYear, importService);
     this.rowValueMapper = new PastProcedureListRowValueMapper();
     this.mergeCandidatesToBeDeleted = new ArrayList<>();
+    this.icd10Validation = new Icd10Validation(validator, rowReader);
   }
 
   @Override
@@ -67,6 +71,12 @@ public class PastProcedureListImporter
 
   private boolean nullSafeEquals(Cell cell, String content) {
     return cell != null && cell.getStringCellValue().equals(content);
+  }
+
+  @Override
+  protected void evaluateActionsForRows(List<PastProcedureListRow> rows) {
+    icd10Validation.validateIcd10Codes(rows);
+    super.evaluateActionsForRows(rows);
   }
 
   @Override
@@ -100,7 +110,6 @@ public class PastProcedureListImporter
 
   @Override
   protected List<SchoolEntryProcedure> createProcedures(List<PastProcedureListRow> importableRows) {
-
     List<ImportPastProcedureData> importData =
         importableRows.stream().map(rowValueMapper::mapValuesToImportData).toList();
     return importService.createProceduresFromDataImport(importData, schoolId, schoolYear);

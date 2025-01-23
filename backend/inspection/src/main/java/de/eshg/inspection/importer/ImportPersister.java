@@ -197,17 +197,15 @@ public class ImportPersister {
     Integer standardDuration = facilityRef.facility.getObjectType().getStandardDuration();
     Instant appointmentStart = importInspection.lastInspected();
     Instant appointmentEnd = appointmentStart.plus(standardDuration, HOURS);
-    Clock clockStart = Clock.fixed(appointmentStart, clock.getZone());
-    Clock clockEnd = Clock.fixed(appointmentEnd, clock.getZone());
 
     Inspection inspection = new Inspection();
     inspection.setProcedureType(ProcedureType.INSPECTION);
     inspection.setType(InspectionType.IMPORT);
     inspection.setPhase(InspectionPhase.CLOSED);
-    inspection.setCreatedAt(clockStart.instant());
+    inspection.setCreatedAt(appointmentStart);
     inspection.setModifiedBy(currentUserId);
     inspection.setResult(importInspection.result());
-    inspection.updateProcedureStatus(ProcedureStatus.CLOSED, clockEnd, auditLogger);
+    inspection.updateProcedureStatus(ProcedureStatus.CLOSED, appointmentEnd, auditLogger);
 
     InspectionRelatedFacility inspectionRelatedFacility = new InspectionRelatedFacility();
     inspectionRelatedFacility.setCentralFileStateId(centralFileStateId);
@@ -216,9 +214,9 @@ public class ImportPersister {
     inspectionRelatedFacility.setFacility(facilityRef.facility);
     inspection.addRelatedFacility(inspectionRelatedFacility);
 
-    InspectionTask task1 = inspection.createPlanningTask(currentUserId, clockStart);
-    InspectionTask task2 = inspection.createExecutionTask(clockStart);
-    InspectionTask task3 = inspection.createReportTask(clockStart);
+    InspectionTask task1 = inspection.createPlanningTask(currentUserId, appointmentStart);
+    InspectionTask task2 = inspection.createExecutionTask(appointmentStart);
+    InspectionTask task3 = inspection.createReportTask(appointmentStart);
     task1.setTaskStatus(TaskStatus.CLOSED);
     task2.setTaskStatus(TaskStatus.CLOSED);
     task3.setTaskStatus(TaskStatus.CLOSED);

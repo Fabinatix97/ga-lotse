@@ -19,6 +19,7 @@ export const GET_QUEUE_FAILED = "get-queue-failed";
 
 export const REPLAY_STARTED = "replace-started";
 export const REPLAY_FAILED = "replay-failed";
+export const REPLAY_FAILED_WITH_401 = "replay-failed-with-401";
 export const REPLAY_ABORTED = "replay-aborted";
 export const REPLAY_DONE = "replay-done";
 export const DELETE_FILE_FAILED_WITH_404 = "delete-file-failed-with-404";

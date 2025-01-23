@@ -6,7 +6,7 @@
 import {
   ApiDomesticAddress,
   ApiGetReferencePersonResponse,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { ApiPatient } from "@eshg/employee-portal-api/travelMedicine";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import { dropBlankStrings } from "@eshg/lib-portal/helpers/form";

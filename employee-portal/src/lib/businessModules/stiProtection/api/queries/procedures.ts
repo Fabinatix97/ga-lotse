@@ -20,7 +20,7 @@ import {
   ManualSortingProps,
 } from "@/lib/shared/components/table/DataTable";
 
-import { stiProtectionProceduresApiQueryKey } from "./apiQueryKeys";
+import { proceduresQueryKey } from "./apiQueryKeys";
 
 type PageRequest = Pick<
   PaginationProps,
@@ -28,16 +28,22 @@ type PageRequest = Pick<
 >;
 type SortingRequest = ManualSortingProps | AutomaticSortingProps;
 
-export function useStiProcedureQuery(procedureId: string) {
+export function useStiProcedureQuery(procedureId?: string) {
   const options = useStiProcedureQueryOptions(procedureId);
   return useSuspenseQuery(options);
 }
 
-export function useStiProcedureQueryOptions(procedureId: string) {
+export function useStiProcedureQueryOptions(procedureId?: string) {
   const stiProtectionApi = useStiProtectionProcedureApi();
   return queryOptions({
-    queryFn: () => stiProtectionApi.getStiProcedure(procedureId),
-    queryKey: stiProtectionProceduresApiQueryKey([procedureId]),
+    queryFn: () => {
+      if (procedureId == null) {
+        throw Error("The procedureId must not be null");
+      }
+      return stiProtectionApi.getStiProcedure(procedureId);
+    },
+    queryKey: proceduresQueryKey([procedureId, "details"]),
+    enabled: procedureId != null,
   });
 }
 
@@ -61,7 +67,7 @@ export function useStiProceduresQuery(
         { signal },
       ),
 
-    queryKey: stiProtectionProceduresApiQueryKey([{ page, sortState }]),
+    queryKey: proceduresQueryKey(["list", { page, sortState }]),
   });
 }
 

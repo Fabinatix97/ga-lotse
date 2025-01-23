@@ -40,17 +40,12 @@ function CreateEvaluationSidebar({
   onClose,
   formRef,
 }: CreateEvaluationSidebarProps) {
-  const attributesByDataSourceId: Record<string, CategorizedFlatAttribute[]> =
-    Object.fromEntries(
-      apiDataSources.map((ds) => [ds.id, mapToCategorizedFlatAttributes(ds)]),
-    );
   const dataSources: DataSource[] = apiDataSources.map(mapToDataSource);
 
   return (
     <CreateEvaluationFromScratchSidebar
       onClose={onClose}
       dataSources={dataSources}
-      attributesByDataSourceId={attributesByDataSourceId}
       evaluationTemplates={apiTemplates}
       formRef={formRef}
     />
@@ -70,6 +65,7 @@ function mapToCategorizedFlatAttributes(
           apiDataSource.businessModuleName,
         ),
         name: getAttributeLabel(attribute, it),
+        key: `${attribute.code}_${it.code}`,
       }));
     }
     return {
@@ -77,6 +73,7 @@ function mapToCategorizedFlatAttributes(
       name: getAttributeLabel(attribute),
       businessModule: mapToApiBusinessModule(apiDataSource.businessModuleName),
       code: attribute.code,
+      key: attribute.code,
     };
   });
 }
@@ -94,5 +91,6 @@ function mapToDataSource(apiDataSource: ApiAvailableDataSource): DataSource {
       dataSourceSensitivity: apiDataSource.sensitivity,
       sensitiveDataAllowed: apiDataSource.sensitiveDataAllowed,
     }),
+    attributes: mapToCategorizedFlatAttributes(apiDataSource),
   };
 }

@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetGdprProcedureResponse } from "@eshg/employee-portal-api/base";
+import { ApiGetGdprProcedureResponse } from "@eshg/base-api";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
-import { HiddenContainer } from "@eshg/lib-portal/components/HiddenContainer";
 import { Button, Sheet } from "@mui/joy";
 import { useState } from "react";
 
@@ -43,7 +42,6 @@ export function DownloadReportButton({
       >
         Antrag Dokument ansehen
       </Button>
-      <HiddenContainer ref={fileDownload.downloadContainerRef} />
     </Sheet>
   );
 }

@@ -33,7 +33,8 @@ public class HistogramChartDataExporter {
       HistogramChartConfiguration histogramChartConfiguration) {
     sheet.setColumnWidth(1, FIRST_COLUMN_WIDTH);
     List<KeyToCount> keyToCountsSample;
-    if (histogramChartConfiguration.getSecondaryAttributeSelection() == null) {
+    if (histogramChartConfiguration.getSecondaryAttributeSelection() == null
+        || histogramChartData.getHistogramGroupDatas().isEmpty()) {
       keyToCountsSample = Collections.emptyList();
     } else {
       keyToCountsSample = histogramChartData.getHistogramGroupDatas().getFirst().getKeyToCounts();
@@ -78,20 +79,27 @@ public class HistogramChartDataExporter {
       HistogramChartConfiguration histogramChartConfiguration,
       AbstractAggregationResult aggregationResult) {
     List<HistogramBin> bins = histogramChartConfiguration.getBins();
-    BigDecimal averageBinWidth =
-        bins.stream()
-            .map(bin -> bin.getUpperBound().subtract(bin.getLowerBound()))
-            .reduce(BigDecimal.ZERO, BigDecimal::add)
-            .divide(BigDecimal.valueOf(bins.size()), 4, RoundingMode.HALF_UP);
+    if (bins.isEmpty()) {
+      DataExportUtil.addMetadataRow(
+          sheet, cellStyle, rowCounter.getAndIncrement(), "Anzahl der Bins", 0);
+      DataExportUtil.addMetadataRow(
+          sheet, cellStyle, rowCounter.getAndIncrement(), "Breite der Bins", "");
+    } else {
+      BigDecimal averageBinWidth =
+          bins.stream()
+              .map(bin -> bin.getUpperBound().subtract(bin.getLowerBound()))
+              .reduce(BigDecimal.ZERO, BigDecimal::add)
+              .divide(BigDecimal.valueOf(bins.size()), 4, RoundingMode.HALF_UP);
 
-    DataExportUtil.addMetadataRow(
-        sheet, cellStyle, rowCounter.getAndIncrement(), "Anzahl der Bins", bins.size());
-    DataExportUtil.addMetadataRow(
-        sheet,
-        cellStyle,
-        rowCounter.getAndIncrement(),
-        "Breite der Bins",
-        averageBinWidth.doubleValue());
+      DataExportUtil.addMetadataRow(
+          sheet, cellStyle, rowCounter.getAndIncrement(), "Anzahl der Bins", bins.size());
+      DataExportUtil.addMetadataRow(
+          sheet,
+          cellStyle,
+          rowCounter.getAndIncrement(),
+          "Breite der Bins",
+          averageBinWidth.doubleValue());
+    }
 
     TwoAttributesChartDataExporter.addAttributesInformation(
         sheet, cellStyle, rowCounter, histogramChartConfiguration, aggregationResult);

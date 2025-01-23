@@ -9,14 +9,13 @@ import de.eshg.base.bundid.persistence.entity.BundIdPersonLink;
 import de.eshg.base.bundid.persistence.repository.BundIdPersonLinkRepository;
 import de.eshg.base.centralfile.persistence.entity.Person;
 import de.eshg.base.keycloak.CitizenKeycloakClient;
-import de.eshg.base.keycloak.RealmBoundKeycloakClient;
 import de.eshg.lib.auditlog.AuditLogger;
+import de.eshg.lib.keycloak.CitizenUserAttribute;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
-import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -35,17 +34,13 @@ public class BundIdPersonLinkService {
     this.auditLogger = auditLogger;
   }
 
-  public void addBundIdPersonLink(String bundId, Person refPerson) {
-    if (identicalBundIdPersonLinkAlreadyExists(bundId, refPerson)) {
+  public void addBundIdPersonLink(String bpk2, Person refPerson) {
+    if (identicalBundIdPersonLinkAlreadyExists(bpk2, refPerson)) {
       return;
     }
 
-    if (citizenKeycloakClient.getUserByName(bundId).isEmpty()) {
-      throw new NotFoundException("BundId user id not found");
-    }
-
     BundIdPersonLink bundIdPersonLink = new BundIdPersonLink();
-    bundIdPersonLink.setBundId(bundId);
+    bundIdPersonLink.setBpk2(bpk2);
     bundIdPersonLink.setReferencePerson(refPerson);
     refPerson.setBundIdPersonLink(bundIdPersonLink);
 
@@ -53,35 +48,32 @@ public class BundIdPersonLinkService {
     writeAuditLog(mapAuditLog(savedBundIdPersonLink));
   }
 
-  private boolean identicalBundIdPersonLinkAlreadyExists(String mukId, Person refPerson) {
-    Optional<BundIdPersonLink> potentialMatch = bundIdPersonLinkRepository.findByBundId(mukId);
+  private boolean identicalBundIdPersonLinkAlreadyExists(String bpk2, Person refPerson) {
+    Optional<BundIdPersonLink> potentialMatch = bundIdPersonLinkRepository.findByBpk2(bpk2);
     return potentialMatch
         .map(
-            mukFacilityLink ->
-                mukFacilityLink
+            bundIdPersonLink ->
+                bundIdPersonLink
                     .getReferencePerson()
                     .getExternalId()
                     .equals(refPerson.getExternalId()))
         .orElse(false);
   }
 
-  // TODO (ISSUE-6575): Use 'bPK2' as bundId instead of username
-  public String getBundIdSelfUserId() {
-    UserRepresentation selfUserRepresentation =
-        citizenKeycloakClient.getSelfUser().toRepresentation();
-
-    RealmBoundKeycloakClient.getSelfUserId();
-
-    return selfUserRepresentation.getUsername();
+  public String getBundIdSelfUserBPK2() {
+    return citizenKeycloakClient
+        .getSelfUser()
+        .toRepresentation()
+        .firstAttribute(CitizenUserAttribute.BUND_ID_B_PK_2.getKey());
   }
 
-  public Person getReferencePersons(String bundId) {
-    BundIdPersonLink bundIdPersonLink =
-        bundIdPersonLinkRepository
-            .findByBundId(bundId)
-            .orElseThrow(() -> new NotFoundException("BundId Person Link not found"));
+  public Optional<Person> getReferencePersonGraceFully(String bpk2) {
+    return bundIdPersonLinkRepository.findByBpk2(bpk2).map(BundIdPersonLink::getReferencePerson);
+  }
 
-    return bundIdPersonLink.getReferencePerson();
+  public Person getReferencePerson(String bpk2) {
+    return getReferencePersonGraceFully(bpk2)
+        .orElseThrow(() -> new NotFoundException("BundId Person Link not found"));
   }
 
   private void writeAuditLog(Map<String, String> attributes) {
@@ -95,8 +87,8 @@ public class BundIdPersonLinkService {
     return Map.of(
         "BundIdPersonLink Id",
         bundIdPersonLink.getId().toString(),
-        "MukId",
-        bundIdPersonLink.getBundId(),
+        "bpk2",
+        bundIdPersonLink.getBpk2(),
         "PersonId",
         bundIdPersonLink.getReferencePerson().getExternalId().toString());
   }

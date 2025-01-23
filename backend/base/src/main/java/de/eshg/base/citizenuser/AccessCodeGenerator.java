@@ -48,7 +48,7 @@ public class AccessCodeGenerator {
         .usingRandom(randomProviderSupplier.get())
         .withinRange(new char[] {'a', 'z'}, new char[] {'A', 'Z'}, new char[] {'0', '9'})
         .filteredBy(character -> !EXCLUDED_CODE_POINTS.contains(character))
-        .build();
+        .get();
   }
 
   public String generateAccessCode() {

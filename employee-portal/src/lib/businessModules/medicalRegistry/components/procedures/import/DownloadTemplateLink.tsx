@@ -5,22 +5,21 @@
 
 "use client";
 
-import { DownloadLink } from "@eshg/lib-portal/api/files/DownloadLink";
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { FileDownloadOutlined } from "@mui/icons-material";
 
 import { useDownloadImportTemplate } from "@/lib/businessModules/medicalRegistry/api/queries/import";
 
 export function DownloadTemplateLink() {
-  const { download, downloadContainerRef } = useDownloadImportTemplate();
+  const { download } = useDownloadImportTemplate();
 
   return (
-    <DownloadLink
-      downloadContainerRef={downloadContainerRef}
+    <ButtonLink
       startDecorator={<FileDownloadOutlined />}
       fontSize="sm"
-      onDownload={() => download()}
+      onClick={() => download()}
     >
       Beispiel-Datei herunterladen
-    </DownloadLink>
+    </ButtonLink>
   );
 }

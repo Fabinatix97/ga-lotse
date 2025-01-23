@@ -19,7 +19,6 @@ import de.eshg.statistics.mapper.FilterParameterMapper;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
 import de.eshg.statistics.persistence.entity.Evaluation;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -136,9 +135,7 @@ public class DiagramCreationService {
                 data, page, analysisId, addDiagramRequest.filters(), pieChartConfigurationDto);
 
     Function<Map<String, Integer>, UUID> addDiagramFunction =
-        data ->
-            analysisService.addPieChartDiagram(
-                analysisId, addDiagramRequest, data, pieChartConfigurationDto);
+        data -> analysisService.addPieChartDiagram(analysisId, addDiagramRequest, data);
 
     return collectDiagramDataAndAddDiagram(
         chartDataHolder, collectDataFunction, addDiagramFunction);
@@ -148,14 +145,14 @@ public class DiagramCreationService {
       UUID analysisId,
       AddDiagramRequest addDiagramRequest,
       PointBasedChartConfigurationDto pointBasedChartConfiguration) {
-    List<DataPointHolder> chartDataHolder = new ArrayList<>();
+    Map<String, List<DataPointHolder>> chartDataHolder = new HashMap<>();
 
-    BiFunction<List<DataPointHolder>, Integer, Integer> collectDataFunction =
+    BiFunction<Map<String, List<DataPointHolder>>, Integer, Integer> collectDataFunction =
         (data, page) ->
             analysisService.collectPointBasedChartData(
                 data, page, analysisId, addDiagramRequest.filters(), pointBasedChartConfiguration);
 
-    Function<List<DataPointHolder>, UUID> addDiagramFunction =
+    Function<Map<String, List<DataPointHolder>>, UUID> addDiagramFunction =
         data ->
             analysisService.addPointBasedChartDiagram(
                 analysisId, addDiagramRequest, data, pointBasedChartConfiguration);

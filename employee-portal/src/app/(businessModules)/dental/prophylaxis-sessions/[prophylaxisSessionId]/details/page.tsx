@@ -5,18 +5,32 @@
 
 "use client";
 
-import { ProphylaxisSessionPageProps } from "@/app/(businessModules)/dental/prophylaxis-sessions/[prophylaxisSessionId]/layout";
-import { useGetProphylaxisSession } from "@/lib/businessModules/dental/api/queries/prophylaxisSessionApi";
-import { ProphylaxisSessionDetails } from "@/lib/businessModules/dental/features/prophylaxisSessions/ProphylaxisSessionDetails";
+import { routes } from "@eshg/dental/shared/routes";
 
-export default function ProphylaxisSessionDetailsPage(
-  props: ProphylaxisSessionPageProps,
-) {
-  const prophylaxisSession = useGetProphylaxisSession({
-    prophylaxisSessionId: props.params.prophylaxisSessionId,
-  });
+import { ProphylaxisSessionDetails } from "@/lib/businessModules/dental/features/prophylaxisSessions/ProphylaxisSessionDetails";
+import { useProphylaxisSessionStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/store/ProphylaxisSessionStoreProvider";
+import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
+
+export default function ProphylaxisSessionDetailsPage() {
+  const institutionName = useProphylaxisSessionStore(
+    (state) => state.institution.name,
+  );
+  const groupName = useProphylaxisSessionStore((state) => state.groupName);
 
   return (
-    <ProphylaxisSessionDetails prophylaxisSession={prophylaxisSession.data} />
+    <StickyToolbarLayout
+      toolbar={
+        <Toolbar
+          title={`Prophylaxe - ${institutionName} - ${groupName}`}
+          backHref={routes.prophylaxisSessions.overview}
+        />
+      }
+    >
+      <MainContentLayout fullViewportHeight>
+        <ProphylaxisSessionDetails />
+      </MainContentLayout>
+    </StickyToolbarLayout>
   );
 }

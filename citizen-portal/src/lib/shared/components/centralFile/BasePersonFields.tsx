@@ -20,8 +20,8 @@ import CountryOfBirthIcon from "@mui/icons-material/TravelExploreOutlined";
 import { isDefined } from "remeda";
 
 import { useTranslation } from "@/lib/i18n/client";
+import { useTranslateCountry } from "@/lib/i18n/useTranslateCountry";
 import { InfoSectionField } from "@/lib/shared/components/infoSection";
-import { translateCountry } from "@/lib/shared/helpers/countryOption";
 
 export function BasePersonFields({
   person,
@@ -29,6 +29,7 @@ export function BasePersonFields({
   person: ApiGetReferencePersonResponse;
 }) {
   const { t } = useTranslation("translation");
+  const { translateCountry } = useTranslateCountry();
 
   return (
     <>

@@ -119,6 +119,15 @@ public enum EmployeePermissionRole implements PermissionRole {
       Module.BASE,
       BASE_CONTACTS_READ),
 
+  BASE_MUK_FACILITY_LINK_WRITE(
+      WRITE_PERMISSION_TEMPLATE.formatted("Muk Facility Links"),
+      "Kann Verknüpfungen zwischen MUK Usern und Facilities (Stammdaten-Konverter) anlegen",
+      Module.BASE),
+  BASE_BUND_ID_PERSON_LINK_WRITE(
+      WRITE_PERMISSION_TEMPLATE.formatted("BundId Person Links"),
+      "Kann Verknüpfungen zwischen BundId Usern und Personen (Stammdaten-Konverter) anlegen",
+      Module.BASE),
+
   BASE_GDPR_PROCEDURE_REVIEW(
       "Limitierte Lese- und Schreibberechtigung %s für Module".formatted("DSGVO-Prozesse"),
       "Kann SachstandsIds zu DSGVO-Prozessen abfragen und DownloadIds anlegen",
@@ -133,15 +142,12 @@ public enum EmployeePermissionRole implements PermissionRole {
       Module.BASE,
       BASE_GDPR_PROCEDURE_READ,
       BASE_PERSONS_READ,
-      BASE_FACILITIES_READ),
-
-  BASE_MUK_FACILITY_LINK_WRITE(
-      WRITE_PERMISSION_TEMPLATE.formatted("Muk Facility Links"),
-      "Kann Verknüpfungen zwischen MUK Usern und Facilities (Stammdaten-Konverter) anlegen",
-      Module.BASE),
-  BASE_BUNDID_PERSON_LINK_WRITE(
-      WRITE_PERMISSION_TEMPLATE.formatted("BundId Person Links"),
-      "Kann Verknüpfungen zwischen BundId Usern und Personen (Stammdaten-Konverter) anlegen",
+      BASE_FACILITIES_READ,
+      BASE_BUND_ID_PERSON_LINK_WRITE,
+      BASE_MUK_FACILITY_LINK_WRITE),
+  BASE_GDPR_VALIDATION_TASK_CLEANUP(
+      DELETE_PERMISSION_TEMPLATE.formatted("DSGVO-Prüfaufträge"),
+      "Kann DSGVO-Prüfaufträge und Downloadpakete in Fachmodulen löschen",
       Module.BASE),
 
   BASE_PROCEDURES_READ(
@@ -318,7 +324,8 @@ public enum EmployeePermissionRole implements PermissionRole {
       BASE_PERSONS_READ,
       BASE_PERSONS_WRITE,
       BASE_CONTACTS_READ,
-      BASE_CONTACTS_WRITE),
+      BASE_CONTACTS_WRITE,
+      BASE_GDPR_PROCEDURE_REVIEW),
 
   OPEN_DATA_ADMIN(ADMIN_KEYCLOAK_NAME.formatted("Open Data"), Module.OPEN_DATA),
 

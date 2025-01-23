@@ -79,9 +79,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -103,6 +104,8 @@ public class AnalysisService {
   private static final String DIAGRAM_WITH_ID_NOT_FOUND = "Diagram with given id not found";
   private static final String PRIMARY_ATTRIBUTE = "primaryAttribute";
   private static final String SECONDARY_ATTRIBUTE = "secondaryAttribute";
+  private static final String ERROR_MESSAGE_ATTRIBUTE_TYPE =
+      "'%s': %ss require an attribute of type BOOLEAN, TEXT or VALUE_WITH_OPTIONS as '%s'";
 
   private final EvaluationService evaluationService;
   private final GeoShapeService geoShapeService;
@@ -266,15 +269,10 @@ public class AnalysisService {
         AggregationResultUtil.getTableColumn(
             barChartConfiguration.primaryAttribute(), aggregationResult);
 
-    String errorMessage =
-        "'%s': BarChartConfigurations require an attribute of type %s or %s as '%s'";
-    validateTableColumValueOptionOrBoolean(
+    String configName = "BarChartConfiguration";
+    validateTableColumBooleanTextOrValueOption(
         tableColumnPrimary,
-        errorMessage.formatted(
-            name,
-            TableColumnValueType.BOOLEAN,
-            TableColumnValueType.VALUE_WITH_OPTIONS,
-            PRIMARY_ATTRIBUTE));
+        ERROR_MESSAGE_ATTRIBUTE_TYPE.formatted(name, configName, PRIMARY_ATTRIBUTE));
 
     if (barChartConfiguration.secondaryAttribute() == null) {
       if (barChartConfiguration.grouping() != null || barChartConfiguration.scaling() != null) {
@@ -286,13 +284,9 @@ public class AnalysisService {
       TableColumn tableColumnSecondary =
           AggregationResultUtil.getTableColumn(
               barChartConfiguration.secondaryAttribute(), aggregationResult);
-      validateTableColumValueOptionOrBoolean(
+      validateTableColumBooleanTextOrValueOption(
           tableColumnSecondary,
-          errorMessage.formatted(
-              name,
-              TableColumnValueType.BOOLEAN,
-              TableColumnValueType.VALUE_WITH_OPTIONS,
-              SECONDARY_ATTRIBUTE));
+          ERROR_MESSAGE_ATTRIBUTE_TYPE.formatted(name, configName, SECONDARY_ATTRIBUTE));
       validateThatTableColumnsAreDifferent(tableColumnPrimary, tableColumnSecondary, name);
 
       if (barChartConfiguration.grouping() == null || barChartConfiguration.scaling() == null) {
@@ -338,12 +332,11 @@ public class AnalysisService {
         AggregationResultUtil.getTableColumn(
             histogramChartConfiguration.primaryAttribute(), aggregationResult);
 
-    String errorMessage =
-        "'%s': HistogramChartConfigurations require an attribute of type %s or %s as '%s'";
+    String configName = "HistogramChartConfiguration";
     validateTableColumnDecimalOrInteger(
         tableColumnPrimary,
-        errorMessage.formatted(
-            name, TableColumnValueType.DECIMAL, TableColumnValueType.INTEGER, PRIMARY_ATTRIBUTE));
+        "'%s': %ss require an attribute of type DECIMAL or INTEGER as '%s'"
+            .formatted(name, configName, PRIMARY_ATTRIBUTE));
 
     if (histogramChartConfiguration.secondaryAttribute() == null) {
       if (histogramChartConfiguration.grouping() != null
@@ -356,13 +349,9 @@ public class AnalysisService {
       TableColumn tableColumnSecondary =
           AggregationResultUtil.getTableColumn(
               histogramChartConfiguration.secondaryAttribute(), aggregationResult);
-      validateTableColumValueOptionOrBoolean(
+      validateTableColumBooleanTextOrValueOption(
           tableColumnSecondary,
-          errorMessage.formatted(
-              name,
-              TableColumnValueType.BOOLEAN,
-              TableColumnValueType.VALUE_WITH_OPTIONS,
-              SECONDARY_ATTRIBUTE));
+          ERROR_MESSAGE_ATTRIBUTE_TYPE.formatted(name, configName, SECONDARY_ATTRIBUTE));
 
       if (histogramChartConfiguration.grouping() == null
           || histogramChartConfiguration.scaling() == null) {
@@ -484,11 +473,10 @@ public class AnalysisService {
         AggregationResultUtil.getTableColumn(
             pieChartConfigurationDto.attribute(), aggregationResult);
 
-    String errorMessage = "'%s': PieChartConfigurations require an attribute of type %s or %s";
-    validateTableColumValueOptionOrBoolean(
+    validateTableColumBooleanTextOrValueOption(
         tableColumnPrimary,
-        errorMessage.formatted(
-            name, TableColumnValueType.BOOLEAN, TableColumnValueType.VALUE_WITH_OPTIONS));
+        "'%s': PieChartConfigurations require an attribute of type BOOLEAN, TEXT or VALUE_WITH_OPTIONS"
+            .formatted(name));
   }
 
   private static void validatePointBasedChartConfiguration(
@@ -526,14 +514,9 @@ public class AnalysisService {
           AggregationResultUtil.getTableColumn(
               chartConfiguration.secondaryAttribute(), aggregationResult);
 
-      validateTableColumValueOptionOrBoolean(
+      validateTableColumBooleanTextOrValueOption(
           tableColumnSecondary,
-          errorMessage.formatted(
-              name,
-              configName,
-              TableColumnValueType.BOOLEAN,
-              TableColumnValueType.VALUE_WITH_OPTIONS,
-              SECONDARY_ATTRIBUTE));
+          ERROR_MESSAGE_ATTRIBUTE_TYPE.formatted(name, configName, SECONDARY_ATTRIBUTE));
     }
   }
 
@@ -545,9 +528,10 @@ public class AnalysisService {
     }
   }
 
-  private static void validateTableColumValueOptionOrBoolean(
+  private static void validateTableColumBooleanTextOrValueOption(
       TableColumn tableColumn, String errorMessage) {
-    if (!tableColumn.getValueType().equals(TableColumnValueType.VALUE_WITH_OPTIONS)
+    if (!tableColumn.getValueType().equals(TableColumnValueType.TEXT)
+        && !tableColumn.getValueType().equals(TableColumnValueType.VALUE_WITH_OPTIONS)
         && !tableColumn.getValueType().equals(TableColumnValueType.BOOLEAN)) {
       throw new BadRequestException(errorMessage);
     }
@@ -642,7 +626,6 @@ public class AnalysisService {
             barChartConfigurationDto.secondaryAttribute(), aggregationResult);
     if (page == 0) {
       AggregationResultUtil.validateColumnFilters(filters, aggregationResult);
-      initiallyFillBarChartMap(collectedChartData, primaryTableColumn, secondaryTableColumn);
     }
 
     Stream<Specification<TableRow>> notNullSpecifications;
@@ -664,49 +647,6 @@ public class AnalysisService {
         tableRow ->
             addTableRowToCollectedBarChartData(
                 tableRow, collectedChartData, primaryTableColumn, secondaryTableColumn));
-  }
-
-  private static void initiallyFillBarChartMap(
-      Map<String, Map<String, Integer>> collectedChartData,
-      TableColumn primaryTableColumn,
-      TableColumn secondaryTableColumn) {
-    List<String> primaryKeys =
-        Objects.requireNonNull(getKeysForValueOptionOrBooleanColumn(primaryTableColumn));
-    List<String> secondaryKeys = getKeysForValueOptionOrBooleanColumn(secondaryTableColumn);
-
-    if (secondaryKeys == null) {
-      primaryKeys.forEach(
-          primaryKey -> {
-            Map<String, Integer> secondaryMap = new HashMap<>();
-            secondaryMap.put(primaryKey, 0);
-            collectedChartData.put(primaryKey, secondaryMap);
-          });
-    } else {
-      primaryKeys.forEach(
-          primaryKey -> {
-            Map<String, Integer> secondaryMap =
-                secondaryKeys.stream().collect(Collectors.toMap(Function.identity(), key -> 0));
-            collectedChartData.put(primaryKey, secondaryMap);
-          });
-    }
-  }
-
-  @SuppressWarnings("java:S1168")
-  private static List<String> getKeysForValueOptionOrBooleanColumn(TableColumn tableColumn) {
-    if (tableColumn == null) {
-      return null;
-    }
-    List<String> keys;
-    if (tableColumn.getValueType().equals(TableColumnValueType.BOOLEAN)) {
-      keys = List.of("Ja", "Nein");
-    } else {
-      keys = getValueToMeaningKeys(tableColumn);
-    }
-    return keys;
-  }
-
-  private static List<String> getValueToMeaningKeys(TableColumn tableColumn) {
-    return tableColumn.getValueToMeanings().stream().map(ValueToMeaning::getValue).toList();
   }
 
   private int collectDataForTablePageAndReturnMaxPage(
@@ -758,23 +698,17 @@ public class AnalysisService {
       TableColumn primaryTableColumn,
       TableColumn secondaryTableColumn) {
     String primaryKey =
-        getKeyForCellEntryValueOptionOrBoolean(getCellEntry(tableRow, primaryTableColumn));
+        getKeyForCellEntryBooleanTextOrValueOption(getCellEntry(tableRow, primaryTableColumn));
 
     String secondaryKey;
     if (secondaryTableColumn == null) {
       secondaryKey = primaryKey;
     } else {
       secondaryKey =
-          getKeyForCellEntryValueOptionOrBoolean(getCellEntry(tableRow, secondaryTableColumn));
+          getKeyForCellEntryBooleanTextOrValueOption(getCellEntry(tableRow, secondaryTableColumn));
     }
 
-    if (primaryKey == null || secondaryKey == null) {
-      return;
-    }
-
-    collectedChartData
-        .get(primaryKey)
-        .compute(secondaryKey, (k, count) -> Objects.requireNonNull(count) + 1);
+    addTableRowToCollectedChartData(primaryKey, secondaryKey, collectedChartData);
   }
 
   private CellEntry getCellEntry(TableRow tableRow, TableColumn tableColumn) {
@@ -784,19 +718,39 @@ public class AnalysisService {
         .orElseThrow();
   }
 
-  private String getKeyForCellEntryValueOptionOrBoolean(CellEntry cellEntry) {
+  private String getKeyForCellEntryBooleanTextOrValueOption(CellEntry cellEntry) {
     if (cellEntry.getValue() == null) {
       return null;
     }
     if (cellEntry.getTableColumn().getValueType().equals(TableColumnValueType.BOOLEAN)) {
       return Boolean.TRUE.equals(cellEntry.getValue()) ? "Ja" : "Nein";
     }
-    String stringValue = cellEntry.getValue().toString();
-    if (getValueToMeaningKeys(cellEntry.getTableColumn()).contains(stringValue)) {
-      return stringValue;
-    } else {
-      return null;
+    if (cellEntry.getTableColumn().getValueType().equals(TableColumnValueType.TEXT)) {
+      return cellEntry.getValue().toString();
     }
+    String stringValue = cellEntry.getValue().toString();
+    if (cellEntry.getTableColumn().getValueType().equals(TableColumnValueType.VALUE_WITH_OPTIONS)
+        && getValueToMeaningKeys(cellEntry.getTableColumn()).contains(stringValue)) {
+      return stringValue;
+    }
+    return null;
+  }
+
+  private static Set<String> getValueToMeaningKeys(TableColumn tableColumn) {
+    return tableColumn.getValueToMeanings().stream()
+        .map(ValueToMeaning::getValue)
+        .collect(Collectors.toSet());
+  }
+
+  private static <T> void addTableRowToCollectedChartData(
+      T primaryKey, String secondaryKey, Map<T, Map<String, Integer>> collectedChartData) {
+    if (primaryKey == null || secondaryKey == null) {
+      return;
+    }
+
+    Map<String, Integer> secondaryToIntegerMap =
+        collectedChartData.computeIfAbsent(primaryKey, key -> new HashMap<>());
+    secondaryToIntegerMap.compute(secondaryKey, (key, count) -> (count == null) ? 1 : count + 1);
   }
 
   @Transactional
@@ -806,10 +760,10 @@ public class AnalysisService {
       Map<String, Map<String, Integer>> chartDataHolder,
       BarChartConfigurationDto barChartConfigurationDto) {
     Analysis analysis = getAnalysisInternal(analysisId);
-    AbstractAggregationResult aggregationResult = analysis.getAggregationResult();
+    fillBarChartDataWithMissingValues(
+        chartDataHolder, analysis.getAggregationResult(), barChartConfigurationDto);
 
-    List<BarGroupData> groupDataList =
-        getBarGroupDataList(chartDataHolder, barChartConfigurationDto, aggregationResult);
+    List<BarGroupData> groupDataList = getBarGroupDataList(chartDataHolder);
 
     int evaluatedEntries =
         groupDataList.stream()
@@ -828,47 +782,94 @@ public class AnalysisService {
     return diagram.getExternalId();
   }
 
-  private static List<BarGroupData> getBarGroupDataList(
+  private static void fillBarChartDataWithMissingValues(
       Map<String, Map<String, Integer>> chartDataHolder,
-      BarChartConfigurationDto barChartConfigurationDto,
-      AbstractAggregationResult aggregationResult) {
+      AbstractAggregationResult aggregationResult,
+      BarChartConfigurationDto barChartConfigurationDto) {
+    TableColumn primaryTableColumn =
+        AggregationResultUtil.getTableColumn(
+            barChartConfigurationDto.primaryAttribute(), aggregationResult);
     TableColumn secondaryTableColumn =
         AggregationResultUtil.getTableColumn(
             barChartConfigurationDto.secondaryAttribute(), aggregationResult);
 
+    Set<String> primaryKeysBooleanValueOption = getKeysForBooleanOrValueOption(primaryTableColumn);
+    if (secondaryTableColumn == null) {
+      primaryKeysBooleanValueOption.forEach(
+          key ->
+              chartDataHolder.computeIfAbsent(
+                  key,
+                  secondaryKey -> {
+                    Map<String, Integer> secondaryMap = new HashMap<>();
+                    secondaryMap.put(secondaryKey, 0);
+                    return secondaryMap;
+                  }));
+    } else {
+      Set<String> secondaryKeys;
+      if (secondaryTableColumn.getValueType().equals(TableColumnValueType.TEXT)) {
+        secondaryKeys = getKeysForTextValues(chartDataHolder);
+      } else {
+        secondaryKeys = getKeysForBooleanOrValueOption(secondaryTableColumn);
+      }
+      primaryKeysBooleanValueOption.forEach(
+          key -> chartDataHolder.computeIfAbsent(key, k -> new HashMap<>()));
+
+      chartDataHolder
+          .keySet()
+          .forEach(
+              primaryKey -> {
+                Map<String, Integer> secondaryToIntegerMap = chartDataHolder.get(primaryKey);
+                secondaryKeys.forEach(
+                    key -> secondaryToIntegerMap.computeIfAbsent(key, secondaryKey -> 0));
+              });
+    }
+  }
+
+  private static <T> Set<String> getKeysForTextValues(Map<T, Map<String, Integer>> valueMap) {
+    Set<String> keys = new HashSet<>();
+    valueMap.values().forEach(map -> keys.addAll(map.keySet()));
+    return keys;
+  }
+
+  private static Set<String> getKeysForBooleanOrValueOption(TableColumn tableColumn) {
+    if (tableColumn == null) {
+      return Collections.emptySet();
+    }
+    if (tableColumn.getValueType().equals(TableColumnValueType.BOOLEAN)) {
+      return Set.of("Ja", "Nein");
+    }
+    if (tableColumn.getValueType().equals(TableColumnValueType.VALUE_WITH_OPTIONS)) {
+      return getValueToMeaningKeys(tableColumn);
+    }
+    return Collections.emptySet();
+  }
+
+  private static List<BarGroupData> getBarGroupDataList(
+      Map<String, Map<String, Integer>> chartDataHolder) {
     Map<String, BarGroupData> groupDataMap =
         chartDataHolder.entrySet().stream()
-            .map(entry -> mapToBarGroupData(entry.getKey(), entry.getValue(), secondaryTableColumn))
+            .map(entry -> mapToBarGroupData(entry.getKey(), entry.getValue()))
             .collect(Collectors.toMap(BarGroupData::getKey, Function.identity()));
 
-    List<String> primaryKeys =
-        Objects.requireNonNull(
-            getKeysForValueOptionOrBooleanColumn(
-                AggregationResultUtil.getTableColumn(
-                    barChartConfigurationDto.primaryAttribute(), aggregationResult)));
-    return primaryKeys.stream().map(groupDataMap::get).toList();
+    return groupDataMap.keySet().stream().sorted().map(groupDataMap::get).toList();
   }
 
   private static BarGroupData mapToBarGroupData(
-      String key,
-      Map<String, Integer> keyToCountStringIntegerMap,
-      TableColumn secondaryTableColumn) {
-    Map<String, KeyToCount> keyToCountMap =
-        keyToCountStringIntegerMap.entrySet().stream()
-            .map(AnalysisService::getKeyToCount)
-            .collect(Collectors.toMap(KeyToCount::getKey, Function.identity()));
-
-    List<String> secondaryKeys = getKeysForValueOptionOrBooleanColumn(secondaryTableColumn);
-    if (secondaryKeys == null) {
-      secondaryKeys = keyToCountMap.keySet().stream().toList();
-    }
-
-    List<KeyToCount> keyToCounts = secondaryKeys.stream().map(keyToCountMap::get).toList();
+      String key, Map<String, Integer> keyToCountStringIntegerMap) {
+    List<KeyToCount> keyToCounts = mapToSortedKeyToCountList(keyToCountStringIntegerMap);
 
     BarGroupData barGroupData = new BarGroupData();
     barGroupData.setKey(key);
     barGroupData.addKeyToCounts(keyToCounts);
     return barGroupData;
+  }
+
+  private static List<KeyToCount> mapToSortedKeyToCountList(
+      Map<String, Integer> keyToCountStringIntegerMap) {
+    return keyToCountStringIntegerMap.entrySet().stream()
+        .map(AnalysisService::getKeyToCount)
+        .sorted(Comparator.comparing(KeyToCount::getKey))
+        .toList();
   }
 
   private static KeyToCount getKeyToCount(Map.Entry<String, Integer> entry) {
@@ -1050,8 +1051,6 @@ public class AnalysisService {
             histogramChartConfigurationDto.secondaryAttribute(), aggregationResult);
     if (page == 0) {
       AggregationResultUtil.validateColumnFilters(filters, aggregationResult);
-      initiallyFillHistogramChartMap(
-          collectedChartData, chartConfiguration.getBins(), secondaryTableColumn);
     }
 
     Specification<TableRow> notNullNotUnknownSpecification =
@@ -1082,29 +1081,6 @@ public class AnalysisService {
                 secondaryTableColumn));
   }
 
-  private void initiallyFillHistogramChartMap(
-      Map<Long, Map<String, Integer>> collectedChartData,
-      List<HistogramBin> bins,
-      TableColumn secondaryTableColumn) {
-    List<String> secondaryKeys = getKeysForValueOptionOrBooleanColumn(secondaryTableColumn);
-
-    if (secondaryKeys == null) {
-      bins.forEach(
-          bin -> {
-            Map<String, Integer> secondaryMap = new HashMap<>();
-            secondaryMap.put(String.valueOf(bin.getId()), 0);
-            collectedChartData.put(bin.getId(), secondaryMap);
-          });
-    } else {
-      bins.forEach(
-          bin -> {
-            Map<String, Integer> secondaryMap =
-                secondaryKeys.stream().collect(Collectors.toMap(Function.identity(), key -> 0));
-            collectedChartData.put(bin.getId(), secondaryMap);
-          });
-    }
-  }
-
   private void addTableRowToCollectedHistogramChartData(
       TableRow tableRow,
       Map<Long, Map<String, Integer>> collectedChartData,
@@ -1130,16 +1106,10 @@ public class AnalysisService {
       secondaryKey = String.valueOf(primaryKey);
     } else {
       secondaryKey =
-          getKeyForCellEntryValueOptionOrBoolean(getCellEntry(tableRow, secondaryTableColumn));
+          getKeyForCellEntryBooleanTextOrValueOption(getCellEntry(tableRow, secondaryTableColumn));
     }
 
-    if (primaryKey == null || secondaryKey == null) {
-      return;
-    }
-
-    collectedChartData
-        .get(primaryKey)
-        .compute(secondaryKey, (k, count) -> Objects.requireNonNull(count) + 1);
+    addTableRowToCollectedChartData(primaryKey, secondaryKey, collectedChartData);
   }
 
   private BigDecimal getValueAsBigDecimal(TableColumnValueType valueType, CellEntry cellEntry) {
@@ -1165,6 +1135,11 @@ public class AnalysisService {
     HistogramChartConfiguration chartConfiguration =
         (HistogramChartConfiguration)
             Hibernate.unproxy(analysis.getChartConfiguration(), ChartConfiguration.class);
+    fillHistogramChartDataWithMissingValues(
+        chartDataHolder,
+        chartConfiguration.getBins(),
+        analysis.getAggregationResult(),
+        histogramChartConfigurationDto);
 
     List<HistogramGroupData> histogramGroupDatas =
         chartConfiguration.getBins().stream()
@@ -1200,6 +1175,36 @@ public class AnalysisService {
     return diagram.getExternalId();
   }
 
+  private static void fillHistogramChartDataWithMissingValues(
+      Map<Long, Map<String, Integer>> chartDataHolder,
+      List<HistogramBin> bins,
+      AbstractAggregationResult aggregationResult,
+      HistogramChartConfigurationDto histogramChartConfigurationDto) {
+    TableColumn secondaryTableColumn =
+        AggregationResultUtil.getTableColumn(
+            histogramChartConfigurationDto.secondaryAttribute(), aggregationResult);
+    bins.forEach(bin -> chartDataHolder.computeIfAbsent(bin.getId(), k -> new HashMap<>()));
+    if (secondaryTableColumn == null) {
+      chartDataHolder.forEach(
+          (key, secondaryMap) -> {
+            String stringKey = String.valueOf(key);
+            secondaryMap.computeIfAbsent(stringKey, k -> 0);
+          });
+    } else {
+      Set<String> secondaryKeys;
+      if (secondaryTableColumn.getValueType().equals(TableColumnValueType.TEXT)) {
+        secondaryKeys = getKeysForTextValues(chartDataHolder);
+      } else {
+        secondaryKeys = getKeysForBooleanOrValueOption(secondaryTableColumn);
+      }
+      chartDataHolder
+          .values()
+          .forEach(
+              secondaryMap ->
+                  secondaryKeys.forEach(key -> secondaryMap.computeIfAbsent(key, k -> 0)));
+    }
+  }
+
   private HistogramGroupData mapToHistogramGroupData(
       HistogramBin bin,
       Map<Long, Map<String, Integer>> chartDataHolder,
@@ -1209,8 +1214,7 @@ public class AnalysisService {
 
     Map<String, Integer> dataForBin = chartDataHolder.get(bin.getId());
     if (withSecondaryAttribute) {
-      histogramGroupData.addKeyToCounts(
-          dataForBin.entrySet().stream().map(AnalysisService::getKeyToCount).toList());
+      histogramGroupData.addKeyToCounts(mapToSortedKeyToCountList(dataForBin));
     } else {
       histogramGroupData.setCount(dataForBin.values().stream().mapToInt(count -> count).sum());
     }
@@ -1248,37 +1252,25 @@ public class AnalysisService {
 
   private void initiallyFillPieChartMap(
       Map<String, Integer> collectedChartData, TableColumn tableColumn) {
-    List<String> keys = Objects.requireNonNull(getKeysForValueOptionOrBooleanColumn(tableColumn));
+    Set<String> keys = getKeysForBooleanOrValueOption(tableColumn);
     keys.forEach(key -> collectedChartData.put(key, 0));
   }
 
   private void addTableRowToCollectedPieChartData(
       TableRow tableRow, Map<String, Integer> collectedChartData, TableColumn tableColumn) {
-    String key = getKeyForCellEntryValueOptionOrBoolean(getCellEntry(tableRow, tableColumn));
-    if (key != null) {
-      collectedChartData.put(key, collectedChartData.get(key) + 1);
+    String primaryKey =
+        getKeyForCellEntryBooleanTextOrValueOption(getCellEntry(tableRow, tableColumn));
+    if (primaryKey != null) {
+      collectedChartData.compute(primaryKey, (key, count) -> (count == null) ? 1 : count + 1);
     }
   }
 
   @Transactional
   public UUID addPieChartDiagram(
-      UUID analysisId,
-      AddDiagramRequest addDiagramRequest,
-      Map<String, Integer> chartDataHolder,
-      PieChartConfigurationDto pieChartConfigurationDto) {
+      UUID analysisId, AddDiagramRequest addDiagramRequest, Map<String, Integer> chartDataHolder) {
     Analysis analysis = getAnalysisInternal(analysisId);
 
-    Map<String, KeyToCount> keyToCountMap =
-        chartDataHolder.entrySet().stream()
-            .map(AnalysisService::getKeyToCount)
-            .collect(Collectors.toMap(KeyToCount::getKey, Function.identity()));
-
-    List<String> primaryKeys =
-        Objects.requireNonNull(
-            getKeysForValueOptionOrBooleanColumn(
-                AggregationResultUtil.getTableColumn(
-                    pieChartConfigurationDto.attribute(), analysis.getAggregationResult())));
-    List<KeyToCount> keyToCounts = primaryKeys.stream().map(keyToCountMap::get).toList();
+    List<KeyToCount> keyToCounts = mapToSortedKeyToCountList(chartDataHolder);
 
     int evaluatedEntries = keyToCounts.stream().mapToInt(KeyToCount::getCount).sum();
 
@@ -1294,7 +1286,7 @@ public class AnalysisService {
 
   @Transactional(readOnly = true)
   public Integer collectPointBasedChartData(
-      List<DataPointHolder> collectedChartData,
+      Map<String, List<DataPointHolder>> collectedChartData,
       Integer page,
       UUID analysisId,
       List<TableColumnFilterParameter> filters,
@@ -1302,8 +1294,12 @@ public class AnalysisService {
     Analysis analysis = getAnalysisInternal(analysisId);
     AbstractAggregationResult aggregationResult = analysis.getAggregationResult();
 
+    TableColumn secondaryTableColumn =
+        AggregationResultUtil.getTableColumn(
+            pointBasedChartConfiguration.secondaryAttribute(), aggregationResult);
     if (page == 0) {
       AggregationResultUtil.validateColumnFilters(filters, aggregationResult);
+      initiallyFillPointBasedChartMap(collectedChartData, secondaryTableColumn);
     }
 
     TableColumn xTableColumn =
@@ -1312,9 +1308,6 @@ public class AnalysisService {
     TableColumn yTableColumn =
         AggregationResultUtil.getTableColumn(
             pointBasedChartConfiguration.yAttribute(), aggregationResult);
-    TableColumn secondaryTableColumn =
-        AggregationResultUtil.getTableColumn(
-            pointBasedChartConfiguration.secondaryAttribute(), aggregationResult);
 
     List<Specification<TableRow>> notNullSpecifications =
         getNotNullSpecificationsForDataPointCharts(
@@ -1328,6 +1321,12 @@ public class AnalysisService {
         tableRow ->
             addTableRowToCollectedPointBasedChartData(
                 tableRow, collectedChartData, xTableColumn, yTableColumn, secondaryTableColumn));
+  }
+
+  private void initiallyFillPointBasedChartMap(
+      Map<String, List<DataPointHolder>> collectedChartData, TableColumn secondaryTableColumn) {
+    Set<String> secondaryKeys = getKeysForBooleanOrValueOption(secondaryTableColumn);
+    secondaryKeys.forEach(key -> collectedChartData.put(key, new ArrayList<>()));
   }
 
   private List<Specification<TableRow>> getNotNullSpecificationsForDataPointCharts(
@@ -1348,7 +1347,7 @@ public class AnalysisService {
 
   private void addTableRowToCollectedPointBasedChartData(
       TableRow tableRow,
-      List<DataPointHolder> collectedChartData,
+      Map<String, List<DataPointHolder>> collectedChartData,
       TableColumn xTableColumn,
       TableColumn yTableColumn,
       TableColumn secondaryTableColumn) {
@@ -1359,12 +1358,16 @@ public class AnalysisService {
         getValueAsBigDecimal(yTableColumn.getValueType(), getCellEntry(tableRow, yTableColumn));
 
     if (secondaryTableColumn == null) {
-      collectedChartData.add(new DataPointHolder(tableRow.getId(), xValue, yValue, null));
+      collectedChartData
+          .computeIfAbsent("", key -> new ArrayList<>())
+          .add(new DataPointHolder(tableRow.getId(), xValue, yValue, null));
     } else {
       CellEntry secondaryCellEntry = getCellEntry(tableRow, secondaryTableColumn);
-      String secondaryKey = getKeyForCellEntryValueOptionOrBoolean(secondaryCellEntry);
+      String secondaryKey = getKeyForCellEntryBooleanTextOrValueOption(secondaryCellEntry);
       if (secondaryKey != null) {
-        collectedChartData.add(new DataPointHolder(tableRow.getId(), xValue, yValue, secondaryKey));
+        collectedChartData
+            .computeIfAbsent(secondaryKey, key -> new ArrayList<>())
+            .add(new DataPointHolder(tableRow.getId(), xValue, yValue, secondaryKey));
       }
     }
   }
@@ -1373,7 +1376,7 @@ public class AnalysisService {
   public UUID addPointBasedChartDiagram(
       UUID analysisId,
       AddDiagramRequest addDiagramRequest,
-      List<DataPointHolder> data,
+      Map<String, List<DataPointHolder>> data,
       PointBasedChartConfigurationDto pointBasedChartConfiguration) {
     Analysis analysis = getAnalysisInternal(analysisId);
 
@@ -1389,41 +1392,28 @@ public class AnalysisService {
     AtomicInteger evaluatedDataAmount = new AtomicInteger(0);
     List<DataPointGroup> dataPointGroups = new ArrayList<>();
     if (pointBasedChartConfiguration.secondaryAttribute() == null) {
-      List<DataPoint> dataPoints = data.stream().sorted(comparator).map(mapFunction).toList();
+      List<DataPoint> dataPoints =
+          data.computeIfAbsent("", key -> new ArrayList<>()).stream()
+              .sorted(comparator)
+              .map(mapFunction)
+              .toList();
       DataPointGroup dataPointGroup = new DataPointGroup();
       dataPointGroup.addDataPoints(dataPoints);
       dataPointGroups.add(dataPointGroup);
       evaluatedDataAmount.addAndGet(dataPoints.size());
     } else {
-      Map<String, List<DataPointHolder>> dataPointMap = new HashMap<>();
-      data.stream()
-          .sorted(comparator)
+      data.keySet().stream()
+          .sorted()
           .forEach(
-              dataPointHolder ->
-                  dataPointMap
-                      .computeIfAbsent(dataPointHolder.secondaryKey(), key -> new ArrayList<>())
-                      .add(dataPointHolder));
-
-      List<String> keys =
-          Objects.requireNonNull(
-              getKeysForValueOptionOrBooleanColumn(
-                  AggregationResultUtil.getTableColumn(
-                      pointBasedChartConfiguration.secondaryAttribute(),
-                      analysis.getAggregationResult())));
-
-      keys.forEach(
-          key -> {
-            List<DataPoint> dataPoints =
-                dataPointMap.getOrDefault(key, Collections.emptyList()).stream()
-                    .sorted(comparator)
-                    .map(mapFunction)
-                    .toList();
-            DataPointGroup dataPointGroup = new DataPointGroup();
-            dataPointGroup.setKey(key);
-            dataPointGroup.addDataPoints(dataPoints);
-            dataPointGroups.add(dataPointGroup);
-            evaluatedDataAmount.addAndGet(dataPoints.size());
-          });
+              key -> {
+                List<DataPoint> dataPoints =
+                    data.get(key).stream().sorted(comparator).map(mapFunction).toList();
+                DataPointGroup dataPointGroup = new DataPointGroup();
+                dataPointGroup.setKey(key);
+                dataPointGroup.addDataPoints(dataPoints);
+                dataPointGroups.add(dataPointGroup);
+                evaluatedDataAmount.addAndGet(dataPoints.size());
+              });
     }
 
     if (pointBasedChartConfiguration
@@ -1434,8 +1424,6 @@ public class AnalysisService {
     }
 
     LineOrScatterChartData lineOrScatterChartData = new LineOrScatterChartData();
-    lineOrScatterChartData.setLineChart(
-        pointBasedChartConfiguration instanceof LineChartConfigurationDto);
     lineOrScatterChartData.addDataPointGroups(dataPointGroups);
     lineOrScatterChartData.setEvaluatedDataAmount(evaluatedDataAmount.get());
 

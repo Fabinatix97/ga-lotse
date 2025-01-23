@@ -11,5 +11,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BundIdPersonLinkRepository extends JpaRepository<BundIdPersonLink, Long> {
 
-  Optional<BundIdPersonLink> findByBundId(String bundId);
+  Optional<BundIdPersonLink> findByBpk2(String bpk2);
 }

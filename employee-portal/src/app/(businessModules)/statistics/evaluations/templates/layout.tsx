@@ -5,7 +5,8 @@
 
 "use client";
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/base-api";
+import { hasAnyUserRoles } from "@eshg/lib-employee-portal/helpers/accessControl";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import {
   BackupTableOutlined,
@@ -21,7 +22,6 @@ import {
   TabNavigationHeaderTypography,
 } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationHeader";
 import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
-import { hasAnyUserRoles } from "@/lib/shared/helpers/accessControl";
 
 export default function EvaluationTemplatesLayout({
   children,

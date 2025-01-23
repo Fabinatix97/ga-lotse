@@ -6,7 +6,7 @@
 import {
   ApiAddCentralFileIdToGdprProcedureRequest,
   ApiAddGdprProcedureRequest,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
 import {
   mapOptionalValue,

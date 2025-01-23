@@ -14,8 +14,6 @@ import de.eshg.travelmedicine.certificate.api.GetCertificatesResponse;
 import de.eshg.travelmedicine.certificate.api.PostPutCertificateRequest;
 import de.eshg.travelmedicine.document.informationstatement.InformationStatementService;
 import de.eshg.travelmedicine.document.medicalhistory.MedicalHistoryService;
-import de.eshg.travelmedicine.featuretoggle.TravelMedicineFeature;
-import de.eshg.travelmedicine.featuretoggle.TravelMedicineFeatureToggle;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetAppointmentOverviewResponse;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetAssignableServicesResponse;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetAvailableAppointmentsResponse;
@@ -86,7 +84,6 @@ public class VaccinationConsultationController {
   public static final String INFORMATION_STATEMENT_URL = "/information-statements";
   public static final String INFORMATION_STATEMENT_RESET_URL = "/reset";
   public static final String SYNC_PERSON_URL = "/sync-person";
-  private final TravelMedicineFeatureToggle featureToggle;
   private final VaccinationConsultationService vaccinationConsultationService;
   private final ProcedureStepService procedureStepService;
   private final CertificateService certificateService;
@@ -98,14 +95,12 @@ public class VaccinationConsultationController {
       VaccinationConsultationService vaccinationConsultationService,
       ProcedureStepService procedureStepService,
       CertificateService certificateService,
-      TravelMedicineFeatureToggle featureToggle,
       InformationStatementService informationStatementService,
       MedicalHistoryService medicalHistoryService,
       AuditLogger auditLogger) {
     this.vaccinationConsultationService = vaccinationConsultationService;
     this.procedureStepService = procedureStepService;
     this.certificateService = certificateService;
-    this.featureToggle = featureToggle;
     this.informationStatementService = informationStatementService;
     this.medicalHistoryService = medicalHistoryService;
     this.auditLogger = auditLogger;
@@ -357,8 +352,6 @@ public class VaccinationConsultationController {
   @Transactional
   public GetInformationStatementsResponse getInformationStatements(
       @PathVariable("procedureId") UUID procedureId) {
-    featureToggle.assertNewFeatureIsEnabled(
-        TravelMedicineFeature.CITIZEN_PORTAL_INFORMATION_STATEMENT);
     return informationStatementService.getInformationStatementsForEmployeePortal(procedureId);
   }
 
@@ -374,8 +367,6 @@ public class VaccinationConsultationController {
   public ResponseEntity<byte[]> getInformationStatementPdf(
       @PathVariable("procedureId") UUID procedureId,
       @PathVariable("informationStatementId") UUID informationStatementId) {
-    featureToggle.assertNewFeatureIsEnabled(
-        TravelMedicineFeature.CITIZEN_PORTAL_INFORMATION_STATEMENT);
     return informationStatementService.createInformationStatementPdf(
         procedureId, informationStatementId);
   }
@@ -386,8 +377,6 @@ public class VaccinationConsultationController {
   public void postInformationStatements(
       @PathVariable("procedureId") UUID procedureId,
       @Valid @RequestBody PostInformationStatementsRequest request) {
-    featureToggle.assertNewFeatureIsEnabled(
-        TravelMedicineFeature.CITIZEN_PORTAL_INFORMATION_STATEMENT);
     informationStatementService.addInformationStatements(procedureId, request);
   }
 
@@ -397,8 +386,6 @@ public class VaccinationConsultationController {
   public void deleteInformationStatement(
       @PathVariable("procedureId") UUID procedureId,
       @PathVariable("informationStatementId") UUID informationStatementId) {
-    featureToggle.assertNewFeatureIsEnabled(
-        TravelMedicineFeature.CITIZEN_PORTAL_INFORMATION_STATEMENT);
     informationStatementService.deleteInformationStatement(procedureId, informationStatementId);
   }
 
@@ -413,8 +400,6 @@ public class VaccinationConsultationController {
   public void resetInformationStatement(
       @PathVariable("procedureId") UUID procedureId,
       @PathVariable("informationStatementId") UUID informationStatementId) {
-    featureToggle.assertNewFeatureIsEnabled(
-        TravelMedicineFeature.CITIZEN_PORTAL_INFORMATION_STATEMENT);
     informationStatementService.resetInformationStatement(procedureId, informationStatementId);
   }
 

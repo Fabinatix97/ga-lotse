@@ -5,13 +5,40 @@
 
 import { ApiEmployeeOmsProcedureOverview } from "@eshg/employee-portal-api/officialMedicalService";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { WarningAmberOutlined } from "@mui/icons-material";
+import { Chip, Tooltip } from "@mui/joy";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
+
+import {
+  procedureStatusNames,
+  statusColors,
+} from "@/lib/shared/components/procedures/constants";
 
 const columnHelper: ColumnHelper<ApiEmployeeOmsProcedureOverview> =
   createColumnHelper<ApiEmployeeOmsProcedureOverview>();
 
 export function procedureOverviewTableColumns() {
   return [
+    columnHelper.display({
+      id: "highPriority",
+      header: "",
+      cell: (ctx) =>
+        ctx.row.original.concern?.highPriority && (
+          <Tooltip
+            title={"Dringender Fall"}
+            arrow
+            placement="top"
+            sx={{ marginBottom: -0.5 }}
+          >
+            <WarningAmberOutlined color="danger" />
+          </Tooltip>
+        ),
+      meta: {
+        width: 24,
+        cellStyle: "icon",
+        headerLabel: "Dringender Fall",
+      },
+    }),
     columnHelper.accessor("firstName", {
       header: "Vorname",
       cell: (props) => props.getValue(),
@@ -46,8 +73,12 @@ export function procedureOverviewTableColumns() {
       },
     }),
     columnHelper.accessor("status", {
-      header: "Status",
-      cell: (props) => props.getValue(),
+      header: "Vorgang Status",
+      cell: (props) => (
+        <Chip color={statusColors[props.getValue()]} size="md">
+          {procedureStatusNames[props.getValue()]}
+        </Chip>
+      ),
       enableSorting: false,
       meta: {
         width: 100,
@@ -58,6 +89,17 @@ export function procedureOverviewTableColumns() {
     }),
     columnHelper.accessor("facilityName", {
       header: "Auftraggeber",
+      cell: (props) => props.getValue(),
+      enableSorting: false,
+      meta: {
+        width: 200,
+        canNavigate: {
+          parentRow: true,
+        },
+      },
+    }),
+    columnHelper.accessor("physicianName", {
+      header: "Ärzt:in",
       cell: (props) => props.getValue(),
       enableSorting: false,
       meta: {

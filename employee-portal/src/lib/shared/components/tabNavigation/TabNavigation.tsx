@@ -5,11 +5,11 @@
 
 "use client";
 
+import { noCheck } from "@eshg/lib-employee-portal/helpers/accessControl";
 import { Stack } from "@mui/joy";
 
 import { TabNavigationItemButton } from "@/lib/shared/components/tabNavigation/TabNavigationButton";
 import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
-import { noCheck } from "@/lib/shared/helpers/accessControl";
 import { useAccessControl } from "@/lib/shared/hooks/useAccessControl";
 
 interface TabNavigationProps {

@@ -27,6 +27,7 @@ dependencies {
     implementation 'io.swagger.core.v3:swagger-core-jakarta:latest.release'
     implementation 'io.micrometer:micrometer-registry-prometheus'
     compileOnly 'org.jetbrains:annotations:latest.release'
+    compileOnly 'com.bucket4j:bucket4j-core:latest.release'
 
     testImplementation project(':test-commons')
     testImplementation project(':rest-service-commons')
@@ -36,6 +37,6 @@ dependencies {
     testFixturesApi 'org.springframework.security:spring-security-test'
     testFixturesImplementation 'org.springframework.data:spring-data-commons'
 
-    testFixturesApi 'org.springdoc:springdoc-openapi-starter-webmvc-ui:latest.release'
+    testFixturesApi 'org.springdoc:springdoc-openapi-starter-webmvc-api:latest.release'
     testFixturesImplementation 'org.openapitools:jackson-databind-nullable:latest.release'
 }

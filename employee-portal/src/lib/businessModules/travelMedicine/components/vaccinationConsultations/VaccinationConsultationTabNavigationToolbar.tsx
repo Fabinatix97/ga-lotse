@@ -5,8 +5,7 @@
 
 "use client";
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
-import { ApiTravelMedicineFeature } from "@eshg/employee-portal-api/travelMedicine";
+import { ApiUserRole } from "@eshg/base-api";
 import {
   DocumentScannerOutlined,
   FormatListBulletedOutlined,
@@ -19,7 +18,6 @@ import { useSuspenseQueries } from "@tanstack/react-query";
 import { isPlainObject } from "remeda";
 
 import { procedureStatusNames } from "@/lib/baseModule/api/procedures/enums";
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/travelMedicine/api/queries/featureToggles";
 import { useGetStatusQuery } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
 import { VaccinationConsultationTabHeader } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/VaccinationConsultationTabHeader";
 import { routes as businessRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
@@ -36,13 +34,10 @@ export function VaccinationConsultationTabNavigationToolbar({
   const hasTravelMedicineAdminRole = useHasUserRoleCheck(
     ApiUserRole.TravelMedicineAdmin,
   );
-  const isInformationStatementsEnabled = useIsNewFeatureEnabled(
-    ApiTravelMedicineFeature.CitizenPortalInformationStatement,
-  );
   const [{ data: status }] = useSuspenseQueries({
     queries: [useGetStatusQuery(id)],
   });
-  const tabItems = createTabItems(id, isInformationStatementsEnabled);
+  const tabItems = createTabItems(id);
 
   return (
     <TabNavigationToolbar
@@ -64,10 +59,7 @@ export function VaccinationConsultationTabNavigationToolbar({
   );
 }
 
-function createTabItems(
-  procedureId: string,
-  isInformationStatementsEnabled: boolean,
-): TabNavigationItem[] {
+function createTabItems(procedureId: string): TabNavigationItem[] {
   return [
     {
       tabButtonName: "Vorgangsdaten",
@@ -79,7 +71,7 @@ function createTabItems(
       href: `${businessRoutes.procedures.medicalHistories(procedureId)}`,
       decorator: <FormatListBulletedOutlined />,
     },
-    isInformationStatementsEnabled && {
+    {
       tabButtonName: "Aufklärungsbögen",
       href: `${businessRoutes.procedures.informationStatements(procedureId)}`,
       decorator: <DocumentScannerOutlined />,

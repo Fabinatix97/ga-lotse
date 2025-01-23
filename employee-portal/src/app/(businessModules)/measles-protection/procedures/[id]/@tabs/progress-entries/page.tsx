@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/base-api";
 
 import { useDownloadMeaslesProtectionFile } from "@/lib/businessModules/measlesProtection/api/download/files";
 import {

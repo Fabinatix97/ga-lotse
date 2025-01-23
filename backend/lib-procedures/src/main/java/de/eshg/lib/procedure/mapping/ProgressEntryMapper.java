@@ -68,6 +68,7 @@ public class ProgressEntryMapper {
     systemProgressEntryDto.setTriggerType(toInterfaceType(progressEntry.getTriggerType()));
     systemProgressEntryDto.setKeyDocumentType(progressEntry.getKeyDocumentType());
     systemProgressEntryDto.setKeyDocumentVersion(progressEntry.getKeyDocumentVersion());
+    systemProgressEntryDto.setPreviousFileStateId(progressEntry.getPreviousFileStateId());
     fillGeneralProgressEntry(systemProgressEntryDto, progressEntry);
     return systemProgressEntryDto;
   }

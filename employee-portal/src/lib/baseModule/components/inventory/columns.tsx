@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiInventoryItem } from "@eshg/employee-portal-api/base";
+import { ApiInventoryItem } from "@eshg/base-api";
 import EditIcon from "@mui/icons-material/Edit";
 import FactCheckIcon from "@mui/icons-material/FactCheck";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";

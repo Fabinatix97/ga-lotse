@@ -5,14 +5,16 @@
 
 import { parseISO } from "date-fns";
 import { Ref } from "react";
-import { groupBy, identity, isDefined } from "remeda";
+import { groupBy, isDefined } from "remeda";
 
+import { AnonymizationOptions } from "@/lib/businessModules/statistics/api/models/anonymizationOptions";
 import { useAddEvaluation } from "@/lib/businessModules/statistics/api/mutations/useAddEvaluation";
-import { mapAnonymizedFieldValueToBoolean } from "@/lib/businessModules/statistics/components/evaluations/AnonymizationConfiguration";
+import { useGetEvaluationTemplateDetails } from "@/lib/businessModules/statistics/api/mutations/useGetEvaluationTemplateDetails";
 import {
-  CategorizedFlatAttribute,
-  ChooseAttributesStep,
-} from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ChooseAttributesStep/ChooseAttributesStep";
+  AnonymizedFieldValue,
+  mapAnonymizedFieldValueToBoolean,
+} from "@/lib/businessModules/statistics/components/evaluations/AnonymizationConfiguration";
+import { ChooseAttributesStep } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ChooseAttributesStep/ChooseAttributesStep";
 import { validateChooseAttributeStep } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ChooseAttributesStep/validateChooseAttributeStep";
 import {
   ChooseDataSourceStep,
@@ -27,58 +29,89 @@ import { ConfigureDataSourceStep } from "@/lib/businessModules/statistics/compon
 import { validateConfigureDataSourceStep } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ConfigureDataSourceStep/validateConfigureDataSourceStep";
 import { SummaryStep } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/SummaryStep/SummaryStep";
 import { CreateEvaluationFromScratchFormModel } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/createEvaluationFromScratchFormModel";
-import { ENUM_FALSE_VALUE } from "@/lib/businessModules/statistics/components/evaluations/details/filter/enumFilterMappings";
+import { ENUM_TRUE_VALUE } from "@/lib/businessModules/statistics/components/evaluations/details/filter/enumFilterMappings";
 import { getLastXMonthsTimeRange } from "@/lib/businessModules/statistics/components/evaluations/timeRangeHelper";
-import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
+import {
+  SidebarStepper,
+  createStepContent,
+} from "@/lib/shared/components/SidebarStepper/SidebarStepper";
 import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
+import { isEqualTimeSpan } from "@/lib/shared/components/formFields/TimeSpanField";
+
+export const CHOOSE_EVALUATION_TEMPLATE = "CHOOSE_EVALUATION_TEMPLATE";
+
+export function willBeAnonymized(
+  anonymized: AnonymizedFieldValue,
+  anonymizationOptions: AnonymizationOptions,
+) {
+  switch (anonymizationOptions) {
+    case AnonymizationOptions.Choice:
+      return mapAnonymizedFieldValueToBoolean(anonymized);
+    case AnonymizationOptions.AlwaysAnonymize:
+      return true;
+    case AnonymizationOptions.NotAnonymizable:
+      return false;
+  }
+}
 
 export function CreateEvaluationFromScratchSidebar({
   onClose,
   dataSources,
-  attributesByDataSourceId,
   evaluationTemplates,
   formRef,
 }: {
   onClose: (force?: boolean) => void;
   dataSources: DataSource[];
-  attributesByDataSourceId: Record<string, CategorizedFlatAttribute[]>;
   evaluationTemplates: EvaluationTemplateStepAutocompleteEntry[];
   formRef: Ref<SidebarFormHandle>;
 }) {
-  const initialValues: CreateEvaluationFromScratchFormModel = {
-    evaluationName: "",
-    timeSpan: getLastXMonthsTimeRange(3),
-    evaluationTemplateId: null,
-    _dataSourceId: "",
-    _selectedAttributeKeys: [],
-    anonymized: ENUM_FALSE_VALUE,
-  };
+  const getEvaluationTemplateDetails = useGetEvaluationTemplateDetails();
   const addEvaluation = useAddEvaluation({
     onSuccess: () => onClose(true),
   });
 
+  function getDataSourceFromId(dataSourceId: string) {
+    return dataSources.find((it) => it.id === dataSourceId);
+  }
+
+  function getAttributesFromKeys(
+    attributeKeys: string[],
+    dataSource: DataSource,
+  ) {
+    return dataSource.attributes.filter((attribute) =>
+      attributeKeys.includes(attribute.key),
+    );
+  }
+
   async function onSubmit(model: CreateEvaluationFromScratchFormModel) {
-    if (model._dataSourceId === "CHOOSE_EVALUATION_TEMPLATE") {
+    if (model[0].dataSourceId === CHOOSE_EVALUATION_TEMPLATE) {
+      const evaluationTemplate = await getEvaluationTemplateDetails(
+        model[1].evaluationTemplateId!,
+      );
       await addEvaluation({
         type: "AddEvaluationWithTemplateRequest",
-        name: model.evaluationName.trim(),
-        timeRangeStart: parseISO(model.timeSpan.start),
-        timeRangeEnd: parseISO(model.timeSpan.end),
-        templateId: model.evaluationTemplateId!,
-        anonymized: mapAnonymizedFieldValueToBoolean(model.anonymized),
+        name: model[3].evaluationName.trim(),
+        timeRangeStart: parseISO(model[2].timeSpan.start),
+        timeRangeEnd: parseISO(model[2].timeSpan.end),
+        templateId: model[1].evaluationTemplateId!,
+        anonymized: willBeAnonymized(
+          model[2].anonymized,
+          evaluationTemplate.anonymizationOptions,
+        ),
       });
     } else {
+      const dataSource = getDataSourceFromId(model[0].dataSourceId!)!;
       const attributeGroups = groupBy(
-        model.selectedAttributes!,
+        getAttributesFromKeys(model[1].selectedAttributeKeys!, dataSource),
         (item) => item.code,
       );
 
       await addEvaluation({
         type: "AddEvaluationWithDataSourcesRequest",
-        name: model.evaluationName.trim(),
+        name: model[3].evaluationName.trim(),
         dataSources: [
           {
-            businessModuleName: model.dataSource!.businessModule,
+            businessModuleName: dataSource.businessModule,
             attributeCodes: Object.entries(attributeGroups).map(
               ([code, attributes]) => {
                 const baseAttributes = attributes
@@ -91,12 +124,15 @@ export function CreateEvaluationFromScratchSidebar({
                 };
               },
             ),
-            id: model.dataSource!.id,
+            id: dataSource.id,
           },
         ],
-        timeRangeStart: parseISO(model.timeSpan.start),
-        timeRangeEnd: parseISO(model.timeSpan.end),
-        anonymized: mapAnonymizedFieldValueToBoolean(model.anonymized),
+        timeRangeStart: parseISO(model[2].timeSpan.start),
+        timeRangeEnd: parseISO(model[2].timeSpan.end),
+        anonymized: willBeAnonymized(
+          model[2].anonymized,
+          dataSource.anonymizationOptions,
+        ),
       });
     }
   }
@@ -104,56 +140,108 @@ export function CreateEvaluationFromScratchSidebar({
   return (
     <SidebarStepper
       onClose={onClose}
-      onSubmit={onSubmit}
-      initialValues={initialValues}
       formRef={formRef}
+      onSubmit={onSubmit}
       steps={[
-        {
-          type: "StandardStep",
-          step: {
-            title: "Neue Auswertung erstellen",
-            content: <ChooseDataSourceStep dataSources={dataSources} />,
-            validator: validateChooseDataSourceStep(evaluationTemplates.length),
-          },
+        () => ({
+          title: "Neue Auswertung erstellen",
+          content: createStepContent({
+            component: ChooseDataSourceStep,
+            componentProps: { dataSources },
+          }),
+          validator: validateChooseDataSourceStep(evaluationTemplates.length),
+          initialValues: { dataSourceId: "" },
+        }),
+        (prevStepsValues) => {
+          if (prevStepsValues[0].dataSourceId === CHOOSE_EVALUATION_TEMPLATE) {
+            return {
+              title: "Auswertungsvorlagen",
+              content: createStepContent({
+                component: ChooseEvaluationTemplateStep,
+                componentProps: { evaluationTemplates },
+              }),
+              initialValues: {
+                evaluationTemplateId: "",
+              },
+            };
+          } else {
+            const dataSource = getDataSourceFromId(
+              prevStepsValues[0].dataSourceId!,
+            );
+            return {
+              title: "Attribute wählen",
+              content: createStepContent({
+                component: ChooseAttributesStep,
+                componentProps: {
+                  attributes: dataSource!.attributes,
+                  dataSourceName: dataSource!.name,
+                },
+              }),
+              initialValues: {
+                selectedAttributeKeys: [],
+              },
+              validator: validateChooseAttributeStep,
+            };
+          }
         },
-        {
-          type: "BranchingStep",
-          branch: (model) => {
-            if (model._dataSourceId !== "CHOOSE_EVALUATION_TEMPLATE") {
-              const attributes =
-                attributesByDataSourceId[model._dataSourceId!] ??
-                Object.values(attributesByDataSourceId).flatMap(identity());
-              return {
-                title: "Attribute wählen",
-                content: <ChooseAttributesStep attributes={attributes} />,
-                validator: validateChooseAttributeStep,
-              };
-            } else {
-              return {
-                title: "Auswertungsvorlagen",
-                content: (
-                  <ChooseEvaluationTemplateStep
-                    evaluationTemplates={evaluationTemplates}
-                  />
-                ),
-              };
-            }
-          },
-        },
-        {
-          type: "StandardStep",
-          step: {
+        (prevStepsValues) => {
+          const isEvaluationTemplateBranch =
+            prevStepsValues[0].dataSourceId === CHOOSE_EVALUATION_TEMPLATE;
+          const dataSource = !isEvaluationTemplateBranch
+            ? getDataSourceFromId(prevStepsValues[0].dataSourceId!)
+            : undefined;
+          const initialTimeSpan = getLastXMonthsTimeRange(3);
+          return {
             title: "Datenquelle konfigurieren",
-            content: <ConfigureDataSourceStep />,
+            content: createStepContent({
+              component: ConfigureDataSourceStep,
+              componentProps: {
+                isEvaluationTemplateBranch,
+                dataSource,
+                evaluationTemplateId: prevStepsValues[1].evaluationTemplateId,
+                explicitStartAndEnd:
+                  isDefined(prevStepsValues[2]) &&
+                  !isEqualTimeSpan(
+                    prevStepsValues[2].timeSpan,
+                    initialTimeSpan,
+                  ),
+              },
+            }),
+            initialValues: {
+              timeSpan: initialTimeSpan,
+              anonymized: ENUM_TRUE_VALUE as AnonymizedFieldValue,
+            },
             validator: validateConfigureDataSourceStep,
-          },
+          };
         },
-        {
-          type: "StandardStep",
-          step: {
+        (prevStepsValues) => {
+          const isEvaluationTemplateBranch =
+            prevStepsValues[0].dataSourceId === CHOOSE_EVALUATION_TEMPLATE;
+          const dataSource = !isEvaluationTemplateBranch
+            ? getDataSourceFromId(prevStepsValues[0].dataSourceId!)
+            : undefined;
+          return {
             title: "Zusammenfassung",
-            content: <SummaryStep />,
-          },
+            content: createStepContent({
+              component: SummaryStep,
+              componentProps: {
+                isEvaluationTemplateBranch,
+                timeSpan: prevStepsValues[2].timeSpan,
+                anonymized: prevStepsValues[2].anonymized,
+                dataSource: dataSource,
+                selectedAttributes:
+                  isDefined(prevStepsValues[1].selectedAttributeKeys) &&
+                  isDefined(dataSource)
+                    ? getAttributesFromKeys(
+                        prevStepsValues[1].selectedAttributeKeys,
+                        dataSource,
+                      )
+                    : undefined,
+                evaluationTemplateId: prevStepsValues[1].evaluationTemplateId,
+              },
+            }),
+            initialValues: { evaluationName: "" },
+          };
         },
       ]}
     />

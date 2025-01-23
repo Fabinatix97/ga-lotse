@@ -14,6 +14,7 @@ import de.eshg.base.contact.ContactApi;
 import de.eshg.base.department.DepartmentApi;
 import de.eshg.base.feature.BaseFeatureTogglesApi;
 import de.eshg.base.gdpr.GdprProcedureApi;
+import de.eshg.base.icd10.Icd10CodeApi;
 import de.eshg.base.inventory.InventoryApi;
 import de.eshg.base.mail.MailApi;
 import de.eshg.base.resource.ResourceApi;
@@ -127,6 +128,11 @@ class BaseClientAutoConfiguration {
   @Bean
   GdprProcedureApi gdprApiClient() {
     return createClient(GdprProcedureApi.class);
+  }
+
+  @Bean
+  Icd10CodeApi icd10CodeApiClient() {
+    return createClient(Icd10CodeApi.class);
   }
 
   private <T> T createClient(Class<T> serviceClass) {

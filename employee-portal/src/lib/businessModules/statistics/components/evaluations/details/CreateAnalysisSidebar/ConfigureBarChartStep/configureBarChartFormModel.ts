@@ -10,8 +10,8 @@ import {
 } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
 
 export interface ConfigureBarChartFormModel {
-  primaryAttributeSelectionKey: string | null;
-  secondaryAttributeSelectionKey: string | null;
+  primaryAttribute: string | null;
+  secondaryAttribute: string | null;
   orientation: DiagramOrientation;
   grouping: DiagramGrouping;
   scaling: DiagramScaling;

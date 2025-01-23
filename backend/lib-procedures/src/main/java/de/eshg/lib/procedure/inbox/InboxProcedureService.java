@@ -6,7 +6,7 @@
 package de.eshg.lib.procedure.inbox;
 
 import static de.eshg.lib.procedure.MapperHelper.mapEnumSet;
-import static de.eshg.lib.procedure.file.MultipartFileParser.parseFile;
+import static de.eshg.lib.procedure.file.MultipartFileParser.validateAndParseFile;
 import static de.eshg.lib.procedure.file.MultipartFileParser.validateProgressEntryTypeSupportsFileType;
 import static de.eshg.lib.procedure.model.GetInboxProceduresSortOrderDto.ASC;
 
@@ -49,10 +49,15 @@ import org.springframework.web.multipart.MultipartFile;
 public class InboxProcedureService {
 
   private final InboxProcedureRepository inboxProcedureRepository;
+  private final InboxProperties inboxProperties;
   private final Clock clock;
 
-  public InboxProcedureService(InboxProcedureRepository inboxProcedureRepository, Clock clock) {
+  public InboxProcedureService(
+      InboxProcedureRepository inboxProcedureRepository,
+      InboxProperties inboxProperties,
+      Clock clock) {
     this.inboxProcedureRepository = inboxProcedureRepository;
+    this.inboxProperties = inboxProperties;
     this.clock = clock;
   }
 
@@ -129,7 +134,7 @@ public class InboxProcedureService {
       InboxProgressEntry inboxProgressEntry = inboxProcedure.getInboxProgressEntry();
       validateProgressEntryTypeSupportsFileType(inboxProgressEntry, file);
 
-      File parsedFile = parseFile(file);
+      File parsedFile = validateAndParseFile(file, inboxProperties.getMaxImageSideLength());
       Optional.ofNullable(fileMetaData)
           .map(FileMetaDataDto::getDescription)
           .ifPresent(parsedFile.getMetaData()::setDescription);

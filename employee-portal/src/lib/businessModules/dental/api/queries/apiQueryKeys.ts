@@ -15,3 +15,4 @@ export const progressEntryApiQueryKey = queryKeyFactory(
   apiQueryKey(["progressEntryApi"]),
 );
 export const fileApiQueryKey = queryKeyFactory(apiQueryKey(["fileApi"]));
+export const staffApiQueryKey = queryKeyFactory(apiQueryKey(["staffApi"]));

@@ -5,14 +5,14 @@
 
 "use client";
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/base-api";
 import { PropsWithChildren } from "react";
 
 import { useProcedureQuery } from "@/lib/businessModules/measlesProtection/api/queries/procedures";
 import { CaseStatusSelect } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/CaseStatusSelect";
-import { MeaslesProtectionTabHeader } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/MeaslesProtectionTabHeader";
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
+import { PersonToolbarHeader } from "@/lib/shared/components/layout/PersonToolbarHeader";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
 import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
@@ -41,9 +41,7 @@ export function MeaslesProtectionProcedureLayout({
           routeBack={
             hasMeaslesProtectionAdminRole ? routes.procedures.index : undefined
           }
-          header={
-            <MeaslesProtectionTabHeader person={procedure.affectedPerson} />
-          }
+          header={<PersonToolbarHeader person={procedure.affectedPerson} />}
           index={navItems[0]?.href}
           afterTabs={<CaseStatusSelect procedure={procedure} />}
         />

@@ -53,7 +53,8 @@ export function WaitingRoomSection({
   });
 
   const onlyIfOpen = createOnlyIfProcedureOpen(procedure);
-  const isOpen = isProcedureOpen(procedure);
+  const isDisabled =
+    !isProcedureOpen(procedure) || updateWaitingRoomDetails.isPending;
 
   return (
     <Sheet>
@@ -69,13 +70,13 @@ export function WaitingRoomSection({
             <InputField
               label="Zusätzliche Info"
               name="info"
-              disabled={!isOpen}
+              disabled={isDisabled}
               maxLength={ADDITIONAL_INFO_MAX_LENGTH}
             />
             <SelectField
               label="Status"
               name="status"
-              disabled={!isOpen}
+              disabled={isDisabled}
               options={WAITING_STATUS_OPTIONS}
             />
             {onlyIfOpen(

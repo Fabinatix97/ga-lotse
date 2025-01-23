@@ -12,10 +12,15 @@ import {
   isValidAttributeKey,
   mapKeyToAttributeSelection,
 } from "@/lib/businessModules/statistics/api/mapper/mapAttributeSelectionKey";
+import { ProcedureReferences } from "@/lib/businessModules/statistics/api/models/evaluationDetailsTableProcedureReferences";
 import { EvaluationFilter } from "@/lib/businessModules/statistics/api/models/evaluationFilterType";
 import { useGetEvaluationDetailsTablePage } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationDetailsTablePage";
+import { useGetProcedureIds } from "@/lib/businessModules/statistics/api/queries/useGetProcedureIds";
 import { EvaluationDetailsLayout } from "@/lib/businessModules/statistics/components/evaluations/details/EvaluationDetailsLayout";
-import { EvaluationDetailsTable } from "@/lib/businessModules/statistics/components/evaluations/details/table/EvaluationDetailsTable";
+import {
+  EvaluationDetailsTable,
+  EvaluationDetailsTableProps,
+} from "@/lib/businessModules/statistics/components/evaluations/details/table/EvaluationDetailsTable";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { usePagination } from "@/lib/shared/hooks/table/usePagination";
 import { useTableSorting } from "@/lib/shared/hooks/table/useTableSorting";
@@ -50,6 +55,22 @@ export default function EvaluationDetailsTablePage(
     props.params.id,
   );
 
+  const evaluationDetailsTableProps: EvaluationDetailsTableProps = {
+    attributes: evaluation.attributes,
+    tableData: evaluation.tableData,
+    paginationProps: getPaginationProps({
+      totalCount: evaluation.totalNumberOfElements,
+    }),
+    manualSortingProps: manualSortingProps,
+    onFiltersSubmit: (filters) =>
+      // Prevent the UI from being replaced by a fallback during an update
+      startTransition(() => {
+        setFilters(filters);
+        resetPageNumber();
+      }),
+    filterTemplates: filterTemplates,
+  };
+
   return (
     <EvaluationDetailsLayout
       evaluationId={props.params.id}
@@ -58,24 +79,35 @@ export default function EvaluationDetailsTablePage(
       }}
     >
       <MainContentLayout fullViewportHeight>
-        <EvaluationDetailsTable
-          evaluationId={props.params.id}
-          attributes={evaluation.attributes}
-          tableData={evaluation.tableData}
-          paginationProps={getPaginationProps({
-            totalCount: evaluation.totalNumberOfElements,
-          })}
-          manualSortingProps={manualSortingProps}
-          onFiltersSubmit={(filters) =>
-            // Prevent the UI from being replaced by a fallback during an update
-            startTransition(() => {
-              setFilters(filters);
-              resetPageNumber();
-            })
-          }
-          filterTemplates={filterTemplates}
-        />
+        {isDefined(evaluation.procedureReferences) ? (
+          <EvaluationDetailsTableWithProcedureReferences
+            procedureReferences={evaluation.procedureReferences}
+            evaluationDetailsTableProps={evaluationDetailsTableProps}
+          />
+        ) : (
+          <EvaluationDetailsTable {...evaluationDetailsTableProps} />
+        )}
       </MainContentLayout>
     </EvaluationDetailsLayout>
+  );
+}
+
+function EvaluationDetailsTableWithProcedureReferences({
+  procedureReferences,
+  evaluationDetailsTableProps,
+}: {
+  procedureReferences: ProcedureReferences;
+  evaluationDetailsTableProps: EvaluationDetailsTableProps;
+}) {
+  const data = useGetProcedureIds({
+    businessModule: procedureReferences.businessModule,
+    procedureReferenceIds: procedureReferences.referenceIds,
+  });
+
+  return (
+    <EvaluationDetailsTable
+      {...evaluationDetailsTableProps}
+      resolveProcedureId={data?.resolveProcedureId}
+    />
   );
 }

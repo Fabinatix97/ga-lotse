@@ -5,7 +5,6 @@
 
 import { ApiCreateSchoolInfoLetterRequest } from "@eshg/employee-portal-api/schoolEntry";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
-import { HiddenContainer } from "@eshg/lib-portal/components/HiddenContainer";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
@@ -53,9 +52,7 @@ interface SchoolInfoLetterSidebarProps extends SidebarWithFormRefProps {
 
 function SchoolInfoLetterSidebar(props: SchoolInfoLetterSidebarProps) {
   const createSchoolInfoLetter = useCreateSchoolInfoLetter(props.procedureId);
-  const { downloadContainerRef, download } = useFileDownload(
-    createSchoolInfoLetter.mutateAsync,
-  );
+  const { download } = useFileDownload(createSchoolInfoLetter.mutateAsync);
 
   async function handleSubmit(values: SchoolInfoLetterFormValues) {
     await download(mapToRequest(values));
@@ -96,7 +93,6 @@ function SchoolInfoLetterSidebar(props: SchoolInfoLetterSidebarProps) {
                   label="auf weitere Beratung der Schule verwiesen"
                 />
               </Stack>
-              <HiddenContainer ref={downloadContainerRef} />
             </SidebarContent>
             <SidebarActions>
               <ButtonBar

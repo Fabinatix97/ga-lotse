@@ -17,15 +17,15 @@ import java.time.LocalDate;
 public record GdprPersonDto(
     SalutationDto salutation,
     @Schema(description = "The academic title of the Person.", example = "Prof. Dr.")
-        @Size(min = 1, max = 119)
+        @Size(min = 1, max = MAX_TITLE_LENGTH)
         String title,
     @Schema(description = "The given name(s) of the Person.", example = "John")
         @NotNull
-        @Size(min = 1, max = 80)
+        @Size(min = 1, max = MAX_FIRST_NAME_LENGTH)
         String firstName,
     @Schema(description = "The last name of the Person.", example = "Doe")
         @NotNull
-        @Size(min = 1, max = 120)
+        @Size(min = 1, max = MAX_LAST_NAME_LENGTH)
         String lastName,
     @Schema(description = "The date of birth of the Person.", example = "2000-01-01") @NotNull
         LocalDate dateOfBirth,
@@ -34,11 +34,19 @@ public record GdprPersonDto(
         @Size(min = 6, max = 254)
         String emailAddress,
     @Schema(description = "The phone number of the Person.", example = "+491234567890")
-        @Size(max = 23)
-        String phoneNumber)
+        @Size(max = MAX_PHONE_NUMBER_LENGTH)
+        String phoneNumber,
+    @Schema(
+            description = "The bpk2 of the BundId user",
+            example = "VnMEBMXsiCWZ34v1JCulQABe6-ts1yDSrbH3zII8BF0")
+        String bpk2)
     implements GdprIdentificationDataDto {
 
   public static final String SCHEMA_NAME = "GdprPerson";
+  public static final int MAX_TITLE_LENGTH = 119;
+  public static final int MAX_FIRST_NAME_LENGTH = 80;
+  public static final int MAX_LAST_NAME_LENGTH = 120;
+  public static final int MAX_PHONE_NUMBER_LENGTH = 23;
 
   @Override
   public String type() {
@@ -46,6 +54,6 @@ public record GdprPersonDto(
   }
 
   public GdprPersonDto(String firstName, String lastName, LocalDate birthDate, AddressDto address) {
-    this(null, null, firstName, lastName, birthDate, address, null, null);
+    this(null, null, firstName, lastName, birthDate, address, null, null, null);
   }
 }

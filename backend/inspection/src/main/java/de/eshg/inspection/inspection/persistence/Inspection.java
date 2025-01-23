@@ -28,7 +28,6 @@ import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import java.time.Clock;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -361,39 +360,41 @@ public class Inspection
     this.calendarEventId = calendarEventId;
   }
 
-  public InspectionTask createPlanningTask(UUID assigneeId, Clock clock) {
+  public InspectionTask createPlanningTask(UUID assigneeId, Instant assignmentDate) {
     if (getPlanningTask().isPresent()) {
       throw new IllegalStateException("Task with type PLANNING already created");
     }
-    InspectionTask task = InspectionTask.newPlanningTask(assigneeId, clock);
+    InspectionTask task = InspectionTask.newPlanningTask(assigneeId, assignmentDate);
     addTask(task);
     return task;
   }
 
-  public InspectionTask createExecutionTask(Clock clock) {
+  public InspectionTask createExecutionTask(Instant assignmentDate) {
     if (getExecutionTask().isPresent()) {
       throw new IllegalStateException("Task with type EXECUTION already created");
     }
     InspectionTask task =
         InspectionTask.newExecutionTask(
             getPlanningTask()
-                .orElseGet(() -> createPlanningTask(CurrentUserHelper.getCurrentUserId(), clock))
+                .orElseGet(
+                    () -> createPlanningTask(CurrentUserHelper.getCurrentUserId(), assignmentDate))
                 .getAssigneeId(),
-            clock);
+            assignmentDate);
     addTask(task);
     return task;
   }
 
-  public InspectionTask createReportTask(Clock clock) {
+  public InspectionTask createReportTask(Instant assignmentDate) {
     if (getReportTask().isPresent()) {
       throw new IllegalStateException("Task with type REPORT already created");
     }
     InspectionTask task =
         InspectionTask.newReportTask(
             getPlanningTask()
-                .orElseGet(() -> createPlanningTask(CurrentUserHelper.getCurrentUserId(), clock))
+                .orElseGet(
+                    () -> createPlanningTask(CurrentUserHelper.getCurrentUserId(), assignmentDate))
                 .getAssigneeId(),
-            clock);
+            assignmentDate);
     addTask(task);
     return task;
   }

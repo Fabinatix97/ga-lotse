@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DownloadLink } from "@eshg/lib-portal/api/files/DownloadLink";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { Button, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
@@ -70,13 +70,12 @@ function PrivacyPolicyConfirmationForm() {
           name="confirmPrivacyNotice"
           label={t("personalArea.confirmPrivacyNotice")}
           descriptionText={
-            <DownloadLink
-              downloadContainerRef={privacyNoticeFile.downloadContainerRef}
+            <ButtonLink
               fontSize="sm"
-              onDownload={() => privacyNoticeFile.download()}
+              onClick={() => privacyNoticeFile.download()}
             >
               {t("personalArea.privacyNotice")}
-            </DownloadLink>
+            </ButtonLink>
           }
         />
 
@@ -84,13 +83,12 @@ function PrivacyPolicyConfirmationForm() {
           name="confirmPrivacyPolicy"
           label={t("personalArea.confirmPrivacyPolicy")}
           descriptionText={
-            <DownloadLink
-              downloadContainerRef={privacyPolicyFile.downloadContainerRef}
+            <ButtonLink
               fontSize="sm"
-              onDownload={() => privacyPolicyFile.download()}
+              onClick={() => privacyPolicyFile.download()}
             >
               {t("personalArea.privacyPolicy")}
-            </DownloadLink>
+            </ButtonLink>
           }
         />
       </Stack>

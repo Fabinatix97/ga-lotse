@@ -40,8 +40,10 @@ export interface EvaluationDetailsTableProps {
   onFiltersSubmit: (filters: EvaluationFilter[]) => void;
   manualSortingProps: ManualSortingProps;
   paginationProps: PaginationProps;
-  evaluationId: string;
   filterTemplates: FilterTemplate[];
+  resolveProcedureId?: (
+    procedureReferenceId: string | undefined,
+  ) => string | undefined;
 }
 
 export function EvaluationDetailsTable(props: EvaluationDetailsTableProps) {
@@ -70,8 +72,12 @@ export function EvaluationDetailsTable(props: EvaluationDetailsTableProps) {
   });
 
   const columns = useMemo(
-    () => evaluationColumns(props.attributes),
-    [props.attributes],
+    () =>
+      evaluationColumns({
+        flatAttributes: props.attributes,
+        resolveProcedureId: props.resolveProcedureId ?? (() => undefined),
+      }),
+    [props.attributes, props.resolveProcedureId],
   );
 
   return (

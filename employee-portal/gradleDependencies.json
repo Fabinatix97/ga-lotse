@@ -1,0 +1,10 @@
+{
+  "dependencies": [
+    ":base-api",
+    ":dental",
+    ":dental-api",
+    ":employee-portal-api",
+    ":lib-employee-portal",
+    ":lib-portal"
+  ]
+}

@@ -32,10 +32,6 @@ public interface ProcedureApi extends BusinessModuleProcedureApi, ProcedureMetri
     public static final String PROCEDURE_TYPE = "procedureType";
     public static final String PROCEDURE_STATUS = "procedureStatus";
     public static final String ASSIGNED_TO_ID = "assignedToId";
-    public static final String NOT_ASSIGNED_TO_ID = "notAssignedToId";
-    public static final String ONCE_ASSIGNED_TO_ID = "onceAssignedToId";
-    public static final String UNASSIGNED = "unassigned";
-    public static final String CREATED_IN_YEAR = "createdInYear";
     public static final String SORT_BY = "sortBy";
     public static final String SORT_ORDER = "sortOrder";
     public static final String PAGE_NUMBER = "pageNumber";

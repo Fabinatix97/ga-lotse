@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/base-api";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Add, CloudUpload, Delete, Edit } from "@mui/icons-material";
 import { Box } from "@mui/joy";
@@ -188,7 +188,7 @@ export function EvaluationTemplatesOverview() {
           sorting={manualSortingProps}
           rowNavigation={{
             focusColumnAccessorKey: "name",
-            onClick: (row) => openTemplateDetails(row.original.id),
+            onClick: (row) => () => openTemplateDetails(row.original.id),
           }}
         />
       </TableSheet>

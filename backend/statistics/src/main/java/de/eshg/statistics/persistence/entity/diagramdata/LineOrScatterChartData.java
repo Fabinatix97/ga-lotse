@@ -9,7 +9,6 @@ import static de.eshg.lib.common.SensitivityLevel.SENSITIVE;
 
 import de.eshg.lib.common.DataSensitivity;
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -22,9 +21,6 @@ import java.util.List;
 @Entity
 @DiscriminatorValue("LINE_OR_SCATTER_CHART_DATA")
 public class LineOrScatterChartData extends DiagramData {
-  @Column(nullable = false)
-  private boolean isLineChart;
-
   @OneToMany(
       cascade = CascadeType.PERSIST,
       fetch = FetchType.LAZY,
@@ -32,14 +28,6 @@ public class LineOrScatterChartData extends DiagramData {
       orphanRemoval = true)
   @OrderColumn
   private final List<DataPointGroup> dataPointGroups = new ArrayList<>();
-
-  public boolean isLineChart() {
-    return isLineChart;
-  }
-
-  public void setLineChart(boolean lineChart) {
-    isLineChart = lineChart;
-  }
 
   public List<DataPointGroup> getDataPointGroups() {
     return dataPointGroups;

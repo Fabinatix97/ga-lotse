@@ -6,7 +6,6 @@
 "use client";
 
 import { ApiReportState } from "@eshg/employee-portal-api/statistics";
-import { HiddenContainer } from "@eshg/lib-portal/components/HiddenContainer";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Add, NotInterestedOutlined } from "@mui/icons-material";
@@ -202,7 +201,7 @@ export function EvaluationReports({
   const { openConfirmationDialog } = useConfirmationDialog();
   const { deleteReportSeriesWithConfirmation, deleteReportWithConfirmation } =
     useDeleteWithConfirmation();
-  const { download: exportData, downloadContainerRef } = useExportReportData();
+  const { download: exportData } = useExportReportData();
   const dataExportGuard = useDataExportGuard();
   const deactivateReportSeries = useDeactivateReportSeries();
   const userPermissions = useStatisticsRoleChecks();
@@ -262,93 +261,89 @@ export function EvaluationReports({
       </CardActions>
     </Card>
   ) : (
-    <>
-      <HiddenContainer ref={downloadContainerRef} />
-
-      <Stack gap={3} flex={1} sx={{ overflowY: "auto" }}>
-        {userPermissions.canWrite() && (
-          <Stack alignSelf="flex-end" direction="row" gap={3}>
-            <RefreshButton
-              loading={isFetchingReports}
-              queryKey={getEvaluationReportsQueryKey([data.evaluationId])}
-            />
-            <Button startDecorator={<Add />} onClick={openAddReportSidebar}>
-              Einzel-Report erstellen
-            </Button>
-          </Stack>
-        )}
-        <Stack
-          flex={1}
-          flexWrap={{ lg: "nowrap", xxs: "wrap" }}
-          flexDirection="row"
-          gap={3}
-          sx={{ overflowY: "auto" }}
+    <Stack gap={3} flex={1} sx={{ overflowY: "auto" }}>
+      {userPermissions.canWrite() && (
+        <Stack alignSelf="flex-end" direction="row" gap={3}>
+          <RefreshButton
+            loading={isFetchingReports}
+            queryKey={getEvaluationReportsQueryKey([data.evaluationId])}
+          />
+          <Button startDecorator={<Add />} onClick={openAddReportSidebar}>
+            Einzel-Report erstellen
+          </Button>
+        </Stack>
+      )}
+      <Stack
+        flex={1}
+        flexWrap={{ lg: "nowrap", xxs: "wrap" }}
+        flexDirection="row"
+        gap={3}
+        sx={{ overflowY: "auto" }}
+      >
+        <TablePage
+          sx={{
+            width: `calc(100% - ${RIGHT_STACK_WIDTH})`,
+          }}
+          fullHeight
         >
-          <TablePage
-            sx={{
-              width: `calc(100% - ${RIGHT_STACK_WIDTH})`,
-            }}
-            fullHeight
-          >
-            <TableSheet>
-              <DataTable
-                striped={false}
-                wrapContent
-                wrapHeader
-                columns={columns(
-                  deleteReportWithConfirmation,
-                  deleteReportSeriesWithConfirmation,
-                  openUpdateReportSidebar,
-                  copy,
-                  async (item) =>
-                    dataExportGuard(item.dataSensitivity, () =>
-                      exportData(
-                        { reportId: item.reportId },
-                        { tooMuchDataForExport: item.tooMuchDataForExport },
-                      ),
+          <TableSheet>
+            <DataTable
+              striped={false}
+              wrapContent
+              wrapHeader
+              columns={columns(
+                deleteReportWithConfirmation,
+                deleteReportSeriesWithConfirmation,
+                openUpdateReportSidebar,
+                copy,
+                async (item) =>
+                  dataExportGuard(item.dataSensitivity, () =>
+                    exportData(
+                      { reportId: item.reportId },
+                      { tooMuchDataForExport: item.tooMuchDataForExport },
                     ),
-                  userPermissions.canDelete,
-                  userPermissions.canWrite,
-                )}
-                data={data.reports}
-                noDataComponent={() => (
-                  <Box flex={1} alignContent="center">
-                    <NoSearchResults info="Keine Reports vorhanden" />
-                  </Box>
-                )}
-                rowNavigation={{
-                  route: (row) =>
-                    row.original.type !== ReportDataType.Series &&
-                    row.original.status === ApiReportState.Completed
-                      ? routes.reports.details(row.original.reportId).index
-                      : undefined,
-                  focusColumnAccessorKey: "name",
-                }}
-                enableSortingRemoval={false}
-                sorting={{
-                  manualSorting: false,
-                  initialSorting: [
-                    {
-                      id: "timeRangeStart",
-                      desc: true,
-                    },
-                  ],
-                }}
-                getSubRows={getSubRows}
-              />
-            </TableSheet>
-          </TablePage>
-          <Stack sx={{ width: { lg: RIGHT_STACK_WIDTH, xxs: "100%" } }}>
-            <ReportAutomationTile
-              activeSeriesInfo={data.activeSeries}
-              onClickAutomate={openAutomateReportSidebar}
-              onClickDeactivate={deactivateReportSeriesWithConfirmation}
-              updateReportSeries={openUpdateReportSidebar}
-              canWrite={userPermissions.canWrite}
+                  ),
+                userPermissions.canDelete,
+                userPermissions.canWrite,
+              )}
+              data={data.reports}
+              noDataComponent={() => (
+                <Box flex={1} alignContent="center">
+                  <NoSearchResults info="Keine Reports vorhanden" />
+                </Box>
+              )}
+              rowNavigation={{
+                route: (row) =>
+                  row.original.type !== ReportDataType.Series &&
+                  row.original.status === ApiReportState.Completed
+                    ? routes.reports.details(row.original.reportId).index
+                    : undefined,
+                focusColumnAccessorKey: "name",
+              }}
+              enableSortingRemoval={false}
+              sorting={{
+                manualSorting: false,
+                initialSorting: [
+                  {
+                    id: "timeRangeStart",
+                    desc: true,
+                  },
+                ],
+              }}
+              getSubRows={getSubRows}
             />
-          </Stack>
+          </TableSheet>
+        </TablePage>
+        <Stack sx={{ width: { lg: RIGHT_STACK_WIDTH, xxs: "100%" } }}>
+          <ReportAutomationTile
+            activeSeriesInfo={data.activeSeries}
+            onClickAutomate={openAutomateReportSidebar}
+            onClickDeactivate={deactivateReportSeriesWithConfirmation}
+            updateReportSeries={openUpdateReportSidebar}
+            canWrite={userPermissions.canWrite}
+          />
         </Stack>
       </Stack>
-    </>
+    </Stack>
   );
 }

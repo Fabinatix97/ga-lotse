@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiCountryCode } from "@eshg/employee-portal-api/base";
+import { ApiCountryCode } from "@eshg/base-api";
 import { isDateString } from "@eshg/lib-portal/helpers/dateTime";
 import { isValidEmailString } from "@eshg/lib-portal/helpers/email";
 import { isBlankString, isEmptyString } from "@eshg/lib-portal/helpers/guards";

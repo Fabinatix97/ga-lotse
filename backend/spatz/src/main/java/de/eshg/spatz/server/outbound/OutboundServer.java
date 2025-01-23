@@ -5,6 +5,8 @@
 
 package de.eshg.spatz.server.outbound;
 
+import static org.apache.logging.log4j.util.Strings.isBlank;
+
 import de.eshg.lib.servicedirectory.ServiceDirectoryApi;
 import de.eshg.lib.servicedirectory.api.ActorResponseDto;
 import de.eshg.spatz.client.HttpProxyClient;
@@ -49,6 +51,7 @@ public final class OutboundServer extends ProxyServer {
 
   private static final Logger logger = LoggerFactory.getLogger(OutboundServer.class);
   public static final String OUTBOUND_RESPONSE_HANDLED = "success";
+  public static final String X_ESHG_HOST = "x-eshg-host";
   private final int outboundTargetPort;
   private final RelayAddressMapper addressMapper;
   private final WebsocketProxyHandler websocketProxyHandler = new WebsocketProxyHandler();
@@ -77,7 +80,6 @@ public final class OutboundServer extends ProxyServer {
   @Override
   protected Publisher<Void> handlerFunction(HttpServerRequest in, HttpServerResponse out) {
 
-    String hostName = in.hostName();
     int hostPort = outboundTargetPort;
 
     String uri = in.uri();
@@ -85,6 +87,9 @@ public final class OutboundServer extends ProxyServer {
     String scheme = in.scheme();
     String protocol = in.protocol();
     HttpHeaders headers = in.requestHeaders();
+
+    String eshgHostHeader = headers.get(X_ESHG_HOST);
+    String hostName = isBlank(eshgHostHeader) ? in.hostName() : eshgHostHeader;
 
     logger.debug(
         "proxying outbound request for hostName={}, port={}, uri={}, method={}, scheme={},"
@@ -102,7 +107,7 @@ public final class OutboundServer extends ProxyServer {
               (in1, out1) ->
                   httpProxyClient
                       .connectWebsocket(
-                          hostName, hostPort, uri, h -> h.set(headers), getClientContext())
+                          hostName, hostPort, uri, getHeaderConsumer(headers), getClientContext())
                       .handle((in2, out2) -> websocketProxyHandler.handle(in1, out1, in2, out2))
                       .doOnComplete(() -> logger.trace("inbound client completed"))
                       .doOnError(handleOutboundError(uri)))
@@ -112,7 +117,7 @@ public final class OutboundServer extends ProxyServer {
     } else {
 
       return httpProxyClient
-          .connect(hostName, hostPort, uri, method, h -> h.set(headers), getClientContext())
+          .connect(hostName, hostPort, uri, method, getHeaderConsumer(headers), getClientContext())
           .send(in.receive().retain())
           .response(
               (httpClientResponse, byteBufFlux) ->
@@ -126,6 +131,13 @@ public final class OutboundServer extends ProxyServer {
   @Override
   public HttpServer setupSsl(HttpServer server, SslContext sslContext) {
     return server;
+  }
+
+  private Consumer<HttpHeaders> getHeaderConsumer(HttpHeaders headers) {
+    return h -> {
+      h.set(headers);
+      h.remove(X_ESHG_HOST);
+    };
   }
 
   private Publisher<Void> handleResponse(

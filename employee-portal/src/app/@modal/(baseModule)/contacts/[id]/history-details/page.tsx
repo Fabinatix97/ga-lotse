@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  SearchParams,
+  parseOptionalInt,
+} from "@eshg/lib-portal/helpers/searchParams";
 import { isDefined, isNullish } from "remeda";
 
 import { ContactAddressChangeSidebar } from "@/lib/baseModule/components/contacts/history/ContactAddressChangeSidebar";
 import { ContactChangeSidebar } from "@/lib/baseModule/components/contacts/history/ContactChangeSidebar";
-import {
-  SearchParams,
-  parseOptionalInt,
-} from "@/lib/shared/helpers/searchParams";
 import { RequiresSearchParams } from "@/lib/types/react";
 
 interface HistorySearchParams {

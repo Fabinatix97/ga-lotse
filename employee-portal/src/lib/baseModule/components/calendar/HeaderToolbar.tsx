@@ -120,7 +120,7 @@ export function HeaderToolbar(props: {
             onClick={props.onSettingsButtonClick}
             aria-label={settingsLabel}
           >
-            <Settings style={{ fontSize: "var(--joy-fontSize-xl)" }} />
+            <Settings sx={{ fontSize: "var(--joy-fontSize-xl)" }} />
           </IconButton>
         </Tooltip>
       </Stack>

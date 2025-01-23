@@ -21,4 +21,5 @@ public record FacilityDto(
     List<@MandatoryEmailAddressConstraint String> emailAddresses,
     List<@NotNull @Size(min = 1, max = 23) String> phoneNumbers,
     @Valid List<FacilityContactPersonDto> contactPersons,
-    @Valid AddressDto contactAddress) {}
+    @Valid AddressDto contactAddress,
+    @Valid FacilitySyncDto facilitySync) {}

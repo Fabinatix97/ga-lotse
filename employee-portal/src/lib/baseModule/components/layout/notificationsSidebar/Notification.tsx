@@ -6,7 +6,7 @@
 import {
   ApiGetAggregatedNotificationsResponseNotificationsInner,
   ApiUser,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import WarningIcon from "@mui/icons-material/WarningAmberSharp";
 import { Card, Stack, Typography } from "@mui/joy";

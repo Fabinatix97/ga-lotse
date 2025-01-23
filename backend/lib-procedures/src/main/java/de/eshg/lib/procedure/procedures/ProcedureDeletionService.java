@@ -8,12 +8,13 @@ package de.eshg.lib.procedure.procedures;
 import de.eshg.base.centralfile.FacilityApi;
 import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.centralfile.api.DeleteFileStatesRequest;
+import de.eshg.lib.procedure.cemetery.CemeteryService;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.RelatedFacility;
 import de.eshg.lib.procedure.domain.model.RelatedPerson;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
-import de.eshg.lib.procedure.util.CemeteryService;
 import de.eshg.rest.service.error.NotFoundException;
+import java.time.Period;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
@@ -50,7 +51,8 @@ public class ProcedureDeletionService<ProcedureT extends Procedure<ProcedureT, ?
   /**
    * Writes a procedure (including all dependent objects) into the cemetery table and afterward
    * deletes it from the productive database tables. The procedure is written to the cemetery table
-   * in a serialized form as a json string.
+   * in a serialized form as a json string. Finally, after the specified {@code retentionPeriod} has
+   * passed, it will also be deleted from the cemetery table.
    *
    * <p>Every user of this method is responsible for making sure that it works for all procedures it
    * will be used with. This includes (but is not limited to)
@@ -68,16 +70,30 @@ public class ProcedureDeletionService<ProcedureT extends Procedure<ProcedureT, ?
    *
    * @param procedure The {@link Procedure} which should be written to the cemetery and then
    *     deleted.
+   * @param retentionPeriod The time period after which the {@link Procedure} should also be deleted
+   *     from the cemetery table. If <code>null</code>, a default retention period will be used (see
+   *     {@link CemeteryService}).
    * @throws NotFoundException if the {@link Procedure} is not found
    */
   @Transactional(propagation = Propagation.MANDATORY)
-  public void deleteAndWriteToCemetery(ProcedureT procedure) {
+  public void deleteAndWriteToCemetery(ProcedureT procedure, Period retentionPeriod) {
     log.info(
         "Attempting to write to cemetery and then delete procedure {}", procedure.getExternalId());
-    cemeteryService.writeToCemetery(procedure);
+    cemeteryService.writeToCemetery(procedure, retentionPeriod);
     markRelatedFileStatesForDeletion(procedure);
     procedureRepository.delete(procedure);
     log.info("Procedure {} written to cemetery and deleted", procedure.getExternalId());
+  }
+
+  /**
+   * A convenience method which does exactly the same as {@link
+   * ProcedureDeletionService#deleteAndWriteToCemetery(Procedure, Period)}
+   *
+   * @param procedure
+   */
+  @Transactional(propagation = Propagation.MANDATORY)
+  public void deleteAndWriteToCemetery(ProcedureT procedure) {
+    deleteAndWriteToCemetery(procedure, null);
   }
 
   /**

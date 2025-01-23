@@ -8,7 +8,7 @@ import {
   ApiGender,
   ApiInstitution,
   ApiProcedureStatus,
-} from "@eshg/employee-portal-api/dental";
+} from "@eshg/dental-api";
 
 import { BaseEntity, mapBaseEntity } from "@/lib/shared/api/models/BaseEntity";
 

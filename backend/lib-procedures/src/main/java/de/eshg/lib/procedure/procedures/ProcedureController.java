@@ -6,17 +6,14 @@
 package de.eshg.lib.procedure.procedures;
 
 import static de.eshg.lib.procedure.MapperHelper.mapEnumSet;
-import static de.eshg.lib.procedure.domain.model.AssignmentHistoryItem_.assignment;
 import static de.eshg.lib.procedure.domain.model.Assignment_.assigneeId;
 import static de.eshg.lib.procedure.domain.model.Procedure_.CREATED_AT;
 import static de.eshg.lib.procedure.domain.model.Procedure_.ID;
 import static de.eshg.lib.procedure.domain.model.Procedure_.MODIFIED_AT;
-import static de.eshg.lib.procedure.domain.model.Procedure_.createdAt;
 import static de.eshg.lib.procedure.domain.model.Procedure_.procedureStatus;
 import static de.eshg.lib.procedure.domain.model.Procedure_.procedureType;
 import static de.eshg.lib.procedure.domain.model.Procedure_.tasks;
 import static de.eshg.lib.procedure.domain.model.ProgressEntry_.procedureId;
-import static de.eshg.lib.procedure.domain.model.Task_.assignmentHistory;
 import static de.eshg.lib.procedure.domain.model.Task_.currentAssignment;
 import static de.eshg.lib.procedure.domain.model.Task_.procedure;
 import static java.util.function.Predicate.not;
@@ -110,7 +107,6 @@ import jakarta.persistence.criteria.Subquery;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.Year;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -227,28 +223,6 @@ public class ProcedureController<
 
     if (filterOptions.assignedToId() != null) {
       specifications.add(anyTaskIsAssignedToUser(filterOptions.assignedToId()));
-    }
-
-    if (filterOptions.notAssignedToId() != null) {
-      specifications.add(noneAttachedTaskIsAssignedToUser(filterOptions.notAssignedToId()));
-    }
-
-    if (filterOptions.onceAssignedToId() != null) {
-      specifications.add(
-          anyAttachedTaskWasOnceOrIsAssignedToUser(filterOptions.onceAssignedToId()));
-    }
-
-    Boolean filterUnassigned = filterOptions.unassigned();
-    if (filterUnassigned != null) {
-      if (filterUnassigned) {
-        specifications.add(allAttachedTasksAreUnassigned());
-      } else {
-        specifications.add(anyAttachedTaskIsAssigned());
-      }
-    }
-
-    if (filterOptions.createdInYear() != null) {
-      specifications.add(createdAtIsInYear(filterOptions.createdInYear()));
     }
 
     if (filterOptions.procedureType() != null) {
@@ -390,62 +364,6 @@ public class ProcedureController<
     };
   }
 
-  private Specification<ProcedureT> createdAtIsInYear(Year year) {
-    Instant firstDayOfThisYear = getInstantOfFirstDayOfYear(year);
-    Instant firstDayOfNextYear = getInstantOfFirstDayOfYear(year.plusYears(1));
-
-    return (procedure, query, cb) ->
-        cb.and(
-            cb.greaterThanOrEqualTo(procedure.get(createdAt), firstDayOfThisYear),
-            cb.lessThan(procedure.get(createdAt), firstDayOfNextYear));
-  }
-
-  private Instant getInstantOfFirstDayOfYear(Year year) {
-    return year.atDay(1).atStartOfDay(clock.getZone()).toInstant();
-  }
-
-  private Specification<ProcedureT> anyAttachedTaskIsAssigned() {
-    return (root, query, cb) -> {
-      Subquery<? extends Task<?>> subquery = query.subquery(tasks.getBindableJavaType());
-      Root<? extends Task<?>> taskRoot = subquery.from(tasks.getBindableJavaType());
-
-      return cb.exists(
-          subquery.where(
-              cb.and(
-                  taskRoot.get(currentAssignment).get(assigneeId).isNotNull(),
-                  cb.equal(taskRoot.get(procedure), root))));
-    };
-  }
-
-  private Specification<ProcedureT> anyAttachedTaskWasOnceOrIsAssignedToUser(UUID userId) {
-    return (root, query, cb) -> {
-      Subquery<? extends Task<?>> subquery = query.subquery(tasks.getBindableJavaType());
-      Root<? extends Task<?>> taskRoot = subquery.from(tasks.getBindableJavaType());
-
-      return cb.exists(
-          subquery.where(
-              cb.and(
-                  cb.equal(taskRoot.get(procedure), root),
-                  cb.or(
-                      taskIsAssignedToUser(cb, taskRoot, userId),
-                      taskWasOnceAssignedToUser(cb, taskRoot, userId)))));
-    };
-  }
-
-  private Predicate taskWasOnceAssignedToUser(
-      CriteriaBuilder cb, Root<? extends Task<?>> taskRoot, UUID userId) {
-    return cb.equal(
-        taskRoot.join(assignmentHistory, JoinType.LEFT).get(assignment).get(assigneeId), userId);
-  }
-
-  private Specification<ProcedureT> noneAttachedTaskIsAssignedToUser(UUID userId) {
-    return (procedureRoot, query, cb) ->
-        cb.not(
-            cb.exists(
-                queryTasksThatAreAttachedToProcedureAndAssignedToUser(
-                    procedureRoot, query, cb, userId)));
-  }
-
   private Subquery<?> queryTasksThatAreAttachedToProcedureAndAssignedToUser(
       Root<ProcedureT> procedureRoot, CriteriaQuery<?> query, CriteriaBuilder cb, UUID userId) {
     Subquery<? extends Task<?>> subquery = query.subquery(tasks.getBindableJavaType());
@@ -454,23 +372,6 @@ public class ProcedureController<
     return subquery.where(
         taskIsAttachedToProcedure(cb, taskRoot, procedureRoot),
         taskIsAssignedToUser(cb, taskRoot, userId));
-  }
-
-  private Specification<ProcedureT> allAttachedTasksAreUnassigned() {
-    return (procedure, query, cb) ->
-        cb.not(
-            cb.exists(
-                queryTasksThatAreAttachedToProcedureAndAssignedToSomeone(procedure, query, cb)));
-  }
-
-  private Subquery<? extends Task<?>> queryTasksThatAreAttachedToProcedureAndAssignedToSomeone(
-      Root<ProcedureT> procedure, CriteriaQuery<?> query, CriteriaBuilder cb) {
-    Subquery<? extends Task<?>> subquery = query.subquery(tasks.getBindableJavaType());
-    Root<? extends Task<?>> task = subquery.from(tasks.getBindableJavaType());
-
-    return subquery.where(
-        cb.and(task.get(currentAssignment).get(assigneeId).isNotNull()),
-        taskIsAttachedToProcedure(cb, task, procedure));
   }
 
   private Predicate taskIsAssignedToUser(

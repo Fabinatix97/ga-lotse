@@ -213,4 +213,13 @@ public class CitizenUserService {
   public void verifyCredential(UUID userId, CredentialTypeDto type, String secret) {
     citizenKeycloakClient.verifyCredential(userId, type, secret);
   }
+
+  public UserRepresentation getCitizenSelfUserRepresentation() {
+    if (CurrentUserHelper.currentUserHasNoRole(CitizenPermissionRole.BUND_ID_USER)
+        && CurrentUserHelper.currentUserHasNoRole(CitizenPermissionRole.MUK_USER)) {
+      return null;
+    }
+
+    return citizenKeycloakClient.getSelfUser().toRepresentation();
+  }
 }

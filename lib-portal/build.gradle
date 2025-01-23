@@ -16,10 +16,6 @@ typescript {
   include = ['src/**/*.ts', 'src/**/*.tsx']
 }
 
-tasks.named('prepareEnvironment').configure {
-  dependsOn project(":employee-portal-api").tasks.named('assemble')
-}
-
 tasks.named('lint').configure {
   inputs.files "${rootDir}/config/eslint.next.js"
 }
@@ -29,7 +25,7 @@ tasks.named('lintFix').configure {
 }
 
 tasks.named('test').configure {
-  inputs.file "${rootDir}/config/tsconfig.lib.json"
+  inputs.file "${rootDir}/config/tsconfig.lib-legacy.json"
 }
 
 tasks.register('assemble') {

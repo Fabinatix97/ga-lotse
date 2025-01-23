@@ -8,6 +8,8 @@ package de.eshg.stiprotection;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.examination.LaboratoryTestExamination;
 import de.eshg.stiprotection.persistence.db.examination.RapidTestExamination;
+import java.time.Clock;
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
@@ -15,21 +17,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class ExaminationService {
 
-  private final StiProtectionProcedureService stiProtectionProcedureService;
+  private final StiProtectionProcedureFinder procedureFinder;
 
-  public ExaminationService(StiProtectionProcedureService stiProtectionProcedureService) {
-    this.stiProtectionProcedureService = stiProtectionProcedureService;
+  private final Clock clock;
+
+  public ExaminationService(StiProtectionProcedureFinder procedureFinder, Clock clock) {
+    this.procedureFinder = procedureFinder;
+    this.clock = clock;
   }
 
   public RapidTestExamination getRapidTestExamination(UUID procedureId) {
-    StiProtectionProcedure procedure =
-        stiProtectionProcedureService.findProcedureByExternalId(procedureId);
+    StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
     return procedure.getRapidTestExamination();
   }
 
   public RapidTestExamination getOrCreateRapidTestExamination(UUID procedureId) {
-    StiProtectionProcedure procedure =
-        stiProtectionProcedureService.findProcedureByExternalId(procedureId);
+    StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
     return Objects.requireNonNullElseGet(
         procedure.getRapidTestExamination(),
         () -> {
@@ -40,14 +43,12 @@ public class ExaminationService {
   }
 
   public LaboratoryTestExamination getLaboratoryTestExamination(UUID procedureId) {
-    StiProtectionProcedure procedure =
-        stiProtectionProcedureService.findProcedureByExternalId(procedureId);
+    StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
     return procedure.getLaboratoryTestExamination();
   }
 
   public LaboratoryTestExamination getOrCreateLaboratoryTestExamination(UUID procedureId) {
-    StiProtectionProcedure procedure =
-        stiProtectionProcedureService.findProcedureByExternalId(procedureId);
+    StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
     return Objects.requireNonNullElseGet(
         procedure.getLaboratoryTestExamination(),
         () -> {
@@ -55,5 +56,17 @@ public class ExaminationService {
           procedure.setLaboratoryTestExamination(laboratoryTestExamination);
           return laboratoryTestExamination;
         });
+  }
+
+  public void updateTestsConductedDate(
+      Boolean testsConducted, LaboratoryTestExamination laboratoryTestExamination) {
+    if (Boolean.TRUE.equals(testsConducted)
+        && Objects.isNull(laboratoryTestExamination.getTestsConductedDate())) {
+      laboratoryTestExamination.setTestsConductedDate(LocalDate.now(clock));
+    }
+    if (!Boolean.TRUE.equals(testsConducted)
+        && Objects.nonNull(laboratoryTestExamination.getTestsConductedDate())) {
+      laboratoryTestExamination.setTestsConductedDate(null);
+    }
   }
 }

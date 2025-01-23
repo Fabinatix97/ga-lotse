@@ -317,7 +317,6 @@ public class ExaminationResultService {
     toResult.setNutritionalAdvice(fromResult.getNutritionalAdvice());
     toResult.setVaccinationAdvice(fromResult.getVaccinationAdvice());
     toResult.setSocialService(fromResult.getSocialService());
-    toResult.setOtherRisk(fromResult.getOtherRisk());
     toResult.setOtherSupport(fromResult.getOtherSupport());
     toResult.setInfoLetter(fromResult.getInfoLetter());
     toResult.setExtraEffort(fromResult.getExtraEffort());

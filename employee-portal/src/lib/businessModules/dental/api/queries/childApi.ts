@@ -7,7 +7,7 @@ import {
   ApiGetInstitutionGroupsResponse,
   ChildApi,
   GetChildrenRequest,
-} from "@eshg/employee-portal-api/dental";
+} from "@eshg/dental-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { isBlankString } from "@eshg/lib-portal/helpers/guards";
 import { queryOptions, useQuery } from "@tanstack/react-query";
@@ -16,6 +16,7 @@ import { isDefined } from "remeda";
 import { useChildApi } from "@/lib/businessModules/dental/api/clients";
 import { mapChild } from "@/lib/businessModules/dental/api/models/Child";
 import { mapChildDetails } from "@/lib/businessModules/dental/api/models/ChildDetails";
+import { mapChildSearchResult } from "@/lib/businessModules/dental/api/models/ChildSearchResult";
 import { mapExamination } from "@/lib/businessModules/dental/api/models/Examination";
 import { mapPaginatedList } from "@/lib/shared/api/models/PaginatedList";
 
@@ -84,6 +85,7 @@ export function useSearchChildren(institutionId: string, searchString: string) {
     queryKey: childApiQueryKey(["searchChildren", institutionId, searchString]),
     queryFn: () => childApi.searchChildren(institutionId, searchString),
     enabled,
-    select: (response) => (enabled ? response.children : []),
+    select: (response) =>
+      enabled ? response.children.map(mapChildSearchResult) : [],
   });
 }

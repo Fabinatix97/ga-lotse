@@ -5,9 +5,7 @@
 
 import { Input, InputProps } from "@mui/joy";
 
-type YearInputProps = Omit<InputProps, "endDecorator" | "placeholder">;
-
-export function YearInput(props: YearInputProps) {
+export function YearInput(props: InputProps) {
   const { sx, ...inputProps } = props;
   return (
     <Input

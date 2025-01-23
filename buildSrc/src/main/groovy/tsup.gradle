@@ -1,0 +1,26 @@
+import com.github.gradle.node.pnpm.task.PnpmTask
+
+plugins {
+  id 'workspace-package'
+}
+
+def srcDir = project.layout.projectDirectory.dir('src')
+def libDir = project.layout.buildDirectory.dir('lib')
+
+tasks.register('bundle', PnpmTask) {
+  group = 'package'
+  dependsOn 'prepareEnvironment'
+
+  inputs.file "${rootDir}/config/tsup.base.ts"
+  inputs.file "${projectDir}/tsconfig.json"
+  inputs.file "${projectDir}/tsup.config.ts"
+  inputs.files fileTree(srcDir)
+  outputs.dir libDir
+  args = ['tsup']
+}
+
+tasks.register('dev', PnpmTask) {
+  group = 'package'
+  dependsOn 'prepareEnvironment'
+  args = ['tsup', '--watch']
+}

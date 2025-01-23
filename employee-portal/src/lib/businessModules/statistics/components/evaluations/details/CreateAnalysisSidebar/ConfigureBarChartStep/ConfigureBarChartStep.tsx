@@ -4,15 +4,12 @@
  */
 
 import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
-import {
-  buildEnumOptions,
-  createFieldNameMapper,
-} from "@eshg/lib-portal/helpers/form";
+import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { Stack } from "@mui/joy";
-import { useFormikContext } from "formik";
+import { isNonNullish } from "remeda";
 
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
-import { ConfigureBarChartFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/ConfigureBarChartStep/configureBarChartFormModel";
+import { ConfigureChartFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/createAnalysisFormModel";
 import { mapAttributeToAutocompleteSelectionOption } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/mapAttribute";
 import {
   groupingValueNames,
@@ -21,21 +18,22 @@ import {
   scalingValueNames,
 } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
 import { AutocompleteSelectOption } from "@/lib/shared/components/AutocompleteSelectOptions";
+import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import { ToggleButtonGroupField } from "@/lib/shared/components/formFields/ToggleButtonGroupField";
+
+export interface ConfigureBarChartStepProps
+  extends SidebarStepContentProps<ConfigureChartFormModel> {
+  attributes: FlatAttribute[];
+}
 
 export function ConfigureBarChartStep({
   attributes,
-}: {
-  attributes: FlatAttribute[];
-}) {
-  const fieldName = createFieldNameMapper<ConfigureBarChartFormModel>(
-    "configureBarChartFormModel",
-  );
-  const { getFieldProps } = useFormikContext();
-  const fieldValue = getFieldProps<string>(
-    fieldName("secondaryAttributeSelectionKey"),
-  ).value;
-  const showGroupedConfigurations = fieldValue?.length > 0;
+  fieldName,
+  values,
+}: ConfigureBarChartStepProps) {
+  const showGroupedConfigurations =
+    isNonNullish(values.secondaryAttribute) &&
+    values.secondaryAttribute.length > 0;
   const autocompleteSelectOptions: AutocompleteSelectOption[] = attributes.map(
     mapAttributeToAutocompleteSelectionOption((attr) =>
       isBooleanOrValueWithOptions(attr.type),
@@ -51,14 +49,14 @@ export function ConfigureBarChartStep({
       <Stack gap={2}>
         <SingleAutocompleteField
           options={autocompleteSelectOptions}
-          name={fieldName("primaryAttributeSelectionKey")}
+          name={fieldName("primaryAttribute")}
           placeholder="Bitte wählen"
           label="Primäres Attribut"
           required="Bitte wählen Sie ein Attribut aus."
         />
         <SingleAutocompleteField
           options={autocompleteSelectOptions}
-          name={fieldName("secondaryAttributeSelectionKey")}
+          name={fieldName("secondaryAttribute")}
           placeholder="Optional"
           label="Sekundäres Attribut"
         />

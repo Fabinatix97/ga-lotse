@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiCountryCode } from "@eshg/employee-portal-api/base";
+import { ApiCountryCode } from "@eshg/base-api";
 import {
   PersonalInformationFormValues,
   RequiredDocumentsFormValues,

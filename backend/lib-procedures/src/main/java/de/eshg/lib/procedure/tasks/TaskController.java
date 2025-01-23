@@ -6,8 +6,6 @@
 package de.eshg.lib.procedure.tasks;
 
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.base.feature.BaseFeature;
-import de.eshg.base.feature.BaseFeatureTogglesApi;
 import de.eshg.base.user.UserApi;
 import de.eshg.lib.common.BusinessModule;
 import de.eshg.lib.procedure.api.TaskApi;
@@ -60,25 +58,23 @@ public class TaskController<
     implements TaskApi, TaskMetricsApi {
   private static final Logger log = LoggerFactory.getLogger(TaskController.class);
 
-  private final TaskService taskService;
+  private final TaskService<TaskT, ProcedureT> taskService;
   private final TaskRepository<TaskT> taskRepository;
   private final ProcedureRepository<ProcedureT> procedureRepository;
   private final TaskTeamOverviewService<TaskT, ProcedureT> taskTeamOverviewService;
   private final BusinessModule businessModule;
   private final ProcedureLibraryEnrichingMapper<ProcedureT, TaskT> enrichingMapper;
   private final UserApi userApi;
-  private final BaseFeatureTogglesApi baseFeatureTogglesApi;
   private final Clock clock;
 
   public TaskController(
-      TaskService taskService,
+      TaskService<TaskT, ProcedureT> taskService,
       TaskRepository<TaskT> taskRepository,
       ProcedureRepository<ProcedureT> procedureRepository,
       TaskTeamOverviewService<TaskT, ProcedureT> taskTeamOverviewService,
       BusinessModule businessModule,
       ProcedureLibraryEnrichingMapper<ProcedureT, TaskT> enrichingMapper,
       UserApi userApi,
-      BaseFeatureTogglesApi baseFeatureTogglesApi,
       Clock clock) {
     this.taskService = taskService;
     this.taskRepository = taskRepository;
@@ -87,7 +83,6 @@ public class TaskController<
     this.businessModule = businessModule;
     this.enrichingMapper = enrichingMapper;
     this.userApi = userApi;
-    this.baseFeatureTogglesApi = baseFeatureTogglesApi;
     this.clock = clock;
   }
 
@@ -175,14 +170,6 @@ public class TaskController<
   @Transactional(readOnly = true)
   public GetTaskMetricsResponse getTaskMetrics(
       ProcedureTypeDto procedureTypeDto, Instant timeRangeStart, Instant timeRangeEnd) {
-    if (!baseFeatureTogglesApi
-        .getFeatureToggles()
-        .enabledNewFeatures()
-        .contains(BaseFeature.TASK_METRICS)) {
-      throw new BadRequestException(
-          "New feature %s is not enabled".formatted(BaseFeature.TASK_METRICS));
-    }
-
     MetricTimeRangeValidator.validateTimeRange(timeRangeStart, timeRangeEnd);
 
     ProcedureType procedureType = ProcedureMapper.toDomainType(procedureTypeDto);

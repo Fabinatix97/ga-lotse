@@ -5,9 +5,6 @@
 
 "use client";
 
-import { ApiTravelMedicineFeature } from "@eshg/citizen-portal-api/travelMedicine";
-
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/travelMedicine/api/queries/featureTogglesApi";
 import { AppointmentSection } from "@/lib/businessModules/travelMedicine/components/landing/AppointmentSection";
 import { LandingpageContent } from "@/lib/businessModules/travelMedicine/components/landing/LandingpageContent";
 import { LandingpageSidePanel } from "@/lib/businessModules/travelMedicine/components/landing/LandingpageSidePanel";
@@ -23,9 +20,6 @@ import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 export default function CitizenTravelMedicineEntryPage() {
   const { t } = useTranslation(["travelMedicine/landing"]);
-  const citizenPortalProcedureEnabled = useIsNewFeatureEnabled(
-    ApiTravelMedicineFeature.CitizenPortalProcedure,
-  );
 
   const isMobile = useIsMobile();
   return (
@@ -34,18 +28,14 @@ export default function CitizenTravelMedicineEntryPage() {
         <PageTitle>{t("pageTitle")}</PageTitle>
         {isMobile ? (
           <OneColumnGrid
-            contentTop={citizenPortalProcedureEnabled && <AppointmentSection />}
+            contentTop={<AppointmentSection />}
             contentCenter={<LandingpageContent />}
             contentBottom={<VaccineOverviewSection />}
           />
         ) : (
           <TwoColumnGrid
             content={<LandingpageContent />}
-            sidePanel={
-              <LandingpageSidePanel
-                citizenPortalProcedureEnabled={citizenPortalProcedureEnabled}
-              />
-            }
+            sidePanel={<LandingpageSidePanel />}
           />
         )}
       </PageContent>

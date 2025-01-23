@@ -10,6 +10,7 @@ import de.eshg.lib.statistics.api.DataRow;
 import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.api.DataTableHeader;
 import de.eshg.lib.statistics.attributes.AttributeInfo;
+import de.eshg.lib.statistics.persistence.ProcedureReferenceForStatistics;
 import de.eshg.lib.statistics.util.DataRowPage;
 import de.eshg.lib.statistics.util.TemporalRange;
 import de.eshg.lib.statistics.util.TimeRange;
@@ -75,7 +76,8 @@ public abstract class DataSource<A extends AttributeInfo> {
       DataTableHeader dataTableHeader,
       TimeRange timeRange,
       int page,
-      int pageSize);
+      int pageSize,
+      List<ProcedureReferenceForStatistics> procedureReferences);
 
   public List<DataRow> bulkAnonymizeDataRows(
       DataTableHeader dataTableHeader, List<DataRow> dataRows) {

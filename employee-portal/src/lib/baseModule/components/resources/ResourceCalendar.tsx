@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiDetailedEventWithoutCalendarId } from "@eshg/employee-portal-api/base";
+import { ApiDetailedEventWithoutCalendarId } from "@eshg/base-api";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import deLocale from "@fullcalendar/core/locales/de";
 import dayGridPlugin from "@fullcalendar/daygrid";

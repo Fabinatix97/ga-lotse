@@ -5,11 +5,8 @@
 
 package de.eshg.medicalregistry.business.model;
 
+import de.eshg.lib.procedure.domain.model.Image;
 import jakarta.annotation.Nullable;
-import org.springframework.web.multipart.MultipartFile;
 
 public record DocumentData(
-    String fileName,
-    String description,
-    @Nullable MedicalRegistryKeyDocumentType keyDocumentType,
-    MultipartFile file) {}
+    String description, @Nullable MedicalRegistryKeyDocumentType keyDocumentType, Image file) {}

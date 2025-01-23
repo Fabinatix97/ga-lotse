@@ -3,39 +3,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBaseFeature, ApiUserRole } from "@eshg/employee-portal-api/base";
-import { ApiTravelMedicineFeature } from "@eshg/employee-portal-api/travelMedicine";
+import { ApiBaseFeature, ApiUserRole } from "@eshg/base-api";
+import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
 import { VaccinesOutlined } from "@mui/icons-material";
 import { isPlainObject } from "remeda";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { UseSideNavigationItemsResult } from "@/lib/baseModule/components/layout/sideNavigation/types";
-import { useIsNewFeatureEnabledUnsuspended } from "@/lib/businessModules/travelMedicine/api/queries/featureToggles";
-import { hasUserRole } from "@/lib/shared/helpers/accessControl";
 
 import { routes } from "./routes";
 
 export function useSideNavigationItems(
   enabled: boolean,
 ): UseSideNavigationItemsResult {
-  // our toggles
-  const {
-    data: informationStatementEnabled,
-    isError: isErrorCitizenPortalInformationStatement,
-    isLoading: isCitizenPortalInformationStatementLoading,
-  } = useIsNewFeatureEnabledUnsuspended(
-    ApiTravelMedicineFeature.CitizenPortalInformationStatement,
-    enabled,
-  );
-
-  const isTravelMedicineError = isErrorCitizenPortalInformationStatement;
-
   // their toggles
   const isInboxEnabled = useIsNewFeatureEnabled(ApiBaseFeature.Inbox);
-
-  if (!enabled) {
-    return { isLoading: false, items: [] };
-  }
 
   const SUB_NAVIGATION_ITEMS = [
     {
@@ -63,7 +45,7 @@ export function useSideNavigationItems(
       href: routes.medicalHistoryTemplates.index,
       accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),
     },
-    informationStatementEnabled && {
+    {
       name: "Aufklärungsbögen",
       href: routes.informationStatementTemplates.index,
       accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),
@@ -91,16 +73,15 @@ export function useSideNavigationItems(
   ];
 
   return {
-    isLoading: isCitizenPortalInformationStatementLoading,
-    items: [
-      {
-        name: "Impfberatung",
-        decorator: <VaccinesOutlined />,
-        error: isTravelMedicineError
-          ? "Bei der Verbindung zum Modul Impfberatung ist ein Fehler aufgetreten."
-          : undefined,
-        subItems: SUB_NAVIGATION_ITEMS.filter(isPlainObject),
-      },
-    ],
+    isLoading: false,
+    items: enabled
+      ? [
+          {
+            name: "Impfberatung",
+            decorator: <VaccinesOutlined />,
+            subItems: SUB_NAVIGATION_ITEMS.filter(isPlainObject),
+          },
+        ]
+      : [],
   };
 }

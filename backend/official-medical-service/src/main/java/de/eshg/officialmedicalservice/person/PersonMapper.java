@@ -11,6 +11,7 @@ import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.PersonDetailsDto;
 import de.eshg.base.centralfile.api.person.UpdatePersonRequest;
 import de.eshg.officialmedicalservice.procedure.api.AffectedPersonDto;
+import de.eshg.officialmedicalservice.procedure.api.AffectedPersonSyncDto;
 
 public class PersonMapper {
 
@@ -34,7 +35,9 @@ public class PersonMapper {
         personFileState.placeOfBirth(),
         personFileState.title(),
         personFileState.gender(),
-        personFileState.contactAddress());
+        personFileState.contactAddress(),
+        new AffectedPersonSyncDto(
+            personFileState.id(), personFileState.referenceVersion(), personFileState.outdated()));
   }
 
   public static AddPersonFileStateRequest mapToAddPersonFileStateRequest(

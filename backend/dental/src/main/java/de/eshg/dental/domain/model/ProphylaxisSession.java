@@ -13,10 +13,12 @@ import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
+import jakarta.persistence.OrderColumn;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +51,13 @@ public class ProphylaxisSession extends BaseEntityWithExternalId {
   @Column(nullable = false)
   private String groupName;
 
+  @DataSensitivity(PSEUDONYMIZED)
+  private boolean screening;
+
+  @DataSensitivity(PSEUDONYMIZED)
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private FluoridationVarnish fluoridationVarnish;
+
   @DataSensitivity(PROTECTED)
   @OneToMany(
       orphanRemoval = true,
@@ -67,6 +76,18 @@ public class ProphylaxisSession extends BaseEntityWithExternalId {
   @LastModifiedDate
   @DataSensitivity(SensitivityLevel.PROTECTED)
   private Instant modifiedAt;
+
+  @ElementCollection
+  @Column(name = "dentist_id", nullable = false)
+  @OrderColumn(name = "dentist_id_order")
+  @DataSensitivity(SensitivityLevel.PROTECTED)
+  private List<UUID> dentistIds = new ArrayList<>();
+
+  @ElementCollection
+  @Column(name = "zfa_id", nullable = false)
+  @OrderColumn(name = "zfa_id_order")
+  @DataSensitivity(SensitivityLevel.PROTECTED)
+  private List<UUID> zfaIds = new ArrayList<>();
 
   public Instant getDateAndTime() {
     return dateAndTime;
@@ -100,6 +121,26 @@ public class ProphylaxisSession extends BaseEntityWithExternalId {
     this.groupName = groupName;
   }
 
+  public boolean isScreening() {
+    return screening;
+  }
+
+  public void setScreening(boolean screening) {
+    this.screening = screening;
+  }
+
+  public boolean hasFluoridationVarnish() {
+    return getFluoridationVarnish() != null;
+  }
+
+  public FluoridationVarnish getFluoridationVarnish() {
+    return fluoridationVarnish;
+  }
+
+  public void setFluoridationVarnish(FluoridationVarnish fluoridationVarnish) {
+    this.fluoridationVarnish = fluoridationVarnish;
+  }
+
   public List<Examination> getExaminations() {
     return examinations;
   }
@@ -114,10 +155,6 @@ public class ProphylaxisSession extends BaseEntityWithExternalId {
     examination.setProphylaxisSession(null);
   }
 
-  public List<Child> getParticipants() {
-    return getExaminations().stream().map(Examination::getChild).toList();
-  }
-
   public Instant getCreatedAt() {
     return createdAt;
   }
@@ -128,5 +165,21 @@ public class ProphylaxisSession extends BaseEntityWithExternalId {
 
   public void setModifiedAt(Instant modifiedAt) {
     this.modifiedAt = modifiedAt;
+  }
+
+  public List<UUID> getDentistIds() {
+    return dentistIds;
+  }
+
+  public void setDentistIds(List<UUID> dentists) {
+    this.dentistIds = dentists;
+  }
+
+  public List<UUID> getZfaIds() {
+    return zfaIds;
+  }
+
+  public void setZfaIds(List<UUID> zfas) {
+    this.zfaIds = zfas;
   }
 }

@@ -12,6 +12,7 @@ import {
 } from "@eshg/employee-portal-api/medicalRegistry";
 import { professionalTitleNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useSearchParams } from "next/navigation";
@@ -37,7 +38,6 @@ import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import { translateCountry } from "@/lib/shared/helpers/i18n";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
 import { MedicalRegistryEntryOverviewControls } from "./MedicalRegistryEntryOverviewControls";

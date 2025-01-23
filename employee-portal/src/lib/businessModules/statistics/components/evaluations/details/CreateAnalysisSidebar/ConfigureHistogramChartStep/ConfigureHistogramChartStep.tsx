@@ -4,16 +4,12 @@
  */
 
 import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
-import {
-  buildEnumOptions,
-  createFieldNameMapper,
-} from "@eshg/lib-portal/helpers/form";
+import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { Stack } from "@mui/joy";
-import { useFormikContext } from "formik";
+import { isDefined, isNonNullish } from "remeda";
 
-import { DiagramBinning } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
-import { ConfigureHistogramChartFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/ConfigureHistogramChartStep/configureHistogramChartFormModel";
+import { ConfigureChartFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/createAnalysisFormModel";
 import { mapAttributeToAutocompleteSelectionOption } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/mapAttribute";
 import {
   binningValueNames,
@@ -23,26 +19,24 @@ import {
   scalingValueNames,
 } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
 import { AutocompleteSelectOption } from "@/lib/shared/components/AutocompleteSelectOptions";
+import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import { SliderField } from "@/lib/shared/components/formFields/SliderField";
 import { ToggleButtonGroupField } from "@/lib/shared/components/formFields/ToggleButtonGroupField";
 
+export interface ConfigureHistogramChartStepProps
+  extends SidebarStepContentProps<ConfigureChartFormModel> {
+  attributes: FlatAttribute[];
+}
+
 export function ConfigureHistogramChartStep({
   attributes,
-}: {
-  attributes: FlatAttribute[];
-}) {
-  const fieldName = createFieldNameMapper<ConfigureHistogramChartFormModel>(
-    "configureHistogramChartFormModel",
-  );
-  const { getFieldProps } = useFormikContext();
-  const secondaryAttributeFieldValue = getFieldProps<string>(
-    fieldName("secondaryAttribute"),
-  ).value;
-  const binningFieldValue = getFieldProps<DiagramBinning>(
-    fieldName("binning"),
-  ).value;
-  const showGroupedConfigurations = secondaryAttributeFieldValue?.length > 0;
-  const showBins = binningFieldValue === "MANUAL";
+  fieldName,
+  values,
+}: ConfigureHistogramChartStepProps) {
+  const showGroupedConfigurations =
+    isNonNullish(values.secondaryAttribute) &&
+    values.secondaryAttribute.length > 0;
+  const showBins = isDefined(values.binning) && values.binning === "MANUAL";
 
   const primaryAutocompleteSelectOptions: AutocompleteSelectOption[] =
     attributes.map(

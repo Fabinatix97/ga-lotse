@@ -9,17 +9,17 @@ import {
   ApiContactCategory,
   ApiContactSortKey,
   ApiContactType,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
+import {
+  PaginatedSearchParams,
+  SortableSearchParams,
+} from "@eshg/lib-portal/helpers/searchParams";
 import { isDefined } from "remeda";
 
 import { useGetContactsOverviewPageQuery } from "@/lib/baseModule/api/queries/contacts";
 import { ContactsTable } from "@/lib/baseModule/components/contacts/ContactsTable";
 import { useAddInstitutionContactSidebar } from "@/lib/baseModule/components/contacts/modals/AddInstitutionContactSidebar";
 import { useAddPersonContactSidebar } from "@/lib/baseModule/components/contacts/modals/AddPersonContactSidebar";
-import {
-  PaginatedSearchParams,
-  SortableSearchParams,
-} from "@/lib/shared/helpers/searchParams";
 
 export interface ContactOverviewSearchParams
   extends PaginatedSearchParams,

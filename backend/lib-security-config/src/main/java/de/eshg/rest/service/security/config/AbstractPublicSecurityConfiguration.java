@@ -5,12 +5,14 @@
 
 package de.eshg.rest.service.security.config;
 
+import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_GDPR_VALIDATION_TASK_CLEANUP;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
 
+import de.eshg.lib.keycloak.CitizenPermissionRole;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.lib.keycloak.ModuleLeaderRole;
 import de.eshg.lib.keycloak.PermissionRole;
@@ -106,9 +108,6 @@ public abstract class AbstractPublicSecurityConfiguration {
             GET, ProcedureLibrary.PROCEDURES_API + "/**", ProcedureLibrary.FILES_API + "/**")
         .hasAnyRole(procedureAccessRole, EmployeePermissionRole.PROCEDURE_ARCHIVE);
 
-    requestMatchers(POST, ProcedureLibrary.PROCEDURES_API + "/check-file-state-usage")
-        .hasAnyRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ);
-
     requestMatchers(
             GET, ProcedureLibrary.INBOX_PROCEDURES_API + "/**", ProcedureLibrary.TASKS_API + "/**")
         .hasRole(procedureAccessRole);
@@ -171,24 +170,50 @@ public abstract class AbstractPublicSecurityConfiguration {
     requestMatchers(GET, ProcedureLibrary.ARCHIVING_API + "/config")
         .hasRole(EmployeePermissionRole.PROCEDURE_ARCHIVE);
 
-    requestMatchers(GET, BaseUrls.ProcedureLibrary.GDPR_VALIDATION_TASK_API_DOWNLOAD_INFO)
-        .hasAnyRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ, procedureAccessRole);
+    gdpr(procedureAccessRole);
+  }
 
-    requestMatchers(GET, BaseUrls.ProcedureLibrary.GDPR_VALIDATION_TASK_API_DOWNLOAD)
-        .hasAnyRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ, procedureAccessRole);
+  private void gdpr(PermissionRole procedureAccessRole) {
+    requestMatchers(
+            GET, ProcedureLibrary.GDPR_VALIDATION_TASK_API + "/{gdprProcedureId}/download-packages")
+        .hasAnyRole(
+            procedureAccessRole,
+            EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ,
+            CitizenPermissionRole.BUND_ID_USER,
+            CitizenPermissionRole.MUK_USER);
+    requestMatchers(
+            GET,
+            ProcedureLibrary.GDPR_VALIDATION_TASK_API
+                + "/{gdprProcedureId}/download-packages/{downloadId}")
+        .hasAnyRole(
+            procedureAccessRole,
+            EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ,
+            CitizenPermissionRole.BUND_ID_USER,
+            CitizenPermissionRole.MUK_USER);
+
+    requestMatchers(POST, ProcedureLibrary.PROCEDURES_API + "/check-file-state-usage")
+        .hasAnyRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ);
+    requestMatchers(DELETE, ProcedureLibrary.GDPR_VALIDATION_TASK_API + "/{gdprProcedureId}")
+        .hasRole(BASE_GDPR_VALIDATION_TASK_CLEANUP);
 
     requestMatchers(GET, ProcedureLibrary.GDPR_VALIDATION_TASK_API + "/**")
         .hasRole(procedureAccessRole);
     requestMatchers(POST, ProcedureLibrary.GDPR_VALIDATION_TASK_API + "/**")
         .hasRole(procedureAccessRole);
+    requestMatchers(
+            DELETE,
+            ProcedureLibrary.GDPR_VALIDATION_TASK_API
+                + "/{gdprProcedureId}/business-procedures/{businessProcedureId}")
+        .hasRole(procedureAccessRole);
   }
 
-  protected void grantAccessToStatistics() {
+  protected void grantAccessToStatistics(PermissionRole procedureAccessRole) {
     requestMatchers(GET, BaseUrls.STATISTICS + "/**")
         .hasAnyRole(
             EmployeePermissionRole.STATISTICS_STATISTICS_READ,
             EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
-    requestMatchers(POST, BaseUrls.STATISTICS + "/**")
+    requestMatchers(POST, BaseUrls.STATISTICS + "/procedure-ids/**").hasRole(procedureAccessRole);
+    requestMatchers(POST, BaseUrls.STATISTICS + "/specific-data/**")
         .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
   }
 

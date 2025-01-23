@@ -26,6 +26,9 @@ public class GdprFacility extends IdentificationData {
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private String phoneNumber;
 
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  private String dataTransmitterPseudonymId;
+
   public String getName() {
     return name;
   }
@@ -56,5 +59,13 @@ public class GdprFacility extends IdentificationData {
 
   public void setPhoneNumber(String phoneNumber) {
     this.phoneNumber = phoneNumber;
+  }
+
+  public String getDataTransmitterPseudonymId() {
+    return dataTransmitterPseudonymId;
+  }
+
+  public void setDataTransmitterPseudonymId(String dataTransmitterPseudonymId) {
+    this.dataTransmitterPseudonymId = dataTransmitterPseudonymId;
   }
 }

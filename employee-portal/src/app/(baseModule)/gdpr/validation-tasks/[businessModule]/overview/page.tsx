@@ -10,6 +10,10 @@ import {
   ApiSortDirection,
   GetAllGdprValidationTasksRequest,
 } from "@eshg/employee-portal-api/businessProcedures";
+import {
+  parseOptionalEnum,
+  parseReadonlyPageParams,
+} from "@eshg/lib-portal/helpers/searchParams";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 
 import { ValidationTasksTable } from "@/lib/baseModule/components/gdpr/validationTasks/ValidationTasksTable";
@@ -17,10 +21,6 @@ import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLay
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 import { isBusinessModule } from "@/lib/shared/helpers/guards";
-import {
-  parseOptionalEnum,
-  parseReadonlyPageParams,
-} from "@/lib/shared/helpers/searchParams";
 
 function parseSearchParams(
   searchParams: ReadonlyURLSearchParams,

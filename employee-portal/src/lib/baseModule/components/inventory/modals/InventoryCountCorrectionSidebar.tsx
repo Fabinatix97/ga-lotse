@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiInventoryItem } from "@eshg/employee-portal-api/base";
+import { ApiInventoryItem } from "@eshg/base-api";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { Grid, Stack, Typography } from "@mui/joy";

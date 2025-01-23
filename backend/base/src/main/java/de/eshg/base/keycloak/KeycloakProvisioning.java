@@ -165,7 +165,8 @@ public abstract class KeycloakProvisioning<T extends RealmBoundKeycloakClient> {
     }
   }
 
-  protected void createOrUpdateEshgClientScope(PermissionRole... permissionRoles) {
+  protected void createOrUpdateEshgClientScope(
+      List<ProtocolMapperRepresentation> additionalMappers, PermissionRole... permissionRoles) {
     ClientScopeRepresentation clientScope = new ClientScopeRepresentation();
     clientScope.setName(ESHG_CLIENT_SCOPE_NAME);
     clientScope.setDescription(
@@ -173,9 +174,43 @@ public abstract class KeycloakProvisioning<T extends RealmBoundKeycloakClient> {
     clientScope.setProtocol(OPENID_CONNECT);
     clientScope.setAttributes(Map.of("include.in.token.scope", FALSE));
 
-    clientScope.setProtocolMappers(
-        ListUtils.union(List.of(getRolesMapper()), getRoleNameMappers(permissionRoles)));
+    List<ProtocolMapperRepresentation> defaultMappers =
+        ListUtils.union(List.of(getRolesMapper()), getRoleNameMappers(permissionRoles));
+    clientScope.setProtocolMappers(ListUtils.union(defaultMappers, additionalMappers));
     keycloakClient.createOrUpdateClientScopes(List.of(clientScope));
+  }
+
+  protected static ProtocolMapperRepresentation getBundIdBpk2Mapper() {
+    return getUserAttributeToTokenMapper(
+        "BundID bPK2", CitizenUserAttribute.BUND_ID_B_PK_2.getKey());
+  }
+
+  protected static ProtocolMapperRepresentation getMukDataTransmitterPseudonymIdMapper() {
+    return getUserAttributeToTokenMapper(
+        "MUK DataTransmitterPseudonymId",
+        CitizenUserAttribute.MUK_DATA_TRANSMITTER_PSEUDONYM_ID.getKey());
+  }
+
+  private static ProtocolMapperRepresentation getUserAttributeToTokenMapper(
+      String mapperName, String attributeKey) {
+    ProtocolMapperRepresentation bundIdBpk2Mapper = new ProtocolMapperRepresentation();
+    bundIdBpk2Mapper.setName(mapperName);
+    bundIdBpk2Mapper.setProtocol(OPENID_CONNECT);
+    bundIdBpk2Mapper.setProtocolMapper("oidc-usermodel-attribute-mapper");
+    bundIdBpk2Mapper.setConfig(
+        Map.of(
+            ID_TOKEN_CLAIM,
+            TRUE,
+            USERINFO_TOKEN_CLAIM,
+            TRUE,
+            ACCESS_TOKEN_CLAIM,
+            TRUE,
+            "user.attribute",
+            attributeKey,
+            CLAIM_NAME,
+            // Escape (\) dots in keycloak claim name to avoid nesting
+            attributeKey.replace(".", "\\.")));
+    return bundIdBpk2Mapper;
   }
 
   private static List<ProtocolMapperRepresentation> getRoleNameMappers(

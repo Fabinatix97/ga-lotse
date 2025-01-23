@@ -49,7 +49,7 @@ public enum IdpTestUser implements KeycloakUser {
           Map.entry(getNormalizedKey(BundIdUserAttribute.COUNTRY), "DE"),
           Map.entry(getNormalizedKey(BundIdUserAttribute.PERSONAL_TITLE), "Prof. Dr. Dr."),
           Map.entry(getNormalizedKey(BundIdUserAttribute.GENDER), "1"),
-          Map.entry(getNormalizedKey(BundIdUserAttribute.BIRTH_DATE), "01.01.2000"),
+          Map.entry(getNormalizedKey(BundIdUserAttribute.BIRTH_DATE), "2000-01-01"),
           Map.entry(getNormalizedKey(BundIdUserAttribute.PLACE_OF_BIRTH), "Bonn"),
           Map.entry(getNormalizedKey(BundIdUserAttribute.BIRTH_NAME), "Meyer"),
           Map.entry(getNormalizedKey(BundIdUserAttribute.TELEPHONE_NUMBER), "0123456789"))),

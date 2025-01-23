@@ -11,7 +11,7 @@ import {
   ApiInstitutionContactChange,
   ApiPersonContactChange,
   ApiUser,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { useRouter } from "next/navigation";
 import { isDefined } from "remeda";

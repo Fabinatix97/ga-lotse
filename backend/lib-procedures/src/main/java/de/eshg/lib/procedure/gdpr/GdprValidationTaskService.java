@@ -5,11 +5,15 @@
 
 package de.eshg.lib.procedure.gdpr;
 
+import static de.eshg.lib.keycloak.CitizenPermissionRole.BUND_ID_USER;
+import static de.eshg.lib.keycloak.CitizenPermissionRole.MUK_USER;
 import static de.eshg.lib.procedure.domain.model.GdprValidationTaskStatus.CLOSED;
 
 import de.eshg.base.gdpr.GdprProcedureApi;
 import de.eshg.base.gdpr.api.AddGdprDownloadsRequest;
+import de.eshg.base.gdpr.api.GdprFacilityDto;
 import de.eshg.base.gdpr.api.GdprIdentificationDataDto;
+import de.eshg.base.gdpr.api.GdprPersonDto;
 import de.eshg.base.gdpr.api.GetGdprDownloadsResponse;
 import de.eshg.base.gdpr.api.GetGdprProcedureFileStateIdsResponse;
 import de.eshg.base.util.PaginationUtil;
@@ -17,6 +21,7 @@ import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.model.GdprDownloadPackage;
 import de.eshg.lib.procedure.domain.model.GdprValidationTask;
 import de.eshg.lib.procedure.domain.model.GdprValidationTaskStatus;
+import de.eshg.lib.procedure.domain.model.GdprValidationTaskType;
 import de.eshg.lib.procedure.domain.model.GdprValidationTask_;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.Task;
@@ -33,19 +38,24 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class GdprValidationTaskService<
@@ -80,17 +90,12 @@ public class GdprValidationTaskService<
   }
 
   public GdprValidationTask getValidationTaskFromDb(UUID id) {
-    return validationTaskRepository
-        .findByGdprProcedureId(id)
+    return findValidationTask(id)
         .orElseThrow(() -> new NotFoundException("GdprValidationTask not found."));
   }
 
-  public List<GdprDownloadPackageInfo> findByDownloadIdIn(Set<UUID> downloadIds) {
-    log.info("Fetching download packages from database for IDs: {}", downloadIds);
-    if (downloadIds == null || downloadIds.isEmpty()) {
-      return List.of();
-    }
-    return downloadPackageRepository.findInfoByExternalIdIn(downloadIds);
+  public Optional<GdprValidationTask> findValidationTask(UUID id) {
+    return validationTaskRepository.findByGdprProcedureId(id);
   }
 
   public List<UUID> findBusinessProcedureIdsByDownloadIdIn(Set<UUID> downloadIds) {
@@ -101,10 +106,11 @@ public class GdprValidationTaskService<
     return downloadPackageRepository.findBusinessProcedureIdsByExternalIdIn(downloadIds);
   }
 
-  public GdprDownloadPackage getDownloadPackage(UUID id) {
-    log.info("Fetching download package from database by id: {}", id);
+  public GdprDownloadPackage getDownloadPackage(UUID gdprId, UUID downloadId) {
+    validatePermissionToAccessGdprProcedure(gdprId, false);
+    log.info("Fetching download package from database by downloadId: {}", downloadId);
     return downloadPackageRepository
-        .findByExternalId(id)
+        .findByExternalId(downloadId)
         .orElseThrow(() -> new NotFoundException("GdprDownloadPackage not found."));
   }
 
@@ -116,9 +122,10 @@ public class GdprValidationTaskService<
 
   public List<UUID> getFileStateIdsAndValidateLink(UUID gdprProcedureId, UUID businessProcedureId) {
     List<UUID> fileStateIdsToSearch = getAndValidateFileStateIds(gdprProcedureId);
-
     List<UUID> businessProcedureIds =
-        procedureRepository.findIdsByFileStateIds(fileStateIdsToSearch);
+        fileStateIdsToSearch.isEmpty()
+            ? List.of()
+            : procedureRepository.findIdsByFileStateIds(fileStateIdsToSearch);
 
     if (!businessProcedureIds.contains(businessProcedureId)) {
       throw new BadRequestException(
@@ -127,9 +134,16 @@ public class GdprValidationTaskService<
     return fileStateIdsToSearch;
   }
 
+  public Optional<ProcedureT> getBusinessProcedure(UUID businessProcedureId, UUID gdprProcedureId) {
+    List<UUID> fileStateIds = getAndValidateFileStateIds(gdprProcedureId);
+    if (fileStateIds.isEmpty()) {
+      return Optional.empty();
+    }
+    return procedureRepository.getByExternalIdAndFileStateIds(businessProcedureId, fileStateIds);
+  }
+
   public boolean validationTaskAlreadyExists(AddGdprValidationTaskRequest request) {
-    Optional<GdprValidationTask> existingTask =
-        validationTaskRepository.findByGdprProcedureId(request.gdprProcedureId());
+    Optional<GdprValidationTask> existingTask = findValidationTask(request.gdprProcedureId());
     if (existingTask.isPresent()) {
       log.info(
           "A GdprValidationTask already exists for GdprProcedure with id {}",
@@ -141,6 +155,10 @@ public class GdprValidationTaskService<
 
   public void searchBusinessProceduresAndUpdateValidationTask(
       List<UUID> fileStateIds, GdprValidationTask validationTask) {
+    if (fileStateIds.isEmpty()) {
+      validationTask.setStatus(CLOSED);
+      return;
+    }
     List<UUID> businessProcedureIds = procedureRepository.findIdsByFileStateIds(fileStateIds);
     if (businessProcedureIds.isEmpty()) {
       validationTask.setStatus(CLOSED);
@@ -169,6 +187,15 @@ public class GdprValidationTaskService<
     return downloadPackageRepository.save(downloadPackage);
   }
 
+  public List<GdprDownloadPackageInfo> getDownloadPackagesInfo(UUID gdprProcedureId) {
+    validatePermissionToAccessGdprProcedure(gdprProcedureId, false);
+    Set<UUID> downloadIdsFromBase = fetchDownloadIdsFromBase(gdprProcedureId).downloadIds();
+    if (downloadIdsFromBase.isEmpty()) {
+      return List.of();
+    }
+    return downloadPackageRepository.findInfoByExternalIdIn(downloadIdsFromBase);
+  }
+
   public GetGdprDownloadsResponse fetchDownloadIdsFromBase(UUID gdprProcedureId) {
     log.info("Fetching download IDs for GdprProcedureId: {}", gdprProcedureId);
     return baseGdprProcedureApi.getDownloads(gdprProcedureId);
@@ -181,7 +208,7 @@ public class GdprValidationTaskService<
     boolean hasPersonFileStates = !fileStateResponse.personFileStateIds().isEmpty();
 
     if (!hasFacilityFileStates && !hasPersonFileStates) {
-      throw new IllegalStateException("The GDPR procedure does not have any file state");
+      return List.of();
     } else if (hasFacilityFileStates && hasPersonFileStates) {
       throw new IllegalStateException(
           "The GDPR procedure has BOTH facility and person file states associated with it");
@@ -215,26 +242,47 @@ public class GdprValidationTaskService<
   }
 
   public List<BusinessProcedureWithInclusionStatusDto> getBusinessProceduresWithInclusionStatus(
-      UUID gdprId, List<UUID> fileStateIds) {
+      UUID gdprId, GdprValidationTaskType type, List<UUID> fileStateIds) {
+    if (fileStateIds.isEmpty()) {
+      return List.of();
+    }
+    List<ProcedureT> procedures = procedureRepository.findByFileStateIds(fileStateIds);
+    List<ProcedureDto> enrichedProcedures = enrichingMapper.enrichAndMapProcedures(procedures);
+    return switch (type) {
+      case RIGHT_OF_ACCESS -> enrichWithInclusionStatusForAccess(enrichedProcedures, gdprId);
+      case RIGHT_TO_ERASURE -> enrichAllWithStatusUndecided(enrichedProcedures);
+    };
+  }
+
+  private List<BusinessProcedureWithInclusionStatusDto> enrichWithInclusionStatusForAccess(
+      List<ProcedureDto> enrichedProcedures, UUID gdprId) {
     GetGdprDownloadsResponse downloadIdsFromBase = fetchDownloadIdsFromBase(gdprId);
     List<UUID> knownProcedureIds =
         findBusinessProcedureIdsByDownloadIdIn(downloadIdsFromBase.downloadIds());
 
-    List<ProcedureT> procedures = procedureRepository.findByFileStateIds(fileStateIds);
-    List<ProcedureDto> enrichedProcedures = enrichingMapper.enrichAndMapProcedures(procedures);
     return enrichedProcedures.stream()
         .map(
             eP ->
                 new BusinessProcedureWithInclusionStatusDto(
-                    eP, getInclusionStatus(eP.procedureId(), knownProcedureIds)))
+                    eP, getInclusionStatusFromList(eP.procedureId(), knownProcedureIds)))
         .toList();
   }
 
-  private static BusinessProcedureInclusionStatusDto getInclusionStatus(
+  private static BusinessProcedureInclusionStatusDto getInclusionStatusFromList(
       UUID id, List<UUID> includedIds) {
     return includedIds.contains(id)
         ? BusinessProcedureInclusionStatusDto.INCLUDED
         : BusinessProcedureInclusionStatusDto.UNDECIDED;
+  }
+
+  private List<BusinessProcedureWithInclusionStatusDto> enrichAllWithStatusUndecided(
+      List<ProcedureDto> enrichedProcedures) {
+    return enrichedProcedures.stream()
+        .map(
+            eP ->
+                new BusinessProcedureWithInclusionStatusDto(
+                    eP, BusinessProcedureInclusionStatusDto.UNDECIDED))
+        .toList();
   }
 
   public void closeTask(UUID gdprProcedureId) {
@@ -257,9 +305,15 @@ public class GdprValidationTaskService<
       GdprValidationTaskStatus status, PaginationUtil.PageSpec pageSpec) {
     Specification<GdprValidationTask> specification = Specification.allOf(hasStatus(status));
 
+    Sort sortOrder =
+        Sort.by(
+            pageSpec.order().getDirection() == Sort.Direction.ASC
+                ? Sort.Order.desc(GdprValidationTask_.STATUS)
+                : Sort.Order.asc(GdprValidationTask_.STATUS),
+            pageSpec.order());
+
     return validationTaskRepository.findAll(
-        specification,
-        PageRequest.of(pageSpec.pageNumber(), pageSpec.pageSize(), Sort.by(pageSpec.order())));
+        specification, PageRequest.of(pageSpec.pageNumber(), pageSpec.pageSize(), sortOrder));
   }
 
   private static Specification<GdprValidationTask> hasStatus(GdprValidationTaskStatus status) {
@@ -285,5 +339,88 @@ public class GdprValidationTaskService<
     GetGdprDownloadsResponse downloadIdsFromBase = fetchDownloadIdsFromBase(gdprProcedureId);
     return downloadPackageRepository.existsByBusinessProcedureIdAndExternalIdIn(
         businessProcedureId, downloadIdsFromBase.downloadIds());
+  }
+
+  public void deleteValidationTask(UUID gdprProcedureId) {
+    validationTaskRepository.deleteByGdprProcedureId(gdprProcedureId);
+  }
+
+  public void deleteDownloadPackages(Collection<UUID> downloadIds) {
+    downloadPackageRepository.deleteAllByExternalIdIn(downloadIds);
+  }
+
+  private void validatePermissionToAccessGdprProcedure(
+      UUID gdprProcedureId, boolean allowEmployeeFullAccess) {
+    if (allowEmployeeFullAccess && CurrentUserHelper.isEmployee()) {
+      return;
+    }
+    GdprIdentificationDataDto identificationData;
+    try {
+      identificationData =
+          baseGdprProcedureApi.getGdprProcedure(gdprProcedureId).identificationData();
+    } catch (HttpClientErrorException.Forbidden forbidden) {
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, forbidden.getMessage());
+    }
+    switch (identificationData) {
+      case null -> throw new IllegalStateException("Identification data null");
+      case GdprPersonDto p -> validateUser(p);
+      case GdprFacilityDto f -> validateUser(f);
+      default ->
+          throw new IllegalStateException(
+              "Unexpected type of IdentificationData: " + identificationData.getClass());
+    }
+  }
+
+  private void validateUser(GdprPersonDto p) {
+    if (StringUtils.isEmpty(p.bpk2())) {
+      validateEmployee();
+    } else {
+      validateCitizen(p);
+    }
+  }
+
+  private void validateUser(GdprFacilityDto f) {
+    if (StringUtils.isEmpty(f.dataTransmitterPseudonymId())) {
+      validateEmployee();
+    } else {
+      validateFacility(f);
+    }
+  }
+
+  private void validateEmployee() {
+    if (!CurrentUserHelper.isEmployee()) {
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Current user is not an employee");
+    }
+  }
+
+  private void validateCitizen(GdprPersonDto p) {
+    if (!CurrentUserHelper.currentUserHasRole(BUND_ID_USER)) {
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Current user is not a bund-id user");
+    }
+    Optional<String> bpk2Gracefully = CurrentUserHelper.getBundIdGracefully();
+    if (bpk2Gracefully.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bund-id user does not have a bpk2");
+    }
+    if (!p.bpk2().equals(bpk2Gracefully.get())) {
+      throw new ResponseStatusException(
+          HttpStatus.FORBIDDEN,
+          "Bund-id bpk2 of current user and of given gdpr procedure do not match");
+    }
+  }
+
+  private void validateFacility(GdprFacilityDto f) {
+    if (!CurrentUserHelper.currentUserHasRole(MUK_USER)) {
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Current user is not a muk user");
+    }
+    Optional<String> mukIdGracefully = CurrentUserHelper.getMukIdGracefully();
+    if (mukIdGracefully.isEmpty()) {
+      throw new ResponseStatusException(
+          HttpStatus.FORBIDDEN, "Muk user does not have a dataTransmitterPseudonymId");
+    }
+    if (!f.dataTransmitterPseudonymId().equals(mukIdGracefully.get())) {
+      throw new ResponseStatusException(
+          HttpStatus.FORBIDDEN,
+          "Muk dataTransmitterPseudonymId of current user and of given gdpr procedure do not match");
+    }
   }
 }

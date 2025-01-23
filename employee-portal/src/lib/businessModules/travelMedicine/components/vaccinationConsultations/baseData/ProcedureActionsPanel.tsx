@@ -7,7 +7,6 @@ import {
   ApiGetVaccinationConsultationDetailsResponse,
   ApiProcedureStatus,
   ApiServiceStatus,
-  ApiTravelMedicineFeature,
 } from "@eshg/employee-portal-api/travelMedicine";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Button, Grid } from "@mui/joy";
@@ -19,7 +18,6 @@ import {
   useAcceptDraftVaccinationConsultation,
   usePatchStatus,
 } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/travelMedicine/api/queries/featureToggles";
 import { AbortProcedureModal } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/AbortProcedureModal";
 import { useAcceptProcedureSidebar } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/AcceptProcedureSidebar";
 import { OpenModalButton } from "@/lib/shared/components/buttons/OpenModalButton";
@@ -31,9 +29,6 @@ export function ProcedureActionsPanel(
     dataTestid: string;
   }>,
 ) {
-  const citizenPortalProcedureEnabled = useIsNewFeatureEnabled(
-    ApiTravelMedicineFeature.CitizenPortalProcedure,
-  );
   const snackbar = useSnackbar();
 
   const patchStatus = usePatchStatus();
@@ -112,10 +107,7 @@ export function ProcedureActionsPanel(
     );
   }
 
-  if (
-    citizenPortalProcedureEnabled &&
-    props.procedure.status === ApiProcedureStatus.Draft
-  ) {
+  if (props.procedure.status === ApiProcedureStatus.Draft) {
     buttons.push(
       <Grid container spacing={2}>
         <Grid xs={6} display={"flex"}>

@@ -36,11 +36,20 @@ public class AppointmentBlockGroup extends BaseEntityWithExternalId {
 
   private int slotDurationInMinutes;
 
-  @ElementCollection @OrderColumn private List<UUID> physicians;
+  @ElementCollection
+  @Column(name = "physician_id", nullable = false)
+  @OrderColumn
+  private List<UUID> physicians;
 
-  @ElementCollection @OrderColumn private List<UUID> mfas;
+  @ElementCollection
+  @Column(name = "mfa_id", nullable = false)
+  @OrderColumn
+  private List<UUID> mfas;
 
-  @ElementCollection @OrderColumn private List<UUID> consultants;
+  @ElementCollection
+  @Column(name = "consultant_id", nullable = false)
+  @OrderColumn
+  private List<UUID> consultants;
 
   private UUID locationId;
 

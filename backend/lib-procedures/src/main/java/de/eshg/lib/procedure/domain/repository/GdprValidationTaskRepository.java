@@ -28,4 +28,6 @@ public interface GdprValidationTaskRepository
   @Query(
       "SELECT COUNT(t) AS count, MIN(t.startedAt) AS oldestStartDate FROM GdprValidationTask t WHERE t.status = de.eshg.lib.procedure.domain.model.GdprValidationTaskStatus.OPEN")
   OpenTaskSummaryRawData getOpenTaskSummary();
+
+  void deleteByGdprProcedureId(UUID gdprProcedureId);
 }

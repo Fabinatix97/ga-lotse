@@ -14,8 +14,8 @@ import {
   ApiGender,
 } from "@eshg/employee-portal-api/stiProtection";
 import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
-import { COUNTRY_CODE_OPTIONS } from "@eshg/lib-portal/components/formFields/countryCodes";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { countryOptions } from "@eshg/lib-portal/helpers/countryOption";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { differenceInMinutes } from "date-fns";
 import { Formik, FormikHelpers } from "formik";
@@ -169,6 +169,7 @@ export function AddNewProcedureSidebar() {
     }
     changeToStep(stepIndex + 1);
   }
+
   const Fields = step.fields;
 
   return (
@@ -244,7 +245,7 @@ function mapFormToApi(form: AddNewProcedureForm): ApiCreateProcedureRequest {
   return deleteUndefined({
     appointmentBookingType: form.appointmentBookingType,
     concern: CONCERN_OPTIONS.find((t) => t.value === form.concern)?.value,
-    countryOfBirth: COUNTRY_CODE_OPTIONS.find(
+    countryOfBirth: countryOptions().find(
       (t) => t.value === form.countryOfBirth,
     )?.value,
     gender: GENDER_OPTIONS.find((t) => t.value === form.gender)?.value as

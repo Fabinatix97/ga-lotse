@@ -5,8 +5,9 @@
 
 import {
   ApiChildDetails,
+  ApiFluoridationConsent,
   ApiProcedureStatus,
-} from "@eshg/employee-portal-api/dental";
+} from "@eshg/dental-api";
 
 import {
   AnnualInstitution,
@@ -22,6 +23,8 @@ export interface ChildDetails extends Child {
   readonly version: number;
   readonly examinations: Examination[];
   readonly institutions: AnnualInstitution[];
+  readonly currentFluoridationConsent?: ApiFluoridationConsent;
+  readonly allFluoridationConsents: ApiFluoridationConsent[];
 }
 
 export function mapChildDetails(response: ApiChildDetails): ChildDetails {
@@ -40,6 +43,10 @@ export function mapChildDetails(response: ApiChildDetails): ChildDetails {
     institution: getCurrentInstitution(institutions),
     examinations: response.examinations.map(mapExamination),
     institutions: institutions,
+    currentFluoridationConsent: getCurrentFluoridationConsent(
+      response.fluoridationConsents,
+    ),
+    allFluoridationConsents: response.fluoridationConsents,
   };
 }
 
@@ -47,4 +54,10 @@ function getCurrentInstitution(institutions: AnnualInstitution[]): Institution {
   return institutions.reduce((max, current) =>
     max.year > current.year ? max : current,
   ).institution;
+}
+
+function getCurrentFluoridationConsent(
+  fluoridationConsent: ApiFluoridationConsent[],
+) {
+  return fluoridationConsent[0];
 }

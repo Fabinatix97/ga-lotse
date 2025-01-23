@@ -4,12 +4,14 @@
  */
 
 import { ApiProvider } from "@eshg/lib-portal/api/ApiProvider";
+import { HiddenDownloadContainer } from "@eshg/lib-portal/api/files/HiddenDownloadContainer";
 import { EnvironmentTypeProvider } from "@eshg/lib-portal/components/EnvironmentTypeProvider";
 import { NonceProvider } from "@eshg/lib-portal/components/NonceProvider";
 import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 import { ConfirmationDialogProvider } from "@eshg/lib-portal/components/confirmationDialog/ConfirmationDialogProvider";
 import { SnackbarProvider } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { getNonceFromHeader } from "@eshg/lib-portal/next/contentSecurityPolicyHeaderMiddleware";
+import { Box } from "@mui/joy";
 import { ReactNode } from "react";
 
 import { env } from "@/env/server";
@@ -61,14 +63,12 @@ export default function RootLayout({
           href="/favicon-32x32.png"
         />
       </head>
-      <body
-        style={{ backgroundColor: "var(--joy-palette-neutral-100, #F0F4F8)" }}
-      >
-        <noscript>
-          Bitte aktivieren Sie JavaScript, um diese Anwendung zu nutzen.
-        </noscript>
-        <NonceProvider initialNonce={nonce}>
-          <ThemeProvider>
+      <NonceProvider initialNonce={nonce}>
+        <ThemeProvider>
+          <Box component="body" sx={{ backgroundColor: "neutral.100" }}>
+            <noscript>
+              Bitte aktivieren Sie JavaScript, um diese Anwendung zu nutzen.
+            </noscript>
             <EnvironmentTypeProvider
               environmentType={env.PUBLIC_ENVIRONMENT_TYPE}
             >
@@ -95,9 +95,11 @@ export default function RootLayout({
                 </DrawerProvider>
               </SnackbarProvider>
             </EnvironmentTypeProvider>
-          </ThemeProvider>
-        </NonceProvider>
-      </body>
+
+            <HiddenDownloadContainer />
+          </Box>
+        </ThemeProvider>
+      </NonceProvider>
     </html>
   );
 }

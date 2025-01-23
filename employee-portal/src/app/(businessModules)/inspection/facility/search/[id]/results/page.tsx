@@ -5,6 +5,8 @@
 
 "use client";
 
+import { SearchParams } from "@eshg/lib-portal/helpers/searchParams";
+
 import {
   useGetWebSearchById,
   useSearchInWebSearch,
@@ -15,7 +17,6 @@ import { FacilityWebSearchFilters } from "@/lib/businessModules/inspection/share
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
-import { SearchParams } from "@/lib/shared/helpers/searchParams";
 
 type EditFacilityPageProps = Readonly<{
   params: { id: string };

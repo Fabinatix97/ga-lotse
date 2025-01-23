@@ -20,7 +20,12 @@ def generateMetaTaskProvider = tasks.register(generateTaskName) {
 
 tasks.named('compile') {
   dependsOn generateMetaTaskProvider
-  inputs.files("${rootDir}/config/tsconfig.lib.json")
+  inputs.files("${rootDir}/config/tsconfig.lib-legacy.json")
+}
+
+tasks.named('compileCheck') {
+  dependsOn generateMetaTaskProvider
+  inputs.files("${rootDir}/config/tsconfig.lib-legacy.json")
 }
 
 static String emulateSymlinkIfNecessary(java.nio.file.Path path) {

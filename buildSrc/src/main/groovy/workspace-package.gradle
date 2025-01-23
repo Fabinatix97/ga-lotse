@@ -1,42 +1,34 @@
 import com.github.gradle.node.pnpm.task.PnpmTask
-import de.eshg.frontend.IncludesAndExcludes
-import de.eshg.frontend.TypescriptDefaults
 
-def typescriptExtension = project.extensions.create('typescript', IncludesAndExcludes)
-
-def getTypescriptInputFiles = {
-  return fileTree(projectDir) {
-    include typescriptExtension.include.get()
-    exclude TypescriptDefaults.getAllExcludes(typescriptExtension.additionalExcludes)
-  }
+plugins {
+  id 'typescript'
 }
 
 tasks.register('prepareEnvironment') {
   dependsOn rootProject.tasks.installDependencies
-}
 
-tasks.register('compile', PnpmTask) {
-  dependsOn 'prepareEnvironment'
-  inputs.files("${rootDir}/config/tsconfig.base.json")
-  inputs.files("${projectDir}/tsconfig.json")
-  inputs.files getTypescriptInputFiles()
-
-  def distDirectory = layout.buildDirectory.dir("dist")
-  outputs.dir distDirectory
-
-  args = ['tsc', '--build']
-
-  doFirst {
-    delete distDirectory.get()
+  def gradleDependenciesJson = project.layout.projectDirectory.file("gradleDependencies.json").asFile
+  if (gradleDependenciesJson.exists()) {
+    def gradleDependencies = new groovy.json.JsonSlurper().parseText(gradleDependenciesJson.text)
+    dependsOn gradleDependencies.dependencies.collect {
+      project(it).tasks.named('assemble')
+    }
   }
 }
 
 tasks.register('check') {
   group = 'verification'
-  dependsOn 'compile'
+  dependsOn 'compileCheck'
 }
 
 tasks.register('clean', Delete) {
   dependsOn 'cleanDependencies'
   delete layout.buildDirectory
+}
+
+tasks.register('addWorkspaceDependency', PnpmTask) {
+  group = 'workspace'
+  args = project.hasProperty('package') ? ['add', "@eshg/${project.property('package')}@workspace:*"] : []
+
+  finalizedBy rootProject.tasks.updateProjectReferences
 }

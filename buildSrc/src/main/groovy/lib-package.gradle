@@ -1,0 +1,62 @@
+plugins {
+  id 'source-checks'
+  id 'vitest'
+  id 'tsup'
+}
+
+prettier {
+  include = ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.json']
+}
+
+eslint {
+  include = ['src/**/*.ts', 'src/**/*.tsx']
+}
+
+typescript {
+  // ⚠⚠⚠ Note ⚠⚠⚠: Please adjust the tsconfig.json when changing includes/excludes here
+  include = ['**/*.ts', '**/*.tsx', '*.js']
+}
+
+def typesDir = layout.buildDirectory.dir('types')
+def configDir = rootProject.layout.projectDirectory.dir('config')
+
+tasks.register('assemble') {
+  group = 'package'
+  dependsOn 'compile'
+  dependsOn 'bundle'
+}
+
+tasks.register('build') {
+  group = 'package'
+  dependsOn 'check'
+  dependsOn 'assemble'
+}
+
+tasks.named('lint').configure {
+  inputs.file configDir.file('eslint.next.js')
+}
+
+tasks.named('lintFix').configure {
+  inputs.file configDir.file('eslint.next.js')
+}
+
+tasks.named('compile').configure {
+  inputs.file configDir.file('tsconfig.lib.json')
+  outputs.dir typesDir
+
+  doFirst {
+    delete typesDir
+  }
+}
+
+tasks.named('compileCheck').configure {
+  inputs.file configDir.file('tsconfig.lib.json')
+}
+
+tasks.named('bundle').configure {
+  inputs.file configDir.file('tsconfig.lib.json')
+}
+
+tasks.named('test').configure {
+  inputs.file configDir.file('tsconfig.lib.json')
+}

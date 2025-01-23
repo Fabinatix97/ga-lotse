@@ -12,19 +12,12 @@ import java.time.LocalDate;
 public final class PastProcedureListRow extends SchoolEntryRow<PastProcedureListRow> {
 
   private ProcedureType procedureType;
-
   private LocalDate examinationDate;
-
   private Anamnesis anamnesis;
-
   private VaccinationStatus vaccinationStatus;
-
   private EyeExaminationResult eyeExaminationResult;
-
   private HearingTestResult hearingTest;
-
   private SopessExaminationResult sopessExamination;
-
   private DevelopmentScreening developmentScreening;
 
   public ProcedureType getProcedureType() {

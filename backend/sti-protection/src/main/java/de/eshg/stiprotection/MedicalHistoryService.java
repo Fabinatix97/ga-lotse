@@ -17,23 +17,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class MedicalHistoryService {
 
-  private final StiProtectionProcedureService stiProtectionProcedureService;
+  private final StiProtectionProcedureFinder procedureFinder;
 
-  public MedicalHistoryService(StiProtectionProcedureService stiProtectionProcedureService) {
-    this.stiProtectionProcedureService = stiProtectionProcedureService;
+  public MedicalHistoryService(StiProtectionProcedureFinder procedureFinder) {
+    this.procedureFinder = procedureFinder;
   }
 
   @Transactional
   public MedicalHistory getMedicalHistory(UUID procedureId) {
-    StiProtectionProcedure procedure =
-        stiProtectionProcedureService.findProcedureByExternalId(procedureId);
+    StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
     return procedure.getMedicalHistory();
   }
 
   @Transactional
   public MedicalHistory getOrCreateMedicalHistory(UUID procedureId) {
-    StiProtectionProcedure procedure =
-        stiProtectionProcedureService.findProcedureByExternalId(procedureId);
+    StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
 
     if (procedure.getMedicalHistory() != null) {
       return procedure.getMedicalHistory();

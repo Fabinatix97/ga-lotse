@@ -10,7 +10,6 @@ import {
   ArchivingApi,
   Configuration,
   FileApi,
-  Icd10CodeApi,
   ImportApi,
   InboxProcedureApi,
   LabelApi,
@@ -54,11 +53,6 @@ export function useAppointmentBlockApi() {
 export function useValueEvaluatorApi() {
   const configuration = useConfiguration();
   return new ValueEvaluatorApi(configuration);
-}
-
-export function useIcd10CodeApi() {
-  const configuration = useConfiguration();
-  return new Icd10CodeApi(configuration);
 }
 
 export function useImportApi() {

@@ -14,12 +14,10 @@ import de.eshg.base.SortDirection;
 import de.eshg.base.feature.BaseFeature;
 import de.eshg.base.feature.BaseFeatureTogglesApi;
 import de.eshg.base.gdpr.api.GdprIdentificationDataDto;
-import de.eshg.base.gdpr.api.GetGdprDownloadsResponse;
 import de.eshg.base.util.PaginationUtil;
 import de.eshg.domain.model.serialization.SerializationService;
 import de.eshg.domain.model.serialization.ZipEditor;
 import de.eshg.file.common.CustomMediaTypes;
-import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.api.GdprValidationTaskApi;
 import de.eshg.lib.procedure.domain.model.GdprDownloadPackage;
 import de.eshg.lib.procedure.domain.model.GdprValidationTask;
@@ -30,6 +28,7 @@ import de.eshg.lib.procedure.domain.model.Task;
 import de.eshg.lib.procedure.domain.repository.GdprDownloadPackageInfo;
 import de.eshg.lib.procedure.mapping.GdprValidationTaskMapper;
 import de.eshg.lib.procedure.model.gdpr.AddGdprValidationTaskRequest;
+import de.eshg.lib.procedure.model.gdpr.DeleteDownloadPackagesRequest;
 import de.eshg.lib.procedure.model.gdpr.GdprValidationTaskDto;
 import de.eshg.lib.procedure.model.gdpr.GdprValidationTaskFilterParameters;
 import de.eshg.lib.procedure.model.gdpr.GdprValidationTaskSortKey;
@@ -38,11 +37,13 @@ import de.eshg.lib.procedure.model.gdpr.GetGdprDownloadPackagesInfoResponse;
 import de.eshg.lib.procedure.model.gdpr.GetGdprNotificationBannerResponse;
 import de.eshg.lib.procedure.model.gdpr.GetGdprValidationTaskDetailsResponse;
 import de.eshg.lib.procedure.model.gdpr.GetGdprValidationTaskResponse;
+import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
 import de.eshg.rest.service.error.BadRequestException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -67,17 +68,19 @@ public class GdprValidationTaskController<
   private final BaseFeatureTogglesApi baseFeatureTogglesApi;
   private final SerializationService serializationService;
   private final AbstractGdprZipEditorProvider zipEditorProvider;
+  private final ProcedureDeletionService<ProcedureT> procedureDeletionService;
 
   public GdprValidationTaskController(
       GdprValidationTaskService<ProcedureT, TaskT> service,
       BaseFeatureTogglesApi baseFeatureTogglesApi,
       SerializationService serializationService,
       AbstractGdprZipEditorProvider zipEditorProvider,
-      AuditLogger auditLogger) {
+      ProcedureDeletionService<ProcedureT> procedureDeletionService) {
     this.service = service;
     this.baseFeatureTogglesApi = baseFeatureTogglesApi;
     this.serializationService = serializationService;
     this.zipEditorProvider = zipEditorProvider;
+    this.procedureDeletionService = procedureDeletionService;
   }
 
   @Override
@@ -190,11 +193,8 @@ public class GdprValidationTaskController<
   public GetGdprDownloadPackagesInfoResponse getGdprDownloadPackagesInfo(UUID gdprProcedureId) {
     assertNewFeatureEnabled(BaseFeature.GDPR, baseFeatureTogglesApi.getFeatureToggles());
     validateGdprValidationTaskIsClosed(gdprProcedureId);
-
-    GetGdprDownloadsResponse downloadIdsFromBase =
-        service.fetchDownloadIdsFromBase(gdprProcedureId);
     List<GdprDownloadPackageInfo> downloadPackagesInfo =
-        fetchDownloadPackagesFromDb(downloadIdsFromBase);
+        service.getDownloadPackagesInfo(gdprProcedureId);
 
     return GdprValidationTaskMapper.mapToApiResponse(downloadPackagesInfo);
   }
@@ -216,16 +216,10 @@ public class GdprValidationTaskController<
         status);
   }
 
-  private List<GdprDownloadPackageInfo> fetchDownloadPackagesFromDb(
-      GetGdprDownloadsResponse response) {
-    return service.findByDownloadIdIn(response.downloadIds());
-  }
-
   @Override
-  public ResponseEntity<Resource> getGdprDownloadPackage(UUID id) {
+  public ResponseEntity<Resource> getGdprDownloadPackage(UUID gdprProcedureId, UUID downloadId) {
     assertNewFeatureEnabled(BaseFeature.GDPR, baseFeatureTogglesApi.getFeatureToggles());
-
-    GdprDownloadPackage downloadPackage = service.getDownloadPackage(id);
+    GdprDownloadPackage downloadPackage = service.getDownloadPackage(gdprProcedureId, downloadId);
     byte[] content = downloadPackage.getContent();
 
     service.writeAuditLog("Abrufen DSGVO Datenpaket", mapAuditlog(downloadPackage));
@@ -234,7 +228,7 @@ public class GdprValidationTaskController<
         .header(
             HttpHeaders.CONTENT_DISPOSITION,
             ContentDisposition.attachment()
-                .filename(downloadPackageFilename(id), StandardCharsets.UTF_8)
+                .filename(downloadPackageFilename(downloadId), StandardCharsets.UTF_8)
                 .build()
                 .toString())
         .header(HttpHeaders.CONTENT_TYPE, CustomMediaTypes.ZIP_VALUE)
@@ -256,7 +250,9 @@ public class GdprValidationTaskController<
 
     GdprValidationTaskDto validationTaskDto = getGdprValidationTaskDto(existingTask);
     return new GetGdprValidationTaskDetailsResponse(
-        validationTaskDto, service.getBusinessProceduresWithInclusionStatus(gdprId, fileStateIds));
+        validationTaskDto,
+        service.getBusinessProceduresWithInclusionStatus(
+            gdprId, existingTask.getType(), fileStateIds));
   }
 
   private GdprValidationTaskDto getGdprValidationTaskDto(GdprValidationTask task) {
@@ -290,12 +286,49 @@ public class GdprValidationTaskController<
         validationTaskDtos, validationTasks.getTotalElements());
   }
 
-  private Map<String, String> mapAuditlog(Page<GdprValidationTask> validationTasks) {
-    List<UUID> validationsTasksIds =
-        validationTasks.stream().map(GdprValidationTask::getGdprProcedureId).toList();
-    return Map.of(
-        "Prüfaufträge IDs:",
-        validationsTasksIds.stream().map(UUID::toString).collect(Collectors.joining(", ")));
+  @Override
+  @Transactional
+  public void deleteBusinessProcedure(UUID gdprProcedureId, UUID businessProcedureId) {
+    assertNewFeatureEnabled(BaseFeature.GDPR, baseFeatureTogglesApi.getFeatureToggles());
+    GdprValidationTask validationTask = service.getValidationTaskFromDb(gdprProcedureId);
+    validateType(validationTask, GdprValidationTaskType.RIGHT_TO_ERASURE);
+    validateStatus(validationTask, GdprValidationTaskStatus.OPEN);
+
+    Optional<ProcedureT> businessProcedure =
+        service.getBusinessProcedure(businessProcedureId, gdprProcedureId);
+    if (businessProcedure.isEmpty()) {
+      log.info("To be deleted business procedure not found.");
+      return;
+    }
+
+    service.writeAuditLog(
+        "Löschung Fachmodul Vorgang", mapAuditlog(validationTask, businessProcedure.get()));
+
+    procedureDeletionService.deleteAndWriteToCemetery(businessProcedure.get());
+  }
+
+  @Override
+  @Transactional
+  public void deleteGdprValidationTaskAndDownloadPackages(
+      UUID gdprProcedureId, DeleteDownloadPackagesRequest request) {
+    assertNewFeatureEnabled(BaseFeature.GDPR, baseFeatureTogglesApi.getFeatureToggles());
+    Optional<GdprValidationTask> validationTask = service.findValidationTask(gdprProcedureId);
+    if (validationTask.isPresent()) {
+      validateStatus(validationTask.get(), GdprValidationTaskStatus.CLOSED);
+
+      service.writeAuditLog("Prüfauftrag löschen", service.mapAuditLog(validationTask.get()));
+      service.deleteValidationTask(gdprProcedureId);
+    } else {
+      log.info("To be deleted validation task not found.");
+    }
+
+    service.writeAuditLog(
+        "Löschen DSGVO Datenpakete", mapAuditlog(request.downloadIds(), "Datenpakete IDs"));
+    service.deleteDownloadPackages(request.downloadIds());
+  }
+
+  private Map<String, String> mapAuditlog(List<UUID> ids, String message) {
+    return Map.of(message, ids.stream().map(UUID::toString).collect(Collectors.joining(", ")));
   }
 
   private Map<String, String> mapAuditlog(GdprDownloadPackage downloadPackage) {

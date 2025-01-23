@@ -28,3 +28,5 @@ export const fileApiQueryKey = queryKeyFactory(apiQueryKey(["fileApi"]));
 export const employeeOmsProcedureApiQueryKey = queryKeyFactory(
   apiQueryKey(["employeeOmsProcedureApi"]),
 );
+
+export const concernApiQueryKey = queryKeyFactory(apiQueryKey(["concernApi"]));

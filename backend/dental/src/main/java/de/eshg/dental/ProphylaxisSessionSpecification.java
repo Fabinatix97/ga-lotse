@@ -85,6 +85,8 @@ class ProphylaxisSessionSpecification implements Specification<ProphylaxisSessio
       case TYPE -> root.get(ProphylaxisSession_.type);
       case GROUP_NAME -> root.get(ProphylaxisSession_.groupName);
       case DATE_AND_TIME -> root.get(ProphylaxisSession_.dateAndTime);
+      case SCREENING -> root.get(ProphylaxisSession_.screening);
+      case FLUORIDATION_VARNISH -> root.get(ProphylaxisSession_.fluoridationVarnish);
     };
   }
 }

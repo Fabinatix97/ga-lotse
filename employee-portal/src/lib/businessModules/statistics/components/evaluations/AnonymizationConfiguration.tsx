@@ -49,24 +49,35 @@ export function AnonymizationConfiguration(
   const { getFieldProps } = useFormikContext();
   const { value } = getFieldProps<string>(props.name);
 
+  switch (props.anonymizationOptions) {
+    case AnonymizationOptions.Choice:
+      return (
+        <Stack gap={2} data-testid="anonymized-toggle-button-group">
+          <ToggleButtonGroupField
+            options={optionsFromRecord(anonymizedFieldValueNames)}
+            name={props.name}
+            label="Anonymisierung der Daten"
+          />
+          {value === ENUM_FALSE_VALUE ? (
+            <SensitivityInfo sensitivity={props.sensitivity} />
+          ) : (
+            <AnonymizationAlert />
+          )}
+        </Stack>
+      );
+    case AnonymizationOptions.AlwaysAnonymize:
+      return <AnonymizationAlert />;
+    case AnonymizationOptions.NotAnonymizable:
+      return <SensitivityInfo sensitivity={props.sensitivity} />;
+  }
+}
+
+function AnonymizationAlert() {
   return (
-    <Stack gap={2} data-testid="anonymized-toggle-button-group">
-      {props.anonymizationOptions === AnonymizationOptions.Choice && (
-        <ToggleButtonGroupField
-          options={optionsFromRecord(anonymizedFieldValueNames)}
-          name={props.name}
-          label="Anonymisierung der Daten"
-        />
-      )}
-      {value === ENUM_FALSE_VALUE ? (
-        <SensitivityInfo sensitivity={props.sensitivity} />
-      ) : (
-        <Alert
-          color="primary"
-          message="Die Daten werden für die Auswertung anonymisiert."
-        />
-      )}
-    </Stack>
+    <Alert
+      color="primary"
+      message="Die Daten werden für die Auswertung anonymisiert."
+    />
   );
 }
 
@@ -74,7 +85,7 @@ function SensitivityInfo(props: {
   sensitivity: DataSourceSensitivity | undefined;
 }) {
   switch (props.sensitivity) {
-    case "SENSITIVE":
+    case DataSourceSensitivity.Sensitive:
       return (
         <Alert
           color="primary"
@@ -101,14 +112,14 @@ function SensitivityInfo(props: {
           }
         />
       );
-    case "INTERNAL_USAGE":
+    case DataSourceSensitivity.InternalUsage:
       return (
         <Alert
           color="primary"
           message="Diese Auswertung enthält personenbezogene Daten. Sie ist ausschließlich für den internen Gebrauch innerhalb des Gesundheitsamtes vorgesehen."
         />
       );
-    case "ANONYMOUS":
+    case DataSourceSensitivity.Anonymous:
       return (
         <Alert
           color="primary"

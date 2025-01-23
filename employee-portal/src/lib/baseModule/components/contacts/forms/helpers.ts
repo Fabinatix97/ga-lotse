@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiVCardAddress } from "@eshg/employee-portal-api/base";
+import { ApiVCardAddress } from "@eshg/base-api";
 import { isDeepEqual, isDefined } from "remeda";
 
 import {

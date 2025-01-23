@@ -91,7 +91,7 @@ export function RepositoryEvaluationTemplatesOverview() {
           }}
           rowNavigation={{
             focusColumnAccessorKey: "name",
-            onClick: (row) =>
+            onClick: (row) => () =>
               openTemplateDetails(row.original.id, row.original.version),
           }}
         />

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SearchReferencePersonsRequest } from "@eshg/employee-portal-api/base";
+import { SearchReferencePersonsRequest } from "@eshg/base-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 

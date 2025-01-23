@@ -7,10 +7,9 @@ package de.eshg.officialmedicalservice.testhelper.api;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public record PostPopulateAdministrativeResponse(
     @Valid @NotNull Map<String, UUID> appointmentBlockGroupsCreated,
-    @Valid @NotNull Map<String, List<UUID>> physicians) {}
+    @Valid @NotNull Map<String, UUID> physiciansCreated) {}

@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetGdprProcedureResponse } from "@eshg/employee-portal-api/base";
+import { ApiGetGdprProcedureResponse } from "@eshg/base-api";
 import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
-import { HiddenContainer } from "@eshg/lib-portal/components/HiddenContainer";
 import DownloadIcon from "@mui/icons-material/SimCardDownloadOutlined";
 import {
   Accordion,
@@ -38,8 +37,12 @@ import { businessModuleNames } from "@/lib/shared/components/procedures/constant
 function useFileDownloadForPackage() {
   const downloadPackage = useDownloadPackageFileByModule();
   return useFileDownload(
-    (params: { businessModule: ApiBusinessModule; packageId: string }) =>
-      downloadPackage(params.businessModule, params.packageId),
+    (params: {
+      businessModule: ApiBusinessModule;
+      gdprId: string;
+      packageId: string;
+    }) =>
+      downloadPackage(params.businessModule, params.gdprId, params.packageId),
   );
 }
 
@@ -50,21 +53,24 @@ function useFileDownloadForBase(gdprProcedureId: string) {
 
 export function GdprDownloadPackagesTile({
   gdprProcedure,
+  hasDownload,
 }: {
   gdprProcedure: ApiGetGdprProcedureResponse;
+  hasDownload: boolean;
 }) {
-  const responses = useGetGdprDownloadPackagesInfo(gdprProcedure.id);
+  const responses = useGetGdprDownloadPackagesInfo(
+    gdprProcedure.id,
+    hasDownload,
+  );
   const businessModuleDownload = useFileDownloadForPackage();
   const baseDownload = useFileDownloadForBase(gdprProcedure.id);
   const id = useId();
-
-  const isEmpty = gdprProcedure.centralFileIds.length === 0;
 
   return (
     <SectionTile id={id}>
       <SectionTitle id={id}>Datenpakete</SectionTitle>
 
-      {isEmpty ? (
+      {!hasDownload ? (
         <NoSearchResults info="Keine Daten gefunden." />
       ) : (
         <AccordionGroup variant="outlined" color="primary">
@@ -102,6 +108,7 @@ export function GdprDownloadPackagesTile({
                           onClick={() =>
                             businessModuleDownload.download({
                               businessModule: response.data.businessModule,
+                              gdprId: gdprProcedure.id,
                               packageId: pkg.id,
                             })
                           }
@@ -119,9 +126,6 @@ export function GdprDownloadPackagesTile({
             ))}
         </AccordionGroup>
       )}
-
-      <HiddenContainer ref={baseDownload.downloadContainerRef} />
-      <HiddenContainer ref={businessModuleDownload.downloadContainerRef} />
     </SectionTile>
   );
 }

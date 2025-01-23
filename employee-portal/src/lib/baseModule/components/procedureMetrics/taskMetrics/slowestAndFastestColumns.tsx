@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiProcedureWithDuration } from "@eshg/employee-portal-api/base";
+import { ApiProcedureWithDuration } from "@eshg/base-api";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { createColumnHelper } from "@tanstack/react-table";
 

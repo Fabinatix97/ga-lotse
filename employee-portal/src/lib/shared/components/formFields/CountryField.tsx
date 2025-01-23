@@ -7,9 +7,8 @@ import {
   SingleAutocompleteField,
   SingleAutocompleteFieldProps,
 } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
+import { countryOptions } from "@eshg/lib-portal/helpers/countryOption";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
-
-import { countryOptions } from "@/lib/shared/helpers/i18n";
 
 interface CountryFieldProps
   extends Omit<SingleAutocompleteFieldProps, "options" | "validate"> {

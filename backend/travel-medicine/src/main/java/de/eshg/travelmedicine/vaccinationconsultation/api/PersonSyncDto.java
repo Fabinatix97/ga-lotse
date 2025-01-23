@@ -11,4 +11,4 @@ import java.util.UUID;
 
 @Schema(name = "PersonSync")
 public record PersonSyncDto(
-    @NotNull UUID fileStateId, @NotNull Long version, @NotNull boolean outdated) {}
+    @NotNull UUID fileStateId, @NotNull long version, @NotNull boolean outdated) {}

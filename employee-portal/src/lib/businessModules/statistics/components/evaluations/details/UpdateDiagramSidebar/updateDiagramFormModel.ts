@@ -5,4 +5,4 @@
 
 import { SaveDiagramStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateDiagramSidebar/SaveDiagramStep/saveDiagramStepFormModel";
 
-export type UpdateDiagramFormModel = SaveDiagramStepFormModel;
+export type UpdateDiagramFormModel = [SaveDiagramStepFormModel];

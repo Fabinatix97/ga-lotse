@@ -3,18 +3,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiResponse } from "@eshg/employee-portal-api/base";
-import { useRef, useState } from "react";
+import { ApiResponse } from "@eshg/base-api";
+import { useState } from "react";
 
 import { useSnackbar } from "../../components/snackbar/SnackbarProvider";
 import { getErrorMessage } from "../../errorHandling/errorMappers";
 import { resolveError } from "../../errorHandling/errorResolvers";
 
+import { DOWNLOAD_CONTAINER_ID } from "./HiddenDownloadContainer";
+
 export function useFileDownload<TParams = void>(
   downloadFn: (params: TParams) => Promise<ApiResponse<Blob>>,
 ) {
   const snackbar = useSnackbar();
-  const downloadContainerRef = useRef<HTMLDivElement>(null);
   const [isPending, setIsPending] = useState(false);
 
   async function downloadWithPendingFn(
@@ -26,14 +27,9 @@ export function useFileDownload<TParams = void>(
 
   async function download(params: TParams): Promise<void> {
     try {
-      const downloadContainer = downloadContainerRef.current;
-      if (downloadContainer === null) {
-        throw new Error("Download container is not initialized");
-      }
-
       const response = await downloadWithPendingFn(params);
       const file = await parseBlobResponse(response);
-      downloadFileAndOpen(file, downloadContainer);
+      downloadFileAndOpen(file);
     } catch (error) {
       const portalError = resolveError(error);
       snackbar.error(getErrorMessage(portalError.errorCode));
@@ -53,7 +49,7 @@ export function useFileDownload<TParams = void>(
     }
   }
 
-  return { downloadContainerRef, download, preview, isPending };
+  return { download, preview, isPending };
 }
 
 export async function parseBlobResponse(
@@ -70,10 +66,12 @@ export async function parseBlobResponse(
   });
 }
 
-export function downloadFileAndOpen(
-  file: File,
-  downloadContainer: HTMLElement,
-): void {
+export function downloadFileAndOpen(file: File): void {
+  const downloadContainer = document.getElementById(DOWNLOAD_CONTAINER_ID);
+  if (downloadContainer === null) {
+    throw new Error("Download container is not initialized");
+  }
+
   const objectUrl = URL.createObjectURL(file);
   const hiddenLink = document.createElement("a");
   hiddenLink.setAttribute("tabindex", "-1");
@@ -82,6 +80,7 @@ export function downloadFileAndOpen(
   hiddenLink.setAttribute("download", file.name);
   downloadContainer.appendChild(hiddenLink);
   hiddenLink.click();
+  downloadContainer.removeChild(hiddenLink);
   URL.revokeObjectURL(objectUrl);
 }
 

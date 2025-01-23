@@ -43,13 +43,6 @@ public class EsuAttributeUtil {
     return options;
   }
 
-  static List<ValueOptionInternal> createTeamOptions() {
-    // configurable?
-    return List.of(
-        new ValueOptionInternal("01", "SG Nord", false),
-        new ValueOptionInternal("02", "SG Süd", false));
-  }
-
   private static void addNumberValueOptions(List<ValueOptionInternal> options, int start, int end) {
     for (int i = start; i <= end; i++) {
       String value = "%d".formatted(i);

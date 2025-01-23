@@ -22,12 +22,12 @@ public interface AuthenticationTraits {
     return login(EmployeeTestUser.DUMMY);
   }
 
-  default AccessToken login(EmployeeTestUser testUser) {
-    return login(testUser.getUsernamePassword());
-  }
-
-  default AccessToken login(CitizenTestUser testUser) {
-    return login(testUser.getUsernamePassword());
+  default AccessToken login(KeycloakUser user) {
+    return switch (user) {
+      case EmployeeTestUser e -> login(e.getUsernamePassword());
+      case CitizenTestUser c -> login(c.getUsernamePassword());
+      default -> throw new IllegalStateException("Unexpected value: " + user);
+    };
   }
 
   default AccessToken login(UsernamePassword usernamePassword) {

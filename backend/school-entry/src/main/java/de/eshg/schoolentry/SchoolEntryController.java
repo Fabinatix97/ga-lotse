@@ -15,6 +15,7 @@ import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.lib.auditlog.AuditLogger;
+import de.eshg.lib.procedure.api.ProcedureSearchParameters;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.TaskType;
 import de.eshg.lib.procedure.util.ProcedureValidator;
@@ -129,7 +130,7 @@ public class SchoolEntryController {
       @InlineParameterObject @ParameterObject @Valid ProcedureSearchParameters searchParameters) {
 
     Validator.validateOnlyOneOfSearchAndFilterParametersAreSet(filterParameters, searchParameters);
-    Validator.validateSearchParametersAreComplete(searchParameters);
+    ProcedureValidator.validateSearchParametersAreComplete(searchParameters);
     PagedProcedures pagedProcedures =
         procedureOverviewService.getProcedures(
             filterParameters, paginationAndSortParameters, searchParameters);

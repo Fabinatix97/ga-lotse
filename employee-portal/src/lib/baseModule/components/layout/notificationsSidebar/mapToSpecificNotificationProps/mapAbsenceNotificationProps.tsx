@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiAbsenceNotification,
-  ApiUser,
-} from "@eshg/employee-portal-api/base";
+import { ApiAbsenceNotification, ApiUser } from "@eshg/base-api";
 import { Typography } from "@mui/joy";
 
 import { UserLink } from "@/lib/shared/components/users/UserLink";

@@ -53,11 +53,12 @@ public class PersonService {
   public void updateChildData(
       SchoolEntryProcedure procedure, Person child, UpdatePersonRequest request) {
     UUID currentFileStateId = child.getCentralFileStateId();
-    UUID updatedFileStateId = personClient.updateChild(currentFileStateId, request);
+    UUID updatedFileStateId = personClient.updatePersonInCentralFile(request, currentFileStateId);
 
-    if (!updatedFileStateId.equals(currentFileStateId)) {
+    if (!currentFileStateId.equals(updatedFileStateId)) {
       child.setCentralFileStateId(updatedFileStateId);
-      progressEntryUtil.addProgressEntry(procedure, CHILD_MODIFIED);
+      progressEntryUtil.addProgressEntryWithPreviousFileStateId(
+          procedure, CHILD_MODIFIED, currentFileStateId);
       personRepository.flush();
     }
   }
@@ -108,7 +109,8 @@ public class PersonService {
 
     if (!newCentralFileStateId.equals(centralFileStateId)) {
       person.setCentralFileStateId(newCentralFileStateId);
-      progressEntryUtil.addProgressEntry(person.getProcedure(), CUSTODIAN_MODIFIED);
+      progressEntryUtil.addProgressEntryWithPreviousFileStateId(
+          person.getProcedure(), CUSTODIAN_MODIFIED, centralFileStateId);
       personRepository.flush();
     }
   }

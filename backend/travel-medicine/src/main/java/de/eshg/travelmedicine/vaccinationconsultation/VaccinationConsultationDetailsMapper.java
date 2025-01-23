@@ -5,8 +5,6 @@
 
 package de.eshg.travelmedicine.vaccinationconsultation;
 
-import static de.eshg.travelmedicine.featuretoggle.TravelMedicineFeature.DEFAULT_BATCH_ID;
-
 import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
@@ -215,10 +213,7 @@ public class VaccinationConsultationDetailsMapper {
       vaccineName = vac.getVaccineName();
       vaccinationNumber = vac.getVaccinationNumber();
       batchIdentifier = vac.getBatchIdentifier();
-      defaultBatchIdentifier =
-          (travelMedicineFeatureToggle.isNewFeatureEnabled(DEFAULT_BATCH_ID)
-              ? vac.getDefaultBatchIdentifier()
-              : null);
+      defaultBatchIdentifier = vac.getDefaultBatchIdentifier();
       latency = vac.getLatency();
     } else {
       throw new UnexpectedTypeException("ServiceType unknown");

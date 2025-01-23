@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiBusinessModule, ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiBusinessModule, ApiUserRole } from "@eshg/base-api";
 
 import { Teamview } from "@/lib/baseModule/components/task/Teamview";
 import { moduleUserGroup } from "@/lib/businessModules/inspection/shared/moduleUserGroup";

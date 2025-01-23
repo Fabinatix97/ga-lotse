@@ -5,7 +5,7 @@
 
 "use server";
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/base-api";
 import {
   ApiApprovalRequest,
   ApiCreateApprovalRequestRequest,
@@ -23,13 +23,13 @@ import {
   ApiUpdateFileMetaDataRequest,
   GetProgressEntriesRequest,
 } from "@eshg/employee-portal-api/businessProcedures";
+import { SearchParams } from "@eshg/lib-portal/helpers/searchParams";
 import {
   UseMutationResult,
   UseSuspenseQueryResult,
 } from "@tanstack/react-query";
 
 import { UseFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
-import { SearchParams } from "@/lib/shared/helpers/searchParams";
 
 export type DynamicRoute = (fileId: string) => string;
 

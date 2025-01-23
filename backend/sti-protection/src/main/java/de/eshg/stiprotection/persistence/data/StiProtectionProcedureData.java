@@ -10,20 +10,47 @@ import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.stiprotection.persistence.db.AppointmentHistoryEntry;
 import de.eshg.stiprotection.persistence.db.Concern;
 import de.eshg.stiprotection.persistence.db.Person;
+import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.UserDefinedAppointment;
 import de.eshg.stiprotection.persistence.db.waitingroom.WaitingRoom;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-public record StiProtectionProcedureData(
-    UUID id,
-    Instant createdAt,
-    ProcedureStatus status,
-    Concern concern,
-    Person person,
-    Appointment appointment,
-    UserDefinedAppointment userDefinedAppointment,
-    List<AppointmentHistoryEntry> appointmentHistory,
-    WaitingRoom waitingRoom,
-    String accessCode) {}
+public record StiProtectionProcedureData(StiProtectionProcedure procedure, String accessCode) {
+  public UUID id() {
+    return procedure.getExternalId();
+  }
+
+  public Instant createdAt() {
+    return procedure.getCreatedAt();
+  }
+
+  public ProcedureStatus status() {
+    return procedure.getProcedureStatus();
+  }
+
+  public Concern concern() {
+    return procedure.getConcern();
+  }
+
+  public Person person() {
+    return procedure.getPerson();
+  }
+
+  public Appointment appointment() {
+    return procedure.getAppointment();
+  }
+
+  public UserDefinedAppointment userDefinedAppointment() {
+    return procedure.getUserDefinedAppointment();
+  }
+
+  public List<AppointmentHistoryEntry> appointmentHistory() {
+    return procedure.getAppointmentHistory();
+  }
+
+  public WaitingRoom waitingRoom() {
+    return procedure.getWaitingRoom();
+  }
+}

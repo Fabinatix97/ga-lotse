@@ -8,9 +8,12 @@
 import { Grid, Stack } from "@mui/joy";
 
 import { useGetProcedureDetails } from "@/lib/businessModules/officialMedicalService/api/queries/employeeOmsProcedureApi";
+import { AdditionalInfoPanel } from "@/lib/businessModules/officialMedicalService/components/procedures/details/AdditionalInfoPanel";
 import { AffectedPersonPanel } from "@/lib/businessModules/officialMedicalService/components/procedures/details/AffectedPersonPanel";
+import { AppointmentsPanel } from "@/lib/businessModules/officialMedicalService/components/procedures/details/AppointmentsPanel";
 import { DetailsGrid } from "@/lib/businessModules/officialMedicalService/components/procedures/details/DetailsGrid";
 import { FacilityPanel } from "@/lib/businessModules/officialMedicalService/components/procedures/details/FacilityPanel";
+import { ProcedureActionsPanel } from "@/lib/businessModules/officialMedicalService/components/procedures/details/ProcedureActionsPanel";
 
 const SPACING = { xxs: 2, sm: 3, md: 3, xxl: 3 };
 
@@ -29,10 +32,17 @@ export function ProcedureDetailsTab({
         <Stack spacing={SPACING}>
           <AffectedPersonPanel procedure={procedure} />
           <FacilityPanel procedure={procedure} />
+          <AppointmentsPanel procedure={procedure} />
         </Stack>
       </Grid>
       <Grid xs={3}>
-        <Stack spacing={SPACING}>{/*todo sidepanel*/}</Stack>
+        <Stack spacing={SPACING}>
+          <AdditionalInfoPanel procedure={procedure} />
+          <ProcedureActionsPanel
+            procedure={procedure}
+            dataTestid="procedure-actions"
+          />
+        </Stack>
       </Grid>
     </DetailsGrid>
   );

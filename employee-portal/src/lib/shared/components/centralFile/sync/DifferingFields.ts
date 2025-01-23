@@ -7,7 +7,7 @@ import {
   ApiDomesticAddress,
   ApiPersonDetails,
   ApiPostboxAddress,
-} from "@eshg/employee-portal-api/base";
+} from "@eshg/base-api";
 
 export const basePersonDiffFieldNames = [
   "salutation",

@@ -11,8 +11,8 @@ import { Box, Checkbox, Grid, Typography } from "@mui/joy";
 
 import { FormSectionLabel } from "@/lib/businessModules/measlesProtection/components/reportCase/ReportCaseForm";
 import { FacilityContactAddressFormInputs } from "@/lib/businessModules/measlesProtection/components/reportCase/types";
-import { CountryField } from "@/lib/businessModules/measlesProtection/shared/components/CountryField";
 import { useTranslation } from "@/lib/i18n/client";
+import { CountryField } from "@/lib/shared/components/form/CountryField";
 
 import { NestedFormProps } from "./AffectedPersonForm";
 
