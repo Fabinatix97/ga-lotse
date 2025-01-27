@@ -39,12 +39,12 @@ export function PacklistDefinitionRevisionTile({
       <Stack spacing={1} direction="row" alignItems={"flex-start"}>
         <Grid container>
           <FactCheckOutlined
-            style={{
+            sx={{
               backgroundColor: "#F0F4F8",
-              borderRadius: 5,
-              padding: 8,
-              width: 40,
-              height: 40,
+              borderRadius: "5px",
+              padding: 1,
+              width: "40px",
+              height: "40px",
             }}
           />
         </Grid>

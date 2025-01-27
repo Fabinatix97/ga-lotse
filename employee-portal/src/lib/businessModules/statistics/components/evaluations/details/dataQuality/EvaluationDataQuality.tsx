@@ -6,7 +6,7 @@
 import {
   ApiGetCompletenessDataResponse,
   ApiGetCompletenessDataResponseCompletenessOfAttributesInner,
-} from "@eshg/employee-portal-api/statistics";
+} from "@eshg/statistics-api";
 import {
   DiamondOutlined,
   IndeterminateCheckBoxOutlined,

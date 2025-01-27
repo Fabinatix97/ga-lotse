@@ -51,7 +51,7 @@ export const SidebarForm = forwardRef<SidebarFormHandle, SidebarFormProps>(
       resetForm: formikResetForm,
     });
 
-    return <FormPlus {...props} style={{ display: "contents" }} />;
+    return <FormPlus {...props} sx={{ display: "contents" }} />;
   },
 );
 

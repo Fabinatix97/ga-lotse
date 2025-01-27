@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ChildDetails } from "@eshg/dental/api/models/ChildDetails";
 import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Divider, Grid, Stack, Typography } from "@mui/joy";
 
-import { ChildDetails } from "@/lib/businessModules/dental/api/models/ChildDetails";
 import { AnnualInstitutionsTable } from "@/lib/businessModules/dental/features/children/details/AnnualInstitutionsTable";
 import { FluoridationConsentTable } from "@/lib/businessModules/dental/features/children/details/FluoridationConsentTable";
 import { useUpdateAnnualChildSidebar } from "@/lib/businessModules/dental/features/children/details/UpdateAnnualChildSidebar";

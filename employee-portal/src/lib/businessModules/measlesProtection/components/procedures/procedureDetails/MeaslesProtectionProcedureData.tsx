@@ -5,8 +5,8 @@
 
 "use client";
 
-import { ApiReportingReason } from "@eshg/employee-portal-api/measlesProtection";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import { ApiReportingReason } from "@eshg/measles-protection-api";
 import { Grid, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { useRouter } from "next/navigation";

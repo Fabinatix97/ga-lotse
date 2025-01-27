@@ -63,6 +63,7 @@ export interface AppointmentListProps<T extends Appointment> {
   field: ReturnType<typeof useBaseField<T | null>>;
   appointments: T[];
   onAppointmentSelected?: (d: T) => unknown;
+  isAppointmentEqual?: (apt1: T, apt2: T) => boolean;
   label: string;
 }
 export function AppointmentListForDate<T extends Appointment>({
@@ -70,6 +71,7 @@ export function AppointmentListForDate<T extends Appointment>({
   field,
   appointments,
   onAppointmentSelected,
+  isAppointmentEqual = (apt1, apt2) => apt1 === apt2,
   label,
 }: AppointmentListProps<T>) {
   const theme = useTheme();
@@ -102,7 +104,8 @@ export function AppointmentListForDate<T extends Appointment>({
         sx={{ marginBottom: "16px", gap: "8px", padding: 0 }}
       >
         {appointments.map((apt) => {
-          const isSelected = field.input.value === apt;
+          const isSelected =
+            !!field.input.value && isAppointmentEqual(field.input.value, apt);
           return (
             <ListItem
               sx={{ padding: 0, minHeight: 0 }}

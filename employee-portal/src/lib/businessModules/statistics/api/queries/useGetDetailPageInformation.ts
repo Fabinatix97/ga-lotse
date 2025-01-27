@@ -9,7 +9,7 @@ import {
   ApiAttributeSelection,
   ApiGetDetailPageInformationResponse,
   EvaluationApi,
-} from "@eshg/employee-portal-api/statistics";
+} from "@eshg/statistics-api";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useEvaluationApi } from "@/lib/businessModules/statistics/api/clients";

@@ -15,6 +15,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -41,7 +42,7 @@ public interface AuditLogApi {
 
   @GetExchange
   @Operation(summary = "Decrypt and read an auditlog file for a service of a certain date.")
-  ResponseEntity<String> readAuditLogFile(
+  ResponseEntity<Resource> readAuditLogFile(
       @RequestHeader(name = DECRYPTION_KEY_HEADER_NAME) @NotNull @NotBlank String key,
       @InlineParameterObject @ParameterObject @Valid
           ReadAuditLogFileRequest readAuditLogFileRequest)

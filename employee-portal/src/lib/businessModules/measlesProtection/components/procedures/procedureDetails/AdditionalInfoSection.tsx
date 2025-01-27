@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import {
   ApiMeaslesProtectionProcedure,
   ApiReportingReason,
-} from "@eshg/employee-portal-api/measlesProtection";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+} from "@eshg/measles-protection-api";
 import { EditOutlined } from "@mui/icons-material";
 import { Button, IconButton, Sheet, Stack } from "@mui/joy";
 import { useState } from "react";

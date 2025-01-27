@@ -100,7 +100,11 @@ public class CitizenPublicController {
     }
     List<AppointmentDto> appointments =
         appointmentBlockService.getFreeAppointments(
-            earliestDate, null, MappingUtil.mapEnum(AppointmentType.class, appointmentType), null);
+            earliestDate,
+            null,
+            MappingUtil.mapEnum(AppointmentType.class, appointmentType),
+            null,
+            null);
 
     return new GetFreeAppointmentsResponse(appointments);
   }

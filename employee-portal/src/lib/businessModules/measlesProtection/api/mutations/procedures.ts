@@ -6,6 +6,11 @@
 "use client";
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
+import { getFilenameFromHeader } from "@eshg/lib-portal/api/files/download";
+import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import { MutationPassThrough } from "@eshg/lib-portal/types/query";
 import {
   ApiAccessRestriction,
   ApiAccessRestrictionLetter,
@@ -31,12 +36,7 @@ import {
   ApiUpdateAccessRestriction,
   ApiUpdateProcedureRequest,
   CreateProofSubmissionRequest,
-} from "@eshg/employee-portal-api/measlesProtection";
-import { getFilenameFromHeader } from "@eshg/lib-portal/api/files/download";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
-import { MutationPassThrough } from "@eshg/lib-portal/types/query";
+} from "@eshg/measles-protection-api";
 import { useMutation } from "@tanstack/react-query";
 import { isNullish } from "remeda";
 

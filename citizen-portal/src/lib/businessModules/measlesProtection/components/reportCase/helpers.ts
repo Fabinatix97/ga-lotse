@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import {
   ApiAffectedPersonDetails,
   ApiAffectedPersonSupplementalData,
   ApiDomesticAddress,
   ApiReportPerson,
-} from "@eshg/citizen-portal-api/measlesProtection";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+} from "@eshg/measles-protection-api";
 
 import {
   AffectedPersonFormInputs,

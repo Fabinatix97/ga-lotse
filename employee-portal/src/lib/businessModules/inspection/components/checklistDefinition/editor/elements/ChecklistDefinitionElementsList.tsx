@@ -11,7 +11,7 @@ import {
   Droppable,
   NotDraggingStyle,
 } from "@hello-pangea/dnd";
-import { Stack } from "@mui/joy";
+import { Box, Stack } from "@mui/joy";
 import { FieldArray, useFormikContext } from "formik";
 
 import { FormChecklistDefinitionVersion } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
@@ -46,7 +46,7 @@ export function ChecklistDefinitionElementsList({
                   spacing={2}
                   {...provided.droppableProps}
                   ref={provided.innerRef}
-                  style={getListStyle(snapshot.isDraggingOver)}
+                  sx={getListStyle(snapshot.isDraggingOver)}
                 >
                   {values.context.sections[sectionIndex]?.elements.map(
                     (element, elementIndex) => (
@@ -56,10 +56,10 @@ export function ChecklistDefinitionElementsList({
                         index={elementIndex}
                       >
                         {(provided, snapshot) => (
-                          <div
+                          <Box
                             ref={provided.innerRef}
                             {...provided.draggableProps}
-                            style={getItemStyle(
+                            sx={getItemStyle(
                               snapshot.isDragging,
                               provided.draggableProps.style,
                             )}
@@ -76,7 +76,7 @@ export function ChecklistDefinitionElementsList({
                               sectionIndex={sectionIndex}
                               elementIndex={elementIndex}
                             />
-                          </div>
+                          </Box>
                         )}
                       </Draggable>
                     ),

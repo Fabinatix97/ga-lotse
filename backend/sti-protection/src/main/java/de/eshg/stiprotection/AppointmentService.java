@@ -92,7 +92,7 @@ public class AppointmentService {
   private void bookBlockAppointment(
       StiProtectionProcedure procedure, AppointmentType type, Instant start, Instant end) {
     procedure.setUserDefinedAppointment(null);
-    appointmentBlockSlotUtil.updateAppointment(type, null, procedure, start, end);
+    appointmentBlockSlotUtil.updateAppointment(type, null, null, procedure, start, end);
     createAppointmentCalendarEvent(procedure, start, end);
   }
 

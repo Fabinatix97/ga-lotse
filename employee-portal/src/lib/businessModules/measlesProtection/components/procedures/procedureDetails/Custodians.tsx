@@ -6,7 +6,7 @@
 import {
   ApiDraftMeaslesProcedure,
   ApiMeaslesProtectionProcedure,
-} from "@eshg/employee-portal-api/measlesProtection";
+} from "@eshg/measles-protection-api";
 import { Sheet } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 

@@ -3,14 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAbstractFile } from "@eshg/employee-portal-api/measlesProtection";
-import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
+import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import { ApiAbstractFile } from "@eshg/measles-protection-api";
 import { FileDownloadOutlined } from "@mui/icons-material";
 import { Box } from "@mui/joy";
 
 import { useFileApi } from "@/lib/businessModules/measlesProtection/api/clients";
 import { useGetFile } from "@/lib/businessModules/measlesProtection/api/queries/files";
-import { useDownloadFile } from "@/lib/shared/api/download/files";
 import {
   FileCard,
   FileCardActionProps,
@@ -29,17 +28,12 @@ export function ProofTabFileCard({
   //TODO: Remove this File-API call when all file data is provided by our own API
   const file = useGetFile(fileId);
   const fileApi = useFileApi();
-  const downloadFile = useDownloadFile((fileId: string) =>
+  const { download } = useFileDownload((fileId: string) =>
     fileApi.downloadFileRaw({ fileId }),
   );
 
-  async function downloadFileOnClick() {
-    const downloadedFile = await downloadFile(fileId);
-    downloadFileAndOpen(downloadedFile);
-  }
-
   const downloadActionProps: FileCardActionProps = {
-    onClick: downloadFileOnClick,
+    onClick: () => download(fileId),
     indicator: <FileDownloadOutlined />,
     color: "primary",
     name: "Download",

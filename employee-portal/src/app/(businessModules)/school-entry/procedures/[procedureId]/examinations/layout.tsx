@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiRequiredProcedureData } from "@eshg/employee-portal-api/schoolEntry";
+import { ApiRequiredProcedureData } from "@eshg/school-entry-api";
 import { Button, Grid, Stack } from "@mui/joy";
 import { PropsWithChildren, useState } from "react";
 

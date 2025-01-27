@@ -5,13 +5,12 @@
 
 "use client";
 
+import { ChildExamination } from "@eshg/dental/api/models/ChildExamination";
+import { ProphylaxisSessionDetails } from "@eshg/dental/api/models/ProphylaxisSessionDetails";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
-
-import { ChildExamination } from "@/lib/businessModules/dental/api/models/ChildExamination";
-import { ProphylaxisSessionDetails } from "@/lib/businessModules/dental/api/models/ProphylaxisSessionDetails";
 
 import { filterParticipants } from "./participantFilters";
 import { sortParticipants } from "./participantSorting";

@@ -24,6 +24,11 @@ public interface ExaminationRepository
   @Query("select e from Examination e where e.externalId = :examinationId")
   Optional<Examination> findOneByExternalIdForUpdate(@Param("examinationId") UUID examinationId);
 
+  @Lock(LockModeType.PESSIMISTIC_WRITE)
+  @Query("select e from Examination e where e.externalId in :examinationIds order by e.id")
+  List<Examination> findAllByExternalIdsForUpdate(
+      @Param("examinationIds") List<UUID> examinationIds);
+
   @Query(
       """
     select e from Examination e

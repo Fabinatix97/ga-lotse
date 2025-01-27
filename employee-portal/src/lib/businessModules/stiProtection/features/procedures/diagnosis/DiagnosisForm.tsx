@@ -71,7 +71,7 @@ export function DiagnosisForm({
 
   return (
     <Formik initialValues={mapApiToForm(diagnosis)} onSubmit={onSubmit}>
-      <FormPlus style={{ height: "100%" }}>
+      <FormPlus sx={{ height: "100%" }}>
         <SidecarFormLayout>
           <Sheet>
             <Stack gap={5}>

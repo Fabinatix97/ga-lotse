@@ -76,16 +76,6 @@ def cleanTaskProvider = tasks.register('cleanGeneratedFiles', Delete) {
   delete srcDir
 }
 
-tasks.named('compile') {
-  dependsOn generateTaskProvider
-  inputs.files("${rootDir}/config/tsconfig.lib-legacy.json")
-}
-
-tasks.named('compileCheck') {
-  dependsOn generateTaskProvider
-  inputs.files("${rootDir}/config/tsconfig.lib-legacy.json")
-}
-
 // Fix/workaround for https://github.com/OpenAPITools/openapi-generator/issues/15637
 private void fixDuplicateImports(Directory outputDir) {
   fileTree("${outputDir}/models").matching {
@@ -125,7 +115,7 @@ tasks.named('compile').configure {
   }
 }
 
-tasks.named('compileCheck').configure {
+tasks.named('compile').configure {
   dependsOn generateTaskProvider
   inputs.file configDir.file('tsconfig.lib.json')
 }

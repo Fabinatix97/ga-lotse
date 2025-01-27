@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiCreateSchoolInfoLetterRequest } from "@eshg/employee-portal-api/schoolEntry";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { ApiCreateSchoolInfoLetterRequest } from "@eshg/school-entry-api";
 import { Button, Divider, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 

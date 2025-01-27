@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetCountryCodesResponse } from "@eshg/employee-portal-api/schoolEntry";
+import { ApiGetCountryCodesResponse } from "@eshg/school-entry-api";
 
 export type CountryCodes = Record<string, number>;
 

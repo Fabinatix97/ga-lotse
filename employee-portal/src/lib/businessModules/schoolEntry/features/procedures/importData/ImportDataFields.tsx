@@ -4,7 +4,6 @@
  */
 
 import { ApiContactCategory, ApiResponse } from "@eshg/base-api";
-import { ApiLocationSelectionMode } from "@eshg/employee-portal-api/schoolEntry";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
@@ -12,6 +11,7 @@ import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
+import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
 import { FileDownload } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import { Stack } from "@mui/joy";

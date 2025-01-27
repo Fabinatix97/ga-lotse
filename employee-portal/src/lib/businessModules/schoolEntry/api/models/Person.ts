@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { mapOptional } from "@eshg/lib-employee-portal/api/models/utils";
+import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import {
   ApiCountryCode,
   ApiGender,
   ApiPersonDetails,
   ApiSalutation,
-} from "@eshg/employee-portal-api/schoolEntry";
-import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
+} from "@eshg/school-entry-api";
 
-import { mapOptional } from "@/lib/shared/api/models/utils";
 import { mapApiAddressToForm } from "@/lib/shared/components/form/address/helpers";
 import { DefaultPersonFormValues } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
 import { normalizeListInputs } from "@/lib/shared/components/personSidebar/helpers";

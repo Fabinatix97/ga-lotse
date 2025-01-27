@@ -6,7 +6,7 @@
 "use client";
 
 import { ApiAbstractFile } from "@eshg/employee-portal-api/businessProcedures";
-import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
+import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
@@ -59,14 +59,11 @@ function FileCardWithOptionalDetailsLinkAndDownload({
   additionalAction?: FileCardActionProps;
 }) {
   const progressEntriesContext = useContext(ProgressEntriesContext);
-  const { useDownloadFile } = progressEntriesContext.config;
+  const { fileApi } = progressEntriesContext.config;
   const { openEntryDetailsSidebar } = progressEntriesContext.action;
-  const downloadFile = useDownloadFile();
-
-  async function downloadFileOnClick() {
-    const downloadedFile = await downloadFile(file.fileId);
-    downloadFileAndOpen(downloadedFile);
-  }
+  const { download } = useFileDownload((fileId: string) =>
+    fileApi.downloadFileRaw({ fileId }),
+  );
 
   const actions: FileCardActionProps[] = [];
 
@@ -86,7 +83,7 @@ function FileCardWithOptionalDetailsLinkAndDownload({
   }
 
   actions.push({
-    onClick: downloadFileOnClick,
+    onClick: () => download(file.fileId),
     indicator: <FileDownloadOutlinedIcon />,
     name: "Download",
     color: "neutral",

@@ -8,7 +8,14 @@
 import { ApiInspectionPhase } from "@eshg/employee-portal-api/inspection";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { Button, FormControl, FormHelperText, Sheet, Stack } from "@mui/joy";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormHelperText,
+  Sheet,
+  Stack,
+} from "@mui/joy";
 import { type Drauu, createDrauu } from "drauu";
 import { Formik } from "formik";
 import { useRouter } from "next/navigation";
@@ -127,7 +134,11 @@ export function FinalizeInspectionModalContent({
             touchAction: "none",
           }}
         >
-          <svg ref={svgRef} style={{ width: "100%", height: "100%" }} />
+          <Box
+            component={"svg"}
+            ref={svgRef}
+            sx={{ width: "100%", height: "100%" }}
+          />
         </Sheet>
         <FormHelperText>Bitte Signatur zeichnen.</FormHelperText>
       </FormControl>

@@ -22,8 +22,10 @@ import { Chip, Typography } from "@mui/joy";
 import { DefaultColorPalette } from "@mui/joy/styles/types";
 import { createColumnHelper } from "@tanstack/react-table";
 
+import { useCancelAppointment } from "@/lib/businessModules/officialMedicalService/api/mutations/appointmentApi";
 import { APPOINTMENT_TYPES } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/constants";
 import { useAppointmentSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/AppointmentSidebar";
+import { isProcedureFinalized } from "@/lib/businessModules/officialMedicalService/shared/helpers";
 import {
   ActionsItem,
   ActionsMenu,
@@ -67,10 +69,10 @@ function createAppointmentColumns({
   openCloseAppointmentDialog,
   openWithdrawAppointmentDialog,
 }: {
-  openBookingSidebar: () => void;
-  openCancelAppointmentDialog: () => void;
-  openCloseAppointmentDialog: () => void;
-  openWithdrawAppointmentDialog: () => void;
+  openBookingSidebar?: (appointment: ApiOmsAppointment) => void;
+  openCancelAppointmentDialog?: (appointment: ApiOmsAppointment) => void;
+  openCloseAppointmentDialog?: () => void;
+  openWithdrawAppointmentDialog?: () => void;
 }) {
   return [
     columnHelper.accessor("appointmentType", {
@@ -125,16 +127,20 @@ function createAppointmentColumns({
         if (
           (bookingState === ApiBookingState.Bookable ||
             bookingState === ApiBookingState.Cancelled) &&
-          appointmentState === ApiAppointmentState.Open
+          appointmentState === ApiAppointmentState.Open &&
+          openBookingSidebar
         ) {
           items.push({
             label: "Terminbuchung vornehmen",
             startDecorator: <CalendarAddDay />,
-            onClick: openBookingSidebar,
+            onClick: () => openBookingSidebar(ctx.row.original),
           });
         }
 
-        if (bookingState === ApiBookingState.Bookable) {
+        if (
+          bookingState === ApiBookingState.Bookable &&
+          openWithdrawAppointmentDialog
+        ) {
           items.push({
             label: "Terminbuchung zurückziehen",
             startDecorator: <Delete />,
@@ -145,25 +151,28 @@ function createAppointmentColumns({
 
         if (
           bookingState === ApiBookingState.Booked &&
-          appointmentState === ApiAppointmentState.Open
+          appointmentState === ApiAppointmentState.Open &&
+          openBookingSidebar &&
+          openCancelAppointmentDialog
         ) {
           items.push({
             label: "Terminbuchung bearbeiten",
             startDecorator: <EditCalendarOutlined />,
-            onClick: openBookingSidebar,
+            onClick: () => openBookingSidebar(ctx.row.original),
           });
 
           items.push({
             label: "Terminbuchung absagen",
             startDecorator: <EventBusyOutlined />,
-            onClick: openCancelAppointmentDialog,
+            onClick: () => openCancelAppointmentDialog(ctx.row.original),
           });
         }
 
         if (
           (bookingState === ApiBookingState.Cancelled ||
             bookingState === ApiBookingState.Booked) &&
-          appointmentState === ApiAppointmentState.Open
+          appointmentState === ApiAppointmentState.Open &&
+          openCloseAppointmentDialog
         ) {
           items.push({
             label: "Als abgeschlossen markieren",
@@ -192,22 +201,25 @@ export function AppointmentsTable({
 }: Readonly<{
   procedure: ApiEmployeeOmsProcedureDetails;
 }>) {
-  const { open: openBookingSidebar } = useAppointmentSidebar();
+  const { open: openBookingSidebar } = useAppointmentSidebar(
+    procedure.physician,
+  );
   const { openConfirmationDialog } = useConfirmationDialog();
+  const { mutateAsync: cancelAppointment } = useCancelAppointment();
   const snackbar = useSnackbar();
 
   if (procedure.appointments.length === 0) {
     return;
   }
 
-  function openCancelAppointmentDialog() {
+  function openCancelAppointmentDialog(appointment: ApiOmsAppointment) {
     openConfirmationDialog({
       title: "Termin absagen?",
       description:
         "Der/die Bürger:in wird per E-Mail informiert. Ein neuer Termin kann gebucht werden.",
       color: "danger",
       confirmLabel: "Absagen",
-      onConfirm: () => snackbar.notification("TODO"),
+      onConfirm: () => cancelAppointment(appointment),
     });
   }
 
@@ -232,12 +244,16 @@ export function AppointmentsTable({
     });
   }
 
-  const columns = createAppointmentColumns({
-    openBookingSidebar: () => openBookingSidebar({}),
-    openCancelAppointmentDialog,
-    openCloseAppointmentDialog,
-    openWithdrawAppointmentDialog,
-  });
+  const columns = isProcedureFinalized(procedure)
+    ? createAppointmentColumns({})
+    : createAppointmentColumns({
+        openBookingSidebar: (appointment) =>
+          openBookingSidebar({ appointment }),
+        openCancelAppointmentDialog: (appointment) =>
+          openCancelAppointmentDialog(appointment),
+        openCloseAppointmentDialog,
+        openWithdrawAppointmentDialog,
+      });
 
   return <DataTable data={procedure.appointments} columns={columns} />;
 }

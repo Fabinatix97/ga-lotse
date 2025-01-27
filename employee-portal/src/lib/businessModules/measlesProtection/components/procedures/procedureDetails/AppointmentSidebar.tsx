@@ -5,10 +5,10 @@
 
 "use client";
 
-import { ApiAppointment } from "@eshg/employee-portal-api/measlesProtection";
 import { SelectObjectField } from "@eshg/lib-portal/components/formFields/SelectObjectField";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
+import { ApiAppointment } from "@eshg/measles-protection-api";
 import { Stack } from "@mui/joy";
 import { Formik, useFormikContext } from "formik";
 import { useCallback } from "react";

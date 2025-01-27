@@ -9,28 +9,15 @@ import { ApiUserRole } from "@eshg/base-api";
 
 import { MedicalRegistryProcedurePageParams } from "@/app/(businessModules)/medical-registry/procedures/[id]/page";
 import {
-  useDecideApprovalRequest,
-  useGrantDeletionForAllRequests,
-} from "@/lib/businessModules/medicalRegistry/api/mutations/approvalRequests";
+  useApprovalRequestApi,
+  useFileApi,
+  useProcedureApi,
+  useProgressEntryApi,
+} from "@/lib/businessModules/medicalRegistry/api/clients";
 import {
-  useDeleteFile,
-  useRequestFileDeletion,
-} from "@/lib/businessModules/medicalRegistry/api/mutations/files";
-import {
-  useCreateProgressEntry,
-  useDeleteProgressEntry,
-  usePatchProgressEntry,
-  useRequestProgressEntryDeletion,
-} from "@/lib/businessModules/medicalRegistry/api/mutations/progressEntries";
-import {
-  useDownloadMedicalRegistryFile,
-  useGetMetaDataHistory,
-} from "@/lib/businessModules/medicalRegistry/api/queries/files";
-import {
-  useFetchProgressEntries,
-  useFetchProgressEntryDetails,
-  useGetManualProgressEntryHistory,
-} from "@/lib/businessModules/medicalRegistry/api/queries/progressEntries";
+  fileApiQueryKey,
+  progressEntryApiQueryKey,
+} from "@/lib/businessModules/medicalRegistry/api/queries/apiQueryKeys";
 import {
   keyDocumentTypes,
   systemProgressEntryTypeTitles,
@@ -43,27 +30,25 @@ export default function MedicalRegistryProgressEntriesPage(
   props: Readonly<ProgressEntriesUrlParams<MedicalRegistryProcedurePageParams>>,
 ) {
   const { params, searchParams } = props;
+  const progressEntryApi = useProgressEntryApi();
+  const procedureApi = useProcedureApi();
+  const fileApi = useFileApi();
+  const approvalRequestApi = useApprovalRequestApi();
+
   return (
     <ProgressEntriesPage
-      useCreateProgressEntry={useCreateProgressEntry}
-      useDeleteFile={useDeleteFile}
-      useDeleteProgressEntry={useDeleteProgressEntry}
-      usePatchProgressEntry={usePatchProgressEntry}
-      useFetchProgressEntries={useFetchProgressEntries}
-      useFetchProgressEntryDetails={useFetchProgressEntryDetails}
       procedureId={params.id}
       searchParams={searchParams}
       leaderRole={ApiUserRole.MedicalRegistryLeader}
-      useRequestProgressEntryDeletion={useRequestProgressEntryDeletion}
-      useRequestFileDeletion={useRequestFileDeletion}
-      useDecideApprovalRequest={useDecideApprovalRequest}
-      useGrantDeletionForAllRequests={useGrantDeletionForAllRequests}
-      useDownloadFile={useDownloadMedicalRegistryFile}
-      useGetManualProgressEntryHistory={useGetManualProgressEntryHistory}
-      useGetMetaDataHistory={useGetMetaDataHistory}
       systemProgressEntryTypes={systemProgressEntryTypeTitles}
       additionalKeyDocumentTypes={keyDocumentTypes}
       groupName={moduleUserGroup.group}
+      progressEntryApiQueryKey={progressEntryApiQueryKey}
+      progressEntryApi={progressEntryApi}
+      procedureApi={procedureApi}
+      fileApiQueryKey={fileApiQueryKey}
+      fileApi={fileApi}
+      approvalRequestApi={approvalRequestApi}
     />
   );
 }

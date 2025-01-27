@@ -1749,6 +1749,31 @@ paths:
           description: OK
       tags:
       - ProphylaxisSession
+  /prophylaxis-sessions/{prophylaxisSessionId}/examinations:
+    patch:
+      operationId: updateProphylaxisSessionExaminations
+      parameters:
+      - in: path
+        name: prophylaxisSessionId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProphylaxisSessionExaminationsRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ProphylaxisSessionDetails"
+          description: OK
+      tags:
+      - ProphylaxisSession
   /prophylaxis-sessions/{prophylaxisSessionId}/participants:
     put:
       operationId: updateProphylaxisSessionParticipants
@@ -2138,6 +2163,16 @@ paths:
       - TestHelper
 components:
   schemas:
+    AbsenceExaminationResult:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/DentalExaminationResult"
+      - type: object
+        properties:
+          reasonForAbsence:
+            $ref: "#/components/schemas/ReasonForAbsence"
+      required:
+      - reasonForAbsence
     AbstractFile:
       type: object
       allOf:
@@ -3195,6 +3230,8 @@ components:
         dateAndTime:
           type: string
           format: date-time
+        fluoridation:
+          type: boolean
         id:
           type: string
           format: uuid
@@ -3204,15 +3241,20 @@ components:
           $ref: "#/components/schemas/ProphylaxisType"
         result:
           oneOf:
+          - $ref: "#/components/schemas/AbsenceExaminationResult"
           - $ref: "#/components/schemas/FluoridationExaminationResult"
           - $ref: "#/components/schemas/ScreeningExaminationResult"
+        screening:
+          type: boolean
         version:
           type: integer
           format: int64
       required:
       - dateAndTime
+      - fluoridation
       - id
       - prophylaxisType
+      - screening
       - version
     ExistingUser:
       type: object
@@ -4401,6 +4443,24 @@ components:
             $ref: "#/components/schemas/MailMetaData"
       required:
       - changedAt
+    MainResult:
+      type: string
+      enum:
+      - S
+      - I
+      - D
+      - F
+      - E
+      - "Y"
+      - X
+      - Z
+      - T
+      - H
+      - O
+      - V
+      - "N"
+      - P
+      - K
     ManualProgressEntry:
       type: object
       allOf:
@@ -4856,6 +4916,7 @@ components:
           format: date
         examinationResult:
           oneOf:
+          - $ref: "#/components/schemas/AbsenceExaminationResult"
           - $ref: "#/components/schemas/FluoridationExaminationResult"
           - $ref: "#/components/schemas/ScreeningExaminationResult"
         firstName:
@@ -4956,6 +5017,13 @@ components:
       - P5
       - P6
       - P7
+    ReasonForAbsence:
+      type: string
+      enum:
+      - NOT_APPEARED
+      - SHIFTED
+      - MOVED
+      - REFUSED
     Salutation:
       type: string
       enum:
@@ -4973,8 +5041,13 @@ components:
             type: boolean
           oralHygieneStatus:
             $ref: "#/components/schemas/OralHygieneStatus"
+          toothDiagnoses:
+            type: array
+            items:
+              $ref: "#/components/schemas/ToothDiagnosis"
       required:
       - fluorideVarnishApplied
+      - toothDiagnoses
     SearchChildrenResponse:
       type: object
       properties:
@@ -4984,6 +5057,19 @@ components:
             $ref: "#/components/schemas/ChildSearchResult"
       required:
       - children
+    SecondaryResult:
+      type: string
+      enum:
+      - DA
+      - FA
+      - FIS
+      - ID
+      - INS
+      - LUE
+      - RET
+      - TR
+      - WR
+      - ZA
     SelfAssignTaskRequest:
       type: object
       properties:
@@ -5208,6 +5294,75 @@ components:
       - DR
       - PROF
       - PROF_DR
+    Tooth:
+      type: string
+      enum:
+      - T11
+      - T12
+      - T13
+      - T14
+      - T15
+      - T16
+      - T17
+      - T18
+      - T21
+      - T22
+      - T23
+      - T24
+      - T25
+      - T26
+      - T27
+      - T28
+      - T31
+      - T32
+      - T33
+      - T34
+      - T35
+      - T36
+      - T37
+      - T38
+      - T41
+      - T42
+      - T43
+      - T44
+      - T45
+      - T46
+      - T47
+      - T48
+      - T51
+      - T52
+      - T53
+      - T54
+      - T55
+      - T61
+      - T62
+      - T63
+      - T64
+      - T65
+      - T71
+      - T72
+      - T73
+      - T74
+      - T75
+      - T81
+      - T82
+      - T83
+      - T84
+      - T85
+    ToothDiagnosis:
+      type: object
+      properties:
+        mainResult:
+          $ref: "#/components/schemas/MainResult"
+        secondaryResult1:
+          $ref: "#/components/schemas/SecondaryResult"
+        secondaryResult2:
+          $ref: "#/components/schemas/SecondaryResult"
+        tooth:
+          $ref: "#/components/schemas/Tooth"
+      required:
+      - mainResult
+      - tooth
     TriggerType:
       type: string
       enum:
@@ -5238,6 +5393,7 @@ components:
           type: string
         result:
           oneOf:
+          - $ref: "#/components/schemas/AbsenceExaminationResult"
           - $ref: "#/components/schemas/FluoridationExaminationResult"
           - $ref: "#/components/schemas/ScreeningExaminationResult"
         version:
@@ -5245,6 +5401,34 @@ components:
           format: int64
       required:
       - version
+    UpdateExaminationsInBulkRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        note:
+          type: string
+        result:
+          oneOf:
+          - $ref: "#/components/schemas/AbsenceExaminationResult"
+          - $ref: "#/components/schemas/FluoridationExaminationResult"
+          - $ref: "#/components/schemas/ScreeningExaminationResult"
+        version:
+          type: integer
+          format: int64
+      required:
+      - id
+      - version
+    UpdateProphylaxisSessionExaminationsRequest:
+      type: object
+      properties:
+        examinationUpdates:
+          type: array
+          items:
+            $ref: "#/components/schemas/UpdateExaminationsInBulkRequest"
+      required:
+      - examinationUpdates
     UpdateProphylaxisSessionParticipantsRequest:
       type: object
       properties:

@@ -12,7 +12,7 @@ import { ConfigureChartFormModel } from "@/lib/businessModules/statistics/compon
 import { mapAttributeToAutocompleteSelectionOption } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/mapAttribute";
 import {
   axisRangeValueNames,
-  isBooleanOrValueWithOptions,
+  isCategorical,
   isNumeric,
 } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
@@ -34,7 +34,7 @@ export function ConfigureLineChartStep({
   );
   const secondaryAttributes = attributes.map(
     mapAttributeToAutocompleteSelectionOption((attribute) =>
-      isBooleanOrValueWithOptions(attribute.type),
+      isCategorical(attribute.type),
     ),
   );
   const axisRange = buildEnumOptions(axisRangeValueNames);

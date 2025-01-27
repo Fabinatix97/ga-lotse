@@ -4,12 +4,6 @@
  */
 
 import { ApiContactCategory } from "@eshg/base-api";
-import {
-  ApiAppointment,
-  ApiLocationSelectionMode,
-  ApiSchoolEntryProcedureType,
-  UpdateProcedureRequest,
-} from "@eshg/employee-portal-api/schoolEntry";
 import { Alert, AlertProps } from "@eshg/lib-portal/components/Alert";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
@@ -28,6 +22,12 @@ import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { validatePastOrTodayDate } from "@eshg/lib-portal/helpers/validators";
 import { useHasChanged } from "@eshg/lib-portal/hooks/useHasChanged";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import {
+  ApiAppointment,
+  ApiLocationSelectionMode,
+  ApiSchoolEntryProcedureType,
+  UpdateProcedureRequest,
+} from "@eshg/school-entry-api";
 import { Divider, Stack } from "@mui/joy";
 import { FormikProvider, useFormik } from "formik";
 import { ReactNode, useEffect } from "react";

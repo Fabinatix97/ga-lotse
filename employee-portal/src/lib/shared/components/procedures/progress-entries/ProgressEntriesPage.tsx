@@ -21,6 +21,7 @@ import { PageGrid } from "@/lib/shared/components/page/PageGrid";
 import { keyDocumentTypes } from "@/lib/shared/components/procedures/progress-entries/constants";
 import { useDeletionProps } from "@/lib/shared/components/procedures/progress-entries/hooks/useDeletionProps";
 import { useProgressEntriesFilterSettings } from "@/lib/shared/components/procedures/progress-entries/hooks/useProgressEntriesFilterSettings";
+import { useFetchProgressEntries } from "@/lib/shared/components/procedures/progress-entries/queries/progressEntryApi";
 import { ApprovalRequestsOverviewSidebar } from "@/lib/shared/components/procedures/progress-entries/sidebars/approvalRequestOverviewSidebar/ApprovalRequestsOverviewSidebar";
 import { Timeline } from "@/lib/shared/components/timeline/Timeline";
 import { TimelineEntry } from "@/lib/shared/components/timeline/TimelineEntry";
@@ -43,8 +44,9 @@ import { ProgressEntryDetailsSidebar } from "./sidebars/progressEntryDetailsSide
 import { ProgressEntriesFilters, ProgressEntriesPageProps } from "./types";
 
 export function ProgressEntriesPage({
-  useFetchProgressEntries,
-  useFetchProgressEntryDetails,
+  progressEntryApiQueryKey,
+  progressEntryApi,
+  procedureApi,
   procedureId,
   searchParams,
   additionalKeyDocumentTypes,
@@ -57,7 +59,14 @@ export function ProgressEntriesPage({
     detailedProcedure,
     files,
     approvalRequestsResponse,
-  } = useFetchProgressEntries(procedureId, props.leaderRole, filters).data;
+  } = useFetchProgressEntries(
+    progressEntryApi,
+    procedureApi,
+    progressEntryApiQueryKey,
+    procedureId,
+    props.leaderRole,
+    filters,
+  ).data;
   const { data: response } = useGetUsersByGroupQuery(
     props.groupName,
     props.getInitOverrides,
@@ -83,7 +92,9 @@ export function ProgressEntriesPage({
         approvalRequestsResponse: approvalRequestsResponse,
         searchParams,
         filterSettings,
-        useFetchProgressEntryDetails,
+        progressEntryApiQueryKey,
+        progressEntryApi,
+        procedureApi,
         ...props,
       }}
     >

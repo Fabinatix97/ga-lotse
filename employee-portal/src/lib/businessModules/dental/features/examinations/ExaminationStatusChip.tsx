@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ExaminationStatus } from "@eshg/dental/api/models/ExaminationStatus";
 import { Chip, ChipProps } from "@mui/joy";
-
-import { ExaminationStatus } from "@/lib/businessModules/dental/api/models/ExaminationStatus";
 
 import { EXAMINATION_STATUS } from "./translations";
 

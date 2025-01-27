@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
 import {
   ApiGetSchoolEntryConfigResponse,
   SchoolEntryConfigApi,
-} from "@eshg/employee-portal-api/schoolEntry";
-import { STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
+} from "@eshg/school-entry-api";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useConfigApi } from "@/lib/businessModules/schoolEntry/api/clients";

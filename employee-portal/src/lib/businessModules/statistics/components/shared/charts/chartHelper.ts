@@ -102,8 +102,10 @@ export function isText(valueType: AttributeType) {
   return valueType === "TextAttribute";
 }
 
-export function isBooleanOrValueWithOptions(valueType: AttributeType) {
-  return isBoolean(valueType) || isValueWithOptions(valueType);
+export function isCategorical(valueType: AttributeType) {
+  return (
+    isBoolean(valueType) || isValueWithOptions(valueType) || isText(valueType)
+  );
 }
 
 export function isNumeric(valueType: AttributeType) {

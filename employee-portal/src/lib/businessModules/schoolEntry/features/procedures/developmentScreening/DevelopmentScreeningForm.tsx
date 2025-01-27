@@ -5,13 +5,13 @@
 
 "use client";
 
+import { FormProps, OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { MutationBundle } from "@eshg/lib-portal/types/query";
 import {
   ApiSchoolFeedback,
   ApiSchoolRecommendation,
   UpdateDevelopmentScreeningResultRequest,
-} from "@eshg/employee-portal-api/schoolEntry";
-import { FormProps, OptionalFieldValue } from "@eshg/lib-portal/types/form";
-import { MutationBundle } from "@eshg/lib-portal/types/query";
+} from "@eshg/school-entry-api";
 import { Divider } from "@mui/joy";
 import { Formik, FormikHelpers } from "formik";
 

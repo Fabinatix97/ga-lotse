@@ -9,7 +9,7 @@ import {
   ApiAppointmentType,
   ApiCreateDailyAppointmentBlock,
   ApiCreateDailyAppointmentBlockGroupRequest,
-} from "@eshg/employee-portal-api/measlesProtection";
+} from "@eshg/measles-protection-api";
 import { useRouter } from "next/navigation";
 
 import { AppointmentDurationsMeasles } from "@/lib/businessModules/measlesProtection/api/models/AppointmentBlockGroup";

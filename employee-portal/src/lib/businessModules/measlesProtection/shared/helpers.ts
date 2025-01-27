@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiDomesticAddress } from "@eshg/employee-portal-api/measlesProtection";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import { ApiDomesticAddress } from "@eshg/measles-protection-api";
 
 import { LegacyBaseAddress } from "@/lib/shared/components/form/address/LegacyAddressForm";
 

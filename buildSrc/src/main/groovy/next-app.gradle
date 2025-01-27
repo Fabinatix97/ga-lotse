@@ -183,7 +183,8 @@ tasks.register('run', NodeTask) {
 
 tasks.register('runDev', PnpmTask) {
   dependsOn 'prepareEnvironment'
-  args = ['next', 'dev', '--turbo', '--port', nextExtension.port.get()]
+  def bundlerArgs = project.hasProperty('webpack') ? [] : ['--turbo']
+  args = ['next', 'dev', '--port', nextExtension.port.get()] + bundlerArgs
 }
 
 tasks.named('clean').configure {

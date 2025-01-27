@@ -20,7 +20,7 @@ export function ServiceCard(props: ServiceCardProps) {
     <NavigationLink
       href={props.href}
       passHref
-      style={{
+      sx={{
         width: "100%",
         textDecoration: "none",
       }}
@@ -44,7 +44,7 @@ export function ServiceCard(props: ServiceCardProps) {
           }}
         >
           <GradientIcon
-            style={{ width: "153px", height: "153px" }}
+            sx={{ width: "153px", height: "153px" }}
             iconClass={props.icon}
           />
         </Box>

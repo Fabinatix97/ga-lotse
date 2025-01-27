@@ -1,0 +1,37 @@
+/**
+ * Copyright 2025 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+"use client";
+
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { createContext, useContext, useState } from "react";
+
+import { DentalClients, createClients } from "@/api/createClients";
+
+const DentalContext = createContext<DentalClients | null>(null);
+
+interface DentalProviderProps extends RequiresChildren {
+  baseUrl: string;
+}
+
+export function DentalProvider(props: DentalProviderProps) {
+  const [clients] = useState<DentalClients>(() => createClients(props.baseUrl));
+
+  return (
+    <DentalContext.Provider value={clients}>
+      {props.children}
+    </DentalContext.Provider>
+  );
+}
+
+export function useDentalApi() {
+  const dentalContext = useContext(DentalContext);
+
+  if (dentalContext === null) {
+    throw new Error("Missing DentalProvider");
+  }
+
+  return dentalContext;
+}

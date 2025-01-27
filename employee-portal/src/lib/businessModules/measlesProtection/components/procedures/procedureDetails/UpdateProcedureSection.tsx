@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiDraftMeaslesProcedure,
-  ApiMeaslesProtectionProcedure,
-} from "@eshg/employee-portal-api/measlesProtection";
 import { Alert as SharedAlert } from "@eshg/lib-portal/components/Alert";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
+import {
+  ApiDraftMeaslesProcedure,
+  ApiMeaslesProtectionProcedure,
+} from "@eshg/measles-protection-api";
 import { Sheet, Stack } from "@mui/joy";
 import { Formik, useFormikContext } from "formik";
 import { PropsWithChildren, useCallback } from "react";
@@ -51,7 +51,7 @@ export function ProcedureForm({
       onSubmit={(form) => submitProcedure(transformToValid(form))}
       validate={validate}
     >
-      <FormPlus style={{ display: "contents" }}>{children}</FormPlus>
+      <FormPlus sx={{ display: "contents" }}>{children}</FormPlus>
     </Formik>
   );
 }

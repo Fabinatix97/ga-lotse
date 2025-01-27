@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetDepartmentInfoResponse } from "@eshg/citizen-portal-api/base";
+import { ApiGetDepartmentInfoResponse } from "@eshg/base-api";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import {
   Dispatch,

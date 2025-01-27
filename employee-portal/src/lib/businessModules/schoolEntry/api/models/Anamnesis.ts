@@ -4,6 +4,10 @@
  */
 
 import {
+  Versioned,
+  mapVersioned,
+} from "@eshg/lib-employee-portal/api/models/Versioned";
+import {
   ApiAdditionalChildInfo,
   ApiAnamnesis,
   ApiCheckUps,
@@ -15,9 +19,7 @@ import {
   ApiMigrationBackground,
   ApiPromotionBeforeSchoolEntry,
   ApiPromotionTherapyAndAidInfo,
-} from "@eshg/employee-portal-api/schoolEntry";
-
-import { Versioned, mapVersioned } from "@/lib/shared/api/models/Versioned";
+} from "@eshg/school-entry-api";
 
 export interface Anamnesis extends Versioned {
   childLanguageScreening?: boolean;

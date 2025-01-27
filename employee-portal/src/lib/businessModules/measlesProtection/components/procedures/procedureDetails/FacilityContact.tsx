@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiFacilityContactPerson } from "@eshg/employee-portal-api/measlesProtection";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { SALUTATION_VALUES } from "@eshg/lib-portal/components/formFields/constants";
+import { ApiFacilityContactPerson } from "@eshg/measles-protection-api";
 import { Grid, Sheet, Stack } from "@mui/joy";
 
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";

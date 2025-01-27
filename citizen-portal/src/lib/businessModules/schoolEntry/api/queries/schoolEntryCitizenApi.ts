@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SchoolEntryCitizenApi } from "@eshg/citizen-portal-api/schoolEntry";
+import { SchoolEntryCitizenApi } from "@eshg/school-entry-api";
 import { queryOptions } from "@tanstack/react-query";
 
 import { mapAppointment } from "@/lib/businessModules/schoolEntry/api/models/Appointment";

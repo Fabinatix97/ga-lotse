@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiGetReferenceFacilityResponse } from "@eshg/citizen-portal-api/base";
+import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
 import StreetIcon from "@mui/icons-material/BusinessOutlined";
 import AddressAdditionIcon from "@mui/icons-material/InfoOutlined";
 import PostalCodeIcon from "@mui/icons-material/MapOutlined";

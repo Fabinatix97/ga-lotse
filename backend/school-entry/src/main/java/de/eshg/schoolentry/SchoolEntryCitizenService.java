@@ -128,6 +128,7 @@ public class SchoolEntryCitizenService {
     appointmentBlockSlotUtil.updateAppointment(
         appointmentType,
         schoolEntryService.getAppointmentLocation(schoolEntryProcedure),
+        null,
         schoolEntryProcedure,
         start,
         end);

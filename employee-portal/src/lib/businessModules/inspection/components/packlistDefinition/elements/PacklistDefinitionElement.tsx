@@ -8,7 +8,7 @@
 import { ApiPacklistDefinitionElement } from "@eshg/employee-portal-api/inspection";
 import { DraggableProvidedDragHandleProps } from "@hello-pangea/dnd";
 import { DeleteOutlined, DragIndicatorOutlined } from "@mui/icons-material";
-import { IconButton, Input, Stack } from "@mui/joy";
+import { Box, IconButton, Input, Stack } from "@mui/joy";
 import { doNothing } from "remeda";
 
 interface PacklistDefinitionElementProps {
@@ -49,29 +49,29 @@ export function PacklistDefinitionElement({
       justifyContent="center"
       alignItems="center"
     >
-      <div
+      <Box
         {...dragHandleProps}
         aria-label={`Element ${defaultIndex} ziehen und verschieben`}
         role="button"
-        style={{
+        sx={{
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
         }}
       >
         <DragIndicatorOutlined
-          style={{
+          sx={{
             backgroundColor: "#E3EFFB",
-            borderRadius: 50,
-            padding: 4,
-            width: 32,
-            height: 32,
+            borderRadius: 6.25,
+            padding: 0.5,
+            width: "32px",
+            height: "32px",
           }}
         />
-      </div>
+      </Box>
       <Input
         disabled={readOnlyMode}
-        style={{ flex: 1, height: 51 }}
+        sx={{ flex: 1, height: "51px" }}
         defaultValue={element?.text ?? ""}
         placeholder={`Text für Eintrag ${defaultIndex} eingeben`}
         onBlur={(event) => setTitle(event.target.value)}

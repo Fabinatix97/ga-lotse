@@ -23,9 +23,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
   @JsonSubTypes.Type(
       value = ScreeningExaminationResultDto.class,
       name = ScreeningExaminationResultDto.SCHEMA_NAME),
+  @JsonSubTypes.Type(
+      value = AbsenceExaminationResultDto.class,
+      name = AbsenceExaminationResultDto.SCHEMA_NAME)
 })
 public sealed interface ExaminationResultDto extends HasTypeDiscriminator
-    permits FluoridationExaminationResultDto, ScreeningExaminationResultDto {
-
-  boolean fluorideVarnishApplied();
-}
+    permits FluoridationExaminationResultDto,
+        ScreeningExaminationResultDto,
+        AbsenceExaminationResultDto {}

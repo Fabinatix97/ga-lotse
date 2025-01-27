@@ -4,35 +4,33 @@
  */
 
 import {
+  GetInformationStatementPdfRequest,
+  GetMedicalHistoryPdfRequest,
+} from "@eshg/employee-portal-api/travelMedicine";
+import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+
+import {
   useFileApi,
   useVaccinationConsultationApi,
 } from "@/lib/businessModules/travelMedicine/api/clients";
-import { useDownloadFile } from "@/lib/shared/api/download/files";
 
 export function useDownloadTravelMedicineFile() {
   const fileApi = useFileApi();
-  return useDownloadFile((fileId: string) =>
+  return useFileDownload((fileId: string) =>
     fileApi.downloadFileRaw({ fileId }),
   );
 }
 
 export function useDownloadInformationStatementPdf() {
   const vaccinationConsultationApi = useVaccinationConsultationApi();
-  return useDownloadFile(
-    (procedureId: string, informationStatementId: string) =>
-      vaccinationConsultationApi.getInformationStatementPdfRaw({
-        procedureId,
-        informationStatementId,
-      }),
+  return useFileDownload((request: GetInformationStatementPdfRequest) =>
+    vaccinationConsultationApi.getInformationStatementPdfRaw(request),
   );
 }
 
 export function useDownloadMedicalHistoryPdf() {
   const vaccinationConsultationApi = useVaccinationConsultationApi();
-  return useDownloadFile((procedureId: string, medicalHistoryId: string) =>
-    vaccinationConsultationApi.getMedicalHistoryPdfRaw({
-      procedureId,
-      medicalHistoryId,
-    }),
+  return useFileDownload((request: GetMedicalHistoryPdfRequest) =>
+    vaccinationConsultationApi.getMedicalHistoryPdfRaw(request),
   );
 }

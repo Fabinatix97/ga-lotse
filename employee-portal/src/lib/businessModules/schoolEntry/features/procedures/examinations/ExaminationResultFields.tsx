@@ -4,10 +4,6 @@
  */
 
 import {
-  ApiDoctorLetterValue,
-  ApiExaminationResultValue,
-} from "@eshg/employee-portal-api/schoolEntry";
-import {
   createFieldNameMapper,
   mapOptionalValue,
 } from "@eshg/lib-portal/helpers/form";
@@ -15,6 +11,10 @@ import {
   OptionalFieldValue,
   SetFieldValueHelper,
 } from "@eshg/lib-portal/types/form";
+import {
+  ApiDoctorLetterValue,
+  ApiExaminationResultValue,
+} from "@eshg/school-entry-api";
 import { Grid } from "@mui/joy";
 import { isDefined } from "remeda";
 

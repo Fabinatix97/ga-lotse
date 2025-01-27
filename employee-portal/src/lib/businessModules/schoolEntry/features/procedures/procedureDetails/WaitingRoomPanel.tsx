@@ -3,10 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiWaitingRoom,
-  ApiWaitingStatus,
-} from "@eshg/employee-portal-api/schoolEntry";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
@@ -18,6 +14,7 @@ import {
   OptionalFieldValue,
   SetFieldValueHelper,
 } from "@eshg/lib-portal/types/form";
+import { ApiWaitingRoom, ApiWaitingStatus } from "@eshg/school-entry-api";
 import { Button } from "@mui/joy";
 import { Formik } from "formik";
 

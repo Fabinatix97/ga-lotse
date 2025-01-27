@@ -23,6 +23,7 @@ interface DrawerContextValue {
   tryOpen: (
     drawerId: string,
     drawerType: DrawerType,
+    scopeId: string | undefined,
     options: DrawerOpenOptions,
   ) => void;
   tryClose: (options?: DrawerCloseOptions) => Promise<boolean>;
@@ -78,6 +79,7 @@ export interface DrawerProps {
 export interface DrawerInstance extends DrawerOpenOptions {
   id: string;
   type: DrawerType;
+  scopeId?: string;
 }
 
 type DrawerType = "sidenav" | "sidebar";
@@ -104,6 +106,7 @@ function useCreateDrawerContextValue(): DrawerContextValue {
     function tryOpen(
       overlayId: string,
       drawerType: DrawerType,
+      scopeId: string | undefined,
       options: DrawerOpenOptions,
     ): void {
       if (overlayId === state.open?.id || overlayId === state.pending?.id) {
@@ -116,6 +119,7 @@ function useCreateDrawerContextValue(): DrawerContextValue {
           ...options,
           id: overlayId,
           type: drawerType,
+          scopeId,
         },
       }));
     }

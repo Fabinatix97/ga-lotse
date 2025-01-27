@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAppointment } from "@eshg/employee-portal-api/measlesProtection";
 import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
+import { ApiAppointment } from "@eshg/measles-protection-api";
 import { Add, DeleteOutline, EditOutlined } from "@mui/icons-material";
 import { Button, Sheet, Stack } from "@mui/joy";
 
@@ -82,7 +82,7 @@ export function AppointmentCard({
       >
         <Stack spacing={3} alignItems={"start"} width={"100%"}>
           {appointment ? (
-            <Stack gap={1} style={{ flexBasis: "auto" }}>
+            <Stack gap={1} sx={{ flexBasis: "auto" }}>
               <DetailsCell
                 label="Datum"
                 value={formatDate(appointment.start)}

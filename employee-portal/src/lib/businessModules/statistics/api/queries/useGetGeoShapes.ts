@@ -3,11 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  GeoShapeApi,
-  GetGeoShapesRequest,
-} from "@eshg/employee-portal-api/statistics";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { GeoShapeApi, GetGeoShapesRequest } from "@eshg/statistics-api";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useGeoShapeApi } from "@/lib/businessModules/statistics/api/clients";

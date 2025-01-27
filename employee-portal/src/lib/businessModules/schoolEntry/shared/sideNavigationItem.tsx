@@ -4,8 +4,8 @@
  */
 
 import { ApiBaseFeature, ApiUserRole } from "@eshg/base-api";
-import { ApiLocationSelectionMode } from "@eshg/employee-portal-api/schoolEntry";
 import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
+import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
 import { WcOutlined } from "@mui/icons-material";
 import { useQuery } from "@tanstack/react-query";
 

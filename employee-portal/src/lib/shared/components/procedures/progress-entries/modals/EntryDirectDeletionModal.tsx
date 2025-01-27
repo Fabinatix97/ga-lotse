@@ -8,6 +8,7 @@ import { useContext } from "react";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { EmployeePortalConfirmationDialog } from "@/lib/shared/components/confirmationDialog/EmployeePortalConfirmationDialog";
 import { ProgressEntriesContext } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
+import { useDeleteProgressEntry } from "@/lib/shared/components/procedures/progress-entries/mutations/progressEntryApi";
 import { EntryDeletionModalProps } from "@/lib/shared/components/procedures/progress-entries/types";
 
 export function EntryDirectDeletionModal(props: EntryDeletionModalProps) {
@@ -22,10 +23,10 @@ export function EntryDirectDeletionModalContent(
   props: EntryDeletionModalProps,
 ) {
   const progressEntriesContext = useContext(ProgressEntriesContext);
-  const { useDeleteProgressEntry } = progressEntriesContext.config;
+  const { progressEntryApi } = progressEntriesContext.config;
   const { entryIdForDeletion } = progressEntriesContext.state;
   const { closeEntryDeletionModal } = progressEntriesContext.action;
-  const deleteProgressEntry = useDeleteProgressEntry();
+  const deleteProgressEntry = useDeleteProgressEntry(progressEntryApi);
   return (
     <EmployeePortalConfirmationDialog
       open={entryIdForDeletion !== null}

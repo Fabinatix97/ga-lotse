@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetEvaluationResponse } from "@eshg/employee-portal-api/statistics";
+import { ApiGetEvaluationResponse } from "@eshg/statistics-api";
 
 import { mapTimeRangeEndApiToFrontend } from "@/lib/businessModules/statistics/api/mapper/mapTimeRangeEnd";
 import {

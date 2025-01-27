@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiValueOption } from "@eshg/employee-portal-api/statistics";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { ApiValueOption } from "@eshg/statistics-api";
 import { isDate } from "date-fns";
 import { isDefined } from "remeda";
 

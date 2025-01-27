@@ -9,7 +9,6 @@ import static de.eshg.schoolentry.population.CreateLabelsTask.SPECIAL_NEEDS_LABE
 import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.*;
 import static java.util.Comparator.comparing;
 
-import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.citizenuser.CitizenAccessCodeUserApi;
 import de.eshg.base.citizenuser.api.AddCitizenAccessCodeUserWithDateOfBirthCredentialRequest;
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
@@ -113,16 +112,28 @@ public class SchoolEntryService {
   }
 
   public SchoolEntryProcedure createProcedure(CreateProcedureRequest request) {
-    return createProceduresWithBookAppointmentTask(
-            List.of(
-                new ImportProcedureData(
-                    request.child(), ProcedureMapper.mapToDomain(request.type()))),
+    UUID createdId = personClient.createPersonInCentralFile(request.child());
+
+    SchoolEntryProcedure createdProcedure =
+        saveSchoolEntryProcedure(
+            createdId,
+            List.of(),
+            ProcedureMapper.mapToDomain(request.type()),
             null,
             null,
             null,
-            DataOrigin.MANUAL_CREATION)
-        .stream()
-        .collect(StreamUtil.toSingleElement());
+            false,
+            null,
+            ProcedureStatus.OPEN,
+            new Anamnesis(),
+            new VaccinationStatus(),
+            new EyeExaminationResult(),
+            new HearingTestResult(),
+            new SopessExaminationResult(),
+            new DevelopmentScreening());
+
+    taskUtil.addOpenTaskOfType(createdProcedure, TaskType.BOOK_APPOINTMENT);
+    return createdProcedure;
   }
 
   public List<SchoolEntryProcedure> createProceduresWithBookAppointmentTask(
@@ -453,7 +464,7 @@ public class SchoolEntryService {
 
     List<AppointmentDto> freeAppointments =
         appointmentBlockService.getFreeAppointments(
-            earliestStart, latestStart, appointmentType, appointmentLocationId);
+            earliestStart, latestStart, appointmentType, appointmentLocationId, null);
 
     Appointment persistedAppointment = procedure.getAppointment();
     if (persistedAppointment != null && returnCurrentAppointment) {
@@ -535,7 +546,8 @@ public class SchoolEntryService {
         && locationId == null) {
       throw new BadRequestException("Appointment location is missing at procedure.");
     }
-    appointmentBlockSlotUtil.updateAppointment(appointmentType, locationId, procedure, start, end);
+    appointmentBlockSlotUtil.updateAppointment(
+        appointmentType, locationId, null, procedure, start, end);
 
     CitizenAccessCodeUserDto citizenAccessCodeUser = createOrGetCitizenAccessCodeUser(procedure);
     String accessCode = citizenAccessCodeUser.accessCode();

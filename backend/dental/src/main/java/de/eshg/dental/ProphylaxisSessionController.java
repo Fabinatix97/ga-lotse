@@ -11,6 +11,7 @@ import de.eshg.dental.api.CreateProphylaxisSessionResponse;
 import de.eshg.dental.api.GetProphylaxisSessionResponse;
 import de.eshg.dental.api.ProphylaxisSessionDetailsDto;
 import de.eshg.dental.api.ProphylaxisSessionPaginationAndSortParameters;
+import de.eshg.dental.api.UpdateProphylaxisSessionExaminationsRequest;
 import de.eshg.dental.api.UpdateProphylaxisSessionParticipantsRequest;
 import de.eshg.dental.api.UpdateProphylaxisSessionRequest;
 import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedInstitution;
@@ -24,6 +25,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -101,6 +103,16 @@ public class ProphylaxisSessionController {
       @Valid @RequestBody UpdateProphylaxisSessionParticipantsRequest request) {
     return ProphylaxisSessionMapper.mapProphylaxisSessionToDetailsDto(
         prophylaxisSessionService.updateProphylaxisSessionParticipants(
+            prophylaxisSessionId, request));
+  }
+
+  @PatchMapping("/{prophylaxisSessionId}/examinations")
+  @Transactional
+  public ProphylaxisSessionDetailsDto updateProphylaxisSessionExaminations(
+      @PathVariable("prophylaxisSessionId") UUID prophylaxisSessionId,
+      @Valid @RequestBody UpdateProphylaxisSessionExaminationsRequest request) {
+    return ProphylaxisSessionMapper.mapProphylaxisSessionToDetailsDto(
+        prophylaxisSessionService.updateProphylaxisSessionExaminations(
             prophylaxisSessionId, request));
   }
 }

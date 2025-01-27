@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { AlertProps } from "@eshg/lib-portal/components/Alert";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   ApiDraftMeaslesProcedure,
   ApiMeaslesProtectionProcedure,
-} from "@eshg/employee-portal-api/measlesProtection";
-import { AlertProps } from "@eshg/lib-portal/components/Alert";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+} from "@eshg/measles-protection-api";
 import TabOutlined from "@mui/icons-material/TabOutlined";
 import { Stack, Typography } from "@mui/joy";
 import { addWeeks } from "date-fns";

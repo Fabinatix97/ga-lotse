@@ -62,9 +62,8 @@ export function DocumentMultiSelectElement({
 
   return (
     <Stack
-      style={{
-        marginLeft: "20px",
-        marginRight: "20px",
+      sx={{
+        marginX: 2.5,
       }}
       gap={1}
     >

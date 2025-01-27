@@ -5,8 +5,8 @@
 
 "use client";
 
-import { CreateLabelRequest } from "@eshg/employee-portal-api/schoolEntry";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import { CreateLabelRequest } from "@eshg/school-entry-api";
 import { Formik } from "formik";
 
 import { useCreateLabel } from "@/lib/businessModules/schoolEntry/api/mutations/labelsApi";

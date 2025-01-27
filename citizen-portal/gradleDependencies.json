@@ -1,3 +1,9 @@
 {
-  "dependencies": [":citizen-portal-api", ":lib-portal"]
+  "dependencies": [
+    ":base-api",
+    ":citizen-portal-api",
+    ":lib-portal",
+    ":measles-protection-api",
+    ":school-entry-api"
+  ]
 }

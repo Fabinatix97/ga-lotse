@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Box } from "@mui/joy";
 import { EChartsOption } from "echarts";
 import ReactEChartsCore from "echarts-for-react/lib/core";
 import {
@@ -207,12 +208,13 @@ export function EChart(props: {
   );
 
   return (
-    <ReactEChartsCore
+    <Box
+      component={ReactEChartsCore}
       ref={ref}
       echarts={echarts}
       option={options}
       opts={{ locale: "DE", renderer: imageType }}
-      style={{ flex: 1 }}
+      sx={{ flex: 1 }}
     />
   );
 }

@@ -17,6 +17,7 @@ import { isDefined } from "remeda";
 import { useConcernSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/ConcernSidebar";
 import { usePhysicianSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/PhysicianSidebar";
 import { DetailsCellInlineEdit } from "@/lib/businessModules/officialMedicalService/shared/DetailsCellInlineEdit";
+import { isProcedureFinalized } from "@/lib/businessModules/officialMedicalService/shared/helpers";
 import { EditButton } from "@/lib/shared/components/buttons/EditButton";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
@@ -44,7 +45,7 @@ export function AdditionalInfoPanel({
                 Anliegen hinzufügen
               </InfoTileAddButton>
             )}
-          {!procedure.physician && (
+          {!isProcedureFinalized(procedure) && !procedure.physician && (
             <InfoTileAddButton
               onClick={() =>
                 physicianSidebar.open({
@@ -87,7 +88,7 @@ export function AdditionalInfoPanel({
       {procedure.physician && (
         <DetailsCellInlineEdit
           renderEditButton={
-            procedure.status !== ApiProcedureStatus.Closed && (
+            !isProcedureFinalized(procedure) && (
               <EditButton
                 aria-label="Ärzt:in bearbeiten"
                 onClick={() => physicianSidebar.open({ procedure })}

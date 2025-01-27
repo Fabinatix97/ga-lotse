@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { SearchParams } from "@eshg/lib-portal/helpers/searchParams";
+
 import { CreateProcedure } from "@/lib/businessModules/officialMedicalService/components/procedures/overview/CreateProcedure";
 import { ProceduresOverviewTable } from "@/lib/businessModules/officialMedicalService/components/procedures/overview/ProceduresOverviewTable";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
@@ -18,12 +20,17 @@ function CreateProcedureButton() {
   );
 }
 
-export default function OfficialMedicalServiceProceduresPage() {
+export default function OfficialMedicalServiceProceduresPage(
+  props: Readonly<{
+    searchParams: SearchParams;
+  }>,
+) {
   return (
     <StickyToolbarLayout toolbar={<Toolbar title="Amtsärztlicher Dienst" />}>
       <MainContentLayout fullViewportHeight>
         <ProceduresOverviewTable
           buttons={[<CreateProcedureButton key="createProcedure" />]}
+          filter={props.searchParams}
         />
       </MainContentLayout>
     </StickyToolbarLayout>

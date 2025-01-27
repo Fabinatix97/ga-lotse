@@ -79,4 +79,8 @@ public class UserClient {
             Collectors.toMap(
                 UserDto::userId, valueMapper, (key, conflictingKey) -> key, LinkedHashMap::new));
   }
+
+  public UserDto getSelfUser() {
+    return userApi.getSelfUser();
+  }
 }

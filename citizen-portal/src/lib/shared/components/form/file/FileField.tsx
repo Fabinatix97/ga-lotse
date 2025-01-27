@@ -21,6 +21,7 @@ import {
   FormLabelProps,
   Stack,
   Typography,
+  styled,
 } from "@mui/joy";
 import { ChangeEvent, ReactNode, useId, useRef } from "react";
 import { isDefined, isFunction, isString } from "remeda";
@@ -28,6 +29,8 @@ import { isDefined, isFunction, isString } from "remeda";
 import { useTranslation } from "@/lib/i18n/client";
 
 import { FileButton, StyledRemoveButton } from "./buttonVariants";
+
+const HiddenInput = styled("input")({ display: "none" });
 
 function resolveAcceptedFileTypes(
   accept: FileType | FileType[] | undefined,
@@ -175,7 +178,7 @@ export function FileField(props: Readonly<FileFieldProps>) {
             >
               {isFileSelected ? props.placeholderSelected : props.placeholder}
             </FileButton>
-            <input
+            <HiddenInput
               ref={fileInputRef}
               id={fileInputId}
               type="file"
@@ -185,7 +188,6 @@ export function FileField(props: Readonly<FileFieldProps>) {
               required={field.required}
               onChange={handleChange}
               tabIndex={-1}
-              style={{ display: "none" }}
             />
             {isDefined(field.helperText) && (
               <FormHelperText id={`${fileInputId}-helper-text`}>

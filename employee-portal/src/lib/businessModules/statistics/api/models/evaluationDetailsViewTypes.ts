@@ -11,7 +11,7 @@ import {
   ApiOrientation,
   ApiRange,
   ApiScaling,
-} from "@eshg/employee-portal-api/statistics";
+} from "@eshg/statistics-api";
 
 import { DataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";

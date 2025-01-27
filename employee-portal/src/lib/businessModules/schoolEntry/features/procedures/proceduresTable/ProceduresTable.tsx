@@ -6,12 +6,12 @@
 "use client";
 
 import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
-import { ApiSchoolEntryProcedureSortKey } from "@eshg/employee-portal-api/schoolEntry";
 import {
   formatDate,
   formatDateTime,
 } from "@eshg/lib-portal/formatters/dateTime";
 import { useToggleableState } from "@eshg/lib-portal/hooks/useToggleableState";
+import { ApiSchoolEntryProcedureSortKey } from "@eshg/school-entry-api";
 import { Chip, Stack } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import {

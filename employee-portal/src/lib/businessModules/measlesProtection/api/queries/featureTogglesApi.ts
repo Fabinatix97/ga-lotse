@@ -4,14 +4,14 @@
  */
 
 import {
-  ApiGetMeaslesProtectionFeatureTogglesResponse,
-  ApiMeaslesProtectionFeature,
-} from "@eshg/employee-portal-api/measlesProtection";
-import {
   selectDisabledOldFeature,
   selectEnabledNewFeature,
   useGetFeatureToggle,
 } from "@eshg/lib-portal/api/featureToggles";
+import {
+  ApiGetMeaslesProtectionFeatureTogglesResponse,
+  ApiMeaslesProtectionFeature,
+} from "@eshg/measles-protection-api";
 
 import { useFeatureTogglesApi } from "@/lib/businessModules/measlesProtection/api/clients";
 import { measlesProtectionApiQueryKey } from "@/lib/businessModules/measlesProtection/api/queries/apiQueryKeys";

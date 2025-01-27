@@ -17,12 +17,12 @@ export function MedicalHistorySectionElement({
   return (
     <Stack
       data-testid={dataTestId}
-      style={{
+      sx={{
         flexDirection: "row",
       }}
     >
       <Stack
-        style={{
+        sx={{
           justifyContent: "space-between",
           flexDirection: "column",
           flex: 1,

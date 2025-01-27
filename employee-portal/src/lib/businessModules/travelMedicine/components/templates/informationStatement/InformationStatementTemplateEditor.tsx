@@ -162,7 +162,7 @@ export function InformationStatementTemplateEditor(
     <Formik initialValues={template} onSubmit={handleSubmit} enableReinitialize>
       {({ isSubmitting, values }) => (
         <FormPlus
-          style={{ height: "100%", overflow: "hidden" }}
+          sx={{ height: "100%", overflow: "hidden" }}
           data-testid="information-statement-template-metadata"
         >
           <Box

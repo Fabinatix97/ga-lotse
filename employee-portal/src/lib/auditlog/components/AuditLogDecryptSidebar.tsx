@@ -97,9 +97,11 @@ export function AuditLogDecryptSidebar({
             date,
           );
 
+          const auditLogFileContent = await auditLogFile.text();
+
           const newAuditLogTab = window.open("about:blank", "_blank")!;
           newAuditLogTab.document.write(
-            `<pre>${encodeReservedHtmlCharacters(auditLogFile)}</pre>`,
+            `<pre>${encodeReservedHtmlCharacters(auditLogFileContent)}</pre>`,
           );
           newAuditLogTab.document.title = `${formatDate(date)} | ${auditLogSourceNames[source]} | Auditlog`;
           newAuditLogTab.document.close();

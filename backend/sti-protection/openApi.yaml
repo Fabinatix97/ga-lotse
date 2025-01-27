@@ -100,6 +100,12 @@ paths:
         schema:
           type: string
           format: date-time
+      - in: query
+        name: physicianId
+        required: false
+        schema:
+          type: string
+          format: uuid
       responses:
         "200":
           content:
@@ -1634,6 +1640,106 @@ paths:
       summary: Get the printable document for sexwork in EN locale.
       tags:
       - MedicalHistoryDocument
+  /sti-procedures/text-templates:
+    get:
+      operationId: getTextTemplates
+      parameters:
+      - description: |
+          Filter logic:
+          - If 'context' is submitted, only text templates are returned which belong to one of the provided contexts.
+          - If no 'context' is submitted, no filtering takes place.
+        in: query
+        name: context
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/TextTemplateContext"
+          uniqueItems: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetTextTemplatesResponse"
+          description: OK
+      summary: Get a list of text templates
+      tags:
+      - TextTemplate
+    post:
+      operationId: createTextTemplate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTextTemplateRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CreateTextTemplateResponse"
+          description: OK
+      summary: Create a new text template
+      tags:
+      - TextTemplate
+  /sti-procedures/text-templates/{textTemplateId}:
+    delete:
+      operationId: deleteTextTemplate
+      parameters:
+      - in: path
+        name: textTemplateId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      summary: Delete an existing text template
+      tags:
+      - TextTemplate
+    get:
+      operationId: getTextTemplate
+      parameters:
+      - in: path
+        name: textTemplateId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TextTemplate"
+          description: OK
+      summary: Get an existing text template
+      tags:
+      - TextTemplate
+    put:
+      operationId: updateTextTemplate
+      parameters:
+      - in: path
+        name: textTemplateId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TextTemplate"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Update an existing text template
+      tags:
+      - TextTemplate
   /sti-procedures/waiting-room-procedures:
     get:
       operationId: getWaitingRoomProcedures
@@ -3387,6 +3493,27 @@ components:
       required:
       - pin
       - procedureId
+    CreateTextTemplateRequest:
+      type: object
+      properties:
+        content:
+          type: string
+        context:
+          $ref: "#/components/schemas/TextTemplateContext"
+        name:
+          type: string
+      required:
+      - content
+      - context
+      - name
+    CreateTextTemplateResponse:
+      type: object
+      properties:
+        textTemplateId:
+          type: string
+          format: uuid
+      required:
+      - textTemplateId
     DataOrigin:
       type: string
       description: "A list of possible origins of Persons and Facility in the Central\
@@ -4528,6 +4655,15 @@ components:
       enum:
       - ASC
       - DESC
+    GetTextTemplatesResponse:
+      type: object
+      properties:
+        textTemplates:
+          type: array
+          items:
+            $ref: "#/components/schemas/TextTemplate"
+      required:
+      - textTemplates
     GetWaitingRoomProceduresResponse:
       type: object
       properties:
@@ -6092,6 +6228,32 @@ components:
       - P24
       - PCR
       - OTHER
+    TextTemplate:
+      type: object
+      properties:
+        content:
+          type: string
+        context:
+          $ref: "#/components/schemas/TextTemplateContext"
+        externalId:
+          type: string
+          format: uuid
+        name:
+          type: string
+      required:
+      - content
+      - context
+      - externalId
+      - name
+    TextTemplateContext:
+      type: string
+      enum:
+      - CONSULTATION_REASON
+      - CONSULTATION_REMARK
+      - RAPID_TESTS_REMARK
+      - LABORATORY_TESTS_REMARK
+      - DIAGNOSIS_RESULT
+      - DIAGNOSIS_REMARK
     Title:
       type: string
       enum:

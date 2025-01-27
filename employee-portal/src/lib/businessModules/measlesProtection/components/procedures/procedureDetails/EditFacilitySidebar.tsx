@@ -5,8 +5,8 @@
 
 "use client";
 
-import { ApiFacility } from "@eshg/employee-portal-api/measlesProtection";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { ApiFacility } from "@eshg/measles-protection-api";
 
 import {
   MeaslesFacility,

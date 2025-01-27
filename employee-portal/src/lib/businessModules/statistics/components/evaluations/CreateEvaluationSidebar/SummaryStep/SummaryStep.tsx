@@ -107,7 +107,6 @@ function Summary(props: SummaryProps) {
           </Typography>
         </Stack>
       )}
-      <Stack gap={1}></Stack>
       <Stack gap={1}>
         <Typography level="title-md">Betrachtungszeitraum</Typography>
         <Typography level="body-md">

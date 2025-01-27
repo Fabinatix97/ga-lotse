@@ -163,7 +163,7 @@ export function ChecklistDefinitionElement({
       borderRadius={12}
       component="section"
       aria-label={`Element ${sectionIndex + 1}.${elementIndex + 1}`}
-      style={{
+      sx={{
         background: "var(--background-level-1, #F0F4F8)",
       }}
     >
@@ -175,9 +175,9 @@ export function ChecklistDefinitionElement({
         alignItems={"center"}
       >
         <Divider
-          style={{
-            marginTop: 24,
-            marginBottom: 24,
+          sx={{
+            marginTop: 3,
+            marginBottom: 3,
             display: "flex",
             flex: 1,
           }}

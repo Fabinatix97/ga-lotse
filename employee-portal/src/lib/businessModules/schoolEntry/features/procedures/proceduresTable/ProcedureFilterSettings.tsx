@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { GetProceduresRequest } from "@eshg/employee-portal-api/schoolEntry";
 import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import {
   isDateString,
   toDateString,
   toUtcDate,
 } from "@eshg/lib-portal/helpers/dateTime";
+import { GetProceduresRequest } from "@eshg/school-entry-api";
 import { FormControl, FormLabel, Input, Select } from "@mui/joy";
 import { isDefined, isEmpty } from "remeda";
 

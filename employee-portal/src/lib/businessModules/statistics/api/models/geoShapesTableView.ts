@@ -6,7 +6,7 @@
 import {
   ApiGeoShapeSortKey,
   ApiGetGeoShapesResponse,
-} from "@eshg/employee-portal-api/statistics";
+} from "@eshg/statistics-api";
 
 export const GeoShapeStatus = {
   Active: "ACTIVE",

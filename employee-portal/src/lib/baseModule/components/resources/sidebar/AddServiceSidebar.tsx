@@ -107,7 +107,7 @@ export function AddServiceForm({
       validate={validateEndAfterStart}
       enableReinitialize
     >
-      <FormPlus style={{ display: "contents" }}>{children}</FormPlus>
+      <FormPlus sx={{ display: "contents" }}>{children}</FormPlus>
     </Formik>
   );
 }

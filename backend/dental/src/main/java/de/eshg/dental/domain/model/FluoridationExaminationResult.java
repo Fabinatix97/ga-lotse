@@ -13,4 +13,15 @@ import jakarta.persistence.Entity;
 @Entity
 @DataSensitivity(SensitivityLevel.SENSITIVE)
 @DiscriminatorValue("FLUORIDATION")
-public class FluoridationExaminationResult extends ExaminationResult {}
+public class FluoridationExaminationResult extends ExaminationResult {
+
+  private boolean fluorideVarnishApplied;
+
+  public boolean isFluorideVarnishApplied() {
+    return fluorideVarnishApplied;
+  }
+
+  public void setFluorideVarnishApplied(boolean fluorideVarnishApplied) {
+    this.fluorideVarnishApplied = fluorideVarnishApplied;
+  }
+}

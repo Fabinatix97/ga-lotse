@@ -3,10 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiAddCitizenAnamnesisRequest,
-  ApiSchoolEntryCountryCode,
-} from "@eshg/citizen-portal-api/schoolEntry";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import {
   MultiStepForm,
@@ -23,6 +19,10 @@ import {
   mapOptionalValue,
 } from "@eshg/lib-portal/helpers/form";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import {
+  ApiAddCitizenAnamnesisRequest,
+  ApiSchoolEntryCountryCode,
+} from "@eshg/school-entry-api";
 import { Typography } from "@mui/joy";
 import { Formik } from "formik";
 import { useRouter } from "next/navigation";

@@ -5,13 +5,13 @@
 
 "use client";
 
-import {
-  ApiSubmissionResult,
-  CreateProofSubmissionRequest,
-} from "@eshg/employee-portal-api/measlesProtection";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import {
+  ApiSubmissionResult,
+  CreateProofSubmissionRequest,
+} from "@eshg/measles-protection-api";
 import { Stack } from "@mui/joy";
 import { Formik, useFormikContext } from "formik";
 import { useCallback } from "react";

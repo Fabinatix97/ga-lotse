@@ -35,6 +35,7 @@ paths:
             '*/*':
               schema:
                 type: string
+                format: binary
           description: OK
       summary: Decrypt and read an auditlog file for a service of a certain date.
       tags:

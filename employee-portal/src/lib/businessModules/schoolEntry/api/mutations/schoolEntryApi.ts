@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   ApiAddCustodianRequest,
   ApiAnamnesis,
@@ -30,10 +33,7 @@ import {
   UpdateProcedureRequest,
   UpdateSopessExaminationResultRequest,
   UpdateVaccinationStatusRequest,
-} from "@eshg/employee-portal-api/schoolEntry";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+} from "@eshg/school-entry-api";
 import { MutationOptions, useQueryClient } from "@tanstack/react-query";
 
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";

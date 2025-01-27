@@ -7,19 +7,19 @@
 
 import { ApiAddContact200Response } from "@eshg/base-api";
 import { ApiCreateChildRequest } from "@eshg/dental-api";
+import { useCreateChild } from "@eshg/dental/api/mutations/childApi";
+import { getChildrenByPersonQuery } from "@eshg/dental/api/queries/childApi";
+import { useDentalApi } from "@eshg/dental/shared/DentalProvider";
 import { routes } from "@eshg/dental/shared/routes";
-import { ApiCreatePerson } from "@eshg/employee-portal-api/schoolEntry";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { ApiCreatePerson } from "@eshg/school-entry-api";
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
 import { SCHOOL_OR_DAYCARE } from "@/lib/baseModule/api/queries/contacts";
-import { useChildApi } from "@/lib/businessModules/dental/api/clients";
-import { useCreateChild } from "@/lib/businessModules/dental/api/mutations/childApi";
-import { getChildrenByPersonQuery } from "@/lib/businessModules/dental/api/queries/childApi";
 import { ChildProcedureCard } from "@/lib/businessModules/dental/features/children/new/ChildProcedureCard";
 import { SearchGroupField } from "@/lib/businessModules/dental/features/prophylaxisSessions/SearchGroupField";
 import { BUTTON_SIZE } from "@/lib/businessModules/schoolEntry/features/procedures/new/constants";
@@ -124,7 +124,7 @@ export function CreateChildSidebar() {
     );
   }
 
-  const childApi = useChildApi();
+  const { childApi } = useDentalApi();
   return (
     <>
       <Button

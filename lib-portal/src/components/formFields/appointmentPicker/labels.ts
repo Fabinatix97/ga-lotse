@@ -13,7 +13,7 @@ const dateFormatter = Intl.DateTimeFormat(undefined, {
 });
 export const FIELD_LABELS_DE = {
   requiredAppointment: "Bitte einen Termin auswählen",
-  requiredDay: "Bitte ein Tag auswählen",
+  requiredDay: "Bitte einen Tag auswählen",
   monthSelection: "Termin Kalendermonat",
   nextMonth: "zum nächsten Monat",
   prevMonth: "zum vorherigen Monat",

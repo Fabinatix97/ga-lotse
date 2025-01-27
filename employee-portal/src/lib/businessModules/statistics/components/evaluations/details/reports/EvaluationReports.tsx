@@ -5,9 +5,9 @@
 
 "use client";
 
-import { ApiReportState } from "@eshg/employee-portal-api/statistics";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { ApiReportState } from "@eshg/statistics-api";
 import { Add, NotInterestedOutlined } from "@mui/icons-material";
 import {
   Box,

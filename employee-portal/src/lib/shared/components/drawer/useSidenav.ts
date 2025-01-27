@@ -5,6 +5,7 @@
 
 import { v4 as uuidv4 } from "uuid";
 
+import { useSidebarScope } from "@/lib/shared/components/drawer/SidebarScope";
 import {
   isDrawer,
   useDrawerContext,
@@ -20,11 +21,12 @@ interface UseSidenavResult {
 
 export function useSidenav(): UseSidenavResult {
   const drawerContext = useDrawerContext();
+  const scopeId = useSidebarScope();
 
   const isOpen = isDrawer(sidenavId, drawerContext.state.open);
 
   function open(): void {
-    drawerContext.tryOpen(sidenavId, "sidenav", {
+    drawerContext.tryOpen(sidenavId, "sidenav", scopeId, {
       component: () => null,
     });
   }

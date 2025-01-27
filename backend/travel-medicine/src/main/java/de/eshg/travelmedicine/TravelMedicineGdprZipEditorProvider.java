@@ -15,14 +15,16 @@ import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.Procedu
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.VaccinationConsultation_;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.VcService_;
 import java.util.Iterator;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TravelMedicineGdprZipEditorProvider extends AbstractGdprZipEditorProvider {
 
-  @Override
-  protected String getLegalBasisAppendix() {
-    return "Hier könnte Ihr Rechtsgrundlagen-Anhang stehen!";
+  public TravelMedicineGdprZipEditorProvider(
+      @Value("classpath:/gdpr-legal-basis-text.txt") Resource resource) {
+    super(resource);
   }
 
   @Override

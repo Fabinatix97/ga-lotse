@@ -14,13 +14,14 @@ import {
   DeletionRequestForm,
   DeletionRequestValues,
 } from "@/lib/shared/components/procedures/progress-entries/forms/DeletionRequestForm";
+import { useRequestFileDeletion } from "@/lib/shared/components/procedures/progress-entries/mutations/fileApi";
 
 export function FileDeletionRequestModal() {
   const progressEntriesContext = useContext(ProgressEntriesContext);
-  const { useRequestFileDeletion } = progressEntriesContext.config;
+  const { fileApi } = progressEntriesContext.config;
   const { fileIdForDeletion } = progressEntriesContext.state;
   const { closeFileDeletionModal } = progressEntriesContext.action;
-  const requestFileDeletion = useRequestFileDeletion();
+  const requestFileDeletion = useRequestFileDeletion(fileApi);
 
   async function handleSubmit(values: DeletionRequestValues) {
     if (fileIdForDeletion !== null)

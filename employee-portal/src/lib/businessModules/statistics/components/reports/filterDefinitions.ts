@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiAvailableDataSource,
-  ApiReportType,
-} from "@eshg/employee-portal-api/statistics";
+import { ApiAvailableDataSource, ApiReportType } from "@eshg/statistics-api";
 
 import { translateReportType } from "@/lib/businessModules/statistics/api/mapper/translateReportType";
 import {

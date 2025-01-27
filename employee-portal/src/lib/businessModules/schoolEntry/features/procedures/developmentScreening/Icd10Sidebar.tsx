@@ -8,6 +8,7 @@
 import { ApiIcd10Code } from "@eshg/base-api";
 import { Close, SearchOutlined } from "@mui/icons-material";
 import {
+  Box,
   Button,
   Checkbox,
   FormControl,
@@ -18,7 +19,8 @@ import {
   Table,
   styled,
 } from "@mui/joy";
-import { ChangeEvent, useState } from "react";
+import { SxProps } from "@mui/joy/styles/types";
+import { ChangeEvent, TdHTMLAttributes, useState } from "react";
 import { useDebounce } from "use-debounce";
 
 import { useSearchIcd10Codes } from "@/lib/baseModule/api/queries/icd10Codes";
@@ -50,6 +52,19 @@ const StyledTable = styled(Table)({
     cursor: "pointer",
   },
 });
+
+function StyledTd({
+  children,
+  ...props
+}: Omit<TdHTMLAttributes<HTMLTableDataCellElement>, "style"> & {
+  sx?: SxProps;
+}) {
+  return (
+    <Box component={"td"} {...props}>
+      {children}
+    </Box>
+  );
+}
 
 function Icd10Sidebar(props: Idc10SidebarProps) {
   const [selectedCodes, setSelectedCodes] = useState<string[]>(
@@ -130,7 +145,7 @@ function Icd10Sidebar(props: Idc10SidebarProps) {
                     }
                   }}
                 >
-                  <td style={{ width: "40px", paddingLeft: 0 }}>
+                  <StyledTd sx={{ width: "40px", paddingLeft: 0 }}>
                     <Checkbox
                       checked={selectedCodes.includes(currentRowCode.code)}
                       size="sm"
@@ -142,26 +157,26 @@ function Icd10Sidebar(props: Idc10SidebarProps) {
                         },
                       }}
                     />
-                  </td>
-                  <td
+                  </StyledTd>
+                  <StyledTd
                     id={`${currentRowCode.code}-code`}
-                    style={{
+                    sx={{
                       width: "72px",
                       fontWeight: currentRowCode.isGroup ? "500" : "normal",
                       whiteSpace: "nowrap",
                     }}
                   >
                     {currentRowCode.code}
-                  </td>
-                  <td
+                  </StyledTd>
+                  <StyledTd
                     id={`${currentRowCode.code}-title`}
-                    style={{
+                    sx={{
                       paddingRight: 0,
                       fontWeight: currentRowCode.isGroup ? "500" : "normal",
                     }}
                   >
                     {currentRowCode.title}
-                  </td>
+                  </StyledTd>
                 </tr>
               ))}
             </tbody>

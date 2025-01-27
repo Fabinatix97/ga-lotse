@@ -13,7 +13,7 @@ import {
   NotDraggingStyle,
 } from "@hello-pangea/dnd";
 import { Add } from "@mui/icons-material";
-import { Button, Stack, Typography } from "@mui/joy";
+import { Box, Button, Stack, Typography } from "@mui/joy";
 import { FieldArray, useFormikContext } from "formik";
 import { v4 as uuidv4 } from "uuid";
 
@@ -61,7 +61,7 @@ export function PacklistDefinitionElementsList({
                     spacing={1}
                     {...provided.droppableProps}
                     ref={provided.innerRef}
-                    style={getListStyle(snapshot.isDraggingOver)}
+                    sx={getListStyle(snapshot.isDraggingOver)}
                   >
                     {values.elements.map((element, elementIndex) => (
                       <Draggable
@@ -70,10 +70,10 @@ export function PacklistDefinitionElementsList({
                         index={elementIndex}
                       >
                         {(provided, snapshot) => (
-                          <div
+                          <Box
                             ref={provided.innerRef}
                             {...provided.draggableProps}
-                            style={getItemStyle(
+                            sx={getItemStyle(
                               snapshot.isDragging,
                               provided.draggableProps.style,
                             )}
@@ -88,7 +88,7 @@ export function PacklistDefinitionElementsList({
                               elementIndex={elementIndex}
                               readOnlyMode={readOnlyMode}
                             />
-                          </div>
+                          </Box>
                         )}
                       </Draggable>
                     ))}
@@ -103,7 +103,7 @@ export function PacklistDefinitionElementsList({
               onClick={() => push(createNewElement())}
               variant="plain"
               startDecorator={<Add />}
-              style={{ alignSelf: "flex-start" }}
+              sx={{ alignSelf: "flex-start" }}
             >
               Neuen Eintrag erstellen
             </Button>

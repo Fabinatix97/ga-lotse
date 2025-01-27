@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAppointment } from "@eshg/employee-portal-api/schoolEntry";
+import { ApiAppointment } from "@eshg/school-entry-api";
 
 export interface Appointment {
   readonly start: Date;

@@ -141,6 +141,29 @@ const nextBaseConfig = tseslint.config(
           ],
         },
       ],
+
+      "react/forbid-dom-props": [
+        "error",
+        {
+          forbid: [
+            {
+              propName: "style",
+              message: `Avoid using "style" prop. Prefer using Joy's Box or Stack components and the "sx" prop. Or create a styled-component using the "styled" function.`,
+            },
+          ],
+        },
+      ],
+      "react/forbid-component-props": [
+        "error",
+        {
+          forbid: [
+            {
+              propName: "style",
+              message: `Avoid using "style" prop. Prefer using the "sx" prop. Or create a styled-component using the "styled" function.`,
+            },
+          ],
+        },
+      ],
     },
   },
   {
@@ -179,33 +202,6 @@ export const eslintNextConfigs = {
     rules: {
       "no-restricted-imports": ["warn", noRestrictedImportsRuleOptions("lib")],
       "@next/next/no-html-link-for-pages": "off", // libs contain no pages
-    },
-  }),
-  // These rules should be move into nextBaseConfig once all portal apps have removed all style attributes.
-  forbidStyleProp: tseslint.config({
-    rules: {
-      "react/forbid-dom-props": [
-        "error",
-        {
-          forbid: [
-            {
-              propName: "style",
-              message: `Avoid using "style" prop. Prefer using Joy's Box or Stack components and the "sx" prop. Or create a styled-component using the "styled" function.`,
-            },
-          ],
-        },
-      ],
-      "react/forbid-component-props": [
-        "error",
-        {
-          forbid: [
-            {
-              propName: "style",
-              message: `Avoid using "style" prop. Prefer using the "sx" prop. Or create a styled-component using the "styled" function.`,
-            },
-          ],
-        },
-      ],
     },
   }),
 };

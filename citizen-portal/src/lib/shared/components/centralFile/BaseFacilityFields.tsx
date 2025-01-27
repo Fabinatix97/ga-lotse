@@ -6,7 +6,7 @@
 import {
   ApiFacilityContactPerson,
   ApiGetReferenceFacilityResponse,
-} from "@eshg/citizen-portal-api/base";
+} from "@eshg/base-api";
 import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 import SalutationIcon from "@mui/icons-material/HowToRegOutlined";
 import MailIcon from "@mui/icons-material/MailOutlined";

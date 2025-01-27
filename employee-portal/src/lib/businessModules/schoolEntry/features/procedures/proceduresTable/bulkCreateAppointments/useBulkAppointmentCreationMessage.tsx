@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiCreateAppointmentsBulkResponse } from "@eshg/employee-portal-api/schoolEntry";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { ApiCreateAppointmentsBulkResponse } from "@eshg/school-entry-api";
 
 interface UseBulkAppointmentCreationMessageResult {
   open: (response: ApiCreateAppointmentsBulkResponse) => void;

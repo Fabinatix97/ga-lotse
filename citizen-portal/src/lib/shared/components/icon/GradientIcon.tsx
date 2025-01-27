@@ -5,10 +5,12 @@
 
 import { SvgIconComponent } from "@mui/icons-material";
 import { SvgIconProps } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
 import { createElement } from "react";
 
-export interface GradientIconProps extends SvgIconProps {
+export interface GradientIconProps extends Omit<SvgIconProps, "style"> {
   iconClass: SvgIconComponent;
+  sx?: SxProps;
 }
 
 export function GradientIcon({ iconClass, ...props }: GradientIconProps) {

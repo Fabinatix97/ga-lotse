@@ -100,6 +100,12 @@ paths:
         schema:
           type: string
           format: date-time
+      - in: query
+        name: physicianId
+        required: false
+        schema:
+          type: string
+          format: uuid
       responses:
         "200":
           content:

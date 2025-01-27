@@ -10,7 +10,7 @@ import {
   ApiGetMeaslesProtectionProceduresSortOrder,
   ApiGetProcedure200Response,
   ProtectionProcedureApi,
-} from "@eshg/employee-portal-api/measlesProtection";
+} from "@eshg/measles-protection-api";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { DeepKeys } from "@tanstack/react-table";
 

@@ -87,3 +87,4 @@ catalogs:
     "drauu": "0.4.2"
     "tsup": "8.3.5"
     "zustand": "5.0.3"
+    "resolve-tspaths": "0.8.23"

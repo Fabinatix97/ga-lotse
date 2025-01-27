@@ -8,6 +8,7 @@ import { useContext } from "react";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { EmployeePortalConfirmationDialog } from "@/lib/shared/components/confirmationDialog/EmployeePortalConfirmationDialog";
 import { ProgressEntriesContext } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
+import { useDeleteFile } from "@/lib/shared/components/procedures/progress-entries/mutations/fileApi";
 
 export function FileDirectDeletionModal() {
   return (
@@ -19,10 +20,10 @@ export function FileDirectDeletionModal() {
 
 export function FileDirectDeletionModalContent() {
   const progressEntriesContext = useContext(ProgressEntriesContext);
-  const { useDeleteFile } = progressEntriesContext.config;
+  const { fileApi } = progressEntriesContext.config;
   const { fileIdForDeletion } = progressEntriesContext.state;
   const { closeFileDeletionModal } = progressEntriesContext.action;
-  const deleteFile = useDeleteFile();
+  const deleteFile = useDeleteFile(fileApi);
   return (
     <EmployeePortalConfirmationDialog
       open={fileIdForDeletion !== null}

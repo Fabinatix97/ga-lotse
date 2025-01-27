@@ -11,7 +11,7 @@ import {
   ApiReportingReason,
   ApiRoleStatus,
   ApiSubmissionResult,
-} from "@eshg/employee-portal-api/measlesProtection";
+} from "@eshg/measles-protection-api";
 
 export const facilityTypeNames: Record<ApiMPFacilityType, string> = {
   [ApiMPFacilityType.School]: "Schule",

@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { formControlClasses } from "@mui/joy";
+import { Box, formControlClasses } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
 // eslint-disable-next-line no-restricted-imports
 import { Form, FormikFormProps, useFormikContext } from "formik";
 import { MutableRefObject, useEffect, useRef } from "react";
@@ -75,6 +76,7 @@ export function scrollToFirstFormError(
 
 interface FormPlusOptions {
   scrollToError?: boolean;
+  sx?: SxProps;
 }
 
 /* Formik <Form> wrapper that utilizes useScrollToError()
@@ -84,14 +86,20 @@ export function FormPlus({
   children,
   scrollToError = true,
   ...props
-}: Omit<FormikFormProps, "autoComplete" | "noValidate" | "ref"> &
+}: Omit<FormikFormProps, "autoComplete" | "noValidate" | "ref" | "style"> &
   FormPlusOptions) {
   const formRef = useRef<HTMLFormElement | null>(null);
   useScrollToError({ enabled: scrollToError, formRef });
 
   return (
-    <Form autoComplete="off" {...props} noValidate ref={formRef}>
+    <Box
+      component={Form}
+      autoComplete="off"
+      {...props}
+      noValidate
+      ref={formRef}
+    >
       {children}
-    </Form>
+    </Box>
   );
 }

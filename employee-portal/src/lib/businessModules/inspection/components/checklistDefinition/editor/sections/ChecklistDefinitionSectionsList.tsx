@@ -14,7 +14,7 @@ import {
   NotDraggingStyle,
 } from "@hello-pangea/dnd";
 import { CreateNewFolder } from "@mui/icons-material";
-import { Button, Stack } from "@mui/joy";
+import { Box, Button, Stack } from "@mui/joy";
 import { FieldArray, useFormikContext } from "formik";
 import { v4 as uuidv4 } from "uuid";
 
@@ -46,7 +46,7 @@ export function ChecklistDefinitionSectionsList() {
                   spacing={2}
                   {...provided.droppableProps}
                   ref={provided.innerRef}
-                  style={getListStyle(snapshot.isDraggingOver)}
+                  sx={getListStyle(snapshot.isDraggingOver)}
                 >
                   {values.context.sections.map((section, sectionIndex) => (
                     <Draggable
@@ -55,10 +55,10 @@ export function ChecklistDefinitionSectionsList() {
                       index={sectionIndex}
                     >
                       {(provided, snapshot) => (
-                        <div
+                        <Box
                           ref={provided.innerRef}
                           {...provided.draggableProps}
-                          style={getItemStyle(
+                          sx={getItemStyle(
                             snapshot.isDragging,
                             provided.draggableProps.style,
                           )}
@@ -73,7 +73,7 @@ export function ChecklistDefinitionSectionsList() {
                             addSection={(section) => push(section)}
                             sectionIndex={sectionIndex}
                           />
-                        </div>
+                        </Box>
                       )}
                     </Draggable>
                   ))}
@@ -87,7 +87,7 @@ export function ChecklistDefinitionSectionsList() {
             onClick={() => push(createNewSection())}
             variant="plain"
             startDecorator={<CreateNewFolder />}
-            style={{ alignSelf: "flex-start" }}
+            sx={{ alignSelf: "flex-start" }}
           >
             Neue Sektion erstellen
           </Button>

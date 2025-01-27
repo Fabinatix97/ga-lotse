@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import {
   ApiAccessRestriction,
   ApiMeaslesProtectionFeature,
   ApiMeaslesProtectionProcedure,
-} from "@eshg/employee-portal-api/measlesProtection";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+} from "@eshg/measles-protection-api";
 import { Add, EditOutlined } from "@mui/icons-material";
 import { Button, IconButton, Sheet, Stack } from "@mui/joy";
 

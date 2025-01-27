@@ -8,27 +8,16 @@
 import { ApiUserRole } from "@eshg/base-api";
 
 import { EditInspectionPageParams } from "@/app/(businessModules)/inspection/procedures/[id]/layout";
-import { useDownloadInspectionFile } from "@/lib/businessModules/inspection/api/download/files";
 import {
-  useDecideApprovalRequest,
-  useGrantDeletionForAllRequests,
-} from "@/lib/businessModules/inspection/api/mutations/approvalRequests";
+  useApprovalRequestApi,
+  useFileApi,
+  useProcedureApi,
+  useProgressEntryApi,
+} from "@/lib/businessModules/inspection/api/clients";
 import {
-  useDeleteFile,
-  useRequestFileDeletion,
-} from "@/lib/businessModules/inspection/api/mutations/files";
-import {
-  useCreateProgressEntry,
-  useDeleteProgressEntry,
-  usePatchProgressEntry,
-  useRequestProgressEntryDeletion,
-} from "@/lib/businessModules/inspection/api/mutations/progressEntries";
-import { useGetMetaDataHistory } from "@/lib/businessModules/inspection/api/queries/files";
-import {
-  useFetchProgressEntries,
-  useFetchProgressEntryDetails,
-  useGetManualProgressEntryHistory,
-} from "@/lib/businessModules/inspection/api/queries/progressEntries";
+  fileApiQueryKey,
+  progressEntryApiQueryKey,
+} from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
 import { systemProgressEntryTypeTitles } from "@/lib/businessModules/inspection/shared/constants";
 import { moduleUserGroup } from "@/lib/businessModules/inspection/shared/moduleUserGroup";
 import { getHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/getHeadersForOfflineCaching";
@@ -39,27 +28,25 @@ export default function InspectionProgressEntriesPage(
   props: ProgressEntriesUrlParams<EditInspectionPageParams>,
 ) {
   const { params, searchParams } = props;
+  const progressEntryApi = useProgressEntryApi();
+  const procedureApi = useProcedureApi();
+  const fileApi = useFileApi();
+  const approvalRequestApi = useApprovalRequestApi();
+
   return (
     <ProgressEntriesPage
-      useCreateProgressEntry={useCreateProgressEntry}
-      useDeleteFile={useDeleteFile}
-      useDeleteProgressEntry={useDeleteProgressEntry}
-      usePatchProgressEntry={usePatchProgressEntry}
-      useFetchProgressEntries={useFetchProgressEntries}
-      useFetchProgressEntryDetails={useFetchProgressEntryDetails}
       procedureId={params.id}
       searchParams={searchParams}
       leaderRole={ApiUserRole.InspectionLeader}
-      useRequestProgressEntryDeletion={useRequestProgressEntryDeletion}
-      useRequestFileDeletion={useRequestFileDeletion}
-      useDecideApprovalRequest={useDecideApprovalRequest}
-      useGrantDeletionForAllRequests={useGrantDeletionForAllRequests}
-      useDownloadFile={useDownloadInspectionFile}
-      useGetManualProgressEntryHistory={useGetManualProgressEntryHistory}
-      useGetMetaDataHistory={useGetMetaDataHistory}
       systemProgressEntryTypes={systemProgressEntryTypeTitles}
       groupName={moduleUserGroup.group}
       getInitOverrides={getHeadersForOfflineCaching}
+      progressEntryApiQueryKey={progressEntryApiQueryKey}
+      progressEntryApi={progressEntryApi}
+      procedureApi={procedureApi}
+      fileApiQueryKey={fileApiQueryKey}
+      fileApi={fileApi}
+      approvalRequestApi={approvalRequestApi}
     />
   );
 }

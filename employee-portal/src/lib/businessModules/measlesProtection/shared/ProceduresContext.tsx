@@ -6,8 +6,8 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
-import { ApiGetProcedure200Response } from "@eshg/employee-portal-api/measlesProtection";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { ApiGetProcedure200Response } from "@eshg/measles-protection-api";
 import { createContext, useContext, useState } from "react";
 import { isNullish } from "remeda";
 

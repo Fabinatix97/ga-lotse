@@ -23,10 +23,12 @@ public interface AppointmentBlockRepository extends JpaRepository<AppointmentBlo
   @Query(
       "select a from AppointmentBlock a left join fetch a.appointments where a.appointmentBlockGroup.type = :appointmentType "
           + "and (:locationId is null or a.appointmentBlockGroup.locationId = :locationId) "
+          + "and (:physicianId is null or :physicianId member of a.appointmentBlockGroup.physicians) "
           + "and a.appointmentBlockEnd >= :appointmentBlockEnd order by a.id")
   List<AppointmentBlock> findBlockByAppointmentTypeAndLocationAndAppointmentBlockEndGreaterThan(
       @Param("appointmentType") AppointmentType appointmentType,
       @Param("locationId") UUID locationId,
+      @Param("physicianId") UUID physicianId,
       @Param("appointmentBlockEnd") Instant appointmentBlockEnd);
 
   @Lock(LockModeType.PESSIMISTIC_WRITE)

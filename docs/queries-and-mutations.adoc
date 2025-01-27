@@ -26,7 +26,7 @@ To properly configure the API clients for usage with TanStack Query, we define r
 .$PATH_TO_MODULE/api/clients.ts
 [,ts]
 ----
-import { AppointmentBlockApi, Configuration, SchoolEntryApi } from "@eshg/employee-portal-api/schoolEntry";
+import { AppointmentBlockApi, Configuration, SchoolEntryApi } from "@eshg/school-entry-api";
 import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 
 function useConfiguration() {

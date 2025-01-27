@@ -18,11 +18,14 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -92,11 +95,13 @@ public class AppointmentBlockSlotUtil {
   public void updateAppointment(
       AppointmentType appointmentType,
       UUID locationId,
+      UUID physicianId,
       EntityWithAppointment entityWithAppointment,
       Instant appointmentStart,
       Instant appointmentEnd) {
     AppointmentBlock newAppointmentBlock =
-        findSuitableAppointmentBlock(appointmentType, locationId, appointmentStart, appointmentEnd);
+        findSuitableAppointmentBlock(
+            appointmentType, locationId, physicianId, appointmentStart, appointmentEnd);
 
     Appointment newAppointment = new Appointment();
     newAppointment.setAppointmentStart(appointmentStart);
@@ -123,7 +128,11 @@ public class AppointmentBlockSlotUtil {
   }
 
   private AppointmentBlock findSuitableAppointmentBlock(
-      AppointmentType appointmentType, UUID locationId, Instant start, Instant end) {
+      AppointmentType appointmentType,
+      UUID locationId,
+      UUID physicianId,
+      Instant start,
+      Instant end) {
     AppointmentBlockSlot requestedSlot = new AppointmentBlockSlot(start, end);
 
     List<AppointmentBlock> appointmentBlocks =
@@ -134,9 +143,22 @@ public class AppointmentBlockSlotUtil {
     Map<AppointmentBlock, List<AppointmentBlockSlot>> freeAppointmentBlockSlots =
         calculateFreeAppointmentBlockSlots(appointmentBlocks);
 
-    return freeAppointmentBlockSlots.entrySet().stream()
-        .filter(entry -> entry.getValue().contains(requestedSlot))
-        .map(Map.Entry::getKey)
+    Stream<AppointmentBlock> appointmentBlock =
+        freeAppointmentBlockSlots.entrySet().stream()
+            .filter(entry -> entry.getValue().contains(requestedSlot))
+            .map(Entry::getKey);
+
+    if (physicianId != null) {
+      appointmentBlock =
+          appointmentBlock.sorted(
+              Comparator.comparing(
+                  block -> {
+                    List<UUID> physicians = block.getAppointmentBlockGroup().getPhysicians();
+                    return physicians.contains(physicianId) ? physicians.size() : Integer.MAX_VALUE;
+                  }));
+    }
+
+    return appointmentBlock
         .findFirst()
         .orElseThrow(
             () ->

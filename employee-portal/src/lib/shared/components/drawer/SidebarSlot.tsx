@@ -11,6 +11,7 @@ import { useQueryErrorResetBoundary } from "@tanstack/react-query";
 import { ReactNode, Suspense } from "react";
 import { ErrorBoundary, FallbackProps } from "react-error-boundary";
 
+import { useSidebarScope } from "@/lib/shared/components/drawer/SidebarScope";
 import {
   DrawerFallbackOptions,
   DrawerInstance,
@@ -21,8 +22,12 @@ import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export function SidebarSlot() {
   const { state, tryClose } = useDrawerContext();
+  const scopeId = useSidebarScope();
   const openDrawer = state.open;
-  const sidebar = openDrawer?.type === "sidebar" ? openDrawer : null;
+  const sidebar =
+    openDrawer?.type === "sidebar" && openDrawer?.scopeId === scopeId
+      ? openDrawer
+      : null;
 
   function renderComponentWithBoundary(
     sidebarInstance: DrawerInstance,

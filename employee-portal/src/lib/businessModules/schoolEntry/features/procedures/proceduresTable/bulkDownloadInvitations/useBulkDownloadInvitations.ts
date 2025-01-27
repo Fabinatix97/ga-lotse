@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DownloadInvitationsRequest } from "@eshg/employee-portal-api/schoolEntry";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import { DownloadInvitationsRequest } from "@eshg/school-entry-api";
 import { useState } from "react";
 import { doNothing } from "remeda";
 

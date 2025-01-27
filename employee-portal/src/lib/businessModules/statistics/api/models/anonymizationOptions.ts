@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiDataSourceSensitivity } from "@eshg/employee-portal-api/statistics";
+import { ApiDataSourceSensitivity } from "@eshg/statistics-api";
 
 export const AnonymizationOptions = {
   Choice: "CHOICE",

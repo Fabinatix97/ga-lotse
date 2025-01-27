@@ -132,13 +132,14 @@ public class AppointmentBlockService {
       Instant earliestStart,
       Instant latestStart,
       AppointmentType appointmentType,
-      UUID locationId) {
+      UUID locationId,
+      UUID physicianId) {
     Instant start = earliestStart == null ? Instant.now(clock) : earliestStart;
 
     List<AppointmentBlock> appointmentBlocks =
         appointmentBlockRepository
             .findBlockByAppointmentTypeAndLocationAndAppointmentBlockEndGreaterThan(
-                appointmentType, locationId, start);
+                appointmentType, locationId, physicianId, start);
 
     return appointmentBlockSlotUtil
         .calculateFreeAppointmentBlockSlots(appointmentBlocks)

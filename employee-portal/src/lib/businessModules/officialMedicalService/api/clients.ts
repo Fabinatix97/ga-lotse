@@ -11,6 +11,7 @@ import {
   Configuration,
   EmployeeOmsProcedureApi,
   FileApi,
+  OmsAppointmentApi,
   ProcedureApi,
   ProgressEntryApi,
 } from "@eshg/employee-portal-api/officialMedicalService";
@@ -56,4 +57,9 @@ export function useEmployeeOmsProcedureApi() {
 export function useConcernApi() {
   const configuration = useConfiguration();
   return new ConcernApi(configuration);
+}
+
+export function useOmsAppointmentApi() {
+  const configuration = useConfiguration();
+  return new OmsAppointmentApi(configuration);
 }

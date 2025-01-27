@@ -5,9 +5,9 @@
 
 "use client";
 
-import { ApiFacilityType } from "@eshg/employee-portal-api/measlesProtection";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import { ApiFacilityType } from "@eshg/measles-protection-api";
 import { useFormikContext } from "formik";
 import { useState } from "react";
 

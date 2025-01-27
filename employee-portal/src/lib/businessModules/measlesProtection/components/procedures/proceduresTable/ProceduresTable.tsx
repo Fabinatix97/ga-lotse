@@ -7,9 +7,9 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
-import { ApiGetProcedure200Response } from "@eshg/employee-portal-api/measlesProtection";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { ApiGetProcedure200Response } from "@eshg/measles-protection-api";
 import { EditOutlined, Preview, ToggleOffOutlined } from "@mui/icons-material";
 import { Chip } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiDateSpan } from "@eshg/employee-portal-api/statistics";
+import { ApiDateSpan } from "@eshg/statistics-api";
 import { addDays, parseISO, startOfDay } from "date-fns";
 
 import { DateSpanFilterValue } from "@/lib/shared/components/filterSettings/models/DateSpanFilter";

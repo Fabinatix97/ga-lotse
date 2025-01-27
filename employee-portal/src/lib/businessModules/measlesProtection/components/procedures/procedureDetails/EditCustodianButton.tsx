@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiCustodian } from "@eshg/employee-portal-api/measlesProtection";
+import { ApiCustodian } from "@eshg/measles-protection-api";
 
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 

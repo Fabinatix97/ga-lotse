@@ -6,14 +6,14 @@
 "use client";
 
 import {
-  ApiCaseStatus,
-  ApiGetProcedure200Response,
-} from "@eshg/employee-portal-api/measlesProtection";
-import {
   SelectOptions,
   optionsFromRecord,
 } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import {
+  ApiCaseStatus,
+  ApiGetProcedure200Response,
+} from "@eshg/measles-protection-api";
 import { FormControl, Select } from "@mui/joy";
 
 import { useUpdateCaseStatusMutation } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";

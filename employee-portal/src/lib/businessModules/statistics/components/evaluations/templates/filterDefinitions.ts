@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAvailableDataSource } from "@eshg/employee-portal-api/statistics";
+import { ApiAvailableDataSource } from "@eshg/statistics-api";
 
 import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
 

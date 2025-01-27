@@ -9,7 +9,6 @@ import {
   ApiProcedureStatus,
   ApiTMCertificate,
 } from "@eshg/employee-portal-api/travelMedicine";
-import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { ReceiptOutlined } from "@mui/icons-material";
 import AddOutlined from "@mui/icons-material/AddOutlined";
@@ -35,7 +34,7 @@ export function CertificatesTable({
   procedureId: string;
 }>) {
   const snackbar = useSnackbar();
-  const downloadFile = useDownloadTravelMedicineFile();
+  const file = useDownloadTravelMedicineFile();
 
   const [
     { data: tableData },
@@ -66,11 +65,7 @@ export function CertificatesTable({
   async function downloadCertificate(certificate: ApiTMCertificate) {
     try {
       if (certificate.certificateFileId !== undefined) {
-        const downloadedFile = await downloadFile(
-          certificate.certificateFileId,
-        );
-
-        downloadFileAndOpen(downloadedFile);
+        await file.download(certificate.certificateFileId);
       }
     } catch {
       snackbar.error("Der Download der Bescheinigung ist fehlgeschlagen.");

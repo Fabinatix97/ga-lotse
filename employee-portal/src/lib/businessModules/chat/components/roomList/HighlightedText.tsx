@@ -39,7 +39,7 @@ export function HighlightedText({
           {index > 0 && (
             <Box
               component="mark"
-              style={{ backgroundColor: theme.palette.success[100] }}
+              sx={{ backgroundColor: theme.palette.success[100] }}
             >
               {match[0]}
             </Box>

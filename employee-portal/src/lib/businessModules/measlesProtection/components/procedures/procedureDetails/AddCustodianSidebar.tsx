@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiDraftMeaslesProcedure } from "@eshg/employee-portal-api/measlesProtection";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { isAdult } from "@eshg/lib-portal/helpers/dateTime";
+import { ApiDraftMeaslesProcedure } from "@eshg/measles-protection-api";
 import { FormikErrors } from "formik";
 
 import { useAddCustodianMutation } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";

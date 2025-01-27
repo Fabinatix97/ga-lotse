@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ChildExamination } from "@eshg/dental/api/models/ChildExamination";
+import { useUpdateProphylaxisSessionParticipants } from "@eshg/dental/api/mutations/prophylaxisSessionApi";
 import { routes } from "@eshg/dental/shared/routes";
 import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
@@ -15,8 +17,6 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { useEffect } from "react";
 import { isDefined } from "remeda";
 
-import { ChildExamination } from "@/lib/businessModules/dental/api/models/ChildExamination";
-import { useUpdateProphylaxisSessionParticipants } from "@/lib/businessModules/dental/api/mutations/prophylaxisSessionApi";
 import { ExaminationStatusChip } from "@/lib/businessModules/dental/features/examinations/ExaminationStatusChip";
 import { useAddChildToProphylaxisSessionSidebar } from "@/lib/businessModules/dental/features/prophylaxisSessions/AddChildToProphylaxisSessionSidebar";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";

@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
+import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import {
   ApiReportingReason,
   ApiRoleStatus,
-} from "@eshg/citizen-portal-api/measlesProtection";
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
+} from "@eshg/measles-protection-api";
 import {
   Business,
   FmdGoodOutlined,

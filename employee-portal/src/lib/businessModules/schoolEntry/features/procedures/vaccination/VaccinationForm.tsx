@@ -6,11 +6,6 @@
 "use client";
 
 import {
-  ApiBooleanWithUnknown,
-  ApiVaccinationSchemeValue,
-  UpdateVaccinationStatusRequest,
-} from "@eshg/employee-portal-api/schoolEntry";
-import {
   SoftRequiredBooleanSelectField,
   SoftRequiredSelectField,
 } from "@eshg/lib-portal/businessModules/schoolEntry/features/procedures/fieldVariants";
@@ -28,6 +23,11 @@ import {
   SetFieldValueHelper,
 } from "@eshg/lib-portal/types/form";
 import { MutationBundle } from "@eshg/lib-portal/types/query";
+import {
+  ApiBooleanWithUnknown,
+  ApiVaccinationSchemeValue,
+  UpdateVaccinationStatusRequest,
+} from "@eshg/school-entry-api";
 import { Add, DeleteOutlined } from "@mui/icons-material";
 import { Button, Divider, Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";

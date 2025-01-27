@@ -6,7 +6,6 @@
 "use client";
 
 import { ApiProcedureStatus } from "@eshg/employee-portal-api/travelMedicine";
-import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
 import { AddOutlined, DocumentScannerOutlined } from "@mui/icons-material";
 import { Button, Stack, Typography } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
@@ -36,7 +35,7 @@ export function InformationStatementsTable({
 }>) {
   const resetInformationStatementApi = useResetInformationStatement();
   const deleteInformationStatementApi = useDeleteInformationStatement();
-  const downloadInformationStatementPdf = useDownloadInformationStatementPdf();
+  const informationStatementPdf = useDownloadInformationStatementPdf();
 
   const [{ data: allInformationStatements }, { data: status }] =
     useSuspenseQueries({
@@ -89,11 +88,10 @@ export function InformationStatementsTable({
   }
 
   async function getInformationStatementPdf(informationStatementId: string) {
-    const downloadedFile = await downloadInformationStatementPdf(
+    await informationStatementPdf.download({
       procedureId,
       informationStatementId,
-    );
-    downloadFileAndOpen(downloadedFile);
+    });
   }
 
   return (

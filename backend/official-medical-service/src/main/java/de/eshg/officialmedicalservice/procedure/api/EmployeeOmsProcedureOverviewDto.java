@@ -9,6 +9,7 @@ import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -21,4 +22,5 @@ public record EmployeeOmsProcedureOverviewDto(
     LocalDate dateOfBirth,
     String facilityName,
     @Valid ConcernDto concern,
-    String physicianName) {}
+    String physicianName,
+    Instant nextAppointment) {}

@@ -5,11 +5,11 @@
 
 "use client";
 
-import { UpdateLabelRequest } from "@eshg/employee-portal-api/schoolEntry";
 import {
   mapOptionalValue,
   parseOptionalValue,
 } from "@eshg/lib-portal/helpers/form";
+import { UpdateLabelRequest } from "@eshg/school-entry-api";
 import { Formik } from "formik";
 
 import { Label } from "@/lib/businessModules/schoolEntry/api/models/Label";

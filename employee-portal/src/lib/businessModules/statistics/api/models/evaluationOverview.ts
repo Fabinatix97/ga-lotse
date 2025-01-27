@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiEvaluationState,
-  ApiUser,
-} from "@eshg/employee-portal-api/statistics";
+import { ApiEvaluationState, ApiUser } from "@eshg/statistics-api";
 
 import { DataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 

@@ -54,13 +54,13 @@ public final class SymmetricEncryption {
     return cipher.doFinal(inputBytes);
   }
 
-  public static byte[] decrypt(EncryptedPayload encryptedPayload) throws GeneralSecurityException {
+  public static Cipher createDecryptionCipher(byte[] key, byte[] iv)
+      throws GeneralSecurityException {
     Cipher cipher = Cipher.getInstance(AES_GCM_ALGORITHM);
-    byte[] key = encryptedPayload.key;
     SecretKey secretKey = new SecretKeySpec(key, KEY_ALGORITHM);
-    GCMParameterSpec gcmParameterSpec = createGcmParameterSpecFromIv(encryptedPayload.iv);
+    GCMParameterSpec gcmParameterSpec = createGcmParameterSpecFromIv(iv);
     cipher.init(Cipher.DECRYPT_MODE, secretKey, gcmParameterSpec);
-    return cipher.doFinal(encryptedPayload.cipherText);
+    return cipher;
   }
 
   public record EncryptedPayload(byte[] cipherText, byte[] key, byte[] iv) {}

@@ -5,10 +5,13 @@
 
 package de.eshg.dental.domain.repository;
 
+import de.eshg.dental.domain.model.Examination_;
 import de.eshg.dental.domain.model.ProphylaxisSession;
+import de.eshg.dental.domain.model.ProphylaxisSession_;
 import jakarta.persistence.LockModeType;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Lock;
@@ -26,6 +29,11 @@ public interface ProphylaxisSessionRepository
       @Param("oldInstitutionId") UUID oldInstitutionId,
       @Param("newInstitutionId") UUID newInstitutionId);
 
+  @EntityGraph(
+      attributePaths = {
+        ProphylaxisSession_.EXAMINATIONS + "." + Examination_.CHILD,
+        ProphylaxisSession_.EXAMINATIONS + "." + Examination_.RESULT
+      })
   Optional<ProphylaxisSession> findByExternalId(UUID externalId);
 
   @Lock(LockModeType.PESSIMISTIC_WRITE)

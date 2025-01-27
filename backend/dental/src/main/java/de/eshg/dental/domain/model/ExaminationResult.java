@@ -24,21 +24,11 @@ public abstract class ExaminationResult extends BaseEntity {
   @OneToOne(optional = false, mappedBy = Examination_.RESULT)
   private Examination examination;
 
-  private boolean fluorideVarnishApplied;
-
   public Examination getExamination() {
     return examination;
   }
 
   public void setExamination(Examination examination) {
     this.examination = examination;
-  }
-
-  public boolean isFluorideVarnishApplied() {
-    return fluorideVarnishApplied;
-  }
-
-  public void setFluorideVarnishApplied(boolean fluorideVarnishApplied) {
-    this.fluorideVarnishApplied = fluorideVarnishApplied;
   }
 }

@@ -15,7 +15,6 @@ def getTypescriptInputFiles = {
 tasks.register('compile', PnpmTask) {
   group = 'package'
   dependsOn 'prepareEnvironment'
-  mustRunAfter 'compileCheck'
 
   inputs.files "${rootDir}/config/tsconfig.base.json"
   inputs.files "${projectDir}/tsconfig.json"
@@ -26,19 +25,6 @@ tasks.register('compile', PnpmTask) {
   args = ['tsc']
 
   doFirst {
-    delete distDir // TODO: exclude *.tsbuildinfo from deletion to enable incremental builds
+    delete distDir
   }
-}
-
-tasks.register('compileCheck', PnpmTask) {
-  group = 'verification'
-  dependsOn 'prepareEnvironment'
-
-  inputs.files "${rootDir}/config/tsconfig.base.json"
-  inputs.files "${projectDir}/tsconfig.json"
-  inputs.files getTypescriptInputFiles()
-
-  outputs.dir distDir
-
-  args = ['tsc', '--noEmit']
 }

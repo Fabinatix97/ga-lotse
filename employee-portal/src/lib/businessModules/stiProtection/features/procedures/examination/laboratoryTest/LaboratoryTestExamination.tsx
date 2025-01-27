@@ -297,7 +297,7 @@ export function LaboratoryTestExamination(
       enableReinitialize
     >
       {({ dirty, resetForm, isSubmitting }) => (
-        <FormPlus style={{ height: "100%", overflow: "hidden" }}>
+        <FormPlus sx={{ height: "100%", overflow: "hidden" }}>
           <Box
             sx={{
               pt: 3,

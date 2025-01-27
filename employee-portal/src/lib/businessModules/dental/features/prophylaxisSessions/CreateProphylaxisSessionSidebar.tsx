@@ -11,6 +11,11 @@ import {
   ApiFluoridationVarnish,
   ApiProphylaxisType,
 } from "@eshg/dental-api";
+import { useCreateProphylaxisSession } from "@eshg/dental/api/mutations/prophylaxisSessionApi";
+import {
+  getAllDentalAssistantsQuery,
+  getAllDentistsQuery,
+} from "@eshg/dental/api/queries/staffApi";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
 import { useHasChanged } from "@eshg/lib-portal/hooks/useHasChanged";
@@ -22,11 +27,6 @@ import { forwardRef, useEffect } from "react";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
 import { SCHOOL_OR_DAYCARE } from "@/lib/baseModule/api/queries/contacts";
-import { useCreateProphylaxisSession } from "@/lib/businessModules/dental/api/mutations/prophylaxisSessionApi";
-import {
-  getAllDentalAssistantsQuery,
-  getAllDentistsQuery,
-} from "@/lib/businessModules/dental/api/queries/staff";
 import { FluoridationField } from "@/lib/businessModules/dental/features/prophylaxisSessions/FluoridationField";
 import { SearchGroupField } from "@/lib/businessModules/dental/features/prophylaxisSessions/SearchGroupField";
 import { PROPHYLAXIS_TYPE_OPTIONS } from "@/lib/businessModules/dental/features/prophylaxisSessions/options";

@@ -5,10 +5,10 @@
 
 "use client";
 
-import { ApiSchoolEntryProcedureType } from "@eshg/employee-portal-api/schoolEntry";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { ApiSchoolEntryProcedureType } from "@eshg/school-entry-api";
 import { Button, Stack } from "@mui/joy";
 import { useRef, useState } from "react";
 

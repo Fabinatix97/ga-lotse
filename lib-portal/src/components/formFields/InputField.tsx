@@ -102,6 +102,7 @@ export function InputField(props: Readonly<InputFieldProps>) {
             maxLength: props.maxLength,
             "aria-details": props["aria-details"],
             autoFocus: props.autoFocus ?? false,
+            max: props.type === "date" ? "9999-12-31" : undefined,
           },
         }}
       />

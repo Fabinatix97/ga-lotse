@@ -86,7 +86,7 @@ export function NewGroupChat({
       >
         {({ values }) => (
           <FormPlus
-            style={{
+            sx={{
               height: "100%",
               display: "flex",
               flexDirection: "column",

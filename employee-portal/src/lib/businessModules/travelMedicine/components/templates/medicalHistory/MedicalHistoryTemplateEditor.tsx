@@ -145,7 +145,7 @@ export function MedicalHistoryTemplateEditor(
       onSubmit={onSubmit}
     >
       {({ values, isSubmitting }) => (
-        <FormPlus style={{ height: "100%", overflow: "hidden" }}>
+        <FormPlus sx={{ height: "100%", overflow: "hidden" }}>
           <Box
             sx={{
               pt: 3,

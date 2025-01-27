@@ -117,7 +117,7 @@ export function AdditionalInfoTile({
     <InfoTile name="additional-infos" title="Zusatzinfos">
       <Formik initialValues={initialValues} onSubmit={handleSubmit}>
         {({ isSubmitting, setFieldValue, values }) => (
-          <FormPlus style={{ display: "contents" }}>
+          <FormPlus sx={{ display: "contents" }}>
             {isNonNullish(facility.objectType) ? (
               <Alert
                 color="primary"

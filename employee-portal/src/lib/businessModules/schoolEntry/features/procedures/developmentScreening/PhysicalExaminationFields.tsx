@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiDoctorLetterValue,
-  ApiExaminationResultValue,
-} from "@eshg/employee-portal-api/schoolEntry";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import {
   NestedFormProps,
   SetFieldValueHelper,
 } from "@eshg/lib-portal/types/form";
+import {
+  ApiDoctorLetterValue,
+  ApiExaminationResultValue,
+} from "@eshg/school-entry-api";
 import { Stack, Typography } from "@mui/joy";
 
 import {

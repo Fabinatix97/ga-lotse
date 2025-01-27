@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiDoctorLetterValue,
-  ApiSopessExaminationResultValue,
-} from "@eshg/employee-portal-api/schoolEntry";
 import { SoftRequiredSelectField } from "@eshg/lib-portal/businessModules/schoolEntry/features/procedures/fieldVariants";
 import {
   OptionalFieldValue,
   SetFieldValueHelper,
 } from "@eshg/lib-portal/types/form";
+import {
+  ApiDoctorLetterValue,
+  ApiSopessExaminationResultValue,
+} from "@eshg/school-entry-api";
 
 import {
   FIXED_WIDTH_STYLE,

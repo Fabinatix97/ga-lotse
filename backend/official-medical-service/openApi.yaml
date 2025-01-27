@@ -100,6 +100,12 @@ paths:
         schema:
           type: string
           format: date-time
+      - in: query
+        name: physicianId
+        required: false
+        schema:
+          type: string
+          format: uuid
       responses:
         "200":
           content:
@@ -492,6 +498,29 @@ paths:
     get:
       operationId: getAllEmployeeProcedures
       parameters:
+      - in: query
+        name: assigned
+        required: false
+        schema:
+          type: boolean
+      - in: query
+        name: status
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProcedureStatus"
+          uniqueItems: true
+      - in: query
+        name: highPriority
+        required: false
+        schema:
+          type: boolean
+      - in: query
+        name: today
+        required: false
+        schema:
+          type: boolean
       - in: query
         name: sortKey
         required: false
@@ -3394,6 +3423,9 @@ components:
           format: uuid
         lastName:
           type: string
+        nextAppointment:
+          type: string
+          format: date-time
         physicianName:
           type: string
         status:
@@ -3405,6 +3437,13 @@ components:
       type: string
       enum:
       - ID
+      - FIRSTNAME
+      - LASTNAME
+      - DATEOFBIRTH
+      - FACILITYNAME
+      - PHYSICIANNAME
+      - STATUS
+      - NEXTAPPOINTMENT
     ExportArchivingRelevantProceduresRequest:
       type: object
       properties:
@@ -4771,6 +4810,8 @@ components:
           $ref: "#/components/schemas/AppointmentType"
         bookingState:
           $ref: "#/components/schemas/BookingState"
+        bookingType:
+          $ref: "#/components/schemas/BookingType"
         duration:
           type: integer
           format: int32

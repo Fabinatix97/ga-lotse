@@ -4,14 +4,14 @@
  */
 
 import {
-  ApiGetStatisticsFeatureTogglesResponse,
-  ApiStatisticsFeature,
-} from "@eshg/employee-portal-api/statistics";
-import {
   FeatureToggleQueryOptions,
   selectEnabledNewFeature,
   useGetFeatureToggle,
 } from "@eshg/lib-portal/api/featureToggles";
+import {
+  ApiGetStatisticsFeatureTogglesResponse,
+  ApiStatisticsFeature,
+} from "@eshg/statistics-api";
 
 import { useFeatureTogglesApi } from "@/lib/businessModules/statistics/api/clients";
 

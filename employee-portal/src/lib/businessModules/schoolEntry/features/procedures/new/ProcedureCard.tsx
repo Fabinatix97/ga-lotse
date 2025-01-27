@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiProcedureDetails } from "@eshg/employee-portal-api/schoolEntry";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { InternalLinkIconButton } from "@eshg/lib-portal/components/navigation/InternalLinkIconButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { ApiProcedureDetails } from "@eshg/school-entry-api";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { Chip, Grid, Sheet, Typography } from "@mui/joy";
 

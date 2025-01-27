@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { mapPaginatedList } from "@eshg/lib-employee-portal/api/models/PaginatedList";
+import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { useHandledBackgroundQuery } from "@eshg/lib-portal/api/useHandledBackgroundQuery";
 import {
   GetFreeAppointmentsForProcedureRequest,
   GetProceduresRequest,
   GetWaitingRoomProceduresRequest,
   SchoolEntryApi,
-} from "@eshg/employee-portal-api/schoolEntry";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { useHandledBackgroundQuery } from "@eshg/lib-portal/api/useHandledBackgroundQuery";
+} from "@eshg/school-entry-api";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { isDefined } from "remeda";
 
@@ -26,7 +27,6 @@ import { mapEyeExaminationResult } from "@/lib/businessModules/schoolEntry/api/m
 import { mapHearingTestResult } from "@/lib/businessModules/schoolEntry/api/models/examinations/HearingTestResult";
 import { mapSopessExaminationResult } from "@/lib/businessModules/schoolEntry/api/models/examinations/SopessExaminationResult";
 import { schoolEntryApiQueryKey } from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";
-import { mapPaginatedList } from "@/lib/shared/api/models/PaginatedList";
 
 export function getProceduresQuery(
   schoolEntryApi: SchoolEntryApi,

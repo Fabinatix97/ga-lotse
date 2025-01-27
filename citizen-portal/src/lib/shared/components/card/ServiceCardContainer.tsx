@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiBusinessModule } from "@eshg/citizen-portal-api/base";
+import { ApiBusinessModule } from "@eshg/base-api";
 import {
   MedicalServicesOutlined,
   PhoneInTalkOutlined,

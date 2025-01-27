@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiGetReferenceFacilityResponse } from "@eshg/citizen-portal-api/base";
+import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
 import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { Grid } from "@mui/joy";

@@ -4,13 +4,16 @@
  */
 
 import { ApiVaccine } from "@eshg/employee-portal-api/travelMedicine";
+import {
+  BaseEntity,
+  mapBaseEntity,
+} from "@eshg/lib-employee-portal/api/models/BaseEntity";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 
 import {
   Disease,
   mapDisease,
 } from "@/lib/businessModules/travelMedicine/api/models/Disease";
-import { BaseEntity, mapBaseEntity } from "@/lib/shared/api/models/BaseEntity";
 
 export interface Vaccines extends BaseEntity {
   readonly createdAt: Date;

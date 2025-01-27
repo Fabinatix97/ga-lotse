@@ -55,7 +55,7 @@ export function AddInspectionTiles({
       <Grid xl={9}>
         <FacilityTile facility={facility} onEdit={openEdit} />
       </Grid>
-      <Grid xl={3} style={{ flex: 1 }}>
+      <Grid xl={3} sx={{ flex: 1 }}>
         <AdditionalInfoTile
           procedureId={inspection.externalId}
           objectTypes={objectTypes}

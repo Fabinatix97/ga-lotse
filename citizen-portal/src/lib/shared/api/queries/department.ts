@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DepartmentApi } from "@eshg/citizen-portal-api/base";
+import { DepartmentApi } from "@eshg/base-api";
 import {
   queryOptions,
   useQuery,

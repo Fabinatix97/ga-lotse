@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiPercentiles } from "@eshg/employee-portal-api/schoolEntry";
+import { ApiPercentiles } from "@eshg/school-entry-api";
 
 export interface Percentiles {
   bmi?: number;

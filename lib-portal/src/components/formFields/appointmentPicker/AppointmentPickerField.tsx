@@ -55,6 +55,7 @@ export interface AppointmentPickerFieldProps<T extends Appointment>
   active?: boolean;
   monthAppointments: T[];
   onAppointmentSelected?: (d: T) => unknown;
+  isAppointmentEqual?: (apt1: T, apt2: T) => boolean;
   layout?: (props: AppointmentPickerLayoutProps) => ReactNode;
   appointmentList?: (props: AppointmentListProps<T>) => ReactNode;
   labels: AppointmentPickerFieldLabels;
@@ -68,6 +69,7 @@ export function AppointmentPickerField<T extends Appointment>({
   setCurrentMonth,
   monthAppointments,
   onAppointmentSelected,
+  isAppointmentEqual,
   required,
   appointmentList: AppointmentListOverride,
   layout,
@@ -135,6 +137,7 @@ export function AppointmentPickerField<T extends Appointment>({
             field={field}
             date={active ? selectedDay : undefined}
             onAppointmentSelected={onAppointmentSelected}
+            isAppointmentEqual={isAppointmentEqual}
           />
           {field.helperText != null && (
             <FormHelperText component="p" sx={{ my: 1 }}>

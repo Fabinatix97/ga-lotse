@@ -9,9 +9,11 @@ import {
   ApiInformationStatementTemplateState,
   ApiTemplateContent,
 } from "@eshg/employee-portal-api/travelMedicine";
+import {
+  BaseEntity,
+  mapBaseEntity,
+} from "@eshg/lib-employee-portal/api/models/BaseEntity";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
-
-import { BaseEntity, mapBaseEntity } from "@/lib/shared/api/models/BaseEntity";
 
 export interface InformationStatementTemplate extends BaseEntity {
   readonly createdAt: Date;

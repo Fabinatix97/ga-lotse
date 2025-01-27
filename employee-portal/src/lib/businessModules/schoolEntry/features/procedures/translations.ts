@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { EnumMap } from "@eshg/lib-portal/types/helpers";
 import {
   ApiAppointmentType,
   ApiArticulationValue,
@@ -29,8 +30,7 @@ import {
   ApiSopessExaminationResultValue,
   ApiVaccinationSchemeValue,
   ApiWaitingStatus,
-} from "@eshg/employee-portal-api/schoolEntry";
-import { EnumMap } from "@eshg/lib-portal/types/helpers";
+} from "@eshg/school-entry-api";
 
 export const PROCEDURE_TYPES: EnumMap<ApiSchoolEntryProcedureType> = {
   [ApiSchoolEntryProcedureType.DraftCitizenOfficeImport]:

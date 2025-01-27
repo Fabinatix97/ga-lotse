@@ -8,7 +8,7 @@
 import {
   ApiReportingReason,
   ApiRoleStatus,
-} from "@eshg/citizen-portal-api/measlesProtection";
+} from "@eshg/measles-protection-api";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";
 import {
   Accordion,

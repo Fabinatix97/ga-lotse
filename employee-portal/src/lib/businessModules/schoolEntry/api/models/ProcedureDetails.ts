@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiProcedureDetails } from "@eshg/employee-portal-api/schoolEntry";
+import { mapOptional } from "@eshg/lib-employee-portal/api/models/utils";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
-
-import { mapOptional } from "@/lib/shared/api/models/utils";
+import { ApiProcedureDetails } from "@eshg/school-entry-api";
 
 import { Appointment, mapAppointment } from "./Appointment";
 import { Label, mapLabels } from "./Label";

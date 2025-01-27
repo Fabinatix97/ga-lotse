@@ -7,7 +7,7 @@ import {
   ApiCountryCode,
   ApiGetDepartmentInfoResponse,
   ApiLocation,
-} from "@eshg/citizen-portal-api/base";
+} from "@eshg/base-api";
 
 export interface DepartmentInfo {
   readonly name: string;

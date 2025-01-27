@@ -66,7 +66,7 @@ export function WaitingRoomSection({
             updateWaitingRoomDetails.mutate(transformToValid(form, procedure))
           }
         >
-          <FormPlus style={{ display: "contents" }}>
+          <FormPlus sx={{ display: "contents" }}>
             <InputField
               label="Zusätzliche Info"
               name="info"

@@ -6,7 +6,7 @@
 import {
   ApiAvailableDataSource,
   ApiMinimalEvaluationTemplateInfo,
-} from "@eshg/employee-portal-api/statistics";
+} from "@eshg/statistics-api";
 import { isNonNullish } from "remeda";
 
 import { mapToApiBusinessModule } from "@/lib/businessModules/statistics/api/mapper/mapToApiBusinessModule";

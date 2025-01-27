@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAppointment } from "@eshg/employee-portal-api/measlesProtection";
 import {
   ApiAppointmentBookingType,
   ApiAppointmentType,
@@ -13,6 +12,7 @@ import {
   ApiUpdateAppointmentRequest,
 } from "@eshg/employee-portal-api/stiProtection";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { ApiAppointment } from "@eshg/measles-protection-api";
 import { differenceInMinutes } from "date-fns";
 import { Formik, FormikHelpers } from "formik";
 import { ReactNode, useMemo, useReducer } from "react";

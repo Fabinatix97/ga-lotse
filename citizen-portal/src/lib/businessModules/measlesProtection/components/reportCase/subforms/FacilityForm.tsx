@@ -5,11 +5,11 @@
 
 "use client";
 
-import { ApiFacilityType } from "@eshg/citizen-portal-api/measlesProtection";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
+import { ApiFacilityType } from "@eshg/measles-protection-api";
 import { Grid, Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { useFormikContext } from "formik";

@@ -61,8 +61,8 @@ export function MedicalHistoryMultiSelectElement({
 
   return (
     <Stack
-      style={{
-        marginLeft: 16,
+      sx={{
+        marginLeft: 2,
       }}
     >
       <List

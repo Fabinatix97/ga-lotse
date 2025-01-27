@@ -3,11 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Configuration } from "@eshg/citizen-portal-api/base";
-import {
-  DepartmentApi,
-  PublicConfigApi,
-} from "@eshg/citizen-portal-api/base/apis";
+import { Configuration, DepartmentApi, PublicConfigApi } from "@eshg/base-api";
 import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 
 function useConfiguration() {

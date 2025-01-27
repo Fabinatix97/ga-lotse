@@ -4,11 +4,11 @@
  */
 
 import { ApiAffectedPerson } from "@eshg/employee-portal-api/officialMedicalService";
+import { mapOptional } from "@eshg/lib-employee-portal/api/models/utils";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 
 import { usePatchAffectedPerson } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
 import { mapToPatchAffectedPersonRequest } from "@/lib/businessModules/officialMedicalService/shared/helpers";
-import { mapOptional } from "@/lib/shared/api/models/utils";
 import { mapApiAddressToForm } from "@/lib/shared/components/form/address/helpers";
 import { PersonEditSidebar } from "@/lib/shared/components/personSidebar/PersonEditSidebar";
 import {

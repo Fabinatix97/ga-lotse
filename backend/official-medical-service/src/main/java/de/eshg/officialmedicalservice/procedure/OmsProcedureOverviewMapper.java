@@ -73,7 +73,8 @@ public class OmsProcedureOverviewMapper {
       OmsProcedure procedure,
       GetPersonFileStateResponse affectedPerson,
       GetFacilityFileStateResponse facility,
-      UserDto physician) {
+      UserDto physician,
+      Instant nextAppointment) {
     String firstName = null;
     String lastName = null;
     LocalDate dateOfBirth = null;
@@ -98,6 +99,7 @@ public class OmsProcedureOverviewMapper {
         dateOfBirth,
         facilityName,
         ConcernMapper.mapToConcernDto(procedure.getConcern()),
-        physicianName);
+        physicianName,
+        nextAppointment);
   }
 }

@@ -8,7 +8,6 @@ package de.eshg.officialmedicalservice.appointment;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
 import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
-import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.officialmedicalservice.appointment.api.BookingInfoDto;
 import de.eshg.officialmedicalservice.appointment.api.BookingTypeDto;
 import de.eshg.officialmedicalservice.appointment.api.PostOmsAppointmentRequest;
@@ -53,7 +52,7 @@ public class OmsAppointmentService {
     OmsProcedure procedure = loadOmsProcedure(externalId);
 
     // validate
-    if (procedure.getProcedureStatus() == ProcedureStatus.CLOSED) {
+    if (procedure.isFinalized()) {
       throw new BadRequestException("Procedure already closed");
     }
     if (!supportedAppointmentTypes.contains(request.appointmentType())) {
@@ -64,6 +63,8 @@ public class OmsAppointmentService {
 
     // create bookable appointment
     OmsAppointment appointment = new OmsAppointment(appointmentType);
+    appointment.setProcedure(procedure);
+    procedure.getAppointments().add(appointment);
 
     // and book it
     BookingInfoDto bookingInfo = request.bookingInfo();
@@ -71,9 +72,6 @@ public class OmsAppointmentService {
       processBooking(bookingInfo, appointment);
     }
 
-    // relate procedure and appointment entities
-    appointment.setProcedure(procedure);
-    procedure.getAppointments().add(appointment);
     omsAppointmentRepository.save(appointment);
 
     return appointment.getExternalId();
@@ -82,7 +80,7 @@ public class OmsAppointmentService {
   @Transactional
   public void bookAppointmentEmployee(UUID appointmentId, BookingInfoDto request) {
     OmsAppointment appointment = loadAppointment(appointmentId);
-    if (ProcedureStatus.CLOSED == appointment.getProcedure().getProcedureStatus()) {
+    if (appointment.getProcedure().isFinalized()) {
       throw new BadRequestException("Procedure is already closed.");
     }
     if (AppointmentState.CLOSED == appointment.getAppointmentState()) {
@@ -99,7 +97,7 @@ public class OmsAppointmentService {
   public void cancelAppointmentEmployee(UUID appointmentId) {
     OmsAppointment appointment = loadAppointment(appointmentId);
 
-    if (ProcedureStatus.CLOSED == appointment.getProcedure().getProcedureStatus()) {
+    if (appointment.getProcedure().isFinalized()) {
       throw new BadRequestException("Procedure is already closed.");
     }
     if (AppointmentState.CLOSED == appointment.getAppointmentState()) {
@@ -128,7 +126,12 @@ public class OmsAppointmentService {
     if (BookingTypeDto.APPOINTMENT_BLOCK.equals(bookingTypeDto)) {
       Instant end = start.plus(Duration.ofMinutes(duration));
       appointmentBlockSlotUtil.updateAppointment(
-          appointment.getAppointmentType(), null, appointment, start, end);
+          appointment.getAppointmentType(),
+          null,
+          appointment.getProcedure().getPhysicianId(),
+          appointment,
+          start,
+          end);
     } else {
       // in case we rebook from appointment block to user defined...
       // ...we need to unlock the used appointment slot

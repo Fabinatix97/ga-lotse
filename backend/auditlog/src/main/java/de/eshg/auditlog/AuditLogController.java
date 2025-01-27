@@ -30,10 +30,13 @@ import de.eshg.base.user.api.UserFilterParameters;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
+import de.eshg.rest.service.error.ErrorResponse;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import jakarta.servlet.ServletRequest;
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.channels.Channels;
@@ -66,13 +69,20 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
+import javax.crypto.AEADBadTagException;
+import javax.crypto.Cipher;
 import org.apache.commons.lang3.ArrayUtils;
+import org.bouncycastle.jcajce.io.CipherInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.RequestAttributes;
@@ -136,7 +146,7 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
   }
 
   @Override
-  public ResponseEntity<String> readAuditLogFile(
+  public ResponseEntity<Resource> readAuditLogFile(
       String key, ReadAuditLogFileRequest readAuditLogFileRequest) {
     UserDto selfUser = userApi.getSelfUser();
 
@@ -160,23 +170,38 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
     validateAccessWasGranted(
         readAuditLogFileRequest.source(), readAuditLogFileRequest.date(), selfUser);
 
-    try {
-      ContentDisposition contentDisposition = ContentDisposition.inline().build();
+    Cipher cipher = createDecryptionCipher(key, ivFilePath);
+    return ResponseEntity.ok()
+        .contentType(TEXT_PLAIN_UTF_8)
+        .header(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.inline().build().toString())
+        .body(new InputStreamResource(() -> createInputStreamForFile(auditLogFilePath, cipher)));
+  }
 
-      return ResponseEntity.ok()
-          .contentType(TEXT_PLAIN_UTF_8)
-          .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString())
-          .body(
-              new String(
-                  decryptAuditLogFile(key, auditLogFilePath, ivFilePath), StandardCharsets.UTF_8));
+  private static CipherInputStream createInputStreamForFile(Path file, Cipher cipher)
+      throws FileNotFoundException {
+    return new CipherInputStream(new FileInputStream(file.toFile()), cipher);
+  }
+
+  private static Cipher createDecryptionCipher(String key, Path ivFilePath) {
+    try {
+      return SymmetricEncryption.createDecryptionCipher(
+          Base64.getDecoder().decode(key), Files.readAllBytes(ivFilePath));
     } catch (IOException e) {
       throw new UncheckedIOException("Unable to read audit log files", e);
-    } catch (InvalidKeyException | javax.crypto.AEADBadTagException e) {
-      log.error("Invalid decryption key", e);
+    } catch (InvalidKeyException e) {
+      log.error("Invalid encryption key was given", e);
       throw new BadRequestException("Invalid decryption key");
     } catch (GeneralSecurityException e) {
       throw new AuditLogDecryptionException("Unable to decrypt audit log", e);
     }
+  }
+
+  @ExceptionHandler
+  public ResponseEntity<ErrorResponse> handleInvalidKey(AEADBadTagException e) {
+    log.error("Wrong decryption key was given", e);
+    return ResponseEntity.badRequest()
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(new ErrorResponse(ErrorCode.BAD_REQUEST, "Wrong decryption key"));
   }
 
   @Override
@@ -511,17 +536,6 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
     } catch (HttpClientErrorException.NotFound notFound) {
       throw new NotFoundException("User not found");
     }
-  }
-
-  private byte[] decryptAuditLogFile(String key, Path auditLogFilePath, Path ivFilePath)
-      throws GeneralSecurityException, IOException {
-    log.info("Decrypting audit log");
-    EncryptedPayload encryptedPayload =
-        new EncryptedPayload(
-            Files.readAllBytes(auditLogFilePath),
-            Base64.getDecoder().decode(key),
-            Files.readAllBytes(ivFilePath));
-    return SymmetricEncryption.decrypt(encryptedPayload);
   }
 
   private Path getIvFilePathOrThrow(

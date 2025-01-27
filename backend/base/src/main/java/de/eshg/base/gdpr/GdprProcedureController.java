@@ -325,16 +325,14 @@ public class GdprProcedureController implements GdprProcedureApi {
   @Transactional(readOnly = true)
   public ResponseEntity<Resource> getCentralFileDownloadPackage(UUID id) {
     baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR);
-    GdprProcedure procedure = service.getGdprProcedureFromDb(id);
 
-    byte[] content = service.getCentralFileDownloadPackage(procedure.getExternalId());
+    byte[] content = service.getCentralFileDownloadPackage(id);
 
     return ResponseEntity.ok()
         .header(
             HttpHeaders.CONTENT_DISPOSITION,
             ContentDisposition.attachment()
-                .filename(
-                    downloadPackageFilename(procedure.getExternalId()), StandardCharsets.UTF_8)
+                .filename(downloadPackageFilename(id), StandardCharsets.UTF_8)
                 .build()
                 .toString())
         .header(HttpHeaders.CONTENT_TYPE, CustomMediaTypes.ZIP_VALUE)

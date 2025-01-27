@@ -5,11 +5,6 @@
 
 "use client";
 
-import {
-  ApiOtherVaccination,
-  ApiVaccinationStatus,
-  UpdateVaccinationStatusRequest,
-} from "@eshg/employee-portal-api/schoolEntry";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import {
@@ -20,6 +15,11 @@ import {
   parseOptionalValue,
 } from "@eshg/lib-portal/helpers/form";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
+import {
+  ApiOtherVaccination,
+  ApiVaccinationStatus,
+  UpdateVaccinationStatusRequest,
+} from "@eshg/school-entry-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { isEmpty } from "remeda";
 

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiCountryCode } from "@eshg/citizen-portal-api/base";
+import { ApiCountryCode } from "@eshg/base-api";
 import {
   countryOptions,
   translateCountry,

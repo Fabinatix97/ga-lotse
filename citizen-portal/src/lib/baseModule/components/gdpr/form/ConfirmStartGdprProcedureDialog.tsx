@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGdprProcedureType } from "@eshg/citizen-portal-api/base";
+import { ApiGdprProcedureType } from "@eshg/base-api";
 import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { Button, Stack, Typography } from "@mui/joy";

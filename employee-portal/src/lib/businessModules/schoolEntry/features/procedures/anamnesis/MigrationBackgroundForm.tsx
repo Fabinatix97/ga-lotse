@@ -5,7 +5,6 @@
 
 "use client";
 
-import { ApiSchoolEntryCountryCode } from "@eshg/employee-portal-api/schoolEntry";
 import { SoftRequiredBooleanSelectField } from "@eshg/lib-portal/businessModules/schoolEntry/features/procedures/fieldVariants";
 import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
 import { MonthAndYearFields } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
@@ -15,6 +14,7 @@ import {
   NestedFormProps,
   SetFieldValueHelper,
 } from "@eshg/lib-portal/types/form";
+import { ApiSchoolEntryCountryCode } from "@eshg/school-entry-api";
 import { FormLabel, Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 

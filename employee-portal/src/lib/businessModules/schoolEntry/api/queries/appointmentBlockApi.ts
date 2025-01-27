@@ -3,17 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { mapPaginatedList } from "@eshg/lib-employee-portal/api/models/PaginatedList";
+import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import {
   ApiCreateDailyAppointmentBlockGroupRequest,
   AppointmentBlockApi,
   GetAppointmentBlockGroupsRequest,
-} from "@eshg/employee-portal-api/schoolEntry";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+} from "@eshg/school-entry-api";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 
 import { useAppointmentBlockApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { mapAppointmentBlockGroup } from "@/lib/businessModules/schoolEntry/api/models/AppointmentBlockGroup";
-import { mapPaginatedList } from "@/lib/shared/api/models/PaginatedList";
 
 import { appointmentBlockApiQueryKey } from "./apiQueryKeys";
 

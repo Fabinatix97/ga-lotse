@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 import {
   AnalysisApi,
   Configuration,
@@ -16,8 +17,7 @@ import {
   ReportSeriesApi,
   StatisticsCentralRepositoryApi,
   StatisticsFeatureTogglesApi,
-} from "@eshg/employee-portal-api/statistics";
-import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
+} from "@eshg/statistics-api";
 
 function useConfiguration() {
   const params = useApiConfiguration("PUBLIC_STATISTICS_BACKEND_URL");

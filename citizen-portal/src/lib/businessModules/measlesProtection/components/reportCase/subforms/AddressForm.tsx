@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiDomesticAddress } from "@eshg/citizen-portal-api/measlesProtection";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import { ApiDomesticAddress } from "@eshg/measles-protection-api";
 import { Box, Checkbox, Grid, Typography } from "@mui/joy";
 
 import { FormSectionLabel } from "@/lib/businessModules/measlesProtection/components/reportCase/ReportCaseForm";

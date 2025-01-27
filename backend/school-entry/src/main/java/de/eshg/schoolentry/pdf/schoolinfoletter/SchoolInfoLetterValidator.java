@@ -23,7 +23,7 @@ public class SchoolInfoLetterValidator {
 
   private SchoolInfoLetterValidator() {}
 
-  public static Map<RequiredProcedureData, Boolean> validateSchoolEntryProcedure(
+  public static List<RequiredProcedureData> validateSchoolEntryProcedure(
       SchoolEntryProcedure procedure) {
     Map<RequiredProcedureData, Boolean> result = new HashMap<>();
 
@@ -93,7 +93,11 @@ public class SchoolInfoLetterValidator {
                     || type != null,
             Stream.of(DevelopmentScreening::getDisabilityType)));
 
-    return result;
+    return result.entrySet().stream()
+        .filter(entry -> !entry.getValue())
+        .map(Map.Entry::getKey)
+        .sorted()
+        .toList();
   }
 
   private static <T extends ValidatableEntity> boolean validate(T validatableEntity) {

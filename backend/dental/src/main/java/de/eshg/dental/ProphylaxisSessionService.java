@@ -15,6 +15,9 @@ import de.eshg.base.user.api.UserDto;
 import de.eshg.dental.api.CreateProphylaxisSessionRequest;
 import de.eshg.dental.api.ProphylaxisSessionPaginationAndSortParameters;
 import de.eshg.dental.api.ProphylaxisSessionRequest;
+import de.eshg.dental.api.UpdateExaminationRequest;
+import de.eshg.dental.api.UpdateExaminationsInBulkRequest;
+import de.eshg.dental.api.UpdateProphylaxisSessionExaminationsRequest;
 import de.eshg.dental.api.UpdateProphylaxisSessionParticipantsRequest;
 import de.eshg.dental.api.UpdateProphylaxisSessionRequest;
 import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedData;
@@ -24,8 +27,10 @@ import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.domain.model.ProphylaxisSession;
 import de.eshg.dental.domain.repository.ChildRepository;
+import de.eshg.dental.domain.repository.ExaminationRepository;
 import de.eshg.dental.domain.repository.ProphylaxisSessionRepository;
 import de.eshg.dental.mapper.ProphylaxisSessionMapper;
+import de.eshg.domain.model.BaseEntityWithExternalId;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.rest.service.error.BadRequestException;
@@ -39,6 +44,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +65,8 @@ public class ProphylaxisSessionService {
   private final Clock clock;
   private final Validator validator;
   private final UserApi userApi;
+  private final ExaminationService examinationService;
+  private final ExaminationRepository examinationRepository;
 
   public ProphylaxisSessionService(
       ProphylaxisSessionRepository prophylaxisSessionRepository,
@@ -67,7 +75,9 @@ public class ProphylaxisSessionService {
       PersonClient personClient,
       Clock clock,
       Validator validator,
-      UserApi userApi) {
+      UserApi userApi,
+      ExaminationService examinationService,
+      ExaminationRepository examinationRepository) {
     this.prophylaxisSessionRepository = prophylaxisSessionRepository;
     this.contactClient = contactClient;
     this.childRepository = childRepository;
@@ -75,6 +85,8 @@ public class ProphylaxisSessionService {
     this.clock = clock;
     this.validator = validator;
     this.userApi = userApi;
+    this.examinationService = examinationService;
+    this.examinationRepository = examinationRepository;
   }
 
   public ProphylaxisSession createProphylaxisSession(CreateProphylaxisSessionRequest request) {
@@ -267,6 +279,30 @@ public class ProphylaxisSessionService {
     prophylaxisSessionRepository.flush();
 
     return getProphylaxisSessionWithDetails(persistedProphylaxisSession.getExternalId());
+  }
+
+  public ProphylaxisSessionWithAugmentedData updateProphylaxisSessionExaminations(
+      UUID prophylaxisSessionId, UpdateProphylaxisSessionExaminationsRequest updateRequest) {
+    List<UUID> examinationIds =
+        updateRequest.examinationUpdates().stream()
+            .map(UpdateExaminationsInBulkRequest::id)
+            .toList();
+
+    Map<UUID, Examination> persistedExaminations =
+        examinationRepository.findAllByExternalIdsForUpdate(examinationIds).stream()
+            .collect(
+                Collectors.toMap(BaseEntityWithExternalId::getExternalId, Function.identity()));
+
+    for (UpdateExaminationsInBulkRequest examinationUpdate : updateRequest.examinationUpdates()) {
+      Examination persistedExamination = persistedExaminations.get(examinationUpdate.id());
+
+      examinationService.updateExamination(
+          persistedExamination,
+          new UpdateExaminationRequest(
+              examinationUpdate.version(), examinationUpdate.note(), examinationUpdate.result()));
+    }
+
+    return getProphylaxisSessionWithDetails(prophylaxisSessionId);
   }
 
   private void mapProphylaxisSessionRequest(

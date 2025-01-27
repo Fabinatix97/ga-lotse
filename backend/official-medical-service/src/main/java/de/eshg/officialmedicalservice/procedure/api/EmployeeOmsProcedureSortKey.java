@@ -7,4 +7,11 @@ package de.eshg.officialmedicalservice.procedure.api;
 
 public enum EmployeeOmsProcedureSortKey {
   ID,
+  FIRSTNAME,
+  LASTNAME,
+  DATEOFBIRTH,
+  FACILITYNAME,
+  PHYSICIANNAME,
+  STATUS,
+  NEXTAPPOINTMENT,
 }

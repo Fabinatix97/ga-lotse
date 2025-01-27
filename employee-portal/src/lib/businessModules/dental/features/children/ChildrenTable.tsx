@@ -6,6 +6,8 @@
 "use client";
 
 import { ApiChildSortKey } from "@eshg/dental-api";
+import { Child } from "@eshg/dental/api/models/Child";
+import { useGetChildrenQuery } from "@eshg/dental/api/queries/childApi";
 import { routes } from "@eshg/dental/shared/routes";
 import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
@@ -14,8 +16,6 @@ import { useSuspenseQueries } from "@tanstack/react-query";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 import { ReactNode } from "react";
 
-import { Child } from "@/lib/businessModules/dental/api/models/Child";
-import { useGetChildrenQuery } from "@/lib/businessModules/dental/api/queries/childApi";
 import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";

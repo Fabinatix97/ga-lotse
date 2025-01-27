@@ -5,8 +5,8 @@
 
 "use client";
 
-import { ApiReportCaseRequest } from "@eshg/citizen-portal-api/measlesProtection";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { ApiReportCaseRequest } from "@eshg/measles-protection-api";
 
 import { useOrganisationPortalApi } from "@/lib/businessModules/measlesProtection/api/clients";
 import { ReportCaseForm } from "@/lib/businessModules/measlesProtection/components/reportCase/ReportCaseForm";

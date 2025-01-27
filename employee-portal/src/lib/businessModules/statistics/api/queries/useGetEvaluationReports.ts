@@ -10,7 +10,7 @@ import {
   ApiReportSeries,
   ApiReportState,
   ApiReportingPeriod,
-} from "@eshg/employee-portal-api/statistics";
+} from "@eshg/statistics-api";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { isNonNullish } from "remeda";
 

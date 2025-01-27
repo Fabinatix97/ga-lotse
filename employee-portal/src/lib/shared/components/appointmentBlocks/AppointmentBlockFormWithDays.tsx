@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiDayOfWeek } from "@eshg/employee-portal-api/measlesProtection";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
+import { ApiDayOfWeek } from "@eshg/measles-protection-api";
 import { Delete } from "@mui/icons-material";
 import { Button, Grid } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";

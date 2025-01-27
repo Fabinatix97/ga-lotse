@@ -9,6 +9,7 @@ import { useContext } from "react";
 import { isDefined } from "remeda";
 
 import { ProgressEntriesContext } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
+import { useFetchProgressEntryDetails } from "@/lib/shared/components/procedures/progress-entries/queries/progressEntryApi";
 import { InboxProgressEntryDetails } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/InboxProgressEntryDetails";
 import { ManualProgressEntryDetails } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/ManualProgressEntryDetails";
 import { SystemProgressEntryDetails } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/SystemProgressEntryDetails";
@@ -22,11 +23,16 @@ export function ProgressEntryDetailsSidebar({
   progressEntryId,
 }: ProgressEntryDetailsSidebarProps) {
   const progressEntriesContext = useContext(ProgressEntriesContext);
-  const { procedureId, useFetchProgressEntryDetails } =
+  const { procedureId, progressEntryApi, progressEntryApiQueryKey } =
     progressEntriesContext.config;
   const { closeEntryDetailsSidebar } = progressEntriesContext.action;
   const { progressEntry, relatedKeyDocumentProgressEntries } =
-    useFetchProgressEntryDetails(procedureId, progressEntryId).data;
+    useFetchProgressEntryDetails(
+      progressEntryApi,
+      progressEntryApiQueryKey,
+      procedureId,
+      progressEntryId,
+    ).data;
 
   return (
     <Sidebar open onClose={closeEntryDetailsSidebar}>

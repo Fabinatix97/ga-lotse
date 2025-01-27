@@ -19,6 +19,7 @@ import de.eshg.lib.procedure.api.ProcedureSearchParameters;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.TaskType;
 import de.eshg.lib.procedure.util.ProcedureValidator;
+import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.schoolentry.api.*;
@@ -507,6 +508,13 @@ public class SchoolEntryController {
 
     SchoolEntryProcedure procedure = schoolEntryService.findProcedureByExternalId(procedureId);
     ProcedureValidator.validateProcedureStatusNotClosed(procedure);
+    List<RequiredProcedureData> validationResult =
+        SchoolInfoLetterValidator.validateSchoolEntryProcedure(procedure);
+    if (!validationResult.isEmpty()) {
+      throw new BadRequestException(
+          "School entry procedure is not complete.",
+          "Incomplete areas: %s".formatted(validationResult));
+    }
     ProcedureDetailsData procedureDetailsData = schoolEntryService.augmentWithDetails(procedure);
 
     Pdf pdf =
@@ -554,17 +562,10 @@ public class SchoolEntryController {
       @PathVariable("procedureId") UUID procedureId) {
     SchoolEntryProcedure procedure = schoolEntryService.findProcedureByExternalId(procedureId);
 
-    Map<RequiredProcedureData, Boolean> validationResult =
+    List<RequiredProcedureData> validationResult =
         SchoolInfoLetterValidator.validateSchoolEntryProcedure(procedure);
 
-    List<RequiredProcedureData> incompleteAreas =
-        validationResult.entrySet().stream()
-            .filter(entry -> !entry.getValue())
-            .map(Map.Entry::getKey)
-            .sorted()
-            .toList();
-
-    return ResponseEntity.ok(new ValidateRequiredProcedureDataResponse(incompleteAreas));
+    return ResponseEntity.ok(new ValidateRequiredProcedureDataResponse(validationResult));
   }
 
   @GetMapping("/waiting-room-procedures")

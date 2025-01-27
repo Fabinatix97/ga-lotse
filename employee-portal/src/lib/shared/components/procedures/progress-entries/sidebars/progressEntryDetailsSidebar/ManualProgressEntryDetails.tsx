@@ -30,6 +30,7 @@ import {
   mapToPatchRequest,
   mapToUpdateMetaDataRequest,
 } from "@/lib/shared/components/procedures/progress-entries/mapper";
+import { usePatchProgressEntry } from "@/lib/shared/components/procedures/progress-entries/mutations/progressEntryApi";
 import {
   AllKeyDocumentVersions,
   DetailsContentWrapper,
@@ -133,8 +134,8 @@ function EditableManualProgressEntryDetails({
   onClose: () => void;
   onHistory: () => void;
 }) {
-  const { usePatchProgressEntry } = useProgressEntriesConfig();
-  const patchProgressEntry = usePatchProgressEntry();
+  const { progressEntryApi, fileApi } = useProgressEntriesConfig();
+  const patchProgressEntry = usePatchProgressEntry(progressEntryApi, fileApi);
   const fileDescription = extractFileDescriptionValue(entry);
   const INITIAL_EDIT_PROGRESS_ENTRY_VALUES: ProgressEntryDetailsValues = {
     text: entry.note ?? "",

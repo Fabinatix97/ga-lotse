@@ -4,17 +4,20 @@
  */
 
 import {
+  Versioned,
+  mapVersioned,
+} from "@eshg/lib-employee-portal/api/models/Versioned";
+import {
   ApiExaminationResult,
   ApiEyeExaminationResult,
   ApiEyeExaminationType,
   ApiPercentageValue,
-} from "@eshg/employee-portal-api/schoolEntry";
+} from "@eshg/school-entry-api";
 
 import {
   ExaminationResult,
   mapExaminationResult,
 } from "@/lib/businessModules/schoolEntry/api/models/examinations/ExaminationResult";
-import { Versioned, mapVersioned } from "@/lib/shared/api/models/Versioned";
 
 export interface EyeExaminationResult extends Versioned {
   leftEye: EyeExamination;

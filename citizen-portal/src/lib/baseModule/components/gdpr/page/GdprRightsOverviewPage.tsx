@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGdprProcedureType } from "@eshg/citizen-portal-api/base";
+import { ApiGdprProcedureType } from "@eshg/base-api";
 import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 import { Button, Sheet, Typography } from "@mui/joy";
 import { useId, useState } from "react";

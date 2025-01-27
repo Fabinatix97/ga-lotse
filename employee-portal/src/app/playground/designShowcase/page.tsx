@@ -23,7 +23,7 @@ export default function DesignShowcasePage() {
           initialValues={{ name: "Value", error: "" }}
           onSubmit={() => Promise.resolve()}
         >
-          <FormPlus style={{ display: "contents" }}>
+          <FormPlus sx={{ display: "contents" }}>
             <Sheet sx={{ width: "fit-content" }}>
               <Stack
                 gap={8}

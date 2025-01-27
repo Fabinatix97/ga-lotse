@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiCreateDailyAppointmentBlockGroupRequest } from "@eshg/employee-portal-api/schoolEntry";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { ApiCreateDailyAppointmentBlockGroupRequest } from "@eshg/school-entry-api";
 
 import { useAppointmentBlockApi } from "@/lib/businessModules/schoolEntry/api/clients";
 

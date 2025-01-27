@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetProcedure200Response } from "@eshg/employee-portal-api/measlesProtection";
 import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { ApiGetProcedure200Response } from "@eshg/measles-protection-api";
 import { Stack } from "@mui/joy";
 import { Formik, useFormikContext } from "formik";
 import { useCallback } from "react";

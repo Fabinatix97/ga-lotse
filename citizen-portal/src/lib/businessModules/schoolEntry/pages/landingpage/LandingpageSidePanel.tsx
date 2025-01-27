@@ -64,7 +64,7 @@ function PrivacyPolicyConfirmationForm() {
   );
 
   return (
-    <FormPlus style={{ display: "contents" }}>
+    <FormPlus sx={{ display: "contents" }}>
       <Stack gap={1}>
         <ConfirmationCheckboxField
           name="confirmPrivacyNotice"

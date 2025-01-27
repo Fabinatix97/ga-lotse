@@ -7,23 +7,29 @@
 
 import { UpdateExaminationRequest } from "@eshg/dental-api";
 import {
+  ApiExaminationResult,
+  ApiFluoridationExaminationResult,
+  ApiScreeningExaminationResult,
+} from "@eshg/dental-api";
+import { Examination } from "@eshg/dental/api/models/Examination";
+import { useUpdateExamination } from "@eshg/dental/api/mutations/childApi";
+import { getExaminationQuery } from "@eshg/dental/api/queries/childApi";
+import { useDentalApi } from "@eshg/dental/shared/DentalProvider";
+import {
   mapOptionalValue,
+  mapRequiredValue,
   parseOptionalValue,
 } from "@eshg/lib-portal/helpers/form";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { DentalChildPageProps } from "@/app/(businessModules)/dental/children/[childId]/layout";
-import { useChildApi } from "@/lib/businessModules/dental/api/clients";
-import { Examination } from "@/lib/businessModules/dental/api/models/Examination";
-import { useUpdateExamination } from "@/lib/businessModules/dental/api/mutations/childApi";
-import { getExaminationQuery } from "@/lib/businessModules/dental/api/queries/childApi";
 import {
   ExaminationDetails,
   ExaminationFormValues,
 } from "@/lib/businessModules/dental/features/children/details/ExaminationDetails";
 
 export default function ExaminationDetailsPage(props: DentalChildPageProps) {
-  const childApi = useChildApi();
+  const { childApi } = useDentalApi();
   const examinationId = props.params.examinationId;
   const { data: examination } = useSuspenseQuery(
     getExaminationQuery(childApi, examinationId),
@@ -44,7 +50,33 @@ export default function ExaminationDetailsPage(props: DentalChildPageProps) {
 }
 
 function mapToFormValues(apiExamination: Examination): ExaminationFormValues {
-  return { note: parseOptionalValue(apiExamination.note) };
+  return {
+    screening: apiExamination.screening,
+    fluoridation: apiExamination.fluoridation,
+    note: parseOptionalValue(apiExamination.note),
+    ...mapExaminationResultFormValues(apiExamination),
+  };
+}
+
+function mapExaminationResultFormValues(apiExamination: Examination) {
+  if (apiExamination.screening) {
+    const screeningResult =
+      apiExamination.result as ApiScreeningExaminationResult;
+    return {
+      oralHygieneStatus: parseOptionalValue(screeningResult?.oralHygieneStatus),
+      fluorideVarnishApplied: parseOptionalValue(
+        screeningResult?.fluorideVarnishApplied,
+      ),
+    };
+  } else {
+    const fluoridationResult =
+      apiExamination.result as ApiFluoridationExaminationResult;
+    return {
+      fluorideVarnishApplied: parseOptionalValue(
+        fluoridationResult?.fluorideVarnishApplied,
+      ),
+    };
+  }
 }
 
 function mapToRequest(
@@ -57,6 +89,28 @@ function mapToRequest(
     apiUpdateExaminationRequest: {
       version,
       note: mapOptionalValue(formValues.note),
+      result: mapExaminationResultRequest(formValues),
     },
   };
+}
+
+function mapExaminationResultRequest(
+  formValues: ExaminationFormValues,
+): ApiExaminationResult | undefined {
+  if (formValues.screening) {
+    return {
+      type: "ScreeningExaminationResult",
+      oralHygieneStatus: mapOptionalValue(formValues.oralHygieneStatus),
+      fluorideVarnishApplied:
+        mapOptionalValue(formValues.fluorideVarnishApplied) ?? false,
+      toothDiagnoses: [],
+    };
+  } else if (formValues.fluoridation) {
+    return {
+      type: "FluoridationExaminationResult",
+      fluorideVarnishApplied: mapRequiredValue(
+        formValues.fluorideVarnishApplied,
+      ),
+    };
+  }
 }

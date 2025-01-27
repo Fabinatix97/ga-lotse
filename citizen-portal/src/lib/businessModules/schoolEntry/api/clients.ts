@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 import {
   Configuration,
   SchoolEntryCitizenApi,
   SchoolEntryPublicCitizenApi,
-} from "@eshg/citizen-portal-api/schoolEntry";
-import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
+} from "@eshg/school-entry-api";
 
 function useConfiguration() {
   const configurationParameters = useApiConfiguration(

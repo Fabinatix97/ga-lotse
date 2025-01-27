@@ -6,7 +6,7 @@
 import {
   ApiAvailableDataSource,
   ApiEvaluationState,
-} from "@eshg/employee-portal-api/statistics";
+} from "@eshg/statistics-api";
 import { isPlainObject } from "remeda";
 
 import {

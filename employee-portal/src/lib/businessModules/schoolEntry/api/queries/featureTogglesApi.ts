@@ -4,16 +4,16 @@
  */
 
 import {
-  ApiGetSchoolEntryFeatureTogglesResponse,
-  ApiSchoolEntryFeature,
-} from "@eshg/employee-portal-api/schoolEntry";
-import {
   FeatureToggleQueryOptions,
   selectDisabledOldFeature,
   selectEnabledNewFeature,
   useGetFeatureToggle,
   useGetFeatureToggleUnsuspended,
 } from "@eshg/lib-portal/api/featureToggles";
+import {
+  ApiGetSchoolEntryFeatureTogglesResponse,
+  ApiSchoolEntryFeature,
+} from "@eshg/school-entry-api";
 import { UseQueryResult } from "@tanstack/react-query";
 
 import { useFeatureTogglesApi } from "@/lib/businessModules/schoolEntry/api/clients";

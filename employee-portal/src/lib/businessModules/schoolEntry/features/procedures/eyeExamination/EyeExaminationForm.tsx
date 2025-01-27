@@ -6,17 +6,17 @@
 "use client";
 
 import {
-  ApiDoctorLetterValue,
-  ApiEyeExaminationType,
-  ApiPercentageValue,
-  UpdateEyeExaminationResultRequest,
-} from "@eshg/employee-portal-api/schoolEntry";
-import {
   FormProps,
   OptionalFieldValue,
   SetFieldValueHelper,
 } from "@eshg/lib-portal/types/form";
 import { MutationBundle } from "@eshg/lib-portal/types/query";
+import {
+  ApiDoctorLetterValue,
+  ApiEyeExaminationType,
+  ApiPercentageValue,
+  UpdateEyeExaminationResultRequest,
+} from "@eshg/school-entry-api";
 import { Divider, Grid, Stack } from "@mui/joy";
 import { Formik, FormikHelpers } from "formik";
 

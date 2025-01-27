@@ -6,7 +6,7 @@
 import {
   ApiGetAllMinimalEvaluationTemplateInfosResponse,
   EvaluationTemplateApi,
-} from "@eshg/employee-portal-api/statistics";
+} from "@eshg/statistics-api";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useEvaluationTemplateApi } from "@/lib/businessModules/statistics/api/clients";

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiBusinessModule } from "@eshg/citizen-portal-api/base";
+import { ApiBusinessModule } from "@eshg/base-api";
 import { useCallback } from "react";
 
 import { useGetConfig } from "@/lib/shared/api/queries/publicConfig";

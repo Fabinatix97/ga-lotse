@@ -4,17 +4,23 @@
  */
 
 import {
+  BaseEntity,
+  mapBaseEntity,
+} from "@eshg/lib-employee-portal/api/models/BaseEntity";
+import {
+  Versioned,
+  mapVersioned,
+} from "@eshg/lib-employee-portal/api/models/Versioned";
+import {
   ApiWaitingRoom,
   ApiWaitingRoomProcedure,
   ApiWaitingStatus,
-} from "@eshg/employee-portal-api/schoolEntry";
+} from "@eshg/school-entry-api";
 
 import {
   Person,
   mapPerson,
 } from "@/lib/businessModules/schoolEntry/api/models/Person";
-import { BaseEntity, mapBaseEntity } from "@/lib/shared/api/models/BaseEntity";
-import { Versioned, mapVersioned } from "@/lib/shared/api/models/Versioned";
 
 export interface WaitingRoom extends Versioned {
   description?: string;

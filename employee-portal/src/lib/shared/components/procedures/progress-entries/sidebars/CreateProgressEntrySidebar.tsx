@@ -29,6 +29,7 @@ import {
   hasKeyDocumentTypeField,
 } from "@/lib/shared/components/procedures/progress-entries/helper";
 import { mapFormValuesToCreateProgressEntryRequest } from "@/lib/shared/components/procedures/progress-entries/mapper";
+import { useCreateProgressEntry } from "@/lib/shared/components/procedures/progress-entries/mutations/progressEntryApi";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
@@ -69,9 +70,8 @@ function CreateProgressEntrySidebarContent({
   open,
   onClose,
 }: CreateProgressEntrySidebarProps) {
-  const { keyDocumentTypes, useCreateProgressEntry } =
-    useProgressEntriesConfig();
-  const createProgressEntry = useCreateProgressEntry();
+  const { keyDocumentTypes, progressEntryApi } = useProgressEntriesConfig();
+  const createProgressEntry = useCreateProgressEntry(progressEntryApi);
   const { openConfirmationDialog } = useConfirmationDialog();
 
   async function handleSubmit(

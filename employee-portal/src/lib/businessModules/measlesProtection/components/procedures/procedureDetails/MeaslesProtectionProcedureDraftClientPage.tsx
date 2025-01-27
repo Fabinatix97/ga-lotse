@@ -5,9 +5,9 @@
 
 "use client";
 
-import { ApiDraftMeaslesProcedure } from "@eshg/employee-portal-api/measlesProtection";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { ApiDraftMeaslesProcedure } from "@eshg/measles-protection-api";
 import { Grid, Stack } from "@mui/joy";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";

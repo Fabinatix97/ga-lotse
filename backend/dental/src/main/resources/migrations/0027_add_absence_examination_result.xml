@@ -1,0 +1,37 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="GA-Lotse" id="1737451987470-1">
+        <ext:createPostgresEnumType name="reasonforabsence" values="MOVED, NOT_APPEARED, REFUSED, SHIFTED"/>
+
+        <createTable tableName="absence_examination_result">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_absence_examination_result"/>
+            </column>
+            <column name="reason_for_absence" type="REASONFORABSENCE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="absence_examination_result" baseColumnNames="id" constraintName="fk_absence_examination_result_examination_result" referencedColumnNames="id" referencedTableName="examination_result"/>
+
+        <addColumn tableName="fluoridation_examination_result">
+            <column name="fluoride_varnish_applied" type="BOOLEAN"/>
+        </addColumn>
+
+        <addColumn tableName="screening_examination_result">
+            <column name="fluoride_varnish_applied" type="BOOLEAN"/>
+        </addColumn>
+
+        <sql>update fluoridation_examination_result fer set fluoride_varnish_applied = (select fluoride_varnish_applied from examination_result er where er.id = fer.id)</sql>
+        <sql>update screening_examination_result ser set fluoride_varnish_applied = (select fluoride_varnish_applied from examination_result er where er.id = ser.id)</sql>
+
+        <addNotNullConstraint tableName="fluoridation_examination_result" columnName="fluoride_varnish_applied" columnDataType="boolean"/>
+        <addNotNullConstraint tableName="screening_examination_result" columnName="fluoride_varnish_applied" columnDataType="boolean"/>
+
+        <dropColumn columnName="fluoride_varnish_applied" tableName="examination_result"/>
+    </changeSet>
+</databaseChangeLog>

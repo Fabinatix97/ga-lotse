@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiRequiredProcedureData } from "@eshg/employee-portal-api/schoolEntry";
 import {
   BaseModal,
   BaseModalProps,
 } from "@eshg/lib-portal/components/BaseModal";
+import { ApiRequiredProcedureData } from "@eshg/school-entry-api";
 import { Typography } from "@mui/joy";
 
 import { REQUIRED_PROCEDURE_DATA } from "@/lib/businessModules/schoolEntry/features/procedures/translations";

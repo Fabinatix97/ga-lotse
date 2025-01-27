@@ -5,14 +5,14 @@
 
 "use client";
 
+import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
+import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import {
   ApiCreatePerson,
   ApiCreateProcedureRequest,
   ApiSchoolEntryProcedureType,
-} from "@eshg/employee-portal-api/schoolEntry";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+} from "@eshg/school-entry-api";
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 import { useRouter } from "next/navigation";

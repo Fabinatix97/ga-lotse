@@ -23,11 +23,6 @@ tasks.named('compile') {
   inputs.files("${rootDir}/config/tsconfig.lib-legacy.json")
 }
 
-tasks.named('compileCheck') {
-  dependsOn generateMetaTaskProvider
-  inputs.files("${rootDir}/config/tsconfig.lib-legacy.json")
-}
-
 static String emulateSymlinkIfNecessary(java.nio.file.Path path) {
   if (Files.isSymbolicLink(path)) {
     return path.toString()

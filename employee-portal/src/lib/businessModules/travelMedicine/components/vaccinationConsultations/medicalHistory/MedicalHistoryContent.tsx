@@ -9,7 +9,6 @@ import {
   ApiMedicalHistory,
   ApiProcedureStatus,
 } from "@eshg/employee-portal-api/travelMedicine";
-import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
 import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { DownloadOutlined } from "@mui/icons-material";
@@ -38,7 +37,7 @@ export function MedicalHistoriesContent({
   const [medicalHistory, setMedicalHistory] = useState<ApiMedicalHistory>();
 
   const resetAlertContext = useResetAlertContext();
-  const downloadMedicalHistoryPdf = useDownloadMedicalHistoryPdf();
+  const medicalHistoryPdf = useDownloadMedicalHistoryPdf();
 
   const [{ data: allMedicalHistories }, { data: status }] = useSuspenseQueries({
     queries: [
@@ -67,11 +66,7 @@ export function MedicalHistoriesContent({
   }
 
   async function getMedicalHistoryPdf(medicalHistoryId: string) {
-    const downloadedFile = await downloadMedicalHistoryPdf(
-      procedureId,
-      medicalHistoryId,
-    );
-    downloadFileAndOpen(downloadedFile);
+    await medicalHistoryPdf.download({ procedureId, medicalHistoryId });
   }
 
   useEffect(() => {

@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import {
   ApiAppointmentType,
   ApiSchoolEntryProcedureType,
-} from "@eshg/employee-portal-api/schoolEntry";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+} from "@eshg/school-entry-api";
 
 import { isDraft } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/options";
 import {

@@ -5,12 +5,12 @@
 
 "use client";
 
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import {
   type ApiAffectedPerson,
   ApiDomesticAddress,
-} from "@eshg/employee-portal-api/measlesProtection";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
+} from "@eshg/measles-protection-api";
 
 import { MEASLES_PROTECTION_AFFECTED_PERSON_CONFIG } from "@/lib/businessModules/measlesProtection/components/procedures/createProceduresForm/NewPersonButton";
 import { ApiFacilityAddressType } from "@/lib/shared/components/form/address/legacyTypes";

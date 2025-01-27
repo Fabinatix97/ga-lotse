@@ -7,27 +7,16 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 
-import { useDownloadMeaslesProtectionFile } from "@/lib/businessModules/measlesProtection/api/download/files";
 import {
-  useDecideApprovalRequest,
-  useGrantDeletionForAllRequests,
-} from "@/lib/businessModules/measlesProtection/api/mutations/approvalRequests";
+  useApprovalRequestApi,
+  useFileApi,
+  useProcedureApi,
+  useProgressEntryApi,
+} from "@/lib/businessModules/measlesProtection/api/clients";
 import {
-  useDeleteFile,
-  useRequestFileDeletion,
-} from "@/lib/businessModules/measlesProtection/api/mutations/files";
-import {
-  useCreateProgressEntry,
-  useDeleteProgressEntry,
-  usePatchProgressEntry,
-  useRequestProgressEntryDeletion,
-} from "@/lib/businessModules/measlesProtection/api/mutations/progressEntries";
-import { useGetMetaDataHistory } from "@/lib/businessModules/measlesProtection/api/queries/files";
-import {
-  useFetchProgressEntries,
-  useFetchProgressEntryDetails,
-  useGetManualProgressEntryHistory,
-} from "@/lib/businessModules/measlesProtection/api/queries/progressEntries";
+  fileApiQueryKey,
+  progressEntryApiQueryKey,
+} from "@/lib/businessModules/measlesProtection/api/queries/apiQueryKeys";
 import { systemProgressEntryTypeTitles } from "@/lib/businessModules/measlesProtection/shared/constants";
 import { moduleUserGroup } from "@/lib/businessModules/measlesProtection/shared/moduleUserGroup";
 import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
@@ -41,26 +30,24 @@ export default function MeaslesProtectionProcedureDataProgressEntriesTab(
   props: ProgressEntriesUrlParams<MeaslesProtectionProcedureProgressEntriesPageParams>,
 ) {
   const { params, searchParams } = props;
+  const progressEntryApi = useProgressEntryApi();
+  const procedureApi = useProcedureApi();
+  const fileApi = useFileApi();
+  const approvalRequestApi = useApprovalRequestApi();
+
   return (
     <ProgressEntriesPage
-      useCreateProgressEntry={useCreateProgressEntry}
-      useDeleteFile={useDeleteFile}
-      useDeleteProgressEntry={useDeleteProgressEntry}
-      usePatchProgressEntry={usePatchProgressEntry}
-      useFetchProgressEntries={useFetchProgressEntries}
-      useFetchProgressEntryDetails={useFetchProgressEntryDetails}
       procedureId={params.id}
       searchParams={searchParams}
       leaderRole={ApiUserRole.MeaslesProtectionLeader}
-      useRequestProgressEntryDeletion={useRequestProgressEntryDeletion}
-      useRequestFileDeletion={useRequestFileDeletion}
-      useDecideApprovalRequest={useDecideApprovalRequest}
-      useGrantDeletionForAllRequests={useGrantDeletionForAllRequests}
-      useDownloadFile={useDownloadMeaslesProtectionFile}
-      useGetManualProgressEntryHistory={useGetManualProgressEntryHistory}
-      useGetMetaDataHistory={useGetMetaDataHistory}
       systemProgressEntryTypes={systemProgressEntryTypeTitles}
       groupName={moduleUserGroup.group}
+      progressEntryApiQueryKey={progressEntryApiQueryKey}
+      progressEntryApi={progressEntryApi}
+      procedureApi={procedureApi}
+      fileApiQueryKey={fileApiQueryKey}
+      fileApi={fileApi}
+      approvalRequestApi={approvalRequestApi}
     />
   );
 }

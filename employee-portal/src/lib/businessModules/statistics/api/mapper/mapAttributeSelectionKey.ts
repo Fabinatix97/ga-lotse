@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAttributeSelection } from "@eshg/employee-portal-api/statistics";
+import { ApiAttributeSelection } from "@eshg/statistics-api";
 
 const MAPPING_DICTIONARY = new Map<string, ApiAttributeSelection>();
 

@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import {
   ApiAvailableDataSource,
   ApiEvaluationInfo,
   ApiEvaluationState,
-} from "@eshg/employee-portal-api/statistics";
-import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+} from "@eshg/statistics-api";
 import {
   Add,
   Delete,

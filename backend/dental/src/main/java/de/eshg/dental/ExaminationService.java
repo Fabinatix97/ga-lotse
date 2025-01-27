@@ -6,10 +6,12 @@
 package de.eshg.dental;
 
 import de.cronn.reflection.util.ClassUtils;
+import de.eshg.dental.api.AbsenceExaminationResultDto;
 import de.eshg.dental.api.ExaminationResultDto;
 import de.eshg.dental.api.FluoridationExaminationResultDto;
 import de.eshg.dental.api.ScreeningExaminationResultDto;
 import de.eshg.dental.api.UpdateExaminationRequest;
+import de.eshg.dental.domain.model.AbsenceExaminationResult;
 import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.domain.model.ExaminationResult;
 import de.eshg.dental.domain.model.FluoridationExaminationResult;
@@ -69,6 +71,8 @@ public class ExaminationService {
           mapResult(examination, fluoridationExaminationResult);
       case ScreeningExaminationResultDto screeningExaminationResult ->
           mapResult(examination, screeningExaminationResult);
+      case AbsenceExaminationResultDto absenceExaminationResult ->
+          mapResult(examination, absenceExaminationResult);
     }
   }
 
@@ -76,12 +80,13 @@ public class ExaminationService {
     mapResult(
         examination,
         FluoridationExaminationResult.class,
-        existingResult -> mapResultCommon(existingResult, newResult));
+        existingResult ->
+            existingResult.setFluorideVarnishApplied(newResult.fluorideVarnishApplied()));
   }
 
   private static void validateExaminationResult(
       Examination examination, ExaminationResultDto newResult) {
-    if (newResult == null) {
+    if (newResult == null || newResult instanceof AbsenceExaminationResultDto) {
       return;
     }
 
@@ -123,15 +128,21 @@ public class ExaminationService {
         examination,
         ScreeningExaminationResult.class,
         existingResult -> {
-          mapResultCommon(existingResult, newResult);
+          existingResult.setFluorideVarnishApplied(newResult.fluorideVarnishApplied());
           existingResult.setOralHygieneStatus(
               ExaminationMapper.mapToDomain(newResult.oralHygieneStatus()));
+          existingResult.setToothDiagnoses(
+              ExaminationMapper.mapToDomain(newResult.toothDiagnoses()));
         });
   }
 
-  private static void mapResultCommon(
-      ExaminationResult existingResult, ExaminationResultDto newResult) {
-    existingResult.setFluorideVarnishApplied(newResult.fluorideVarnishApplied());
+  private void mapResult(Examination examination, AbsenceExaminationResultDto newResult) {
+    mapResult(
+        examination,
+        AbsenceExaminationResult.class,
+        existingResult ->
+            existingResult.setReasonForAbsence(
+                ExaminationMapper.mapToDomain(newResult.reasonForAbsence())));
   }
 
   private <R extends ExaminationResult> void mapResult(

@@ -5,11 +5,11 @@
 
 "use client";
 
-import { ApiWaitingRoomSortKey } from "@eshg/employee-portal-api/schoolEntry";
 import {
   formatDate,
   formatDateTime,
 } from "@eshg/lib-portal/formatters/dateTime";
+import { ApiWaitingRoomSortKey } from "@eshg/school-entry-api";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 import { isDefined, isNullish } from "remeda";
 

@@ -13,7 +13,7 @@ import { ConfigureChartFormModel } from "@/lib/businessModules/statistics/compon
 import { mapAttributeToAutocompleteSelectionOption } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/mapAttribute";
 import {
   groupingValueNames,
-  isBooleanOrValueWithOptions,
+  isCategorical,
   orientationValueNames,
   scalingValueNames,
 } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
@@ -36,7 +36,7 @@ export function ConfigureBarChartStep({
     values.secondaryAttribute.length > 0;
   const autocompleteSelectOptions: AutocompleteSelectOption[] = attributes.map(
     mapAttributeToAutocompleteSelectionOption((attr) =>
-      isBooleanOrValueWithOptions(attr.type),
+      isCategorical(attr.type),
     ),
   );
 

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiGetReferencePersonResponse } from "@eshg/citizen-portal-api/base";
+import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import DateOfBirthIcon from "@mui/icons-material/CakeOutlined";

@@ -7,7 +7,7 @@ import {
   ApiDoctorLetterValue,
   ApiExaminationResult,
   ApiExaminationResultValue,
-} from "@eshg/employee-portal-api/schoolEntry";
+} from "@eshg/school-entry-api";
 
 export interface ExaminationResult {
   examinationResultValue?: ApiExaminationResultValue;

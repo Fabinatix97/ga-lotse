@@ -5,6 +5,9 @@
     ":dental-api",
     ":employee-portal-api",
     ":lib-employee-portal",
-    ":lib-portal"
+    ":lib-portal",
+    ":measles-protection-api",
+    ":school-entry-api",
+    ":statistics-api"
   ]
 }

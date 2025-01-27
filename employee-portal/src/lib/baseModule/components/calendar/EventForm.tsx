@@ -81,7 +81,7 @@ export function EventForm({
       onSubmit={onSubmit}
       validate={validateEndAfterStart}
     >
-      <FormPlus style={{ display: "contents" }}>{children}</FormPlus>
+      <FormPlus sx={{ display: "contents" }}>{children}</FormPlus>
     </Formik>
   );
 }

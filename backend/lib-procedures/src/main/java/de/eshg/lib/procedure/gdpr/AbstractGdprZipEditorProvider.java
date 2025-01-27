@@ -22,6 +22,9 @@ import de.eshg.lib.procedure.domain.model.RelatedFacility_;
 import de.eshg.lib.procedure.domain.model.RelatedPerson_;
 import de.eshg.lib.procedure.domain.model.SystemProgressEntry_;
 import de.eshg.lib.procedure.domain.model.Task_;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -30,17 +33,27 @@ import java.util.UUID;
 import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.io.Resource;
 
 public abstract class AbstractGdprZipEditorProvider {
 
+  private final Resource resource;
+
   public static final String FILE_META_DATA = "metaData";
 
-  public static final String COMMON_LEGAL_BASIS_TEXT =
-      "Die Rechtsgrundlage für die Datenverarbeitung ist Art. 6 Abs. 1 S. 1 lit. f DS-GVO.";
+  protected AbstractGdprZipEditorProvider(Resource resource) {
+    this.resource = resource;
+  }
 
   protected abstract ZipEditor createSpecificFilter();
 
-  protected abstract String getLegalBasisAppendix();
+  protected String getLegalBasis() {
+    try {
+      return Files.readString(resource.getFile().toPath());
+    } catch (IOException e) {
+      throw new UncheckedIOException("Could not read resource file " + resource.getFilename(), e);
+    }
+  }
 
   public ZipEditor create(List<UUID> fileStateIds) {
     return createCommonFilter(fileStateIds)
@@ -51,13 +64,9 @@ public abstract class AbstractGdprZipEditorProvider {
   private ZipEditor createLegalBasisEnricher() {
     return (jsonNode, zipFileWrapper) -> {
       if (!zipFileWrapper.getFileNames().contains("Rechtsgrundlage.txt")) {
-        zipFileWrapper.addEntry("Rechtsgrundlage.txt", buildLegalBasisFileContent());
+        zipFileWrapper.addEntry("Rechtsgrundlage.txt", getLegalBasis().getBytes());
       }
     };
-  }
-
-  private byte[] buildLegalBasisFileContent() {
-    return (COMMON_LEGAL_BASIS_TEXT + System.lineSeparator() + getLegalBasisAppendix()).getBytes();
   }
 
   private static ZipEditor createCommonFilter(List<UUID> fileStateIds) {

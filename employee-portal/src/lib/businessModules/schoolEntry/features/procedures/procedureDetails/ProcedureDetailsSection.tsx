@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiLocationSelectionMode } from "@eshg/employee-portal-api/schoolEntry";
 import {
   formatDate,
   formatDateTime,
 } from "@eshg/lib-portal/formatters/dateTime";
+import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
 import { Divider, Stack } from "@mui/joy";
 import { isDefined } from "remeda";
 

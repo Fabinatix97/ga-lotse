@@ -10,20 +10,22 @@ import de.eshg.domain.model.serialization.ZipFileWrapper;
 import de.eshg.lib.procedure.gdpr.AbstractGdprZipEditorProvider;
 import java.util.Set;
 import java.util.function.Predicate;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 @Component
 public class InspectionGdprZipEditorProvider extends AbstractGdprZipEditorProvider {
 
+  public InspectionGdprZipEditorProvider(
+      @Value("classpath:/gdpr-legal-basis-text.txt") Resource resource) {
+    super(resource);
+  }
+
   @Override
   public ZipEditor createSpecificFilter() {
     return (jsonNode, zipFile) ->
         filterFiles(zipFile, InspectionGdprZipEditorProvider::isNotReportPdf);
-  }
-
-  @Override
-  protected String getLegalBasisAppendix() {
-    return "Hier könnte Ihr Rechtsgrundlagen-Anhang stehen!";
   }
 
   private static void filterFiles(ZipFileWrapper zipFile, Predicate<String> predicate) {

@@ -1125,7 +1125,9 @@ function FindingsLegendSidebar(props: DrawerProps) {
         <table>
           {Object.entries(FINDINGS).map(([abbreviation, description]) => (
             <tr key={abbreviation}>
-              <th style={{ textAlign: "left" }}>{abbreviation}</th>
+              <Box component={"th"} sx={{ textAlign: "left" }}>
+                {abbreviation}
+              </Box>
               <td>= {description}</td>
             </tr>
           ))}

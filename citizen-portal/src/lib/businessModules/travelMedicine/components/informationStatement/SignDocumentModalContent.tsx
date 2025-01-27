@@ -4,7 +4,7 @@
  */
 
 import { InfoOutlined } from "@mui/icons-material";
-import { Button, Sheet, Stack, Typography } from "@mui/joy";
+import { Box, Button, Sheet, Stack, Typography } from "@mui/joy";
 import { type Drauu, createDrauu } from "drauu";
 import { useFormikContext } from "formik";
 import { useEffect, useRef, useState } from "react";
@@ -97,7 +97,11 @@ export function SignDocumentModalContent({
         <Typography startDecorator={<InfoOutlined />}>
           {t("modal.sign")}
         </Typography>
-        <svg ref={svgRef} style={{ width: "100%", height: "100%" }} />
+        <Box
+          component={"svg"}
+          ref={svgRef}
+          sx={{ width: "100%", height: "100%" }}
+        />
       </Sheet>
       <Stack
         direction="row"

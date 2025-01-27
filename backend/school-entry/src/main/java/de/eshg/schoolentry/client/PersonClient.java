@@ -105,7 +105,9 @@ public class PersonClient {
   public UUID createPersonInCentralFile(CreatePersonDto personDetailsData) {
     AddPersonFileStateRequest request =
         new AddPersonFileStateRequest(
-            PersonMapper.mapToPersonDetailsDto(personDetailsData), DataOriginDto.MANUAL);
+            personDetailsData.referenceId(),
+            PersonMapper.mapToPersonDetailsDto(personDetailsData),
+            DataOriginDto.MANUAL);
 
     log.info("Creating person in the central file");
 

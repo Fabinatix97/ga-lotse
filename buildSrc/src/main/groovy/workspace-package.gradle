@@ -18,7 +18,7 @@ tasks.register('prepareEnvironment') {
 
 tasks.register('check') {
   group = 'verification'
-  dependsOn 'compileCheck'
+  dependsOn 'compile'
 }
 
 tasks.register('clean', Delete) {

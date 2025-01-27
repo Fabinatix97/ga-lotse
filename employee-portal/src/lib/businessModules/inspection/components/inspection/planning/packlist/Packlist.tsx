@@ -77,10 +77,10 @@ export function Packlist({
               </Typography>
 
               <AccordionSummary
-                style={{
+                sx={{
                   minHeight: "1px",
                   height: "1px",
-                  marginTop: -10,
+                  marginTop: -1.25,
                 }}
                 slotProps={{
                   button: {
@@ -110,11 +110,11 @@ export function Packlist({
               <Stack
                 direction="column"
                 gap={2}
-                sx={{ paddingX: 2 }}
                 data-testid="packlists"
-                style={{
-                  marginTop: 20,
-                  marginLeft: -12,
+                sx={{
+                  paddingX: 2,
+                  marginTop: 2.5,
+                  marginLeft: -1.5,
                 }}
               >
                 {packlist.elements.map((element) => {

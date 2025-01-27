@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBusinessModule } from "@eshg/citizen-portal-api/base";
+import { ApiBusinessModule } from "@eshg/base-api";
 import { ApiOpenDataFileType } from "@eshg/citizen-portal-api/openData";
 import { parseOptionalEnum } from "@eshg/lib-portal/helpers/searchParams";
 import { useSearchParams } from "next/navigation";

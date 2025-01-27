@@ -9,7 +9,7 @@ import {
   Configuration,
   GdprProcedureApi,
   MukFacilityLinkApi,
-} from "@eshg/citizen-portal-api/base";
+} from "@eshg/base-api";
 import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 
 function useConfiguration() {

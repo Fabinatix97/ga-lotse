@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiErrorCode } from "@eshg/citizen-portal-api/base";
+import { ApiErrorCode } from "@eshg/base-api";
 import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
 import { useSuspenseQuery } from "@tanstack/react-query";
 

@@ -162,6 +162,10 @@ public abstract class Procedure<
     this.procedureStatus = procedureStatus;
   }
 
+  public boolean isFinalized() {
+    return List.of(ProcedureStatus.CLOSED, ProcedureStatus.ABORTED).contains(this.procedureStatus);
+  }
+
   private void validateStatusTransition(ProcedureStatus procedureStatus) {
     if (this.procedureStatus != null
         && this.procedureStatus != ProcedureStatus.DRAFT

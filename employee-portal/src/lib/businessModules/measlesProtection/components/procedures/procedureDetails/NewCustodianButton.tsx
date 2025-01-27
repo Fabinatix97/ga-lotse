@@ -8,7 +8,7 @@
 import {
   ApiAddCustodianRequest,
   ApiCustodianDetails,
-} from "@eshg/employee-portal-api/measlesProtection";
+} from "@eshg/measles-protection-api";
 import { Add } from "@mui/icons-material";
 import { Button, Sheet } from "@mui/joy";
 

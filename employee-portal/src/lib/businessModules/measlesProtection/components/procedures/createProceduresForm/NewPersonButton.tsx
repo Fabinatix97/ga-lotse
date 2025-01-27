@@ -6,9 +6,9 @@
 "use client";
 
 import type { ApiGetReferencePersonResponse } from "@eshg/base-api";
-import { type ApiAffectedPersonDetails } from "@eshg/employee-portal-api/measlesProtection";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import { type ApiAffectedPersonDetails } from "@eshg/measles-protection-api";
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 import { useRouter } from "next/navigation";

@@ -5,6 +5,8 @@
 
 "use client";
 
+import { Row } from "@eshg/lib-portal/components/Row";
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import {
   ApiMeaslesProtectionFeature,
   ApiMeaslesProtectionProcedure,
@@ -12,9 +14,7 @@ import {
   ApiProofRequestLetter,
   ApiProofSubmission,
   ApiSubmissionResult,
-} from "@eshg/employee-portal-api/measlesProtection";
-import { Row } from "@eshg/lib-portal/components/Row";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+} from "@eshg/measles-protection-api";
 import { Add } from "@mui/icons-material";
 import { Button, Grid, Sheet, Stack } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
@@ -218,7 +218,7 @@ function FineCard({
       <DetailsSection title="Bußgeld">
         <Stack spacing={3} alignItems={"start"} width={"100%"}>
           {monetaryFines.length > 0 && (
-            <Stack gap={1} style={{ flexBasis: "auto" }}>
+            <Stack gap={1} sx={{ flexBasis: "auto" }}>
               {monetaryFines.map((fine) => (
                 <DetailsCell
                   key={fine.externalId}

@@ -4,6 +4,9 @@
  */
 
 import { UpdateChildRequest } from "@eshg/dental-api";
+import { ChildDetails } from "@eshg/dental/api/models/ChildDetails";
+import { Institution } from "@eshg/dental/api/models/Institution";
+import { useUpdateAnnualChild } from "@eshg/dental/api/mutations/childApi";
 import { BooleanSelectField } from "@eshg/lib-portal/components/formFields/BooleanSelectField";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -20,9 +23,6 @@ import { FormikProvider, useFormik } from "formik";
 import { isDefined } from "remeda";
 
 import { SCHOOL_OR_DAYCARE } from "@/lib/baseModule/api/queries/contacts";
-import { ChildDetails } from "@/lib/businessModules/dental/api/models/ChildDetails";
-import { Institution } from "@/lib/businessModules/dental/api/models/Institution";
-import { useUpdateAnnualChild } from "@/lib/businessModules/dental/api/mutations/childApi";
 import { SearchGroupField } from "@/lib/businessModules/dental/features/prophylaxisSessions/SearchGroupField";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";

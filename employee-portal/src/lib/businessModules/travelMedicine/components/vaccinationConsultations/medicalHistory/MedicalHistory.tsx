@@ -143,8 +143,8 @@ export function MedicalHistory({
                                     {element.anamnesisQuestion
                                       .subElementText && (
                                       <Stack
-                                        style={{
-                                          marginLeft: 16,
+                                        sx={{
+                                          marginLeft: 2,
                                         }}
                                       >
                                         <MedicalHistoryTextareaElement

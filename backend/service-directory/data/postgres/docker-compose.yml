@@ -4,7 +4,7 @@
 services:
   postgres:
     container_name: servicedirectory_db
-    image: 'postgres:16.3@sha256:d0f363f8366fbc3f52d172c6e76bc27151c3d643b870e1062b4e8bfe65baf609'
+    image: 'postgres:15.8@sha256:eb3747f5d0a92195ca486d2f15d9a4ee5e9461b0332fe87fbc59069490a5c659'
     ports:
       - 5437:5432
     environment:

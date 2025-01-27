@@ -3,20 +3,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ImportStatistics } from "@eshg/lib-employee-portal/api/models/import/ImportStatistics";
+import {
+  formatDuplicatedCount,
+  formatFailedCount,
+  formatTotalCount,
+} from "@eshg/lib-employee-portal/helpers/import";
 import { Stack, Typography } from "@mui/joy";
 
-import { ImportStatistics } from "@/lib/shared/api/models/import/ImportStatistics";
 import { FileDownloadButton } from "@/lib/shared/components/buttons/FileDownloadButton";
 import { ImportResultProceduresSummary } from "@/lib/shared/components/import/ImportResultProceduresSummary";
 import {
   ImportResultItem,
   ImportResultSummary,
 } from "@/lib/shared/components/import/ImportResultSummary";
-import {
-  formatDuplicatedCount,
-  formatFailedCount,
-  formatTotalCount,
-} from "@/lib/shared/helpers/import";
 
 function buildStatisticItems(statistics: ImportStatistics): ImportResultItem[] {
   if (statistics.total === 0) {

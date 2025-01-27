@@ -5,6 +5,16 @@
 
 "use client";
 
+import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
+import { mapMonthAndYear } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
+import {
+  mapOptionalDate,
+  mapOptionalValue,
+  parseOptionalDate,
+  parseOptionalValue,
+} from "@eshg/lib-portal/helpers/form";
+import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import {
   ApiAdditionalChildInfo,
   ApiCheckUps,
@@ -17,17 +27,7 @@ import {
   ApiPromotionBeforeSchoolEntry,
   ApiPromotionTherapyAndAidInfo,
   UpdateAnamnesisRequest,
-} from "@eshg/employee-portal-api/schoolEntry";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
-import { mapMonthAndYear } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
-import {
-  mapOptionalDate,
-  mapOptionalValue,
-  parseOptionalDate,
-  parseOptionalValue,
-} from "@eshg/lib-portal/helpers/form";
-import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
+} from "@eshg/school-entry-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { isDefined } from "remeda";
 

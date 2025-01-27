@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SchoolEntryPublicCitizenApi } from "@eshg/citizen-portal-api/schoolEntry";
+import { SchoolEntryPublicCitizenApi } from "@eshg/school-entry-api";
 import { queryOptions } from "@tanstack/react-query";
 
 import { schoolEntryPublicCitizenApiQueryKey } from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";

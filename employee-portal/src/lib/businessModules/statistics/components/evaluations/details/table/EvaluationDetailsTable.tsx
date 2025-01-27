@@ -6,7 +6,9 @@
 "use client";
 
 import { useMemo } from "react";
+import { isDefined } from "remeda";
 
+import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";
 import { mapAttributesToFilterDefinitions } from "@/lib/businessModules/statistics/api/mapper/mapAttributesToFilterDefinitions";
 import { mapFilterValuesToEvaluationFilters } from "@/lib/businessModules/statistics/api/mapper/mapFilterValuesToEvaluationFilters";
 import { EvaluationDetailsTableData } from "@/lib/businessModules/statistics/api/models/evaluationDetailsTableData";
@@ -15,7 +17,10 @@ import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatA
 import { useAddFilterTemplate } from "@/lib/businessModules/statistics/api/mutations/useAddFilterTemplate";
 import { useDeleteFilterTemplate } from "@/lib/businessModules/statistics/api/mutations/useDeleteFilterTemplate";
 import { useGetFilterTemplateFilters } from "@/lib/businessModules/statistics/api/mutations/useGetFilterTemplateFilters";
-import { evaluationColumns } from "@/lib/businessModules/statistics/components/evaluations/details/table/columns";
+import {
+  DUMMY_COLUMN,
+  evaluationColumns,
+} from "@/lib/businessModules/statistics/components/evaluations/details/table/columns";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
@@ -75,10 +80,18 @@ export function EvaluationDetailsTable(props: EvaluationDetailsTableProps) {
     () =>
       evaluationColumns({
         flatAttributes: props.attributes,
-        resolveProcedureId: props.resolveProcedureId ?? (() => undefined),
       }),
-    [props.attributes, props.resolveProcedureId],
+    [props.attributes],
   );
+
+  const procedureReferenceAttribute = props.attributes.find(
+    (attribute) => attribute.type === "ProcedureReferenceAttribute",
+  );
+
+  const focusColumnAccessorKey =
+    props.attributes.find(
+      (attribute) => attribute.type !== "ProcedureReferenceAttribute",
+    )?.key ?? DUMMY_COLUMN;
 
   return (
     <TablePage
@@ -106,6 +119,32 @@ export function EvaluationDetailsTable(props: EvaluationDetailsTableProps) {
           data={props.tableData}
           columns={columns}
           sorting={props.manualSortingProps}
+          rowNavigation={{
+            onClick: (row) => {
+              if (
+                isDefined(procedureReferenceAttribute) &&
+                isDefined(props.resolveProcedureId)
+              ) {
+                const procedureReferenceId = row.original[
+                  procedureReferenceAttribute.key
+                ] as string | undefined;
+                const procedureId =
+                  props.resolveProcedureId(procedureReferenceId);
+                if (isDefined(procedureId)) {
+                  return () =>
+                    window.open(
+                      resolveProcedureDetailsRoute({
+                        businessModule:
+                          procedureReferenceAttribute.businessModule,
+                        procedureId,
+                      }),
+                      "_blank",
+                    );
+                }
+              }
+            },
+            focusColumnAccessorKey,
+          }}
         />
       </TableSheet>
     </TablePage>

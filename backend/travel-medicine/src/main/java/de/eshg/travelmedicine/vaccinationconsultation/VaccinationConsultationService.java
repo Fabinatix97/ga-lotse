@@ -7,6 +7,7 @@ package de.eshg.travelmedicine.vaccinationconsultation;
 
 import static de.eshg.travelmedicine.util.MappingUtil.mapEnum;
 import static de.eshg.travelmedicine.util.TravelMedicineProgressEntryType.PERSON_SYNCHRONIZED;
+import static de.eshg.travelmedicine.util.TravelMedicineProgressEntryType.PERSON_UPDATED;
 
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
 import de.eshg.lib.appointmentblock.AppointmentTypeMapper;
@@ -297,14 +298,16 @@ public class VaccinationConsultationService {
         procedureAccessor.accessProcedure(procedureId, ProcedureAccessor.checkNotClosed);
 
     Person person = vaccinationConsultation.getRelatedPersons().getFirst();
+    UUID previousFileStateId = person.getCentralFileStateId();
     UUID updatedFileStateId =
-        personClient.syncPerson(person.getCentralFileStateId(), request.referenceVersion());
+        personClient.syncPerson(previousFileStateId, request.referenceVersion());
     person.setCentralFileStateId(updatedFileStateId);
 
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             PERSON_SYNCHRONIZED.name(), TriggerType.SYSTEM_AUTOMATIC);
     progressEntry.setProcedureId(vaccinationConsultation.getId());
+    progressEntry.setPreviousFileStateId(previousFileStateId);
     vaccinationConsultation.addProgressEntry(progressEntry);
   }
 
@@ -315,16 +318,24 @@ public class VaccinationConsultationService {
       throw new BadRequestException("Can't update person in draft status.");
     }
 
+    Person person = vaccinationConsultation.getRelatedPersons().getFirst();
+    UUID previousFileStateId = person.getCentralFileStateId();
+
     try {
       UUID patientIdFromCentralFile =
-          personClient.updatePersonInCentralFile(
-              vaccinationConsultation.getRelatedPersons().getFirst().getCentralFileStateId(),
-              request.patient());
+          personClient.updatePersonInCentralFile(previousFileStateId, request.patient());
       vaccinationConsultationMapper.toDomainTypePatchPerson(
           patientIdFromCentralFile, vaccinationConsultation);
     } catch (Exception e) {
       throw new BadRequestException(UPDATE_OUTDATED_PERSON);
     }
+
+    SystemProgressEntry progressEntry =
+        SystemProgressEntryFactory.createSystemProgressEntry(
+            PERSON_UPDATED.name(), TriggerType.SYSTEM_AUTOMATIC);
+    progressEntry.setProcedureId(vaccinationConsultation.getId());
+    progressEntry.setPreviousFileStateId(previousFileStateId);
+    vaccinationConsultation.addProgressEntry(progressEntry);
   }
 
   public void updateTravelDetails(

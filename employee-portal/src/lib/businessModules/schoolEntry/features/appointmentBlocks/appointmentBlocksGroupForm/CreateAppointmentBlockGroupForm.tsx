@@ -6,17 +6,17 @@
 "use client";
 
 import { ApiAddContact200Response } from "@eshg/base-api";
-import {
-  ApiAppointmentType,
-  ApiCreateDailyAppointmentBlock,
-  ApiCreateDailyAppointmentBlockGroupRequest,
-} from "@eshg/employee-portal-api/schoolEntry";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   mapOptionalValue,
   mapRequiredValue,
 } from "@eshg/lib-portal/helpers/form";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import {
+  ApiAppointmentType,
+  ApiCreateDailyAppointmentBlock,
+  ApiCreateDailyAppointmentBlockGroupRequest,
+} from "@eshg/school-entry-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";

@@ -4,13 +4,13 @@
  */
 
 import { GetChildrenRequest } from "@eshg/dental-api";
+import { useSearchInstitutionGroups } from "@eshg/dental/api/queries/childApi";
 import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { useHasChanged } from "@eshg/lib-portal/hooks/useHasChanged";
 import { CircularProgress, FormControl, FormLabel, Select } from "@mui/joy";
 import { useEffect } from "react";
 import { isDefined } from "remeda";
 
-import { useSearchInstitutionGroups } from "@/lib/businessModules/dental/api/queries/childApi";
 import { ResetButton } from "@/lib/shared/components/ResetButton";
 import { ActiveFilter } from "@/lib/shared/components/filterSettings/ActiveFilter";
 import { FilterSettingsContent } from "@/lib/shared/components/filterSettings/FilterSettingsContent";

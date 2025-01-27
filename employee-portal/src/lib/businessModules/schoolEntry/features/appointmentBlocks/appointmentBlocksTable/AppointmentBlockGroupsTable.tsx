@@ -5,13 +5,13 @@
 
 "use client";
 
+import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import {
   ApiAppointmentBlockSortKey,
   ApiAppointmentLocation,
   ApiAppointmentType,
   ApiLocationSelectionMode,
-} from "@eshg/employee-portal-api/schoolEntry";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+} from "@eshg/school-entry-api";
 import { Chip } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import {

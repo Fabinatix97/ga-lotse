@@ -4,16 +4,21 @@
  */
 
 import {
+  ApiAppointmentType,
   ApiCreateDailyAppointmentBlockGroupRequest,
   GetAppointmentBlockGroupsRequest,
 } from "@eshg/employee-portal-api/officialMedicalService";
+import { mapPaginatedList } from "@eshg/lib-employee-portal/api/models/PaginatedList";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useQuery,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 
 import { useAppointmentBlockApi } from "@/lib/businessModules/officialMedicalService/api/clients";
 import { mapAppointmentBlockGroup } from "@/lib/businessModules/officialMedicalService/api/models/AppointmentBlockGroup";
 import { appointmentBlockApiQueryKey } from "@/lib/businessModules/officialMedicalService/api/queries/apiQueryKeys";
-import { mapPaginatedList } from "@/lib/shared/api/models/PaginatedList";
 
 export function useGetAppointmentBlockGroupsQuery(
   request: GetAppointmentBlockGroupsRequest,
@@ -45,5 +50,18 @@ export function useValidateDailyAppointmentBlocksForGroup(
       data != null
         ? appointmentApi.validateDailyAppointmentBlocksForGroup(data)
         : null,
+  });
+}
+
+export function useGetFreeAppointmentsQuery(physicianId?: string) {
+  const appointmentApi = useAppointmentBlockApi();
+  return useSuspenseQuery({
+    queryKey: appointmentBlockApiQueryKey(["getFreeAppointments", physicianId]),
+    queryFn: () =>
+      appointmentApi.getFreeAppointments(
+        ApiAppointmentType.OfficialMedicalService,
+        undefined,
+        physicianId,
+      ),
   });
 }

@@ -8,6 +8,7 @@ import {
   ApiCreateDailyAppointmentBlockGroupRequest,
   GetAppointmentBlockGroupsRequest,
 } from "@eshg/employee-portal-api/travelMedicine";
+import { mapPaginatedList } from "@eshg/lib-employee-portal/api/models/PaginatedList";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledBackgroundQuery } from "@eshg/lib-portal/api/useHandledBackgroundQuery";
 import { queryOptions, useQuery } from "@tanstack/react-query";
@@ -16,7 +17,6 @@ import { useAppointmentBlockApi } from "@/lib/businessModules/travelMedicine/api
 import { mapAppointment } from "@/lib/businessModules/travelMedicine/api/models/Appointment";
 import { mapAppointmentBlockGroup } from "@/lib/businessModules/travelMedicine/api/models/AppointmentBlock";
 import { appointmentBlockApiQueryKey } from "@/lib/businessModules/travelMedicine/api/queries/queryKeys";
-import { mapPaginatedList } from "@/lib/shared/api/models/PaginatedList";
 
 export function useGetAppointmentBlockGroupsQuery(
   request: GetAppointmentBlockGroupsRequest,

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetCitizenProcedureResponse } from "@eshg/citizen-portal-api/schoolEntry";
+import { ApiGetCitizenProcedureResponse } from "@eshg/school-entry-api";
 import { Duration, intervalToDuration } from "date-fns";
 
 import { SchoolEntryChild, mapSchoolEntryChild } from "./SchoolEntryChild";

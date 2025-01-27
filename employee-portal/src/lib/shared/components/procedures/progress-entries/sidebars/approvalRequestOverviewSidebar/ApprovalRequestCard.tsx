@@ -25,13 +25,14 @@ import {
   ProgressEntriesContext,
   useResolvedUserName,
 } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
+import { useDecideApprovalRequest } from "@/lib/shared/components/procedures/progress-entries/mutations/approvalRequestApi";
 import { FileAsApprovalRequestEntity } from "@/lib/shared/components/procedures/progress-entries/sidebars/approvalRequestOverviewSidebar/FileAsApprovalRequestEntity";
 import { ProgressEntryAsApprovalRequestEntity } from "@/lib/shared/components/procedures/progress-entries/sidebars/approvalRequestOverviewSidebar/ProgressEntryAsApprovalRequestEntity";
 
 export function ApprovalRequestCard(request: ApiApprovalRequest) {
   const progressEntriesContext = useContext(ProgressEntriesContext);
-  const { useDecideApprovalRequest } = progressEntriesContext.config;
-  const decideApprovalRequest = useDecideApprovalRequest();
+  const { approvalRequestApi } = progressEntriesContext.config;
+  const decideApprovalRequest = useDecideApprovalRequest(approvalRequestApi);
 
   function decideRequest(decision: string) {
     return function () {

@@ -53,6 +53,7 @@ public class Child extends Procedure<Child, ChildTask, Person, Facility> {
   @DataSensitivity(SENSITIVE)
   @ElementCollection
   @OrderColumn
+  @BatchSize(size = 100)
   private final List<FluoridationConsent> fluoridationConsents = new ArrayList<>();
 
   public UUID getChildIdFromCentralFile() {

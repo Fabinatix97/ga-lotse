@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { AppointmentTypeApi } from "@eshg/employee-portal-api/schoolEntry";
+import { AppointmentTypeApi } from "@eshg/school-entry-api";
 import { queryOptions } from "@tanstack/react-query";
 
 import { mapAppointmentTypeConfig } from "@/lib/businessModules/schoolEntry/api/models/AppointmentTypeConfig";

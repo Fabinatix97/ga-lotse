@@ -6,18 +6,21 @@
 package de.eshg.lib.procedure.gdpr;
 
 import de.eshg.domain.model.serialization.ZipEditor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 @Component
 @ConditionalOnMissingBean(AbstractGdprZipEditorProvider.class)
 public class DefaultGdprZipEditorProvider extends AbstractGdprZipEditorProvider {
 
-  protected ZipEditor createSpecificFilter() {
-    return (jsonNode, zipFileWrapper) -> {};
+  public DefaultGdprZipEditorProvider(
+      @Value("classpath:/gdpr-legal-basis-text.txt") Resource resource) {
+    super(resource);
   }
 
-  protected String getLegalBasisAppendix() {
-    return "";
+  protected ZipEditor createSpecificFilter() {
+    return (jsonNode, zipFileWrapper) -> {};
   }
 }

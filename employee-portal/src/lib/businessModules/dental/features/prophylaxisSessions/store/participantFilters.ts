@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ChildExamination } from "@/lib/businessModules/dental/api/models/ChildExamination";
+import { ChildExamination } from "@eshg/dental/api/models/ChildExamination";
 
 export interface ParticipantFilters {
   gender: GenderFilter;

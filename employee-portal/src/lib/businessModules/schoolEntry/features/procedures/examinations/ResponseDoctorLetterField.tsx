@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiExaminationResultValue } from "@eshg/employee-portal-api/schoolEntry";
 import {
   SoftRequiredSelectField,
   SoftRequiredSelectFieldProps,
 } from "@eshg/lib-portal/businessModules/schoolEntry/features/procedures/fieldVariants";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { ApiExaminationResultValue } from "@eshg/school-entry-api";
 
 import { RESPONSE_DOCTOR_LETTER_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 

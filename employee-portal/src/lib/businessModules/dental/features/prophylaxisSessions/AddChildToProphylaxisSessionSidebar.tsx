@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ChildExamination } from "@eshg/dental/api/models/ChildExamination";
+import { ChildSearchResult } from "@eshg/dental/api/models/ChildSearchResult";
+import { useUpdateProphylaxisSessionParticipants } from "@eshg/dental/api/mutations/prophylaxisSessionApi";
+import { useSearchChildren } from "@eshg/dental/api/queries/childApi";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -25,10 +29,6 @@ import { Formik } from "formik";
 import { ReactNode } from "react";
 import { useDebounce } from "use-debounce";
 
-import { ChildExamination } from "@/lib/businessModules/dental/api/models/ChildExamination";
-import { ChildSearchResult } from "@/lib/businessModules/dental/api/models/ChildSearchResult";
-import { useUpdateProphylaxisSessionParticipants } from "@/lib/businessModules/dental/api/mutations/prophylaxisSessionApi";
-import { useSearchChildren } from "@/lib/businessModules/dental/api/queries/childApi";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { SelectableCard } from "@/lib/shared/components/cards/SelectableCard";
 import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";

@@ -5,6 +5,7 @@
 
 import { useUuid } from "@eshg/lib-portal/hooks/useUuid";
 
+import { useSidebarScope } from "@/lib/shared/components/drawer/SidebarScope";
 import {
   DrawerOpenOptions,
   DrawerProps,
@@ -44,13 +45,14 @@ export function useSidebar<TSidebarProps extends DrawerProps>(
   options: DrawerOpenOptions<TSidebarProps>,
 ): UseSidebarResult<TSidebarProps> {
   const drawerContext = useDrawerContext();
+  const sidebarScope = useSidebarScope();
   const sidebarId = useUuid();
 
   const isOpen = isDrawer(sidebarId, drawerContext.state.open);
 
   function open(sidebarProps?: CustomSidebarProps<TSidebarProps>): void {
     const SidebarComponent = options.component;
-    drawerContext.tryOpen(sidebarId, "sidebar", {
+    drawerContext.tryOpen(sidebarId, "sidebar", sidebarScope, {
       ...options,
       component: (overlayProps) => {
         const mergedProps = {

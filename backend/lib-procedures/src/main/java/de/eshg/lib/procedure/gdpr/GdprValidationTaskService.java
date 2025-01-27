@@ -107,11 +107,20 @@ public class GdprValidationTaskService<
   }
 
   public GdprDownloadPackage getDownloadPackage(UUID gdprId, UUID downloadId) {
-    validatePermissionToAccessGdprProcedure(gdprId, false);
+    validatePermissionToAccessGdprProcedure(gdprId);
+    validateDownloadIdBelongsToGdprProcedure(gdprId, downloadId);
     log.info("Fetching download package from database by downloadId: {}", downloadId);
     return downloadPackageRepository
         .findByExternalId(downloadId)
         .orElseThrow(() -> new NotFoundException("GdprDownloadPackage not found."));
+  }
+
+  private void validateDownloadIdBelongsToGdprProcedure(UUID gdprId, UUID downloadId) {
+    Set<UUID> knownDownloadIds = fetchDownloadIdsFromBase(gdprId).downloadIds();
+    if (!knownDownloadIds.contains(downloadId)) {
+      throw new BadRequestException(
+          "The requested gdpr procedure does not contain the requested download package");
+    }
   }
 
   public Procedure<?, ?, ?, ?> getBusinessProcedureFromDb(UUID id) {
@@ -188,7 +197,7 @@ public class GdprValidationTaskService<
   }
 
   public List<GdprDownloadPackageInfo> getDownloadPackagesInfo(UUID gdprProcedureId) {
-    validatePermissionToAccessGdprProcedure(gdprProcedureId, false);
+    validatePermissionToAccessGdprProcedure(gdprProcedureId);
     Set<UUID> downloadIdsFromBase = fetchDownloadIdsFromBase(gdprProcedureId).downloadIds();
     if (downloadIdsFromBase.isEmpty()) {
       return List.of();
@@ -349,11 +358,7 @@ public class GdprValidationTaskService<
     downloadPackageRepository.deleteAllByExternalIdIn(downloadIds);
   }
 
-  private void validatePermissionToAccessGdprProcedure(
-      UUID gdprProcedureId, boolean allowEmployeeFullAccess) {
-    if (allowEmployeeFullAccess && CurrentUserHelper.isEmployee()) {
-      return;
-    }
+  private void validatePermissionToAccessGdprProcedure(UUID gdprProcedureId) {
     GdprIdentificationDataDto identificationData;
     try {
       identificationData =

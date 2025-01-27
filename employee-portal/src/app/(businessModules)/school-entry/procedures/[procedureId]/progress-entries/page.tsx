@@ -8,27 +8,16 @@
 import { ApiUserRole } from "@eshg/base-api";
 
 import { SchoolEntryProcedurePageParams } from "@/app/(businessModules)/school-entry/procedures/[procedureId]/layout";
-import { useDownloadSchoolEntryFile } from "@/lib/businessModules/schoolEntry/api/download/files";
 import {
-  useDecideApprovalRequest,
-  useGrantDeletionForAllRequests,
-} from "@/lib/businessModules/schoolEntry/api/mutations/approvalRequests";
+  useApprovalRequestApi,
+  useFileApi,
+  useProcedureApi,
+  useProgressEntryApi,
+} from "@/lib/businessModules/schoolEntry/api/clients";
 import {
-  useDeleteFile,
-  useRequestFileDeletion,
-} from "@/lib/businessModules/schoolEntry/api/mutations/files";
-import {
-  useCreateProgressEntry,
-  useDeleteProgressEntry,
-  usePatchProgressEntry,
-  useRequestProgressEntryDeletion,
-} from "@/lib/businessModules/schoolEntry/api/mutations/progressEntries";
-import { useGetMetaDataHistory } from "@/lib/businessModules/schoolEntry/api/queries/files";
-import {
-  useFetchProgressEntries,
-  useFetchProgressEntryDetails,
-  useGetManualProgressEntryHistory,
-} from "@/lib/businessModules/schoolEntry/api/queries/progressEntries";
+  fileApiQueryKey,
+  progressEntryApiQueryKey,
+} from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";
 import {
   keyDocumentTypes,
   systemProgressEntryTypeTitles,
@@ -41,27 +30,25 @@ export default function SchoolEntryProgressEntriesPage(
   props: ProgressEntriesUrlParams<SchoolEntryProcedurePageParams>,
 ) {
   const { params, searchParams } = props;
+  const progressEntryApi = useProgressEntryApi();
+  const procedureApi = useProcedureApi();
+  const fileApi = useFileApi();
+  const approvalRequestApi = useApprovalRequestApi();
+
   return (
     <ProgressEntriesPage
-      useCreateProgressEntry={useCreateProgressEntry}
-      useDeleteFile={useDeleteFile}
-      useDeleteProgressEntry={useDeleteProgressEntry}
-      usePatchProgressEntry={usePatchProgressEntry}
-      useFetchProgressEntries={useFetchProgressEntries}
-      useFetchProgressEntryDetails={useFetchProgressEntryDetails}
       procedureId={params.procedureId}
       searchParams={searchParams}
       leaderRole={ApiUserRole.SchoolEntryLeader}
-      useRequestProgressEntryDeletion={useRequestProgressEntryDeletion}
-      useRequestFileDeletion={useRequestFileDeletion}
-      useDecideApprovalRequest={useDecideApprovalRequest}
-      useGrantDeletionForAllRequests={useGrantDeletionForAllRequests}
-      useDownloadFile={useDownloadSchoolEntryFile}
-      useGetManualProgressEntryHistory={useGetManualProgressEntryHistory}
-      useGetMetaDataHistory={useGetMetaDataHistory}
       systemProgressEntryTypes={systemProgressEntryTypeTitles}
       additionalKeyDocumentTypes={keyDocumentTypes}
       groupName={moduleUserGroup.group}
+      progressEntryApiQueryKey={progressEntryApiQueryKey}
+      progressEntryApi={progressEntryApi}
+      procedureApi={procedureApi}
+      fileApiQueryKey={fileApiQueryKey}
+      fileApi={fileApi}
+      approvalRequestApi={approvalRequestApi}
     />
   );
 }

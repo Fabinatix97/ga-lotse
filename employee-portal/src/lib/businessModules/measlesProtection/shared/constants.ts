@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { EnumMap } from "@eshg/lib-portal/types/helpers";
 import {
   ApiAppointmentType,
   ApiProcedureType,
   ApiTaskType,
-} from "@eshg/employee-portal-api/measlesProtection";
-import { EnumMap } from "@eshg/lib-portal/types/helpers";
+} from "@eshg/measles-protection-api";
 
 export const procedureTypes = [ApiProcedureType.MeaslesProtection];
 

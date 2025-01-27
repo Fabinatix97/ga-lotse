@@ -3,28 +3,25 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InternalLinkIconButton } from "@eshg/lib-portal/components/navigation/InternalLinkIconButton";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { Stack } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
-import { isDefined } from "remeda";
 
-import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";
 import { EvaluationDetailsTableRow } from "@/lib/businessModules/statistics/api/models/evaluationDetailsTableData";
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 import { mapRawValueToTableCell } from "@/lib/businessModules/statistics/components/evaluations/details/table/mapRawValueToTableCell";
 
 const columnHelper = createColumnHelper<EvaluationDetailsTableRow>();
+// TODO: this should be removed in ISSUE-7403
+export const DUMMY_COLUMN = "dummyColumn";
 
 export function evaluationColumns({
   flatAttributes,
-  resolveProcedureId,
 }: {
   flatAttributes: FlatAttribute[];
-  resolveProcedureId: (
-    procedureReferenceId: string | undefined,
-  ) => string | undefined;
 }) {
+  const canNavigate = flatAttributes.some(
+    (attribute) => attribute.type === "ProcedureReferenceAttribute",
+  );
+
   const dataColumns = flatAttributes
     .filter((attribute) => attribute.type !== "ProcedureReferenceAttribute")
     .map((attribute) => {
@@ -37,47 +34,23 @@ export function evaluationColumns({
             "valueOptions" in attribute ? attribute.valueOptions : undefined,
           ),
         meta: {
+          canNavigate: {
+            parentRow: canNavigate,
+          },
           width: "12rem",
         },
       });
     });
 
-  const procedureLinkColumns = flatAttributes
-    .filter((attribute) => attribute.type === "ProcedureReferenceAttribute")
-    .map((attribute) => {
-      return columnHelper.accessor(attribute.key, {
-        header: "",
-        cell: (props) => {
-          const procedureReferenceId = props.getValue() as string | undefined;
-          const procedureId = resolveProcedureId(procedureReferenceId);
-          const href = isDefined(procedureId)
-            ? resolveProcedureDetailsRoute({
-                businessModule: attribute.businessModule,
-                procedureId,
-              })
-            : undefined;
+  const dummyColumn = columnHelper.accessor(DUMMY_COLUMN, {
+    header: "",
+    cell: "",
+    meta: {
+      canNavigate: {
+        parentRow: canNavigate,
+      },
+    },
+  });
 
-          return isDefined(href) ? (
-            <Stack direction="row" justifyContent={"flex-end"}>
-              <InternalLinkIconButton
-                variant="plain"
-                color="primary"
-                size="sm"
-                href={href}
-                aria-label="Vorgangsdetails"
-              >
-                <ArrowForwardIosIcon />
-              </InternalLinkIconButton>
-            </Stack>
-          ) : undefined;
-        },
-        enableSorting: false,
-        meta: {
-          width: "3rem",
-          cellStyle: "button",
-        },
-      });
-    });
-
-  return [...dataColumns, ...procedureLinkColumns];
+  return dataColumns.length > 0 ? dataColumns : [dummyColumn];
 }

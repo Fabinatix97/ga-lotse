@@ -8,12 +8,12 @@ import {
   ApiCreateDailyAppointmentBlockGroupRequest,
   GetAppointmentBlockGroupsRequest,
 } from "@eshg/employee-portal-api/stiProtection";
+import { mapPaginatedList } from "@eshg/lib-employee-portal/api/models/PaginatedList";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useAppointmentBlockApi } from "@/lib/businessModules/stiProtection/api/clients";
 import { mapAppointmentBlockGroup } from "@/lib/businessModules/stiProtection/api/models/AppointmentBlockGroup";
-import { mapPaginatedList } from "@/lib/shared/api/models/PaginatedList";
 
 import { appointmentBlockApiQueryKey } from "./apiQueryKeys";
 

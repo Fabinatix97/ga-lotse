@@ -4,6 +4,7 @@
  */
 
 import { ApiProcedureStatus } from "@eshg/base-api";
+import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
 import {
   ApiCaseStatus,
   ApiMPFacilityType,
@@ -11,8 +12,7 @@ import {
   ApiProofRequestSent,
   ApiRoleStatus,
   ApiSubmissionResult,
-} from "@eshg/employee-portal-api/measlesProtection";
-import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
+} from "@eshg/measles-protection-api";
 import { useMemo } from "react";
 
 import {

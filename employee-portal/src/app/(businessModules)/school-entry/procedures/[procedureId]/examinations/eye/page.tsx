@@ -5,13 +5,13 @@
 
 "use client";
 
-import {
-  ApiEyeExaminationType,
-  UpdateEyeExaminationResultRequest,
-} from "@eshg/employee-portal-api/schoolEntry";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { addMissingKeys, dropEmptyKeys } from "@eshg/lib-portal/helpers/form";
+import {
+  ApiEyeExaminationType,
+  UpdateEyeExaminationResultRequest,
+} from "@eshg/school-entry-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { SchoolEntryProcedurePageProps } from "@/app/(businessModules)/school-entry/procedures/[procedureId]/layout";

@@ -9,7 +9,7 @@ import { Stack } from "@mui/joy";
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 import { ConfigureChartFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/createAnalysisFormModel";
 import { mapAttributeToAutocompleteSelectionOption } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/mapAttribute";
-import { isBooleanOrValueWithOptions } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
+import { isCategorical } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
 import { AutocompleteSelectOption } from "@/lib/shared/components/AutocompleteSelectOptions";
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 
@@ -24,7 +24,7 @@ export function ConfigurePieChartStep({
 }: ConfigurePieChartStepProps) {
   const primaryAttributes: AutocompleteSelectOption[] = attributes.map(
     mapAttributeToAutocompleteSelectionOption((attr) =>
-      isBooleanOrValueWithOptions(attr.type),
+      isCategorical(attr.type),
     ),
   );
   return (

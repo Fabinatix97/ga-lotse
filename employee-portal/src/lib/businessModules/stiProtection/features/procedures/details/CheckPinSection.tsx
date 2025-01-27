@@ -42,7 +42,7 @@ export function CheckPinSection({
           initialValues={{ pin: undefined }}
           onSubmit={(form) => setPinToCheck(form.pin)}
         >
-          <FormPlus style={{ display: "contents" }}>
+          <FormPlus sx={{ display: "contents" }}>
             <Row sx={{ alignItems: "end" }}>
               <InputField
                 label="6-stellige PIN"

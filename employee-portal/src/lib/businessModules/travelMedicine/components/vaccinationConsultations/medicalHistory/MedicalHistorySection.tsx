@@ -18,7 +18,7 @@ export function MedicalHistorySection({
     <Stack
       data-testid={dataTestId}
       spacing={2}
-      style={{ marginLeft: 12, marginRight: 12, marginTop: 12 }}
+      sx={{ marginLeft: 1.5, marginRight: 1.5, marginTop: 1.5 }}
     >
       {children}
     </Stack>

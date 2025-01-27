@@ -17,5 +17,7 @@ public record ExaminationDto(
     @NotNull long version,
     @NotNull Instant dateAndTime,
     @NotNull ProphylaxisTypeDto prophylaxisType,
+    @NotNull boolean screening,
+    @NotNull boolean fluoridation,
     String note,
     @Valid ExaminationResultDto result) {}

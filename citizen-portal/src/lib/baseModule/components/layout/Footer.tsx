@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBaseFeature } from "@eshg/citizen-portal-api/base";
+import { ApiBaseFeature } from "@eshg/base-api";
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Box, Stack, Typography, styled } from "@mui/joy";

@@ -1,0 +1,30 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1737446348651-1">
+    <ext:createPostgresEnumType name="tooth" values="T11, T12, T13, T14, T15, T16, T17, T18, T21, T22, T23, T24, T25, T26, T27, T28, T31, T32, T33, T34, T35, T36, T37, T38, T41, T42, T43, T44, T45, T46, T47, T48, T51, T52, T53, T54, T55, T61, T62, T63, T64, T65, T71, T72, T73, T74, T75, T81, T82, T83, T84, T85"/>
+    <ext:createPostgresEnumType name="mainresult" values="D, E, F, H, I, K, N, O, P, S, T, V, X, Y, Z"/>
+    <ext:createPostgresEnumType name="secondaryresult" values="DA, FA, FIS, ID, INS, LUE, RET, TR, WR, ZA"/>
+
+    <createTable tableName="screening_examination_result_tooth_diagnoses">
+      <column name="screening_examination_result_id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_screening_examination_result_tooth_diagnoses"/>
+      </column>
+      <column name="tooth" type="TOOTH">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_screening_examination_result_tooth_diagnoses"/>
+      </column>
+      <column name="main_result" type="MAINRESULT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="secondary_result1" type="SECONDARYRESULT"/>
+      <column name="secondary_result2" type="SECONDARYRESULT"/>
+    </createTable>
+    <addForeignKeyConstraint baseTableName="screening_examination_result_tooth_diagnoses" baseColumnNames="screening_examination_result_id"
+                             constraintName="fk_screening_examination_result_tooth_diagnoses_screening_examination_result"
+                             referencedColumnNames="id" referencedTableName="screening_examination_result"/>
+  </changeSet>
+</databaseChangeLog>

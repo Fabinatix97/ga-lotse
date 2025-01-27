@@ -21,6 +21,8 @@ import { isDefined } from "remeda";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { useProgressEntriesConfig } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
+import { useGetMetaDataHistory } from "@/lib/shared/components/procedures/progress-entries/queries/fileApi";
+import { useGetManualProgressEntryHistory } from "@/lib/shared/components/procedures/progress-entries/queries/progressEntryApi";
 import { HistoryItem } from "@/lib/shared/components/procedures/progress-entries/types";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
@@ -84,14 +86,19 @@ export function DetailsHistory({
 }
 
 function NoteHistory({ entry }: { entry: ApiManualProgressEntry }) {
-  const { useGetManualProgressEntryHistory } = useProgressEntriesConfig();
-  const history = useGetManualProgressEntryHistory(entry.progressEntryId).data;
+  const { progressEntryApi, progressEntryApiQueryKey } =
+    useProgressEntriesConfig();
+  const history = useGetManualProgressEntryHistory(
+    progressEntryApi,
+    progressEntryApiQueryKey,
+    entry.progressEntryId,
+  ).data;
   return <History items={history} />;
 }
 
 function FileDescriptionHistory({ fileId }: { fileId: string }) {
-  const { useGetMetaDataHistory } = useProgressEntriesConfig();
-  const history = useGetMetaDataHistory(fileId).data;
+  const { fileApi, fileApiQueryKey } = useProgressEntriesConfig();
+  const history = useGetMetaDataHistory(fileApi, fileApiQueryKey, fileId).data;
   return <History items={history} />;
 }
 

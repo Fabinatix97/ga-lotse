@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiAccessRestriction,
-  ApiMeaslesProtectionProcedure,
-} from "@eshg/employee-portal-api/measlesProtection";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { isDateString } from "@eshg/lib-portal/helpers/dateTime";
+import {
+  ApiAccessRestriction,
+  ApiMeaslesProtectionProcedure,
+} from "@eshg/measles-protection-api";
 import { Divider, Stack } from "@mui/joy";
 import { formatISO } from "date-fns";
 import { Formik, useFormikContext } from "formik";

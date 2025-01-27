@@ -9,7 +9,7 @@ import {
   ApiReportSeries,
   ApiReportType,
   ReportSeriesApi,
-} from "@eshg/employee-portal-api/statistics";
+} from "@eshg/statistics-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import {

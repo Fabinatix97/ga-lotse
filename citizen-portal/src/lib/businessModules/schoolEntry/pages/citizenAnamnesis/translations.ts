@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiSchoolEntryCountryCode } from "@eshg/citizen-portal-api/schoolEntry";
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
+import { ApiSchoolEntryCountryCode } from "@eshg/school-entry-api";
 
 const CountryCodesWithoutGeneralGroups = Object.values(
   ApiSchoolEntryCountryCode,

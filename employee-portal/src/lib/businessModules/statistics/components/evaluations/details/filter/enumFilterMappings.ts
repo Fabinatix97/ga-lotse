@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiValueOption } from "@eshg/employee-portal-api/statistics";
+import { ApiValueOption } from "@eshg/statistics-api";
 
 import { EnumFilterOption } from "@/lib/shared/components/filterSettings/models/EnumFilter";
 

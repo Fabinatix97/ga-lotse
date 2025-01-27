@@ -17,7 +17,7 @@ export function SectionTitle({
   label: string;
 }>) {
   return (
-    <Stack flex={1} direction="row" spacing={2} style={{ paddingRight: 12 }}>
+    <Stack flex={1} direction="row" spacing={2} sx={{ paddingRight: 1.5 }}>
       <InputField
         label
         aria-label={label}

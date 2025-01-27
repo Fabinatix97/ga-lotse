@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -77,10 +78,15 @@ public class AppointmentBlockController {
   @Transactional(readOnly = true)
   public GetFreeAppointmentsResponse getFreeAppointments(
       @RequestParam(name = "appointmentType") AppointmentTypeDto appointmentType,
-      @RequestParam(name = "earliestDate", required = false) Instant earliestDate) {
+      @RequestParam(name = "earliestDate", required = false) Instant earliestDate,
+      @RequestParam(name = "physicianId", required = false) UUID physicianId) {
     List<AppointmentDto> appointments =
         appointmentBlockService.getFreeAppointments(
-            earliestDate, null, MappingUtil.mapEnum(AppointmentType.class, appointmentType), null);
+            earliestDate,
+            null,
+            MappingUtil.mapEnum(AppointmentType.class, appointmentType),
+            null,
+            physicianId);
 
     return new GetFreeAppointmentsResponse(appointments);
   }

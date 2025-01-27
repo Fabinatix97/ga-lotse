@@ -13,14 +13,20 @@ import de.eshg.base.user.UserApi;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.dental.ChildController;
 import de.eshg.dental.ProphylaxisSessionController;
+import de.eshg.dental.api.AbsenceExaminationResultDto;
 import de.eshg.dental.api.CreateProphylaxisSessionRequest;
 import de.eshg.dental.api.CreateProphylaxisSessionResponse;
 import de.eshg.dental.api.ExaminationResultDto;
 import de.eshg.dental.api.FluoridationExaminationResultDto;
 import de.eshg.dental.api.FluoridationVarnishDto;
+import de.eshg.dental.api.MainResultDto;
 import de.eshg.dental.api.OralHygieneStatusDto;
 import de.eshg.dental.api.ProphylaxisTypeDto;
+import de.eshg.dental.api.ReasonForAbsenceDto;
 import de.eshg.dental.api.ScreeningExaminationResultDto;
+import de.eshg.dental.api.SecondaryResultDto;
+import de.eshg.dental.api.ToothDiagnosisDto;
+import de.eshg.dental.api.ToothDto;
 import de.eshg.dental.api.UpdateExaminationRequest;
 import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
@@ -39,6 +45,7 @@ import java.io.Serial;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import net.datafaker.Faker;
@@ -173,12 +180,32 @@ public class ProphylaxisSessionsPopulator
     if (prophylaxisSession.isScreening()) {
       return new ScreeningExaminationResultDto(
           hasFluoridationVarnish && faker.bool().bool(),
-          optional(faker, randomElement(faker, OralHygieneStatusDto.values())));
+          optional(faker, randomElement(faker, OralHygieneStatusDto.values())),
+          randomToothDiagnoses(faker));
     } else if (hasFluoridationVarnish) {
       return new FluoridationExaminationResultDto(faker.bool().bool());
     } else {
+      if (faker.random().nextDouble() <= 0.5) {
+        return new AbsenceExaminationResultDto(randomElement(faker, ReasonForAbsenceDto.values()));
+      }
       return null;
     }
+  }
+
+  private static List<ToothDiagnosisDto> randomToothDiagnoses(Faker faker) {
+    List<ToothDiagnosisDto> toothDiagnoses = new ArrayList<>();
+    boolean milkTeeth = faker.bool().bool();
+    List<ToothDto> teeth = milkTeeth ? ToothDto.allMilkTeeth() : ToothDto.allPermanentTeeth();
+    for (ToothDto tooth : teeth) {
+      MainResultDto mainResult = randomElement(faker, MainResultDto.values());
+      SecondaryResultDto secondaryResult1 =
+          optional(faker, randomElement(faker, SecondaryResultDto.values()));
+      SecondaryResultDto secondaryResult2 =
+          optional(faker, randomElement(faker, SecondaryResultDto.values()));
+      toothDiagnoses.add(
+          new ToothDiagnosisDto(tooth, mainResult, secondaryResult1, secondaryResult2));
+    }
+    return toothDiagnoses;
   }
 
   static class EmptySchoolException extends RuntimeException {

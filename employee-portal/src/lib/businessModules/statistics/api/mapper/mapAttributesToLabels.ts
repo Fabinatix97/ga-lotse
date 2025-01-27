@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBusinessDataAttributeWithName } from "@eshg/employee-portal-api/statistics";
+import { ApiBusinessDataAttributeWithName } from "@eshg/statistics-api";
 
 import { getAttributeLabel } from "@/lib/businessModules/statistics/components/evaluations/getAttributeLabel";
 

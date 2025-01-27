@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiGetReferencePersonResponse } from "@eshg/citizen-portal-api/base";
+import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 import { Grid } from "@mui/joy";
 import { isDefined } from "remeda";

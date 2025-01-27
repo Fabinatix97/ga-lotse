@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiBaseFeature } from "@eshg/citizen-portal-api/base";
+import { ApiBaseFeature } from "@eshg/base-api";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { PropsWithChildren } from "react";
 

@@ -5,12 +5,9 @@
 
 "use client";
 
-import {
-  ApiCustodian,
-  ApiDomesticAddress,
-} from "@eshg/employee-portal-api/measlesProtection";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
+import { ApiCustodian, ApiDomesticAddress } from "@eshg/measles-protection-api";
 
 import { MEASLES_PROTECTION_CUSTODIAN_CONFIG } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/NewCustodianButton";
 import { ApiFacilityAddressType } from "@/lib/shared/components/form/address/legacyTypes";

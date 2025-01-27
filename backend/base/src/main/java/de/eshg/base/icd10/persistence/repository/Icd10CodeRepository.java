@@ -46,7 +46,7 @@ public interface Icd10CodeRepository extends JpaRepository<Icd10Code, String> {
                     select g.group_start || '-' || g.group_end as code, true as "group", g.title as title
                     from icd10group g
                     where (g.group_start || '-' || g.group_end) in :codesWithoutDot
-                )
+                ) as codes
                 order by code asc, "group" asc
          """)
   Stream<Icd10SearchResult> findAllCodes(@Param("codesWithoutDot") List<String> codesWithoutDot);

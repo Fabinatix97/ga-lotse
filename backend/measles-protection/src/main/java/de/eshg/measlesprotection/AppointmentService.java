@@ -80,7 +80,7 @@ public class AppointmentService {
     List<AppointmentBlock> appointmentBlocks =
         appointmentBlockRepository
             .findBlockByAppointmentTypeAndLocationAndAppointmentBlockEndGreaterThan(
-                PROOF_SUBMISSION, null, start);
+                PROOF_SUBMISSION, null, null, start);
 
     Set<UUID> currentUserEvents = currentUserEvents(start, end);
     List<AppointmentBlock> currentUserBlocks =
@@ -136,7 +136,7 @@ public class AppointmentService {
   }
 
   private void bookAppointment(MeaslesProtectionProcedure procedure, Instant start, Instant end) {
-    appointmentBlockSlotUtil.updateAppointment(PROOF_SUBMISSION, null, procedure, start, end);
+    appointmentBlockSlotUtil.updateAppointment(PROOF_SUBMISSION, null, null, procedure, start, end);
 
     UserCalendar currentUserCalendar = calendarApi.getCurrentUserCalendar();
     calendarEventApi.addBusinessCaseEvent(

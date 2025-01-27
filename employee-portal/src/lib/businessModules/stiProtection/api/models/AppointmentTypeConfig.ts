@@ -7,8 +7,10 @@ import {
   ApiAppointmentType,
   ApiAppointmentTypeConfig,
 } from "@eshg/employee-portal-api/stiProtection";
-
-import { BaseEntity, mapBaseEntity } from "@/lib/shared/api/models/BaseEntity";
+import {
+  BaseEntity,
+  mapBaseEntity,
+} from "@eshg/lib-employee-portal/api/models/BaseEntity";
 
 export interface AppointmentTypeConfig extends BaseEntity {
   appointmentTypeDto: ApiAppointmentType;

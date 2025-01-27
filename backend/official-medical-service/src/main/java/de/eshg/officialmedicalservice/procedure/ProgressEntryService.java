@@ -13,6 +13,7 @@ import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
 import java.time.Clock;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,11 +30,23 @@ public class ProgressEntryService {
     this.userApi = userApi;
   }
 
-  public void createProgressEntryForSyncAffectedPerson(OmsProcedure procedure) {
+  public void createProgressEntryForUpdateAffectedPerson(
+      OmsProcedure procedure, UUID previousFileStateId) {
+    SystemProgressEntry progressEntry =
+        SystemProgressEntryFactory.createSystemProgressEntry(
+            OmsProgressEntryType.UPDATE_AFFECTED_PERSON.name(), TriggerType.SYSTEM_AUTOMATIC);
+    progressEntry.setProcedureId(procedure.getId());
+    progressEntry.setPreviousFileStateId(previousFileStateId);
+    procedure.addProgressEntry(progressEntry);
+  }
+
+  public void createProgressEntryForSyncAffectedPerson(
+      OmsProcedure procedure, UUID previousFileStateId) {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             OmsProgressEntryType.SYNC_AFFECTED_PERSON.name(), TriggerType.SYSTEM_AUTOMATIC);
     progressEntry.setProcedureId(procedure.getId());
+    progressEntry.setPreviousFileStateId(previousFileStateId);
     procedure.addProgressEntry(progressEntry);
   }
 

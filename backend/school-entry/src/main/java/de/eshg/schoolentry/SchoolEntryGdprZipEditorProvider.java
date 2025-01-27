@@ -19,14 +19,16 @@ import de.eshg.schoolentry.domain.model.SchoolEntryProcedure_;
 import de.eshg.schoolentry.domain.model.SopessExaminationResult_;
 import de.eshg.schoolentry.domain.model.WaitingRoom_;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SchoolEntryGdprZipEditorProvider extends AbstractGdprZipEditorProvider {
 
-  @Override
-  protected String getLegalBasisAppendix() {
-    return "Hier könnte Ihr Rechtsgrundlagen-Anhang stehen!";
+  public SchoolEntryGdprZipEditorProvider(
+      @Value("classpath:/gdpr-legal-basis-text.txt") Resource resource) {
+    super(resource);
   }
 
   @Override

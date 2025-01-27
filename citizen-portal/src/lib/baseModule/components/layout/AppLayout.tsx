@@ -10,6 +10,7 @@ import { EnvironmentTypeProvider } from "@eshg/lib-portal/components/Environment
 import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 import { ConfirmationDialogProvider } from "@eshg/lib-portal/components/confirmationDialog/ConfirmationDialogProvider";
 import { SnackbarProvider } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { Box } from "@mui/joy";
 import { PropsWithChildren } from "react";
 
 import { env } from "@/env/server";
@@ -31,20 +32,21 @@ export function AppLayout({
   }>
 >) {
   return (
-    <html lang={lang} style={{ height: "100%" }}>
-      <body
-        style={{
-          backgroundColor: "var(--joy-palette-neutral-100, #F0F4F8)",
-          minHeight: "100%",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <noscript>
-          Bitte aktivieren Sie JavaScript, um diese Anwendung zu nutzen.
-        </noscript>
-        <I18nProvider lang={lang}>
-          <ThemeProvider>
+    <I18nProvider lang={lang}>
+      <ThemeProvider>
+        <Box component="html" sx={{ height: "100%" }}>
+          <Box
+            component="body"
+            sx={{
+              backgroundColor: "neutral.100",
+              minHeight: "100%",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <noscript>
+              Bitte aktivieren Sie JavaScript, um diese Anwendung zu nutzen.
+            </noscript>
             <EnvironmentTypeProvider
               environmentType={env.PUBLIC_ENVIRONMENT_TYPE}
             >
@@ -65,9 +67,9 @@ export function AppLayout({
             </EnvironmentTypeProvider>
 
             <HiddenDownloadContainer />
-          </ThemeProvider>
-        </I18nProvider>
-      </body>
-    </html>
+          </Box>
+        </Box>
+      </ThemeProvider>
+    </I18nProvider>
   );
 }

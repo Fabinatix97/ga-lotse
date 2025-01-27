@@ -4,7 +4,7 @@
  */
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
-import { ApiAddCustodianRequest } from "@eshg/employee-portal-api/schoolEntry";
+import { ApiAddCustodianRequest } from "@eshg/school-entry-api";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/joy";
 import { useRef, useState } from "react";

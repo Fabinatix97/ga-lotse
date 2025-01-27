@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ProofRequestLetterApi } from "@eshg/employee-portal-api/measlesProtection";
+import { ProofRequestLetterApi } from "@eshg/measles-protection-api";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useProofRequestLetterApi } from "@/lib/businessModules/measlesProtection/api/clients";

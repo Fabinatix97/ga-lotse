@@ -7,31 +7,21 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import {
-  ApiApprovalRequest,
-  ApiCreateApprovalRequestRequest,
-  ApiCreateManualProgressEntryRequest,
-  ApiFileMetaData,
   ApiGetDetailedProcedureResponse,
-  ApiGetFile200Response,
   ApiGetProcedureApprovalRequestsResponse,
   ApiGetProgressEntriesResponseProgressEntriesInner,
-  ApiGetProgressEntryResponse,
-  ApiManualProgressEntry,
-  ApiPatchManualProgressEntryRequest,
   ApiProgressEntryClass,
   ApiProgressEntryReferenceFilePair,
-  ApiUpdateFileMetaDataRequest,
+  ApprovalRequestApi,
+  FileApi,
   GetProgressEntriesRequest,
+  ProcedureApi,
+  ProgressEntryApi,
 } from "@eshg/employee-portal-api/businessProcedures";
+import { QueryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
 import { SearchParams } from "@eshg/lib-portal/helpers/searchParams";
-import {
-  UseMutationResult,
-  UseSuspenseQueryResult,
-} from "@tanstack/react-query";
 
 import { UseFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
-
-export type DynamicRoute = (fileId: string) => string;
 
 export interface EntryDeletionModalProps {
   onSuccessfulDeletion: () => void;
@@ -42,7 +32,7 @@ export type ProgressEntriesSearchParams = Omit<
   "procedureId"
 >;
 
-export interface ProgressEntriesPageProps extends ProgressEntryApiMethods {
+export interface ProgressEntriesPageProps extends ProgressEntryClients {
   procedureId: string;
   searchParams: SearchParams;
   leaderRole: ApiUserRole;
@@ -52,7 +42,7 @@ export interface ProgressEntriesPageProps extends ProgressEntryApiMethods {
   getInitOverrides?: (inspectionId?: string) => RequestInit;
 }
 
-export interface ProgressEntriesConfig extends ProgressEntryApiActions {
+export interface ProgressEntriesConfig extends ProgressEntryClients {
   procedureId: string;
   progressEntries: ApiGetProgressEntriesResponseProgressEntriesInner[];
   detailedProcedure: ApiGetDetailedProcedureResponse;
@@ -69,102 +59,44 @@ export interface ProgressEntriesUrlParams<TPageParams = unknown> {
   searchParams: SearchParams;
 }
 
-interface ProgressEntryApiActions {
-  useCreateProgressEntry: () => UseMutationResult<
-    ApiManualProgressEntry,
-    Error,
-    {
-      request: ApiCreateManualProgressEntryRequest;
-      file?: File | undefined;
-      fileMetaData?: ApiFileMetaData | undefined;
-    },
-    unknown
-  >;
-  useDeleteFile: () => UseMutationResult<void, Error, string, unknown>;
-  useDeleteProgressEntry: () => UseMutationResult<void, Error, string, unknown>;
-
-  usePatchProgressEntry(): UseMutationResult<
-    {
-      entry?: ApiManualProgressEntry;
-      file?: ApiGetFile200Response;
-    },
-    Error,
-    {
-      entryId: string;
-      patchProgressEntryRequest?: ApiPatchManualProgressEntryRequest;
-      fileId?: string;
-      updateFileMetaDataRequest?: ApiUpdateFileMetaDataRequest;
-    },
-    unknown
-  >;
-
-  useRequestProgressEntryDeletion: () => UseMutationResult<
-    ApiApprovalRequest,
-    Error,
-    {
-      entryId: string;
-      createApprovalRequest: ApiCreateApprovalRequestRequest;
-    },
-    unknown
-  >;
-  useRequestFileDeletion: () => UseMutationResult<
-    ApiApprovalRequest,
-    Error,
-    {
-      fileId: string;
-      createApprovalRequest: ApiCreateApprovalRequestRequest;
-    },
-    unknown
-  >;
-  useDecideApprovalRequest: () => UseMutationResult<
-    void,
-    Error,
-    {
-      approvalRequestId: string;
-      decision: string;
-    },
-    unknown
-  >;
-  useGrantDeletionForAllRequests: () => UseMutationResult<
-    void,
-    Error,
-    ApiApprovalRequest[],
-    unknown
-  >;
-  useDownloadFile: () => (fileId: string) => Promise<File>;
-  useGetManualProgressEntryHistory: (
-    entryId: string,
-  ) => UseSuspenseQueryResult<HistoryItem[] | undefined, Error>;
-  useGetMetaDataHistory: (
-    fileId: string,
-  ) => UseSuspenseQueryResult<HistoryItem[] | undefined, Error>;
-  useFetchProgressEntryDetails: (
-    procedureId: string,
-    progressEntryId: string,
-  ) => UseSuspenseQueryResult<ApiGetProgressEntryResponse, Error>;
+interface ProgressEntryClients {
+  progressEntryApiQueryKey: QueryKeyFactory;
+  progressEntryApi: ProgressEntryClient;
+  procedureApi: ProcedureClient;
+  fileApiQueryKey: QueryKeyFactory;
+  fileApi: FileClient;
+  approvalRequestApi: ApprovalRequestClient;
 }
 
-interface ProgressEntryApiMethods extends ProgressEntryApiActions {
-  useFetchProgressEntries: (
-    procedureId: string,
-    leaderRole: ApiUserRole,
-    progressEntryFilter: ProgressEntriesFilters,
-  ) => UseSuspenseQueryResult<
-    {
-      detailedProcedure: ApiGetDetailedProcedureResponse;
-      files: ApiProgressEntryReferenceFilePair[];
-      progressEntries: ApiGetProgressEntriesResponseProgressEntriesInner[];
-      approvalRequestsResponse:
-        | ApiGetProcedureApprovalRequestsResponse
-        | undefined;
-    },
-    Error
-  >;
-  useFetchProgressEntryDetails: (
-    procedureId: string,
-    progressEntryId: string,
-  ) => UseSuspenseQueryResult<ApiGetProgressEntryResponse, Error>;
-}
+export type ProgressEntryClient = Pick<
+  ProgressEntryApi,
+  | "addProgressEntry"
+  | "removeProgressEntry"
+  | "patchProgressEntry"
+  | "getProgressEntriesRaw"
+  | "getProgressEntry"
+  | "requestProgressEntryDeletion"
+  | "getManualProgressEntryHistory"
+>;
+
+export type ProcedureClient = Pick<
+  ProcedureApi,
+  "getDetailedProcedure" | "getProcedureFileDetails" | "getApprovalRequests"
+>;
+
+export type FileClient = Pick<
+  FileApi,
+  | "downloadFileRaw"
+  | "getMetaDataHistory"
+  | "deleteFile"
+  | "requestFileDeletion"
+  | "updateFileMetaData"
+>;
+
+export type ApprovalRequestClient = Pick<
+  ApprovalRequestApi,
+  "decideApprovalRequest"
+>;
 
 export interface HistoryItem {
   changedAt: Date;

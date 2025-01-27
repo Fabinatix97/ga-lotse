@@ -3,9 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiSchoolEntryLabel } from "@eshg/employee-portal-api/schoolEntry";
-
-import { BaseEntity, mapBaseEntity } from "@/lib/shared/api/models/BaseEntity";
+import {
+  BaseEntity,
+  mapBaseEntity,
+} from "@eshg/lib-employee-portal/api/models/BaseEntity";
+import { ApiSchoolEntryLabel } from "@eshg/school-entry-api";
 
 export interface Label extends BaseEntity {
   readonly version: number;

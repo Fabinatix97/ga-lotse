@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiSchoolEntryProcedureType } from "@eshg/employee-portal-api/schoolEntry";
+import { ApiSchoolEntryProcedureType } from "@eshg/school-entry-api";
 
 export function isDraft(type: string) {
   return (

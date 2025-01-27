@@ -13,6 +13,7 @@ import de.eshg.officialmedicalservice.procedure.api.EmployeeOmsProcedureHeaderDt
 import de.eshg.officialmedicalservice.procedure.api.EmployeeOmsProcedurePaginationAndSortParameters;
 import de.eshg.officialmedicalservice.procedure.api.EmployeePagedOmsProcedures;
 import de.eshg.officialmedicalservice.procedure.api.GetEmployeeOmsProcedureOverviewResponse;
+import de.eshg.officialmedicalservice.procedure.api.GetOmsProceduresFilterOptionsDto;
 import de.eshg.officialmedicalservice.procedure.api.PatchAffectedPersonRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchConcernRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchEmployeeOmsProcedureFacilityRequest;
@@ -88,10 +89,12 @@ public class EmployeeOmsProcedureController {
   @GetMapping(path = PROCEDURES_URL)
   @Operation(summary = "Get all oms procedures")
   public GetEmployeeOmsProcedureOverviewResponse getAllEmployeeProcedures(
+      @InlineParameterObject @ParameterObject @Valid GetOmsProceduresFilterOptionsDto filters,
       @InlineParameterObject @ParameterObject @Valid
           EmployeeOmsProcedurePaginationAndSortParameters paginationAndSortParameters) {
     EmployeePagedOmsProcedures pagedOmsProcedures =
-        employeeOmsProcedureService.getEmployeeProceduresOverview(paginationAndSortParameters);
+        employeeOmsProcedureService.getEmployeeProceduresOverview(
+            filters, paginationAndSortParameters);
     return new GetEmployeeOmsProcedureOverviewResponse(
         pagedOmsProcedures.proceduresPage(), pagedOmsProcedures.totalNumberOfProcedures());
   }

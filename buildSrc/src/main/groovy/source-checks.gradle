@@ -44,7 +44,7 @@ def defaultPrettierArgs = ['--no-error-on-unmatched-pattern']
 tasks.register('format', PnpmTask) {
   group = 'verification'
   dependsOn rootProject.tasks.installDependencies
-  mustRunAfter 'lintFix'
+  mustRunAfter 'compile', 'lintFix'
   inputs.file "${rootDir}/.editorconfig"
   inputs.file "${rootDir}/.prettierrc"
   if (file("${projectDir}/.prettierignore").exists()) {
@@ -80,7 +80,7 @@ def defaultEslintArgs = ['--max-warnings=0', '--no-error-on-unmatched-pattern']
 tasks.register('lint', PnpmTask) {
   group = 'verification'
   dependsOn 'prepareEnvironment'
-  dependsOn 'compileCheck'
+  dependsOn 'compile'
   inputs.files eslintConfigFiles
   def inputFiles = getEslintInputs()
   inputs.files inputFiles
@@ -91,7 +91,7 @@ tasks.register('lint', PnpmTask) {
 tasks.register('lintFix', PnpmTask) {
   group = 'verification'
   dependsOn 'prepareEnvironment'
-  dependsOn 'compileCheck'
+  dependsOn 'compile'
   inputs.files eslintConfigFiles
   def inputFiles = getEslintInputs()
   inputs.files inputFiles

@@ -86,7 +86,7 @@ export function NewDirectChat({
         validate={validateDMForm}
       >
         <FormPlus
-          style={{
+          sx={{
             height: "100%",
             display: "flex",
             flexDirection: "column",

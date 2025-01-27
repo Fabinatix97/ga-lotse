@@ -67,13 +67,11 @@ export function RadioButtonsField<T extends SelectOption = SelectOption>(
           value={field.input.value ? String(field.input.value) : ""}
           onChange={onChange}
           onBlur={field.input.onBlur}
-          style={{
-            flexDirection: props.direction ?? "row",
-          }}
           sx={{
             gap: 2,
-            marginLeft: "20px",
+            marginLeft: 2.5,
             marginBottom: 0,
+            flexDirection: props.direction ?? "row",
           }}
           data-testid={props["data-testid"]}
         >

@@ -9,14 +9,17 @@ import de.eshg.dental.domain.model.Child_;
 import de.eshg.dental.domain.model.Examination_;
 import de.eshg.domain.model.serialization.ZipEditor;
 import de.eshg.lib.procedure.gdpr.AbstractGdprZipEditorProvider;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DentalGdprZipEditorProvider extends AbstractGdprZipEditorProvider {
 
-  @Override
-  protected String getLegalBasisAppendix() {
-    return "Hier könnte Ihr Rechtsgrundlagen-Anhang stehen!";
+  // TODO (ISSUE-7442): Replace text for legal basis in the file below
+  public DentalGdprZipEditorProvider(
+      @Value("classpath:/gdpr-legal-basis-text.txt") Resource resource) {
+    super(resource);
   }
 
   @Override

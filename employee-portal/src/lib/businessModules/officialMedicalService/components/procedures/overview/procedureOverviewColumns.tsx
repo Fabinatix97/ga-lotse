@@ -5,6 +5,7 @@
 
 import { ApiEmployeeOmsProcedureOverview } from "@eshg/employee-portal-api/officialMedicalService";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { WarningAmberOutlined } from "@mui/icons-material";
 import { Chip, Tooltip } from "@mui/joy";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
@@ -42,7 +43,7 @@ export function procedureOverviewTableColumns() {
     columnHelper.accessor("firstName", {
       header: "Vorname",
       cell: (props) => props.getValue(),
-      enableSorting: false,
+      enableSorting: true,
       meta: {
         width: 180,
         canNavigate: {
@@ -53,7 +54,7 @@ export function procedureOverviewTableColumns() {
     columnHelper.accessor("lastName", {
       header: "Nachname",
       cell: (props) => props.getValue(),
-      enableSorting: false,
+      enableSorting: true,
       meta: {
         width: 180,
         canNavigate: {
@@ -64,9 +65,31 @@ export function procedureOverviewTableColumns() {
     columnHelper.accessor("dateOfBirth", {
       header: "Geburtsdatum",
       cell: (props) => formatDate(props.getValue()),
-      enableSorting: false,
+      enableSorting: true,
       meta: {
         width: 120,
+        canNavigate: {
+          parentRow: true,
+        },
+      },
+    }),
+    columnHelper.accessor("facilityName", {
+      header: "Auftraggeber",
+      cell: (props) => props.getValue(),
+      enableSorting: true,
+      meta: {
+        width: 200,
+        canNavigate: {
+          parentRow: true,
+        },
+      },
+    }),
+    columnHelper.accessor("physicianName", {
+      header: "Ärzt:in",
+      cell: (props) => props.getValue(),
+      enableSorting: true,
+      meta: {
+        width: 200,
         canNavigate: {
           parentRow: true,
         },
@@ -79,7 +102,7 @@ export function procedureOverviewTableColumns() {
           {procedureStatusNames[props.getValue()]}
         </Chip>
       ),
-      enableSorting: false,
+      enableSorting: true,
       meta: {
         width: 100,
         canNavigate: {
@@ -87,21 +110,10 @@ export function procedureOverviewTableColumns() {
         },
       },
     }),
-    columnHelper.accessor("facilityName", {
-      header: "Auftraggeber",
-      cell: (props) => props.getValue(),
-      enableSorting: false,
-      meta: {
-        width: 200,
-        canNavigate: {
-          parentRow: true,
-        },
-      },
-    }),
-    columnHelper.accessor("physicianName", {
-      header: "Ärzt:in",
-      cell: (props) => props.getValue(),
-      enableSorting: false,
+    columnHelper.accessor("nextAppointment", {
+      header: "Nächster Termin",
+      cell: (props) => formatDateTime(props.getValue()),
+      enableSorting: true,
       meta: {
         width: 200,
         canNavigate: {

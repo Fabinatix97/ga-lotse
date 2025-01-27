@@ -5,9 +5,9 @@
 
 "use client";
 
+import { AnnualInstitution } from "@eshg/dental/api/models/Institution";
 import { createColumnHelper } from "@tanstack/react-table";
 
-import { AnnualInstitution } from "@/lib/businessModules/dental/api/models/Institution";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";

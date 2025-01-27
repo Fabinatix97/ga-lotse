@@ -4,6 +4,10 @@
  */
 
 import {
+  Versioned,
+  mapVersioned,
+} from "@eshg/lib-employee-portal/api/models/Versioned";
+import {
   ApiGetDevelopmentScreeningResult,
   ApiHandicap,
   ApiMeasurements,
@@ -12,9 +16,7 @@ import {
   ApiSchoolFeedback,
   ApiSchoolRecommendation,
   ApiSocioEducationalPerformance,
-} from "@eshg/employee-portal-api/schoolEntry";
-
-import { Versioned, mapVersioned } from "@/lib/shared/api/models/Versioned";
+} from "@eshg/school-entry-api";
 
 import { Percentiles, mapPercentiles } from "./Percentiles";
 

@@ -51,9 +51,8 @@ export function AnamnesisQuestion(props: Readonly<AnamnesisQuestionProps>) {
           )}
           {props.anamnesisQuestion.subElementText && (
             <Stack
-              style={{
-                marginLeft: "20px",
-                marginRight: "20px",
+              sx={{
+                marginX: 2.5,
               }}
             >
               <DocumentTextareaElement

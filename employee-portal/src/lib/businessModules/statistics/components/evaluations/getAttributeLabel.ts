@@ -6,7 +6,7 @@
 import {
   ApiBaseDataSourceAttribute,
   ApiBusinessDataSourceAttribute,
-} from "@eshg/employee-portal-api/statistics";
+} from "@eshg/statistics-api";
 import { isNonNullish } from "remeda";
 
 export function getAttributeLabel(

@@ -25,7 +25,7 @@ export function ChecklistIncidentToggle({
     <Checkbox
       name={field.name}
       color={element.incident ? "danger" : "neutral"}
-      style={{ alignSelf: "flex-start" }}
+      sx={{ alignSelf: "flex-start" }}
       size="sm"
       checkedIcon={<CloseOutlined />}
       uncheckedIcon={<WarningAmberOutlined />}

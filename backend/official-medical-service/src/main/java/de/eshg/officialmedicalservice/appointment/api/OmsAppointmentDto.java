@@ -17,5 +17,6 @@ public record OmsAppointmentDto(
     @NotNull AppointmentTypeDto appointmentType,
     @NotNull AppointmentStateDto appointmentState,
     @NotNull BookingStateDto bookingState,
+    BookingTypeDto bookingType,
     Instant start,
     Integer duration) {}

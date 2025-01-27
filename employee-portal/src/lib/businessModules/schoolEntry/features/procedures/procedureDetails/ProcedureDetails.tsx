@@ -5,8 +5,8 @@
 
 "use client";
 
-import { ApiLocationSelectionMode } from "@eshg/employee-portal-api/schoolEntry";
 import { useControlledAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
 import { Grid, Stack } from "@mui/joy";
 import { isDefined } from "remeda";
 

@@ -18,8 +18,8 @@ export function DataElementBox(props: Readonly<DataElementBoxProps>) {
       borderRadius={12}
       component="section"
       flex={1}
-      style={{
-        padding: 12,
+      sx={{
+        padding: 1.5,
         background: "var(--background-level-1, #F0F4F8)",
       }}
       data-testid={props["data-testid"]}

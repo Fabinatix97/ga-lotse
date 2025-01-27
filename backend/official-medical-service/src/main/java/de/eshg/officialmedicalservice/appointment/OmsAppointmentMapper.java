@@ -43,6 +43,7 @@ public class OmsAppointmentMapper {
         toInterfaceType(omsAppointment.getAppointmentType()),
         toInterfaceType(omsAppointment.getAppointmentState()),
         toInterfaceType(omsAppointment.getBookingState()),
+        toInterfaceType(omsAppointment.getBookingType()),
         omsAppointment.getStart(),
         omsAppointment.getDuration());
   }
@@ -73,6 +74,13 @@ public class OmsAppointmentMapper {
       return null;
     }
     return BookingStateDto.valueOf(bookingState.name());
+  }
+
+  public BookingTypeDto toInterfaceType(BookingType bookingType) {
+    if (bookingType == null) {
+      return null;
+    }
+    return BookingTypeDto.valueOf(bookingType.name());
   }
 
   public BookingType toDomainType(BookingTypeDto bookingTypeDto) {

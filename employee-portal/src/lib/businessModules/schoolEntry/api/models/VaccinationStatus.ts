@@ -4,13 +4,15 @@
  */
 
 import {
+  Versioned,
+  mapVersioned,
+} from "@eshg/lib-employee-portal/api/models/Versioned";
+import {
   ApiBooleanWithUnknown,
   ApiOtherVaccination,
   ApiVaccinationSchemeValue,
   ApiVaccinationStatus,
-} from "@eshg/employee-portal-api/schoolEntry";
-
-import { Versioned, mapVersioned } from "@/lib/shared/api/models/Versioned";
+} from "@eshg/school-entry-api";
 
 export interface VaccinationStatus extends Versioned {
   vaccinationScheme?: ApiVaccinationSchemeValue;

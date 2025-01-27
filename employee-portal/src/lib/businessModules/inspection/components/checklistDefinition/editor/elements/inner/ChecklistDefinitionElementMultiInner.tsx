@@ -82,7 +82,7 @@ export function ChecklistDefinitionElementMultiInner({
       <Button
         onClick={() => addItem()}
         startDecorator={<Add />}
-        style={{ alignSelf: "flex-start" }}
+        sx={{ alignSelf: "flex-start" }}
         variant="plain"
       >
         Antwortmöglichkeit hinzufügen

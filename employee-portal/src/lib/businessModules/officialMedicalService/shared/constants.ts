@@ -4,7 +4,8 @@
  */
 
 export const systemProgressEntryTypeTitles: Record<string, string> = {
-  SYNC_AFFECTED_PERSON: "Geänderte Personendaten übernommen",
+  UPDATE_AFFECTED_PERSON: "Geänderte Personendaten übernommen",
+  SYNC_AFFECTED_PERSON: "Geänderte Personendaten synchronisiert",
   SYNC_FACILITY: "Geänderte Auftraggeberdaten übernommen",
   PHYSICIAN_CHANGED: "Geänderte(r) Ärzt:in übernommen",
   PROCEDURE_STARTED: "Vorgang gestartet",

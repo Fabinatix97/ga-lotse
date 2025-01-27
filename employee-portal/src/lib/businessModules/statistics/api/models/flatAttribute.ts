@@ -7,7 +7,7 @@ import { ApiBusinessModule } from "@eshg/base-api";
 import {
   ApiAttributeSelection,
   ApiTableColumnHeader,
-} from "@eshg/employee-portal-api/statistics";
+} from "@eshg/statistics-api";
 
 import { mapAttributeSelectionToKey } from "@/lib/businessModules/statistics/api/mapper/mapAttributeSelectionKey";
 import { mapToApiBusinessModule } from "@/lib/businessModules/statistics/api/mapper/mapToApiBusinessModule";

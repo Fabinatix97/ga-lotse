@@ -4,8 +4,8 @@
  */
 
 import { ApiUser } from "@eshg/base-api";
-import { ApiLocationSelectionMode } from "@eshg/employee-portal-api/schoolEntry";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
 import { Divider, Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 import { isDefined, isEmpty, mapToObj } from "remeda";

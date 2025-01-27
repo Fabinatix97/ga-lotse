@@ -5,10 +5,10 @@
 
 "use client";
 
+import { ChildExamination } from "@eshg/dental/api/models/ChildExamination";
 import { routes } from "@eshg/dental/shared/routes";
 import { MedicalServicesOutlined } from "@mui/icons-material";
 
-import { ChildExamination } from "@/lib/businessModules/dental/api/models/ChildExamination";
 import { PersonToolbarHeader } from "@/lib/shared/components/layout/PersonToolbarHeader";
 import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
 

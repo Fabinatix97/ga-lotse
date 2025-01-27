@@ -78,7 +78,9 @@ export function ChecklistDefinitionSection({
     <AccordionGroup
       variant="plain"
       transition="0.5s"
-      style={{ marginLeft: -12, marginRight: -12 }}
+      sx={{
+        marginX: -1.5,
+      }}
     >
       <Accordion defaultExpanded>
         <Stack
@@ -136,7 +138,7 @@ export function ChecklistDefinitionSection({
                 },
               }}
             >
-              <Stack spacing={2} style={{ marginLeft: "3rem" }}>
+              <Stack spacing={2} sx={{ marginLeft: "3rem" }}>
                 <ChecklistDefinitionElementsList sectionIndex={sectionIndex} />
                 <Stack spacing={2} direction={"row"}>
                   <Button

@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiAppointmentType } from "@eshg/employee-portal-api/schoolEntry";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { ApiAppointmentType } from "@eshg/school-entry-api";
 import { differenceInCalendarDays, isBefore, isEqual, isPast } from "date-fns";
 import { FormikErrors } from "formik";
 import { isEmpty } from "remeda";

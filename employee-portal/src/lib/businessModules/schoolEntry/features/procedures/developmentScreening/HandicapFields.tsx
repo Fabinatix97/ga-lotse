@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiDisabilityType } from "@eshg/employee-portal-api/schoolEntry";
 import { SoftRequiredSelectField } from "@eshg/lib-portal/businessModules/schoolEntry/features/procedures/fieldVariants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import {
@@ -11,6 +10,7 @@ import {
   OptionalFieldValue,
   SetFieldValueHelper,
 } from "@eshg/lib-portal/types/form";
+import { ApiDisabilityType } from "@eshg/school-entry-api";
 import { Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiDraftMeaslesProcedure } from "@eshg/employee-portal-api/measlesProtection";
+import { ApiDraftMeaslesProcedure } from "@eshg/measles-protection-api";
 import { doNothing } from "remeda";
 
 import {

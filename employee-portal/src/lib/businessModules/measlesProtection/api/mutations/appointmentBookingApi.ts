@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { BookAppointmentForProcedureRequest } from "@eshg/employee-portal-api/measlesProtection";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { BookAppointmentForProcedureRequest } from "@eshg/measles-protection-api";
 
 import { useAppointmentBookingApi } from "@/lib/businessModules/measlesProtection/api/clients";
 import { measlesProtectionApiQueryKey } from "@/lib/businessModules/measlesProtection/api/queries/apiQueryKeys";

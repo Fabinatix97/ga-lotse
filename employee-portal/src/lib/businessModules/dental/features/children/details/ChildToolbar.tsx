@@ -6,6 +6,8 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
+import { getChildDetailsQuery } from "@eshg/dental/api/queries/childApi";
+import { useDentalApi } from "@eshg/dental/shared/DentalProvider";
 import { routes } from "@eshg/dental/shared/routes";
 import {
   FormatListBulletedOutlined,
@@ -14,8 +16,6 @@ import {
 } from "@mui/icons-material";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { useChildApi } from "@/lib/businessModules/dental/api/clients";
-import { getChildDetailsQuery } from "@/lib/businessModules/dental/api/queries/childApi";
 import { PersonToolbarHeader } from "@/lib/shared/components/layout/PersonToolbarHeader";
 import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
 import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
@@ -28,7 +28,7 @@ interface ChildToolbarProps {
 export function ChildToolbar(props: ChildToolbarProps) {
   const { childId } = props;
   const hasDentalAdminRole = useHasUserRoleCheck(ApiUserRole.DentalAdmin);
-  const childApi = useChildApi();
+  const { childApi } = useDentalApi();
   const { data: child } = useSuspenseQuery(
     getChildDetailsQuery(childApi, childId),
   );

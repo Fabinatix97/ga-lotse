@@ -3,22 +3,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiImportStatistics,
-  ImportCitizenListRequest,
-  ImportPastProcedureListRequest,
-  ImportSchoolListRequest,
-} from "@eshg/employee-portal-api/schoolEntry";
+import { parseImportResult } from "@eshg/lib-employee-portal/helpers/import";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import {
   mapOptionalValue,
   mapRequiredValue,
 } from "@eshg/lib-portal/helpers/form";
+import {
+  ApiImportStatistics,
+  ImportCitizenListRequest,
+  ImportPastProcedureListRequest,
+  ImportSchoolListRequest,
+} from "@eshg/school-entry-api";
 
 import { useImportApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { ImportDataValues } from "@/lib/businessModules/schoolEntry/features/procedures/importData/ImportDataSidebar";
 import { ImportListType } from "@/lib/businessModules/schoolEntry/features/procedures/importData/importTypes";
-import { parseImportResult } from "@/lib/shared/helpers/import";
 
 export function useImportData() {
   const importApi = useImportApi();

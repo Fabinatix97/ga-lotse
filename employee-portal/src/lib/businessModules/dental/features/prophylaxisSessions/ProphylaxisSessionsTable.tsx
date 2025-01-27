@@ -6,14 +6,14 @@
 "use client";
 
 import { ApiProphylaxisSessionSortKey } from "@eshg/dental-api";
+import { ProphylaxisSession } from "@eshg/dental/api/models/ProphylaxisSession";
+import { useGetProphylaxisSessions } from "@eshg/dental/api/queries/prophylaxisSessionApi";
 import { routes } from "@eshg/dental/shared/routes";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { useToggleableState } from "@eshg/lib-portal/hooks/useToggleableState";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 import { ReactNode } from "react";
 
-import { ProphylaxisSession } from "@/lib/businessModules/dental/api/models/ProphylaxisSession";
-import { useGetProphylaxisSessions } from "@/lib/businessModules/dental/api/queries/prophylaxisSessionApi";
 import {
   ProphylaxisSessionFilterSettings,
   ProphylaxisSessionFilters,

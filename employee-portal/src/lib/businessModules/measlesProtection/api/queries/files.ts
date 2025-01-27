@@ -6,11 +6,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useFileApi } from "@/lib/businessModules/measlesProtection/api/clients";
-import {
-  fileApiQueryKey,
-  measlesProtectionApiQueryKey,
-} from "@/lib/businessModules/measlesProtection/api/queries/apiQueryKeys";
-import { useGetMetaDataHistoryTemplate } from "@/lib/shared/api/queries/files";
+import { measlesProtectionApiQueryKey } from "@/lib/businessModules/measlesProtection/api/queries/apiQueryKeys";
 
 export function useGetFile(fileId: string) {
   const fileApi = useFileApi();
@@ -18,8 +14,4 @@ export function useGetFile(fileId: string) {
     queryFn: () => fileApi.getFile(fileId),
     queryKey: measlesProtectionApiQueryKey(["files", "get", fileId]),
   });
-}
-
-export function useGetMetaDataHistory(fileId: string) {
-  return useGetMetaDataHistoryTemplate(useFileApi, fileApiQueryKey, fileId);
 }

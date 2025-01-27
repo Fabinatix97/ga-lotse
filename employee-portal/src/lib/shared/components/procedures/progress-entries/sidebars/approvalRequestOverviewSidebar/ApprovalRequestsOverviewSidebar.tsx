@@ -13,6 +13,7 @@ import {
   ProgressEntriesContext,
   useOpenApprovalRequests,
 } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
+import { useGrantDeletionForAllRequests } from "@/lib/shared/components/procedures/progress-entries/mutations/approvalRequestApi";
 import { ApprovalRequestCard } from "@/lib/shared/components/procedures/progress-entries/sidebars/approvalRequestOverviewSidebar/ApprovalRequestCard";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
@@ -29,8 +30,9 @@ export function ApprovalRequestsOverviewSidebar({
 }: ApprovalRequestOverviewProps) {
   const approvalRequests = useOpenApprovalRequests()!;
   const progressEntriesContext = useContext(ProgressEntriesContext);
-  const { useGrantDeletionForAllRequests } = progressEntriesContext.config;
-  const grantDeletionForAll = useGrantDeletionForAllRequests();
+  const { approvalRequestApi } = progressEntriesContext.config;
+  const grantDeletionForAll =
+    useGrantDeletionForAllRequests(approvalRequestApi);
 
   function deleteAll() {
     grantDeletionForAll.mutate(approvalRequests);

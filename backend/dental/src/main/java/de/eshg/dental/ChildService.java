@@ -11,6 +11,7 @@ import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.api.GetFileStateIdsResponse;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateRequest;
+import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.AddPersonFileStatesRequest;
 import de.eshg.base.centralfile.api.person.AddPersonFileStatesResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
@@ -124,10 +125,26 @@ public class ChildService {
     this.procedureQuery = procedureQuery;
   }
 
-  public Child createChild(CreateChildRequest request) {
-    Map<CreateChildRequest, Child> children =
-        createChildren(List.of(request), DataOriginDto.MANUAL);
-    return Iterables.getOnlyElement(children.values());
+  Child createChild(CreateChildRequest request) {
+    AddPersonFileStateRequest addPersonRequest =
+        mapToAddPersonFileStateRequest(DataOriginDto.MANUAL, request);
+    AddPersonFileStateResponse response = personApi.addPersonFileState(addPersonRequest);
+
+    Child createdChild = createChild(request, response.id());
+    childRepository.save(createdChild);
+    return createdChild;
+  }
+
+  private Child createChild(CreateChildRequest request, UUID personId) {
+    Child createdChild = new Child();
+    createdChild.setProcedureType(ProcedureType.DENTAL_CHILD);
+    createdChild.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
+    Person person = new Person();
+    person.setPersonType(Person.PERSON_TYPE_USED_FOR_CHILDREN);
+    person.setCentralFileStateId(personId);
+    createdChild.addRelatedPerson(person);
+    ChildMapper.mapToChild(request, createdChild);
+    return createdChild;
   }
 
   public Map<CreateChildRequest, Child> createChildren(
@@ -140,13 +157,7 @@ public class ChildService {
 
     Map<CreateChildRequest, Child> createdChildren = new LinkedHashMap<>();
     for (int i = 0; i < requests.size(); i++) {
-      Child child = new Child();
-      child.setProcedureType(ProcedureType.DENTAL_CHILD);
-      child.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
-      Person person = new Person();
-      person.setPersonType(Person.PERSON_TYPE_USED_FOR_CHILDREN);
-      person.setCentralFileStateId(childFileStateIds.get(i));
-      child.addRelatedPerson(person);
+      Child child = createChild(requests.get(i), childFileStateIds.get(i));
       CreateChildRequest request = requests.get(i);
       ChildMapper.mapToChild(request, child);
       childRepository.save(child);
@@ -282,31 +293,34 @@ public class ChildService {
       Collection<CreateChildRequest> requests, DataOriginDto dataOrigin) {
     List<AddPersonFileStateRequest> personsToAdd =
         requests.stream()
-            .map(
-                request ->
-                    new AddPersonFileStateRequest(
-                        request.referenceId(),
-                        new PersonDetailsDto(
-                            request.title(),
-                            request.salutation(),
-                            request.gender(),
-                            request.firstName(),
-                            request.lastName(),
-                            request.dateOfBirth(),
-                            request.nameAtBirth(),
-                            request.placeOfBirth(),
-                            request.countryOfBirth(),
-                            request.emailAddresses(),
-                            request.phoneNumbers(),
-                            request.contactAddress(),
-                            request.differentBillingAddress()),
-                        dataOrigin))
+            .map(request -> mapToAddPersonFileStateRequest(dataOrigin, request))
             .toList();
 
     AddPersonFileStatesResponse response =
         personApi.addPersonFileStates(new AddPersonFileStatesRequest(personsToAdd));
 
     return response.personFileStateIds();
+  }
+
+  private static AddPersonFileStateRequest mapToAddPersonFileStateRequest(
+      DataOriginDto dataOrigin, CreateChildRequest request) {
+    return new AddPersonFileStateRequest(
+        request.referenceId(),
+        new PersonDetailsDto(
+            request.title(),
+            request.salutation(),
+            request.gender(),
+            request.firstName(),
+            request.lastName(),
+            request.dateOfBirth(),
+            request.nameAtBirth(),
+            request.placeOfBirth(),
+            request.countryOfBirth(),
+            request.emailAddresses(),
+            request.phoneNumbers(),
+            request.contactAddress(),
+            request.differentBillingAddress()),
+        dataOrigin);
   }
 
   public Child findByExternalIdOrThrow(UUID childId) {
@@ -570,7 +584,7 @@ public class ChildService {
         .map(this::augmentWithDetails);
   }
 
-  private static NotFoundException childNotFoundException() {
+  static NotFoundException childNotFoundException() {
     return ExceptionUtil.notFoundException(Child.class);
   }
 }

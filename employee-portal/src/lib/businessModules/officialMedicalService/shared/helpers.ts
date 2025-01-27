@@ -13,6 +13,7 @@ import {
   ApiPatchAffectedPersonRequest,
   ApiPatchEmployeeOmsProcedureFacilityRequest,
   ApiPostEmployeeOmsProcedureRequest,
+  ApiProcedureStatus,
 } from "@eshg/employee-portal-api/officialMedicalService";
 
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
@@ -108,4 +109,14 @@ export function mapToApiPatchFacilityRequest(
       phoneNumbers: facility.phoneNumbers ?? [],
     },
   };
+}
+
+export function isProcedureFinalized(procedure: {
+  status: ApiProcedureStatus;
+}): boolean {
+  const finalizedStates: ApiProcedureStatus[] = [
+    ApiProcedureStatus.Closed,
+    ApiProcedureStatus.Aborted,
+  ];
+  return finalizedStates.includes(procedure.status);
 }

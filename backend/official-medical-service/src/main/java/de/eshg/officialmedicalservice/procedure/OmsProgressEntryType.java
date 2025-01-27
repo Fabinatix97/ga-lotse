@@ -6,6 +6,7 @@
 package de.eshg.officialmedicalservice.procedure;
 
 public enum OmsProgressEntryType {
+  UPDATE_AFFECTED_PERSON,
   SYNC_AFFECTED_PERSON,
   SYNC_FACILITY,
   PHYSICIAN_CHANGED,

@@ -6,7 +6,7 @@
 import {
   ApiBaseFeature,
   ApiGetBaseFeatureTogglesResponse,
-} from "@eshg/citizen-portal-api/base";
+} from "@eshg/base-api";
 import {
   selectDisabledOldFeature,
   selectEnabledNewFeature,

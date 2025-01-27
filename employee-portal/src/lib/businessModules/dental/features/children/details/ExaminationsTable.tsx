@@ -5,11 +5,11 @@
 
 "use client";
 
+import { Examination } from "@eshg/dental/api/models/Examination";
 import { routes } from "@eshg/dental/shared/routes";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 
-import { Examination } from "@/lib/businessModules/dental/api/models/Examination";
 import { ExaminationStatusChip } from "@/lib/businessModules/dental/features/examinations/ExaminationStatusChip";
 import { PROPHYLAXIS_TYPES } from "@/lib/businessModules/dental/features/prophylaxisSessions/translations";
 import { DataTable } from "@/lib/shared/components/table/DataTable";

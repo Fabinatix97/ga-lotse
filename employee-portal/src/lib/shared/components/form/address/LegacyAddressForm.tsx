@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiCountryCode } from "@eshg/employee-portal-api/measlesProtection";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import {
   buildEnumOptions,
@@ -11,6 +10,7 @@ import {
 } from "@eshg/lib-portal/helpers/form";
 import { validateLength } from "@eshg/lib-portal/helpers/validators";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
+import { ApiCountryCode } from "@eshg/measles-protection-api";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, Grid, IconButton, Stack, Typography } from "@mui/joy";

@@ -51,7 +51,8 @@ public class AppointmentService {
 
     AppointmentType appointmentType = procedureStep.getAppointmentType();
     Instant end = start.plus(Duration.ofMinutes(durationInMinutes));
-    appointmentBlockSlotUtil.updateAppointment(appointmentType, null, procedureStep, start, end);
+    appointmentBlockSlotUtil.updateAppointment(
+        appointmentType, null, null, procedureStep, start, end);
   }
 
   public Appointment createBlockAppointment(
@@ -59,7 +60,7 @@ public class AppointmentService {
     DummyEntityWithAppointment appointmentHolder = new DummyEntityWithAppointment();
     Instant end = start.plus(Duration.ofMinutes(durationInMinutes));
     appointmentBlockSlotUtil.updateAppointment(
-        appointmentType, null, appointmentHolder, start, end);
+        appointmentType, null, null, appointmentHolder, start, end);
     return appointmentHolder.getAppointment();
   }
 

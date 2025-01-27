@@ -4,13 +4,15 @@
  */
 
 import {
+  BaseEntity,
+  mapBaseEntity,
+} from "@eshg/lib-employee-portal/api/models/BaseEntity";
+import { mapOptional } from "@eshg/lib-employee-portal/api/models/utils";
+import {
   ApiSchoolEntryProcedure,
   ApiSchoolEntryProcedureType,
   ApiSchoolEntryStatusType,
-} from "@eshg/employee-portal-api/schoolEntry";
-
-import { BaseEntity, mapBaseEntity } from "@/lib/shared/api/models/BaseEntity";
-import { mapOptional } from "@/lib/shared/api/models/utils";
+} from "@eshg/school-entry-api";
 
 import { Label, mapLabels } from "./Label";
 import { Location, mapLocation } from "./Location";

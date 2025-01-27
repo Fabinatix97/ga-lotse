@@ -5,6 +5,12 @@
 
 "use client";
 
+import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
+import {
+  mapOptionalValue,
+  parseOptionalValue,
+} from "@eshg/lib-portal/helpers/form";
 import {
   type ApiExaminationWithDiagnosis,
   ApiHandicap,
@@ -14,13 +20,7 @@ import {
   ApiPsychoSocialRisk,
   ApiSocioEducationalPerformance,
   UpdateDevelopmentScreeningResultRequest,
-} from "@eshg/employee-portal-api/schoolEntry";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
-import {
-  mapOptionalValue,
-  parseOptionalValue,
-} from "@eshg/lib-portal/helpers/form";
+} from "@eshg/school-entry-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { SchoolEntryProcedurePageProps } from "@/app/(businessModules)/school-entry/procedures/[procedureId]/layout";

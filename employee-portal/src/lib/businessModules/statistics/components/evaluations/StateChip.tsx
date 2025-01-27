@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiEvaluationState } from "@eshg/employee-portal-api/statistics";
+import { ApiEvaluationState } from "@eshg/statistics-api";
 import { Chip, ChipProps } from "@mui/joy";
 
 const statusNames = {

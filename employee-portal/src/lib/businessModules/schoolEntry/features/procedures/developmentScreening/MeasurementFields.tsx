@@ -5,7 +5,6 @@
 
 "use client";
 
-import { GetPercentilesRequest } from "@eshg/employee-portal-api/schoolEntry";
 import { SoftRequiredNumberField } from "@eshg/lib-portal/businessModules/schoolEntry/features/procedures/fieldVariants";
 import {
   createFieldNameMapper,
@@ -15,6 +14,7 @@ import {
   NestedFormProps,
   OptionalFieldValue,
 } from "@eshg/lib-portal/types/form";
+import { GetPercentilesRequest } from "@eshg/school-entry-api";
 import { Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types/theme";
 import { FormikErrors } from "formik";

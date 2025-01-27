@@ -4,6 +4,7 @@
  */
 
 import { ApiAddContact200Response } from "@eshg/base-api";
+import { useImportChildren } from "@eshg/dental/api/mutations/importApi";
 import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
 import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
@@ -12,7 +13,6 @@ import { Stack } from "@mui/joy";
 import { Formik } from "formik";
 
 import { SCHOOL_OR_DAYCARE } from "@/lib/baseModule/api/queries/contacts";
-import { useImportChildren } from "@/lib/businessModules/dental/api/mutations/importApi";
 import { SelectContactField } from "@/lib/shared/components/formFields/SelectContactField";
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
 import { SchoolYearField } from "@/lib/shared/components/formFields/schoolYear";
@@ -51,7 +51,7 @@ function ImportChildrenSidebar(props: SidebarWithFormRefProps) {
     await importChildren(
       {
         file: mapRequiredValue(values.file),
-        institution: mapRequiredValue(values.institution),
+        institutionId: mapRequiredValue(values.institution).id,
         schoolYear: mapRequiredValue(values.schoolYear),
       },
       {

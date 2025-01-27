@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 import {
   AccessRestrictionApi,
   AppointmentBlockApi,
@@ -22,8 +23,7 @@ import {
   ProofSubmissionApi,
   ProtectionProcedureApi,
   StatusTransitionApi,
-} from "@eshg/employee-portal-api/measlesProtection";
-import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
+} from "@eshg/measles-protection-api";
 
 function useConfiguration() {
   const configurationParameters = useApiConfiguration(

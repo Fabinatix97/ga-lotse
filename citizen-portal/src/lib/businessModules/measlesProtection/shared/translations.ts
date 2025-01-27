@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import { EnumMap } from "@eshg/lib-portal/types/helpers";
 import {
   ApiGender,
   ApiMPFacilityType,
@@ -10,9 +12,7 @@ import {
   ApiRoleStatus,
   ApiSalutation,
   ApiTitle,
-} from "@eshg/citizen-portal-api/measlesProtection";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
-import { EnumMap } from "@eshg/lib-portal/types/helpers";
+} from "@eshg/measles-protection-api";
 
 import { TranslateFn } from "@/lib/i18n/client";
 

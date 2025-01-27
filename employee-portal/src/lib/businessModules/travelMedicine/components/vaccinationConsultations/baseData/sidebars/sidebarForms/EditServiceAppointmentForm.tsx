@@ -60,17 +60,19 @@ function formatAppointmentInfo(
   return (
     <Stack gap={2} data-testid="booking-status">
       {earliestDate && (
-        <p style={{ margin: 0 }}>
+        <Typography sx={{ margin: 0 }}>
           Selbstbuchung ab: {formatDate(earliestDate)}
-        </p>
+        </Typography>
       )}
       {bookingType === "SELF_BOOKING" ? (
-        <p style={{ margin: 0 }}>{formatBookingType(bookingType)}</p>
+        <Typography sx={{ margin: 0 }}>
+          {formatBookingType(bookingType)}
+        </Typography>
       ) : (
-        <p style={{ margin: 0 }}>
+        <Typography sx={{ margin: 0 }}>
           {`${formatDateTime(appointmentDate)} Uhr `}
           {formatBookingType(bookingType)}
-        </p>
+        </Typography>
       )}
     </Stack>
   );

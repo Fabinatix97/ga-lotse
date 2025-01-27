@@ -14,7 +14,7 @@ import { mapAttributeToAutocompleteSelectionOption } from "@/lib/businessModules
 import {
   binningValueNames,
   groupingValueNames,
-  isBooleanOrValueWithOptions,
+  isCategorical,
   isNumeric,
   scalingValueNames,
 } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
@@ -45,7 +45,7 @@ export function ConfigureHistogramChartStep({
   const secondaryAutocompleteSelectOptions: AutocompleteSelectOption[] =
     attributes.map(
       mapAttributeToAutocompleteSelectionOption((attr) =>
-        isBooleanOrValueWithOptions(attr.type),
+        isCategorical(attr.type),
       ),
     );
 

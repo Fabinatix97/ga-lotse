@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { AlertProps as SharedAlertProps } from "@eshg/lib-portal/components/Alert";
+import { isAdult } from "@eshg/lib-portal/helpers/dateTime";
 import {
   ApiDraftMeaslesProcedure,
   ApiMeaslesProtectionProcedure,
@@ -10,9 +12,7 @@ import {
   ApiReportingReason,
   ApiRoleStatus,
   ApiUpdateProcedureRequest,
-} from "@eshg/employee-portal-api/measlesProtection";
-import { AlertProps as SharedAlertProps } from "@eshg/lib-portal/components/Alert";
-import { isAdult } from "@eshg/lib-portal/helpers/dateTime";
+} from "@eshg/measles-protection-api";
 import { isObjectType } from "remeda";
 
 export interface UpdateProcedureForm {

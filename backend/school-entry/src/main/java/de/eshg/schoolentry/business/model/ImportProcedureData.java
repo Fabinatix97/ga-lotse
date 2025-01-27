@@ -19,10 +19,6 @@ public record ImportProcedureData(
     boolean isEarlyExamination,
     boolean hasInformationBlock) {
 
-  public ImportProcedureData(CreatePersonDto child, ProcedureType procedureType) {
-    this(child, procedureType, null, false, false, false);
-  }
-
   public ImportProcedureData(
       CreatePersonDto child,
       ProcedureType procedureType,
