@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import {
+  formatDate,
+  formatDateTime,
+} from "@eshg/lib-portal/formatters/dateTime";
+import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
 import {
   ApiAppointmentBookingType,
   ApiAppointmentSummary,
@@ -11,13 +17,7 @@ import {
   ApiServiceStatus,
   ApiUser,
   ApiVaccine,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import {
-  formatDate,
-  formatDateTime,
-} from "@eshg/lib-portal/formatters/dateTime";
-import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
+} from "@eshg/travel-medicine-api";
 import { isEmpty, isNonNullish } from "remeda";
 
 import { AppointmentSummary } from "@/lib/businessModules/travelMedicine/api/models/AppointmentSummary";

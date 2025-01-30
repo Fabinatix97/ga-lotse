@@ -10,7 +10,7 @@ import jakarta.validation.constraints.NotNull;
 
 @Schema(name = FluoridationExaminationResultDto.SCHEMA_NAME)
 public record FluoridationExaminationResultDto(@NotNull boolean fluorideVarnishApplied)
-    implements ExaminationResultDto {
+    implements ExaminationResultDto, IsFluorideVarnishApplicable {
 
   static final String SCHEMA_NAME = "FluoridationExaminationResult";
 

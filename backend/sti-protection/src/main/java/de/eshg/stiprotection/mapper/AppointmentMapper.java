@@ -10,6 +10,7 @@ import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.stiprotection.api.CreateAppointmentRequest;
+import de.eshg.stiprotection.api.CreateFollowUpProcedureRequest;
 import de.eshg.stiprotection.api.CreateProcedureRequest;
 import de.eshg.stiprotection.api.UpdateAppointmentRequest;
 import de.eshg.stiprotection.persistence.data.AppointmentBookingType;
@@ -64,6 +65,14 @@ public class AppointmentMapper {
     return new AppointmentData(
         AppointmentBookingType.valueOf(request.appointmentBookingType().name()),
         appointmentType,
+        request.appointmentStart(),
+        request.durationInMinutes());
+  }
+
+  public static AppointmentData toDataType(CreateFollowUpProcedureRequest request) {
+    return new AppointmentData(
+        AppointmentBookingType.valueOf(request.appointmentBookingType().name()),
+        AppointmentType.valueOf(request.concern().name()),
         request.appointmentStart(),
         request.durationInMinutes());
   }

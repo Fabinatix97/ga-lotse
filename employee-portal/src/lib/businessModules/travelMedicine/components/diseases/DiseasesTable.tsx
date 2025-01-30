@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiDisease } from "@eshg/employee-portal-api/travelMedicine";
+import { ApiDisease } from "@eshg/travel-medicine-api";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";

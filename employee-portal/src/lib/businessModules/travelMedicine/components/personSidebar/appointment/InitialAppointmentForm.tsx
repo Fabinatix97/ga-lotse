@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import {
   ApiAppointmentBookingType,
   ApiAppointmentType,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
+} from "@eshg/travel-medicine-api";
 import { RefObject } from "@fullcalendar/core/preact.js";
 import { Sheet, Stack } from "@mui/joy";
 import { format } from "date-fns";

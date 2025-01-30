@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiDocumentContent } from "@eshg/citizen-portal-api/travelMedicine";
 import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm";
+import { ApiDocumentContent } from "@eshg/travel-medicine-api";
 import { Button } from "@mui/joy";
 
 import { useTranslation } from "@/lib/i18n/client";

@@ -6,13 +6,14 @@
 import {
   ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner,
   ApiSystemProgressEntry,
+  ApiUser,
 } from "@eshg/employee-portal-api/businessProcedures";
 import { Chip } from "@mui/joy";
 import { isDefined } from "remeda";
 
 import { useProgressEntriesConfig } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import { systemProgressEntryTypeTitles } from "@/lib/shared/components/procedures/progress-entries/constants";
-import { displayTriggerer } from "@/lib/shared/components/procedures/progress-entries/helper";
+import { formatTriggeredBy } from "@/lib/shared/components/procedures/progress-entries/helper";
 import {
   AllKeyDocumentVersions,
   DetailsContentWrapper,
@@ -22,9 +23,11 @@ import { LabelValueDisplay } from "@/lib/shared/components/procedures/progress-e
 
 export function SystemProgressEntryDetails({
   entry,
+  resolvedUsers,
   relatedKeyDocumentProgressEntries,
 }: {
   entry: ApiSystemProgressEntry;
+  resolvedUsers: Record<string, ApiUser>;
   relatedKeyDocumentProgressEntries: ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner[];
 }) {
   const { keyDocumentTypes } = useProgressEntriesConfig();
@@ -49,7 +52,7 @@ export function SystemProgressEntryDetails({
       title={
         isDefined(titleSuffix) ? `${titlePrefix} ${titleSuffix}` : titlePrefix
       }
-      creatorName={displayTriggerer(entry)}
+      creatorName={formatTriggeredBy(entry, resolvedUsers)}
       additionalFileElements={{
         start: (
           <>

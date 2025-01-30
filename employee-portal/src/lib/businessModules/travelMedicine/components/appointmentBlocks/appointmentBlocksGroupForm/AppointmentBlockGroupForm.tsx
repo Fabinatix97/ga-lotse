@@ -4,10 +4,10 @@
  */
 
 import { ApiUser } from "@eshg/base-api";
-import { ApiAppointmentType } from "@eshg/employee-portal-api/travelMedicine";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { ApiAppointmentType } from "@eshg/travel-medicine-api";
 import { Divider, Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 import { isDefined, isEmpty } from "remeda";

@@ -4,11 +4,10 @@
  */
 
 import { ChildExamination } from "@eshg/dental/api/models/ChildExamination";
-import { useUpdateProphylaxisSessionParticipants } from "@eshg/dental/api/mutations/prophylaxisSessionApi";
+import { useDeleteProphylaxisSessionParticipantOptions } from "@eshg/dental/api/mutations/prophylaxisSessionApi";
 import { routes } from "@eshg/dental/shared/routes";
 import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Add } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
@@ -72,11 +71,13 @@ export function ProphylaxisSessionParticipantsTable() {
   const setParticipantSorting = useProphylaxisSessionStore(
     (state) => state.setParticipantSorting,
   );
-  const { mutateAsync: updateParticipants } =
-    useUpdateProphylaxisSessionParticipants(prophylaxisSessionId);
   const { openConfirmationDialog } = useConfirmationDialog();
 
-  const snackbar = useSnackbar();
+  const deleteOptions = useDeleteProphylaxisSessionParticipantOptions(
+    prophylaxisSessionId,
+    prophylaxisSessionVersion,
+    allParticipants,
+  );
 
   function handleRemoveParticipant(childExternalId: string) {
     openConfirmationDialog({
@@ -84,21 +85,11 @@ export function ProphylaxisSessionParticipantsTable() {
       title: "Kind entfernen?",
       confirmLabel: "Entfernen",
       description: "Möchten Sie das Kind aus der Prophylaxe entfernen?",
-      onConfirm: async () => {
-        await updateParticipants(
-          {
-            version: prophylaxisSessionVersion,
-            participants: allParticipants
-              .map((childExamination) => childExamination.childId)
-              .filter((id) => id !== childExternalId),
-          },
-          {
-            onSuccess: () => {
-              snackbar.confirmation("Kind erfolgreich entfernt.");
-            },
-          },
-        );
+      onConfirmMutation: {
+        mutationOptions: deleteOptions,
+        variableSupplier: () => childExternalId,
       },
+      onConfirm: () => Promise.resolve(),
     });
   }
 
@@ -151,7 +142,7 @@ export function ProphylaxisSessionParticipantsTable() {
                   />
                   <Divider orientation="vertical" />
                   <ParticipantFilter
-                    name="fluoridationConsent"
+                    name="fluoridationConsentGiven"
                     label="Fluoridierungseinverständnis"
                     filters={FLUORIDATION_CONSENT_FILTERS}
                   />
@@ -182,6 +173,7 @@ export function ProphylaxisSessionParticipantsTable() {
         }}
         sorting={tableControl.tableSorting}
         enableSortingRemoval={false}
+        minWidth={1200}
       />
     </TablePage>
   );
@@ -242,13 +234,13 @@ function columnDefs(
         width: 110,
       },
     }),
-    columnHelper.accessor("fluoridationConsent", {
+    columnHelper.accessor("fluoridationConsentGiven", {
       header: "Fluoridierungseinverständnis",
       cell: (props) => displayBoolean(props.getValue()),
       enableSorting: true,
       meta: {
         canNavigate: { parentRow: true },
-        width: 110,
+        width: 205,
       },
     }),
     columnHelper.accessor("status", {

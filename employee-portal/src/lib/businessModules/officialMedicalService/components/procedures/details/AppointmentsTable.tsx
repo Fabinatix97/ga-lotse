@@ -9,7 +9,6 @@ import {
   ApiEmployeeOmsProcedureDetails,
   ApiOmsAppointment,
 } from "@eshg/employee-portal-api/officialMedicalService";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
 import {
@@ -22,7 +21,11 @@ import { Chip, Typography } from "@mui/joy";
 import { DefaultColorPalette } from "@mui/joy/styles/types";
 import { createColumnHelper } from "@tanstack/react-table";
 
-import { useCancelAppointment } from "@/lib/businessModules/officialMedicalService/api/mutations/appointmentApi";
+import {
+  useCancelAppointment,
+  useCloseAppointment,
+  useWithdrawAppointment,
+} from "@/lib/businessModules/officialMedicalService/api/mutations/appointmentApi";
 import { APPOINTMENT_TYPES } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/constants";
 import { useAppointmentSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/AppointmentSidebar";
 import { isProcedureFinalized } from "@/lib/businessModules/officialMedicalService/shared/helpers";
@@ -68,11 +71,13 @@ function createAppointmentColumns({
   openCancelAppointmentDialog,
   openCloseAppointmentDialog,
   openWithdrawAppointmentDialog,
+  closeAppointment,
 }: {
   openBookingSidebar?: (appointment: ApiOmsAppointment) => void;
   openCancelAppointmentDialog?: (appointment: ApiOmsAppointment) => void;
-  openCloseAppointmentDialog?: () => void;
-  openWithdrawAppointmentDialog?: () => void;
+  openCloseAppointmentDialog?: (appointment: ApiOmsAppointment) => void;
+  openWithdrawAppointmentDialog?: (appointment: ApiOmsAppointment) => void;
+  closeAppointment?: (appointment: ApiOmsAppointment) => Promise<void>;
 }) {
   return [
     columnHelper.accessor("appointmentType", {
@@ -142,10 +147,10 @@ function createAppointmentColumns({
           openWithdrawAppointmentDialog
         ) {
           items.push({
-            label: "Terminbuchung zurückziehen",
+            label: "Terminoption zurückziehen",
             startDecorator: <Delete />,
             color: "danger",
-            onClick: openWithdrawAppointmentDialog,
+            onClick: () => openWithdrawAppointmentDialog(ctx.row.original),
           });
         }
 
@@ -164,20 +169,32 @@ function createAppointmentColumns({
           items.push({
             label: "Terminbuchung absagen",
             startDecorator: <EventBusyOutlined />,
+            color: "danger",
             onClick: () => openCancelAppointmentDialog(ctx.row.original),
           });
         }
 
         if (
-          (bookingState === ApiBookingState.Cancelled ||
-            bookingState === ApiBookingState.Booked) &&
+          bookingState === ApiBookingState.Booked &&
           appointmentState === ApiAppointmentState.Open &&
           openCloseAppointmentDialog
         ) {
           items.push({
             label: "Als abgeschlossen markieren",
             startDecorator: <CheckCircle />,
-            onClick: openCloseAppointmentDialog,
+            onClick: () => openCloseAppointmentDialog(ctx.row.original),
+          });
+        }
+
+        if (
+          bookingState === ApiBookingState.Cancelled &&
+          appointmentState === ApiAppointmentState.Open &&
+          closeAppointment
+        ) {
+          items.push({
+            label: "Als abgeschlossen markieren",
+            startDecorator: <CheckCircle />,
+            onClick: () => closeAppointment(ctx.row.original),
           });
         }
 
@@ -206,7 +223,8 @@ export function AppointmentsTable({
   );
   const { openConfirmationDialog } = useConfirmationDialog();
   const { mutateAsync: cancelAppointment } = useCancelAppointment();
-  const snackbar = useSnackbar();
+  const { mutateAsync: closeAppointment } = useCloseAppointment();
+  const { mutateAsync: withdrawAppointment } = useWithdrawAppointment();
 
   if (procedure.appointments.length === 0) {
     return;
@@ -223,24 +241,24 @@ export function AppointmentsTable({
     });
   }
 
-  function openCloseAppointmentDialog() {
+  function openCloseAppointmentDialog(appointment: ApiOmsAppointment) {
     openConfirmationDialog({
       title: "Termin abschließen?",
       description:
         "Der/die Bürger:in wird per E-Mail informiert. Ein neuer Termin kann gebucht werden.",
       confirmLabel: "Abschließen",
-      onConfirm: () => snackbar.notification("TODO"),
+      onConfirm: () => closeAppointment(appointment),
     });
   }
 
-  function openWithdrawAppointmentDialog() {
+  function openWithdrawAppointmentDialog(appointment: ApiOmsAppointment) {
     openConfirmationDialog({
-      title: "Termin löschen?",
+      title: "Terminoption zurückziehen?",
       description:
-        "Gebuchte, anstehende Termine werden storniert. Die Aktion lässt sich nicht rückgängig machen.",
+        "Der/die Bürger:in wird per E-Mail informiert. Eine neue Terminoption kann erstellt werden.",
       color: "danger",
-      confirmLabel: "Löschen",
-      onConfirm: () => snackbar.notification("TODO"),
+      confirmLabel: "Zurückziehen",
+      onConfirm: () => withdrawAppointment(appointment),
     });
   }
 
@@ -253,6 +271,7 @@ export function AppointmentsTable({
           openCancelAppointmentDialog(appointment),
         openCloseAppointmentDialog,
         openWithdrawAppointmentDialog,
+        closeAppointment,
       });
 
   return <DataTable data={procedure.appointments} columns={columns} />;

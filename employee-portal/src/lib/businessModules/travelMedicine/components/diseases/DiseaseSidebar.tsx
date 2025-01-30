@@ -6,7 +6,7 @@
 import {
   ApiDisease,
   ApiPostPutDiseaseRequest,
-} from "@eshg/employee-portal-api/travelMedicine";
+} from "@eshg/travel-medicine-api";
 
 import {
   PutDiseaseRequest,

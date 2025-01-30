@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Divider, Stack, Typography } from "@mui/joy";
+import { Box, Divider, Stack, Typography } from "@mui/joy";
 import { ReactNode } from "react";
 
 interface AnalysisDiagramProps {
@@ -12,7 +12,7 @@ interface AnalysisDiagramProps {
   evaluatedDataAmount: number;
   evaluatedDataAmountTotal: number;
   header?: ReactNode;
-  chart: ReactNode;
+  getChart: () => ReactNode;
 }
 
 export function AnalysisDiagramBox({
@@ -21,8 +21,26 @@ export function AnalysisDiagramBox({
   evaluatedDataAmount,
   evaluatedDataAmountTotal,
   header,
-  chart,
+  getChart,
 }: AnalysisDiagramProps) {
+  function diagramContent() {
+    if (evaluatedDataAmount === 0) {
+      return (
+        <Box
+          height="100%"
+          width="100%"
+          alignContent="center"
+          textAlign="center"
+        >
+          <Typography level="body-md" color="primary">
+            Keine Daten vorhanden
+          </Typography>
+        </Box>
+      );
+    }
+    return getChart();
+  }
+
   return (
     <Stack
       flex="1"
@@ -37,7 +55,7 @@ export function AnalysisDiagramBox({
       }}
     >
       {header}
-      {chart}
+      {diagramContent()}
       <Stack gap={2} marginTop={2}>
         <Divider />
         <Typography level="body-md" data-testid="analysis-diagram-description">

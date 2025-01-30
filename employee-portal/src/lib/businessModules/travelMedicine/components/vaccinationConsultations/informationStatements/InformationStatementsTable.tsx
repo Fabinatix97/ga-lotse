@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiProcedureStatus } from "@eshg/employee-portal-api/travelMedicine";
+import { ApiProcedureStatus } from "@eshg/travel-medicine-api";
 import { AddOutlined, DocumentScannerOutlined } from "@mui/icons-material";
 import { Button, Stack, Typography } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";

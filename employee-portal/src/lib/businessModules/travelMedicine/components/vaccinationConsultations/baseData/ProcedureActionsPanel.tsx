@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   ApiGetVaccinationConsultationDetailsResponse,
   ApiProcedureStatus,
   ApiServiceStatus,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+} from "@eshg/travel-medicine-api";
 import { Button, Grid } from "@mui/joy";
 import { ReactNode } from "react";
 

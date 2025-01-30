@@ -6,8 +6,11 @@
 import { ApiGdprProcedureType } from "@eshg/base-api";
 import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 import { Button, Sheet, Typography } from "@mui/joy";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useId, useState } from "react";
 
+import { useGetSelfGdprProceduresQuery } from "@/lib/baseModule/api/queries/gdpr";
+import { GdprProcedureList } from "@/lib/baseModule/components/gdpr/GdprProcedureList";
 import { ConfirmStartGdprProcedureDialog } from "@/lib/baseModule/components/gdpr/form/ConfirmStartGdprProcedureDialog";
 import { GdprObjectionFormDialog } from "@/lib/baseModule/components/gdpr/form/GdprObjectionFormDialog";
 import { UserType } from "@/lib/baseModule/components/layout/types";
@@ -20,11 +23,15 @@ import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
 
 const gdprProcedureTypes = Object.values(ApiGdprProcedureType);
 
-export function GdprRightsOverview({ type }: { type: UserType }) {
+export function GdprRightsOverview({ userType }: { userType: UserType }) {
   const { t } = useTranslation();
   const [chosenProcedureType, setChosenProcedureType] = useState<
     ApiGdprProcedureType | undefined
   >();
+
+  const { data: procedures } = useSuspenseQuery(
+    useGetSelfGdprProceduresQuery(),
+  );
 
   function msg(
     type: ApiGdprProcedureType,
@@ -39,8 +46,14 @@ export function GdprRightsOverview({ type }: { type: UserType }) {
         <PageTitle
           toolbar={<LogoutButton text={t("translation:common.leave")} />}
         >
-          {t("gdpr:overview.title")}
+          {t(`gdpr:overview.title.${userType}`)}
         </PageTitle>
+
+        {procedures.length > 0 && (
+          <ContentSheet missingTitle>
+            <GdprProcedureList procedures={procedures} />
+          </ContentSheet>
+        )}
 
         <ContentSheet missingTitle>
           <InfoSectionGrid>
@@ -51,7 +64,9 @@ export function GdprRightsOverview({ type }: { type: UserType }) {
                 buttonLabel={msg(type, "button")}
                 onClick={() => setChosenProcedureType(type)}
               >
-                {msg(type, "description")}
+                {t(
+                  `gdpr:overview.${type.toLowerCase()}.description.${userType}`,
+                )}
               </ActionTile>
             ))}
           </InfoSectionGrid>
@@ -65,7 +80,7 @@ export function GdprRightsOverview({ type }: { type: UserType }) {
 
           <ConfirmStartGdprProcedureDialog
             type={chosenProcedureType}
-            userType={type}
+            userType={userType}
             onClose={() => setChosenProcedureType(undefined)}
           />
         </QueryBoundary>
@@ -91,12 +106,21 @@ function ActionTile(props: ActionTileProps) {
         backgroundColor: theme.palette.background.level1,
         gap: theme.spacing(2),
         display: "grid",
+        height: "100%",
       })}
     >
       <Typography level="h2" id={id}>
         {props.title}
       </Typography>
-      <Typography>{props.children}</Typography>
+      <Typography
+        sx={{
+          textWrap: "pretty",
+          hyphens: "auto",
+          overflowWrap: "anywhere",
+        }}
+      >
+        {props.children}
+      </Typography>
       <Button
         onClick={props.onClick}
         sx={{

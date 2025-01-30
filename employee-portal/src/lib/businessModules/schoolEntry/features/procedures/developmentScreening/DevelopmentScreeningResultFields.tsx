@@ -6,7 +6,7 @@
 import {
   SoftRequiredBooleanSelectField,
   SoftRequiredSelectField,
-} from "@eshg/lib-portal/businessModules/schoolEntry/features/procedures/fieldVariants";
+} from "@eshg/lib-portal/components/form/fieldVariants";
 import { Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 

@@ -10,8 +10,6 @@ import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatA
 import { mapRawValueToTableCell } from "@/lib/businessModules/statistics/components/evaluations/details/table/mapRawValueToTableCell";
 
 const columnHelper = createColumnHelper<EvaluationDetailsTableRow>();
-// TODO: this should be removed in ISSUE-7403
-export const DUMMY_COLUMN = "dummyColumn";
 
 export function evaluationColumns({
   flatAttributes,
@@ -42,15 +40,5 @@ export function evaluationColumns({
       });
     });
 
-  const dummyColumn = columnHelper.accessor(DUMMY_COLUMN, {
-    header: "",
-    cell: "",
-    meta: {
-      canNavigate: {
-        parentRow: canNavigate,
-      },
-    },
-  });
-
-  return dataColumns.length > 0 ? dataColumns : [dummyColumn];
+  return dataColumns;
 }

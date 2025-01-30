@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAppointmentTypeConfig } from "@eshg/employee-portal-api/travelMedicine";
+import { ApiAppointmentTypeConfig } from "@eshg/travel-medicine-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { useUpdateAppointmentType } from "@/lib/businessModules/travelMedicine/api/mutations/appointmentTypes";

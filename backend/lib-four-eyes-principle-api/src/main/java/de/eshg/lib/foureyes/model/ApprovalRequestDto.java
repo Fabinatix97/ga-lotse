@@ -31,7 +31,9 @@ public record ApprovalRequestDto(
   public Set<UUID> getResolvableUserIds() {
     Set<UUID> uuids = new LinkedHashSet<>();
     uuids.add(createdBy);
-    uuids.addAll(entity.getResolvableUserIds());
+    Optional.ofNullable(entity)
+        .map(HasResolvableUserIds::getResolvableUserIds)
+        .ifPresent(uuids::addAll);
     return uuids;
   }
 }

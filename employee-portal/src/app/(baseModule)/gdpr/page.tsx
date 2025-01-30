@@ -28,14 +28,12 @@ function parseSearchParams(
   return {
     type: parseOptionalEnum(ApiGdprProcedureType, searchParams.get("type")),
     ...parseReadonlyPageParams(searchParams),
-    sortKey: parseOptionalEnum(
-      ApiGdprProcedureSortKey,
-      searchParams.get("sortKey"),
-    ),
-    sortDirection: parseOptionalEnum(
-      ApiSortDirection,
-      searchParams.get("sortDirection"),
-    ),
+    sortKey:
+      parseOptionalEnum(ApiGdprProcedureSortKey, searchParams.get("sortKey")) ??
+      ApiGdprProcedureSortKey.CreatedAt,
+    sortDirection:
+      parseOptionalEnum(ApiSortDirection, searchParams.get("sortDirection")) ??
+      ApiSortDirection.Asc,
   };
 }
 

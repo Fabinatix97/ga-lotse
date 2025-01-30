@@ -25,6 +25,7 @@ export function AnonIdentityDocumentCard({
         <DetailsColumn>
           <DetailsCell
             label="Anmeldecode"
+            valueIsDiv
             value={
               <DisplayAccessCode code={procedure.person.accessCode} bold />
             }

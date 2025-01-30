@@ -8,6 +8,9 @@ package de.eshg.lib.procedure.model;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import java.util.LinkedHashSet;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Schema(name = SystemProgressEntryDto.SCHEMA_NAME)
@@ -21,11 +24,7 @@ public final class SystemProgressEntryDto extends ProgressEntryDto
   private String changeDescription;
   private String keyDocumentType;
   private Integer keyDocumentVersion;
-
   private UUID triggeredBy;
-  private String triggeredByUserFirstName;
-  private String triggeredByUserLastName;
-
   private UUID previousFileStateId;
 
   public String getSystemProgressEntryType() {
@@ -61,37 +60,6 @@ public final class SystemProgressEntryDto extends ProgressEntryDto
   }
 
   @Override
-  public UUID getRelatedUserId() {
-    return getTriggeredBy();
-  }
-
-  @Override
-  public void setRelatedUserFirstName(String relatedUserFirstName) {
-    setTriggeredByUserFirstName(relatedUserFirstName);
-  }
-
-  @Override
-  public void setRelatedUserLastName(String relatedUserLastName) {
-    setTriggeredByUserLastName(relatedUserLastName);
-  }
-
-  public String getTriggeredByUserFirstName() {
-    return triggeredByUserFirstName;
-  }
-
-  public void setTriggeredByUserFirstName(String triggeredByUserFirstName) {
-    this.triggeredByUserFirstName = triggeredByUserFirstName;
-  }
-
-  public String getTriggeredByUserLastName() {
-    return triggeredByUserLastName;
-  }
-
-  public void setTriggeredByUserLastName(String triggeredByUserLastName) {
-    this.triggeredByUserLastName = triggeredByUserLastName;
-  }
-
-  @Override
   public String getKeyDocumentType() {
     return keyDocumentType;
   }
@@ -115,5 +83,12 @@ public final class SystemProgressEntryDto extends ProgressEntryDto
 
   public void setPreviousFileStateId(UUID previousFileStateId) {
     this.previousFileStateId = previousFileStateId;
+  }
+
+  @Override
+  public Set<UUID> getResolvableUserIds() {
+    LinkedHashSet<UUID> userIds = new LinkedHashSet<>(super.getResolvableUserIds());
+    Optional.ofNullable(triggeredBy).ifPresent(userIds::add);
+    return userIds;
   }
 }

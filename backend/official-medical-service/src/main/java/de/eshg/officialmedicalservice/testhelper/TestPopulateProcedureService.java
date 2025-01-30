@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
@@ -168,8 +169,11 @@ public class TestPopulateProcedureService {
           // 7. cancel appointments
           cancelAppointments(request.cancelledAppointments(), appointmentMap);
 
-          // 8. close procedure
-          if (Arrays.asList(CLOSED).contains(request.targetState())) {
+          // 8. close appointments
+          closeAppointments(request.closedAppointments(), appointmentMap);
+
+          // 9. close procedure
+          if (Objects.equals(CLOSED, request.targetState())) {
             employeeOmsProcedureService.closeOpenProcedure(procedureId);
           }
 
@@ -202,6 +206,19 @@ public class TestPopulateProcedureService {
               Optional.of(appointmentMap.get(appointment))
                   .orElseThrow(() -> new RuntimeException("Unknown appointment key"));
           appointmentService.cancelAppointmentEmployee(appointmentId);
+        });
+  }
+
+  private void closeAppointments(List<String> appointmentList, Map<String, UUID> appointmentMap) {
+    if (appointmentList == null) {
+      return;
+    }
+    appointmentList.forEach(
+        appointment -> {
+          UUID appointmentId =
+              Optional.of(appointmentMap.get(appointment))
+                  .orElseThrow(() -> new RuntimeException("Unknown appointment key"));
+          appointmentService.closeAppointmentEmployee(appointmentId);
         });
   }
 }

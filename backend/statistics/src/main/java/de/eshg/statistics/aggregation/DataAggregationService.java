@@ -745,7 +745,7 @@ public class DataAggregationService {
 
   private static TextEntry createTextEntry(Object value) {
     TextEntry entry = new TextEntry();
-    if (value instanceof String stringValue) {
+    if (value instanceof String stringValue && !stringValue.isBlank()) {
       entry.setTextValue(stringValue);
     }
     return entry;
@@ -868,7 +868,8 @@ public class DataAggregationService {
         unknownValue == null
             ? null
             : tableRowRepository.count(
-                TableRowSpecifications.getTextFilterSpecification(tableColumn, unknownValue)));
+                TableRowSpecifications.getTextFilterSpecificationExactly(
+                    tableColumn, unknownValue)));
     minMaxNullUnknownValues.setUnknownValue(unknownValue);
 
     return minMaxNullUnknownValues;

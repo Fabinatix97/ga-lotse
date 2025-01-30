@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PostInformationStatementsRequest } from "@eshg/employee-portal-api/travelMedicine";
+import { PostInformationStatementsRequest } from "@eshg/travel-medicine-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { useCreateInformationStatements } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";

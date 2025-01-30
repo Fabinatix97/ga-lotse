@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   ApiPatchMedicalHistoryTemplateFlagRequest,
   ApiPostPutMedicalHistoryTemplateRequest,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+} from "@eshg/travel-medicine-api";
 
 import { useMedicalHistoryTemplateApi } from "@/lib/businessModules/travelMedicine/api/clients";
 

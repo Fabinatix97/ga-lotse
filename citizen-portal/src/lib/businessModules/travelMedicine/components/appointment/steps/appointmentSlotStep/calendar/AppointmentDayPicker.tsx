@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAppointment } from "@eshg/citizen-portal-api/travelMedicine";
+import { ApiAppointment } from "@eshg/travel-medicine-api";
 import { DateSelectArg } from "@fullcalendar/core/index.js";
 import deLocale from "@fullcalendar/core/locales/de";
 import dayGridPlugin from "@fullcalendar/daygrid";

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiGetOpeningHoursResponse } from "@eshg/citizen-portal-api/travelMedicine";
+import { ApiGetOpeningHoursResponse } from "@eshg/travel-medicine-api";
 import { AccessTimeOutlined } from "@mui/icons-material";
 import { Typography } from "@mui/joy";
 import { isDefined } from "remeda";

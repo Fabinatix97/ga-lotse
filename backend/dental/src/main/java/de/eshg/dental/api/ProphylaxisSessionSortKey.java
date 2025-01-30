@@ -10,6 +10,6 @@ public enum ProphylaxisSessionSortKey {
   TYPE,
   GROUP_NAME,
   DATE_AND_TIME,
-  SCREENING,
+  IS_SCREENING,
   FLUORIDATION_VARNISH,
 }

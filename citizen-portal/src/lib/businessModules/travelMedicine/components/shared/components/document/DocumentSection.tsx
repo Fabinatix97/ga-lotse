@@ -6,7 +6,7 @@
 import {
   ApiDocumentContent,
   ApiDocumentSection,
-} from "@eshg/citizen-portal-api/travelMedicine";
+} from "@eshg/travel-medicine-api";
 import { Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { ReactNode } from "react";

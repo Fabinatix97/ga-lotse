@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
+import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
+import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
   ApiCountryCode,
   ApiTravelTimeUnit,
   ApiTravelType,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+} from "@eshg/travel-medicine-api";
 import { Grid, Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 import { useState } from "react";

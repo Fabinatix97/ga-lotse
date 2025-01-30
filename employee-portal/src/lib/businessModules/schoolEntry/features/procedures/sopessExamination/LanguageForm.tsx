@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SoftRequiredSelectField } from "@eshg/lib-portal/businessModules/schoolEntry/features/procedures/fieldVariants";
+import { SoftRequiredSelectField } from "@eshg/lib-portal/components/form/fieldVariants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { ApiPrimaryLanguageValue } from "@eshg/school-entry-api";
 import { Stack, Typography } from "@mui/joy";

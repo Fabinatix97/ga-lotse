@@ -6,6 +6,7 @@
 package de.eshg.officialmedicalservice.procedure;
 
 import de.eshg.api.commons.InlineParameterObject;
+import de.eshg.lib.procedure.api.ProcedureSearchParameters;
 import de.eshg.officialmedicalservice.appointment.OmsAppointmentService;
 import de.eshg.officialmedicalservice.appointment.api.PostOmsAppointmentRequest;
 import de.eshg.officialmedicalservice.procedure.api.EmployeeOmsProcedureDetailsDto;
@@ -91,10 +92,11 @@ public class EmployeeOmsProcedureController {
   public GetEmployeeOmsProcedureOverviewResponse getAllEmployeeProcedures(
       @InlineParameterObject @ParameterObject @Valid GetOmsProceduresFilterOptionsDto filters,
       @InlineParameterObject @ParameterObject @Valid
-          EmployeeOmsProcedurePaginationAndSortParameters paginationAndSortParameters) {
+          EmployeeOmsProcedurePaginationAndSortParameters paginationAndSortParameters,
+      @InlineParameterObject @ParameterObject @Valid ProcedureSearchParameters searchParameters) {
     EmployeePagedOmsProcedures pagedOmsProcedures =
         employeeOmsProcedureService.getEmployeeProceduresOverview(
-            filters, paginationAndSortParameters);
+            filters, paginationAndSortParameters, searchParameters);
     return new GetEmployeeOmsProcedureOverviewResponse(
         pagedOmsProcedures.proceduresPage(), pagedOmsProcedures.totalNumberOfProcedures());
   }

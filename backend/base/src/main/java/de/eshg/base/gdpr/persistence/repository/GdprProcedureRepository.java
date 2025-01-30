@@ -33,11 +33,12 @@ public interface GdprProcedureRepository
       """
     SELECT g.externalId
     FROM GdprProcedure g
-    WHERE g.status = de.eshg.base.gdpr.persistence.GdprProcedureStatus.CLOSED
+    WHERE (g.status = de.eshg.base.gdpr.persistence.GdprProcedureStatus.CLOSED
+      OR g.status = de.eshg.base.gdpr.persistence.GdprProcedureStatus.ABORTED)
       AND g.closedAt <= :cutOffDate
     ORDER BY g.closedAt DESC
     """)
-  List<UUID> findIdsOfYoungestClosedProcedures(
+  List<UUID> findIdsOfYoungestExpiredProcedures(
       @Param("cutOffDate") Instant cutOffDate, Pageable pageable);
 
   @Query("select p from GdprProcedure p where p.identificationData.bpk2 = :bpk2")

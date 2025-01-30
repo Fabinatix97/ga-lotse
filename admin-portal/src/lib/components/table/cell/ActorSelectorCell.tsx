@@ -8,7 +8,7 @@ import {
   ApiAdminActorType,
   ApiAdminOrgUnitType,
   ApiFederalState,
-} from "@eshg/admin-portal-api/serviceDirectory";
+} from "@eshg/service-directory-api";
 import { Autocomplete, Select, SelectProps, Stack } from "@mui/joy";
 import { CellContext } from "@tanstack/react-table";
 import { ReactNode, useCallback, useMemo } from "react";

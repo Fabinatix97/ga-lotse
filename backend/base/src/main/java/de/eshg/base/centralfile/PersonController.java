@@ -11,9 +11,12 @@ import de.eshg.base.address.AddressDto;
 import de.eshg.base.address.mapper.AddressMapper;
 import de.eshg.base.centralfile.api.DeleteFileStatesRequest;
 import de.eshg.base.centralfile.api.DiffDto;
+import de.eshg.base.centralfile.api.GetFileStateIdsBulkRequest;
+import de.eshg.base.centralfile.api.GetFileStateIdsBulkResponse;
 import de.eshg.base.centralfile.api.GetFileStateIdsResponse;
 import de.eshg.base.centralfile.api.person.*;
 import de.eshg.base.centralfile.mapper.PersonMapper;
+import de.eshg.base.centralfile.persistence.AssociatedFileStateIds;
 import de.eshg.base.centralfile.persistence.PersonService;
 import de.eshg.base.centralfile.persistence.entity.BirthDetails_;
 import de.eshg.base.centralfile.persistence.entity.Person;
@@ -116,6 +119,29 @@ public class PersonController implements PersonApi {
             .orElseThrow(() -> new NotFoundException(PERSON_FILE_STATE_NOT_FOUND));
 
     return findAllLinkedFileStates(fileState.getReferencePerson().getId());
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public GetFileStateIdsBulkResponse getPersonFileStateIdsAssociatedWithFileStates(
+      GetFileStateIdsBulkRequest request) {
+    List<AssociatedFileStateIds> associatedFileStateIds =
+        personRepository.findAllAssociatedFileStateIdsByFileStateIds(request.fileStateIds());
+    GetFileStateIdsBulkResponse response =
+        PersonMapper.mapToFileStateIdsBulkResponse(associatedFileStateIds);
+
+    if (associatedFileStateIds.size() < request.fileStateIds().size()) {
+      Map<UUID, List<UUID>> foundFileStateIdsMap = response.fileStateIds();
+      List<UUID> notFoundFileStateIds =
+          request.fileStateIds().stream()
+              .filter(fileStateId -> !foundFileStateIdsMap.containsKey(fileStateId))
+              .toList();
+      throw new NotFoundException(
+          "Number of file state ids not found: " + notFoundFileStateIds.size(),
+          "File state ids not found: " + notFoundFileStateIds);
+    }
+
+    return response;
   }
 
   @Override

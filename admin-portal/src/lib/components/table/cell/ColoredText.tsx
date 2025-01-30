@@ -8,7 +8,7 @@ import {
   ApiAdminCertificate,
   instanceOfApiAdminActorSelector,
   instanceOfApiAdminCertificate,
-} from "@eshg/admin-portal-api/serviceDirectory";
+} from "@eshg/service-directory-api";
 import { ColorPaletteProp, Typography } from "@mui/joy";
 import { ReactNode } from "react";
 import { isObjectType } from "remeda";

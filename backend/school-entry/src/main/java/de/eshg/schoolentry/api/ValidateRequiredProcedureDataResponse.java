@@ -9,4 +9,4 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public record ValidateRequiredProcedureDataResponse(
-    @NotNull List<RequiredProcedureData> invalidAreas) {}
+    @NotNull List<RequiredProcedureArea> incompleteAreas) {}

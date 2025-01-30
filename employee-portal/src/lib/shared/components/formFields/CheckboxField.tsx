@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import { FieldProps } from "@eshg/lib-portal/types/form";
 import { Checkbox, CheckboxProps, FormControl, FormHelperText } from "@mui/joy";
@@ -36,6 +37,7 @@ function isChecked(
 }
 
 export function CheckboxField(props: CheckboxFieldProps) {
+  const disabled = useIsFormDisabled() || props.disabled;
   const {
     input: field,
     required,
@@ -74,7 +76,7 @@ export function CheckboxField(props: CheckboxFieldProps) {
         }}
         onBlur={field.onBlur}
         label={starLabel}
-        disabled={props.disabled}
+        disabled={disabled}
         checked={isChecked(field.value, props.representingValue)}
         value={props.representingValue ?? "true"}
         size={props.size}

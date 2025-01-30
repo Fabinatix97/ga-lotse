@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PracticeInformationFormValues } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
+import {
+  MedicalRegistryCreateProcedureFormValues,
+  PracticeInformationFormValues,
+} from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { BooleanRadioField } from "@eshg/lib-portal/components/formFields/BooleanRadioField";
 import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
@@ -15,7 +18,7 @@ import {
 } from "@eshg/lib-portal/helpers/validators";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { Grid, Typography } from "@mui/joy";
-import { useField } from "formik";
+import { useFormikContext } from "formik";
 
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
 
@@ -24,12 +27,15 @@ interface PracticeInformationFormProps extends NestedFormProps {
 }
 
 export function PracticeInformationForm(props: PracticeInformationFormProps) {
+  const values =
+    useFormikContext<MedicalRegistryCreateProcedureFormValues>().values;
+
   const fieldName = createFieldNameMapper<PracticeInformationFormValues>(
     props.name,
   );
-  const [proprietaryPractice] = useField<boolean>(
-    fieldName("proprietaryPractice"),
-  );
+
+  const proprietaryPractice =
+    values.practiceInformationForm.proprietaryPractice;
 
   return (
     <>
@@ -55,7 +61,7 @@ export function PracticeInformationForm(props: PracticeInformationFormProps) {
         </Grid>
       )}
 
-      {(props.forceProprietaryPractice || proprietaryPractice.value) && (
+      {(props.forceProprietaryPractice || proprietaryPractice) && (
         <>
           <Grid xxs={6}>
             <InputField
@@ -118,6 +124,7 @@ export function PracticeInformationForm(props: PracticeInformationFormProps) {
               name={fieldName("email")}
               label={"Email"}
               required={requiredFieldMessage}
+              validate={validateLength(1, 254)}
             />
           </Grid>
           <Grid xxl={6} />

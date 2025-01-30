@@ -4,13 +4,13 @@
  */
 
 import {
-  ApiDocumentAnamnesisQuestion,
-  ApiDocumentSubElementMultiSelect,
-} from "@eshg/citizen-portal-api/travelMedicine";
-import {
   BaseFieldProps,
   useBaseField,
 } from "@eshg/lib-portal/components/formFields/BaseField";
+import {
+  ApiDocumentAnamnesisQuestion,
+  ApiDocumentSubElementMultiSelect,
+} from "@eshg/travel-medicine-api";
 import { Checkbox, List, ListItem, Stack, Typography } from "@mui/joy";
 import { ChangeEvent } from "react";
 

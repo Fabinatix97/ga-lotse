@@ -60,8 +60,8 @@ export interface CreateProphylaxisSessionValues {
   institution: ApiAddContact200Response | null;
   groupName: OptionalFieldValue<string>;
   type: OptionalFieldValue<ApiProphylaxisType>;
-  screening: boolean;
-  fluoridation: boolean;
+  isScreening: boolean;
+  isFluoridation: boolean;
   fluoridationVarnish: OptionalFieldValue<ApiFluoridationVarnish>;
   dentistIds: string[];
   zfaIds: string[];
@@ -95,8 +95,8 @@ function CreateProphylaxisSessionSidebar(props: SidebarWithFormRefProps) {
         institution: null,
         groupName: "",
         type: "",
-        screening: false,
-        fluoridation: false,
+        isScreening: false,
+        isFluoridation: false,
         fluoridationVarnish: "",
         dentistIds: [],
         zfaIds: [],
@@ -184,7 +184,7 @@ const CreateProphylaxisSessionSidebarForm = forwardRef<
             options={PROPHYLAXIS_TYPE_OPTIONS}
             required="Bitte den Typ der Prophylaxe angeben."
           />
-          <CheckboxField name="screening" label="Reihenuntersuchung" />
+          <CheckboxField name="isScreening" label="Reihenuntersuchung" />
           <FluoridationField />
           <Typography component="h3" level="title-sm">
             Durchführende Personen
@@ -228,8 +228,8 @@ function mapValues(
     institutionId: mapRequiredValue(values.institution)?.id,
     groupName: mapRequiredValue(values.groupName),
     type: mapRequiredValue(values.type),
-    screening: values.screening,
-    fluoridationVarnish: values.fluoridation
+    isScreening: values.isScreening,
+    fluoridationVarnish: values.isFluoridation
       ? mapRequiredValue(values.fluoridationVarnish)
       : undefined,
     dentistIds: values.dentistIds,

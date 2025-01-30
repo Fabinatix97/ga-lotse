@@ -34,7 +34,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpClientErrorException.Unauthorized;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -114,7 +114,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         .forEach(
             error -> {
               String item = getAffectedItem(error);
-              String errorMessage = error.getDefaultMessage();
+              String errorMessage = getErrorMessage(error);
               errors.put(item, errorMessage);
             });
     log.error("Invalid request, failed to bind with errors:\n{}", errors, ex);
@@ -126,6 +126,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
       return fieldError.getField();
     } else {
       return error.getObjectName();
+    }
+  }
+
+  private static String getErrorMessage(ObjectError error) {
+    if (error instanceof FieldError) {
+      return "Invalid input for field";
+    } else {
+      return "Something went wrong.";
     }
   }
 
@@ -172,7 +180,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler
   @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public ErrorResponse handleUnauthorized(HttpClientErrorException.Unauthorized ex) {
+  public ErrorResponse handleUnauthorized(Unauthorized ex) {
     return logAndMapToErrorResponse(ex, ErrorCode.UNAUTHORIZED, "Unauthorized");
   }
 

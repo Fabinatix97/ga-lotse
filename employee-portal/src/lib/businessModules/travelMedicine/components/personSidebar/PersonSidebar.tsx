@@ -4,11 +4,11 @@
  */
 
 import { type ApiGetReferencePersonResponse } from "@eshg/base-api";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   ApiAppointmentBookingType,
   ApiAppointmentType,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+} from "@eshg/travel-medicine-api";
 import { FormikErrors } from "formik";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { isNullish } from "remeda";

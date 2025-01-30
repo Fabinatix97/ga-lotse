@@ -17,10 +17,8 @@ import {
   sexualContactGenderOptions,
   sexualOrientationOptions,
 } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/options";
-import {
-  CheckboxGroupField,
-  FieldSetControl,
-} from "@/lib/shared/components/formFields/CheckboxGroupField";
+import { CheckboxGroupField } from "@/lib/shared/components/formFields/CheckboxGroupField";
+import { FieldSetControl } from "@/lib/shared/components/formFields/FieldSetControl";
 import { Legend } from "@/lib/shared/components/formFields/Legend";
 import { validatePositiveInteger } from "@/lib/shared/helpers/validators";
 

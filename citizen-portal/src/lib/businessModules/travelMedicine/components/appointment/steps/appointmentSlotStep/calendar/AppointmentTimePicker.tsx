@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAppointment } from "@eshg/citizen-portal-api/travelMedicine";
+import { ApiAppointment } from "@eshg/travel-medicine-api";
 import { Stack } from "@mui/joy";
 import Button from "@mui/joy/Button/Button";
 import Grid from "@mui/joy/Grid";

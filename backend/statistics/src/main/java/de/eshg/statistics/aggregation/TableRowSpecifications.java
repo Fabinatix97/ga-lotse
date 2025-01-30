@@ -39,6 +39,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.query.EscapeCharacter;
 
 public class TableRowSpecifications {
   private TableRowSpecifications() {}
@@ -123,7 +124,7 @@ public class TableRowSpecifications {
               integerValueFilterParameter.withNullValues());
       case NullFilterParameterDto ignored -> getNullSpecification(tableColumn);
       case TextFilterParameterDto textFilterParameter ->
-          getTextFilterSpecification(tableColumn, textFilterParameter.text());
+          getTextFilterSpecificationSearch(tableColumn, textFilterParameter.text());
       case ValueOptionFilterParameterDto valueOptionFilterParameter ->
           getValueOptionFilterSpecification(
               tableColumn,
@@ -300,13 +301,26 @@ public class TableRowSpecifications {
     };
   }
 
-  public static Specification<TableRow> getTextFilterSpecification(
+  public static Specification<TableRow> getTextFilterSpecificationExactly(
       TableColumn tableColumn, String text) {
     return (root, query, criteriaBuilder) -> {
       Join<Object, Object> join = root.join(TableRow_.CELL_ENTRIES);
       return criteriaBuilder.and(
           criteriaBuilder.equal(join.get(CellEntry_.TABLE_COLUMN), tableColumn),
           criteriaBuilder.equal(join.get(TextEntry_.TEXT_VALUE), text));
+    };
+  }
+
+  public static Specification<TableRow> getTextFilterSpecificationSearch(
+      TableColumn tableColumn, String text) {
+    return (root, query, criteriaBuilder) -> {
+      Join<Object, Object> join = root.join(TableRow_.CELL_ENTRIES);
+      return criteriaBuilder.and(
+          criteriaBuilder.equal(join.get(CellEntry_.TABLE_COLUMN), tableColumn),
+          criteriaBuilder.like(
+              criteriaBuilder.lower(join.get(TextEntry_.TEXT_VALUE)),
+              "%" + EscapeCharacter.DEFAULT.escape(text.toLowerCase()) + "%",
+              EscapeCharacter.DEFAULT.getEscapeCharacter()));
     };
   }
 

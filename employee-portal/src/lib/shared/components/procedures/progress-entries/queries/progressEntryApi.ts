@@ -78,7 +78,7 @@ export function useFetchProgressEntries(
       return {
         detailedProcedure,
         files: files.fileDetails,
-        progressEntries: (await progressEntries.value()).progressEntries,
+        progressEntries: await progressEntries.value(),
         approvalRequestsResponse: approvalRequestsResponse,
       };
     },

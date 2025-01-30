@@ -21,10 +21,12 @@ In order to add a new workspace package, run the `addWorkspaceDependency` task o
 .Example
 [,bash]
 ----
-./gradlew :employee-portal:addWorkspaceDependency -Ppackage=base-api
+./gradlew :employee-portal:addWorkspaceDependency -Ppackage=base-api [-Pdev]
 ----
 
 The task automatically updates all project references.
+
+Adding the `-Pdev` argument will add the package to the `devDependencie`.
 
 === Updating project references
 

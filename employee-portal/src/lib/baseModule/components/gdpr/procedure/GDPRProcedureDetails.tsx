@@ -16,8 +16,12 @@ import {
 import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 import { Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
+import { isDefined } from "remeda";
 
-import { isGdprPerson } from "@/lib/baseModule/components/gdpr/helpers";
+import {
+  isGdprFacility,
+  isGdprPerson,
+} from "@/lib/baseModule/components/gdpr/helpers";
 import {
   LinkFacilitySidebar,
   LinkPersonSidebar,
@@ -55,6 +59,15 @@ const COLUMN_STYLE: SxProps = {
   maxWidth: (theme) => ({ md: `calc(100%/3 - 2 * ${theme.spacing(2)})` }),
 };
 
+function isExternalIdentity(
+  identity: ApiGetGdprProcedureResponse["identificationData"],
+) {
+  return (
+    (isGdprPerson(identity) && isDefined(identity.bpk2)) ||
+    (isGdprFacility(identity) && isDefined(identity.dataTransmitterPseudonymId))
+  );
+}
+
 export function GDPRProcedureDetails({
   procedure,
   hasDownload,
@@ -80,6 +93,10 @@ export function GDPRProcedureDetails({
   const canEditCentralFile =
     procedure.status === ApiGdprProcedureStatus.InProgress &&
     procedure.type === ApiGdprProcedureType.ToRectification;
+
+  const showDownloads =
+    procedure.status === ApiGdprProcedureStatus.Closed &&
+    procedure.type === ApiGdprProcedureType.OfAccess;
 
   function openLinkSidebar() {
     if (isGdprPerson(identity)) {
@@ -137,7 +154,7 @@ export function GDPRProcedureDetails({
               canEdit={canEditCentralFile}
               onEdit={() => editPerson(person)}
             >
-              {index + 1}. Datensatz aus dem Stammdaten-Konverter
+              {index + 1}. Stammdatensatz
             </SectionTitle>
             <CentralFilePersonDetails person={person} columnSx={COLUMN_STYLE} />
           </SectionTile>
@@ -149,7 +166,7 @@ export function GDPRProcedureDetails({
               canEdit={canEditCentralFile}
               onEdit={() => editFacility(facility)}
             >
-              {index + 1}. Datensatz aus dem Stammdaten-Konverter
+              {index + 1}. Stammdatensatz
             </SectionTitle>
             <CentralFileFacilityDetails
               facility={facility}
@@ -166,13 +183,13 @@ export function GDPRProcedureDetails({
           title="Datenpakete"
           loadingText="Datenpakete werden geladen..."
         >
-          {procedure.status === ApiGdprProcedureStatus.Closed &&
-            procedure.type === ApiGdprProcedureType.OfAccess && (
-              <GdprDownloadPackagesTile
-                gdprProcedure={procedure}
-                hasDownload={hasDownload}
-              />
-            )}
+          {showDownloads && (
+            <GdprDownloadPackagesTile
+              gdprProcedure={procedure}
+              hasDownload={hasDownload}
+              isExternal={isExternalIdentity(procedure.identificationData)}
+            />
+          )}
         </SheetQueryBoundary>
         {procedure.status === ApiGdprProcedureStatus.Draft && (
           <CentralFileLinkTile

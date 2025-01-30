@@ -6,10 +6,14 @@
 package de.eshg.rest;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class RestHelper {
+  public static String queryTemplate(Collection<String> queryKeys) {
+    return queryTemplate(queryKeys.toArray(new String[0]));
+  }
 
   public static String queryTemplate(String... queryVariables) {
     return Arrays.stream(queryVariables)

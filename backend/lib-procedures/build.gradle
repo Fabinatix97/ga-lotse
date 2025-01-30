@@ -53,8 +53,6 @@ dependencies {
     testImplementation testFixtures(project(':business-module-persistence-commons'))
     testImplementation testFixtures(project(':base-api'))
     testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    testImplementation "org.testcontainers:junit-jupiter"
-    testImplementation 'org.testcontainers:postgresql'
     testImplementation 'org.instancio:instancio-core:latest.release'
     testImplementation 'org.apache.commons:commons-text:latest.release'
     testImplementation 'org.apache.commons:commons-collections4:latest.release'

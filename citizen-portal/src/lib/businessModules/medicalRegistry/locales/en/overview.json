@@ -6,7 +6,7 @@
     "requiredFieldsHint": "All mandatory fields indicated by an asterisk (*) must be filled out to submit the online form."
   },
   "sidebar": {
-    "title": "Would you like to register a healthcare profession?",
+    "title": "Would you like to register in the professional registry for healthcare professions?",
     "content": "Use the registration form to create a new entry or update an existing one.",
     "registrationForm": "To the registration form"
   }

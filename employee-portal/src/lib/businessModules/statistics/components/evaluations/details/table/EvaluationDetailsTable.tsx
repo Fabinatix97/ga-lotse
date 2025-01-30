@@ -17,10 +17,7 @@ import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatA
 import { useAddFilterTemplate } from "@/lib/businessModules/statistics/api/mutations/useAddFilterTemplate";
 import { useDeleteFilterTemplate } from "@/lib/businessModules/statistics/api/mutations/useDeleteFilterTemplate";
 import { useGetFilterTemplateFilters } from "@/lib/businessModules/statistics/api/mutations/useGetFilterTemplateFilters";
-import {
-  DUMMY_COLUMN,
-  evaluationColumns,
-} from "@/lib/businessModules/statistics/components/evaluations/details/table/columns";
+import { evaluationColumns } from "@/lib/businessModules/statistics/components/evaluations/details/table/columns";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
@@ -49,6 +46,7 @@ export interface EvaluationDetailsTableProps {
   resolveProcedureId?: (
     procedureReferenceId: string | undefined,
   ) => string | undefined;
+  loading: boolean;
 }
 
 export function EvaluationDetailsTable(props: EvaluationDetailsTableProps) {
@@ -88,10 +86,9 @@ export function EvaluationDetailsTable(props: EvaluationDetailsTableProps) {
     (attribute) => attribute.type === "ProcedureReferenceAttribute",
   );
 
-  const focusColumnAccessorKey =
-    props.attributes.find(
-      (attribute) => attribute.type !== "ProcedureReferenceAttribute",
-    )?.key ?? DUMMY_COLUMN;
+  const focusColumnAccessorKey = props.attributes.find(
+    (attribute) => attribute.type !== "ProcedureReferenceAttribute",
+  )!.key;
 
   return (
     <TablePage
@@ -112,13 +109,17 @@ export function EvaluationDetailsTable(props: EvaluationDetailsTableProps) {
         )
       }
     >
-      <TableSheet footer={<Pagination {...props.paginationProps} />}>
+      <TableSheet
+        loading={props.loading}
+        footer={<Pagination {...props.paginationProps} />}
+      >
         <DataTable
           wrapContent
           wrapHeader
           data={props.tableData}
           columns={columns}
           sorting={props.manualSortingProps}
+          enableSortingRemoval={false}
           rowNavigation={{
             onClick: (row) => {
               if (

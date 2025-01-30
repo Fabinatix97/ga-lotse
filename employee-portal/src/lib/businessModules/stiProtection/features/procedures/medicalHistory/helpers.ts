@@ -100,19 +100,11 @@ export function mapToFormValues(
     previousIllnesses: mapApiPreviousIllnessesToForm(apiData.previousIllnesses),
     sexualOrientationAndContact: {
       numberOfSexualPartnersLast12Months:
-        ifSexWork(
-          apiData,
-          (d) => d.riskContacts?.numberOfSexualPartnersLast12Months,
-        ) ?? "",
+        apiData.riskContacts?.numberOfSexualPartnersLast12Months ?? "",
       sexualContactFactors:
-        fromSet(
-          ifSexWork(apiData, (d) => d.riskContacts?.partnerRiskFactors),
-        ) ?? [],
-      sexualContactGenders: fromSet(
-        ifSexWork(apiData, (d) => d.riskContacts?.sexualContacts),
-      ),
-      sexualOrientation:
-        ifSexWork(apiData, (d) => d.riskContacts?.sexualOrientation) ?? null,
+        fromSet(apiData.riskContacts?.partnerRiskFactors) ?? [],
+      sexualContactGenders: fromSet(apiData.riskContacts?.sexualContacts),
+      sexualOrientation: apiData.riskContacts?.sexualOrientation ?? null,
       startInSexWork: mapToMonthAndYear(
         ifSexWork(apiData, (d) => d.sexWorkRiskContacts?.startInSexWorkDate),
       ),

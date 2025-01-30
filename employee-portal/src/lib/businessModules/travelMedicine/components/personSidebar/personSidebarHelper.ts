@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
+import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
+import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import {
   ApiAppointmentBookingType,
   ApiPatchVaccinationConsultationPatientRequest,
   ApiPatient,
   ApiPostVaccinationConsultationRequest,
   ApiTravelType,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
-import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+} from "@eshg/travel-medicine-api";
 
 import { InitialAppointmentFormValuesProps } from "@/lib/businessModules/travelMedicine/components/personSidebar/appointment/InitialAppointmentForm";
 import { mapToApiPersonAddress } from "@/lib/businessModules/travelMedicine/shared/helper";

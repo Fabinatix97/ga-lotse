@@ -8,7 +8,7 @@ import {
   instanceOfApiAdminStagedEntityAdminPartialActor,
   instanceOfApiAdminStagedEntityAdminPartialOrgUnit,
   instanceOfApiAdminStagedEntityAdminPartialRule,
-} from "@eshg/admin-portal-api/serviceDirectory";
+} from "@eshg/service-directory-api";
 import { Row } from "@tanstack/react-table";
 
 import { useEditableTable } from "@/lib/components/table/context/TableEditContext";

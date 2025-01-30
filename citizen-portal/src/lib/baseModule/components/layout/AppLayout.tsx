@@ -34,7 +34,7 @@ export function AppLayout({
   return (
     <I18nProvider lang={lang}>
       <ThemeProvider>
-        <Box component="html" sx={{ height: "100%" }}>
+        <Box component="html" sx={{ height: "100%" }} lang={lang}>
           <Box
             component="body"
             sx={{

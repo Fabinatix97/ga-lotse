@@ -3,11 +3,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { FormLabel, getFormLabelUtilityClass, useTheme } from "@mui/joy";
+import { TypographySystem } from "@mui/joy/styles/types";
 import { PropsWithChildren } from "react";
 
-export function Legend({ children }: PropsWithChildren) {
+interface LegendProps extends PropsWithChildren {
+  level?: keyof TypographySystem;
+}
+
+export function Legend({ children, level }: LegendProps) {
   const theme = useTheme();
+  const disabled = useIsFormDisabled();
 
   if (children == null) {
     return null;
@@ -24,6 +31,10 @@ export function Legend({ children }: PropsWithChildren) {
         margin: "0 0 0.375rem 0",
         fontSize: theme.fontSize.sm,
         fontWeight: theme.fontWeight.md,
+        color: disabled ? theme.palette.text.secondary : "inherit",
+        ...(level && {
+          font: theme.typography[level],
+        }),
       }}
     >
       {children}

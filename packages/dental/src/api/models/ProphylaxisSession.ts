@@ -20,7 +20,7 @@ export interface ProphylaxisSession extends BaseEntity {
   institution: Institution;
   groupName: string;
   type: ApiProphylaxisType;
-  screening: boolean;
+  isScreening: boolean;
   fluoridationVarnish?: ApiFluoridationVarnish;
 }
 
@@ -33,7 +33,7 @@ export function mapProphylaxisSession(
     institution: mapInstitution(response.institution),
     groupName: response.groupName,
     type: response.type,
-    screening: response.screening,
+    isScreening: response.isScreening,
     fluoridationVarnish: response.fluoridationVarnish,
   };
 }

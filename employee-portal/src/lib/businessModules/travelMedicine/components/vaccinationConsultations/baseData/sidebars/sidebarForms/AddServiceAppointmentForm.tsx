@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import {
   ApiAppointmentBookingType,
   ApiAppointmentType,
   ApiAssignableService,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
+} from "@eshg/travel-medicine-api";
 import { Stack, Typography } from "@mui/joy";
 import { format, isAfter } from "date-fns";
 import { Formik, FormikErrors } from "formik";

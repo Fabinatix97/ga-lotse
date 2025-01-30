@@ -8,7 +8,7 @@ import {
   ApiInventoryVaccineWithoutRmbiVaccine,
   ApiPostPutVaccineRequest,
   ApiVaccine,
-} from "@eshg/employee-portal-api/travelMedicine";
+} from "@eshg/travel-medicine-api";
 
 import {
   usePostVaccine,

@@ -4,13 +4,13 @@
  */
 
 import {
-  AbortDraftVaccinationConsultationRequest,
-  ApiGetVaccinationConsultationDetailsResponse,
-} from "@eshg/employee-portal-api/travelMedicine";
-import {
   BaseModal,
   BaseModalProps,
 } from "@eshg/lib-portal/components/BaseModal";
+import {
+  AbortDraftVaccinationConsultationRequest,
+  ApiGetVaccinationConsultationDetailsResponse,
+} from "@eshg/travel-medicine-api";
 import { Button, Stack, Typography } from "@mui/joy";
 import { useRouter } from "next/navigation";
 

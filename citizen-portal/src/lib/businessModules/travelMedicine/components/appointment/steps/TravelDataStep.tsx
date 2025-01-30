@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiTravelType } from "@eshg/citizen-portal-api/travelMedicine";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { ApiTravelType } from "@eshg/travel-medicine-api";
 import { Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 

@@ -16,6 +16,7 @@
     "@eshg/measles-protection-api": "workspace:*",
     "@eshg/school-entry-api": "workspace:*",
     "@eshg/statistics-api": "workspace:*",
+    "@eshg/travel-medicine-api": "workspace:*",
     "@fontsource/poppins": "catalog:joy",
     "@fontsource/source-code-pro": "catalog:joy",
     "@fullcalendar/core": "catalog:fullcalendar",

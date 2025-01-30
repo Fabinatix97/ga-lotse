@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiDisease } from "@eshg/employee-portal-api/travelMedicine";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { MultiAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/MultiAutocompleteField";
 import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import { ApiDisease } from "@eshg/travel-medicine-api";
 import { Stack } from "@mui/joy";
 
 interface TemplateMetaInfoProps {

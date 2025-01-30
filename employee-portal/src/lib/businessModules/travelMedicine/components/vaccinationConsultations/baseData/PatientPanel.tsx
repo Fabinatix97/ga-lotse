@@ -5,12 +5,12 @@
 
 "use client";
 
+import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import {
   ApiPatient,
   ApiPersonSync,
   ApiSalutation,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
+} from "@eshg/travel-medicine-api";
 import { isDefined } from "remeda";
 
 import { PersonDetails } from "@/lib/businessModules/schoolEntry/api/models/Person";

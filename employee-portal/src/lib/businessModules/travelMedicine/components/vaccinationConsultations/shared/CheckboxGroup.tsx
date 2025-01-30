@@ -5,11 +5,11 @@
 
 "use client";
 
+import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import {
   ApiAppliedService,
   ApiAssignableService,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
+} from "@eshg/travel-medicine-api";
 import {
   Checkbox,
   FormControl,

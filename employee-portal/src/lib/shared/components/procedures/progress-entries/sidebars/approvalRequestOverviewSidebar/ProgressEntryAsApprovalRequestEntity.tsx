@@ -6,12 +6,14 @@
 import { ApiManualProgressEntry } from "@eshg/employee-portal-api/businessProcedures";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { Stack, Typography } from "@mui/joy";
+import { useContext } from "react";
 import { isDefined } from "remeda";
 
 import { FileCardWithDownload } from "@/lib/shared/components/procedures/progress-entries/FileCardWithActions";
 import { DeletionNote } from "@/lib/shared/components/procedures/progress-entries/FileOrDeletionNote";
+import { ProgressEntriesContext } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import { manualProgressEntryTitles } from "@/lib/shared/components/procedures/progress-entries/constants";
-import { buildName } from "@/lib/shared/components/procedures/progress-entries/helper";
+import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 interface ProgressEntryAsApprovalRequestEntityProps {
   approvalRequestEntity: ApiManualProgressEntry;
@@ -20,6 +22,9 @@ interface ProgressEntryAsApprovalRequestEntityProps {
 export function ProgressEntryAsApprovalRequestEntity({
   approvalRequestEntity,
 }: ProgressEntryAsApprovalRequestEntityProps) {
+  const { resolvedUsers } = useContext(ProgressEntriesContext).config
+    .approvalRequestsResponse!;
+
   const file = approvalRequestEntity.fileReference;
   return (
     <>
@@ -28,10 +33,7 @@ export function ProgressEntryAsApprovalRequestEntity({
           <Typography level={"body-xs"} data-testid="createdAtAndBy">
             {buildLabel(
               approvalRequestEntity.createdAt,
-              buildName(
-                approvalRequestEntity.createdByUserFirstName,
-                approvalRequestEntity.createdByUserLastName,
-              ),
+              fullName(resolvedUsers[approvalRequestEntity.createdBy]),
             )}
           </Typography>
           <Typography level={"title-md"} data-testid="entryTitle">

@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiUser } from "@eshg/employee-portal-api/travelMedicine";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import { ApiUser } from "@eshg/travel-medicine-api";
 
 export interface User {
   readonly email?: string;

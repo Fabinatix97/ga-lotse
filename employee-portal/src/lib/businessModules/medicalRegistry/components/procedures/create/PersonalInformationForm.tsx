@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PersonalInformationFormValues } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
+import { ApiTypeOfChange } from "@eshg/employee-portal-api/medicalRegistry";
+import {
+  MedicalRegistryCreateProcedureFormValues,
+  PersonalInformationFormValues,
+} from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
@@ -11,17 +15,26 @@ import { PhoneNumberField } from "@eshg/lib-portal/components/formFields/PhoneNu
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import {
+  validateLength,
+  validatePastOrTodayDate,
+} from "@eshg/lib-portal/helpers/validators";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { Grid, Typography } from "@mui/joy";
+import { useFormikContext } from "formik";
 
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
 import { CountryField } from "@/lib/shared/components/formFields/CountryField";
 
 export function PersonalInformationForm(props: NestedFormProps) {
+  const values =
+    useFormikContext<MedicalRegistryCreateProcedureFormValues>().values;
+
   const fieldName = createFieldNameMapper<PersonalInformationFormValues>(
     props.name,
   );
+
+  const changeType = values.generalInformationForm.changeType;
 
   return (
     <>
@@ -61,6 +74,11 @@ export function PersonalInformationForm(props: NestedFormProps) {
           name={fieldName("birthName")}
           label={"Geburtsname"}
           validate={validateLength(1, 40)}
+          required={
+            changeType === ApiTypeOfChange.ChangeOfName
+              ? requiredFieldMessage
+              : undefined
+          }
         />
       </Grid>
       <Grid xxl={6} />
@@ -131,7 +149,11 @@ export function PersonalInformationForm(props: NestedFormProps) {
       <Grid xxl={6} />
 
       <Grid xxs={6}>
-        <EmailField name={fieldName("email")} label={"E-Mail-Adresse"} />
+        <EmailField
+          name={fieldName("email")}
+          label={"E-Mail-Adresse"}
+          validate={validateLength(1, 254)}
+        />
       </Grid>
       <Grid xxl={6} />
 
@@ -140,6 +162,7 @@ export function PersonalInformationForm(props: NestedFormProps) {
           name={fieldName("birthDate")}
           label={"Geburtsdatum"}
           required={requiredFieldMessage}
+          validate={validatePastOrTodayDate}
         />
       </Grid>
       <Grid xxs={6} xxl={4}>

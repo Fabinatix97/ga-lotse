@@ -74,14 +74,6 @@ export function ConfirmStartGdprProcedureDialog({
         <Typography>
           {t(`start_procedure_dialog.${type}.description`)}
         </Typography>
-        <Typography level="title-md">
-          {/* TODO: Load attributes with get /self */}
-          Max Mustermann
-          <br />
-          Hauptstraße 33, 54032 Köln
-          <br />
-          Deutschland
-        </Typography>
         <Stack alignSelf="end" gap={2} direction="row">
           <Button variant="outlined" onClick={handleClose}>
             {t("translation:common.cancel")}

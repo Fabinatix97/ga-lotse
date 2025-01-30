@@ -5,17 +5,20 @@
 
 package de.eshg.lib.procedure.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import de.eshg.model.HasResolvableUserIds;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Schema(name = "ProgressEntry")
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "@type")
-public abstract sealed class ProgressEntryDto
+public abstract sealed class ProgressEntryDto implements HasResolvableUserIds
     permits ManualProgressEntryDto, ProcessedInboxProgressEntryDto, SystemProgressEntryDto {
   @NotNull private UUID progressEntryId;
   @NotNull private Instant createdAt;
@@ -54,12 +57,10 @@ public abstract sealed class ProgressEntryDto
     this.fileReference = fileReference;
   }
 
-  @JsonIgnore
-  public abstract UUID getRelatedUserId();
-
-  @JsonIgnore
-  public abstract void setRelatedUserFirstName(String relatedUserFirstName);
-
-  @JsonIgnore
-  public abstract void setRelatedUserLastName(String relatedUserLastName);
+  @Override
+  public Set<UUID> getResolvableUserIds() {
+    return Optional.ofNullable(fileReference)
+        .map(HasResolvableUserIds::getResolvableUserIds)
+        .orElseGet(Collections::emptySet);
+  }
 }

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAdminActorSelector } from "@eshg/admin-portal-api/serviceDirectory";
+import { ApiAdminActorSelector } from "@eshg/service-directory-api";
 import { Stack } from "@mui/joy";
 import { CellContext } from "@tanstack/react-table";
 

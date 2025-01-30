@@ -29,6 +29,16 @@ public enum EmployeeTestUser implements KeycloakUser {
               ModuleLeaderGroup.values(),
               ModuleMemberGroup.values(),
               AdministrativeGroup.values()))),
+  BASE_MODULE_GDPR_USER(
+      "base_dummy",
+      "+49 555 123 420",
+      "password",
+      "Max",
+      "Mustermann",
+      List.of(
+          EmployeePermissionRole.STANDARD_EMPLOYEE,
+          EmployeePermissionRole.BASE_GDPR_PROCEDURE_WRITE),
+      List.of()),
   KEYCLOAK_USER_ADMINISTRATOR_DUMMY(
       "keycloak_system_admin",
       "+49 555 123 463",
@@ -214,7 +224,14 @@ public enum EmployeeTestUser implements KeycloakUser {
       "password",
       "Hans",
       "Hansen",
-      List.of(ModuleMemberGroup.OFFICIAL_MEDICAL_SERVICE));
+      List.of(ModuleMemberGroup.OFFICIAL_MEDICAL_SERVICE)),
+  DENTAL_MODULE_LEADER(
+      "dental_module_leader",
+      "+49 555 456 456",
+      "password",
+      "Thomas",
+      "Müller",
+      List.of(ModuleMemberGroup.DENTAL, ModuleLeaderGroup.DENTAL));
 
   private final String username;
   private final String email;

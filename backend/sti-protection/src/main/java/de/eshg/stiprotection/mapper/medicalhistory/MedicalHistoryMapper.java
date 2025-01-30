@@ -106,7 +106,7 @@ public final class MedicalHistoryMapper {
     return updateGeneralMedicalHistory(dto, entity);
   }
 
-  private static MedicalHistory updateGeneralMedicalHistory(
+  public static MedicalHistory updateGeneralMedicalHistory(
       MedicalHistoryDto dto, MedicalHistory entity) {
     entity.setExaminationReason(dto.examinationReason());
     entity.setCurrentSymptoms(dto.currentSymptoms());

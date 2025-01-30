@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiVaccinationType } from "@eshg/employee-portal-api/travelMedicine";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { ApiVaccinationType } from "@eshg/travel-medicine-api";
 import { Divider, Grid } from "@mui/joy";
 import { FormikErrors, useFormikContext } from "formik";
 import { useState } from "react";

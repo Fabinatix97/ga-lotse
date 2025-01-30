@@ -67,7 +67,7 @@ export const columns = [
   columnHelper.accessor("createdAt", {
     id: "dueDate",
     header: "Frist",
-    enableSorting: false,
+    enableSorting: true,
     cell: (cell) => dueDate(cell),
     meta: {
       width: "20ch",
@@ -78,7 +78,7 @@ export const columns = [
   }),
   columnHelper.accessor("createdAt", {
     header: "Erstellt",
-    enableSorting: true,
+    enableSorting: false,
     cell: (cell) => formatDateTime(cell.getValue()),
     meta: {
       width: "20rem",

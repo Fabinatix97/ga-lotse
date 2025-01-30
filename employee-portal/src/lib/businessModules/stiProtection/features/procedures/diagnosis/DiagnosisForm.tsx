@@ -16,12 +16,13 @@ import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { Add, Delete } from "@mui/icons-material";
+import { Add, Delete, Edit } from "@mui/icons-material";
 import { Button, IconButton, Sheet, Stack, Typography } from "@mui/joy";
 import {
   FieldArray,
   FieldArrayRenderProps,
   Formik,
+  FormikProps,
   useFormikContext,
 } from "formik";
 import { PropsWithChildren } from "react";
@@ -33,10 +34,12 @@ import {
   SidecarSheet,
 } from "@/lib/businessModules/stiProtection/features/procedures/SidecarFormLayout";
 import { TabStickyBottomButtonBar } from "@/lib/businessModules/stiProtection/features/procedures/TabStickyBottomButtonBar";
+import { useOnCancelForm } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { CheckboxGroupField } from "@/lib/shared/components/formFields/CheckboxGroupField";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
+import { useIcd10Sidebar } from "./Icd10Sidebar";
 import {
   API_DIAGNOSIS_TEST_OPTIONS,
   DiagnosisFormData,
@@ -64,6 +67,15 @@ export function DiagnosisForm({
     },
   });
 
+  const onCancelForm = useOnCancelForm<DiagnosisFormData>();
+
+  function handleCancel({ dirty, resetForm }: FormikProps<DiagnosisFormData>) {
+    onCancelForm({
+      dirty,
+      reset: resetForm,
+    });
+  }
+
   function onSubmit(values: DiagnosisFormData) {
     const diagnosis = mapFormToApi(values);
     return upsertDiagnosis.mutateAsync(diagnosis);
@@ -71,55 +83,95 @@ export function DiagnosisForm({
 
   return (
     <Formik initialValues={mapApiToForm(diagnosis)} onSubmit={onSubmit}>
-      <FormPlus sx={{ height: "100%" }}>
-        <SidecarFormLayout>
-          <Sheet>
-            <Stack gap={5}>
-              <Typography level="h2">Diagnose</Typography>
+      {(formikProps) => (
+        <FormPlus sx={{ height: "100%" }}>
+          <SidecarFormLayout>
+            <Sheet>
+              <Stack gap={5}>
+                <Typography level="h2">Diagnose</Typography>
+                <SectionGrid defaultColumn={1}>
+                  <TextareaField name="results" label="Ergebnisse" />
+                </SectionGrid>
+                <FieldArray name="medications" render={MedicationsSection} />
+                <FindingsSection />
+                <TypesOfTestsSection />
+              </Stack>
+            </Sheet>
 
-              <SectionGrid defaultColumn={1}>
-                <TextareaField name="results" label="Ergebnisse" />
-              </SectionGrid>
-              <FieldArray name="medications" render={MedicationsSection} />
-              <TypesOfTestsSection />
-            </Stack>
-          </Sheet>
-
-          <SidecarSheet>
-            <Typography level="h3" mb={3}>
-              Zusatzinfos
-            </Typography>
-            <Stack rowGap={5}>
-              <TextareaField name="notes" label="Allgemeine Bemerkungen" />
-              <CheckboxField name="resultsShared" label="Ergebnis mitgeteilt" />
-            </Stack>
-          </SidecarSheet>
-        </SidecarFormLayout>
-        <TabStickyBottomButtonBar procedure={procedure} />
-      </FormPlus>
+            <SidecarSheet>
+              <Typography level="h3" mb={3}>
+                Zusatzinfos
+              </Typography>
+              <Stack rowGap={5}>
+                <TextareaField name="notes" label="Allgemeine Bemerkungen" />
+                <CheckboxField
+                  name="resultsShared"
+                  label="Ergebnis mitgeteilt"
+                />
+              </Stack>
+            </SidecarSheet>
+          </SidecarFormLayout>
+          <TabStickyBottomButtonBar
+            procedure={procedure}
+            onCancel={() => handleCancel(formikProps)}
+          />
+        </FormPlus>
+      )}
     </Formik>
   );
 }
 
-function TypesOfTestsSection() {
-  const { values } = useFormikContext<DiagnosisFormData>();
-  const hasOtherTypeOfTest = values.typesOfTests.includes(ApiTestType.Other);
+function FindingsSection() {
+  const {
+    values: { findings },
+    setFieldValue,
+  } = useFormikContext<DiagnosisFormData>();
+  const icd10Sidebar = useIcd10Sidebar();
+
+  function handleClickIcd10Code() {
+    icd10Sidebar.open({
+      initiallySelectedCodes: findings ?? [],
+      onSubmit: async (selectedCodes) => {
+        await setFieldValue("findings", selectedCodes);
+      },
+    });
+  }
+
   return (
-    <SectionGrid defaultColumn={1}>
-      <CheckboxGroupField
-        name="typesOfTests"
-        label="Art des Tests"
-        options={API_DIAGNOSIS_TEST_OPTIONS}
-        orientation="vertical"
+    <SectionGrid
+      defaultColumn={1}
+      sx={{ rowGap: 2 }}
+      breakpoint="xxl"
+      id="findings-section-id"
+    >
+      <Typography level="title-md" aria-describedby="findings-section-id">
+        Befunde
+      </Typography>
+      <Stack
+        aria-label="findings-section-icd-10-codes"
+        direction="column"
+        rowGap={1}
       >
-        {hasOtherTypeOfTest ? (
-          <InputField
-            name="otherTests"
-            label="Bezeichnung des Tests"
-            required="Bitte die Bezeichnung des Tests angeben."
-          />
-        ) : null}
-      </CheckboxGroupField>
+        {findings?.map(({ code, title }) => (
+          <Stack key={code} direction="row" aria-label="icd-10-code">
+            <Typography
+              aria-label="icd-10-code-id"
+              mr={1}
+            >{`${code}: `}</Typography>
+            <Typography aria-label="icd-10-code-title">{title}</Typography>
+          </Stack>
+        ))}
+      </Stack>
+      <HiddenIfDisabled>
+        <Button
+          sx={{ width: "fit-content" }}
+          startDecorator={<Edit />}
+          variant="plain"
+          onClick={handleClickIcd10Code}
+        >
+          Befund bearbeiten
+        </Button>
+      </HiddenIfDisabled>
     </SectionGrid>
   );
 }
@@ -183,6 +235,30 @@ function MedicationsSection({ remove, push, form }: FieldArrayRenderProps) {
           Medikament hinzufügen
         </Button>
       </HiddenIfDisabled>
+    </SectionGrid>
+  );
+}
+
+function TypesOfTestsSection() {
+  const { values } = useFormikContext<DiagnosisFormData>();
+  const hasOtherTypeOfTest = values.typesOfTests.includes(ApiTestType.Other);
+  return (
+    <SectionGrid defaultColumn={1}>
+      <CheckboxGroupField
+        name="typesOfTests"
+        label="Art der Tests"
+        labelLevel="title-md"
+        options={API_DIAGNOSIS_TEST_OPTIONS}
+        orientation="vertical"
+      >
+        {hasOtherTypeOfTest ? (
+          <InputField
+            name="otherTests"
+            label="Bezeichnung des Tests"
+            required="Bitte die Bezeichnung des Tests angeben."
+          />
+        ) : null}
+      </CheckboxGroupField>
     </SectionGrid>
   );
 }

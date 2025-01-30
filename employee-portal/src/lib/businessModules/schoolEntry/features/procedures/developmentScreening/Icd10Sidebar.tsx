@@ -33,13 +33,13 @@ import {
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
-export function useIdc10Sidebar(): UseSidebarResult<Idc10SidebarProps> {
+export function useIcd10Sidebar(): UseSidebarResult<Icd10SidebarProps> {
   return useSidebar({
     component: Icd10Sidebar,
   });
 }
 
-interface Idc10SidebarProps extends DrawerProps {
+interface Icd10SidebarProps extends DrawerProps {
   onSubmit: (selectedCodes: string[]) => void;
   initiallySelectedCodes: string[];
 }
@@ -66,7 +66,7 @@ function StyledTd({
   );
 }
 
-function Icd10Sidebar(props: Idc10SidebarProps) {
+function Icd10Sidebar(props: Icd10SidebarProps) {
   const [selectedCodes, setSelectedCodes] = useState<string[]>(
     props.initiallySelectedCodes,
   );

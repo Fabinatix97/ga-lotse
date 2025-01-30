@@ -32,7 +32,6 @@ import de.eshg.lib.procedure.helper.UserHelper;
 import de.eshg.lib.procedure.mapping.ProgressEntryMapper;
 import de.eshg.lib.procedure.model.FileMetaDataDto;
 import de.eshg.lib.procedure.model.GetManualProgressEntryHistoryResponse;
-import de.eshg.lib.procedure.model.ManualProgressEntryDto;
 import de.eshg.lib.procedure.model.ManualProgressEntryHistoryDto;
 import de.eshg.lib.procedure.model.ManualProgressEntryTypeDto;
 import de.eshg.lib.procedure.model.PatchManualProgressEntryRequest;
@@ -372,12 +371,6 @@ public class ProgressEntryService<P extends Procedure<P, ?, ?, ?>> {
             .stream()
             .map(ProgressEntryMapper::toInterfaceType)
             .toList();
-
-    List<ManualProgressEntryDto> manualProgressEntryDtos =
-        progressEntryHistory.stream()
-            .map(ManualProgressEntryHistoryDto::getManualProgressEntry)
-            .toList();
-    userHelper.enrichUsersFirstNamesAndLastNames(manualProgressEntryDtos);
 
     return new GetManualProgressEntryHistoryResponse(progressEntryHistory);
   }

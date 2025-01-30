@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
+import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
 import {
   ApiAppointmentBookingType,
   ApiAppointmentSummary,
   ApiAppointmentType,
-} from "@eshg/citizen-portal-api/travelMedicine";
-import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
-import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
+} from "@eshg/travel-medicine-api";
 import {
   ChevronRightOutlined,
   DateRangeOutlined,

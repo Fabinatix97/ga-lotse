@@ -21,7 +21,7 @@ import {
   ApiLanguageKnowledgeValue,
   ApiPercentageValue,
   ApiPrimaryLanguageValue,
-  ApiRequiredProcedureData,
+  ApiRequiredProcedureArea,
   ApiSchoolEntryCountryCode,
   ApiSchoolEntryProcedureType,
   ApiSchoolEntryStatusType,
@@ -448,18 +448,21 @@ export const WAITING_STATUS_VALUES: EnumMap<ApiWaitingStatus> = {
   [ApiWaitingStatus.InExamination]: "In Behandlung",
   [ApiWaitingStatus.InExaminationDoctor]: "In Behandlung bei Arzt:in",
   [ApiWaitingStatus.InExaminationMfa]: "In Behandlung bei MFA",
+  [ApiWaitingStatus.InExaminationSopass]: "In Behandlung SOPASS",
+  [ApiWaitingStatus.ExaminationFinished]: "Untersuchung durchgeführt",
   [ApiWaitingStatus.Done]: "Fertig",
   [ApiWaitingStatus.Cancelled]: "Abgesagt",
+  [ApiWaitingStatus.NotAppeared]: "Nicht erschienen",
 };
 
-export const REQUIRED_PROCEDURE_DATA: EnumMap<ApiRequiredProcedureData> = {
-  [ApiRequiredProcedureData.Details]: "Details",
-  [ApiRequiredProcedureData.HearingTest]: "Hörscreening",
-  [ApiRequiredProcedureData.EyeExamination]: "Sehscreening",
-  [ApiRequiredProcedureData.Anamnesis]: "Anamnese",
-  [ApiRequiredProcedureData.SopessExamination]: "S1 - SOPESS 2019",
-  [ApiRequiredProcedureData.DevelopmentScreening]: "S1 - Befund",
-  [ApiRequiredProcedureData.VaccinationStatus]: "Impfstatus",
+export const REQUIRED_PROCEDURE_AREAS: EnumMap<ApiRequiredProcedureArea> = {
+  [ApiRequiredProcedureArea.Details]: "Details",
+  [ApiRequiredProcedureArea.HearingTest]: "Hörscreening",
+  [ApiRequiredProcedureArea.EyeExamination]: "Sehscreening",
+  [ApiRequiredProcedureArea.Anamnesis]: "Anamnese",
+  [ApiRequiredProcedureArea.SopessExamination]: "S1 - SOPESS 2019",
+  [ApiRequiredProcedureArea.DevelopmentScreening]: "S1 - Befund",
+  [ApiRequiredProcedureArea.VaccinationStatus]: "Impfstatus",
 };
 
 export const BOOLEAN_WITH_UNKNOWN_VALUES: EnumMap<ApiBooleanWithUnknown> = {

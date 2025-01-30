@@ -10,6 +10,7 @@ import static org.springframework.http.HttpMethod.*;
 import de.eshg.lib.keycloak.CitizenPermissionRole;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.rest.service.security.config.BaseUrls.Base;
+import de.eshg.rest.service.security.config.BaseUrls.Base.Gdpr;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -106,20 +107,9 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
   }
 
   private void gdpr() {
-    requestMatchers(GET, BaseUrls.Base.GDPR_PROCEDURE_API + "/*/central-file-download-package")
+    requestMatchers(GET, BaseUrls.Base.GDPR_PROCEDURE_API + Gdpr.CENTRAL_FILE_DOWNLOAD_PACKAGE)
         .hasAnyRole(
             EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ,
-            CitizenPermissionRole.BUND_ID_USER,
-            CitizenPermissionRole.MUK_USER);
-    requestMatchers(GET, BaseUrls.Base.GDPR_PROCEDURE_API + "/*/downloads")
-        .hasAnyRole(
-            EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW,
-            CitizenPermissionRole.BUND_ID_USER,
-            CitizenPermissionRole.MUK_USER);
-    requestMatchers(GET, BaseUrls.Base.GDPR_PROCEDURE_API + "/*")
-        .hasAnyRole(
-            EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ,
-            EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW,
             CitizenPermissionRole.BUND_ID_USER,
             CitizenPermissionRole.MUK_USER);
     gdprOnlinePortal();
@@ -128,27 +118,40 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
 
   private void gdprOnlinePortal() {
     requestMatchers(
+            GET,
+            BaseUrls.Base.GDPR_PROCEDURE_API
+                + BaseUrls.Base.GDPR_PROCEDURE_CITIZEN_PORTAL_URL
+                + "/self/linked-gdpr-procedures")
+        .hasAnyRole(CitizenPermissionRole.BUND_ID_USER, CitizenPermissionRole.MUK_USER);
+
+    requestMatchers(
             POST,
             BaseUrls.Base.GDPR_PROCEDURE_API + BaseUrls.Base.GDPR_PROCEDURE_CITIZEN_PORTAL_URL)
         .hasAnyRole(CitizenPermissionRole.BUND_ID_USER, CitizenPermissionRole.MUK_USER);
   }
 
   private void gdprEmployee() {
-    requestMatchers(GET, BaseUrls.Base.GDPR_PROCEDURE_API + "/*/fileStateIds")
-        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW);
-    requestMatchers(POST, BaseUrls.Base.GDPR_PROCEDURE_API + "/*/downloads")
-        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW);
-    requestMatchers(
-            GET,
-            BaseUrls.Base.GDPR_PROCEDURE_API
-                + BaseUrls.Base.GDPR_PROCEDURE_CITIZEN_PORTAL_URL
-                + "/self/linked-gdpr-procedures")
-        .hasAnyRole(CitizenPermissionRole.BUND_ID_USER, CitizenPermissionRole.MUK_USER);
-    requestMatchers(GET, BaseUrls.Base.GDPR_PROCEDURE_API + "/**")
+    requestMatchers(GET, BaseUrls.Base.GDPR_PROCEDURE_API)
         .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ);
-    requestMatchers(POST, BaseUrls.Base.GDPR_PROCEDURE_API + "/**")
+    requestMatchers(GET, BaseUrls.Base.GDPR_PROCEDURE_API + Gdpr.DETAILS_PAGE)
+        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ);
+    requestMatchers(GET, BaseUrls.Base.GDPR_PROCEDURE_API + Gdpr.REPORT_DOCUMENT)
+        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ);
+
+    requestMatchers(PUT, BaseUrls.Base.GDPR_PROCEDURE_API + Gdpr.MATTER_OF_CONCERN)
         .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_WRITE);
-    requestMatchers(PUT, BaseUrls.Base.GDPR_PROCEDURE_API + "/**")
+
+    requestMatchers(POST, BaseUrls.Base.GDPR_PROCEDURE_API)
+        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_WRITE);
+    requestMatchers(POST, BaseUrls.Base.GDPR_PROCEDURE_API + Gdpr.BY_ID)
+        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_WRITE);
+    requestMatchers(POST, BaseUrls.Base.GDPR_PROCEDURE_API + Gdpr.REFRESH_STATUS)
+        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_WRITE);
+    requestMatchers(POST, BaseUrls.Base.GDPR_PROCEDURE_API + Gdpr.START_PROCEDURE)
+        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_WRITE);
+    requestMatchers(POST, BaseUrls.Base.GDPR_PROCEDURE_API + Gdpr.CANCEL_PROCEDURE)
+        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_WRITE);
+    requestMatchers(POST, BaseUrls.Base.GDPR_PROCEDURE_API + Gdpr.CLOSE_PROCEDURE)
         .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_WRITE);
   }
 

@@ -4,6 +4,9 @@
  */
 
 import { ApiGetDepartmentInfoResponse } from "@eshg/base-api";
+import { toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
+import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import {
   ApiAppointmentType,
   ApiCountryCode,
@@ -11,10 +14,7 @@ import {
   ApiPostCitizenVaccinationConsultationRequest,
   ApiTravelInformation,
   ApiTravelType,
-} from "@eshg/citizen-portal-api/travelMedicine";
-import { toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
-import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
+} from "@eshg/travel-medicine-api";
 import { isDefined, isEmpty } from "remeda";
 
 import {

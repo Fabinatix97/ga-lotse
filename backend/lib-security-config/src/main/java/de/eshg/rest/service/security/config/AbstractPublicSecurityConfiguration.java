@@ -18,6 +18,7 @@ import de.eshg.lib.keycloak.ModuleLeaderRole;
 import de.eshg.lib.keycloak.PermissionRole;
 import de.eshg.rest.service.security.config.BaseUrls.FourEyesLibrary;
 import de.eshg.rest.service.security.config.BaseUrls.ProcedureLibrary;
+import de.eshg.rest.service.security.config.BaseUrls.ProcedureLibrary.Gdpr;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -174,17 +175,13 @@ public abstract class AbstractPublicSecurityConfiguration {
   }
 
   private void gdpr(PermissionRole procedureAccessRole) {
-    requestMatchers(
-            GET, ProcedureLibrary.GDPR_VALIDATION_TASK_API + "/{gdprProcedureId}/download-packages")
+    requestMatchers(GET, ProcedureLibrary.GDPR_VALIDATION_TASK_API + Gdpr.DOWNLOAD_PACKAGES_INFO)
         .hasAnyRole(
             procedureAccessRole,
             EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ,
             CitizenPermissionRole.BUND_ID_USER,
             CitizenPermissionRole.MUK_USER);
-    requestMatchers(
-            GET,
-            ProcedureLibrary.GDPR_VALIDATION_TASK_API
-                + "/{gdprProcedureId}/download-packages/{downloadId}")
+    requestMatchers(GET, ProcedureLibrary.GDPR_VALIDATION_TASK_API + Gdpr.DOWNLOAD_PACKAGE)
         .hasAnyRole(
             procedureAccessRole,
             EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ,
@@ -192,18 +189,22 @@ public abstract class AbstractPublicSecurityConfiguration {
             CitizenPermissionRole.MUK_USER);
 
     requestMatchers(POST, ProcedureLibrary.PROCEDURES_API + "/check-file-state-usage")
-        .hasAnyRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ);
-    requestMatchers(DELETE, ProcedureLibrary.GDPR_VALIDATION_TASK_API + "/{gdprProcedureId}")
+        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ);
+    requestMatchers(GET, ProcedureLibrary.GDPR_VALIDATION_TASK_API + Gdpr.NOTIFICATION_BANNER)
+        .hasRole(procedureAccessRole);
+    requestMatchers(GET, ProcedureLibrary.GDPR_VALIDATION_TASK_API + Gdpr.BY_GDPR_ID)
+        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ);
+    requestMatchers(POST, ProcedureLibrary.GDPR_VALIDATION_TASK_API)
+        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_WRITE);
+
+    requestMatchers(DELETE, ProcedureLibrary.GDPR_VALIDATION_TASK_API + Gdpr.BY_GDPR_ID)
         .hasRole(BASE_GDPR_VALIDATION_TASK_CLEANUP);
+    requestMatchers(DELETE, ProcedureLibrary.GDPR_VALIDATION_TASK_API + Gdpr.BUSINESS_PROCEDURE)
+        .hasRole(procedureAccessRole);
 
     requestMatchers(GET, ProcedureLibrary.GDPR_VALIDATION_TASK_API + "/**")
         .hasRole(procedureAccessRole);
     requestMatchers(POST, ProcedureLibrary.GDPR_VALIDATION_TASK_API + "/**")
-        .hasRole(procedureAccessRole);
-    requestMatchers(
-            DELETE,
-            ProcedureLibrary.GDPR_VALIDATION_TASK_API
-                + "/{gdprProcedureId}/business-procedures/{businessProcedureId}")
         .hasRole(procedureAccessRole);
   }
 

@@ -5,5 +5,5 @@ plugins {
 def backendDir = rootProject.layout.projectDirectory.dir('backend')
 
 apiPackage {
-  inputSpec = backendDir.file('dental/openApi.yaml')
+  inputSpec = backendDir.file('dental/openApi.json')
 }

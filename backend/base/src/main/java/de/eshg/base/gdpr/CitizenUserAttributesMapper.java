@@ -9,39 +9,40 @@ import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.keycloak.CitizenUserAttribute;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CitizenUserAttributesMapper {
 
   protected static final Logger log = LoggerFactory.getLogger(CitizenUserAttributesMapper.class);
+  public static final String ELLIPSIS = "[\u2026]"; // (three dots character)
 
   protected static String extractAttributeAndShortenIfLong(
       Map<String, List<String>> userAttributes,
       CitizenUserAttribute citizenUserAttribute,
       int maxLength) {
-    String extracted = extractAttribute(userAttributes, citizenUserAttribute);
+    String extractedAttribute = extractAttribute(userAttributes, citizenUserAttribute);
 
-    String truncated = shortenExtracted(citizenUserAttribute, maxLength, extracted);
-    if (truncated != null) return truncated;
+    String shortenedAttribute =
+        shortenExtractedAttribute(citizenUserAttribute, maxLength, extractedAttribute);
 
-    return extracted;
+    return shortenedAttribute;
   }
 
-  protected static String shortenExtracted(
-      CitizenUserAttribute citizenUserAttribute, int maxLength, String extracted) {
-    String ellipsis = "[...]";
+  protected static String shortenExtractedAttribute(
+      CitizenUserAttribute citizenUserAttribute, int maxLength, String attribute) {
+    String attributeShortened = StringUtils.abbreviate(attribute, ELLIPSIS, maxLength);
 
-    if (extracted != null && extracted.length() > maxLength) {
-      String truncated = extracted.substring(0, maxLength - ellipsis.length()) + ellipsis;
+    if (!StringUtils.equals(attribute, attributeShortened)) {
       log.debug(
           "User attribute \"{}\" with value \"{}\" has been truncated to \"{}\" due to length restrictions",
           citizenUserAttribute,
-          extracted,
-          truncated);
-      return truncated;
+          attribute,
+          attributeShortened);
     }
-    return extracted;
+
+    return attributeShortened;
   }
 
   protected static String extractAttribute(

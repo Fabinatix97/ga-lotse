@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiVaccine } from "@eshg/employee-portal-api/travelMedicine";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { ApiVaccine } from "@eshg/travel-medicine-api";
 import { Delete, Edit } from "@mui/icons-material";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";

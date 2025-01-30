@@ -5,7 +5,7 @@
 
 "use client";
 
-import { SoftRequiredBooleanSelectField } from "@eshg/lib-portal/businessModules/schoolEntry/features/procedures/fieldVariants";
+import { SoftRequiredBooleanSelectField } from "@eshg/lib-portal/components/form/fieldVariants";
 import { BooleanSelectField } from "@eshg/lib-portal/components/formFields/BooleanSelectField";
 import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";

@@ -52,7 +52,7 @@ public class ProphylaxisSession extends BaseEntityWithExternalId {
   private String groupName;
 
   @DataSensitivity(PSEUDONYMIZED)
-  private boolean screening;
+  private boolean isScreening;
 
   @DataSensitivity(PSEUDONYMIZED)
   @JdbcType(PostgreSQLEnumJdbcType.class)
@@ -122,11 +122,11 @@ public class ProphylaxisSession extends BaseEntityWithExternalId {
   }
 
   public boolean isScreening() {
-    return screening;
+    return isScreening;
   }
 
-  public void setScreening(boolean screening) {
-    this.screening = screening;
+  public void setIsScreening(boolean isScreening) {
+    this.isScreening = isScreening;
   }
 
   public boolean hasFluoridationVarnish() {

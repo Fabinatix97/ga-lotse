@@ -25,6 +25,6 @@ public interface CitizenUserApi {
 
   @GetExchange(BaseUrls.Base.CITIZEN_USER_SELF_URL)
   @ApiResponse(responseCode = "200")
-  @Operation(summary = "Get the name of the citizen user which is currently active")
+  @Operation(summary = "Get the attributes of the citizen user which is currently active")
   GetCitizenSelfUserResponse getCitizenSelfUser();
 }

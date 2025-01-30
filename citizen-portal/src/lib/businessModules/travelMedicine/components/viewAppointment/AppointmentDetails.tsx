@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetAppointmentDetailsResponse } from "@eshg/citizen-portal-api/travelMedicine";
+import { ApiGetAppointmentDetailsResponse } from "@eshg/travel-medicine-api";
 
 import { AppointmentDetailsAdditionalInformation } from "@/lib/businessModules/travelMedicine/components/viewAppointment/AppointmentDetailsAdditionalInformation";
 import { AppointmentDetailsMetaInformation } from "@/lib/businessModules/travelMedicine/components/viewAppointment/AppointmentDetailsMetaInformation";

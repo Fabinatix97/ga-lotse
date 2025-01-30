@@ -5,6 +5,7 @@
 
 package de.eshg.base.centralfile.persistence.repository;
 
+import de.eshg.base.centralfile.persistence.AssociatedFileStateIds;
 import de.eshg.base.centralfile.persistence.entity.Person;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -98,6 +99,28 @@ public interface PersonRepository
   Optional<Person> findByExternalIdEqualsAndReferencePersonIsNotNull(UUID id);
 
   Optional<Person> findByExternalIdEqualsAndReferencePersonIsNull(UUID id);
+
+  @Query(
+      nativeQuery = true,
+      value =
+          """
+    with given_person as (
+      select id, reference_person_id, external_id
+      from person
+      where external_id in :ids)
+    select gp.external_id as file_state_id,
+      array_remove(
+        array_agg(associated_person.external_id order by associated_person.id),
+        null
+      ) as associated_file_state_ids
+    from given_person gp
+      left join person associated_person
+      on associated_person.reference_person_id = gp.reference_person_id
+      and associated_person.external_id != gp.external_id
+    group by gp.id, gp.external_id
+    order by gp.id;
+    """)
+  List<AssociatedFileStateIds> findAllAssociatedFileStateIdsByFileStateIds(List<UUID> ids);
 
   @Query(
       """

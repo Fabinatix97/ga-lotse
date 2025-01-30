@@ -127,7 +127,7 @@ export function ProphylaxisSessionsTable(props: ProphylaxisSessionsTableProps) {
           columns={COLUMNS}
           sorting={tableControl.tableSorting}
           enableSortingRemoval={false}
-          minWidth={500}
+          minWidth={1200}
           rowNavigation={{
             route: (row) =>
               routes.prophylaxisSessions.byId(row.original.id).details,
@@ -183,12 +183,12 @@ const COLUMNS = [
       canNavigate: { parentRow: true },
     },
   }),
-  columnHelper.accessor("screening", {
+  columnHelper.accessor("isScreening", {
     header: "Reihenuntersuchung",
     cell: (props) => displayBoolean(props.getValue()),
     enableSorting: true,
     meta: {
-      width: 120,
+      width: 130,
       canNavigate: { parentRow: true },
     },
   }),
@@ -207,6 +207,6 @@ const SORT_KEY_MAPPING: Record<string, ApiProphylaxisSessionSortKey> = {
   dateAndTime: ApiProphylaxisSessionSortKey.DateAndTime,
   groupName: ApiProphylaxisSessionSortKey.GroupName,
   type: ApiProphylaxisSessionSortKey.Type,
-  screening: ApiProphylaxisSessionSortKey.Screening,
+  isScreening: ApiProphylaxisSessionSortKey.IsScreening,
   fluoridationVarnish: ApiProphylaxisSessionSortKey.FluoridationVarnish,
 };

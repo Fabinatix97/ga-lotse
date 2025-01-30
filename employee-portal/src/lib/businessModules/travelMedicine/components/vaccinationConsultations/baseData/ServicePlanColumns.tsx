@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import {
   ApiAppointmentBookingType,
   ApiServicePlanEntry,
   ApiServicePlanGroup,
   ApiServiceStatus,
   ApiUser,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+} from "@eshg/travel-medicine-api";
 import {
   Cancel,
   Delete,

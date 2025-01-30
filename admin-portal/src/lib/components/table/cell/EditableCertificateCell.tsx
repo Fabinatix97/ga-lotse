@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAdminCertificate } from "@eshg/admin-portal-api/serviceDirectory";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { ApiAdminCertificate } from "@eshg/service-directory-api";
 import { Add, AddModerator } from "@mui/icons-material";
 import { IconButton, styled } from "@mui/joy";
 import { CellContext } from "@tanstack/react-table";

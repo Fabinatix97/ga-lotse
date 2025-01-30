@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiProcedureStepService } from "@eshg/employee-portal-api/travelMedicine";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
+import { ApiProcedureStepService } from "@eshg/travel-medicine-api";
 import { List, ListItem, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 import { Ref } from "react";

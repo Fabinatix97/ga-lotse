@@ -12,7 +12,7 @@ import {
   ApiServicePlanEntry,
   ApiServicePlanGroup,
   ApiServiceStatus,
-} from "@eshg/employee-portal-api/travelMedicine";
+} from "@eshg/travel-medicine-api";
 import { AddOutlined } from "@mui/icons-material";
 import { Button, Grid } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";

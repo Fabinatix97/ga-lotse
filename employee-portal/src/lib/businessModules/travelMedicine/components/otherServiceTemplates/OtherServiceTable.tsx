@@ -5,8 +5,8 @@
 
 "use client";
 
-import { ApiPostPutOtherServiceTemplateRequest } from "@eshg/employee-portal-api/travelMedicine";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { ApiPostPutOtherServiceTemplateRequest } from "@eshg/travel-medicine-api";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";

@@ -5,11 +5,15 @@
 
 "use client";
 
+import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
+import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import InternetIcon from "@mui/icons-material/LanguageOutlined";
 import { Button, Sheet, SheetProps, Stack, Typography } from "@mui/joy";
 import { useState } from "react";
+import { Trans } from "react-i18next";
 
 import { UserType } from "@/lib/baseModule/components/layout/types";
+import { useRoutes } from "@/lib/baseModule/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 import { useGetDepartmentInfo } from "@/lib/shared/api/queries/department";
 import { AddressSection } from "@/lib/shared/components/AddressSection";
@@ -39,6 +43,7 @@ export default function DataPrivacyRightsEntrypointPage() {
   });
   const { data: department } = useGetDepartmentInfo();
   const { t } = useTranslation("gdpr");
+  const routes = useRoutes();
 
   return (
     <PageLayout>
@@ -49,7 +54,18 @@ export default function DataPrivacyRightsEntrypointPage() {
           <ContentSheetTitle>
             {t("entrypoint.intro_section.title")}
           </ContentSheetTitle>
-          <Typography>{t("entrypoint.intro_section.description")}</Typography>
+          <Typography>
+            <Trans
+              i18nKey="gdpr:entrypoint.intro_section.description"
+              components={{
+                InternalLink: (
+                  <InternalLink href={routes.privacyPolicy}>
+                    {routes.privacyPolicy}
+                  </InternalLink>
+                ),
+              }}
+            />
+          </Typography>
         </ContentSheet>
 
         <ContentSheet missingTitle>
@@ -69,9 +85,40 @@ export default function DataPrivacyRightsEntrypointPage() {
                 <InfoSectionTitle>
                   {t("entrypoint.your_rights_section.online.internet.title")}
                 </InfoSectionTitle>
-                {t(
-                  "entrypoint.your_rights_section.online.internet.description",
-                )}
+                <Typography
+                  sx={{
+                    whiteSpace: "preserve",
+                    textWrap: "pretty",
+                    hyphens: "auto",
+                    overflowWrap: "anywhere",
+                  }}
+                >
+                  <Trans
+                    i18nKey="gdpr:entrypoint.your_rights_section.online.internet.description"
+                    components={{
+                      BundIdLink: (
+                        <ExternalLink
+                          href="https://id.bund.de/de"
+                          target="_blank"
+                          referrerPolicy="no-referrer"
+                          sx={{ hyphens: "manual" }}
+                        >
+                          BundID
+                        </ExternalLink>
+                      ),
+                      MukLink: (
+                        <ExternalLink
+                          href="https://info.mein-unternehmenskonto.de/"
+                          target="_blank"
+                          referrerPolicy="no-referrer"
+                          sx={{ hyphens: "manual" }}
+                        >
+                          Mein Unternehmenskonto
+                        </ExternalLink>
+                      ),
+                    }}
+                  />
+                </Typography>
               </InfoSection>
               <Stack
                 direction="row"

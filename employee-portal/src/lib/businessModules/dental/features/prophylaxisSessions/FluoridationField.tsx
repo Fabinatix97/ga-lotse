@@ -11,12 +11,12 @@ import { FLUORIDATION_VARNISH_OPTIONS } from "@/lib/businessModules/dental/featu
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 
 export function FluoridationField() {
-  const [fluoridation] = useField<boolean>("fluoridation");
+  const [isFluoridation] = useField<boolean>("isFluoridation");
 
   return (
     <Stack gap={3}>
-      <CheckboxField name="fluoridation" label="Fluoridierung" />
-      {fluoridation.value && (
+      <CheckboxField name="isFluoridation" label="Fluoridierung" />
+      {isFluoridation.value && (
         <SelectField
           name="fluoridationVarnish"
           label="Lack"

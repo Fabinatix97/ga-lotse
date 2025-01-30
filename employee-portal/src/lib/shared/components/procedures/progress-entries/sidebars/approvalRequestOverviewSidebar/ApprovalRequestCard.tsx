@@ -21,18 +21,18 @@ import { useContext } from "react";
 import { isDefined } from "remeda";
 
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import {
-  ProgressEntriesContext,
-  useResolvedUserName,
-} from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
+import { ProgressEntriesContext } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import { useDecideApprovalRequest } from "@/lib/shared/components/procedures/progress-entries/mutations/approvalRequestApi";
 import { FileAsApprovalRequestEntity } from "@/lib/shared/components/procedures/progress-entries/sidebars/approvalRequestOverviewSidebar/FileAsApprovalRequestEntity";
 import { ProgressEntryAsApprovalRequestEntity } from "@/lib/shared/components/procedures/progress-entries/sidebars/approvalRequestOverviewSidebar/ProgressEntryAsApprovalRequestEntity";
+import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 export function ApprovalRequestCard(request: ApiApprovalRequest) {
   const progressEntriesContext = useContext(ProgressEntriesContext);
-  const { approvalRequestApi } = progressEntriesContext.config;
+  const { approvalRequestApi, approvalRequestsResponse } =
+    progressEntriesContext.config;
   const decideApprovalRequest = useDecideApprovalRequest(approvalRequestApi);
+  const { resolvedUsers } = approvalRequestsResponse!;
 
   function decideRequest(decision: string) {
     return function () {
@@ -62,7 +62,7 @@ export function ApprovalRequestCard(request: ApiApprovalRequest) {
             color="danger"
             data-testid="requestTitle"
           >
-            Löschanfrage von {useResolvedUserName(request.createdBy)}
+            Löschanfrage von {fullName(resolvedUsers[request.createdBy])}
           </Typography>
           <div data-testid="requestEntity">
             {isDefined(request.entity) &&

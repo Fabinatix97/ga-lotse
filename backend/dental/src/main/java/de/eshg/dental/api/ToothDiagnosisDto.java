@@ -13,4 +13,9 @@ public record ToothDiagnosisDto(
     @NotNull ToothDto tooth,
     @NotNull MainResultDto mainResult,
     SecondaryResultDto secondaryResult1,
-    SecondaryResultDto secondaryResult2) {}
+    SecondaryResultDto secondaryResult2) {
+
+  public ToothDiagnosisDto(ToothDto tooth, MainResultDto mainResult) {
+    this(tooth, mainResult, null, null);
+  }
+}

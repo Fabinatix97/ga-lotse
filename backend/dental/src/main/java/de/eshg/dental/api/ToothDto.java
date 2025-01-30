@@ -84,4 +84,73 @@ public enum ToothDto {
   public static List<ToothDto> allPermanentTeeth() {
     return Arrays.stream(ToothDto.values()).filter(t -> !t.milkTooth).toList();
   }
+
+  public boolean isMilkTooth() {
+    return milkTooth;
+  }
+
+  public static ToothDto matchingPermanentToothForMilkTooth(ToothDto tooth) {
+    if (!tooth.isMilkTooth()) {
+      return null;
+    }
+
+    return switch (tooth) {
+      case T51 -> T11;
+      case T52 -> T12;
+      case T53 -> T13;
+      case T54 -> T14;
+      case T55 -> T15;
+
+      case T61 -> T21;
+      case T62 -> T22;
+      case T63 -> T23;
+      case T64 -> T24;
+      case T65 -> T25;
+
+      case T71 -> T31;
+      case T72 -> T32;
+      case T73 -> T33;
+      case T74 -> T34;
+      case T75 -> T35;
+
+      case T81 -> T41;
+      case T82 -> T42;
+      case T83 -> T43;
+      case T84 -> T44;
+      case T85 -> T45;
+      default -> null;
+    };
+  }
+
+  public static ToothDto matchingMilkToothForPermanentTooth(ToothDto tooth) {
+    if (tooth.isMilkTooth()) {
+      return null;
+    }
+    return switch (tooth) {
+      case T11 -> T51;
+      case T12 -> T52;
+      case T13 -> T53;
+      case T14 -> T54;
+      case T15 -> T55;
+
+      case T21 -> T61;
+      case T22 -> T62;
+      case T23 -> T63;
+      case T24 -> T64;
+      case T25 -> T65;
+
+      case T31 -> T71;
+      case T32 -> T72;
+      case T33 -> T73;
+      case T34 -> T74;
+      case T35 -> T75;
+
+      case T41 -> T81;
+      case T42 -> T82;
+      case T43 -> T83;
+      case T44 -> T84;
+      case T45 -> T85;
+      default -> null;
+    };
+  }
 }

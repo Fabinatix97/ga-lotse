@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 import {
   AppointmentBlockApi,
   AppointmentTypeApi,
@@ -23,8 +24,7 @@ import {
   UnusedBaseInventoryVaccineApi,
   VaccinationConsultationApi,
   VaccineApi,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
+} from "@eshg/travel-medicine-api";
 
 function useConfiguration() {
   const configurationParameters = useApiConfiguration(

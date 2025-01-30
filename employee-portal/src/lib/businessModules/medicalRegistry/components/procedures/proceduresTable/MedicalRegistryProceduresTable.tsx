@@ -50,8 +50,8 @@ function formatAddress(address: ApiApplicantAddress) {
 
 function getProceduresColumns() {
   return [
-    columnHelper.accessor("lastName", {
-      header: "Name",
+    columnHelper.accessor("firstName", {
+      header: "Vorname",
       enableSorting: false,
       meta: {
         width: 180,
@@ -60,8 +60,8 @@ function getProceduresColumns() {
         },
       },
     }),
-    columnHelper.accessor("firstName", {
-      header: "Vorname",
+    columnHelper.accessor("lastName", {
+      header: "Name",
       enableSorting: false,
       meta: {
         width: 180,

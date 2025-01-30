@@ -461,6 +461,15 @@ export const theme = extendTheme({
     },
     JoyCheckbox: {
       styleOverrides: {
+        root: ({ theme, ownerState }) => ({
+          "&.Mui-disabled": {
+            label: {
+              color: ownerState.disabled
+                ? theme.palette.text.secondary
+                : theme.palette.text.primary,
+            },
+          },
+        }),
         label: ({ theme }) => ({
           fontWeight: 400,
           fontSize: theme.fontSize.md,

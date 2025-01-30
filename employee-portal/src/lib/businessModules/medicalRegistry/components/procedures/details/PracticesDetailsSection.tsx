@@ -14,7 +14,10 @@ import { isDefined } from "remeda";
 
 import { ContactData } from "@/lib/businessModules/medicalRegistry/components/procedures/details/ContactData";
 import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import {
+  DetailsCell,
+  DetailsCellWrapped,
+} from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
 import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
@@ -86,19 +89,19 @@ function PracticeDetails({
           divider={<ResponsiveDivider breakpoint="md" />}
         >
           <DetailsColumn sx={COLUMN_STYLE}>
-            <DetailsCell label={"Name"} value={practice.name} />
+            <DetailsCellWrapped label={"Name"} value={practice.name} />
             {isDefined(address) && (
               <>
-                <DetailsCell
+                <DetailsCellWrapped
                   label={PRACTICE_FIELD_NAME.streetAndHouseNumber}
                   value={streetAndHouseNumber(address)}
                 />
                 <DetailsRow>
-                  <DetailsCell
+                  <DetailsCellWrapped
                     label={PRACTICE_FIELD_NAME.postalCode}
                     value={address.postalCode}
                   />
-                  <DetailsCell
+                  <DetailsCellWrapped
                     label={PRACTICE_FIELD_NAME.city}
                     value={address.city}
                     avoidWrap
@@ -109,23 +112,23 @@ function PracticeDetails({
           </DetailsColumn>
           {hasContactData && (
             <DetailsColumn sx={COLUMN_STYLE}>
-              <DetailsCell
+              <DetailsCellWrapped
                 label={PRACTICE_FIELD_NAME.openingHours}
                 value={practice.openingHours}
               />
               <ContactData subject={practice} />
-              <DetailsCell
+              <DetailsCellWrapped
                 label={PRACTICE_FIELD_NAME.website}
                 value={practice.website}
               />
             </DetailsColumn>
           )}
           <DetailsColumn sx={COLUMN_STYLE}>
-            <DetailsCell
+            <DetailsCellWrapped
               label={PRACTICE_FIELD_NAME.institutionIdentifier}
               value={practice.institutionIdentifier}
             />
-            <DetailsCell
+            <DetailsCellWrapped
               label={PRACTICE_FIELD_NAME.establishmentNumber}
               value={practice.establishmentNumber}
             />

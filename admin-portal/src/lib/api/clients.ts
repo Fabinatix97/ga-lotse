@@ -9,7 +9,7 @@ import {
   HTTPHeaders,
   Middleware,
   ServiceDirectoryAdminApi,
-} from "@eshg/admin-portal-api/serviceDirectory";
+} from "@eshg/service-directory-api";
 
 import { setAdminName } from "@/lib/helpers/adminName";
 

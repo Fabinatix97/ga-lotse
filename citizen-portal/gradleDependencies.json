@@ -4,6 +4,7 @@
     ":citizen-portal-api",
     ":lib-portal",
     ":measles-protection-api",
-    ":school-entry-api"
+    ":school-entry-api",
+    ":travel-medicine-api"
   ]
 }

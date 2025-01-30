@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isDateString, toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
 import {
   ApiPatchVaccinationConsultationTravelDetailsRequest,
   ApiTravelType,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { isDateString, toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
+} from "@eshg/travel-medicine-api";
 import { isEmpty } from "remeda";
 
 import { useUpdateTravelDetails } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";

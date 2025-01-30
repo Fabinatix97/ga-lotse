@@ -49,8 +49,11 @@ public final class WaitingRoomMapper {
       case IN_EXAMINATION -> WaitingStatusDto.IN_EXAMINATION;
       case IN_EXAMINATION_DOCTOR -> WaitingStatusDto.IN_EXAMINATION_DOCTOR;
       case IN_EXAMINATION_MFA -> WaitingStatusDto.IN_EXAMINATION_MFA;
+      case IN_EXAMINATION_SOPASS -> WaitingStatusDto.IN_EXAMINATION_SOPASS;
+      case EXAMINATION_FINISHED -> WaitingStatusDto.EXAMINATION_FINISHED;
       case DONE -> WaitingStatusDto.DONE;
       case CANCELLED -> WaitingStatusDto.CANCELLED;
+      case NOT_APPEARED -> WaitingStatusDto.NOT_APPEARED;
     };
   }
 
@@ -74,8 +77,11 @@ public final class WaitingRoomMapper {
       case IN_EXAMINATION -> WaitingStatus.IN_EXAMINATION;
       case IN_EXAMINATION_DOCTOR -> WaitingStatus.IN_EXAMINATION_DOCTOR;
       case IN_EXAMINATION_MFA -> WaitingStatus.IN_EXAMINATION_MFA;
+      case IN_EXAMINATION_SOPASS -> WaitingStatus.IN_EXAMINATION_SOPASS;
+      case EXAMINATION_FINISHED -> WaitingStatus.EXAMINATION_FINISHED;
       case DONE -> WaitingStatus.DONE;
       case CANCELLED -> WaitingStatus.CANCELLED;
+      case NOT_APPEARED -> WaitingStatus.NOT_APPEARED;
     };
   }
 

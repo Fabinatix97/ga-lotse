@@ -47,7 +47,7 @@ function PlaygroundChartBox({
           description="Hier könnte Ihre Werbung stehen"
           filterLabels={["Label 1", "Label 2"]}
           evaluatedDataAmount={42}
-          chart={chart}
+          getChart={() => chart}
         />
         <Stack direction="row" gap={3}>
           {switches}

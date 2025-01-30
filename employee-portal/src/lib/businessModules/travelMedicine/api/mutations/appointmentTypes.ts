@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiUpdateAppointmentTypeRequest } from "@eshg/employee-portal-api/travelMedicine";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { ApiUpdateAppointmentTypeRequest } from "@eshg/travel-medicine-api";
 
 import { useAppointmentTypeApi } from "@/lib/businessModules/travelMedicine/api/clients";
 

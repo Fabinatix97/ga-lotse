@@ -9,7 +9,7 @@ import { ApiUserRole } from "@eshg/base-api";
 import {
   ApiGetDetailedProcedureResponse,
   ApiGetProcedureApprovalRequestsResponse,
-  ApiGetProgressEntriesResponseProgressEntriesInner,
+  ApiGetProgressEntriesResponse,
   ApiProgressEntryClass,
   ApiProgressEntryReferenceFilePair,
   ApprovalRequestApi,
@@ -44,7 +44,7 @@ export interface ProgressEntriesPageProps extends ProgressEntryClients {
 
 export interface ProgressEntriesConfig extends ProgressEntryClients {
   procedureId: string;
-  progressEntries: ApiGetProgressEntriesResponseProgressEntriesInner[];
+  progressEntries: ApiGetProgressEntriesResponse;
   detailedProcedure: ApiGetDetailedProcedureResponse;
   files: ApiProgressEntryReferenceFilePair[];
   searchParams: ProgressEntriesSearchParams;

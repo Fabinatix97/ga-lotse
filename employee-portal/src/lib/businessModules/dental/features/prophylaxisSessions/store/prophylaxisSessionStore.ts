@@ -3,11 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ExaminationResult } from "@eshg/dental/api/models/ExaminationResult";
 import { ProphylaxisSessionDetails } from "@eshg/dental/api/models/ProphylaxisSessionDetails";
 import { createStore } from "zustand";
 
 import { ParticipantFilters } from "./participantFilters";
 import { ParticipantSorting } from "./participantSorting";
+import { replaceExaminationResult } from "./replaceExaminationResult";
 
 export interface ProphylaxisSessionState extends ProphylaxisSessionDetails {
   participantFilters: ParticipantFilters;
@@ -17,6 +19,10 @@ export interface ProphylaxisSessionState extends ProphylaxisSessionDetails {
 export interface ProphylaxisSessionActions {
   setParticipantFilters: (filtersChange: Partial<ParticipantFilters>) => void;
   setParticipantSorting: (sorting: ParticipantSorting) => void;
+  setExaminationResult: (
+    participantId: string,
+    examinationResult: ExaminationResult,
+  ) => void;
 }
 
 export type ProphylaxisSessionStore = ProphylaxisSessionState &
@@ -24,7 +30,7 @@ export type ProphylaxisSessionStore = ProphylaxisSessionState &
 
 const initialFilters: ParticipantFilters = {
   gender: "ANY",
-  fluoridationConsent: "ANY",
+  fluoridationConsentGiven: "ANY",
 };
 
 const initialSorting: ParticipantSorting = {
@@ -59,5 +65,16 @@ export function createProphylaxisSessionStore(
       set({
         participantSorting,
       }),
+    setExaminationResult: (
+      participantId: string,
+      examinationResult: ExaminationResult,
+    ) =>
+      set((state) => ({
+        participants: replaceExaminationResult(
+          participantId,
+          examinationResult,
+          state.participants,
+        ),
+      })),
   }));
 }

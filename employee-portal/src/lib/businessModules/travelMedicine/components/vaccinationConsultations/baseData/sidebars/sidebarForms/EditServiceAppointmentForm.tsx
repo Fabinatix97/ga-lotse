@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiAppointmentBookingType,
-  ApiAppointmentType,
-  ApiProcedureStepService,
-} from "@eshg/employee-portal-api/travelMedicine";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
   formatDate,
   formatDateTime,
 } from "@eshg/lib-portal/formatters/dateTime";
+import {
+  ApiAppointmentBookingType,
+  ApiAppointmentType,
+  ApiProcedureStepService,
+} from "@eshg/travel-medicine-api";
 import { Chip, List, ListItem, Sheet, Stack, Typography } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 import { Ref } from "react";

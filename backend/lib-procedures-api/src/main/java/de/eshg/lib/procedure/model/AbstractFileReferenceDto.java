@@ -6,13 +6,14 @@
 package de.eshg.lib.procedure.model;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import de.eshg.model.HasResolvableUserIds;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Schema(name = AbstractFileReferenceDto.SCHEMA_NAME)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "@type")
-public abstract sealed class AbstractFileReferenceDto
+public abstract sealed class AbstractFileReferenceDto implements HasResolvableUserIds
     permits AbstractFileDto, GenericFileReferenceDto {
 
   public static final String SCHEMA_NAME = "AbstractFileReference";

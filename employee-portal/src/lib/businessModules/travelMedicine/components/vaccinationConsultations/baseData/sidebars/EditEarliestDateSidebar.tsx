@@ -6,7 +6,7 @@
 import {
   ApiServicePlanGroup,
   PatchEarliestDateRequest,
-} from "@eshg/employee-portal-api/travelMedicine";
+} from "@eshg/travel-medicine-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { format } from "date-fns";
 

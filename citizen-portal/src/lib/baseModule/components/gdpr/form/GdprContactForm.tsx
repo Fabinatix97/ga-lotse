@@ -103,6 +103,7 @@ export function GdprContactForm() {
                         paddingInline: "0.5rem",
                         whiteSpace: "preserve",
                         hyphens: "auto",
+                        overflowWrap: "anywhere",
                       }}
                     >
                       {values.content}

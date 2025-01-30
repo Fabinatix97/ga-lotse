@@ -101,8 +101,17 @@ export function CreateEvaluationFromScratchSidebar({
       });
     } else {
       const dataSource = getDataSourceFromId(model[0].dataSourceId!)!;
+      const attributeProcedureReference = dataSource.attributes.find(
+        (attribute) => attribute.code === "PROCEDURE_REFERENCE",
+      )?.code;
       const attributeGroups = groupBy(
-        getAttributesFromKeys(model[1].selectedAttributeKeys!, dataSource),
+        getAttributesFromKeys(
+          [
+            ...model[1].selectedAttributeKeys!,
+            attributeProcedureReference,
+          ].filter(isDefined),
+          dataSource,
+        ),
         (item) => item.code,
       );
 

@@ -9,7 +9,6 @@ import { ApiProcedureStatus } from "@eshg/employee-portal-api/businessProcedures
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { createContext, useContext, useState } from "react";
 
-import { buildName } from "@/lib/shared/components/procedures/progress-entries/helper";
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
@@ -114,23 +113,4 @@ export function useIsReadOnly() {
 
 export function useProgressEntriesConfig() {
   return useContext(ProgressEntriesContext).config;
-}
-
-export function useOpenApprovalRequests() {
-  const { approvalRequestsResponse } = useContext(
-    ProgressEntriesContext,
-  ).config;
-  return approvalRequestsResponse?.approvalRequests;
-}
-
-export function useResolvedUserName(userId?: string) {
-  const { approvalRequestsResponse } = useContext(
-    ProgressEntriesContext,
-  ).config;
-  if (!userId) {
-    return "Unbekanntem Nutzer";
-  }
-
-  const user = approvalRequestsResponse?.resolvedUsers?.[userId];
-  return buildName(user?.firstName, user?.lastName);
 }

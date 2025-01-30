@@ -13,6 +13,8 @@ import de.eshg.base.user.UserApi;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.dental.api.ChildFilterParameters;
 import de.eshg.dental.api.FluoridationConsentDto;
+import de.eshg.dental.api.ToothDiagnosisDto;
+import de.eshg.dental.api.ToothDto;
 import de.eshg.dental.domain.repository.ChildRepository;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.keycloak.TechnicalGroup;
@@ -105,6 +107,32 @@ public class Validator {
         && fluoridationConsent.consented()
         && Boolean.TRUE.equals(fluoridationConsent.hasAllergy())) {
       throw new BadRequestException("Child cannot have an allergy and fluoridation consent.");
+    }
+  }
+
+  static void validateToothDiagnoses(List<ToothDiagnosisDto> toothDiagnoses) {
+    List<ToothDto> teeth = toothDiagnoses.stream().map(ToothDiagnosisDto::tooth).toList();
+    validateUniqueTeeth(teeth);
+    validateMilkOrPermanentTooth(teeth);
+  }
+
+  private static void validateMilkOrPermanentTooth(List<ToothDto> teeth) {
+    List<ToothDto> milkTeeth = teeth.stream().filter(ToothDto::isMilkTooth).toList();
+
+    for (ToothDto milkTooth : milkTeeth) {
+      ToothDto matchingPermanentTooth = ToothDto.matchingPermanentToothForMilkTooth(milkTooth);
+      if (teeth.contains(matchingPermanentTooth)) {
+        throw new BadRequestException(
+            "Milk tooth %s and matching permanent tooth %s cannot be set together."
+                .formatted(milkTooth, matchingPermanentTooth));
+      }
+    }
+  }
+
+  private static void validateUniqueTeeth(List<ToothDto> teeth) {
+    List<ToothDto> uniqueTeeth = teeth.stream().distinct().toList();
+    if (teeth.size() != uniqueTeeth.size()) {
+      throw new BadRequestException("There are teeth twice in the list.");
     }
   }
 }

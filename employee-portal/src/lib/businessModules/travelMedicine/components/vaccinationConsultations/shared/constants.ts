@@ -6,7 +6,7 @@
 import {
   ApiAppointmentBookingType,
   ApiServiceStatus,
-} from "@eshg/employee-portal-api/travelMedicine";
+} from "@eshg/travel-medicine-api";
 import { ChipProps } from "@mui/joy";
 
 export const statusColors = {

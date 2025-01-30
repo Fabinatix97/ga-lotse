@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import {
   ApiMedicalHistoryTemplate,
   ApiMedicalHistoryTemplateState,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+} from "@eshg/travel-medicine-api";
 import {
   DeleteOutlined,
   EditOutlined,

@@ -6,7 +6,7 @@
 import {
   ApiTemplateAnamnesisQuestion,
   ApiTemplateSubElementText,
-} from "@eshg/employee-portal-api/travelMedicine";
+} from "@eshg/travel-medicine-api";
 import { Add } from "@mui/icons-material";
 import { Box, Button } from "@mui/joy";
 import { FieldArray } from "formik";

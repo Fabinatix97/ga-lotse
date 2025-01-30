@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAppointment } from "@eshg/citizen-portal-api/travelMedicine";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
+import { ApiAppointment } from "@eshg/travel-medicine-api";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { Grid, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";

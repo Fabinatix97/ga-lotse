@@ -5,8 +5,9 @@
 
 "use client";
 
-import { startTransition, useState } from "react";
-import { isDefined } from "remeda";
+import { ApiSortDirection } from "@eshg/employee-portal-api/stiProtection";
+import { startTransition, useEffect, useState } from "react";
+import { isDefined, isNullish } from "remeda";
 
 import {
   isValidAttributeKey,
@@ -32,9 +33,9 @@ export default function EvaluationDetailsTablePage(
 ) {
   const { resetPageNumber, page, pageSize, getPaginationProps } =
     usePagination();
-  const { sortKey, sortDirection, manualSortingProps } = useTableSorting({
-    onSortingChange: () => resetPageNumber(),
-  });
+
+  const [sortKey, setSortKey] = useState<string>();
+  const [sortDirection, setSortDirection] = useState<ApiSortDirection>();
 
   const [filters, setFilters] = useState<EvaluationFilter[]>([]);
 
@@ -55,6 +56,31 @@ export default function EvaluationDetailsTablePage(
     props.params.id,
   );
 
+  const sortableAccessorKey = evaluation.attributes.find(
+    (attribute) => attribute.type !== "ProcedureReferenceAttribute",
+  )?.key;
+
+  const {
+    sortKey: tableSortKey,
+    sortDirection: tableSortDirection,
+    manualSortingProps,
+  } = useTableSorting({
+    onSortingChange: () => resetPageNumber(),
+    initialSorting: isDefined(sortableAccessorKey)
+      ? {
+          id: sortableAccessorKey,
+          desc: false,
+        }
+      : undefined,
+  });
+
+  useEffect(() => {
+    startTransition(() => {
+      setSortKey(tableSortKey);
+      setSortDirection(tableSortDirection);
+    });
+  }, [tableSortDirection, tableSortKey]);
+
   const evaluationDetailsTableProps: EvaluationDetailsTableProps = {
     attributes: evaluation.attributes,
     tableData: evaluation.tableData,
@@ -69,6 +95,7 @@ export default function EvaluationDetailsTablePage(
         resetPageNumber();
       }),
     filterTemplates: filterTemplates,
+    loading: isNullish(sortKey),
   };
 
   return (

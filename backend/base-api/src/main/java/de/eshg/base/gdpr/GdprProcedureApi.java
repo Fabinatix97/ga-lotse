@@ -23,6 +23,7 @@ import de.eshg.base.gdpr.api.GetGdprProceduresResponse;
 import de.eshg.base.gdpr.api.SetMatterOfConcernRequest;
 import de.eshg.base.gdpr.api.StartGdprProcedureRequest;
 import de.eshg.rest.service.security.config.BaseUrls;
+import de.eshg.rest.service.security.config.BaseUrls.Base;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -38,15 +39,26 @@ import org.springframework.web.service.annotation.*;
 @HttpExchange(url = GdprProcedureApi.BASE_URL)
 public interface GdprProcedureApi {
   String BASE_URL = BaseUrls.Base.GDPR_PROCEDURE_API;
-  String REFRESH_URL_SUFFIX = "/{id}/refresh-status";
   String SELF_LINKED_GDPR_PROCEDURES = "/self/linked-gdpr-procedures";
+  String CITIZEN_PORTAL_URL = Base.GDPR_PROCEDURE_CITIZEN_PORTAL_URL;
+  String DOWNLOADS = Base.Gdpr.DOWNLOADS;
+  String FILE_STATE_IDS = Base.Gdpr.FILE_STATE_IDS;
+  String BY_ID = Base.Gdpr.BY_ID;
+  String DETAILS_PAGE = Base.Gdpr.DETAILS_PAGE;
+  String REPORT_DOCUMENT = Base.Gdpr.REPORT_DOCUMENT;
+  String MATTER_OF_CONCERN = Base.Gdpr.MATTER_OF_CONCERN;
+  String REFRESH_STATUS = Base.Gdpr.REFRESH_STATUS;
+  String START_PROCEDURE = Base.Gdpr.START_PROCEDURE;
+  String CANCEL_PROCEDURE = Base.Gdpr.CANCEL_PROCEDURE;
+  String CLOSE_PROCEDURE = Base.Gdpr.CLOSE_PROCEDURE;
+  String CENTRAL_FILE_DOWNLOAD_PACKAGE = Base.Gdpr.CENTRAL_FILE_DOWNLOAD_PACKAGE;
 
   @PostExchange
   @ApiResponse(responseCode = "200")
   @Operation(summary = "Add a GDPR procedure")
   GetGdprProcedureResponse addGdprProcedure(@RequestBody @Valid AddGdprProcedureRequest request);
 
-  @PostExchange(BaseUrls.Base.GDPR_PROCEDURE_CITIZEN_PORTAL_URL)
+  @PostExchange(CITIZEN_PORTAL_URL)
   @ApiResponse(responseCode = "200")
   @Operation(
       summary =
@@ -58,25 +70,25 @@ public interface GdprProcedureApi {
   GetGdprProcedureResponse addGdprProcedureFromCitizenPortal(
       @RequestBody @Valid AddGdprProcedureFromCitizenPortalRequest request);
 
-  @GetExchange(BaseUrls.Base.GDPR_PROCEDURE_CITIZEN_PORTAL_URL + SELF_LINKED_GDPR_PROCEDURES)
+  @GetExchange(CITIZEN_PORTAL_URL + SELF_LINKED_GDPR_PROCEDURES)
   @ApiResponse(responseCode = "200")
   @Operation(
       summary = "Get the GDPR procedures linked with the citizen user which is currently active")
   GetCitizenSelfUsersGdprProceduresResponse getCitizenSelfUserLinkedGdprProcedures();
 
-  @GetExchange("/{id}")
+  @GetExchange(BY_ID)
   @ApiResponse(responseCode = "200")
   @Operation(summary = "Get GDPR procedure by id")
   GetGdprProcedureResponse getGdprProcedure(
       @Parameter(description = "The Id of the GDPR procedure.") @PathVariable("id") UUID id);
 
-  @PostExchange(REFRESH_URL_SUFFIX)
+  @PostExchange(REFRESH_STATUS)
   @ApiResponse(responseCode = "200")
   @Operation(summary = "Refresh status of GDPR procedure.")
   GetGdprProcedureResponse refreshStatus(
       @Parameter(description = "The Id of the GDPR procedure.") @PathVariable("id") UUID id);
 
-  @GetExchange("/{id}/details-page")
+  @GetExchange(DETAILS_PAGE)
   @ApiResponse(responseCode = "200")
   @Operation(
       summary =
@@ -92,14 +104,14 @@ public interface GdprProcedureApi {
   GetGdprProceduresResponse getGdprProcedures(
       @InlineParameterObject @ParameterObject @Valid GdprProcedureFilterParameters parameters);
 
-  @PostExchange("/{id}")
+  @PostExchange(BY_ID)
   @ApiResponse(responseCode = "200")
   @Operation(summary = "Add central file id to GDPR procedure.")
   GetGdprProcedureResponse addCentralFileIdToGdprProcedure(
       @Parameter(description = "The Id of the GDPR procedure.") @PathVariable("id") UUID id,
       @RequestBody @Valid AddCentralFileIdToGdprProcedureRequest request);
 
-  @PutExchange("/{id}/matter-of-concern")
+  @PutExchange(MATTER_OF_CONCERN)
   @ApiResponse(responseCode = "200")
   @Operation(
       summary =
@@ -107,36 +119,36 @@ public interface GdprProcedureApi {
   void setMatterOfConcern(
       @PathVariable("id") UUID id, @RequestBody @Valid SetMatterOfConcernRequest request);
 
-  @PostExchange("/{id}/start-procedure")
+  @PostExchange(START_PROCEDURE)
   @ApiResponse(responseCode = "200")
   @Operation(summary = "Start the GDPR procedure")
   void startProcedure(
       @PathVariable("id") UUID id, @RequestBody @Valid StartGdprProcedureRequest request);
 
-  @PostExchange("/{id}/cancel-procedure")
+  @PostExchange(CANCEL_PROCEDURE)
   @ApiResponse(responseCode = "200")
   @Operation(summary = "Cancel the GDPR procedure")
   void cancelProcedure(
       @PathVariable("id") UUID id, @RequestBody @Valid CancelGdprProcedureRequest request);
 
-  @PostExchange("/{id}/close-procedure")
+  @PostExchange(CLOSE_PROCEDURE)
   @ApiResponse(responseCode = "200")
   @Operation(summary = "Close the GDPR procedure")
   void closeProcedure(
       @PathVariable("id") UUID id, @RequestBody @Valid CloseGdprProcedureRequest request);
 
-  @GetExchange("/{id}/fileStateIds")
+  @GetExchange(FILE_STATE_IDS)
   @ApiResponse(responseCode = "200")
   @Operation(summary = "Get file state ids of this gdpr procedure.")
   GetGdprProcedureFileStateIdsResponse getFileStateIds(
       @Parameter(description = "The Id of the GDPR procedure.") @PathVariable("id") UUID id);
 
-  @GetExchange("/{id}/report-document")
+  @GetExchange(REPORT_DOCUMENT)
   @ApiResponse(responseCode = "200")
   @Operation(summary = "Returns the relevant report as PDF for this GDPR Procedure.")
   ResponseEntity<Resource> getReportDocument(@PathVariable("id") UUID id);
 
-  @PostExchange("/{id}/downloads")
+  @PostExchange(DOWNLOADS)
   @ApiResponse(responseCode = "200")
   @Operation(
       summary =
@@ -144,14 +156,14 @@ public interface GdprProcedureApi {
   void addDownloads(
       @PathVariable("id") UUID id, @RequestBody @Valid AddGdprDownloadsRequest request);
 
-  @GetExchange("/{id}/downloads")
+  @GetExchange(DOWNLOADS)
   @ApiResponse(responseCode = "200")
   @Operation(
       summary =
           "Get list of download ids of GDPR-related documents or data of this GDPR procedure.")
   GetGdprDownloadsResponse getDownloads(@PathVariable("id") UUID id);
 
-  @DeleteExchange("/{id}/downloads")
+  @DeleteExchange(DOWNLOADS)
   @ApiResponse(responseCode = "200")
   @Operation(
       summary =
@@ -159,7 +171,7 @@ public interface GdprProcedureApi {
   void deleteDownloads(
       @PathVariable("id") UUID id, @RequestBody @Valid DeleteGdprDownloadsRequest request);
 
-  @GetExchange("/{id}/central-file-download-package")
+  @GetExchange(CENTRAL_FILE_DOWNLOAD_PACKAGE)
   @ApiResponse(responseCode = "200")
   @Operation(
       summary = "Get Gdpr Download Package of central files linked to given Gdpr Procedure Id")

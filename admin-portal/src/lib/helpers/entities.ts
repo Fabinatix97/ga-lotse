@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAdminStagedEntityType } from "@eshg/admin-portal-api/serviceDirectory";
+import { ApiAdminStagedEntityType } from "@eshg/service-directory-api";
 import { FunctionComponent, ReactNode } from "react";
 
 import { OverridableTableRowProps } from "@/lib/components/table/TableRow";

@@ -1,0 +1,148 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "description" : "This is the api for Local Service Directory",
+    "title" : "Local Service Directory Api",
+    "version" : "0.1"
+  },
+  "servers" : [ {
+    "url" : "http://localhost:8089"
+  } ],
+  "paths" : {
+    "/actor/announce" : {
+      "put" : {
+        "description" : "Only after an actor was provided with a valid certificate, the requirements to communicate with other actors are fulfilled.",
+        "operationId" : "announceActor",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AnnounceRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Actor"
+                }
+              }
+            },
+            "description" : "Returns the announced actor"
+          }
+        },
+        "summary" : "Announce an actor by updating its certificate",
+        "tags" : [ "LsdActor" ]
+      }
+    },
+    "/orgUnit/actors" : {
+      "get" : {
+        "operationId" : "getActors",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetActorsResponse"
+                }
+              }
+            },
+            "description" : "Returns all actors associated with the orgUnit"
+          }
+        },
+        "summary" : "Get all actors of the orgUnit",
+        "tags" : [ "LsdOrgUnit" ]
+      }
+    },
+    "/orgUnit/name" : {
+      "get" : {
+        "operationId" : "getName",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            },
+            "description" : "Returns the name of the orgUnit"
+          }
+        },
+        "summary" : "Get the name of the orgUnit",
+        "tags" : [ "LsdOrgUnit" ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Actor" : {
+        "required" : [ "commonName" ],
+        "type" : "object",
+        "properties" : {
+          "certificate" : {
+            "$ref" : "#/components/schemas/Certificate"
+          },
+          "commonName" : {
+            "type" : "string"
+          },
+          "readableName" : {
+            "type" : "string"
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/ActorType"
+          }
+        }
+      },
+      "ActorType" : {
+        "type" : "string",
+        "enum" : [ "EXT", "GM", "FM", "LSD", "MISC", "WEB", "ZA", "ZR" ]
+      },
+      "AnnounceRequest" : {
+        "type" : "object",
+        "properties" : {
+          "certificate" : {
+            "type" : "string"
+          },
+          "readableName" : {
+            "type" : "string"
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/ActorType"
+          }
+        }
+      },
+      "Certificate" : {
+        "required" : [ "signatory", "signature", "value" ],
+        "type" : "object",
+        "properties" : {
+          "signatory" : {
+            "type" : "string"
+          },
+          "signature" : {
+            "type" : "string"
+          },
+          "value" : {
+            "type" : "string"
+          }
+        }
+      },
+      "GetActorsResponse" : {
+        "required" : [ "actors" ],
+        "type" : "object",
+        "properties" : {
+          "actors" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Actor"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -37,6 +37,7 @@ export function useGetProcedureIds({
       };
     },
     enabled: procedureReferenceIds.length > 0,
+    throwOnError: false,
   });
 
   return query.data;

@@ -7,7 +7,7 @@ import { SxProps } from "@mui/joy/styles/types";
 import { useFormikContext } from "formik";
 import { PropsWithChildren } from "react";
 
-import { FieldSetControl } from "@/lib/shared/components/formFields/CheckboxGroupField";
+import { FieldSetControl } from "@/lib/shared/components/formFields/FieldSetControl";
 import {
   RadioButtonsField,
   RadioButtonsFieldProps,

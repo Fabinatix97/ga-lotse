@@ -6,13 +6,13 @@
 "use client";
 
 import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
-import { ApiProcedureStatus } from "@eshg/employee-portal-api/travelMedicine";
 import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import {
   isDateString,
   toDateString,
   toUtcDate,
 } from "@eshg/lib-portal/helpers/dateTime";
+import { ApiProcedureStatus } from "@eshg/travel-medicine-api";
 import {
   KeyboardArrowLeftOutlined,
   KeyboardArrowRightOutlined,

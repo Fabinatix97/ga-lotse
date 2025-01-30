@@ -14,7 +14,7 @@ export interface GradientIconProps extends Omit<SvgIconProps, "style"> {
 }
 
 export function GradientIcon({ iconClass, ...props }: GradientIconProps) {
-  const iconProps = { ...props, sx: { fill: "url(#gradient)" } };
+  const iconProps = { ...props, sx: { fill: "url(#gradient)", ...props.sx } };
   const icon = createElement(iconClass, iconProps);
 
   return (

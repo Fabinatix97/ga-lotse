@@ -63,7 +63,7 @@ export function SelectField<
   const FieldComponent = props.component ?? BaseField;
   const SelectComponent = props.select ?? Select;
   const field = useBaseField<SelectFieldValue<TMultiple>>(props);
-  const disabled = useIsFormDisabled();
+  const disabled = useIsFormDisabled() || props.disabled;
 
   const { enqueue } = usePromiseSequencer();
 
@@ -75,7 +75,7 @@ export function SelectField<
       error={field.error}
       className={props.className}
       sx={props.sx}
-      disabled={props.disabled}
+      disabled={disabled}
     >
       <SelectComponent
         name={props.name}
@@ -102,7 +102,7 @@ export function SelectField<
         }}
         multiple={props.multiple}
         placeholder={props.placeholder}
-        disabled={disabled || props.disabled}
+        disabled={disabled}
         renderValue={props.renderValue}
         color={props.primary ? "primary" : undefined}
       >

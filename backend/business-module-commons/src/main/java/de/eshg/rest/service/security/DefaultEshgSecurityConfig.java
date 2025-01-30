@@ -23,7 +23,6 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.http.HttpMethod;
@@ -71,12 +70,6 @@ public class DefaultEshgSecurityConfig {
   @ConditionalOnTestHelperEnabled
   AuthorizationCustomizer testHelperSecurityConfig() {
     return auth -> auth.requestMatchers("/test-helper/**").permitAll();
-  }
-
-  @Bean
-  @Profile("test")
-  AuthorizationCustomizer apiDocsSecurityConfig() {
-    return auth -> auth.requestMatchers(HttpMethod.GET, "/api-docs.yaml").permitAll();
   }
 
   @Bean

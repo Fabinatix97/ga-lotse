@@ -7,7 +7,7 @@ import {
   ApiAppointmentType,
   ApiServicePlanGroup,
   PatchAppointmentRequest,
-} from "@eshg/employee-portal-api/travelMedicine";
+} from "@eshg/travel-medicine-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { usePatchAppointment } from "@/lib/businessModules/travelMedicine/api/mutations/procedureSteps";

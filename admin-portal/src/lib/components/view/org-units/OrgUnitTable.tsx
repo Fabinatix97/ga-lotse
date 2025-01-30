@@ -12,7 +12,7 @@ import {
   ApiFederalState,
   ApiGetOrgUnitsResponse,
   ApiOrgUnitType,
-} from "@eshg/admin-portal-api/serviceDirectory";
+} from "@eshg/service-directory-api";
 import { createColumnHelper, filterFns } from "@tanstack/react-table";
 import { useMemo } from "react";
 

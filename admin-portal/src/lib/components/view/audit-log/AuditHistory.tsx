@@ -15,7 +15,7 @@ import {
   ApiPairAdminPartialActor,
   ApiPairAdminPartialOrgUnit,
   ApiPairAdminPartialRule,
-} from "@eshg/admin-portal-api/serviceDirectory";
+} from "@eshg/service-directory-api";
 import { Stack, Typography } from "@mui/joy";
 import { TFunction } from "i18next";
 import { isEmpty } from "remeda";

@@ -113,6 +113,24 @@ public class OmsAppointmentService {
     appointment.setAppointment(null); // to unlock appointment block
   }
 
+  @Transactional
+  public void closeAppointmentEmployee(UUID appointmentId) {
+    OmsAppointment appointment = loadAppointment(appointmentId);
+
+    if (appointment.getProcedure().isFinalized()) {
+      throw new BadRequestException("Procedure is already closed.");
+    }
+    if (AppointmentState.CLOSED == appointment.getAppointmentState()) {
+      throw new BadRequestException("Appointment is already closed.");
+    }
+
+    if (BookingState.BOOKABLE == appointment.getBookingState()) {
+      appointment.setBookingState(BookingState.WITHDRAWN);
+    }
+
+    appointment.setAppointmentState(AppointmentState.CLOSED);
+  }
+
   private void processBooking(BookingInfoDto bookingInfo, OmsAppointment appointment) {
     BookingTypeDto bookingTypeDto = bookingInfo.bookingType();
     Instant start = bookingInfo.start();

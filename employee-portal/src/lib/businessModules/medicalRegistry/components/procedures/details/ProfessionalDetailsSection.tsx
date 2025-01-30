@@ -18,7 +18,10 @@ import { isDefined } from "remeda";
 import { ContactData } from "@/lib/businessModules/medicalRegistry/components/procedures/details/ContactData";
 import { GENDER_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";
 import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import {
+  DetailsCell,
+  DetailsCellWrapped,
+} from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
 import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
@@ -66,33 +69,33 @@ export function ProfessionalDetailsSection({
           <DetailsColumn>
             <DetailsRow>
               {isDefined(applicant.title) && (
-                <DetailsCell
+                <DetailsCellWrapped
                   label={PROFESSIONAL_FIELD_NAME.title}
                   value={applicant.title}
                 />
               )}
-              <DetailsCell
+              <DetailsCellWrapped
                 label={PROFESSIONAL_FIELD_NAME.firstName}
                 value={applicant.firstName}
               />
-              <DetailsCell
+              <DetailsCellWrapped
                 label={PROFESSIONAL_FIELD_NAME.lastName}
                 value={applicant.lastName}
               />
             </DetailsRow>
             {isDefined(applicant.nameAtBirth) && (
-              <DetailsCell
+              <DetailsCellWrapped
                 label={PROFESSIONAL_FIELD_NAME.nameAtBirth}
                 value={applicant.nameAtBirth}
               />
             )}
             <DetailsRow>
-              <DetailsCell
+              <DetailsCellWrapped
                 label={PROFESSIONAL_FIELD_NAME.dateOfBirth}
                 value={formatDate(applicant.dateOfBirth)}
               />
               {isDefined(applicant.placeOfBirth) && (
-                <DetailsCell
+                <DetailsCellWrapped
                   label={PROFESSIONAL_FIELD_NAME.placeOfBirth}
                   value={applicant.placeOfBirth}
                 />
@@ -113,16 +116,16 @@ export function ProfessionalDetailsSection({
             <DetailsColumn>
               {isDefined(address) && (
                 <>
-                  <DetailsCell
+                  <DetailsCellWrapped
                     label={PROFESSIONAL_FIELD_NAME.streetAndHouseNumber}
                     value={streetAndHouseNumber(address)}
                   />
                   <DetailsRow>
-                    <DetailsCell
+                    <DetailsCellWrapped
                       label={PROFESSIONAL_FIELD_NAME.postalCode}
                       value={address.postalCode}
                     />
-                    <DetailsCell
+                    <DetailsCellWrapped
                       label={PROFESSIONAL_FIELD_NAME.city}
                       value={address.city}
                       avoidWrap
@@ -142,7 +145,7 @@ export function ProfessionalDetailsSection({
               {(isDefined(professionInformation.professionalTitle) ||
                 isDefined(professionInformation.fieldOfExpertise)) && (
                 <DetailsRow>
-                  <DetailsCell
+                  <DetailsCellWrapped
                     label={PROFESSIONAL_FIELD_NAME.professionalTitle}
                     value={
                       professionInformation.professionalTitle &&
@@ -151,7 +154,7 @@ export function ProfessionalDetailsSection({
                       ]
                     }
                   />
-                  <DetailsCell
+                  <DetailsCellWrapped
                     label={PROFESSIONAL_FIELD_NAME.fieldOfExpertise}
                     value={professionInformation.fieldOfExpertise}
                   />
@@ -160,17 +163,17 @@ export function ProfessionalDetailsSection({
               {(isDefined(professionInformation.specialistTitle) ||
                 isDefined(professionInformation.furtherTraining)) && (
                 <DetailsRow>
-                  <DetailsCell
+                  <DetailsCellWrapped
                     label={PROFESSIONAL_FIELD_NAME.specialistTitle}
                     value={professionInformation.specialistTitle}
                   />
-                  <DetailsCell
+                  <DetailsCellWrapped
                     label={PROFESSIONAL_FIELD_NAME.furtherTraining}
                     value={professionInformation.furtherTraining}
                   />
                 </DetailsRow>
               )}
-              <DetailsCell
+              <DetailsCellWrapped
                 label={PROFESSIONAL_FIELD_NAME.qualifications}
                 value={professionInformation.qualifications}
               />
@@ -203,7 +206,7 @@ export function ProfessionalDetailsSection({
                 label={PROFESSIONAL_FIELD_NAME.approbationGrantedOn}
                 value={formatDate(professionInformation.approbationGrantedOn)}
               />
-              <DetailsCell
+              <DetailsCellWrapped
                 label={PROFESSIONAL_FIELD_NAME.approbationIssuingAuthority}
                 value={professionInformation.approbationIssuingAuthority}
               />

@@ -34,6 +34,10 @@ public record StiProtectionProcedureData(StiProtectionProcedure procedure, Strin
     return procedure.getConcern();
   }
 
+  public Boolean isFollowUp() {
+    return procedure.isFollowUp();
+  }
+
   public Person person() {
     return procedure.getPerson();
   }

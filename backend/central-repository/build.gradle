@@ -22,9 +22,6 @@ dependencies {
     testImplementation testFixtures(project(':lib-service-directory-admin-api'))
     testImplementation project(':lib-service-directory-admin-api')
     testImplementation testFixtures(project(':business-module-commons'))
-
-    testImplementation 'org.testcontainers:junit-jupiter'
-    testImplementation 'org.testcontainers:postgresql'
 }
 
 

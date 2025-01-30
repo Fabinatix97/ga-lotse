@@ -1,0 +1,850 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "description" : "This is a the generic API for all business modules",
+    "title" : "The generic appointmentblock library API for business modules",
+    "version" : "0.1"
+  },
+  "servers" : [ {
+    "url" : "http://localhost:8080"
+  } ],
+  "paths" : {
+    "/appointment-blocks/appointment-block-groups" : {
+      "get" : {
+        "operationId" : "getAppointmentBlockGroups",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "sortKey",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/AppointmentBlockSortKey"
+          }
+        }, {
+          "in" : "query",
+          "name" : "sortDirection",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/SortDirection"
+          }
+        }, {
+          "in" : "query",
+          "name" : "pageNumber",
+          "required" : false,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "in" : "query",
+          "name" : "pageSize",
+          "required" : false,
+          "schema" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetAppointmentBlockGroupsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get all appointment block groups.",
+        "tags" : [ "AppointmentBlock" ]
+      }
+    },
+    "/appointment-blocks/daily-appointment-block-groups" : {
+      "post" : {
+        "operationId" : "createDailyAppointmentBlocksForGroup",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateDailyAppointmentBlockGroupRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CreateAppointmentBlockGroupResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Create appointment group with blocks for week days.",
+        "tags" : [ "AppointmentBlock" ]
+      }
+    },
+    "/appointment-blocks/daily-appointment-block-groups/validate" : {
+      "post" : {
+        "operationId" : "validateDailyAppointmentBlocksForGroup",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateDailyAppointmentBlockGroupRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ValidateAppointmentBlockGroupResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Create appointment group with blocks for week days.",
+        "tags" : [ "AppointmentBlock" ]
+      }
+    },
+    "/appointment-blocks/free-appointments" : {
+      "get" : {
+        "operationId" : "getFreeAppointments",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "appointmentType",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/AppointmentType"
+          }
+        }, {
+          "in" : "query",
+          "name" : "earliestDate",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "in" : "query",
+          "name" : "physicianId",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetFreeAppointmentsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get free appointments for an appointment type.",
+        "tags" : [ "AppointmentBlock" ]
+      }
+    },
+    "/appointment-types" : {
+      "get" : {
+        "operationId" : "getAppointmentTypes",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetAppointmentTypesResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Gets all Appointment Types",
+        "tags" : [ "AppointmentType" ]
+      }
+    },
+    "/appointment-types/{id}" : {
+      "get" : {
+        "operationId" : "getOneAppointmentType",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AppointmentTypeConfig"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Gets one Appointment Type by ID",
+        "tags" : [ "AppointmentType" ]
+      },
+      "put" : {
+        "operationId" : "updateAppointmentType",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateAppointmentTypeRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AppointmentTypeConfig"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Modifies an existing Appointment Type",
+        "tags" : [ "AppointmentType" ]
+      }
+    },
+    "/test-helper/population" : {
+      "post" : {
+        "operationId" : "populateDefaults",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DefaultPopulationResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/request-interceptor" : {
+      "post" : {
+        "operationId" : "interceptNextRequest",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/InsertRequestInterceptionTestHelperRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/request-interceptor/barriers" : {
+      "post" : {
+        "operationId" : "addBarrier",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TestHelperInterceptionRequestFilter"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AddBarrierTestHelperResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/request-interceptor/barriers/{barrierId}/await" : {
+      "post" : {
+        "operationId" : "awaitBarrier",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "barrierId",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "in" : "query",
+          "name" : "timeoutInMillis",
+          "required" : false,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/request-interceptor/reset" : {
+      "post" : {
+        "operationId" : "resetInterceptionsAndBarriers",
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/reset" : {
+      "post" : {
+        "operationId" : "reset",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TestHelperClockUpdateResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/set-clock" : {
+      "patch" : {
+        "operationId" : "setClock",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TestHelperClockSetRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TestHelperClockUpdateResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/wind-clock" : {
+      "patch" : {
+        "operationId" : "windClockForward",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TestHelperClockWindForwardRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TestHelperClockUpdateResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "AddBarrierTestHelperResponse" : {
+        "required" : [ "barrierId" ],
+        "type" : "object",
+        "properties" : {
+          "barrierId" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "Appointment" : {
+        "required" : [ "end", "start" ],
+        "type" : "object",
+        "properties" : {
+          "end" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "start" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        },
+        "description" : "Appointment of a procedure."
+      },
+      "AppointmentBlockSortKey" : {
+        "type" : "string",
+        "enum" : [ "START", "END" ]
+      },
+      "AppointmentLocation" : {
+        "required" : [ "id", "name" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "name" : {
+            "type" : "string"
+          }
+        }
+      },
+      "AppointmentType" : {
+        "type" : "string",
+        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE" ]
+      },
+      "AppointmentTypeConfig" : {
+        "required" : [ "appointmentTypeDto", "id", "standardDurationInMinutes" ],
+        "type" : "object",
+        "properties" : {
+          "appointmentTypeDto" : {
+            "$ref" : "#/components/schemas/AppointmentType"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "standardDurationInMinutes" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "CreateAppointmentBlockGroupResponse" : {
+        "required" : [ "appointmentBlockIds", "id" ],
+        "type" : "object",
+        "properties" : {
+          "appointmentBlockIds" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Id of the AppointmentBlockGroup.",
+            "format" : "uuid",
+            "example" : "UUID_1"
+          }
+        }
+      },
+      "CreateDailyAppointmentBlock" : {
+        "required" : [ "daysOfWeek", "end", "start" ],
+        "type" : "object",
+        "properties" : {
+          "daysOfWeek" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DayOfWeek"
+            }
+          },
+          "end" : {
+            "type" : "string",
+            "description" : "Time at which the appointment block ends.",
+            "format" : "date-time",
+            "example" : "2016-01-01T01:45:00.123456+01:00"
+          },
+          "start" : {
+            "type" : "string",
+            "description" : "Time at which the appointment block starts.",
+            "format" : "date-time",
+            "example" : "2016-01-01T01:00:00.123456+01:00"
+          }
+        }
+      },
+      "CreateDailyAppointmentBlockGroupRequest" : {
+        "required" : [ "appointmentBlocks", "parallelExaminations", "type" ],
+        "type" : "object",
+        "properties" : {
+          "appointmentBlocks" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CreateDailyAppointmentBlock"
+            }
+          },
+          "consultants" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "locationId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "mfas" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "parallelExaminations" : {
+            "maximum" : 10,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "physicians" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/AppointmentType"
+          }
+        }
+      },
+      "DayOfWeek" : {
+        "type" : "string",
+        "enum" : [ "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY" ]
+      },
+      "DefaultPopulationResponse" : {
+        "type" : "object",
+        "properties" : {
+          "populations" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Population"
+            }
+          }
+        }
+      },
+      "GetAppointmentBlock" : {
+        "required" : [ "end", "id", "numberOfBookedAppointments", "numberOfFreeAppointments", "start" ],
+        "type" : "object",
+        "properties" : {
+          "end" : {
+            "type" : "string",
+            "description" : "Time at which the appointment block ends.",
+            "format" : "date-time",
+            "example" : "2016-01-01T01:45:00.123456+01:00"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Id of the AppointmentBlock.",
+            "format" : "uuid",
+            "example" : "UUID_1"
+          },
+          "numberOfBookedAppointments" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "numberOfFreeAppointments" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "start" : {
+            "type" : "string",
+            "description" : "Time at which the appointment block starts.",
+            "format" : "date-time",
+            "example" : "2016-01-01T01:00:00.123456+01:00"
+          }
+        },
+        "description" : "A planned appointment block. Appointment blocks offer a set of bookable appointments at different times within the timeframe of the appointment block."
+      },
+      "GetAppointmentBlockGroup" : {
+        "required" : [ "appointmentBlocks", "id", "parallelExaminations", "type" ],
+        "type" : "object",
+        "properties" : {
+          "appointmentBlocks" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/GetAppointmentBlock"
+            }
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Id of the AppointmentBlockGroup.",
+            "format" : "uuid",
+            "example" : "UUID_1"
+          },
+          "location" : {
+            "$ref" : "#/components/schemas/AppointmentLocation"
+          },
+          "parallelExaminations" : {
+            "maximum" : 10,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/AppointmentType"
+          }
+        }
+      },
+      "GetAppointmentBlockGroupsResponse" : {
+        "required" : [ "elements", "totalNumberOfElements" ],
+        "type" : "object",
+        "properties" : {
+          "elements" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/GetAppointmentBlockGroup"
+            }
+          },
+          "totalNumberOfElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "GetAppointmentTypesResponse" : {
+        "required" : [ "appointmentTypeConfigDtos" ],
+        "type" : "object",
+        "properties" : {
+          "appointmentTypeConfigDtos" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppointmentTypeConfig"
+            }
+          }
+        }
+      },
+      "GetFreeAppointmentsResponse" : {
+        "required" : [ "appointments" ],
+        "type" : "object",
+        "properties" : {
+          "appointments" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Appointment"
+            }
+          }
+        }
+      },
+      "HttpMethod" : {
+        "type" : "string",
+        "enum" : [ "GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "TRACE" ]
+      },
+      "InsertRequestInterceptionTestHelperRequest" : {
+        "required" : [ "type" ],
+        "type" : "object",
+        "properties" : {
+          "filter" : {
+            "$ref" : "#/components/schemas/TestHelperInterceptionRequestFilter"
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/InterceptionType"
+          }
+        }
+      },
+      "InterceptionType" : {
+        "type" : "string",
+        "enum" : [ "BAD_REQUEST", "UNAUTHORIZED", "FORBIDDEN", "NOT_FOUND", "INTERNAL_SERVER_ERROR" ]
+      },
+      "Population" : {
+        "required" : [ "numberOfPopulatedEntities", "totalNumberOfEntities" ],
+        "type" : "object",
+        "properties" : {
+          "numberOfPopulatedEntities" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "populatorName" : {
+            "type" : "string"
+          },
+          "totalNumberOfEntities" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "SortDirection" : {
+        "type" : "string",
+        "enum" : [ "ASC", "DESC" ]
+      },
+      "TestHelperClockSetRequest" : {
+        "required" : [ "newInstant" ],
+        "type" : "object",
+        "properties" : {
+          "newInstant" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "TestHelperClockUpdateResponse" : {
+        "required" : [ "instant" ],
+        "type" : "object",
+        "properties" : {
+          "instant" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "TestHelperClockWindForwardRequest" : {
+        "required" : [ "days", "hours", "minutes", "months", "seconds", "weeks" ],
+        "type" : "object",
+        "properties" : {
+          "days" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "hours" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "minutes" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "months" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "seconds" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "weeks" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "TestHelperInterceptionRequestFilter" : {
+        "type" : "object",
+        "properties" : {
+          "httpMethodFilter" : {
+            "$ref" : "#/components/schemas/HttpMethod"
+          },
+          "queryPatternFilter" : {
+            "type" : "string"
+          },
+          "urlPatternFilter" : {
+            "type" : "string"
+          }
+        }
+      },
+      "UpdateAppointmentTypeRequest" : {
+        "required" : [ "standardDurationInMinutes" ],
+        "type" : "object",
+        "properties" : {
+          "standardDurationInMinutes" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "ValidateAppointmentBlockGroupResponse" : {
+        "required" : [ "userIdsWithEventConflicts", "userIdsWithoutEventConflicts" ],
+        "type" : "object",
+        "properties" : {
+          "userIdsWithEventConflicts" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "userIdsWithoutEventConflicts" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
+      }
+    }
+  }
+}

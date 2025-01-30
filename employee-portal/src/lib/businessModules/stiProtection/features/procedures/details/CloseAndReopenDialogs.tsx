@@ -165,21 +165,23 @@ export function ReopenConfirmationDialog({
       onConfirm={onConfirm}
     >
       <DetailsTable>
-        <tr>
-          <th scope="row">Aktenzeichen</th>
-          <td>-</td>
-        </tr>
-        <tr>
-          <th scope="row">Geburtsjahr</th>
-          <td>{personDetails.yearOfBirth}</td>
-        </tr>
-        <tr>
-          <th scope="row">Geburtsland</th>
-          <td>
-            {personDetails.countryOfBirth &&
-              translateCountry(personDetails.countryOfBirth)}
-          </td>
-        </tr>
+        <tbody>
+          <tr>
+            <th scope="row">Aktenzeichen</th>
+            <td>-</td>
+          </tr>
+          <tr>
+            <th scope="row">Geburtsjahr</th>
+            <td>{personDetails.yearOfBirth}</td>
+          </tr>
+          <tr>
+            <th scope="row">Geburtsland</th>
+            <td>
+              {personDetails.countryOfBirth &&
+                translateCountry(personDetails.countryOfBirth)}
+            </td>
+          </tr>
+        </tbody>
       </DetailsTable>
     </EmployeePortalConfirmationDialog>
   );

@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetAppointmentDetailsResponse } from "@eshg/citizen-portal-api/travelMedicine";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { ApiGetAppointmentDetailsResponse } from "@eshg/travel-medicine-api";
 import { useSearchParams } from "next/navigation";
 import { createContext, useContext } from "react";
 

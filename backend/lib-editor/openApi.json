@@ -1,0 +1,775 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "description" : "This is the API for the editor library 'lib-editor'",
+    "title" : "The editor library API",
+    "version" : "0.1"
+  },
+  "servers" : [ {
+    "url" : "http://localhost:8080"
+  } ],
+  "paths" : {
+    "/editor/{editorId}" : {
+      "get" : {
+        "operationId" : "loadEditor",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "editorId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Editor"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get editor content",
+        "tags" : [ "Editor" ]
+      }
+    },
+    "/editor/{editorId}/element" : {
+      "post" : {
+        "operationId" : "insertEditorElement",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "editorId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/InsertEditorRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ModifyEditorElementResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Insert an editor element",
+        "tags" : [ "Editor" ]
+      }
+    },
+    "/editor/{editorId}/element/{elementId}" : {
+      "delete" : {
+        "operationId" : "deleteEditorElement",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "editorId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "path",
+          "name" : "elementId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Delete an editor element",
+        "tags" : [ "Editor" ]
+      },
+      "patch" : {
+        "operationId" : "updateEditorElement",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "editorId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "in" : "path",
+          "name" : "elementId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateEditorRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ModifyEditorElementResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update an editor element",
+        "tags" : [ "Editor" ]
+      }
+    },
+    "/textblocks" : {
+      "get" : {
+        "operationId" : "getTextBlocks",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "searchQuery",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "sortKey",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/TextBlockSortKey"
+          }
+        }, {
+          "in" : "query",
+          "name" : "sortDirection",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/SortDirection"
+          }
+        }, {
+          "in" : "query",
+          "name" : "pageNumber",
+          "required" : false,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "in" : "query",
+          "name" : "pageSize",
+          "required" : false,
+          "schema" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetTextBlocksResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get all text blocks, filtered and paginated",
+        "tags" : [ "TextBlock" ]
+      },
+      "post" : {
+        "operationId" : "createTextBlock",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TextBlockRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TextBlock"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Creates a new text block",
+        "tags" : [ "TextBlock" ]
+      }
+    },
+    "/textblocks/{textBlockId}" : {
+      "delete" : {
+        "operationId" : "deleteTextBlock",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "textBlockId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Delete a text block",
+        "tags" : [ "TextBlock" ]
+      },
+      "get" : {
+        "operationId" : "getTextBlock",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "textBlockId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TextBlock"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get a text block by its id",
+        "tags" : [ "TextBlock" ]
+      },
+      "patch" : {
+        "operationId" : "updateTextBlock",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "textBlockId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TextBlockRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TextBlock"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update the data for a text block",
+        "tags" : [ "TextBlock" ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Editor" : {
+        "required" : [ "editorBody", "id" ],
+        "type" : "object",
+        "properties" : {
+          "editorBody" : {
+            "$ref" : "#/components/schemas/EditorBody"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
+      "EditorBody" : {
+        "required" : [ "elements" ],
+        "type" : "object",
+        "properties" : {
+          "elements" : {
+            "type" : "array",
+            "items" : {
+              "oneOf" : [ {
+                "$ref" : "#/components/schemas/EditorElementAudios"
+              }, {
+                "$ref" : "#/components/schemas/EditorElementChapter"
+              }, {
+                "$ref" : "#/components/schemas/EditorElementFullTextBlock"
+              }, {
+                "$ref" : "#/components/schemas/EditorElementImages"
+              }, {
+                "$ref" : "#/components/schemas/EditorElementQA"
+              }, {
+                "$ref" : "#/components/schemas/EditorElementSection"
+              }, {
+                "$ref" : "#/components/schemas/EditorElementSeparator"
+              }, {
+                "$ref" : "#/components/schemas/EditorElementText"
+              }, {
+                "$ref" : "#/components/schemas/EditorElementTextBlock"
+              }, {
+                "$ref" : "#/components/schemas/EditorElementTopLevelTitle"
+              } ]
+            }
+          }
+        }
+      },
+      "EditorElement" : {
+        "required" : [ "@type", "deletable", "editable", "highlighted", "id", "moveable" ],
+        "type" : "object",
+        "properties" : {
+          "@type" : {
+            "type" : "string"
+          },
+          "deletable" : {
+            "type" : "boolean"
+          },
+          "editable" : {
+            "type" : "boolean"
+          },
+          "highlighted" : {
+            "type" : "boolean"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "moveable" : {
+            "type" : "boolean"
+          },
+          "referenceID" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        },
+        "discriminator" : {
+          "mapping" : {
+            "AUDIOS" : "#/components/schemas/EditorElementAudios",
+            "CHAPTER" : "#/components/schemas/EditorElementChapter",
+            "FULL_TEXT_BLOCK" : "#/components/schemas/EditorElementFullTextBlock",
+            "IMAGES" : "#/components/schemas/EditorElementImages",
+            "QUESTION_AND_ANSWERS" : "#/components/schemas/EditorElementQA",
+            "SECTION" : "#/components/schemas/EditorElementSection",
+            "SEPARATOR" : "#/components/schemas/EditorElementSeparator",
+            "TEXT" : "#/components/schemas/EditorElementText",
+            "TEXT_BLOCK" : "#/components/schemas/EditorElementTextBlock",
+            "TOPLEVEL_TITLE" : "#/components/schemas/EditorElementTopLevelTitle"
+          },
+          "propertyName" : "@type"
+        }
+      },
+      "EditorElementAnswer" : {
+        "required" : [ "answerId", "answerText", "selected" ],
+        "type" : "object",
+        "properties" : {
+          "answerId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "answerText" : {
+            "type" : "string"
+          },
+          "extraText" : {
+            "type" : "string"
+          },
+          "selected" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "EditorElementAudio" : {
+        "required" : [ "externalId" ],
+        "type" : "object",
+        "properties" : {
+          "externalId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "fileDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "fileName" : {
+            "type" : "string"
+          },
+          "fileSize" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "EditorElementAudios" : {
+        "required" : [ "audios", "deletable", "editable", "highlighted", "id", "moveable", "title" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/EditorElement"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "audios" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/EditorElementAudio"
+              }
+            },
+            "title" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
+      "EditorElementChapter" : {
+        "required" : [ "deletable", "editable", "highlighted", "id", "moveable", "title" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/EditorElement"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "title" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
+      "EditorElementFullTextBlock" : {
+        "required" : [ "deletable", "editable", "highlighted", "id", "moveable", "text", "title" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/EditorElement"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "text" : {
+              "type" : "string"
+            },
+            "title" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
+      "EditorElementImage" : {
+        "required" : [ "externalId" ],
+        "type" : "object",
+        "properties" : {
+          "externalId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "fileDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "fileName" : {
+            "type" : "string"
+          },
+          "fileSize" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "EditorElementImages" : {
+        "required" : [ "deletable", "editable", "highlighted", "id", "images", "moveable", "title" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/EditorElement"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "images" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/EditorElementImage"
+              }
+            },
+            "title" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
+      "EditorElementQA" : {
+        "required" : [ "answers", "deletable", "editable", "highlighted", "id", "moveable", "title" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/EditorElement"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "answers" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/EditorElementAnswer"
+              }
+            },
+            "title" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
+      "EditorElementSection" : {
+        "required" : [ "deletable", "editable", "highlighted", "id", "moveable", "title" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/EditorElement"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "title" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
+      "EditorElementSeparator" : {
+        "required" : [ "deletable", "editable", "highlighted", "id", "moveable" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/EditorElement"
+        } ]
+      },
+      "EditorElementText" : {
+        "required" : [ "deletable", "editable", "highlighted", "id", "moveable", "text" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/EditorElement"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "text" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
+      "EditorElementTextBlock" : {
+        "required" : [ "deletable", "editable", "highlighted", "id", "moveable", "text", "title" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/EditorElement"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "text" : {
+              "type" : "string"
+            },
+            "title" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
+      "EditorElementTopLevelTitle" : {
+        "required" : [ "deletable", "editable", "highlighted", "id", "moveable", "title" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/EditorElement"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "title" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
+      "GetTextBlocksResponse" : {
+        "required" : [ "elements", "totalNumberOfElements" ],
+        "type" : "object",
+        "properties" : {
+          "elements" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TextBlock"
+            }
+          },
+          "totalNumberOfElements" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "InsertEditorRequest" : {
+        "required" : [ "editorElement" ],
+        "type" : "object",
+        "properties" : {
+          "editorElement" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/EditorElementAudios"
+            }, {
+              "$ref" : "#/components/schemas/EditorElementChapter"
+            }, {
+              "$ref" : "#/components/schemas/EditorElementFullTextBlock"
+            }, {
+              "$ref" : "#/components/schemas/EditorElementImages"
+            }, {
+              "$ref" : "#/components/schemas/EditorElementQA"
+            }, {
+              "$ref" : "#/components/schemas/EditorElementSection"
+            }, {
+              "$ref" : "#/components/schemas/EditorElementSeparator"
+            }, {
+              "$ref" : "#/components/schemas/EditorElementText"
+            }, {
+              "$ref" : "#/components/schemas/EditorElementTextBlock"
+            }, {
+              "$ref" : "#/components/schemas/EditorElementTopLevelTitle"
+            } ]
+          },
+          "insertAfter" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "insertBefore" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "ModifyEditorElementResponse" : {
+        "required" : [ "element" ],
+        "type" : "object",
+        "properties" : {
+          "element" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/EditorElementAudios"
+            }, {
+              "$ref" : "#/components/schemas/EditorElementChapter"
+            }, {
+              "$ref" : "#/components/schemas/EditorElementFullTextBlock"
+            }, {
+              "$ref" : "#/components/schemas/EditorElementImages"
+            }, {
+              "$ref" : "#/components/schemas/EditorElementQA"
+            }, {
+              "$ref" : "#/components/schemas/EditorElementSection"
+            }, {
+              "$ref" : "#/components/schemas/EditorElementSeparator"
+            }, {
+              "$ref" : "#/components/schemas/EditorElementText"
+            }, {
+              "$ref" : "#/components/schemas/EditorElementTextBlock"
+            }, {
+              "$ref" : "#/components/schemas/EditorElementTopLevelTitle"
+            } ]
+          }
+        }
+      },
+      "MoveOperation" : {
+        "type" : "string",
+        "enum" : [ "UP", "DOWN" ]
+      },
+      "SortDirection" : {
+        "type" : "string",
+        "enum" : [ "ASC", "DESC" ]
+      },
+      "TextBlock" : {
+        "required" : [ "content", "id", "name" ],
+        "type" : "object",
+        "properties" : {
+          "content" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "name" : {
+            "type" : "string"
+          }
+        }
+      },
+      "TextBlockRequest" : {
+        "required" : [ "content", "name" ],
+        "type" : "object",
+        "properties" : {
+          "content" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          }
+        }
+      },
+      "TextBlockSortKey" : {
+        "type" : "string",
+        "enum" : [ "NAME" ]
+      },
+      "UpdateEditorRequest" : {
+        "type" : "object",
+        "properties" : {
+          "answerId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "moveOperation" : {
+            "$ref" : "#/components/schemas/MoveOperation"
+          },
+          "text" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          }
+        }
+      }
+    }
+  }
+}

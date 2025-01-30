@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { EnumMap } from "@eshg/lib-portal/types/helpers";
 import {
   ApiAppointmentBookingType,
   ApiProcedureStatus,
   ApiServiceStatus,
   ApiTravelTimeUnit,
   ApiTravelType,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { EnumMap } from "@eshg/lib-portal/types/helpers";
+} from "@eshg/travel-medicine-api";
 
 import { AllowedProcedureStatusForSearch } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultationSearch/VaccinationConsultationsSearchFilterSettings";
 

@@ -5,6 +5,7 @@
 
 import {
   ApiDiagnosis,
+  ApiIcd10Code,
   ApiTestType,
 } from "@eshg/employee-portal-api/stiProtection";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
@@ -20,6 +21,8 @@ export interface DiagnosisFormData {
   otherTests: string;
   notes: string;
   resultsShared: boolean | undefined;
+  selectedCodes?: string[];
+  findings?: ApiIcd10Code[];
 }
 
 export interface MedicationFormData {
@@ -54,6 +57,7 @@ export function mapApiToForm(api: ApiDiagnosis): DiagnosisFormData {
     otherTests: api.otherTestTypeName ?? "",
     notes: api.generalRemarks ?? "",
     resultsShared: api.resultsCommunicated,
+    findings: sortIcd10Codes(api.findings),
   };
 }
 
@@ -69,5 +73,21 @@ export function mapFormToApi(data: DiagnosisFormData): ApiDiagnosis {
     otherTestTypeName: mapOptionalValue(data.otherTests),
     generalRemarks: mapOptionalValue(data.notes),
     resultsCommunicated: data.resultsShared ?? false,
+    findings: data.findings ?? [],
   };
+}
+
+export function sortIcd10Codes(icd10Codes: ApiIcd10Code[] = []) {
+  function compareByCode(a: ApiIcd10Code, b: ApiIcd10Code) {
+    return a.code.localeCompare(b.code);
+  }
+  const groupCodes = icd10Codes
+    .filter(({ isGroup }) => isGroup)
+    .sort(compareByCode);
+  const nonGroupCodes = icd10Codes
+    .filter(({ isGroup }) => !isGroup)
+    .sort(compareByCode);
+  const groupPrioritizedCodes = [...groupCodes, ...nonGroupCodes];
+
+  return groupPrioritizedCodes;
 }

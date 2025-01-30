@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAppointmentBookingType } from "@eshg/citizen-portal-api/travelMedicine";
+import { ApiAppointmentBookingType } from "@eshg/travel-medicine-api";
 import { Button, Stack } from "@mui/joy";
 import { useRouter } from "next/navigation";
 

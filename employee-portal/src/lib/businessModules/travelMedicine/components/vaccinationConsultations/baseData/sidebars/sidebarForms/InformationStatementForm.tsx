@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { MultiAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/MultiAutocompleteField";
+import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
 import {
   ApiDisease,
   ApiInformationStatementTemplate,
   ApiInformationStatementTemplateState,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { MultiAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/MultiAutocompleteField";
-import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
+} from "@eshg/travel-medicine-api";
 import { Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { Ref, useState } from "react";

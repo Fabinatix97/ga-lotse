@@ -18,3 +18,7 @@ export const mukFacilityLinkApiQueryKey = queryKeyFactory(
 export const bundIdPersonLinkApiQueryKey = queryKeyFactory(
   apiQueryKey(["bundIdPersonLinkApi"]),
 );
+
+export const gdprProcedureApiQueryKey = queryKeyFactory(
+  apiQueryKey(["gdprProcedureApi"]),
+);

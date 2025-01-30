@@ -17,7 +17,7 @@ public record CreateProphylaxisSessionRequest(
     @NotNull UUID institutionId,
     @NotBlank String groupName,
     @NotNull ProphylaxisTypeDto type,
-    @NotNull boolean screening,
+    @NotNull boolean isScreening,
     FluoridationVarnishDto fluoridationVarnish,
     @NotEmpty(message = "At least one dentist is required") List<UUID> dentistIds,
     @NotEmpty(message = "At least one zfa is required") List<UUID> zfaIds)

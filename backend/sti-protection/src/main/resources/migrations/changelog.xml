@@ -51,5 +51,6 @@
   <include file="migrations/0041_add_countrycodes.xml"/>
   <include file="migrations/0042_add_previous_file_state_id_to_system_progress_entry.xml"/>
   <include file="migrations/0043_add_text_templates.xml"/>
+  <include file="migrations/0044_add_follow_up_flag.xml"/>
 
 </databaseChangeLog>

@@ -54,7 +54,7 @@ export function ProphylaxisSessionDetails() {
               />
               <DetailsCell
                 label="Reihenuntersuchung"
-                value={displayBoolean(prophylaxisSession.screening)}
+                value={displayBoolean(prophylaxisSession.isScreening)}
               />
               <DetailsCell
                 label="Teilnehmer"

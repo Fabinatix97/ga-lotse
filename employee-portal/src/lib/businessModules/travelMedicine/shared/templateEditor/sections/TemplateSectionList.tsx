@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiTemplateSection } from "@eshg/employee-portal-api/travelMedicine";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { ApiTemplateSection } from "@eshg/travel-medicine-api";
 import { CreateNewFolder } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 import { FieldArray } from "formik";

@@ -84,7 +84,7 @@ public class GdprCleanupJob {
     ZonedDateTime cutoffZdt = now.minus(Period.ofDays(30));
     Instant cutOffDate = cutoffZdt.toInstant();
     log.debug("Cut-off date: {}", cutOffDate);
-    return gdprProcedureRepository.findIdsOfYoungestClosedProcedures(cutOffDate, maxResults());
+    return gdprProcedureRepository.findIdsOfYoungestExpiredProcedures(cutOffDate, maxResults());
   }
 
   private PageRequest maxResults() {

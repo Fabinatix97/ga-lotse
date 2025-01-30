@@ -7,15 +7,14 @@ package de.eshg.schoolentry.pdf.schoolinfoletter;
 
 import de.cronn.reflection.util.PropertyUtils;
 import de.cronn.reflection.util.TypedPropertyGetter;
-import de.eshg.schoolentry.api.RequiredProcedureData;
+import de.eshg.domain.model.GenericEntity;
+import de.eshg.schoolentry.api.RequiredProcedureArea;
 import de.eshg.schoolentry.domain.model.*;
-import jakarta.validation.constraints.NotNull;
 import java.beans.PropertyDescriptor;
-import java.util.HashMap;
+import java.util.EnumSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiFunction;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -23,123 +22,128 @@ public class SchoolInfoLetterValidator {
 
   private SchoolInfoLetterValidator() {}
 
-  public static List<RequiredProcedureData> validateSchoolEntryProcedure(
+  public static Set<RequiredProcedureArea> validateSchoolEntryProcedure(
       SchoolEntryProcedure procedure) {
-    Map<RequiredProcedureData, Boolean> result = new HashMap<>();
+    Set<RequiredProcedureArea> incompleteAreas = EnumSet.noneOf(RequiredProcedureArea.class);
 
-    result.put(
-        RequiredProcedureData.DETAILS,
-        procedure.getSchoolId() != null
-            && procedure.getSchoolYear() != null
-            && (procedure.getAppointment() != null || procedure.getExaminationDate() != null));
-    result.put(RequiredProcedureData.HEARING_TEST, validate(procedure.getHearingTestResult()));
-    result.put(
-        RequiredProcedureData.EYE_EXAMINATION, validate(procedure.getEyeExaminationResult()));
-    result.put(RequiredProcedureData.ANAMNESIS, validate(procedure.getAnamnesis()));
-    result.put(
-        RequiredProcedureData.SOPESS_EXAMINATION, validate(procedure.getSopessExaminationResult()));
-    result.put(
-        RequiredProcedureData.DEVELOPMENT_SCREENING,
-        validate(procedure.getDevelopmentScreeningResult()));
-    result.put(
-        RequiredProcedureData.VACCINATION_STATUS, validate(procedure.getVaccinationStatus()));
+    if (isDetailsIncomplete(procedure)) {
+      incompleteAreas.add(RequiredProcedureArea.DETAILS);
+    }
 
-    result.compute(
-        RequiredProcedureData.HEARING_TEST,
-        validateSpecialCases(
-            procedure.getHearingTestResult(),
-            SchoolInfoLetterValidator::validateExaminationResult,
-            Stream.of(HearingTestResult::getExaminationResult)));
+    if (isHearingTestIncomplete(procedure)) {
+      incompleteAreas.add(RequiredProcedureArea.HEARING_TEST);
+    }
 
-    result.compute(
-        RequiredProcedureData.EYE_EXAMINATION,
-        validateSpecialCases(
+    if (isEyeExaminationIncomplete(procedure)) {
+      incompleteAreas.add(RequiredProcedureArea.EYE_EXAMINATION);
+    }
+
+    if (isIncomplete(procedure.getAnamnesis())) {
+      incompleteAreas.add(RequiredProcedureArea.ANAMNESIS);
+    }
+
+    if (isSopessExaminationIncomplete(procedure.getSopessExaminationResult())) {
+      incompleteAreas.add(RequiredProcedureArea.SOPESS_EXAMINATION);
+    }
+
+    if (isDevelopmentScreeningResultIncomplete(procedure)) {
+      incompleteAreas.add(RequiredProcedureArea.DEVELOPMENT_SCREENING);
+    }
+
+    if (isIncomplete(procedure.getVaccinationStatus())) {
+      incompleteAreas.add(RequiredProcedureArea.VACCINATION_STATUS);
+    }
+
+    return incompleteAreas;
+  }
+
+  private static boolean isDevelopmentScreeningResultIncomplete(SchoolEntryProcedure procedure) {
+    return isIncomplete(procedure.getDevelopmentScreeningResult())
+        || isHandicapResultIncomplete(procedure)
+        || isDisabilityResultIncomplete(procedure);
+  }
+
+  private static boolean isDisabilityResultIncomplete(SchoolEntryProcedure procedure) {
+    DevelopmentScreening developmentScreeningResult = procedure.getDevelopmentScreeningResult();
+    DisabilityType disabilityType = developmentScreeningResult.getDisabilityType();
+    return developmentScreeningResult.getDisability().getResult() && disabilityType == null;
+  }
+
+  private static boolean isHandicapResultIncomplete(SchoolEntryProcedure procedure) {
+    return isIncomplete(
+        procedure.getDevelopmentScreeningResult(),
+        SchoolInfoLetterValidator::isHandicapIncomplete,
+        Stream.of(DevelopmentScreening::getChronicDisease, DevelopmentScreening::getDisability));
+  }
+
+  private static boolean isHandicapIncomplete(HandicapWithDiagnosis handicap) {
+    if (handicap.getResult() == null) {
+      return true;
+    }
+    return handicap.getResult() && handicap.getIcd10Codes().isEmpty();
+  }
+
+  private static boolean isSopessExaminationIncomplete(
+      SopessExaminationResult sopessExaminationResult) {
+    return isIncomplete(sopessExaminationResult)
+        || isSopessExaminationIncompleteForNonGermanPrimaryLanguage(sopessExaminationResult);
+  }
+
+  private static boolean isSopessExaminationIncompleteForNonGermanPrimaryLanguage(
+      SopessExaminationResult sopessExaminationResult) {
+    if (Objects.equals(sopessExaminationResult.getPrimaryLanguage(), PrimaryLanguageValue.GERMAN)) {
+      return false;
+    }
+    return isIncomplete(
+        sopessExaminationResult,
+        Objects::isNull,
+        Stream.of(
+            SopessExaminationResult::getFamilyLanguage,
+            SopessExaminationResult::getGermanKnowledgeChild,
+            SopessExaminationResult::getGermanKnowledgePrimaryCarer));
+  }
+
+  private static boolean isEyeExaminationIncomplete(SchoolEntryProcedure procedure) {
+    return isIncomplete(procedure.getEyeExaminationResult())
+        || isIncomplete(
             procedure.getEyeExaminationResult(),
-            SchoolInfoLetterValidator::validateExaminationResult,
+            SchoolInfoLetterValidator::isExaminationResultIncomplete,
             Stream.of(
                 EyeExaminationResult::getEyeExamination,
                 EyeExaminationResult::getIshiharaExamination,
-                EyeExaminationResult::getLangExamination)));
-
-    result.compute(
-        RequiredProcedureData.SOPESS_EXAMINATION,
-        validateSpecialCases(
-            procedure.getSopessExaminationResult(),
-            mandatoryIfPrimaryLanguageIsNotGerman(procedure.getSopessExaminationResult()),
-            Stream.of(
-                SopessExaminationResult::getFamilyLanguage,
-                SopessExaminationResult::getGermanKnowledgeChild,
-                SopessExaminationResult::getGermanKnowledgePrimaryCarer)));
-
-    result.compute(
-        RequiredProcedureData.DEVELOPMENT_SCREENING,
-        validateSpecialCases(
-            procedure.getDevelopmentScreeningResult(),
-            (HandicapWithDiagnosis handicap) -> {
-              if (handicap.getResult() == null) {
-                return false;
-              }
-              return !handicap.getResult() || !handicap.getIcd10Codes().isEmpty();
-            },
-            Stream.of(
-                DevelopmentScreening::getChronicDisease, DevelopmentScreening::getDisability)));
-
-    result.compute(
-        RequiredProcedureData.DEVELOPMENT_SCREENING,
-        validateSpecialCases(
-            procedure.getDevelopmentScreeningResult(),
-            (DisabilityType type) ->
-                !procedure.getDevelopmentScreeningResult().getDisability().getResult()
-                    || type != null,
-            Stream.of(DevelopmentScreening::getDisabilityType)));
-
-    return result.entrySet().stream()
-        .filter(entry -> !entry.getValue())
-        .map(Map.Entry::getKey)
-        .sorted()
-        .toList();
+                EyeExaminationResult::getLangExamination));
   }
 
-  private static <T extends ValidatableEntity> boolean validate(T validatableEntity) {
+  private static boolean isHearingTestIncomplete(SchoolEntryProcedure procedure) {
+    return isIncomplete(procedure.getHearingTestResult())
+        || isExaminationResultIncomplete(procedure.getHearingTestResult().getExaminationResult());
+  }
+
+  private static boolean isDetailsIncomplete(SchoolEntryProcedure procedure) {
+    return procedure.getSchoolId() == null
+        || procedure.getSchoolYear() == null
+        || procedure.getAppointment() == null && procedure.getExaminationDate() == null;
+  }
+
+  private static boolean isIncomplete(ValidatableEntity validatableEntity) {
     return validatableEntity
         .getPropertiesToValidate()
-        .filter(requiredProperties::contains)
+        .filter(REQUIRED_PROPERTIES::contains)
         .map(prop -> PropertyUtils.read(validatableEntity, prop))
-        .noneMatch(Objects::isNull);
+        .anyMatch(Objects::isNull);
   }
 
-  @SuppressWarnings("unchecked")
-  private static <T, U> BiFunction<RequiredProcedureData, Boolean, Boolean> validateSpecialCases(
-      T toValidate, Predicate<U> validationFn, Stream<TypedPropertyGetter<T, U>> getters) {
-    return (key, currentValue) -> {
-      // if already invalid, abort
-      if (Boolean.FALSE.equals(currentValue)) {
-        return false;
-      }
-      // read values and validate with validationFn
-      return getters
-          .map(
-              getter ->
-                  PropertyUtils.read(
-                      toValidate, PropertyUtils.getPropertyDescriptor(toValidate, getter)))
-          .map(value -> (U) value)
-          .allMatch(validationFn);
-    };
+  private static <T extends GenericEntity<?>, V> boolean isIncomplete(
+      T toValidate, Predicate<V> isIncomplete, Stream<TypedPropertyGetter<T, V>> getters) {
+    return getters.map(getter -> getter.get(toValidate)).anyMatch(isIncomplete);
   }
 
-  private static boolean validateExaminationResult(@NotNull ExaminationResult result) {
-    return !result.getValue().equals(ExaminationResultValue.DOCTOR_LETTER)
-        || result.getDoctorLetter() != null;
+  private static boolean isExaminationResultIncomplete(ExaminationResult result) {
+    return result.getValue().equals(ExaminationResultValue.DOCTOR_LETTER)
+        && result.getDoctorLetter() == null;
   }
 
-  private static <T> Predicate<T> mandatoryIfPrimaryLanguageIsNotGerman(
-      SopessExaminationResult sopessExaminationResult) {
-    return (T value) ->
-        sopessExaminationResult.getPrimaryLanguage().equals(PrimaryLanguageValue.GERMAN)
-            || value != null;
-  }
-
-  static final List<PropertyDescriptor> requiredProperties =
+  static final List<PropertyDescriptor> REQUIRED_PROPERTIES =
       List.of(
           hearingTestProperty(HearingTestResult::getExaminationResult),
           eyeExaminationProperty(EyeExaminationResult::getEyeExamination),
@@ -241,7 +245,7 @@ public class SchoolInfoLetterValidator {
           developmentScreeningProperty(DevelopmentScreening::getVaccinationAdvice),
           developmentScreeningProperty(DevelopmentScreening::getWeight));
 
-  static final List<PropertyDescriptor> optionalProperties =
+  static final List<PropertyDescriptor> OPTIONAL_PROPERTIES =
       List.of(
           hearingTestProperty(HearingTestResult::getRightEar),
           hearingTestProperty(HearingTestResult::getLeftEar),

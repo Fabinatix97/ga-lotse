@@ -51,8 +51,8 @@ the corresponding `AttributeInfo`. `null` is also a valid value.
 * DATE: java.lang.String in the format yyyy-MMM-dd as returned by java.time.LocalDate.toString()
 * DECIMAL: java.lang.Double (or double) - precision = 10, scale = 4 can be handled
 * INTEGER: java.lang.Integer (or int)
-* TEXT: java.lang.String
-* VALUE_WITH_OPTIONS: java.lang.String, one value of the provided options
+* TEXT: java.lang.String, blank strings will be stored as null
+* VALUE_WITH_OPTIONS: java.lang.String, one value of the provided options, blank strings will be stored as null
 * PROCEDURE_ID: java.util.UUID
 * CENTRAL_FILE_ID_PERSON & CENTRAL_FILE_ID_FACILITY & CONTACT_ID: java.util.UUID
 

@@ -5,9 +5,9 @@
 
 "use client";
 
-import { ApiTravelType } from "@eshg/employee-portal-api/travelMedicine";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
+import { ApiTravelType } from "@eshg/travel-medicine-api";
 import { Stack } from "@mui/joy";
 import { isEmpty } from "remeda";
 

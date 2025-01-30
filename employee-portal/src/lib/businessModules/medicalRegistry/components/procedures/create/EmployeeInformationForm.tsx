@@ -3,27 +3,32 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { EmployeeInformationFormValues } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
+import {
+  EmployeeInformationFormValues,
+  MedicalRegistryCreateProcedureFormValues,
+} from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
 import { BooleanRadioField } from "@eshg/lib-portal/components/formFields/BooleanRadioField";
 import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { validateFile } from "@eshg/lib-portal/helpers/validators";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { Grid, Typography } from "@mui/joy";
-import { useField } from "formik";
+import { useFormikContext } from "formik";
 
 import { useServerConfig } from "@/lib/baseModule/api/queries/config";
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
 
 export function EmployeeInformationForm(props: NestedFormProps) {
+  const values =
+    useFormikContext<MedicalRegistryCreateProcedureFormValues>().values;
   const { data: config } = useServerConfig();
 
   const fieldName = createFieldNameMapper<EmployeeInformationFormValues>(
     props.name,
   );
 
-  const [employeesEmployed] = useField<boolean>(fieldName("employeesEmployed"));
+  const employeesEmployed = values.employeeInformationForm.employeesEmployed;
 
   return (
     <>
@@ -37,7 +42,7 @@ export function EmployeeInformationForm(props: NestedFormProps) {
         />
       </Grid>
 
-      {employeesEmployed.value && (
+      {employeesEmployed && (
         <>
           <Grid xxs={6}>
             <Typography level="body-md">

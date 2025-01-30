@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { ApiSyncPersonRequest } from "@eshg/travel-medicine-api";
 import {
   AbortDraftVaccinationConsultationRequest,
   AcceptDraftVaccinationConsultationRequest,
@@ -17,11 +21,7 @@ import {
   PatchVaccinationRequest,
   PostInformationStatementsRequest,
   PostServicesRequest,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { ApiSyncPersonRequest } from "@eshg/employee-portal-api/travelMedicine/models";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+} from "@eshg/travel-medicine-api";
 
 import { useVaccinationConsultationApi } from "@/lib/businessModules/travelMedicine/api/clients";
 

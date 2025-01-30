@@ -6,10 +6,10 @@
 package de.eshg.lib.procedure.model;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import de.cronn.commons.lang.SetUtils;
 import de.eshg.lib.foureyes.model.ApprovalRequestEntityDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -26,8 +26,6 @@ public final class ManualProgressEntryDto extends ProgressEntryDto
   @NotNull private boolean locked;
 
   @NotNull private UUID createdBy;
-  private String createdByUserFirstName;
-  private String createdByUserLastName;
 
   public ManualProgressEntryTypeDto getManualProgressEntryType() {
     return manualProgressEntryType;
@@ -80,38 +78,9 @@ public final class ManualProgressEntryDto extends ProgressEntryDto
   }
 
   @Override
-  public UUID getRelatedUserId() {
-    return getCreatedBy();
-  }
-
-  @Override
-  public void setRelatedUserFirstName(String relatedUserFirstName) {
-    setCreatedByUserFirstName(relatedUserFirstName);
-  }
-
-  @Override
-  public void setRelatedUserLastName(String relatedUserLastName) {
-    setCreatedByUserLastName(relatedUserLastName);
-  }
-
-  public String getCreatedByUserFirstName() {
-    return createdByUserFirstName;
-  }
-
-  public void setCreatedByUserFirstName(String createdByUserFirstName) {
-    this.createdByUserFirstName = createdByUserFirstName;
-  }
-
-  public String getCreatedByUserLastName() {
-    return createdByUserLastName;
-  }
-
-  public void setCreatedByUserLastName(String createdByUserLastName) {
-    this.createdByUserLastName = createdByUserLastName;
-  }
-
-  @Override
   public Set<UUID> getResolvableUserIds() {
-    return SetUtils.orderedSet(getRelatedUserId());
+    LinkedHashSet<UUID> userIds = new LinkedHashSet<>(super.getResolvableUserIds());
+    userIds.add(getCreatedBy());
+    return userIds;
   }
 }

@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAppointmentType } from "@eshg/employee-portal-api/travelMedicine";
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
+import { ApiAppointmentType } from "@eshg/travel-medicine-api";
 
 export const appointmentTypes: EnumMap<ApiAppointmentType> = {
   [ApiAppointmentType.Consultation]: "Beratung",

@@ -6,7 +6,7 @@
 import {
   ApiAdminPartialRule,
   ApiStagingStatus,
-} from "@eshg/admin-portal-api/serviceDirectory";
+} from "@eshg/service-directory-api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 

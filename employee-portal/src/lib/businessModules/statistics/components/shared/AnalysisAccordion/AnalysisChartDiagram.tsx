@@ -149,7 +149,6 @@ export function AnalysisChartDiagram(props: {
   }
 
   const [openFullScreenChart, setOpenFullScreenChart] = useState(false);
-  const chart = getChart();
   const canExportData = canExportDataPermission(props.dataSourceSensitivity);
 
   return (
@@ -169,7 +168,7 @@ export function AnalysisChartDiagram(props: {
           filterLabels={props.analysisDiagram.filterLabels}
           evaluatedDataAmount={props.analysisDiagram.evaluatedDataAmount}
           evaluatedDataAmountTotal={props.evaluatedDataAmountTotal}
-          chart={chart}
+          getChart={getChart}
         />
       </BaseModal>
       <AnalysisDiagramBox
@@ -177,7 +176,7 @@ export function AnalysisChartDiagram(props: {
         filterLabels={props.analysisDiagram.filterLabels}
         evaluatedDataAmount={props.analysisDiagram.evaluatedDataAmount}
         evaluatedDataAmountTotal={props.evaluatedDataAmountTotal}
-        chart={chart}
+        getChart={getChart}
         header={
           <Stack
             direction="row"
@@ -209,16 +208,18 @@ export function AnalysisChartDiagram(props: {
                       startDecorator: <Edit />,
                       onClick: openUpdateDiagramSidebar,
                     },
-                  canExportData && {
-                    label: "Als PNG exportieren",
-                    startDecorator: <Download />,
-                    onClick: () => onExportAsImage?.(ImageType.PNG),
-                  },
-                  canExportData && {
-                    label: "Als SVG exportieren",
-                    startDecorator: <Download />,
-                    onClick: () => onExportAsImage?.(ImageType.SVG),
-                  },
+                  canExportData &&
+                    props.analysisDiagram.evaluatedDataAmount > 0 && {
+                      label: "Als PNG exportieren",
+                      startDecorator: <Download />,
+                      onClick: () => onExportAsImage?.(ImageType.PNG),
+                    },
+                  canExportData &&
+                    props.analysisDiagram.evaluatedDataAmount > 0 && {
+                      label: "Als SVG exportieren",
+                      startDecorator: <Download />,
+                      onClick: () => onExportAsImage?.(ImageType.SVG),
+                    },
                   canExportData && {
                     label: "Als XLSX exportieren",
                     startDecorator: <Download />,

@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiAdminRevision } from "@eshg/admin-portal-api/serviceDirectory";
+import { ApiAdminRevision } from "@eshg/service-directory-api";
 import { FileDownloadOutlined } from "@mui/icons-material";
 import { Button, Divider, Stack } from "@mui/joy";
 import { useSearchParams } from "next/navigation";

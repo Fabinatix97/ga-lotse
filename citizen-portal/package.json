@@ -11,6 +11,7 @@
     "@eshg/lib-portal": "workspace:*",
     "@eshg/measles-protection-api": "workspace:*",
     "@eshg/school-entry-api": "workspace:*",
+    "@eshg/travel-medicine-api": "workspace:*",
     "@fontsource/poppins": "catalog:joy",
     "@fullcalendar/core": "catalog:fullcalendar",
     "@fullcalendar/daygrid": "catalog:fullcalendar",

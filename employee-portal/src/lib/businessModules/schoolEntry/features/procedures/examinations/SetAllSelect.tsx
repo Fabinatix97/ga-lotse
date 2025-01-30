@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import {
   FieldOrientation,
   resolveFieldComponent,
-} from "@eshg/lib-portal/businessModules/schoolEntry/features/procedures/fieldVariants";
-import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
+} from "@eshg/lib-portal/components/form/fieldVariants";
 import { FieldComponentProps } from "@eshg/lib-portal/components/formFields/BaseField";
 import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { NO_SELECTION_LABEL } from "@eshg/lib-portal/helpers/form";

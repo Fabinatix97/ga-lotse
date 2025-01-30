@@ -6,7 +6,7 @@
 package de.eshg.base.gdpr;
 
 import static de.eshg.base.gdpr.CitizenUserAttributesMapper.extractAttribute;
-import static de.eshg.base.gdpr.CitizenUserAttributesMapper.shortenExtracted;
+import static de.eshg.base.gdpr.CitizenUserAttributesMapper.extractAttributeAndShortenIfLong;
 
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.gdpr.persistence.GdprFacility;
@@ -40,35 +40,7 @@ public class MukAttributesMapper {
     return new FacilityIdentificationDataForValidation(
         extractAttribute(userAttributes, CitizenUserAttribute.MUK_DATA_TRANSMITTER_PSEUDONYM_ID),
         extractAttribute(userAttributes, CitizenUserAttribute.MUK_FACILITY_NAME),
-        shortenExtractedDomesticAddress(extractDomesticAddressDto(userAttributes)));
-  }
-
-  private static DomesticAddressDto shortenExtractedDomesticAddress(
-      DomesticAddressDto extractedAddress) {
-    String cityShortened =
-        shortenExtracted(
-            CitizenUserAttribute.MUK_ADDRESS_CITY,
-            DomesticAddressDto.MAX_CITY_LENGTH,
-            extractedAddress.city());
-    String streetShortened =
-        shortenExtracted(
-            CitizenUserAttribute.MUK_ADDRESS_STREET,
-            DomesticAddressDto.MAX_STREET_LENGTH,
-            extractedAddress.street());
-    String houseNumberShortened =
-        shortenExtracted(
-            CitizenUserAttribute.MUK_ADDRESS_HOUSE_NUMBER,
-            DomesticAddressDto.MAX_HOUSE_NUMBER_LENGTH,
-            extractedAddress.houseNumber());
-
-    return new DomesticAddressDto(
-        extractedAddress.country(),
-        cityShortened,
-        extractedAddress.postalCode(),
-        null,
-        streetShortened,
-        houseNumberShortened,
-        extractedAddress.addressAddition());
+        extractDomesticAddressDto(userAttributes));
   }
 
   public static DomesticAddressDto extractDomesticAddressDto(
@@ -76,14 +48,28 @@ public class MukAttributesMapper {
     CountryCode countryCode =
         CitizenUserAttributesMapper.mapCountryCode(
             extractAttribute(userAttributes, CitizenUserAttribute.MUK_ADDRESS_COUNTRY));
-    String city = extractAttribute(userAttributes, CitizenUserAttribute.MUK_ADDRESS_CITY);
+    String city =
+        extractAttributeAndShortenIfLong(
+            userAttributes,
+            CitizenUserAttribute.MUK_ADDRESS_CITY,
+            DomesticAddressDto.MAX_CITY_LENGTH);
     String postalCode =
         mapPostalCode(
-            extractAttribute(userAttributes, CitizenUserAttribute.MUK_ADDRESS_POSTAL_CODE),
+            extractAttributeAndShortenIfLong(
+                userAttributes,
+                CitizenUserAttribute.MUK_ADDRESS_POSTAL_CODE,
+                DomesticAddressDto.MAX_POSTAL_CODE_LENGTH),
             countryCode);
-    String street = extractAttribute(userAttributes, CitizenUserAttribute.MUK_ADDRESS_STREET);
+    String street =
+        extractAttributeAndShortenIfLong(
+            userAttributes,
+            CitizenUserAttribute.MUK_ADDRESS_STREET,
+            DomesticAddressDto.MAX_STREET_LENGTH);
     String houseNumber =
-        extractAttribute(userAttributes, CitizenUserAttribute.MUK_ADDRESS_HOUSE_NUMBER);
+        extractAttributeAndShortenIfLong(
+            userAttributes,
+            CitizenUserAttribute.MUK_ADDRESS_HOUSE_NUMBER,
+            DomesticAddressDto.MAX_HOUSE_NUMBER_LENGTH);
     String addressAddition =
         extractAttribute(userAttributes, CitizenUserAttribute.MUK_ADDRESS_ADDRESS_ADDITION);
 

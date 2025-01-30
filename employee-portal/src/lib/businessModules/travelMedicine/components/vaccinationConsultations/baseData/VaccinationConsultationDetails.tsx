@@ -6,6 +6,7 @@
 "use client";
 
 import { ApiCountryCode } from "@eshg/base-api";
+import { Alert } from "@eshg/lib-portal/components/Alert";
 import {
   ApiCreatedByUserType,
   ApiGetVaccinationConsultationDetailsResponse,
@@ -15,8 +16,7 @@ import {
   ApiServicePlanGroup,
   ApiTravelTimeUnit,
   ApiTravelType,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { Alert } from "@eshg/lib-portal/components/Alert";
+} from "@eshg/travel-medicine-api";
 import { Grid, Stack } from "@mui/joy";
 
 import { DetailsGrid } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/DetailsGrid";

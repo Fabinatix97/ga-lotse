@@ -11,7 +11,7 @@ import {
   ApiAdminStagedEntityAdminPartialRule,
   ApiGetRulesResponse,
   ServiceDirectoryAdminApi,
-} from "@eshg/admin-portal-api/serviceDirectory";
+} from "@eshg/service-directory-api";
 import { useQuery } from "@tanstack/react-query";
 import { prop, sortBy } from "remeda";
 

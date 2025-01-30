@@ -8,7 +8,7 @@
 import {
   ApiCertificateType,
   ApiStepWithAppliedServices,
-} from "@eshg/employee-portal-api/travelMedicine";
+} from "@eshg/travel-medicine-api";
 
 import {
   UsePostCertificateRequest,

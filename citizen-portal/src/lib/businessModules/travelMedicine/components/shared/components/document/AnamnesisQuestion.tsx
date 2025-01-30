@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiDocumentAnamnesisQuestion } from "@eshg/citizen-portal-api/travelMedicine";
 import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
+import { ApiDocumentAnamnesisQuestion } from "@eshg/travel-medicine-api";
 import { Stack } from "@mui/joy";
 import { FieldConfig, FieldInputProps } from "formik";
 

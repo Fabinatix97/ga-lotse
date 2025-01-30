@@ -4,13 +4,13 @@
  */
 
 import {
-  ApiAppointmentBookingType,
-  ApiAppointmentOverviewEntry,
-} from "@eshg/employee-portal-api/travelMedicine";
-import {
   formatDate,
   formatDateTime,
 } from "@eshg/lib-portal/formatters/dateTime";
+import {
+  ApiAppointmentBookingType,
+  ApiAppointmentOverviewEntry,
+} from "@eshg/travel-medicine-api";
 import { Chip } from "@mui/joy";
 import {
   ColumnHelper,

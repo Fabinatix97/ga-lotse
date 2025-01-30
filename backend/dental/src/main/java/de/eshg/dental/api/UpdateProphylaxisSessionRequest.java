@@ -14,7 +14,7 @@ public record UpdateProphylaxisSessionRequest(
     @NotNull Instant dateAndTime,
     @NotBlank String groupName,
     @NotNull ProphylaxisTypeDto type,
-    @NotNull boolean screening,
+    @NotNull boolean isScreening,
     FluoridationVarnishDto fluoridationVarnish)
     implements ProphylaxisSessionRequest {
   public UpdateProphylaxisSessionRequest(

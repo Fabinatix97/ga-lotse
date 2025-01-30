@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
 import {
   AddProcedureStepRequest,
   ApiAppointmentBookingType,
   ApiAppointmentType,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
+} from "@eshg/travel-medicine-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { format } from "date-fns";
 

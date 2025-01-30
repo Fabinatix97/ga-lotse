@@ -8,5 +8,5 @@
 import { GdprRightsOverview } from "@/lib/baseModule/components/gdpr/page/GdprRightsOverviewPage";
 
 export default function OrganizationGdprOverview() {
-  return <GdprRightsOverview type="organization" />;
+  return <GdprRightsOverview userType="organization" />;
 }

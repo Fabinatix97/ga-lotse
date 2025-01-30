@@ -1,40 +1,55 @@
 {
   "overview": {
-    "title": "Rights in accordance with GDPR",
+    "title": {
+      "person": "Rights in accordance with GDPR",
+      "organization": "Data protection rights"
+    },
     "right_of_access": {
       "title": "Right of Access",
-      "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor Aenean massa.",
-      "button": "Request your data"
+      "description": {
+        "person": "According to Article 15 GDPR, you have the right to access your stored personal data. We provide this information to you through an automated process, which may take some time.",
+        "organization": "For reasons of transparency, we offer companies the right to access your stored personal data. We provide this information to you through an automated process, which may take some time."
+      },
+      "button": "Request data"
     },
     "right_to_erasure": {
       "title": "Right to Erasure",
-      "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor Aenean massa.",
-      "button": "Delete your data"
+      "description": {
+        "person": "According to Article 17 GDPR, you have the right to request the deletion of your stored personal data. We process this request through an automated process, which may take some time.",
+        "organization": "For reasons of transparency, we offer companies the right to request the deletion of your stored personal data. We process this request through an automated process, which may take some time."
+      },
+      "button": "Delete data"
     },
     "right_to_object": {
       "title": "Right to Object",
-      "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor Aenean massa.",
-      "button": "Object to proceedings"
+      "description": {
+        "person": "According to Article 21 GDPR, you have the right to object to the processing of your personal data. Additionally, you can use this method to request a restriction of processing according to Article 18 GDPR. Please use the form below to explain your concern.",
+        "organization": "For reasons of transparency, we offer companies the right to object to the processing of your personal data.Please use the form below to explain your concern."
+      },
+      "button": "Object to processing"
     },
     "right_to_rectification": {
       "title": "Right to Rectification",
-      "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor Aenean massa.",
+      "description": {
+        "person": "We place great importance on the accuracy of your data and uphold your right to rectification in accordance with Article 16 GDPR. If your data contains errors or requires changes, please inform us about it.",
+        "organization": "We place great importance on the accuracy of your data. If your data contains errors or requires changes, please inform us about it."
+      },
       "button": "Request correction"
     }
   },
   "entrypoint": {
-    "title": "Self-Disclosure Personal Data",
+    "title": "Data protection rights in GA-Lotse",
     "intro_section": {
       "title": "Data Protection Rights",
-      "description": "This section contains an introductory text about the privacy policy. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes. Lorem Ipsum is a simple demo text for the print and typography industry. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis nato."
+      "description": "As a public health department, we offer you the opportunity to obtain information about your stored data, correct it, delete it, or object to its processing. For more details about your rights, please read our <InternalLink href=\"/datenschutz\">privacy policy</InternalLink>."
     },
     "your_rights_section": {
-      "description": "Here you can easily request your stored personal data – either online or, even better, in person at the public health office. We look forward to welcoming you there and are happy to assist you with the verification process.",
+      "description": "You can address concerns regarding your stored data both online and in person at the public health department. We look forward to welcoming you there and are happy to assist you with your concerns.",
       "online": {
         "title": "Online",
         "internet": {
           "title": "Internet",
-          "description": "You can authenticate yourself online as an individual or a company."
+          "description": "The digital process requires a clear identification of your person or your company to ensure that only you can access your data.\n\nTherefore, private individuals need to verify their identity with <BundIdLink href=\"#\">BundID</BundIdLink>, while companies need to verify their identity with <MukLink href=\"#\">Mein Unternehmenskonto</MukLink>.\n\nPlease note that some services of GA-Lotse may not be immediately available after the initial login."
         },
         "buttons": {
           "person": "As an Individual",
@@ -46,9 +61,15 @@
       }
     }
   },
+  "profile": {
+    "unlinked": {
+      "title": "Your data",
+      "description": "Your profile data is currently not available. You can request a data report to view the data we have on file for you."
+    }
+  },
   "contact_form": {
     "title": "Correcting information",
-    "description": "Did you spot any errors in your information?\nYou can contact us to correct any mistakes.",
+    "description": "We place great importance on the accuracy of your data. If your stored data contains errors or needs to be updated, please inform us using the contact form.",
     "success": "Your request has been submitted.",
     "open": "Contact",
     "input_label": "Your request",
@@ -60,31 +81,65 @@
   },
   "start_procedure_dialog": {
     "RIGHT_OF_ACCESS": {
-      "title": "Datenauskunft",
-      "description": "Wir leiten einen Prozess zur Abfrage folgender Daten ein:",
-      "submit": "Datenauskunft beantragen"
+      "title": "Request data",
+      "description": "We are initiating an automated process to query your data.",
+      "submit": "Start data inquiry"
     },
     "RIGHT_TO_ERASURE": {
-      "title": "Löschanfrage",
-      "description": "Diese Aktion kann nicht rückgängig gemacht werden. Wir leiten einen Prozess zur Löschung folgender Daten ein:",
-      "submit": "Löschung anfragen"
+      "title": "Delete data",
+      "description": "This action cannot be undone. We are initiating an automated process to delete your data.",
+      "submit": "Start erasure process"
     },
     "RIGHT_TO_OBJECT": {
-      "title": "Datenverarbeitung widersprechen",
-      "description": "Bitte nennen Sie uns ihr Anliegen des Widerspruchs.",
+      "title": "Object to processing",
+      "description": "Please explain your objection.",
       "matterOfConcern": "Matter of concern",
-      "submit": "Widerspruch einreichen"
+      "submit": "Send objection"
     },
     "RIGHT_TO_RECTIFICATION": {
-      "title": "Datenkorrektur",
-      "description": "Sie werden auf Ihr Profil weitergeleitet. Dort können Sie eine Korrektur beantragen.",
-      "submit": "Zum Profil"
+      "title": "Request correction",
+      "description": "Your are being redirected to your profil page. On this page you can open the contact form to request a correction of your data.",
+      "submit": "Open profile"
     }
   },
   "confirmation": {
-    "RIGHT_OF_ACCESS": "Datenauskunft erfolgreich beantragt.",
-    "RIGHT_TO_ERASURE": "Löschauftrag erfolgreich gesendet.",
-    "RIGHT_TO_OBJECT": "Daten widerspruch erfolgreich gesendet.",
-    "RIGHT_TO_RECTIFICATION": "Datenkorrektur erfolgreich gesendet."
+    "RIGHT_OF_ACCESS": "Data request submitted.",
+    "RIGHT_TO_ERASURE": "Deletion request submitted.",
+    "RIGHT_TO_OBJECT": "Objection request submitted.",
+    "RIGHT_TO_RECTIFICATION": "Correction request submitted."
+  },
+  "gdpr_procedure_fields": {
+    "matter_of_concern": "Matter of concern"
+  },
+  "gdpr_procedure_summary": {
+    "type": {
+      "RIGHT_OF_ACCESS": "Data request",
+      "RIGHT_TO_ERASURE": "Deletion request",
+      "RIGHT_TO_OBJECT": "Objection request",
+      "RIGHT_TO_RECTIFICATION": "Correction request"
+    },
+    "status": {
+      "DRAFT": "Sent",
+      "OPEN": "Arrived",
+      "IN_PROGRESS": "In progress",
+      "ABORTED": "Rejected",
+      "CLOSED": "Completed"
+    }
+  },
+  "gdpr_procedure_details": {
+    "description": {
+      "CLOSED": "Your request has been processed successfully.",
+      "ABORTED": "Your request was rejected. Please contact us directly to fulfill your rights.",
+      "deleteHint": "The deletion process may take up to 24 hours.",
+      "hasDownloads": {
+        "true": "We have the following data packages available for download.",
+        "false": "We do not have any data available to you."
+      }
+    }
+  },
+  "gdpr_procedure_downloads": {
+    "no_results": "We currently have no available data to show you.",
+    "central_file_data": "Reference data",
+    "download": "Download"
   }
 }

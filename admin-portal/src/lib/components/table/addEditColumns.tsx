@@ -7,7 +7,7 @@ import {
   ApiAdminStagedEntityType,
   ApiGetOrgUnitsResponse,
   ApiStagingStatus,
-} from "@eshg/admin-portal-api/serviceDirectory";
+} from "@eshg/service-directory-api";
 import { Add, Delete, Edit, Save, Undo } from "@mui/icons-material";
 import Done from "@mui/icons-material/Done";
 import ModeEdit from "@mui/icons-material/ModeEdit";

@@ -183,8 +183,57 @@ public class ProphylaxisSessionService {
             .users()
             .stream()
             .collect(StreamUtil.toLinkedHashMap(UserDto::userId));
+
+    List<UUID> fileStateIdsOfChildrenInSession =
+        examinations.stream().map(ex -> ex.getChild().getChildIdFromCentralFile()).toList();
+
+    Map<UUID, List<UUID>> associatedFileStateIdsByFileStateIdInSession =
+        personClient.fetchAssociatedExternalIdsInBulk(fileStateIdsOfChildrenInSession);
+
+    List<UUID> allFileStateIds =
+        Stream.concat(
+                associatedFileStateIdsByFileStateIdInSession.values().stream()
+                    .flatMap(List::stream),
+                fileStateIdsOfChildrenInSession.stream())
+            .toList();
+
+    Map<UUID, List<Examination>> examinationsByFileStateId =
+        examinationRepository.findAllByChildFileStateIds(allFileStateIds).stream()
+            .collect(Collectors.groupingBy(ex -> ex.getChild().getChildIdFromCentralFile()));
+
+    Map<UUID, List<Examination>> previousExaminationsBySessionChildFileStateId =
+        fileStateIdsOfChildrenInSession.stream()
+            .collect(
+                StreamUtil.toLinkedHashMap(
+                    Function.identity(),
+                    getPreviousExaminations(
+                        prophylaxisSession,
+                        examinationsByFileStateId,
+                        associatedFileStateIdsByFileStateIdInSession)));
+
     return new ProphylaxisSessionWithAugmentedData(
-        prophylaxisSession, contact, examinationMap, usersMap);
+        prophylaxisSession,
+        contact,
+        examinationMap,
+        usersMap,
+        previousExaminationsBySessionChildFileStateId);
+  }
+
+  private static Function<UUID, List<Examination>> getPreviousExaminations(
+      ProphylaxisSession prophylaxisSessionToIgnore,
+      Map<UUID, List<Examination>> examinationsByChildFileStateId,
+      Map<UUID, List<UUID>> associatedFileStateIdsByChildFileStateId) {
+    return fileStateId ->
+        Stream.concat(
+                examinationsByChildFileStateId.get(fileStateId).stream()
+                    .filter(ex -> !ex.getProphylaxisSession().equals(prophylaxisSessionToIgnore)),
+                associatedFileStateIdsByChildFileStateId
+                    .getOrDefault(fileStateId, List.of())
+                    .stream()
+                    .map(examinationsByChildFileStateId::get)
+                    .filter(Objects::nonNull)
+                    .flatMap(List::stream))
+            .toList();
   }
 
   private Map<UUID, GetPersonFileStateResponse> fetchPersonFileStatesInBulk(
@@ -310,7 +359,7 @@ public class ProphylaxisSessionService {
     session.setDateAndTime(request.dateAndTime());
     session.setGroupName(request.groupName());
     session.setType(ProphylaxisSessionMapper.mapToDomain(request.type()));
-    session.setScreening(request.screening());
+    session.setIsScreening(request.isScreening());
     session.setFluoridationVarnish(
         ProphylaxisSessionMapper.mapToDomain(request.fluoridationVarnish()));
   }

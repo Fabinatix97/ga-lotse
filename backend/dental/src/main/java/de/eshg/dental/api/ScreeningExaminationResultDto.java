@@ -15,7 +15,7 @@ public record ScreeningExaminationResultDto(
     @NotNull boolean fluorideVarnishApplied,
     OralHygieneStatusDto oralHygieneStatus,
     @NotNull @Valid List<ToothDiagnosisDto> toothDiagnoses)
-    implements ExaminationResultDto {
+    implements ExaminationResultDto, IsFluorideVarnishApplicable {
 
   static final String SCHEMA_NAME = "ScreeningExaminationResult";
 

@@ -4,7 +4,7 @@
  */
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
-import { ApiPatient } from "@eshg/employee-portal-api/travelMedicine";
+import { ApiPatient } from "@eshg/travel-medicine-api";
 import { ComponentType, Ref, useState } from "react";
 import { isDefined } from "remeda";
 

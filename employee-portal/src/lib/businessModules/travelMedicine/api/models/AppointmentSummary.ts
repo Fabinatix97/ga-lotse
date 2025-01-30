@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import {
   ApiAppointmentBookingType,
   ApiAppointmentSummary,
   ApiAppointmentType,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+} from "@eshg/travel-medicine-api";
 
 export interface AppointmentSummary {
   readonly appointmentBookingType: ApiAppointmentBookingType;

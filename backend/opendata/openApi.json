@@ -1,0 +1,921 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "description" : "This is the API for the opendata service",
+    "title" : "OpenData Service API",
+    "version" : "0.1"
+  },
+  "servers" : [ {
+    "url" : "http://localhost:8096"
+  } ],
+  "paths" : {
+    "/citizen/public" : {
+      "get" : {
+        "description" : "Gets all open documents aka all resources including their versions.\nIt is possible to filter by `fileType`, `sources` and the year of\n`statisticsStartDate` and `statisticsEndDate`\n",
+        "operationId" : "getOpenDocuments_1",
+        "parameters" : [ {
+          "description" : "If set only versions with a `statisticsStartDate` or `statisticsEndDate`\nwithin the given year or whose period from `statisticsStartDate` to\n`statisticsEndDate` covers the given year\n",
+          "in" : "query",
+          "name" : "statisticsYearFilter",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "If set, versions with at least one of the given business modules are returned\n",
+          "in" : "query",
+          "name" : "sourcesFilter",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/BusinessModule"
+            }
+          }
+        }, {
+          "description" : "If set, versions with the given file type are returned",
+          "in" : "query",
+          "name" : "fileTypeFilter",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/OpenDataFileType"
+          }
+        }, {
+          "description" : "If set, versions with `fileName` or `description` matching the given search string are returned",
+          "in" : "query",
+          "name" : "searchString",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Limit of returned results",
+          "in" : "query",
+          "name" : "pageSize",
+          "required" : false,
+          "schema" : {
+            "maximum" : 200,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 25
+          }
+        }, {
+          "description" : "Offset used for pagination",
+          "in" : "query",
+          "name" : "pageNumber",
+          "required" : false,
+          "schema" : {
+            "maximum" : 2000,
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetOpenDocumentsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Gets open documents",
+        "tags" : [ "OpenDataPublicCitizen" ]
+      }
+    },
+    "/citizen/public/terms-of-use" : {
+      "get" : {
+        "operationId" : "getTermsOfUse",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Returns the terms of use",
+        "tags" : [ "OpenDataPublicCitizen" ]
+      }
+    },
+    "/citizen/public/{versionId}" : {
+      "get" : {
+        "description" : "Gets one specific version of an open document by its id\n",
+        "operationId" : "getVersion_1",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "versionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Version"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get specific version of an open document",
+        "tags" : [ "OpenDataPublicCitizen" ]
+      }
+    },
+    "/citizen/public/{versionId}/download" : {
+      "get" : {
+        "operationId" : "downloadDocument_1",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "versionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Download a specific version of a document",
+        "tags" : [ "OpenDataPublicCitizen" ]
+      }
+    },
+    "/open-documents" : {
+      "get" : {
+        "description" : "Gets all open documents aka all resources including their versions.\nIt is possible to filter by `fileType`, `sources` and the year of\n`statisticsStartDate` and `statisticsEndDate`\n",
+        "operationId" : "getOpenDocuments",
+        "parameters" : [ {
+          "description" : "If set only versions with a `statisticsStartDate` or `statisticsEndDate`\nwithin the given year or whose period from `statisticsStartDate` to\n`statisticsEndDate` covers the given year\n",
+          "in" : "query",
+          "name" : "statisticsYearFilter",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "If set, versions with at least one of the given business modules are returned\n",
+          "in" : "query",
+          "name" : "sourcesFilter",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/BusinessModule"
+            }
+          }
+        }, {
+          "description" : "If set, versions with the given file type are returned",
+          "in" : "query",
+          "name" : "fileTypeFilter",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/OpenDataFileType"
+          }
+        }, {
+          "description" : "If set, versions with `fileName` or `description` matching the given search string are returned",
+          "in" : "query",
+          "name" : "searchString",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Limit of returned results",
+          "in" : "query",
+          "name" : "pageSize",
+          "required" : false,
+          "schema" : {
+            "maximum" : 200,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 25
+          }
+        }, {
+          "description" : "Offset used for pagination",
+          "in" : "query",
+          "name" : "pageNumber",
+          "required" : false,
+          "schema" : {
+            "maximum" : 2000,
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetOpenDocumentsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Gets open documents",
+        "tags" : [ "OpenData" ]
+      },
+      "post" : {
+        "description" : "Creates a resource as well if there is no existing resource with the\ngiven `resourceName`. If resourceName is null, a UUID based one is generated\n",
+        "operationId" : "createOpenDocument",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "file" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "postOpenDocumentRequest" : {
+                    "$ref" : "#/components/schemas/PostOpenDocumentRequest"
+                  }
+                },
+                "required" : [ "file", "postOpenDocumentRequest" ]
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Resource"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Creates a new version",
+        "tags" : [ "OpenData" ]
+      }
+    },
+    "/open-documents/fallback-license-url" : {
+      "get" : {
+        "operationId" : "getFallbackLicenseUrl",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetFallbackLicenseUrlResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "get the configured fallback license url",
+        "tags" : [ "OpenData" ]
+      }
+    },
+    "/open-documents/{versionId}" : {
+      "delete" : {
+        "description" : "Deletes correlating resource as well if there are no other versions left",
+        "operationId" : "deleteVersion",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "versionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Deletes a version",
+        "tags" : [ "OpenData" ]
+      },
+      "get" : {
+        "description" : "Gets one specific version of an open document by its id\n",
+        "operationId" : "getVersion",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "versionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Version"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get specific version of an open document",
+        "tags" : [ "OpenData" ]
+      },
+      "put" : {
+        "description" : "Updates `versionName`, `fileName`, `description`, `licence` and/or `sources`",
+        "operationId" : "updateVersionMetadata",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "versionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateVersionMetaDataRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Updates meta data of a version",
+        "tags" : [ "OpenData" ]
+      }
+    },
+    "/open-documents/{versionId}/download" : {
+      "get" : {
+        "operationId" : "downloadDocument",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "versionId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Download a specific version of a document",
+        "tags" : [ "OpenData" ]
+      }
+    },
+    "/test-helper/population" : {
+      "post" : {
+        "operationId" : "populateDefaults",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DefaultPopulationResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/request-interceptor" : {
+      "post" : {
+        "operationId" : "interceptNextRequest",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/InsertRequestInterceptionTestHelperRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/request-interceptor/barriers" : {
+      "post" : {
+        "operationId" : "addBarrier",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TestHelperInterceptionRequestFilter"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AddBarrierTestHelperResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/request-interceptor/barriers/{barrierId}/await" : {
+      "post" : {
+        "operationId" : "awaitBarrier",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "barrierId",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "in" : "query",
+          "name" : "timeoutInMillis",
+          "required" : false,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/request-interceptor/reset" : {
+      "post" : {
+        "operationId" : "resetInterceptionsAndBarriers",
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/reset" : {
+      "post" : {
+        "operationId" : "reset",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TestHelperClockUpdateResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/set-clock" : {
+      "patch" : {
+        "operationId" : "setClock",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TestHelperClockSetRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TestHelperClockUpdateResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/wind-clock" : {
+      "patch" : {
+        "operationId" : "windClockForward",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TestHelperClockWindForwardRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TestHelperClockUpdateResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "AddBarrierTestHelperResponse" : {
+        "required" : [ "barrierId" ],
+        "type" : "object",
+        "properties" : {
+          "barrierId" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "BusinessModule" : {
+        "type" : "string",
+        "enum" : [ "INSPECTION", "SCHOOL_ENTRY", "TRAVEL_MEDICINE", "MEASLES_PROTECTION", "STI_PROTECTION", "MEDICAL_REGISTRY", "DENTAL", "OFFICIAL_MEDICAL_SERVICE" ]
+      },
+      "DefaultPopulationResponse" : {
+        "type" : "object",
+        "properties" : {
+          "populations" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Population"
+            }
+          }
+        }
+      },
+      "GetFallbackLicenseUrlResponse" : {
+        "required" : [ "fallbackLicenseUrl" ],
+        "type" : "object",
+        "properties" : {
+          "fallbackLicenseUrl" : {
+            "type" : "string"
+          }
+        }
+      },
+      "GetOpenDocumentsResponse" : {
+        "required" : [ "elements", "totalElements", "totalPages" ],
+        "type" : "object",
+        "properties" : {
+          "elements" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource"
+            }
+          },
+          "totalElements" : {
+            "type" : "integer",
+            "description" : "Total number of result elements for the given filter criteria",
+            "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "description" : "Total number of result pages for the given filter criteria",
+            "format" : "int32"
+          }
+        }
+      },
+      "HttpMethod" : {
+        "type" : "string",
+        "enum" : [ "GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "TRACE" ]
+      },
+      "InsertRequestInterceptionTestHelperRequest" : {
+        "required" : [ "type" ],
+        "type" : "object",
+        "properties" : {
+          "filter" : {
+            "$ref" : "#/components/schemas/TestHelperInterceptionRequestFilter"
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/InterceptionType"
+          }
+        }
+      },
+      "InterceptionType" : {
+        "type" : "string",
+        "enum" : [ "BAD_REQUEST", "UNAUTHORIZED", "FORBIDDEN", "NOT_FOUND", "INTERNAL_SERVER_ERROR" ]
+      },
+      "OpenDataFileType" : {
+        "type" : "string",
+        "enum" : [ "PDF", "CSV" ]
+      },
+      "Population" : {
+        "required" : [ "numberOfPopulatedEntities", "totalNumberOfEntities" ],
+        "type" : "object",
+        "properties" : {
+          "numberOfPopulatedEntities" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "populatorName" : {
+            "type" : "string"
+          },
+          "totalNumberOfEntities" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "PostOpenDocumentRequest" : {
+        "required" : [ "licence", "sources", "versionName" ],
+        "type" : "object",
+        "properties" : {
+          "description" : {
+            "type" : "string"
+          },
+          "licence" : {
+            "type" : "string"
+          },
+          "resourceName" : {
+            "type" : "string",
+            "description" : "If set, and a resource with the same value already exists in the database,\nthe version is added to this resource. Otherwise, a new resource is created.\n\nIf this value is not set, a new resource with a generated UUID as `resourceName` is created.\n"
+          },
+          "sources" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/BusinessModule"
+            }
+          },
+          "statisticEndDate" : {
+            "type" : "string",
+            "description" : "Either set `statisticsStartDate` and `statisticsEndDate` together or not at all.",
+            "format" : "date"
+          },
+          "statisticStartDate" : {
+            "type" : "string",
+            "description" : "Either set `statisticsStartDate` and `statisticsEndDate` together or not at all.",
+            "format" : "date"
+          },
+          "versionName" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Resource" : {
+        "required" : [ "resourceName", "versions" ],
+        "type" : "object",
+        "properties" : {
+          "resourceName" : {
+            "type" : "string"
+          },
+          "versions" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Version"
+            }
+          }
+        }
+      },
+      "TestHelperClockSetRequest" : {
+        "required" : [ "newInstant" ],
+        "type" : "object",
+        "properties" : {
+          "newInstant" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "TestHelperClockUpdateResponse" : {
+        "required" : [ "instant" ],
+        "type" : "object",
+        "properties" : {
+          "instant" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "TestHelperClockWindForwardRequest" : {
+        "required" : [ "days", "hours", "minutes", "months", "seconds", "weeks" ],
+        "type" : "object",
+        "properties" : {
+          "days" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "hours" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "minutes" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "months" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "seconds" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "weeks" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "TestHelperInterceptionRequestFilter" : {
+        "type" : "object",
+        "properties" : {
+          "httpMethodFilter" : {
+            "$ref" : "#/components/schemas/HttpMethod"
+          },
+          "queryPatternFilter" : {
+            "type" : "string"
+          },
+          "urlPatternFilter" : {
+            "type" : "string"
+          }
+        }
+      },
+      "UpdateVersionMetaDataRequest" : {
+        "required" : [ "licence", "sources", "version", "versionName" ],
+        "type" : "object",
+        "properties" : {
+          "description" : {
+            "type" : "string"
+          },
+          "fileName" : {
+            "pattern" : "^[\\w\\-\\. ]+$",
+            "type" : "string"
+          },
+          "licence" : {
+            "type" : "string"
+          },
+          "sources" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/BusinessModule"
+            }
+          },
+          "statisticEndDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "statisticStartDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "versionName" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Version" : {
+        "required" : [ "externalId", "fileName", "fileSize", "fileType", "licence", "major", "minor", "publicationDate", "sources", "version", "versionName" ],
+        "type" : "object",
+        "properties" : {
+          "author" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "externalId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "fileName" : {
+            "type" : "string"
+          },
+          "fileSize" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "fileType" : {
+            "$ref" : "#/components/schemas/OpenDataFileType"
+          },
+          "licence" : {
+            "type" : "string"
+          },
+          "major" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "minor" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "publicationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "sources" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/BusinessModule"
+            }
+          },
+          "statisticEndDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "statisticStartDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "version" : {
+            "type" : "integer",
+            "description" : "Version of the entity. Each time the entity is changed, it is incremented by one.",
+            "format" : "int64"
+          },
+          "versionName" : {
+            "type" : "string"
+          }
+        }
+      }
+    }
+  }
+}

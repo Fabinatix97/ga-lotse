@@ -65,6 +65,23 @@ public final class BaseUrls {
     public static final String GDPR_PROCEDURE_API = "/gdpr-procedures";
     public static final String GDPR_PROCEDURE_CITIZEN_PORTAL_URL = "/citizen-portal";
 
+    public static final class Gdpr {
+      public static final String DOWNLOADS = "/{id}/downloads";
+      public static final String FILE_STATE_IDS = "/{id}/fileStateIds";
+      public static final String BY_ID = "/{id}";
+      public static final String DETAILS_PAGE = "/{id}/details-page";
+      public static final String REPORT_DOCUMENT = "/{id}/report-document";
+      public static final String MATTER_OF_CONCERN = "/{id}/matter-of-concern";
+      public static final String REFRESH_STATUS = "/{id}/refresh-status";
+      public static final String START_PROCEDURE = "/{id}/start-procedure";
+      public static final String CANCEL_PROCEDURE = "/{id}/cancel-procedure";
+      public static final String CLOSE_PROCEDURE = "/{id}/close-procedure";
+      public static final String CENTRAL_FILE_DOWNLOAD_PACKAGE =
+          "/{id}/central-file-download-package";
+
+      private Gdpr() {}
+    }
+
     public static final String FACILITY_API = "/facilities";
     public static final String FACILITY_FILE_STATE_URL = "/centralfilestates";
     public static final String FACILITY_EXTERNAL_DATA_SOURCE_URL = "/external-source";
@@ -209,6 +226,22 @@ public final class BaseUrls {
     public static final String ARCHIVING_API = "/archiving";
     public static final String TASKS_TEAM_VIEW = TASKS_API + "/team-view";
     public static final String GDPR_VALIDATION_TASK_API = "/gdpr-validation-tasks";
+
+    public static final class Gdpr {
+      public static final String NOTIFICATION_BANNER = "/notification-banner";
+      public static final String BY_GDPR_ID = "/{gdprProcedureId}";
+      public static final String BUSINESS_PROCEDURES = "/{gdprProcedureId}/business-procedures";
+      public static final String BUSINESS_PROCEDURE =
+          "/{gdprProcedureId}/business-procedures/{businessProcedureId}";
+      public static final String BUSINESS_PROCEDURE_DOWNLOAD_PACKAGE =
+          "/{gdprProcedureId}/business-procedures/{businessProcedureId}/downloadPackage";
+      public static final String DOWNLOAD_PACKAGES_INFO = "/{gdprProcedureId}/download-packages";
+      public static final String DOWNLOAD_PACKAGE =
+          "/{gdprProcedureId}/download-packages/{downloadId}";
+      public static final String CLOSE_PROCEDURE = "/{gdprProcedureId}/close";
+
+      private Gdpr() {}
+    }
 
     private ProcedureLibrary() {}
   }

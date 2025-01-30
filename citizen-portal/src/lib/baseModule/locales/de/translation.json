@@ -16,6 +16,16 @@
   "site_keywords": "Services, Dienstleistungen, Einschulungsuntersuchung, Reisemedizinische Beratung, Amtsärztlicher Dienst, GA-Lotse, Galotse",
   "health_department_title": "Gesundheitsamt",
   "most_searched_services_title": "Meistgesuchte Services",
+  "business_modules": {
+    "SCHOOL_ENTRY": "Einschulungsuntersuchung",
+    "DENTAL": "Zahnärztlicher Dienst",
+    "INSPECTION": "Begehung",
+    "MEASLES_PROTECTION": "Masernschutz",
+    "MEDICAL_REGISTRY": "Medizinalaufsicht",
+    "OFFICIAL_MEDICAL_SERVICE": "Amtsärztlicher Dienst",
+    "TRAVEL_MEDICINE": "Reisemedizinische Beratung",
+    "STI_PROTECTION": "HIV-STI Beratung"
+  },
   "common": {
     "email": "E-Mail",
     "phone": "Telefon",
@@ -41,6 +51,7 @@
     "person_one": "Person",
     "person_other": "Personen",
     "page_loading": "Seite wird geladen…",
+    "loading": "Wird geladen...",
     "leave": "Mein Bereich verlassen"
   },
   "gender": {

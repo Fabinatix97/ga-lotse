@@ -9,10 +9,7 @@ import {
 } from "@eshg/dental-api";
 import { mapOptional } from "@eshg/lib-employee-portal/api/models/utils";
 
-import {
-  ChildExaminationResult,
-  mapChildExaminationResult,
-} from "./ChildExaminationResult";
+import { ExaminationResult, mapExaminationResult } from "./ExaminationResult";
 import { ExaminationStatus, mapToExaminationStatus } from "./ExaminationStatus";
 
 export interface ChildExamination {
@@ -22,20 +19,25 @@ export interface ChildExamination {
   readonly dateOfBirth: Date;
   readonly groupName: string;
   readonly gender?: ApiGender;
-  readonly fluoridationConsent?: boolean;
-  readonly examinationResult?: ChildExaminationResult;
+  readonly fluoridationConsentGiven?: boolean;
   readonly status: ExaminationStatus;
+  readonly result?: ExaminationResult;
+  readonly note?: string;
 }
 
 export function mapChildExamination(
   response: ApiProphylaxisSessionChildExamination,
 ): ChildExamination {
   return {
-    ...response,
-    status: mapToExaminationStatus(response.examinationResult),
-    examinationResult: mapOptional(
-      response.examinationResult,
-      mapChildExaminationResult,
-    ),
+    childId: response.childId,
+    firstName: response.firstName,
+    lastName: response.lastName,
+    dateOfBirth: response.dateOfBirth,
+    groupName: response.groupName,
+    gender: response.gender,
+    fluoridationConsentGiven: response.fluoridationConsentGiven,
+    status: mapToExaminationStatus(response.result),
+    result: mapOptional(response.result, mapExaminationResult),
+    note: response.note,
   };
 }

@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiProcedureStatus } from "@eshg/employee-portal-api/travelMedicine";
 import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import {
   isDateString,
   toDateString,
   toUtcDate,
 } from "@eshg/lib-portal/helpers/dateTime";
+import { ApiProcedureStatus } from "@eshg/travel-medicine-api";
 import { FormControl, FormLabel, Input, Select } from "@mui/joy";
 import { useEffect, useState } from "react";
 import { isDefined } from "remeda";

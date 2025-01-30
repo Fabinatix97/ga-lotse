@@ -3,13 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiDentalExaminationResult,
-  ApiExamination,
-  ApiProphylaxisType,
-} from "@eshg/dental-api";
+import { ApiExamination, ApiProphylaxisType } from "@eshg/dental-api";
 import { BaseEntity } from "@eshg/lib-employee-portal/api/models/BaseEntity";
+import { mapOptional } from "@eshg/lib-employee-portal/api/models/utils";
 
+import { ExaminationResult, mapExaminationResult } from "./ExaminationResult";
 import { ExaminationStatus, mapToExaminationStatus } from "./ExaminationStatus";
 
 export interface Examination extends BaseEntity {
@@ -17,8 +15,9 @@ export interface Examination extends BaseEntity {
   readonly prophylaxisType: ApiProphylaxisType;
   readonly screening: boolean;
   readonly fluoridation: boolean;
+  readonly fluoridationConsentGiven: boolean;
   readonly note?: string;
-  readonly result?: ApiDentalExaminationResult;
+  readonly result?: ExaminationResult;
   readonly version: number;
   readonly status: ExaminationStatus;
 }
@@ -28,10 +27,11 @@ export function mapExamination(response: ApiExamination): Examination {
     ...response,
     dateAndTime: response.dateAndTime,
     prophylaxisType: response.prophylaxisType,
-    screening: response.screening,
-    fluoridation: response.fluoridation,
+    screening: response.isScreening,
+    fluoridation: response.isFluoridation,
+    fluoridationConsentGiven: response.fluoridationConsentGiven,
     note: response.note,
-    result: response.result,
+    result: mapOptional(response.result, mapExaminationResult),
     status: mapToExaminationStatus(response.result),
   };
 }

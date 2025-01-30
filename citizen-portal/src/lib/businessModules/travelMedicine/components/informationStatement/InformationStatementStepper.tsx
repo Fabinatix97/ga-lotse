@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiDocumentContent,
-  ApiDocumentSection,
-} from "@eshg/citizen-portal-api/travelMedicine";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import {
   MultiStepForm,
   StepFactory,
 } from "@eshg/lib-portal/components/form/MultiStepForm";
+import {
+  ApiDocumentContent,
+  ApiDocumentSection,
+} from "@eshg/travel-medicine-api";
 import { Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 import { useRouter, useSearchParams } from "next/navigation";

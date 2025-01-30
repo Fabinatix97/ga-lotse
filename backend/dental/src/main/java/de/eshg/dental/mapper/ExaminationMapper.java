@@ -47,6 +47,7 @@ public final class ExaminationMapper {
         ProphylaxisSessionMapper.mapToDto(prophylaxisSession.getType()),
         prophylaxisSession.isScreening(),
         prophylaxisSession.hasFluoridationVarnish(),
+        examination.getChild().isFluoridationConsentCurrentlyGiven(),
         examination.getNote(),
         mapToDto(examination.getResult()));
   }
@@ -195,7 +196,7 @@ public final class ExaminationMapper {
     };
   }
 
-  private static Tooth mapToDomain(ToothDto dto) {
+  public static Tooth mapToDomain(ToothDto dto) {
     return switch (dto) {
       case null -> null;
       case T11 -> Tooth.T11;

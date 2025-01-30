@@ -6,16 +6,15 @@ def backendDir = rootProject.layout.projectDirectory.dir('backend')
 
 openapiGenerator {
   inputSpecs = [
-    'auditlog'              : backendDir.file('auditlog/openApi.yaml'),
-    'businessProcedures'    : backendDir.file('lib-procedures/openApi.yaml'),
-    'libEditor'             : backendDir.file('lib-editor/openApi.yaml'),
-    'libStatistics'         : backendDir.file('lib-statistics/openApi.yaml'),
-    'inspection'            : backendDir.file('inspection/openApi.yaml'),
-    'opendata'              : backendDir.file('opendata/openApi.yaml'),
-    'travelMedicine'        : backendDir.file('travel-medicine/openApi.yaml'),
-    'chatManagement'        : backendDir.file('chat-management/openApi.yaml'),
-    'stiProtection'         : backendDir.file('sti-protection/openApi.yaml'),
-    'medicalRegistry'       : backendDir.file('medical-registry/openApi.yaml'),
-    'officialMedicalService': backendDir.file('official-medical-service/openApi.yaml')
+    'auditlog'              : backendDir.file('auditlog/openApi.json'),
+    'businessProcedures'    : backendDir.file('lib-procedures/openApi.json'),
+    'libEditor'             : backendDir.file('lib-editor/openApi.json'),
+    'libStatistics'         : backendDir.file('lib-statistics/openApi.json'),
+    'inspection'            : backendDir.file('inspection/openApi.json'),
+    'opendata'              : backendDir.file('opendata/openApi.json'),
+    'chatManagement'        : backendDir.file('chat-management/openApi.json'),
+    'stiProtection'         : backendDir.file('sti-protection/openApi.json'),
+    'medicalRegistry'       : backendDir.file('medical-registry/openApi.json'),
+    'officialMedicalService': backendDir.file('official-medical-service/openApi.json')
   ]
 }

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAdminActorSelector } from "@eshg/admin-portal-api/serviceDirectory";
+import { ApiAdminActorSelector } from "@eshg/service-directory-api";
 
 import { PartialActorWithId } from "@/lib/components/view/actors/ActorTable";
 import { PartialOrgUnitWithId, useOrgUnitsById } from "@/lib/hooks/useOrgUnits";

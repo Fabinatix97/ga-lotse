@@ -28,6 +28,7 @@ public class StiProtectionProcedureMapper {
         procedureData.createdAt(),
         ProcedureMapper.toInterfaceType(procedureData.status()),
         ConcernMapper.toInterfaceType(procedureData.concern()),
+        procedureData.isFollowUp(),
         PersonMapper.toInterfaceType(procedureData.person(), procedureData.accessCode()),
         AppointmentMapper.toInterfaceType(
             procedureData.appointment(), procedureData.userDefinedAppointment()),

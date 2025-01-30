@@ -5,14 +5,14 @@
 
 "use client";
 
+import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import {
   ApiAppliedService,
   ApiCertificateType,
   ApiStepWithAppliedServices,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+} from "@eshg/travel-medicine-api";
 import { Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 import { Ref } from "react";

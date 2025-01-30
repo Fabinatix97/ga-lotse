@@ -7,7 +7,7 @@ import { ChildExamination } from "@eshg/dental/api/models/ChildExamination";
 
 export interface ParticipantFilters {
   gender: GenderFilter;
-  fluoridationConsent: FluoridationConsentFilter;
+  fluoridationConsentGiven: FluoridationConsentFilter;
 }
 
 export type GenderFilter = "MALE" | "FEMALE" | "ANY";
@@ -20,7 +20,7 @@ export function filterParticipants(
   return participants.filter(
     (participant) =>
       matchesGender(participant, filters.gender) &&
-      matchesFluoridationConsent(participant, filters.fluoridationConsent),
+      matchesFluoridationConsent(participant, filters.fluoridationConsentGiven),
   );
 }
 
@@ -44,5 +44,5 @@ function matchesFluoridationConsent(
   }
 
   const requiresConsent = filter === "YES";
-  return participant.fluoridationConsent === requiresConsent;
+  return participant.fluoridationConsentGiven === requiresConsent;
 }

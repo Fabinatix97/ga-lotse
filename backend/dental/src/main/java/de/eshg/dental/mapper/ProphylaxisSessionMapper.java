@@ -12,7 +12,7 @@ import de.eshg.dental.api.ExistingUserDto;
 import de.eshg.dental.api.FluoridationVarnishDto;
 import de.eshg.dental.api.NonExistingUserDto;
 import de.eshg.dental.api.PerformingPersonDto;
-import de.eshg.dental.api.ProphylaxisSessionChildExamination;
+import de.eshg.dental.api.ProphylaxisSessionChildExaminationDto;
 import de.eshg.dental.api.ProphylaxisSessionDetailsDto;
 import de.eshg.dental.api.ProphylaxisSessionDto;
 import de.eshg.dental.api.ProphylaxisTypeDto;
@@ -24,6 +24,7 @@ import de.eshg.dental.domain.model.ProphylaxisSession;
 import de.eshg.dental.domain.model.ProphylaxisType;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -85,32 +86,54 @@ public final class ProphylaxisSessionMapper {
         mapToDto(session.getType()),
         session.isScreening(),
         mapToDto(session.getFluoridationVarnish()),
-        mapToChildExaminations(prophylaxisSession.participants()),
+        getParticipants(prophylaxisSession),
         mapPersons(session.getDentistIds(), userMap),
         mapPersons(session.getZfaIds(), userMap));
   }
 
-  private static List<ProphylaxisSessionChildExamination> mapToChildExaminations(
-      Map<Examination, GetPersonFileStateResponse> fileStateResponses) {
+  private static List<ProphylaxisSessionChildExaminationDto> getParticipants(
+      ProphylaxisSessionWithAugmentedData prophylaxisSessionAugmented) {
+    Map<Examination, GetPersonFileStateResponse> fileStateResponses =
+        prophylaxisSessionAugmented.participants();
     if (fileStateResponses == null) {
       return List.of();
     }
     return fileStateResponses.entrySet().stream()
-        .map(entry -> mapToChildExamination(entry.getKey(), entry.getValue()))
+        .map(
+            entry -> {
+              Examination examination = entry.getKey();
+              GetPersonFileStateResponse fileStateResponse = entry.getValue();
+              List<Examination> previousExaminations =
+                  prophylaxisSessionAugmented
+                      .previousExaminationsByChildFileStateId()
+                      .getOrDefault(examination.getChild().getChildIdFromCentralFile(), List.of());
+
+              return mapToChildExamination(examination, fileStateResponse, previousExaminations);
+            })
         .toList();
   }
 
-  private static ProphylaxisSessionChildExamination mapToChildExamination(
-      Examination examination, GetPersonFileStateResponse fileStateResponse) {
-    return new ProphylaxisSessionChildExamination(
+  private static ProphylaxisSessionChildExaminationDto mapToChildExamination(
+      Examination examination,
+      GetPersonFileStateResponse fileStateResponse,
+      List<Examination> previousExaminations) {
+    return new ProphylaxisSessionChildExaminationDto(
+        examination.getVersion(),
+        examination.getExternalId(),
         examination.getChild().getExternalId(),
         fileStateResponse.firstName(),
         fileStateResponse.lastName(),
         fileStateResponse.dateOfBirth(),
         examination.getChild().getGroupName().trim(),
         fileStateResponse.gender(),
+        examination.getNote(),
         examination.getChild().getCurrentFluoridationConsent(),
-        ExaminationMapper.mapToDto(examination.getResult()));
+        ExaminationMapper.mapToDto(examination.getResult()),
+        previousExaminations.stream()
+            .map(Examination::getResult)
+            .filter(Objects::nonNull)
+            .map(ExaminationMapper::mapToDto)
+            .toList());
   }
 
   private static List<? extends PerformingPersonDto> mapPersons(

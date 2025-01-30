@@ -9,10 +9,7 @@ import { Button, Stack } from "@mui/joy";
 import { useContext } from "react";
 
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import {
-  ProgressEntriesContext,
-  useOpenApprovalRequests,
-} from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
+import { ProgressEntriesContext } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import { useGrantDeletionForAllRequests } from "@/lib/shared/components/procedures/progress-entries/mutations/approvalRequestApi";
 import { ApprovalRequestCard } from "@/lib/shared/components/procedures/progress-entries/sidebars/approvalRequestOverviewSidebar/ApprovalRequestCard";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
@@ -28,11 +25,12 @@ export function ApprovalRequestsOverviewSidebar({
   open,
   onClose,
 }: ApprovalRequestOverviewProps) {
-  const approvalRequests = useOpenApprovalRequests()!;
   const progressEntriesContext = useContext(ProgressEntriesContext);
-  const { approvalRequestApi } = progressEntriesContext.config;
+  const { approvalRequestApi, approvalRequestsResponse } =
+    progressEntriesContext.config;
   const grantDeletionForAll =
     useGrantDeletionForAllRequests(approvalRequestApi);
+  const { approvalRequests } = approvalRequestsResponse!;
 
   function deleteAll() {
     grantDeletionForAll.mutate(approvalRequests);

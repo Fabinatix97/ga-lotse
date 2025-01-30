@@ -83,5 +83,6 @@
   <include file="migrations/0073_remove_icd10_tables.xml"/>
   <include file="migrations/0074_add_cemetery_delete_at.xml"/>
   <include file="migrations/0075_add_previous_file_state_id_to_system_progress_entry.xml"/>
+  <include file="migrations/0076_add_waiting_status.xml"/>
 
 </databaseChangeLog>

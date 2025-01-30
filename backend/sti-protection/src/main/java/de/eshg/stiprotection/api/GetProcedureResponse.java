@@ -21,6 +21,7 @@ public record GetProcedureResponse(
     @NotNull Instant createdAt,
     @NotNull ProcedureStatusDto status,
     @NotNull ConcernDto concern,
+    @NotNull Boolean isFollowUp,
     @NotNull @Valid PersonDto person,
     @Valid AppointmentDto appointment,
     @NotNull @Valid List<AppointmentHistoryEntryDto> appointmentHistory,

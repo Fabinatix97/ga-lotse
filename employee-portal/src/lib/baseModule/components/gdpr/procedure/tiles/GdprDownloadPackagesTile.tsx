@@ -6,6 +6,7 @@
 import { ApiGetGdprProcedureResponse } from "@eshg/base-api";
 import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import CheckmarkIcon from "@mui/icons-material/Check";
 import DownloadIcon from "@mui/icons-material/SimCardDownloadOutlined";
 import {
   Accordion,
@@ -16,6 +17,7 @@ import {
   ListItem,
   ListItemButton,
   ListItemDecorator,
+  Typography,
   accordionDetailsClasses,
   accordionSummaryClasses,
   styled,
@@ -54,13 +56,15 @@ function useFileDownloadForBase(gdprProcedureId: string) {
 export function GdprDownloadPackagesTile({
   gdprProcedure,
   hasDownload,
+  isExternal,
 }: {
   gdprProcedure: ApiGetGdprProcedureResponse;
   hasDownload: boolean;
+  isExternal: boolean;
 }) {
   const responses = useGetGdprDownloadPackagesInfo(
     gdprProcedure.id,
-    hasDownload,
+    hasDownload && !isExternal,
   );
   const businessModuleDownload = useFileDownloadForPackage();
   const baseDownload = useFileDownloadForBase(gdprProcedure.id);
@@ -70,7 +74,15 @@ export function GdprDownloadPackagesTile({
     <SectionTile id={id}>
       <SectionTitle id={id}>Datenpakete</SectionTitle>
 
-      {!hasDownload ? (
+      {isExternal ? (
+        <Typography
+          sx={{ textWrap: "pretty" }}
+          startDecorator={<CheckmarkIcon color="success" size="lg" />}
+        >
+          Verfügbare Daten wurden übermittelt und können nun vom Antragsteller
+          abgerufen werden.
+        </Typography>
+      ) : !hasDownload ? (
         <NoSearchResults info="Keine Daten gefunden." />
       ) : (
         <AccordionGroup variant="outlined" color="primary">

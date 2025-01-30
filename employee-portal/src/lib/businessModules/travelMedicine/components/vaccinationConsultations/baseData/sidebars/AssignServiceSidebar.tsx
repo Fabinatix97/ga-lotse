@@ -6,7 +6,7 @@
 import {
   ApiPatchServiceAssignmentRequest,
   AssignStepToServiceRequest,
-} from "@eshg/employee-portal-api/travelMedicine";
+} from "@eshg/travel-medicine-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { isDefined } from "remeda";
 

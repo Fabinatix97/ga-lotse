@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiPatchMedicalHistoryRequest } from "@eshg/employee-portal-api/travelMedicine";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { ApiPatchMedicalHistoryRequest } from "@eshg/travel-medicine-api";
 
 import { useMedicalHistoryApi } from "@/lib/businessModules/travelMedicine/api/clients";
 

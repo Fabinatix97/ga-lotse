@@ -6,6 +6,7 @@
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import {
   DataPrivacyFormValues,
+  MedicalRegistryCreateProcedureFormValues,
   WrittenConfirmationFormValues,
 } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
@@ -14,7 +15,7 @@ import { BooleanRadioField } from "@eshg/lib-portal/components/formFields/Boolea
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Button, Typography } from "@mui/joy";
-import { useField, useFormikContext } from "formik";
+import { useFormikContext } from "formik";
 import { isEmpty } from "remeda";
 
 import { useMedicalRegistryPublicCitizenApi } from "@/lib/businessModules/medicalRegistry/api/clients";
@@ -29,7 +30,7 @@ export function ProfessionalRegistrationSidePanel() {
   const { t } = useTranslation([
     "medicalRegistry/professionalRegistrationForm",
   ]);
-  const { handleSubmit, validateForm, setTouched, touched } =
+  const { values, handleSubmit, validateForm, setTouched, touched } =
     useFormikContext();
   const { currentStep, totalSteps, goForward, goBack } = useMultiStepForm();
   const citizenRoutes = useCitizenRoutes();
@@ -39,11 +40,22 @@ export function ProfessionalRegistrationSidePanel() {
       "writtenConfirmationForm",
     );
 
-  const [requestForWrittenConfirmation] = useField<boolean>(
-    writtenConfirmationForm("requestForWrittenConfirmation"),
-  );
+  const requestForWrittenConfirmation = (
+    values as MedicalRegistryCreateProcedureFormValues
+  ).writtenConfirmationForm.requestForWrittenConfirmation;
 
   const snackbar = useSnackbar();
+
+  async function handleFormWithSnackbar(handleFunction: () => void) {
+    const errors = await validateForm();
+    await setTouched({ ...touched, ...errors });
+
+    if (isEmpty(errors)) {
+      handleFunction();
+    } else {
+      snackbar.error(t("snackbar.errors"), { manualClose: false });
+    }
+  }
 
   return (
     <>
@@ -56,7 +68,7 @@ export function ProfessionalRegistrationSidePanel() {
             name={writtenConfirmationForm("requestForWrittenConfirmation")}
             label={t("stepFour.sidePanel.label.writtenConfirmation")}
           />
-          {requestForWrittenConfirmation.value && (
+          {requestForWrittenConfirmation && (
             <>
               <CheckboxField
                 name={writtenConfirmationForm("confirmationFee")}
@@ -75,18 +87,7 @@ export function ProfessionalRegistrationSidePanel() {
 
       <ContentSheet>
         {currentStep < totalSteps && (
-          <Button
-            onClick={async () => {
-              const errors = await validateForm();
-              await setTouched({ ...touched, ...errors });
-
-              if (isEmpty(errors)) {
-                goForward();
-              } else {
-                snackbar.error(t("snackbar.errors"));
-              }
-            }}
-          >
+          <Button onClick={() => handleFormWithSnackbar(goForward)}>
             {t("navigation.continue")}
           </Button>
         )}
@@ -96,7 +97,7 @@ export function ProfessionalRegistrationSidePanel() {
               {t("stepFour.sidePanel.completion")}
             </Typography>
             <PrivacyPolicyConfirmationForm />
-            <Button onClick={() => handleSubmit()}>
+            <Button onClick={() => handleFormWithSnackbar(handleSubmit)}>
               {t("navigation.submit")}
             </Button>
           </>

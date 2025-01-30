@@ -9,7 +9,7 @@ import {
   ApiAdminActorType,
   ApiAdminCertificate,
   ApiPairAdminPartialActor,
-} from "@eshg/admin-portal-api/serviceDirectory";
+} from "@eshg/service-directory-api";
 import { createColumnHelper } from "@tanstack/react-table";
 
 import { AuditCell } from "@/lib/components/table/cell/AuditCell";

@@ -1,40 +1,55 @@
 {
   "overview": {
-    "title": "Datenschutzrechte gemäß DSGVO",
+    "title": {
+      "person": "Datenschutzrechte gemäß DSGVO",
+      "organization": "Datenschutzrechte"
+    },
     "right_of_access": {
       "title": "Datenauskunft",
-      "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor Aenean massa.",
-      "button": "Datenauskunft beantragen"
+      "description": {
+        "person": "Gemäß Art. 15 DSGVO haben Sie das Recht, Auskunft über Ihre gespeicherten personenbezogenen Daten zu erhalten. Wir stellen diese Informationen in einem automatisierten Prozess für Sie bereit, der einige Zeit in Anspruch nehmen kann.",
+        "organization": "Aus Transparenzgründen bieten wir Unternehmen das Recht, Auskunft über Ihre gespeicherten personenbezogenen Daten zu erhalten. Wir stellen diese Informationen in einem automatisierten Prozess für Sie bereit, der einige Zeit in Anspruch nehmen kann."
+      },
+      "button": "Datenauskunft anfragen"
     },
     "right_to_erasure": {
       "title": "Löschanfrage",
-      "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor Aenean massa.",
+      "description": {
+        "person": "Gemäß Art. 17 DSGVO haben Sie das Recht, die Löschung Ihrer gespeicherten personenbezogenen Daten zu verlangen. Wir bearbeiten diese Anfrage in einem automatisierten Prozess, der einige Zeit in Anspruch nehmen kann.",
+        "organization": "Aus Transparenzgründen bieten wir Unternehmen das Recht, die Löschung Ihrer gespeicherten personenbezogenen Daten zu verlangen. Wir bearbeiten diese Anfrage in einem automatisierten Prozess, der einige Zeit in Anspruch nehmen kann."
+      },
       "button": "Daten löschen"
     },
     "right_to_object": {
       "title": "Datenverarbeitung widersprechen",
-      "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor Aenean massa.",
-      "button": "Widerspruch einreichen"
+      "description": {
+        "person": "Gemäß Art. 21 DSGVO haben Sie das Recht, Widerspruch gegen die Verarbeitung Ihrer personenbezogenen Daten einzulegen. Darüber hinaus können Sie auf diesem Weg auch eine Einschränkung der Verarbeitung gemäß Art. 18 DSGVO beantragen. Nutzen Sie bitte das nachfolgende Formular, um Ihr Anliegen entsprechend zu erläutern.",
+        "organization": "Aus Transparenzgründen bieten wir Unternehmen das Recht, Widerspruch gegen die Verarbeitung Ihrer personenbezogenen Daten einzulegen. Nutzen Sie bitte das nachfolgende Formular, um Ihr Anliegen entsprechend zu erläutern."
+      },
+      "button": "Widerspruch einlegen"
     },
     "right_to_rectification": {
       "title": "Datenkorrektur",
-      "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor Aenean massa.",
+      "description": {
+        "person": "Wir legen großen Wert auf die Korrektheit Ihrer Daten und wahren Ihr Recht auf Berichtigung gemäß Art. 16 DSGVO. Bitte benachrichtigen Sie uns, wenn Ihre Daten fehlerhaft sind oder geändert werden müssen.",
+        "organization": "Wir legen großen Wert auf die Korrektheit Ihrer Daten. Bitte benachrichtigen Sie uns, wenn Ihre Daten fehlerhaft sind oder geändert werden müssen."
+      },
       "button": "Daten korrigieren"
     }
   },
   "entrypoint": {
-    "title": "Selbstauskunft personenbezogene Daten",
+    "title": "Datenschutzrechte in GA-Lotse",
     "intro_section": {
       "title": "Datenschutzrechte",
-      "description": "Hier wird ein Intro-Text zu der Datenschutzrichtlinien eingefügt. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes.Lorem Ipsum ist ein einfacher Demo-Text für die Print- und Schriftindustrie. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis nato."
+      "description": "Als Gesundheitsamt bieten wir Ihnen die Möglichkeit, Auskunft über Ihre gespeicherten Daten zu erhalten, diese zu korrigieren, zu löschen oder der Verarbeitung zu widersprechen. Weitere Details zu Ihren Rechten finden Sie in unserer <InternalLink href=\"/datenschutz\">Datenschutzerklärung</InternalLink>."
     },
     "your_rights_section": {
-      "description": "Hier können Sie ganz einfach Ihre gespeicherten personenbezogenen Daten anfordern – entweder online oder, noch besser, persönlich vor Ort beim Gesundheitsamt. Wir freuen uns, Sie dort begrüßen zu dürfen und helfen Ihnen gerne bei der Verifizierung.",
+      "description": "Sie können Anliegen bezüglich Ihrer gespeicherten Daten sowohl online als auch persönlich vor Ort im Gesundheitsamt vorbringen und klären. Wir freuen uns darauf, Sie dort begrüßen zu dürfen und unterstützen Sie gerne bei Ihrem Anliegen.",
       "online": {
         "title": "Online",
         "internet": {
           "title": "Internet",
-          "description": "Sie können sich online als Privatperson oder Unternehmen Authentifizieren."
+          "description": "Der digitale Prozess erfordert eine eindeutige Identifikation Ihrer Person bzw. Ihres Unternehmens, um sicherzustellen, dass ausschließlich Sie auf Ihre Daten zugreifen können.\n\nDaher ist für Privatpersonen eine Authentifizierung mit <BundIdLink href=\"\">BundID</BundIdLink> bzw. für Unternehmen eine Authentifizierung mit <MukLink href=\"\">Mein Unternehmenskonto</MukLink> notwendig.\n\nBitte beachten Sie, dass nach dem erstmaligen Login einige Services von GA-Lotse noch nicht unmittelbar zur Verfügung stehen."
         },
         "buttons": {
           "person": "Als Privatperson",
@@ -46,9 +61,15 @@
       }
     }
   },
+  "profile": {
+    "unlinked": {
+      "title": "Ihre Daten",
+      "description": "Ihre Profildaten stehen Ihnen aktuell noch nicht zur Verfügung. Sie können eine Datenauskunft beantragen, um Einsicht in Ihre uns vorliegenden Daten zu erlangen."
+    }
+  },
   "contact_form": {
     "title": "Informationen korrigieren",
-    "description": "Sehen Sie einen Fehler in Ihren Informationen?\nHier können Sie mit uns Kontakt aufnehmen, um Ihre Informationen zu korrigieren.",
+    "description": "Wir legen großen Wert auf die Korrektheit Ihrer Daten. Falls Ihre Daten Fehler enthalten oder Änderungen notwendig sind, bitten wir Sie, uns diese über das Kontaktformular mitzuteilen.",
     "success": "Ihre Anfrage wurde empfangen.",
     "open": "Kontaktieren",
     "input_label": "Ihre Nachricht",
@@ -61,12 +82,12 @@
   "start_procedure_dialog": {
     "RIGHT_OF_ACCESS": {
       "title": "Datenauskunft",
-      "description": "Wir leiten einen Prozess zur Abfrage folgender Daten ein:",
+      "description": "Wir leiten einen Prozess zur Abfrage Ihrer Daten ein.",
       "submit": "Datenauskunft beantragen"
     },
     "RIGHT_TO_ERASURE": {
       "title": "Löschanfrage",
-      "description": "Diese Aktion kann nicht rückgängig gemacht werden. Wir leiten einen Prozess zur Löschung folgender Daten ein:",
+      "description": "Diese Aktion kann nicht rückgängig gemacht werden. Wir leiten einen Prozess zur Löschung Ihrer Daten ein.",
       "submit": "Löschung anfragen"
     },
     "RIGHT_TO_OBJECT": {
@@ -84,7 +105,41 @@
   "confirmation": {
     "RIGHT_OF_ACCESS": "Datenauskunft erfolgreich beantragt.",
     "RIGHT_TO_ERASURE": "Löschauftrag erfolgreich gesendet.",
-    "RIGHT_TO_OBJECT": "Daten widerspruch erfolgreich gesendet.",
+    "RIGHT_TO_OBJECT": "Widerspruch erfolgreich gesendet.",
     "RIGHT_TO_RECTIFICATION": "Datenkorrektur erfolgreich gesendet."
+  },
+  "gdpr_procedure_fields": {
+    "matter_of_concern": "Anliegen"
+  },
+  "gdpr_procedure_summary": {
+    "type": {
+      "RIGHT_OF_ACCESS": "Datenauskunft",
+      "RIGHT_TO_ERASURE": "Löschanfrage",
+      "RIGHT_TO_OBJECT": "Widerspruch",
+      "RIGHT_TO_RECTIFICATION": "Datenkorrektur"
+    },
+    "status": {
+      "DRAFT": "Gesendet",
+      "OPEN": "Angekommen",
+      "IN_PROGRESS": "In Bearbeitung",
+      "ABORTED": "Abgelehnt",
+      "CLOSED": "Abgeschlossen"
+    }
+  },
+  "gdpr_procedure_details": {
+    "description": {
+      "CLOSED": "Ihre Anfrage wurde erfolgreich bearbeitet.",
+      "ABORTED": "Ihre Anfrage wurde abgebrochen. Bitte kontaktieren Sie uns persönlich zur Wahrnehmung Ihrer Rechte.",
+      "deleteHint": "Das Löschen der betroffenen Daten kann bis zu 24 Stunden benötigen.",
+      "hasDownloads": {
+        "true": "Ihnen stehen folgende Datenpakete zum Download zur Verfügung.",
+        "false": "Es gibt keine Daten über Sie, die wir Ihnen zur Verfügung stellen können."
+      }
+    }
+  },
+  "gdpr_procedure_downloads": {
+    "no_results": "Keine Daten vorhanden.",
+    "central_file_data": "Referenzdaten",
+    "download": "Herunterladen"
   }
 }

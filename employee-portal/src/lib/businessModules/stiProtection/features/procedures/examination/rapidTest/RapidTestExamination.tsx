@@ -6,16 +6,16 @@
 import { ApiRapidTestExamination } from "@eshg/employee-portal-api/stiProtection";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { Box, Divider, Grid, Sheet, Stack, Typography } from "@mui/joy";
-import { Formik, FormikState } from "formik";
+import { Formik } from "formik";
 
 import { useUpsertRapidTest } from "@/lib/businessModules/stiProtection/api/mutations/examination";
 import { ExaminationStickyBottomButtonBar } from "@/lib/businessModules/stiProtection/features/procedures/examination/ExaminationStickyBottomButtonBar";
 import { ExaminationTabNavPanel } from "@/lib/businessModules/stiProtection/features/procedures/examination/ExaminationTabNavPanel";
+import { useOnCancelForm } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 import { SidePanel } from "@/lib/shared/components/sidePanel/SidePanel";
 import { SidePanelTitle } from "@/lib/shared/components/sidePanel/SidePanelTitle";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 import {
   RapidTestData,
@@ -139,21 +139,7 @@ export function RapidTestExamination(props: RapidTestExaminationProps) {
     });
   }
 
-  const { openCancelDialog } = useConfirmationDialog();
-
-  function onCancel(
-    dirty: boolean,
-    reset: (state?: Partial<FormikState<RapidTestExaminationData>>) => void,
-  ) {
-    if (!dirty) {
-      return;
-    }
-    openCancelDialog({
-      onConfirm: () => {
-        reset();
-      },
-    });
-  }
+  const onCancel = useOnCancelForm<RapidTestExaminationData>();
 
   return (
     <Formik
@@ -247,7 +233,7 @@ export function RapidTestExamination(props: RapidTestExaminationProps) {
           </Box>
           <ExaminationStickyBottomButtonBar
             isSubmitting={isSubmitting}
-            onClick={() => onCancel(dirty, resetForm)}
+            onClick={() => onCancel({ dirty, reset: resetForm })}
           />
         </FormPlus>
       )}
@@ -270,7 +256,7 @@ function ExaminationTabInfo() {
           <Typography>Allgemeine Bemerkung</Typography>
           <TextareaField name="generalRemarks" minRows={4} />
         </Stack>
-        <CheckboxField name="testsPayed" label={"Tests bezahlt"} />
+        <CheckboxField name="testsPayed" label="Tests bezahlt" />
       </Stack>
     </SidePanel>
   );

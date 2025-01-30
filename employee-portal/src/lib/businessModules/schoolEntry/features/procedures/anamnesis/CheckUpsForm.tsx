@@ -5,7 +5,7 @@
 
 "use client";
 
-import { SoftRequiredSelectField } from "@eshg/lib-portal/businessModules/schoolEntry/features/procedures/fieldVariants";
+import { SoftRequiredSelectField } from "@eshg/lib-portal/components/form/fieldVariants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import {
   NestedFormProps,

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAppointmentSummary } from "@eshg/employee-portal-api/travelMedicine";
+import { ApiAppointmentSummary } from "@eshg/travel-medicine-api";
 import { Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { Ref } from "react";

@@ -6,7 +6,7 @@
 import {
   ApiAdminActorSelector,
   ApiAdminCertificate,
-} from "@eshg/admin-portal-api/serviceDirectory";
+} from "@eshg/service-directory-api";
 import { CellContext } from "@tanstack/react-table";
 import { ReactNode } from "react";
 import { isDeepEqual } from "remeda";

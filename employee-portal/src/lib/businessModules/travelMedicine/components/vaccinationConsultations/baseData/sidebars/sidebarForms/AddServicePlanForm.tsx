@@ -10,7 +10,7 @@ import {
   ApiPostOtherServiceRequest,
   ApiPostVaccinationRequest,
   ApiVaccine,
-} from "@eshg/employee-portal-api/travelMedicine";
+} from "@eshg/travel-medicine-api";
 import { Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { Ref } from "react";

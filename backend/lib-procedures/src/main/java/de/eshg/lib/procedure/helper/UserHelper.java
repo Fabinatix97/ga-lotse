@@ -13,7 +13,6 @@ import de.eshg.base.user.api.UserDto;
 import de.eshg.base.user.api.UserFilterParameters;
 import de.eshg.base.user.api.UserRoleDto;
 import de.eshg.lib.keycloak.ModuleLeaderRole;
-import de.eshg.lib.procedure.model.ProgressEntryDto;
 import de.eshg.model.HasResolvableUserIds;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -61,33 +60,6 @@ public class UserHelper {
                 user -> new UserFirstAndLastName(user.firstName(), user.lastName())));
   }
 
-  public <T extends ProgressEntryDto> void enrichUsersFirstNamesAndLastNames(T progressEntry) {
-    enrichUsersFirstNamesAndLastNames(List.of(progressEntry));
-  }
-
-  public void enrichUsersFirstNamesAndLastNames(List<? extends ProgressEntryDto> progressEntries) {
-    Set<UUID> userUuids = collectUsersUuids(progressEntries);
-
-    Map<UUID, UserFirstAndLastName> userFirstNameAndLastNameByUuid =
-        resolveUsersFirstNamesAndLastNamesByUserUuids(userUuids);
-
-    for (ProgressEntryDto progressEntry : progressEntries) {
-      UUID uuid = progressEntry.getRelatedUserId();
-      if (uuid != null && userFirstNameAndLastNameByUuid.containsKey(uuid)) {
-        UserFirstAndLastName userFirstAndLastName = userFirstNameAndLastNameByUuid.get(uuid);
-        progressEntry.setRelatedUserFirstName(userFirstAndLastName.firstName());
-        progressEntry.setRelatedUserLastName(userFirstAndLastName.lastName());
-      }
-    }
-  }
-
-  private Set<UUID> collectUsersUuids(List<? extends ProgressEntryDto> progressEntries) {
-    return progressEntries.stream()
-        .map(ProgressEntryDto::getRelatedUserId)
-        .filter(Objects::nonNull)
-        .collect(Collectors.toSet());
-  }
-
   public Set<UUID> getUuidsOfModuleLeaders() {
     UserRoleDto userRoleDto = mapModuleLeaderRoleToApi(moduleLeaderRole);
     UserFilterParameters userFilterParameters = new UserFilterParameters(userRoleDto, null);
@@ -98,7 +70,7 @@ public class UserHelper {
 
   public <T extends HasResolvableUserIds> Map<UUID, UserDto> resolveUsers(
       SequencedMap<UUID, List<T>> map) {
-    return resolveUsers(map, false);
+    return resolveUsers(map, true);
   }
 
   public <T extends HasResolvableUserIds> Map<UUID, UserDto> resolveUsers(
@@ -108,7 +80,7 @@ public class UserHelper {
   }
 
   public <T extends HasResolvableUserIds> Map<UUID, UserDto> resolveUsers(List<T> list) {
-    return resolveUsers(list, false);
+    return resolveUsers(list, true);
   }
 
   public <T extends HasResolvableUserIds> Map<UUID, UserDto> resolveUsers(

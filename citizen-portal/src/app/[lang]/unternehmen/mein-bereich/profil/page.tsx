@@ -57,8 +57,10 @@ function ProfileContent({
   if (linkedFacility === "not found") {
     return (
       <ContentSheet>
-        <ContentSheetTitle>Platzhalter</ContentSheetTitle>
-        Hier könnte Ihre Werbung stehen.
+        <ContentSheetTitle>
+          {t("gdpr:profile.unlinked.title")}
+        </ContentSheetTitle>
+        {t("gdpr:profile.unlinked.description")}
       </ContentSheet>
     );
   }

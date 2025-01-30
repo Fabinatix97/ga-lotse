@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiDocumentSectionElement } from "@eshg/employee-portal-api/travelMedicine";
 import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
+import { ApiDocumentSectionElement } from "@eshg/travel-medicine-api";
 import { FormLabel, styled } from "@mui/joy";
 
 import { RadioButtonsField } from "@/lib/shared/components/formFields/RadioButtonsField";

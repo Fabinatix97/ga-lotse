@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   ApiAppointment,
   ApiDocumentContent,
   ApiPatchInformationStatementRequest,
   DeleteAppointmentCpRequest,
-} from "@eshg/citizen-portal-api/travelMedicine";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+} from "@eshg/travel-medicine-api";
 
 import { useCitizenAuthApi } from "@/lib/businessModules/travelMedicine/api/clients";
 import { useTranslation } from "@/lib/i18n/client";

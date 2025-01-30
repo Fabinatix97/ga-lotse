@@ -9,8 +9,7 @@ import {
 } from "@eshg/citizen-portal-api/medicalRegistry";
 import {
   EmployeeInformationFormValues,
-  GeneralInformationFormValues,
-  PersonalInformationFormValues,
+  MedicalRegistryCreateProcedureFormValues,
   RequiredDocumentsFormValues,
 } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
 import { shouldEnable } from "@eshg/lib-portal/businessModules/medicalRegistry/sections";
@@ -18,7 +17,7 @@ import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 import { validateFile } from "@eshg/lib-portal/helpers/validators";
 import { Add, DeleteOutlined } from "@mui/icons-material";
 import { Button, Grid, IconButton, Sheet, Stack, Typography } from "@mui/joy";
-import { FieldArray, useField } from "formik";
+import { FieldArray, useFormikContext } from "formik";
 import { Fragment } from "react";
 
 import { requiredFieldMessageKey } from "@/lib/businessModules/medicalRegistry/pages/professionalRegistrationForm/ProfessionalRegistrationForm";
@@ -35,39 +34,22 @@ const BYTES_PER_MB = 1048576;
 const MAX_FILE_SIZE = 25 * BYTES_PER_MB;
 
 export function ProfessionalRegistrationFormStepFour() {
-  const requiredDocumentsForm =
-    createFieldNameMapper<RequiredDocumentsFormValues>("requiredDocumentsForm");
+  const values =
+    useFormikContext<MedicalRegistryCreateProcedureFormValues>().values;
 
-  const [otherRelevantDocuments] = useField<File[]>(
-    requiredDocumentsForm("otherRelevantDocuments"),
-  );
+  const changeType = values.generalInformationForm.changeType;
+  const nationality = values.personalInformationForm.nationality;
+  const employeesEmployed = values.employeeInformationForm.employeesEmployed;
+  const otherRelevantDocuments =
+    values.requiredDocumentsForm.otherRelevantDocuments;
 
   const employeeInformationForm =
     createFieldNameMapper<EmployeeInformationFormValues>(
       "employeeInformationForm",
     );
 
-  const [employeesEmployed] = useField<boolean>(
-    employeeInformationForm("employeesEmployed"),
-  );
-
-  const personalInformationForm =
-    createFieldNameMapper<PersonalInformationFormValues>(
-      "personalInformationForm",
-    );
-
-  const [nationality] = useField<ApiCountryCode>(
-    personalInformationForm("nationality"),
-  );
-
-  const generalInformationForm =
-    createFieldNameMapper<GeneralInformationFormValues>(
-      "generalInformationForm",
-    );
-
-  const [changeType] = useField<ApiTypeOfChange>(
-    generalInformationForm("changeType"),
-  );
+  const requiredDocumentsForm =
+    createFieldNameMapper<RequiredDocumentsFormValues>("requiredDocumentsForm");
 
   const { t } = useTranslation([
     "medicalRegistry/professionalRegistrationForm",
@@ -88,18 +70,24 @@ export function ProfessionalRegistrationFormStepFour() {
             validate={validateFile(FileType.Jpeg.extensions, MAX_FILE_SIZE)}
           />
         </Sheet>
-        {shouldEnable("optionalDocuments", changeType.value) && (
+        {shouldEnable("optionalDocuments", changeType) && (
           <Sheet variant="soft">
             <TranslatedFileField
               name={requiredDocumentsForm("license")}
               label={t("stepFour.contentSheetOne.label.license")}
               accept={FileType.Jpeg}
+              required={
+                changeType === ApiTypeOfChange.NewRegistration ||
+                changeType === ApiTypeOfChange.ReRegistration
+                  ? t(requiredFieldMessageKey)
+                  : undefined
+              }
               validate={validateFile(FileType.Jpeg.extensions, MAX_FILE_SIZE)}
             />
           </Sheet>
         )}
-        {shouldEnable("optionalDocuments", changeType.value) &&
-          nationality.value !== ApiCountryCode.De && (
+        {shouldEnable("optionalDocuments", changeType) &&
+          nationality !== ApiCountryCode.De && (
             <Sheet variant="soft">
               <TranslatedFileField
                 name={requiredDocumentsForm("workPermit")}
@@ -111,86 +99,83 @@ export function ProfessionalRegistrationFormStepFour() {
             </Sheet>
           )}
 
-        {shouldEnable("optionalDocuments", changeType.value) && (
-          <FieldArray name={requiredDocumentsForm("otherRelevantDocuments")}>
-            {({ push, remove }) => (
-              <>
-                {otherRelevantDocuments.value.map((values, index) => (
-                  <Fragment key={index}>
-                    <Stack
-                      direction="row"
-                      gap={2}
-                      alignItems="flex-start"
-                      sx={{
-                        ">:first-child": { flexGrow: 1 },
-                      }}
-                    >
-                      <Sheet variant="soft">
-                        <TranslatedFileField
-                          name={`requiredDocumentsForm.otherRelevantDocuments.${index}`}
-                          label={t(
-                            "stepFour.contentSheetOne.label.otherRelevantDocument",
-                          )}
-                          accept={FileType.Jpeg}
-                          required={t(requiredFieldMessageKey)}
-                          validate={validateFile(
-                            FileType.Jpeg.extensions,
-                            MAX_FILE_SIZE,
-                          )}
-                        />
-                      </Sheet>
+        <FieldArray name={requiredDocumentsForm("otherRelevantDocuments")}>
+          {({ push, remove }) => (
+            <>
+              {otherRelevantDocuments.map((values, index) => (
+                <Fragment key={index}>
+                  <Stack
+                    direction="row"
+                    gap={2}
+                    alignItems="flex-start"
+                    sx={{
+                      ">:first-child": { flexGrow: 1 },
+                    }}
+                  >
+                    <Sheet variant="soft">
+                      <TranslatedFileField
+                        name={`requiredDocumentsForm.otherRelevantDocuments.${index}`}
+                        label={t(
+                          "stepFour.contentSheetOne.label.otherRelevantDocument",
+                        )}
+                        accept={FileType.Jpeg}
+                        required={t(requiredFieldMessageKey)}
+                        validate={validateFile(
+                          FileType.Jpeg.extensions,
+                          MAX_FILE_SIZE,
+                        )}
+                      />
+                    </Sheet>
 
-                      <IconButton
-                        aria-label="Dokument löschen"
-                        color="neutral"
-                        variant="outlined"
-                        sx={{
-                          marginTop: "27px",
-                          "--Icon-fontSize": (theme) => theme.fontSize.xl,
-                        }}
-                        onClick={() => remove(index)}
-                      >
-                        <DeleteOutlined />
-                      </IconButton>
-                    </Stack>
-                  </Fragment>
-                ))}
-                <Grid xxs={6}>
-                  {otherRelevantDocuments.value.length <
-                    MAX_OTHER_RELEVANT_DOCUMENTS && (
-                    <Button onClick={() => push(null)} startDecorator={<Add />}>
-                      {t(
-                        "stepFour.contentSheetOne.label.anotherRelevantDocument",
-                      )}
-                    </Button>
-                  )}
-                </Grid>
-              </>
-            )}
-          </FieldArray>
-        )}
+                    <IconButton
+                      aria-label="Dokument löschen"
+                      color="neutral"
+                      variant="outlined"
+                      sx={{
+                        marginTop: "27px",
+                        "--Icon-fontSize": (theme) => theme.fontSize.xl,
+                      }}
+                      onClick={() => remove(index)}
+                    >
+                      <DeleteOutlined />
+                    </IconButton>
+                  </Stack>
+                </Fragment>
+              ))}
+              <Grid xxs={6}>
+                {otherRelevantDocuments.length <
+                  MAX_OTHER_RELEVANT_DOCUMENTS && (
+                  <Button onClick={() => push(null)} startDecorator={<Add />}>
+                    {t(
+                      "stepFour.contentSheetOne.label.anotherRelevantDocument",
+                    )}
+                  </Button>
+                )}
+              </Grid>
+            </>
+          )}
+        </FieldArray>
       </ContentSheet>
 
-      {shouldEnable("employees", changeType.value) &&
-        employeesEmployed.value && (
-          <ContentSheet>
-            <Typography level="h2">
-              {t("stepFour.contentSheetTwo.pageTitle")}
-            </Typography>
-            <Typography level="body-md">
-              {t("stepFour.contentSheetTwo.hint")}
-            </Typography>
-            <Sheet variant="soft">
-              <TranslatedFileField
-                name={employeeInformationForm("employeesFile")}
-                label={t("stepFour.contentSheetTwo.label.employeesFile")}
-                accept={FileType.Jpeg}
-                required={t(requiredFieldMessageKey)}
-                validate={validateFile(FileType.Jpeg.extensions, MAX_FILE_SIZE)}
-              />
-            </Sheet>
-          </ContentSheet>
-        )}
+      {shouldEnable("employees", changeType) && employeesEmployed && (
+        <ContentSheet>
+          <Typography level="h2">
+            {t("stepFour.contentSheetTwo.pageTitle")}
+          </Typography>
+          <Typography level="body-md">
+            {t("stepFour.contentSheetTwo.hint")}
+          </Typography>
+          <Sheet variant="soft">
+            <TranslatedFileField
+              name={employeeInformationForm("employeesFile")}
+              label={t("stepFour.contentSheetTwo.label.employeesFile")}
+              accept={FileType.Jpeg}
+              required={t(requiredFieldMessageKey)}
+              validate={validateFile(FileType.Jpeg.extensions, MAX_FILE_SIZE)}
+            />
+          </Sheet>
+        </ContentSheet>
+      )}
     </Stack>
   );
 }

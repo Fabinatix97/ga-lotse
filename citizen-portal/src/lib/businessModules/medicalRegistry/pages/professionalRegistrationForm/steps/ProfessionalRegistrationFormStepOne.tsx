@@ -3,9 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiTypeOfChange } from "@eshg/citizen-portal-api/medicalRegistry";
 import { changeTypeNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
 import {
   GeneralInformationFormValues,
+  MedicalRegistryCreateProcedureFormValues,
   PersonalInformationFormValues,
 } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
@@ -15,8 +17,12 @@ import { PhoneNumberField } from "@eshg/lib-portal/components/formFields/PhoneNu
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import {
+  validateLength,
+  validatePastOrTodayDate,
+} from "@eshg/lib-portal/helpers/validators";
 import { Grid, Typography } from "@mui/joy";
+import { useFormikContext } from "formik";
 import { useMemo } from "react";
 
 import { requiredFieldMessageKey } from "@/lib/businessModules/medicalRegistry/pages/professionalRegistrationForm/ProfessionalRegistrationForm";
@@ -30,6 +36,11 @@ import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 const changeTypeNamesOptions = buildEnumOptions(changeTypeNames);
 
 export function ProfessionalRegistrationFormStepOne() {
+  const values =
+    useFormikContext<MedicalRegistryCreateProcedureFormValues>().values;
+
+  const changeType = values.generalInformationForm.changeType;
+
   const generalInformationForm =
     createFieldNameMapper<GeneralInformationFormValues>(
       "generalInformationForm",
@@ -123,6 +134,11 @@ export function ProfessionalRegistrationFormStepOne() {
             <InputField
               name={personalInformationForm("birthName")}
               label={t("stepOne.contentSheetTwo.label.birthName")}
+              required={
+                changeType === ApiTypeOfChange.ChangeOfName
+                  ? t(requiredFieldMessageKey)
+                  : undefined
+              }
               validate={validateLength(1, 40)}
             />
           </Grid>
@@ -131,6 +147,7 @@ export function ProfessionalRegistrationFormStepOne() {
               name={personalInformationForm("birthDate")}
               label={t("stepOne.contentSheetTwo.label.birthDate")}
               required={t(requiredFieldMessageKey)}
+              validate={validatePastOrTodayDate}
             />
           </Grid>
           <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
@@ -191,6 +208,7 @@ export function ProfessionalRegistrationFormStepOne() {
             <EmailField
               name={personalInformationForm("email")}
               label={t("stepOne.contentSheetTwo.label.email")}
+              validate={validateLength(1, 254)}
             />
           </Grid>
           <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>

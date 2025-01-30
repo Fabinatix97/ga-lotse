@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAppointment } from "@eshg/citizen-portal-api/travelMedicine";
 import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
+import { ApiAppointment } from "@eshg/travel-medicine-api";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { Stack } from "@mui/joy";
 import Grid from "@mui/joy/Grid";

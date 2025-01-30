@@ -35,6 +35,7 @@ import de.eshg.dental.domain.repository.ExaminationRepository;
 import de.eshg.dental.domain.repository.ProphylaxisSessionRepository;
 import de.eshg.lib.keycloak.TechnicalGroup;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
+import de.eshg.persistence.TransactionHelper;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.ListWithTotalNumber;
 import de.eshg.testhelper.population.PopulateWithAccessTokenHelper;
@@ -60,6 +61,7 @@ public class ProphylaxisSessionsPopulator
   private final ExaminationRepository examinationRepository;
   private final ChildController childController;
   private final UserApi userApi;
+  private final TransactionHelper transactionHelper;
 
   public ProphylaxisSessionsPopulator(
       PopulationProperties properties,
@@ -74,7 +76,8 @@ public class ProphylaxisSessionsPopulator
           ChildrenPopulator childrenPopulator,
       ExaminationRepository examinationRepository,
       ChildController childController,
-      UserApi userApi) {
+      UserApi userApi,
+      TransactionHelper transactionHelper) {
     super(
         properties,
         clock,
@@ -89,6 +92,7 @@ public class ProphylaxisSessionsPopulator
     this.examinationRepository = examinationRepository;
     this.childController = childController;
     this.userApi = userApi;
+    this.transactionHelper = transactionHelper;
   }
 
   @Override
@@ -138,7 +142,7 @@ public class ProphylaxisSessionsPopulator
             dentistIds,
             zfaIds);
 
-    randomExaminations(faker);
+    transactionHelper.executeInTransaction(() -> randomExaminations(faker));
 
     return createProphylaxisSessionRequest;
   }
@@ -177,13 +181,16 @@ public class ProphylaxisSessionsPopulator
   private static ExaminationResultDto randomResult(Faker faker, Examination examination) {
     ProphylaxisSession prophylaxisSession = examination.getProphylaxisSession();
     boolean hasFluoridationVarnish = prophylaxisSession.hasFluoridationVarnish();
+    boolean isFluoridationConsentGiven =
+        examination.getChild().isFluoridationConsentCurrentlyGiven();
     if (prophylaxisSession.isScreening()) {
       return new ScreeningExaminationResultDto(
-          hasFluoridationVarnish && faker.bool().bool(),
+          hasFluoridationVarnish && isFluoridationConsentGiven && faker.bool().bool(),
           optional(faker, randomElement(faker, OralHygieneStatusDto.values())),
           randomToothDiagnoses(faker));
     } else if (hasFluoridationVarnish) {
-      return new FluoridationExaminationResultDto(faker.bool().bool());
+      return new FluoridationExaminationResultDto(
+          isFluoridationConsentGiven && faker.bool().bool());
     } else {
       if (faker.random().nextDouble() <= 0.5) {
         return new AbsenceExaminationResultDto(randomElement(faker, ReasonForAbsenceDto.values()));

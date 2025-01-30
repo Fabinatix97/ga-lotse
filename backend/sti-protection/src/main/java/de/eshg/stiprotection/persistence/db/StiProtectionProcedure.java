@@ -54,6 +54,10 @@ public class StiProtectionProcedure
   private Concern concern;
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @Column(nullable = false)
+  private Boolean isFollowUp = false;
+
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @OneToOne(
       mappedBy = MedicalHistory_.PROCEDURE,
       cascade = CascadeType.PERSIST,
@@ -142,6 +146,14 @@ public class StiProtectionProcedure
 
   public void setConcern(Concern concern) {
     this.concern = concern;
+  }
+
+  public Boolean isFollowUp() {
+    return isFollowUp;
+  }
+
+  public void setFollowUp(Boolean followUp) {
+    isFollowUp = followUp;
   }
 
   public MedicalHistory getMedicalHistory() {

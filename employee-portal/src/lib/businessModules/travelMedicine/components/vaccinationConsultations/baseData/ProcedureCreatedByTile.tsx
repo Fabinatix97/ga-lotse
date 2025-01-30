@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import "@eshg/employee-portal-api/travelMedicine";
-import { ApiCreatedByUserType } from "@eshg/employee-portal-api/travelMedicine";
+import "@eshg/travel-medicine-api";
+import { ApiCreatedByUserType } from "@eshg/travel-medicine-api";
 import { Grid } from "@mui/joy";
 
 import { translateCreatedByUserType } from "@/lib/businessModules/travelMedicine/components/appointmentTypes/translations";

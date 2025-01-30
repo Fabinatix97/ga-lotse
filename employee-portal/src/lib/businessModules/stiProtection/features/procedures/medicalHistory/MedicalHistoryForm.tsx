@@ -31,6 +31,7 @@ import {
 } from "@/lib/businessModules/stiProtection/api/queries/medicalHistoryDocument";
 import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
 import { CONCERN_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";
+import { isProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { StickyBottomButtonBar } from "@/lib/shared/components/buttons/StickyBottomButtonBar";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
@@ -185,6 +186,7 @@ function MedicalHistoryStickyBottomButtonBar(
     isSubmitting,
     onClick: fetchMedicalHistoryDocument,
   } = props;
+  const isOpenProcedure = isProcedureOpen(stiProcedure);
 
   return (
     <StickyBottomButtonBar
@@ -197,7 +199,9 @@ function MedicalHistoryStickyBottomButtonBar(
           >
             Abbrechen
           </InternalLinkButton>
-          <SubmitButton submitting={isSubmitting}>Speichern</SubmitButton>
+          <SubmitButton submitting={isSubmitting} disabled={!isOpenProcedure}>
+            Speichern
+          </SubmitButton>
         </>
       }
       left={

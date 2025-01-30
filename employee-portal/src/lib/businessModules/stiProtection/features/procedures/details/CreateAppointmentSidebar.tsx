@@ -28,6 +28,7 @@ import {
 } from "@/lib/businessModules/stiProtection/features/procedures/addNewProcedure/SummaryForm";
 import {
   deleteUndefined,
+  isProcedureOpen,
   optionalInt,
 } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
@@ -156,6 +157,8 @@ export function CreateAppointmentSidebar({
   });
 
   async function handleSubmit(values: CreateAppointmentForm) {
+    if (!isProcedureOpen(procedure)) return;
+
     if (editAppointmentType) {
       await editAppointment.mutateAsync({
         id: procedure.id,

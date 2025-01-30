@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
+import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
   ApiDisease,
   ApiOtherServiceTemplate,
   ApiVaccine,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+} from "@eshg/travel-medicine-api";
 import { Add } from "@mui/icons-material";
 import { Button, Divider, Sheet, Stack, Typography } from "@mui/joy";
 import { FieldArray, useFormikContext } from "formik";

@@ -8,6 +8,7 @@
 import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { Button, Stack, Typography } from "@mui/joy";
+import { Trans } from "react-i18next";
 
 import { UserType } from "@/lib/baseModule/components/layout/types";
 import { useRoutes } from "@/lib/baseModule/shared/routes";
@@ -33,7 +34,21 @@ export function LoginRedirectDialog(props: Readonly<LoginRedirectDialogProps>) {
       onClose={props.onClose}
       modalTitle={dialogText("title")}
     >
-      <Typography>{dialogText("description")}</Typography>
+      <Typography>
+        <Trans
+          i18nKey={`login:login_dialog.${props.type}.description`}
+          components={{
+            Quote: (
+              <Typography
+                sx={{
+                  minWidth: "fit-content",
+                  display: "inline-block",
+                }}
+              />
+            ),
+          }}
+        />
+      </Typography>
       <Stack direction="row" justifyContent="end" gap={2}>
         <Button
           onClick={() => props.onClose()}

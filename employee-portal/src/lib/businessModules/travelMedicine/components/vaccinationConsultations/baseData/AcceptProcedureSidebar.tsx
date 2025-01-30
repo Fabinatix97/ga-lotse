@@ -4,6 +4,8 @@
  */
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
+import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
+import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import {
   ApiCountryCode,
   ApiGender,
@@ -11,9 +13,7 @@ import {
   ApiPatient,
   ApiPersonAddress,
   ApiSalutation,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+} from "@eshg/travel-medicine-api";
 
 import { useAcceptDraftVaccinationConsultation } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
 import { AcceptProcedureForm } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/AcceptProcedureForm";

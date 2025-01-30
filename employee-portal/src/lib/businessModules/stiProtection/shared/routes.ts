@@ -29,4 +29,5 @@ export const routes = {
     index: `${appointmentBlockPath}`,
     new: `${appointmentBlockPath}/new`,
   },
+  textTemplates: `${basePath}/text-templates`,
 } as const;

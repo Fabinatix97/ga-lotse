@@ -60,6 +60,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -196,8 +197,11 @@ public class StiProtectionProcedureService {
 
   private StiProtectionProcedureData toProcedureData(StiProtectionProcedure procedure) {
     UUID anonymousUserId = procedure.getPerson().getAnonymousUserId();
-    return new StiProtectionProcedureData(
-        procedure, citizenAccessCodeUserApi.getCitizenAccessCodeUser(anonymousUserId).accessCode());
+    String accessCode =
+        anonymousUserId != null
+            ? citizenAccessCodeUserApi.getCitizenAccessCodeUser(anonymousUserId).accessCode()
+            : null;
+    return new StiProtectionProcedureData(procedure, accessCode);
   }
 
   public StiProtectionProcedureData getProcedure(UUID procedureId) {
@@ -214,12 +218,13 @@ public class StiProtectionProcedureService {
     progressEntryUtil.addProgressEntry(procedureId, PERSON_DETAILS_UPDATED);
   }
 
-  public void closeProcedure(UUID procedureId, StiProtectionProcedure procedure) {
+  public void closeProcedure(StiProtectionProcedure procedure) {
     ProcedureStatus procedureStatus = procedure.getProcedureStatus();
     if (procedureStatus.isOpen()) {
+      deleteAnonymousUser(procedure);
       procedure.updateProcedureStatus(ProcedureStatus.CLOSED, clock, auditLogger);
     } else {
-      throw unexpectedProcedureStatus(procedureId, procedureStatus);
+      throw unexpectedProcedureStatus(procedure.getExternalId(), procedureStatus);
     }
   }
 
@@ -265,6 +270,10 @@ public class StiProtectionProcedureService {
     return accessCode;
   }
 
+  public String generatePin() {
+    return RandomStringUtils.secure().nextNumeric(6);
+  }
+
   public void registerAnonymousUser(StiProtectionProcedure procedure, String pin) {
     UUID anonymousUserId = procedure.getPerson().getAnonymousUserId();
     if (anonymousUserId != null) {
@@ -274,6 +283,15 @@ public class StiProtectionProcedureService {
         citizenAccessCodeUserApi.addCitizenAccessCodeUserWithPinCredential(
             new AddCitizenAccessCodeUserWithPinCredentialRequest(pin));
     procedure.getPerson().setAnonymousUserId(user.userId());
+  }
+
+  public void deleteAnonymousUser(StiProtectionProcedure procedure) {
+    UUID anonymousUserId = procedure.getPerson().getAnonymousUserId();
+    if (anonymousUserId == null) {
+      throw new BadRequestException("User already deleted.");
+    }
+    citizenAccessCodeUserApi.deleteCitizenAccessCodeUser(anonymousUserId);
+    procedure.getPerson().setAnonymousUserId(null);
   }
 
   public void verifyAnonymousUserPin(UUID procedureId, String pin) {

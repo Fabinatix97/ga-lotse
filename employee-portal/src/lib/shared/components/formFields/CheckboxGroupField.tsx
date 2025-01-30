@@ -13,14 +13,11 @@ import {
   CheckboxProps,
   FormControl,
   FormControlProps,
-  getFormControlUtilityClass,
-  styled,
 } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
+import { SxProps, TypographySystem } from "@mui/joy/styles/types";
 import { ChangeEvent, ChangeEventHandler, ReactNode, useId } from "react";
 
-import { Legend } from "./Legend";
-import { OptionalHelperText } from "./OptionalHelperText";
+import { FieldSetControl } from "./FieldSetControl";
 
 export interface AccessibleSelectOption extends SelectOption {
   ariaLabel?: string;
@@ -30,6 +27,7 @@ export interface CheckboxGroupFieldProps<T extends SelectOption>
   options: T[];
   name: string;
   label?: string | ReactNode;
+  labelLevel?: keyof TypographySystem;
   orientation?: "vertical" | "horizontal";
   onChange?: ChangeEventHandler<HTMLInputElement>;
   sx?: SxProps;
@@ -71,6 +69,7 @@ export function CheckboxGroupField<T extends SelectOption = SelectOption>(
     <FieldSetControl
       onBlur={field.input.onBlur}
       legend={props.label}
+      legendLevel={props.labelLevel}
       helperText={field.helperText}
       required={field.required}
       error={field.error}
@@ -94,7 +93,7 @@ export function CheckboxGroupField<T extends SelectOption = SelectOption>(
   );
 }
 
-type FieldSetProps = Pick<
+export type FieldSetProps = Pick<
   FormControlProps,
   | "required"
   | "error"
@@ -105,50 +104,13 @@ type FieldSetProps = Pick<
   | "aria-label"
 > & { flexDirection?: "row" | "column" };
 
-interface FieldSetLegendAndHelper {
+export interface FieldSetLegendAndHelper {
   helperText?: string;
   legend?: string | ReactNode;
+  legendLevel?: keyof TypographySystem;
   children: ReactNode;
   groupHelperTextId?: string;
 }
-
-export function FieldSetControl({
-  helperText,
-  legend,
-  children,
-  error,
-  groupHelperTextId,
-  ...fieldSetProps
-}: FieldSetProps & FieldSetLegendAndHelper) {
-  const rootClass = getFormControlUtilityClass("root");
-  const errorClass = getFormControlUtilityClass("error");
-  const className =
-    fieldSetProps.className != null
-      ? `${rootClass} ${fieldSetProps.className}`
-      : rootClass;
-
-  const classNameWithError = error ? `${errorClass} ${className}` : className;
-  return (
-    <FieldSetRow
-      component="fieldset"
-      flexDirection={"column"}
-      {...fieldSetProps}
-      className={classNameWithError}
-    >
-      <Legend>{legend}</Legend>
-      {children}
-      <OptionalHelperText id={groupHelperTextId}>
-        {helperText}
-      </OptionalHelperText>
-    </FieldSetRow>
-  );
-}
-
-const FieldSetRow = styled(Row)(() => ({
-  margin: 0,
-  padding: 0,
-  border: "none",
-}));
 
 interface CheckboxesProps<T extends AccessibleSelectOption> {
   name: string;

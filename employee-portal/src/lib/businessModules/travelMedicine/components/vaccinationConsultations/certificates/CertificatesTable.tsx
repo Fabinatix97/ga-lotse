@@ -5,11 +5,11 @@
 
 "use client";
 
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   ApiProcedureStatus,
   ApiTMCertificate,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+} from "@eshg/travel-medicine-api";
 import { ReceiptOutlined } from "@mui/icons-material";
 import AddOutlined from "@mui/icons-material/AddOutlined";
 import { Button, Stack, Typography } from "@mui/joy";

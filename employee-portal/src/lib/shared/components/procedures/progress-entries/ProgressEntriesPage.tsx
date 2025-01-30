@@ -33,7 +33,6 @@ import {
   ProgressEntriesProvider,
   useHasDeletionRights,
   useIsReadOnly,
-  useOpenApprovalRequests,
   useProgressEntriesConfig,
 } from "./ProgressEntriesContext";
 import { SortSelect } from "./SortSelect";
@@ -227,10 +226,10 @@ interface ProgressEntriesInformationSheetProps {
 function ProgressEntriesInformationSheet({
   openApprovalRequestsSidebar,
 }: ProgressEntriesInformationSheetProps) {
-  const { searchParams } = useProgressEntriesConfig();
+  const { searchParams, approvalRequestsResponse } = useProgressEntriesConfig();
   const timelineEntryProps = useTimelineEntryProps();
 
-  const approvalRequests = useOpenApprovalRequests();
+  const approvalRequests = approvalRequestsResponse?.approvalRequests;
   const hasDeletionRights = useHasDeletionRights();
   const isReadOnly = useIsReadOnly();
   const isOffline = useIsOffline();

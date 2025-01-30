@@ -30,6 +30,10 @@ export function GDPRTable({ params }: { params: GetGdprProceduresRequest }) {
   const tableControl = useTableControl({
     serverSideSorting: true,
     sortFieldName: "sortKey",
+    initialSorting: {
+      id: "dueDate",
+      desc: false,
+    },
   });
   const {
     data: { elements, totalNumberOfElements },
@@ -84,6 +88,7 @@ export function GDPRTable({ params }: { params: GetGdprProceduresRequest }) {
           data={elements}
           columns={columns}
           sorting={tableControl.tableSorting}
+          enableSortingRemoval={false}
           rowNavigation={{
             focusColumnAccessorKey: "identificationData",
             route: (row) => routes.gdpr.details(row.original.id),

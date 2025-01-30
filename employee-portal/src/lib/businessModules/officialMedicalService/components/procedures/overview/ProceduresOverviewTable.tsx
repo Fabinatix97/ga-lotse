@@ -8,6 +8,7 @@
 import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
 import { GetAllEmployeeProceduresRequest } from "@eshg/employee-portal-api/officialMedicalService";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { useToggleableState } from "@eshg/lib-portal/hooks/useToggleableState";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { ColumnSort } from "@tanstack/react-table";
 import { ReactNode, useMemo, useState } from "react";
@@ -35,6 +36,12 @@ import {
 import { useSearchParamStateProvider } from "@/lib/shared/components/filterSettings/useSearchParamStateProvider";
 import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
+import {
+  PersonSearchForm,
+  PersonSearchFormValues,
+  TogglePersonSearchButton,
+  usePersonSearch,
+} from "@/lib/shared/components/personSearch/PersonSearchForm";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
@@ -43,6 +50,8 @@ import {
   getSortKey,
 } from "@/lib/shared/components/table/sorting";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
+
+type PanelName = "filters" | "personSearch";
 
 interface ProceduresOverviewTableProps {
   buttons?: ReactNode[];
@@ -86,6 +95,7 @@ function createFilterDefinitions(): FilterDefinition[] {
 export function ProceduresOverviewTable(
   props: Readonly<ProceduresOverviewTableProps>,
 ) {
+  const [activePanel, toggleActivePanel] = useToggleableState<PanelName>();
   const tableControl = useTableControl({
     serverSideSorting: true,
     sortFieldName: "sortKey",
@@ -93,8 +103,10 @@ export function ProceduresOverviewTable(
     initialSorting: initialSorting,
   });
 
+  const personSearch = usePersonSearch();
   const proceduresQuery = useGetAllProceduresQuery({
     ...props.filter,
+    ...personSearch.searchParams,
     pageNumber: tableControl.paginationProps.pageNumber,
     pageSize: tableControl.paginationProps.pageSize,
     sortKey: getSortKey(tableControl.tableSorting),
@@ -120,7 +132,7 @@ export function ProceduresOverviewTable(
     true,
   );
 
-  const { stateProvider } = useOmsProceduresFilterState({
+  const { stateProvider, resetFilters } = useOmsProceduresFilterState({
     stateProvider: paramStateProvider,
     defaults: [],
     filter: props.filter,
@@ -129,24 +141,52 @@ export function ProceduresOverviewTable(
   const filterSettings = useFilterSettings({
     definitions: filterDefinitions,
     stateProvider,
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    onValuesSubmit: (_values) => {},
+    onValuesSubmit: (_values) => {
+      personSearch.reset();
+    },
     showSearch: false,
   });
+
+  function handleChangePersonSearch(formValues: PersonSearchFormValues) {
+    tableControl.paginationProps.onPageChange(0);
+    resetFilters();
+    personSearch.setValues(formValues);
+  }
 
   return (
     <TablePage
       fullHeight
       controls={
         <ButtonBar
-          left={<FilterButton {...filterSettings.filterButtonProps} />}
+          left={[
+            <FilterButton
+              {...filterSettings.filterButtonProps}
+              key="filterButton"
+              isFilterVisible={activePanel === "filters"}
+              onClick={() => toggleActivePanel("filters")}
+            />,
+            <TogglePersonSearchButton
+              {...personSearch.buttonProps}
+              key="personSearchButton"
+              expanded={activePanel === "personSearch"}
+              onClick={() => toggleActivePanel("personSearch")}
+            />,
+          ]}
           right={props.buttons}
           alignItems="flex-end"
         />
       }
       data-testid="procedures-table"
+      search={
+        activePanel === "personSearch" && (
+          <PersonSearchForm
+            {...personSearch.formProps}
+            onChange={handleChangePersonSearch}
+          />
+        )
+      }
       filterSettings={
-        filterSettings.filterSettingsVisible && (
+        activePanel === "filters" && (
           <FilterSettingsSheet {...filterSettings.filterSettingsSheetProps}>
             <FilterSettings {...filterSettings.filterSettingsProps} />
           </FilterSettingsSheet>
@@ -203,9 +243,15 @@ function useOmsProceduresFilterState(options: {
     [options.filter, options.defaults, touched],
   );
 
+  function resetFilters() {
+    setTouched(false);
+    setActiveValues(options.defaults);
+  }
+
   return {
     stateProvider,
     filter,
+    resetFilters,
   };
 }
 

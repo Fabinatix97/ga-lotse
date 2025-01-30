@@ -4,15 +4,15 @@
  */
 
 import {
-  ApiAppointmentType,
-  ApiGetAppointmentBlock,
-  ApiGetAppointmentBlockGroup,
-} from "@eshg/employee-portal-api/travelMedicine";
-import {
   BaseEntity,
   mapBaseEntity,
 } from "@eshg/lib-employee-portal/api/models/BaseEntity";
 import { assertNonEmptyArray } from "@eshg/lib-portal/helpers/assertions";
+import {
+  ApiAppointmentType,
+  ApiGetAppointmentBlock,
+  ApiGetAppointmentBlockGroup,
+} from "@eshg/travel-medicine-api";
 import { first, last, sumBy } from "remeda";
 
 export interface AppointmentBlockGroup extends AppointmentBlock {

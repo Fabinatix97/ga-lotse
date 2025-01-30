@@ -15,12 +15,14 @@ import { Divider, Sheet, Typography } from "@mui/joy";
 import { Formik } from "formik";
 
 import { useUpsertConsultation } from "@/lib/businessModules/stiProtection/api/mutations/consultation";
+import { TextTemplatesSidebarProvider } from "@/lib/businessModules/stiProtection/components/textTemplates/TextTemplatesSidebarProvider";
+import { TextareaFieldWithTextTemplates } from "@/lib/businessModules/stiProtection/components/textTemplates/TextareaFieldWithTextTemplates";
+import { ApiTextTemplateContext } from "@/lib/businessModules/stiProtection/components/textTemplates/constants";
 import {
   SidecarFormLayout,
   SidecarSheet,
 } from "@/lib/businessModules/stiProtection/features/procedures/SidecarFormLayout";
 import { TabStickyBottomButtonBar } from "@/lib/businessModules/stiProtection/features/procedures/TabStickyBottomButtonBar";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
 import { GeneralSection } from "./GeneralSection";
 import { PregnancySection } from "./PregnancySection";
@@ -71,10 +73,13 @@ export function ConsultationForm({
             <Typography level="h3" mb={3}>
               Zusatzinfos
             </Typography>
-            <TextareaField
-              name="general.notes"
-              label="Allgemeine Bemerkungen"
-            />
+            <TextTemplatesSidebarProvider>
+              <TextareaFieldWithTextTemplates
+                name="general.notes"
+                label="Allgemeine Bemerkungen"
+                context={ApiTextTemplateContext.Consultation}
+              />
+            </TextTemplatesSidebarProvider>
           </SidecarSheet>
         </SidecarFormLayout>
         <TabStickyBottomButtonBar procedure={procedure} />

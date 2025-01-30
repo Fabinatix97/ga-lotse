@@ -11,6 +11,9 @@ import {
   ApiStiProtectionProcedureOverview,
 } from "@eshg/employee-portal-api/stiProtection";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { FormikState } from "formik";
+
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function concernToAppointmentType(
   concern: ApiConcern | "RESULTS_REVIEW",
@@ -110,4 +113,29 @@ export function getOpenAppointmentsFromProcedure(
   }
 
   return openAppointments;
+}
+
+export function useOnCancelForm<T>() {
+  const { openCancelDialog } = useConfirmationDialog();
+
+  return function onCancelForm({
+    dirty,
+    onConfirm,
+    reset,
+  }: {
+    dirty: boolean;
+    onConfirm?: () => void;
+    reset: (state?: Partial<FormikState<T>>) => void;
+  }) {
+    if (!dirty) {
+      return;
+    }
+
+    return openCancelDialog({
+      onConfirm: () => {
+        reset();
+        if (onConfirm) onConfirm();
+      },
+    });
+  };
 }

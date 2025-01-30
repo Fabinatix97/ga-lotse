@@ -79,7 +79,10 @@ export function GdprPersonDataTile({
               name="bpk2"
               label="BundID"
               value={
-                <Typography startDecorator={<VerifiedIcon color="success" />}>
+                <Typography
+                  startDecorator={<VerifiedIcon color="success" />}
+                  noWrap
+                >
                   Authentifiziert
                 </Typography>
               }

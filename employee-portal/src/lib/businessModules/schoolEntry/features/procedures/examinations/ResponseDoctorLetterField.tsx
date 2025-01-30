@@ -6,7 +6,7 @@
 import {
   SoftRequiredSelectField,
   SoftRequiredSelectFieldProps,
-} from "@eshg/lib-portal/businessModules/schoolEntry/features/procedures/fieldVariants";
+} from "@eshg/lib-portal/components/form/fieldVariants";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { ApiExaminationResultValue } from "@eshg/school-entry-api";
 

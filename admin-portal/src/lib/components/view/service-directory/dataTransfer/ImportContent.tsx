@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiImportRequest } from "@eshg/admin-portal-api/serviceDirectory";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { ApiImportRequest } from "@eshg/service-directory-api";
 import { Typography } from "@mui/joy";
 import { Formik, FormikHelpers } from "formik";
 import { Dispatch, SetStateAction, useState } from "react";

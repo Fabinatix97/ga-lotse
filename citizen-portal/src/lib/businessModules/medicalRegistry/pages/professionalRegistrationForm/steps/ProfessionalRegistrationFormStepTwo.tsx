@@ -10,7 +10,7 @@ import {
 } from "@eshg/citizen-portal-api/medicalRegistry";
 import { professionalTitleNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
 import {
-  GeneralInformationFormValues,
+  MedicalRegistryCreateProcedureFormValues,
   OccupationalInformationFormValues,
   ProfessionalismInformationFormValues,
 } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
@@ -20,8 +20,12 @@ import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import {
+  validateLength,
+  validatePastOrTodayDate,
+} from "@eshg/lib-portal/helpers/validators";
 import { Grid, Radio, Typography } from "@mui/joy";
-import { useField } from "formik";
+import { useFormikContext } from "formik";
 import { useMemo } from "react";
 
 import { requiredFieldMessageKey } from "@/lib/businessModules/medicalRegistry/pages/professionalRegistrationForm/ProfessionalRegistrationForm";
@@ -35,6 +39,11 @@ import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 const professionalTitleNamesOptions = buildEnumOptions(professionalTitleNames);
 
 export function ProfessionalRegistrationFormStepTwo() {
+  const values =
+    useFormikContext<MedicalRegistryCreateProcedureFormValues>().values;
+
+  const changeType = values.generalInformationForm.changeType;
+
   const occupationalInformationForm =
     createFieldNameMapper<OccupationalInformationFormValues>(
       "occupationalInformationForm",
@@ -44,15 +53,6 @@ export function ProfessionalRegistrationFormStepTwo() {
     createFieldNameMapper<ProfessionalismInformationFormValues>(
       "professionalismInformationForm",
     );
-
-  const generalInformationForm =
-    createFieldNameMapper<GeneralInformationFormValues>(
-      "generalInformationForm",
-    );
-
-  const [changeType] = useField<ApiTypeOfChange>(
-    generalInformationForm("changeType"),
-  );
 
   const { t } = useTranslation([
     "medicalRegistry/professionalRegistrationForm",
@@ -75,7 +75,7 @@ export function ProfessionalRegistrationFormStepTwo() {
     <>
       <ContentSheet>
         <Typography level="h2">{t("stepTwo.pageTitle")}</Typography>
-        {shouldEnable("profession", changeType.value) && (
+        {shouldEnable("profession", changeType) && (
           <>
             <Grid container spacing={2} sx={{ flexGrow: 1 }}>
               <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
@@ -83,25 +83,28 @@ export function ProfessionalRegistrationFormStepTwo() {
                   name={occupationalInformationForm("professionalTitle")}
                   label={t("stepTwo.label.professionalTitle")}
                   options={translatedProfessionalTitleNamesOptions}
-                  required={requiredFieldMessageKey}
+                  required={t(requiredFieldMessageKey)}
                 />
               </Grid>
               <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
                 <InputField
                   name={occupationalInformationForm("fieldOfExpertise")}
                   label={t("stepTwo.label.fieldOfExpertise")}
+                  validate={validateLength(1, 100)}
                 />
               </Grid>
               <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
                 <InputField
                   name={occupationalInformationForm("specialistTitle")}
                   label={t("stepTwo.label.specialistTitle")}
+                  validate={validateLength(1, 100)}
                 />
               </Grid>
               <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
                 <InputField
                   name={occupationalInformationForm("furtherTraining")}
                   label={t("stepTwo.label.furtherTraining")}
+                  validate={validateLength(1, 300)}
                 />
               </Grid>
               <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
@@ -121,7 +124,13 @@ export function ProfessionalRegistrationFormStepTwo() {
                 <DateField
                   name={occupationalInformationForm("approbationGrantedOn")}
                   label={t("stepTwo.label.approbationGrantedOn")}
-                  required={requiredFieldMessageKey}
+                  required={
+                    changeType === ApiTypeOfChange.NewRegistration ||
+                    changeType === ApiTypeOfChange.ReRegistration
+                      ? t(requiredFieldMessageKey)
+                      : undefined
+                  }
+                  validate={validatePastOrTodayDate}
                 />
               </Grid>
               <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
@@ -130,7 +139,8 @@ export function ProfessionalRegistrationFormStepTwo() {
                     "approbationIssuingAuthority",
                   )}
                   label={t("stepTwo.label.approbationIssuingAuthority")}
-                  required={requiredFieldMessageKey}
+                  required={t(requiredFieldMessageKey)}
+                  validate={validateLength(1, 100)}
                 />
               </Grid>
             </Grid>
@@ -142,7 +152,7 @@ export function ProfessionalRegistrationFormStepTwo() {
               name={professionalismInformationForm("employmentType")}
               label={t("stepTwo.label.employmentType")}
               orientation="horizontal"
-              required={requiredFieldMessageKey}
+              required={t(requiredFieldMessageKey)}
             >
               <Radio
                 value={ApiEmploymentType.FullTime}
@@ -157,7 +167,7 @@ export function ProfessionalRegistrationFormStepTwo() {
               name={professionalismInformationForm("employmentStatus")}
               label={t("stepTwo.label.employmentStatus")}
               orientation="horizontal"
-              required={requiredFieldMessageKey}
+              required={t(requiredFieldMessageKey)}
             >
               <Radio
                 value={ApiEmploymentStatus.SelfEmployed}

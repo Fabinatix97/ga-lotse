@@ -21,8 +21,6 @@ dependencies {
     testImplementation testFixtures(project(':business-module-commons'))
     testImplementation testFixtures(project(':business-module-persistence-commons'))
 
-    testImplementation 'org.testcontainers:junit-jupiter'
-    testImplementation 'org.testcontainers:postgresql'
     testImplementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
 }
 

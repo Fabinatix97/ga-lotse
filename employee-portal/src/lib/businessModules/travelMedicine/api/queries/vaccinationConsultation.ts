@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiProcedureStatus } from "@eshg/employee-portal-api/travelMedicine";
+import { ApiProcedureStatus } from "@eshg/travel-medicine-api";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 
 import { useVaccinationConsultationApi } from "@/lib/businessModules/travelMedicine/api/clients";

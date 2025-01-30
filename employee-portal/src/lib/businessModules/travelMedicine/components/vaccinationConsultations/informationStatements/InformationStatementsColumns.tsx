@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiInformationStatement } from "@eshg/employee-portal-api/travelMedicine";
+import { ApiInformationStatement } from "@eshg/travel-medicine-api";
 import {
   DeleteOutlined,
   Replay,

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiDocumentContent } from "@eshg/citizen-portal-api/travelMedicine";
+import { ApiDocumentContent } from "@eshg/travel-medicine-api";
 import { Button, Stack } from "@mui/joy";
 import { Dispatch, SetStateAction } from "react";
 

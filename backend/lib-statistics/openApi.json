@@ -1,0 +1,384 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "description" : "This is a the generic API for all business modules",
+    "title" : "The generic statistics library API for business modules",
+    "version" : "0.1"
+  },
+  "servers" : [ {
+    "url" : "http://localhost:8080"
+  } ],
+  "paths" : {
+    "/statistics/procedure-ids" : {
+      "post" : {
+        "operationId" : "getProcedureIds",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/GetProcedureIdsRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetProcedureIdsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get procedure ids for procedure references",
+        "tags" : [ "StatisticsProcedureReference" ]
+      }
+    },
+    "/test-helper/population" : {
+      "post" : {
+        "operationId" : "populateDefaults",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DefaultPopulationResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/request-interceptor" : {
+      "post" : {
+        "operationId" : "interceptNextRequest",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/InsertRequestInterceptionTestHelperRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/request-interceptor/barriers" : {
+      "post" : {
+        "operationId" : "addBarrier",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TestHelperInterceptionRequestFilter"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AddBarrierTestHelperResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/request-interceptor/barriers/{barrierId}/await" : {
+      "post" : {
+        "operationId" : "awaitBarrier",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "barrierId",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "in" : "query",
+          "name" : "timeoutInMillis",
+          "required" : false,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/request-interceptor/reset" : {
+      "post" : {
+        "operationId" : "resetInterceptionsAndBarriers",
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/reset" : {
+      "post" : {
+        "operationId" : "reset",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TestHelperClockUpdateResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/set-clock" : {
+      "patch" : {
+        "operationId" : "setClock",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TestHelperClockSetRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TestHelperClockUpdateResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/wind-clock" : {
+      "patch" : {
+        "operationId" : "windClockForward",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TestHelperClockWindForwardRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TestHelperClockUpdateResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "AddBarrierTestHelperResponse" : {
+        "required" : [ "barrierId" ],
+        "type" : "object",
+        "properties" : {
+          "barrierId" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "DefaultPopulationResponse" : {
+        "type" : "object",
+        "properties" : {
+          "populations" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Population"
+            }
+          }
+        }
+      },
+      "GetProcedureIdsRequest" : {
+        "required" : [ "procedureReferences" ],
+        "type" : "object",
+        "properties" : {
+          "procedureReferences" : {
+            "maxItems" : 200,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
+      },
+      "GetProcedureIdsResponse" : {
+        "required" : [ "referenceToId" ],
+        "type" : "object",
+        "properties" : {
+          "referenceToId" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
+      },
+      "HttpMethod" : {
+        "type" : "string",
+        "enum" : [ "GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "TRACE" ]
+      },
+      "InsertRequestInterceptionTestHelperRequest" : {
+        "required" : [ "type" ],
+        "type" : "object",
+        "properties" : {
+          "filter" : {
+            "$ref" : "#/components/schemas/TestHelperInterceptionRequestFilter"
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/InterceptionType"
+          }
+        }
+      },
+      "InterceptionType" : {
+        "type" : "string",
+        "enum" : [ "BAD_REQUEST", "UNAUTHORIZED", "FORBIDDEN", "NOT_FOUND", "INTERNAL_SERVER_ERROR" ]
+      },
+      "Population" : {
+        "required" : [ "numberOfPopulatedEntities", "totalNumberOfEntities" ],
+        "type" : "object",
+        "properties" : {
+          "numberOfPopulatedEntities" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "populatorName" : {
+            "type" : "string"
+          },
+          "totalNumberOfEntities" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "TestHelperClockSetRequest" : {
+        "required" : [ "newInstant" ],
+        "type" : "object",
+        "properties" : {
+          "newInstant" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "TestHelperClockUpdateResponse" : {
+        "required" : [ "instant" ],
+        "type" : "object",
+        "properties" : {
+          "instant" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "TestHelperClockWindForwardRequest" : {
+        "required" : [ "days", "hours", "minutes", "months", "seconds", "weeks" ],
+        "type" : "object",
+        "properties" : {
+          "days" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "hours" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "minutes" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "months" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "seconds" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "weeks" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "TestHelperInterceptionRequestFilter" : {
+        "type" : "object",
+        "properties" : {
+          "httpMethodFilter" : {
+            "$ref" : "#/components/schemas/HttpMethod"
+          },
+          "queryPatternFilter" : {
+            "type" : "string"
+          },
+          "urlPatternFilter" : {
+            "type" : "string"
+          }
+        }
+      }
+    }
+  }
+}

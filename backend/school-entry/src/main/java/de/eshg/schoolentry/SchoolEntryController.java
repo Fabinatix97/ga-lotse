@@ -45,8 +45,10 @@ import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.core.io.ByteArrayResource;
@@ -505,16 +507,8 @@ public class SchoolEntryController {
   public ResponseEntity<Resource> createSchoolInfoLetter(
       @PathVariable("procedureId") UUID procedureId,
       @Valid @RequestBody CreateSchoolInfoLetterRequest request) {
-
     SchoolEntryProcedure procedure = schoolEntryService.findProcedureByExternalId(procedureId);
-    ProcedureValidator.validateProcedureStatusNotClosed(procedure);
-    List<RequiredProcedureData> validationResult =
-        SchoolInfoLetterValidator.validateSchoolEntryProcedure(procedure);
-    if (!validationResult.isEmpty()) {
-      throw new BadRequestException(
-          "School entry procedure is not complete.",
-          "Incomplete areas: %s".formatted(validationResult));
-    }
+    validateProcedureForSchoolInfoLetter(procedure);
     ProcedureDetailsData procedureDetailsData = schoolEntryService.augmentWithDetails(procedure);
 
     Pdf pdf =
@@ -539,6 +533,18 @@ public class SchoolEntryController {
         .body(new ByteArrayResource(pdf.getFileContent().getContent()));
   }
 
+  private static void validateProcedureForSchoolInfoLetter(SchoolEntryProcedure procedure) {
+    ProcedureValidator.validateProcedureStatusNotClosed(procedure);
+
+    Set<RequiredProcedureArea> incompleteAreas =
+        SchoolInfoLetterValidator.validateSchoolEntryProcedure(procedure);
+    if (!incompleteAreas.isEmpty()) {
+      throw new BadRequestException(
+          "School entry procedure is not complete.",
+          "Incomplete areas: %s".formatted(incompleteAreas));
+    }
+  }
+
   @PutMapping("/{procedureId}/waiting-room")
   @Transactional
   @Operation(summary = "Update waiting room details for a procedure.")
@@ -558,14 +564,14 @@ public class SchoolEntryController {
 
   @GetMapping("/{procedureId}/validate-completeness")
   @Transactional(readOnly = true)
-  public ResponseEntity<ValidateRequiredProcedureDataResponse> validateCompleteness(
+  public ValidateRequiredProcedureDataResponse validateCompleteness(
       @PathVariable("procedureId") UUID procedureId) {
     SchoolEntryProcedure procedure = schoolEntryService.findProcedureByExternalId(procedureId);
 
-    List<RequiredProcedureData> validationResult =
+    Set<RequiredProcedureArea> incompleteAreas =
         SchoolInfoLetterValidator.validateSchoolEntryProcedure(procedure);
 
-    return ResponseEntity.ok(new ValidateRequiredProcedureDataResponse(validationResult));
+    return new ValidateRequiredProcedureDataResponse(new ArrayList<>(incompleteAreas));
   }
 
   @GetMapping("/waiting-room-procedures")

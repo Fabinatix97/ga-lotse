@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiPersonAddress } from "@eshg/employee-portal-api/travelMedicine";
+import { ApiPersonAddress } from "@eshg/travel-medicine-api";
 
 import { LegacyBaseAddress } from "@/lib/shared/components/form/address/LegacyAddressForm";
 

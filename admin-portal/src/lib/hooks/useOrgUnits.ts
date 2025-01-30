@@ -12,7 +12,7 @@ import {
   ApiAdminStagedEntityType,
   ApiGetOrgUnitsResponse,
   ServiceDirectoryAdminApi,
-} from "@eshg/admin-portal-api/serviceDirectory";
+} from "@eshg/service-directory-api";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { prop, sortBy } from "remeda";

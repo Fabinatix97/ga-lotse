@@ -12,8 +12,11 @@ import de.eshg.base.SalutationDto;
 import de.eshg.base.contact.ContactApi;
 import de.eshg.base.testhelper.BaseTestHelperApi;
 import de.eshg.dental.ChildController;
+import de.eshg.dental.api.ChildDetailsDto;
 import de.eshg.dental.api.CreateChildRequest;
 import de.eshg.dental.api.CreateChildResponse;
+import de.eshg.dental.api.FluoridationConsentDto;
+import de.eshg.dental.api.UpdateChildRequest;
 import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.repository.ChildRepository;
 import de.eshg.testhelper.environment.EnvironmentConfig;
@@ -27,6 +30,7 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.time.Year;
 import java.util.List;
+import java.util.UUID;
 import net.datafaker.Faker;
 import net.datafaker.providers.base.Name;
 
@@ -72,10 +76,38 @@ public class ChildrenPopulator extends DentalPopulator<CreateChildResponse> {
     for (int i = numberOfPastYears; i > 0; i--) {
       Year yearInPast = Year.of(request.year() - i);
       CreateChildRequest requestForPast = withNewYear(request, yearInPast);
-      childController.createChild(requestForPast);
+      UUID childId = childController.createChild(requestForPast).id();
+      updateChild(childId, faker, i);
     }
 
-    return childController.createChild(request);
+    CreateChildResponse child = childController.createChild(request);
+    updateChild(child.id(), faker, numberOfPastYears);
+
+    return child;
+  }
+
+  private void updateChild(UUID childId, Faker faker, int numberOfPastYears) {
+    ChildDetailsDto childDetails = childController.getChild(childId);
+    childController.updateChild(
+        childId,
+        new UpdateChildRequest(
+            childDetails.version(),
+            childDetails.groupName(),
+            childDetails.getCurrentInstitution().id(),
+            randomFluoridationConsent(faker, childDetails.year())));
+  }
+
+  private FluoridationConsentDto randomFluoridationConsent(Faker faker, int year) {
+    Boolean consented = optional(faker, faker.bool().bool());
+    if (consented == null) {
+      return null;
+    }
+
+    Boolean hasAllergy = consented ? optional(faker, false) : optional(faker, faker.bool().bool());
+    LocalDate dateOfConsent =
+        LocalDate.of(year - 1, 1, 1).plusDays(faker.number().numberBetween(1, 350));
+
+    return new FluoridationConsentDto(dateOfConsent, consented, hasAllergy);
   }
 
   private CreateChildRequest randomChild(Faker faker) {

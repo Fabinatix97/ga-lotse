@@ -2,13 +2,13 @@
   "login_dialog": {
     "person": {
       "title": "You are being redirected",
-      "description": "You will be redirected to the official BundID portal. Please login with your BundID account to authenticate your identity and make use of your rights.",
-      "submit": "Login with BundID"
+      "description": "You are now leaving the GA-Lotse website and will be redirected to the BundID portal. Please log in with your BundID account there to continue processing your request.",
+      "submit": "Proceed to BundID"
     },
     "organization": {
       "title": "You are being redirected",
-      "description": "You will be redirected to the official MeinUnternehmenskonto portal. Please login with your MeinUnternehmenskonto account to authenticate your identity and make use of your rights.",
-      "submit": "Login with Mein Unternehmenskonto"
+      "description": "You are now leaving the GA-Lotse website and will be redirected to the <Quote>\"Mein Unternehmenskonto\"</Quote> portal. Please log in there with your <Quote>\"Mein Unternehmenskonto\"</Quote> account to continue processing your request.",
+      "submit": "Proceed to Mein Unternehmenskonto"
     }
   }
 }

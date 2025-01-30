@@ -26,7 +26,7 @@ export function ProgressEntryDetailsSidebar({
   const { procedureId, progressEntryApi, progressEntryApiQueryKey } =
     progressEntriesContext.config;
   const { closeEntryDetailsSidebar } = progressEntriesContext.action;
-  const { progressEntry, relatedKeyDocumentProgressEntries } =
+  const { progressEntry, relatedKeyDocumentProgressEntries, resolvedUsers } =
     useFetchProgressEntryDetails(
       progressEntryApi,
       progressEntryApiQueryKey,
@@ -40,6 +40,7 @@ export function ProgressEntryDetailsSidebar({
         progressEntry.type === "ManualProgressEntry" && (
           <ManualProgressEntryDetails
             entry={progressEntry}
+            resolvedUsers={resolvedUsers}
             relatedKeyDocumentProgressEntries={
               relatedKeyDocumentProgressEntries
             }
@@ -50,6 +51,7 @@ export function ProgressEntryDetailsSidebar({
         progressEntry.type === "SystemProgressEntry" && (
           <SystemProgressEntryDetails
             entry={progressEntry}
+            resolvedUsers={resolvedUsers}
             relatedKeyDocumentProgressEntries={
               relatedKeyDocumentProgressEntries
             }
@@ -57,7 +59,10 @@ export function ProgressEntryDetailsSidebar({
         )}
       {isDefined(progressEntry) &&
         progressEntry.type === "ProcessedInboxProgressEntry" && (
-          <InboxProgressEntryDetails entry={progressEntry} />
+          <InboxProgressEntryDetails
+            entry={progressEntry}
+            resolvedUsers={resolvedUsers}
+          />
         )}
     </Sidebar>
   );

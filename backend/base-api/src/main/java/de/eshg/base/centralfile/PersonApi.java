@@ -6,6 +6,8 @@
 package de.eshg.base.centralfile;
 
 import de.eshg.base.centralfile.api.DeleteFileStatesRequest;
+import de.eshg.base.centralfile.api.GetFileStateIdsBulkRequest;
+import de.eshg.base.centralfile.api.GetFileStateIdsBulkResponse;
 import de.eshg.base.centralfile.api.GetFileStateIdsResponse;
 import de.eshg.base.centralfile.api.person.*;
 import de.eshg.rest.service.security.config.BaseUrls;
@@ -96,6 +98,14 @@ public interface PersonApi {
   GetFileStateIdsResponse getPersonFileStateIdsAssociatedWithFileState(
       @Parameter(description = "The Id of the File State of the Person.") @PathVariable("id")
           UUID id);
+
+  @PostExchange(FILE_STATES_URL + "/linked-ids")
+  @ApiResponse(responseCode = "200")
+  @Operation(
+      summary =
+          "Get the Ids of all other person file states associated with the reference person of the given file state")
+  GetFileStateIdsBulkResponse getPersonFileStateIdsAssociatedWithFileStates(
+      @Valid @RequestBody GetFileStateIdsBulkRequest request);
 
   @GetExchange(REFERENCE_URL + "/{id}/linked-ids")
   @ApiResponse(responseCode = "200")

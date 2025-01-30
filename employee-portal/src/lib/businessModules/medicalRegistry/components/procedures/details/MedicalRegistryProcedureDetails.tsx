@@ -80,14 +80,14 @@ function useDraftAlerts(procedure: ApiGetProcedure200Response) {
     open: procedureType === ApiMedicalRegistryEntryProcedureType.CitizenDraft,
     type: "error",
     message:
-      "Dieser Entwurf kommt aus einer externen Quelle. Bitte kontrollieren Sie die Daten, bevor Sie den Eintrag anlegen.",
+      "Dieser Entwurf kommt aus einer externen Quelle. Bitte kontrollieren Sie die Daten, bevor Sie den Entwurf übernehmen.",
   });
 
   useControlledAlert({
     open: procedureType === ApiMedicalRegistryEntryProcedureType.EmployeeDraft,
     type: "warning",
     message:
-      "Bitte kontrollieren Sie die Daten, bevor Sie den Eintrag anlegen.",
+      "Bitte kontrollieren Sie die Daten, bevor Sie den Entwurf übernehmen.",
   });
 }
 
@@ -104,7 +104,10 @@ function DraftActions({
     openConfirmationDialog({
       color: "danger",
       title: "Wollen Sie den Entwurf wirklich verwerfen?",
-      description: "Die Aktion kann nicht rückgängig gemacht werden.",
+      description:
+        "Die Aktion kann nicht rückgängig gemacht werden. \
+        Bitte informieren Sie ggf. den Antragsteller darüber, dass der Antrag \
+        verworfen wurde.",
       confirmLabel: "Verwerfen",
       onConfirm: () => {
         deleteDraftProcedure.mutate(

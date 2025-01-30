@@ -45,4 +45,10 @@ public class OmsAppointmentController {
   public void cancelAppointment(@PathVariable("id") UUID appointmentId) {
     omsAppointmentService.cancelAppointmentEmployee(appointmentId);
   }
+
+  @PatchMapping(path = APPOINTMENT_URL + "/{id}/close")
+  @Operation(summary = "close an appointment")
+  public void closeAppointment(@PathVariable("id") UUID appointmentId) {
+    omsAppointmentService.closeAppointmentEmployee(appointmentId);
+  }
 }

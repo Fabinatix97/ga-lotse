@@ -8,6 +8,7 @@ package de.eshg.lib.procedure.model;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.Set;
 import java.util.UUID;
 
 @Schema(name = GenericFileReferenceDto.SCHEMA_NAME)
@@ -21,5 +22,10 @@ public final class GenericFileReferenceDto extends AbstractFileReferenceDto {
     setFileId(fileId);
     setDeleted(deleted);
     setDeletable(deletable);
+  }
+
+  @Override
+  public Set<UUID> getResolvableUserIds() {
+    return Set.of();
   }
 }

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiExportResponse } from "@eshg/admin-portal-api/serviceDirectory";
+import { ApiExportResponse } from "@eshg/service-directory-api";
 import { FileDownloadOutlined } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 import { useCallback } from "react";

@@ -5,11 +5,6 @@
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
-  ApiGender,
-  ApiPatient,
-  ApiSalutation,
-} from "@eshg/employee-portal-api/travelMedicine";
-import {
   GENDER_VALUES,
   SALUTATION_VALUES,
   getOptionalTitle,
@@ -17,6 +12,11 @@ import {
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
+import {
+  ApiGender,
+  ApiPatient,
+  ApiSalutation,
+} from "@eshg/travel-medicine-api";
 import { Divider, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 import { isDefined } from "remeda";

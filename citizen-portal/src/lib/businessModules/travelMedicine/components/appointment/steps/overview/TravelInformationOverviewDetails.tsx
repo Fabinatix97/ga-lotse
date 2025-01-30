@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiTravelTimeUnit,
-  ApiTravelType,
-} from "@eshg/citizen-portal-api/travelMedicine";
+import { ApiTravelTimeUnit, ApiTravelType } from "@eshg/travel-medicine-api";
 import { TravelExploreOutlined } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";

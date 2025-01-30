@@ -37,7 +37,10 @@ export function GdprFacilityDataTile({
               name="dataTransmitterPseudonymId"
               label="Mein Unternehmenskonto"
               value={
-                <Typography startDecorator={<VerifiedIcon color="success" />}>
+                <Typography
+                  startDecorator={<VerifiedIcon color="success" />}
+                  noWrap
+                >
                   Authentifiziert
                 </Typography>
               }

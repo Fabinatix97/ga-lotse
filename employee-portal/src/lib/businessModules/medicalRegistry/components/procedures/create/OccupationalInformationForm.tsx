@@ -3,8 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiTypeOfChange } from "@eshg/employee-portal-api/medicalRegistry";
 import { professionalTitleNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
-import { OccupationalInformationFormValues } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
+import {
+  MedicalRegistryCreateProcedureFormValues,
+  OccupationalInformationFormValues,
+} from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
 import { lifetimeDoctorNumberValidator } from "@eshg/lib-portal/businessModules/medicalRegistry/validator";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
@@ -13,15 +17,25 @@ import {
   buildEnumOptions,
   createFieldNameMapper,
 } from "@eshg/lib-portal/helpers/form";
+import {
+  validateLength,
+  validatePastOrTodayDate,
+} from "@eshg/lib-portal/helpers/validators";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { Grid, Typography } from "@mui/joy";
+import { useFormikContext } from "formik";
 
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
 
 export function OccupationalInformationForm(props: NestedFormProps) {
+  const values =
+    useFormikContext<MedicalRegistryCreateProcedureFormValues>().values;
+
   const fieldName = createFieldNameMapper<OccupationalInformationFormValues>(
     props.name,
   );
+
+  const changeType = values.generalInformationForm.changeType;
 
   return (
     <>
@@ -41,7 +55,11 @@ export function OccupationalInformationForm(props: NestedFormProps) {
       <Grid xxl={6} />
 
       <Grid xxs={6}>
-        <InputField name={fieldName("fieldOfExpertise")} label="Fachgebiet" />
+        <InputField
+          name={fieldName("fieldOfExpertise")}
+          label="Fachgebiet"
+          validate={validateLength(1, 100)}
+        />
       </Grid>
       <Grid xxl={6} />
 
@@ -49,12 +67,17 @@ export function OccupationalInformationForm(props: NestedFormProps) {
         <InputField
           name={fieldName("specialistTitle")}
           label="Facharztbezeichnung"
+          validate={validateLength(1, 100)}
         />
       </Grid>
       <Grid xxl={6} />
 
       <Grid xxs={6}>
-        <InputField name={fieldName("furtherTraining")} label="Weiterbildung" />
+        <InputField
+          name={fieldName("furtherTraining")}
+          label="Weiterbildung"
+          validate={validateLength(1, 300)}
+        />
       </Grid>
       <Grid xxl={6} />
 
@@ -67,7 +90,13 @@ export function OccupationalInformationForm(props: NestedFormProps) {
         <DateField
           name={fieldName("approbationGrantedOn")}
           label="Erlaubnis / Approbation erteilt am"
-          required={requiredFieldMessage}
+          required={
+            changeType === ApiTypeOfChange.NewRegistration ||
+            changeType === ApiTypeOfChange.ReRegistration
+              ? requiredFieldMessage
+              : undefined
+          }
+          validate={validatePastOrTodayDate}
         />
       </Grid>
       <Grid xxl={6} />
@@ -77,6 +106,7 @@ export function OccupationalInformationForm(props: NestedFormProps) {
           name={fieldName("approbationIssuingAuthority")}
           label="Ausstellungsbehörde"
           required={requiredFieldMessage}
+          validate={validateLength(1, 100)}
         />
       </Grid>
       <Grid xxl={6} />

@@ -5,15 +5,15 @@
 
 "use client";
 
+import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   ApiInformationStatementTemplate,
   ApiInformationStatementTemplateRequest,
   ApiInformationStatementTemplateState,
   ApiTemplateSection,
   PutInformationStatementTemplateRequest,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+} from "@eshg/travel-medicine-api";
 import { Box } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { Formik } from "formik";

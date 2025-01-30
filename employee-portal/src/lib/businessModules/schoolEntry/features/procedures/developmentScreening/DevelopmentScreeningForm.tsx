@@ -21,7 +21,7 @@ import {
   HandicapFields,
   HandicapFieldsValues,
 } from "@/lib/businessModules/schoolEntry/features/procedures/developmentScreening/HandicapFields";
-import { useIdc10Sidebar } from "@/lib/businessModules/schoolEntry/features/procedures/developmentScreening/Icd10Sidebar";
+import { useIcd10Sidebar } from "@/lib/businessModules/schoolEntry/features/procedures/developmentScreening/Icd10Sidebar";
 import {
   MeasurementFields,
   MeasurementFieldsValues,
@@ -63,7 +63,7 @@ interface DevelopmentScreeningFormProps
 }
 
 export function DevelopmentScreeningForm(props: DevelopmentScreeningFormProps) {
-  const icd10Sidebar = useIdc10Sidebar();
+  const icd10Sidebar = useIcd10Sidebar();
 
   function handleClickIcd10Code(
     currentCodes: string[],

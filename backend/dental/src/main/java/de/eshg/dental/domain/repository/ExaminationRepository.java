@@ -37,4 +37,18 @@ public interface ExaminationRepository
   List<Examination> findAllByChildStatus(@Param("status") ProcedureStatus status);
 
   Optional<Examination> findByExternalId(UUID examinationId);
+
+  @Query(
+      nativeQuery = true,
+      value =
+          """
+    select e.*
+    from examination e
+      join child c on c.id = e.child_id
+      join person pers on pers.procedure_id = c.id
+      join prophylaxis_session sess on sess.id = e.prophylaxis_session_id
+    where pers.central_file_state_id in :fileStateIds
+    order by sess.date_and_time desc, e.id;
+    """)
+  List<Examination> findAllByChildFileStateIds(List<UUID> fileStateIds);
 }

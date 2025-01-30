@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import org.apache.commons.lang3.BooleanUtils;
 import org.hibernate.annotations.BatchSize;
 
 @Entity
@@ -113,6 +114,10 @@ public class Child extends Procedure<Child, ChildTask, Person, Facility> {
         .max(Comparator.comparing(FluoridationConsent::dateOfConsent))
         .map(FluoridationConsent::consented)
         .orElse(null);
+  }
+
+  public boolean isFluoridationConsentCurrentlyGiven() {
+    return BooleanUtils.isTrue(getCurrentFluoridationConsent());
   }
 
   public void addFluoridationConsent(FluoridationConsent fluoridationConsent) {

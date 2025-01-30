@@ -19,9 +19,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.keycloak.representations.idm.UserRepresentation;
 
 public class BundIdAttributesMapper {
+
+  public static final String ELLIPSIS_HOUSE_NUMBER = "[\u2026]"; // (three dots character)
 
   private BundIdAttributesMapper() {
     throw new IllegalStateException("Utility class");
@@ -56,12 +59,12 @@ public class BundIdAttributesMapper {
   protected static PersonIdentificationDataForValidation mapFromKeycloak(
       UserRepresentation representation) {
     String firstName =
-        shortenExtracted(
+        shortenExtractedAttribute(
             CitizenUserAttribute.FIRST_NAME,
             GdprPersonDto.MAX_FIRST_NAME_LENGTH,
             representation.getFirstName());
     String lastName =
-        shortenExtracted(
+        shortenExtractedAttribute(
             CitizenUserAttribute.LAST_NAME,
             GdprPersonDto.MAX_LAST_NAME_LENGTH,
             representation.getLastName());
@@ -99,29 +102,7 @@ public class BundIdAttributesMapper {
         phoneNumber,
         title,
         salutationDto,
-        shortenExtractedDomesticAddress(extractDomesticAddressDto(userAttributes)));
-  }
-
-  private static DomesticAddressDto shortenExtractedDomesticAddress(
-      DomesticAddressDto extractedAddress) {
-    String cityShortened =
-        shortenExtracted(
-            CitizenUserAttribute.BUND_ID_LOCALITY_NAME,
-            DomesticAddressDto.MAX_CITY_LENGTH,
-            extractedAddress.city());
-    String postalCodeShortened =
-        shortenExtracted(
-            CitizenUserAttribute.BUND_ID_POSTAL_CODE,
-            DomesticAddressDto.MAX_POSTAL_CODE_LENGTH,
-            extractedAddress.postalCode());
-    String streetShortened =
-        shortenExtracted(
-            CitizenUserAttribute.BUND_ID_POSTAL_ADDRESS,
-            DomesticAddressDto.MAX_STREET_LENGTH,
-            extractedAddress.street());
-
-    return new DomesticAddressDto(
-        extractedAddress.country(), cityShortened, postalCodeShortened, streetShortened);
+        extractDomesticAddressDto(userAttributes));
   }
 
   public static DomesticAddressDto extractDomesticAddressDto(
@@ -138,13 +119,43 @@ public class BundIdAttributesMapper {
             userAttributes,
             CitizenUserAttribute.BUND_ID_POSTAL_CODE,
             DomesticAddressDto.MAX_POSTAL_CODE_LENGTH);
-    String street =
-        extractAttributeAndShortenIfLong(
-            userAttributes,
-            CitizenUserAttribute.BUND_ID_POSTAL_ADDRESS,
-            DomesticAddressDto.MAX_STREET_LENGTH);
 
-    return new DomesticAddressDto(countryCode, city, postalCode, street);
+    String bundIdPostalAddressAttribute =
+        extractAttribute(userAttributes, CitizenUserAttribute.BUND_ID_POSTAL_ADDRESS);
+    StreetAndHouseNumber streetAndHouseNumber =
+        shortenIfLong(StreetAndHouseNumber.splitPostalAddress(bundIdPostalAddressAttribute));
+
+    return new DomesticAddressDto(
+        countryCode,
+        city,
+        postalCode,
+        streetAndHouseNumber.street(),
+        streetAndHouseNumber.houseNumber());
+  }
+
+  private static StreetAndHouseNumber shortenIfLong(StreetAndHouseNumber streetAndHouseNumber) {
+    String street = streetAndHouseNumber.street();
+    String streetShortened =
+        StringUtils.abbreviate(street, ELLIPSIS, DomesticAddressDto.MAX_STREET_LENGTH);
+    if (!StringUtils.equals(street, streetShortened)) {
+      log.debug(
+          "Extracted street part from User Attribute \"BUND_ID_POSTAL_ADDRESS\" (value \"{}\") has been truncated to {} due to length restrictions",
+          street,
+          streetShortened);
+    }
+
+    String houseNumber = streetAndHouseNumber.houseNumber();
+    String houseNumberShortened =
+        StringUtils.abbreviate(
+            houseNumber, ELLIPSIS_HOUSE_NUMBER, DomesticAddressDto.MAX_HOUSE_NUMBER_LENGTH);
+    if (!StringUtils.equals(houseNumber, houseNumberShortened)) {
+      log.debug(
+          "House number extracted from User Attribute \"BUND_ID_POSTAL_ADDRESS\" (value \"{}\") has been truncated to {} due to length restrictions",
+          houseNumber,
+          houseNumberShortened);
+    }
+
+    return new StreetAndHouseNumber(streetShortened, houseNumberShortened);
   }
 
   private static SalutationDto mapGender(String genderAttribute) {

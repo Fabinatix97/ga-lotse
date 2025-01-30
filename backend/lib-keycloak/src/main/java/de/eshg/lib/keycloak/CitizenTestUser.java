@@ -142,15 +142,13 @@ public enum CitizenTestUser implements KeycloakUser {
       List.of(CitizenPermissionRole.BUND_ID_USER),
       Map.ofEntries(
           Map.entry(BUND_ID_B_PK_2, "OKYUQ-yFYLC1Qhp770Sy8wI8OvzI8348CFovB_Ay_PU"),
-          Map.entry(
-              BUND_ID_POSTAL_ADDRESS,
-              "Isgatan 134 Lägenhet 3, Kallskogen vid Stormyrarna, 95213 Vinterdal"),
+          Map.entry(BUND_ID_POSTAL_ADDRESS, "Isgatan 134124436545623"),
           Map.entry(
               BUND_ID_POSTAL_CODE,
-              "Isgatan 134 Lägenhet 3, Kallskogen vid Stormyrarna, 95213 Vinterdal"),
+              "Isgatan 134124436545623 Lägenhet 3, Kallskogen vid Stormyrarna, 95213 Vinterdal"),
           Map.entry(
               BUND_ID_LOCALITY_NAME,
-              "Isgatan 134 Lägenhet 3, Kallskogen vid Stormyrarna, 95213 Vinterdal"),
+              "Isgatan 134124436545623 Lägenhet 3, Kallskogen vid Stormyrarna, 95213 Vinterdal"),
           Map.entry(BUND_ID_COUNTRY, "SE"),
           Map.entry(BUND_ID_GENDER, "Male"),
           Map.entry(BUND_ID_BIRTH_DATE, "1975-03-23"),

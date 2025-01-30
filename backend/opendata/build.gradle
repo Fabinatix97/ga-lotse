@@ -17,8 +17,6 @@ dependencies {
     testImplementation testFixtures(project(':business-module-persistence-commons'))
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
 
-    testImplementation 'org.testcontainers:junit-jupiter'
-    testImplementation 'org.testcontainers:postgresql'
     testImplementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
 }
 

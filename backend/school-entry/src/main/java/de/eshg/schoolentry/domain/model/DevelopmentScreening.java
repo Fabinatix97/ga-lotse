@@ -438,6 +438,7 @@ public class DevelopmentScreening extends GenericEntity<Long> implements Validat
     this.bmiPercentile = bmiPercentile;
   }
 
+  @Override
   public Stream<PropertyDescriptor> getPropertiesToValidate() {
     List<PropertyDescriptor> propertiesToIgnore =
         List.of(

@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import {
   ApiAppointmentType,
   ApiCountryCode,
   ApiTravelTimeUnit,
   ApiTravelType,
-} from "@eshg/citizen-portal-api/travelMedicine";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+} from "@eshg/travel-medicine-api";
 
 export interface AppointmentFormValues {
   patient: PatientFormValues;

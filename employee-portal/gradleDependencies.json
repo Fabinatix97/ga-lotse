@@ -8,6 +8,7 @@
     ":lib-portal",
     ":measles-protection-api",
     ":school-entry-api",
-    ":statistics-api"
+    ":statistics-api",
+    ":travel-medicine-api"
   ]
 }

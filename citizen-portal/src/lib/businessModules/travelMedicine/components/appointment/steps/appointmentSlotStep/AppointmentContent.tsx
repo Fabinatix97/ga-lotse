@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAppointmentType } from "@eshg/citizen-portal-api/travelMedicine";
+import { ApiAppointmentType } from "@eshg/travel-medicine-api";
 import { isAfter, isEqual } from "date-fns";
 import { useFormikContext } from "formik";
 import { useEffect } from "react";

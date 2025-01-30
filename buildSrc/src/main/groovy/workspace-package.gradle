@@ -28,7 +28,8 @@ tasks.register('clean', Delete) {
 
 tasks.register('addWorkspaceDependency', PnpmTask) {
   group = 'workspace'
-  args = project.hasProperty('package') ? ['add', "@eshg/${project.property('package')}@workspace:*"] : []
+  def saveDevArg = project.hasProperty('dev') ? ['--save-dev'] : []
+  args = project.hasProperty('package') ? ['add', "@eshg/${project.property('package')}@workspace:*"] + saveDevArg : []
 
   finalizedBy rootProject.tasks.updateProjectReferences
 }

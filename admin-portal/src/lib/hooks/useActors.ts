@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAdminStagedEntityType } from "@eshg/admin-portal-api/serviceDirectory";
+import { ApiAdminStagedEntityType } from "@eshg/service-directory-api";
 import { useMemo } from "react";
 
 import { PartialActorWithId } from "@/lib/components/view/actors/ActorTable";

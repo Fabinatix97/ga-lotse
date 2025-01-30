@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { EnumMap } from "@eshg/lib-portal/types/helpers";
 import {
   ApiAppointmentType,
   ApiTravelTimeUnit,
   ApiTravelType,
-} from "@eshg/citizen-portal-api/travelMedicine";
-import { EnumMap } from "@eshg/lib-portal/types/helpers";
+} from "@eshg/travel-medicine-api";
 
 export const TRAVEL_TYPES: EnumMap<ApiTravelType> = {
   [ApiTravelType.Unspecified]: "nicht erfasst",

@@ -5,9 +5,9 @@
 
 "use client";
 
-import { ApiMedicalHistory } from "@eshg/employee-portal-api/travelMedicine";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import { ApiMedicalHistory } from "@eshg/travel-medicine-api";
 import { Box, Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { useEffect } from "react";

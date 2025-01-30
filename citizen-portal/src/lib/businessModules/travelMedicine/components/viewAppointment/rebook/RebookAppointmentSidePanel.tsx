@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAppointmentBookingType } from "@eshg/citizen-portal-api/travelMedicine";
 import { formatTime } from "@eshg/lib-portal/formatters/dateTime";
 import { formatDateToFullReadableString } from "@eshg/lib-portal/helpers/dateTime";
+import { ApiAppointmentBookingType } from "@eshg/travel-medicine-api";
 import { AccessTimeOutlined, DateRange } from "@mui/icons-material";
 import { Button, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";

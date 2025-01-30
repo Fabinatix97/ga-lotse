@@ -52,6 +52,7 @@ import de.eshg.lib.procedure.model.ProgressEntrySortOrderDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Stream;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -150,10 +151,11 @@ public class ProgressEntryController<P extends Procedure<P, ?, ?, ?>> implements
             .map(ProgressEntryMapper::toInterfaceType)
             .toList();
 
-    userHelper.enrichUsersFirstNamesAndLastNames(progressEntries);
-
     return new GetProgressEntriesResponse(
-        page.getTotalPages(), page.getTotalElements(), progressEntries);
+        page.getTotalPages(),
+        page.getTotalElements(),
+        progressEntries,
+        userHelper.resolveUsers(progressEntries));
   }
 
   @Override
@@ -171,12 +173,7 @@ public class ProgressEntryController<P extends Procedure<P, ?, ?, ?>> implements
         progressEntryService.addManualProgressEntry(
             procedureId, manualProgressEntry, file, fileMetaData);
 
-    ManualProgressEntryDto manualProgressEntryDto =
-        ProgressEntryMapper.toInterfaceType(savedManualProgressEntry);
-
-    userHelper.enrichUsersFirstNamesAndLastNames(manualProgressEntryDto);
-
-    return manualProgressEntryDto;
+    return ProgressEntryMapper.toInterfaceType(savedManualProgressEntry);
   }
 
   private Sort mapToSort(GetProgressEntriesSortOptions sortOptions) {
@@ -267,8 +264,16 @@ public class ProgressEntryController<P extends Procedure<P, ?, ?, ?>> implements
   public GetProgressEntryResponse getProgressEntry(UUID procedureId, UUID progressEntryId) {
     ProgressEntry progressEntry =
         progressEntryService.getProgressEntryOrThrow(procedureId, progressEntryId);
+    List<KeyDocumentAwareProgressEntryDto> relatedKeyDocumentProgressEntries =
+        getRelatedKeyDocumentProgressEntries(progressEntry);
+
+    ProgressEntryDto progressEntryDto = ProgressEntryMapper.toInterfaceType(progressEntry);
     return new GetProgressEntryResponse(
-        mapAndEnrich(progressEntry), getRelatedKeyDocumentProgressEntries(progressEntry));
+        progressEntryDto,
+        relatedKeyDocumentProgressEntries,
+        userHelper.resolveUsers(
+            Stream.concat(Stream.of(progressEntryDto), relatedKeyDocumentProgressEntries.stream())
+                .toList()));
   }
 
   private List<KeyDocumentAwareProgressEntryDto> getRelatedKeyDocumentProgressEntries(
@@ -287,16 +292,10 @@ public class ProgressEntryController<P extends Procedure<P, ?, ?, ?>> implements
             keyDocumentAware.getKeyDocumentType(),
             progressEntry.getId())
         .stream()
-        .map(this::mapAndEnrich)
+        .map(ProgressEntryMapper::toInterfaceType)
         .filter(KeyDocumentAwareProgressEntryDto.class::isInstance)
         .map(KeyDocumentAwareProgressEntryDto.class::cast)
         .toList();
-  }
-
-  private ProgressEntryDto mapAndEnrich(ProgressEntry entity) {
-    ProgressEntryDto response = ProgressEntryMapper.toInterfaceType(entity);
-    userHelper.enrichUsersFirstNamesAndLastNames(response);
-    return response;
   }
 
   @Override
@@ -321,12 +320,7 @@ public class ProgressEntryController<P extends Procedure<P, ?, ?, ?>> implements
         progressEntryService.patchProgressEntry(
             procedureId, progressEntryId, patchManualProgressEntryRequest);
 
-    ManualProgressEntryDto manualProgressEntryDto =
-        ProgressEntryMapper.toInterfaceType(manualProgressEntry);
-
-    userHelper.enrichUsersFirstNamesAndLastNames(manualProgressEntryDto);
-
-    return manualProgressEntryDto;
+    return ProgressEntryMapper.toInterfaceType(manualProgressEntry);
   }
 
   @Override

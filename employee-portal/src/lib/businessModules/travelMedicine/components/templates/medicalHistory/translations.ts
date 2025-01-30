@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiMedicalHistoryTemplateState } from "@eshg/employee-portal-api/travelMedicine";
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
+import { ApiMedicalHistoryTemplateState } from "@eshg/travel-medicine-api";
 
 export const MEDICAL_HISTORY_TEMPLATE_STATES: EnumMap<ApiMedicalHistoryTemplateState> =
   {

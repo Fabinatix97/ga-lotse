@@ -35,3 +35,22 @@ export function useCancelAppointment() {
     onSuccess: () => snackbar.confirmation("Termin abgesagt."),
   });
 }
+
+export function useCloseAppointment() {
+  return useCloseAppointmentInternal("Termin abgeschlossen.");
+}
+
+export function useWithdrawAppointment() {
+  return useCloseAppointmentInternal("Terminoption zurückgezogen.");
+}
+
+function useCloseAppointmentInternal(successMessage: string) {
+  const snackbar = useSnackbar();
+  const employeeOmsProcedureApi = useOmsAppointmentApi();
+
+  return useHandledMutation({
+    mutationFn: ({ appointmentId }: { appointmentId: string }) =>
+      employeeOmsProcedureApi.closeAppointment(appointmentId),
+    onSuccess: () => snackbar.confirmation(successMessage),
+  });
+}

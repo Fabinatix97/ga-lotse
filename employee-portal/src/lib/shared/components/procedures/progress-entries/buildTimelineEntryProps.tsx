@@ -8,6 +8,7 @@ import {
   ApiManualProgressEntry,
   ApiProcessedInboxProgressEntry,
   ApiSystemProgressEntry,
+  ApiUser,
 } from "@eshg/employee-portal-api/businessProcedures";
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
@@ -23,6 +24,7 @@ import {
 } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import { TimelineEntryProps } from "@/lib/shared/components/timeline/TimelineEntry";
 import { TimelineEntryIndicator } from "@/lib/shared/components/timeline/TimelineEntryIndicator";
+import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 import { EntryFile } from "./EntryFile";
 import {
@@ -32,30 +34,41 @@ import {
   systemProgressEntryIndicators,
   systemProgressEntryTypeTitles,
 } from "./constants";
-import { buildName, displayTriggerer } from "./helper";
+import { formatTriggeredBy } from "./helper";
 
 interface ProgressEntryTimelineEntryProps extends TimelineEntryProps {
   key: string;
 }
 
 export function useTimelineEntryProps(): ProgressEntryTimelineEntryProps[] {
-  const { progressEntries } = useProgressEntriesConfig();
+  const { progressEntries, resolvedUsers } =
+    useProgressEntriesConfig().progressEntries;
 
   return progressEntries.map((progressEntry) =>
-    timelineEntryPropsOfProgressEntry(progressEntry),
+    timelineEntryPropsOfProgressEntry(progressEntry, resolvedUsers),
   );
 }
 
 function timelineEntryPropsOfProgressEntry(
   progressEntry: ApiGetProgressEntriesResponseProgressEntriesInner,
+  resolvedUsers: Record<string, ApiUser>,
 ): ProgressEntryTimelineEntryProps {
   switch (progressEntry.type) {
     case "SystemProgressEntry":
-      return timelineEntryPropsOfSystemProgressEntry(progressEntry);
+      return timelineEntryPropsOfSystemProgressEntry(
+        progressEntry,
+        resolvedUsers,
+      );
     case "ManualProgressEntry":
-      return timelineEntryPropsOfManualProgressEntry(progressEntry);
+      return timelineEntryPropsOfManualProgressEntry(
+        progressEntry,
+        resolvedUsers,
+      );
     case "ProcessedInboxProgressEntry":
-      return timelineEntryPropsOfInboxProgressEntry(progressEntry);
+      return timelineEntryPropsOfInboxProgressEntry(
+        progressEntry,
+        resolvedUsers,
+      );
   }
 }
 
@@ -73,6 +86,7 @@ function TextSheet(props: { text: string; dataTestId: string }) {
 
 function timelineEntryPropsOfSystemProgressEntry(
   systemProgressEntry: ApiSystemProgressEntry,
+  resolvedUsers: Record<string, ApiUser>,
 ): ProgressEntryTimelineEntryProps {
   return {
     key: systemProgressEntry.progressEntryId,
@@ -88,7 +102,7 @@ function timelineEntryPropsOfSystemProgressEntry(
     ),
     label: buildLabel(
       systemProgressEntry.createdAt,
-      displayTriggerer(systemProgressEntry),
+      formatTriggeredBy(systemProgressEntry, resolvedUsers),
     ),
     indicator: (
       <TimelineEntryIndicator color="success">
@@ -116,6 +130,7 @@ function timelineEntryPropsOfSystemProgressEntry(
 
 function timelineEntryPropsOfManualProgressEntry(
   manualProgressEntry: ApiManualProgressEntry,
+  resolvedUsers: Record<string, ApiUser>,
 ): ProgressEntryTimelineEntryProps {
   const note = manualProgressEntry.note;
   return {
@@ -130,10 +145,7 @@ function timelineEntryPropsOfManualProgressEntry(
     ),
     label: buildLabel(
       manualProgressEntry.createdAt,
-      buildName(
-        manualProgressEntry.createdByUserFirstName,
-        manualProgressEntry.createdByUserLastName,
-      ),
+      fullName(resolvedUsers[manualProgressEntry.createdBy]),
     ),
     indicator: (
       <TimelineEntryIndicator>
@@ -158,6 +170,7 @@ function timelineEntryPropsOfManualProgressEntry(
 
 function timelineEntryPropsOfInboxProgressEntry(
   inboxProgressEntry: ApiProcessedInboxProgressEntry,
+  resolvedUsers: Record<string, ApiUser>,
 ): ProgressEntryTimelineEntryProps {
   return {
     key: inboxProgressEntry.progressEntryId,
@@ -171,10 +184,7 @@ function timelineEntryPropsOfInboxProgressEntry(
     ),
     label: buildLabel(
       inboxProgressEntry.createdAt,
-      buildName(
-        inboxProgressEntry.createdByUserFirstName,
-        inboxProgressEntry.createdByUserLastName,
-      ),
+      fullName(resolvedUsers[inboxProgressEntry.createdBy]),
     ),
     indicator: (
       <TimelineEntryIndicator>

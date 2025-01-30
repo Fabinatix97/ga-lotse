@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiUser } from "@eshg/employee-portal-api/travelMedicine";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { ApiUser } from "@eshg/travel-medicine-api";
 import { Sheet, Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { Ref } from "react";

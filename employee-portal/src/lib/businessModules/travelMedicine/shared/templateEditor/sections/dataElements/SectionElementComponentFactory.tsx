@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiTemplateSectionElement } from "@eshg/employee-portal-api/travelMedicine/models";
+import { ApiTemplateSectionElement } from "@eshg/travel-medicine-api";
 
 import { TemplateSectionElementProp } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/SectionDataElementList";
 import { TemplateConfirmation } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/TemplateConfirmation";

@@ -6,6 +6,7 @@
 import {
   ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner,
   ApiManualProgressEntry,
+  ApiUser,
 } from "@eshg/employee-portal-api/businessProcedures";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
@@ -39,15 +40,18 @@ import {
 import { DetailsHistory } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/DetailsHistory";
 import { LabelValueDisplay } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/LabelValueDisplay";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
+import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 type ManualProgressEntryDetailsView = "DETAILS" | "HISTORY";
 
 export function ManualProgressEntryDetails({
   entry,
+  resolvedUsers,
   relatedKeyDocumentProgressEntries,
   onClose,
 }: {
   entry: ApiManualProgressEntry;
+  resolvedUsers: Record<string, ApiUser>;
   relatedKeyDocumentProgressEntries: ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner[];
   onClose: () => void;
 }) {
@@ -67,6 +71,7 @@ export function ManualProgressEntryDetails({
       {currentView === "DETAILS" && (
         <ManualProgressEntryDetailsView
           entry={entry}
+          resolvedUsers={resolvedUsers}
           relatedKeyDocumentProgressEntries={relatedKeyDocumentProgressEntries}
           onHistory={openHistory}
           onClose={onClose}
@@ -82,10 +87,11 @@ export function ManualProgressEntryDetails({
 export function ManualProgressEntryDetailsView(props: {
   entry: ApiManualProgressEntry;
   relatedKeyDocumentProgressEntries: ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner[];
+  resolvedUsers: Record<string, ApiUser>;
   onClose: () => void;
   onHistory: () => void;
 }) {
-  const { entry } = props;
+  const { entry, resolvedUsers } = props;
   const isReadOnly = useIsReadOnly();
   const hasEditRights = useHasEditRights(entry);
   const editable = hasEditRights && !isReadOnly && !entry.locked;
@@ -95,6 +101,7 @@ export function ManualProgressEntryDetailsView(props: {
   ) : (
     <ManualProgressEntryDetailsTemplate
       entry={entry}
+      resolvedUsers={resolvedUsers}
       relatedKeyDocumentProgressEntries={
         props.relatedKeyDocumentProgressEntries
       }
@@ -125,11 +132,13 @@ export interface ProgressEntryDetailsValues {
 
 function EditableManualProgressEntryDetails({
   entry,
+  resolvedUsers,
   relatedKeyDocumentProgressEntries,
   onClose,
   onHistory,
 }: {
   entry: ApiManualProgressEntry;
+  resolvedUsers: Record<string, ApiUser>;
   relatedKeyDocumentProgressEntries: ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner[];
   onClose: () => void;
   onHistory: () => void;
@@ -169,6 +178,7 @@ function EditableManualProgressEntryDetails({
         <SidebarForm onSubmit={handleSubmit}>
           <ManualProgressEntryDetailsTemplate
             entry={entry}
+            resolvedUsers={resolvedUsers}
             relatedKeyDocumentProgressEntries={
               relatedKeyDocumentProgressEntries
             }
@@ -209,6 +219,7 @@ function isFileLocked(entry: ApiManualProgressEntry) {
 
 interface ManualProgressEntryDetailsTemplateProps {
   entry: ApiManualProgressEntry;
+  resolvedUsers: Record<string, ApiUser>;
   relatedKeyDocumentProgressEntries: ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner[];
   handleClose: () => void;
   elements: {
@@ -221,6 +232,7 @@ interface ManualProgressEntryDetailsTemplateProps {
 
 function ManualProgressEntryDetailsTemplate({
   entry,
+  resolvedUsers,
   relatedKeyDocumentProgressEntries,
   handleClose,
   elements,
@@ -248,7 +260,7 @@ function ManualProgressEntryDetailsTemplate({
       <DetailsContentWrapper
         entry={entry}
         title={`Details ${manualProgressEntryTypeNames[entry.manualProgressEntryType]}`}
-        creatorName={`${entry.createdByUserFirstName} ${entry.createdByUserLastName}`}
+        creatorName={fullName(resolvedUsers[entry.createdBy])}
         additionalFileElements={{
           start: (
             <>

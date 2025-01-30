@@ -5,14 +5,14 @@
 
 "use client";
 
-import { ApiRequiredProcedureData } from "@eshg/school-entry-api";
+import { ApiRequiredProcedureArea } from "@eshg/school-entry-api";
 import { Button, Grid, Stack } from "@mui/joy";
 import { PropsWithChildren, useState } from "react";
 
 import { SchoolEntryProcedurePageProps } from "@/app/(businessModules)/school-entry/procedures/[procedureId]/layout";
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { useGetProcedure } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
-import { RequiredProcedureDataDialog } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/RequiredProcedureDataModal";
+import { IncompleteProcedureAreasModal } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/IncompleteProcedureAreasModal";
 import { useMedicalReportSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/reports/MedicalReportSidebar";
 import { useSchoolInfoLetterSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/reports/SchoolInfoLetterSidebar";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
@@ -87,20 +87,20 @@ interface CreateReportsPanelProps {
 function CreateReportsPanel(props: CreateReportsPanelProps) {
   const medicalReportSidebar = useMedicalReportSidebar();
   const schoolInfoLetterSidebar = useSchoolInfoLetterSidebar();
-  const [requiredProcedureData, setRequiredProcedureData] = useState<
-    ApiRequiredProcedureData[]
+  const [incompleteProcedureAreas, setIncompleteProcedureAreas] = useState<
+    ApiRequiredProcedureArea[]
   >([]);
   const schoolEntryApi = useSchoolEntryApi();
 
   async function handleSchoolInfoLetterClick() {
-    const data = await schoolEntryApi.validateCompleteness(props.procedureId);
-    const invalidAreas = data.invalidAreas;
-    if (invalidAreas?.length === 0) {
+    const validationResponse = await schoolEntryApi.validateCompleteness(
+      props.procedureId,
+    );
+    const incompleteAreas = validationResponse.incompleteAreas;
+    if (incompleteAreas.length === 0) {
       schoolInfoLetterSidebar.open({ procedureId: props.procedureId });
-      setRequiredProcedureData([]);
-    } else {
-      setRequiredProcedureData(invalidAreas);
     }
+    setIncompleteProcedureAreas(incompleteAreas);
   }
 
   return (
@@ -109,10 +109,10 @@ function CreateReportsPanel(props: CreateReportsPanelProps) {
       <Button variant="solid" onClick={handleSchoolInfoLetterClick}>
         Schulinfobrief erstellen
       </Button>
-      <RequiredProcedureDataDialog
-        open={requiredProcedureData.length > 0}
-        onClose={() => setRequiredProcedureData([])}
-        requiredProcedureData={requiredProcedureData}
+      <IncompleteProcedureAreasModal
+        open={incompleteProcedureAreas.length > 0}
+        onClose={() => setIncompleteProcedureAreas([])}
+        incompleteProcedureAreas={incompleteProcedureAreas}
       />
       <Button
         variant="outlined"

@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 import {
   CitizenAuthApi,
   CitizenPublicApi,
   Configuration,
   TravelMedicineFeatureTogglesPublicApi,
-} from "@eshg/citizen-portal-api/travelMedicine";
-import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
+} from "@eshg/travel-medicine-api";
 
 function useConfiguration() {
   const configurationParameters = useApiConfiguration(

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiInformationStatementTemplateState } from "@eshg/employee-portal-api/travelMedicine";
+import { ApiInformationStatementTemplateState } from "@eshg/travel-medicine-api";
 import { ChipProps } from "@mui/joy";
 
 export const templateStatusColors = {

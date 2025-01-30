@@ -7,7 +7,6 @@ packages:
   - "citizen-portal"
   - "citizen-portal-api"
   - "admin-portal"
-  - "admin-portal-api"
   - "e2e"
   - "e2e-api"
   - "lib-portal"

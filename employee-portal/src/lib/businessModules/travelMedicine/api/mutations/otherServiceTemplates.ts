@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiPostPutOtherServiceTemplateRequest } from "@eshg/employee-portal-api/travelMedicine";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { ApiPostPutOtherServiceTemplateRequest } from "@eshg/travel-medicine-api";
 
 import { useOtherServiceTemplateApi } from "@/lib/businessModules/travelMedicine/api/clients";
 

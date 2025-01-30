@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import {
   GetInformationStatementPdfRequest,
   GetMedicalHistoryPdfRequest,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+} from "@eshg/travel-medicine-api";
 
 import {
   useFileApi,

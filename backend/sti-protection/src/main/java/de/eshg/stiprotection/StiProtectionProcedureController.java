@@ -5,6 +5,8 @@
 
 package de.eshg.stiprotection;
 
+import static de.eshg.stiprotection.persistence.db.StiProtectionSystemProgressEntryType.FOLLOW_UP_CREATED;
+
 import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.model.Pdf;
@@ -13,6 +15,8 @@ import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.stiprotection.annotations.ProcedureStatusTransition;
 import de.eshg.stiprotection.api.CreateAppointmentRequest;
+import de.eshg.stiprotection.api.CreateFollowUpProcedureRequest;
+import de.eshg.stiprotection.api.CreateFollowUpProcedureResponse;
 import de.eshg.stiprotection.api.CreateProcedureRequest;
 import de.eshg.stiprotection.api.CreateProcedureResponse;
 import de.eshg.stiprotection.api.GetProcedureResponse;
@@ -42,7 +46,6 @@ import jakarta.validation.Valid;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -71,6 +74,7 @@ public class StiProtectionProcedureController {
   private final StiProtectionProcedureDeletionService procedureDeletionService;
   private final StiProtectionProcedureFinder procedureFinder;
   private final ProgressEntryUtil progressEntryUtil;
+  private final FollowUpProcedureService followUpProcedureService;
 
   public StiProtectionProcedureController(
       StiProtectionProcedureService stiProtectionService,
@@ -78,13 +82,15 @@ public class StiProtectionProcedureController {
       AuditLogger auditLogger,
       StiProtectionProcedureDeletionService procedureDeletionService,
       StiProtectionProcedureFinder procedureFinder,
-      ProgressEntryUtil progressEntryUtil) {
+      ProgressEntryUtil progressEntryUtil,
+      FollowUpProcedureService followUpProcedureService) {
     this.stiProtectionService = stiProtectionService;
     this.appointmentService = appointmentService;
     this.auditLogger = auditLogger;
     this.procedureDeletionService = procedureDeletionService;
     this.procedureFinder = procedureFinder;
     this.progressEntryUtil = progressEntryUtil;
+    this.followUpProcedureService = followUpProcedureService;
   }
 
   @PostMapping
@@ -95,7 +101,7 @@ public class StiProtectionProcedureController {
         stiProtectionService.createProcedure(ConcernMapper.toDatabaseType(request.concern()));
     stiProtectionService.addPerson(procedure, PersonMapper.toDataType(request));
     appointmentService.createAppointment(procedure, AppointmentMapper.toDataType(request));
-    String pin = RandomStringUtils.secure().nextNumeric(6);
+    String pin = stiProtectionService.generatePin();
     stiProtectionService.registerAnonymousUser(procedure, pin);
     return StiProtectionProcedureMapper.toInterfaceType(procedure, pin);
   }
@@ -191,7 +197,7 @@ public class StiProtectionProcedureController {
   public void closeProcedure(@PathVariable("id") UUID procedureId) {
     StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
     appointmentService.cancelAppointment(procedure);
-    stiProtectionService.closeProcedure(procedureId, procedure);
+    stiProtectionService.closeProcedure(procedure);
   }
 
   @PutMapping("/{id}/reopen")
@@ -241,5 +247,33 @@ public class StiProtectionProcedureController {
   public void deleteProcedure(@PathVariable("id") UUID procedureId) {
     procedureDeletionService.deleteAndWriteToCemetery(
         procedureFinder.findByExternalId(procedureId));
+  }
+
+  @PostMapping("/{id}/follow-up")
+  @Transactional
+  @ProcedureStatusTransition
+  public CreateFollowUpProcedureResponse createFollowUpProcedure(
+      @PathVariable("id") UUID procedureId,
+      @Valid @RequestBody CreateFollowUpProcedureRequest request) {
+    StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
+    // Todo remove old access code user
+    if (procedure.getProcedureStatus().isOpen()) {
+      appointmentService.cancelAppointment(procedure);
+      stiProtectionService.closeProcedure(procedure);
+    }
+
+    StiProtectionProcedure followUpProcedure =
+        stiProtectionService.createProcedure(ConcernMapper.toDatabaseType(request.concern()));
+    followUpProcedure.setFollowUp(true);
+    stiProtectionService.addPerson(
+        followUpProcedure, PersonMapper.toDataType(procedure.getPerson()));
+    appointmentService.createAppointment(followUpProcedure, AppointmentMapper.toDataType(request));
+    String pin = stiProtectionService.generatePin();
+    stiProtectionService.registerAnonymousUser(followUpProcedure, pin);
+
+    followUpProcedureService.transferFollowUpData(procedure, followUpProcedure);
+
+    progressEntryUtil.addProgressEntry(followUpProcedure.getExternalId(), FOLLOW_UP_CREATED);
+    return new CreateFollowUpProcedureResponse(followUpProcedure.getExternalId(), pin);
   }
 }

@@ -5,8 +5,15 @@
 
 import { InternalLinkIconButton } from "@eshg/lib-portal/components/navigation/InternalLinkIconButton";
 import { ChevronLeft } from "@mui/icons-material";
-import { Box, Divider, Sheet, Stack } from "@mui/joy";
-import { ReactNode } from "react";
+import {
+  Box,
+  Divider,
+  IconButton,
+  IconButtonProps,
+  Sheet,
+  Stack,
+} from "@mui/joy";
+import { ElementType, ReactNode } from "react";
 
 import { TabNavigation } from "@/lib/shared/components/tabNavigation/TabNavigation";
 import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
@@ -15,8 +22,8 @@ import { HorizontalScrollBoxWithButtons } from "@/lib/shared/components/tabNavig
 export interface TabNavigationToolbarProps {
   /** tab definitions */
   items: TabNavigationItem[];
-  /** route for back button */
-  routeBack?: string;
+  /** route or component for back button */
+  routeBack?: string | ReactNode;
   /** component to be displayed as header; required. */
   header: ReactNode;
   /** component to be displayed right aligned beneath the tabs; optional. */
@@ -43,14 +50,13 @@ export function TabNavigationToolbar(props: TabNavigationToolbarProps) {
           overflowY: "hidden",
         }}
       >
-        {props.routeBack !== undefined && (
-          <InternalLinkIconButton
+        {typeof props.routeBack === "string" ? (
+          <BackButton
+            component={InternalLinkIconButton}
             href={props.routeBack}
-            aria-label="Zurück"
-            sx={{ minWidth: "3.5rem" }}
-          >
-            <ChevronLeft sx={{ width: "40px", height: "40px" }} />
-          </InternalLinkIconButton>
+          />
+        ) : (
+          props.routeBack
         )}
         <Stack divider={<Divider />} sx={{ flexGrow: 1, minWidth: 0 }}>
           <Box sx={{ paddingInline: 3 }}>{props.header}</Box>
@@ -77,5 +83,13 @@ export function TabNavigationToolbar(props: TabNavigationToolbarProps) {
         </Stack>
       </Stack>
     </Sheet>
+  );
+}
+
+export function BackButton<T extends ElementType>(props: IconButtonProps<T>) {
+  return (
+    <IconButton aria-label="Zurück" sx={{ minWidth: "3.5rem" }} {...props}>
+      <ChevronLeft sx={{ width: "40px", height: "40px" }} />
+    </IconButton>
   );
 }

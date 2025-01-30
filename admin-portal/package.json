@@ -6,8 +6,8 @@
   "dependencies": {
     "@emotion/react": "catalog:joy",
     "@emotion/styled": "catalog:joy",
-    "@eshg/admin-portal-api": "workspace:*",
     "@eshg/lib-portal": "workspace:*",
+    "@eshg/service-directory-api": "workspace:*",
     "@fontsource/poppins": "catalog:joy",
     "@mui/icons-material": "catalog:joy",
     "@mui/joy": "catalog:joy",

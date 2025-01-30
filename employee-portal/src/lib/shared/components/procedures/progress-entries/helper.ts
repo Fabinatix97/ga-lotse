@@ -8,11 +8,13 @@ import {
   ApiProgressEntry,
   ApiSystemProgressEntry,
   ApiTriggerType,
+  ApiUser,
 } from "@eshg/employee-portal-api/businessProcedures";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { isDefined, isEmpty } from "remeda";
 
 import { manualProgressEntryFileTypes } from "@/lib/shared/components/procedures/progress-entries/constants";
+import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 export function extractFileDescriptionValue(entry: ApiProgressEntry) {
   if (!isDefined(entry.fileReference)) return undefined;
@@ -20,23 +22,19 @@ export function extractFileDescriptionValue(entry: ApiProgressEntry) {
   return entry.fileReference.metaData?.description;
 }
 
-export function displayTriggerer(entry: ApiSystemProgressEntry) {
+export function formatTriggeredBy(
+  entry: ApiSystemProgressEntry,
+  resolvedUsers: Record<string, ApiUser>,
+) {
   if (entry.triggerType === ApiTriggerType.Citizen) {
     return "Bürger:in";
   }
-  return entry.triggeredBy
-    ? buildName(entry.triggeredByUserFirstName, entry.triggeredByUserLastName)
-    : "System";
-}
 
-export function buildName(firstName?: string, lastName?: string): string {
-  if (!isDefined(firstName) && !isDefined(lastName))
-    return "Unbekanntem Nutzer";
-  return `${emptyIfUndefined(firstName)} ${emptyIfUndefined(lastName)}`;
-}
+  if (!isDefined(entry.triggeredBy)) {
+    return "System";
+  }
 
-function emptyIfUndefined(optionalValue?: string) {
-  return isDefined(optionalValue) ? optionalValue : "";
+  return fullName(resolvedUsers[entry.triggeredBy]);
 }
 
 export function hasFileField(

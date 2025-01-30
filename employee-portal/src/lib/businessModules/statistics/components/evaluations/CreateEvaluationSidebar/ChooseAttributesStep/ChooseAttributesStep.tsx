@@ -37,22 +37,26 @@ export interface ChooseAttributesStepProps
 }
 
 export function ChooseAttributesStep(props: ChooseAttributesStepProps) {
-  const groupedAttributes = groupBy(
-    props.attributes,
+  const groupedAttributesWithoutReference = groupBy(
+    props.attributes.filter(
+      (attribute) => attribute.code !== "PROCEDURE_REFERENCE",
+    ),
     (attribute) => attribute.category,
   );
 
   const searchableCheckboxGroups: SearchableGroup<SearchableCheckboxGroupItem>[] =
-    Object.entries(groupedAttributes).map(([category, attributes]) => ({
-      name: category,
-      inAccordion: true,
-      items: attributes.flatMap((attribute) =>
-        mapToCheckboxGroupItem(
-          attribute,
-          props.fieldName("selectedAttributeKeys"),
+    Object.entries(groupedAttributesWithoutReference).map(
+      ([category, attributes]) => ({
+        name: category,
+        inAccordion: true,
+        items: attributes.flatMap((attribute) =>
+          mapToCheckboxGroupItem(
+            attribute,
+            props.fieldName("selectedAttributeKeys"),
+          ),
         ),
-      ),
-    }));
+      }),
+    );
 
   return (
     <Stack>

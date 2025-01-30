@@ -9,11 +9,11 @@ import {
   useBaseField,
 } from "@eshg/lib-portal/components/formFields/BaseField";
 import { ValidationRules } from "@eshg/lib-portal/types/form";
-import { Textarea } from "@mui/joy";
+import { Textarea, TextareaProps } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { FocusEvent, ReactNode } from "react";
 
-interface TextareaFieldProps extends ValidationRules<string> {
+export interface TextareaFieldProps extends ValidationRules<string> {
   name: string;
   label?: string | ReactNode;
   placeholder?: string;
@@ -26,6 +26,7 @@ interface TextareaFieldProps extends ValidationRules<string> {
   disabled?: boolean;
   "data-testid"?: string;
   "aria-label"?: string;
+  slotProps?: TextareaProps["slotProps"];
 }
 
 export function TextareaField(props: TextareaFieldProps) {
@@ -64,7 +65,10 @@ export function TextareaField(props: TextareaFieldProps) {
         placeholder={props.placeholder}
         readOnly={props.readOnly}
         disabled={disabled}
-        slotProps={{ textarea: { disabled } }}
+        slotProps={{
+          ...props.slotProps,
+          textarea: { ...props.slotProps?.textarea, disabled },
+        }}
         data-testid={props["data-testid"]}
         aria-label={props["aria-label"]}
       />

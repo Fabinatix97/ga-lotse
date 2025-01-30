@@ -4,8 +4,9 @@
  */
 
 import { ApiCountryCode } from "@eshg/base-api";
+import { ApiTypeOfChange } from "@eshg/employee-portal-api/medicalRegistry";
 import {
-  PersonalInformationFormValues,
+  MedicalRegistryCreateProcedureFormValues,
   RequiredDocumentsFormValues,
 } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
 import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
@@ -14,7 +15,7 @@ import { validateFile } from "@eshg/lib-portal/helpers/validators";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { Add, DeleteOutlined } from "@mui/icons-material";
 import { Button, Grid, IconButton, Stack, Typography } from "@mui/joy";
-import { FieldArray, useField } from "formik";
+import { FieldArray, useFormikContext } from "formik";
 import { Fragment } from "react";
 
 import { useServerConfig } from "@/lib/baseModule/api/queries/config";
@@ -28,24 +29,19 @@ interface RequiredDocumentsFormProps extends NestedFormProps {
 }
 
 export function RequiredDocumentsForm(props: RequiredDocumentsFormProps) {
+  const values =
+    useFormikContext<MedicalRegistryCreateProcedureFormValues>().values;
+
   const { data: config } = useServerConfig();
 
   const fieldName = createFieldNameMapper<RequiredDocumentsFormValues>(
     props.name,
   );
 
-  const [otherRelevantDocuments] = useField<File[]>(
-    fieldName("otherRelevantDocuments"),
-  );
-
-  const personalInformationFormFieldName =
-    createFieldNameMapper<PersonalInformationFormValues>(
-      "personalInformationForm",
-    );
-
-  const [nationality] = useField<ApiCountryCode>(
-    personalInformationFormFieldName("nationality"),
-  );
+  const otherRelevantDocuments =
+    values.requiredDocumentsForm.otherRelevantDocuments;
+  const nationality = values.personalInformationForm.nationality;
+  const changeType = values.generalInformationForm.changeType;
 
   return (
     <>
@@ -66,6 +62,12 @@ export function RequiredDocumentsForm(props: RequiredDocumentsFormProps) {
                 FileType.Jpeg.extensions,
                 config.maxFileSize,
               )}
+              required={
+                changeType === ApiTypeOfChange.NewRegistration ||
+                changeType === ApiTypeOfChange.ReRegistration
+                  ? requiredFieldMessage
+                  : undefined
+              }
             />
           </Grid>
           <Grid xxl={6} />
@@ -83,80 +85,76 @@ export function RequiredDocumentsForm(props: RequiredDocumentsFormProps) {
       </Grid>
       <Grid xxl={6} />
 
-      {props.enableOptionalDocuments &&
-        nationality.value !== ApiCountryCode.De && (
+      {props.enableOptionalDocuments && nationality !== ApiCountryCode.De && (
+        <>
+          <Grid xxs={6}>
+            <FileField
+              name={fieldName("workPermit")}
+              label={"Arbeitserlaubnis als JPG hochladen"}
+              accept={FileType.Jpeg}
+              required={requiredFieldMessage}
+              validate={validateFile(
+                FileType.Jpeg.extensions,
+                config.maxFileSize,
+              )}
+            />
+          </Grid>
+          <Grid xxl={6} />
+        </>
+      )}
+
+      <FieldArray name={fieldName("otherRelevantDocuments")}>
+        {({ push, remove }) => (
           <>
+            {otherRelevantDocuments.map((values, index) => (
+              <Fragment key={index}>
+                <Grid xxs={6}>
+                  <Stack
+                    direction="row"
+                    gap={2}
+                    alignItems="flex-start"
+                    sx={{
+                      ">:first-child": { flexGrow: 1 },
+                    }}
+                  >
+                    <FileField
+                      name={`requiredDocumentsForm.otherRelevantDocuments.${index}`}
+                      label={"Sonstiges Dokument als JPG hochladen"}
+                      accept={FileType.Jpeg}
+                      required={requiredFieldMessage}
+                      validate={validateFile(
+                        FileType.Jpeg.extensions,
+                        config.maxFileSize,
+                      )}
+                    />
+                    <IconButton
+                      aria-label="Dokument löschen"
+                      color="neutral"
+                      variant="outlined"
+                      sx={{
+                        marginTop: "27px",
+                        "--Icon-fontSize": (theme) => theme.fontSize.xl,
+                      }}
+                      onClick={() => remove(index)}
+                    >
+                      <DeleteOutlined />
+                    </IconButton>
+                  </Stack>
+                </Grid>
+                <Grid xxl={6} />
+              </Fragment>
+            ))}
             <Grid xxs={6}>
-              <FileField
-                name={fieldName("workPermit")}
-                label={"Arbeitserlaubnis als JPG hochladen"}
-                accept={FileType.Jpeg}
-                required={requiredFieldMessage}
-                validate={validateFile(
-                  FileType.Jpeg.extensions,
-                  config.maxFileSize,
-                )}
-              />
+              {otherRelevantDocuments.length < MAX_OTHER_RELEVANT_DOCUMENTS && (
+                <Button onClick={() => push(null)} startDecorator={<Add />}>
+                  Weiteres Dokument hinzufügen
+                </Button>
+              )}
             </Grid>
             <Grid xxl={6} />
           </>
         )}
-
-      {props.enableOptionalDocuments && (
-        <FieldArray name={fieldName("otherRelevantDocuments")}>
-          {({ push, remove }) => (
-            <>
-              {otherRelevantDocuments.value.map((values, index) => (
-                <Fragment key={index}>
-                  <Grid xxs={6}>
-                    <Stack
-                      direction="row"
-                      gap={2}
-                      alignItems="flex-start"
-                      sx={{
-                        ">:first-child": { flexGrow: 1 },
-                      }}
-                    >
-                      <FileField
-                        name={`requiredDocumentsForm.otherRelevantDocuments.${index}`}
-                        label={"Sonstiges Dokument als JPG hochladen"}
-                        accept={FileType.Jpeg}
-                        required={requiredFieldMessage}
-                        validate={validateFile(
-                          FileType.Jpeg.extensions,
-                          config.maxFileSize,
-                        )}
-                      />
-                      <IconButton
-                        aria-label="Dokument löschen"
-                        color="neutral"
-                        variant="outlined"
-                        sx={{
-                          marginTop: "27px",
-                          "--Icon-fontSize": (theme) => theme.fontSize.xl,
-                        }}
-                        onClick={() => remove(index)}
-                      >
-                        <DeleteOutlined />
-                      </IconButton>
-                    </Stack>
-                  </Grid>
-                  <Grid xxl={6} />
-                </Fragment>
-              ))}
-              <Grid xxs={6}>
-                {otherRelevantDocuments.value.length <
-                  MAX_OTHER_RELEVANT_DOCUMENTS && (
-                  <Button onClick={() => push(null)} startDecorator={<Add />}>
-                    Weiteres Dokument hinzufügen
-                  </Button>
-                )}
-              </Grid>
-              <Grid xxl={6} />
-            </>
-          )}
-        </FieldArray>
-      )}
+      </FieldArray>
     </>
   );
 }

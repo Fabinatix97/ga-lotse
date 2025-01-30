@@ -24,12 +24,16 @@ import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesResponse;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.lib.auditlog.AuditLogger;
+import de.eshg.lib.procedure.api.ProcedureSearchParameters;
 import de.eshg.lib.procedure.domain.model.FacilityType;
+import de.eshg.lib.procedure.domain.model.PersonType;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.RelatedPerson;
 import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
+import de.eshg.lib.procedure.procedures.ProcedureSearchService;
+import de.eshg.lib.procedure.util.ProcedureValidator;
 import de.eshg.officialmedicalservice.appointment.OmsAppointmentMapper;
 import de.eshg.officialmedicalservice.appointment.persistence.entity.AppointmentState;
 import de.eshg.officialmedicalservice.appointment.persistence.entity.OmsAppointment;
@@ -111,6 +115,7 @@ public class EmployeeOmsProcedureService {
   private final AuditLogger auditLogger;
   private final ProgressEntryService progressEntryService;
   private final EntityManager entityManager;
+  private final ProcedureSearchService<OmsProcedure> procedureSearchService;
 
   public EmployeeOmsProcedureService(
       OmsProcedureRepository omsProcedureRepository,
@@ -122,7 +127,8 @@ public class EmployeeOmsProcedureService {
       AuditLogger auditLogger,
       UserClient userClient,
       ProgressEntryService progressEntryService,
-      EntityManager entityManager) {
+      EntityManager entityManager,
+      ProcedureSearchService<OmsProcedure> procedureSearchService) {
     this.omsProcedureRepository = omsProcedureRepository;
     this.omsProcedureOverviewMapper = omsProcedureOverviewMapper;
     this.omsAppointmentMapper = omsAppointmentMapper;
@@ -133,6 +139,7 @@ public class EmployeeOmsProcedureService {
     this.userClient = userClient;
     this.progressEntryService = progressEntryService;
     this.entityManager = entityManager;
+    this.procedureSearchService = procedureSearchService;
   }
 
   @Transactional
@@ -197,23 +204,39 @@ public class EmployeeOmsProcedureService {
   @Transactional(readOnly = true)
   public EmployeePagedOmsProcedures getEmployeeProceduresOverview(
       GetOmsProceduresFilterOptionsDto filters,
-      EmployeeOmsProcedurePaginationAndSortParameters paginationAndSortParameters) {
+      EmployeeOmsProcedurePaginationAndSortParameters paginationAndSortParameters,
+      ProcedureSearchParameters searchParameters) {
 
-    Instant isBefore = null;
-    Instant isAfter = null;
+    List<OmsProcedureView> candidates = null;
 
-    if (Boolean.TRUE.equals(filters.today())) {
-      LocalDate today = LocalDate.ofInstant(clock.instant(), clock.getZone());
-      LocalDateTime startOfDay = today.atStartOfDay();
-      isAfter = startOfDay.atZone(clock.getZone()).toInstant();
-      isBefore = isAfter.plus(1, ChronoUnit.DAYS);
+    if (ProcedureValidator.hasNonNullValue(searchParameters)) {
+
+      List<OmsProcedure> allProcedures =
+          procedureSearchService.searchProceduresByPerson(
+              searchParameters.searchFirstName(),
+              searchParameters.searchLastName(),
+              searchParameters.searchDateOfBirth(),
+              PersonType.PATIENT);
+
+      candidates = allProcedures.stream().flatMap(this::convertToProcedureViewStream).toList();
+    } else {
+      Instant isBefore = null;
+      Instant isAfter = null;
+
+      if (Boolean.TRUE.equals(filters.today())) {
+        LocalDate today = LocalDate.ofInstant(clock.instant(), clock.getZone());
+        LocalDateTime startOfDay = today.atStartOfDay();
+        isAfter = startOfDay.atZone(clock.getZone()).toInstant();
+        isBefore = isAfter.plus(1, ChronoUnit.DAYS);
+      }
+
+      UserDto selfUser = userClient.getSelfUser();
+      UUID physicianId = Boolean.TRUE.equals(filters.assigned()) ? selfUser.userId() : null;
+
+      candidates =
+          findOmsProcedures(
+              physicianId, filters.status(), isBefore, isAfter, filters.highPriority());
     }
-
-    UserDto selfUser = userClient.getSelfUser();
-    UUID physicianId = Boolean.TRUE.equals(filters.assigned()) ? selfUser.userId() : null;
-
-    List<OmsProcedureView> candidates =
-        findOmsProcedures(physicianId, filters.status(), isBefore, isAfter, filters.highPriority());
 
     List<OmsProcedure> candidateProcedures =
         candidates.stream().map(OmsProcedureView::procedure).toList();
@@ -230,6 +253,18 @@ public class EmployeeOmsProcedureService {
         sortAndPageEntries(omsProcedureOverviewDtos, paginationAndSortParameters, idMap);
 
     return new EmployeePagedOmsProcedures(result, omsProcedureOverviewDtos.size());
+  }
+
+  private Stream<OmsProcedureView> convertToProcedureViewStream(OmsProcedure procedure) {
+    Concern concern = procedure.getConcern();
+    List<OmsAppointment> appointments = procedure.getAppointments();
+
+    if (appointments.isEmpty()) {
+      return Stream.of(new OmsProcedureView(procedure, procedure.getConcern(), null));
+    } else {
+      return appointments.stream()
+          .map(appointment -> new OmsProcedureView(procedure, concern, appointment));
+    }
   }
 
   private List<OmsProcedureView> findOmsProcedures(

@@ -6,12 +6,14 @@
 package de.eshg.dental.client;
 
 import de.eshg.base.centralfile.PersonApi;
+import de.eshg.base.centralfile.api.GetFileStateIdsBulkRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesSortParameters;
 import de.eshg.dental.domain.model.Child;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
 
@@ -48,5 +50,14 @@ public class PersonClient {
   public List<GetPersonFileStateResponse> fetchPersonDataInBulk(List<Child> children) {
     List<UUID> fileStateIds = children.stream().map(Child::getChildIdFromCentralFile).toList();
     return fetchPersonDataInBulk(fileStateIds, null);
+  }
+
+  public Map<UUID, List<UUID>> fetchAssociatedExternalIdsInBulk(List<UUID> externalIds) {
+    if (externalIds.isEmpty()) {
+      return Map.of();
+    }
+    return personApi
+        .getPersonFileStateIdsAssociatedWithFileStates(new GetFileStateIdsBulkRequest(externalIds))
+        .fileStateIds();
   }
 }

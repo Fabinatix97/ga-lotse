@@ -20,7 +20,9 @@ import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.address.PostboxAddressDto;
 import de.eshg.base.address.mapper.AddressMapper;
 import de.eshg.base.centralfile.api.DiffDto;
+import de.eshg.base.centralfile.api.GetFileStateIdsBulkResponse;
 import de.eshg.base.centralfile.api.person.*;
+import de.eshg.base.centralfile.persistence.AssociatedFileStateIds;
 import de.eshg.base.centralfile.persistence.entity.*;
 import de.eshg.base.centralfile.persistence.entity.BirthDetails;
 import de.eshg.base.centralfile.persistence.entity.Person;
@@ -29,6 +31,7 @@ import de.eshg.base.centralfile.persistence.entity.PersonEmailAddress;
 import de.eshg.base.centralfile.persistence.entity.PersonPhoneNumber;
 import de.eshg.base.util.PersonDiffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -255,5 +258,16 @@ public class PersonMapper {
       case DomesticAddressDto domesticAddress ->
           AddressMapper.mapDomesticAddressIntoDm(domesticAddress, new DomesticPersonAddress());
     };
+  }
+
+  public static GetFileStateIdsBulkResponse mapToFileStateIdsBulkResponse(
+      List<AssociatedFileStateIds> fileStateIds) {
+    Map<UUID, List<UUID>> resultMap =
+        fileStateIds.stream()
+            .collect(
+                StreamUtil.toLinkedHashMap(
+                    AssociatedFileStateIds::fileStateId,
+                    association -> Arrays.asList(association.associatedFileStateIds())));
+    return new GetFileStateIdsBulkResponse(resultMap);
   }
 }

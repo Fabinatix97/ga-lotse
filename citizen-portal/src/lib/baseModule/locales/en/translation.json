@@ -15,7 +15,17 @@
   "site_description": "Extensive services for the protection and restoration of health",
   "site_keywords": "Services, School entry examination, Travel medicine advice, Official medical service, GA-Lotse, Galotse",
   "health_department_title": "Health Department",
-  "most_searched_services_title": "Most Search for Services",
+  "most_searched_services_title": "Popular services",
+  "business_modules": {
+    "SCHOOL_ENTRY": "School entry examination",
+    "DENTAL": "Dental service",
+    "INSPECTION": "Inspection",
+    "MEASLES_PROTECTION": "Measles protection",
+    "MEDICAL_REGISTRY": "Medical registry",
+    "OFFICIAL_MEDICAL_SERVICE": "Official medical service",
+    "TRAVEL_MEDICINE": "Travel medicine advice",
+    "STI_PROTECTION": "HIV/STI counseling service"
+  },
   "common": {
     "email": "E-Mail",
     "phone": "Phone",
@@ -41,6 +51,7 @@
     "person_one": "Person",
     "person_other": "Persons",
     "page_loading": "Page loading…",
+    "loading": "Loading...",
     "leave": "Leave My Area"
   },
   "gender": {

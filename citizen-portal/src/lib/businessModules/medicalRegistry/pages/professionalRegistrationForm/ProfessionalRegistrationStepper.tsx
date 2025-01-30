@@ -4,18 +4,16 @@
  */
 
 import { ApiTypeOfChange } from "@eshg/citizen-portal-api/medicalRegistry";
-import {
-  GeneralInformationFormValues,
-  MedicalRegistryCreateProcedureFormValues,
-} from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
+import { MedicalRegistryCreateProcedureFormValues } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
 import { shouldEnable } from "@eshg/lib-portal/businessModules/medicalRegistry/sections";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import {
   MultiStepForm,
   StepFactory,
 } from "@eshg/lib-portal/components/form/MultiStepForm";
+import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Typography } from "@mui/joy";
-import { FormikProps, useField } from "formik";
+import { FormikProps, useFormikContext } from "formik";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { ProfessionalRegistrationSidePanel } from "@/lib/businessModules/medicalRegistry/pages/professionalRegistrationForm/ProfessionalRegistrationSidePanel";
@@ -24,7 +22,6 @@ import { ProfessionalRegistrationFormStepThree } from "@/lib/businessModules/med
 import { useTranslation } from "@/lib/i18n/client";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
 import { PageTitle } from "@/lib/shared/components/layout/page";
-import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 
 import { ProfessionalRegistrationFormStepOne } from "./steps/ProfessionalRegistrationFormStepOne";
 import { ProfessionalRegistrationFormStepTwo } from "./steps/ProfessionalRegistrationFormStepTwo";
@@ -36,14 +33,9 @@ interface ProfessionalRegistrationStepperProps {
 export function ProfessionalRegistrationStepper(
   props: ProfessionalRegistrationStepperProps,
 ) {
-  const generalInformationForm =
-    createFieldNameMapper<GeneralInformationFormValues>(
-      "generalInformationForm",
-    );
-
-  const [changeType] = useField<ApiTypeOfChange>(
-    generalInformationForm("changeType"),
-  );
+  const values = useFormikContext()
+    .values as MedicalRegistryCreateProcedureFormValues;
+  const changeType = values.generalInformationForm.changeType;
 
   const { t } = useTranslation([
     "medicalRegistry/professionalRegistrationForm",
@@ -51,7 +43,7 @@ export function ProfessionalRegistrationStepper(
 
   return (
     <MultiStepForm<MedicalRegistryCreateProcedureFormValues>
-      steps={steps(changeType.value)}
+      steps={steps(changeType)}
     >
       {({ Outlet, currentStep, totalSteps }) => (
         <>
@@ -77,7 +69,7 @@ export function ProfessionalRegistrationStepper(
   );
 }
 
-function steps(changeType: ApiTypeOfChange) {
+function steps(changeType: OptionalFieldValue<ApiTypeOfChange>) {
   const steps: StepFactory<MedicalRegistryCreateProcedureFormValues>[] = [
     ProfessionalRegistrationFormStepOne,
   ];

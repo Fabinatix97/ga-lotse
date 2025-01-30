@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiTypeOfChange } from "@eshg/citizen-portal-api/medicalRegistry";
 import {
   EmployeeInformationFormValues,
-  GeneralInformationFormValues,
+  MedicalRegistryCreateProcedureFormValues,
   PracticeInformationFormValues,
 } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
 import { shouldEnable } from "@eshg/lib-portal/businessModules/medicalRegistry/sections";
@@ -19,7 +18,7 @@ import {
   validateNumber,
 } from "@eshg/lib-portal/helpers/validators";
 import { Grid, Typography } from "@mui/joy";
-import { useField } from "formik";
+import { useFormikContext } from "formik";
 
 import { requiredFieldMessageKey } from "@/lib/businessModules/medicalRegistry/pages/professionalRegistrationForm/ProfessionalRegistrationForm";
 import { useTranslation } from "@/lib/i18n/client";
@@ -28,44 +27,34 @@ import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 
 export function ProfessionalRegistrationFormStepThree() {
+  const values =
+    useFormikContext<MedicalRegistryCreateProcedureFormValues>().values;
+
+  const proprietaryPractice =
+    values.practiceInformationForm.proprietaryPractice;
+  const changeType = values.generalInformationForm.changeType;
+  const forceProprietaryPractice = !shouldEnable("practiceChoice", changeType);
+
   const practiceInformationForm =
     createFieldNameMapper<PracticeInformationFormValues>(
       "practiceInformationForm",
     );
-
-  const [proprietaryPractice] = useField<boolean>(
-    practiceInformationForm("proprietaryPractice"),
-  );
 
   const employeeInformationForm =
     createFieldNameMapper<EmployeeInformationFormValues>(
       "employeeInformationForm",
     );
 
-  const generalInformationForm =
-    createFieldNameMapper<GeneralInformationFormValues>(
-      "generalInformationForm",
-    );
-
-  const [changeType] = useField<ApiTypeOfChange>(
-    generalInformationForm("changeType"),
-  );
-
   const { t } = useTranslation([
     "medicalRegistry/professionalRegistrationForm",
   ]);
-
-  const forceProprietaryPractice = !shouldEnable(
-    "practiceChoice",
-    changeType.value,
-  );
 
   return (
     <>
       <ContentSheet>
         <Typography level="h2">{t("stepThree.pageTitle")}</Typography>
 
-        {shouldEnable("practice", changeType.value) && (
+        {shouldEnable("practice", changeType) && (
           <>
             {forceProprietaryPractice ? (
               <Alert color="primary" message={t("stepThree.hint")} />
@@ -83,7 +72,7 @@ export function ProfessionalRegistrationFormStepThree() {
               </>
             )}
 
-            {(forceProprietaryPractice || proprietaryPractice.value) && (
+            {(forceProprietaryPractice || proprietaryPractice) && (
               <>
                 <Typography level="h4">
                   {t("stepThree.subTitle.practiceInformation")}
@@ -93,7 +82,7 @@ export function ProfessionalRegistrationFormStepThree() {
                     <InputField
                       name={practiceInformationForm("practiceName")}
                       label={t("stepThree.label.practiceName")}
-                      required={requiredFieldMessageKey}
+                      required={t(requiredFieldMessageKey)}
                       validate={validateLength(1, 300)}
                     />
                   </Grid>
@@ -101,7 +90,7 @@ export function ProfessionalRegistrationFormStepThree() {
                     <InputField
                       name={practiceInformationForm("street")}
                       label={t("stepThree.label.street")}
-                      required={requiredFieldMessageKey}
+                      required={t(requiredFieldMessageKey)}
                       validate={validateLength(1, 55)}
                     />
                   </Grid>
@@ -109,7 +98,7 @@ export function ProfessionalRegistrationFormStepThree() {
                     <InputField
                       name={practiceInformationForm("houseNumber")}
                       label={t("stepThree.label.houseNumber")}
-                      required={requiredFieldMessageKey}
+                      required={t(requiredFieldMessageKey)}
                       validate={validateLength(1, 11)}
                     />
                   </Grid>
@@ -117,7 +106,7 @@ export function ProfessionalRegistrationFormStepThree() {
                     <InputField
                       name={practiceInformationForm("postalCode")}
                       label={t("stepThree.label.postalCode")}
-                      required={requiredFieldMessageKey}
+                      required={t(requiredFieldMessageKey)}
                       validate={validateLength(1, 20)}
                     />
                   </Grid>
@@ -125,7 +114,7 @@ export function ProfessionalRegistrationFormStepThree() {
                     <InputField
                       name={practiceInformationForm("city")}
                       label={t("stepThree.label.city")}
-                      required={requiredFieldMessageKey}
+                      required={t(requiredFieldMessageKey)}
                       validate={validateLength(1, 50)}
                     />
                   </Grid>
@@ -133,7 +122,7 @@ export function ProfessionalRegistrationFormStepThree() {
                     <InputField
                       name={practiceInformationForm("phoneNumber")}
                       label={t("stepThree.label.phoneNumber")}
-                      required={requiredFieldMessageKey}
+                      required={t(requiredFieldMessageKey)}
                       validate={validateLength(1, 23)}
                     />
                   </Grid>
@@ -141,7 +130,8 @@ export function ProfessionalRegistrationFormStepThree() {
                     <EmailField
                       name={practiceInformationForm("email")}
                       label={t("stepThree.label.email")}
-                      required={requiredFieldMessageKey}
+                      required={t(requiredFieldMessageKey)}
+                      validate={validateLength(1, 254)}
                     />
                   </Grid>
                   <Grid {...allBreakpoints(12)}>
@@ -184,7 +174,7 @@ export function ProfessionalRegistrationFormStepThree() {
           </>
         )}
 
-        {shouldEnable("employees", changeType.value) && (
+        {shouldEnable("employees", changeType) && (
           <>
             <Typography level="h4">
               {t("stepThree.label.employeesEmployed")}

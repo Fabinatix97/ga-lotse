@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAppointmentType } from "@eshg/employee-portal-api/travelMedicine";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import { ApiAppointmentType } from "@eshg/travel-medicine-api";
 
 import { appointmentTypes } from "@/lib/businessModules/travelMedicine/shared/appointmentTypes";
 

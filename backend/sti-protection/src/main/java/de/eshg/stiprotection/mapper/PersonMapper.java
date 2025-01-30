@@ -41,6 +41,14 @@ public class PersonMapper {
         request.inGermanySince());
   }
 
+  public static PersonData toDataType(Person entity) {
+    return new PersonData(
+        entity.getGender(),
+        entity.getYearOfBirth(),
+        entity.getCountryOfBirth(),
+        entity.getInGermanySince());
+  }
+
   public static Person toDatabaseType(PersonData data) {
     Person person = new Person();
     person.setGender(data.gender());

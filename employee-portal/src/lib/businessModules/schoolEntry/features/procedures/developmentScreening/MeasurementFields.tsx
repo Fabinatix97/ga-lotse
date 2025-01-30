@@ -5,7 +5,7 @@
 
 "use client";
 
-import { SoftRequiredNumberField } from "@eshg/lib-portal/businessModules/schoolEntry/features/procedures/fieldVariants";
+import { SoftRequiredNumberField } from "@eshg/lib-portal/components/form/fieldVariants";
 import {
   createFieldNameMapper,
   mapOptionalValue,

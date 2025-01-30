@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiVaccinationConsultationSearch } from "@eshg/employee-portal-api/travelMedicine";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { calculateAge } from "@eshg/lib-portal/helpers/dateTime";
+import { ApiVaccinationConsultationSearch } from "@eshg/travel-medicine-api";
 import { Chip } from "@mui/joy";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 

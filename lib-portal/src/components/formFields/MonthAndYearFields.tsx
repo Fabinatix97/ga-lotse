@@ -7,14 +7,14 @@ import { Stack } from "@mui/joy";
 import { ReactNode } from "react";
 import { isDefined } from "remeda";
 
-import {
-  SoftRequiredNumberField,
-  SoftRequiredSelectObjectField,
-} from "../../businessModules/schoolEntry/features/procedures/fieldVariants";
 import { toDateString, toUtcDate } from "../../helpers/dateTime";
 import { isEmptyString } from "../../helpers/guards";
 import { useMonthAndYearValidationsRules } from "../../hooks/useMonthAndYearValidations";
 import { OptionalFieldValue } from "../../types/form";
+import {
+  SoftRequiredNumberField,
+  SoftRequiredSelectObjectField,
+} from "../form/fieldVariants";
 
 import { HorizontalField } from "./HorizontalField";
 

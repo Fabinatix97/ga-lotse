@@ -5,11 +5,11 @@
 
 "use client";
 
+import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import {
   SoftRequiredBooleanSelectField,
   SoftRequiredSelectField,
-} from "@eshg/lib-portal/businessModules/schoolEntry/features/procedures/fieldVariants";
-import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
+} from "@eshg/lib-portal/components/form/fieldVariants";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";

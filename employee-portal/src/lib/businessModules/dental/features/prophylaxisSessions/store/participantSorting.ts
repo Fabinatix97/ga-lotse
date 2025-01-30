@@ -17,7 +17,7 @@ export interface ParticipantSorting {
 
 export type ParticipantSortKey = keyof Omit<
   ChildExamination,
-  "childId" | "examinationResult"
+  "childId" | "result" | "note"
 >;
 export type ParticipantSortDirection = "asc" | "desc";
 
@@ -68,7 +68,7 @@ function compareBy(
     switch (sortKey) {
       case "dateOfBirth":
         return b.dateOfBirth.getDate() - a.dateOfBirth.getDate();
-      case "fluoridationConsent":
+      case "fluoridationConsentGiven":
         return compareFluoridation(a, b, sortDirection);
       case "gender":
         return compareGender(a, b, sortDirection);
@@ -85,8 +85,8 @@ function compareFluoridation(
   b: ChildExamination,
   sortDirection: ParticipantSortDirection,
 ): number {
-  const aValue = displayBoolean(a.fluoridationConsent);
-  const bValue = displayBoolean(b.fluoridationConsent);
+  const aValue = displayBoolean(a.fluoridationConsentGiven);
+  const bValue = displayBoolean(b.fluoridationConsentGiven);
 
   return compareAndSortEmptyStringToEnd(aValue, bValue, sortDirection);
 }

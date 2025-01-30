@@ -5,9 +5,9 @@
 
 "use client";
 
-import { ApiAppointmentType } from "@eshg/employee-portal-api/travelMedicine";
 import { BaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
+import { ApiAppointmentType } from "@eshg/travel-medicine-api";
 import { FormLabel, Input, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 import { Ref } from "react";

@@ -7,7 +7,7 @@ import {
   ApiAdminActorType,
   ApiAdminOrgUnitType,
   ApiFederalState,
-} from "@eshg/admin-portal-api/serviceDirectory";
+} from "@eshg/service-directory-api";
 import { FormControl, Select } from "@mui/joy";
 import { CellContext } from "@tanstack/react-table";
 import { ReactNode, useCallback } from "react";

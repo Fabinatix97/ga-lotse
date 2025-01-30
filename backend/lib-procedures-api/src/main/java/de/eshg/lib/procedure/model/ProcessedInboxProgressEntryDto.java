@@ -8,6 +8,8 @@ package de.eshg.lib.procedure.model;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Schema(name = ProcessedInboxProgressEntryDto.SCHEMA_NAME)
@@ -21,8 +23,6 @@ public final class ProcessedInboxProgressEntryDto extends ProgressEntryDto {
   private String messageText;
 
   @NotNull private UUID createdBy;
-  private String createdByUserFirstName;
-  private String createdByUserLastName;
 
   public UUID getInboxProcedureId() {
     return inboxProcedureId;
@@ -65,33 +65,9 @@ public final class ProcessedInboxProgressEntryDto extends ProgressEntryDto {
   }
 
   @Override
-  public UUID getRelatedUserId() {
-    return getCreatedBy();
-  }
-
-  @Override
-  public void setRelatedUserFirstName(String relatedUserFirstName) {
-    setCreatedByUserFirstName(relatedUserFirstName);
-  }
-
-  @Override
-  public void setRelatedUserLastName(String relatedUserLastName) {
-    setCreatedByUserLastName(relatedUserLastName);
-  }
-
-  public String getCreatedByUserFirstName() {
-    return createdByUserFirstName;
-  }
-
-  public void setCreatedByUserFirstName(String createdByUserFirstName) {
-    this.createdByUserFirstName = createdByUserFirstName;
-  }
-
-  public String getCreatedByUserLastName() {
-    return createdByUserLastName;
-  }
-
-  public void setCreatedByUserLastName(String createdByUserLastName) {
-    this.createdByUserLastName = createdByUserLastName;
+  public Set<UUID> getResolvableUserIds() {
+    LinkedHashSet<UUID> userIds = new LinkedHashSet<>(super.getResolvableUserIds());
+    userIds.add(getCreatedBy());
+    return userIds;
   }
 }

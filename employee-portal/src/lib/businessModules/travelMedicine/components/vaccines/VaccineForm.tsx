@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiDisease,
-  ApiInventoryVaccineWithoutRmbiVaccine,
-} from "@eshg/employee-portal-api/travelMedicine";
 import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import {
+  ApiDisease,
+  ApiInventoryVaccineWithoutRmbiVaccine,
+} from "@eshg/travel-medicine-api";
 import { DeleteOutlined } from "@mui/icons-material";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import { Grid, IconButton, Stack, Typography } from "@mui/joy";

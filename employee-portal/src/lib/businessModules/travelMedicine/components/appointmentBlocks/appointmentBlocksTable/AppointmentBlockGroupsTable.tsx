@@ -5,11 +5,11 @@
 
 "use client";
 
+import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import {
   ApiAppointmentBlockSortKey,
   ApiAppointmentType,
-} from "@eshg/employee-portal-api/travelMedicine/models";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+} from "@eshg/travel-medicine-api";
 import { Chip } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";

@@ -20,4 +20,5 @@ public record PostPopulateProcedureRequest(
     UUID physician,
     @Valid List<@Valid AppointmentPopulationDto> appointments,
     List<String> cancelledAppointments,
+    List<String> closedAppointments,
     ProcedureStatusDto targetState) {}

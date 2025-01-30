@@ -5,12 +5,12 @@
 
 "use client";
 
+import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import {
   ApiMedicalHistory,
   ApiProcedureStatus,
-} from "@eshg/employee-portal-api/travelMedicine";
-import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+} from "@eshg/travel-medicine-api";
 import { DownloadOutlined } from "@mui/icons-material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import EditNoteIcon from "@mui/icons-material/EditNote";

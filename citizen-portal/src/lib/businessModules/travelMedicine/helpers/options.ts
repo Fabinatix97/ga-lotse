@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiTravelTimeUnit } from "@eshg/citizen-portal-api/travelMedicine";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import { ApiTravelTimeUnit } from "@eshg/travel-medicine-api";
 
 import { TRAVEL_TIME_UNITS } from "@/lib/businessModules/travelMedicine/helpers/translations";
 

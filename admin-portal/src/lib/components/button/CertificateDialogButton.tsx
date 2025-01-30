@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAdminCertificate } from "@eshg/admin-portal-api/serviceDirectory";
+import { ApiAdminCertificate } from "@eshg/service-directory-api";
 import {
   Button,
   DialogTitle,

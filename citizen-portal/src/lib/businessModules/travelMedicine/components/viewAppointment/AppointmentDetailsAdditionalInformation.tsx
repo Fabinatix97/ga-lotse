@@ -6,7 +6,7 @@
 import {
   ApiAppointmentBookingType,
   ApiGetAppointmentDetailsResponse,
-} from "@eshg/citizen-portal-api/travelMedicine";
+} from "@eshg/travel-medicine-api";
 import { Box, styled } from "@mui/joy";
 
 import { theme } from "@/lib/baseModule/theme/theme";

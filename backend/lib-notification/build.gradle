@@ -21,8 +21,6 @@ dependencies {
 
     testImplementation testFixtures(project(':business-module-persistence-commons'))
     testImplementation project(':rest-service-commons')
-    testImplementation "org.testcontainers:junit-jupiter"
-    testImplementation 'org.testcontainers:postgresql'
 
     testRuntimeOnly 'org.postgresql:postgresql'
     testRuntimeOnly 'com.h2database:h2'

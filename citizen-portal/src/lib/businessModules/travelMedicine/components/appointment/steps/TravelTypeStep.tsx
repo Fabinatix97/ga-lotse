@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiTravelType } from "@eshg/citizen-portal-api/travelMedicine";
+import { ApiTravelType } from "@eshg/travel-medicine-api";
 import { FormikValues, useFormikContext } from "formik";
 
 import {

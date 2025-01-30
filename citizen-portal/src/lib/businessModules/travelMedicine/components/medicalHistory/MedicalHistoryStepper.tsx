@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiDocumentContent } from "@eshg/citizen-portal-api/travelMedicine";
 import { Alert } from "@eshg/lib-portal/components/Alert";
+import { ApiDocumentContent } from "@eshg/travel-medicine-api";
 import { FormikValues } from "formik";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";

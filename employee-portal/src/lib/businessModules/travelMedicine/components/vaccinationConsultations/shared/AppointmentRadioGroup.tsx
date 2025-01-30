@@ -3,10 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiAppointmentBookingType,
-  ApiAppointmentType,
-} from "@eshg/employee-portal-api/travelMedicine";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
@@ -14,6 +10,10 @@ import {
   AppointmentPickerField,
   FIELD_LABELS_DE,
 } from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentPickerField";
+import {
+  ApiAppointmentBookingType,
+  ApiAppointmentType,
+} from "@eshg/travel-medicine-api";
 import { Stack, Typography } from "@mui/joy";
 import { useField } from "formik";
 import { useState } from "react";

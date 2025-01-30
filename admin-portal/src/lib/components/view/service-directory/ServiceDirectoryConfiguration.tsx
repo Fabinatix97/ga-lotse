@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiGetOrgUnitsResponse } from "@eshg/admin-portal-api/serviceDirectory";
+import { ApiGetOrgUnitsResponse } from "@eshg/service-directory-api";
 import { useMemo, useState } from "react";
 
 import { PageContent } from "@/lib/components/view/PageContent";

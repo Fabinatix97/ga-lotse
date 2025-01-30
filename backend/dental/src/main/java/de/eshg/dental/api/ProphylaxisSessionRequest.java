@@ -14,7 +14,7 @@ public interface ProphylaxisSessionRequest {
 
   ProphylaxisTypeDto type();
 
-  boolean screening();
+  boolean isScreening();
 
   FluoridationVarnishDto fluoridationVarnish();
 }

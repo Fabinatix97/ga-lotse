@@ -22,6 +22,24 @@ export interface DetailsCellProps {
   valueSx?: SxProps;
 }
 
+export function DetailsCellWrapped(props: DetailsCellProps) {
+  return (
+    <DetailsCell
+      name={props.name}
+      label={props.label}
+      value={props.value}
+      showIfEmpty={props.showIfEmpty}
+      avoidWrap={props.avoidWrap}
+      flexGrow={props.flexGrow}
+      valueIsDiv={props.valueIsDiv}
+      sx={props.sx}
+      valueSx={{ overflowWrap: "anywhere", ...props.valueSx }}
+    >
+      {props.children}
+    </DetailsCell>
+  );
+}
+
 export function DetailsCell({
   name: givenName,
   label,

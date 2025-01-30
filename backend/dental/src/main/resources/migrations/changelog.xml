@@ -35,5 +35,6 @@
   <include file="migrations/0025_add_previous_file_state_id_to_system_progress_entry.xml"/>
   <include file="migrations/0026_add_tooth_diagnoses.xml"/>
   <include file="migrations/0027_add_absence_examination_result.xml"/>
+  <include file="migrations/0028_rename_screening.xml"/>
 
 </databaseChangeLog>
