@@ -6,10 +6,7 @@
 import { EChartsOption, SeriesOption } from "echarts";
 import { unique } from "remeda";
 
-import {
-  AnalysisDiagramScatterChart,
-  AnalysisScatterDiagramConfiguration,
-} from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
+import { AnalysisDiagramScatterChart } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
 import {
   ChartApi,
   EChart,
@@ -19,12 +16,11 @@ import {
   mapAxisTitleWithOptionalUnit,
 } from "@/lib/businessModules/statistics/components/shared/charts/dataHelper";
 
+import { NumericAxesConfiguration } from "./types";
+
 interface ScatterChartDiagramProps {
   diagramData: AnalysisDiagramScatterChart["data"];
-  configuration: Pick<
-    AnalysisScatterDiagramConfiguration,
-    "axisRange" | "xAttribute" | "yAttribute"
-  >;
+  configuration: NumericAxesConfiguration;
   eChartApi?: (eChartApi: ChartApi) => void;
 }
 

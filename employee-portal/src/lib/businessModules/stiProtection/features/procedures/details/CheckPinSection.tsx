@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiStiProtectionProcedure } from "@eshg/employee-portal-api/stiProtection";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { ApiStiProtectionProcedure } from "@eshg/sti-protection-api";
 import {
   CheckCircleOutlined,
   ErrorOutlineOutlined,

@@ -339,6 +339,7 @@ public enum EmployeePermissionRole implements PermissionRole {
       BASE_PERSONS_WRITE,
       BASE_FACILITIES_READ,
       BASE_FACILITIES_WRITE,
+      BASE_ACCESS_CODE_USER_ADMIN,
       BASE_CALENDAR_BUSINESS_EVENTS_WRITE);
 
   private final String keycloakNameWithoutPrefix;

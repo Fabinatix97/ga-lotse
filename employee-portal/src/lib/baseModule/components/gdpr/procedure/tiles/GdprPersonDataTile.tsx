@@ -11,7 +11,7 @@ import {
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import VerifiedIcon from "@mui/icons-material/VerifiedOutlined";
-import { Stack, Typography } from "@mui/joy";
+import { Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
 import {
@@ -20,10 +20,10 @@ import {
 } from "@/lib/baseModule/components/gdpr/procedure/tiles/SectionTile";
 import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
 import { BaseAddressDetails } from "@/lib/shared/components/address/BaseAddressDetails";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
 import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
-import { ExternalLinkDetailsCell } from "@/lib/shared/components/detailsSection/ExternalLinkDetailsCell";
+import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
+import { ExternalLinkDetailsItem } from "@/lib/shared/components/detailsSection/items/ExternalLinkDetailsItem";
 
 export function GdprPersonDataTile({
   identity,
@@ -46,46 +46,39 @@ export function GdprPersonDataTile({
           <DetailsRow>
             {isNonEmptyString(identity.salutation) &&
               identity.salutation !== ApiSalutation.NotSpecified && (
-                <DetailsCell
-                  name={"salutation"}
+                <DetailsItem
                   label={PERSON_FIELD_NAME.salutation}
                   value={SALUTATION_VALUES[identity.salutation]}
                 />
               )}
-            <DetailsCell
-              name={"title"}
+            <DetailsItem
               label={PERSON_FIELD_NAME.title}
               value={identity.title}
               avoidWrap
             />
           </DetailsRow>
-          <DetailsCell
-            name={"firstName"}
+          <DetailsItem
             label={PERSON_FIELD_NAME.firstName}
             value={identity.firstName}
           />
-          <DetailsCell
-            name={"lastName"}
+          <DetailsItem
             label={PERSON_FIELD_NAME.lastName}
             value={identity.lastName}
           />
-          <DetailsCell
-            name={"dateOfBirth"}
+          <DetailsItem
             label={PERSON_FIELD_NAME.dateOfBirth}
             value={formatDate(identity.dateOfBirth)}
           />
           {identity.bpk2 && (
-            <DetailsCell
-              name="bpk2"
+            <DetailsItem
               label="BundID"
-              value={
-                <Typography
-                  startDecorator={<VerifiedIcon color="success" />}
-                  noWrap
-                >
-                  Authentifiziert
-                </Typography>
-              }
+              value="Authentifiziert"
+              slotProps={{
+                value: {
+                  startDecorator: <VerifiedIcon color="success" />,
+                  noWrap: true,
+                },
+              }}
             />
           )}
         </DetailsColumn>
@@ -95,16 +88,12 @@ export function GdprPersonDataTile({
         {(isNonEmptyString(identity.emailAddress) ||
           isNonEmptyString(identity.phoneNumber)) && (
           <DetailsColumn sx={columnSx}>
-            {isNonEmptyString(identity.emailAddress) && (
-              <ExternalLinkDetailsCell
-                name={"emailAddress"}
-                label={PERSON_FIELD_NAME.emailAddresses}
-                value={identity.emailAddress}
-                href={(value) => `mailto:${value}`}
-              />
-            )}
-            <DetailsCell
-              name={"phoneNumber"}
+            <ExternalLinkDetailsItem
+              label={PERSON_FIELD_NAME.emailAddresses}
+              value={identity.emailAddress}
+              href={(value: string) => `mailto:${value}`}
+            />
+            <DetailsItem
               label={PERSON_FIELD_NAME.phoneNumbers}
               value={identity.phoneNumber}
             />

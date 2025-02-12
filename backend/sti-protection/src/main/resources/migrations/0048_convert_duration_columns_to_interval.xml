@@ -1,0 +1,30 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="use_interval_for_durations">
+    <sql>
+      ALTER TABLE appointment_type_config
+      ALTER COLUMN standard_duration_in_minutes TYPE interval second(6)
+      USING (standard_duration_in_minutes * INTERVAL '1 minute');
+    </sql>
+    <renameColumn tableName="appointment_type_config"
+                  oldColumnName="standard_duration_in_minutes"
+                  newColumnName="standard_duration"/>
+
+    <sql>
+      ALTER TABLE appointment_block_group
+      ALTER COLUMN slot_duration_in_minutes TYPE interval second(6)
+      USING (slot_duration_in_minutes * INTERVAL '1 minute');
+    </sql>
+    <renameColumn tableName="appointment_block_group"
+                  oldColumnName="slot_duration_in_minutes"
+                  newColumnName="slot_duration"/>
+  </changeSet>
+</databaseChangeLog>
+

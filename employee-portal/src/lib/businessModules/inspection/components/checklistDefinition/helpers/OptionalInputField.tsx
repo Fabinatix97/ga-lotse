@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
-import { useFormikContext } from "formik";
-import { useEffect, useState } from "react";
+import { FormikErrors } from "formik";
+import { memo, useState } from "react";
 
 import { FlexInputFieldProps } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/FlexInputField";
 import { InputWithDeleteButton } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/InputWithDeleteButton";
@@ -15,23 +16,37 @@ export interface OptionalInputFieldProps extends FlexInputFieldProps {
   addButtonLabel: string;
 }
 
-export function OptionalInputField({
-  addButtonLabel,
-  ...props
-}: Readonly<OptionalInputFieldProps>) {
-  const { getFieldProps, setFieldValue } = useFormikContext();
-  const [showInput, setShowInput] = useState(false);
+export function OptionalInputField(props: Readonly<OptionalInputFieldProps>) {
+  const { meta, helpers } = useBaseField(props);
 
-  // show input if it has an initial value
-  useEffect(() => {
-    const { value } = getFieldProps<string>(props.name);
-    setShowInput(!!value);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only run on mount
-  }, [props.name]);
+  return (
+    <MemoizedOptionalInputField
+      {...props}
+      setValue={helpers.setValue}
+      hasInitialValue={!!meta.initialValue}
+    />
+  );
+}
+
+interface InnerOptionalInputFieldProps extends OptionalInputFieldProps {
+  setValue: (
+    value: string,
+    shouldValidate?: boolean,
+  ) => Promise<void | FormikErrors<string>>;
+  hasInitialValue: boolean;
+}
+
+const MemoizedOptionalInputField = memo(function InnerOptionalInputField({
+  addButtonLabel,
+  hasInitialValue,
+  setValue,
+  ...props
+}: Readonly<InnerOptionalInputFieldProps>) {
+  const [showInput, setShowInput] = useState(hasInitialValue);
 
   function handleDelete() {
     setShowInput(false);
-    void setFieldValue(props.name, "");
+    void setValue("");
   }
 
   if (showInput) {
@@ -49,4 +64,4 @@ export function OptionalInputField({
       {addButtonLabel}
     </Button>
   );
-}
+});

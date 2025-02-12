@@ -130,7 +130,8 @@ public class CitizenKeycloakProvisioning extends KeycloakProvisioning<CitizenKey
     builder.setDescription("Citizen Portal Browser Flow");
     builder.addAlternativeStep("auth-cookie");
     builder.addAlternativeStep("identity-provider-redirector");
-    builder.addAlternativeStep("access-code");
+    builder.addAlternativeStep("date-of-birth-access-code");
+    builder.addAlternativeStep("pin-access-code");
     builder.build(keycloakClient);
 
     keycloakClient.bindBrowserFlow(PORTAL_BROWSER_FLOW_ALIAS);

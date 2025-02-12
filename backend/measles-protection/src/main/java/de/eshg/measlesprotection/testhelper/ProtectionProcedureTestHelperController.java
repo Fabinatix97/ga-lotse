@@ -5,7 +5,7 @@
 
 package de.eshg.measlesprotection.testhelper;
 
-import de.eshg.auditlog.SharedAuditLogTestHelperApi;
+import de.eshg.auditlog.AuditLogClientTestHelperApi;
 import de.eshg.lib.auditlog.AuditLogTestHelperService;
 import de.eshg.measlesprotection.api.MeaslesProtectionProcedurePopulationResult;
 import de.eshg.measlesprotection.api.draft.OpenProcedureResponse;
@@ -17,7 +17,6 @@ import de.eshg.testhelper.api.PopulationRequest;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.ListWithTotalNumber;
 import jakarta.validation.Valid;
-import java.io.IOException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +25,7 @@ import org.springframework.web.service.annotation.PostExchange;
 @RestController
 @ConditionalOnTestHelperEnabled
 public class ProtectionProcedureTestHelperController extends TestHelperController
-    implements SharedAuditLogTestHelperApi {
+    implements AuditLogClientTestHelperApi {
 
   private final ProtectionProcedurePopulator populator;
   private final AuditLogTestHelperService auditLogTestHelperService;
@@ -60,12 +59,7 @@ public class ProtectionProcedureTestHelperController extends TestHelperControlle
   }
 
   @Override
-  public void clearAuditLogStorageDirectory() throws IOException {
-    auditLogTestHelperService.clearAuditLogStorageDirectory();
-  }
-
-  @Override
-  public void runArchivingJob() {
-    auditLogTestHelperService.runArchivingJob();
+  public void runAuditLogArchivingJob() {
+    auditLogTestHelperService.runAuditLogArchivingJob();
   }
 }

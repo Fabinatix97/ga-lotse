@@ -78,6 +78,7 @@ function ImportChildrenSidebar(props: SidebarWithFormRefProps) {
               name="institution"
               label="Einrichtung"
               categories={SCHOOL_OR_DAYCARE}
+              placeholder="Schule/Kita suchen"
               required="Bitte eine Schule/Kita angeben."
               getOptionLabel={getInstitutionOptionLabel}
             />

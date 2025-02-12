@@ -11,6 +11,7 @@ export const routes = defineRoutes("/official-medical-service", (omsPath) => ({
     byId: (procedureId: string) =>
       defineRoutes(proceduresPath(`/${procedureId}`), (procedurePath) => ({
         details: procedurePath("/details"),
+        documents: procedurePath("/documents"),
         progressEntries: procedurePath("/progress-entries"),
         syncAffectedPerson: (fileStateId: string, personVersion: number) =>
           procedurePath(
@@ -27,4 +28,5 @@ export const routes = defineRoutes("/official-medical-service", (omsPath) => ({
       new: appointmentBlockGroupsPath("/new"),
     }),
   ),
+  waitingRoom: omsPath("/waiting-room"),
 }));

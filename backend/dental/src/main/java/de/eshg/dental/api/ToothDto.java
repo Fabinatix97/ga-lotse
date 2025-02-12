@@ -90,10 +90,6 @@ public enum ToothDto {
   }
 
   public static ToothDto matchingPermanentToothForMilkTooth(ToothDto tooth) {
-    if (!tooth.isMilkTooth()) {
-      return null;
-    }
-
     return switch (tooth) {
       case T51 -> T11;
       case T52 -> T12;
@@ -118,39 +114,40 @@ public enum ToothDto {
       case T83 -> T43;
       case T84 -> T44;
       case T85 -> T45;
-      default -> null;
-    };
-  }
 
-  public static ToothDto matchingMilkToothForPermanentTooth(ToothDto tooth) {
-    if (tooth.isMilkTooth()) {
-      return null;
-    }
-    return switch (tooth) {
-      case T11 -> T51;
-      case T12 -> T52;
-      case T13 -> T53;
-      case T14 -> T54;
-      case T15 -> T55;
-
-      case T21 -> T61;
-      case T22 -> T62;
-      case T23 -> T63;
-      case T24 -> T64;
-      case T25 -> T65;
-
-      case T31 -> T71;
-      case T32 -> T72;
-      case T33 -> T73;
-      case T34 -> T74;
-      case T35 -> T75;
-
-      case T41 -> T81;
-      case T42 -> T82;
-      case T43 -> T83;
-      case T44 -> T84;
-      case T45 -> T85;
-      default -> null;
+      case T11,
+              T12,
+              T13,
+              T14,
+              T15,
+              T16,
+              T17,
+              T18,
+              T21,
+              T22,
+              T23,
+              T24,
+              T25,
+              T26,
+              T27,
+              T28,
+              T31,
+              T32,
+              T33,
+              T34,
+              T35,
+              T36,
+              T37,
+              T38,
+              T41,
+              T42,
+              T43,
+              T44,
+              T45,
+              T46,
+              T47,
+              T48 ->
+          throw new IllegalArgumentException("Unexpected tooth: " + tooth);
     };
   }
 }

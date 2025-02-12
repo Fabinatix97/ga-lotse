@@ -82,7 +82,7 @@ public class MedicalRegistryImportController {
             (sheet, actualColumns) -> {
               MedicalRegistryImporter importer =
                   new MedicalRegistryImporter(
-                      sheet, actualColumns, medicalRegistryService, IMPORTER_BATCH_SIZE);
+                      sheet, actualColumns, medicalRegistryService, clock, IMPORTER_BATCH_SIZE);
               return importer.process();
             });
     log.info(

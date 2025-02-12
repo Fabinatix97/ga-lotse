@@ -5,7 +5,15 @@
 
 import { Select, SelectProps } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
-import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { FieldHelperProps, FormikHandlers } from "formik";
+import {
+  ReactNode,
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { isDefined } from "remeda";
 
 import { FieldProps } from "../../types/form";
@@ -60,9 +68,47 @@ export function SelectField<
   TMultiple extends boolean = false,
   TOptionLabel extends string | ReactNode = string,
 >(props: SelectFieldProps<TMultiple, TOptionLabel>) {
+  const field = useBaseField<SelectFieldValue<TMultiple>>(props);
+
+  return (
+    <MemoizedSelectField
+      {...props}
+      fieldHelperText={field.helperText}
+      fieldRequired={field.required}
+      fieldError={field.error}
+      fieldInputValue={field.input.value}
+      fieldHelpersSetValue={field.helpers.setValue}
+      fieldHelpersSetTouched={field.helpers.setTouched}
+      fieldInputOnBlur={field.input.onBlur}
+    />
+  );
+}
+
+interface InnerSelectFieldProps<
+  TMultiple extends boolean,
+  TOptionLabel extends string | ReactNode = string,
+> extends SelectFieldProps<TMultiple, TOptionLabel> {
+  fieldHelperText?: string;
+  fieldRequired: boolean;
+  fieldError: boolean;
+  fieldInputValue: SelectFieldValue<TMultiple>;
+  fieldHelpersSetValue: FieldHelperProps<
+    SelectFieldValue<TMultiple>
+  >["setValue"];
+  fieldHelpersSetTouched: FieldHelperProps<
+    SelectFieldValue<TMultiple>
+  >["setTouched"];
+  fieldInputOnBlur: FormikHandlers["handleBlur"];
+}
+
+const MemoizedSelectField = memo(InnerSelectField) as typeof InnerSelectField;
+
+function InnerSelectField<
+  TMultiple extends boolean = false,
+  TOptionLabel extends string | ReactNode = string,
+>(props: Readonly<InnerSelectFieldProps<TMultiple, TOptionLabel>>) {
   const FieldComponent = props.component ?? BaseField;
   const SelectComponent = props.select ?? Select;
-  const field = useBaseField<SelectFieldValue<TMultiple>>(props);
   const disabled = useIsFormDisabled() || props.disabled;
 
   const { enqueue } = usePromiseSequencer();
@@ -70,34 +116,34 @@ export function SelectField<
   return (
     <FieldComponent
       label={props.label}
-      helperText={field.helperText}
-      required={field.required}
-      error={field.error}
+      helperText={props.fieldHelperText}
+      required={props.fieldRequired}
+      error={props.fieldError}
       className={props.className}
       sx={props.sx}
       disabled={disabled}
     >
       <SelectComponent
         name={props.name}
-        value={toJoyUiSelectValue<TMultiple>(field.input.value)}
+        value={toJoyUiSelectValue<TMultiple>(props.fieldInputValue)}
         onChange={(_, newValue) => {
           const emptyValue = props.multiple ? [] : "";
           const newFieldValue = (newValue ??
             emptyValue) as SelectFieldValue<TMultiple>;
           enqueue(async () => {
-            await field.helpers.setValue(newFieldValue);
+            await props.fieldHelpersSetValue(newFieldValue);
             if (isDefined(props.onChange)) {
               props.onChange(newFieldValue);
             }
           });
         }}
         // Trigger the validation when the dropdown is closed, acting similar to a blur
-        onClose={() => enqueue(() => field.helpers.setTouched(true, true))}
+        onClose={() => enqueue(() => props.fieldHelpersSetTouched(true, true))}
         onBlur={(event) => {
           // The relatedTarget is a <li> when the dropdown is opened,
           // we don't want to trigger the blur in that case.
           if (event.relatedTarget instanceof HTMLInputElement) {
-            field.input.onBlur(event);
+            props.fieldInputOnBlur(event);
           }
         }}
         multiple={props.multiple}

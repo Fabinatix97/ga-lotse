@@ -9,11 +9,11 @@ import {
   ApiChecklist,
   ApiInspection,
   ApiInspectionPhase,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { scrollToFirstFormError } from "@eshg/lib-portal/components/form/FormPlus";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/EditOutlined";
-import { Button, Divider, IconButton, Stack } from "@mui/joy";
+import { Button, Divider, Grid, IconButton, Stack, Typography } from "@mui/joy";
 import { useState } from "react";
 
 import { AppointmentSidebar } from "@/lib/businessModules/inspection/components/inspection/common/appointment/AppointmentSidebar";
@@ -26,7 +26,7 @@ import {
   SidePanelNavigationTab,
 } from "@/lib/businessModules/inspection/components/inspection/execution/SidePanelNavigation";
 import { useChecklistValidateContext } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/ChecklistValidateContext";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { SidePanel } from "@/lib/shared/components/sidePanel/SidePanel";
 import { SidePanelTitle } from "@/lib/shared/components/sidePanel/SidePanelTitle";
 import { UserLink } from "@/lib/shared/components/users/UserLink";
@@ -159,38 +159,55 @@ export function ExecutionSidePanel({
 
       <Divider sx={{ marginY: 1 }} />
 
-      <DetailsCell
-        name="user"
+      <DetailsItem
         label={"Durchführung durch"}
         value={
-          inspection?.executedAppointment?.assignedTo && (
+          (inspection?.executedAppointment?.assignedTo && (
             <UserLink user={inspection?.executedAppointment?.assignedTo} />
+          )) ?? (
+            <Typography
+              data-testid={`user.value`}
+              component="i"
+              color="neutral"
+              level="title-md"
+            >
+              Keine Angaben
+            </Typography>
           )
         }
-        showIfEmpty
       />
 
-      <DetailsCell
-        name="date"
-        label="Geplanter Termin"
-        value={plannedDateAndTime}
-      />
-      <DetailsCell
-        name="date"
+      <DetailsItem label="Geplanter Termin" value={plannedDateAndTime} />
+      <DetailsItem
         label="Tatsächlicher Begehungstermin"
-        value={executedDateAndTime}
-      >
-        {!readOnly && (
-          <IconButton
-            aria-label={`Termin ändern`}
-            color="primary"
-            onClick={() => setApprovalSidebarOpen(true)}
-            sx={{ p: 0, ml: 1, minHeight: 0 }}
-          >
-            <EditIcon />
-          </IconButton>
-        )}
-      </DetailsCell>
+        value={
+          <Grid container alignItems="center">
+            <Typography
+              role={"paragraph"}
+              component={"p"}
+              data-testid={`date.value`}
+              level="title-md"
+              sx={{
+                width: undefined,
+                textWrap: "pretty",
+                hyphens: "auto",
+              }}
+            >
+              {executedDateAndTime}
+            </Typography>
+            {!readOnly && (
+              <IconButton
+                aria-label={`Termin ändern`}
+                color="primary"
+                onClick={() => setApprovalSidebarOpen(true)}
+                sx={{ p: 0, ml: 1, minHeight: 0 }}
+              >
+                <EditIcon />
+              </IconButton>
+            )}
+          </Grid>
+        }
+      ></DetailsItem>
 
       {!readOnly && (
         <>
@@ -202,8 +219,7 @@ export function ExecutionSidePanel({
       {inspection.phase === ApiInspectionPhase.Executed && (
         <>
           <Divider sx={{ mb: 1, mt: 1 }} />
-          <DetailsCell
-            name="phase-executed"
+          <DetailsItem
             label="Begehung abgeschlossen"
             value="Die Begehung ist abgeschlossen. Sie sind noch offline. Die eingegebenen Daten wurden gespeichert und werden übertragen, sobald Sie wieder online sind."
           />

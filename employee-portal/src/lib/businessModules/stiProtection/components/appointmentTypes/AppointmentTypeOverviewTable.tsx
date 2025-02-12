@@ -5,8 +5,8 @@
 
 "use client";
 
-import { ApiAppointmentTypeConfig } from "@eshg/employee-portal-api/stiProtection";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { ApiAppointmentTypeConfig } from "@eshg/sti-protection-api";
 import { FormikProps } from "formik";
 import { useRef, useState } from "react";
 

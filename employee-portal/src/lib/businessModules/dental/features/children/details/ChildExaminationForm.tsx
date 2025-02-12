@@ -5,23 +5,57 @@
 
 "use client";
 
-import { FormProps } from "@eshg/lib-portal/types/form";
+import {
+  ApiExaminationResult,
+  UpdateExaminationRequest,
+} from "@eshg/dental-api";
+import { Examination } from "@eshg/dental/api/models/Examination";
+import { ToothDiagnoses } from "@eshg/dental/api/models/ExaminationResult";
+import { useUpdateExamination } from "@eshg/dental/api/mutations/childApi";
+import {
+  mapOptionalValue,
+  mapRequiredValue,
+} from "@eshg/lib-portal/helpers/form";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Formik } from "formik";
 
-import { ExaminationFormValues } from "@/lib/businessModules/dental/features/examinations/ExaminationFormLayout";
+import {
+  ExaminationFormValues,
+  mapToExaminationFormValues,
+} from "@/lib/businessModules/dental/features/examinations/ExaminationFormLayout";
+import { useDentalExaminationStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
 import { FormFooter } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/FormFooter";
 import { FormStack } from "@/lib/shared/components/form/FormStack";
 
-interface ChildExaminationFormProps
-  extends FormProps<ExaminationFormValues>,
-    RequiresChildren {}
+interface ChildExaminationFormProps extends RequiresChildren {
+  examination: Examination;
+}
 
 export function ChildExaminationForm(props: ChildExaminationFormProps) {
+  const { examination } = props;
+  const getToothDiagnoses = useDentalExaminationStore(
+    (state) => state.getToothDiagnoses,
+  );
+  const updateExamination = useUpdateExamination(examination.id);
+
+  async function handleSubmit(values: ExaminationFormValues) {
+    try {
+      const toothDiagnoses = getToothDiagnoses();
+      await updateExamination.mutateAsync(
+        mapToRequest(examination, values, toothDiagnoses),
+      );
+    } catch {
+      // TODO handle invalid tooth diagnoses
+    }
+  }
+
   return (
     <Formik
-      initialValues={props.initialValues}
-      onSubmit={props.onSubmit}
+      initialValues={mapToExaminationFormValues(
+        examination.result,
+        examination.note,
+      )}
+      onSubmit={handleSubmit}
       enableReinitialize
     >
       {({ handleSubmit, isSubmitting }) => {
@@ -34,4 +68,50 @@ export function ChildExaminationForm(props: ChildExaminationFormProps) {
       }}
     </Formik>
   );
+}
+
+function mapToRequest(
+  examination: Examination,
+  formValues: ExaminationFormValues,
+  toothDiagnoses: ToothDiagnoses,
+): UpdateExaminationRequest {
+  return {
+    examinationId: examination.id,
+    apiUpdateExaminationRequest: {
+      version: examination.version,
+      note: mapOptionalValue(formValues.note),
+      result: mapExaminationResultRequest(
+        examination,
+        formValues,
+        toothDiagnoses,
+      ),
+    },
+  };
+}
+
+function mapExaminationResultRequest(
+  examination: Examination,
+  formValues: ExaminationFormValues,
+  toothDiagnoses: ToothDiagnoses,
+): ApiExaminationResult | undefined {
+  if (examination.screening) {
+    return {
+      type: "ScreeningExaminationResult",
+      oralHygieneStatus: mapOptionalValue(formValues.oralHygieneStatus),
+      fluorideVarnishApplied:
+        mapOptionalValue(formValues.fluorideVarnishApplied) ?? false,
+      toothDiagnoses: Object.values(toothDiagnoses),
+    };
+  }
+
+  if (examination.fluoridation) {
+    return {
+      type: "FluoridationExaminationResult",
+      fluorideVarnishApplied: mapRequiredValue(
+        formValues.fluorideVarnishApplied,
+      ),
+    };
+  }
+
+  return undefined;
 }

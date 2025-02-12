@@ -7,7 +7,7 @@ import {
   ApiAuditLogSource,
   ApiAuditLogSourceFromJSON,
   AuditLogApi,
-} from "@eshg/employee-portal-api/auditlog";
+} from "@eshg/auditlog-api";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { encodeReservedHtmlCharacters } from "@eshg/lib-portal/helpers/htmlStringEncoder";

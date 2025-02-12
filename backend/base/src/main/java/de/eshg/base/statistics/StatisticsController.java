@@ -26,6 +26,7 @@ import de.eshg.base.street.SearchStreetResponse;
 import de.eshg.base.street.StreetController;
 import de.eshg.base.util.Gender;
 import de.eshg.lib.common.CountryCode;
+import de.eshg.lib.statistics.api.DataPrivacyCategory;
 import de.eshg.lib.statistics.api.DataRow;
 import de.eshg.lib.statistics.api.ValueType;
 import de.eshg.rest.service.error.BadRequestException;
@@ -86,7 +87,8 @@ public class StatisticsController implements BaseStatisticsApi {
         commonAttribute.getType(),
         null,
         commonAttribute.getValueOptions(),
-        commonAttribute.isMandatory());
+        commonAttribute.isMandatory(),
+        DataPrivacyCategory.QUASI_IDENTIFYING);
   }
 
   @Override
@@ -158,7 +160,14 @@ public class StatisticsController implements BaseStatisticsApi {
     ValueType valueType = mapToValueType(subjectType);
     List<BaseAttribute> attributes = new ArrayList<>();
     attributes.add(
-        new BaseAttribute(valueType.name(), valueType.name(), valueType, null, null, true));
+        new BaseAttribute(
+            valueType.name(),
+            valueType.name(),
+            valueType,
+            null,
+            null,
+            true,
+            DataPrivacyCategory.QUASI_IDENTIFYING));
     baseAttributes.forEach(baseAttribute -> attributes.add(mapToAttribute(baseAttribute)));
     return attributes;
   }

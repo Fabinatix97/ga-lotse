@@ -6,7 +6,7 @@
 import {
   GetPendingFacilitiesRequest,
   SearchRequest,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 
 export type FacilityWebSearchFilters = Partial<Omit<SearchRequest, "sort">> & {
   sortField?: string;

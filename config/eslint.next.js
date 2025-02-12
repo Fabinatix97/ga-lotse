@@ -95,6 +95,11 @@ function noRestrictedImportsRuleOptions(packageType) {
         importNames: ["Form"],
         message: "Use 'FormPlus' from '@eshg/lib-portal' instead.",
       },
+      {
+        name: "zustand/middleware",
+        importNames: ["devtools"],
+        message: "Remove before committing.",
+      },
     ],
   };
 }

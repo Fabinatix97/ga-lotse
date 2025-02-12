@@ -17,13 +17,28 @@ import org.springframework.util.CollectionUtils;
 
 @Schema(name = "Diagnosis")
 public record DiagnosisDto(
-    String results,
-    @Valid List<MedicationDto> medications,
-    @Valid List<Icd10CodeDto> findings,
-    Set<TestTypeDto> testTypes,
-    String otherTestTypeName,
-    String generalRemarks,
-    Boolean resultsCommunicated) {
+    @Schema(
+            description = "Details the results of the diagnosis.",
+            example = "Colicky pain, acute abdomen; medication prescribed for pain management.")
+        String results,
+    @Schema(description = "Lists prescribed medications.") @Valid List<MedicationDto> medications,
+    @Schema(description = "Records diagnostic findings using ICD-10 codes.") @Valid
+        List<Icd10CodeDto> findings,
+    @Schema(description = "Specifies the type of laboratory tests conducted during examination.")
+        Set<TestTypeDto> testTypes,
+    @Schema(
+            description = "Provides the name of a test type not included in the predefined list.",
+            example = "ELISA.")
+        String otherTestTypeName,
+    @Schema(
+            description =
+                "Additional remarks or observations documented during the diagnosis phase.",
+            example = "Positive for HIV antibodies and presence of P24 antigen detected.")
+        String generalRemarks,
+    @Schema(
+            description =
+                "Indicates whether the patient has been informed of their diagnostic results and updates the laboratory status to 'CLOSE'.")
+        Boolean resultsCommunicated) {
 
   @AssertTrue(
       message =

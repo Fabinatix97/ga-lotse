@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiInspectionPhase } from "@eshg/employee-portal-api/inspection";
+import { ApiInspectionPhase } from "@eshg/inspection-api";
 import { Grid } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 

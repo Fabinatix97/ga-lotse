@@ -16,8 +16,13 @@
   },
   "resultSection": {
     "results": "Results",
-    "foundSingular": "{{totalElements}} result found",
-    "foundPlural": "{{totalElements}} results found",
+    "found_one": "{{count}} result found",
+    "found_other": "{{count}} results found",
     "version": "Version"
+  },
+  "pagination": {
+    "loadMore": "Show more",
+    "shown_one": "<strong>{{shownElements}}</strong> of <strong>{{count}}</strong> result is shown",
+    "shown_other": "<strong>{{shownElements}}</strong> of <strong>{{count}}</strong> results are shown"
   }
 }

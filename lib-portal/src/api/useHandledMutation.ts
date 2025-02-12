@@ -17,6 +17,29 @@ import {
 } from "../errorHandling/errorMappers";
 import { resolveError } from "../errorHandling/errorResolvers";
 
+interface AlertOptions {
+  /**
+   * Enables retrying the mutation from the alert after a recoverable error
+   *
+   * Use this option for mutations where the original trigger (e.g. a button)
+   * is not available anymore when an error occurs.
+   */
+  enableRetryAfterError?: boolean;
+  /**
+   * Enables closing any error alert
+   */
+  closeable?: boolean;
+}
+
+interface UseHandledMutationOptions<
+  TData = unknown,
+  TError = DefaultError,
+  TVariables = void,
+  TContext = unknown,
+> extends UseMutationOptions<TData, TError, TVariables, TContext> {
+  alertOptions?: AlertOptions;
+}
+
 /**
  * Use mutation with default error handling
  *
@@ -28,26 +51,33 @@ export function useHandledMutation<
   TError = DefaultError,
   TVariables = void,
   TContext = unknown,
->(options: UseMutationOptions<TData, TError, TVariables, TContext>) {
+>(options: UseHandledMutationOptions<TData, TError, TVariables, TContext>) {
+  const { alertOptions, ...mutationOptions } = options;
   const alert = useAlert();
 
-  return useMutation({
-    ...options,
-    onError: runBefore(options.onError, (error) => {
+  const mutation = useMutation({
+    ...mutationOptions,
+    onError: runBefore(options.onError, (error, variables) => {
       const { errorCode } = resolveError(error);
       const { title, message } = getErrorDescription(errorCode);
+      const onReset =
+        alertOptions?.enableRetryAfterError === true
+          ? () => mutation.mutate(variables)
+          : undefined;
 
       alert.error({
         title,
         message,
-        action: getErrorAction(errorCode),
-        closeable: getCloseable(errorCode),
+        action: getErrorAction(errorCode, onReset),
+        closeable: alertOptions?.closeable ?? getCloseable(errorCode),
       });
     }),
     onMutate: runBefore(options.onMutate, () => {
       alert.close();
     }),
   });
+
+  return mutation;
 }
 
 function runBefore<const TParams extends unknown[]>(

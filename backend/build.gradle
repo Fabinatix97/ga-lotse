@@ -19,7 +19,8 @@ buildscript {
 plugins {
     id 'io.spring.dependency-management' version 'latest.release' apply false
     id 'com.avast.gradle.docker-compose' version 'latest.release' apply false
-    id 'org.springframework.boot' version 'latest.release' apply false
+    // ⚠ Note ⚠ Pinned to 3.4.1 because of https://github.com/spring-projects/spring-framework/issues/34324
+    id 'org.springframework.boot' version '3.4.1' apply false
     id 'org.cyclonedx.bom' version 'latest.release' apply false
     id 'com.trileuco.dependency-track-gradle' version 'latest.release' apply false
     id 'jacoco-report-aggregation'
@@ -61,7 +62,7 @@ sonar {
 //CAUTION: run ./gradlew wrapper (twice) after changes to this task!
 //See https://docs.gradle.org/current/userguide/gradle_wrapper.html#sec:upgrading_wrapper
 wrapper {
-    gradleVersion = "8.9"
+    gradleVersion = "8.12.1"
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -256,9 +257,6 @@ subprojects {
     tasks.named("check").configure {
         dependsOn findUnusedValidationFilesTask
     }
-
-    def springBootVersion = dependencyManagement.managedVersions['org.springframework.boot:spring-boot']
-    assert springBootVersion == "3.4.1": "Remove the dependency overwrite of 'hibernate.version' in gradle.properties since Spring Boot is updated to ${springBootVersion}"
 
     clean {
         delete test.outputs

@@ -44,7 +44,7 @@ function EditableStringCell(
     [props.column.id, props.row, props.table.options.meta],
   );
 
-  const value = props.getValue();
+  const value = props.getValue() ?? "";
   const serverError =
     !!errorMessage?.ids.includes(props.row.original.id) &&
     !!errorMessage?.columns?.includes(props.column.id);

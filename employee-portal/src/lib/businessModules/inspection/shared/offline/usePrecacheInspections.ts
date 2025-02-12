@@ -23,7 +23,7 @@ import {
   PacklistApi,
   ProcedureApi,
   ProgressEntryApi,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { queryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";

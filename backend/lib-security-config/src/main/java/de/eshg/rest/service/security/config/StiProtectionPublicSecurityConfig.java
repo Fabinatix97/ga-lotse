@@ -20,6 +20,8 @@ public final class StiProtectionPublicSecurityConfig extends AbstractPublicSecur
     grantAccessToLibProceduresUrls(
         EmployeePermissionRole.STI_PROTECTION_USER, ModuleLeaderRole.STI_PROTECTION_LEADER);
 
+    requestMatchers(BaseUrls.StiProtection.CITIZEN_PUBLIC_CONTROLLER + "/**").permitAll();
+
     requestMatchers(GET, BaseUrls.StiProtection.PROCEDURE_CONTROLLER + "/{id}/**")
         .hasAnyRole(
             EmployeePermissionRole.STI_PROTECTION_USER, EmployeePermissionRole.PROCEDURE_ARCHIVE);

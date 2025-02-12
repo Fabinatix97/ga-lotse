@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiFacility } from "@eshg/employee-portal-api/officialMedicalService";
+import { ApiFacility } from "@eshg/official-medical-service-api";
 
 import { usePatchFacility } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
 import {

@@ -7,7 +7,7 @@ import {
   ApiEditorElementAnswer,
   ApiEditorElementQA,
   ApiUpdateEditorRequest,
-} from "@eshg/employee-portal-api/libEditor";
+} from "@eshg/lib-editor-api";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import CheckBox from "@mui/icons-material/CheckBox";
 import CheckBoxOutlineBlank from "@mui/icons-material/CheckBoxOutlineBlank";

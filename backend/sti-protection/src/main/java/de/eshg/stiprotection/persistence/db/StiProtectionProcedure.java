@@ -29,12 +29,15 @@ import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -44,6 +47,13 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import org.springframework.util.Assert;
 
 @Entity
+@Table(
+    indexes = {
+      @Index(name = "idx_sti_protection_procedure_sample_bar_code", columnList = "sample_bar_code"),
+      @Index(
+          name = "idx_sti_protection_procedure_appointment_start",
+          columnList = "appointment_start"),
+    })
 public class StiProtectionProcedure
     extends Procedure<StiProtectionProcedure, StiProtectionTask, Person, Facility>
     implements EntityWithAppointment {
@@ -133,6 +143,12 @@ public class StiProtectionProcedure
   @JdbcType(PostgreSQLEnumJdbcType.class)
   @Column(nullable = false)
   private LabStatus labStatus;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  private String sampleBarCode;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  private Instant appointmentStart;
 
   @Transient
   public Person getPerson() {
@@ -286,7 +302,13 @@ public class StiProtectionProcedure
 
   @PrePersist
   @PreUpdate
-  public void computeLabStatus() {
+  public void computeFieldValues() {
+    computeLabStatus();
+    computeSampleBarcode();
+    computeAppointmentStart();
+  }
+
+  private void computeLabStatus() {
     labStatus = LabStatus.OPEN;
     if (laboratoryTestExamination != null
         && Objects.nonNull(laboratoryTestExamination.getTestsConductedDate())) {
@@ -299,5 +321,29 @@ public class StiProtectionProcedure
 
   public LabStatus getLabStatus() {
     return labStatus;
+  }
+
+  private void computeSampleBarcode() {
+    if (laboratoryTestExamination == null) {
+      sampleBarCode = null;
+    } else {
+      sampleBarCode = laboratoryTestExamination.getSampleBarCode();
+    }
+  }
+
+  public String getSampleBarCode() {
+    return sampleBarCode;
+  }
+
+  private void computeAppointmentStart() {
+    if (userDefinedAppointment != null) {
+      appointmentStart = userDefinedAppointment.getAppointmentStart();
+    } else if (appointment != null) {
+      appointmentStart = appointment.getAppointmentStart();
+    }
+  }
+
+  public Instant getAppointmentStart() {
+    return appointmentStart;
   }
 }

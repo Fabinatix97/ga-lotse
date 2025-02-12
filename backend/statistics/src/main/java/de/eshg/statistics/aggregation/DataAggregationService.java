@@ -17,6 +17,7 @@ import de.eshg.lib.aggregation.BusinessModuleAggregationHelper;
 import de.eshg.lib.aggregation.ClientResponse;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.statistics.api.Attribute;
+import de.eshg.lib.statistics.api.DataPrivacyCategory;
 import de.eshg.lib.statistics.api.DataRow;
 import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.api.DataTableHeader;
@@ -39,6 +40,7 @@ import de.eshg.statistics.persistence.entity.Evaluation;
 import de.eshg.statistics.persistence.entity.MinMaxNullUnknownValues;
 import de.eshg.statistics.persistence.entity.StatisticsDataSensitivity;
 import de.eshg.statistics.persistence.entity.TableColumn;
+import de.eshg.statistics.persistence.entity.TableColumnDataPrivacyCategory;
 import de.eshg.statistics.persistence.entity.TableColumnValueType;
 import de.eshg.statistics.persistence.entity.TableRow;
 import de.eshg.statistics.persistence.entity.ValueToMeaning;
@@ -312,6 +314,8 @@ public class DataAggregationService {
 
     if (baseModuleAttribute == null) {
       tableColumn.setValueType(mapToTableColumnValueType(businessModuleAttribute.valueType()));
+      tableColumn.setDataPrivacyCategory(
+          mapToTableColumnDataPrivacyCategory(businessModuleAttribute.dataPrivacyCategory()));
       tableColumn.setUnit(businessModuleAttribute.unit());
       tableColumn.addValueToMeanings(
           EvaluationMapper.mapToValueToMeanings(businessModuleAttribute.valueOptions()));
@@ -320,6 +324,8 @@ public class DataAggregationService {
       tableColumn.setBaseModuleAttributeCode(baseModuleAttribute.code());
       tableColumn.setBaseModuleAttributeName(baseModuleAttribute.name());
       tableColumn.setValueType(mapToTableColumnValueType(baseModuleAttribute.valueType()));
+      tableColumn.setDataPrivacyCategory(
+          mapToTableColumnDataPrivacyCategory(baseModuleAttribute.dataPrivacyCategory()));
       tableColumn.setUnit(baseModuleAttribute.unit());
       tableColumn.addValueToMeanings(
           EvaluationMapper.mapToValueToMeanings(baseModuleAttribute.valueOptions()));
@@ -338,6 +344,13 @@ public class DataAggregationService {
 
   private static TableColumnValueType mapToTableColumnValueType(ValueType valueType) {
     return TableColumnValueType.valueOf(valueType.name());
+  }
+
+  private static TableColumnDataPrivacyCategory mapToTableColumnDataPrivacyCategory(
+      DataPrivacyCategory dataPrivacyCategory) {
+    return dataPrivacyCategory == null
+        ? null
+        : TableColumnDataPrivacyCategory.valueOf(dataPrivacyCategory.name());
   }
 
   private static List<TableColumn> createTableColumnsForBaseAttributes(
@@ -555,7 +568,10 @@ public class DataAggregationService {
             firstTableColumn.getBaseModuleAttributeCode(),
             secondTableColumn.getBaseModuleAttributeCode())
         || !Objects.equals(firstTableColumn.getUnit(), secondTableColumn.getUnit())
-        || firstTableColumn.isMandatory() != secondTableColumn.isMandatory()) {
+        || firstTableColumn.isMandatory() != secondTableColumn.isMandatory()
+        || !Objects.equals(
+            firstTableColumn.getDataPrivacyCategory(),
+            secondTableColumn.getDataPrivacyCategory())) {
       return true;
     }
     if (firstTableColumn.getValueToMeanings().size()

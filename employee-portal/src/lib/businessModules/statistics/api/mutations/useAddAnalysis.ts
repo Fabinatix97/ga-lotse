@@ -9,7 +9,7 @@ import {
   ApiAddAnalysisRequest,
   ApiAddAnalysisRequestChartConfiguration,
 } from "@eshg/statistics-api";
-import { isNonNullish } from "remeda";
+import { isNonNullish, isNumber } from "remeda";
 
 import { useAnalysisApi } from "@/lib/businessModules/statistics/api/clients";
 import { mapKeyToAttributeSelection } from "@/lib/businessModules/statistics/api/mapper/mapAttributeSelectionKey";
@@ -68,6 +68,7 @@ export function mapModelToChartConfiguration({
       const hasSecondaryAttribute = mapSelectionKeyToBoolean(
         chartConfigurationModel.secondaryAttribute,
       );
+      const manualBinning = chartConfigurationModel.binning === "MANUAL";
       return {
         type: "HistogramChartConfiguration",
         primaryAttribute: mapKeyToAttributeSelection(
@@ -85,9 +86,14 @@ export function mapModelToChartConfiguration({
           ? chartConfigurationModel.grouping
           : undefined,
         binningMode: chartConfigurationModel.binning,
-        numberOfBins:
-          chartConfigurationModel.binning === "MANUAL"
-            ? chartConfigurationModel.bins
+        numberOfBins: manualBinning ? chartConfigurationModel.bins : undefined,
+        minBin:
+          manualBinning && isNumber(chartConfigurationModel.minBin)
+            ? chartConfigurationModel.minBin
+            : undefined,
+        maxBin:
+          manualBinning && isNumber(chartConfigurationModel.maxBin)
+            ? chartConfigurationModel.maxBin
             : undefined,
       };
     }

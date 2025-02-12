@@ -5,6 +5,8 @@
 
 import { Middleware } from "@eshg/base-api";
 
+import { PortalError } from "../errorHandling/PortalError";
+import { PortalErrorCode } from "../errorHandling/PortalErrorCode";
 import { resolveErrorResponse } from "../errorHandling/errorResolvers";
 
 export const errorInterceptionMiddleware = {
@@ -18,7 +20,10 @@ export const errorInterceptionMiddleware = {
   async onError(context) {
     if (context.response === undefined) {
       const cause = resolveCause(context.error);
-      throw new Error(`Failed to fetch ${context.url}${cause}`);
+      throw new PortalError({
+        errorCode: PortalErrorCode.UnexpectedError,
+        message: `Failed to fetch ${context.url}${cause}`,
+      });
     }
     return Promise.resolve();
   },

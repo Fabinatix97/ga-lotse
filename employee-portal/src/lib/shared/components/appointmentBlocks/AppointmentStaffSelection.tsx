@@ -6,7 +6,10 @@
 import { Button, Grid } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
-import { AppointmentStaffField } from "@/lib/shared/components/appointmentBlocks/AppointmentStaffField";
+import {
+  AppointmentStaffField,
+  StaffUser,
+} from "@/lib/shared/components/appointmentBlocks/AppointmentStaffField";
 import { FormGroupGrid } from "@/lib/shared/components/form/FormGroupGrid";
 
 export const BUTTON_STYLES: SxProps = {
@@ -14,17 +17,12 @@ export const BUTTON_STYLES: SxProps = {
 };
 
 export interface AppointmentStaffSelectionProps {
-  physicianOptions: SelectionOption[];
-  medicalAssistantOptions?: SelectionOption[];
-  consultantOptions?: SelectionOption[];
+  physicianOptions: StaffUser[];
+  medicalAssistantOptions?: StaffUser[];
+  consultantOptions?: StaffUser[];
   blockedStaff: string[];
   freeStaff: string[];
   validateAvailability: () => void;
-}
-
-export interface SelectionOption {
-  label: string;
-  value: string;
 }
 
 export function AppointmentStaffSelection(

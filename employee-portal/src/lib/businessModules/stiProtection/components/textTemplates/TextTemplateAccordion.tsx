@@ -17,16 +17,18 @@ import { useTransition } from "react";
 
 import { AddTextTemplate } from "@/lib/shared/components/icons/AddTextTemplate";
 
-import { useTextTemplatesSidebar } from "./TextTemplatesSidebarProvider";
+import { AppendText } from "./TextTemplatesSidebar";
 
 export function TextTemplateAccordion({
   name,
-  text,
+  content,
   index,
+  appendText,
 }: {
   name: string;
-  text: string;
+  content: string;
   index: number;
+  appendText: AppendText;
 }) {
   return (
     <Accordion
@@ -45,10 +47,14 @@ export function TextTemplateAccordion({
         >
           {name}
         </AccordionSummary>
-        <AddTextTemplateButton text={text} index={index} />
+        <AddTextTemplateButton
+          text={content}
+          appendText={appendText}
+          index={index}
+        />
       </Row>
       <AccordionDetails>
-        <Typography padding={2}>{text}</Typography>
+        <Typography padding={2}>{content}</Typography>
       </AccordionDetails>
     </Accordion>
   );
@@ -57,7 +63,7 @@ export function TextTemplateAccordion({
 const AnimatedIconButton = styled(IconButton)(({ theme }) => ({
   transition: "all 300ms",
   "&[aria-disabled=true]": {
-    "background-color": theme.palette.success.plainActiveBg,
+    backgroundColor: theme.palette.success.plainActiveBg,
     borderColor: "transparent",
     cursor: "default",
     ".MuiSvgIcon-root": { color: theme.palette.success.outlinedColor },
@@ -67,12 +73,14 @@ const AnimatedIconButton = styled(IconButton)(({ theme }) => ({
 function AddTextTemplateButton({
   text,
   index,
+  appendText,
 }: {
   text: string;
   index: number;
+  appendText: AppendText;
 }) {
   const [isAppending, startAppending] = useTransition();
-  const { appendText } = useTextTemplatesSidebar();
+  // const { appendText } = useTextTemplatesSidebar();
 
   function onClick() {
     if (isAppending) {
@@ -87,6 +95,7 @@ function AddTextTemplateButton({
   return (
     <AnimatedIconButton
       aria-keyshortcuts={`${shortcut}`}
+      color={"primary"}
       variant={"outlined"}
       aria-disabled={isAppending}
       title={`Vorlage einfügen${shortcut ? ` (${shortcut})` : ""}`}

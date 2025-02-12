@@ -10,7 +10,7 @@ import {
   ApiGetChecklistsResponseFromJSON,
   ApiGetChecklistsResponseToJSON,
   ApiUpdateChecklistElementsInner,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 
 import { X_ESHG_INSPECTION_ID, uuidV4Re } from "@/serviceWorker/common/common";
 import {

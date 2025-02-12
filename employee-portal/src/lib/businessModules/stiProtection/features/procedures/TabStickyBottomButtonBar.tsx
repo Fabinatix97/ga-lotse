@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiStiProtectionProcedure } from "@eshg/employee-portal-api/stiProtection";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
+import { ApiStiProtectionProcedure } from "@eshg/sti-protection-api";
 import { Button } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { useRouter } from "next/navigation";

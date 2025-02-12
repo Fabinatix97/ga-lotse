@@ -6,7 +6,7 @@
 import {
   ApiAuditLogSource,
   ApiAuditLogSourceFromJSON,
-} from "@eshg/employee-portal-api/auditlog";
+} from "@eshg/auditlog-api";
 import { ensureArray } from "@eshg/lib-portal/helpers/guards";
 import { SearchParams } from "@eshg/lib-portal/helpers/searchParams";
 import { isString } from "remeda";

@@ -219,7 +219,9 @@ public class RepoMapper {
         getEnumString(histogramChartConfiguration.getScaling()),
         getEnumString(histogramChartConfiguration.getGrouping()),
         getEnumString(histogramChartConfiguration.getBinningMode()),
-        histogramChartConfiguration.getNumberOfBins());
+        histogramChartConfiguration.getNumberOfBins(),
+        histogramChartConfiguration.getMinBin(),
+        histogramChartConfiguration.getMaxBin());
   }
 
   private static RepoLineChart mapToRepoLineChart(LineChartConfiguration lineChartConfiguration) {
@@ -450,7 +452,9 @@ public class RepoMapper {
         mapToScaling(repoHistogramChart.scaling()),
         mapToGrouping(repoHistogramChart.grouping()),
         mapToBinning(repoHistogramChart.binningMode()),
-        repoHistogramChart.numberOfBins());
+        repoHistogramChart.numberOfBins(),
+        repoHistogramChart.minBin(),
+        repoHistogramChart.maxBin());
   }
 
   private static LineChartConfigurationDto mapToLineChartConfiguration(

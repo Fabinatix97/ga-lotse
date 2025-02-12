@@ -6,10 +6,18 @@
 import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { Stack } from "@mui/joy";
+import { isNonNullish } from "remeda";
 
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
+import {
+  ChartsSamplePreview,
+  chartSampleConfiguration,
+  getScatterChartGroupedSampleData,
+  getScatterChartSimpleSampleData,
+} from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/ChartsSamplePreview";
 import { ConfigureChartFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/createAnalysisFormModel";
 import { mapAttributeToAutocompleteSelectionOption } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/mapAttribute";
+import { ScatterChart } from "@/lib/businessModules/statistics/components/shared/charts/ScatterChart";
 import {
   axisRangeValueNames,
   isCategorical,
@@ -27,6 +35,7 @@ export interface ConfigureScatterChartStepProps
 export function ConfigureScatterChartStep({
   attributes,
   fieldName,
+  values,
 }: ConfigureScatterChartStepProps) {
   const axisAttributes = attributes.map(
     mapAttributeToAutocompleteSelectionOption((attribute) =>
@@ -40,38 +49,67 @@ export function ConfigureScatterChartStep({
   );
   const axisRange = buildEnumOptions(axisRangeValueNames);
 
+  const showGroupedConfigurations =
+    isNonNullish(values.secondaryAttribute) &&
+    values.secondaryAttribute.length > 0;
+
   return (
-    <Stack gap={3}>
-      <Stack gap={2}>
-        <SingleAutocompleteField
-          options={axisAttributes}
-          name={fieldName("xAxis")}
-          placeholder="Bitte wählen"
-          label="X-Achse"
-          required="Bitte wählen Sie ein Attribut aus."
-        />
-        <SingleAutocompleteField
-          options={axisAttributes}
-          name={fieldName("yAxis")}
-          placeholder="Bitte wählen"
-          label="Y-Achse"
-          required="Bitte wählen Sie ein Attribut aus."
-        />
-        <SingleAutocompleteField
-          options={secondaryAttributes}
-          name={fieldName("secondaryAttribute")}
-          placeholder="Optional"
-          label="Sekundäres Attribut"
-        />
+    <Stack gap={4}>
+      <Stack gap={3}>
+        <Stack gap={2}>
+          <SingleAutocompleteField
+            options={axisAttributes}
+            name={fieldName("xAxis")}
+            placeholder="Bitte wählen"
+            label="X-Achse"
+            required="Bitte wählen Sie ein Attribut aus."
+          />
+          <SingleAutocompleteField
+            options={axisAttributes}
+            name={fieldName("yAxis")}
+            placeholder="Bitte wählen"
+            label="Y-Achse"
+            required="Bitte wählen Sie ein Attribut aus."
+          />
+          <SingleAutocompleteField
+            options={secondaryAttributes}
+            name={fieldName("secondaryAttribute")}
+            placeholder="Optional"
+            label="Sekundäres Attribut"
+          />
+        </Stack>
+        <Stack gap={1}>
+          <ToggleButtonGroupField
+            options={axisRange}
+            name={fieldName("axisRange")}
+            label="Achsenskalierung"
+          />
+          <SwitchField name={fieldName("trendline")} label="Trendlinie" />
+        </Stack>
       </Stack>
-      <Stack gap={1}>
-        <ToggleButtonGroupField
-          options={axisRange}
-          name={fieldName("axisRange")}
-          label="Achsenskalierung"
-        />
-        <SwitchField name={fieldName("trendline")} label="Trendlinie" />
-      </Stack>
+      <ChartsSamplePreview
+        chart={
+          showGroupedConfigurations ? (
+            <ScatterChart
+              key={`groupedScatterChart_${values.trendline}`}
+              diagramData={getScatterChartGroupedSampleData(values.trendline)}
+              configuration={{
+                axisRange: values.axisRange,
+                ...chartSampleConfiguration,
+              }}
+            />
+          ) : (
+            <ScatterChart
+              key={`simpleScatterChart_${values.trendline}`}
+              diagramData={getScatterChartSimpleSampleData(values.trendline)}
+              configuration={{
+                axisRange: values.axisRange,
+                ...chartSampleConfiguration,
+              }}
+            />
+          )
+        }
+      />
     </Stack>
   );
 }

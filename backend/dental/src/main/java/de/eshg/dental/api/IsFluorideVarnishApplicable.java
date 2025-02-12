@@ -5,6 +5,14 @@
 
 package de.eshg.dental.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.BooleanUtils;
+
 public interface IsFluorideVarnishApplicable {
-  boolean fluorideVarnishApplied();
+  Boolean fluorideVarnishApplied();
+
+  @JsonIgnore
+  default boolean isFluorideVarnishAppliedOrFalse() {
+    return BooleanUtils.isTrue(fluorideVarnishApplied());
+  }
 }

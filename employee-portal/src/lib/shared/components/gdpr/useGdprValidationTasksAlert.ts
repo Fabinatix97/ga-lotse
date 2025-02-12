@@ -5,11 +5,11 @@
 
 "use client";
 
+import { useControlledAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
 import {
   ApiBusinessModule,
   ApiGetGdprNotificationBannerResponse,
-} from "@eshg/employee-portal-api/businessProcedures";
-import { useControlledAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
+} from "@eshg/lib-procedures-api";
 import { isPast } from "date-fns";
 
 import { routes } from "@/lib/baseModule/shared/routes";
@@ -19,23 +19,27 @@ export function useGdprValidationTasksAlert({
   banner,
   businessModule,
 }: {
-  banner: ApiGetGdprNotificationBannerResponse;
+  banner: ApiGetGdprNotificationBannerResponse | undefined;
   businessModule: ApiBusinessModule;
 }) {
-  const { openValidationTasksCount, earliestDueDate } = banner;
+  let numberOfTasksLine = "";
+  let deadlineLine = "";
 
-  const numberOfTasksLine =
-    openValidationTasksCount === 1
-      ? `Es liegt eine DSGVO-Anfrage vor.`
-      : `Es liegen ${openValidationTasksCount} DSGVO-Anfragen vor.`;
-  const deadlineLine =
-    earliestDueDate === undefined || isPast(earliestDueDate)
-      ? "Sie müssen diese sofort bearbeiten."
-      : `Sie haben noch ${formatDurationFromNowUntil(earliestDueDate)} Zeit, diese zu bearbeiten.`;
+  if (banner) {
+    const { openValidationTasksCount, earliestDueDate } = banner;
+    numberOfTasksLine =
+      openValidationTasksCount === 1
+        ? `Es liegt eine DSGVO-Anfrage vor.`
+        : `Es liegen ${openValidationTasksCount} DSGVO-Anfragen vor.`;
+    deadlineLine =
+      earliestDueDate === undefined || isPast(earliestDueDate)
+        ? "Sie müssen diese sofort bearbeiten."
+        : `Sie haben noch ${formatDurationFromNowUntil(earliestDueDate)} Zeit, diese zu bearbeiten.`;
+  }
 
   useControlledAlert({
     type: "warning",
-    open: openValidationTasksCount > 0,
+    open: !!banner && banner.openValidationTasksCount > 0,
     message: `${numberOfTasksLine} ${deadlineLine}`,
     action: {
       text: "Anfragen Prüfen",

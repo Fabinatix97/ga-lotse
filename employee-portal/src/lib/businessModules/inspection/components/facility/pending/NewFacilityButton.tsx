@@ -9,7 +9,7 @@ import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
 import {
   type ApiInspAddFacilityResponse,
   ApiProcedureStatus,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";

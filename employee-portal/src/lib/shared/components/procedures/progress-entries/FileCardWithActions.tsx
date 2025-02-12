@@ -5,8 +5,8 @@
 
 "use client";
 
-import { ApiAbstractFile } from "@eshg/employee-portal-api/businessProcedures";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import { ApiAbstractFile } from "@eshg/lib-procedures-api";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";

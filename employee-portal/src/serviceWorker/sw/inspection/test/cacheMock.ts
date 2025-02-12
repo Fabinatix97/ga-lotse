@@ -10,7 +10,7 @@ import {
   ApiGetChecklistsResponseToJSON,
   ApiInspection,
   ApiInspectionToJSON,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { isString } from "remeda";
 import { vi } from "vitest";
 

@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { GdprValidationTaskApiInterface } from "@eshg/employee-portal-api/businessProcedures";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { GdprValidationTaskApiInterface } from "@eshg/lib-procedures-api";
 
 export function useAddDownloadPackage(taskApi: GdprValidationTaskApiInterface) {
   const snackbar = useSnackbar();

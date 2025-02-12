@@ -11,7 +11,7 @@ import {
   ApiInspectionResult,
   ApiInspectionType,
   ApiWebSearchEntryStatus,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { ChipProps } from "@mui/joy";
 
 export const webSearchStatusNames = {

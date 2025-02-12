@@ -7,7 +7,7 @@ import { ApiUserRole } from "@eshg/base-api";
 import {
   ApiChecklistDefinition,
   ApiChecklistDefinitionVersion,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { ConfirmationDialogProps } from "@eshg/lib-portal/components/confirmationDialog/BaseConfirmationDialog";
 import {

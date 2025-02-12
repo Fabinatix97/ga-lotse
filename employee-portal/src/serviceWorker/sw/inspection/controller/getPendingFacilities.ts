@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiInspPendingFacilitiesOverviewResponse } from "@eshg/employee-portal-api/inspection";
+import { ApiInspPendingFacilitiesOverviewResponse } from "@eshg/inspection-api";
 
 import { precachedInspectionIds } from "@/serviceWorker/common/precachedInspectionIds";
 import { getFacilities } from "@/serviceWorker/sw/inspection/service/getFacilities";

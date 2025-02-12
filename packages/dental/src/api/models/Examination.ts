@@ -4,27 +4,34 @@
  */
 
 import { ApiExamination, ApiProphylaxisType } from "@eshg/dental-api";
-import { BaseEntity } from "@eshg/lib-employee-portal/api/models/BaseEntity";
+import {
+  BaseEntity,
+  mapBaseEntity,
+} from "@eshg/lib-employee-portal/api/models/BaseEntity";
+import {
+  Versioned,
+  mapVersioned,
+} from "@eshg/lib-employee-portal/api/models/Versioned";
 import { mapOptional } from "@eshg/lib-employee-portal/api/models/utils";
 
 import { ExaminationResult, mapExaminationResult } from "./ExaminationResult";
 import { ExaminationStatus, mapToExaminationStatus } from "./ExaminationStatus";
 
-export interface Examination extends BaseEntity {
+export interface Examination extends BaseEntity, Versioned {
   readonly dateAndTime: Date;
   readonly prophylaxisType: ApiProphylaxisType;
   readonly screening: boolean;
   readonly fluoridation: boolean;
-  readonly fluoridationConsentGiven: boolean;
+  readonly fluoridationConsentGiven?: boolean;
   readonly note?: string;
   readonly result?: ExaminationResult;
-  readonly version: number;
   readonly status: ExaminationStatus;
 }
 
 export function mapExamination(response: ApiExamination): Examination {
   return {
-    ...response,
+    ...mapBaseEntity(response),
+    ...mapVersioned(response),
     dateAndTime: response.dateAndTime,
     prophylaxisType: response.prophylaxisType,
     screening: response.isScreening,

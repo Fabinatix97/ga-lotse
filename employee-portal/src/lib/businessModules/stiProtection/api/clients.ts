@@ -7,6 +7,7 @@ import {
   Configuration as BaseConfiguration,
   CitizenAccessCodeUserApi,
 } from "@eshg/base-api";
+import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 import {
   AppointmentBlockApi,
   AppointmentTypeApi,
@@ -22,9 +23,9 @@ import {
   ProcedureApi,
   ProgressEntryApi,
   StiProtectionProcedureApi,
+  TextTemplateApi,
   WaitingRoomApi,
-} from "@eshg/employee-portal-api/stiProtection";
-import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
+} from "@eshg/sti-protection-api";
 
 function useConfiguration() {
   const configParameters = useApiConfiguration(
@@ -113,4 +114,9 @@ export function useConsultationApi() {
 export function useDiagnosisApi() {
   const config = useConfiguration();
   return new DiagnosisApi(config);
+}
+
+export function useTextTemplateApi() {
+  const config = useConfiguration();
+  return new TextTemplateApi(config);
 }

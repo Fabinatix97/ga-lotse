@@ -10,7 +10,7 @@ import {
   ApiCLSectionElementsInner,
   ApiChecklist,
   ApiUpdateChecklistElementsInner,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { isDefined } from "remeda";
 
 export type FormCheckboxField = Omit<ApiCLCheckboxField, "checked"> & {

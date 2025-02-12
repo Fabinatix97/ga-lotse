@@ -10,7 +10,10 @@ import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { SALUTATION_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import {
+  validateDateOfBirth,
+  validateLength,
+} from "@eshg/lib-portal/helpers/validators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Divider, Grid } from "@mui/joy";
 import { Formik } from "formik";
@@ -127,6 +130,7 @@ function CreateGDPRProcedureSidebar({
                   name={fieldName("dateOfBirth")}
                   label={"Geburtsdatum"}
                   required={"Bitte ein Geburtsdatum eingeben"}
+                  validate={validateDateOfBirth}
                 />
               </Grid>
               <Grid xxs={12}>

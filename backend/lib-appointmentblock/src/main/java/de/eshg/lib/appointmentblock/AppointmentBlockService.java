@@ -24,8 +24,8 @@ import de.eshg.rest.service.security.CurrentUserHelper;
 import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Stream;
 import org.springframework.data.domain.Page;
@@ -267,8 +267,7 @@ public class AppointmentBlockService {
     AppointmentBlockGroup appointmentBlockGroup = new AppointmentBlockGroup();
     appointmentBlockGroup.setType(appointmentType);
     appointmentBlockGroup.setParallelExaminations(request.parallelExaminations());
-    appointmentBlockGroup.setSlotDurationInMinutes(
-        appointmentTypeConfig.getStandardDurationInMinutes());
+    appointmentBlockGroup.setSlotDuration(appointmentTypeConfig.getStandardDuration());
     appointmentBlockGroup.setMfas(request.mfas());
     appointmentBlockGroup.setPhysicians(request.physicians());
     appointmentBlockGroup.setConsultants(request.consultants());
@@ -289,33 +288,29 @@ public class AppointmentBlockService {
     if (block.start().isBefore(Instant.now(clock))) {
       throw new BadRequestException("Start of first appointment block must be in the future.");
     }
+    ZonedDateTime start = block.start().atZone(clock.getZone());
+    ZonedDateTime end = block.end().atZone(clock.getZone());
+    List<DayOfWeek> daysOfWeek = DayOfWeekDtoMapper.toJavaTime(block.daysOfWeek());
+    return createDailyAppointmentBlocks(start, end, daysOfWeek);
+  }
 
+  private static List<CreateAppointmentBlockData> createDailyAppointmentBlocks(
+      ZonedDateTime start, ZonedDateTime end, List<DayOfWeek> daysOfWeek) {
     List<CreateAppointmentBlockData> result = new ArrayList<>();
 
-    LocalDate startDate = block.start().atZone(clock.getZone()).toLocalDate();
-    LocalTime startTime = block.start().atZone(clock.getZone()).toLocalTime();
-    LocalTime endTime = block.end().atZone(clock.getZone()).toLocalTime();
-    long totalDays = DAYS.between(block.start(), block.end());
+    LocalTime endTime = end.toLocalTime();
+    long totalDays = DAYS.between(start, end);
     for (int daysToAdd = 0; daysToAdd <= totalDays; daysToAdd++) {
-      LocalDate date = startDate.plusDays(daysToAdd);
-      List<DayOfWeek> daysOfWeek = DayOfWeekDtoMapper.toJavaTime(block.daysOfWeek());
-      if (daysOfWeek.contains(date.getDayOfWeek())) {
-        result.add(appointmentBlockData(date, startTime, endTime));
+      ZonedDateTime appointmentStart = start.plusDays(daysToAdd);
+      if (daysOfWeek.contains(appointmentStart.getDayOfWeek())) {
+        ZonedDateTime appointmentEnd = appointmentStart.with(endTime);
+        result.add(
+            new CreateAppointmentBlockData(
+                appointmentStart.toInstant(), appointmentEnd.toInstant()));
       }
     }
 
     return result;
-  }
-
-  private CreateAppointmentBlockData appointmentBlockData(
-      LocalDate date, LocalTime startTime, LocalTime endTime) {
-    Instant appointmentStart = toInstant(date, startTime);
-    Instant appointmentEnd = toInstant(date, endTime);
-    return new CreateAppointmentBlockData(appointmentStart, appointmentEnd);
-  }
-
-  private Instant toInstant(LocalDate date, LocalTime startTime) {
-    return date.atTime(startTime).atZone(clock.getZone()).toInstant();
   }
 
   public ValidateAppointmentBlockGroupResponse validateDailyAppointmentBlocksForGroup(

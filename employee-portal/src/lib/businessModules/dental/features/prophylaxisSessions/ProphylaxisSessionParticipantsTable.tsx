@@ -10,14 +10,29 @@ import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants"
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Add } from "@mui/icons-material";
+import CancelIcon from "@mui/icons-material/Cancel";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { Button, Divider, Stack, Typography } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { isDefined } from "remeda";
 
 import { ExaminationStatusChip } from "@/lib/businessModules/dental/features/examinations/ExaminationStatusChip";
 import { useAddChildToProphylaxisSessionSidebar } from "@/lib/businessModules/dental/features/prophylaxisSessions/AddChildToProphylaxisSessionSidebar";
+import { ChangeReasonForAbsenceModal } from "@/lib/businessModules/dental/features/prophylaxisSessions/ChangeReasonForAbsenceModal";
+import {
+  useFilteredParticipants,
+  useProphylaxisSessionStore,
+} from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/ProphylaxisSessionStoreProvider";
+import {
+  FluoridationConsentFilter,
+  GenderFilter,
+} from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/participantFilters";
+import {
+  ParticipantSortKey,
+  ParticipantSorting,
+} from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/participantSorting";
+import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
@@ -30,18 +45,6 @@ import {
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 import { ParticipantFilter, ParticipantFilterDef } from "./ParticipantFilter";
-import {
-  useFilteredParticipants,
-  useProphylaxisSessionStore,
-} from "./store/ProphylaxisSessionStoreProvider";
-import {
-  FluoridationConsentFilter,
-  GenderFilter,
-} from "./store/participantFilters";
-import {
-  ParticipantSortKey,
-  ParticipantSorting,
-} from "./store/participantSorting";
 
 const GENDER_FILTERS: ParticipantFilterDef<GenderFilter>[] = [
   { label: "Alle", value: "ANY" },
@@ -78,6 +81,10 @@ export function ProphylaxisSessionParticipantsTable() {
     prophylaxisSessionVersion,
     allParticipants,
   );
+  const [
+    openReasonForAbsenceModalOfParticipant,
+    setOpenReasonForAbsenceModalOfParticipant,
+  ] = useState<ChildExamination>();
 
   function handleRemoveParticipant(childExternalId: string) {
     openConfirmationDialog({
@@ -91,6 +98,14 @@ export function ProphylaxisSessionParticipantsTable() {
       },
       onConfirm: () => Promise.resolve(),
     });
+  }
+
+  function handleAbsentParticipant(examination: ChildExamination) {
+    setOpenReasonForAbsenceModalOfParticipant(examination);
+  }
+
+  function closeAbsenceModal() {
+    setOpenReasonForAbsenceModalOfParticipant(undefined);
   }
 
   function routeToExamination(participantIndex: number) {
@@ -153,9 +168,11 @@ export function ProphylaxisSessionParticipantsTable() {
           right={
             <>
               <AddChildButton />
-              <InternalLinkButton href={routeToExamination(0)}>
-                Reihenuntersuchung starten
-              </InternalLinkButton>
+              {filteredParticipants.length > 0 && (
+                <InternalLinkButton href={routeToExamination(0)}>
+                  Prophylaxe starten
+                </InternalLinkButton>
+              )}
             </>
           }
         />
@@ -163,10 +180,7 @@ export function ProphylaxisSessionParticipantsTable() {
     >
       <DataTable
         data={filteredParticipants}
-        columns={columnDefs(
-          filteredParticipants.length,
-          handleRemoveParticipant,
-        )}
+        columns={columnDefs(handleRemoveParticipant, handleAbsentParticipant)}
         rowNavigation={{
           focusColumnAccessorKey: "lastName",
           route: (row) => routeToExamination(row.index),
@@ -175,6 +189,14 @@ export function ProphylaxisSessionParticipantsTable() {
         enableSortingRemoval={false}
         minWidth={1200}
       />
+      {isDefined(openReasonForAbsenceModalOfParticipant) && (
+        <OverlayBoundary>
+          <ChangeReasonForAbsenceModal
+            onClose={closeAbsenceModal}
+            examination={openReasonForAbsenceModalOfParticipant}
+          />
+        </OverlayBoundary>
+      )}
     </TablePage>
   );
 }
@@ -182,10 +204,10 @@ export function ProphylaxisSessionParticipantsTable() {
 const columnHelper = createColumnHelper<ChildExamination>();
 
 function columnDefs(
-  participantsSize: number,
   onRemoveParticipant: (participantId: string) => void,
+  onAbsentParticipant: (examination: ChildExamination) => void,
 ) {
-  const columnDefs = [
+  return [
     columnHelper.accessor("firstName", {
       header: "Vorname",
       cell: (props) => props.getValue(),
@@ -252,17 +274,22 @@ function columnDefs(
         width: 110,
       },
     }),
-  ];
-
-  if (participantsSize > 1) {
-    return [
-      ...columnDefs,
-      columnHelper.display({
-        header: "Aktionen",
-        id: "actions",
-        cell: (props) => (
+    columnHelper.display({
+      header: "Aktionen",
+      id: "actions",
+      cell: (props) =>
+        childCanBeRemoved(props.row.original) ? (
           <ActionsMenu
             actionItems={[
+              ...(props.row.original.status !== "CLOSED"
+                ? [
+                    {
+                      label: "Nicht anwesend",
+                      startDecorator: <CancelIcon />,
+                      onClick: () => onAbsentParticipant(props.row.original),
+                    },
+                  ]
+                : []),
               {
                 label: "Entfernen",
                 startDecorator: <DeleteIcon />,
@@ -271,17 +298,14 @@ function columnDefs(
               },
             ]}
           />
-        ),
-        meta: {
-          width: 80,
-          cellStyle: "button",
-          textAlign: "right",
-        },
-      }),
-    ];
-  }
-
-  return columnDefs;
+        ) : undefined,
+      meta: {
+        width: 80,
+        cellStyle: "button",
+        textAlign: "right",
+      },
+    }),
+  ];
 }
 
 function resolveTableSorting(
@@ -330,4 +354,8 @@ function AddChildButton() {
       Kind hinzufügen
     </Button>
   );
+}
+
+function childCanBeRemoved(child: ChildExamination) {
+  return child.result === undefined;
 }

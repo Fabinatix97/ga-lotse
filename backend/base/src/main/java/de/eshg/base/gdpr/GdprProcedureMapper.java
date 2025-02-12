@@ -144,7 +144,6 @@ public class GdprProcedureMapper {
   public static GdprProcedureStatusDto mapToApi(GdprProcedureStatus status) {
     return switch (status) {
       case DRAFT -> GdprProcedureStatusDto.DRAFT;
-      case OPEN -> GdprProcedureStatusDto.OPEN;
       case CLOSED -> GdprProcedureStatusDto.CLOSED;
       case ABORTED -> GdprProcedureStatusDto.ABORTED;
       case IN_PROGRESS -> GdprProcedureStatusDto.IN_PROGRESS;
@@ -260,7 +259,7 @@ public class GdprProcedureMapper {
     return new GetCitizenSelfUsersGdprProceduresResponse(responses);
   }
 
-  private static CitizenUsersGdprProcedureDto mapProcedureToCitizenApi(GdprProcedure procedure) {
+  static CitizenUsersGdprProcedureDto mapProcedureToCitizenApi(GdprProcedure procedure) {
     return new CitizenUsersGdprProcedureDto(
         procedure.getExternalId(),
         GdprProcedureMapper.mapToApi(procedure.getType()),

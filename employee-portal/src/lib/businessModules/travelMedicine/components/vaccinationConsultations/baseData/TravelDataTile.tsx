@@ -17,9 +17,9 @@ import {
   TRAVEL_TIME_UNITS,
   TRAVEL_TYPES,
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/translations";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
+import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 
 interface TravelDataTileProps {
   initialValues: CreateProcedureValues;
@@ -30,74 +30,67 @@ export function TravelDataTile(procedure: Readonly<TravelDataTileProps>) {
   const travelDataSidebar = useTravelDataSidebar();
 
   return (
-    <>
-      <DetailsSection
-        data-testid="travelData"
-        title="Reisedaten"
-        onEdit={() => travelDataSidebar.open(procedure)}
-        canEdit={!procedure.isProcedureClosed}
-      >
-        <Stack direction={{ xxs: "column", md: "row" }} gap={3}>
-          <Stack sx={{ flexGrow: 1, maxWidth: "calc(100%/2)" }} gap={1}>
-            <DetailsRow>
-              <DetailsCell
-                name="travelType"
-                label="Reiseart"
+    <DetailsSection
+      data-testid="travelData"
+      title="Reisedaten"
+      onEdit={() => travelDataSidebar.open(procedure)}
+      canEdit={!procedure.isProcedureClosed}
+    >
+      <Stack direction={{ xxs: "column", md: "row" }} gap={3}>
+        <Stack sx={{ flexGrow: 1, maxWidth: "calc(100%/2)" }} gap={1}>
+          <DetailsRow>
+            <DetailsItem
+              label="Reiseart"
+              value={
+                procedure.initialValues.travelType &&
+                TRAVEL_TYPES[procedure.initialValues.travelType]
+              }
+            />
+            {procedure.initialValues.travelType !== ApiTravelType.NoTravel && (
+              <DetailsItem
+                label="Reiseziele"
                 value={
-                  procedure.initialValues.travelType &&
-                  TRAVEL_TYPES[procedure.initialValues.travelType]
+                  isEmpty(procedure.initialValues.travelDestinations)
+                    ? "-"
+                    : procedure.initialValues.travelDestinations
+                        .map((cc) => translateCountry(cc))
+                        .join(", ")
                 }
               />
-              {procedure.initialValues.travelType !==
-                ApiTravelType.NoTravel && (
-                <DetailsCell
-                  name="travelDestinations"
-                  label="Reiseziele"
-                  value={
-                    isEmpty(procedure.initialValues.travelDestinations)
-                      ? "-"
-                      : procedure.initialValues.travelDestinations
-                          .map((cc) => translateCountry(cc))
-                          .join(", ")
-                  }
-                />
-              )}
-            </DetailsRow>
-          </Stack>
-
-          <Stack sx={{ flexGrow: 1, maxWidth: "calc(100%/2)" }} gap={1}>
-            {procedure.initialValues.travelType !== ApiTravelType.NoTravel ? (
-              <DetailsRow>
-                <DetailsCell
-                  name="travelStartDate"
-                  label="Reisebeginn"
-                  value={
-                    procedure.initialValues.travelStartDate
-                      ? formatDate(
-                          new Date(procedure.initialValues.travelStartDate),
-                        )
-                      : "-"
-                  }
-                />
-                <DetailsCell
-                  name="travelTimeAmount"
-                  label="Reisedauer"
-                  value={
-                    procedure.initialValues.travelTimeAmount
-                      ? procedure.initialValues.travelTimeAmount +
-                        " " +
-                        (procedure.initialValues.travelTimeUnit &&
-                          TRAVEL_TIME_UNITS[
-                            procedure.initialValues.travelTimeUnit
-                          ])
-                      : "-"
-                  }
-                />
-              </DetailsRow>
-            ) : null}
-          </Stack>
+            )}
+          </DetailsRow>
         </Stack>
-      </DetailsSection>
-    </>
+
+        <Stack sx={{ flexGrow: 1, maxWidth: "calc(100%/2)" }} gap={1}>
+          {procedure.initialValues.travelType !== ApiTravelType.NoTravel ? (
+            <DetailsRow>
+              <DetailsItem
+                label="Reisebeginn"
+                value={
+                  procedure.initialValues.travelStartDate
+                    ? formatDate(
+                        new Date(procedure.initialValues.travelStartDate),
+                      )
+                    : "-"
+                }
+              />
+              <DetailsItem
+                label="Reisedauer"
+                value={
+                  procedure.initialValues.travelTimeAmount
+                    ? procedure.initialValues.travelTimeAmount +
+                      " " +
+                      (procedure.initialValues.travelTimeUnit &&
+                        TRAVEL_TIME_UNITS[
+                          procedure.initialValues.travelTimeUnit
+                        ])
+                    : "-"
+                }
+              />
+            </DetailsRow>
+          ) : null}
+        </Stack>
+      </Stack>
+    </DetailsSection>
   );
 }

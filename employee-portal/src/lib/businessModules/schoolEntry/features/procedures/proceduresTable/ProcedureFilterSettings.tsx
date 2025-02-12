@@ -192,6 +192,7 @@ export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
             onChange={(schoolId) =>
               props.setFilterFormValue("schoolIdFilter", schoolId)
             }
+            placeholder="Schule suchen"
           />
         </FormControl>
         <FormControl>

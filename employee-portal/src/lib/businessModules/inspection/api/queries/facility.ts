@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  FacilityApi,
-  GetPendingFacilitiesRequest,
-} from "@eshg/employee-portal-api/inspection";
+import { FacilityApi, GetPendingFacilitiesRequest } from "@eshg/inspection-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 

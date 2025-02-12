@@ -12,7 +12,7 @@ import {
   ServicesRequest,
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/sidebarForms/AddServicePlanForm";
 import { createOtherServicesTemplateOptions } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/helpers";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { LOCALE_OPTION, formatCurrency } from "@/lib/shared/helpers/numbers";
 
 interface OtherServicesFieldsProps {
@@ -82,8 +82,7 @@ export function OtherServicesFields({
           await getFeeForTemplate(index, templateId, setFieldValue);
         }}
       />
-      <DetailsCell
-        name={`services.${index}.fee`}
+      <DetailsItem
         label="Preis"
         value={formatCurrency(val.fee, {
           localOption: LOCALE_OPTION.manual,

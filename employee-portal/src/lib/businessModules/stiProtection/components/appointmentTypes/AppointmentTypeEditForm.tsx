@@ -5,9 +5,9 @@
 
 "use client";
 
-import { ApiAppointmentType } from "@eshg/employee-portal-api/stiProtection";
 import { BaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
+import { ApiAppointmentType } from "@eshg/sti-protection-api";
 import { FormLabel, Input, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 

@@ -6,7 +6,7 @@
 import {
   ApiPacklistToJSON,
   ApiUpdatePacklistElementRequestFromJSON,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 
 import { API_INSPECTION_PACKLISTS_PACKLIST_PATH_PATTERN } from "@/serviceWorker/sw/config";
 import { updatePacklistElement } from "@/serviceWorker/sw/inspection/service/updatePacklistElement";

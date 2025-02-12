@@ -16,4 +16,8 @@ public record UpdatePersonInBulkRequest(
             example = "be9831d4-dc25-48d8-9bfe-4c0b54bfb2c1")
         @NotNull
         UUID fileStateId,
-    @NotNull @Valid PersonDetailsDto updatedPerson) {}
+    @NotNull @Valid UpdatePersonRequest updatedPerson) {
+  public UpdatePersonInBulkRequest(UUID fileStateId, PersonDetails personDetails) {
+    this(fileStateId, new UpdatePersonRequest(personDetails));
+  }
+}

@@ -6,14 +6,14 @@
 "use client";
 
 import {
-  ApiGdprValidationTaskSortKey,
-  ApiSortDirection,
-  GetAllGdprValidationTasksRequest,
-} from "@eshg/employee-portal-api/businessProcedures";
-import {
   parseOptionalEnum,
   parseReadonlyPageParams,
 } from "@eshg/lib-portal/helpers/searchParams";
+import {
+  ApiGdprValidationTaskSortKey,
+  ApiSortDirection,
+  GetAllGdprValidationTasksRequest,
+} from "@eshg/lib-procedures-api";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 
 import { ValidationTasksTable } from "@/lib/baseModule/components/gdpr/validationTasks/ValidationTasksTable";

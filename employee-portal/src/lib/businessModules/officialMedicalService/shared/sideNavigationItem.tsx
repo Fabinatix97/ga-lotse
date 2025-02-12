@@ -29,6 +29,11 @@ const NAVIGATION_ITEMS: SideNavigationItem[] = [
         href: routes.appointmentBlockGroups.index,
         accessCheck: hasUserRole(ApiUserRole.OfficialMedicalServiceAdmin),
       },
+      {
+        name: "Wartezimmer",
+        href: routes.waitingRoom,
+        accessCheck: hasUserRole(ApiUserRole.OfficialMedicalServiceAdmin),
+      },
     ].filter(isPlainObject),
   },
 ];

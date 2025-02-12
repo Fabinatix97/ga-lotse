@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiFacilityForDuplicateReview } from "@eshg/employee-portal-api/inspection";
+import { ApiFacilityForDuplicateReview } from "@eshg/inspection-api";
 import { Radio, Sheet, Stack, Typography } from "@mui/joy";
 
 import { DuplicateTileLine } from "@/lib/businessModules/inspection/components/facility/pending/DuplicateTileLine";

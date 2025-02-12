@@ -6,7 +6,7 @@
 import {
   ApiGetInspectionFeatureTogglesResponse,
   ApiInspectionFeature,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import {
   FeatureToggleQueryOptions,
   selectDisabledOldFeature,

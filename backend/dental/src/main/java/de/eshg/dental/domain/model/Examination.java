@@ -84,6 +84,10 @@ public class Examination extends BaseEntityWithExternalId {
     this.result = result;
   }
 
+  public boolean hasResult() {
+    return result != null;
+  }
+
   public Instant getDateAndTime() {
     return getProphylaxisSession().getDateAndTime();
   }

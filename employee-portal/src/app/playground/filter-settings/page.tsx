@@ -89,6 +89,7 @@ const filterDefinitions: FilterDefinition[] = [
     name: "Date Comparison",
   },
   { type: "Year", key: "year", name: "Year" },
+  { type: "Text", key: "text", name: "Text" },
 ];
 
 const initialValues: FilterValue[] = [

@@ -197,6 +197,8 @@ public class AnalysisMapper {
         mapToBinningMode(histogramChartConfigurationDto.binningMode()));
     histogramChartConfiguration.setNumberOfBins(histogramChartConfigurationDto.numberOfBins());
     histogramChartConfiguration.addBins(histogramBins);
+    histogramChartConfiguration.setMinBin(histogramChartConfigurationDto.minBin());
+    histogramChartConfiguration.setMaxBin(histogramChartConfigurationDto.maxBin());
     return histogramChartConfiguration;
   }
 
@@ -395,7 +397,9 @@ public class AnalysisMapper {
         mapToScalingDto(histogramChartConfiguration.getScaling()),
         mapToGroupingDto(histogramChartConfiguration.getGrouping()),
         mapToBinningModeDto(histogramChartConfiguration.getBinningMode()),
-        histogramChartConfiguration.getNumberOfBins());
+        histogramChartConfiguration.getNumberOfBins(),
+        histogramChartConfiguration.getMinBin(),
+        histogramChartConfiguration.getMaxBin());
   }
 
   private static ChartConfigurationDto mapToChoroplethMapConfigurationDto(

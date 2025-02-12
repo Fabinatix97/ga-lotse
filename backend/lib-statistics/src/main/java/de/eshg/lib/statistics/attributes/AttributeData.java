@@ -5,6 +5,7 @@
 
 package de.eshg.lib.statistics.attributes;
 
+import de.eshg.lib.statistics.api.DataPrivacyCategory;
 import de.eshg.lib.statistics.api.ValueOptionInternal;
 import java.util.List;
 
@@ -25,6 +26,11 @@ public abstract sealed class AttributeData
   private final List<ValueOptionInternal> valueOptions;
   private final String category;
   private final boolean mandatory;
+  private final DataPrivacyCategory dataPrivacyCategory;
+
+  protected AttributeData(String name, String code, String category, boolean mandatory) {
+    this(name, code, null, null, category, mandatory);
+  }
 
   protected AttributeData(
       String name,
@@ -33,7 +39,17 @@ public abstract sealed class AttributeData
       ValueOptionInternal valueOption,
       String category,
       boolean mandatory) {
-    this(name, code, unit, toList(valueOption), category, mandatory);
+    this(name, code, unit, toList(valueOption), category, mandatory, null);
+  }
+
+  protected AttributeData(
+      String name,
+      String code,
+      ValueOptionInternal valueOption,
+      String category,
+      boolean mandatory,
+      DataPrivacyCategory dataPrivacyCategory) {
+    this(name, code, null, toList(valueOption), category, mandatory, dataPrivacyCategory);
   }
 
   protected AttributeData(
@@ -42,11 +58,7 @@ public abstract sealed class AttributeData
       ValueOptionInternal valueOption,
       String category,
       boolean mandatory) {
-    this(name, code, null, toList(valueOption), category, mandatory);
-  }
-
-  protected AttributeData(String name, String code, String category, boolean mandatory) {
-    this(name, code, null, (ValueOptionInternal) null, category, mandatory);
+    this(name, code, null, toList(valueOption), category, mandatory, null);
   }
 
   protected AttributeData(
@@ -55,13 +67,15 @@ public abstract sealed class AttributeData
       String unit,
       List<ValueOptionInternal> valueOptions,
       String category,
-      boolean mandatory) {
+      boolean mandatory,
+      DataPrivacyCategory dataPrivacyCategory) {
     this.name = name;
     this.code = code;
     this.unit = unit;
     this.valueOptions = valueOptions;
     this.category = category;
     this.mandatory = mandatory;
+    this.dataPrivacyCategory = dataPrivacyCategory;
   }
 
   private static List<ValueOptionInternal> toList(ValueOptionInternal valueOption) {
@@ -93,5 +107,9 @@ public abstract sealed class AttributeData
 
   public boolean isMandatory() {
     return mandatory;
+  }
+
+  public DataPrivacyCategory getDataPrivacyCategory() {
+    return dataPrivacyCategory;
   }
 }

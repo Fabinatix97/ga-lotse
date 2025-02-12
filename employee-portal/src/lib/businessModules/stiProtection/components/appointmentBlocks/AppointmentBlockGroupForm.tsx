@@ -3,13 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import {
   ApiAppointmentType,
   ApiAppointmentTypeConfig,
   ApiUser,
-} from "@eshg/employee-portal-api/stiProtection";
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+} from "@eshg/sti-protection-api";
 import { Divider, Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 import { isDefined, isEmpty, mapToObj } from "remeda";
@@ -20,12 +19,12 @@ import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { AppointmentBlockGroupValuesWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
 import { AppointmentBlockGroupFields } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockGroupFields";
 import { AppointmentCountWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
+import { StaffUser } from "@/lib/shared/components/appointmentBlocks/AppointmentStaffField";
 import { AppointmentStaffSelection } from "@/lib/shared/components/appointmentBlocks/AppointmentStaffSelection";
 import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { FormSheet } from "@/lib/shared/components/form/FormSheet";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
 import { validateFieldArray } from "@/lib/shared/helpers/validators";
 
 import { mapFormValues } from "./CreateAppointmentBlockGroupForm";
@@ -87,10 +86,11 @@ function validateForm(
   return errors;
 }
 
-function userToOption(user: ApiUser): SelectOption {
+function userToOption(user: ApiUser): StaffUser {
   return {
-    value: user.userId,
-    label: fullName(user),
+    userId: user.userId,
+    firstName: user.firstName,
+    lastName: user.lastName,
   };
 }
 

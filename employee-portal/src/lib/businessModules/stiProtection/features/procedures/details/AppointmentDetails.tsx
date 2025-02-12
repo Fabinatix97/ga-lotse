@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Row } from "@eshg/lib-portal/components/Row";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   ApiAppointmentHistoryEntry,
   ApiStiProtectionProcedure,
-} from "@eshg/employee-portal-api/stiProtection";
-import { Row } from "@eshg/lib-portal/components/Row";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+} from "@eshg/sti-protection-api";
 import { EditCalendar, EventBusy } from "@mui/icons-material";
 import { Button, Chip, Sheet, Stack } from "@mui/joy";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";

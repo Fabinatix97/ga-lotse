@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import { formatFileSize } from "@eshg/lib-portal/helpers/file";
 import {
   ApiArchivingRelevance,
   ApiGetRelevantArchivableProceduresSortBy,
-} from "@eshg/employee-portal-api/businessProcedures";
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
-import { formatFileSize } from "@eshg/lib-portal/helpers/file";
+} from "@eshg/lib-procedures-api";
 import { DeleteOutlined, DownloadOutlined } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 

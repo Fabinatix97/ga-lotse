@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import {
   ApiManualProgressEntryType,
   ApiProgressEntry,
   ApiSystemProgressEntry,
   ApiTriggerType,
   ApiUser,
-} from "@eshg/employee-portal-api/businessProcedures";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+} from "@eshg/lib-procedures-api";
 import { isDefined, isEmpty } from "remeda";
 
 import { manualProgressEntryFileTypes } from "@/lib/shared/components/procedures/progress-entries/constants";

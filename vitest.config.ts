@@ -11,8 +11,15 @@ import { VITEST_COVERAGE_EXCLUDES, VITEST_OUT_DIR } from "./config/vitest.base";
 // https://vitejs.dev/config/
 export default defineConfig({
   test: {
+    workspace: [
+      "employee-portal",
+      "citizen-portal",
+      "admin-portal",
+      "lib-portal",
+      "packages/*",
+    ],
     environment: "node",
-    reporters: ["basic", "junit"],
+    reporters: ["default", "junit"],
     outputFile: {
       junit: `${VITEST_OUT_DIR}/junit.xml`,
     },
@@ -23,9 +30,11 @@ export default defineConfig({
       reporter: ["text", "html", "cobertura"],
       include: ["**/src/**/*"],
       exclude: [
-        "*-api",
+        "packages/*-api",
         "e2e",
         "performance-test",
+        "**/build",
+        "**/.next",
         ...VITEST_COVERAGE_EXCLUDES,
       ],
     },

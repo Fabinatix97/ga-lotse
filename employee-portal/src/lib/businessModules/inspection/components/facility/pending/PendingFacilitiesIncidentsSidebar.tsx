@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiInspectionIncident } from "@eshg/employee-portal-api/inspection";
+import { ApiInspectionIncident } from "@eshg/inspection-api";
 import { Sheet, Stack, Typography } from "@mui/joy";
 
 import { useGetIncidents } from "@/lib/businessModules/inspection/api/queries/incidents";

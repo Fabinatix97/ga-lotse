@@ -8,7 +8,7 @@ import {
   ApiGetPacklistsResponseToJSON,
   ApiPacklist,
   ApiUpdatePacklistElementRequest,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 
 import { getFromApiCache, writeToApiCache } from "@/serviceWorker/sw/cache";
 

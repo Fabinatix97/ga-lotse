@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Schema(name = SCHEMA_NAME)
 public record HistogramChartConfigurationDto(
@@ -21,7 +22,9 @@ public record HistogramChartConfigurationDto(
     ScalingDto scaling,
     GroupingDto grouping,
     @NotNull BinningModeDto binningMode,
-    @Min(2) @Max(50) Integer numberOfBins)
+    @Min(2) @Max(50) Integer numberOfBins,
+    BigDecimal minBin,
+    BigDecimal maxBin)
     implements AddChartConfigurationDto, ChartConfigurationDto {
   public static final String SCHEMA_NAME = "HistogramChartConfiguration";
 

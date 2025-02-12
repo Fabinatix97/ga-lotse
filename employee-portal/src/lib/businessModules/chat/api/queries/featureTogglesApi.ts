@@ -6,7 +6,7 @@
 import {
   ApiChatFeature,
   ApiGetFeatureTogglesResponse,
-} from "@eshg/employee-portal-api/chatManagement";
+} from "@eshg/chat-management-api";
 import {
   FeatureToggleQueryOptions,
   selectDisabledOldFeature,

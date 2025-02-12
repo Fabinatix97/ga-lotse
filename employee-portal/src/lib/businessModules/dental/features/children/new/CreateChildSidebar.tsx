@@ -73,6 +73,7 @@ function DentalSearchFormComponent(
         label="Einrichtung"
         categories={SCHOOL_OR_DAYCARE}
         required="Bitte eine Schule/Kita angeben."
+        placeholder="Schule/Kita suchen"
         getOptionLabel={getInstitutionOptionLabel}
       />
       <SearchGroupField

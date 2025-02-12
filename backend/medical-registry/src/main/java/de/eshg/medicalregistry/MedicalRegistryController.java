@@ -347,7 +347,7 @@ public class MedicalRegistryController {
   }
 
   @GetMapping("/{procedureId}")
-  @Transactional(readOnly = true)
+  @Transactional
   @Operation(summary = "Get medical registry procedure by id.")
   public GetProcedureResponse getProcedure(@PathVariable("procedureId") UUID procedureId) {
     MedicalRegistryProcedure medicalRegistryProcedure =

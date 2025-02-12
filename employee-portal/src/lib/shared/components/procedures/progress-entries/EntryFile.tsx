@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiInboxProgressEntryFileReference } from "@eshg/employee-portal-api/businessProcedures";
+import { ApiInboxProgressEntryFileReference } from "@eshg/lib-procedures-api";
 import { Box } from "@mui/joy";
 import { isDefined } from "remeda";
 

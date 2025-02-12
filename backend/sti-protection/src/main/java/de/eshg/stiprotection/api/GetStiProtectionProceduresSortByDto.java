@@ -10,9 +10,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "GetStiProtectionProceduresSortBy")
 public enum GetStiProtectionProceduresSortByDto {
   CREATED_AT,
-  STATUS,
-  CONCERN,
-  YEAR_OF_BIRTH,
-  GENDER,
-  LAB_STATUS
+  SAMPLE_BARCODE,
+  APPOINTMENT
 }

@@ -27,6 +27,7 @@ export interface TextareaFieldProps extends ValidationRules<string> {
   "data-testid"?: string;
   "aria-label"?: string;
   slotProps?: TextareaProps["slotProps"];
+  className?: string;
 }
 
 export function TextareaField(props: TextareaFieldProps) {
@@ -53,6 +54,7 @@ export function TextareaField(props: TextareaFieldProps) {
       error={field.error}
       sx={props.sx}
       disabled={disabled}
+      className={props.className}
     >
       <Textarea
         aria-labelledby={props["label-id"]}

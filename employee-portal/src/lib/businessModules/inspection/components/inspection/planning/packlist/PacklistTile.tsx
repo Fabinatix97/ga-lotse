@@ -5,10 +5,7 @@
 
 "use client";
 
-import {
-  ApiInspection,
-  ApiPacklist,
-} from "@eshg/employee-portal-api/inspection";
+import { ApiInspection, ApiPacklist } from "@eshg/inspection-api";
 import { Stack, Textarea, Typography } from "@mui/joy";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";

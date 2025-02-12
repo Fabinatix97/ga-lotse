@@ -5,10 +5,10 @@
 
 "use client";
 
-import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
-import { GetAllEmployeeProceduresRequest } from "@eshg/employee-portal-api/officialMedicalService";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { useToggleableState } from "@eshg/lib-portal/hooks/useToggleableState";
+import { ApiBusinessModule } from "@eshg/lib-procedures-api";
+import { GetAllEmployeeProceduresRequest } from "@eshg/official-medical-service-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { ColumnSort } from "@tanstack/react-table";
 import { ReactNode, useMemo, useState } from "react";

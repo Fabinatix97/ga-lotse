@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiPacklist } from "@eshg/employee-portal-api/inspection";
+import { ApiPacklist } from "@eshg/inspection-api";
 import { DeleteOutlined } from "@mui/icons-material";
 import {
   Accordion,

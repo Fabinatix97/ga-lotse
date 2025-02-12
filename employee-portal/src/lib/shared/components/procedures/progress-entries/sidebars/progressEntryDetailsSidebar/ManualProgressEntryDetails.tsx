@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import {
   ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner,
   ApiManualProgressEntry,
   ApiUser,
-} from "@eshg/employee-portal-api/businessProcedures";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
+} from "@eshg/lib-procedures-api";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { Button, Chip } from "@mui/joy";
 import { Formik } from "formik";

@@ -12,6 +12,7 @@ import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import java.time.Duration;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
@@ -26,7 +27,8 @@ public class AppointmentTypeConfig extends GloballyUniqueEntityBase {
   @Column(nullable = false, unique = true)
   private AppointmentType appointmentType;
 
-  private int standardDurationInMinutes;
+  @Column(nullable = false)
+  private Duration standardDuration;
 
   public AppointmentType getAppointmentType() {
     return appointmentType;
@@ -36,11 +38,11 @@ public class AppointmentTypeConfig extends GloballyUniqueEntityBase {
     this.appointmentType = appointmentType;
   }
 
-  public int getStandardDurationInMinutes() {
-    return standardDurationInMinutes;
+  public Duration getStandardDuration() {
+    return standardDuration;
   }
 
-  public void setStandardDurationInMinutes(int standardDuration) {
-    this.standardDurationInMinutes = standardDuration;
+  public void setStandardDuration(Duration standardDuration) {
+    this.standardDuration = standardDuration;
   }
 }

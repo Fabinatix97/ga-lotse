@@ -10,7 +10,7 @@ import { Formik } from "formik";
 import { Ref } from "react";
 
 import { AppliedByFields } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/sidebarForms/AppliedByFields";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import {
   SidebarForm,
@@ -53,13 +53,11 @@ export function ServiceAppliedForm(props: Readonly<ServiceAppliedFormProps>) {
             <Stack direction="column" gap={2} data-testid="serviceApplied">
               <Sheet>
                 <Stack direction="column" gap={2}>
-                  <DetailsCell
-                    name="vaccinationInfo"
+                  <DetailsItem
                     label="Impfung"
                     value={props.initialValues.vaccinationInfo}
                   />
-                  <DetailsCell
-                    name="vaccineName"
+                  <DetailsItem
                     label="Impfstoff"
                     value={props.initialValues.vaccineName}
                   />

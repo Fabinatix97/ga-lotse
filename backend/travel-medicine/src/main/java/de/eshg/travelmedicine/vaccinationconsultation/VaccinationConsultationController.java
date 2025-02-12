@@ -153,7 +153,7 @@ public class VaccinationConsultationController {
 
   @GetMapping(path = "/{procedureId}" + DETAILS_URL)
   @Operation(summary = "Get vaccination consultation details")
-  @Transactional(readOnly = true)
+  @Transactional
   public GetVaccinationConsultationDetailsResponse getVaccinationConsultationDetails(
       @PathVariable("procedureId") UUID procedureId) {
     GetVaccinationConsultationDetailsResponse vaccinationConsultationDetails =

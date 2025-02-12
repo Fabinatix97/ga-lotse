@@ -4,7 +4,6 @@
  */
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
-import { ApiMedicalRegistryEntrySearchResult } from "@eshg/employee-portal-api/medicalRegistry";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import {
@@ -13,6 +12,7 @@ import {
 } from "@eshg/lib-portal/formatters/dateTime";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { ApiMedicalRegistryEntrySearchResult } from "@eshg/medical-registry-api";
 import { Stack, Typography } from "@mui/joy";
 
 import {

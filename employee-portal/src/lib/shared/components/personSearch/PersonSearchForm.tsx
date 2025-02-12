@@ -7,6 +7,7 @@ import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
+import { validateDateOfBirth } from "@eshg/lib-portal/helpers/validators";
 import {
   Close,
   InsertLinkOutlined,
@@ -100,6 +101,7 @@ export function PersonSearchForm(props: PersonSearchFormProps) {
             name="dateOfBirth"
             label="Geburtsdatum"
             required="Bitte Geburtsdatum eingeben"
+            validate={validateDateOfBirth}
           />
 
           <Button

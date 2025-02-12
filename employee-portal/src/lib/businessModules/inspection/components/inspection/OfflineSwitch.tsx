@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiInspectionPhase } from "@eshg/employee-portal-api/inspection";
+import { ApiInspectionPhase } from "@eshg/inspection-api";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { getErrorDescription } from "@eshg/lib-portal/errorHandling/errorMappers";
 import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";

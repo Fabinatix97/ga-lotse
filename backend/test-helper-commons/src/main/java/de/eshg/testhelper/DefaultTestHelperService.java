@@ -111,10 +111,14 @@ public class DefaultTestHelperService implements TestHelperWithDatabaseService {
   public void resetResettableProperties() {
     environmentConfig.assertIsNotProduction();
     for (ResettableProperties resettableProperties : resettableProperties) {
-      String resettablePropertiesSnapshot =
-          initialResettablePropertiesSnapshots.get(resettableProperties);
-      SnapshotUtil.restoreSnapshot(resettablePropertiesSnapshot, resettableProperties);
+      resetProperties(resettableProperties);
     }
+  }
+
+  public void resetProperties(ResettableProperties resettableProperties) {
+    String resettablePropertiesSnapshot =
+        initialResettablePropertiesSnapshots.get(resettableProperties);
+    SnapshotUtil.restoreSnapshot(resettablePropertiesSnapshot, resettableProperties);
   }
 
   protected String[] getTablesToExclude() {

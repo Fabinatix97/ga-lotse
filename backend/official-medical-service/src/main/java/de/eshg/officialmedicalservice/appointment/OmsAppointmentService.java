@@ -15,6 +15,7 @@ import de.eshg.officialmedicalservice.appointment.persistence.OmsAppointmentRepo
 import de.eshg.officialmedicalservice.appointment.persistence.entity.AppointmentState;
 import de.eshg.officialmedicalservice.appointment.persistence.entity.BookingState;
 import de.eshg.officialmedicalservice.appointment.persistence.entity.OmsAppointment;
+import de.eshg.officialmedicalservice.procedure.ProgressEntryService;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedureRepository;
 import de.eshg.rest.service.error.BadRequestException;
@@ -35,16 +36,19 @@ public class OmsAppointmentService {
 
   private static final List<AppointmentTypeDto> supportedAppointmentTypes =
       List.of(AppointmentTypeDto.OFFICIAL_MEDICAL_SERVICE);
+  private final ProgressEntryService progressEntryService;
 
   public OmsAppointmentService(
       OmsProcedureRepository omsProcedureRepository,
       OmsAppointmentRepository omsAppointmentRepository,
       OmsAppointmentMapper omsAppointmentMapper,
-      AppointmentBlockSlotUtil appointmentBlockSlotUtil) {
+      AppointmentBlockSlotUtil appointmentBlockSlotUtil,
+      ProgressEntryService progressEntryService) {
     this.omsProcedureRepository = omsProcedureRepository;
     this.omsAppointmentRepository = omsAppointmentRepository;
     this.omsAppointmentMapper = omsAppointmentMapper;
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
+    this.progressEntryService = progressEntryService;
   }
 
   @Transactional
@@ -74,6 +78,12 @@ public class OmsAppointmentService {
 
     omsAppointmentRepository.save(appointment);
 
+    if (bookingInfo != null) {
+      progressEntryService.createProgressEntryForAddingAppointmentWithBooking(procedure, request);
+    } else {
+      progressEntryService.createProgressEntryForAddingSelfBookingAppointment(procedure);
+    }
+
     return appointment.getExternalId();
   }
 
@@ -88,6 +98,14 @@ public class OmsAppointmentService {
     }
     if (BookingState.WITHDRAWN == appointment.getBookingState()) {
       throw new BadRequestException("Appointment is withdrawn");
+    }
+
+    if (BookingState.BOOKED == appointment.getBookingState()) {
+      progressEntryService.createProgressEntryForRebookedAppointment(
+          appointment.getProcedure(), appointment, request);
+    } else {
+      progressEntryService.createProgressEntryForBookingAppointment(
+          appointment.getProcedure(), request);
     }
 
     processBooking(request, appointment);
@@ -111,6 +129,8 @@ public class OmsAppointmentService {
     appointment.setBookingType(null);
     appointment.setDuration(null);
     appointment.setAppointment(null); // to unlock appointment block
+    progressEntryService.createProgressEntryForCancelingAppointment(
+        appointment.getProcedure(), appointment);
   }
 
   @Transactional
@@ -126,6 +146,12 @@ public class OmsAppointmentService {
 
     if (BookingState.BOOKABLE == appointment.getBookingState()) {
       appointment.setBookingState(BookingState.WITHDRAWN);
+
+      progressEntryService.createProgressEntryForWithdrawingAppointmentOption(
+          appointment.getProcedure());
+    } else {
+      progressEntryService.createProgressEntryForClosingAppointment(
+          appointment.getProcedure(), appointment);
     }
 
     appointment.setAppointmentState(AppointmentState.CLOSED);

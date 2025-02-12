@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import {
   ApiCreateInboxProcedureRequest,
   ApiInboxProcedure,
-} from "@eshg/employee-portal-api/businessProcedures";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+} from "@eshg/lib-procedures-api";
 
 export function useCreateInboxProcedureTemplate(
   useInboxProcedureApi: () => {

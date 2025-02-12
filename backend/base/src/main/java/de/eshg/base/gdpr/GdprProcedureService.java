@@ -278,8 +278,9 @@ public class GdprProcedureService {
   public GdprProcedure addCentralFileIdsToGdprProcedure(
       List<CentralFileIdWrapper> centralFileIds, UUID gdprProcedureId, long version) {
     GdprProcedure procedure = getGdprProcedureForUpdate(gdprProcedureId);
-    ValidationUtil.validateVersion(version, procedure);
 
+    ValidationUtil.validateVersion(version, procedure);
+    throwIfProcedureIsNoDraft(procedure);
     throwIfCentralFileIdAlreadyExists(centralFileIds, procedure);
 
     entityManager.lock(procedure, LockModeType.PESSIMISTIC_FORCE_INCREMENT);
@@ -315,6 +316,13 @@ public class GdprProcedureService {
 
     writeAuditLog("StammdatenIDs hinzufügen", mapAuditLog(procedure));
     return procedure;
+  }
+
+  private static void throwIfProcedureIsNoDraft(GdprProcedure procedure) {
+    if (procedure.getStatus() != GdprProcedureStatus.DRAFT) {
+      throw new BadRequestException(
+          "Cannot add centralFileIds: Gdpr Procedure is not in Draft Status");
+    }
   }
 
   private static void throwIfCentralFileIdAlreadyExists(

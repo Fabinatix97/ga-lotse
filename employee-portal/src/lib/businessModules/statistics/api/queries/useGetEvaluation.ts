@@ -5,6 +5,7 @@
 
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { EvaluationApi, GetEvaluationRequest } from "@eshg/statistics-api";
+import { queryOptions } from "@tanstack/react-query";
 
 import { mapEvaluationToTableView } from "@/lib/businessModules/statistics/api/models/evaluationDetailsTableView";
 
@@ -14,10 +15,10 @@ export function createQueryGetEvaluation(
   evaluationApi: EvaluationApi,
   evaluationRequest: GetEvaluationRequest,
 ) {
-  return {
+  return queryOptions({
     queryKey: evaluationApiQueryKey(["getEvaluation", evaluationRequest]),
     queryFn: () =>
       evaluationApi.getEvaluationRaw(evaluationRequest).then(unwrapRawResponse),
     select: mapEvaluationToTableView,
-  };
+  });
 }

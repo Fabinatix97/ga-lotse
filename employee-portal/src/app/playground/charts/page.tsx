@@ -9,8 +9,6 @@ import { Option, Select, Sheet, Stack, Switch, Typography } from "@mui/joy";
 import { ReactNode, useState } from "react";
 
 import {
-  AnalysisLineDiagramConfiguration,
-  AnalysisScatterDiagramConfiguration,
   DiagramAxisRange,
   DiagramCharacteristicParameter,
   DiagramColorScheme,
@@ -19,7 +17,6 @@ import {
   DiagramScaling,
   DiagramType,
 } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
-import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 import { AnalysisDiagramBox } from "@/lib/businessModules/statistics/components/shared/AnalysisAccordion/AnalysisDiagramBox";
 import { BarChart } from "@/lib/businessModules/statistics/components/shared/charts/BarChart";
 import { ChoroplethMap } from "@/lib/businessModules/statistics/components/shared/charts/ChoroplethMap";
@@ -634,13 +631,13 @@ export default function PlaygroundChartsPage() {
       type: "IntegerAttribute",
       name: "Größe",
       unit: "m",
-    } as FlatAttribute,
+    },
     yAttribute: {
       type: "IntegerAttribute",
       name: "Gewicht",
       unit: "kg",
-    } as FlatAttribute,
-  } as AnalysisLineDiagramConfiguration;
+    },
+  };
 
   const lineChartGroupedWithLongValues = [
     {
@@ -676,13 +673,13 @@ export default function PlaygroundChartsPage() {
       type: "IntegerAttribute",
       name: "Die ganz besondere Einheit der gemessen Substanz gerundet nach Gefühl und Flexibilität",
       unit: "Einheitskürzel",
-    } as FlatAttribute,
+    },
     yAttribute: {
       type: "IntegerAttribute",
       name: "Die ganz besondere Einheit der gemessen Substanz gerundet nach Gefühl und Flexibilität",
       unit: "Einheitskürzel",
-    } as FlatAttribute,
-  } as AnalysisLineDiagramConfiguration;
+    },
+  };
 
   const scatterChartSimple = [
     {
@@ -745,13 +742,13 @@ export default function PlaygroundChartsPage() {
       type: "IntegerAttribute",
       name: "Größe",
       unit: "m",
-    } as FlatAttribute,
+    },
     yAttribute: {
       type: "IntegerAttribute",
       name: "Gewicht",
       unit: "kg",
-    } as FlatAttribute,
-  } as AnalysisScatterDiagramConfiguration;
+    },
+  };
 
   const choroplethData = [
     {

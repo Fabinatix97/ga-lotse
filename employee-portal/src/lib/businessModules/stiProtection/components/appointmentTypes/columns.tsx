@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAppointmentTypeConfig } from "@eshg/employee-portal-api/stiProtection";
+import { ApiAppointmentTypeConfig } from "@eshg/sti-protection-api";
 import { Edit } from "@mui/icons-material";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 

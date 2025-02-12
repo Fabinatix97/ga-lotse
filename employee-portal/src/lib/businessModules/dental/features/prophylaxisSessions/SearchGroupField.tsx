@@ -5,7 +5,6 @@
 
 import { useSearchInstitutionGroups } from "@eshg/dental/api/queries/childApi";
 import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
-import { SearchOutlined } from "@mui/icons-material";
 
 import { mapToSelectOption } from "@/lib/shared/helpers/selectOptionMapper";
 
@@ -14,6 +13,7 @@ interface SearchGroupFieldProps {
   label: string;
   institutionId: string;
   freeSolo?: boolean;
+  disabled?: boolean;
 }
 
 export function SearchGroupField(props: SearchGroupFieldProps) {
@@ -28,9 +28,9 @@ export function SearchGroupField(props: SearchGroupFieldProps) {
       required="Bitte eine Gruppe angeben."
       options={options}
       placeholder="Gruppe suchen"
-      endDecorator={<SearchOutlined />}
       loading={searchGroups.isLoading}
       freeSolo={props.freeSolo}
+      disabled={props.disabled}
     />
   );
 }

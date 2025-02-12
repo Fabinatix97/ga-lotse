@@ -149,10 +149,9 @@ function BaseSnackbar({
   );
 }
 
-const SnackbarContext = createContext<{
-  queue: SnackbarValues[];
-  setQueue: Dispatch<SetStateAction<SnackbarValues[]>>;
-}>(null!);
+const SnackbarContext = createContext<
+  Dispatch<SetStateAction<SnackbarValues[]>>
+>(null!);
 
 export function SnackbarProvider({
   children,
@@ -164,8 +163,9 @@ export function SnackbarProvider({
   closeLabel?: string;
 }>) {
   const [queue, setQueue] = useState<SnackbarValues[]>([]);
+
   return (
-    <SnackbarContext.Provider value={{ queue, setQueue }}>
+    <SnackbarContext.Provider value={setQueue}>
       <>
         {queue.map((snackbarValues, index) => (
           <BaseSnackbar
@@ -204,11 +204,10 @@ export interface Snackbar {
 }
 
 export function useSnackbar(): Snackbar {
-  const context = useContext(SnackbarContext);
-  if (context === null) {
+  const setQueue = useContext(SnackbarContext);
+  if (setQueue === null) {
     throw new Error("useSnackbar was called outside SnackbarProvider");
   }
-  const { setQueue } = context;
 
   return useMemo(() => {
     function enqueueSnackbar(snackbar: SnackbarPropsKeyOptional) {
@@ -249,7 +248,10 @@ export function useSnackbar(): Snackbar {
      */
     function close(key: string) {
       setQueue((prevQueue) =>
-        removeSnackbarFromQueue({ queue: prevQueue, key }),
+        removeSnackbarFromQueue({
+          queue: prevQueue,
+          key,
+        }),
       );
     }
 

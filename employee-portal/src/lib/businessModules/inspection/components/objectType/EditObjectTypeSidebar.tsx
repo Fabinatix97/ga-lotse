@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiObjectType } from "@eshg/employee-portal-api/inspection";
+import { ApiObjectType } from "@eshg/inspection-api";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import {
   validateIntegerAnd,

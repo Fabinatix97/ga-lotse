@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiArchivingRelevance } from "@eshg/employee-portal-api/businessProcedures";
+import { ApiArchivingRelevance } from "@eshg/lib-procedures-api";
 import { DeleteOutlined, Inventory2Outlined } from "@mui/icons-material";
 import { Divider, Typography } from "@mui/joy";
 import { RowSelectionState } from "@tanstack/react-table";

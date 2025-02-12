@@ -7,7 +7,7 @@ import type {
   ApiInspectionAppointment,
   ApiInspectionTravelTime,
   ApiObjectType,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { toDateTimeString } from "@eshg/lib-portal/helpers/dateTime";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";

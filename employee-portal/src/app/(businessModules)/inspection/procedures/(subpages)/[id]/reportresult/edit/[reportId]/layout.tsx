@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+"use client";
+
 import { PropsWithChildren } from "react";
 
 import { EditInspectionPageParams } from "@/app/(businessModules)/inspection/procedures/[id]/layout";

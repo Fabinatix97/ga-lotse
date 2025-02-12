@@ -5,10 +5,13 @@
 
 "use client";
 
-import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
-import { ApiStiProtectionProcedureOverview } from "@eshg/employee-portal-api/stiProtection";
 import { Row } from "@eshg/lib-portal/components/Row";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import {
+  formatDate,
+  formatDateTime,
+} from "@eshg/lib-portal/formatters/dateTime";
+import { ApiBusinessModule } from "@eshg/lib-procedures-api";
+import { ApiStiProtectionProcedureOverview } from "@eshg/sti-protection-api";
 import { EditOutlined, ToggleOffOutlined } from "@mui/icons-material";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
@@ -22,6 +25,7 @@ import {
 import {
   CONCERN_VALUES,
   GENDER_VALUES,
+  LAB_STATUS_VALUES,
   PROCEDURE_STATUS_VALUES,
 } from "@/lib/businessModules/stiProtection/shared/constants";
 import { isProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
@@ -54,10 +58,20 @@ function getProceduresColumns({
   reopenDialog: UseCloseAndReopenConfirmationDialog;
 }) {
   return [
+    columnHelper.accessor("accessCode", {
+      header: "Anmeldecode",
+      cell: ({ getValue }) => getValue(),
+      enableSorting: false,
+      meta: {
+        canNavigate: {
+          parentRow: true,
+        },
+      },
+    }),
     columnHelper.accessor("yearOfBirth", {
       header: "Geburtsjahr",
       cell: ({ getValue }) => getValue(),
-      enableSorting: true,
+      enableSorting: false,
       meta: {
         canNavigate: {
           parentRow: true,
@@ -67,7 +81,7 @@ function getProceduresColumns({
     columnHelper.accessor("gender", {
       header: "Geschlecht",
       cell: ({ getValue }) => GENDER_VALUES[getValue()],
-      enableSorting: true,
+      enableSorting: false,
       meta: {
         canNavigate: {
           parentRow: true,
@@ -77,6 +91,16 @@ function getProceduresColumns({
     columnHelper.accessor("status", {
       header: "Status",
       cell: ({ getValue }) => PROCEDURE_STATUS_VALUES[getValue()],
+      enableSorting: false,
+      meta: {
+        canNavigate: {
+          parentRow: true,
+        },
+      },
+    }),
+    columnHelper.accessor("appointmentStart", {
+      header: "Termin",
+      cell: ({ getValue }) => formatDateTime(getValue()),
       enableSorting: true,
       meta: {
         canNavigate: {
@@ -87,7 +111,7 @@ function getProceduresColumns({
     columnHelper.accessor("concern", {
       header: "Anliegen",
       cell: ({ getValue }) => CONCERN_VALUES[getValue()],
-      enableSorting: true,
+      enableSorting: false,
       meta: {
         canNavigate: {
           parentRow: true,
@@ -95,9 +119,29 @@ function getProceduresColumns({
       },
     }),
     columnHelper.accessor("createdAt", {
-      header: "Erstell.",
+      header: "Erstellt",
       cell: ({ getValue }) => formatDate(getValue()),
       enableSorting: true,
+      meta: {
+        canNavigate: {
+          parentRow: true,
+        },
+      },
+    }),
+    columnHelper.accessor("sampleBarCode", {
+      header: "Labor-Barcode",
+      cell: ({ getValue }) => getValue(),
+      enableSorting: true,
+      meta: {
+        canNavigate: {
+          parentRow: true,
+        },
+      },
+    }),
+    columnHelper.accessor("labStatus", {
+      header: "Laborstatus",
+      cell: ({ getValue }) => LAB_STATUS_VALUES[getValue()],
+      enableSorting: false,
       meta: {
         canNavigate: {
           parentRow: true,

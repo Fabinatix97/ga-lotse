@@ -4,13 +4,13 @@
  */
 
 import {
-  ApiGetRelevantArchivableProceduresSortBy,
-  ApiProcedure,
-} from "@eshg/employee-portal-api/businessProcedures";
-import {
   formatDate,
   formatDateTime,
 } from "@eshg/lib-portal/formatters/dateTime";
+import {
+  ApiGetRelevantArchivableProceduresSortBy,
+  ApiProcedure,
+} from "@eshg/lib-procedures-api";
 import { createColumnHelper } from "@tanstack/react-table";
 
 const columnHelper = createColumnHelper<ApiProcedure>();

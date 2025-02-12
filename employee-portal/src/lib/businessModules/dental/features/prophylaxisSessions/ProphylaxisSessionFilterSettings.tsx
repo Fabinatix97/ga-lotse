@@ -71,6 +71,7 @@ export function ProphylaxisSessionFilterSettings(
             onChange={(institutionId) =>
               props.setFilterFormValue("institutionIdFilter", institutionId)
             }
+            placeholder="Schule/Kita suchen"
           />
         </FormControl>
         <FormControl>

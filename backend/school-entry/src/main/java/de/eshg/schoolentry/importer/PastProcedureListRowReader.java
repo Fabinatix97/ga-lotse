@@ -15,6 +15,7 @@ import de.eshg.schoolentry.api.CountryCodeDto;
 import de.eshg.schoolentry.business.model.*;
 import de.eshg.schoolentry.domain.model.*;
 import de.eshg.schoolentry.mapper.AnamnesisMapper;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.YearMonth;
@@ -35,8 +36,9 @@ class PastProcedureListRowReader extends RowReader<PastProcedureListRow, PastPro
   static final List<PastProcedureListColumn> CHRONIC_DISEASE_ICD10_COLUMNS =
       List.of(CHRONIC_DISEASE_ICD10_1, CHRONIC_DISEASE_ICD10_2, CHRONIC_DISEASE_ICD10_3);
 
-  PastProcedureListRowReader(Sheet sheet, List<PastProcedureListColumn> actualColumns) {
-    super(sheet, actualColumns, PastProcedureListRow::new);
+  PastProcedureListRowReader(
+      Sheet sheet, Clock clock, List<PastProcedureListColumn> actualColumns) {
+    super(sheet, actualColumns, PastProcedureListRow::new, clock);
   }
 
   @Override
@@ -356,7 +358,7 @@ class PastProcedureListRowReader extends RowReader<PastProcedureListRow, PastPro
     return new ImportChildData(
         cellAsString(col, FIRST_NAME, errorHandler),
         cellAsString(col, LAST_NAME, errorHandler),
-        cellAsDate(col, DATE_OF_BIRTH, errorHandler),
+        cellAsDateOfBirth(col, DATE_OF_BIRTH, errorHandler),
         cellAsGender(col, GENDER, errorHandler),
         readAddressData(
             col,

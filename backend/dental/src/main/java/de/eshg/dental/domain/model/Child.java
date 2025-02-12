@@ -12,6 +12,7 @@ import static de.eshg.lib.common.SensitivityLevel.SENSITIVE;
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.procedure.domain.model.Procedure;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -109,15 +110,22 @@ public class Child extends Procedure<Child, ChildTask, Person, Facility> {
     return fluoridationConsents;
   }
 
-  public Boolean getCurrentFluoridationConsent() {
+  public FluoridationConsent getCurrentFluoridationConsent() {
     return fluoridationConsents.stream()
-        .max(Comparator.comparing(FluoridationConsent::dateOfConsent))
-        .map(FluoridationConsent::consented)
+        .max(Comparator.comparing(FluoridationConsent::getModifiedAt))
         .orElse(null);
   }
 
+  @Nullable
+  public Boolean isFluoridationConsentCurrentlyGivenOptionally() {
+    if (getCurrentFluoridationConsent() == null) {
+      return null;
+    }
+    return getCurrentFluoridationConsent().isConsented();
+  }
+
   public boolean isFluoridationConsentCurrentlyGiven() {
-    return BooleanUtils.isTrue(getCurrentFluoridationConsent());
+    return BooleanUtils.isTrue(isFluoridationConsentCurrentlyGivenOptionally());
   }
 
   public void addFluoridationConsent(FluoridationConsent fluoridationConsent) {

@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import {
   ApiAppointmentHistoryEntry,
   ApiStiProtectionProcedure,
   ApiStiProtectionProcedureOverview,
-} from "@eshg/employee-portal-api/stiProtection";
-import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
+} from "@eshg/sti-protection-api";
 import { Typography, styled } from "@mui/joy";
 import { useState } from "react";
 

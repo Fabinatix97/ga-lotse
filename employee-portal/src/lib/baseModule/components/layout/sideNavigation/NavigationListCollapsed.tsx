@@ -38,45 +38,52 @@ export function NavigationListCollapsed({
   setCollapsed?: Dispatch<SetStateAction<boolean>>;
   itemGroups: SideNavItemGroups;
 }) {
-  const [menuIndex, setMenuIndex] = useState<null | number>(null);
+  const [openMenuItemName, setOpenMenuItemName] = useState<string | null>(null);
 
   const itemProps = {
-    onClick: () => setMenuIndex(null),
+    onClick: () => setOpenMenuItemName(null),
   };
   const pathname = usePathname();
-  // eslint-disable-next-line func-style
-  const createHandleLeaveMenu =
-    (index: number) => (getIsOnButton: () => boolean) => {
+
+  function createHandleLeaveMenu(itemName: string) {
+    return (getIsOnButton: () => boolean) => {
       setTimeout(() => {
         const isOnButton = getIsOnButton();
         if (!isOnButton) {
-          setMenuIndex((latestIndex: null | number) => {
-            if (index === latestIndex) {
+          setOpenMenuItemName((previousOpenMenuItemName) => {
+            if (itemName === previousOpenMenuItemName) {
               return null;
             }
-            return latestIndex;
+            return previousOpenMenuItemName;
           });
         }
       }, 200);
     };
+  }
 
   function getNavItemGroup(itemGroup: SideNavigationItem[]) {
-    if (itemGroup.length > 0) {
-      const list = itemGroup.map((item, index) =>
-        "subItems" in item ? (
+    if (itemGroup.length === 0) {
+      return undefined;
+    }
+
+    const list = itemGroup.map((item) => {
+      if ("subItems" in item) {
+        const isItemMenuOpen = openMenuItemName === item.name;
+
+        return (
           <NavigationIconItemWithSubItems
             key={item.name}
             item={item}
-            open={menuIndex === index}
-            onOpen={() => setMenuIndex(index)}
-            onLeaveMenu={createHandleLeaveMenu(index)}
+            open={isItemMenuOpen}
+            onOpen={() => setOpenMenuItemName(item.name)}
+            onLeaveMenu={createHandleLeaveMenu(item.name)}
             selected={
-              menuIndex !== index &&
+              !isItemMenuOpen &&
               item.subItems.some((subItem) => isItemSelected(subItem, pathname))
             }
             menu={
               <Menu
-                onClose={() => setMenuIndex(null)}
+                onClose={() => setOpenMenuItemName(null)}
                 keepMounted={true}
                 disablePortal={true}
               >
@@ -110,16 +117,17 @@ export function NavigationListCollapsed({
           >
             {item.decorator}
           </NavigationIconItemWithSubItems>
-        ) : (
-          <NavigationIconItemWithoutSubItems
-            key={`${item.href}-${item.name}`}
-            item={item}
-            resetActiveIndex={() => setMenuIndex(index)}
-          />
-        ),
+        );
+      }
+      return (
+        <NavigationIconItemWithoutSubItems
+          key={item.name}
+          item={item}
+          resetActiveIndex={() => setOpenMenuItemName(null)}
+        />
       );
-      return <StyledList sx={listStyling}>{list}</StyledList>;
-    } else return undefined;
+    });
+    return <StyledList sx={listStyling}>{list}</StyledList>;
   }
 
   return (

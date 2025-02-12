@@ -7,7 +7,7 @@ import { ApiResponse } from "@eshg/base-api";
 import {
   ApiImportStatistics,
   ApiImportStatisticsFromJSON,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { useMutation } from "@tanstack/react-query";
 import { useCallback, useRef } from "react";
 

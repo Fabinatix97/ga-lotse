@@ -3,22 +3,53 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiConsultation } from "@eshg/employee-portal-api/stiProtection";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { MutationPassThrough } from "@eshg/lib-portal/types/query";
-import { useMutation } from "@tanstack/react-query";
+import { ApiConsultation } from "@eshg/sti-protection-api";
+import { MutationOptions, useMutation } from "@tanstack/react-query";
 
 import { useConsultationApi } from "@/lib/businessModules/stiProtection/api/clients";
 import { proceduresQueryKey } from "@/lib/businessModules/stiProtection/api/queries/apiQueryKeys";
 
-export function useUpsertConsultation(
-  procedureId: string,
-  passThrough: MutationPassThrough<ApiConsultation, void>,
-) {
-  const api = useConsultationApi();
-  return useMutation({
-    mutationFn: (consultation) =>
-      api.updateConsultation(procedureId, consultation),
+interface UpsertConsultationParams {
+  consultation: ApiConsultation;
+}
+
+export function useUpsertConsultationOptions({
+  procedureId,
+  passThrough,
+}: {
+  procedureId: string;
+  passThrough?: MutationPassThrough<UpsertConsultationParams, void>;
+}): MutationOptions<void, Error, UpsertConsultationParams> {
+  const consultationApi = useConsultationApi();
+  const snackbar = useSnackbar();
+
+  return {
+    mutationFn: ({ consultation }: UpsertConsultationParams) =>
+      consultationApi.updateConsultation(procedureId, consultation),
     mutationKey: proceduresQueryKey([procedureId, "consultation"]),
-    ...passThrough,
-  });
+    ...(passThrough ?? {
+      onSuccess: () => {
+        snackbar.confirmation(
+          "Die Konsultation wurde erfolgreich gespeichert.",
+        );
+      },
+      onError: () => {
+        snackbar.error("Die Konsultation konnte nicht gespeichert werden.");
+      },
+    }),
+  };
+}
+
+export function useUpsertConsultation({
+  procedureId,
+  passThrough,
+}: {
+  procedureId: string;
+  passThrough?: MutationPassThrough<UpsertConsultationParams, void>;
+}) {
+  const options = useUpsertConsultationOptions({ procedureId, passThrough });
+
+  return useMutation(options);
 }

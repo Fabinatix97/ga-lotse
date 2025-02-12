@@ -77,16 +77,16 @@ public class ChildrenPopulator extends DentalPopulator<CreateChildResponse> {
       Year yearInPast = Year.of(request.year() - i);
       CreateChildRequest requestForPast = withNewYear(request, yearInPast);
       UUID childId = childController.createChild(requestForPast).id();
-      updateChild(childId, faker, i);
+      updateChild(childId, faker);
     }
 
     CreateChildResponse child = childController.createChild(request);
-    updateChild(child.id(), faker, numberOfPastYears);
+    updateChild(child.id(), faker);
 
     return child;
   }
 
-  private void updateChild(UUID childId, Faker faker, int numberOfPastYears) {
+  private void updateChild(UUID childId, Faker faker) {
     ChildDetailsDto childDetails = childController.getChild(childId);
     childController.updateChild(
         childId,

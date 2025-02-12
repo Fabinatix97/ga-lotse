@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBusinessModule } from "@eshg/citizen-portal-api/openData";
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import {
   SelectOptions,
@@ -11,6 +10,7 @@ import {
 } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { YearInput } from "@eshg/lib-portal/components/inputs/YearInput";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { ApiBusinessModule } from "@eshg/opendata-api";
 import {
   CloseOutlined,
   DateRangeOutlined,

@@ -6,7 +6,7 @@
 import {
   ApiUpdateChecklistRequestFromJSON,
   ApiUpdateChecklistResponseToJSON,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 
 import { API_INSPECTION_CHECKLISTS_CHECKLIST_PATH_PATTERN } from "@/serviceWorker/sw/config";
 import { updateChecklist } from "@/serviceWorker/sw/inspection/service/updateChecklist";

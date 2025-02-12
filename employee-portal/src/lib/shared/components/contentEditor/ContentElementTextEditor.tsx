@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiUpdateEditorRequest } from "@eshg/employee-portal-api/libEditor";
+import { ApiUpdateEditorRequest } from "@eshg/lib-editor-api";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { Divider, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";

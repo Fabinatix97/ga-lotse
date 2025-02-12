@@ -4,7 +4,7 @@
  */
 
 import { ApiUserRole } from "@eshg/base-api";
-import { ApiObjectType } from "@eshg/employee-portal-api/inspection";
+import { ApiObjectType } from "@eshg/inspection-api";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { Stack } from "@mui/joy";

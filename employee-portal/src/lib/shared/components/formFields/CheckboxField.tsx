@@ -8,8 +8,8 @@ import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import { FieldProps } from "@eshg/lib-portal/types/form";
 import { Checkbox, CheckboxProps, FormControl, FormHelperText } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
-import { useFormikContext } from "formik";
-import { ChangeEventHandler } from "react";
+import { FormikHandlers, useFormikContext } from "formik";
+import { ChangeEventHandler, memo } from "react";
 import { isString } from "remeda";
 
 export interface CheckboxFieldProps extends FieldProps<boolean> {
@@ -22,10 +22,9 @@ export interface CheckboxFieldProps extends FieldProps<boolean> {
   "aria-label"?: string;
 }
 
-function isChecked(
-  value: string | number | readonly string[],
-  representingValue?: string,
-): boolean {
+type ValueType = boolean | number | string | readonly string[];
+
+function isChecked(value: ValueType, representingValue?: string): boolean {
   if (value == null) {
     return false;
   }
@@ -37,12 +36,11 @@ function isChecked(
 }
 
 export function CheckboxField(props: CheckboxFieldProps) {
-  const disabled = useIsFormDisabled() || props.disabled;
   const {
     input: field,
     required,
     meta,
-  } = useBaseField<number | string | readonly string[]>({
+  } = useBaseField<ValueType>({
     name: props.name,
     required: props.required,
     type: "checkbox",
@@ -53,34 +51,70 @@ export function CheckboxField(props: CheckboxFieldProps) {
       return props.required;
     },
   });
+  const { isValid } = useFormikContext();
+
+  return (
+    <MemoizedCheckboxField
+      {...props}
+      fieldName={field.name}
+      fieldValue={field.value}
+      fieldOnChange={field.onChange}
+      fieldOnBlur={field.onBlur}
+      fieldRequired={required}
+      metaError={meta.error}
+      isValid={isValid}
+    />
+  );
+}
+
+interface InnerCheckboxFieldProps extends CheckboxFieldProps {
+  fieldName: string;
+  fieldValue: ValueType;
+  fieldOnChange: FormikHandlers["handleChange"];
+  fieldOnBlur: FormikHandlers["handleBlur"];
+  fieldRequired: boolean;
+  metaError?: string;
+  isValid: boolean;
+}
+
+const MemoizedCheckboxField = memo(function InnerCheckboxField({
+  fieldName,
+  fieldValue,
+  fieldOnChange,
+  fieldOnBlur,
+  fieldRequired,
+  metaError,
+  isValid,
+  ...props
+}: InnerCheckboxFieldProps) {
+  const disabled = useIsFormDisabled() || props.disabled;
 
   const starLabel =
     isString(props.label) && props.required ? `${props.label} *` : props.label;
 
-  const { isValid } = useFormikContext();
-  const hasValidationError = !!meta.error && !isValid;
+  const hasValidationError = !!metaError && !isValid;
 
   // Often checkbox helper text is shown for a whole group,
   // only show for single checkbox if the checkbox is "required"
   const showHelperText = hasValidationError && props.required != null;
 
   return (
-    <FormControl error={hasValidationError} required={required}>
+    <FormControl error={hasValidationError} required={fieldRequired}>
       <Checkbox
-        name={field.name}
+        name={fieldName}
         onChange={(event) => {
-          field.onChange(event);
+          fieldOnChange(event);
           if (props.onChange != null) {
             props.onChange(event);
           }
         }}
-        onBlur={field.onBlur}
+        onBlur={fieldOnBlur}
         label={starLabel}
         disabled={disabled}
-        checked={isChecked(field.value, props.representingValue)}
+        checked={isChecked(fieldValue, props.representingValue)}
         value={props.representingValue ?? "true"}
         size={props.size}
-        required={required}
+        required={fieldRequired}
         variant={props.variant}
         sx={props.sx}
         slotProps={{
@@ -92,4 +126,4 @@ export function CheckboxField(props: CheckboxFieldProps) {
       ) : null}
     </FormControl>
   );
-}
+});

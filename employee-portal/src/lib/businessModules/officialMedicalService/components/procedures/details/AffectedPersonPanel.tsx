@@ -8,11 +8,10 @@
 import {
   ApiEmployeeOmsProcedureDetails,
   ApiProcedureStatus,
-} from "@eshg/employee-portal-api/officialMedicalService";
-import { Sheet } from "@mui/joy";
+} from "@eshg/official-medical-service-api";
 import { SxProps } from "@mui/joy/styles/types";
 
-import { UpdateAffectedPersonSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/UpdateAffectedPersonSidebar";
+import { useUpdateAffectedPersonSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/UpdateAffectedPersonSidebar";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { PersonDetails } from "@/lib/businessModules/schoolEntry/api/models/Person";
 import { EditButton } from "@/lib/shared/components/buttons/EditButton";
@@ -21,8 +20,7 @@ import {
   SyncBarrier,
   useSyncBarrier,
 } from "@/lib/shared/components/centralFile/sync/SyncBarrier";
-import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
-import { useToggle } from "@/lib/shared/hooks/useToggle";
+import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 
 const COLUMN_STYLE: SxProps = {
   flexGrow: 1,
@@ -34,9 +32,16 @@ export function AffectedPersonPanel({
 }: Readonly<{
   procedure: ApiEmployeeOmsProcedureDetails;
 }>) {
-  const [editing, toggleEditing] = useToggle(false);
-  const title = "Betroffene Person";
   const person = procedure.affectedPerson;
+
+  const updateAffectedPersonSidebar = useUpdateAffectedPersonSidebar();
+
+  function openSidebar() {
+    updateAffectedPersonSidebar.open({
+      affectedPerson: person,
+      procedureId: procedure.id,
+    });
+  }
 
   const syncRoute =
     person.affectedPersonSync !== undefined
@@ -58,35 +63,31 @@ export function AffectedPersonPanel({
     syncPersonParams as PersonDetails,
   );
 
+  if (!person) {
+    return null;
+  }
+
   return (
-    person && (
-      <Sheet data-testid="affected-person">
-        <DetailsSection
-          title={title}
-          buttons={
-            procedure.status !== ApiProcedureStatus.Closed &&
-            person.affectedPersonSync !== undefined && (
-              <SyncBarrier
-                outdated={person.affectedPersonSync.outdated}
-                syncHref={syncRoute}
-              >
-                <EditButton
-                  aria-label="Person bearbeiten"
-                  onClick={syncBarrier(toggleEditing)}
-                />
-              </SyncBarrier>
-            )
-          }
-        >
-          <CentralFilePersonDetails person={person} columnSx={COLUMN_STYLE} />
-        </DetailsSection>
-        <UpdateAffectedPersonSidebar
-          affectedPerson={person}
-          onClose={toggleEditing}
-          open={editing}
-          procedureId={procedure.id}
-        />
-      </Sheet>
-    )
+    <InfoTile
+      data-testid="affected-person"
+      name="affectedPerson"
+      title="Betroffene Person"
+      controls={
+        procedure.status !== ApiProcedureStatus.Closed &&
+        person.affectedPersonSync !== undefined && (
+          <SyncBarrier
+            outdated={person.affectedPersonSync.outdated}
+            syncHref={syncRoute}
+          >
+            <EditButton
+              aria-label="Person bearbeiten"
+              onClick={syncBarrier(openSidebar)}
+            />
+          </SyncBarrier>
+        )
+      }
+    >
+      <CentralFilePersonDetails person={person} columnSx={COLUMN_STYLE} />
+    </InfoTile>
   );
 }

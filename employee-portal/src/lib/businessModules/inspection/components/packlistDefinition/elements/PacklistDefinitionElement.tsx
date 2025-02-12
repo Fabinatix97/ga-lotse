@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiPacklistDefinitionElement } from "@eshg/employee-portal-api/inspection";
+import { ApiPacklistDefinitionElement } from "@eshg/inspection-api";
 import { DraggableProvidedDragHandleProps } from "@hello-pangea/dnd";
 import { DeleteOutlined, DragIndicatorOutlined } from "@mui/icons-material";
 import { Box, IconButton, Input, Stack } from "@mui/joy";

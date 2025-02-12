@@ -94,6 +94,7 @@ public class StiProtectionProcedureController {
   }
 
   @PostMapping
+  @Operation(summary = "Create a new STI procedure.")
   @Transactional
   public CreateProcedureResponse createProcedure(
       @Valid @RequestBody CreateProcedureRequest request) {
@@ -108,7 +109,7 @@ public class StiProtectionProcedureController {
 
   @GetMapping("/{id}")
   @Operation(summary = "Get STI protection procedure by id.")
-  @Transactional(readOnly = true)
+  @Transactional
   public GetProcedureResponse getStiProcedure(@PathVariable("id") UUID procedureId) {
     auditLogger.log(
         "Vorgangsbearbeitung",
@@ -250,13 +251,13 @@ public class StiProtectionProcedureController {
   }
 
   @PostMapping("/{id}/follow-up")
+  @Operation(summary = "Create an STI follow-up procedure.")
   @Transactional
   @ProcedureStatusTransition
   public CreateFollowUpProcedureResponse createFollowUpProcedure(
       @PathVariable("id") UUID procedureId,
       @Valid @RequestBody CreateFollowUpProcedureRequest request) {
     StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
-    // Todo remove old access code user
     if (procedure.getProcedureStatus().isOpen()) {
       appointmentService.cancelAppointment(procedure);
       stiProtectionService.closeProcedure(procedure);

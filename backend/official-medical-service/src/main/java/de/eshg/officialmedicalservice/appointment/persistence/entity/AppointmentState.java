@@ -6,6 +6,17 @@
 package de.eshg.officialmedicalservice.appointment.persistence.entity;
 
 public enum AppointmentState {
-  OPEN,
-  CLOSED
+  OPEN("OFFEN"),
+  CLOSED("GESCHLOSSEN"),
+  ;
+
+  private final String germanName;
+
+  AppointmentState(String germanName) {
+    this.germanName = germanName;
+  }
+
+  public String getGermanName() {
+    return germanName;
+  }
 }

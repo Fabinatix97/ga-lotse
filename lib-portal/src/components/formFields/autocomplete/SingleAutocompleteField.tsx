@@ -20,6 +20,7 @@ export interface SingleAutocompleteFieldProps
   freeSolo?: boolean;
   disableFiltering?: boolean;
   popupIcon?: ReactNode;
+  disabled?: boolean;
 }
 
 export function SingleAutocompleteField(props: SingleAutocompleteFieldProps) {
@@ -47,7 +48,8 @@ export function SingleAutocompleteField(props: SingleAutocompleteFieldProps) {
       <Autocomplete
         {...autocompleteProps}
         multiple={false}
-        freeSolo={props.freeSolo}
+        freeSolo={true}
+        forcePopupIcon={!props.freeSolo}
         value={field.input.value}
         onChange={(_, newValue) => {
           handleChange(newValue);
@@ -55,7 +57,7 @@ export function SingleAutocompleteField(props: SingleAutocompleteFieldProps) {
         onInputChange={handleInputChange}
         options={props.options.map((opt) => opt.value)}
         filterOptions={props.disableFiltering ? identity() : undefined}
-        disabled={disabled}
+        disabled={disabled || props.disabled}
         popupIcon={props.popupIcon}
       />
     </BaseField>

@@ -92,19 +92,20 @@ public final class ChildMapper {
       return new ArrayList<>();
     }
     return fluoridationConsent.stream()
-        .map(f -> new FluoridationConsentDto(f.dateOfConsent(), f.consented(), f.hasAllergy()))
+        .map(f -> new FluoridationConsentDto(f.getDateOfConsent(), f.isConsented(), f.hasAllergy()))
         .toList();
   }
 
-  public static FluoridationConsent mapFluoridationToDomain(
-      FluoridationConsentDto fluoridationConsent) {
-    if (fluoridationConsent == null) {
+  public static FluoridationConsent mapFluoridationToDomain(FluoridationConsentDto dto) {
+    if (dto == null) {
       return null;
     }
-    return new FluoridationConsent(
-        fluoridationConsent.dateOfConsent(),
-        fluoridationConsent.consented(),
-        fluoridationConsent.hasAllergy());
+
+    FluoridationConsent fluoridationConsent = new FluoridationConsent();
+    fluoridationConsent.setDateOfConsent(dto.dateOfConsent());
+    fluoridationConsent.setConsented(dto.consented());
+    fluoridationConsent.setHasAllergy(dto.hasAllergy());
+    return fluoridationConsent;
   }
 
   public static CreateChildRequest mapImportDataToCreateChildRequest(

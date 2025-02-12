@@ -6,7 +6,7 @@
 import {
   ApiEditorBodyElementsInner,
   ApiUpdateEditorRequest,
-} from "@eshg/employee-portal-api/libEditor";
+} from "@eshg/lib-editor-api";
 import { Divider, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 

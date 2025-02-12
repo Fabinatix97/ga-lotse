@@ -4,16 +4,16 @@
  */
 
 import { ApiGdprFacility } from "@eshg/base-api";
-import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import VerifiedIcon from "@mui/icons-material/VerifiedOutlined";
-import { Stack, Typography } from "@mui/joy";
+import { Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
 import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
 import { BaseAddressDetails } from "@/lib/shared/components/address/BaseAddressDetails";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
+import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
+import { ExternalLinkDetailsItem } from "@/lib/shared/components/detailsSection/items/ExternalLinkDetailsItem";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 
 export function GdprFacilityDataTile({
@@ -31,19 +31,17 @@ export function GdprFacilityDataTile({
         divider={<ResponsiveDivider />}
       >
         <DetailsColumn sx={columnSx}>
-          <DetailsCell name="name" label="Name" value={identity.name} />
+          <DetailsItem label="Name" value={identity.name} />
           {identity.dataTransmitterPseudonymId && (
-            <DetailsCell
-              name="dataTransmitterPseudonymId"
+            <DetailsItem
               label="Mein Unternehmenskonto"
-              value={
-                <Typography
-                  startDecorator={<VerifiedIcon color="success" />}
-                  noWrap
-                >
-                  Authentifiziert
-                </Typography>
-              }
+              value="Authentifiziert"
+              slotProps={{
+                value: {
+                  startDecorator: <VerifiedIcon color="success" />,
+                  noWrap: true,
+                },
+              }}
             />
           )}
         </DetailsColumn>
@@ -53,22 +51,12 @@ export function GdprFacilityDataTile({
         {(isNonEmptyString(identity.emailAddress) ||
           isNonEmptyString(identity.phoneNumber)) && (
           <DetailsColumn sx={columnSx}>
-            {isNonEmptyString(identity.emailAddress) && (
-              <DetailsCell
-                name={"emailAddress"}
-                label={"E-Mail-Adresse"}
-                value={
-                  <ExternalLink href={`mailto:${identity.emailAddress}`}>
-                    {identity.emailAddress}
-                  </ExternalLink>
-                }
-              />
-            )}
-            <DetailsCell
-              name={"phoneNumber"}
-              label={"Telefonnummer"}
-              value={identity.phoneNumber}
+            <ExternalLinkDetailsItem
+              label={"E-Mail-Adresse"}
+              value={identity.emailAddress}
+              href={(value) => `mailto:${value}`}
             />
+            <DetailsItem label={"Telefonnummer"} value={identity.phoneNumber} />
           </DetailsColumn>
         )}
       </Stack>

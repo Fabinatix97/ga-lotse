@@ -9,7 +9,8 @@ import {
   AnalysisDiagramLineChart,
   AnalysisDiagramScatterChart,
 } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
-import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
+
+import { XYAxes } from "./types";
 
 export function calculateXYMinMax(
   filterSet:
@@ -25,24 +26,118 @@ export function calculateXYMinMax(
   return [xMin, xMax, yMin, yMax];
 }
 
-export function formatBreakLongStringOnce(input: string) {
-  if (input.length <= 30) {
-    return input;
-  }
+function getTextWidth(text: string) {
+  const charWidths = new Map<string, number>([
+    ["f", 4],
+    ["i", 3],
+    ["j", 4],
+    ["l", 3],
+    ["m", 11],
+    ["r", 4],
+    ["t", 4],
+    ["w", 11],
+    ["A", 8],
+    ["B", 8],
+    ["C", 9],
+    ["D", 9],
+    ["E", 8],
+    ["F", 8],
+    ["G", 9],
+    ["H", 9],
+    ["I", 4],
+    ["J", 5],
+    ["K", 8],
+    ["L", 7],
+    ["M", 11],
+    ["N", 9],
+    ["O", 9],
+    ["P", 8],
+    ["Q", 9],
+    ["R", 8],
+    ["S", 8],
+    ["T", 8],
+    ["U", 9],
+    ["V", 8],
+    ["W", 11],
+    ["X", 8],
+    ["Y", 8],
+    ["Z", 8],
+    [" ", 3],
+    [".", 3],
+    [",", 3],
+    ["!", 3],
+    ["?", 6],
+    ["-", 4],
+    ["1", 4],
+  ]);
 
-  const textParts = input.split(" ");
-  const middle = Math.round(textParts.length / 2);
-  const topPart = textParts.slice(0, middle).join(" ");
-  const bottomPart = textParts.slice(middle).join(" ");
-  return topPart + "\n" + bottomPart;
+  return text
+    .split("")
+    .reduce((acc, character) => acc + (charWidths.get(character) ?? 7), 0);
 }
 
-export function mapAxisTitleWithOptionalUnit(attribute: FlatAttribute) {
-  return (attribute.type === "DecimalAttribute" ||
-    attribute.type === "IntegerAttribute") &&
+function splitWordEqually(word: string, maxWidth: number) {
+  // Determine Split point
+  const averageCharsFittingWidth = Math.floor(
+    maxWidth / (getTextWidth(word) / word.length),
+  );
+  let amountOfSplits = 1;
+  for (
+    ;
+    word.length / amountOfSplits > averageCharsFittingWidth;
+    ++amountOfSplits
+  ) {}
+
+  // Split words
+  const splitInterval = Math.ceil(word.length / amountOfSplits);
+  const splitWords = [];
+  let splitIndex = 0;
+  for (
+    ;
+    splitIndex + splitInterval < word.length;
+    splitIndex += splitInterval
+  ) {
+    splitWords.push(word.slice(splitIndex, splitIndex + splitInterval) + "-");
+  }
+  splitWords.push(word.slice(splitIndex));
+
+  return splitWords;
+}
+
+export function formatChartLabel(text: string, maxWidth: number) {
+  return text
+    .split(/\s|(?<=-)/)
+    .flatMap((it) => {
+      if (getTextWidth(it) > maxWidth) {
+        return splitWordEqually(it, maxWidth);
+      }
+      return [it];
+    })
+    .reduce((acc, currentValue) => {
+      if (
+        acc.length > 0 &&
+        getTextWidth([...acc[acc.length - 1]!, currentValue].join(" ")) <
+          maxWidth
+      ) {
+        return [
+          ...acc.slice(0, acc.length - 1),
+          [...acc[acc.length - 1]!, currentValue],
+        ];
+      }
+      return [...acc, [currentValue]];
+    }, [] as string[][])
+    .map((it) => it.join(" "))
+    .join("\n")
+    .replaceAll("- ", "-");
+}
+
+export function mapAxisTitleWithOptionalUnit(attribute: XYAxes) {
+  return formatChartLabel(
     isDefined(attribute.unit)
-    ? `${formatBreakLongStringOnce(attribute.name)} [${attribute.unit}]`
-    : formatBreakLongStringOnce(attribute.name);
+      ? `${attribute.name} [${attribute.unit}]`
+      : attribute.name,
+    300,
+  );
 }
 
 export function calculateRelativeFormatting(value: number): string {

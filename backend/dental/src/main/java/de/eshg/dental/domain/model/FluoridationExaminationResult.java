@@ -15,13 +15,13 @@ import jakarta.persistence.Entity;
 @DiscriminatorValue("FLUORIDATION")
 public class FluoridationExaminationResult extends ExaminationResult {
 
-  private boolean fluorideVarnishApplied;
+  private Boolean fluorideVarnishApplied;
 
-  public boolean isFluorideVarnishApplied() {
+  public Boolean isFluorideVarnishApplied() {
     return fluorideVarnishApplied;
   }
 
-  public void setFluorideVarnishApplied(boolean fluorideVarnishApplied) {
+  public void setFluorideVarnishApplied(Boolean fluorideVarnishApplied) {
     this.fluorideVarnishApplied = fluorideVarnishApplied;
   }
 }

@@ -25,12 +25,12 @@ import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedInstitution;
 import de.eshg.dental.client.PersonClient;
 import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
+import de.eshg.dental.domain.model.Person;
 import de.eshg.dental.domain.model.ProphylaxisSession;
 import de.eshg.dental.domain.repository.ChildRepository;
 import de.eshg.dental.domain.repository.ExaminationRepository;
 import de.eshg.dental.domain.repository.ProphylaxisSessionRepository;
 import de.eshg.dental.mapper.ProphylaxisSessionMapper;
-import de.eshg.domain.model.BaseEntityWithExternalId;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.rest.service.error.BadRequestException;
@@ -44,6 +44,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
@@ -92,9 +93,6 @@ public class ProphylaxisSessionService {
   public ProphylaxisSession createProphylaxisSession(CreateProphylaxisSessionRequest request) {
     ProphylaxisSession session = new ProphylaxisSession();
     mapProphylaxisSessionRequest(session, request);
-    session.setInstitutionId(request.institutionId());
-    session.setDentistIds(request.dentistIds());
-    session.setZfaIds(request.zfaIds());
     addExaminationsForChildren(request, session);
     prophylaxisSessionRepository.save(session);
     return session;
@@ -198,8 +196,11 @@ public class ProphylaxisSessionService {
             .toList();
 
     Map<UUID, List<Examination>> examinationsByFileStateId =
-        examinationRepository.findAllByChildFileStateIds(allFileStateIds).stream()
-            .collect(Collectors.groupingBy(ex -> ex.getChild().getChildIdFromCentralFile()));
+        examinationRepository
+            .findAllByPersonFileStateIds(Person.PERSON_TYPE_USED_FOR_CHILDREN, allFileStateIds)
+            .collect(
+                Collectors.groupingBy(
+                    examination -> examination.getChild().getChildIdFromCentralFile()));
 
     Map<UUID, List<Examination>> previousExaminationsBySessionChildFileStateId =
         fileStateIdsOfChildrenInSession.stream()
@@ -233,7 +234,16 @@ public class ProphylaxisSessionService {
                     .map(examinationsByChildFileStateId::get)
                     .filter(Objects::nonNull)
                     .flatMap(List::stream))
+            .filter(isBefore(prophylaxisSessionToIgnore))
             .toList();
+  }
+
+  private static Predicate<Examination> isBefore(ProphylaxisSession prophylaxisSession) {
+    return examination ->
+        examination
+            .getProphylaxisSession()
+            .getDateAndTime()
+            .isBefore(prophylaxisSession.getDateAndTime());
   }
 
   private Map<UUID, GetPersonFileStateResponse> fetchPersonFileStatesInBulk(
@@ -320,6 +330,9 @@ public class ProphylaxisSessionService {
       UUID prophylaxisSessionId, UpdateProphylaxisSessionRequest updateRequest) {
     ProphylaxisSession persistedProphylaxisSession =
         findProphylaxisSessionForUpdate(prophylaxisSessionId, updateRequest.version());
+    Validator.validateUpdatableFields(
+        persistedProphylaxisSession,
+        mapProphylaxisSessionRequest(new ProphylaxisSession(), updateRequest));
     validator.validateGroupAtInstitutionExists(
         persistedProphylaxisSession.getInstitutionId(), updateRequest.groupName());
 
@@ -337,30 +350,38 @@ public class ProphylaxisSessionService {
             .map(UpdateExaminationsInBulkRequest::id)
             .toList();
 
+    List<Long> ids = examinationRepository.findAllByExternalIdsForUpdate(examinationIds);
     Map<UUID, Examination> persistedExaminations =
-        examinationRepository.findAllByExternalIdsForUpdate(examinationIds).stream()
-            .collect(
-                Collectors.toMap(BaseEntityWithExternalId::getExternalId, Function.identity()));
+        examinationRepository
+            .fetchByIds(ids)
+            .collect(StreamUtil.toLinkedHashMap(Examination::getExternalId));
 
     for (UpdateExaminationsInBulkRequest examinationUpdate : updateRequest.examinationUpdates()) {
       Examination persistedExamination = persistedExaminations.get(examinationUpdate.id());
-
+      if (persistedExamination == null) {
+        throw new NotFoundException(
+            "Examination with id %s not found".formatted(examinationUpdate.id()));
+      }
       examinationService.updateExamination(
           persistedExamination,
           new UpdateExaminationRequest(
               examinationUpdate.version(), examinationUpdate.note(), examinationUpdate.result()));
     }
-
+    examinationRepository.flush();
     return getProphylaxisSessionWithDetails(prophylaxisSessionId);
   }
 
-  private void mapProphylaxisSessionRequest(
+  private ProphylaxisSession mapProphylaxisSessionRequest(
       ProphylaxisSession session, ProphylaxisSessionRequest request) {
+    session.setInstitutionId(request.institutionId());
     session.setDateAndTime(request.dateAndTime());
     session.setGroupName(request.groupName());
     session.setType(ProphylaxisSessionMapper.mapToDomain(request.type()));
     session.setIsScreening(request.isScreening());
     session.setFluoridationVarnish(
         ProphylaxisSessionMapper.mapToDomain(request.fluoridationVarnish()));
+    session.setDentistIds(request.dentistIds());
+    session.setZfaIds(request.zfaIds());
+    return session;
   }
 }

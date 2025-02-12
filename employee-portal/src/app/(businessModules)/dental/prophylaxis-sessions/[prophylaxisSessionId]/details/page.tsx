@@ -8,7 +8,8 @@
 import { routes } from "@eshg/dental/shared/routes";
 
 import { ProphylaxisSessionDetails } from "@/lib/businessModules/dental/features/prophylaxisSessions/ProphylaxisSessionDetails";
-import { useProphylaxisSessionStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/store/ProphylaxisSessionStoreProvider";
+import { useProphylaxisSessionStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/ProphylaxisSessionStoreProvider";
+import { useSyncOutgoingProphylaxisSessionChanges } from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/useSyncOutgoingProphylaxisSessionChanges";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
@@ -18,6 +19,8 @@ export default function ProphylaxisSessionDetailsPage() {
     (state) => state.institution.name,
   );
   const groupName = useProphylaxisSessionStore((state) => state.groupName);
+
+  useSyncOutgoingProphylaxisSessionChanges();
 
   return (
     <StickyToolbarLayout

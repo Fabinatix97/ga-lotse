@@ -3,14 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiAppointmentType,
-  ApiConcern,
-} from "@eshg/employee-portal-api/stiProtection";
 import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
+import { ApiAppointmentType, ApiConcern } from "@eshg/sti-protection-api";
 import { EditOutlined } from "@mui/icons-material";
 import { Divider, IconButton, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
@@ -18,15 +15,16 @@ import { ReactNode, useId } from "react";
 
 import { APPOINTMENT_TYPES } from "@/lib/businessModules/stiProtection/shared/constants";
 import { concernToAppointmentType } from "@/lib/businessModules/stiProtection/shared/helpers";
+import { getAppointmentDate } from "@/lib/businessModules/stiProtection/shared/procedure/mappers";
 
-import { getAppointmentDate } from "./AddNewProcedureSidebar";
-import { CombinedAppointmentForm } from "./AppointmentForm";
+import { CombinedAppointmentForm } from "./AddNewProcedureSidebar";
 
 const germanDateFormatter = Intl.DateTimeFormat("de-DE", {
   day: "2-digit",
   month: "2-digit",
   year: "numeric",
 });
+
 const germanTimeFormatter = Intl.DateTimeFormat("de-DE", {
   timeStyle: "short",
 });

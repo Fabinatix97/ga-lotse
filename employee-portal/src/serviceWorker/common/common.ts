@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiResponse } from "@eshg/employee-portal-api/inspection";
+import { ApiResponse } from "@eshg/inspection-api";
 
 export const SERVICE_WORKER_SERVER_NAME = "eshg-employee-portal-service-worker";
 

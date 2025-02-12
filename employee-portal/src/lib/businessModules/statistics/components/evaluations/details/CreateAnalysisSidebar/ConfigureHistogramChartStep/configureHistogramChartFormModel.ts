@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+
 import {
   DiagramBinning,
   DiagramGrouping,
@@ -16,4 +18,6 @@ export interface ConfigureHistogramChartFormModel {
   scaling: DiagramScaling;
   binning: DiagramBinning;
   bins: number;
+  minBin: OptionalFieldValue<number>;
+  maxBin: OptionalFieldValue<number>;
 }

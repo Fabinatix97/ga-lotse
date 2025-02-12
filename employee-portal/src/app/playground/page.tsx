@@ -115,6 +115,9 @@ export default function PlaygroundIndexPage() {
               Appointment Picker Field
             </InternalLink>
           </li>
+          <li>
+            <InternalLink href="/playground/teeth">Zahn-Icons</InternalLink>
+          </li>
         </ul>
       </MainContentLayout>
     </StickyToolbarLayout>

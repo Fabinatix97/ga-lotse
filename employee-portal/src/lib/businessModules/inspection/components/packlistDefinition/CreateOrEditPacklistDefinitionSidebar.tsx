@@ -8,7 +8,7 @@
 import {
   ApiObjectType,
   ApiPacklistDefinitionRevision,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Stack } from "@mui/joy";
 import { Formik } from "formik";

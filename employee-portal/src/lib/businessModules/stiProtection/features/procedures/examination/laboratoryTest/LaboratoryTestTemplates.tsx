@@ -3,201 +3,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiHepatitisLaboratoryTest,
-  ApiLaboratoryTest,
-  ApiLaboratoryTestSamples,
-} from "@eshg/employee-portal-api/stiProtection";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { Divider, Grid, Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { useFormikContext } from "formik";
 import { PropsWithChildren, ReactNode } from "react";
 
-import {
-  YesOrNoFieldData,
-  YesOrNoWithFollowUp,
-  mapBoolToYesOrNo,
-  mapYesOrNoToBool,
-} from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
+import { YesOrNoWithFollowUp } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
 import {
   SectionGrid,
   SubRow,
 } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/SectionGrid";
-import {
-  areAllValuesUndefined,
-  guardValue,
-  mapOptionalBool,
-  mapOptionalString,
-} from "@/lib/businessModules/stiProtection/shared/helpers";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
-import { LaboratoryTestExaminationData } from "./LaboratoryTestExamination";
-
-export interface LaboratoryTestData {
-  value: string;
-  result: YesOrNoFieldData;
-  remark: string;
-}
-
-export const defaultLaboratoryTestFormData = {
-  value: "",
-  result: null,
-  remark: "",
-};
-
-export function mapApiLaboratoryTestToFormData(
-  responseData: ApiLaboratoryTest | undefined,
-): LaboratoryTestData {
-  if (responseData === undefined) {
-    return defaultLaboratoryTestFormData;
-  }
-  return {
-    value: responseData.value ?? "",
-    result: mapBoolToYesOrNo(responseData.result),
-    remark: responseData.remark ?? "",
-  };
-}
-
-export function mapLaboratoryTestFormDataToApi(
-  formData: LaboratoryTestData | null,
-): ApiLaboratoryTest | undefined {
-  if (formData === null) {
-    return undefined;
-  }
-
-  const mappedValues = {
-    value: mapOptionalString(formData.value),
-    result: mapYesOrNoToBool(formData.result ?? ""),
-    remark: mapOptionalString(formData.remark),
-  };
-
-  if (areAllValuesUndefined(mappedValues)) {
-    return undefined;
-  } else {
-    return mappedValues;
-  }
-}
-
-export interface HepatitisLaboratoryTestData extends LaboratoryTestData {
-  infection?: boolean;
-  vaccineTitre?: boolean;
-}
-
-export const defaultHepatitisLaboratoryTestFormData = {
-  infection: false,
-  vaccineTitre: false,
-  value: "",
-  result: null,
-  remark: "",
-};
-
-export function mapApiHepatitisLaboratoryTestToFormData(
-  responseData: ApiHepatitisLaboratoryTest | undefined,
-): HepatitisLaboratoryTestData {
-  if (responseData === undefined) {
-    return defaultHepatitisLaboratoryTestFormData;
-  }
-  return {
-    infection: responseData.infection ?? false,
-    vaccineTitre: responseData.vaccineTitre ?? false,
-    value: responseData.value ?? "",
-    result: mapBoolToYesOrNo(responseData.result),
-    remark: responseData.remark ?? "",
-  };
-}
-
-export function mapHepatitisLaboratoryTestFormDataToApi(
-  formData: HepatitisLaboratoryTestData | null,
-): ApiHepatitisLaboratoryTest | undefined {
-  if (formData === null) {
-    return undefined;
-  }
-
-  const mappedValues = {
-    infection: mapOptionalBool(formData.infection),
-    vaccineTitre: mapOptionalBool(formData.vaccineTitre),
-    value: mapOptionalString(formData.value),
-    result: mapYesOrNoToBool(formData.result ?? ""),
-    remark: mapOptionalString(formData.remark),
-  };
-
-  if (areAllValuesUndefined(mappedValues)) {
-    return undefined;
-  } else {
-    return mappedValues;
-  }
-}
-
-export interface LaboratoryTestSamplesData {
-  oralSampleRequested: boolean;
-  oralSampleData: LaboratoryTestData;
-  urethralSampleRequested: boolean;
-  urethralSampleData: LaboratoryTestData;
-  analSampleRequested: boolean;
-  analSampleData: LaboratoryTestData;
-}
-
-export const defaultLaboratoryTestSamplesFormData = {
-  oralSampleRequested: false,
-  oralSampleData: defaultLaboratoryTestFormData,
-  urethralSampleRequested: false,
-  urethralSampleData: defaultLaboratoryTestFormData,
-  analSampleRequested: false,
-  analSampleData: defaultLaboratoryTestFormData,
-};
-
-export function mapApiLaboratoryTestSamplesToFormData(
-  responseData: ApiLaboratoryTestSamples | undefined,
-): LaboratoryTestSamplesData {
-  if (responseData === undefined) {
-    return defaultLaboratoryTestSamplesFormData;
-  }
-
-  return {
-    oralSampleRequested: responseData.oralSampleRequested ?? false,
-    oralSampleData: mapApiLaboratoryTestToFormData(responseData.oralSampleData),
-    urethralSampleRequested: responseData.urethralSampleRequested ?? false,
-    urethralSampleData: mapApiLaboratoryTestToFormData(
-      responseData.urethralSampleData,
-    ),
-    analSampleRequested: responseData.analSampleRequested ?? false,
-    analSampleData: mapApiLaboratoryTestToFormData(responseData.analSampleData),
-  };
-}
-
-export function mapLaboratoryTestSamplesFormDataToApi(
-  formData: LaboratoryTestSamplesData | null,
-): ApiLaboratoryTestSamples | undefined {
-  if (formData === null) {
-    return undefined;
-  }
-
-  const mappedValues = {
-    oralSampleRequested: mapOptionalBool(formData.oralSampleRequested),
-    oralSampleData: guardValue(
-      formData.oralSampleRequested,
-      mapLaboratoryTestFormDataToApi(formData.oralSampleData),
-    ),
-    urethralSampleRequested: mapOptionalBool(formData.urethralSampleRequested),
-    urethralSampleData: guardValue(
-      formData.urethralSampleRequested,
-      mapLaboratoryTestFormDataToApi(formData.urethralSampleData),
-    ),
-    analSampleRequested: mapOptionalBool(formData.analSampleRequested),
-    analSampleData: guardValue(
-      formData.analSampleRequested,
-      mapLaboratoryTestFormDataToApi(formData.analSampleData),
-    ),
-  };
-
-  if (areAllValuesUndefined(mappedValues)) {
-    return undefined;
-  } else {
-    return mappedValues;
-  }
-}
+import { LaboratoryTestExaminationData } from "./helpers";
 
 export interface LaboratoryTestProps extends PropsWithChildren {
   testRequestedPath: string;

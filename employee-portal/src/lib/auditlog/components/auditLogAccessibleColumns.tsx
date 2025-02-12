@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiAccessibleAuditLog } from "@eshg/employee-portal-api/auditlog";
+import { ApiAccessibleAuditLog } from "@eshg/auditlog-api";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { VisibilityOutlined } from "@mui/icons-material";
 import { Chip, Typography } from "@mui/joy";

@@ -15,6 +15,8 @@ import de.eshg.lib.auditlog.config.AuditLogConfig;
 import de.eshg.rest.client.BearerAuthInterceptor;
 import de.eshg.rest.client.CorrelationIdForwardingInterceptor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
@@ -26,6 +28,7 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 @AutoConfiguration
 @PropertySource("classpath:/auditlog-default.properties")
+@AutoConfigureAfter(JpaRepositoriesAutoConfiguration.class)
 @EnableConfigurationProperties(AuditLogConfig.class)
 @Import(
     value = {

@@ -12,7 +12,21 @@ import java.util.UUID;
 
 @Schema(name = "TextTemplate")
 public record TextTemplateDto(
-    @NotNull UUID externalId,
-    @NotBlank String name,
-    @NotNull TextTemplateContextDto context,
-    @NotBlank String content) {}
+    @NotNull
+        @Schema(
+            description = "Unique identifier for referencing the text template.",
+            example = "696a337f-8cbe-47b7-ac13-2e13e574c2c5")
+        UUID externalId,
+    @NotBlank
+        @Schema(description = "Display name of the text template.", example = "Hepatitis Panel")
+        String name,
+    @NotNull
+        @Schema(
+            description = "Category where the template is applicable.",
+            example = "DIAGNOSIS_RESULT")
+        TextTemplateContextDto context,
+    @NotBlank
+        @Schema(
+            description = "Predefined text that will be inserted.",
+            example = "Complete hepatitis A serology (acute vs. immunity)")
+        String content) {}

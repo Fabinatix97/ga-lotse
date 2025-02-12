@@ -7,6 +7,7 @@ import { DateComparisonFilterDefinition } from "@/lib/shared/components/filterSe
 import { DateSpanFilterDefinition } from "@/lib/shared/components/filterSettings/models/DateSpanFilter";
 import { EnumFilterDefinition } from "@/lib/shared/components/filterSettings/models/EnumFilter";
 import { NumberFilterDefinition } from "@/lib/shared/components/filterSettings/models/NumberFilter";
+import { TextFilterDefinition } from "@/lib/shared/components/filterSettings/models/TextFilter";
 import { YearFilterDefinition } from "@/lib/shared/components/filterSettings/models/YearFilter";
 
 import { DateFilterDefinition } from "./DateFilter";
@@ -26,4 +27,5 @@ export type FilterDefinition =
   | DateSpanFilterDefinition
   | DateComparisonFilterDefinition
   | NumberFilterDefinition
-  | YearFilterDefinition;
+  | YearFilterDefinition
+  | TextFilterDefinition;

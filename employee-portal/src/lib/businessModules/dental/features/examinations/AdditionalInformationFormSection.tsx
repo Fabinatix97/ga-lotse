@@ -4,28 +4,20 @@
  */
 
 import { ApiOralHygieneStatus } from "@eshg/dental-api";
+import { ExaminationStatus } from "@eshg/dental/api/models/ExaminationStatus";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import {
-  BooleanSelectField,
-  BooleanSelectFieldProps,
-} from "@eshg/lib-portal/components/formFields/BooleanSelectField";
-import {
-  SelectField,
-  SelectFieldProps,
-} from "@eshg/lib-portal/components/formFields/SelectField";
+  SoftRequiredBooleanSelectField,
+  SoftRequiredSelectField,
+} from "@eshg/lib-portal/components/form/fieldVariants";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
-import { ReactNode } from "react";
 
+import { ExaminationStatusChip } from "@/lib/businessModules/dental/features/examinations/ExaminationStatusChip";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 
 import { ORAL_HYGIENE_STATUS } from "./translations";
-
-const DEFAULT_COMPONENTS: AdditionalInformationFormComponents = {
-  SelectField,
-  BooleanSelectField,
-};
 
 export const ORAL_HYGIENE_STATUS_OPTIONS =
   buildEnumOptions<ApiOralHygieneStatus>(ORAL_HYGIENE_STATUS, true);
@@ -35,44 +27,32 @@ export interface AdditionalInformationFormValues {
   fluorideVarnishApplied: OptionalFieldValue<boolean>;
 }
 
-export interface AdditionalInformationFormComponents {
-  SelectField: <
-    TMultiple extends boolean = false,
-    TOptionLabel extends string | ReactNode = string,
-  >(
-    props: SelectFieldProps<TMultiple, TOptionLabel>,
-  ) => ReactNode;
-  BooleanSelectField: (props: BooleanSelectFieldProps) => ReactNode;
-}
-
 interface AdditionalInformationFormSectionProps {
   screening: boolean;
   fluoridation: boolean;
   fluoridationConsentGiven?: boolean;
-  components?: AdditionalInformationFormComponents;
+  status: ExaminationStatus;
 }
 
 export function AdditionalInformationFormSection(
   props: AdditionalInformationFormSectionProps,
 ) {
-  const { screening, fluoridation, fluoridationConsentGiven, components } =
-    props;
-
-  const { SelectField, BooleanSelectField } = components ?? DEFAULT_COMPONENTS;
+  const { screening, fluoridation, fluoridationConsentGiven } = props;
 
   return (
     <InformationSheet>
       <DetailsSection title="Zusatzinfos">
+        <ExaminationStatusChip status={props.status} />
         {screening && (
-          <SelectField
+          <SoftRequiredSelectField
             name="oralHygieneStatus"
             label="Mundhygienestatus"
             options={ORAL_HYGIENE_STATUS_OPTIONS}
+            orientation="vertical"
           />
         )}
         {fluoridation && (
           <FluoridationField
-            component={BooleanSelectField}
             fluoridationConsentGiven={fluoridationConsentGiven}
           />
         )}
@@ -82,7 +62,6 @@ export function AdditionalInformationFormSection(
 }
 
 interface FluoridationFieldProps {
-  component: AdditionalInformationFormComponents["BooleanSelectField"];
   fluoridationConsentGiven?: boolean;
 }
 
@@ -96,13 +75,12 @@ function FluoridationField(props: FluoridationFieldProps) {
     );
   }
 
-  const FieldComponent = props.component;
-
   return (
-    <FieldComponent
+    <SoftRequiredBooleanSelectField
       name="fluorideVarnishApplied"
       label="Fluoridierung"
-      required="Bitte angeben, ob fluoridiert wurde."
+      orientation="vertical"
+      softRequired
     />
   );
 }

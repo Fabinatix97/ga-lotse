@@ -28,6 +28,7 @@ import de.eshg.base.user.api.GetUsersResponse;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.base.user.api.UserFilterParameters;
 import de.eshg.lib.auditlog.AuditLogger;
+import de.eshg.rest.service.error.AlreadyExistsException;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.ErrorResponse;
@@ -146,6 +147,7 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
   }
 
   @Override
+  @Transactional
   public ResponseEntity<Resource> readAuditLogFile(
       String key, ReadAuditLogFileRequest readAuditLogFileRequest) {
     UserDto selfUser = userApi.getSelfUser();
@@ -784,7 +786,7 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
 
   private void throwBadRequestExceptionBecauseFileAlreadyExists(
       AddAuditLogFileRequest addAuditLogFileRequest) {
-    throw new BadRequestException(
+    throw new AlreadyExistsException(
         "Audit log for %s of %s already exists"
             .formatted(
                 addAuditLogFileRequest.date().format(DateTimeFormatter.ISO_LOCAL_DATE),

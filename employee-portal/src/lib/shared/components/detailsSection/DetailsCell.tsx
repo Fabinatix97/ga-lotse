@@ -22,6 +22,11 @@ export interface DetailsCellProps {
   valueSx?: SxProps;
 }
 
+/**
+ * @deprecated This component is very old and messy. Please migrate and start using the newer DetailsItem instead of DetailsCell.
+ *             The new component is based on composition and is more adaptable to situations through `slotProps`.
+ *             We removed the `name` prop, to properly enforce using the labels for locators in tests.
+ */
 export function DetailsCellWrapped(props: DetailsCellProps) {
   return (
     <DetailsCell
@@ -40,6 +45,11 @@ export function DetailsCellWrapped(props: DetailsCellProps) {
   );
 }
 
+/**
+ * @deprecated This component is very old and messy. Please migrate and start using the newer DetailsItem instead of DetailsCell.
+ *             The new component is based on composition and is more adaptable to situations through `slotProps`.
+ *             We removed the `name` prop, to properly enforce using the labels for locators in tests.
+ */
 export function DetailsCell({
   name: givenName,
   label,

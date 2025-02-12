@@ -94,6 +94,8 @@ export function activeValueToParamValues(activeValue: FilterValue): string[] {
       return [activeValue.startDate, activeValue.endDate].filter(
         (value) => value !== undefined,
       );
+    case "Text":
+      return [activeValue.value];
   }
 }
 

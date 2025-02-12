@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiChecklistDefinitionVersion } from "@eshg/employee-portal-api/inspection";
+import { ApiChecklistDefinitionVersion } from "@eshg/inspection-api";
 import { Sheet, Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 

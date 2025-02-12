@@ -85,6 +85,7 @@ export function ChildrenFilterSettings(props: ChildrenFilterSettingsProps) {
             onChange={(institutionId) => {
               props.setFilterFormValue("institutionIdFilter", institutionId);
             }}
+            placeholder="Schule/Kita suchen"
           />
         </FormControl>
         <FormControl>

@@ -679,6 +679,187 @@
         "tags" : [ "Concern" ]
       }
     },
+    "/employee/document/{id}" : {
+      "delete" : {
+        "operationId" : "deleteDocumentEmployee",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Deletes a document along with all files associated with it",
+        "tags" : [ "OmsDocument" ]
+      },
+      "patch" : {
+        "operationId" : "patchDocumentInformation",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PatchDocumentInformationRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Updates information of one oms document",
+        "tags" : [ "OmsDocument" ]
+      }
+    },
+    "/employee/document/{id}/complete-file-upload" : {
+      "patch" : {
+        "operationId" : "patchCompleteDocumentFileUpload",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "files" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
+                  }
+                },
+                "required" : [ "files" ]
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Completes file upload of one oms document",
+        "tags" : [ "OmsDocument" ]
+      }
+    },
+    "/employee/document/{id}/note" : {
+      "patch" : {
+        "operationId" : "patchDocumentNote",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PatchDocumentNoteRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Updates note of one oms document",
+        "tags" : [ "OmsDocument" ]
+      }
+    },
+    "/employee/document/{id}/review" : {
+      "patch" : {
+        "operationId" : "patchDocumentReview",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PatchDocumentReviewRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Accepts or rejects a submitted document",
+        "tags" : [ "OmsDocument" ]
+      }
+    },
+    "/employee/file/{fileId}" : {
+      "get" : {
+        "operationId" : "getDownloadFile",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "fileId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Download file from oms document.",
+        "tags" : [ "OmsFile" ]
+      }
+    },
     "/employee/procedures" : {
       "get" : {
         "operationId" : "getAllEmployeeProcedures",
@@ -848,6 +1029,13 @@
         } ],
         "responses" : {
           "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AcceptDraftProcedureResponse"
+                }
+              }
+            },
             "description" : "OK"
           }
         },
@@ -974,6 +1162,117 @@
         "tags" : [ "EmployeeOmsProcedure" ]
       }
     },
+    "/employee/procedures/{id}/document" : {
+      "get" : {
+        "operationId" : "getAllDocuments",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetDocumentsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get all documents for one oms procedure",
+        "tags" : [ "EmployeeOmsProcedure" ]
+      },
+      "post" : {
+        "operationId" : "postDocument",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "files" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
+                  },
+                  "note" : {
+                    "type" : "string"
+                  },
+                  "postDocumentRequest" : {
+                    "$ref" : "#/components/schemas/PostDocumentRequest"
+                  }
+                },
+                "required" : [ "postDocumentRequest" ]
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "uuid"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Add a document to an oms procedure",
+        "tags" : [ "EmployeeOmsProcedure" ]
+      }
+    },
+    "/employee/procedures/{id}/email-notifications" : {
+      "patch" : {
+        "operationId" : "patchEmailNotifications",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PatchEmployeeOmsProcedureEmailNotificationsRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Updates the whether or not email notifications will be sent",
+        "tags" : [ "EmployeeOmsProcedure" ]
+      }
+    },
     "/employee/procedures/{id}/facility" : {
       "patch" : {
         "operationId" : "patchFacility",
@@ -1070,6 +1369,37 @@
         "tags" : [ "EmployeeOmsProcedure" ]
       }
     },
+    "/employee/procedures/{id}/medical-opinion-status" : {
+      "patch" : {
+        "operationId" : "patchMedicalOpinionStatus",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/MedicalOpinionStatus"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Updates the medical opinion status of a oms procedure",
+        "tags" : [ "EmployeeOmsProcedure" ]
+      }
+    },
     "/employee/procedures/{id}/physician" : {
       "patch" : {
         "operationId" : "patchPhysician",
@@ -1140,6 +1470,37 @@
         "tags" : [ "EmployeeOmsProcedure" ]
       }
     },
+    "/employee/procedures/{id}/waiting-room" : {
+      "patch" : {
+        "operationId" : "patchWaitingRoom",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/WaitingRoom"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update waiting room details for a procedure",
+        "tags" : [ "EmployeeOmsProcedure" ]
+      }
+    },
     "/employee/procedures/{procedureId}/affected-person" : {
       "patch" : {
         "operationId" : "updateAffectedPerson",
@@ -1200,6 +1561,58 @@
         },
         "summary" : "Synchronize affected person data",
         "tags" : [ "EmployeeOmsProcedure" ]
+      }
+    },
+    "/employee/waiting-room" : {
+      "get" : {
+        "operationId" : "getWaitingRoomProcedures",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "sortKey",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/WaitingRoomSortKey"
+          }
+        }, {
+          "in" : "query",
+          "name" : "sortDirection",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/SortDirection"
+          }
+        }, {
+          "in" : "query",
+          "name" : "pageNumber",
+          "required" : false,
+          "schema" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "in" : "query",
+          "name" : "pageSize",
+          "required" : false,
+          "schema" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetWaitingRoomProceduresResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get all procedures in waiting room.",
+        "tags" : [ "WaitingRoom" ]
       }
     },
     "/files/{fileId}" : {
@@ -2920,18 +3333,7 @@
     },
     "/test-helper/archiving-job" : {
       "post" : {
-        "operationId" : "runArchivingJob",
-        "responses" : {
-          "200" : {
-            "description" : "OK"
-          }
-        },
-        "tags" : [ "TestHelper" ]
-      }
-    },
-    "/test-helper/audit-log-storage" : {
-      "delete" : {
-        "operationId" : "clearAuditLogStorageDirectory",
+        "operationId" : "runAuditLogArchivingJob",
         "responses" : {
           "200" : {
             "description" : "OK"
@@ -3238,6 +3640,15 @@
           "propertyName" : "@type"
         }
       },
+      "AcceptDraftProcedureResponse" : {
+        "required" : [ "accessCode" ],
+        "type" : "object",
+        "properties" : {
+          "accessCode" : {
+            "type" : "string"
+          }
+        }
+      },
       "AddBarrierTestHelperResponse" : {
         "required" : [ "barrierId" ],
         "type" : "object",
@@ -3431,9 +3842,9 @@
             "format" : "uuid"
           },
           "standardDurationInMinutes" : {
-            "minimum" : 0,
+            "minimum" : 1,
             "type" : "integer",
-            "format" : "int32"
+            "format" : "int64"
           }
         }
       },
@@ -4005,6 +4416,84 @@
           }
         }
       },
+      "Document" : {
+        "required" : [ "documentStatus", "documentTypeDe", "files", "id", "mandatoryDocument", "uploadInCitizenPortal" ],
+        "type" : "object",
+        "properties" : {
+          "documentStatus" : {
+            "$ref" : "#/components/schemas/DocumentStatus"
+          },
+          "documentTypeDe" : {
+            "type" : "string"
+          },
+          "documentTypeEn" : {
+            "type" : "string"
+          },
+          "files" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/OmsFile"
+            }
+          },
+          "helpTextDe" : {
+            "type" : "string"
+          },
+          "helpTextEn" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "lastDocumentUpload" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "mandatoryDocument" : {
+            "type" : "boolean"
+          },
+          "note" : {
+            "type" : "string"
+          },
+          "reasonForRejection" : {
+            "type" : "string"
+          },
+          "uploadInCitizenPortal" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "DocumentPopulation" : {
+        "required" : [ "key", "request" ],
+        "type" : "object",
+        "properties" : {
+          "files" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/FileTestDataConfig"
+            }
+          },
+          "key" : {
+            "type" : "string"
+          },
+          "note" : {
+            "type" : "string"
+          },
+          "reasonForRejection" : {
+            "type" : "string"
+          },
+          "request" : {
+            "$ref" : "#/components/schemas/PostDocumentRequest"
+          },
+          "targetState" : {
+            "$ref" : "#/components/schemas/DocumentStatus"
+          }
+        }
+      },
+      "DocumentStatus" : {
+        "type" : "string",
+        "enum" : [ "MISSING", "SUBMITTED", "REJECTED", "ACCEPTED" ]
+      },
       "DomesticAddress" : {
         "required" : [ "city", "country", "postalCode", "street" ],
         "type" : "object",
@@ -4063,7 +4552,7 @@
         } ]
       },
       "EmployeeOmsProcedureDetails" : {
-        "required" : [ "affectedPerson", "appointments", "id", "status" ],
+        "required" : [ "affectedPerson", "appointments", "id", "medicalOpinionStatus", "sendEmailNotifications", "status", "waitingRoom" ],
         "type" : "object",
         "properties" : {
           "affectedPerson" : {
@@ -4075,6 +4564,10 @@
               "$ref" : "#/components/schemas/OmsAppointment"
             }
           },
+          "citizenUserId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
           "concern" : {
             "$ref" : "#/components/schemas/Concern"
           },
@@ -4085,11 +4578,20 @@
             "type" : "string",
             "format" : "uuid"
           },
+          "medicalOpinionStatus" : {
+            "$ref" : "#/components/schemas/MedicalOpinionStatus"
+          },
           "physician" : {
             "$ref" : "#/components/schemas/User"
           },
+          "sendEmailNotifications" : {
+            "type" : "boolean"
+          },
           "status" : {
             "$ref" : "#/components/schemas/ProcedureStatus"
+          },
+          "waitingRoom" : {
+            "$ref" : "#/components/schemas/WaitingRoom"
           }
         }
       },
@@ -4117,7 +4619,7 @@
         }
       },
       "EmployeeOmsProcedureOverview" : {
-        "required" : [ "id", "status" ],
+        "required" : [ "id", "medicalOpinionStatus", "status" ],
         "type" : "object",
         "properties" : {
           "concern" : {
@@ -4139,6 +4641,9 @@
           },
           "lastName" : {
             "type" : "string"
+          },
+          "medicalOpinionStatus" : {
+            "$ref" : "#/components/schemas/MedicalOpinionStatus"
           },
           "nextAppointment" : {
             "type" : "string",
@@ -4297,6 +4802,10 @@
             "type" : "string"
           }
         }
+      },
+      "FileTestDataConfig" : {
+        "type" : "string",
+        "enum" : [ "PDF", "JPG", "PNG" ]
       },
       "FileType" : {
         "type" : "string",
@@ -4749,6 +5258,18 @@
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/DetailedTask"
+            }
+          }
+        }
+      },
+      "GetDocumentsResponse" : {
+        "required" : [ "documents" ],
+        "type" : "object",
+        "properties" : {
+          "documents" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Document"
             }
           }
         }
@@ -5368,6 +5889,22 @@
         "default" : "ASC",
         "enum" : [ "ASC", "DESC" ]
       },
+      "GetWaitingRoomProceduresResponse" : {
+        "required" : [ "elements", "totalNumberOfElements" ],
+        "type" : "object",
+        "properties" : {
+          "elements" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/WaitingRoomProcedure"
+            }
+          },
+          "totalNumberOfElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
       "HttpMethod" : {
         "type" : "string",
         "enum" : [ "GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "TRACE" ]
@@ -5690,6 +6227,10 @@
         "type" : "string",
         "enum" : [ "LETTER", "PHONE_CALL", "NOTE", "EMAIL", "IMAGE", "DOCUMENT" ]
       },
+      "MedicalOpinionStatus" : {
+        "type" : "string",
+        "enum" : [ "IN_PROGRESS", "ACCOMPLISHED" ]
+      },
       "MetaData" : {
         "required" : [ "@type" ],
         "type" : "object",
@@ -5751,6 +6292,30 @@
           }
         }
       },
+      "OmsFile" : {
+        "required" : [ "creationDate", "fileType", "id", "name", "size" ],
+        "type" : "object",
+        "properties" : {
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "fileType" : {
+            "$ref" : "#/components/schemas/FileType"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
       "Operation" : {
         "type" : "string",
         "enum" : [ "DELETE" ]
@@ -5770,6 +6335,59 @@
         "properties" : {
           "concern" : {
             "$ref" : "#/components/schemas/Concern"
+          }
+        }
+      },
+      "PatchDocumentInformationRequest" : {
+        "required" : [ "documentTypeDe", "mandatoryDocument", "uploadInCitizenPortal" ],
+        "type" : "object",
+        "properties" : {
+          "documentTypeDe" : {
+            "type" : "string"
+          },
+          "documentTypeEn" : {
+            "type" : "string"
+          },
+          "helpTextDe" : {
+            "type" : "string"
+          },
+          "helpTextEn" : {
+            "type" : "string"
+          },
+          "mandatoryDocument" : {
+            "type" : "boolean"
+          },
+          "uploadInCitizenPortal" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "PatchDocumentNoteRequest" : {
+        "type" : "object",
+        "properties" : {
+          "note" : {
+            "type" : "string"
+          }
+        }
+      },
+      "PatchDocumentReviewRequest" : {
+        "required" : [ "result" ],
+        "type" : "object",
+        "properties" : {
+          "reasonForRejection" : {
+            "type" : "string"
+          },
+          "result" : {
+            "$ref" : "#/components/schemas/ReviewResult"
+          }
+        }
+      },
+      "PatchEmployeeOmsProcedureEmailNotificationsRequest" : {
+        "required" : [ "sendEmailNotifications" ],
+        "type" : "object",
+        "properties" : {
+          "sendEmailNotifications" : {
+            "type" : "boolean"
           }
         }
       },
@@ -5873,6 +6491,30 @@
           }
         }
       },
+      "PostDocumentRequest" : {
+        "required" : [ "documentTypeDe", "mandatoryDocument", "uploadInCitizenPortal" ],
+        "type" : "object",
+        "properties" : {
+          "documentTypeDe" : {
+            "type" : "string"
+          },
+          "documentTypeEn" : {
+            "type" : "string"
+          },
+          "helpTextDe" : {
+            "type" : "string"
+          },
+          "helpTextEn" : {
+            "type" : "string"
+          },
+          "mandatoryDocument" : {
+            "type" : "boolean"
+          },
+          "uploadInCitizenPortal" : {
+            "type" : "boolean"
+          }
+        }
+      },
       "PostEmployeeOmsProcedureFacilityRequest" : {
         "required" : [ "facility" ],
         "type" : "object",
@@ -5939,6 +6581,9 @@
               "type" : "string"
             }
           },
+          "citizenUserId" : {
+            "type" : "string"
+          },
           "closedAppointments" : {
             "type" : "array",
             "items" : {
@@ -5948,8 +6593,17 @@
           "concern" : {
             "$ref" : "#/components/schemas/ConcernTestDataConfig"
           },
+          "documents" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DocumentPopulation"
+            }
+          },
           "facility" : {
             "$ref" : "#/components/schemas/PostEmployeeOmsProcedureFacilityRequest"
+          },
+          "medicalOpinionStatus" : {
+            "$ref" : "#/components/schemas/MedicalOpinionStatus"
           },
           "physician" : {
             "type" : "string",
@@ -5958,8 +6612,14 @@
           "procedureData" : {
             "$ref" : "#/components/schemas/PostEmployeeOmsProcedureRequest"
           },
+          "sendEmailNotifications" : {
+            "type" : "boolean"
+          },
           "targetState" : {
             "$ref" : "#/components/schemas/ProcedureStatus"
+          },
+          "waitingRoom" : {
+            "$ref" : "#/components/schemas/WaitingRoom"
           }
         }
       },
@@ -5968,6 +6628,13 @@
         "type" : "object",
         "properties" : {
           "appointments" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "documentMap" : {
             "type" : "object",
             "additionalProperties" : {
               "type" : "string",
@@ -6228,6 +6895,10 @@
         "type" : "string",
         "default" : "ASC",
         "enum" : [ "ASC", "DESC" ]
+      },
+      "ReviewResult" : {
+        "type" : "string",
+        "enum" : [ "ACCEPTED", "REJECTED" ]
       },
       "Salutation" : {
         "type" : "string",
@@ -6518,9 +7189,9 @@
         "type" : "object",
         "properties" : {
           "standardDurationInMinutes" : {
-            "minimum" : 0,
+            "minimum" : 1,
             "type" : "integer",
-            "format" : "int32"
+            "format" : "int64"
           }
         }
       },
@@ -6590,6 +7261,58 @@
             }
           }
         }
+      },
+      "WaitingRoom" : {
+        "type" : "object",
+        "properties" : {
+          "info" : {
+            "type" : "string"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/WaitingStatus"
+          }
+        }
+      },
+      "WaitingRoomProcedure" : {
+        "required" : [ "dateOfBirth", "facilityName", "firstName", "id", "lastName", "modifiedAt", "waitingRoom" ],
+        "type" : "object",
+        "properties" : {
+          "dateOfBirth" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "facilityName" : {
+            "type" : "string"
+          },
+          "firstName" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "lastName" : {
+            "type" : "string"
+          },
+          "modifiedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "physicianName" : {
+            "type" : "string"
+          },
+          "waitingRoom" : {
+            "$ref" : "#/components/schemas/WaitingRoom"
+          }
+        }
+      },
+      "WaitingRoomSortKey" : {
+        "type" : "string",
+        "enum" : [ "ID", "FIRSTNAME", "LASTNAME", "DATE_OF_BIRTH", "FACILITY", "PHYSICIAN", "STATUS", "INFO", "MODIFIED_AT" ]
+      },
+      "WaitingStatus" : {
+        "type" : "string",
+        "enum" : [ "WAITING_FOR_CONSULTATION", "IN_CONSULTATION", "DONE" ]
       }
     }
   }

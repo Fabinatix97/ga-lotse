@@ -48,7 +48,7 @@ Based on the available data sources the user will select the wanted statistics d
 the corresponding `AttributeInfo`. `null` is also a valid value.
 
 * BOOLEAN: java.lang.Boolean (or boolean)
-* DATE: java.lang.String in the format yyyy-MMM-dd as returned by java.time.LocalDate.toString()
+* DATE: java.lang.String in the format yyyy-MM-dd as returned by java.time.LocalDate.toString()
 * DECIMAL: java.lang.Double (or double) - precision = 10, scale = 4 can be handled
 * INTEGER: java.lang.Integer (or int)
 * TEXT: java.lang.String, blank strings will be stored as null

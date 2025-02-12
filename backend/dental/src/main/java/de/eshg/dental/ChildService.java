@@ -60,6 +60,7 @@ import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.validation.ValidationUtil;
 import java.io.IOException;
 import java.time.Clock;
+import java.time.Instant;
 import java.time.Year;
 import java.util.Collection;
 import java.util.Collections;
@@ -259,7 +260,7 @@ public class ChildService {
         .map(ChildWithAugmentedData::child)
         .map(Child::getFluoridationConsents)
         .flatMap(Collection::stream)
-        .sorted(Comparator.comparing(FluoridationConsent::dateOfConsent).reversed())
+        .sorted(Comparator.comparing(FluoridationConsent::getModifiedAt).reversed())
         .toList();
   }
 
@@ -407,7 +408,7 @@ public class ChildService {
           ChildImporter importer =
               new ChildImporter(
                   sheet,
-                  new ChildRowReader(sheet, actualColumns),
+                  new ChildRowReader(sheet, clock, actualColumns),
                   new FeedbackColumnAccessor(actualColumns, ChildColumn.CHILD_ID.getHeader()),
                   institutionId,
                   year,
@@ -485,18 +486,26 @@ public class ChildService {
 
     FluoridationConsent requestedFluoridationConsent =
         ChildMapper.mapFluoridationToDomain(request.fluoridationConsent());
-    List<FluoridationConsent> persistedFluoridationConsents = child.getFluoridationConsents();
+    FluoridationConsent persistedFluoridationConsent = child.getCurrentFluoridationConsent();
     boolean updateFluoridationConsent =
         requestedFluoridationConsent != null
-            && (persistedFluoridationConsents.isEmpty()
-                || !Objects.equals(
-                    requestedFluoridationConsent, persistedFluoridationConsents.getLast()));
+            && (persistedFluoridationConsent == null
+                || !fluoridationConsentsMatch(
+                    requestedFluoridationConsent, persistedFluoridationConsent));
 
     if (updateFluoridationConsent) {
+      requestedFluoridationConsent.setModifiedAt(Instant.now(clock));
       child.addFluoridationConsent(requestedFluoridationConsent);
     }
 
     childRepository.flush();
+  }
+
+  private boolean fluoridationConsentsMatch(
+      FluoridationConsent fluoridationConsent1, FluoridationConsent fluoridationConsent2) {
+    return fluoridationConsent1.isConsented() == fluoridationConsent2.isConsented()
+        && Objects.equals(fluoridationConsent1.hasAllergy(), fluoridationConsent2.hasAllergy())
+        && fluoridationConsent1.getDateOfConsent().equals(fluoridationConsent2.getDateOfConsent());
   }
 
   private void addSystemProgressEntry(

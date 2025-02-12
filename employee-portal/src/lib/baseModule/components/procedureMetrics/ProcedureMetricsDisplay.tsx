@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiProcedureMetric } from "@eshg/employee-portal-api/inspection";
+import { ApiProcedureMetric } from "@eshg/inspection-api";
 import {
   CheckOutlined,
   DeviceHubOutlined,

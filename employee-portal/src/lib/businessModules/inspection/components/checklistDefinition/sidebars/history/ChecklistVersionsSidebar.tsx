@@ -9,7 +9,7 @@ import { ApiUserRole } from "@eshg/base-api";
 import {
   ApiChecklistDefinition,
   ApiChecklistDefinitionVersion,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { Stack, Typography } from "@mui/joy";
 

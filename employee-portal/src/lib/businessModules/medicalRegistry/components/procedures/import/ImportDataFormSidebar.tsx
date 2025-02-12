@@ -30,38 +30,33 @@ export function ImportDataFormSidebar({ onClose }: ImportDataFormSidebarProps) {
       <SidebarContent title="Daten importieren">
         <Stack gap={3}>
           <Alert
-            color="primary"
-            title="Hinweis"
+            color="danger"
+            title="Duplikate vermeiden"
             message={
               <List
                 marker="disc"
+                size="md"
                 sx={{
                   "&, && > *": { color: "inherit" },
                   paddingInlineStart: "2ch",
                   "--List-padding": 0,
-                  "--ListItem-minHeight": "2rem",
+                  "--ListItem-minHeight": "1.5rem",
+                  "--ListItem-paddingX": 0,
+                  "--ListItem-paddingY": 0,
                 }}
               >
+                <ListItem>Laden Sie Datensätze nicht mehrfach hoch.</ListItem>
                 <ListItem>
-                  Der Import kann nicht rückgängig gemacht werden.
-                </ListItem>
-                <ListItem>Alle Pflichtfelder müssen ausgefüllt sein.</ListItem>
-                <ListItem>Daten-Duplikate sind zu vermeiden.</ListItem>
-                <ListItem>
-                  Die Datei darf maximal 4000 Einträge enthalten.
+                  Vermeiden Sie Duplikate von Bestandsdaten sowie innerhalb der
+                  XLSX-Datei.
                 </ListItem>
               </List>
             }
           />
-          <Alert
-            color="danger"
-            title="Mehrfachupload vermeiden"
-            message="Datensätze dürfen nicht mehrfach hochgeladen werden."
-          />
           <Stack gap={2}>
             <FileField
               name="importFile"
-              label="Wählen Sie eine XLSX-Datei aus"
+              label="XLSX-Datei auswählen (Max. 4000 Einträge)"
               required="Bitte eine XLSX-Datei auswählen."
               accept={FileType.Xlsx}
             />

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetProcedureDraftResponse } from "@eshg/employee-portal-api/medicalRegistry";
+import { ApiGetProcedureDraftResponse } from "@eshg/medical-registry-api";
 import { Button, Card, Stack, Typography } from "@mui/joy";
 import { useId } from "react";
 

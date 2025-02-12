@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import {
   ApiAppointmentTypeConfig,
   ApiUpdateAppointmentTypeRequest,
-} from "@eshg/employee-portal-api/stiProtection";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+} from "@eshg/sti-protection-api";
 
 import { useAppointmentTypeApi } from "@/lib/businessModules/stiProtection/api/clients";
 

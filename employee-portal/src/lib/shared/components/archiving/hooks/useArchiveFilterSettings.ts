@@ -8,7 +8,7 @@ import {
   ApiGetArchivingConfigurationResponse,
   ApiProcedureType,
   GetArchivableProceduresRequest,
-} from "@eshg/employee-portal-api/businessProcedures";
+} from "@eshg/lib-procedures-api";
 
 import { archivingRelevanceNames } from "@/lib/shared/components/archiving/constants";
 import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";

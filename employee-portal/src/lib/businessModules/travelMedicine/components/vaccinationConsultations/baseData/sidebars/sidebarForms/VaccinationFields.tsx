@@ -23,7 +23,7 @@ import {
   createVaccinesOptions,
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/helpers";
 import { VACCINATION_TYPE } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/options";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { LOCALE_OPTION, formatCurrency } from "@/lib/shared/helpers/numbers";
 import { validatePositiveInteger } from "@/lib/shared/helpers/validators";
@@ -108,8 +108,7 @@ export function VaccinationFields({
           setOffset(getVaccineOffsets(vaccineId));
         }}
       />
-      <DetailsCell
-        name={`services.${index}.fee`}
+      <DetailsItem
         label="Preis"
         value={formatCurrency(val.fee, {
           localOption: LOCALE_OPTION.manual,

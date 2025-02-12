@@ -7,7 +7,7 @@ import { ApiBusinessModule } from "@eshg/base-api";
 import {
   ApiOpenDataFileType,
   GetOpenDocumentsRequest,
-} from "@eshg/employee-portal-api/opendata";
+} from "@eshg/opendata-api";
 
 import { openDataFileTypes } from "@/lib/opendata/constants";
 import { buildOpenDataBusinessModuleOptions } from "@/lib/opendata/helper";

@@ -4,7 +4,6 @@
  */
 
 import { ApiSalutation } from "@eshg/base-api";
-import { ApiContactType } from "@eshg/employee-portal-api/businessProcedures";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
@@ -17,11 +16,13 @@ import {
   buildEnumOptions,
   createFieldNameMapper,
 } from "@eshg/lib-portal/helpers/form";
+import { validateDateOfBirth } from "@eshg/lib-portal/helpers/validators";
 import {
   NestedFormProps,
   OptionalFieldValue,
 } from "@eshg/lib-portal/types/form";
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
+import { ApiContactType } from "@eshg/lib-procedures-api";
 import { Divider, Grid, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
@@ -114,7 +115,11 @@ export function ContactForm(props: NestedFormProps) {
                 : undefined
             }
           />
-          <DateField name={fieldName("dateOfBirth")} label="Geburtsdatum" />
+          <DateField
+            name={fieldName("dateOfBirth")}
+            label="Geburtsdatum"
+            validate={validateDateOfBirth}
+          />
           <Divider />
           <AddressForm name={fieldName("address")} />
         </Stack>

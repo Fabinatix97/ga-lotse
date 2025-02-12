@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiStiProtectionProcedure } from "@eshg/employee-portal-api/stiProtection";
 import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
+import { ApiStiProtectionProcedure } from "@eshg/sti-protection-api";
 import { Sheet, Stack } from "@mui/joy";
 
 import { GENDER_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";

@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { countryOptions } from "@eshg/lib-portal/helpers/countryOption";
 import {
   ApiGender,
   ApiStiProtectionProcedure,
   UpdatePersonDetailsRequest,
-} from "@eshg/employee-portal-api/stiProtection";
-import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { countryOptions } from "@eshg/lib-portal/helpers/countryOption";
+} from "@eshg/sti-protection-api";
 import { Formik } from "formik";
 
 import { useUpdatePersonDetails } from "@/lib/businessModules/stiProtection/api/mutations/procedures";

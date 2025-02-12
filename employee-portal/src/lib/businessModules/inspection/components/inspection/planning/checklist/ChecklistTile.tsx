@@ -10,7 +10,7 @@ import {
   ApiInspection,
   ApiInspectionAvailableCLDVersionsResponse,
   ApiInspectionCLDVersion,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { DeleteOutlined } from "@mui/icons-material";
 import { Chip, IconButton, Stack, Typography } from "@mui/joy";

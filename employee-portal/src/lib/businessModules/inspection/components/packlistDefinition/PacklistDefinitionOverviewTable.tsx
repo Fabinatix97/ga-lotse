@@ -8,7 +8,7 @@
 import {
   ApiPacklistDefinition,
   ApiPacklistDefinitionRevision,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { Add, Edit, History } from "@mui/icons-material";
 import { Button, Stack } from "@mui/joy";

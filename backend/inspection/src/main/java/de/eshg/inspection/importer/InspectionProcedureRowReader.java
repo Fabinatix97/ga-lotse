@@ -57,7 +57,7 @@ class InspectionProcedureRowReader extends RowReader<InspectionImporterRow, Insp
       List<InspectionListColumn> actualColumns,
       ImportPersister importPersister,
       Clock clock) {
-    super(sheet, actualColumns, InspectionImporterRow::new);
+    super(sheet, actualColumns, InspectionImporterRow::new, clock);
     this.importPersister = importPersister;
     this.clock = clock;
   }
@@ -120,7 +120,7 @@ class InspectionProcedureRowReader extends RowReader<InspectionImporterRow, Insp
     String firstName = cellAsString(col, CONTACT_FIRSTNAME, true, false, errorHandler);
     String lastName = cellAsString(col, CONTACT_LASTNAME, true, false, errorHandler);
     String email = cellAsString(col, CONTACT_EMAIL, true, false, errorHandler);
-    String phonenumber = cellAsString(col, CONTACT_PHONENUMBER, true, false, errorHandler);
+    String phonenumber = cellAsString(col, CONTACT_PHONENUMBER, true, true, errorHandler);
 
     // If every contact field is empty then don't create a contact
     if (salutation == null

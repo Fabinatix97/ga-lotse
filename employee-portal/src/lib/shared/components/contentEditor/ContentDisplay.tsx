@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiEditorBodyElementsInner } from "@eshg/employee-portal-api/libEditor";
+import { ApiEditorBodyElementsInner } from "@eshg/lib-editor-api";
 import { Box } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { MouseEventHandler, PropsWithChildren } from "react";

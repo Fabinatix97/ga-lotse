@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiFacilitySync } from "@eshg/employee-portal-api/officialMedicalService";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { ApiFacilitySync } from "@eshg/official-medical-service-api";
 import { useRouter } from "next/navigation";
 
 import { PersonDetails } from "@/lib/businessModules/schoolEntry/api/models/Person";

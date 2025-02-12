@@ -51,4 +51,8 @@
     <include file="migrations/0041_introduce_table_column_value_type.xml"/>
     <include file="migrations/0042_store_procedure_references_instead_of_ids.xml"/>
     <include file="migrations/0043_remove_linechart_column.xml"/>
+    <include file="migrations/0044_add_auditlog_entry.xml"/>
+    <include file="migrations/0045_data_privacy_category.xml"/>
+    <include file="migrations/0046_add_minBin_and_maxBin.xml"/>
+    <include file="migrations/0047_migrate_minBin_and_maxBin.xml"/>
 </databaseChangeLog>

@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiInspFacility } from "@eshg/employee-portal-api/inspection";
+import { ApiInspFacility } from "@eshg/inspection-api";
 
 import { CentralFileFacilityDetails } from "@/lib/shared/components/centralFile/display/CentralFileFacilityDetails";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 
 interface FacilityTileProps {
@@ -27,11 +27,7 @@ export function FacilityTile({
       onEdit={!readonly ? onEdit : undefined}
     >
       <CentralFileFacilityDetails facility={facility.baseFacility}>
-        <DetailsCell
-          name="Objekttyp"
-          label="Objekttyp"
-          value={facility.objectType?.name}
-        />
+        <DetailsItem label="Objekttyp" value={facility.objectType?.name} />
       </CentralFileFacilityDetails>
     </InfoTile>
   );

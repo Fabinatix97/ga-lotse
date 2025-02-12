@@ -5,12 +5,18 @@
 
 package de.eshg.officialmedicalservice.procedure.persistence.entity;
 
+import static de.eshg.lib.common.SensitivityLevel.PSEUDONYMIZED;
+
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.officialmedicalservice.appointment.persistence.entity.OmsAppointment;
 import de.eshg.officialmedicalservice.appointment.persistence.entity.OmsAppointment_;
+import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocument;
+import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocument_;
+import de.eshg.officialmedicalservice.waitingroom.persistence.entity.WaitingRoom;
+import de.eshg.officialmedicalservice.waitingroom.persistence.entity.WaitingRoom_;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,11 +25,14 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Transient;
+import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
 public class OmsProcedure extends Procedure<OmsProcedure, OmsTask, Person, Facility> {
@@ -44,6 +53,37 @@ public class OmsProcedure extends Procedure<OmsProcedure, OmsTask, Person, Facil
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @Column
   private UUID physicianId;
+
+  @OneToMany(
+      mappedBy = OmsDocument_.OMS_PROCEDURE,
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+      orphanRemoval = true)
+  @OrderBy
+  @BatchSize(size = 100)
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  private final List<OmsDocument> documents = new ArrayList<>();
+
+  @Column(nullable = false)
+  @NotNull
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private MedicalOpinionStatus medicalOpinionStatus;
+
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @Column(nullable = false)
+  private boolean sendEmailNotifications = true;
+
+  @OneToOne(
+      optional = false,
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+      mappedBy = WaitingRoom_.PROCEDURE,
+      orphanRemoval = true)
+  @DataSensitivity(PSEUDONYMIZED)
+  private WaitingRoom waitingRoom;
+
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @Column
+  private UUID citizenUserId;
 
   public Person findAffectedPerson() {
     if (getRelatedPersons().isEmpty()) {
@@ -75,5 +115,42 @@ public class OmsProcedure extends Procedure<OmsProcedure, OmsTask, Person, Facil
 
   public List<OmsAppointment> getAppointments() {
     return appointments;
+  }
+
+  public List<OmsDocument> getDocuments() {
+    return documents;
+  }
+
+  public MedicalOpinionStatus getMedicalOpinionStatus() {
+    return medicalOpinionStatus;
+  }
+
+  public void setMedicalOpinionStatus(MedicalOpinionStatus medicalOpinionStatus) {
+    this.medicalOpinionStatus = medicalOpinionStatus;
+  }
+
+  public boolean isSendEmailNotifications() {
+    return sendEmailNotifications;
+  }
+
+  public void setSendEmailNotifications(boolean sendEmailNotifications) {
+    this.sendEmailNotifications = sendEmailNotifications;
+  }
+
+  public WaitingRoom getWaitingRoom() {
+    return waitingRoom;
+  }
+
+  public void setWaitingRoom(WaitingRoom waitingRoom) {
+    this.waitingRoom = waitingRoom;
+    waitingRoom.setProcedure(this);
+  }
+
+  public UUID getCitizenUserId() {
+    return citizenUserId;
+  }
+
+  public void setCitizenUserId(UUID citizenUserId) {
+    this.citizenUserId = citizenUserId;
   }
 }

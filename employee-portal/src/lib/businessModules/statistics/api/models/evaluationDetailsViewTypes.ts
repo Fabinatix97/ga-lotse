@@ -154,6 +154,8 @@ export interface AnalysisHistogramDiagramConfiguration {
   grouping?: DiagramGrouping;
   binning: DiagramBinning;
   bins?: number;
+  minBin?: number;
+  maxBin?: number;
 }
 
 export interface AnalysisLineDiagramConfiguration {

@@ -5,6 +5,7 @@
 
 "use client";
 
+import { STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
 import { useQuery } from "@tanstack/react-query";
 
 import { useStiProtectionProcedureApi } from "@/lib/businessModules/stiProtection/api/clients";
@@ -23,5 +24,6 @@ export function usePinCheck(procedureId: string, pin: string | undefined) {
     },
     queryKey: ["pin-validation", procedureId, pin],
     enabled: pin != null,
+    staleTime: STATIC_QUERY_OPTIONS.staleTime,
   });
 }

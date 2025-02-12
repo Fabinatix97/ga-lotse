@@ -34,3 +34,6 @@ export const appointmentTypesApiQueryKey = queryKeyFactory(
 export const archivingApiQueryKey = queryKeyFactory(
   stiProtectionApiQueryKey(["archivingApi"]),
 );
+export const textTemplateApiQueryKey = queryKeyFactory(
+  stiProtectionApiQueryKey(["textTemplateApi"]),
+);

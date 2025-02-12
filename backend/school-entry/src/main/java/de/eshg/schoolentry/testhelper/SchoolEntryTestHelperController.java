@@ -5,7 +5,7 @@
 
 package de.eshg.schoolentry.testhelper;
 
-import de.eshg.auditlog.SharedAuditLogTestHelperApi;
+import de.eshg.auditlog.AuditLogClientTestHelperApi;
 import de.eshg.lib.appointmentblock.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.api.CreateAppointmentBlockGroupResponse;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
@@ -24,7 +24,6 @@ import de.eshg.testhelper.api.PopulationRequest;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.ListWithTotalNumber;
 import jakarta.validation.Valid;
-import java.io.IOException;
 import java.util.UUID;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,7 +36,7 @@ import org.springframework.web.service.annotation.PostExchange;
 @RestController
 @ConditionalOnTestHelperEnabled
 public class SchoolEntryTestHelperController extends TestHelperController
-    implements SharedAuditLogTestHelperApi {
+    implements AuditLogClientTestHelperApi {
 
   private final SchoolEntryTestHelperService schoolEntryTestHelperService;
   private final SchoolEntryFeatureToggle schoolEntryFeatureToggle;
@@ -126,12 +125,7 @@ public class SchoolEntryTestHelperController extends TestHelperController
   }
 
   @Override
-  public void clearAuditLogStorageDirectory() throws IOException {
-    auditLogTestHelperService.clearAuditLogStorageDirectory();
-  }
-
-  @Override
-  public void runArchivingJob() {
-    auditLogTestHelperService.runArchivingJob();
+  public void runAuditLogArchivingJob() {
+    auditLogTestHelperService.runAuditLogArchivingJob();
   }
 }

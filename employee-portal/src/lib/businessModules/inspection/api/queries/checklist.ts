@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ChecklistApi } from "@eshg/employee-portal-api/inspection";
+import { ChecklistApi } from "@eshg/inspection-api";
 import { queryOptions } from "@tanstack/react-query";
 
 import { checklistApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";

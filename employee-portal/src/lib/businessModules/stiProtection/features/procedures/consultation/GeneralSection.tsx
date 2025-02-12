@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiTextTemplateContext } from "@eshg/sti-protection-api";
 import { Typography, useTheme } from "@mui/joy";
 
 import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
@@ -10,6 +11,7 @@ import {
   YesOrNoFieldData,
   YesOrNoWithFollowUp,
 } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
+import { TextareaFieldWithTextTemplates } from "@/lib/businessModules/stiProtection/components/textTemplates/TextareaFieldWithTextTemplates";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
@@ -42,7 +44,11 @@ export function GeneralSection() {
     <SectionGrid defaultColumn={1}>
       <Typography level="h3">Allgemein</Typography>
 
-      <TextareaField name="general.mainReason" label="Konsultationsgrund" />
+      <TextareaFieldWithTextTemplates
+        context={ApiTextTemplateContext.ConsultationReason}
+        name="general.mainReason"
+        label="Konsultationsgrund"
+      />
       <TextareaField
         name="general.furtherGenderInfo"
         label="Weitere Geschlechtsangaben"

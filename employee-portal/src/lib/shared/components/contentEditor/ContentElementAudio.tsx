@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiEditorElementAudios } from "@eshg/employee-portal-api/libEditor";
+import { ApiEditorElementAudios } from "@eshg/lib-editor-api";
 import { OpenInNew } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
 

@@ -6,7 +6,7 @@
 "use client";
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
-import { ApiPostEmployeeOmsProcedureRequest } from "@eshg/employee-portal-api/officialMedicalService";
+import { ApiPostEmployeeOmsProcedureRequest } from "@eshg/official-medical-service-api";
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 import { useRouter } from "next/navigation";

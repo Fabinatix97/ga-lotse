@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiUpdateChecklistElementsInner } from "@eshg/employee-portal-api/inspection";
+import { ApiUpdateChecklistElementsInner } from "@eshg/inspection-api";
 import { isArray, isPlainObject } from "remeda";
 
 // Recursively update all objects with matching id and type.

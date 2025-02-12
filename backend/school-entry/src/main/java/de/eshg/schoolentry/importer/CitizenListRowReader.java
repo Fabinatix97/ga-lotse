@@ -16,6 +16,7 @@ import de.eshg.lib.xlsximport.RowReader;
 import de.eshg.lib.xlsximport.model.AddressData;
 import de.eshg.schoolentry.business.model.ImportChildData;
 import de.eshg.schoolentry.business.model.ImportCustodianData;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,8 +56,8 @@ class CitizenListRowReader extends RowReader<CitizenListRow, CitizenListColumn> 
               SALUTATION_CUSTODIAN_2,
               GENDER_CUSTODIAN_2));
 
-  CitizenListRowReader(Sheet sheet, List<CitizenListColumn> actualColumns) {
-    super(sheet, actualColumns, CitizenListRow::new);
+  CitizenListRowReader(Sheet sheet, Clock clock, List<CitizenListColumn> actualColumns) {
+    super(sheet, actualColumns, CitizenListRow::new, clock);
   }
 
   @Override
@@ -76,7 +77,7 @@ class CitizenListRowReader extends RowReader<CitizenListRow, CitizenListColumn> 
     String lastName = cellAsString(col, LAST_NAME, errorHandler);
     String firstName = cellAsString(col, FIRST_NAME, errorHandler);
     AddressData addressData = readAddressData(col, CHILD_ADDRESS_COLUMNS, errorHandler, true);
-    LocalDate birthDate = cellAsDate(col, DATE_OF_BIRTH, errorHandler);
+    LocalDate birthDate = cellAsDateOfBirth(col, DATE_OF_BIRTH, errorHandler);
     String placeOfBirth = cellAsString(col, PLACE_OF_BIRTH, true, false, errorHandler);
     CountryCode countryCode = cellAsCountryCode(col, COUNTRY_OF_BIRTH, errorHandler);
     GenderDto genderDto = cellAsGender(col, GENDER, errorHandler);
@@ -93,7 +94,7 @@ class CitizenListRowReader extends RowReader<CitizenListRow, CitizenListColumn> 
         String firstName = cellAsString(col, custodian.firstName(), errorHandler);
         String lastName = cellAsString(col, custodian.lastName(), errorHandler);
         AddressData address = readAddressData(col, custodian.address(), errorHandler, false);
-        LocalDate dateOfBirth = cellAsDate(col, custodian.dateOfBirth(), errorHandler);
+        LocalDate dateOfBirth = cellAsDateOfBirth(col, custodian.dateOfBirth(), errorHandler);
         String title = cellAsString(col, custodian.title(), true, false, errorHandler);
         SalutationDto salutation = cellAsSalutation(col, custodian.salutation(), errorHandler);
         GenderDto gender = cellAsGender(col, custodian.gender(), errorHandler);

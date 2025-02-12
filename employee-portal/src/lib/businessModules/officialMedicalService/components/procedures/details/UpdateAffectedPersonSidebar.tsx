@@ -3,38 +3,41 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAffectedPerson } from "@eshg/employee-portal-api/officialMedicalService";
 import { mapOptional } from "@eshg/lib-employee-portal/api/models/utils";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
+import { ApiAffectedPerson } from "@eshg/official-medical-service-api";
 
 import { usePatchAffectedPerson } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
 import { mapToPatchAffectedPersonRequest } from "@/lib/businessModules/officialMedicalService/shared/helpers";
 import { mapApiAddressToForm } from "@/lib/shared/components/form/address/helpers";
-import { PersonEditSidebar } from "@/lib/shared/components/personSidebar/PersonEditSidebar";
 import {
   DefaultPersonForm,
   DefaultPersonFormValues,
 } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
+import { PersonSidebarForm } from "@/lib/shared/components/personSidebar/form/PersonSidebarForm";
 import { normalizeListInputs } from "@/lib/shared/components/personSidebar/helpers";
-import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
+import {
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
-interface UpdateAffectedPersonSidebarProps {
-  affectedPerson: ApiAffectedPerson;
-  procedureId: string;
-  open: boolean;
-  onClose: () => void;
+export function useUpdateAffectedPersonSidebar() {
+  return useSidebarWithFormRef({
+    component: UpdateAffectedPersonSidebar,
+  });
 }
 
-export function UpdateAffectedPersonSidebar({
+interface UpdateAffectedPersonSidebarProps extends SidebarWithFormRefProps {
+  affectedPerson: ApiAffectedPerson;
+  procedureId: string;
+}
+
+function UpdateAffectedPersonSidebar({
   affectedPerson,
   procedureId,
-  open,
+  formRef,
   onClose,
 }: UpdateAffectedPersonSidebarProps) {
-  const { closeSidebar, handleClose, sidebarFormRef } = useSidebarForm({
-    onClose,
-  });
-
   const updateAffectedPerson = usePatchAffectedPerson();
 
   const version = affectedPerson.version;
@@ -49,18 +52,18 @@ export function UpdateAffectedPersonSidebar({
         ),
       },
       {
-        onSuccess: closeSidebar,
+        onSuccess: () => onClose(true),
       },
     );
   }
 
   return (
-    <PersonEditSidebar
-      open={open}
+    <PersonSidebarForm
+      mode={"edit"}
       title={"Betroffene Person bearbeiten"}
-      onCancel={handleClose}
+      onCancel={onClose}
       onSubmit={handleSubmit}
-      sidebarFormRef={sidebarFormRef}
+      sidebarFormRef={formRef}
       initialValues={mapPersonDetailsToForm(affectedPerson)}
       component={DefaultPersonForm}
       addressRequired

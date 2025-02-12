@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiFileType } from "@eshg/employee-portal-api/businessProcedures";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { formatFileSize } from "@eshg/lib-portal/helpers/file";
+import { ApiFileType } from "@eshg/lib-procedures-api";
 import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlined";
 import AudioFileOutlinedIcon from "@mui/icons-material/AudioFileOutlined";
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";

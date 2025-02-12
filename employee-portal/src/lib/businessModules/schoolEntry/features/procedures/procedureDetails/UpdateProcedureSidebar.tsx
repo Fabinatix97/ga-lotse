@@ -201,12 +201,14 @@ function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
               <SelectContactField
                 name="school"
                 label="Schule"
+                placeholder="Schule suchen"
                 categories={new Set([ApiContactCategory.School])}
               />
               {isHealthDepartmentSelectionMode(locationSelectionMode) && (
                 <SelectContactField
                   name="location"
                   label="Gesundheitsamt"
+                  placeholder="Gesundheitsamt suchen"
                   categories={new Set([ApiContactCategory.HealthDepartment])}
                 />
               )}

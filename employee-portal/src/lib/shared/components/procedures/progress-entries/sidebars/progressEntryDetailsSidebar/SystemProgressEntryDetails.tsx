@@ -7,7 +7,7 @@ import {
   ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner,
   ApiSystemProgressEntry,
   ApiUser,
-} from "@eshg/employee-portal-api/businessProcedures";
+} from "@eshg/lib-procedures-api";
 import { Chip } from "@mui/joy";
 import { isDefined } from "remeda";
 

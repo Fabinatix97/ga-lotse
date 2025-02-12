@@ -127,7 +127,7 @@ public final class ProphylaxisSessionMapper {
         examination.getChild().getGroupName().trim(),
         fileStateResponse.gender(),
         examination.getNote(),
-        examination.getChild().getCurrentFluoridationConsent(),
+        examination.getChild().isFluoridationConsentCurrentlyGivenOptionally(),
         ExaminationMapper.mapToDto(examination.getResult()),
         previousExaminations.stream()
             .map(Examination::getResult)
@@ -143,8 +143,8 @@ public final class ProphylaxisSessionMapper {
             userId ->
                 Optional.ofNullable(userMap.get(userId))
                     .<PerformingPersonDto>map(
-                        user -> new ExistingUserDto(user.firstName(), user.lastName()))
-                    .orElse(new NonExistingUserDto()))
+                        user -> new ExistingUserDto(userId, user.firstName(), user.lastName()))
+                    .orElse(new NonExistingUserDto(userId)))
         .toList();
   }
 

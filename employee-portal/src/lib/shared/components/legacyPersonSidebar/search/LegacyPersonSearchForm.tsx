@@ -6,6 +6,7 @@
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { validateDateOfBirth } from "@eshg/lib-portal/helpers/validators";
 import SearchIcon from "@mui/icons-material/Search";
 import { Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
@@ -72,6 +73,7 @@ export function LegacyPersonSearchForm({
                   name="dateOfBirth"
                   label="Geburtsdatum"
                   required="Bitte ein Geburtsdatum angeben."
+                  validate={validateDateOfBirth}
                 />
                 <SubmitButton
                   submitting={loading === true || isSubmitting}

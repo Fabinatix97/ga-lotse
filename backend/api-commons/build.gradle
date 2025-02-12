@@ -7,4 +7,9 @@ dependencies {
     api 'com.fasterxml.jackson.core:jackson-annotations'
     api 'io.swagger.core.v3:swagger-annotations-jakarta:latest.release'
     api 'org.springframework:spring-web'
+
+    testImplementation project(':test-commons')
+    testRuntimeOnly 'org.hibernate.validator:hibernate-validator'
+    testRuntimeOnly 'jakarta.el:jakarta.el-api:latest.release'
+    testRuntimeOnly 'org.glassfish:jakarta.el:latest.release'
 }

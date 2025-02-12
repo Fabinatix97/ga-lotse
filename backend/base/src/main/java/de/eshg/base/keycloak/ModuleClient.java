@@ -44,7 +44,8 @@ public enum ModuleClient {
   MEDICAL_REGISTRY(
       "medical-registry", List.of(BASE_MAIL_SEND, BASE_PERSONS_DELETE, BASE_FACILITIES_DELETE)),
   DENTAL("dental", List.of(BASE_MAIL_SEND, BASE_PERSONS_DELETE, BASE_FACILITIES_DELETE)),
-  OFFICIAL_MEDICAL_SERVICE("official-medical-service", List.of(BASE_MAIL_SEND));
+  OFFICIAL_MEDICAL_SERVICE(
+      "official-medical-service", List.of(BASE_MAIL_SEND, BASE_ACCESS_CODE_USER_ADMIN));
 
   private final String clientIdWithoutPrefix;
   private final List<EmployeePermissionRole> roles;

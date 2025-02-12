@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import {
   ApiConcern,
   ApiConcernCategoryConfig,
   ApiConcernConfig,
   ApiEmployeeOmsProcedureDetails,
   ApiGetConcernsResponse,
-} from "@eshg/employee-portal-api/officialMedicalService";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
+} from "@eshg/official-medical-service-api";
 import { Grid } from "@mui/joy";
 import { Formik, useFormikContext } from "formik";
 

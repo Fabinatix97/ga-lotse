@@ -33,12 +33,13 @@ export function useSearchParam<K extends BooleanNumberStringNames>(
   });
   let value = arrayParam[0];
   if (castTo === "boolean") {
-    value = !!value as NonNullable<BooleanNumberStringType<K>>;
+    value = (value != null) as NonNullable<BooleanNumberStringType<K>>;
   }
-  return [
-    (value ?? null) as BooleanNumberStringType<K>,
-    (value) => setArrayParam([value]),
-  ];
+  const setValue = useCallback(
+    (newValue: BooleanNumberStringType<K>) => setArrayParam([newValue]),
+    [setArrayParam],
+  );
+  return [(value ?? null) as BooleanNumberStringType<K>, setValue];
 }
 
 export function updateSearchParam(
@@ -106,7 +107,7 @@ export function useSearchParamArray<K extends BooleanNumberStringNames>(
     return [
       rawValues.map(
         (rawValue) =>
-          (rawValue === "true") as NonNullable<BooleanNumberStringType<K>>,
+          (rawValue !== "false") as NonNullable<BooleanNumberStringType<K>>,
       ),
       setParam,
     ];

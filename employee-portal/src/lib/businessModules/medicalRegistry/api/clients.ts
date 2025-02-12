@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 import {
   ApprovalRequestApi,
   ArchivingApi,
@@ -12,8 +13,7 @@ import {
   MedicalRegistryImportApi,
   ProcedureApi,
   ProgressEntryApi,
-} from "@eshg/employee-portal-api/medicalRegistry";
-import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
+} from "@eshg/medical-registry-api";
 
 function useConfiguration() {
   const configurationParameters = useApiConfiguration(

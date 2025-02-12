@@ -5,16 +5,16 @@
 
 "use client";
 
-import { ApiStiProtectionProcedure } from "@eshg/employee-portal-api/stiProtection";
+import { ApiStiProtectionProcedure } from "@eshg/sti-protection-api";
 import { Grid, Stack } from "@mui/joy";
 
 import { AdditionalDataSection } from "./AdditionalDataSection";
 import { AnonIdentityDocumentCard } from "./AnonIdentityDocumentCard";
 import { AppointmentDetails } from "./AppointmentDetails";
 import { CheckPinSection } from "./CheckPinSection";
-import { CloseAndReopenProcedurePanel } from "./CloseProcedurePanel";
 import { CreateAppointmentSidebar } from "./CreateAppointmentSidebar";
 import { EditPersonalDataSidebar } from "./EditPersonalDataSidebar";
+import { FinalProcedureActionPanel } from "./FinalProcedureActionPanel";
 import { PersonDetails } from "./PersonDetails";
 import { WaitingRoomSection } from "./WaitingRoomSection";
 
@@ -40,7 +40,7 @@ export function ProcedureDetails({
             <AdditionalDataSection procedure={procedure} />
             <CheckPinSection procedure={procedure} />
             <WaitingRoomSection procedure={procedure} />
-            <CloseAndReopenProcedurePanel procedure={procedure} />
+            <FinalProcedureActionPanel procedure={procedure} />
           </Stack>
         </Grid>
       </Grid>

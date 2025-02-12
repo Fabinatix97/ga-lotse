@@ -23,7 +23,6 @@ export function GdprProcedureStatusChip({
 
 const gdprProcedureStatusColor = {
   [ApiGdprProcedureStatus.Draft]: "warning",
-  [ApiGdprProcedureStatus.Open]: "neutral",
   [ApiGdprProcedureStatus.InProgress]: "primary",
   [ApiGdprProcedureStatus.Closed]: "success",
   [ApiGdprProcedureStatus.Aborted]: "danger",

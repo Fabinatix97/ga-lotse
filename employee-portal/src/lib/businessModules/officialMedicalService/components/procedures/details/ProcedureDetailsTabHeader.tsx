@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiEmployeeOmsProcedureHeader } from "@eshg/employee-portal-api/officialMedicalService";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { ApiEmployeeOmsProcedureHeader } from "@eshg/official-medical-service-api";
 
 import {
   TabNavigationHeader,

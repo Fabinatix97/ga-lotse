@@ -71,7 +71,8 @@ public class StatisticsService {
         attribute.getUnit(),
         attribute.getValueOptions(),
         attribute.getCategory(),
-        attribute.isMandatory());
+        attribute.isMandatory(),
+        attribute.getDataPrivacyCategory());
   }
 
   private static ValueType mapToValueType(AttributeData attribute) {

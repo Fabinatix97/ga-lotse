@@ -5,8 +5,6 @@
 
 package de.eshg.centralrepository.config;
 
-import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
-
 import de.eshg.lib.common.EshgHttpHeaders;
 import de.eshg.rest.service.security.AuthorizationCustomizer;
 import de.eshg.rest.service.security.DefaultEshgSecurityConfig;
@@ -27,6 +25,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
+import org.springframework.security.web.context.NullSecurityContextRepository;
 
 @Configuration
 public class CentralRepositorySecurityConfig {
@@ -43,6 +42,8 @@ public class CentralRepositorySecurityConfig {
     EshgHeaderPreAuthenticatedProcessingFilter eshgHeaderPreAuthenticatedProcessingFilter =
         new EshgHeaderPreAuthenticatedProcessingFilter();
     eshgHeaderPreAuthenticatedProcessingFilter.setAuthenticationManager(authenticationManager);
+    eshgHeaderPreAuthenticatedProcessingFilter.setSecurityContextRepository(
+        new NullSecurityContextRepository());
 
     return http.authorizeHttpRequests(
             auth -> {
@@ -61,7 +62,7 @@ public class CentralRepositorySecurityConfig {
         .formLogin(AbstractHttpConfigurer::disable)
         .httpBasic(AbstractHttpConfigurer::disable)
         .logout(AbstractHttpConfigurer::disable)
-        .sessionManagement(customizer -> customizer.sessionCreationPolicy(STATELESS))
+        .sessionManagement(AbstractHttpConfigurer::disable)
         .addFilter(eshgHeaderPreAuthenticatedProcessingFilter)
         .headers(DefaultEshgSecurityConfig::securityHeaders)
         .build();

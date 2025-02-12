@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiInspectionFeature } from "@eshg/employee-portal-api/inspection";
+import { ApiInspectionFeature } from "@eshg/inspection-api";
 
 import { useIsNewFeatureEnabledUnsuspended } from "@/lib/businessModules/inspection/api/queries/feature";
 

@@ -6,6 +6,7 @@
 package de.eshg.base.spring.config;
 
 import static de.eshg.base.gdpr.GdprProcedureApi.BY_ID;
+import static de.eshg.base.gdpr.GdprProcedureApi.DELETE_DOWNLOADS;
 import static de.eshg.base.gdpr.GdprProcedureApi.DOWNLOADS;
 import static de.eshg.base.gdpr.GdprProcedureApi.FILE_STATE_IDS;
 import static org.springframework.http.HttpMethod.DELETE;
@@ -87,7 +88,7 @@ public class BaseInternalSecurityConfig {
     auth.requestMatchers(POST, GdprProcedureApi.BASE_URL + DOWNLOADS)
         .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW.name());
 
-    auth.requestMatchers(DELETE, GdprProcedureApi.BASE_URL + DOWNLOADS)
+    auth.requestMatchers(POST, GdprProcedureApi.BASE_URL + DELETE_DOWNLOADS)
         .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW.name());
   }
 

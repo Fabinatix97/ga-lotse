@@ -6,7 +6,7 @@
 import {
   ChecklistDefinitionApi,
   ChecklistDefinitionCentralRepoApi,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import {

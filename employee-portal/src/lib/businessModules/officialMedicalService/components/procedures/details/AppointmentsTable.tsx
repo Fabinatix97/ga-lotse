@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { EnumMap } from "@eshg/lib-portal/types/helpers";
 import {
   ApiAppointmentState,
   ApiBookingState,
   ApiEmployeeOmsProcedureDetails,
   ApiOmsAppointment,
-} from "@eshg/employee-portal-api/officialMedicalService";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import { EnumMap } from "@eshg/lib-portal/types/helpers";
+} from "@eshg/official-medical-service-api";
 import {
   CheckCircle,
   Delete,
@@ -71,13 +71,11 @@ function createAppointmentColumns({
   openCancelAppointmentDialog,
   openCloseAppointmentDialog,
   openWithdrawAppointmentDialog,
-  closeAppointment,
 }: {
   openBookingSidebar?: (appointment: ApiOmsAppointment) => void;
   openCancelAppointmentDialog?: (appointment: ApiOmsAppointment) => void;
   openCloseAppointmentDialog?: (appointment: ApiOmsAppointment) => void;
   openWithdrawAppointmentDialog?: (appointment: ApiOmsAppointment) => void;
-  closeAppointment?: (appointment: ApiOmsAppointment) => Promise<void>;
 }) {
   return [
     columnHelper.accessor("appointmentType", {
@@ -189,12 +187,12 @@ function createAppointmentColumns({
         if (
           bookingState === ApiBookingState.Cancelled &&
           appointmentState === ApiAppointmentState.Open &&
-          closeAppointment
+          openCloseAppointmentDialog
         ) {
           items.push({
             label: "Als abgeschlossen markieren",
             startDecorator: <CheckCircle />,
-            onClick: () => closeAppointment(ctx.row.original),
+            onClick: () => openCloseAppointmentDialog(ctx.row.original),
           });
         }
 
@@ -234,7 +232,7 @@ export function AppointmentsTable({
     openConfirmationDialog({
       title: "Termin absagen?",
       description:
-        "Der/die Bürger:in wird per E-Mail informiert. Ein neuer Termin kann gebucht werden.",
+        "Ein neuer Termin kann gebucht werden. Der/die Bürger:in wird per E-Mail informiert.",
       color: "danger",
       confirmLabel: "Absagen",
       onConfirm: () => cancelAppointment(appointment),
@@ -244,8 +242,7 @@ export function AppointmentsTable({
   function openCloseAppointmentDialog(appointment: ApiOmsAppointment) {
     openConfirmationDialog({
       title: "Termin abschließen?",
-      description:
-        "Der/die Bürger:in wird per E-Mail informiert. Ein neuer Termin kann gebucht werden.",
+      description: "Der Termin kann nicht mehr editiert werden.",
       confirmLabel: "Abschließen",
       onConfirm: () => closeAppointment(appointment),
     });
@@ -255,7 +252,7 @@ export function AppointmentsTable({
     openConfirmationDialog({
       title: "Terminoption zurückziehen?",
       description:
-        "Der/die Bürger:in wird per E-Mail informiert. Eine neue Terminoption kann erstellt werden.",
+        "Es kan kein Termin über das Online Portal mehr gebucht werden. Der/die Bürger:in wird per E-Mail informiert.",
       color: "danger",
       confirmLabel: "Zurückziehen",
       onConfirm: () => withdrawAppointment(appointment),
@@ -271,7 +268,6 @@ export function AppointmentsTable({
           openCancelAppointmentDialog(appointment),
         openCloseAppointmentDialog,
         openWithdrawAppointmentDialog,
-        closeAppointment,
       });
 
   return <DataTable data={procedure.appointments} columns={columns} />;

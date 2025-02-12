@@ -10,9 +10,8 @@ import {
   ApiGetDetailPageInformationResponse,
   EvaluationApi,
 } from "@eshg/statistics-api";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions } from "@tanstack/react-query";
 
-import { useEvaluationApi } from "@/lib/businessModules/statistics/api/clients";
 import { mapAttributeSelectionToKey } from "@/lib/businessModules/statistics/api/mapper/mapAttributeSelectionKey";
 import { mapTimeRangeEndApiToFrontend } from "@/lib/businessModules/statistics/api/mapper/mapTimeRangeEnd";
 import { mapToApiBusinessModule } from "@/lib/businessModules/statistics/api/mapper/mapToApiBusinessModule";
@@ -65,6 +64,8 @@ function mapConfiguration(
         scaling: diagramConfiguration.scaling,
         binning: diagramConfiguration.binningMode,
         bins: diagramConfiguration.numberOfBins,
+        minBin: diagramConfiguration.minBin,
+        maxBin: diagramConfiguration.maxBin,
         primaryAttribute: getApiAttribute(
           diagramConfiguration.primaryAttribute,
         )!,
@@ -165,17 +166,9 @@ export function createQueryGetDetailPageInformation(
   evaluationApi: EvaluationApi,
   evaluationId: string,
 ) {
-  return {
+  return queryOptions({
     queryKey: evaluationApiQueryKey(["getDetailPageInformation", evaluationId]),
     queryFn: () => evaluationApi.getDetailPageInformation(evaluationId),
     select: mapToEvaluationDetailsView,
-  };
-}
-
-export function useGetDetailPageInformation(evaluationId: string) {
-  const evaluationApi = useEvaluationApi();
-  const queryResult = useSuspenseQuery(
-    createQueryGetDetailPageInformation(evaluationApi, evaluationId),
-  );
-  return queryResult.data;
+  });
 }

@@ -16,6 +16,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.OrderColumn;
+import java.time.Duration;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,7 +35,8 @@ public class AppointmentBlockGroup extends BaseEntityWithExternalId {
 
   private int parallelExaminations;
 
-  private int slotDurationInMinutes;
+  @Column(nullable = false)
+  private Duration slotDuration;
 
   @ElementCollection
   @Column(name = "physician_id", nullable = false)
@@ -77,12 +79,12 @@ public class AppointmentBlockGroup extends BaseEntityWithExternalId {
     this.parallelExaminations = parallelExaminations;
   }
 
-  public int getSlotDurationInMinutes() {
-    return slotDurationInMinutes;
+  public Duration getSlotDuration() {
+    return slotDuration;
   }
 
-  public void setSlotDurationInMinutes(int slotDurationInMinutes) {
-    this.slotDurationInMinutes = slotDurationInMinutes;
+  public void setSlotDuration(Duration slotDuration) {
+    this.slotDuration = slotDuration;
   }
 
   public List<UUID> getPhysicians() {

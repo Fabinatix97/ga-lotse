@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { type ApiInspection } from "@eshg/employee-portal-api/inspection";
+import { type ApiInspection } from "@eshg/inspection-api";
 
 import { InspectionLockInfo } from "@/lib/businessModules/inspection/components/inspection/InspectionLockInfo";
 import { InspectionPhaseSelect } from "@/lib/businessModules/inspection/components/inspection/InspectionPhaseSelect";

@@ -3436,18 +3436,7 @@
     },
     "/test-helper/archiving-job" : {
       "post" : {
-        "operationId" : "runArchivingJob",
-        "responses" : {
-          "200" : {
-            "description" : "OK"
-          }
-        },
-        "tags" : [ "TestHelper" ]
-      }
-    },
-    "/test-helper/audit-log-storage" : {
-      "delete" : {
-        "operationId" : "clearAuditLogStorageDirectory",
+        "operationId" : "runAuditLogArchivingJob",
         "responses" : {
           "200" : {
             "description" : "OK"
@@ -5039,9 +5028,9 @@
             "format" : "uuid"
           },
           "standardDurationInMinutes" : {
-            "minimum" : 0,
+            "minimum" : 1,
             "type" : "integer",
-            "format" : "int32"
+            "format" : "int64"
           }
         }
       },
@@ -9474,9 +9463,9 @@
         "type" : "object",
         "properties" : {
           "standardDurationInMinutes" : {
-            "minimum" : 0,
+            "minimum" : 1,
             "type" : "integer",
-            "format" : "int32"
+            "format" : "int64"
           }
         }
       },

@@ -11,13 +11,14 @@ import de.eshg.lib.xlsximport.ColumnAccessor;
 import de.eshg.lib.xlsximport.ErrorHandler;
 import de.eshg.lib.xlsximport.RowReader;
 import de.eshg.schoolentry.business.model.ImportChildData;
+import java.time.Clock;
 import java.util.List;
 import org.apache.poi.ss.usermodel.Sheet;
 
 class SchoolListRowReader extends RowReader<SchoolListRow, SchoolListColumn> {
 
-  SchoolListRowReader(Sheet sheet, List<SchoolListColumn> actualColumns) {
-    super(sheet, actualColumns, SchoolListRow::new);
+  SchoolListRowReader(Sheet sheet, Clock clock, List<SchoolListColumn> actualColumns) {
+    super(sheet, actualColumns, SchoolListRow::new, clock);
   }
 
   @Override
@@ -35,7 +36,7 @@ class SchoolListRowReader extends RowReader<SchoolListRow, SchoolListColumn> {
     return new ImportChildData(
         cellAsString(col, FIRST_NAME, errorHandler),
         cellAsString(col, LAST_NAME, errorHandler),
-        cellAsDate(col, DATE_OF_BIRTH, errorHandler),
+        cellAsDateOfBirth(col, DATE_OF_BIRTH, errorHandler),
         cellAsGender(col, GENDER, errorHandler),
         readAddressData(
             col,

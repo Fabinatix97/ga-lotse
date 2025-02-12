@@ -6,8 +6,10 @@
 package de.eshg.officialmedicalservice.testhelper.api;
 
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
+import de.eshg.officialmedicalservice.procedure.api.MedicalOpinionStatusDto;
 import de.eshg.officialmedicalservice.procedure.api.PostEmployeeOmsProcedureFacilityRequest;
 import de.eshg.officialmedicalservice.procedure.api.PostEmployeeOmsProcedureRequest;
+import de.eshg.officialmedicalservice.waitingroom.api.WaitingRoomDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
@@ -21,4 +23,9 @@ public record PostPopulateProcedureRequest(
     @Valid List<@Valid AppointmentPopulationDto> appointments,
     List<String> cancelledAppointments,
     List<String> closedAppointments,
-    ProcedureStatusDto targetState) {}
+    @Valid List<DocumentPopulationDto> documents,
+    MedicalOpinionStatusDto medicalOpinionStatus,
+    ProcedureStatusDto targetState,
+    Boolean sendEmailNotifications,
+    @Valid WaitingRoomDto waitingRoom,
+    String citizenUserId) {}

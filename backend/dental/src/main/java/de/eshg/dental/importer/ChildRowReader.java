@@ -17,13 +17,14 @@ import de.eshg.dental.business.model.ImportChildData;
 import de.eshg.lib.xlsximport.ColumnAccessor;
 import de.eshg.lib.xlsximport.ErrorHandler;
 import de.eshg.lib.xlsximport.RowReader;
+import java.time.Clock;
 import java.util.List;
 import org.apache.poi.ss.usermodel.Sheet;
 
 public class ChildRowReader extends RowReader<ChildRow, ChildColumn> {
 
-  public ChildRowReader(Sheet sheet, List<ChildColumn> actualColumns) {
-    super(sheet, actualColumns, ChildRow::new);
+  public ChildRowReader(Sheet sheet, Clock clock, List<ChildColumn> actualColumns) {
+    super(sheet, actualColumns, ChildRow::new, clock);
   }
 
   @Override
@@ -40,7 +41,7 @@ public class ChildRowReader extends RowReader<ChildRow, ChildColumn> {
     return new ImportChildData(
         cellAsString(col, LAST_NAME, errorHandler),
         cellAsString(col, FIRST_NAME, errorHandler),
-        cellAsDate(col, DATE_OF_BIRTH, errorHandler),
+        cellAsDateOfBirth(col, DATE_OF_BIRTH, errorHandler),
         cellAsGender(col, GENDER, errorHandler),
         cellAsString(col, GROUP, errorHandler));
   }

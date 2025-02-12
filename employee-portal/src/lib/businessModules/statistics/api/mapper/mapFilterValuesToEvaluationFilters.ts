@@ -93,6 +93,13 @@ export function mapFilterValuesToEvaluationFilters(
               withNullValues: withNullValues,
             } satisfies EvaluationFilter;
           }
+        case "TextAttribute":
+          assertFilterType(filterValue, "Text");
+          return {
+            type: "TextFilterParameter",
+            text: filterValue.value,
+            attribute: attributeSelection,
+          } satisfies EvaluationFilter;
         default:
           throw new Error(`Attribute of type ${attribute.type} not expected`);
       }

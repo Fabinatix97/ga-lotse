@@ -7,6 +7,7 @@ package de.eshg.statistics.mapper;
 
 import de.eshg.statistics.api.AttributeSelectionDto;
 import de.eshg.statistics.persistence.entity.AttributeSelection;
+import de.eshg.statistics.persistence.entity.TableColumn;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -69,5 +70,17 @@ public class AttributeSelectionMapper {
         attributeSelection.getDataSourceId(),
         attributeSelection.getBusinessModuleAttributeCode(),
         attributeSelection.getBaseModuleAttributeCode());
+  }
+
+  public static AttributeSelectionDto mapToApi(TableColumn tableColumn) {
+    if (tableColumn == null) {
+      return null;
+    } else {
+      return new AttributeSelectionDto(
+          tableColumn.getBusinessModuleName(),
+          tableColumn.getDataSourceId(),
+          tableColumn.getBusinessModuleAttributeCode(),
+          tableColumn.getBaseModuleAttributeCode());
+    }
   }
 }

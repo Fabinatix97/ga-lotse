@@ -8,7 +8,7 @@
 import {
   ApiChecklistDefinitionVersion,
   ApiObjectType,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { InfoOutlined } from "@mui/icons-material";
@@ -109,6 +109,7 @@ export function EditChecklistDefinition({
       initialValues={formData}
       onSubmit={sendToBackend}
       enableReinitialize
+      validateOnChange={false}
     >
       {({ isSubmitting }) => (
         <FormPlus>

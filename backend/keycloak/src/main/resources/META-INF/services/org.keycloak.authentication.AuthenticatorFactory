@@ -1,1 +1,3 @@
-de.eshg.keycloak.authenticator.AccessCodeFormFactory
+de.eshg.keycloak.authenticator.DateOfBirthAccessCodeFormFactory
+de.eshg.keycloak.authenticator.PinAccessCodeFormFactory
+de.eshg.keycloak.authenticator.DeprecatedAccessCodeFormFactory

@@ -5,7 +5,7 @@
 
 package de.eshg.medicalregistry.testhelper;
 
-import de.eshg.auditlog.SharedAuditLogTestHelperApi;
+import de.eshg.auditlog.AuditLogClientTestHelperApi;
 import de.eshg.lib.auditlog.AuditLogTestHelperService;
 import de.eshg.medicalregistry.featuretoggle.MedicalRegistryFeature;
 import de.eshg.medicalregistry.featuretoggle.MedicalRegistryFeatureToggle;
@@ -13,7 +13,6 @@ import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperController;
 import de.eshg.testhelper.TestHelperWithDatabaseService;
 import de.eshg.testhelper.environment.EnvironmentConfig;
-import java.io.IOException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.service.annotation.DeleteExchange;
@@ -22,7 +21,7 @@ import org.springframework.web.service.annotation.PostExchange;
 @RestController
 @ConditionalOnTestHelperEnabled
 public class MedicalRegistryTestHelperController extends TestHelperController
-    implements SharedAuditLogTestHelperApi {
+    implements AuditLogClientTestHelperApi {
 
   private final AuditLogTestHelperService auditLogTestHelperService;
   private final MedicalRegistryFeatureToggle medicalRegistryFeatureToggle;
@@ -50,12 +49,7 @@ public class MedicalRegistryTestHelperController extends TestHelperController
   }
 
   @Override
-  public void clearAuditLogStorageDirectory() throws IOException {
-    auditLogTestHelperService.clearAuditLogStorageDirectory();
-  }
-
-  @Override
-  public void runArchivingJob() {
-    auditLogTestHelperService.runArchivingJob();
+  public void runAuditLogArchivingJob() {
+    auditLogTestHelperService.runAuditLogArchivingJob();
   }
 }

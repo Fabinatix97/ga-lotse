@@ -5,12 +5,13 @@
 
 "use client";
 
-import { ApiSortDirection } from "@eshg/employee-portal-api/stiProtection";
+import { ApiSortDirection } from "@eshg/statistics-api";
 import { startTransition, useEffect, useState } from "react";
-import { isDefined, isNullish } from "remeda";
+import { isDefined } from "remeda";
 
 import {
   isValidAttributeKey,
+  mapAttributeSelectionToKey,
   mapKeyToAttributeSelection,
 } from "@/lib/businessModules/statistics/api/mapper/mapAttributeSelectionKey";
 import { ProcedureReferences } from "@/lib/businessModules/statistics/api/models/evaluationDetailsTableProcedureReferences";
@@ -56,20 +57,16 @@ export default function EvaluationDetailsTablePage(
     props.params.id,
   );
 
-  const sortableAccessorKey = evaluation.attributes.find(
-    (attribute) => attribute.type !== "ProcedureReferenceAttribute",
-  )?.key;
-
   const {
     sortKey: tableSortKey,
     sortDirection: tableSortDirection,
     manualSortingProps,
   } = useTableSorting({
     onSortingChange: () => resetPageNumber(),
-    initialSorting: isDefined(sortableAccessorKey)
+    initialSorting: evaluation.sortAttribute
       ? {
-          id: sortableAccessorKey,
-          desc: false,
+          id: mapAttributeSelectionToKey(evaluation.sortAttribute),
+          desc: evaluation.sortDirection === "DESC",
         }
       : undefined,
   });
@@ -95,7 +92,6 @@ export default function EvaluationDetailsTablePage(
         resetPageNumber();
       }),
     filterTemplates: filterTemplates,
-    loading: isNullish(sortKey),
   };
 
   return (

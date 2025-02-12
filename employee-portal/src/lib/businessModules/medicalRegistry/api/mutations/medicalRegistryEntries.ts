@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ConfirmProcedureRequest,
-  CreateProcedureRequest,
-} from "@eshg/employee-portal-api/medicalRegistry";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import {
+  ConfirmProcedureRequest,
+  CreateProcedureRequest,
+} from "@eshg/medical-registry-api";
 import { useRouter } from "next/navigation";
 
 import { useMedicalRegistryApi } from "@/lib/businessModules/medicalRegistry/api/clients";

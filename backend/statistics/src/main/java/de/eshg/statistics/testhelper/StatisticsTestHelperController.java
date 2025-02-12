@@ -5,7 +5,7 @@
 
 package de.eshg.statistics.testhelper;
 
-import de.eshg.auditlog.SharedAuditLogTestHelperApi;
+import de.eshg.auditlog.AuditLogClientTestHelperApi;
 import de.eshg.lib.auditlog.AuditLogTestHelperService;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.statistics.aggregation.ReportExecution;
@@ -16,7 +16,6 @@ import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.DefaultTestHelperService;
 import de.eshg.testhelper.TestHelperController;
 import de.eshg.testhelper.environment.EnvironmentConfig;
-import java.io.IOException;
 import java.util.UUID;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +24,7 @@ import org.springframework.web.service.annotation.PostExchange;
 @RestController
 @ConditionalOnTestHelperEnabled
 public class StatisticsTestHelperController extends TestHelperController
-    implements SharedAuditLogTestHelperApi {
+    implements AuditLogClientTestHelperApi {
 
   private final StatisticsFeatureToggle statisticsFeatureToggle;
   private final AuditLogTestHelperService auditLogTestHelperService;
@@ -59,11 +58,6 @@ public class StatisticsTestHelperController extends TestHelperController
     statisticsExecutorService.submit(reportExecution::handlePlannedReportsInternal);
   }
 
-  @Override
-  public void clearAuditLogStorageDirectory() throws IOException {
-    auditLogTestHelperService.clearAuditLogStorageDirectory();
-  }
-
   @PostExchange("/populate-create-evaluation/{businessModuleName}/{anonymized}")
   public UUID createEvaluation(
       @PathVariable("businessModuleName") String businessModuleName,
@@ -81,7 +75,7 @@ public class StatisticsTestHelperController extends TestHelperController
   }
 
   @Override
-  public void runArchivingJob() {
-    auditLogTestHelperService.runArchivingJob();
+  public void runAuditLogArchivingJob() {
+    auditLogTestHelperService.runAuditLogArchivingJob();
   }
 }

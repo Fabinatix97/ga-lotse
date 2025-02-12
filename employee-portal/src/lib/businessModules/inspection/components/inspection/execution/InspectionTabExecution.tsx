@@ -10,7 +10,7 @@ import {
   ApiInspection,
   ApiInspectionPhase,
   ApiUpdateInspectionRequest,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import {
   AutorenewOutlined,
   Checklist as ChecklistIcon,

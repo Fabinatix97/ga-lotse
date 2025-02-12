@@ -5,7 +5,6 @@
 
 import { ApiContactCategory } from "@eshg/base-api";
 import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
-import { SearchOutlined } from "@mui/icons-material";
 import { useState } from "react";
 
 import { useSearchContacts } from "@/lib/baseModule/api/queries/contacts";
@@ -35,7 +34,6 @@ export function SearchMultipleContactsField(props: SearchContactFieldProps) {
       required={`Bitte ein/e ${categories} angeben.`}
       options={options}
       placeholder={`${categories} suchen`}
-      endDecorator={<SearchOutlined />}
       loading={searchContacts.isLoading}
       onInputChange={(_, newInputValue) => setContactName(newInputValue)}
       disableFiltering

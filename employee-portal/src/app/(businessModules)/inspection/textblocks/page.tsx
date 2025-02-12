@@ -5,7 +5,7 @@
 
 "use client";
 
-import { GetTextBlocksRequest } from "@eshg/employee-portal-api/inspection";
+import { GetTextBlocksRequest } from "@eshg/inspection-api";
 import { SearchParams } from "@eshg/lib-portal/helpers/searchParams";
 
 import { useGetTextBlocks } from "@/lib/businessModules/inspection/api/queries/textblocks";

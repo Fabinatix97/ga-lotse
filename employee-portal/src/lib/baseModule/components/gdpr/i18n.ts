@@ -8,7 +8,6 @@ import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 
 export const statusTranslation = {
   DRAFT: "Entwurf",
-  OPEN: "Offen",
   IN_PROGRESS: "In Bearbeitung",
   CLOSED: "Abgeschlossen",
   ABORTED: "Abgebrochen",

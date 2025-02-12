@@ -8,7 +8,7 @@
 import {
   ApiUpdateChecklistElementsInner,
   ApiUpdateChecklistRequest,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { Stack } from "@mui/joy";
 import { useQueryClient } from "@tanstack/react-query";

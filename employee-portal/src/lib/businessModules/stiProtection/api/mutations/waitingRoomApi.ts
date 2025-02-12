@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { UpdateWaitingRoomDetailsRequest } from "@eshg/employee-portal-api/stiProtection";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { MutationPassThrough } from "@eshg/lib-portal/types/query";
+import { UpdateWaitingRoomDetailsRequest } from "@eshg/sti-protection-api";
 
 import { useWaitingRoomApi } from "@/lib/businessModules/stiProtection/api/clients";
 import { stiProtectionApiQueryKey } from "@/lib/businessModules/stiProtection/api/queries/apiQueryKeys";

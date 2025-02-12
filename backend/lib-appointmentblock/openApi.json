@@ -488,9 +488,9 @@
             "format" : "uuid"
           },
           "standardDurationInMinutes" : {
-            "minimum" : 0,
+            "minimum" : 1,
             "type" : "integer",
-            "format" : "int32"
+            "format" : "int64"
           }
         }
       },
@@ -819,9 +819,9 @@
         "type" : "object",
         "properties" : {
           "standardDurationInMinutes" : {
-            "minimum" : 0,
+            "minimum" : 1,
             "type" : "integer",
-            "format" : "int32"
+            "format" : "int64"
           }
         }
       },

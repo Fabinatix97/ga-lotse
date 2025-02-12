@@ -12,4 +12,10 @@ import java.time.LocalDate;
 
 @Schema(name = "Medication")
 public record MedicationDto(
-    @NotBlank String name, @NotBlank String dose, @NotNull LocalDate prescriptionDate) {}
+    @Schema(description = "Name of the prescribed medication.", example = "Tenofovir.") @NotBlank
+        String name,
+    @Schema(description = "Prescribed dosage of the medication.", example = "300 mg once daily.")
+        @NotBlank
+        String dose,
+    @Schema(description = "Date the medication was prescribed.", example = "2025-01-16") @NotNull
+        LocalDate prescriptionDate) {}

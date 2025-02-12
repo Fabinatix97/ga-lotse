@@ -22,11 +22,12 @@ export interface TableSheetProps extends RequiresChildren {
   hideTable?: boolean;
   title?: ReactNode;
   footer?: ReactNode;
+  "aria-label"?: string;
 }
 
 export function TableSheet(props: TableSheetProps): ReactElement {
   return (
-    <StyledSheet>
+    <StyledSheet aria-label={props["aria-label"]}>
       <Stack flex={1} overflow="auto">
         {props.title}
         {props.hideTable ? <Box flex={1} overflow="auto" /> : props.children}

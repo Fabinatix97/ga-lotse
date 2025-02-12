@@ -5,11 +5,11 @@
 
 "use client";
 
+import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
 import {
   ApiWaitingRoomProcedure,
   ApiWaitingRoomSortKey,
-} from "@eshg/employee-portal-api/stiProtection";
-import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
+} from "@eshg/sti-protection-api";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 import { differenceInMinutes } from "date-fns";
 

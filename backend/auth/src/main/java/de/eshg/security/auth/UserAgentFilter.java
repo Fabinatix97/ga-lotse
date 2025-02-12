@@ -20,7 +20,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.util.Assert;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -30,7 +29,6 @@ public class UserAgentFilter extends OncePerRequestFilter {
 
   private final AuthProperties authProperties;
   private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-  private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
   public UserAgentFilter(AuthProperties authProperties) {
     this.authProperties = authProperties;

@@ -4,12 +4,12 @@
  */
 
 import { systemProgressEntryTypeTitles as dentalSystemProgressEntryTypeTitles } from "@eshg/dental/shared/progressEntries";
+import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 import {
   ApiInboxProgressEntryType,
   ApiManualProgressEntryType,
   ApiProgressEntryClass,
-} from "@eshg/employee-portal-api/businessProcedures";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
+} from "@eshg/lib-procedures-api";
 import {
   CallOutlined,
   DescriptionOutlined,

@@ -14,7 +14,7 @@ import {
   ApiPatchEmployeeOmsProcedureFacilityRequest,
   ApiPostEmployeeOmsProcedureRequest,
   ApiProcedureStatus,
-} from "@eshg/employee-portal-api/officialMedicalService";
+} from "@eshg/official-medical-service-api";
 
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import {
@@ -119,4 +119,14 @@ export function isProcedureFinalized(procedure: {
     ApiProcedureStatus.Aborted,
   ];
   return finalizedStates.includes(procedure.status);
+}
+
+export function isProcedureOpenOrInProgress(procedure: {
+  status: ApiProcedureStatus;
+}): boolean {
+  const openOrInProgressStates: ApiProcedureStatus[] = [
+    ApiProcedureStatus.Open,
+    ApiProcedureStatus.InProgress,
+  ];
+  return openOrInProgressStates.includes(procedure.status);
 }

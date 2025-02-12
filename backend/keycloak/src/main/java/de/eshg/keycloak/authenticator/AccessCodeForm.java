@@ -8,13 +8,13 @@ package de.eshg.keycloak.authenticator;
 import static org.keycloak.authentication.authenticators.util.AuthenticatorUtils.getDisabledByBruteForceEventError;
 
 import de.eshg.keycloak.api.user.KeycloakAttributes;
-import de.eshg.keycloak.credentialprovider.DateOfBirthCredentialModel;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import org.jboss.logging.Logger;
 import org.keycloak.authentication.AbstractFormAuthenticator;
 import org.keycloak.authentication.AuthenticationFlowContext;
@@ -23,27 +23,20 @@ import org.keycloak.events.Errors;
 import org.keycloak.forms.login.LoginFormsProvider;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
-import org.keycloak.models.UserCredentialModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.models.utils.FormMessage;
 import org.keycloak.protocol.oidc.OIDCLoginProtocol;
 import org.keycloak.sessions.AuthenticationSessionModel;
 import org.keycloak.utils.StringUtil;
 
-public class AccessCodeForm extends AbstractFormAuthenticator {
+public abstract class AccessCodeForm extends AbstractFormAuthenticator {
 
   private static final Logger logger = Logger.getLogger(AccessCodeForm.class);
 
-  public static final String FORM_TEMPLATE = "access-code.ftl";
   public static final String ACCESS_CODE_QUERY_PARAMETER = "access_code";
-
+  public static final String CONTEXT_INFO_QUERY_PARAMETER = "context_info";
   public static final String ACCESS_CODE_FIELD = "access_code";
-  public static final String DATE_OF_BIRTH_FIELD = "date_of_birth";
-
   public static final String MISSING_ACCESS_CODE_MESSAGE = "missingAccessCode";
-  public static final String MISSING_DATE_OF_BIRTH_MESSAGE = "missingDateOfBirth";
-  public static final String INVALID_ACCESS_CODE_CREDENTIALS_MESSAGE =
-      "invalidAccessCodeCredentials";
   public static final String ACCOUNT_LOCKED_OUT_MESSAGE = "accountLockedOut";
 
   @Override
@@ -54,11 +47,11 @@ public class AccessCodeForm extends AbstractFormAuthenticator {
 
     // Only show the authenticator if prompted by query parameter or auth note set
     if (Objects.equals(
-            queryParameters.getFirst(OIDCLoginProtocol.PROMPT_PARAM), ACCESS_CODE_QUERY_PARAMETER)
+            queryParameters.getFirst(OIDCLoginProtocol.PROMPT_PARAM), getAuthenticatorPrompt())
         || Objects.equals(
-            authSession.getAuthNote(OIDCLoginProtocol.PROMPT_PARAM), ACCESS_CODE_QUERY_PARAMETER)) {
+            authSession.getAuthNote(OIDCLoginProtocol.PROMPT_PARAM), getAuthenticatorPrompt())) {
 
-      authSession.setAuthNote(OIDCLoginProtocol.PROMPT_PARAM, ACCESS_CODE_QUERY_PARAMETER);
+      authSession.setAuthNote(OIDCLoginProtocol.PROMPT_PARAM, getAuthenticatorPrompt());
 
       // If an access code was provided in the initial rendering of the page
       // add it to the formData
@@ -66,11 +59,20 @@ public class AccessCodeForm extends AbstractFormAuthenticator {
         String accessCode = queryParameters.getFirst(ACCESS_CODE_QUERY_PARAMETER);
         formData.add(ACCESS_CODE_FIELD, accessCode);
       }
+      applyCustomFormTemplateValues(context);
+      addContextInfo(context, formData);
       challenge(context, formData, Map.of());
     } else {
       context.attempted();
     }
   }
+
+  protected abstract void addContextInfo(
+      AuthenticationFlowContext context, MultivaluedMap<String, String> formData);
+
+  protected abstract String getAuthenticatorPrompt();
+
+  protected abstract String getInvalidCredentialsMessage();
 
   /*
    * This processes the form submission and adds error handling to the same form on failure
@@ -80,14 +82,11 @@ public class AccessCodeForm extends AbstractFormAuthenticator {
   public void action(AuthenticationFlowContext context) {
     MultivaluedMap<String, String> formData = context.getHttpRequest().getDecodedFormParameters();
     Map<String, String> errors = new HashMap<>();
-
     String accessCode = formData.getFirst(ACCESS_CODE_FIELD).replaceAll("\\s+", "");
-    if (StringUtil.isBlank(accessCode)) {
-      errors.put(ACCESS_CODE_FIELD, MISSING_ACCESS_CODE_MESSAGE);
-    }
-    if (StringUtil.isBlank(formData.getFirst(DATE_OF_BIRTH_FIELD))) {
-      errors.put(DATE_OF_BIRTH_FIELD, MISSING_DATE_OF_BIRTH_MESSAGE);
-    }
+    applyCustomFormTemplateValues(context);
+    addContextInfo(context, formData);
+    validateAccesCodeField(accessCode, errors);
+    validateCredentialField(formData, errors);
 
     if (errors.isEmpty()) {
       getUserByAccessCodeAttribute(context, accessCode)
@@ -96,17 +95,7 @@ public class AccessCodeForm extends AbstractFormAuthenticator {
                 // Check if the user is locked out
                 String bruteForceError = getDisabledByBruteForceEventError(context, user);
                 boolean isDisabled = bruteForceError != null;
-                // Is submitted in the format yyyy-mm-dd from the html input tag with type=date
-                String dateOfBirth = formData.getFirst(DATE_OF_BIRTH_FIELD);
-                if (!isDisabled
-                    && (user.credentialManager()
-                            .isValid(
-                                new UserCredentialModel(
-                                    null, DateOfBirthCredentialModel.TYPE, dateOfBirth))
-                        // Todo(ISSUE-7041): Remove. For accounts in prod that still save the date
-                        // of birth as attribute
-                        || dateOfBirth.equals(
-                            user.getFirstAttribute(KeycloakAttributes.DATE_OF_BIRTH_ATTRIBUTE)))) {
+                if (!isDisabled && validateCredentials(formData, user)) {
                   context.setUser(user);
                   context.success();
                 } else {
@@ -117,14 +106,14 @@ public class AccessCodeForm extends AbstractFormAuthenticator {
                   if (isDisabled) {
                     errors.put(ACCESS_CODE_FIELD, ACCOUNT_LOCKED_OUT_MESSAGE);
                   } else {
-                    errors.put(ACCESS_CODE_FIELD, INVALID_ACCESS_CODE_CREDENTIALS_MESSAGE);
+                    errors.put(ACCESS_CODE_FIELD, getInvalidCredentialsMessage());
                   }
                 }
               },
               () -> {
                 // Invalid access code, but display the same error
                 formData.remove(ACCESS_CODE_FIELD);
-                errors.put(ACCESS_CODE_FIELD, INVALID_ACCESS_CODE_CREDENTIALS_MESSAGE);
+                errors.put(ACCESS_CODE_FIELD, getInvalidCredentialsMessage());
               });
     }
 
@@ -132,6 +121,31 @@ public class AccessCodeForm extends AbstractFormAuthenticator {
       challenge(context, formData, errors);
     }
   }
+
+  private void validateAccesCodeField(String accessCode, Map<String, String> errors) {
+    if (StringUtil.isBlank(accessCode)) {
+      errors.put(ACCESS_CODE_FIELD, MISSING_ACCESS_CODE_MESSAGE);
+    }
+  }
+
+  private void applyCustomFormTemplateValues(AuthenticationFlowContext context) {
+    LoginFormsProvider form = context.form();
+    form.setAttributeMapper(
+        new Function<Map<String, Object>, Map<String, Object>>() {
+          @Override
+          public Map<String, Object> apply(Map<String, Object> attributes) {
+            attributes.computeIfPresent(
+                "auth", (key, bean) -> new AccessCodeAwareAuthenticationContextBean());
+            return attributes;
+          }
+        });
+  }
+
+  protected abstract void validateCredentialField(
+      MultivaluedMap<String, String> formData, Map<String, String> errors);
+
+  protected abstract boolean validateCredentials(
+      MultivaluedMap<String, String> formData, UserModel user);
 
   /*
    * This creates the custom code form which asks for an access code and a second authentication information
@@ -148,17 +162,15 @@ public class AccessCodeForm extends AbstractFormAuthenticator {
         .filter(name -> StringUtil.isNotBlank(formData.getFirst(name)))
         .forEach(name -> form.setAttribute(name, formData.getFirst(name)));
     errors.forEach((field, message) -> form.addError(new FormMessage(field, message)));
-    context.challenge(form.createForm(FORM_TEMPLATE));
+    context.challenge(form.createForm(getFormTemplate()));
   }
 
   static void logFailedAttemptOnUser(
       AuthenticationFlowContext context, UserModel user, String bruteForceError) {
     context.getEvent().user(user);
-    if (bruteForceError != null) {
-      context.getEvent().error(bruteForceError);
-    } else {
-      context.getEvent().error(Errors.INVALID_USER_CREDENTIALS);
-    }
+    context
+        .getEvent()
+        .error(Objects.requireNonNullElse(bruteForceError, Errors.INVALID_USER_CREDENTIALS));
     RealmModel realm = context.getRealm();
     if (realm.isBruteForceProtected()) {
       context
@@ -198,4 +210,6 @@ public class AccessCodeForm extends AbstractFormAuthenticator {
 
   @Override
   public void setRequiredActions(KeycloakSession session, RealmModel realm, UserModel user) {}
+
+  protected abstract String getFormTemplate();
 }

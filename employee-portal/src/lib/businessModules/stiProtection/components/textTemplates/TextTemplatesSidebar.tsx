@@ -4,6 +4,7 @@
  */
 
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { ApiTextTemplateContext } from "@eshg/sti-protection-api";
 import { OpenInNew } from "@mui/icons-material";
 import {
   AccordionGroup,
@@ -13,26 +14,38 @@ import {
   Select,
   Stack,
 } from "@mui/joy";
-import { KeyboardEvent, useId, useRef } from "react";
+import {
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from "react";
 
+import { useTextTemplates } from "@/lib/businessModules/stiProtection/api/queries/textTemplates";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 import { TextTemplateAccordion } from "./TextTemplateAccordion";
-import { useTextTemplatesSidebar } from "./TextTemplatesSidebarProvider";
-import { ExampleTextTemplates, TextTemplateContextOptions } from "./constants";
+import { TextTemplateContextOptions } from "./constants";
 
-export function TextTemplatesSidebar() {
-  const { isOpen, close, context } = useTextTemplatesSidebar();
+export type AppendText = (text: string) => Promise<void> | undefined;
+interface TextTemplatesSidebarProps {
+  onClose: () => void;
+  context: ApiTextTemplateContext;
+  appendTextRef: MutableRefObject<AppendText | null>;
+}
+
+export function TextTemplatesSidebar({
+  onClose,
+  context,
+  appendTextRef,
+}: TextTemplatesSidebarProps) {
   const accordionsRef = useRef<HTMLDivElement | null>(null);
 
-  const textTemplates = ExampleTextTemplates.filter(
-    (k) => k.context === context,
-  );
-
-  function onKeyDown(e: KeyboardEvent) {
+  const onKeyDown = useCallback((e: KeyboardEvent) => {
     const index = parseInt(e.key);
     if (isNaN(index)) {
       return;
@@ -41,47 +54,84 @@ export function TextTemplatesSidebar() {
       `button[aria-keyshortcuts="${index}"]`,
     ) as HTMLElement | undefined;
     button?.click();
+  }, []);
+
+  function appendText(text: string) {
+    if (appendTextRef.current == null) {
+      return;
+    }
+    return appendTextRef.current(text);
   }
 
+  useEffect(() => {
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [onKeyDown]);
+
   return (
-    <div onKeyDown={onKeyDown}>
-      <Sidebar open={isOpen} onClose={close}>
-        <SidebarContent title={"Textvorlage einfügen"}>
-          <Stack gap={2}>
-            <ContextSelect />
-            <AccordionGroup sx={{ gap: 1 }} ref={accordionsRef}>
-              <Divider />
-              {textTemplates.map(({ name, text }, index) => (
-                <TextTemplateAccordion
-                  key={name}
-                  name={name}
-                  text={text}
-                  index={index}
-                />
-              ))}
-            </AccordionGroup>
-            <InternalLinkButton
-              href={routes.textTemplates}
-              sx={{ alignSelf: "start" }}
-              variant="plain"
-              endDecorator={<OpenInNew />}
-            >
-              Textvorlagen verwalten
-            </InternalLinkButton>
-          </Stack>
-        </SidebarContent>
-        <SidebarActions>
-          <Button onClick={close} sx={{ alignSelf: "end" }}>
-            Schließen
-          </Button>
-        </SidebarActions>
-      </Sidebar>
-    </div>
+    <>
+      <SidebarContent title={"Textvorlage einfügen"}>
+        <TextTemplatesSidebarContent
+          context={context}
+          appendText={appendText}
+          accordionsRef={accordionsRef}
+        />
+      </SidebarContent>
+      <SidebarActions>
+        <Button onClick={onClose} sx={{ alignSelf: "end" }}>
+          Schließen
+        </Button>
+      </SidebarActions>
+    </>
+  );
+}
+interface TextTemplatesSidebarContentProps
+  extends Pick<TextTemplatesSidebarProps, "context"> {
+  appendText: AppendText;
+  accordionsRef: MutableRefObject<HTMLDivElement | null>;
+}
+export function TextTemplatesSidebarContent({
+  context: givenContext,
+  appendText,
+  accordionsRef,
+}: TextTemplatesSidebarContentProps) {
+  const [context, setContext] = useState<ApiTextTemplateContext | null>(
+    givenContext,
+  );
+  const filterContexts = context == null ? undefined : [context];
+  const { data: textTemplates } = useTextTemplates(filterContexts);
+  return (
+    <Stack gap={2}>
+      <ContextSelect context={context} setContext={setContext} />
+      <AccordionGroup sx={{ gap: 1 }} ref={accordionsRef}>
+        <Divider />
+        {textTemplates.map(({ name, content }, index) => (
+          <TextTemplateAccordion
+            key={name}
+            name={name}
+            content={content}
+            index={index}
+            appendText={appendText}
+          />
+        ))}
+      </AccordionGroup>
+      <InternalLinkButton
+        href={routes.textTemplates}
+        sx={{ alignSelf: "start" }}
+        variant="plain"
+        endDecorator={<OpenInNew />}
+      >
+        Textvorlagen verwalten
+      </InternalLinkButton>
+    </Stack>
   );
 }
 
-export function ContextSelect() {
-  const { context, setContext } = useTextTemplatesSidebar();
+interface ContextSelectProps {
+  context: ApiTextTemplateContext | null;
+  setContext: (c: ApiTextTemplateContext | null) => void;
+}
+export function ContextSelect({ context, setContext }: ContextSelectProps) {
   const buttonId = useId();
   const labelId = useId();
   return (
@@ -91,8 +141,13 @@ export function ContextSelect() {
       </label>
       <Select
         slotProps={{ button: { id: buttonId, "aria-labelledby": labelId } }}
-        value={context ?? null}
-        onChange={(_e, newValue) => setContext(newValue)}
+        value={context}
+        onChange={(_e, newValue) => {
+          if (!newValue) {
+            return;
+          }
+          setContext(newValue);
+        }}
       >
         {TextTemplateContextOptions.map((option, index) => (
           <Option key={index} label={option.label} value={option.value}>

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { GetTextBlocksRequest } from "@eshg/employee-portal-api/inspection";
+import { GetTextBlocksRequest } from "@eshg/inspection-api";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useTextBlockApi } from "@/lib/businessModules/inspection/api/clients";

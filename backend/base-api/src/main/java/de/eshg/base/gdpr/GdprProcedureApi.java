@@ -11,6 +11,7 @@ import de.eshg.base.gdpr.api.AddGdprDownloadsRequest;
 import de.eshg.base.gdpr.api.AddGdprProcedureFromCitizenPortalRequest;
 import de.eshg.base.gdpr.api.AddGdprProcedureRequest;
 import de.eshg.base.gdpr.api.CancelGdprProcedureRequest;
+import de.eshg.base.gdpr.api.CitizenUsersGdprProcedureDto;
 import de.eshg.base.gdpr.api.CloseGdprProcedureRequest;
 import de.eshg.base.gdpr.api.DeleteGdprDownloadsRequest;
 import de.eshg.base.gdpr.api.GdprProcedureFilterParameters;
@@ -42,6 +43,7 @@ public interface GdprProcedureApi {
   String SELF_LINKED_GDPR_PROCEDURES = "/self/linked-gdpr-procedures";
   String CITIZEN_PORTAL_URL = Base.GDPR_PROCEDURE_CITIZEN_PORTAL_URL;
   String DOWNLOADS = Base.Gdpr.DOWNLOADS;
+  String DELETE_DOWNLOADS = Base.Gdpr.DELETE_DOWNLOADS;
   String FILE_STATE_IDS = Base.Gdpr.FILE_STATE_IDS;
   String BY_ID = Base.Gdpr.BY_ID;
   String DETAILS_PAGE = Base.Gdpr.DETAILS_PAGE;
@@ -64,10 +66,10 @@ public interface GdprProcedureApi {
       summary =
           """
   This endpoint allows authenticated MUK and BundID users to initiate a GDPR
-  procedure via the citizen portal initiate a GDPR procedure. A matter of
-  concern can be added to the request if desired.
+  procedure via the citizen portal. A matter of concern can be added to the
+  request if desired.
   """)
-  GetGdprProcedureResponse addGdprProcedureFromCitizenPortal(
+  CitizenUsersGdprProcedureDto addGdprProcedureFromCitizenPortal(
       @RequestBody @Valid AddGdprProcedureFromCitizenPortalRequest request);
 
   @GetExchange(CITIZEN_PORTAL_URL + SELF_LINKED_GDPR_PROCEDURES)
@@ -163,7 +165,7 @@ public interface GdprProcedureApi {
           "Get list of download ids of GDPR-related documents or data of this GDPR procedure.")
   GetGdprDownloadsResponse getDownloads(@PathVariable("id") UUID id);
 
-  @DeleteExchange(DOWNLOADS)
+  @PostExchange(DELETE_DOWNLOADS)
   @ApiResponse(responseCode = "200")
   @Operation(
       summary =

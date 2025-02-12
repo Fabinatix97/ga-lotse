@@ -4,7 +4,6 @@
  */
 
 import { ApiCountryCode } from "@eshg/base-api";
-import { ApiTypeOfChange } from "@eshg/employee-portal-api/medicalRegistry";
 import {
   MedicalRegistryCreateProcedureFormValues,
   RequiredDocumentsFormValues,
@@ -13,6 +12,7 @@ import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { validateFile } from "@eshg/lib-portal/helpers/validators";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
+import { ApiTypeOfChange } from "@eshg/medical-registry-api";
 import { Add, DeleteOutlined } from "@mui/icons-material";
 import { Button, Grid, IconButton, Stack, Typography } from "@mui/joy";
 import { FieldArray, useFormikContext } from "formik";

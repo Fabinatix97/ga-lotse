@@ -6,7 +6,7 @@
 import {
   GetArchivableProceduresRequest,
   GetRelevantArchivableProceduresRequest,
-} from "@eshg/employee-portal-api/businessProcedures";
+} from "@eshg/lib-procedures-api";
 
 import { useArchivingApi } from "@/lib/businessModules/inspection/api/clients";
 import { archivingApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";

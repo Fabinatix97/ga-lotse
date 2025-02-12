@@ -11,11 +11,11 @@ import {
   ENUM_TRUE_VALUE,
 } from "@/lib/businessModules/statistics/components/evaluations/details/filter/enumFilterMappings";
 
-import { SuppertedEvaluationFilterValues } from "./suppertedEvaluationFilterValues";
+import { SupportedEvaluationFilterValues } from "./supportedEvaluationFilterValues";
 
 export function mapEvaluationFilterToFilterValue(
   filter: EvaluationFilter,
-): SuppertedEvaluationFilterValues {
+): SupportedEvaluationFilterValues {
   switch (filter.type) {
     case "ValueOptionFilterParameter": {
       const selectedValues = filter.searchValues;
@@ -82,6 +82,12 @@ export function mapEvaluationFilterToFilterValue(
             ? "INCLUDE_NULL"
             : "EXCLUDE_NULL",
         },
+      };
+    case "TextFilterParameter":
+      return {
+        type: "Text",
+        key: mapAttributeSelectionToKey(filter.attribute),
+        value: filter.text,
       };
     default:
       throw new Error("Not Implemented!");

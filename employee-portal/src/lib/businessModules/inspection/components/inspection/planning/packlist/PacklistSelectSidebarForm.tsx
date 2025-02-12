@@ -6,7 +6,7 @@
 import {
   ApiInspectionAvailablePLDRevisionsResponse,
   ApiInspectionPLDRevision,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";

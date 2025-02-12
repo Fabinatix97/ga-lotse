@@ -6,7 +6,9 @@
 import {
   ApiCreateProphylaxisSessionRequest,
   ApiProphylaxisSessionDetails,
+  ApiUpdateExaminationsInBulkRequest,
   ApiUpdateProphylaxisSessionParticipantsRequest,
+  ApiUpdateProphylaxisSessionRequest,
 } from "@eshg/dental-api";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -24,6 +26,21 @@ export function useCreateProphylaxisSession() {
       prophylaxisSessionApi.createProphylaxisSession(request),
     onSuccess: () => {
       snackbar.confirmation("Prophylaxe erfolgreich angelegt.");
+    },
+  });
+}
+
+export function useUpdateProphylaxisSession(prophylaxisSessionId: string) {
+  const { prophylaxisSessionApi } = useDentalApi();
+  const snackbar = useSnackbar();
+  return useHandledMutation({
+    mutationFn: (request: ApiUpdateProphylaxisSessionRequest) =>
+      prophylaxisSessionApi.updateProphylaxisSession(
+        prophylaxisSessionId,
+        request,
+      ),
+    onSuccess: () => {
+      snackbar.confirmation("Prophylaxe erfolgreich gespeichert.");
     },
   });
 }
@@ -76,6 +93,40 @@ export function useUpdateProphylaxisSessionParticipants(
       ),
     onSuccess: (response: ApiProphylaxisSessionDetails) => {
       queryClient.setQueryData(queryKey, response);
+    },
+  });
+}
+
+interface UseUpdateProphylaxisSessionExaminationsOptions {
+  onSuccess: () => void;
+}
+
+export function useUpdateProphylaxisSessionExaminations(
+  prophylaxisSessionId: string,
+  options?: UseUpdateProphylaxisSessionExaminationsOptions,
+) {
+  const { prophylaxisSessionApi } = useDentalApi();
+  const queryClient = useQueryClient();
+  const { queryKey } = getProphylaxisSessionQuery(prophylaxisSessionApi, {
+    prophylaxisSessionId,
+  });
+  const snackbar = useSnackbar();
+
+  return useHandledMutation({
+    meta: { updatesQuery: queryKey },
+    mutationFn: (examinationUpdates: ApiUpdateExaminationsInBulkRequest[]) =>
+      prophylaxisSessionApi.updateProphylaxisSessionExaminations(
+        prophylaxisSessionId,
+        { examinationUpdates },
+      ),
+    onSuccess: (response) => {
+      queryClient.setQueryData(queryKey, response);
+      snackbar.confirmation("Untersuchungen erfolgreich gespeichert.");
+      options?.onSuccess?.();
+    },
+    alertOptions: {
+      enableRetryAfterError: true,
+      closeable: true,
     },
   });
 }

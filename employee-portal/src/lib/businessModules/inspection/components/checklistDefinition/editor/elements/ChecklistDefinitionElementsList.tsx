@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiCLSectionContextElementsInner } from "@eshg/inspection-api";
 import { useNonce } from "@eshg/lib-portal/components/NonceProvider";
 import {
   DragDropContext,
@@ -13,6 +14,7 @@ import {
 } from "@hello-pangea/dnd";
 import { Box, Stack } from "@mui/joy";
 import { FieldArray, useFormikContext } from "formik";
+import { memo } from "react";
 
 import { FormChecklistDefinitionVersion } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
 import { ChecklistDefinitionElement } from "@/lib/businessModules/inspection/components/checklistDefinition/editor/elements/ChecklistDefinitionElement";
@@ -50,35 +52,15 @@ export function ChecklistDefinitionElementsList({
                 >
                   {values.context.sections[sectionIndex]?.elements.map(
                     (element, elementIndex) => (
-                      <Draggable
+                      <MemoizedDraggableChecklistDefinitionElement
                         key={element.id}
-                        draggableId={element.id}
-                        index={elementIndex}
-                      >
-                        {(provided, snapshot) => (
-                          <Box
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            sx={getItemStyle(
-                              snapshot.isDragging,
-                              provided.draggableProps.style,
-                            )}
-                          >
-                            <ChecklistDefinitionElement
-                              dragHandleProps={provided.dragHandleProps}
-                              key={element.id}
-                              element={element}
-                              setElement={(element) =>
-                                replace(elementIndex, element)
-                              }
-                              deleteElement={() => remove(elementIndex)}
-                              addElement={(element) => push(element)}
-                              sectionIndex={sectionIndex}
-                              elementIndex={elementIndex}
-                            />
-                          </Box>
-                        )}
-                      </Draggable>
+                        element={element}
+                        elementIndex={elementIndex}
+                        sectionIndex={sectionIndex}
+                        push={push}
+                        remove={remove}
+                        replace={replace}
+                      />
                     ),
                   )}
                   {provided.placeholder}
@@ -91,6 +73,53 @@ export function ChecklistDefinitionElementsList({
     </FieldArray>
   );
 }
+
+const MemoizedDraggableChecklistDefinitionElement = memo(
+  function DraggableChecklistDefinitionElement({
+    element,
+    elementIndex,
+    sectionIndex,
+    push,
+    remove,
+    replace,
+  }: {
+    element: ApiCLSectionContextElementsInner;
+    elementIndex: number;
+    sectionIndex: number;
+    push: (element: ApiCLSectionContextElementsInner) => void;
+    remove: (elementIndex: number) => void;
+    replace: (
+      elementIndex: number,
+      element: ApiCLSectionContextElementsInner,
+    ) => void;
+  }) {
+    return (
+      <Draggable draggableId={element.id} index={elementIndex}>
+        {(provided, snapshot) => (
+          <Box
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            sx={getItemStyle(
+              snapshot.isDragging,
+              provided.draggableProps.style,
+            )}
+          >
+            <ChecklistDefinitionElement
+              dragHandleProps={provided.dragHandleProps}
+              key={element.id}
+              element={element}
+              setElement={(element) => replace(elementIndex, element)}
+              deleteElement={() => remove(elementIndex)}
+              addElement={(element) => push(element)}
+              sectionIndex={sectionIndex}
+              elementIndex={elementIndex}
+            />
+          </Box>
+        )}
+      </Draggable>
+    );
+  },
+);
 
 function getItemStyle(
   isDragging: boolean,

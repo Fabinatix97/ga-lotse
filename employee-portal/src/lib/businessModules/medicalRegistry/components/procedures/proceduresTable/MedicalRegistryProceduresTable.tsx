@@ -5,32 +5,24 @@
 
 "use client";
 
-import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
-import {
-  ApiApplicantAddress,
-  ApiMedicalRegistryEntry,
-} from "@eshg/employee-portal-api/medicalRegistry";
 import { professionalTitleNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
-import { useSuspenseQueries } from "@tanstack/react-query";
+import { ApiBusinessModule } from "@eshg/lib-procedures-api";
+import {
+  ApiApplicantAddress,
+  ApiMedicalRegistryEntry,
+} from "@eshg/medical-registry-api";
+import { Box } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
-import { useSearchParams } from "next/navigation";
-import { useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { isDefined } from "remeda";
 
-import { useMedicalRegistryApi } from "@/lib/businessModules/medicalRegistry/api/clients";
-import {
-  getMedicalRegistryOverviewQuery,
-  getMedicalRegistrySearchQuery,
-} from "@/lib/businessModules/medicalRegistry/api/queries/medicalRegistryEntries";
+import { useGetMedicalProceduresTablePage } from "@/lib/businessModules/medicalRegistry/api/queries/useGetMedicalProceduresTablePage";
 import { MedicalRegistryProcedureChip } from "@/lib/businessModules/medicalRegistry/components/procedures/MedicalRegistryProcedureChip";
-import {
-  getMedicalRegistryEntryFilters,
-  useMedicalRegistryFilterSettings,
-} from "@/lib/businessModules/medicalRegistry/shared/hooks/useMedicalRegistryFilterSettings";
+import { useMedicalRegistryFilterSettings } from "@/lib/businessModules/medicalRegistry/shared/hooks/useMedicalRegistryFilterSettings";
 import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";
-import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
+import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
@@ -38,7 +30,7 @@ import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
+import { usePagination } from "@/lib/shared/hooks/table/usePagination";
 
 import { MedicalRegistryEntryOverviewControls } from "./MedicalRegistryEntryOverviewControls";
 
@@ -150,49 +142,37 @@ function getProceduresColumns() {
   ];
 }
 
-export function MedicalRegistryProceduresTable() {
-  const tableControl = useTableControl();
-  const filterSettings = useMedicalRegistryFilterSettings();
+type PanelName = "filters" | "entrySearch";
 
+function reduceActivePanel(
+  state: PanelName | undefined,
+  newState: PanelName,
+): PanelName | undefined {
+  return newState === state ? undefined : newState;
+}
+
+export function MedicalRegistryProceduresTable() {
+  const { resetPageNumber, page, pageSize, getPaginationProps } =
+    usePagination();
+  const filterSettings = useMedicalRegistryFilterSettings();
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [activePanel, toggleActivePanel] = useReducer(
     reduceActivePanel,
     undefined,
   );
 
-  type PanelName = "filters" | "entrySearch";
+  useEffect(() => {
+    resetPageNumber();
+  }, [activePanel, searchQuery, filterSettings.activeValues, resetPageNumber]);
 
-  function reduceActivePanel(
-    state: PanelName | undefined,
-    newState: PanelName,
-  ): PanelName | undefined {
-    return newState === state ? undefined : newState;
-  }
-
-  const searchParams = useSearchParams();
-  const searchQuery = searchParams.get("name") ?? "";
-
-  const medicalRegistryApi = useMedicalRegistryApi();
-
-  const proceduresQuery =
-    activePanel === "entrySearch"
-      ? getMedicalRegistrySearchQuery(medicalRegistryApi, searchQuery)
-      : getMedicalRegistryOverviewQuery(medicalRegistryApi, {
-          ...getMedicalRegistryEntryFilters(filterSettings.activeValues),
-          pageSize: tableControl.paginationProps.pageSize,
-          pageNumber: tableControl.paginationProps.pageNumber,
-        });
-
-  const gdprBannerQuery = useGetGdprValidationBannerQuery(
-    ApiBusinessModule.MedicalRegistry,
-  );
-
-  const [
-    {
-      data: { medicalRegistryEntries, totalElements },
-      isLoading,
-    },
-    gdprBanner,
-  ] = useSuspenseQueries({ queries: [proceduresQuery, gdprBannerQuery] });
+  const { medicalHistoryData, isLoading, gdprBanner } =
+    useGetMedicalProceduresTablePage(
+      activePanel === "entrySearch",
+      pageSize,
+      page,
+      filterSettings.activeValues,
+      searchQuery,
+    );
 
   useGdprValidationTasksAlert({
     banner: gdprBanner.data,
@@ -202,11 +182,13 @@ export function MedicalRegistryProceduresTable() {
   return (
     <TablePage
       aria-label="Vorgänge"
+      fullHeight
       controls={
         <MedicalRegistryEntryOverviewControls
           filterSettings={filterSettings}
           activePanel={activePanel}
           toggleActivePanel={toggleActivePanel}
+          onNameSearch={setSearchQuery}
         />
       }
       filterSettings={
@@ -220,22 +202,33 @@ export function MedicalRegistryProceduresTable() {
       <TableSheet
         loading={isLoading}
         footer={
-          activePanel !== "entrySearch" && (
+          activePanel !== "entrySearch" &&
+          medicalHistoryData && (
             <Pagination
-              totalCount={totalElements}
-              {...tableControl.paginationProps}
+              {...getPaginationProps({
+                totalCount: medicalHistoryData.totalElements,
+              })}
             />
           )
         }
       >
         <DataTable
-          data={medicalRegistryEntries}
+          data={medicalHistoryData?.medicalRegistryEntries ?? []}
           columns={getProceduresColumns()}
           rowNavigation={{
             route: ({ original: { id: procedureId } }) =>
               routes.procedures.byId(procedureId).details,
             focusColumnAccessorKey: "lastName",
           }}
+          noDataComponent={
+            isLoading
+              ? undefined
+              : () => (
+                  <Box flex={1} alignContent="center">
+                    <NoSearchResults info="Keine Vorgänge vorhanden" />
+                  </Box>
+                )
+          }
         />
       </TableSheet>
     </TablePage>

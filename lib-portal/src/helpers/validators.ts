@@ -3,7 +3,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { endOfDay, isFuture, isThisMonth, isToday } from "date-fns";
+import {
+  addYears,
+  endOfDay,
+  isAfter,
+  isBefore,
+  isFuture,
+  isThisMonth,
+  isToday,
+  parseISO,
+  startOfDay,
+  subYears,
+} from "date-fns";
 import { isDefined, isEmpty, isNullish } from "remeda";
 
 import { OptionalFieldValue, Validator } from "../types/form";
@@ -111,6 +122,23 @@ export function validatePastMonthAndYear(year: number, month: number) {
   const date = new Date(year, month);
   if (!isThisMonth(date) && isFuture(date)) {
     return "Das Datum liegt in der Zukunft.";
+  }
+
+  return undefined;
+}
+
+export function validateDateOfBirth(value: string) {
+  const inputDate = parseISO(value);
+
+  const today = new Date();
+  const minDate = subYears(startOfDay(today), 150);
+  const maxDate = addYears(endOfDay(today), 1);
+
+  if (isBefore(inputDate, minDate)) {
+    return "Das Geburtsdatum darf maximal 150 Jahre in der Vergangenheit liegen.";
+  }
+  if (isAfter(inputDate, maxDate)) {
+    return "Das Geburtsdatum darf maximal ein Jahr in der Zukunft liegen.";
   }
 
   return undefined;

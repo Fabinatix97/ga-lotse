@@ -71,7 +71,7 @@ public class DiagramExportService {
     analysisService.checkPermissionForDiagram(diagramId);
   }
 
-  @Transactional(readOnly = true)
+  @Transactional
   public Resource exportData(UUID diagramId) {
     Diagram diagram = analysisService.getDiagramInternal(diagramId);
     AbstractAggregationResult aggregationResult = diagram.getAnalysis().getAggregationResult();

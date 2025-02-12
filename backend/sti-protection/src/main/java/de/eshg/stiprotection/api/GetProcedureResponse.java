@@ -26,4 +26,5 @@ public record GetProcedureResponse(
     @Valid AppointmentDto appointment,
     @NotNull @Valid List<AppointmentHistoryEntryDto> appointmentHistory,
     @Valid WaitingRoomDto waitingRoom,
-    @NotNull LabStatusDto labStatus) {}
+    @NotNull LabStatusDto labStatus,
+    String sampleBarCode) {}

@@ -4,14 +4,14 @@
  */
 
 import {
-  ApiGetMedicalRegistryFeatureTogglesResponse,
-  ApiMedicalRegistryFeature,
-} from "@eshg/citizen-portal-api/medicalRegistry";
-import {
   selectDisabledOldFeature,
   selectEnabledNewFeature,
   useGetFeatureToggle,
 } from "@eshg/lib-portal/api/featureToggles";
+import {
+  ApiGetMedicalRegistryFeatureTogglesResponse,
+  ApiMedicalRegistryFeature,
+} from "@eshg/medical-registry-api";
 
 import { useFeatureTogglesApi } from "@/lib/businessModules/medicalRegistry/api/clients";
 import { medicalRegistryFeatureTogglesPublicApiQueryKey } from "@/lib/businessModules/medicalRegistry/api/queries/apiQueryKeys";

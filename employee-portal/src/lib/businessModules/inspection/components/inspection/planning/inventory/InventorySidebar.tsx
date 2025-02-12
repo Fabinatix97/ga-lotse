@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiUpdateInspectionModifyInventoryRequest } from "@eshg/employee-portal-api/inspection";
+import { ApiUpdateInspectionModifyInventoryRequest } from "@eshg/inspection-api";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { validateRange } from "@eshg/lib-portal/helpers/validators";

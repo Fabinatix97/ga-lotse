@@ -1,6 +1,7 @@
 plugins {
     id "eshg.java-lib"
     id "eshg.base-test-dependency"
+    id "java-test-fixtures"
 }
 
 dependencies {
@@ -9,6 +10,7 @@ dependencies {
     implementation project(':rest-oauth-client-commons')
     implementation project(':test-helper-commons')
     implementation project(':lib-security-config-urls')
+    implementation project(':business-module-persistence-commons')
 
     implementation 'org.slf4j:slf4j-api'
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
@@ -20,9 +22,17 @@ dependencies {
     testImplementation project(':base-api')
     testImplementation project(':lib-base-client')
     testImplementation testFixtures(project(':business-module-commons'))
+    testImplementation testFixtures(project(':business-module-persistence-commons'))
     testImplementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
     testRuntimeOnly 'org.springframework.boot:spring-boot-starter-web'
+    testRuntimeOnly 'org.postgresql:postgresql'
+
+    testFixturesApi project(':lib-auditlog')
+    testFixturesApi project(':test-commons')
+    testFixturesApi 'de.cronn:validation-file-assertions:latest.release'
+    testFixturesApi 'org.springframework.data:spring-data-jpa'
+    testFixturesImplementation project(':business-module-persistence-commons')
 }
 
 tasks.named("test").configure {

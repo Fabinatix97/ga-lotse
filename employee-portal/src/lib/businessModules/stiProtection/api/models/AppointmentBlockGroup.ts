@@ -4,15 +4,15 @@
  */
 
 import {
-  ApiAppointmentType,
-  ApiGetAppointmentBlock,
-  ApiGetAppointmentBlockGroup,
-} from "@eshg/employee-portal-api/stiProtection";
-import {
   BaseEntity,
   mapBaseEntity,
 } from "@eshg/lib-employee-portal/api/models/BaseEntity";
 import { assertNonEmptyArray } from "@eshg/lib-portal/helpers/assertions";
+import {
+  ApiAppointmentType,
+  ApiGetAppointmentBlock,
+  ApiGetAppointmentBlockGroup,
+} from "@eshg/sti-protection-api";
 import { first, last, sumBy } from "remeda";
 
 export interface AppointmentBlockStiProtection extends BaseEntity {

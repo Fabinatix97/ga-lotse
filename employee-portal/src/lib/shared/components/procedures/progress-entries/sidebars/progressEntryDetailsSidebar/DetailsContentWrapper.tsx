@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import {
   ApiGetFile200Response,
   ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner,
   ApiInboxProgressEntryFileReference,
   ApiMail,
   ApiProgressEntry,
-} from "@eshg/employee-portal-api/businessProcedures";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+} from "@eshg/lib-procedures-api";
 import DateRangeOutlinedIcon from "@mui/icons-material/DateRangeOutlined";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";

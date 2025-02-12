@@ -9,6 +9,7 @@ import { ExaminationStatus } from "@eshg/dental/api/models/ExaminationStatus";
 export const EXAMINATION_STATUS: Record<ExaminationStatus, string> = {
   OPEN: "offen",
   CLOSED: "abgeschlossen",
+  NOT_PRESENT: "Nicht anwesend",
 };
 
 export const ORAL_HYGIENE_STATUS: Record<ApiOralHygieneStatus, string> = {

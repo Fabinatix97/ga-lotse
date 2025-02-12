@@ -1893,14 +1893,14 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/GetGdprProcedureResponse"
+                  "$ref" : "#/components/schemas/CitizenUsersGdprProcedure"
                 }
               }
             },
             "description" : "OK"
           }
         },
-        "summary" : "This endpoint allows authenticated MUK and BundID users to initiate a GDPR\nprocedure via the citizen portal initiate a GDPR procedure. A matter of\nconcern can be added to the request if desired.\n",
+        "summary" : "This endpoint allows authenticated MUK and BundID users to initiate a GDPR\nprocedure via the citizen portal. A matter of concern can be added to the\nrequest if desired.\n",
         "tags" : [ "GdprProcedure" ]
       }
     },
@@ -2080,6 +2080,37 @@
         "tags" : [ "GdprProcedure" ]
       }
     },
+    "/gdpr-procedures/{id}/delete-downloads" : {
+      "post" : {
+        "operationId" : "deleteDownloads",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DeleteGdprDownloadsRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Delete one or multiple downloads of GDPR-related document or data of this GDPR procedure.",
+        "tags" : [ "GdprProcedure" ]
+      }
+    },
     "/gdpr-procedures/{id}/details-page" : {
       "get" : {
         "operationId" : "getGdprProcedureDetailsPage",
@@ -2110,35 +2141,6 @@
       }
     },
     "/gdpr-procedures/{id}/downloads" : {
-      "delete" : {
-        "operationId" : "deleteDownloads",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/DeleteGdprDownloadsRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "description" : "OK"
-          }
-        },
-        "summary" : "Delete one or multiple downloads of GDPR-related document or data of this GDPR procedure.",
-        "tags" : [ "GdprProcedure" ]
-      },
       "get" : {
         "operationId" : "getDownloads",
         "parameters" : [ {
@@ -4277,18 +4279,7 @@
     },
     "/test-helper/archiving-job" : {
       "post" : {
-        "operationId" : "runArchivingJob",
-        "responses" : {
-          "200" : {
-            "description" : "OK"
-          }
-        },
-        "tags" : [ "TestHelper" ]
-      }
-    },
-    "/test-helper/audit-log-storage" : {
-      "delete" : {
-        "operationId" : "clearAuditLogStorageDirectory",
+        "operationId" : "runAuditLogArchivingJob",
         "responses" : {
           "200" : {
             "description" : "OK"
@@ -4300,6 +4291,17 @@
     "/test-helper/auditlog-notification-job" : {
       "post" : {
         "operationId" : "runAuditlogNotificationJob",
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/business-modules/reset" : {
+      "post" : {
+        "operationId" : "resetActivatedBusinessModules",
         "responses" : {
           "200" : {
             "description" : "OK"
@@ -4385,6 +4387,17 @@
             "$ref" : "#/components/schemas/BaseFeature"
           }
         } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/gdpr-cleanup-job" : {
+      "post" : {
+        "operationId" : "runGdprCleanupJob",
         "responses" : {
           "200" : {
             "description" : "OK"
@@ -7520,7 +7533,7 @@
       "GdprProcedureStatus" : {
         "type" : "string",
         "description" : "A list of statuses a GDPR procedure can have.",
-        "enum" : [ "DRAFT", "OPEN", "IN_PROGRESS", "CLOSED", "ABORTED" ]
+        "enum" : [ "DRAFT", "IN_PROGRESS", "CLOSED", "ABORTED" ]
       },
       "GdprProcedureType" : {
         "type" : "string",
@@ -11023,7 +11036,7 @@
             "example" : "UUID_2"
           },
           "updatedPerson" : {
-            "$ref" : "#/components/schemas/PersonDetails"
+            "$ref" : "#/components/schemas/UpdatePersonRequest"
           }
         }
       },
@@ -11046,11 +11059,90 @@
         }
       },
       "UpdatePersonRequest" : {
-        "required" : [ "updatedPerson" ],
+        "required" : [ "dateOfBirth", "firstName", "lastName" ],
         "type" : "object",
         "properties" : {
-          "updatedPerson" : {
-            "$ref" : "#/components/schemas/PersonDetails"
+          "contactAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
+          "countryOfBirth" : {
+            "$ref" : "#/components/schemas/CountryCode"
+          },
+          "dateOfBirth" : {
+            "type" : "string",
+            "description" : "The date of birth of the Person.",
+            "format" : "date",
+            "example" : "2000-01-01"
+          },
+          "differentBillingAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
+          "emailAddresses" : {
+            "type" : "array",
+            "description" : "A list of email addresses of the Person.",
+            "example" : "['mail1@address.de','mail2@address.de','mail3@address.de']",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The given name(s) of the Person.",
+            "example" : "John"
+          },
+          "gender" : {
+            "$ref" : "#/components/schemas/Gender"
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The last name of the Person.",
+            "example" : "Doe"
+          },
+          "nameAtBirth" : {
+            "maxLength" : 40,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The last name at birth of the Person.",
+            "example" : "Smith"
+          },
+          "phoneNumbers" : {
+            "type" : "array",
+            "description" : "A list of telephone numbers of the Person.",
+            "example" : "['+4912345678901','+4912345678902','+4912345678903']",
+            "items" : {
+              "maxLength" : 23,
+              "minLength" : 1,
+              "type" : "string"
+            }
+          },
+          "placeOfBirth" : {
+            "maxLength" : 50,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The place of birth (without country) of the Person.",
+            "example" : "Berlin"
+          },
+          "salutation" : {
+            "$ref" : "#/components/schemas/Salutation"
+          },
+          "title" : {
+            "maxLength" : 119,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The academic title of a Person.",
+            "example" : "Prof. Dr."
           }
         },
         "description" : "Request used for performing a consistent update of a person file state and its associated reference person"
@@ -11110,7 +11202,7 @@
         "type" : "object",
         "properties" : {
           "personDetails" : {
-            "$ref" : "#/components/schemas/PersonDetails"
+            "$ref" : "#/components/schemas/UpdatePersonRequest"
           },
           "version" : {
             "type" : "integer",

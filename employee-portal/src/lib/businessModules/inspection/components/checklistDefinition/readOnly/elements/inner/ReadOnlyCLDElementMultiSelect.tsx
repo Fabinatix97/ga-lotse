@@ -6,7 +6,7 @@
 import {
   ApiCLFieldOptionContext,
   ApiCLMultiSelectContext,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { Box, List, ListItem, Typography, styled } from "@mui/joy";
 
 import { ReadOnlyCLDElementProps } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/elements/ReadOnlyCLDElement";

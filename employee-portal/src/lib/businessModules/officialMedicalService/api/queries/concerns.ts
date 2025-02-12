@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ConcernApi } from "@eshg/employee-portal-api/officialMedicalService";
+import { ConcernApi } from "@eshg/official-medical-service-api";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useConcernApi } from "@/lib/businessModules/officialMedicalService/api/clients";

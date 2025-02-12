@@ -6,7 +6,7 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
-import { ApiChecklistDefinition } from "@eshg/employee-portal-api/inspection";
+import { ApiChecklistDefinition } from "@eshg/inspection-api";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Row } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";

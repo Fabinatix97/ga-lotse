@@ -3,12 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiAppointmentType,
-  ApiConcern,
-} from "@eshg/employee-portal-api/stiProtection";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+import { ApiAppointmentType, ApiConcern } from "@eshg/sti-protection-api";
 
 import { APPOINTMENT_TYPES } from "@/lib/businessModules/stiProtection/shared/constants";
 

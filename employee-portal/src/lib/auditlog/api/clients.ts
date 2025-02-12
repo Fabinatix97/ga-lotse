@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { AuditLogApi, Configuration } from "@eshg/employee-portal-api/auditlog";
+import { AuditLogApi, Configuration } from "@eshg/auditlog-api";
 import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 
 function useConfiguration() {

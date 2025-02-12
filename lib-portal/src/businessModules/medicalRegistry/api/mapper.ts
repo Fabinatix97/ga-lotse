@@ -13,7 +13,7 @@ import {
   ApiTypeOfFullChange,
   ApiTypeOfPracticeChange,
   CreateProcedureRequest,
-} from "@eshg/employee-portal-api/medicalRegistry";
+} from "@eshg/medical-registry-api";
 import { isEmpty } from "remeda";
 
 import {

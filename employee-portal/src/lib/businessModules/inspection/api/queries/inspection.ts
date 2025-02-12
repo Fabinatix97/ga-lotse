@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InspectionApi } from "@eshg/employee-portal-api/inspection";
+import { InspectionApi } from "@eshg/inspection-api";
 import {
   queryOptions,
   useQueryClient,

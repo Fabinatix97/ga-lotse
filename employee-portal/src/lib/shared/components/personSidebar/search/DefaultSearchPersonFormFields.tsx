@@ -6,7 +6,10 @@
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import {
+  validateDateOfBirth,
+  validateLength,
+} from "@eshg/lib-portal/helpers/validators";
 
 import { SearchPersonFormValues } from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
 
@@ -31,6 +34,7 @@ export function DefaultSearchPersonFormFields() {
         name={fieldName("dateOfBirth")}
         label="Geburtsdatum"
         required="Bitte ein Geburtsdatum angeben."
+        validate={validateDateOfBirth}
       />
     </>
   );

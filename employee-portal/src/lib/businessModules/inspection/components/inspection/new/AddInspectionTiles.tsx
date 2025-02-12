@@ -6,10 +6,7 @@
 "use client";
 
 import { ApiUser } from "@eshg/base-api";
-import {
-  ApiInspection,
-  ApiObjectType,
-} from "@eshg/employee-portal-api/inspection";
+import { ApiInspection, ApiObjectType } from "@eshg/inspection-api";
 import { Grid } from "@mui/joy";
 
 import { useUpdateInspectionFacility } from "@/lib/businessModules/inspection/api/mutations/facility";

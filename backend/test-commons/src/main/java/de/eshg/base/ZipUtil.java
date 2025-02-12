@@ -23,34 +23,44 @@ import org.apache.commons.lang3.exception.UncheckedException;
 
 public class ZipUtil {
 
+  private static final int MAX_ENTRIES = 1_000;
+  private static final int MAX_BYTES = 1_000_000;
+
+  public static final String TOO_MANY_ZIP_ENTRIES = "Too many ZIP entries";
+  public static final String EXPANDED_CONTENT_TOO_LARGE = "Expanded content too large";
+
   private ZipUtil() {}
 
   public static byte[] extractZipEntry(String internalPath, byte[] content) {
     try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(content);
         ZipInputStream zipInputStream = new ZipInputStream(byteArrayInputStream)) {
-      for (ZipEntry zipEntry = zipInputStream.getNextEntry();
-          zipEntry != null;
-          zipEntry = zipInputStream.getNextEntry()) {
+      for (int numberOfEntries = 0; numberOfEntries < MAX_ENTRIES; numberOfEntries++) {
+        ZipEntry zipEntry = zipInputStream.getNextEntry();
+        if (zipEntry == null) {
+          return new byte[0];
+        }
         if (internalPath.equals(zipEntry.getName())) {
-          return zipInputStream.readAllBytes();
+          return readBytes(zipInputStream);
         }
       }
+      throw new IllegalStateException(TOO_MANY_ZIP_ENTRIES);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
-    return new byte[0];
   }
 
   public static List<String> listZipEntries(byte[] content) {
     try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(content);
         ZipInputStream zipInputStream = new ZipInputStream(byteArrayInputStream)) {
       List<String> zipEntries = new ArrayList<>();
-      for (ZipEntry zipEntry = zipInputStream.getNextEntry();
-          zipEntry != null;
-          zipEntry = zipInputStream.getNextEntry()) {
+      for (int numberOfEntries = 0; numberOfEntries < MAX_ENTRIES; numberOfEntries++) {
+        ZipEntry zipEntry = zipInputStream.getNextEntry();
+        if (zipEntry == null) {
+          return zipEntries;
+        }
         zipEntries.add(zipEntry.getName());
       }
-      return zipEntries;
+      throw new IllegalStateException(TOO_MANY_ZIP_ENTRIES);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -65,20 +75,28 @@ public class ZipUtil {
   }
 
   public static String listZipContent(byte[] content, List<ValidationNormalizer> normalizers) {
+    long totalSize = 0;
     List<String> results = new ArrayList<>();
     try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(content);
         ZipInputStream zipInputStream = new ZipInputStream(byteArrayInputStream)) {
-      for (ZipEntry zipEntry = zipInputStream.getNextEntry();
-          zipEntry != null;
-          zipEntry = zipInputStream.getNextEntry()) {
-        results.add(stringifyZipEntry(zipEntry, zipInputStream.readAllBytes(), normalizers));
+      for (int numberOfEntries = 0; numberOfEntries < MAX_ENTRIES; numberOfEntries++) {
+        ZipEntry zipEntry = zipInputStream.getNextEntry();
+        if (zipEntry == null) {
+          return results.stream()
+              .map(String::stripTrailing)
+              .collect(Collectors.joining(System.lineSeparator()));
+        }
+        byte[] entryContent = readBytes(zipInputStream);
+        totalSize += entryContent.length;
+        if (totalSize > MAX_BYTES) {
+          throw new IllegalStateException(EXPANDED_CONTENT_TOO_LARGE);
+        }
+        results.add(stringifyZipEntry(zipEntry, entryContent, normalizers));
       }
+      throw new IllegalStateException(TOO_MANY_ZIP_ENTRIES);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
-    return results.stream()
-        .map(String::stripTrailing)
-        .collect(Collectors.joining(System.lineSeparator()));
   }
 
   private static String stringifyZipEntry(
@@ -119,5 +137,13 @@ public class ZipUtil {
       source = normalizer.normalize(source);
     }
     return source;
+  }
+
+  private static byte[] readBytes(ZipInputStream zipInputStream) throws IOException {
+    byte[] result = zipInputStream.readNBytes(MAX_BYTES);
+    if (zipInputStream.readNBytes(1).length > 0) {
+      throw new IllegalArgumentException(EXPANDED_CONTENT_TOO_LARGE);
+    }
+    return result;
   }
 }

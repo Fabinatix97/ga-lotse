@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import {
   ApiGetProcedure200Response,
   ApiPractice,
-} from "@eshg/employee-portal-api/medicalRegistry";
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
+} from "@eshg/medical-registry-api";
 import { Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { isDefined } from "remeda";

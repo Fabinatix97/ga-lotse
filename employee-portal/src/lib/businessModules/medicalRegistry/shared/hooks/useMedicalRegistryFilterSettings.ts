@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { professionalTitleNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
 import {
   ApiProcedureStatus,
   ApiProcedureType,
   ApiProfessionalTitle,
-} from "@eshg/employee-portal-api/medicalRegistry";
-import { GetProcedureOverviewRequest } from "@eshg/employee-portal-api/medicalRegistry/apis";
-import { professionalTitleNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
+  GetProcedureOverviewRequest,
+} from "@eshg/medical-registry-api";
 
 import {
   EntryStatus,
@@ -87,7 +87,6 @@ export function useMedicalRegistryFilterSettings(): UseFilterSettings {
       } else {
         localStorage.removeItem(initialProfessionalTitles);
       }
-      // active values are synced via SearchParamStateProvider
     },
     showSearch: false,
   });

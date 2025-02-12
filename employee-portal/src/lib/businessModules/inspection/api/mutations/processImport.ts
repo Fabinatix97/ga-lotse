@@ -8,7 +8,7 @@ import {
   ApiImportStatisticsFromJSON,
   ApiResponse,
   ImportProcessesRequest,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 
 import { useImportApi } from "@/lib/businessModules/inspection/api/clients";

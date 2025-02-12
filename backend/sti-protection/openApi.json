@@ -549,6 +549,95 @@
         "tags" : [ "Archiving" ]
       }
     },
+    "/citizen/public/department-info" : {
+      "get" : {
+        "operationId" : "getDepartmentInfo",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "request",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/GetDepartmentInfoRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetDepartmentInfoResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get department info",
+        "tags" : [ "StiProtectionCitizen" ]
+      }
+    },
+    "/citizen/public/free-appointments" : {
+      "get" : {
+        "operationId" : "getFreeAppointmentsForCitizen",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "appointmentType",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/StiAppointmentType"
+          }
+        }, {
+          "in" : "query",
+          "name" : "earliestDate",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetFreeAppointmentsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get free appointments for an appointment type.",
+        "tags" : [ "StiProtectionCitizen" ]
+      }
+    },
+    "/citizen/public/opening-hours" : {
+      "get" : {
+        "operationId" : "getOpeningHours",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "request",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/GetOpeningHoursRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetOpeningHoursResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get opening hours",
+        "tags" : [ "StiProtectionCitizen" ]
+      }
+    },
     "/files/{fileId}" : {
       "delete" : {
         "operationId" : "deleteFile",
@@ -2089,6 +2178,7 @@
             "description" : "OK"
           }
         },
+        "summary" : "Create a new STI procedure.",
         "tags" : [ "StiProtectionProcedure" ]
       }
     },
@@ -2570,6 +2660,7 @@
             "description" : "OK"
           }
         },
+        "summary" : "Create an STI follow-up procedure.",
         "tags" : [ "StiProtectionProcedure" ]
       }
     },
@@ -3234,18 +3325,7 @@
     },
     "/test-helper/archiving-job" : {
       "post" : {
-        "operationId" : "runArchivingJob",
-        "responses" : {
-          "200" : {
-            "description" : "OK"
-          }
-        },
-        "tags" : [ "TestHelper" ]
-      }
-    },
-    "/test-helper/audit-log-storage" : {
-      "delete" : {
-        "operationId" : "clearAuditLogStorageDirectory",
+        "operationId" : "runAuditLogArchivingJob",
         "responses" : {
           "200" : {
             "description" : "OK"
@@ -3302,6 +3382,34 @@
               "*/*" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/StiProtectionProcedurePopulationResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/population/text-templates" : {
+      "post" : {
+        "operationId" : "populateTextTemplates",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TextTemplatePopulationRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TextTemplatePopulationResponse"
                 }
               }
             },
@@ -3655,9 +3763,9 @@
             "format" : "uuid"
           },
           "standardDurationInMinutes" : {
-            "minimum" : 0,
+            "minimum" : 1,
             "type" : "integer",
-            "format" : "int32"
+            "format" : "int64"
           }
         }
       },
@@ -4313,13 +4421,17 @@
         "type" : "object",
         "properties" : {
           "content" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Predefined text that will be inserted.",
+            "example" : "Complete hepatitis A serology (acute vs. immunity)"
           },
           "context" : {
             "$ref" : "#/components/schemas/TextTemplateContext"
           },
           "name" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Display name of the text template.",
+            "example" : "Hepatitis Panel"
           }
         }
       },
@@ -4414,31 +4526,41 @@
         "properties" : {
           "findings" : {
             "type" : "array",
+            "description" : "Records diagnostic findings using ICD-10 codes.",
             "items" : {
               "$ref" : "#/components/schemas/Icd10Code"
             }
           },
           "generalRemarks" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Additional remarks or observations documented during the diagnosis phase.",
+            "example" : "Positive for HIV antibodies and presence of P24 antigen detected."
           },
           "medications" : {
             "type" : "array",
+            "description" : "Lists prescribed medications.",
             "items" : {
               "$ref" : "#/components/schemas/Medication"
             }
           },
           "otherTestTypeName" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Provides the name of a test type not included in the predefined list.",
+            "example" : "ELISA."
           },
           "results" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Details the results of the diagnosis.",
+            "example" : "Colicky pain, acute abdomen; medication prescribed for pain management."
           },
           "resultsCommunicated" : {
-            "type" : "boolean"
+            "type" : "boolean",
+            "description" : "Indicates whether the patient has been informed of their diagnostic results and updates the laboratory status to 'CLOSE'."
           },
           "testTypes" : {
             "uniqueItems" : true,
             "type" : "array",
+            "description" : "Specifies the type of laboratory tests conducted during examination.",
             "items" : {
               "$ref" : "#/components/schemas/TestType"
             }
@@ -5013,6 +5135,71 @@
           }
         }
       },
+      "GetDepartmentInfoRequest" : {
+        "type" : "object",
+        "properties" : {
+          "concern" : {
+            "$ref" : "#/components/schemas/Concern"
+          }
+        }
+      },
+      "GetDepartmentInfoResponse" : {
+        "required" : [ "city", "country", "email", "homepage", "houseNumber", "location", "name", "phoneNumber", "postalCode", "street" ],
+        "type" : "object",
+        "properties" : {
+          "abbreviation" : {
+            "type" : "string",
+            "description" : "The abbreviation of the name of the department",
+            "example" : "LTG"
+          },
+          "city" : {
+            "type" : "string",
+            "description" : "The name of the city where the department is located",
+            "example" : "Berlin"
+          },
+          "country" : {
+            "$ref" : "#/components/schemas/CountryCode"
+          },
+          "email" : {
+            "type" : "string",
+            "description" : "The email address of the department",
+            "example" : "mail@address.de"
+          },
+          "homepage" : {
+            "type" : "string",
+            "description" : "The domain of the department's official homepage, excluding protocols",
+            "example" : "department-homepage.de"
+          },
+          "houseNumber" : {
+            "type" : "string",
+            "description" : "The house number at the department's address, including any extensions or suffixes",
+            "example" : "1b"
+          },
+          "location" : {
+            "$ref" : "#/components/schemas/Location"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "The name of the department",
+            "example" : "Gesundheitsamt Landkreis Testgebiet"
+          },
+          "phoneNumber" : {
+            "type" : "string",
+            "description" : "The primary contact telephone number for the department",
+            "example" : "+491234567890"
+          },
+          "postalCode" : {
+            "type" : "string",
+            "description" : "The postal code for the department’s address",
+            "example" : "12345"
+          },
+          "street" : {
+            "type" : "string",
+            "description" : "The street name for the department’s address, not including the house number",
+            "example" : "Beispielweg"
+          }
+        }
+      },
       "GetDetailedProcedureResponse" : {
         "required" : [ "facilities", "persons", "procedure", "tasks" ],
         "type" : "object",
@@ -5248,6 +5435,33 @@
               }, {
                 "$ref" : "#/components/schemas/PdfMetaDataHistory"
               } ]
+            }
+          }
+        }
+      },
+      "GetOpeningHoursRequest" : {
+        "required" : [ "concern" ],
+        "type" : "object",
+        "properties" : {
+          "concern" : {
+            "$ref" : "#/components/schemas/Concern"
+          }
+        }
+      },
+      "GetOpeningHoursResponse" : {
+        "required" : [ "de", "en" ],
+        "type" : "object",
+        "properties" : {
+          "de" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "en" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
             }
           }
         }
@@ -5582,7 +5796,7 @@
       "GetStiProtectionProceduresSortBy" : {
         "type" : "string",
         "default" : "CREATED_AT",
-        "enum" : [ "CREATED_AT", "STATUS", "CONCERN", "YEAR_OF_BIRTH", "GENDER", "LAB_STATUS" ]
+        "enum" : [ "CREATED_AT", "SAMPLE_BARCODE", "APPOINTMENT" ]
       },
       "GetStiProtectionProceduresSortOrder" : {
         "type" : "string",
@@ -5731,7 +5945,8 @@
             "description" : "ICD-10 code title",
             "example" : "Cholera"
           }
-        }
+        },
+        "description" : "Records diagnostic findings using ICD-10 codes."
       },
       "Image" : {
         "required" : [ "@type", "createdAt", "deletable", "deleted", "fileId", "fileName", "fileSizeBytes", "fileType", "locked", "modifiedAt" ],
@@ -6082,6 +6297,25 @@
           }
         }
       },
+      "Location" : {
+        "required" : [ "latitude", "longitude" ],
+        "type" : "object",
+        "properties" : {
+          "latitude" : {
+            "type" : "number",
+            "description" : "Geographic coordinate that specifies the north–south angular location of a point on the surface of the Earth.",
+            "format" : "double",
+            "example" : 52.51627
+          },
+          "longitude" : {
+            "type" : "number",
+            "description" : "Geographic coordinate that specifies the east–west angular position of a point on the surface of the Earth.",
+            "format" : "double",
+            "example" : 13.377703
+          }
+        },
+        "description" : "Location defined by latitude and longitude."
+      },
       "Mail" : {
         "required" : [ "@type", "createdAt", "deletable", "deleted", "fileId", "fileName", "fileSizeBytes", "fileType", "locked", "modifiedAt", "removedInvalidAttachments" ],
         "type" : "object",
@@ -6216,16 +6450,23 @@
         "type" : "object",
         "properties" : {
           "dose" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Prescribed dosage of the medication.",
+            "example" : "300 mg once daily."
           },
           "name" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Name of the prescribed medication.",
+            "example" : "Tenofovir."
           },
           "prescriptionDate" : {
             "type" : "string",
-            "format" : "date"
+            "description" : "Date the medication was prescribed.",
+            "format" : "date",
+            "example" : "2025-01-16"
           }
-        }
+        },
+        "description" : "Lists prescribed medications."
       },
       "MetaData" : {
         "required" : [ "@type" ],
@@ -7021,6 +7262,10 @@
         "type" : "string",
         "enum" : [ "ASC", "DESC" ]
       },
+      "StiAppointmentType" : {
+        "type" : "string",
+        "enum" : [ "HIV_STI_CONSULTATION", "SEX_WORK" ]
+      },
       "StiConsultationMedicalHistory" : {
         "type" : "object",
         "allOf" : [ {
@@ -7101,6 +7346,9 @@
           "person" : {
             "$ref" : "#/components/schemas/Person"
           },
+          "sampleBarCode" : {
+            "type" : "string"
+          },
           "status" : {
             "$ref" : "#/components/schemas/ProcedureStatus"
           },
@@ -7110,7 +7358,7 @@
         }
       },
       "StiProtectionProcedureOverview" : {
-        "required" : [ "accessCode", "concern", "createdAt", "gender", "id", "labStatus", "status", "yearOfBirth" ],
+        "required" : [ "concern", "createdAt", "gender", "id", "labStatus", "status", "yearOfBirth" ],
         "type" : "object",
         "properties" : {
           "accessCode" : {
@@ -7118,6 +7366,10 @@
           },
           "appointment" : {
             "$ref" : "#/components/schemas/Appointment"
+          },
+          "appointmentStart" : {
+            "type" : "string",
+            "format" : "date-time"
           },
           "concern" : {
             "$ref" : "#/components/schemas/Concern"
@@ -7138,6 +7390,9 @@
           },
           "labStatus" : {
             "$ref" : "#/components/schemas/LabStatus"
+          },
+          "sampleBarCode" : {
+            "type" : "string"
           },
           "status" : {
             "$ref" : "#/components/schemas/ProcedureStatus"
@@ -7394,6 +7649,7 @@
       },
       "TestType" : {
         "type" : "string",
+        "description" : "Specifies the type of laboratory tests conducted during examination.",
         "enum" : [ "WESTERN_BLOT", "P24", "PCR", "OTHER" ]
       },
       "TextTemplate" : {
@@ -7401,23 +7657,57 @@
         "type" : "object",
         "properties" : {
           "content" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Predefined text that will be inserted.",
+            "example" : "Complete hepatitis A serology (acute vs. immunity)"
           },
           "context" : {
             "$ref" : "#/components/schemas/TextTemplateContext"
           },
           "externalId" : {
             "type" : "string",
-            "format" : "uuid"
+            "description" : "Unique identifier for referencing the text template.",
+            "format" : "uuid",
+            "example" : "UUID_4"
           },
           "name" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Display name of the text template.",
+            "example" : "Hepatitis Panel"
           }
         }
       },
       "TextTemplateContext" : {
         "type" : "string",
+        "description" : "Category where the template is applicable.",
+        "example" : "DIAGNOSIS_RESULT",
         "enum" : [ "CONSULTATION_REASON", "CONSULTATION_REMARK", "RAPID_TESTS_REMARK", "LABORATORY_TESTS_REMARK", "DIAGNOSIS_RESULT", "DIAGNOSIS_REMARK" ]
+      },
+      "TextTemplatePopulationRequest" : {
+        "required" : [ "numberOfEntitiesToPopulate" ],
+        "type" : "object",
+        "properties" : {
+          "numberOfEntitiesToPopulate" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "TextTemplatePopulationResponse" : {
+        "required" : [ "count" ],
+        "type" : "object",
+        "properties" : {
+          "count" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "textTemplates" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TextTemplate"
+            }
+          }
+        }
       },
       "Title" : {
         "type" : "string",
@@ -7449,9 +7739,9 @@
         "type" : "object",
         "properties" : {
           "standardDurationInMinutes" : {
-            "minimum" : 0,
+            "minimum" : 1,
             "type" : "integer",
-            "format" : "int32"
+            "format" : "int64"
           }
         }
       },
@@ -7513,7 +7803,7 @@
             "type" : "string",
             "description" : "The Id of the user.",
             "format" : "uuid",
-            "example" : "UUID_4"
+            "example" : "UUID_5"
           },
           "username" : {
             "type" : "string",

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiUser } from "@eshg/employee-portal-api/inspection";
+import { ApiUser } from "@eshg/inspection-api";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { Stack, Typography } from "@mui/joy";
 

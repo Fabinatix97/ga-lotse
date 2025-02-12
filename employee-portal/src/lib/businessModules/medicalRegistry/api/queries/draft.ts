@@ -10,7 +10,7 @@ import {
   ApiMedicalRegistryEntrySearchResult,
   ApiMedicalRegistryEntrySearchResultFromJSON,
   ApiProcedureStatus,
-} from "@eshg/employee-portal-api/medicalRegistry";
+} from "@eshg/medical-registry-api";
 import { useQuery } from "@tanstack/react-query";
 import { isDefined, mapValues } from "remeda";
 

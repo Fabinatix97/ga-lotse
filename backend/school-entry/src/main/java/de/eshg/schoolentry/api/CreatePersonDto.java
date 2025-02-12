@@ -9,6 +9,7 @@ import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.base.address.AddressDto;
 import de.eshg.lib.common.CountryCode;
+import de.eshg.validation.constraints.DateOfBirth;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -25,7 +26,7 @@ public record CreatePersonDto(
     GenderDto gender,
     @NotNull @Size(min = 1, max = 80) String firstName,
     @NotNull @Size(min = 1, max = 120) String lastName,
-    @NotNull LocalDate dateOfBirth,
+    @NotNull @DateOfBirth LocalDate dateOfBirth,
     @Size(min = 1, max = 40) String nameAtBirth,
     @Size(min = 1, max = 50) String placeOfBirth,
     CountryCode countryOfBirth,

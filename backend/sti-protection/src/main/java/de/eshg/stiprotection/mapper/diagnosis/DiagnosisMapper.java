@@ -30,21 +30,6 @@ public class DiagnosisMapper {
         entity.getResultsCommunicated());
   }
 
-  public static DiagnosisDto toInterfaceType(Diagnosis entity) {
-    if (entity == null) {
-      return new DiagnosisDto(null, null, null, null, null, null, false);
-    }
-
-    return new DiagnosisDto(
-        entity.getResults(),
-        MedicationMapper.toInterfaceType(entity.getMedications()),
-        null,
-        TestTypeMapper.toInterfaceType(entity.getTestTypes()),
-        entity.getOtherTestTypeName(),
-        entity.getGeneralRemarks(),
-        entity.getResultsCommunicated());
-  }
-
   public static Diagnosis toDatabaseType(DiagnosisDto dto) {
     if (dto == null) {
       return null;

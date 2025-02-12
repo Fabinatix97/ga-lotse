@@ -95,7 +95,7 @@ public class GdprProcedureController implements GdprProcedureApi {
 
   @Override
   @Transactional
-  public GetGdprProcedureResponse addGdprProcedureFromCitizenPortal(
+  public CitizenUsersGdprProcedureDto addGdprProcedureFromCitizenPortal(
       AddGdprProcedureFromCitizenPortalRequest request) {
     baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR_ONLINE_PORTAL);
 
@@ -105,7 +105,7 @@ public class GdprProcedureController implements GdprProcedureApi {
     procedure.setIdentificationData(identificationData);
 
     GdprProcedure saved = service.addFromCitizenPortal(procedure);
-    return mapGdprProcedureToApi(saved);
+    return GdprProcedureMapper.mapProcedureToCitizenApi(saved);
   }
 
   @Override
@@ -216,6 +216,7 @@ public class GdprProcedureController implements GdprProcedureApi {
   public GetGdprProcedureResponse addCentralFileIdToGdprProcedure(
       UUID id, AddCentralFileIdToGdprProcedureRequest request) {
     baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR);
+
     List<CentralFileIdWrapper> centralFileIds =
         mapToDm(request.centralFileIds().stream().distinct().toList());
     return mapGdprProcedureToApi(

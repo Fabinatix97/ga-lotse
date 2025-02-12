@@ -19,6 +19,6 @@ public record ExaminationDto(
     @NotNull ProphylaxisTypeDto prophylaxisType,
     @NotNull boolean isScreening,
     @NotNull boolean isFluoridation,
-    @NotNull boolean fluoridationConsentGiven,
+    Boolean fluoridationConsentGiven,
     String note,
     @Valid ExaminationResultDto result) {}

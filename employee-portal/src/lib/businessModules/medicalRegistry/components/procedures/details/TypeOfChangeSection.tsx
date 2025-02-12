@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetProcedureDraftResponse } from "@eshg/employee-portal-api/medicalRegistry";
 import { changeTypeNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
+import { ApiGetProcedureDraftResponse } from "@eshg/medical-registry-api";
 import { Typography } from "@mui/joy";
 
 import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";

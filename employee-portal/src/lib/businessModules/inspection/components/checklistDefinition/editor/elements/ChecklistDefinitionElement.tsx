@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiCLSectionContextElementsInner } from "@eshg/employee-portal-api/inspection";
+import { ApiCLSectionContextElementsInner } from "@eshg/inspection-api";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { DraggableProvidedDragHandleProps } from "@hello-pangea/dnd";

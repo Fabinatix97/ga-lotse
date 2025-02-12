@@ -46,7 +46,6 @@ export interface EvaluationDetailsTableProps {
   resolveProcedureId?: (
     procedureReferenceId: string | undefined,
   ) => string | undefined;
-  loading: boolean;
 }
 
 export function EvaluationDetailsTable(props: EvaluationDetailsTableProps) {
@@ -109,10 +108,7 @@ export function EvaluationDetailsTable(props: EvaluationDetailsTableProps) {
         )
       }
     >
-      <TableSheet
-        loading={props.loading}
-        footer={<Pagination {...props.paginationProps} />}
-      >
+      <TableSheet footer={<Pagination {...props.paginationProps} />}>
         <DataTable
           wrapContent
           wrapHeader

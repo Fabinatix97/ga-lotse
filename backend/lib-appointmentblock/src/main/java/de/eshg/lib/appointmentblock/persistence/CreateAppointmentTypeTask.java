@@ -9,6 +9,7 @@ import de.eshg.lib.appointmentblock.persistence.entity.AppointmentTypeConfig;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.persistence.TransactionHelper;
 import jakarta.annotation.PostConstruct;
+import java.time.Duration;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +40,7 @@ public class CreateAppointmentTypeTask {
             appointmentBlockProperties
                 .getDefaultAppointmentTypeConfiguration()
                 .forEach(
-                    (appointmentType, defaultDuration) -> {
-                      int standardDuration = Math.toIntExact(defaultDuration.toMinutes());
+                    (appointmentType, standardDuration) -> {
                       Optional<AppointmentTypeConfig> config =
                           appointmentTypeRepository.findByAppointmentType(appointmentType);
 
@@ -54,23 +54,23 @@ public class CreateAppointmentTypeTask {
   }
 
   private void createAppointmentTypeConfig(
-      AppointmentType appointmentType, int standardDurationInMinutes) {
+      AppointmentType appointmentType, Duration standardDuration) {
     AppointmentTypeConfig appointmentTypeConfig = new AppointmentTypeConfig();
     appointmentTypeConfig.setAppointmentType(appointmentType);
-    appointmentTypeConfig.setStandardDurationInMinutes(standardDurationInMinutes);
+    appointmentTypeConfig.setStandardDuration(standardDuration);
     appointmentTypeRepository.save(appointmentTypeConfig);
   }
 
   private static void updateAppointmentTypeConfig(
-      AppointmentTypeConfig config, int standardDurationInMinutes) {
-    int previousStandardDurationInMinutes = config.getStandardDurationInMinutes();
-    if (previousStandardDurationInMinutes != standardDurationInMinutes) {
+      AppointmentTypeConfig config, Duration standardDuration) {
+    Duration previousStandardDuration = config.getStandardDuration();
+    if (!previousStandardDuration.equals(standardDuration)) {
       log.info(
-          "Updated appointment type configuration for type {} from {} to {} minutes",
+          "Updated appointment type configuration for type {} from {} to {}",
           config.getAppointmentType(),
-          previousStandardDurationInMinutes,
-          standardDurationInMinutes);
+          previousStandardDuration,
+          standardDuration);
     }
-    config.setStandardDurationInMinutes(standardDurationInMinutes);
+    config.setStandardDuration(standardDuration);
   }
 }

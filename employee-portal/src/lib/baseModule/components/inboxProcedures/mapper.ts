@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { AcademicTitle } from "@eshg/lib-portal/components/formFields/constants";
+import { toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
+import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import {
   ApiContactDetails,
   ApiContactType,
@@ -11,10 +14,7 @@ import {
   ApiInboxProcedureAddress,
   ApiInboxProgressEntryType,
   ApiTitle,
-} from "@eshg/employee-portal-api/businessProcedures";
-import { AcademicTitle } from "@eshg/lib-portal/components/formFields/constants";
-import { toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+} from "@eshg/lib-procedures-api";
 import { isEmpty } from "remeda";
 
 import { AddressValues } from "@/lib/baseModule/components/inboxProcedures/AddressForm";

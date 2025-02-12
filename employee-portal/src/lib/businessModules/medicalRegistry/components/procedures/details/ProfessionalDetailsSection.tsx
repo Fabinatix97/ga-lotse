@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetProcedure200Response } from "@eshg/employee-portal-api/medicalRegistry";
 import {
   employmentStatusNames,
   employmentTypeNames,
@@ -12,6 +11,7 @@ import {
 import { PERSON_FIELD_NAME } from "@eshg/lib-portal/components/formFields/constants";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
+import { ApiGetProcedure200Response } from "@eshg/medical-registry-api";
 import { Stack } from "@mui/joy";
 import { isDefined } from "remeda";
 

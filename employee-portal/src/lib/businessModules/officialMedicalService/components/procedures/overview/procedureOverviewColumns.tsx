@@ -3,13 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiEmployeeOmsProcedureOverview } from "@eshg/employee-portal-api/officialMedicalService";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { ApiEmployeeOmsProcedureOverview } from "@eshg/official-medical-service-api";
 import { WarningAmberOutlined } from "@mui/icons-material";
 import { Chip, Tooltip } from "@mui/joy";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 
+import { statusColorsMedicalOpinionStatus } from "@/lib/businessModules/officialMedicalService/shared/constants";
+import { STATUS_NAMES_MEDICAL_OPINION_STATUS } from "@/lib/businessModules/officialMedicalService/shared/translations";
 import {
   procedureStatusNames,
   statusColors,
@@ -105,6 +107,24 @@ export function procedureOverviewTableColumns() {
       enableSorting: true,
       meta: {
         width: 100,
+        canNavigate: {
+          parentRow: true,
+        },
+      },
+    }),
+    columnHelper.accessor("medicalOpinionStatus", {
+      header: "Gutachten Status",
+      cell: (props) => (
+        <Chip
+          color={statusColorsMedicalOpinionStatus[props.getValue()]}
+          size="md"
+        >
+          {STATUS_NAMES_MEDICAL_OPINION_STATUS[props.getValue()]}
+        </Chip>
+      ),
+      enableSorting: true,
+      meta: {
+        width: 120,
         canNavigate: {
           parentRow: true,
         },

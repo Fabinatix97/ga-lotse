@@ -13,6 +13,7 @@ interface MultiFormButtonBarProps {
   onCancel?: () => void;
   onBack?: () => void;
   onDelete?: () => void;
+  onReject?: () => void;
   submitting: boolean;
   submitLabel: string | undefined;
 }
@@ -41,6 +42,11 @@ export function MultiFormButtonBar(props: MultiFormButtonBarProps) {
           {isDefined(props.onDelete) && (
             <Button variant="plain" color="danger" onClick={props.onDelete}>
               Entfernen
+            </Button>
+          )}
+          {isDefined(props.onReject) && (
+            <Button variant="plain" color="danger" onClick={props.onReject}>
+              Ablehnen
             </Button>
           )}
           {isDefined(props.submitLabel) && (

@@ -10,7 +10,7 @@ import { useDentalApi } from "@eshg/dental/shared/DentalProvider";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { PropsWithChildren } from "react";
 
-import { ProphylaxisSessionStoreProvider } from "@/lib/businessModules/dental/features/prophylaxisSessions/store/ProphylaxisSessionStoreProvider";
+import { ProphylaxisSessionStoreProvider } from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/ProphylaxisSessionStoreProvider";
 
 export type ProphylaxisSessionPageProps = Readonly<{
   params: ProphylaxisSessionPageParams;

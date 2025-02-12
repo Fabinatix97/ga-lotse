@@ -3,16 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { ReactNode } from "react";
 
 import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
 import { BaseAddressDetails } from "@/lib/shared/components/address/BaseAddressDetails";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
-import { ExternalLinkDetailsCell } from "@/lib/shared/components/detailsSection/ExternalLinkDetailsCell";
+import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
+import { ExternalLinkDetailsItem } from "@/lib/shared/components/detailsSection/items/ExternalLinkDetailsItem";
 import { BaseAddress } from "@/lib/shared/helpers/address";
 
 export interface CentralFileFacility {
@@ -21,8 +20,6 @@ export interface CentralFileFacility {
   readonly emailAddresses?: string[];
   readonly phoneNumbers?: string[];
 }
-
-const fieldName = createFieldNameMapper<CentralFileFacility>();
 
 export interface CentralFileFacilityDetailsProps<T> {
   readonly facility: T;
@@ -46,11 +43,7 @@ export function CentralFileFacilityDetails<T extends CentralFileFacility>(
       width="100%"
     >
       <DetailsColumn sx={props.columnSx}>
-        <DetailsCell
-          name={fieldName("name")}
-          label={"Name"}
-          value={facility.name}
-        />
+        <DetailsItem label="Name" value={facility.name} />
         {props.children}
       </DetailsColumn>
       {facility.contactAddress && (
@@ -62,19 +55,17 @@ export function CentralFileFacilityDetails<T extends CentralFileFacility>(
       {emailAddresses.length + phoneNumbers.length > 0 && (
         <DetailsColumn sx={props.columnSx}>
           {emailAddresses.map((email, index) => (
-            <ExternalLinkDetailsCell
+            <ExternalLinkDetailsItem
               key={`${email}.${index}`}
-              name={`emailAddress.${index}`}
-              label={"E-Mail-Adresse"}
+              label="E-Mail-Adresse"
               value={email}
               href={(value) => `mailto:${value}`}
             />
           ))}
           {phoneNumbers.map((phoneNumber, index) => (
-            <DetailsCell
+            <DetailsItem
               key={`${phoneNumber}.${index}`}
-              name={`phoneNumber.${index}`}
-              label={"Telefonnummer"}
+              label="Telefonnummer"
               value={phoneNumber}
             />
           ))}

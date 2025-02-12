@@ -58,8 +58,9 @@ The Lib Portal serves as shared library for components that can be used in all s
 
 === Api Clients
 
-The portal applications depend on generated api clients for fetching data from the backend services.
-For example, the `employee-portal-api` folder contains a module that generates all needed api clients for the `employee-portal` from OpenApi specifications. The api clients are automatically generated when starting the application.
+The portal applications and business module library packages depend on generated api clients for fetching data from the backend services.
+For example, the `packages/dental-api` folder contains a module that generates the api client for the `packages/dental` package from a OpenAPI specification.
+The api clients are automatically generated when starting the application (or running any other gradle task depending on them).
 
 === Naming Convention
 

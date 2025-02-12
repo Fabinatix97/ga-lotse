@@ -30,3 +30,7 @@ export const employeeOmsProcedureApiQueryKey = queryKeyFactory(
 );
 
 export const concernApiQueryKey = queryKeyFactory(apiQueryKey(["concernApi"]));
+
+export const waitingRoomApiQueryKey = queryKeyFactory(
+  apiQueryKey(["waitingRoomApi"]),
+);

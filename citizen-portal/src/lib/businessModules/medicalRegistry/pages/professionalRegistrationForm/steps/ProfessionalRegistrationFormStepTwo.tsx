@@ -3,11 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiEmploymentStatus,
-  ApiEmploymentType,
-  ApiTypeOfChange,
-} from "@eshg/citizen-portal-api/medicalRegistry";
 import { professionalTitleNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
 import {
   MedicalRegistryCreateProcedureFormValues,
@@ -24,6 +19,11 @@ import {
   validateLength,
   validatePastOrTodayDate,
 } from "@eshg/lib-portal/helpers/validators";
+import {
+  ApiEmploymentStatus,
+  ApiEmploymentType,
+  ApiTypeOfChange,
+} from "@eshg/medical-registry-api";
 import { Grid, Radio, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { useMemo } from "react";

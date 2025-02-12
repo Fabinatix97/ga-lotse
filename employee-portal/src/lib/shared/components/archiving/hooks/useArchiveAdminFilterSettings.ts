@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { GetRelevantArchivableProceduresRequest } from "@eshg/employee-portal-api/businessProcedures";
+import { GetRelevantArchivableProceduresRequest } from "@eshg/lib-procedures-api";
 
 import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
 import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";

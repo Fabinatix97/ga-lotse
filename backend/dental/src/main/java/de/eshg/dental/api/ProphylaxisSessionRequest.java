@@ -6,8 +6,12 @@
 package de.eshg.dental.api;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
 
 public interface ProphylaxisSessionRequest {
+  UUID institutionId();
+
   Instant dateAndTime();
 
   String groupName();
@@ -17,4 +21,8 @@ public interface ProphylaxisSessionRequest {
   boolean isScreening();
 
   FluoridationVarnishDto fluoridationVarnish();
+
+  List<UUID> dentistIds();
+
+  List<UUID> zfaIds();
 }

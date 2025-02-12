@@ -7,21 +7,16 @@ package de.eshg.keycloak.authenticator;
 
 import java.util.List;
 import org.keycloak.Config;
-import org.keycloak.authentication.Authenticator;
 import org.keycloak.authentication.AuthenticatorFactory;
 import org.keycloak.models.AuthenticationExecutionModel;
-import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
 import org.keycloak.provider.ProviderConfigProperty;
 
-public class AccessCodeFormFactory implements AuthenticatorFactory {
-
-  public static final String PROVIDER_ID = "access-code";
-  static AccessCodeForm SINGLETON = new AccessCodeForm();
+public abstract class AccessCodeFormFactory implements AuthenticatorFactory {
 
   @Override
   public String getDisplayType() {
-    return "Access Code Form";
+    return "%s Access Code Form".formatted(getFormattedCredentialType());
   }
 
   @Override
@@ -46,17 +41,13 @@ public class AccessCodeFormFactory implements AuthenticatorFactory {
 
   @Override
   public String getHelpText() {
-    return "Validates a code and a second identity factory from a form";
+    return "Validates a code and a %s credential from a form"
+        .formatted(getFormattedCredentialType());
   }
 
   @Override
   public List<ProviderConfigProperty> getConfigProperties() {
     return null;
-  }
-
-  @Override
-  public Authenticator create(KeycloakSession session) {
-    return SINGLETON;
   }
 
   @Override
@@ -70,6 +61,10 @@ public class AccessCodeFormFactory implements AuthenticatorFactory {
 
   @Override
   public String getId() {
-    return PROVIDER_ID;
+    return getCredentialType() + "-access-code";
   }
+
+  public abstract String getCredentialType();
+
+  public abstract String getFormattedCredentialType();
 }

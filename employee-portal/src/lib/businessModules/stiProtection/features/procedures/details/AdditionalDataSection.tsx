@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiStiProtectionProcedure } from "@eshg/employee-portal-api/stiProtection";
-import { Sheet } from "@mui/joy";
+import { ApiStiProtectionProcedure } from "@eshg/sti-protection-api";
+import { Chip, Sheet, styled } from "@mui/joy";
 
 import { CONCERN_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
@@ -27,6 +27,7 @@ export function AdditionalDataSection({
     <Sheet>
       <DetailsSection title="Zusatzinfos">
         <DetailsColumn>
+          {procedure.isFollowUp ? <FollowUpProcedureChip /> : null}
           <DetailsCell label="Art" value={CONCERN_VALUES[procedure.concern]} />
           <DetailsCell
             label="Nächster Termin"
@@ -37,4 +38,13 @@ export function AdditionalDataSection({
       </DetailsSection>
     </Sheet>
   );
+}
+
+const FollowUpChip = styled(Chip)(({ theme }) => ({
+  backgroundColor: theme.palette.primary.softBg,
+  color: theme.palette.text.primary,
+}));
+
+function FollowUpProcedureChip() {
+  return <FollowUpChip>Folgevorgang</FollowUpChip>;
 }

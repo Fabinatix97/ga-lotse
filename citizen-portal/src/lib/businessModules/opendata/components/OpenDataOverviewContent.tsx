@@ -3,24 +3,30 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiVersion } from "@eshg/citizen-portal-api/openData";
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
-import { parseOptionalNonNegativeInt } from "@eshg/lib-portal/helpers/searchParams";
-import { ChevronRightOutlined } from "@mui/icons-material";
-import { Card, CardContent, List, ListItem, Stack, Typography } from "@mui/joy";
-import { useSearchParams } from "next/navigation";
-import { isEmpty } from "remeda";
+import { ApiVersion } from "@eshg/opendata-api";
+import { ChevronRightOutlined, RefreshOutlined } from "@mui/icons-material";
+import {
+  Button,
+  Card,
+  CardContent,
+  List,
+  ListItem,
+  Stack,
+  Typography,
+} from "@mui/joy";
+import { startTransition } from "react";
+import { Trans } from "react-i18next";
+import { isDefined, isEmpty } from "remeda";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { useGetOpenDocuments } from "@/lib/businessModules/opendata/api/queries/citizenPublicApi";
 import { OpenDataFilters } from "@/lib/businessModules/opendata/components/OpenDataFilters";
-import { SEARCH_PARAMS } from "@/lib/businessModules/opendata/components/helpers";
 import { useOpenDataFilterValues } from "@/lib/businessModules/opendata/components/useOpenDataFilterValues";
 import { fileTypeNames } from "@/lib/businessModules/opendata/shared/constants";
 import { useCitizenRoutes } from "@/lib/businessModules/opendata/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 import { MobileBreakpoint, byBreakpoint } from "@/lib/shared/breakpoints";
-import { Pagination } from "@/lib/shared/components/Pagination";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
 import {
   ContentSheet,
@@ -28,7 +34,6 @@ import {
 } from "@/lib/shared/components/layout/contentSheet";
 import { GridColumnStack } from "@/lib/shared/components/layout/grid";
 import { PageTitle } from "@/lib/shared/components/layout/page";
-import { useReplaceSearchParams } from "@/lib/shared/hooks/searchParams/useReplaceSearchParams";
 import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 const PAGE_SIZE = 10;
@@ -37,20 +42,14 @@ export function OpenDataOverviewContent() {
   const { t } = useTranslation(["opendata/overview"]);
   const isMobile = useIsMobile();
 
-  const { pageNumber, setPageNumber } = usePagination();
-
   const filterValues = useOpenDataFilterValues();
-  const {
-    data: { totalElements, elements },
-  } = useGetOpenDocuments({
-    pageNumber,
+  const { data, fetchNextPage, hasNextPage, isFetching } = useGetOpenDocuments({
     pageSize: PAGE_SIZE,
     searchString: filterValues.search,
     sourcesFilter: filterValues.topic,
     fileTypeFilter: filterValues.fileType,
     statisticsYearFilter: filterValues.year,
   });
-  const versions = elements.flatMap(({ versions }) => versions);
 
   return (
     <PageContent>
@@ -70,30 +69,55 @@ export function OpenDataOverviewContent() {
             </Stack>
           )}
           <Typography level="h3" sx={{ marginTop: 1 }}>
-            {totalElements === 1
-              ? t("resultSection.foundSingular", { totalElements })
-              : t("resultSection.foundPlural", { totalElements })}
+            {t("resultSection.found", {
+              count: data?.totalElements ?? 0,
+            })}
           </Typography>
 
-          <List
-            sx={{ padding: 0, gap: "inherit" }}
-            aria-label={t("resultSection.results")}
-          >
-            {versions.map((version) => (
-              <ListItem key={version.externalId} sx={{ padding: 0 }}>
-                <OpenDataCard version={version} />
-              </ListItem>
-            ))}
-          </List>
+          {isDefined(data) && (
+            <>
+              <List
+                sx={{ padding: 0, gap: "inherit" }}
+                aria-label={t("resultSection.results")}
+              >
+                {data.versions.map((version) => (
+                  <ListItem key={version.externalId} sx={{ padding: 0 }}>
+                    <OpenDataCard version={version} />
+                  </ListItem>
+                ))}
+              </List>
 
-          {/* TODO: ISSUE-7233: replace pagination with "Show more" button  */}
-          {totalElements > PAGE_SIZE && (
-            <Pagination
-              totalCount={totalElements}
-              pageSize={PAGE_SIZE}
-              pageNumber={pageNumber}
-              onPageChange={setPageNumber}
-            />
+              <Stack gap={2} alignItems="center">
+                {hasNextPage && (
+                  <Button
+                    loading={isFetching}
+                    variant="soft"
+                    endDecorator={<RefreshOutlined />}
+                    sx={{ margin: "auto" }}
+                    onClick={() => {
+                      startTransition(async () => {
+                        await fetchNextPage();
+                      });
+                    }}
+                  >
+                    {t("pagination.loadMore")}
+                  </Button>
+                )}
+                <Typography
+                  sx={{
+                    color: (theme) => theme.palette.text.primary,
+                  }}
+                >
+                  <Trans
+                    i18nKey="opendata/overview:pagination.shown"
+                    count={data.totalElements}
+                    values={{
+                      shownElements: data.versions.length,
+                    }}
+                  ></Trans>
+                </Typography>
+              </Stack>
+            </>
           )}
         </ContentSheet>
       </GridColumnStack>
@@ -153,20 +177,4 @@ function OpenDataCard({ version }: { version: ApiVersion }) {
       </InternalLink>
     </Card>
   );
-}
-
-function usePagination() {
-  const searchParams = useSearchParams();
-  const replaceSearchParams = useReplaceSearchParams();
-  const pageNumber =
-    parseOptionalNonNegativeInt(searchParams.get(SEARCH_PARAMS.pageNumber)) ??
-    0;
-
-  function setPageNumber(newPageNumber: number) {
-    replaceSearchParams([
-      { name: SEARCH_PARAMS.pageNumber, value: newPageNumber },
-    ]);
-  }
-
-  return { pageNumber, setPageNumber };
 }

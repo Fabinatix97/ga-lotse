@@ -14,6 +14,8 @@ import { ExaminationStatus, mapToExaminationStatus } from "./ExaminationStatus";
 
 export interface ChildExamination {
   readonly childId: string;
+  readonly examinationId: string;
+  readonly examinationVersion: number;
   readonly firstName: string;
   readonly lastName: string;
   readonly dateOfBirth: Date;
@@ -30,6 +32,8 @@ export function mapChildExamination(
 ): ChildExamination {
   return {
     childId: response.childId,
+    examinationId: response.examinationId,
+    examinationVersion: response.examinationVersion,
     firstName: response.firstName,
     lastName: response.lastName,
     dateOfBirth: response.dateOfBirth,

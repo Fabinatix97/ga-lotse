@@ -41,6 +41,11 @@ const defaultSubItems: SideNavigationSubItem[] = [
     href: routes.appointmentDefinition,
     accessCheck: hasUserRole(ApiUserRole.StiProtectionUser),
   },
+  {
+    name: "Textvorlagen",
+    href: routes.textTemplates,
+    accessCheck: hasUserRole(ApiUserRole.StiProtectionUser),
+  },
 ];
 
 export function useSideNavigationItems(

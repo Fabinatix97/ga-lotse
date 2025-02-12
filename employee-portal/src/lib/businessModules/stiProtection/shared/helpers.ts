@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import {
   ApiAppointmentHistoryEntry,
   ApiAppointmentType,
   ApiConcern,
   ApiStiProtectionProcedure,
   ApiStiProtectionProcedureOverview,
-} from "@eshg/employee-portal-api/stiProtection";
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
+} from "@eshg/sti-protection-api";
 import { FormikState } from "formik";
 
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";

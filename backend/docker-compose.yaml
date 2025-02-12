@@ -572,6 +572,8 @@ services:
       - de.eshg.base.service-url=http://base:8080
       - eshg.keycloak.internal.url=http://keycloak:8080
       - de.eshg.auditlog.service-url=http://auditlog:8080
+      - de.eshg.official-medical-service.notification.fromAddress=tba@stadt-frankfurt.de
+      - de.eshg.official-medical-service.notification.greeting=Ihr TBA-Team der Stadt Frankfurt
     depends_on:
       official-medical-service-db:
         condition: service_healthy

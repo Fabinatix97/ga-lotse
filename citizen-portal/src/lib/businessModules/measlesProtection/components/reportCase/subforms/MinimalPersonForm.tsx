@@ -8,7 +8,10 @@
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import {
+  validateDateOfBirth,
+  validateLength,
+} from "@eshg/lib-portal/helpers/validators";
 import { Grid, Stack } from "@mui/joy";
 
 import {
@@ -69,6 +72,7 @@ export function MinimalPersonForm(props: Readonly<NestedFormProps>) {
             name={fieldName("dateOfBirth")}
             label={minimalPersonFormConfig.dateOfBirth.label}
             required={minimalPersonFormConfig.dateOfBirth.required}
+            validate={validateDateOfBirth}
           />
         </Grid>
       </Grid>

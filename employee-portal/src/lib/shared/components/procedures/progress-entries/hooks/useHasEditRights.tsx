@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiManualProgressEntry } from "@eshg/employee-portal-api/businessProcedures";
+import { ApiManualProgressEntry } from "@eshg/lib-procedures-api";
 
 import { useGetSelfUser } from "@/lib/baseModule/api/queries/users";
 

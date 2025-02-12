@@ -139,18 +139,19 @@ public class DataSourceAggregationService {
     return businessAttributes.stream()
         .map(
             attribute -> {
-              Optional<BaseAvailableDataSource> baseAvailableDataSource =
-                  findBaseAvailableDataSource(baseAvailableDataSources, attribute);
-              return new BusinessDataSourceAttribute(
-                  attribute.name(),
-                  attribute.code(),
-                  attribute.category(),
-                  baseAvailableDataSource
+              List<BaseDataSourceAttribute> baseDataSourceAttributes =
+                  findBaseAvailableDataSource(baseAvailableDataSources, attribute)
                       .map(
                           availableDataSource ->
                               mapToBaseDataSourceAttributes(
                                   attribute.name(), availableDataSource.attributes()))
-                      .orElse(null));
+                      .orElse(null);
+              return new BusinessDataSourceAttribute(
+                  attribute.name(),
+                  attribute.code(),
+                  attribute.category(),
+                  baseDataSourceAttributes == null ? attribute.dataPrivacyCategory() : null,
+                  baseDataSourceAttributes);
             })
         .toList();
   }
@@ -192,7 +193,8 @@ public class DataSourceAggregationService {
                     EvaluationMapper.getAttributeDisplayName(
                         businessAttributeName, attribute.name()),
                     attribute.name(),
-                    attribute.code()))
+                    attribute.code(),
+                    attribute.dataPrivacyCategory()))
         .toList();
   }
 }

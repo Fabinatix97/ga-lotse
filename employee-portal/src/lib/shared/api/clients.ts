@@ -5,18 +5,18 @@
 
 import { ConfigurationParameters } from "@eshg/base-api";
 import {
-  ApiBusinessModule,
-  Configuration as BusinessProceduresConfiguration,
-  GdprValidationTaskApi,
-} from "@eshg/employee-portal-api/businessProcedures";
-import {
-  Configuration as LibStatisticsConfiguration,
-  StatisticsProcedureReferenceApi,
-} from "@eshg/employee-portal-api/libStatistics";
-import {
   ApiConfiguration,
   useApiConfiguration,
 } from "@eshg/lib-portal/api/ApiProvider";
+import {
+  ApiBusinessModule,
+  GdprValidationTaskApi,
+  Configuration as LibProceduresConfiguration,
+} from "@eshg/lib-procedures-api";
+import {
+  Configuration as LibStatisticsConfiguration,
+  StatisticsProcedureReferenceApi,
+} from "@eshg/lib-statistics-api";
 
 type ConfigurationConstructor<TConfiguration> = new (
   params: ConfigurationParameters,
@@ -49,7 +49,7 @@ export function useConfigurationByBusinessModule<TConfiguration>(
 export function useGdprValidationTaskApi(businessModule: ApiBusinessModule) {
   const configuration = useConfigurationByBusinessModule(
     businessModule,
-    BusinessProceduresConfiguration,
+    LibProceduresConfiguration,
   );
   return new GdprValidationTaskApi(configuration);
 }

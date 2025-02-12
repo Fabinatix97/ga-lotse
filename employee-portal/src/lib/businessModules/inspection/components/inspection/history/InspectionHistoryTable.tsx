@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiInspPendingFacility } from "@eshg/employee-portal-api/inspection";
+import { ApiInspPendingFacility } from "@eshg/inspection-api";
 import { Row } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 

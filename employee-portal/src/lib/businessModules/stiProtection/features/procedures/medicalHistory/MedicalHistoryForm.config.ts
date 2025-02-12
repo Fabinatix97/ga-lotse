@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { MonthAndYear } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
 import {
   ApiConcern,
   ApiCreateMedicalHistoryRequest,
@@ -16,8 +17,7 @@ import {
   ApiSexWorkLocation,
   ApiSexualOrientation,
   ApiVaccination,
-} from "@eshg/employee-portal-api/stiProtection";
-import { MonthAndYear } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
+} from "@eshg/sti-protection-api";
 
 import { YesOrNoFieldData } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
 

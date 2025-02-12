@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiChecklist } from "@eshg/employee-portal-api/inspection";
+import { ApiChecklist } from "@eshg/inspection-api";
 import { Box, Stack, Typography } from "@mui/joy";
 import { Fragment } from "react";
 

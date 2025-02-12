@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiTypeOfChange } from "@eshg/employee-portal-api/medicalRegistry";
 import { professionalTitleNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
 import {
   MedicalRegistryCreateProcedureFormValues,
@@ -22,6 +21,7 @@ import {
   validatePastOrTodayDate,
 } from "@eshg/lib-portal/helpers/validators";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
+import { ApiTypeOfChange } from "@eshg/medical-registry-api";
 import { Grid, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 

@@ -84,5 +84,7 @@
   <include file="migrations/0074_add_cemetery_delete_at.xml"/>
   <include file="migrations/0075_add_previous_file_state_id_to_system_progress_entry.xml"/>
   <include file="migrations/0076_add_waiting_status.xml"/>
+  <include file="migrations/0077_add_auditlog_entry.xml"/>
+  <include file="migrations/0078_convert_duration_columns_to_interval.xml"/>
 
 </databaseChangeLog>

@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiCLAudioContext,
-  ApiCLImageContext,
-} from "@eshg/employee-portal-api/inspection";
+import { ApiCLAudioContext, ApiCLImageContext } from "@eshg/inspection-api";
 import { UploadFileOutlined } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 

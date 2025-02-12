@@ -6,7 +6,7 @@
 import {
   ApiGetArchivableProceduresResponse,
   ApiProcedure,
-} from "@eshg/employee-portal-api/businessProcedures";
+} from "@eshg/lib-procedures-api";
 
 export type ArchivableProcedure = ApiProcedure & { id: string };
 

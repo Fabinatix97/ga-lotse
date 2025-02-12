@@ -6,7 +6,7 @@
 import {
   ApiChecklistDefinition,
   ApiChecklistDefinitionCentralRepoRequest,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { Stack } from "@mui/joy";

@@ -3,34 +3,32 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   ApiAppointment,
   ApiAppointmentBookingType,
   ApiAppointmentType,
   ApiConcern,
   ApiCountryCode,
-  ApiCreateProcedureRequest,
   ApiCreateProcedureResponse,
   ApiGender,
-} from "@eshg/employee-portal-api/stiProtection";
-import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { countryOptions } from "@eshg/lib-portal/helpers/countryOption";
-import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
-import { differenceInMinutes } from "date-fns";
-import { Formik, FormikHelpers } from "formik";
+} from "@eshg/sti-protection-api";
+import { Formik } from "formik";
 import { useRouter } from "next/navigation";
-import { useReducer, useState } from "react";
+import { useState } from "react";
 
 import {
   useCreateStiProcedureMutation,
   useCreateStiProcedureOptions,
 } from "@/lib/businessModules/stiProtection/api/mutations/procedures";
-import { CONCERN_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";
 import {
-  deleteUndefined,
-  optionalInt,
-} from "@/lib/businessModules/stiProtection/shared/helpers";
+  AppointmentForm,
+  CreateAppointmentForm,
+} from "@/lib/businessModules/stiProtection/shared/procedure/AppointmentForm";
+import { SharePinModal } from "@/lib/businessModules/stiProtection/shared/procedure/SharePinModal";
+import { CONCERN_OPTIONS } from "@/lib/businessModules/stiProtection/shared/procedure/helpers";
+import { mapProcedureFormToApi } from "@/lib/businessModules/stiProtection/shared/procedure/mappers";
+import { useFormWithSteps } from "@/lib/businessModules/stiProtection/shared/procedure/useFormWithSteps";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
@@ -42,20 +40,15 @@ import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
 
-import { AppointmentForm, CombinedAppointmentForm } from "./AppointmentForm";
 import {
   PersonalDataForm,
   personalDataFormValidation,
 } from "./PersonalDataForm";
-import { SharePinModal } from "./SharePinModal";
 import { AppointmentFieldSetProps, SummaryForm } from "./SummaryForm";
 
-export const CONCERN_OPTIONS = Object.entries(CONCERN_VALUES).map(
-  ([value, label]) => ({
-    content: <b>{label}</b>,
-    value: value as ApiConcern,
-  }),
-);
+export type CombinedAppointmentForm = Partial<
+  AddNewProcedureForm & CreateAppointmentForm
+>;
 
 const steps = [
   {
@@ -122,14 +115,6 @@ export function AddNewProcedureSidebar() {
   const [dataToShare, setDataToShare] = useState<
     { pin: string; id: string } | undefined
   >();
-  const lastStepIndex = steps.length - 1;
-  const [stepIndex, changeToStep] = useReducer(
-    (_index: number, newIndex: number) =>
-      Math.max(Math.min(newIndex, lastStepIndex), 0),
-    0,
-  );
-
-  const step = steps[stepIndex]!;
 
   const snackbar = useSnackbar();
   const addNewProcedureOptions = useCreateStiProcedureOptions();
@@ -140,6 +125,21 @@ export function AddNewProcedureSidebar() {
       setDataToShare({ pin: data.pin, id: data.procedureId });
     },
   });
+
+  function onFinalSubmit(newValues: AddNewProcedureForm) {
+    const mappedValues = mapProcedureFormToApi(newValues);
+    return addNewProcedure.mutateAsync(mappedValues);
+  }
+
+  const {
+    Fields,
+    handleNext,
+    handlePrev,
+    changeToStep,
+    step,
+    isOnFirstStep,
+    isOnLastStep,
+  } = useFormWithSteps({ steps, onFinalSubmit });
 
   function pinIsShared() {
     if (dataToShare == null) {
@@ -156,22 +156,6 @@ export function AddNewProcedureSidebar() {
     },
   });
 
-  const isOnFirstStep = stepIndex === 0;
-  const isOnLastStep = stepIndex === lastStepIndex;
-
-  function handleNext(
-    newValues: AddNewProcedureForm,
-    _helpers: FormikHelpers<AddNewProcedureForm>,
-  ) {
-    if (isOnLastStep) {
-      const mappedValues = mapFormToApi(newValues);
-      return addNewProcedure.mutateAsync(mappedValues);
-    }
-    changeToStep(stepIndex + 1);
-  }
-
-  const Fields = step.fields;
-
   return (
     <>
       <Sidebar open={isOpen} onClose={handleClose}>
@@ -185,7 +169,7 @@ export function AddNewProcedureSidebar() {
               <ConfirmLeaveDirtyFormEffect
                 onSaveMutation={{
                   mutationOptions: addNewProcedureOptions,
-                  variableSupplier: () => mapFormToApi(values),
+                  variableSupplier: () => mapProcedureFormToApi(values),
                 }}
               />
               <SidebarContent title={step.title} subtitle={step.subTitle}>
@@ -202,11 +186,7 @@ export function AddNewProcedureSidebar() {
                 <MultiFormButtonBar
                   submitting={addNewProcedure.isPending}
                   onCancel={handleClose}
-                  onBack={
-                    isOnFirstStep
-                      ? undefined
-                      : () => changeToStep(stepIndex - 1)
-                  }
+                  onBack={isOnFirstStep ? undefined : handlePrev}
                   submitLabel={isOnLastStep ? "Vorgang anlegen" : "Weiter"}
                 />
               </SidebarActions>
@@ -217,56 +197,4 @@ export function AddNewProcedureSidebar() {
       <SharePinModal pinToShare={dataToShare?.pin} onShared={pinIsShared} />
     </>
   );
-}
-
-function mapFormToApi(form: AddNewProcedureForm): ApiCreateProcedureRequest {
-  if (!form.yearOfBirth) {
-    throw new Error("Year of birth must be defined");
-  }
-  if (!form.appointmentBookingType) {
-    throw new Error("Appointment booking type must be defined");
-  }
-  const isCustomAppointment =
-    form.appointmentBookingType === ApiAppointmentBookingType.UserDefined;
-
-  const appointmentStart = isCustomAppointment
-    ? new Date(form.customAppointmentDate)
-    : form.blockAppointment?.start;
-
-  if (!appointmentStart) {
-    throw new Error("Appointment start must be defined");
-  }
-
-  const blockAppointmentEnd = form.blockAppointment?.end;
-  if (!isCustomAppointment && blockAppointmentEnd == null) {
-    throw new Error("Appointment end must be defined");
-  }
-
-  return deleteUndefined({
-    appointmentBookingType: form.appointmentBookingType,
-    concern: CONCERN_OPTIONS.find((t) => t.value === form.concern)?.value,
-    countryOfBirth: countryOptions().find(
-      (t) => t.value === form.countryOfBirth,
-    )?.value,
-    gender: GENDER_OPTIONS.find((t) => t.value === form.gender)?.value as
-      | ApiGender
-      | undefined,
-    durationInMinutes: isCustomAppointment
-      ? optionalInt(form.customAppointmentDuration)
-      : differenceInMinutes(blockAppointmentEnd!, appointmentStart),
-    appointmentStart,
-    inGermanySince: optionalInt(form.inGermanySince),
-    yearOfBirth: parseInt(form.yearOfBirth, 10),
-  });
-}
-
-export function getAppointmentDate(form: CombinedAppointmentForm) {
-  const customAppointmentDate = isNonEmptyString(form.customAppointmentDate)
-    ? new Date(form.customAppointmentDate)
-    : undefined;
-  const date =
-    form.appointmentBookingType === ApiAppointmentBookingType.AppointmentBlock
-      ? form.blockAppointment?.start
-      : customAppointmentDate;
-  return date ?? undefined;
 }

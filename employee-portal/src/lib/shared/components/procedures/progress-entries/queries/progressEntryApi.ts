@@ -4,8 +4,8 @@
  */
 
 import { ApiUserRole } from "@eshg/base-api";
-import { ApiGetProceduresSortOrder } from "@eshg/employee-portal-api/businessProcedures";
 import { type QueryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
+import { ApiGetProceduresSortOrder } from "@eshg/lib-procedures-api";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { isDefined, reverse } from "remeda";

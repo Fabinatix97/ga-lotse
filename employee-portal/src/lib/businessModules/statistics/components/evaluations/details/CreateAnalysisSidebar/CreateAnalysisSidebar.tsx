@@ -12,6 +12,7 @@ import { ConfigureBarChartStep } from "@/lib/businessModules/statistics/componen
 import { validateConfigureBarChartStep } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/ConfigureBarChartStep/validateConfigureBarChartStep";
 import { ConfigureChoroplethChartStep } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/ConfigureChoroplethChartStep/ConfigureChoroplethChartStep";
 import { ConfigureHistogramChartStep } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/ConfigureHistogramChartStep/ConfigureHistogramChartStep";
+import { validateConfigureHistogramChartStep } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/ConfigureHistogramChartStep/validateConfigureHistogramChartStep";
 import { ConfigureLineChartStep } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/ConfigureLineChartStep/ConfigureLineChartStep";
 import { ConfigurePieChartStep } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/ConfigurePieChartStep/ConfigurePieChartStep";
 import { ConfigureScatterChartStep } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/ConfigureScatterChartStep/ConfigureScatterChartStep";
@@ -67,6 +68,8 @@ function CreateAnalysisSidebar({
     trendline: false,
     binning: "AUTO",
     bins: 8,
+    minBin: "",
+    maxBin: "",
     colorScheme: "UNIFORM",
     characteristicParameter: "MEAN",
   };
@@ -158,6 +161,7 @@ function CreateAnalysisSidebar({
                   componentProps: { attributes },
                 }),
                 initialValues: initialChartConfigurationValues,
+                validator: validateConfigureHistogramChartStep,
               };
           }
         },

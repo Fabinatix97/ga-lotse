@@ -5,12 +5,13 @@
 
 package de.eshg.base.centralfile.api.person;
 
-import de.eshg.CustomValidations.MandatoryEmailAddressConstraint;
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.lib.common.CountryCode;
+import de.eshg.validation.constraints.DateOfBirth;
+import de.eshg.validation.constraints.MandatoryEmailAddressConstraint;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -31,7 +32,7 @@ public record AddPersonFileStateRequest(
     GenderDto gender,
     @NotNull @Size(min = 1, max = 80) String firstName,
     @NotNull @Size(min = 1, max = 120) String lastName,
-    @NotNull LocalDate dateOfBirth,
+    @NotNull @DateOfBirth LocalDate dateOfBirth,
     @Size(min = 1, max = 40) String nameAtBirth,
     @Size(min = 1, max = 50) String placeOfBirth,
     CountryCode countryOfBirth,
@@ -47,42 +48,42 @@ public record AddPersonFileStateRequest(
     this(new PersonDetailsDto(firstName, lastName, dateOfBirth), dataOrigin);
   }
 
-  public AddPersonFileStateRequest(PersonDetailsDto personDetailsDto, DataOriginDto dataOrigin) {
+  public AddPersonFileStateRequest(PersonDetails personDetails, DataOriginDto dataOrigin) {
     this(
         null,
-        personDetailsDto.title(),
-        personDetailsDto.salutation(),
-        personDetailsDto.gender(),
-        personDetailsDto.firstName(),
-        personDetailsDto.lastName(),
-        personDetailsDto.dateOfBirth(),
-        personDetailsDto.nameAtBirth(),
-        personDetailsDto.placeOfBirth(),
-        personDetailsDto.countryOfBirth(),
-        personDetailsDto.emailAddresses(),
-        personDetailsDto.phoneNumbers(),
-        personDetailsDto.contactAddress(),
-        personDetailsDto.differentBillingAddress(),
+        personDetails.title(),
+        personDetails.salutation(),
+        personDetails.gender(),
+        personDetails.firstName(),
+        personDetails.lastName(),
+        personDetails.dateOfBirth(),
+        personDetails.nameAtBirth(),
+        personDetails.placeOfBirth(),
+        personDetails.countryOfBirth(),
+        personDetails.emailAddresses(),
+        personDetails.phoneNumbers(),
+        personDetails.contactAddress(),
+        personDetails.differentBillingAddress(),
         dataOrigin);
   }
 
   public AddPersonFileStateRequest(
-      UUID referencePersonId, PersonDetailsDto personDetailsDto, DataOriginDto dataOrigin) {
+      UUID referencePersonId, PersonDetails personDetails, DataOriginDto dataOrigin) {
     this(
         referencePersonId,
-        personDetailsDto.title(),
-        personDetailsDto.salutation(),
-        personDetailsDto.gender(),
-        personDetailsDto.firstName(),
-        personDetailsDto.lastName(),
-        personDetailsDto.dateOfBirth(),
-        personDetailsDto.nameAtBirth(),
-        personDetailsDto.placeOfBirth(),
-        personDetailsDto.countryOfBirth(),
-        personDetailsDto.emailAddresses(),
-        personDetailsDto.phoneNumbers(),
-        personDetailsDto.contactAddress(),
-        personDetailsDto.differentBillingAddress(),
+        personDetails.title(),
+        personDetails.salutation(),
+        personDetails.gender(),
+        personDetails.firstName(),
+        personDetails.lastName(),
+        personDetails.dateOfBirth(),
+        personDetails.nameAtBirth(),
+        personDetails.placeOfBirth(),
+        personDetails.countryOfBirth(),
+        personDetails.emailAddresses(),
+        personDetails.phoneNumbers(),
+        personDetails.contactAddress(),
+        personDetails.differentBillingAddress(),
         dataOrigin);
   }
 }

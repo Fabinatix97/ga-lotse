@@ -5,8 +5,8 @@
 
 "use client";
 
-import { ApiInboxProcedure } from "@eshg/employee-portal-api/businessProcedures";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { ApiInboxProcedure } from "@eshg/lib-procedures-api";
 import { createColumnHelper } from "@tanstack/react-table";
 import { isDefined } from "remeda";
 

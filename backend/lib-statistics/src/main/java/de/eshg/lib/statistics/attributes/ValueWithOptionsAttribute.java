@@ -15,6 +15,6 @@ public final class ValueWithOptionsAttribute extends AttributeData {
       List<ValueOptionInternal> valueOptions,
       String category,
       boolean mandatory) {
-    super(name, code, null, valueOptions, category, mandatory);
+    super(name, code, null, valueOptions, category, mandatory, null);
   }
 }

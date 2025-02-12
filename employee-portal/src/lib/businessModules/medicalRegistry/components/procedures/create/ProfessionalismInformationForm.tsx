@@ -4,10 +4,6 @@
  */
 
 import {
-  ApiEmploymentStatus,
-  ApiEmploymentType,
-} from "@eshg/employee-portal-api/medicalRegistry";
-import {
   employmentStatusNames,
   employmentTypeNames,
 } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
@@ -15,6 +11,10 @@ import { ProfessionalismInformationFormValues } from "@eshg/lib-portal/businessM
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
+import {
+  ApiEmploymentStatus,
+  ApiEmploymentType,
+} from "@eshg/medical-registry-api";
 import { Grid, Radio, Typography } from "@mui/joy";
 
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";

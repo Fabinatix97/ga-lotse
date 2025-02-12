@@ -11,6 +11,7 @@ import de.eshg.lib.appointmentblock.api.UpdateAppointmentTypeRequest;
 import de.eshg.lib.appointmentblock.persistence.AppointmentTypeRepository;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentTypeConfig;
 import de.eshg.rest.service.error.NotFoundException;
+import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -49,12 +50,12 @@ public class AppointmentTypeService {
 
   public AppointmentTypeConfigDto updateAppointmentType(
       UUID id, UpdateAppointmentTypeRequest request) {
-
     AppointmentTypeConfig appointmentTypeConfig =
         appointmentTypeRepository
             .findById(id)
             .orElseThrow(() -> new NotFoundException("Appointment type not found"));
-    appointmentTypeConfig.setStandardDurationInMinutes(request.standardDurationInMinutes());
+    appointmentTypeConfig.setStandardDuration(
+        Duration.ofMinutes(request.standardDurationInMinutes()));
     appointmentTypeRepository.save(appointmentTypeConfig);
 
     return AppointmentTypeMapper.toInterfaceType(appointmentTypeConfig);

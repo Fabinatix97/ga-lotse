@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { AppointmentTypeApi } from "@eshg/employee-portal-api/stiProtection";
+import { AppointmentTypeApi } from "@eshg/sti-protection-api";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useAppointmentTypeApi } from "@/lib/businessModules/stiProtection/api/clients";

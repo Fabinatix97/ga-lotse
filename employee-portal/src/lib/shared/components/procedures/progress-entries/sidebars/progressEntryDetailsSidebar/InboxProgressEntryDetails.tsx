@@ -6,7 +6,7 @@
 import {
   ApiProcessedInboxProgressEntry,
   ApiUser,
-} from "@eshg/employee-portal-api/businessProcedures";
+} from "@eshg/lib-procedures-api";
 import { isDefined } from "remeda";
 
 import { inboxProgressEntryTitles } from "@/lib/shared/components/procedures/progress-entries/constants";

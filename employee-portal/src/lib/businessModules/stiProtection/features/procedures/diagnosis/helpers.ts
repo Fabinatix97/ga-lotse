@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
 import {
   ApiDiagnosis,
   ApiIcd10Code,
   ApiTestType,
-} from "@eshg/employee-portal-api/stiProtection";
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
-import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
+} from "@eshg/sti-protection-api";
 
 import { formatDateTypeToISODate } from "@/lib/shared/helpers/dateTime";
 

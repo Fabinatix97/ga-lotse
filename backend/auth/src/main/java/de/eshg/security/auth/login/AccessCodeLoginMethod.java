@@ -8,6 +8,7 @@ package de.eshg.security.auth.login;
 import com.google.common.annotations.VisibleForTesting;
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.security.auth.AuthProperties;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
-public final class AccessCodeLoginMethod extends LoginMethod {
+public class AccessCodeLoginMethod extends LoginMethod {
   private static final Logger log = LoggerFactory.getLogger(AccessCodeLoginMethod.class);
 
   public static final String ACCESS_CODE_QUERY_PARAMETER = "access_code";
@@ -29,19 +30,50 @@ public final class AccessCodeLoginMethod extends LoginMethod {
   }
 
   @Override
-  public List<String> getPathPatterns() {
-    return authProperties.getAccessCodeUrlPatterns();
+  protected List<String> getPathPatterns() {
+    return authProperties.getAccessCodeLoginProperties().values().stream()
+        .flatMap(Collection::stream)
+        .toList();
   }
 
   @Override
   protected void applyParameters(Map<String, Object> params, String redirectUrl) {
-    params.put("prompt", "access_code");
+    AccessCodeLoginType accessCodeLoginType = getAccessCodeLoginType(redirectUrl);
+    params.put("prompt", determineCredentialProviderId(accessCodeLoginType));
+
+    // See de.eshg.keycloak.authenticator.DateOfBirthAccessCodeForm
+    determineContextInfoKey(accessCodeLoginType)
+        .ifPresent(contextInfoKey -> params.put("context_info", contextInfoKey));
+
     getAndValidateAccessCode(redirectUrl)
         .ifPresent(
             validAccessCode -> {
               log.debug("Passing access code to authorization URL");
               params.put(ACCESS_CODE_QUERY_PARAMETER, validAccessCode);
             });
+  }
+
+  private AccessCodeLoginType getAccessCodeLoginType(String redirectUrl) {
+    return authProperties.getAccessCodeLoginProperties().entrySet().stream()
+        .filter(entry -> isApplicable(redirectUrl, entry.getValue()))
+        .map(Map.Entry::getKey)
+        .collect(StreamUtil.toSingleElement());
+  }
+
+  private static String determineCredentialProviderId(AccessCodeLoginType variant) {
+    return switch (variant) {
+      case SCHOOL_ENTRY, TRAVEL_MEDICINE -> "date-of-birth"; // DateOfBirthCredentialProvider
+      case STI_PROTECTION -> "pin"; // PinCredentialProvider
+    };
+  }
+
+  private static Optional<String> determineContextInfoKey(AccessCodeLoginType variant) {
+    return Optional.ofNullable(
+        switch (variant) {
+          case SCHOOL_ENTRY -> "esu";
+          case TRAVEL_MEDICINE -> "tm";
+          case STI_PROTECTION -> null;
+        });
   }
 
   private static Optional<String> getAndValidateAccessCode(String url) {

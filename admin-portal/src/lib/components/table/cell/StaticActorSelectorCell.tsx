@@ -47,6 +47,23 @@ export function formatActorSelector(s: ApiAdminActorSelector) {
   return `${format(s.federalState)}/${format(s.orgUnitType)}/${format(s.orgUnitName)}/${format(s.actorType)}/${format(s.actorName)}`;
 }
 
+export function isActorSelector(s: unknown): s is ApiAdminActorSelector {
+  return (
+    typeof s === "object" &&
+    s !== null &&
+    "federalState" in s &&
+    ["string", "undefined"].includes(typeof s.federalState) &&
+    "orgUnitType" in s &&
+    ["string", "undefined"].includes(typeof s.orgUnitType) &&
+    "orgUnitName" in s &&
+    ["string", "undefined"].includes(typeof s.orgUnitName) &&
+    "actorType" in s &&
+    ["string", "undefined"].includes(typeof s.actorType) &&
+    "actorName" in s &&
+    ["string", "undefined"].includes(typeof s.actorName)
+  );
+}
+
 function format(value: string | undefined): string {
   if (value == null) {
     return "*";

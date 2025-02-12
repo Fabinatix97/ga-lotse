@@ -7,15 +7,18 @@ package de.eshg.stiprotection;
 
 import de.eshg.lib.common.BusinessModule;
 import de.eshg.rest.service.security.config.StiProtectionPublicSecurityConfig;
+import de.eshg.stiprotection.persistence.config.DepartmentInfoConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
 @Import(StiProtectionPublicSecurityConfig.class)
 @EntityScan("de.eshg")
+@EnableConfigurationProperties(DepartmentInfoConfig.class)
 public class StiProtectionApplication {
 
   @Bean

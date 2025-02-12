@@ -4,10 +4,6 @@
  */
 
 import {
-  ApiCountryCode,
-  ApiTypeOfChange,
-} from "@eshg/citizen-portal-api/medicalRegistry";
-import {
   EmployeeInformationFormValues,
   MedicalRegistryCreateProcedureFormValues,
   RequiredDocumentsFormValues,
@@ -15,6 +11,7 @@ import {
 import { shouldEnable } from "@eshg/lib-portal/businessModules/medicalRegistry/sections";
 import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 import { validateFile } from "@eshg/lib-portal/helpers/validators";
+import { ApiCountryCode, ApiTypeOfChange } from "@eshg/medical-registry-api";
 import { Add, DeleteOutlined } from "@mui/icons-material";
 import { Button, Grid, IconButton, Sheet, Stack, Typography } from "@mui/joy";
 import { FieldArray, useFormikContext } from "formik";

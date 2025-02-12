@@ -7,6 +7,7 @@ package de.eshg.statistics.mapper;
 
 import de.eshg.base.SortDirection;
 import de.eshg.base.user.api.UserDto;
+import de.eshg.lib.statistics.api.DataPrivacyCategory;
 import de.eshg.lib.statistics.api.DataRow;
 import de.eshg.lib.statistics.api.ValueOptionInternal;
 import de.eshg.statistics.api.TableColumnHeader;
@@ -33,6 +34,7 @@ import de.eshg.statistics.persistence.entity.Evaluation;
 import de.eshg.statistics.persistence.entity.MinMaxNullUnknownValues;
 import de.eshg.statistics.persistence.entity.StatisticsDataSensitivity;
 import de.eshg.statistics.persistence.entity.TableColumn;
+import de.eshg.statistics.persistence.entity.TableColumnDataPrivacyCategory;
 import de.eshg.statistics.persistence.entity.TableColumnValueType;
 import de.eshg.statistics.persistence.entity.TableRow;
 import de.eshg.statistics.persistence.entity.ValueToMeaning;
@@ -50,11 +52,15 @@ public class EvaluationMapper {
 
   public static GetEvaluationResponse mapToApi(
       Evaluation evaluation,
+      TableColumn sortTableColumn,
+      SortDirection sortDirection,
       List<TableRow> tableRows,
       long totalNumberOfElements,
       boolean isTooMuchDataForExport) {
     return new GetEvaluationResponse(
         mapToEvaluationInfo(evaluation, isTooMuchDataForExport),
+        AttributeSelectionMapper.mapToApi(sortTableColumn),
+        sortDirection,
         mapToApi(evaluation.getTableColumns()),
         tableRows.stream().map(EvaluationMapper::mapToApi).toList(),
         totalNumberOfElements);
@@ -77,7 +83,8 @@ public class EvaluationMapper {
               tableColumn.getBusinessModuleAttributeCode(),
               tableColumn.getUnit(),
               tableColumn.getValueToMeanings(),
-              tableColumn.getMinMaxNullUnknownValues()));
+              tableColumn.getMinMaxNullUnknownValues()),
+          mapDataPrivacyCategory(tableColumn.getDataPrivacyCategory()));
     } else {
       return new TableColumnHeader(
           getAttributeDisplayName(tableColumn, false),
@@ -93,7 +100,8 @@ public class EvaluationMapper {
                   tableColumn.getBaseModuleAttributeCode(),
                   tableColumn.getUnit(),
                   tableColumn.getValueToMeanings(),
-                  tableColumn.getMinMaxNullUnknownValues())));
+                  tableColumn.getMinMaxNullUnknownValues())),
+          mapDataPrivacyCategory(tableColumn.getDataPrivacyCategory()));
     }
   }
 
@@ -169,6 +177,13 @@ public class EvaluationMapper {
 
   private static ValueOption mapToApi(ValueToMeaning valueToMeaning) {
     return new ValueOption(valueToMeaning.getValue(), valueToMeaning.getMeaning());
+  }
+
+  private static DataPrivacyCategory mapDataPrivacyCategory(
+      TableColumnDataPrivacyCategory dataPrivacyCategory) {
+    return dataPrivacyCategory == null
+        ? null
+        : DataPrivacyCategory.valueOf(dataPrivacyCategory.name());
   }
 
   private static DataRow mapToApi(TableRow tableRow) {

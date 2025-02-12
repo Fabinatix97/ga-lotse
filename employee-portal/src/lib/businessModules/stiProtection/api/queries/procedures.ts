@@ -5,12 +5,12 @@
 
 "use client";
 
+import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import {
   ApiGetStiProtectionProceduresSortBy,
   ApiGetStiProtectionProceduresSortOrder,
   ApiStiProtectionProcedureOverview,
-} from "@eshg/employee-portal-api/stiProtection";
-import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+} from "@eshg/sti-protection-api";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useStiProtectionProcedureApi } from "@/lib/businessModules/stiProtection/api/clients";
@@ -83,11 +83,9 @@ const SortByMap: Record<
   string,
   ApiGetStiProtectionProceduresSortBy | undefined
 > = {
-  yearOfBirth: ApiGetStiProtectionProceduresSortBy.YearOfBirth,
-  gender: ApiGetStiProtectionProceduresSortBy.Gender,
-  status: ApiGetStiProtectionProceduresSortBy.Status,
-  concern: ApiGetStiProtectionProceduresSortBy.Concern,
   createdAt: ApiGetStiProtectionProceduresSortBy.CreatedAt,
+  sampleBarCode: ApiGetStiProtectionProceduresSortBy.SampleBarcode,
+  appointmentStart: ApiGetStiProtectionProceduresSortBy.Appointment,
 } as const satisfies Partial<
   Record<ColumnNames, ApiGetStiProtectionProceduresSortBy>
 >;

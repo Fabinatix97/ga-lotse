@@ -11,7 +11,6 @@ import {
 } from "@eshg/lib-portal/components/formFields/constants";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import {
   ApiGender,
   ApiPatient,
@@ -23,8 +22,8 @@ import { isDefined } from "remeda";
 
 import { instanceOfApiGetReferencePersonResponse } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/AcceptProcedureSidebar";
 import { BaseAddressDetails } from "@/lib/shared/components/address/BaseAddressDetails";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
+import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
@@ -44,9 +43,6 @@ export interface PatientDetailsProps {
 }
 
 export function PatientDetails(props: Readonly<PatientDetailsProps>) {
-  const fieldName = createFieldNameMapper<
-    ApiGetReferencePersonResponse | ApiPatient
-  >();
   const person = instanceOfApiGetReferencePersonResponse(props.person)
     ? props.person
     : {
@@ -96,61 +92,39 @@ export function PatientDetails(props: Readonly<PatientDetailsProps>) {
           <SidebarContent title={props.title} subtitle="Ausgewählte Person">
             <Stack gap={2}>
               <DetailsRow>
-                <DetailsCell
-                  name={fieldName("salutation")}
+                <DetailsItem
                   label={"Anrede"}
                   value={SALUTATION_VALUES[person.salutation]}
-                  flexGrow
                 />
-                <DetailsCell
-                  name={fieldName("title")}
+                <DetailsItem
                   label={"Titel"}
                   value={getOptionalTitle(person.title)}
-                  flexGrow
                   avoidWrap
                 />
               </DetailsRow>
               <DetailsRow>
-                <DetailsCell
-                  name={fieldName("firstName")}
-                  label={"Vorname"}
-                  value={person.firstName}
-                  flexGrow
-                />
-                <DetailsCell
-                  name={fieldName("lastName")}
-                  label={"Name"}
-                  value={person.lastName}
-                  flexGrow
-                  avoidWrap
-                />
+                <DetailsItem label={"Vorname"} value={person.firstName} />
+                <DetailsItem label={"Name"} value={person.lastName} avoidWrap />
               </DetailsRow>
               <DetailsRow>
-                <DetailsCell
-                  name={fieldName("dateOfBirth")}
+                <DetailsItem
                   label={"Geburtsdatum"}
                   value={formatDate(person.dateOfBirth)}
-                  flexGrow
                 />
-                <DetailsCell
-                  name={fieldName("gender")}
+                <DetailsItem
                   label={"Geschlecht"}
                   value={GENDER_VALUES[person.gender]}
-                  flexGrow
                 />
               </DetailsRow>
-              <DetailsCell
-                name={fieldName("nameAtBirth")}
+              <DetailsItem
                 label={"Geburtsname"}
                 value={props.person.nameAtBirth}
               />
-              <DetailsCell
-                name={fieldName("placeOfBirth")}
+              <DetailsItem
                 label={"Geburtsort"}
                 value={props.person.placeOfBirth}
               />
-              <DetailsCell
-                name={fieldName("countryOfBirth")}
+              <DetailsItem
                 label={"Geburtsland"}
                 value={
                   isDefined(props.person.countryOfBirth)
@@ -170,17 +144,15 @@ export function PatientDetails(props: Readonly<PatientDetailsProps>) {
                 <>
                   <Divider />
                   {person.emailAddresses.map((email, index) => (
-                    <DetailsCell
+                    <DetailsItem
                       key={`${email}-${index}`}
-                      name={fieldName("emailAddresses") + "." + index}
                       label={"E-Mail-Adresse"}
                       value={email}
                     />
                   ))}
                   {person.phoneNumbers.map((phoneNumber, index) => (
-                    <DetailsCell
+                    <DetailsItem
                       key={`${phoneNumber}-${index}`}
-                      name={fieldName("phoneNumbers") + "." + index}
                       label={"Telefonnummer"}
                       value={phoneNumber}
                     />
@@ -197,9 +169,8 @@ export function PatientDetails(props: Readonly<PatientDetailsProps>) {
                   </Divider>
                   {isDefined(props.initialPatient.emailAddresses) &&
                     props.initialPatient.emailAddresses.map((email, index) => (
-                      <DetailsCell
+                      <DetailsItem
                         key={`initialPatient-${email}-${index}`}
-                        name={fieldName("emailAddresses") + "." + index}
                         label={"E-Mail-Adresse"}
                         value={email}
                       />
@@ -207,9 +178,8 @@ export function PatientDetails(props: Readonly<PatientDetailsProps>) {
                   {isDefined(props.initialPatient.phoneNumbers) &&
                     props.initialPatient.phoneNumbers.map(
                       (phoneNumber, index) => (
-                        <DetailsCell
+                        <DetailsItem
                           key={`initialPatient-${phoneNumber}-${index}`}
-                          name={fieldName("phoneNumbers") + "." + index}
                           label={"Telefonnummer"}
                           value={phoneNumber}
                         />

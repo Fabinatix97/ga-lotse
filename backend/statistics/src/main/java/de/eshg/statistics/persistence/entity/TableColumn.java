@@ -52,6 +52,10 @@ public class TableColumn extends BaseEntity {
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private TableColumnValueType valueType;
 
+  @Column
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private TableColumnDataPrivacyCategory dataPrivacyCategory;
+
   @Column private String unit;
 
   @OneToMany(
@@ -139,6 +143,14 @@ public class TableColumn extends BaseEntity {
 
   public void setValueType(TableColumnValueType valueType) {
     this.valueType = valueType;
+  }
+
+  public TableColumnDataPrivacyCategory getDataPrivacyCategory() {
+    return dataPrivacyCategory;
+  }
+
+  public void setDataPrivacyCategory(TableColumnDataPrivacyCategory dataPrivacyCategory) {
+    this.dataPrivacyCategory = dataPrivacyCategory;
   }
 
   public String getUnit() {

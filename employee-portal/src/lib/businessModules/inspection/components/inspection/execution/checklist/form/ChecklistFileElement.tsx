@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiFileType } from "@eshg/employee-portal-api/inspection";
+import { ApiFileType } from "@eshg/inspection-api";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 import { FileLike } from "@eshg/lib-portal/components/formFields/file/validators";

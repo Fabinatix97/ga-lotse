@@ -5,6 +5,7 @@
 
 package de.eshg.statistics.api;
 
+import de.eshg.lib.statistics.api.DataPrivacyCategory;
 import de.eshg.statistics.api.attributes.AbstractTableColumnHeaderAttribute;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -16,4 +17,5 @@ public record TableColumnHeader(
     @NotBlank String businessModule,
     @NotNull UUID dataSourceId,
     @NotBlank String dataSourceName,
-    @NotNull @Valid AbstractTableColumnHeaderAttribute attribute) {}
+    @NotNull @Valid AbstractTableColumnHeaderAttribute attribute,
+    DataPrivacyCategory dataPrivacyCategory) {}

@@ -8,7 +8,7 @@ import {
   ApiInspectionIncident,
   ApiInspectionPhase,
   ApiInspectionToJSON,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 
 import { getFromApiCache, writeToApiCache } from "@/serviceWorker/sw/cache";
 import { API_INSPECTION_INSPECTIONS_FINALIZE_PATH_PATTERN } from "@/serviceWorker/sw/config";

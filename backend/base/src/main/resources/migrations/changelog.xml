@@ -47,5 +47,7 @@
   <include file="migrations/0037_add_maps-id-to-muk-facility-link.xml"/>
   <include file="migrations/0038_shedlock.xml"/>
   <include file="migrations/0039-add-countrycodes.xml"/>
+  <include file="migrations/0040_add_auditlog_entry.xml"/>
+  <include file="migrations/0041_remove_gdpr_status_open.xml"/>
 
 </databaseChangeLog>

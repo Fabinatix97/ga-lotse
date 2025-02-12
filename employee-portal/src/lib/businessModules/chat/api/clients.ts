@@ -7,7 +7,7 @@ import {
   ChatFeatureTogglesApi,
   Configuration,
   UserSettingsApi,
-} from "@eshg/employee-portal-api/chatManagement";
+} from "@eshg/chat-management-api";
 import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 
 function useConfiguration() {

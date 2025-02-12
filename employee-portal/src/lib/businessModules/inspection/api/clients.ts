@@ -28,7 +28,7 @@ import {
   TaskApi,
   TextBlockApi,
   WebSearchApi,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 
 export function useConfiguration() {

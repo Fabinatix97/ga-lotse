@@ -7,7 +7,7 @@ import {
   ApiFollowupType,
   ApiInspectionFollowupInfo,
   ApiInspectionResult,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";

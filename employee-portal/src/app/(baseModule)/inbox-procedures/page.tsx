@@ -6,7 +6,7 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
-import { ApiInboxProcedure } from "@eshg/employee-portal-api/businessProcedures";
+import { ApiInboxProcedure } from "@eshg/lib-procedures-api";
 import { useState } from "react";
 
 import { useCreateInboxProcedure } from "@/lib/baseModule/api/mutations/inboxProcedures";

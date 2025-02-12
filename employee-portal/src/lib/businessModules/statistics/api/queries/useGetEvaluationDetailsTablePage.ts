@@ -3,8 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { GetEvaluationRequest } from "@eshg/statistics-api";
+import {
+  ApiAttributeSelection,
+  ApiSortDirection,
+  GetEvaluationRequest,
+} from "@eshg/statistics-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
+import { useEffect, useRef } from "react";
+import { isDeepEqual, isNullish } from "remeda";
 
 import {
   useEvaluationApi,
@@ -19,11 +25,43 @@ export function useGetEvaluationDetailsTablePage(
 ) {
   const evaluationApi = useEvaluationApi();
   const filterTemplateApi = useFilterTemplateApi();
+
+  const defaultSortAttributeRef = useRef<ApiAttributeSelection>();
+  const defaultSortDirectionRef = useRef<ApiSortDirection>();
+
   const [{ data: evaluation }, { data: filterTemplates }] = useSuspenseQueries({
     queries: [
-      createQueryGetEvaluation(evaluationApi, evaluationRequest),
+      createQueryGetEvaluation(evaluationApi, {
+        ...evaluationRequest,
+        apiGetEvaluationRequest: {
+          ...evaluationRequest.apiGetEvaluationRequest,
+          sortAttribute: !isDeepEqual(
+            defaultSortAttributeRef.current,
+            evaluationRequest.apiGetEvaluationRequest.sortAttribute,
+          )
+            ? evaluationRequest.apiGetEvaluationRequest.sortAttribute
+            : undefined,
+          sortDirection: !isDeepEqual(
+            defaultSortDirectionRef.current,
+            evaluationRequest.apiGetEvaluationRequest.sortDirection,
+          )
+            ? evaluationRequest.apiGetEvaluationRequest.sortDirection
+            : undefined,
+        },
+      }),
       createQueryGetFilterTemplates(filterTemplateApi, evaluationId),
     ],
   });
-  return { evaluation, filterTemplates };
+
+  useEffect(() => {
+    if (isNullish(defaultSortAttributeRef.current)) {
+      defaultSortAttributeRef.current = evaluation.sortAttribute;
+      defaultSortDirectionRef.current = evaluation.sortDirection;
+    }
+  }, [evaluation.sortAttribute, evaluation.sortDirection]);
+
+  return {
+    evaluation,
+    filterTemplates,
+  };
 }

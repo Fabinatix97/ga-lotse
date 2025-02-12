@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
+import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 
 import { useBulkUpdateProceduresArchivingRelevance } from "@/lib/businessModules/schoolEntry/api/mutations/archiving";
 import {

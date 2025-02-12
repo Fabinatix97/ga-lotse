@@ -35,6 +35,10 @@ import {
   HeaderButtons,
 } from "@/lib/components/table/addEditColumns";
 import { getActiveLabel } from "@/lib/components/table/cell/ActiveCell";
+import {
+  formatActorSelector,
+  isActorSelector,
+} from "@/lib/components/table/cell/StaticActorSelectorCell";
 import { Actor } from "@/lib/components/view/actors/ActorTable";
 import { UniqueEntity } from "@/lib/helpers/entities";
 import { entityToString } from "@/lib/helpers/entityToString";
@@ -140,7 +144,7 @@ export function Filter<TData extends UniqueEntity, TValue>({
 function getColumnValues<TData extends UniqueEntity, TValue>(
   column: Column<TData, TValue>,
   table: Table<TData>,
-) {
+): string[] {
   return unique(
     table
       .getCenterRows()
@@ -165,6 +169,9 @@ function getLabels(value: unknown): string[] {
   }
   if (isEntity(value)) {
     return [entityToString(value, true)];
+  }
+  if (isActorSelector(value)) {
+    return [formatActorSelector(value)];
   }
   return [String(value)];
 }
@@ -299,10 +306,10 @@ export function getActorSelectorFilterFn(
     return thisOrParentOrChildApplies(
       row,
       (orig) =>
-        orig[columnId] !== undefined &&
-        Object.values(orig[columnId]).some((v: string) =>
-          v.toLowerCase().includes(lowerFilterValue),
-        ),
+        !isNullish(orig[columnId]) &&
+        formatActorSelector(orig[columnId])
+          .toLowerCase()
+          .includes(lowerFilterValue),
     );
   };
 }

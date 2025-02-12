@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   ApiInboxProcedureStatus,
   InboxProcedureApi,
-} from "@eshg/employee-portal-api/businessProcedures";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+} from "@eshg/lib-procedures-api";
 
 type UseCloseInboxProcedureResult = ReturnType<
   typeof useCloseInboxProcedureTemplate

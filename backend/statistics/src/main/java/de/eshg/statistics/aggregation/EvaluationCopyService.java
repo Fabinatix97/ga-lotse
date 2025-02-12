@@ -116,6 +116,7 @@ public class EvaluationCopyService {
     copy.setBaseModuleAttributeCode(original.getBaseModuleAttributeCode());
     copy.setBaseModuleAttributeName(original.getBaseModuleAttributeName());
     copy.setValueType(original.getValueType());
+    copy.setDataPrivacyCategory(original.getDataPrivacyCategory());
     copy.setUnit(original.getUnit());
     copy.setDataSourceName(original.getDataSourceName());
     copy.setDataSourceId(original.getDataSourceId());
@@ -484,6 +485,8 @@ public class EvaluationCopyService {
     copy.setGrouping(original.getGrouping());
     copy.setBinningMode(original.getBinningMode());
     copy.setNumberOfBins(original.getNumberOfBins());
+    copy.setMinBin(original.getMinBin());
+    copy.setMaxBin(original.getMaxBin());
     if (copyHistogramBins) {
       copy.addBins(copyHistogramBins(original.getBins()));
     }

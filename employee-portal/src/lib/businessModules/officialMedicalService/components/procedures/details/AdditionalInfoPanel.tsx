@@ -5,18 +5,19 @@
 
 "use client";
 
+import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import {
   ApiEmployeeOmsProcedureDetails,
   ApiProcedureStatus,
-} from "@eshg/employee-portal-api/officialMedicalService";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+} from "@eshg/official-medical-service-api";
 import { InfoOutlined } from "@mui/icons-material";
 import { Alert } from "@mui/joy";
 import { isDefined } from "remeda";
 
 import { useConcernSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/ConcernSidebar";
+import { useEmailNotificationSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/EmailNotificationSidebar";
 import { usePhysicianSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/PhysicianSidebar";
-import { DetailsCellInlineEdit } from "@/lib/businessModules/officialMedicalService/shared/DetailsCellInlineEdit";
+import { DetailsItemInlineEdit } from "@/lib/businessModules/officialMedicalService/shared/DetailsItemInlineEdit";
 import { isProcedureFinalized } from "@/lib/businessModules/officialMedicalService/shared/helpers";
 import { EditButton } from "@/lib/shared/components/buttons/EditButton";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
@@ -29,6 +30,7 @@ export function AdditionalInfoPanel({
 }>) {
   const concernSidebar = useConcernSidebar();
   const physicianSidebar = usePhysicianSidebar();
+  const emailNotificationSidebar = useEmailNotificationSidebar();
 
   return (
     <InfoTile
@@ -70,8 +72,7 @@ export function AdditionalInfoPanel({
         </Alert>
       )}
       {procedure.concern && (
-        <DetailsCellInlineEdit
-          name="concern"
+        <DetailsItemInlineEdit
           label="Anliegen"
           value={procedure.concern.nameDe}
           renderEditButton={
@@ -86,7 +87,7 @@ export function AdditionalInfoPanel({
       )}
 
       {procedure.physician && (
-        <DetailsCellInlineEdit
+        <DetailsItemInlineEdit
           renderEditButton={
             !isProcedureFinalized(procedure) && (
               <EditButton
@@ -95,9 +96,23 @@ export function AdditionalInfoPanel({
               />
             )
           }
-          name="physician"
           label="Ärzt:In"
           value={formatPersonName(procedure.physician)}
+        />
+      )}
+
+      {!!procedure.affectedPerson.emailAddresses?.length && (
+        <DetailsItemInlineEdit
+          label="E-Mail-Benachrichtigungen"
+          value={procedure.sendEmailNotifications ? "Aktiviert" : "Deaktiviert"}
+          renderEditButton={
+            procedure.status === ApiProcedureStatus.Draft && (
+              <EditButton
+                aria-label="E-Mail-Benachrichtigungen bearbeiten"
+                onClick={() => emailNotificationSidebar.open({ procedure })}
+              />
+            )
+          }
         />
       )}
     </InfoTile>

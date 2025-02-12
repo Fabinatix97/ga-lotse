@@ -5,8 +5,8 @@
 
 package de.eshg.base.user.api;
 
-import de.eshg.CustomValidations.MandatoryEmailAddressConstraint;
 import de.eshg.base.SalutationDto;
+import de.eshg.validation.constraints.MandatoryEmailAddressConstraint;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

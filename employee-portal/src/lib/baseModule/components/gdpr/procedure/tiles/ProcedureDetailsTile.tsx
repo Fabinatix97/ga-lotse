@@ -18,7 +18,6 @@ import {
 } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import EditIcon from "@mui/icons-material/EditOutlined";
-import InfoIcon from "@mui/icons-material/InfoOutlined";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { Button, Divider, IconButton, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
@@ -37,14 +36,14 @@ import {
   typeTranslation,
 } from "@/lib/baseModule/components/gdpr/i18n";
 import { DownloadReportButton } from "@/lib/baseModule/components/gdpr/procedure/DownloadReportButton";
+import { MatterOfConcernDisplayField } from "@/lib/baseModule/components/gdpr/procedure/MatterOfConcernDisplayField";
 import { useEditMatterOfConcernSidebar } from "@/lib/baseModule/components/gdpr/procedure/sidebars/EditMatterOfConcernSidebar";
 import {
   SectionTile,
   SectionTitle,
 } from "@/lib/baseModule/components/gdpr/procedure/tiles/SectionTile";
-import { multiLineEllipsis } from "@/lib/baseModule/theme/theme";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
@@ -115,13 +114,11 @@ export function ProcedureDetailsTile({
 
         <AlertSlot />
 
-        <DetailsCell
-          name={"createdAt"}
+        <DetailsItem
           label={"Erstellt"}
           value={formatDateTime(procedure.createdAt)}
         />
-        <DetailsCell
-          name={"type"}
+        <DetailsItem
           label={"Vorgangsart"}
           value={
             isGdprPerson(procedure.identificationData)
@@ -130,13 +127,11 @@ export function ProcedureDetailsTile({
           }
           avoidWrap
         />
-        <DetailsCell
-          name={"status"}
+        <DetailsItem
           label={"Status"}
           value={statusTranslation[procedure.status]}
         />
-        <DetailsCell
-          name="internalNote"
+        <DetailsItem
           label={
             procedure.status === ApiGdprProcedureStatus.Closed
               ? "Ergebnis"
@@ -147,25 +142,9 @@ export function ProcedureDetailsTile({
           value={procedure.internalNote}
         />
         {requiresMatterOfConcern && (
-          <DetailsCell
-            name="matterOfConcern"
-            label="Anliegen"
-            value={
-              procedure.matterOfConcern ??
-              (isEditable ? (
-                <Typography
-                  startDecorator={<InfoIcon color="danger" size="md" />}
-                >
-                  Bitte Anliegen eintragen.
-                </Typography>
-              ) : (
-                ""
-              ))
-            }
-            valueSx={{
-              ...multiLineEllipsis(3),
-              maxWidth: "100%",
-            }}
+          <MatterOfConcernDisplayField
+            value={procedure.matterOfConcern}
+            editable={isEditable}
           />
         )}
 

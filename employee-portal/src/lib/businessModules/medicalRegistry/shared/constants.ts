@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiProcedureType } from "@eshg/employee-portal-api/medicalRegistry";
+import { ApiProcedureType } from "@eshg/medical-registry-api";
 
 export const archivableProcedureTypes = [ApiProcedureType.MedicalRegistryEntry];
 

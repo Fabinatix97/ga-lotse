@@ -3,10 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   AbortDraftProcedureRequest,
   AcceptDraftProcedureRequest,
   ApiConcern,
+  ApiPatchEmployeeOmsProcedureEmailNotificationsRequest,
   ApiPatchEmployeeOmsProcedureFacilityRequest,
   ApiPatchEmployeeOmsProcedurePhysicianRequest,
   ApiPostEmployeeOmsProcedureRequest,
@@ -14,10 +17,11 @@ import {
   ApiSyncAffectedPersonRequest,
   ApiSyncFacilityRequest,
   CloseOpenProcedureRequest,
+  PatchMedicalOpinionStatusRequest,
+  PatchWaitingRoomRequest,
+  PostDocumentRequest,
   UpdateAffectedPersonRequest,
-} from "@eshg/employee-portal-api/officialMedicalService";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+} from "@eshg/official-medical-service-api";
 
 import { useEmployeeOmsProcedureApi } from "@/lib/businessModules/officialMedicalService/api/clients";
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
@@ -178,6 +182,25 @@ export function usePatchPhysician(procedureId: string) {
   });
 }
 
+export function usePatchEmailNotifications(procedureId: string) {
+  const snackbar = useSnackbar();
+  const employeeOmsProcedureApi = useEmployeeOmsProcedureApi();
+
+  return useHandledMutation({
+    mutationFn: (
+      request: ApiPatchEmployeeOmsProcedureEmailNotificationsRequest,
+    ) => {
+      return employeeOmsProcedureApi.patchEmailNotifications(
+        procedureId,
+        request,
+      );
+    },
+    onSuccess: () => {
+      snackbar.confirmation("Die E-Mail-Einstellungen wurden gespeichert.");
+    },
+  });
+}
+
 export function usePostAppointment() {
   const snackbar = useSnackbar();
   const employeeOmsProcedureApi = useEmployeeOmsProcedureApi();
@@ -191,5 +214,42 @@ export function usePostAppointment() {
       request: ApiPostOmsAppointmentRequest;
     }) => employeeOmsProcedureApi.postAppointment(procedureId, request),
     onSuccess: () => snackbar.confirmation("Der Termin wurde angelegt."),
+  });
+}
+
+export function usePostDocument() {
+  const snackbar = useSnackbar();
+  const employeeOmsProcedureApi = useEmployeeOmsProcedureApi();
+
+  return useHandledMutation({
+    mutationFn: (request: PostDocumentRequest) =>
+      employeeOmsProcedureApi.postDocumentRaw(request),
+    onSuccess: () => snackbar.confirmation("Das Dokument wurde angelegt."),
+  });
+}
+
+export function usePatchMedicalOpinionStatus() {
+  const snackbar = useSnackbar();
+  const employeeOmsProcedureApi = useEmployeeOmsProcedureApi();
+
+  return useHandledMutation({
+    mutationFn: (request: PatchMedicalOpinionStatusRequest) => {
+      return employeeOmsProcedureApi.patchMedicalOpinionStatusRaw(request);
+    },
+    onSuccess: () => {
+      snackbar.confirmation("Gutachtenstatus geändert");
+    },
+  });
+}
+
+export function usePatchWaitingRoom() {
+  const snackbar = useSnackbar();
+  const employeeOmsProcedureApi = useEmployeeOmsProcedureApi();
+
+  return useHandledMutation({
+    mutationFn: (request: PatchWaitingRoomRequest) =>
+      employeeOmsProcedureApi.patchWaitingRoomRaw(request),
+    onSuccess: () =>
+      snackbar.confirmation("Das Wartezimmer wurde aktualisiert."),
   });
 }

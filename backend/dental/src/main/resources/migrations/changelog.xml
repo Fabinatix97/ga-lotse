@@ -36,5 +36,9 @@
   <include file="migrations/0026_add_tooth_diagnoses.xml"/>
   <include file="migrations/0027_add_absence_examination_result.xml"/>
   <include file="migrations/0028_rename_screening.xml"/>
+  <include file="migrations/0029_add_auditlog_entry.xml"/>
+  <include file="migrations/0030_add_modified_at_fluoridation.xml"/>
+  <include file="migrations/0031_fluoride_varnish_applied_optional.xml"/>
+  <include file="migrations/0032_migrate_examination_result_to_use_sequences.xml"/>
 
 </databaseChangeLog>

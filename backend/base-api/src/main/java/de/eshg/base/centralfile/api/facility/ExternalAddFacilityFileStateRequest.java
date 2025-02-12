@@ -5,8 +5,8 @@
 
 package de.eshg.base.centralfile.api.facility;
 
-import de.eshg.CustomValidations.MandatoryEmailAddressConstraint;
 import de.eshg.base.address.AddressDto;
+import de.eshg.validation.constraints.MandatoryEmailAddressConstraint;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

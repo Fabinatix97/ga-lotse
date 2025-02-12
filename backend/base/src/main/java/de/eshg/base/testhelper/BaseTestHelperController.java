@@ -6,10 +6,11 @@
 package de.eshg.base.testhelper;
 
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.auditlog.SharedAuditLogTestHelperApi;
+import de.eshg.auditlog.AuditLogClientTestHelperApi;
 import de.eshg.base.contact.api.SearchContactsResponse;
 import de.eshg.base.feature.BaseFeature;
 import de.eshg.base.feature.BaseFeatureToggle;
+import de.eshg.base.gdpr.GdprCleanupJob;
 import de.eshg.base.inventory.api.GetInventoryItemsResponse;
 import de.eshg.base.keycloak.CitizenKeycloakClient;
 import de.eshg.base.keycloak.MasterKeycloakProvisioning;
@@ -35,7 +36,6 @@ import de.eshg.testhelper.api.RealmDto;
 import de.eshg.testhelper.api.TestHelperLoginAsCitizenAccessCodeUserRequest;
 import de.eshg.testhelper.api.TestHelperLoginRequest;
 import de.eshg.testhelper.environment.EnvironmentConfig;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -48,7 +48,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @ConditionalOnTestHelperEnabled
 public class BaseTestHelperController extends TestHelperController
-    implements BaseTestHelperApi, SharedAuditLogTestHelperApi {
+    implements BaseTestHelperApi, AuditLogClientTestHelperApi {
 
   private final BaseTestHelperService baseTestHelperService;
   private final BaseFeatureToggle baseFeatureToggle;
@@ -57,6 +57,7 @@ public class BaseTestHelperController extends TestHelperController
   private final BusinessModulesConfigurationProperties businessModulesConfigurationProperties;
   private final CitizenKeycloakClient citizenKeycloakClient;
   private final AuditLogNotificationJob auditLogNotificationJob;
+  private final GdprCleanupJob gdprCleanupJob;
 
   public BaseTestHelperController(
       BaseTestHelperService baseTestHelperService,
@@ -66,7 +67,8 @@ public class BaseTestHelperController extends TestHelperController
       EnvironmentConfig environmentConfig,
       BusinessModulesConfigurationProperties businessModulesConfigurationProperties,
       CitizenKeycloakClient citizenKeycloakClient,
-      AuditLogNotificationJob auditLogNotificationJob) {
+      AuditLogNotificationJob auditLogNotificationJob,
+      GdprCleanupJob gdprCleanupJob) {
     super(baseTestHelperService, environmentConfig);
     this.baseTestHelperService = baseTestHelperService;
     this.baseFeatureToggle = baseFeatureToggle;
@@ -75,6 +77,7 @@ public class BaseTestHelperController extends TestHelperController
     this.businessModulesConfigurationProperties = businessModulesConfigurationProperties;
     this.citizenKeycloakClient = citizenKeycloakClient;
     this.auditLogNotificationJob = auditLogNotificationJob;
+    this.gdprCleanupJob = gdprCleanupJob;
   }
 
   @Override
@@ -168,6 +171,11 @@ public class BaseTestHelperController extends TestHelperController
   }
 
   @Override
+  public void resetActivatedBusinessModules() {
+    baseTestHelperService.resetProperties(businessModulesConfigurationProperties);
+  }
+
+  @Override
   public void createSetupAdmin(CreateSetupAdminRequest request) {
     masterKeycloakProvisioning.initializeSetupAdmin(request.username(), request.emailAddress());
   }
@@ -219,17 +227,17 @@ public class BaseTestHelperController extends TestHelperController
   }
 
   @Override
-  public void clearAuditLogStorageDirectory() throws IOException {
-    auditLogTestHelperService.clearAuditLogStorageDirectory();
-  }
-
-  @Override
-  public void runArchivingJob() {
-    auditLogTestHelperService.runArchivingJob();
+  public void runAuditLogArchivingJob() {
+    auditLogTestHelperService.runAuditLogArchivingJob();
   }
 
   @Override
   public void runAuditlogNotificationJob() {
     auditLogNotificationJob.run();
+  }
+
+  @Override
+  public void runGdprCleanupJob() {
+    gdprCleanupJob.performGdprCleanup();
   }
 }

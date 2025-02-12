@@ -5,7 +5,7 @@
 
 package de.eshg.officialmedicalservice.testhelper;
 
-import de.eshg.auditlog.SharedAuditLogTestHelperApi;
+import de.eshg.auditlog.AuditLogClientTestHelperApi;
 import de.eshg.lib.auditlog.AuditLogTestHelperService;
 import de.eshg.officialmedicalservice.testhelper.api.PostPopulateAdministrativeResponse;
 import de.eshg.officialmedicalservice.testhelper.api.PostPopulateProcedureRequest;
@@ -16,7 +16,6 @@ import de.eshg.testhelper.TestHelperController;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
-import java.io.IOException;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.service.annotation.PostExchange;
@@ -24,7 +23,7 @@ import org.springframework.web.service.annotation.PostExchange;
 @RestController
 @ConditionalOnTestHelperEnabled
 public class OmsTestHelperController extends TestHelperController
-    implements SharedAuditLogTestHelperApi {
+    implements AuditLogClientTestHelperApi {
   public static final String TEST_POPULATION_PATH = "/population";
   public static final String TEST_POPULATION_URL = TestHelperApi.BASE_URL + TEST_POPULATION_PATH;
 
@@ -58,12 +57,7 @@ public class OmsTestHelperController extends TestHelperController
   }
 
   @Override
-  public void clearAuditLogStorageDirectory() throws IOException {
-    auditLogTestHelperService.clearAuditLogStorageDirectory();
-  }
-
-  @Override
-  public void runArchivingJob() {
-    auditLogTestHelperService.runArchivingJob();
+  public void runAuditLogArchivingJob() {
+    auditLogTestHelperService.runAuditLogArchivingJob();
   }
 }

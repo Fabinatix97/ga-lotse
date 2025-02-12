@@ -10,57 +10,64 @@ import { Person } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
 
 import { ProphylaxisSessionParticipantsTable } from "@/lib/businessModules/dental/features/prophylaxisSessions/ProphylaxisSessionParticipantsTable";
-import { useProphylaxisSessionStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/store/ProphylaxisSessionStoreProvider";
+import { useUpdateProphylaxisSessionSidebar } from "@/lib/businessModules/dental/features/prophylaxisSessions/UpdateProphylaxisSessionSidebar";
+import { useProphylaxisSessionStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/ProphylaxisSessionStoreProvider";
 import {
   PROPHYLAXIS_TYPES,
   fluoridationDescription,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/translations";
 import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
 import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
+import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { displayBoolean } from "@/lib/shared/helpers/booleans";
 
 export function ProphylaxisSessionDetails() {
   const prophylaxisSession = useProphylaxisSessionStore((state) => state);
+  const updateProphylaxisSidebar = useUpdateProphylaxisSessionSidebar();
 
   return (
     <Stack gap={4}>
       <ContentPanel testId="prophylaxis-session-panel">
         <DetailsSection
           title="Allgemeine Informationen"
+          onEdit={() =>
+            updateProphylaxisSidebar.open({
+              prophylaxisSession: prophylaxisSession,
+            })
+          }
           data-testid="prophylaxis-details"
         >
           <DetailsRow>
             <DetailsColumn>
-              <DetailsCell
+              <DetailsItem
                 label="Datum"
                 value={formatDateTime(prophylaxisSession.dateAndTime)}
               />
-              <DetailsCell
+              <DetailsItem
                 label="Einrichtung"
                 value={prophylaxisSession.institution.name}
               />
-              <DetailsCell
+              <DetailsItem
                 label="Gruppe"
                 value={prophylaxisSession.groupName}
               />
             </DetailsColumn>
             <DetailsColumn>
-              <DetailsCell
+              <DetailsItem
                 label="Typ"
                 value={PROPHYLAXIS_TYPES[prophylaxisSession.type]}
               />
-              <DetailsCell
+              <DetailsItem
                 label="Reihenuntersuchung"
                 value={displayBoolean(prophylaxisSession.isScreening)}
               />
-              <DetailsCell
+              <DetailsItem
                 label="Teilnehmer"
                 value={prophylaxisSession.participants.length}
               />
-              <DetailsCell
+              <DetailsItem
                 label="Fluoridierung"
                 value={fluoridationDescription(
                   prophylaxisSession.fluoridationVarnish,
@@ -68,13 +75,13 @@ export function ProphylaxisSessionDetails() {
               />
             </DetailsColumn>
             <DetailsColumn>
-              <DetailsCell
+              <DetailsItem
                 label="Zahnarzt/-ärztin"
                 value={
                   <PerformingPersons persons={prophylaxisSession.dentists} />
                 }
               />
-              <DetailsCell
+              <DetailsItem
                 label="ZFA"
                 value={<PerformingPersons persons={prophylaxisSession.zfas} />}
               />

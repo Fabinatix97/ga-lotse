@@ -1,0 +1,10 @@
+{
+  "name": "@eshg/lib-editor-api",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "exports": {
+    "types": "./build/types/src/index.d.ts",
+    "import": "./build/lib/index.js"
+  }
+}

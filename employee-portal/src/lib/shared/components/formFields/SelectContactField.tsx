@@ -23,6 +23,7 @@ interface SelectContactFieldProps {
   required?: string;
   placeholder?: string;
   endDecorator?: ReactNode;
+  disabled?: boolean;
 }
 
 export function SelectContactField(props: SelectContactFieldProps) {
@@ -42,6 +43,7 @@ export function SelectContactField(props: SelectContactFieldProps) {
       required={props.required}
       placeholder={props.placeholder}
       endDecorator={props.endDecorator}
+      disabled={props.disabled}
     />
   );
 }

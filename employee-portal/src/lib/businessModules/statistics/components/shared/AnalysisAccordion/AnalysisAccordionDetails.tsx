@@ -190,6 +190,18 @@ function getDiagramConfigurationValues(
             ? String(diagramConfiguration.bins)
             : "Auto",
         ],
+        [
+          "Bin-Zentrum (unten)",
+          isNonNullish(diagramConfiguration.minBin)
+            ? String(diagramConfiguration.minBin)
+            : undefined,
+        ],
+        [
+          "Bin-Zentrum (oben)",
+          isNonNullish(diagramConfiguration.maxBin)
+            ? String(diagramConfiguration.maxBin)
+            : undefined,
+        ],
       ];
     case DiagramType.LINE_CHART:
       return lineAndScatterValues(diagramConfiguration);

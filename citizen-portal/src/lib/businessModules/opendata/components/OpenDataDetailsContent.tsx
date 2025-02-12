@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiVersion } from "@eshg/citizen-portal-api/openData";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { formatFileSize } from "@eshg/lib-portal/helpers/file";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { ApiVersion } from "@eshg/opendata-api";
 import { DownloadOutlined, FileCopyOutlined } from "@mui/icons-material";
 import { Button, Card, Chip, Stack, Typography } from "@mui/joy";
 import { visuallyHidden } from "@mui/utils";

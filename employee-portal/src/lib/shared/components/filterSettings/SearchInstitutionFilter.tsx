@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { SearchOutlined } from "@mui/icons-material";
 import { Autocomplete } from "@mui/joy";
 import { useState } from "react";
 import { identity } from "remeda";
@@ -17,6 +16,7 @@ import { mapContactToSelectOption } from "@/lib/shared/helpers/selectOptionMappe
 interface SearchInstitutionFilterProps {
   institutionId: string | undefined;
   onChange: (institutionId: string | undefined) => void;
+  placeholder: string;
 }
 
 export function SearchInstitutionFilter(props: SearchInstitutionFilterProps) {
@@ -41,8 +41,7 @@ export function SearchInstitutionFilter(props: SearchInstitutionFilterProps) {
       inputValue={institutionName}
       options={institutionOptions}
       filterOptions={identity()}
-      placeholder="Schule suchen"
-      endDecorator={<SearchOutlined />}
+      placeholder={props.placeholder}
       loading={searchInstitutions.isLoading}
       onInputChange={(_, newInputValue) => setInstitutionName(newInputValue)}
       onChange={(_event, value) => {

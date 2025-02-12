@@ -8,7 +8,7 @@
 import {
   ApiProcedureStatus,
   ApiProcedureType,
-} from "@eshg/employee-portal-api/medicalRegistry";
+} from "@eshg/medical-registry-api";
 import { Chip, ChipProps } from "@mui/joy";
 
 import {

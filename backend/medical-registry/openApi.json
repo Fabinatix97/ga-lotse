@@ -2523,18 +2523,7 @@
     },
     "/test-helper/archiving-job" : {
       "post" : {
-        "operationId" : "runArchivingJob",
-        "responses" : {
-          "200" : {
-            "description" : "OK"
-          }
-        },
-        "tags" : [ "TestHelper" ]
-      }
-    },
-    "/test-helper/audit-log-storage" : {
-      "delete" : {
-        "operationId" : "clearAuditLogStorageDirectory",
+        "operationId" : "runAuditLogArchivingJob",
         "responses" : {
           "200" : {
             "description" : "OK"

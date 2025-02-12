@@ -10,7 +10,7 @@ import type {
   ApiDomesticAddress,
   ApiInspection,
   ApiInspectionTravelTime,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
@@ -24,7 +24,7 @@ import { useInspectionGeoApi } from "@/lib/businessModules/inspection/api/client
 import { useGetDepartment } from "@/lib/businessModules/inspection/api/queries/department";
 import { getReverseGeoCode } from "@/lib/businessModules/inspection/api/queries/geo";
 import { TravelTimeSidebar } from "@/lib/businessModules/inspection/components/inspection/planning/traveltime/TravelTimeSidebar";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { useCopy } from "@/lib/shared/hooks/useCopy";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
@@ -169,38 +169,22 @@ export function TravelTimeTile({
       <Grid container columnSpacing={2} rowSpacing={3}>
         {showTravelStart && (
           <Grid xs={6}>
-            <DetailsCell
-              name="startBuffer"
-              label="Anfahrtszeit in Minuten"
-              value={startBuffer}
-            />
+            <DetailsItem label="Anfahrtszeit in Minuten" value={startBuffer} />
           </Grid>
         )}
         {showTravelStart && (
           <Grid xs={6}>
-            <DetailsCell
-              name="startTime"
-              label="Zeitpunkt der Abfahrt"
-              value={startTime}
-            />
+            <DetailsItem label="Zeitpunkt der Abfahrt" value={startTime} />
           </Grid>
         )}
         {showTravelEnd && (
           <Grid xs={6}>
-            <DetailsCell
-              name="endBuffer"
-              label="Rückfahrzeit in Minuten"
-              value={endBuffer}
-            />
+            <DetailsItem label="Rückfahrzeit in Minuten" value={endBuffer} />
           </Grid>
         )}
         {showTravelEnd && (
           <Grid xs={6}>
-            <DetailsCell
-              name="endTime"
-              label="Zeitpunkt der Rückkehr"
-              value={endTime}
-            />
+            <DetailsItem label="Zeitpunkt der Rückkehr" value={endTime} />
           </Grid>
         )}
       </Grid>

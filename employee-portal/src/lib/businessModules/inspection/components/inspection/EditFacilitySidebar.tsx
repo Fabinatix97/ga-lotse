@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetFacilityFileStateResponse } from "@eshg/employee-portal-api/inspection";
+import { ApiGetFacilityFileStateResponse } from "@eshg/inspection-api";
 
 import {
   DefaultFacilityFormValues,

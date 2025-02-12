@@ -3,35 +3,40 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
+import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import {
+  AppointmentListForDate,
+  AppointmentListProps,
+} from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentListForDate";
+import {
+  AppointmentPickerField,
+  FIELD_LABELS_DE,
+} from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentPickerField";
+import { toDateTimeString } from "@eshg/lib-portal/helpers/dateTime";
+import {
+  validateIntegerAnd,
+  validateRange,
+} from "@eshg/lib-portal/helpers/validators";
 import {
   ApiAppointment,
   ApiAppointmentType,
   ApiBookingType,
   ApiOmsAppointment,
   ApiUser,
-} from "@eshg/employee-portal-api/officialMedicalService";
-import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import {
-  AppointmentPickerField,
-  FIELD_LABELS_DE,
-} from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentPickerField";
-import { assertNever } from "@eshg/lib-portal/helpers/assertions";
-import { toDateTimeString } from "@eshg/lib-portal/helpers/dateTime";
-import {
-  validateIntegerAnd,
-  validateRange,
-} from "@eshg/lib-portal/helpers/validators";
-import { Box, Button, Sheet, Stack, Typography } from "@mui/joy";
+} from "@eshg/official-medical-service-api";
+import { Sheet, Stack, Typography } from "@mui/joy";
 import { addMinutes, isEqual } from "date-fns";
-import { Formik, useFormikContext } from "formik";
-import { useMemo, useState } from "react";
-import { isEmpty, prop, sortBy } from "remeda";
+import { Formik, FormikHelpers, useFormikContext } from "formik";
+import { ReactNode, useMemo, useReducer, useState } from "react";
+import { clamp, isEmpty, prop, sortBy } from "remeda";
 
 import { useBookAppointment } from "@/lib/businessModules/officialMedicalService/api/mutations/appointmentApi";
 import { usePostAppointment } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
 import { useGetFreeAppointmentsQuery } from "@/lib/businessModules/officialMedicalService/api/queries/appointmentBlocksApi";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
+import { APPOINTMENT_TYPES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
+import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
+import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { DateTimeField } from "@/lib/shared/components/formFields/DateTimeField";
 import {
@@ -51,6 +56,7 @@ interface Appointment {
 }
 
 interface AppointmentFormValues {
+  appointmentType: ApiAppointmentType;
   bookingType: ApiBookingType | "SelfBooking";
   appointment?: Appointment;
   start: string;
@@ -69,7 +75,7 @@ export function useCreateAppointmentSidebar(
         await createAppointment({
           procedureId,
           request: {
-            appointmentType: ApiAppointmentType.OfficialMedicalService,
+            appointmentType: values.appointmentType,
             bookingInfo:
               values.bookingType === "SelfBooking"
                 ? undefined
@@ -132,6 +138,60 @@ interface AppointmentSidebarProps extends SidebarWithFormRefProps {
   physician?: ApiUser;
 }
 
+interface FieldsProps {
+  allowSelfBooking: boolean;
+  physician?: ApiUser;
+  appointments: ApiAppointment[];
+  initialValues: AppointmentFormValues;
+}
+
+interface SidebarStep {
+  title: string;
+  subTitle: string;
+  fields: (props: Readonly<FieldsProps>) => ReactNode;
+}
+
+function getAppointmentTypeOptions() {
+  return [
+    {
+      value: ApiAppointmentType.OfficialMedicalService,
+      label: APPOINTMENT_TYPES[ApiAppointmentType.OfficialMedicalService],
+    },
+  ];
+}
+
+function getSteps(editingExistingAppointment: boolean): SidebarStep[] {
+  return editingExistingAppointment
+    ? [
+        {
+          title: "Termin buchen",
+          subTitle: "",
+          fields: (props: Readonly<FieldsProps>) => <BookingForm {...props} />,
+        },
+      ]
+    : [
+        {
+          title: "Termin buchen",
+          subTitle: "Schritt 1 von 2",
+          fields: () => (
+            <>
+              <SelectField
+                name="appointmentType"
+                label="Terminart"
+                required="Bitte eine Terminart auswählen"
+                options={getAppointmentTypeOptions()}
+              />
+            </>
+          ),
+        },
+        {
+          title: "Termin buchen",
+          subTitle: "Schritt 2 von 2",
+          fields: (props: Readonly<FieldsProps>) => <BookingForm {...props} />,
+        },
+      ];
+}
+
 function EmbeddedAppointmentSidebar({
   formRef,
   onClose: handleClose,
@@ -145,9 +205,20 @@ function EmbeddedAppointmentSidebar({
     physician?.userId,
   );
 
+  const steps = getSteps(!!appointment);
+  const lastStepIndex = steps.length - 1;
+  const [stepIndex, changeToStep] = useReducer(
+    (_index: number, newIndex: number) =>
+      clamp(newIndex, { min: 0, max: lastStepIndex }),
+    0,
+  );
+  const step = steps[stepIndex]!;
+  const Fields = step.fields;
+
   async function handleSubmit(values: AppointmentFormValues) {
     if (values.bookingType === ApiBookingType.AppointmentBlock) {
       values = {
+        appointmentType: values.appointmentType,
         bookingType: ApiBookingType.AppointmentBlock,
         start: toDateTimeString(values.appointment!.start),
         duration: Math.round(
@@ -162,49 +233,39 @@ function EmbeddedAppointmentSidebar({
     handleClose(true);
   }
 
+  async function handleNext(
+    newValues: AppointmentFormValues,
+    helpers: FormikHelpers<AppointmentFormValues>,
+  ) {
+    const isOnLastStep = stepIndex === lastStepIndex;
+
+    if (isOnLastStep) {
+      await handleSubmit(newValues);
+      helpers.resetForm();
+      changeToStep(0);
+    } else {
+      changeToStep(stepIndex + 1);
+    }
+  }
+
   return (
-    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+    <Formik initialValues={initialValues} onSubmit={handleNext}>
       {({ isSubmitting }) => (
         <SidebarForm ref={formRef}>
-          <SidebarContent title="Termin buchen">
-            <AssignedPhysician physician={physician} />
-            <RadioAccordionGroupField
-              name="bookingType"
-              data-testid="booking-type-radio-control"
-            >
-              <RadioAccordionItem
-                value={ApiBookingType.AppointmentBlock}
-                label="Aus Terminblock"
-              >
-                {(isExpanded) => (
-                  <AppointmentBlockForm
-                    isExpanded={isExpanded}
-                    appointments={appointments}
-                    initialMonth={initialValues.appointment?.start}
-                  />
-                )}
-              </RadioAccordionItem>
-              <RadioAccordionItem
-                value={ApiBookingType.UserDefined}
-                label="Individueller Termin"
-              >
-                {(isExpanded) => (
-                  <AppointmentUserDefinedForm isExpanded={isExpanded} />
-                )}
-              </RadioAccordionItem>
-              {allowSelfBooking && (
-                <RadioAccordionItem
-                  sx={{ "& .MuiAccordionDetails-root": { height: 0 } }}
-                  value={"SelfBooking"}
-                  label="Selbstbuchung"
-                />
-              )}
-            </RadioAccordionGroupField>
+          <SidebarContent title={step.title} subtitle={step.subTitle}>
+            <Fields
+              allowSelfBooking={allowSelfBooking}
+              appointments={appointments}
+              initialValues={initialValues}
+              physician={physician}
+            />
           </SidebarContent>
           <AppointmentSidebarActions
             isSubmitting={isSubmitting}
             onClose={handleClose}
-            initialValues={initialValues}
+            stepIndex={stepIndex}
+            changeToStep={changeToStep}
+            lastStepIndex={lastStepIndex}
           />
         </SidebarForm>
       )}
@@ -215,61 +276,82 @@ function EmbeddedAppointmentSidebar({
 function AppointmentSidebarActions({
   isSubmitting,
   onClose,
-  initialValues,
+  stepIndex,
+  changeToStep,
+  lastStepIndex,
 }: {
   isSubmitting: boolean;
   onClose: (force?: boolean) => void;
-  initialValues: AppointmentFormValues;
+  stepIndex: number;
+  changeToStep: (newStep: number) => void;
+  lastStepIndex: number;
 }) {
-  const { values } = useFormikContext<AppointmentFormValues>();
-  const dirty = !isAppointmentFormValuesEqual(initialValues, values);
+  const { dirty } = useFormikContext<AppointmentFormValues>();
+  const isOnFirstStep = stepIndex === 0;
+  const isOnLastStep = stepIndex === lastStepIndex;
+
+  let submitLabel;
+  if (isOnLastStep) {
+    submitLabel = dirty ? "Buchen" : "Schließen";
+  } else {
+    submitLabel = "Weiter";
+  }
 
   return (
     <SidebarActions>
-      <ButtonBar
-        left={
-          dirty && (
-            <Button
-              variant="plain"
-              color="primary"
-              onClick={() => onClose(true)}
-            >
-              Abbrechen
-            </Button>
-          )
-        }
-        right={
-          dirty ? (
-            <SubmitButton submitting={isSubmitting}>Buchen</SubmitButton>
-          ) : (
-            <Button onClick={() => onClose(true)}>Schließen</Button>
-          )
-        }
+      <MultiFormButtonBar
+        submitting={isSubmitting}
+        onCancel={() => onClose(true)}
+        onBack={isOnFirstStep ? undefined : () => changeToStep(stepIndex - 1)}
+        submitLabel={submitLabel}
       />
     </SidebarActions>
   );
 }
 
-function isAppointmentFormValuesEqual(
-  v1: AppointmentFormValues,
-  v2: AppointmentFormValues,
-) {
-  if (v1.bookingType !== v2.bookingType) return false;
-  switch (v1.bookingType) {
-    case ApiBookingType.AppointmentBlock:
-      if (!v1.appointment || !v2.appointment)
-        return v1.appointment == v2.appointment;
-      return (
-        isEqual(v1.appointment.start, v2.appointment.start) &&
-        isEqual(v1.appointment.end, v2.appointment.end)
-      );
-    case ApiBookingType.UserDefined:
-      return v1.start === v2.start && v1.duration === v2.duration;
-    case "SelfBooking":
-      return true;
-    default:
-      assertNever(v1.bookingType);
-  }
+function BookingForm({
+  allowSelfBooking,
+  physician,
+  appointments,
+  initialValues,
+}: Readonly<FieldsProps>) {
+  return (
+    <>
+      <AssignedPhysician physician={physician} />
+      <RadioAccordionGroupField
+        name="bookingType"
+        data-testid="booking-type-radio-control"
+      >
+        <RadioAccordionItem
+          value={ApiBookingType.AppointmentBlock}
+          label="Aus Terminblock"
+        >
+          {(isExpanded) => (
+            <AppointmentBlockForm
+              isExpanded={isExpanded}
+              appointments={appointments}
+              initialMonth={initialValues.appointment?.start}
+            />
+          )}
+        </RadioAccordionItem>
+        <RadioAccordionItem
+          value={ApiBookingType.UserDefined}
+          label="Individueller Termin"
+        >
+          {(isExpanded) => (
+            <AppointmentUserDefinedForm isExpanded={isExpanded} />
+          )}
+        </RadioAccordionItem>
+        {allowSelfBooking && (
+          <RadioAccordionItem
+            sx={{ "& .MuiAccordionDetails-root": { height: 0 } }}
+            value={"SelfBooking"}
+            label="Selbstbuchung"
+          />
+        )}
+      </RadioAccordionGroupField>
+    </>
+  );
 }
 
 function useAppointments(
@@ -316,6 +398,7 @@ function useAppointments(
     return {
       appointments,
       initialValues: {
+        appointmentType: ApiAppointmentType.OfficialMedicalService,
         bookingType:
           appointment?.bookingType ?? ApiBookingType.AppointmentBlock,
         appointment: blockAppointment,
@@ -356,6 +439,7 @@ function AppointmentBlockForm({
           isAppointmentEqual={(apt1: ApiAppointment, apt2: ApiAppointment) =>
             isEqual(apt1.start, apt2.start) && isEqual(apt1.end, apt2.end)
           }
+          appointmentList={StyledAppointmentListForDate}
         />
       )}
     </Sheet>
@@ -365,14 +449,14 @@ function AppointmentBlockForm({
 function AssignedPhysician({ physician }: { physician?: ApiUser }) {
   return (
     physician && (
-      <Box component="dl">
-        <Typography component="dt" my={2} level="title-md">
-          Zugewiesene:r Arzt/Ärztin
-        </Typography>
-        <Typography component="dd" my={2}>
-          {physician.firstName} {physician.lastName}
-        </Typography>
-      </Box>
+      <DetailsItem
+        label="Zugewiesene:r Arzt/Ärztin"
+        value={physician.firstName + " " + physician.lastName}
+        slotProps={{
+          label: { level: "title-md" },
+          value: { level: "body-sm" },
+        }}
+      />
     )
   );
 }
@@ -396,5 +480,30 @@ function AppointmentUserDefinedForm({
         required={isExpanded ? "Termindauer ist erforderlich" : undefined}
       />
     </Stack>
+  );
+}
+
+// AppointmentListForDate but with equal width chips and time labels with no leading zeros
+export function StyledAppointmentListForDate<T extends Appointment>(
+  props: AppointmentListProps<T>,
+) {
+  return (
+    <AppointmentListForDate
+      {...props}
+      slotProps={{
+        chip: {
+          sx: {
+            minWidth: "4rem",
+            paddingX: 0,
+          },
+        },
+      }}
+      getLabel={(apt) =>
+        apt.start.toLocaleTimeString("de-DE", {
+          hour: "numeric",
+          minute: "2-digit",
+        })
+      }
+    />
   );
 }

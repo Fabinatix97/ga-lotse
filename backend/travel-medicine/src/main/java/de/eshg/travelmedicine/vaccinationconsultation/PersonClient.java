@@ -146,22 +146,22 @@ public class PersonClient {
             .orElseThrow(() -> new BadRequestException("Reference person not found."));
     boolean dataAdded =
         addEmailAndPhoneNumberToReferencePerson(referencePerson, personFromCentralFile);
-    PersonDetailsDto personDetailsDto = mapToPersonDetailsDto(referencePerson);
+    UpdatePersonRequest updatePersonRequest = mapToUpdatePersonRequest(referencePerson);
     AddPersonFileStateResponse addPersonFileStateResponse;
     if (dataAdded) {
       UpdateReferencePersonRequest updateReferencePersonRequest =
-          new UpdateReferencePersonRequest(personDetailsDto, referencePerson.version());
+          new UpdateReferencePersonRequest(updatePersonRequest, referencePerson.version());
       addPersonFileStateResponse =
           personApi.updateReferencePerson(referencePersonId, updateReferencePersonRequest);
     } else {
-      AddPersonFileStateRequest addPersonRequest = mapToAddPeronRequest(referencePerson);
+      AddPersonFileStateRequest addPersonRequest = mapToAddPersonRequest(referencePerson);
       addPersonFileStateResponse = personApi.addPersonFileState(addPersonRequest);
     }
 
     return addPersonFileStateResponse.id();
   }
 
-  private AddPersonFileStateRequest mapToAddPeronRequest(
+  private AddPersonFileStateRequest mapToAddPersonRequest(
       GetReferencePersonResponse referencePerson) {
     return new AddPersonFileStateRequest(
         referencePerson.id(),
@@ -339,8 +339,8 @@ public class PersonClient {
         personFromCentralFile.differentBillingAddress());
   }
 
-  private PersonDetailsDto mapToPersonDetailsDto(GetReferencePersonResponse referencePerson) {
-    return new PersonDetailsDto(
+  private UpdatePersonRequest mapToUpdatePersonRequest(GetReferencePersonResponse referencePerson) {
+    return new UpdatePersonRequest(
         referencePerson.title(),
         referencePerson.salutation(),
         referencePerson.gender(),

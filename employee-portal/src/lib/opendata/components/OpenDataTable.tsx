@@ -5,11 +5,11 @@
 
 "use client";
 
-import { ApiResource, ApiVersion } from "@eshg/employee-portal-api/opendata";
 import {
   parseOptionalString,
   parseReadonlyPageParams,
 } from "@eshg/lib-portal/helpers/searchParams";
+import { ApiResource, ApiVersion } from "@eshg/opendata-api";
 import Add from "@mui/icons-material/Add";
 import { Button, Stack } from "@mui/joy";
 import { useSearchParams } from "next/navigation";

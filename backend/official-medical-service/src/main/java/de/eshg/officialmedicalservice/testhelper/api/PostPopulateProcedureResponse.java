@@ -11,4 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public record PostPopulateProcedureResponse(
-    @NotNull UUID procedureId, UUID facilityId, @NotNull @Valid Map<String, UUID> appointments) {}
+    @NotNull UUID procedureId,
+    UUID facilityId,
+    @NotNull @Valid Map<String, UUID> appointments,
+    @Valid Map<String, UUID> documentMap) {}

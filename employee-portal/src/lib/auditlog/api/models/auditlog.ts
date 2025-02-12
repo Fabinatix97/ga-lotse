@@ -7,7 +7,7 @@ import {
   ApiAuditLogGrantedAccessCount,
   ApiAuditLogSource,
   ApiGetAvailableAuditLogsResponse,
-} from "@eshg/employee-portal-api/auditlog/models";
+} from "@eshg/auditlog-api";
 
 interface GetAvailableAuditLogsResponse {
   logs: AuditLog[];

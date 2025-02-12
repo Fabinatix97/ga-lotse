@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiInspectionPLDRevision } from "@eshg/employee-portal-api/inspection";
+import { ApiInspectionPLDRevision } from "@eshg/inspection-api";
 import { InfoOutlined } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
 

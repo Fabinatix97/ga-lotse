@@ -5,17 +5,14 @@
 
 "use client";
 
-import {
-  ApiInspection,
-  ApiInspectionAppointment,
-} from "@eshg/employee-portal-api/inspection";
+import { ApiInspection, ApiInspectionAppointment } from "@eshg/inspection-api";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { useState } from "react";
 import { isNonNullish, isNullish } from "remeda";
 
 import { AppointmentSidebar } from "@/lib/businessModules/inspection/components/inspection/common/appointment/AppointmentSidebar";
 import { getFormattedAppointmentParts } from "@/lib/businessModules/inspection/components/inspection/common/appointment/appointmentUtils";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
 
@@ -79,8 +76,8 @@ export function AppointmentTile({
           message="Termin muss ausgewählt sein, um eine Begehung durchzuführen."
         />
       )}
-      <DetailsCell name="date" label="Datum" value={date} />
-      <DetailsCell name="timeFrame" label="Zeitraum" value={fromTo} />
+      <DetailsItem label="Datum" value={date} />
+      <DetailsItem label="Zeitraum" value={fromTo} />
     </InfoTile>
   );
 }

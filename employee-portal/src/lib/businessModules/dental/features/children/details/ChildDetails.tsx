@@ -14,8 +14,8 @@ import { useUpdateAnnualChildSidebar } from "@/lib/businessModules/dental/featur
 import { IconTooltipButton } from "@/lib/shared/components/buttons/IconTooltipButton";
 import { CentralFilePersonDetails } from "@/lib/shared/components/centralFile/display/CentralFilePersonDetails";
 import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
+import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { PageGrid } from "@/lib/shared/components/page/PageGrid";
 import { displayBoolean } from "@/lib/shared/helpers/booleans";
 
@@ -58,16 +58,8 @@ export function ChildDetailsPage(props: ChildDetailsProps) {
             canEdit={!disabled}
           >
             <Stack gap={1}>
-              <DetailsCell
-                name="institution"
-                label="Einrichtung"
-                value={child.institution.name}
-              />
-              <DetailsCell
-                name="group"
-                label="Gruppe"
-                value={child.groupName}
-              />
+              <DetailsItem label="Einrichtung" value={child.institution.name} />
+              <DetailsItem label="Gruppe" value={child.groupName} />
               {child.currentFluoridationConsent ? (
                 <>
                   <Divider />
@@ -84,22 +76,19 @@ export function ChildDetailsPage(props: ChildDetailsProps) {
                     />
                   </Typography>
                   <Stack direction="row" gap={2} flexWrap="wrap">
-                    <DetailsCell
-                      name="fluoridationConsent"
+                    <DetailsItem
                       label="Einverständis"
                       value={displayBoolean(
                         child.currentFluoridationConsent.consented,
                       )}
                     />
-                    <DetailsCell
-                      name="fluoridationConsentDate"
+                    <DetailsItem
                       label="Datum der Einverständniserklärung"
                       value={formatDate(
                         child.currentFluoridationConsent.dateOfConsent,
                       )}
                     />
-                    <DetailsCell
-                      name="allergy"
+                    <DetailsItem
                       label="Allergie"
                       value={displayBoolean(
                         child.currentFluoridationConsent.hasAllergy,
@@ -108,8 +97,7 @@ export function ChildDetailsPage(props: ChildDetailsProps) {
                   </Stack>
                 </>
               ) : (
-                <DetailsCell
-                  name="fluoridationConsent"
+                <DetailsItem
                   label="Einverständis zur Fluoridierung"
                   value="Liegt nicht vor"
                 />

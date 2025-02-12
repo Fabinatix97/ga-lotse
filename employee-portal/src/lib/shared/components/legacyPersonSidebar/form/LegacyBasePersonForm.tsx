@@ -13,7 +13,10 @@ import {
   TITLE_OPTIONS,
   TITLE_VALUES,
 } from "@eshg/lib-portal/components/formFields/constants";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import {
+  validateDateOfBirth,
+  validateLength,
+} from "@eshg/lib-portal/helpers/validators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Grid, Stack } from "@mui/joy";
 
@@ -116,6 +119,7 @@ export function LegacyBasePersonForm({
             label="Geburtsdatum"
             required="Bitte ein Geburtsdatum angeben."
             disabled={disabledFields?.includes("dateOfBirth")}
+            validate={validateDateOfBirth}
           />
         </Grid>
         {!hiddenFields?.includes("gender") && (

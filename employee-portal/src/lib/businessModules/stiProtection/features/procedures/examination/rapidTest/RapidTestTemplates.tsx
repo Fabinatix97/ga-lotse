@@ -3,61 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiRapidTestData } from "@eshg/employee-portal-api/stiProtection";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { Grid, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { PropsWithChildren } from "react";
 
-import {
-  YesOrNoFieldData,
-  YesOrNoWithFollowUp,
-  mapBoolToYesOrNo,
-  mapYesOrNoToBool,
-} from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
+import { YesOrNoWithFollowUp } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
 import { FormGroupGrid } from "@/lib/shared/components/form/FormGroupGrid";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
-import { RapidTestExaminationData } from "./RapidTestExamination";
-
-export interface RapidTestData {
-  number?: string;
-  result: YesOrNoFieldData;
-}
-
-export function mapRapidTestToForm(testData?: ApiRapidTestData): RapidTestData {
-  if (testData == undefined) {
-    return {
-      number: "",
-      result: null,
-    };
-  }
-  return {
-    number: testData.number,
-    result: mapBoolToYesOrNo(testData.result),
-  };
-}
-
-export function mapRapidTestToApi(
-  formData: RapidTestData | null,
-): ApiRapidTestData | undefined {
-  if (formData === null) {
-    return undefined;
-  }
-
-  const resultValue = mapYesOrNoToBool(formData.result);
-  if (resultValue === undefined) {
-    return undefined;
-  }
-
-  return {
-    number: mapOptionalValue(formData.number?.trim()),
-    result: !!resultValue,
-  };
-}
+import { RapidTestExaminationData } from "./helpers";
 
 export interface RapidTestProps extends PropsWithChildren {
   name: string;

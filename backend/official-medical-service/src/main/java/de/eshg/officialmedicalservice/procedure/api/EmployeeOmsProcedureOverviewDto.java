@@ -17,6 +17,7 @@ import java.util.UUID;
 public record EmployeeOmsProcedureOverviewDto(
     @NotNull UUID id,
     @NotNull ProcedureStatusDto status,
+    @NotNull MedicalOpinionStatusDto medicalOpinionStatus,
     String firstName,
     String lastName,
     LocalDate dateOfBirth,

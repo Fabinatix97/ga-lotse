@@ -6,9 +6,9 @@
 import {
   ApiCreateInspectionIncidentRequest,
   ApiInspectionIncident,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { Grid } from "@mui/joy";
+import { Grid, Typography } from "@mui/joy";
 import { Formik } from "formik";
 import { isEmpty, isNonNullish, isNullish } from "remeda";
 import { v4 as uuidv4 } from "uuid";
@@ -18,7 +18,7 @@ import {
   useUpdateIncident,
 } from "@/lib/businessModules/inspection/api/mutations/incidents";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
@@ -99,11 +99,20 @@ function IncidentSidebarInner({
                     />
                   )}
                   {isChecklistIncident && (
-                    <DetailsCell
-                      name="title"
+                    <DetailsItem
                       label="Titel"
-                      value={incident.title}
-                      showIfEmpty
+                      value={
+                        incident.title ?? (
+                          <Typography
+                            data-testid={`title.value`}
+                            component="i"
+                            color="neutral"
+                            level="title-md"
+                          >
+                            Keine Angaben
+                          </Typography>
+                        )
+                      }
                     />
                   )}
                 </Grid>

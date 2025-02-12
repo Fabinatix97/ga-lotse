@@ -4,7 +4,6 @@
  */
 
 import { ApiContactCategory } from "@eshg/base-api";
-import { SearchOutlined } from "@mui/icons-material";
 
 import { contactCategoryNames } from "@/lib/baseModule/shared/translations";
 import { SelectContactField } from "@/lib/shared/components/formFields/SelectContactField";
@@ -34,7 +33,6 @@ export function SearchContactField(props: SearchContactFieldProps) {
       categories={new Set([props.category])}
       placeholder={`${translatedCategory} suchen`}
       required={requiredMessage[props.category]}
-      endDecorator={<SearchOutlined />}
     />
   );
 }

@@ -41,6 +41,7 @@ import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
 import de.eshg.rest.service.error.BadRequestException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.nio.charset.StandardCharsets;
+import java.time.Period;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -240,7 +241,7 @@ public class GdprValidationTaskController<
   }
 
   @Override
-  @Transactional(readOnly = true)
+  @Transactional
   public GetGdprValidationTaskDetailsResponse getGdprValidationTaskDetails(UUID gdprId) {
     assertNewFeatureEnabled(BaseFeature.GDPR, baseFeatureTogglesApi.getFeatureToggles());
     List<UUID> fileStateIds = service.getAndValidateFileStateIds(gdprId);
@@ -304,7 +305,7 @@ public class GdprValidationTaskController<
     service.writeAuditLog(
         "Löschung Fachmodul Vorgang", mapAuditlog(validationTask, businessProcedure.get()));
 
-    procedureDeletionService.deleteAndWriteToCemetery(businessProcedure.get());
+    procedureDeletionService.deleteAndWriteToCemetery(businessProcedure.get(), Period.ZERO);
   }
 
   @Override

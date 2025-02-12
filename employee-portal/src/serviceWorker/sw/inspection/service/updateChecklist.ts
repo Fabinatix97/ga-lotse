@@ -10,7 +10,7 @@ import {
   ApiGetChecklistsResponseFromJSON,
   ApiGetChecklistsResponseToJSON,
   ApiUpdateChecklistRequest,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 
 import { getFromApiCache, writeToApiCache } from "@/serviceWorker/sw/cache";
 import {

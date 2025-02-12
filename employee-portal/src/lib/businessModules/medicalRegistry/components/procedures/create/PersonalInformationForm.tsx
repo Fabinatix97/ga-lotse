@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiTypeOfChange } from "@eshg/employee-portal-api/medicalRegistry";
 import {
   MedicalRegistryCreateProcedureFormValues,
   PersonalInformationFormValues,
@@ -16,10 +15,13 @@ import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField"
 import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import {
+  validateDateOfBirth,
   validateLength,
   validatePastOrTodayDate,
+  validatePipe,
 } from "@eshg/lib-portal/helpers/validators";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
+import { ApiTypeOfChange } from "@eshg/medical-registry-api";
 import { Grid, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
@@ -162,7 +164,7 @@ export function PersonalInformationForm(props: NestedFormProps) {
           name={fieldName("birthDate")}
           label={"Geburtsdatum"}
           required={requiredFieldMessage}
-          validate={validatePastOrTodayDate}
+          validate={validatePipe(validatePastOrTodayDate, validateDateOfBirth)}
         />
       </Grid>
       <Grid xxs={6} xxl={4}>

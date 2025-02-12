@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiCLSectionContextElementsInner } from "@eshg/employee-portal-api/inspection";
+import { ApiCLSectionContextElementsInner } from "@eshg/inspection-api";
 import { Divider } from "@mui/joy";
 
 import { ReadOnlyCLDElementCheckbox } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/elements/inner/ReadOnlyCLDElementCheckbox";

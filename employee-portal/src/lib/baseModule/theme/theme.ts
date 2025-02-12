@@ -35,6 +35,12 @@ declare module "@mui/joy/styles/types/zIndex" {
   }
 }
 
+declare module "@mui/joy/ToggleButtonGroup" {
+  interface ToggleButtonGroupPropsVariantOverrides {
+    tabs: true;
+  }
+}
+
 type FontSizeOverrides = { [_k in keyof FontSize]: true };
 declare module "@mui/joy/SvgIcon" {
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -49,7 +55,7 @@ const noBoxShadow = {
   boxShadow: "none",
 };
 
-export function multiLineEllipsis(linesToShow = 2): SxProps {
+export function multiLineEllipsis(linesToShow = 2) {
   return {
     display: "-webkit-box",
     WebkitBoxOrient: "vertical",
@@ -57,7 +63,7 @@ export function multiLineEllipsis(linesToShow = 2): SxProps {
     lineClamp: String(linesToShow),
     overflow: "hidden",
     textOverflow: "ellipsis",
-  };
+  } satisfies SxProps;
 }
 
 function fixOutlinedHeight(variant?: string, size?: string) {
@@ -447,16 +453,33 @@ export const theme = extendTheme({
     },
     JoyToggleButtonGroup: {
       styleOverrides: {
-        root: ({ ownerState }) => {
-          if (ownerState.color === "primary") {
-            return {
-              ".MuiButton-variantOutlined": {
-                color: "var(--joy-palette-primary-600)",
+        root: ({ ownerState, theme }) => ({
+          ...(ownerState.color === "primary" && {
+            ".MuiButton-variantOutlined": {
+              color: "var(--joy-palette-primary-600)",
+            },
+          }),
+          ...(ownerState.variant === "tabs" && {
+            ".MuiButton-variantTabs": {
+              backgroundColor: theme.palette.background.level1,
+              "--ButtonGroup-separatorColor": "#636B744D",
+              "&[aria-pressed=true]": {
+                zIndex: 2,
+                backgroundColor: theme.palette.primary.solidBg,
+                color: "white",
+                "&[data-first-child]": {
+                  borderLeft: `1px solid ${theme.palette.primary.solidBg}`,
+                },
               },
-            };
-          }
-          return {};
-        },
+              "&[aria-pressed=false]": {
+                fontWeight: 400,
+                "&:hover": {
+                  zIndex: 1,
+                },
+              },
+            },
+          }),
+        }),
       },
     },
     JoyCheckbox: {

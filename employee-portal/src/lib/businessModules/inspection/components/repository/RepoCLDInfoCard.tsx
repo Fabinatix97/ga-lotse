@@ -4,7 +4,7 @@
  */
 
 import { ApiUserRole } from "@eshg/base-api";
-import { ApiChecklistDefinitionVersion } from "@eshg/employee-portal-api/inspection";
+import { ApiChecklistDefinitionVersion } from "@eshg/inspection-api";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";

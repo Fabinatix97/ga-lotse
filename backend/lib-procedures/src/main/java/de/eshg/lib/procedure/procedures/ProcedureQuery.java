@@ -5,9 +5,12 @@
 
 package de.eshg.lib.procedure.procedures;
 
+import de.eshg.lib.procedure.domain.model.FacilityType;
 import de.eshg.lib.procedure.domain.model.PersonType;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.Procedure_;
+import de.eshg.lib.procedure.domain.model.RelatedFacility;
+import de.eshg.lib.procedure.domain.model.RelatedFacility_;
 import de.eshg.lib.procedure.domain.model.RelatedPerson;
 import de.eshg.lib.procedure.domain.model.RelatedPerson_;
 import jakarta.persistence.EntityManager;
@@ -47,6 +50,31 @@ public class ProcedureQuery {
             criteriaBuilder.equal(relatedPersonsJoin.get(RelatedPerson_.personType), personType));
 
     query.select(childJoin.get(RelatedPerson_.centralFileStateId));
+
+    query.where(procedureSpecification.toPredicate(root, query, criteriaBuilder));
+
+    return entityManager.createQuery(query).getResultList();
+  }
+
+  public <
+          ProcedureT extends Procedure<ProcedureT, ?, ?, RelatedFacilityT>,
+          RelatedFacilityT extends RelatedFacility<ProcedureT>>
+      List<UUID> findAllRelatedFacilityFileStateIds(
+          Specification<ProcedureT> procedureSpecification,
+          Class<ProcedureT> procedureClass,
+          FacilityType facilityType) {
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UUID> query = criteriaBuilder.createQuery(UUID.class);
+    Root<ProcedureT> root = query.from(procedureClass);
+
+    Join<ProcedureT, ? extends RelatedFacility<?>> relatedFacilitiesJoin =
+        root.join(Procedure_.relatedFacilities);
+    Join<ProcedureT, ? extends RelatedFacility<?>> childJoin =
+        relatedFacilitiesJoin.on(
+            criteriaBuilder.equal(
+                relatedFacilitiesJoin.get(RelatedFacility_.facilityType), facilityType));
+
+    query.select(childJoin.get(RelatedFacility_.centralFileStateId));
 
     query.where(procedureSpecification.toPredicate(root, query, criteriaBuilder));
 

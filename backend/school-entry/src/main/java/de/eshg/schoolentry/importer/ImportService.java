@@ -40,6 +40,7 @@ import de.eshg.schoolentry.util.ProgressEntryUtil;
 import de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType;
 import jakarta.persistence.criteria.Path;
 import java.io.IOException;
+import java.time.Clock;
 import java.time.Year;
 import java.util.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -55,6 +56,7 @@ public class ImportService {
 
   private static final Logger log = LoggerFactory.getLogger(ImportService.class);
 
+  private final Clock clock;
   private final Validator validator;
   private final SchoolEntryService schoolEntryService;
   private final LabelService labelService;
@@ -67,6 +69,7 @@ public class ImportService {
   private final SchoolEntryProcedureRepository schoolEntryProcedureRepository;
 
   public ImportService(
+      Clock clock,
       Validator validator,
       SchoolEntryService schoolEntryService,
       LabelService labelService,
@@ -77,6 +80,7 @@ public class ImportService {
       SchoolEntryProperties schoolEntryProperties,
       ProcedureTypeAssignmentHelper procedureTypeAssignmentHelper,
       SchoolEntryProcedureRepository schoolEntryProcedureRepository) {
+    this.clock = clock;
     this.validator = validator;
     this.schoolEntryService = schoolEntryService;
     this.labelService = labelService;
@@ -148,7 +152,7 @@ public class ImportService {
       List<CitizenListColumn> actualColumns) {
     return new CitizenOrSchoolListImporter<>(
         sheet,
-        new CitizenListRowReader(sheet, actualColumns),
+        new CitizenListRowReader(sheet, clock, actualColumns),
         new FeedbackColumnAccessor(actualColumns),
         importType,
         new CitizenListRowValueMapper(),
@@ -168,7 +172,7 @@ public class ImportService {
       List<SchoolListColumn> actualColumns) {
     return new CitizenOrSchoolListImporter<>(
         sheet,
-        new SchoolListRowReader(sheet, actualColumns),
+        new SchoolListRowReader(sheet, clock, actualColumns),
         new FeedbackColumnAccessor(actualColumns),
         importType,
         new SchoolListRowValueMapper(schoolYear, procedureTypeAssignmentHelper),
@@ -186,7 +190,7 @@ public class ImportService {
       List<PastProcedureListColumn> actualColumns) {
     return new PastProcedureListImporter(
         sheet,
-        new PastProcedureListRowReader(sheet, actualColumns),
+        new PastProcedureListRowReader(sheet, clock, actualColumns),
         new FeedbackColumnAccessor(actualColumns),
         schoolId,
         schoolYear,

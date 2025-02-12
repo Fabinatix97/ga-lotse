@@ -24,6 +24,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.metadata.ConstraintDescriptor;
+import java.time.Clock;
 import java.util.Arrays;
 import java.util.Set;
 import org.apache.poi.ss.usermodel.Cell;
@@ -34,8 +35,8 @@ class MedicalRegistryRowReader extends RowReader<MedicalRegistryRow, MedicalRegi
   private static final ValidatorFactory validatorFactory =
       Validation.buildDefaultValidatorFactory();
 
-  MedicalRegistryRowReader(Sheet sheet) {
-    super(sheet, Arrays.asList(MedicalRegistryColumn.values()), MedicalRegistryRow::new);
+  MedicalRegistryRowReader(Sheet sheet, Clock clock) {
+    super(sheet, Arrays.asList(MedicalRegistryColumn.values()), MedicalRegistryRow::new, clock);
   }
 
   @Override

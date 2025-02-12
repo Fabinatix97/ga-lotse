@@ -15,7 +15,6 @@ import de.eshg.base.centralfile.api.person.ExternalAddPersonFileStateRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
 import de.eshg.base.centralfile.api.person.PersonDetails;
-import de.eshg.base.centralfile.api.person.PersonDetailsDto;
 import de.eshg.base.centralfile.api.person.UpdatePersonRequest;
 import de.eshg.base.centralfile.api.person.UpdateReferencePersonRequest;
 import de.eshg.lib.procedure.MapperHelper;
@@ -130,7 +129,7 @@ public class PersonService {
 
     return personApi
         .updatePersonFileStateAndReference(
-            personFileState.id(), new UpdatePersonRequest(new PersonDetailsDto(personFileState)))
+            personFileState.id(), new UpdatePersonRequest(personFileState))
         .id();
   }
 
@@ -153,8 +152,9 @@ public class PersonService {
     return updatedFileState.id();
   }
 
-  private PersonDetailsDto enrich(PersonDetails newPersonDetails, PersonDetails oldPersonDetails) {
-    return new PersonDetailsDto(
+  private UpdatePersonRequest enrich(
+      PersonDetails newPersonDetails, PersonDetails oldPersonDetails) {
+    return new UpdatePersonRequest(
         EnrichmentHelper.enrich(PersonDetails::title, newPersonDetails, oldPersonDetails),
         EnrichmentHelper.enrich(PersonDetails::salutation, newPersonDetails, oldPersonDetails),
         EnrichmentHelper.enrich(PersonDetails::gender, newPersonDetails, oldPersonDetails),

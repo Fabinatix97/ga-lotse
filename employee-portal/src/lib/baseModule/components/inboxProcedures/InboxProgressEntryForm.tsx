@@ -5,7 +5,6 @@
 
 "use client";
 
-import { ApiInboxProgressEntryType } from "@eshg/employee-portal-api/businessProcedures";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
@@ -19,6 +18,7 @@ import {
   OptionalFieldValue,
 } from "@eshg/lib-portal/types/form";
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
+import { ApiInboxProgressEntryType } from "@eshg/lib-procedures-api";
 import { Grid, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 

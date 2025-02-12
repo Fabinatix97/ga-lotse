@@ -37,7 +37,7 @@ export function FormDialog<T extends FormikValues>({
   return (
     <BaseModal modalTitle={title} color={color} open={open} onClose={onClose}>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
-        {({ isSubmitting, handleSubmit }) => {
+        {({ isSubmitting }) => {
           return (
             <FormPlus>
               <Typography textColor="text.secondary">{description}</Typography>
@@ -54,10 +54,10 @@ export function FormDialog<T extends FormikValues>({
                     {cancelLabel}
                   </Button>
                   <Button
+                    type="submit"
                     size="sm"
                     color={color}
                     loading={isSubmitting}
-                    onClick={() => handleSubmit()}
                     loadingPosition={"start"}
                     data-testid="formDialogConfirm"
                   >

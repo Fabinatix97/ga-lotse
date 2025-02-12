@@ -5,9 +5,9 @@
 
 package de.eshg.medicalregistry.api;
 
-import de.eshg.CustomValidations.EmailAddressConstraint;
 import de.eshg.base.GenderDto;
 import de.eshg.lib.common.CountryCode;
+import de.eshg.validation.constraints.EmailAddressConstraint;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

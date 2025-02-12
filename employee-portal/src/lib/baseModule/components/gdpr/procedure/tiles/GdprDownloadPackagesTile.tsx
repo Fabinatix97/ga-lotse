@@ -4,8 +4,8 @@
  */
 
 import { ApiGetGdprProcedureResponse } from "@eshg/base-api";
-import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 import CheckmarkIcon from "@mui/icons-material/Check";
 import DownloadIcon from "@mui/icons-material/SimCardDownloadOutlined";
 import {

@@ -5,25 +5,11 @@
 
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { isDefined } from "remeda";
 import * as v from "valibot";
 
-import { AdditionalInformationFormSection } from "@/lib/businessModules/dental/features/examinations/AdditionalInformationFormSection";
-import { ExaminationFormLayout } from "@/lib/businessModules/dental/features/examinations/ExaminationFormLayout";
-import { NoteFormSection } from "@/lib/businessModules/dental/features/examinations/NoteFormSection";
-import { ProphylaxisSessionExaminationBottomBar } from "@/lib/businessModules/dental/features/prophylaxisSessions/examination/ProphylaxisSessionExaminationBottomBar";
-import { ProphylaxisSessionExaminationForm } from "@/lib/businessModules/dental/features/prophylaxisSessions/examination/ProphylaxisSessionExaminationForm";
-import { ProphylaxisSessionExaminationToolbar } from "@/lib/businessModules/dental/features/prophylaxisSessions/examination/ProphylaxisSessionExaminationToolbar";
-import { ADDITIONAL_INFO_FORM_COMPONENTS } from "@/lib/businessModules/dental/features/prophylaxisSessions/examination/formComponents";
-import { useProphylaxisSessionExaminationForm } from "@/lib/businessModules/dental/features/prophylaxisSessions/examination/useProphylaxisSessionExaminationForm";
-import { useProphylaxisSessionExaminationNavigation } from "@/lib/businessModules/dental/features/prophylaxisSessions/examination/useProphylaxisSessionExaminationNavigation";
-import {
-  useFilteredParticipants,
-  useProphylaxisSessionStore,
-} from "@/lib/businessModules/dental/features/prophylaxisSessions/store/ProphylaxisSessionStoreProvider";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
+import { DentalExaminationStoreProvider } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
+import { ParticipantExaminationPage } from "@/lib/businessModules/dental/features/prophylaxisSessions/participantExamination/ParticipantExaminationPage";
+import { useFilteredParticipants } from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/ProphylaxisSessionStoreProvider";
 
 const PageParamsSchema = v.object({
   participantIndex: v.pipe(
@@ -52,72 +38,13 @@ export default function ProphylaxisSessionExaminationPage(
     );
   }
 
-  const router = useRouter();
-  const prophylaxisSessionId = useProphylaxisSessionStore((state) => state.id);
-  const isScreening = useProphylaxisSessionStore((state) => state.isScreening);
-  const fluoridationVarnish = useProphylaxisSessionStore(
-    (state) => state.fluoridationVarnish,
-  );
-  const setExaminationResult = useProphylaxisSessionStore(
-    (state) => state.setExaminationResult,
-  );
-
-  const [nextRoute, setNextRoute] = useState<string>();
-  const examinationForm = useProphylaxisSessionExaminationForm({
-    examinationResult: participant.result,
-    note: participant.note,
-    onSubmit: (examinationResult) => {
-      setExaminationResult(participant.childId, examinationResult);
-      if (isDefined(nextRoute)) {
-        setNextRoute(undefined);
-        router.push(nextRoute);
-      }
-    },
-  });
-  const examinationNavigation = useProphylaxisSessionExaminationNavigation({
-    participantIndex,
-    participantsLength: filteredParticipants.length,
-    onNavigate: (nextRoute) => {
-      setNextRoute(nextRoute);
-      void examinationForm.submitForm();
-    },
-  });
-
   return (
-    <StickyToolbarLayout
-      toolbar={
-        <ProphylaxisSessionExaminationToolbar
-          prophylaxisSessionId={prophylaxisSessionId}
-          participant={participant}
-          participantIndex={participantIndex}
-          onBackClicked={examinationNavigation.gotoOverview}
-        />
-      }
-    >
-      <ProphylaxisSessionExaminationForm
-        form={examinationForm}
-        bottomBar={
-          <ProphylaxisSessionExaminationBottomBar
-            onPreviousParticipantClicked={
-              examinationNavigation.gotoPreviousParticipant
-            }
-            onNextParticipantClicked={examinationNavigation.gotoNextParticipant}
-            onOverviewClicked={examinationNavigation.gotoOverview}
-          />
-        }
-      >
-        <ExaminationFormLayout
-          additionalInformation={
-            <AdditionalInformationFormSection
-              screening={isScreening}
-              fluoridation={isDefined(fluoridationVarnish)}
-              fluoridationConsentGiven={participant.fluoridationConsentGiven}
-              components={ADDITIONAL_INFO_FORM_COMPONENTS}
-            />
-          }
-          note={<NoteFormSection />}
-        />
-      </ProphylaxisSessionExaminationForm>
-    </StickyToolbarLayout>
+    <DentalExaminationStoreProvider examinationResult={participant.result}>
+      <ParticipantExaminationPage
+        participant={participant}
+        participantIndex={participantIndex}
+        participantsLength={filteredParticipants.length}
+      />
+    </DentalExaminationStoreProvider>
   );
 }

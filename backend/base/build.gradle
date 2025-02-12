@@ -48,6 +48,7 @@ dependencies {
     testImplementation testFixtures(project(':lib-service-directory-admin-api'))
     testImplementation testFixtures(project(":base-api"))
     testImplementation testFixtures(project(':lib-document-generator'))
+    testImplementation testFixtures(project(':lib-auditlog'))
 
     testImplementation 'org.apache.commons:commons-csv:latest.release'
     testImplementation 'com.tngtech.archunit:archunit-junit5:latest.release'

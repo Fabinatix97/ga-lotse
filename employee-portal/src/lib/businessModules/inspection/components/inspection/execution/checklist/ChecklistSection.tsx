@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiCLSection } from "@eshg/employee-portal-api/inspection";
+import { ApiCLSection } from "@eshg/inspection-api";
 import { Divider, Stack, Typography } from "@mui/joy";
 import { Fragment } from "react";
 

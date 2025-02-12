@@ -1,0 +1,30 @@
+/**
+ * Copyright 2025 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { EnumMap } from "@eshg/lib-portal/types/helpers";
+import {
+  ApiDocumentStatus,
+  ApiMedicalOpinionStatus,
+  ApiWaitingStatus,
+} from "@eshg/official-medical-service-api";
+
+export const STATUS_NAMES_DOCUMENT_STATUS: EnumMap<ApiDocumentStatus> = {
+  [ApiDocumentStatus.Accepted]: "Akzeptiert",
+  [ApiDocumentStatus.Missing]: "Fehlt",
+  [ApiDocumentStatus.Rejected]: "Nachreichen",
+  [ApiDocumentStatus.Submitted]: "Zu prüfen",
+};
+
+export const STATUS_NAMES_MEDICAL_OPINION_STATUS: EnumMap<ApiMedicalOpinionStatus> =
+  {
+    [ApiMedicalOpinionStatus.InProgress]: "In Arbeit",
+    [ApiMedicalOpinionStatus.Accomplished]: "Fertig",
+  };
+
+export const WAITING_STATUS_VALUES: EnumMap<ApiWaitingStatus> = {
+  [ApiWaitingStatus.WaitingForConsultation]: "Wartet auf Termin",
+  [ApiWaitingStatus.InConsultation]: "Im Gespräch",
+  [ApiWaitingStatus.Done]: "Fertig",
+};

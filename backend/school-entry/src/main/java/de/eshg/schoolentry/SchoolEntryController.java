@@ -143,7 +143,7 @@ public class SchoolEntryController {
   }
 
   @GetMapping("/{procedureId}")
-  @Transactional(readOnly = true)
+  @Transactional
   @Operation(summary = "Get school entry procedure by id.")
   public ProcedureDetailsDto getProcedure(@PathVariable("procedureId") UUID procedureId) {
     ProcedureDetailsData procedureDetailsData =

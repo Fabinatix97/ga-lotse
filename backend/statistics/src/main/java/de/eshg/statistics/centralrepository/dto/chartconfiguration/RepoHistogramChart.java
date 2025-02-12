@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 public record RepoHistogramChart(
     @NotNull @Valid RepoAttributeSelection primaryAttribute,
@@ -18,7 +19,9 @@ public record RepoHistogramChart(
     String scaling,
     String grouping,
     @NotBlank String binningMode,
-    @Min(2) @Max(50) Integer numberOfBins)
+    @Min(2) @Max(50) Integer numberOfBins,
+    BigDecimal minBin,
+    BigDecimal maxBin)
     implements RepoChartConfiguration {
   public static final String SCHEMA_NAME = "RepoHistogramChart";
 

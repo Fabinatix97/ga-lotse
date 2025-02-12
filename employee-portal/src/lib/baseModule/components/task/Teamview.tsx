@@ -5,11 +5,7 @@
 
 "use client";
 
-import {
-  ApiBusinessModule,
-  ApiTask,
-  ApiUser,
-} from "@eshg/employee-portal-api/businessProcedures";
+import { ApiBusinessModule, ApiTask, ApiUser } from "@eshg/lib-procedures-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { differenceInDays } from "date-fns";
 import { useState } from "react";

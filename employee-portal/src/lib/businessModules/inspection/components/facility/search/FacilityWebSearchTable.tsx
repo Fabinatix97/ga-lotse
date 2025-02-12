@@ -8,7 +8,7 @@
 import {
   type ApiWebSearchOverviewEntry,
   type ApiWebSearchStatus,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { DeleteOutlined, Edit, PlayArrow } from "@mui/icons-material";
 import { ColorPaletteProp } from "@mui/joy";

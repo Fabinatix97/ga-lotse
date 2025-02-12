@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiInspectionPhase } from "@eshg/employee-portal-api/inspection";
+import { ApiInspectionPhase } from "@eshg/inspection-api";
 
 import { useGetInspection } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { InspectionTabDisabled } from "@/lib/businessModules/inspection/components/inspection/common/InspectionTabDisabled";

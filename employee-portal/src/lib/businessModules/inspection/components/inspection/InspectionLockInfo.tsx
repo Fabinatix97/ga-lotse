@@ -4,7 +4,7 @@
  */
 
 import { ApiUserRole } from "@eshg/base-api";
-import { type ApiInspection } from "@eshg/employee-portal-api/inspection";
+import { type ApiInspection } from "@eshg/inspection-api";
 import { Clear } from "@mui/icons-material";
 import { Box, IconButton, Typography } from "@mui/joy";
 

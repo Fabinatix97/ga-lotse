@@ -6,7 +6,7 @@
 import {
   ApiChecklistDefinition,
   ApiChecklistDefinitionVersion,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { ConfirmationDialogProps } from "@eshg/lib-portal/components/confirmationDialog/BaseConfirmationDialog";
 import { Snackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";

@@ -27,6 +27,6 @@ public class AppointmentTypeMapper {
     return new AppointmentTypeConfigDto(
         appointmentTypeConfig.getId(),
         toInterfaceType(appointmentTypeConfig.getAppointmentType()),
-        appointmentTypeConfig.getStandardDurationInMinutes());
+        appointmentTypeConfig.getStandardDuration().toMinutes());
   }
 }

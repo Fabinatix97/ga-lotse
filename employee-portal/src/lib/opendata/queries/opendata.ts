@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { GetOpenDocumentsRequest } from "@eshg/employee-portal-api/opendata";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { GetOpenDocumentsRequest } from "@eshg/opendata-api";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useOpenDataApi } from "@/lib/opendata/api/clients";

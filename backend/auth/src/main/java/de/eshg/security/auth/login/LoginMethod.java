@@ -42,7 +42,10 @@ public abstract class LoginMethod {
   }
 
   public final boolean isApplicable(String url) {
-    List<String> patterns = getPathPatterns();
+    return isApplicable(url, getPathPatterns());
+  }
+
+  protected final boolean isApplicable(String url, List<String> patterns) {
     if (patterns == null) {
       return false;
     }

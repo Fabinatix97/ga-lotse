@@ -11,7 +11,6 @@ import {
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { calculateAge } from "@eshg/lib-portal/helpers/dateTime";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { isDefined } from "remeda";
@@ -19,10 +18,10 @@ import { isDefined } from "remeda";
 import { GENDER_VALUES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
 import { BaseAddressDetails } from "@/lib/shared/components/address/BaseAddressDetails";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
 import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
-import { ExternalLinkDetailsCell } from "@/lib/shared/components/detailsSection/ExternalLinkDetailsCell";
+import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
+import { ExternalLinkDetailsItem } from "@/lib/shared/components/detailsSection/items/ExternalLinkDetailsItem";
 import { BaseAddress } from "@/lib/shared/helpers/address";
 
 export interface CentralFilePerson {
@@ -39,8 +38,6 @@ export interface CentralFilePerson {
   readonly phoneNumbers?: string[];
   readonly contactAddress?: BaseAddress;
 }
-
-const fieldName = createFieldNameMapper<CentralFilePerson>();
 
 export interface CentralFilePersonDetailsProps {
   readonly person: CentralFilePerson;
@@ -65,65 +62,52 @@ export function CentralFilePersonDetails(props: CentralFilePersonDetailsProps) {
         {(isDefined(person.salutation) || isDefined(person.title)) && (
           <DetailsRow>
             {isDefined(person.salutation) && (
-              <DetailsCell
-                name={fieldName("salutation")}
+              <DetailsItem
                 label={PERSON_FIELD_NAME.salutation}
                 value={SALUTATION_VALUES[person.salutation]}
               />
             )}
-            <DetailsCell
-              name={fieldName("title")}
-              label={PERSON_FIELD_NAME.title}
-              value={person.title}
-            />
+            <DetailsItem label={PERSON_FIELD_NAME.title} value={person.title} />
           </DetailsRow>
         )}
-        <DetailsCell
-          name={fieldName("firstName")}
+        <DetailsItem
           label={PERSON_FIELD_NAME.firstName}
           value={person.firstName}
         />
-        <DetailsCell
-          name={fieldName("lastName")}
+        <DetailsItem
           label={PERSON_FIELD_NAME.lastName}
           value={person.lastName}
         />
         <DetailsRow>
-          <DetailsCell
-            name={fieldName("dateOfBirth")}
+          <DetailsItem
             label={PERSON_FIELD_NAME.dateOfBirth}
             value={formatDate(person.dateOfBirth)}
           />
           {props.showAge && (
-            <DetailsCell
-              name="currentAge"
+            <DetailsItem
               label="Alter"
               value={calculateAge(person.dateOfBirth)}
             />
           )}
           {isDefined(person.gender) && (
-            <DetailsCell
-              name={fieldName("gender")}
+            <DetailsItem
               label={PERSON_FIELD_NAME.gender}
               value={GENDER_VALUES[person.gender]}
             />
           )}
         </DetailsRow>
-        <DetailsCell
-          name={fieldName("nameAtBirth")}
+        <DetailsItem
           label={PERSON_FIELD_NAME.nameAtBirth}
           value={person.nameAtBirth}
         />
         {(person.placeOfBirth ?? person.countryOfBirth) && (
           <DetailsRow>
-            <DetailsCell
-              name={fieldName("placeOfBirth")}
+            <DetailsItem
               label={PERSON_FIELD_NAME.placeOfBirth}
               value={person.placeOfBirth}
             />
             {person.countryOfBirth && (
-              <DetailsCell
-                name={fieldName("countryOfBirth")}
+              <DetailsItem
                 label={PERSON_FIELD_NAME.countryOfBirth}
                 value={translateCountry(person.countryOfBirth)}
               />
@@ -140,18 +124,16 @@ export function CentralFilePersonDetails(props: CentralFilePersonDetailsProps) {
       {emailAddresses.length + phoneNumbers.length > 0 && (
         <DetailsColumn sx={props.columnSx}>
           {emailAddresses.map((email, index) => (
-            <ExternalLinkDetailsCell
+            <ExternalLinkDetailsItem
               key={`${email}.${index}`}
-              name={`emailAddress.${index}`}
               label={PERSON_FIELD_NAME.emailAddresses}
               value={email}
               href={(value) => `mailto:${value}`}
             />
           ))}
           {phoneNumbers.map((phoneNumber, index) => (
-            <DetailsCell
+            <DetailsItem
               key={`${phoneNumber}.${index}`}
-              name={`phoneNumber.${index}`}
               label={PERSON_FIELD_NAME.phoneNumbers}
               value={phoneNumber}
             />

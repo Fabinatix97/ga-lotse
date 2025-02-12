@@ -6,7 +6,7 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
-import { ApiObjectType } from "@eshg/employee-portal-api/inspection";
+import { ApiObjectType } from "@eshg/inspection-api";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 
 import { useGetObjectTypes } from "@/lib/businessModules/inspection/api/queries/objectTypes";

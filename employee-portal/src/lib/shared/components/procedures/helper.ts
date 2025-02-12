@@ -13,7 +13,7 @@ import {
 import {
   ApiManualProgressEntryType,
   ApiProgressEntryClass,
-} from "@eshg/employee-portal-api/businessProcedures";
+} from "@eshg/lib-procedures-api";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
 import { EnumFilterValue } from "@/lib/shared/components/filterSettings/models/EnumFilter";

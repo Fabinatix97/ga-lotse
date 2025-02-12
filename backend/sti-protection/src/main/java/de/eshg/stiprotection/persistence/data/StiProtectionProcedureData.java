@@ -57,4 +57,12 @@ public record StiProtectionProcedureData(StiProtectionProcedure procedure, Strin
   public WaitingRoom waitingRoom() {
     return procedure.getWaitingRoom();
   }
+
+  public String sampleBarCode() {
+    return procedure.getSampleBarCode();
+  }
+
+  public Instant appointmentStart() {
+    return procedure.getAppointmentStart();
+  }
 }

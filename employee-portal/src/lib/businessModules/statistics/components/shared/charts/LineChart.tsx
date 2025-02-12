@@ -5,10 +5,7 @@
 
 import { EChartsOption, SeriesOption } from "echarts";
 
-import {
-  AnalysisDiagramLineChart,
-  AnalysisLineDiagramConfiguration,
-} from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
+import { AnalysisDiagramLineChart } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
 import {
   ChartApi,
   EChart,
@@ -18,12 +15,11 @@ import {
   mapAxisTitleWithOptionalUnit,
 } from "@/lib/businessModules/statistics/components/shared/charts/dataHelper";
 
+import { NumericAxesConfiguration } from "./types";
+
 interface LineChartDiagramProps {
   diagramData: AnalysisDiagramLineChart["data"];
-  configuration: Pick<
-    AnalysisLineDiagramConfiguration,
-    "axisRange" | "xAttribute" | "yAttribute"
-  >;
+  configuration: NumericAxesConfiguration;
   eChartApi?: (eChartApi: ChartApi) => void;
 }
 

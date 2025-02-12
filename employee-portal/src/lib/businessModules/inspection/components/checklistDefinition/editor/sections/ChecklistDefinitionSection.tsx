@@ -8,7 +8,7 @@
 import {
   ApiCLSectionContext,
   ApiCLSectionContextElementsInner,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { DraggableProvidedDragHandleProps } from "@hello-pangea/dnd";
 import { Add } from "@mui/icons-material";

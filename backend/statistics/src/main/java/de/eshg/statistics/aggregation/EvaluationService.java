@@ -464,6 +464,10 @@ public class EvaluationService extends AbstractAggregationResultService {
 
     return EvaluationMapper.mapToApi(
         evaluation,
+        sortTableColumn.getValueType().equals(TableColumnValueType.PROCEDURE_REFERENCE)
+            ? null
+            : sortTableColumn,
+        getEvaluationRequest.sortDirection(),
         tableRowPage.get().toList(),
         tableRowPage.getTotalElements(),
         isTooMuchDataForExportFunction().apply(evaluation));
@@ -480,7 +484,13 @@ public class EvaluationService extends AbstractAggregationResultService {
       AttributeSelectionDto sortAttribute, Evaluation evaluation) {
     TableColumn sortTableColumn = AggregationResultUtil.getTableColumn(sortAttribute, evaluation);
     if (sortTableColumn == null) {
-      sortTableColumn = evaluation.getTableColumns().getFirst();
+      sortTableColumn =
+          evaluation.getTableColumns().stream()
+              .filter(
+                  tableColumn ->
+                      !tableColumn.getValueType().equals(TableColumnValueType.PROCEDURE_REFERENCE))
+              .findFirst()
+              .orElse(evaluation.getTableColumns().getFirst());
     }
     return sortTableColumn;
   }

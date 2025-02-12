@@ -10,7 +10,7 @@ import {
   ApiWebSearchEntriesResponse,
   ApiWebSearchEntry,
   ApiWebSearchQuery,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import AddIcon from "@mui/icons-material/Add";

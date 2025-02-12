@@ -64,5 +64,7 @@
   <include file="migrations/0054_make_appointment_block_users_non_nullable.xml"/>
   <include file="migrations/0055_add_cemetery_delete_at.xml"/>
   <include file="migrations/0056_add_previous_file_state_id_to_system_progress_entry.xml"/>
+  <include file="migrations/0057_add_auditlog_entry.xml"/>
+  <include file="migrations/0058_convert_duration_columns_to_interval.xml"/>
 
 </databaseChangeLog>

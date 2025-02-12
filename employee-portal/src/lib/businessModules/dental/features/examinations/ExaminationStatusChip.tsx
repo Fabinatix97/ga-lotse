@@ -11,6 +11,7 @@ import { EXAMINATION_STATUS } from "./translations";
 const examinationStatusColors: Record<ExaminationStatus, ChipProps["color"]> = {
   OPEN: "neutral",
   CLOSED: "success",
+  NOT_PRESENT: "danger",
 };
 
 interface ExaminationStatusChipProps {

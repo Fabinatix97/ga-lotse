@@ -39,6 +39,7 @@ public class AuditLogInternalSecurityConfiguration {
   @ConditionalOnTestHelperEnabled
   public AuthorizationCustomizer testHelperAuthorizationCustomizer() {
     return auth ->
-        auth.requestMatchers(HttpMethod.DELETE, AuditLogTestHelperApi.BASE_URL + "/**").permitAll();
+        auth.requestMatchers(HttpMethod.DELETE, AuditLogServiceTestHelperApi.BASE_URL + "/**")
+            .permitAll();
   }
 }

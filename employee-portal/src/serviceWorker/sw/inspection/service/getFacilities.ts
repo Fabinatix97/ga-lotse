@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiInspPendingFacility,
-  ApiInspection,
-} from "@eshg/employee-portal-api/inspection";
+import { ApiInspPendingFacility, ApiInspection } from "@eshg/inspection-api";
 
 import { getInspection } from "@/serviceWorker/sw/inspection/service/updateInspection";
 

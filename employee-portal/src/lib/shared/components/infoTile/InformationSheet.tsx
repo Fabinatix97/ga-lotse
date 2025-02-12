@@ -11,7 +11,11 @@ export function InformationSheet({
   sx,
   dataTestId,
   ...props
-}: PropsWithChildren<SheetProps & { dataTestId?: string }>) {
+}: PropsWithChildren<
+  SheetProps & {
+    dataTestId?: string;
+  }
+>) {
   return (
     <Sheet
       sx={{
@@ -24,7 +28,13 @@ export function InformationSheet({
       data-testid={dataTestId}
       {...props}
     >
-      <Stack gap={2} sx={{ flexGrow: 1, width: "100%" }}>
+      <Stack
+        gap={2}
+        sx={{
+          flexGrow: 1,
+          width: "100%",
+        }}
+      >
         {children}
       </Stack>
     </Sheet>

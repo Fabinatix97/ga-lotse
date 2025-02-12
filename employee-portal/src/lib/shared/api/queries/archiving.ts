@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { type QueryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
+import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import {
   ArchivingApi,
   GetArchivableProceduresRequest,
   GetRelevantArchivableProceduresRequest,
-} from "@eshg/employee-portal-api/businessProcedures";
-import { type QueryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+} from "@eshg/lib-procedures-api";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { mapArchivableProceduresResponse } from "@/lib/shared/components/archiving/api/models/archivableProcedure";

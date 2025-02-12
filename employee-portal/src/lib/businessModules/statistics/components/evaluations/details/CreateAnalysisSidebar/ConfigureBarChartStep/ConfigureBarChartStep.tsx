@@ -9,8 +9,14 @@ import { Stack } from "@mui/joy";
 import { isNonNullish } from "remeda";
 
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
+import {
+  ChartsSamplePreview,
+  barChartGroupedSampleData,
+  barChartSimpleSampleData,
+} from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/ChartsSamplePreview";
 import { ConfigureChartFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/createAnalysisFormModel";
 import { mapAttributeToAutocompleteSelectionOption } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/mapAttribute";
+import { BarChart } from "@/lib/businessModules/statistics/components/shared/charts/BarChart";
 import {
   groupingValueNames,
   isCategorical,
@@ -45,41 +51,62 @@ export function ConfigureBarChartStep({
   const scaling = buildEnumOptions(scalingValueNames);
 
   return (
-    <Stack gap={3}>
-      <Stack gap={2}>
-        <SingleAutocompleteField
-          options={autocompleteSelectOptions}
-          name={fieldName("primaryAttribute")}
-          placeholder="Bitte wählen"
-          label="Primäres Attribut"
-          required="Bitte wählen Sie ein Attribut aus."
+    <Stack gap={4}>
+      <Stack gap={3}>
+        <Stack gap={2}>
+          <SingleAutocompleteField
+            options={autocompleteSelectOptions}
+            name={fieldName("primaryAttribute")}
+            placeholder="Bitte wählen"
+            label="Primäres Attribut"
+            required="Bitte wählen Sie ein Attribut aus."
+          />
+          <SingleAutocompleteField
+            options={autocompleteSelectOptions}
+            name={fieldName("secondaryAttribute")}
+            placeholder="Optional"
+            label="Sekundäres Attribut"
+          />
+        </Stack>
+        <ToggleButtonGroupField
+          options={orientations}
+          name={fieldName("orientation")}
+          label="Ausrichtung"
         />
-        <SingleAutocompleteField
-          options={autocompleteSelectOptions}
-          name={fieldName("secondaryAttribute")}
-          placeholder="Optional"
-          label="Sekundäres Attribut"
-        />
+        {showGroupedConfigurations && (
+          <>
+            <ToggleButtonGroupField
+              options={grouping}
+              name={fieldName("grouping")}
+              label="Anordnung"
+            />
+            <ToggleButtonGroupField
+              options={scaling}
+              name={fieldName("scaling")}
+              label="Verhältnisse"
+            />
+          </>
+        )}
       </Stack>
-      <ToggleButtonGroupField
-        options={orientations}
-        name={fieldName("orientation")}
-        label="Ausrichtung"
+      <ChartsSamplePreview
+        chart={
+          showGroupedConfigurations ? (
+            <BarChart
+              key={"groupedBarChart"}
+              diagramData={barChartGroupedSampleData}
+              orientation={values.orientation}
+              grouping={values.grouping}
+              scaling={values.scaling}
+            />
+          ) : (
+            <BarChart
+              key={"simpleBarChart"}
+              diagramData={barChartSimpleSampleData}
+              orientation={values.orientation}
+            />
+          )
+        }
       />
-      {showGroupedConfigurations && (
-        <>
-          <ToggleButtonGroupField
-            options={grouping}
-            name={fieldName("grouping")}
-            label="Anordnung"
-          />
-          <ToggleButtonGroupField
-            options={scaling}
-            name={fieldName("scaling")}
-            label="Verhältnisse"
-          />
-        </>
-      )}
     </Stack>
   );
 }

@@ -7,7 +7,7 @@ import {
   ApiUpdateChecklistResponseToJSON,
   ApiUploadMediaFileRequest,
   ApiUploadMediaFileRequestFromJSON,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 
 import { API_INSPECTION_CHECKLISTS_FILE_PATH_PATTERN } from "@/serviceWorker/sw/config";
 import {

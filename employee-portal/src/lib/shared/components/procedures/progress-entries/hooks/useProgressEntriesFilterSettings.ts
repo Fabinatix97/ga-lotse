@@ -4,7 +4,7 @@
  */
 
 import { ApiUser } from "@eshg/base-api";
-import { ApiProgressEntryClassFromJSON } from "@eshg/employee-portal-api/businessProcedures";
+import { ApiProgressEntryClassFromJSON } from "@eshg/lib-procedures-api";
 import { Dispatch, SetStateAction, startTransition } from "react";
 
 import { EnumFilterDefinition } from "@/lib/shared/components/filterSettings/models/EnumFilter";

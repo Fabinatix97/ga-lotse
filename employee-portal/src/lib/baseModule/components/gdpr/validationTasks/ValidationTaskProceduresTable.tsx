@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import {
   ApiBusinessProcedureInclusionStatus,
   ApiBusinessProcedureWithInclusionStatus,
@@ -11,8 +12,7 @@ import {
   ApiProcedure,
   ApiProcedureStatus,
   GdprValidationTaskApiInterface,
-} from "@eshg/employee-portal-api/businessProcedures";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+} from "@eshg/lib-procedures-api";
 import IncludedIcon from "@mui/icons-material/CheckOutlined";
 import UndecidedIcon from "@mui/icons-material/ClearOutlined";
 import { Button, Chip, Typography } from "@mui/joy";

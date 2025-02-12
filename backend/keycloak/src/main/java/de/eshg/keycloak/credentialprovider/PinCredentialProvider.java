@@ -29,6 +29,8 @@ public class PinCredentialProvider
         CredentialInputUpdater,
         CredentialInputValidator {
 
+  private static final Pattern PIN_PATTERN = Pattern.compile("^\\d{6}$");
+
   protected final KeycloakSession session;
 
   public PinCredentialProvider(KeycloakSession session) {
@@ -85,10 +87,9 @@ public class PinCredentialProvider
   }
 
   private void validate(String pin) {
-    Pattern pattern = Pattern.compile("^\\d{6}$");
-    Matcher matcher = pattern.matcher(pin);
+    Matcher matcher = PIN_PATTERN.matcher(pin);
     if (!matcher.matches()) {
-      throw new ModelException("PIN does not match defined pattern", pattern.pattern());
+      throw new ModelException("PIN does not match defined pattern", PIN_PATTERN.pattern());
     }
   }
 

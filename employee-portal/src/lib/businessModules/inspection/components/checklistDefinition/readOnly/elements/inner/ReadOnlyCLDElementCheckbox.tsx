@@ -6,7 +6,7 @@
 import {
   ApiCLCheckboxContext,
   ApiCLMultiSelectContext,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 
 import { ReadOnlyCLDElementProps } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/elements/ReadOnlyCLDElement";
 import { ReadOnlyCLDElementMultiSelect } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/elements/inner/ReadOnlyCLDElementMultiSelect";

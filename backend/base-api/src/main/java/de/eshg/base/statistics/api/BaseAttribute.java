@@ -5,6 +5,7 @@
 
 package de.eshg.base.statistics.api;
 
+import de.eshg.lib.statistics.api.DataPrivacyCategory;
 import de.eshg.lib.statistics.api.ValueOptionInternal;
 import de.eshg.lib.statistics.api.ValueType;
 import jakarta.validation.Valid;
@@ -19,4 +20,5 @@ public record BaseAttribute(
     @NotNull ValueType valueType,
     String unit,
     @Size(min = 1) @Valid List<ValueOptionInternal> valueOptions,
-    @NotNull boolean mandatory) {}
+    @NotNull boolean mandatory,
+    @NotNull DataPrivacyCategory dataPrivacyCategory) {}

@@ -14,7 +14,7 @@ import {
   ApiCLSingleSelectContext,
   type ApiCLTextElementContext,
   ApiChecklistDefinitionVersion,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { ConfirmationDialogProps } from "@eshg/lib-portal/components/confirmationDialog/BaseConfirmationDialog";
 import { v4 as uuidv4 } from "uuid";
 

@@ -1421,18 +1421,7 @@
     },
     "/test-helper/archiving-job" : {
       "post" : {
-        "operationId" : "runArchivingJob",
-        "responses" : {
-          "200" : {
-            "description" : "OK"
-          }
-        },
-        "tags" : [ "TestHelper" ]
-      }
-    },
-    "/test-helper/audit-log-storage" : {
-      "delete" : {
-        "operationId" : "clearAuditLogStorageDirectory",
+        "operationId" : "runAuditLogArchivingJob",
         "responses" : {
           "200" : {
             "description" : "OK"
@@ -2342,11 +2331,14 @@
         }
       },
       "BaseDataSourceAttribute" : {
-        "required" : [ "code", "displayName", "name" ],
+        "required" : [ "code", "dataPrivacyCategory", "displayName", "name" ],
         "type" : "object",
         "properties" : {
           "code" : {
             "type" : "string"
+          },
+          "dataPrivacyCategory" : {
+            "$ref" : "#/components/schemas/DataPrivacyCategory"
           },
           "displayName" : {
             "type" : "string"
@@ -2484,6 +2476,9 @@
           },
           "code" : {
             "type" : "string"
+          },
+          "dataPrivacyCategory" : {
+            "$ref" : "#/components/schemas/DataPrivacyCategory"
           },
           "name" : {
             "type" : "string"
@@ -2675,6 +2670,10 @@
             "$ref" : "#/components/schemas/TrendLine"
           }
         }
+      },
+      "DataPrivacyCategory" : {
+        "type" : "string",
+        "enum" : [ "QUASI_IDENTIFYING", "SENSITIVE", "INSENSITIVE" ]
       },
       "DataRow" : {
         "required" : [ "values" ],
@@ -3409,7 +3408,7 @@
         }
       },
       "GetEvaluationResponse" : {
-        "required" : [ "dataRows", "evaluationInfo", "tableColumnHeaders", "totalNumberOfElements" ],
+        "required" : [ "dataRows", "evaluationInfo", "sortDirection", "tableColumnHeaders", "totalNumberOfElements" ],
         "type" : "object",
         "properties" : {
           "dataRows" : {
@@ -3420,6 +3419,12 @@
           },
           "evaluationInfo" : {
             "$ref" : "#/components/schemas/EvaluationInfo"
+          },
+          "sortAttribute" : {
+            "$ref" : "#/components/schemas/AttributeSelection"
+          },
+          "sortDirection" : {
+            "$ref" : "#/components/schemas/SortDirection"
           },
           "tableColumnHeaders" : {
             "type" : "array",
@@ -3851,6 +3856,12 @@
             },
             "grouping" : {
               "$ref" : "#/components/schemas/Grouping"
+            },
+            "maxBin" : {
+              "type" : "number"
+            },
+            "minBin" : {
+              "type" : "number"
             },
             "numberOfBins" : {
               "maximum" : 50,
@@ -4448,7 +4459,7 @@
       },
       "SortDirection" : {
         "type" : "string",
-        "default" : "DESC",
+        "default" : "ASC",
         "enum" : [ "ASC", "DESC" ]
       },
       "StatisticsFeature" : {
@@ -4492,6 +4503,9 @@
           },
           "businessModule" : {
             "type" : "string"
+          },
+          "dataPrivacyCategory" : {
+            "$ref" : "#/components/schemas/DataPrivacyCategory"
           },
           "dataSourceId" : {
             "type" : "string",

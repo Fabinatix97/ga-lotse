@@ -166,7 +166,7 @@ public class ChildController {
       @PathVariable("examinationId") UUID examinationId,
       @Valid @RequestBody UpdateExaminationRequest request) {
     Examination examination = examinationService.findExaminationForUpdate(examinationId);
-    examinationService.updateExamination(examination, request);
+    examinationService.updateExaminationAndFlush(examination, request);
     return ExaminationMapper.mapToDto(examination);
   }
 

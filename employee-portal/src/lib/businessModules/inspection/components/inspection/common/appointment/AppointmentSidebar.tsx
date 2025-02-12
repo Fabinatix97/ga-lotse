@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiInspectionAppointment } from "@eshg/employee-portal-api/inspection";
+import { ApiInspectionAppointment } from "@eshg/inspection-api";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import { Grid } from "@mui/joy";

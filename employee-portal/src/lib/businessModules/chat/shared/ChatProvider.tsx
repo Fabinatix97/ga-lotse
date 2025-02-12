@@ -6,7 +6,7 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
-import { ApiChatFeature } from "@eshg/employee-portal-api/chatManagement";
+import { ApiChatFeature } from "@eshg/chat-management-api";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { createContext, useContext, useMemo } from "react";
 import { doNothing, isNullish, omit } from "remeda";

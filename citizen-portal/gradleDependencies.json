@@ -1,9 +1,12 @@
 {
   "dependencies": [
     ":base-api",
-    ":citizen-portal-api",
     ":lib-portal",
+    ":lib-procedures-api",
     ":measles-protection-api",
+    ":medical-registry-api",
+    ":official-medical-service-api",
+    ":opendata-api",
     ":school-entry-api",
     ":travel-medicine-api"
   ]

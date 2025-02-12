@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Configuration, OpenDataApi } from "@eshg/employee-portal-api/opendata";
 import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
+import { Configuration, OpenDataApi } from "@eshg/opendata-api";
 
 function useConfiguration() {
   const configurationParameters = useApiConfiguration(

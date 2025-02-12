@@ -5,9 +5,9 @@
 
 "use client";
 
-import { ApiImportStatistics } from "@eshg/employee-portal-api/medicalRegistry";
 import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { ApiImportStatistics } from "@eshg/medical-registry-api";
 import {
   ErrorOutlineOutlined,
   FileDownloadOutlined,

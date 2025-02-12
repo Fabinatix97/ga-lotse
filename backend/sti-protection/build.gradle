@@ -22,6 +22,7 @@ dependencies {
     testImplementation testFixtures(project(':business-module-persistence-commons'))
     testImplementation testFixtures(project(':lib-document-generator'))
     testImplementation testFixtures(project(':lib-procedures'))
+    testImplementation testFixtures(project(':lib-auditlog'))
 }
 
 dockerCompose {

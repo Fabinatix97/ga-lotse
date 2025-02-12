@@ -11,7 +11,7 @@ import {
   ApiInspection,
   ApiInspectionType,
   ApiObjectType,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";

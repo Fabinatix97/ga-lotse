@@ -18,10 +18,13 @@ import de.eshg.lib.procedure.domain.model.TaskType;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import de.eshg.officialmedicalservice.concern.ConcernMapper;
 import de.eshg.officialmedicalservice.procedure.api.EmployeeOmsProcedureOverviewDto;
+import de.eshg.officialmedicalservice.procedure.api.MedicalOpinionStatusDto;
 import de.eshg.officialmedicalservice.procedure.api.PostEmployeeOmsProcedureRequest;
+import de.eshg.officialmedicalservice.procedure.persistence.entity.MedicalOpinionStatus;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsTask;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.Person;
+import de.eshg.officialmedicalservice.waitingroom.persistence.entity.WaitingRoom;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -48,6 +51,8 @@ public class OmsProcedureOverviewMapper {
 
     procedure.setProcedureType(ProcedureType.OFFICIAL_MEDICAL_SERVICE);
     procedure.updateProcedureStatus(ProcedureStatus.DRAFT, clock, auditLogger);
+    procedure.setMedicalOpinionStatus(MedicalOpinionStatus.IN_PROGRESS);
+    procedure.setWaitingRoom(new WaitingRoom());
 
     OmsTask omsTask = new OmsTask();
     if (currentUserId != null) {
@@ -94,6 +99,7 @@ public class OmsProcedureOverviewMapper {
     return new EmployeeOmsProcedureOverviewDto(
         procedure.getExternalId(),
         ProcedureMapper.toInterfaceType(procedure.getProcedureStatus()),
+        MedicalOpinionStatusDto.valueOf(procedure.getMedicalOpinionStatus().name()),
         firstName,
         lastName,
         dateOfBirth,

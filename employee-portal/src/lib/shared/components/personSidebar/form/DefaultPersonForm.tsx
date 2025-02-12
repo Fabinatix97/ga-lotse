@@ -20,7 +20,10 @@ import {
   TITLE_OPTIONS,
 } from "@eshg/lib-portal/components/formFields/constants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import {
+  validateDateOfBirth,
+  validateLength,
+} from "@eshg/lib-portal/helpers/validators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { Box, Divider, Grid, IconButton, Stack, Typography } from "@mui/joy";
@@ -134,6 +137,7 @@ export function DefaultPersonForm<TValues extends DefaultPersonFormValues>(
                     ? "Bitte ein Geburtsdatum angeben"
                     : undefined
                 }
+                validate={validateDateOfBirth}
               />
             </Grid>
             <Grid xxs>

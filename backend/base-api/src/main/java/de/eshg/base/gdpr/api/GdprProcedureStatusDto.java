@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "GdprProcedureStatus", description = "A list of statuses a GDPR procedure can have.")
 public enum GdprProcedureStatusDto {
   DRAFT,
-  OPEN,
   IN_PROGRESS,
   CLOSED,
   ABORTED;

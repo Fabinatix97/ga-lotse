@@ -4,6 +4,11 @@
  */
 
 import {
+  MonthAndYear,
+  mapMonthAndYear,
+} from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
+import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import {
   ApiCreateMedicalHistoryRequest,
   ApiExamination,
   ApiGetMedicalHistory200Response,
@@ -14,12 +19,7 @@ import {
   ApiSexWorkMedicalHistory,
   ApiSexWorkRiskContact,
   ApiStiProtectionProcedure,
-} from "@eshg/employee-portal-api/stiProtection";
-import {
-  MonthAndYear,
-  mapMonthAndYear,
-} from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+} from "@eshg/sti-protection-api";
 
 import {
   mapBoolToYesOrNo,

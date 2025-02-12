@@ -3,253 +3,40 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiLaboratoryTestExamination } from "@eshg/employee-portal-api/stiProtection";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import {
+  ApiLaboratoryTestExamination,
+  ApiTextTemplateContext,
+} from "@eshg/sti-protection-api";
 import { Box, Divider, Grid, Sheet, Stack, Typography } from "@mui/joy";
-import { Formik, FormikState } from "formik";
+import { Formik } from "formik";
 
-import { useUpsertLaboratoryTest } from "@/lib/businessModules/stiProtection/api/mutations/examination";
+import {
+  useUpsertLaboratoryTest,
+  useUpsertLaboratoryTestOptions,
+} from "@/lib/businessModules/stiProtection/api/mutations/examination";
+import { TextareaFieldWithTextTemplates } from "@/lib/businessModules/stiProtection/components/textTemplates/TextareaFieldWithTextTemplates";
 import { ExaminationStickyBottomButtonBar } from "@/lib/businessModules/stiProtection/features/procedures/examination/ExaminationStickyBottomButtonBar";
 import { ExaminationTabNavPanel } from "@/lib/businessModules/stiProtection/features/procedures/examination/ExaminationTabNavPanel";
-import {
-  guardValue,
-  mapOptionalString,
-} from "@/lib/businessModules/stiProtection/shared/helpers";
+import { useOnCancelForm } from "@/lib/businessModules/stiProtection/shared/helpers";
+import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 import { SidePanel } from "@/lib/shared/components/sidePanel/SidePanel";
 import { SidePanelTitle } from "@/lib/shared/components/sidePanel/SidePanelTitle";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 import {
   HepatitisLaboratoryTest,
-  HepatitisLaboratoryTestData,
-  LaboratoryTestData,
   LaboratoryTestSamples,
-  LaboratoryTestSamplesData,
   LaboratoryTestWithBooleanResult,
-  defaultHepatitisLaboratoryTestFormData,
-  defaultLaboratoryTestFormData,
-  defaultLaboratoryTestSamplesFormData,
-  mapApiHepatitisLaboratoryTestToFormData,
-  mapApiLaboratoryTestSamplesToFormData,
-  mapApiLaboratoryTestToFormData,
-  mapHepatitisLaboratoryTestFormDataToApi,
-  mapLaboratoryTestFormDataToApi,
-  mapLaboratoryTestSamplesFormDataToApi,
 } from "./LaboratoryTestTemplates";
-
-export interface LaboratoryTestExaminationData {
-  sampleBarcode?: string;
-  generalRemarks?: string;
-  testsConducted?: boolean;
-  testsPayed?: boolean;
-  //Requested Tests
-  hivTestRequested?: boolean;
-  syphilisTestRequested?: boolean;
-  hepATestRequested?: boolean;
-  hepBTestRequested?: boolean;
-  hepCTestRequested?: boolean;
-  chlamydiaTestRequested?: boolean;
-  gonorrheaTestRequested?: boolean;
-  mycoplasmaTestRequested?: boolean;
-  cancerScreeningTestRequested?: boolean;
-  hpvTestRequested?: boolean;
-  mpoxTestRequested?: boolean;
-  otherTestRequested?: boolean;
-  //Data of Tests
-  hivTestData: LaboratoryTestData | null;
-  syphilisTestData: LaboratoryTestData | null;
-  hadSyphilis?: boolean;
-  hepATestData: HepatitisLaboratoryTestData | null;
-  hepBTestData: HepatitisLaboratoryTestData | null;
-  hepCTestData: LaboratoryTestData | null;
-  chlamydiaTestData: LaboratoryTestSamplesData | null;
-  gonorrheaTestData: LaboratoryTestSamplesData | null;
-  mycoplasmaTestData: LaboratoryTestSamplesData | null;
-  cancerScreeningTestData: LaboratoryTestData | null;
-  hpvTestData: LaboratoryTestData | null;
-  mpoxTestData: LaboratoryTestData | null;
-  otherTestName?: string;
-  otherTestData: LaboratoryTestData | null;
-}
-
-function mapToFormValues(
-  responseData: ApiLaboratoryTestExamination,
-): LaboratoryTestExaminationData {
-  return {
-    sampleBarcode: responseData.sampleBarcode ?? "",
-    generalRemarks: responseData.generalRemarks ?? "",
-    testsConducted: responseData.testsConducted ?? false,
-    testsPayed: responseData.testsPayed ?? false,
-    //Requested Tests
-    hivTestRequested: responseData.hivTestRequested ?? false,
-    syphilisTestRequested: responseData.syphilisTestRequested ?? false,
-    hepATestRequested: responseData.hepATestRequested ?? false,
-    hepBTestRequested: responseData.hepBTestRequested ?? false,
-    hepCTestRequested: responseData.hepCTestRequested ?? false,
-    chlamydiaTestRequested: responseData.chlamydiaTestRequested ?? false,
-    gonorrheaTestRequested: responseData.gonorrheaTestRequested ?? false,
-    mycoplasmaTestRequested: responseData.mycoplasmaTestRequested ?? false,
-    cancerScreeningTestRequested:
-      responseData.cancerScreeningTestRequested ?? false,
-    hpvTestRequested: responseData.hpvTestRequested ?? false,
-    mpoxTestRequested: responseData.mpoxTestRequested ?? false,
-    otherTestRequested: responseData.otherTestRequested ?? false,
-    //Data of Tests
-    hivTestData: mapApiLaboratoryTestToFormData(responseData.hivTestData),
-    syphilisTestData: mapApiLaboratoryTestToFormData(
-      responseData.syphilisTestData,
-    ),
-    hadSyphilis: responseData.hadSyphilis ?? false,
-    hepATestData: mapApiHepatitisLaboratoryTestToFormData(
-      responseData.hepATestData,
-    ),
-    hepBTestData: mapApiHepatitisLaboratoryTestToFormData(
-      responseData.hepBTestData,
-    ),
-    hepCTestData: mapApiLaboratoryTestToFormData(responseData.hepCTestData),
-    chlamydiaTestData: mapApiLaboratoryTestSamplesToFormData(
-      responseData.chlamydiaTestSamples,
-    ),
-    gonorrheaTestData: mapApiLaboratoryTestSamplesToFormData(
-      responseData.gonorrheaTestSamples,
-    ),
-    mycoplasmaTestData: mapApiLaboratoryTestSamplesToFormData(
-      responseData.mycoplasmaTestSamples,
-    ),
-    cancerScreeningTestData: mapApiLaboratoryTestToFormData(
-      responseData.cancerScreeningTestData,
-    ),
-    hpvTestData: mapApiLaboratoryTestToFormData(responseData.hpvTestData),
-    mpoxTestData: mapApiLaboratoryTestToFormData(responseData.mpoxTestData),
-    otherTestName: responseData.otherTestRequested
-      ? (responseData.otherTestName ?? "")
-      : "",
-    otherTestData: mapApiLaboratoryTestToFormData(responseData.otherTestData),
-  };
-}
-
-function defaultLaboratoryTestExaminationFormValues(): LaboratoryTestExaminationData {
-  return {
-    sampleBarcode: "",
-    generalRemarks: "",
-    testsConducted: false,
-    testsPayed: false,
-    //Requested Tests
-    hivTestRequested: false,
-    syphilisTestRequested: false,
-    hepATestRequested: false,
-    hepBTestRequested: false,
-    hepCTestRequested: false,
-    chlamydiaTestRequested: false,
-    gonorrheaTestRequested: false,
-    mycoplasmaTestRequested: false,
-    cancerScreeningTestRequested: false,
-    hpvTestRequested: false,
-    mpoxTestRequested: false,
-    otherTestRequested: false,
-    //Data of Tests
-    hivTestData: defaultLaboratoryTestFormData,
-    syphilisTestData: defaultLaboratoryTestFormData,
-    hadSyphilis: false,
-    hepATestData: defaultHepatitisLaboratoryTestFormData,
-    hepBTestData: defaultHepatitisLaboratoryTestFormData,
-    hepCTestData: defaultLaboratoryTestFormData,
-    chlamydiaTestData: defaultLaboratoryTestSamplesFormData,
-    gonorrheaTestData: defaultLaboratoryTestSamplesFormData,
-    mycoplasmaTestData: defaultLaboratoryTestSamplesFormData,
-    cancerScreeningTestData: defaultLaboratoryTestFormData,
-    hpvTestData: defaultLaboratoryTestFormData,
-    mpoxTestData: defaultLaboratoryTestFormData,
-    otherTestName: "",
-    otherTestData: defaultLaboratoryTestFormData,
-  };
-}
-
-function mapFormValuesToApi(
-  formData: LaboratoryTestExaminationData,
-): ApiLaboratoryTestExamination {
-  return {
-    sampleBarcode: mapOptionalString(formData.sampleBarcode),
-    generalRemarks: mapOptionalString(formData.generalRemarks),
-    testsConducted: formData.testsConducted ?? false,
-    testsPayed: formData.testsPayed ?? false,
-    //Requested Tests
-    hivTestRequested: formData.hivTestRequested ?? false,
-    syphilisTestRequested: formData.syphilisTestRequested ?? false,
-    hepATestRequested: formData.hepATestRequested ?? false,
-    hepBTestRequested: formData.hepBTestRequested ?? false,
-    hepCTestRequested: formData.hepCTestRequested ?? false,
-    chlamydiaTestRequested: formData.chlamydiaTestRequested ?? false,
-    gonorrheaTestRequested: formData.gonorrheaTestRequested ?? false,
-    mycoplasmaTestRequested: formData.mycoplasmaTestRequested ?? false,
-    cancerScreeningTestRequested:
-      formData.cancerScreeningTestRequested ?? false,
-    hpvTestRequested: formData.hpvTestRequested ?? false,
-    mpoxTestRequested: formData.mpoxTestRequested ?? false,
-    otherTestRequested: formData.otherTestRequested ?? false,
-    //Data of Tests
-    hivTestData: guardValue(
-      formData.hivTestRequested,
-      mapLaboratoryTestFormDataToApi(formData.hivTestData),
-    ),
-    syphilisTestData: guardValue(
-      formData.syphilisTestRequested,
-      mapLaboratoryTestFormDataToApi(formData.syphilisTestData),
-    ),
-    hadSyphilis: guardValue(
-      formData.syphilisTestRequested,
-      formData.hadSyphilis,
-    ),
-    hepATestData: guardValue(
-      formData.hepATestRequested,
-      mapHepatitisLaboratoryTestFormDataToApi(formData.hepATestData),
-    ),
-    hepBTestData: guardValue(
-      formData.hepBTestRequested,
-      mapHepatitisLaboratoryTestFormDataToApi(formData.hepBTestData),
-    ),
-    hepCTestData: guardValue(
-      formData.hepCTestRequested,
-      mapLaboratoryTestFormDataToApi(formData.hepCTestData),
-    ),
-    chlamydiaTestSamples: guardValue(
-      formData.chlamydiaTestRequested,
-      mapLaboratoryTestSamplesFormDataToApi(formData.chlamydiaTestData),
-    ),
-    gonorrheaTestSamples: guardValue(
-      formData.gonorrheaTestRequested,
-      mapLaboratoryTestSamplesFormDataToApi(formData.gonorrheaTestData),
-    ),
-    mycoplasmaTestSamples: guardValue(
-      formData.mycoplasmaTestRequested,
-      mapLaboratoryTestSamplesFormDataToApi(formData.mycoplasmaTestData),
-    ),
-    cancerScreeningTestData: guardValue(
-      formData.cancerScreeningTestRequested,
-      mapLaboratoryTestFormDataToApi(formData.cancerScreeningTestData),
-    ),
-    hpvTestData: guardValue(
-      formData.hpvTestRequested,
-      mapLaboratoryTestFormDataToApi(formData.hpvTestData),
-    ),
-    mpoxTestData: guardValue(
-      formData.mpoxTestRequested,
-      mapLaboratoryTestFormDataToApi(formData.mpoxTestData),
-    ),
-    otherTestName: guardValue(
-      formData.otherTestRequested,
-      mapOptionalString(formData.otherTestName),
-    ),
-    otherTestData: guardValue(
-      formData.otherTestRequested,
-      mapLaboratoryTestFormDataToApi(formData.otherTestData),
-    ),
-  };
-}
+import {
+  LaboratoryTestExaminationData,
+  defaultLaboratoryTestExaminationFormValues,
+  mapFormValuesToApi,
+  mapToFormValues,
+} from "./helpers";
 
 interface LaboratoryTestExaminationProps {
   procedureId: string;
@@ -260,29 +47,15 @@ export function LaboratoryTestExamination(
   props: LaboratoryTestExaminationProps,
 ) {
   const { procedureId, laboratoryTestExamination: laboratoryTests } = props;
-  const upsertLaboratoryTests = useUpsertLaboratoryTest(procedureId);
+  const upsertLaboratoryTestOptions = useUpsertLaboratoryTestOptions({
+    procedureId,
+  });
+  const upsertLaboratoryTests = useUpsertLaboratoryTest({ procedureId });
+  const onCancel = useOnCancelForm<LaboratoryTestExaminationData>();
 
   function onSubmit(values: LaboratoryTestExaminationData) {
     return upsertLaboratoryTests.mutateAsync({
       laboratoryTests: mapFormValuesToApi(values),
-    });
-  }
-
-  const { openCancelDialog } = useConfirmationDialog();
-
-  function onCancel(
-    dirty: boolean,
-    reset: (
-      state?: Partial<FormikState<LaboratoryTestExaminationData>>,
-    ) => void,
-  ) {
-    if (!dirty) {
-      return;
-    }
-    openCancelDialog({
-      onConfirm: () => {
-        reset();
-      },
     });
   }
 
@@ -296,8 +69,17 @@ export function LaboratoryTestExamination(
       onSubmit={onSubmit}
       enableReinitialize
     >
-      {({ dirty, resetForm, isSubmitting }) => (
+      {({ resetForm, dirty, isSubmitting, values }) => (
         <FormPlus sx={{ height: "100%", overflow: "hidden" }}>
+          <ConfirmLeaveDirtyFormEffect
+            onSaveMutation={{
+              mutationOptions: upsertLaboratoryTestOptions,
+              variableSupplier: () => ({
+                procedureId,
+                laboratoryTests: mapFormValuesToApi(values),
+              }),
+            }}
+          />
           <Box
             sx={{
               pt: 3,
@@ -425,7 +207,7 @@ export function LaboratoryTestExamination(
           </Box>
           <ExaminationStickyBottomButtonBar
             isSubmitting={isSubmitting}
-            onClick={() => onCancel(dirty, resetForm)}
+            onClick={() => onCancel({ dirty, reset: resetForm })}
           />
         </FormPlus>
       )}
@@ -446,7 +228,11 @@ function ExaminationTabInfo() {
       >
         <Stack paddingTop={1}>
           <Typography>Allgemeine Bemerkung</Typography>
-          <TextareaField name="generalRemarks" minRows={4} />
+          <TextareaFieldWithTextTemplates
+            name="generalRemarks"
+            minRows={4}
+            context={ApiTextTemplateContext.LaboratoryTestsRemark}
+          />
         </Stack>
         <CheckboxField name="testsConducted" label={"Tests durchgeführt"} />
         <CheckboxField name="testsPayed" label={"Tests bezahlt"} />

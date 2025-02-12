@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiCLSectionContextElementsInner } from "@eshg/employee-portal-api/inspection";
+import { ApiCLSectionContextElementsInner } from "@eshg/inspection-api";
 import type { FC } from "react";
 
 import { ChecklistDefinitionElementCheckboxInner } from "@/lib/businessModules/inspection/components/checklistDefinition/editor/elements/inner/ChecklistDefinitionElementCheckboxInner";

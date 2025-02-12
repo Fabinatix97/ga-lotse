@@ -4,7 +4,7 @@
  */
 
 import { ApiUserRole } from "@eshg/base-api";
-import { ApiChecklistDefinitionVersion } from "@eshg/employee-portal-api/inspection";
+import { ApiChecklistDefinitionVersion } from "@eshg/inspection-api";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { CopyAllOutlined, InfoOutlined } from "@mui/icons-material";

@@ -5,12 +5,14 @@
 
 import { Input, InputProps } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
+import { FormikErrors } from "formik";
 import {
   ChangeEvent,
   FocusEvent,
   FocusEventHandler,
   HTMLInputTypeAttribute,
   ReactNode,
+  memo,
 } from "react";
 
 import { FieldProps } from "../../types/form";
@@ -46,35 +48,75 @@ export interface InputFieldProps
 }
 
 export function InputField(props: Readonly<InputFieldProps>) {
+  const field = useBaseField<string>(props);
+
+  return (
+    <MemoizedInputField
+      {...props}
+      fieldHelperText={field.helperText}
+      fieldRequired={field.required}
+      fieldError={field.error}
+      fieldInputValue={field.input.value}
+      fieldHelpersSetValue={field.helpers.setValue}
+      fieldInputOnBlur={field.input.onBlur}
+      fieldInputOnChange={field.input.onChange}
+    />
+  );
+}
+
+interface InnerInputFieldProps extends InputFieldProps {
+  fieldHelperText?: string;
+  fieldRequired: boolean;
+  fieldError: boolean;
+  fieldInputValue: string;
+  fieldHelpersSetValue: (
+    value: string,
+    shouldValidate?: boolean,
+  ) => Promise<void | FormikErrors<string>>;
+  fieldInputOnBlur: (event: FocusEvent<HTMLInputElement>) => void;
+  fieldInputOnChange: (event: ChangeEvent<HTMLInputElement>) => void;
+}
+
+const MemoizedInputField = memo(function InnerInputField(
+  props: Readonly<InnerInputFieldProps>,
+) {
   const FieldComponent = props.component ?? BaseField;
   const InputComponent = props.input ?? Input;
-  const field = useBaseField<string>(props);
   const disabled = useIsFormDisabled() || props.disabled;
+  const {
+    fieldHelperText,
+    fieldError,
+    fieldRequired,
+    fieldHelpersSetValue,
+    fieldInputValue,
+    fieldInputOnBlur,
+    fieldInputOnChange,
+  } = props;
 
   function handleChange(event: ChangeEvent<HTMLInputElement>): void {
-    field.input.onChange(event);
+    fieldInputOnChange(event);
     props.onChange?.(event.target.value);
   }
 
   async function handleBlur(event: FocusEvent<HTMLInputElement>) {
     if (!props.untrimmedInput) {
-      const value: string | undefined = field.input.value;
+      const value: string | undefined = fieldInputValue;
       const trimmedValue = value?.trim();
       if (value !== trimmedValue) {
-        await field.helpers.setValue(trimmedValue);
+        await fieldHelpersSetValue(trimmedValue);
         event.target.value = trimmedValue;
       }
     }
-    field.input.onBlur?.(event);
+    fieldInputOnBlur?.(event);
     props.onBlur?.(event);
   }
 
   return (
     <FieldComponent
       label={props.label}
-      helperText={field.helperText}
-      required={field.required}
-      error={field.error}
+      helperText={fieldHelperText}
+      required={fieldRequired}
+      error={fieldError}
       sx={props.sx}
       fieldDecorator={props.fieldDecorator}
       disabled={disabled}
@@ -82,7 +124,7 @@ export function InputField(props: Readonly<InputFieldProps>) {
       <InputComponent
         type={props.type}
         name={props.name}
-        value={field.input.value}
+        value={fieldInputValue}
         placeholder={props.placeholder}
         onChange={handleChange}
         onFocus={props.onFocus}
@@ -108,4 +150,4 @@ export function InputField(props: Readonly<InputFieldProps>) {
       />
     </FieldComponent>
   );
-}
+});

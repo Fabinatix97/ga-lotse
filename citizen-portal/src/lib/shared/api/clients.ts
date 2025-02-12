@@ -5,15 +5,15 @@
 
 import { Configuration, DepartmentApi, PublicConfigApi } from "@eshg/base-api";
 import {
+  ApiConfiguration,
+  useApiConfiguration,
+} from "@eshg/lib-portal/api/ApiProvider";
+import {
   ApiBusinessModule,
   Configuration as BusinessModuleConfiguration,
   ConfigurationParameters,
   GdprValidationTaskApi,
-} from "@eshg/citizen-portal-api/businessProcedures";
-import {
-  ApiConfiguration,
-  useApiConfiguration,
-} from "@eshg/lib-portal/api/ApiProvider";
+} from "@eshg/lib-procedures-api";
 
 export const BUSINESS_MODULE_URLS = {
   [ApiBusinessModule.SchoolEntry]: "PUBLIC_SCHOOL_ENTRY_BACKEND_URL",

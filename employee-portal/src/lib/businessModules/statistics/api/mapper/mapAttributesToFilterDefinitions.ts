@@ -13,6 +13,7 @@ import {
 import { EnumFilterDefinition } from "@/lib/shared/components/filterSettings/models/EnumFilter";
 import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
 import { NumberFilterDefinition } from "@/lib/shared/components/filterSettings/models/NumberFilter";
+import { TextFilterDefinition } from "@/lib/shared/components/filterSettings/models/TextFilter";
 
 export function mapAttributesToFilterDefinitions(
   attributes: FlatAttribute[],
@@ -44,6 +45,13 @@ export function mapAttributesToFilterDefinitions(
             maxValue: attribute.maxValue,
             unit: attribute.unit,
           } satisfies NumberFilterDefinition;
+        case "TextAttribute":
+          return {
+            type: "Text",
+            key: attribute.key,
+            name: attribute.name,
+            inAccordion: true,
+          } satisfies TextFilterDefinition;
       }
     })
     .filter(isNonNullish);

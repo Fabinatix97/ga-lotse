@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiProcedureType } from "@eshg/employee-portal-api/businessProcedures";
+import { ApiProcedureType } from "@eshg/lib-procedures-api";
 
 import {
   UseFetchInboxProcedure,

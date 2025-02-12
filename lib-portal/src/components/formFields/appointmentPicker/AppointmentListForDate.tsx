@@ -5,6 +5,7 @@
 
 import {
   Chip,
+  ChipProps,
   Divider,
   List,
   ListItem,
@@ -73,7 +74,14 @@ export function AppointmentListForDate<T extends Appointment>({
   onAppointmentSelected,
   isAppointmentEqual = (apt1, apt2) => apt1 === apt2,
   label,
-}: AppointmentListProps<T>) {
+  slotProps,
+  getLabel = (apt) => timeForm.format(apt.start),
+}: AppointmentListProps<T> & {
+  slotProps?: {
+    chip?: Omit<ChipProps, "variant" | "color">;
+  };
+  getLabel?: (appointment: T) => string;
+}) {
   const theme = useTheme();
   const labelId = useId();
   const hasAppointments = appointments.length > 0;
@@ -87,6 +95,8 @@ export function AppointmentListForDate<T extends Appointment>({
       return field.helpers.setValue(d);
     };
   }
+
+  const { sx: chipSx, ...otherChipProps } = slotProps?.chip ?? {};
 
   return (
     <RadioGroup>
@@ -118,7 +128,9 @@ export function AppointmentListForDate<T extends Appointment>({
                   minWidth: "56px",
                   textAlign: "center",
                   paddingX: 2,
+                  ...chipSx,
                 }}
+                {...otherChipProps}
               >
                 <Radio
                   disableIcon
@@ -146,7 +158,7 @@ export function AppointmentListForDate<T extends Appointment>({
                         fontWeight: theme.fontWeight.md,
                       }}
                     >
-                      {timeForm.format(apt.start)}
+                      {getLabel(apt)}
                     </Typography>
                   }
                 />

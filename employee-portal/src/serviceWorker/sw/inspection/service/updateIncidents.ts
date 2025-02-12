@@ -8,7 +8,7 @@ import {
   ApiGetInspectionIncidentsResponseToJSON,
   ApiInspectionIncident,
   ApiUpdateInspectionIncidentRequest,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { isDefined } from "remeda";
 
 import { getFromApiCache, writeToApiCache } from "@/serviceWorker/sw/cache";

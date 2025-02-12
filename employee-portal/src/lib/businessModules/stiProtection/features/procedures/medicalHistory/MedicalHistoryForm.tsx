@@ -5,15 +5,15 @@
 
 "use client";
 
-import {
-  ApiConcern,
-  ApiGetMedicalHistory200Response,
-  ApiStiProtectionProcedure,
-} from "@eshg/employee-portal-api/stiProtection";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import {
+  ApiConcern,
+  ApiGetMedicalHistory200Response,
+  ApiStiProtectionProcedure,
+} from "@eshg/sti-protection-api";
 import Print from "@mui/icons-material/Print";
 import { Button, Divider, Sheet, Typography, styled } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
@@ -108,7 +108,7 @@ export function MedicalHistoryForm({
     setOpenFile(true);
   }
 
-  function onSubmit(values: MedicalHistoryFormData) {
+  async function onSubmit(values: MedicalHistoryFormData) {
     return upsertMedicalHistory.mutateAsync(
       mapFormValuesToApi(stiProcedure, values),
     );
@@ -122,6 +122,7 @@ export function MedicalHistoryForm({
           : defaultMedicalHistoryFormValues()
       }
       onSubmit={onSubmit}
+      enableReinitialize
     >
       {({ isSubmitting, values }) => (
         <FormPlus>

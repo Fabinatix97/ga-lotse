@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiEmployeeOmsProcedureDetails } from "@eshg/employee-portal-api/officialMedicalService";
+import { ApiEmployeeOmsProcedureDetails } from "@eshg/official-medical-service-api";
 import { Button } from "@mui/joy";
 
 import { useCreateAppointmentSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/AppointmentSidebar";

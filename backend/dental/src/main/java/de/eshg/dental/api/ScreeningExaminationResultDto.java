@@ -12,15 +12,19 @@ import java.util.List;
 
 @Schema(name = ScreeningExaminationResultDto.SCHEMA_NAME)
 public record ScreeningExaminationResultDto(
-    @NotNull boolean fluorideVarnishApplied,
+    Boolean fluorideVarnishApplied,
     OralHygieneStatusDto oralHygieneStatus,
     @NotNull @Valid List<ToothDiagnosisDto> toothDiagnoses)
     implements ExaminationResultDto, IsFluorideVarnishApplicable {
 
   static final String SCHEMA_NAME = "ScreeningExaminationResult";
 
+  public ScreeningExaminationResultDto() {
+    this(null, null, List.of());
+  }
+
   public ScreeningExaminationResultDto(
-      boolean fluorideVarnishApplied, OralHygieneStatusDto oralHygieneStatus) {
+      Boolean fluorideVarnishApplied, OralHygieneStatusDto oralHygieneStatus) {
     this(fluorideVarnishApplied, oralHygieneStatus, List.of());
   }
 

@@ -6,7 +6,11 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
-import { TextSnippetOutlined, TimelineOutlined } from "@mui/icons-material";
+import {
+  DescriptionOutlined,
+  TextSnippetOutlined,
+  TimelineOutlined,
+} from "@mui/icons-material";
 import { Chip } from "@mui/joy";
 
 import { procedureStatusNames } from "@/lib/baseModule/api/procedures/enums";
@@ -55,6 +59,11 @@ function buildTabItems(id: string): TabNavigationItem[] {
       tabButtonName: "Vorgangsdaten",
       href: routes.procedures.byId(id).details,
       decorator: <TextSnippetOutlined />,
+    },
+    {
+      tabButtonName: "Dokumente",
+      href: routes.procedures.byId(id).documents,
+      decorator: <DescriptionOutlined />,
     },
     {
       tabButtonName: "Verlaufseinträge",

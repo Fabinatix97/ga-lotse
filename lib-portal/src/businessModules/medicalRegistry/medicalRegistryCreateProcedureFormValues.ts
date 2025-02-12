@@ -9,7 +9,7 @@ import {
   ApiEmploymentType,
   ApiProfessionalTitle,
   ApiTypeOfChange,
-} from "@eshg/employee-portal-api/medicalRegistry";
+} from "@eshg/medical-registry-api";
 
 import { NullableFieldValue, OptionalFieldValue } from "../../types/form";
 

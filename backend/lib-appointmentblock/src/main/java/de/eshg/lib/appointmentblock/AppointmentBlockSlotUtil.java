@@ -16,7 +16,6 @@ import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockGroup;
 import de.eshg.rest.service.error.BadRequestException;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -75,11 +74,9 @@ public class AppointmentBlockSlotUtil {
     Instant start = appointmentBlock.getAppointmentBlockStart();
     Instant end = appointmentBlock.getAppointmentBlockEnd();
     long sequentialSlotCount =
-        getNumberOfSequentialAppointmentSlots(
-            appointmentBlockGroup.getSlotDurationInMinutes(), start, end);
+        getNumberOfSequentialAppointmentSlots(appointmentBlockGroup.getSlotDuration(), start, end);
 
-    Duration examinationDuration =
-        Duration.of(appointmentBlockGroup.getSlotDurationInMinutes(), ChronoUnit.MINUTES);
+    Duration examinationDuration = appointmentBlockGroup.getSlotDuration();
     Instant slotStart = start;
     for (int i = 0; i < sequentialSlotCount; i++) {
       Instant slotEnd = slotStart.plus(examinationDuration);
@@ -194,22 +191,20 @@ public class AppointmentBlockSlotUtil {
 
   private long getNumberOfTotalAppointmentSlots(AppointmentBlock appointmentBlock) {
     return getNumberOfTotalAppointmentSlots(
-        appointmentBlock.getAppointmentBlockGroup().getSlotDurationInMinutes(),
+        appointmentBlock.getAppointmentBlockGroup().getSlotDuration(),
         appointmentBlock.getAppointmentBlockGroup().getParallelExaminations(),
         appointmentBlock.getAppointmentBlockStart(),
         appointmentBlock.getAppointmentBlockEnd());
   }
 
   private long getNumberOfTotalAppointmentSlots(
-      int slotDurationInMinutes, int parallelExaminations, Instant start, Instant end) {
-    long numberOfSequentialSlots =
-        getNumberOfSequentialAppointmentSlots(slotDurationInMinutes, start, end);
+      Duration slotDuration, int parallelExaminations, Instant start, Instant end) {
+    long numberOfSequentialSlots = getNumberOfSequentialAppointmentSlots(slotDuration, start, end);
     return numberOfSequentialSlots * parallelExaminations;
   }
 
   private long getNumberOfSequentialAppointmentSlots(
-      int slotDurationInMinutes, Instant start, Instant end) {
-    Duration examinationDuration = Duration.of(slotDurationInMinutes, ChronoUnit.MINUTES);
+      Duration examinationDuration, Instant start, Instant end) {
     Duration appointmentBlockDuration = Duration.between(start, end);
     return appointmentBlockDuration.dividedBy(examinationDuration);
   }

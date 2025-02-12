@@ -9,6 +9,7 @@ import { ExaminationResult } from "@eshg/dental/api/models/ExaminationResult";
 import { parseOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { Grid } from "@mui/joy";
 import { ReactNode } from "react";
+import { isDefined } from "remeda";
 
 import { PageGrid } from "@/lib/shared/components/page/PageGrid";
 
@@ -21,17 +22,21 @@ export interface ExaminationFormValues
 
 interface ExaminationFormLayoutProps {
   additionalInformation: ReactNode;
+  dentalExamination?: ReactNode;
   note: ReactNode;
 }
 
 export function ExaminationFormLayout(props: ExaminationFormLayoutProps) {
   return (
     <PageGrid>
-      <Grid xxs={12} md={4}>
+      <Grid xxs={12} md={3}>
         {props.additionalInformation}
       </Grid>
-      <Grid xxs={12} md={8}>
-        {props.note}
+      <Grid container xxs={12} md={9}>
+        {isDefined(props.dentalExamination) && (
+          <Grid xxs={12}>{props.dentalExamination}</Grid>
+        )}
+        <Grid xxs={12}>{props.note}</Grid>
       </Grid>
     </PageGrid>
   );

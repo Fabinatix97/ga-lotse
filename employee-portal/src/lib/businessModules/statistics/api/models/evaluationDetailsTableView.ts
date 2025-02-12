@@ -27,6 +27,8 @@ export interface EvaluationDetailsTableView {
   tableData: EvaluationDetailsTableRow[];
   procedureReferences: ProcedureReferences | undefined;
   totalNumberOfElements: number;
+  sortAttribute: ApiGetEvaluationResponse["sortAttribute"];
+  sortDirection: ApiGetEvaluationResponse["sortDirection"];
 }
 
 export function mapEvaluationToTableView(
@@ -47,5 +49,7 @@ export function mapEvaluationToTableView(
     tableData,
     procedureReferences: mapProcedureReferences({ tableData, attributes }),
     totalNumberOfElements: evaluation.totalNumberOfElements,
+    sortAttribute: evaluation.sortAttribute,
+    sortDirection: evaluation.sortDirection,
   };
 }

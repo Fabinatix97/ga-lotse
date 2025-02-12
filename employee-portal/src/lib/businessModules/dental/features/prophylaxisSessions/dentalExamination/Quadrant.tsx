@@ -1,0 +1,31 @@
+/**
+ * Copyright 2025 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Stack } from "@mui/joy";
+import { Property } from "csstype";
+import { ReactNode } from "react";
+
+import { useDentalExaminationStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
+import {
+  QuadrantNumber,
+  Tooth,
+} from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
+
+interface QuadrantProps {
+  quadrantNumber: QuadrantNumber;
+  children: (tooth: Tooth, index: number) => ReactNode;
+  gap?: Property.Gap;
+}
+
+export function Quadrant(props: QuadrantProps) {
+  const dentition = useDentalExaminationStore((state) => state.dentition);
+  return (
+    <Stack gap={props.gap ?? 1} direction="row">
+      {dentition[props.quadrantNumber].teeth.map((tooth, index) =>
+        props.children(tooth, index),
+      )}
+    </Stack>
+  );
+}

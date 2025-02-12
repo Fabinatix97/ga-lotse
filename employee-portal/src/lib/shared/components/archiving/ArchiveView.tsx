@@ -4,7 +4,7 @@
  */
 
 import { ApiUserRole } from "@eshg/base-api";
-import { ApiProcedureType } from "@eshg/employee-portal-api/businessProcedures";
+import { ApiProcedureType } from "@eshg/lib-procedures-api";
 
 import { UseBulkUpdateProceduresArchivingRelevance } from "@/lib/shared/api/mutations/archiving";
 import {

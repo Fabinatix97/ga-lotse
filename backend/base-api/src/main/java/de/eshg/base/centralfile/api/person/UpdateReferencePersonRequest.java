@@ -16,4 +16,8 @@ import jakarta.validation.constraints.NotNull;
         and the expected current version number.
         """)
 public record UpdateReferencePersonRequest(
-    @NotNull @Valid PersonDetailsDto personDetails, @NotNull long version) {}
+    @NotNull @Valid UpdatePersonRequest personDetails, @NotNull long version) {
+  public UpdateReferencePersonRequest(PersonDetails personDetails, long version) {
+    this(new UpdatePersonRequest(personDetails), version);
+  }
+}

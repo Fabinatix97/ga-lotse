@@ -14,4 +14,4 @@ import java.util.UUID;
 public record AppointmentTypeConfigDto(
     @NotNull UUID id,
     @NotNull AppointmentTypeDto appointmentTypeDto,
-    @NotNull @Min(0) int standardDurationInMinutes) {}
+    @NotNull @Min(1) long standardDurationInMinutes) {}

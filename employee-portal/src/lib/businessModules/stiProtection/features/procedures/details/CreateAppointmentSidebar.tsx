@@ -3,16 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   ApiAppointmentBookingType,
   ApiAppointmentType,
-  ApiConcern,
   ApiCreateAppointmentRequest,
   ApiStiProtectionProcedure,
   ApiUpdateAppointmentRequest,
-} from "@eshg/employee-portal-api/stiProtection";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { ApiAppointment } from "@eshg/measles-protection-api";
+} from "@eshg/sti-protection-api";
 import { differenceInMinutes } from "date-fns";
 import { Formik, FormikHelpers } from "formik";
 import { ReactNode, useMemo, useReducer } from "react";
@@ -21,7 +19,6 @@ import {
   useCreateAppointmentMutation,
   useEditAppointmentMutation,
 } from "@/lib/businessModules/stiProtection/api/mutations/procedures";
-import { AppointmentForm } from "@/lib/businessModules/stiProtection/features/procedures/addNewProcedure/AppointmentForm";
 import {
   AppointmentFieldSetProps,
   SummaryForm,
@@ -31,6 +28,11 @@ import {
   isProcedureOpen,
   optionalInt,
 } from "@/lib/businessModules/stiProtection/shared/helpers";
+import {
+  AppointmentForm,
+  CreateAppointmentForm,
+  initialValues,
+} from "@/lib/businessModules/stiProtection/shared/procedure/AppointmentForm";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
@@ -38,24 +40,6 @@ import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
-
-export interface CreateAppointmentForm {
-  appointmentType?: ApiAppointmentType | "" | null;
-  appointmentBookingType?: ApiAppointmentBookingType | "";
-  blockAppointment?: null | ApiAppointment;
-  concern?: ApiConcern | "RESULTS_REVIEW" | "";
-  customAppointmentDate: string;
-  customAppointmentDuration: string;
-}
-
-const initialValues: CreateAppointmentForm = {
-  appointmentType: null,
-  appointmentBookingType: "",
-  blockAppointment: null,
-  concern: "",
-  customAppointmentDate: "",
-  customAppointmentDuration: "",
-};
 
 interface CreateAppointmentSidebarProps {
   procedure: ApiStiProtectionProcedure;

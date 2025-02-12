@@ -16,6 +16,7 @@ import de.eshg.stiprotection.persistence.db.examination.LaboratoryTestSamplesDat
 import de.eshg.stiprotection.persistence.db.medicalhistory.Examination;
 import de.eshg.stiprotection.persistence.db.medicalhistory.MedicalHistory;
 import de.eshg.stiprotection.persistence.db.medicalhistory.SexWorkMedicalHistory;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -44,10 +45,21 @@ public class FollowUpProcedureService {
 
   private void transferDiagnosisData(
       StiProtectionProcedure procedure, StiProtectionProcedure followUpProcedure) {
+    Diagnosis previousDiagnosis = procedure.getDiagnosis();
+
     Diagnosis followUpDiagnosis =
-        DiagnosisMapper.toDatabaseType(DiagnosisMapper.toInterfaceType(procedure.getDiagnosis()));
+        DiagnosisMapper.toDatabaseType(
+            DiagnosisMapper.toInterfaceType(previousDiagnosis, List.of()));
+    followUpDiagnosis.setIcd10Codes(copyICD10Codes(previousDiagnosis));
     followUpDiagnosis.setResultsCommunicated(false);
     followUpProcedure.setDiagnosis(followUpDiagnosis);
+  }
+
+  private static List<String> copyICD10Codes(Diagnosis previousDiagnosis) {
+    if (previousDiagnosis == null) {
+      return List.of();
+    }
+    return List.copyOf(previousDiagnosis.getIcd10Codes());
   }
 
   private void transferMedicalHistoryData(

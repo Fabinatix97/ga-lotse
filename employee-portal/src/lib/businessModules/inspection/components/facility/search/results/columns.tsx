@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiWebSearchEntry } from "@eshg/employee-portal-api/inspection";
+import { ApiWebSearchEntry } from "@eshg/inspection-api";
 import { Add } from "@mui/icons-material";
 import { Checkbox, Chip, CircularProgress, Stack } from "@mui/joy";
 import { Cell, ColumnHelper, createColumnHelper } from "@tanstack/react-table";

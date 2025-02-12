@@ -6,6 +6,8 @@
 "use server";
 
 import { ApiUserRole } from "@eshg/base-api";
+import { QueryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
+import { SearchParams } from "@eshg/lib-portal/helpers/searchParams";
 import {
   ApiGetDetailedProcedureResponse,
   ApiGetProcedureApprovalRequestsResponse,
@@ -17,9 +19,7 @@ import {
   GetProgressEntriesRequest,
   ProcedureApi,
   ProgressEntryApi,
-} from "@eshg/employee-portal-api/businessProcedures";
-import { QueryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
-import { SearchParams } from "@eshg/lib-portal/helpers/searchParams";
+} from "@eshg/lib-procedures-api";
 
 import { UseFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 

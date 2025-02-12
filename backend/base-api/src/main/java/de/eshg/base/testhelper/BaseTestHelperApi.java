@@ -83,6 +83,9 @@ public interface BaseTestHelperApi extends TestHelperApi, LoginProvider {
   void disableBusinessModule(
       @PathVariable("businessModuleToDisable") BusinessModule businessModuleToDisable);
 
+  @PostExchange("/business-modules/reset")
+  void resetActivatedBusinessModules();
+
   @PostExchange("/setup-admin")
   void createSetupAdmin(@Valid @RequestBody CreateSetupAdminRequest request);
 
@@ -92,6 +95,9 @@ public interface BaseTestHelperApi extends TestHelperApi, LoginProvider {
   @GetExchange("/idp-user/{nameId}")
   CitizenUserDto getIdpUser(@PathVariable("nameId") String nameId);
 
-  @PostExchange("auditlog-notification-job")
+  @PostExchange("/auditlog-notification-job")
   void runAuditlogNotificationJob();
+
+  @PostExchange("/gdpr-cleanup-job")
+  void runGdprCleanupJob();
 }

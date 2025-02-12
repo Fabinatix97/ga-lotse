@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import {
   EmployeeOmsProcedureApi,
   GetAllEmployeeProceduresRequest,
-} from "@eshg/employee-portal-api/officialMedicalService";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+} from "@eshg/official-medical-service-api";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useEmployeeOmsProcedureApi } from "@/lib/businessModules/officialMedicalService/api/clients";
@@ -53,15 +53,6 @@ export function getProcedureHeaderQuery(
 
 export function useGetProcedureDetails(procedureId: string) {
   const employeeOmsProcedureApi = useEmployeeOmsProcedureApi();
-  return useSuspenseQuery(
-    getProcedureDetailsQuery(employeeOmsProcedureApi, procedureId),
-  );
-}
-
-export function getProcedureDetailsQuery(
-  employeeOmsProcedureApi: EmployeeOmsProcedureApi,
-  procedureId: string,
-) {
   return queryOptions({
     queryKey: employeeOmsProcedureApiQueryKey([
       "getEmployeeProcedureDetails",
@@ -69,5 +60,14 @@ export function getProcedureDetailsQuery(
     ]),
     queryFn: () =>
       employeeOmsProcedureApi.getEmployeeProcedureDetails(procedureId),
+  });
+}
+
+export function useGetAllDocuments(procedureId: string) {
+  const employeeOmsProcedureApi = useEmployeeOmsProcedureApi();
+  return queryOptions({
+    queryKey: employeeOmsProcedureApiQueryKey(["getAllDocuments", procedureId]),
+    queryFn: () => employeeOmsProcedureApi.getAllDocuments(procedureId),
+    select: (response) => response.documents,
   });
 }

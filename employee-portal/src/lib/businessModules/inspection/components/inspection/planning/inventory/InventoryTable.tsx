@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiInspectionInventory } from "@eshg/employee-portal-api/inspection";
+import { ApiInspectionInventory } from "@eshg/inspection-api";
 import { DeleteOutlined } from "@mui/icons-material";
 import { Chip, IconButton } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";

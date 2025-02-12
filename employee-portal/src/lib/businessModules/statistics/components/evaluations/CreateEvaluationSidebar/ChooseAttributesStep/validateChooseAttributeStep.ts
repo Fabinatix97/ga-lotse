@@ -12,7 +12,7 @@ export function validateChooseAttributeStep(
 ) {
   if (
     isNullish(model.selectedAttributeKeys) ||
-    (model.selectedAttributeKeys.length ?? 0) === 0
+    (model.selectedAttributeKeys?.size ?? 0) === 0
   ) {
     return {
       noAttribute: "Bitte Attribut wählen.",

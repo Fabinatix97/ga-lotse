@@ -67,6 +67,7 @@ public final class BaseUrls {
 
     public static final class Gdpr {
       public static final String DOWNLOADS = "/{id}/downloads";
+      public static final String DELETE_DOWNLOADS = "/{id}/delete-downloads";
       public static final String FILE_STATE_IDS = "/{id}/fileStateIds";
       public static final String BY_ID = "/{id}";
       public static final String DETAILS_PAGE = "/{id}/details-page";
@@ -162,6 +163,7 @@ public final class BaseUrls {
 
   public static final class StiProtection {
     public static final String PROCEDURE_CONTROLLER = "/sti-procedures";
+    public static final String CITIZEN_PUBLIC_CONTROLLER = "/citizen/public";
 
     private StiProtection() {}
   }

@@ -18,4 +18,5 @@ public record Attribute(
     String unit,
     @Size(min = 1) @Valid List<ValueOptionInternal> valueOptions,
     @NotBlank String category,
-    @NotNull boolean mandatory) {}
+    @NotNull boolean mandatory,
+    DataPrivacyCategory dataPrivacyCategory) {}

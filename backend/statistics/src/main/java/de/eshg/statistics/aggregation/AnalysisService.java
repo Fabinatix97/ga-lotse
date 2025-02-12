@@ -360,18 +360,36 @@ public class AnalysisService {
       }
     }
 
+    validateBinning(histogramChartConfiguration, name);
+  }
+
+  private static void validateBinning(
+      HistogramChartConfigurationDto histogramChartConfiguration, String name) {
     if (histogramChartConfiguration.binningMode().equals(BinningModeDto.MANUAL)
-        && histogramChartConfiguration.numberOfBins() == null) {
+        && (histogramChartConfiguration.numberOfBins() == null
+            || histogramChartConfiguration.minBin() == null
+            || histogramChartConfiguration.maxBin() == null)) {
       throw new BadRequestException(
-          "'%s': numberOfBins is required for binning mode '%s'"
+          "'%s': numberOfBins, minBin & maxBin is required for binning mode '%s'"
               .formatted(name, BinningModeDto.MANUAL.name()));
     }
 
     if (histogramChartConfiguration.binningMode().equals(BinningModeDto.AUTO)
-        && histogramChartConfiguration.numberOfBins() != null) {
+        && (histogramChartConfiguration.numberOfBins() != null
+            || histogramChartConfiguration.minBin() != null
+            || histogramChartConfiguration.maxBin() != null)) {
       throw new BadRequestException(
-          "'%s': numberOfBins must not be set for binning mode '%s'"
+          "'%s': numberOfBins, minBin & maxBin must not be set for binning mode '%s'"
               .formatted(name, BinningModeDto.AUTO.name()));
+    }
+
+    if (histogramChartConfiguration.binningMode().equals(BinningModeDto.MANUAL)) {
+      boolean maxIsNotGreaterThanMin =
+          histogramChartConfiguration.maxBin().compareTo(histogramChartConfiguration.minBin()) <= 0;
+      if (maxIsNotGreaterThanMin) {
+        throw new BadRequestException(
+            "'%s': value of maxBin must be greater than minBin".formatted(name));
+      }
     }
   }
 
@@ -393,20 +411,22 @@ public class AnalysisService {
     }
 
     int numberOfBins;
-    if (histogramChartConfiguration.binningMode().equals(BinningModeDto.MANUAL)) {
-      numberOfBins = histogramChartConfiguration.numberOfBins();
-    } else {
-      numberOfBins = Math.clamp((int) Math.ceil(Math.sqrt(numberOfDataPoints)), 2, 50);
-    }
-
     BigDecimal minimum;
     BigDecimal maximum;
-    if (tableColumnPrimary.getValueType().equals(TableColumnValueType.DECIMAL)) {
-      minimum = tableColumnPrimary.getMinMaxNullUnknownValues().getMinDecimal();
-      maximum = tableColumnPrimary.getMinMaxNullUnknownValues().getMaxDecimal();
+    if (histogramChartConfiguration.binningMode().equals(BinningModeDto.MANUAL)) {
+      numberOfBins = histogramChartConfiguration.numberOfBins();
+      maximum = histogramChartConfiguration.maxBin();
+      minimum = histogramChartConfiguration.minBin();
     } else {
-      minimum = new BigDecimal(tableColumnPrimary.getMinMaxNullUnknownValues().getMinInteger());
-      maximum = new BigDecimal(tableColumnPrimary.getMinMaxNullUnknownValues().getMaxInteger());
+      numberOfBins = Math.clamp((int) Math.ceil(Math.sqrt(numberOfDataPoints)), 2, 50);
+
+      if (tableColumnPrimary.getValueType().equals(TableColumnValueType.DECIMAL)) {
+        minimum = tableColumnPrimary.getMinMaxNullUnknownValues().getMinDecimal();
+        maximum = tableColumnPrimary.getMinMaxNullUnknownValues().getMaxDecimal();
+      } else {
+        minimum = new BigDecimal(tableColumnPrimary.getMinMaxNullUnknownValues().getMinInteger());
+        maximum = new BigDecimal(tableColumnPrimary.getMinMaxNullUnknownValues().getMaxInteger());
+      }
     }
 
     BigDecimal binWidth = calculateBinWidth(maximum, minimum, numberOfBins);

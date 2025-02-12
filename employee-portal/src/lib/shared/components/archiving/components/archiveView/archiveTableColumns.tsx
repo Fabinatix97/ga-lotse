@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiGetArchivableProceduresSortBy } from "@eshg/employee-portal-api/businessProcedures";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { ApiGetArchivableProceduresSortBy } from "@eshg/lib-procedures-api";
 import { createColumnHelper } from "@tanstack/react-table";
 
 import { ArchivableProcedure } from "@/lib/shared/components/archiving/api/models/archivableProcedure";

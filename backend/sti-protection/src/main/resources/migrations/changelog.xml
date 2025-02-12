@@ -52,5 +52,9 @@
   <include file="migrations/0042_add_previous_file_state_id_to_system_progress_entry.xml"/>
   <include file="migrations/0043_add_text_templates.xml"/>
   <include file="migrations/0044_add_follow_up_flag.xml"/>
+  <include file="migrations/0045_add_sample_bar_code.xml"/>
+  <include file="migrations/0046_add_appointment_start.xml"/>
+  <include file="migrations/0047_add_auditlog_entry.xml"/>
+  <include file="migrations/0048_convert_duration_columns_to_interval.xml"/>
 
 </databaseChangeLog>

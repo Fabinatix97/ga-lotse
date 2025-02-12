@@ -473,14 +473,18 @@ public class StatisticsPopulator {
     ScalingDto scaling = null;
     GroupingDto grouping = null;
     BinningModeDto binning = BinningModeDto.AUTO;
-    Integer numberBins = null;
+    Integer numberOfBins = null;
+    BigDecimal minBin = null;
+    BigDecimal maxBin = null;
     if (secondAttribute != null) {
       name = "histo with second";
       secondDto = getAttributeSelectionDto(secondAttribute, businessModule, dataSourceId);
       scaling = ScalingDto.RELATIVE;
       grouping = GroupingDto.STACKED;
       binning = BinningModeDto.MANUAL;
-      numberBins = 4;
+      numberOfBins = 4;
+      minBin = BigDecimal.ONE;
+      maxBin = BigDecimal.TEN;
     }
     AnalysisDto analysisDto =
         analysisController.addAnalysis(
@@ -493,7 +497,9 @@ public class StatisticsPopulator {
                     scaling,
                     grouping,
                     binning,
-                    numberBins)));
+                    numberOfBins,
+                    minBin,
+                    maxBin)));
     addDiagramWithoutFilters(analysisDto);
   }
 

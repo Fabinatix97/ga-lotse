@@ -16,7 +16,7 @@ import java.util.Optional;
 
 public record GetEvaluationRequest(
     @Valid AttributeSelectionDto sortAttribute,
-    @Schema(defaultValue = "DESC") SortDirection sortDirection,
+    @Schema(defaultValue = "ASC") SortDirection sortDirection,
     @Min(0) @Schema(defaultValue = "0") Integer page,
     @Min(1) @Schema(defaultValue = "25") Integer pageSize,
     @Valid List<TableColumnFilterParameter> filters) {
@@ -28,7 +28,7 @@ public record GetEvaluationRequest(
       Integer pageSize,
       List<TableColumnFilterParameter> filters) {
     this.sortAttribute = sortAttribute;
-    this.sortDirection = Optional.ofNullable(sortDirection).orElse(SortDirection.DESC);
+    this.sortDirection = Optional.ofNullable(sortDirection).orElse(SortDirection.ASC);
     this.page = Optional.ofNullable(page).orElse(0);
     this.pageSize = Optional.ofNullable(pageSize).orElse(25);
     this.filters = filters;

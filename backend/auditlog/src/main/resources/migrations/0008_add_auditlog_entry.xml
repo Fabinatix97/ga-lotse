@@ -1,0 +1,54 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1737664353337-1">
+    <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="50"
+      maxValue="9223372036854775807" minValue="1" sequenceName="audit_log_entry_seq"
+      startValue="1"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1737664353337-2">
+    <createTable tableName="audit_log_entry">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_audit_log_entry"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="category" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="function" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1737664353337-3">
+    <createTable tableName="audit_log_entry_additional_data">
+      <column name="audit_log_entry_id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_audit_log_entry_additional_data"/>
+      </column>
+      <column name="additional_data" type="TEXT"/>
+      <column name="additional_data_key" type="TEXT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_audit_log_entry_additional_data"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1737664353337-4">
+    <addForeignKeyConstraint constraintName="fk_audit_log_entry_additional_data_audit_log_entry"
+      baseTableName="audit_log_entry_additional_data" baseColumnNames="audit_log_entry_id"
+      referencedTableName="audit_log_entry" referencedColumnNames="id"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

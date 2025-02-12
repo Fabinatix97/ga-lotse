@@ -5,8 +5,8 @@
 
 "use client";
 
-import { ApiProcedureType } from "@eshg/employee-portal-api/businessProcedures";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { ApiProcedureType } from "@eshg/lib-procedures-api";
 import { Stack } from "@mui/joy";
 
 import {

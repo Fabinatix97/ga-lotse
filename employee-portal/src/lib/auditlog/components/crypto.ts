@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiGetEncryptedSymmetricKeyResponse } from "@eshg/auditlog-api";
 import { ApiEmployeeUserKeys } from "@eshg/base-api";
-import { ApiGetEncryptedSymmetricKeyResponse } from "@eshg/employee-portal-api/auditlog";
 import { AeadId, CipherSuite, KdfId, KemId } from "hpke-js";
 
 const suite = new CipherSuite({

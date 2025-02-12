@@ -15,5 +15,6 @@
   <include file="migrations/0005_add_cemetery_delete_at.xml"/>
   <include file="migrations/0006_add_countrycodes.xml"/>
   <include file="migrations/0007_add_previous_file_state_id_to_system_progress_entry.xml"/>
+  <include file="migrations/0008_add_auditlog_entry.xml"/>
 
 </databaseChangeLog>

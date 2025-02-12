@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { SALUTATION_VALUES } from "@eshg/lib-portal/components/formFields/constants";
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import {
   ApiGetInboxProcedureResponse,
   ApiInboxProcedureAddress,
   ApiInboxProcedureStatus,
-} from "@eshg/employee-portal-api/businessProcedures";
-import { SALUTATION_VALUES } from "@eshg/lib-portal/components/formFields/constants";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+} from "@eshg/lib-procedures-api";
 import { Button, Divider, Stack, Typography } from "@mui/joy";
 import { ReactElement, useState } from "react";
 

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import {
   ApiGender,
   ApiPartnerRiskFactors,
@@ -12,8 +13,7 @@ import {
   ApiSexWorkLocation,
   ApiSexualOrientation,
   ApiVaccination,
-} from "@eshg/employee-portal-api/stiProtection";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+} from "@eshg/sti-protection-api";
 
 import {
   sexualContactNames as sexualContactGenderNames,

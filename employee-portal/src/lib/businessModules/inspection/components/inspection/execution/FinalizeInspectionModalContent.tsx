@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiInspectionPhase } from "@eshg/employee-portal-api/inspection";
+import { ApiInspectionPhase } from "@eshg/inspection-api";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import {

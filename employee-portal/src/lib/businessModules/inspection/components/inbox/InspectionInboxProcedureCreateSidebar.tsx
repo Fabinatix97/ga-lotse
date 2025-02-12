@@ -8,7 +8,7 @@ import {
   ApiGetReferenceFacilityResponse,
   ApiInboxProcedure,
   ApiProcedureStatus,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { assertNever } from "@eshg/lib-portal/helpers/assertions";
 import { useRouter } from "next/navigation";

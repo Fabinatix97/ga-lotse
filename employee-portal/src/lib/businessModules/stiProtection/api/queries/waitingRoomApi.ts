@@ -6,7 +6,7 @@
 import {
   ApiGetWaitingRoomProceduresResponse,
   GetWaitingRoomProceduresRequest,
-} from "@eshg/employee-portal-api/stiProtection";
+} from "@eshg/sti-protection-api";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useWaitingRoomApi } from "@/lib/businessModules/stiProtection/api/clients";

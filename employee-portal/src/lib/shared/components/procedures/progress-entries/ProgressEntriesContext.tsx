@@ -5,8 +5,8 @@
 
 "use client";
 
-import { ApiProcedureStatus } from "@eshg/employee-portal-api/businessProcedures";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { ApiProcedureStatus } from "@eshg/lib-procedures-api";
 import { createContext, useContext, useState } from "react";
 
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";

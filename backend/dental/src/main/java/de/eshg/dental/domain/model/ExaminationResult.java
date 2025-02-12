@@ -5,7 +5,7 @@
 
 package de.eshg.dental.domain.model;
 
-import de.eshg.domain.model.BaseEntity;
+import de.eshg.domain.model.SequencedBaseEntity;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.DiscriminatorColumn;
@@ -19,7 +19,7 @@ import jakarta.persistence.OneToOne;
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 @DataSensitivity(SensitivityLevel.SENSITIVE)
-public abstract class ExaminationResult extends BaseEntity {
+public abstract class ExaminationResult extends SequencedBaseEntity {
 
   @OneToOne(optional = false, mappedBy = Examination_.RESULT)
   private Examination examination;

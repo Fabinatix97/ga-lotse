@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiEditorElementQA } from "@eshg/employee-portal-api/libEditor";
+import { ApiEditorElementQA } from "@eshg/lib-editor-api";
 import {
   Checkbox,
   FormControl,

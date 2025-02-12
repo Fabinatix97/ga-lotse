@@ -10,8 +10,8 @@ import {
   instanceOfApiGdprFacility,
   instanceOfApiGdprPerson,
 } from "@eshg/base-api";
-import { ApiGdprValidationTaskIdentificationData } from "@eshg/employee-portal-api/businessProcedures";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import { ApiGdprValidationTaskIdentificationData } from "@eshg/lib-procedures-api";
 
 export function isGdprPerson(
   identificationData: ApiGdprIdentificationData,

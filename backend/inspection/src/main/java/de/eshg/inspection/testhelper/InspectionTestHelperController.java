@@ -5,7 +5,7 @@
 
 package de.eshg.inspection.testhelper;
 
-import de.eshg.auditlog.SharedAuditLogTestHelperApi;
+import de.eshg.auditlog.AuditLogClientTestHelperApi;
 import de.eshg.inspection.checklist.persistence.ChecklistRepository;
 import de.eshg.inspection.feature.InspectionFeature;
 import de.eshg.inspection.feature.InspectionFeatureToggle;
@@ -13,7 +13,6 @@ import de.eshg.lib.auditlog.AuditLogTestHelperService;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperController;
 import de.eshg.testhelper.environment.EnvironmentConfig;
-import java.io.IOException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +22,7 @@ import org.springframework.web.service.annotation.PostExchange;
 @RestController
 @ConditionalOnTestHelperEnabled
 public class InspectionTestHelperController extends TestHelperController
-    implements SharedAuditLogTestHelperApi {
+    implements AuditLogClientTestHelperApi {
 
   private final AuditLogTestHelperService auditLogTestHelperService;
   private final InspectionFeatureToggle inspectionFeatureToggle;
@@ -42,13 +41,8 @@ public class InspectionTestHelperController extends TestHelperController
   }
 
   @Override
-  public void clearAuditLogStorageDirectory() throws IOException {
-    auditLogTestHelperService.clearAuditLogStorageDirectory();
-  }
-
-  @Override
-  public void runArchivingJob() {
-    auditLogTestHelperService.runArchivingJob();
+  public void runAuditLogArchivingJob() {
+    auditLogTestHelperService.runAuditLogArchivingJob();
   }
 
   @PostExchange("/enabled-new-features/{featureToEnable}")

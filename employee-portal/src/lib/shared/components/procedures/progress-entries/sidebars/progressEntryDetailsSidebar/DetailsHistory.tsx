@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiManualProgressEntry } from "@eshg/employee-portal-api/businessProcedures";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { ApiManualProgressEntry } from "@eshg/lib-procedures-api";
 import {
   Button,
   Chip,

@@ -23,6 +23,7 @@ import {
 import { DefaultPersonFormValues } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
 
 export function normalizeListInputs(input: string[] | undefined): string[] {
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   return input === undefined || input.length === 0 ? [""] : input;
 }
 

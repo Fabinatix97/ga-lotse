@@ -6,10 +6,13 @@
 import { ApiExaminationResult } from "@eshg/dental-api";
 import { isDefined } from "remeda";
 
-export type ExaminationStatus = "OPEN" | "CLOSED";
+export type ExaminationStatus = "OPEN" | "CLOSED" | "NOT_PRESENT";
 
 export function mapToExaminationStatus(
   examinationResult: ApiExaminationResult | undefined,
 ): ExaminationStatus {
+  if (examinationResult?.type === "AbsenceExaminationResult") {
+    return "NOT_PRESENT";
+  }
   return isDefined(examinationResult) ? "CLOSED" : "OPEN";
 }

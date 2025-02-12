@@ -5,12 +5,14 @@
 
 package de.eshg.security.auth;
 
+import de.eshg.security.auth.login.AccessCodeLoginType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +39,8 @@ public record AuthProperties(
     }
   }
 
-  public List<String> getAccessCodeUrlPatterns() {
-    return auth().accessCodeUrlPatterns();
+  public Map<AccessCodeLoginType, List<String>> getAccessCodeLoginProperties() {
+    return Optional.ofNullable(auth().accessCodeUrlPatterns()).orElseGet(Map::of);
   }
 
   public List<String> getMukUrlPatterns() {
@@ -55,7 +57,7 @@ public record AuthProperties(
 
   record Auth(
       List<String> languagePathPrefixes,
-      List<String> accessCodeUrlPatterns,
+      Map<AccessCodeLoginType, @NotEmpty List<String>> accessCodeUrlPatterns,
       List<String> mukUrlPatterns,
       List<String> bundIdUrlPatterns,
       @Valid UserAgentFilter userAgentFilter) {}

@@ -22,7 +22,6 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -88,9 +87,8 @@ public class AppointmentBlockValidator {
         throw new BadRequestException(
             "AppointmentBlockGroup end time of day must be after start time of day.");
       }
-      Duration examinationDuration =
-          Duration.of(typeConfig.getStandardDurationInMinutes(), ChronoUnit.MINUTES);
-      Duration appointmentBlockLength = Duration.between(startTime, endTime);
+      Duration examinationDuration = typeConfig.getStandardDuration();
+      Duration appointmentBlockLength = Duration.between(start, end);
       if (!DurationUtil.isDivisible(appointmentBlockLength, examinationDuration)) {
         String errorMessage =
             "Appointment block length %s is not a multiple of examination duration %s."

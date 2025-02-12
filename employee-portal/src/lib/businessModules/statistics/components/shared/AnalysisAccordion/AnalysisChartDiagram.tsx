@@ -10,7 +10,7 @@ import {
   Edit,
   OpenInFullOutlined,
 } from "@mui/icons-material";
-import { IconButton, Stack, Typography } from "@mui/joy";
+import { IconButton, Stack, Tooltip, Typography } from "@mui/joy";
 import { useState } from "react";
 import { isObjectType } from "remeda";
 
@@ -173,6 +173,7 @@ export function AnalysisChartDiagram(props: {
       </BaseModal>
       <AnalysisDiagramBox
         description={props.analysisDiagram.description}
+        onShowMoreDescription={() => setOpenFullScreenChart(true)}
         filterLabels={props.analysisDiagram.filterLabels}
         evaluatedDataAmount={props.analysisDiagram.evaluatedDataAmount}
         evaluatedDataAmountTotal={props.evaluatedDataAmountTotal}
@@ -184,9 +185,21 @@ export function AnalysisChartDiagram(props: {
             alignItems="center"
             minWidth={0}
           >
-            <Typography level="title-md" data-testid="analysis-diagram-title">
-              {props.analysisDiagram.title}
-            </Typography>
+            <Tooltip title={props.analysisDiagram.title}>
+              <Typography
+                sx={{
+                  height: "1.5rem",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  paddingRight: "1rem",
+                }}
+                level="title-md"
+                data-testid="analysis-diagram-title"
+              >
+                {props.analysisDiagram.title}
+              </Typography>
+            </Tooltip>
             <Stack direction="row" gap={1}>
               <IconButton
                 aria-label="Im Vollbildmodus anzeigen"

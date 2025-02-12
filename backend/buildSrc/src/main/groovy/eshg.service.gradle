@@ -76,7 +76,7 @@ bootJar {
 ext {
     listenPort = 8080
     additionalAptPackages = null
-    jreDockerImage = 'eclipse-temurin:21.0.5_11-jre-jammy@sha256:5d7781c6aabbc2f8673ec1899f2fdf6851f20c94dcdefeb8a1ca1e37e9c13e92'
+    jreDockerImage = 'eclipse-temurin:21.0.6_7-jre-noble@sha256:7cad9a0229472d691deae12aaa342dfc1541251a9bfc4557f65cdf0b81817ddd'
 }
 
 tasks.register('createDockerfile', Dockerfile) {
@@ -97,7 +97,7 @@ tasks.register('createDockerfile', Dockerfile) {
     def userName = 'eshg'
 
     runCommand("addgroup --system ${groupName}")
-    runCommand("adduser --shell /usr/sbin/nologin --system --home /app --ingroup ${groupName} --uid 1000 ${userName}")
+    runCommand("adduser --shell /usr/sbin/nologin --system --home /app --ingroup ${groupName} ${userName}")
     if (additionalAptPackages != null) {
         runCommand("DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y ${additionalAptPackages} && rm -rf /var/lib/apt/lists/*")
     }

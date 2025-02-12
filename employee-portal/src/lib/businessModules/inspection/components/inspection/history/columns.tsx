@@ -6,7 +6,7 @@
 import {
   type ApiInspPendingFacility,
   ApiProcedureStatus,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { OpenInNewOutlined } from "@mui/icons-material";
 import { Chip, IconButton, Stack, Typography } from "@mui/joy";

@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiConsultation } from "@eshg/employee-portal-api/stiProtection";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
+import { ApiConsultation } from "@eshg/sti-protection-api";
 
 import {
   mapBoolToYesOrNo,

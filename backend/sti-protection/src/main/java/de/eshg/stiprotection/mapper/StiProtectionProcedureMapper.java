@@ -34,7 +34,8 @@ public class StiProtectionProcedureMapper {
             procedureData.appointment(), procedureData.userDefinedAppointment()),
         AppointmentHistoryMapper.toInterfaceType(procedureData.appointmentHistory()),
         WaitingRoomMapper.toInterfaceType(procedureData.waitingRoom()),
-        LabStatusMapper.toInterfaceData(procedureData.procedure().getLabStatus()));
+        LabStatusMapper.toInterfaceData(procedureData.procedure().getLabStatus()),
+        procedureData.sampleBarCode());
   }
 
   public static StiProtectionProcedureOverviewDto toOverviewType(
@@ -50,6 +51,8 @@ public class StiProtectionProcedureMapper {
         AppointmentMapper.toInterfaceType(
             procedureData.appointment(), procedureData.userDefinedAppointment()),
         procedureData.accessCode(),
-        LabStatusMapper.toInterfaceData(procedureData.procedure().getLabStatus()));
+        LabStatusMapper.toInterfaceData(procedureData.procedure().getLabStatus()),
+        procedureData.sampleBarCode(),
+        procedureData.appointmentStart());
   }
 }

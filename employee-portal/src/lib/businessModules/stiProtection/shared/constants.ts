@@ -3,18 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { EnumMap } from "@eshg/lib-portal/types/helpers";
 import {
   ApiAppointmentStatus,
   ApiAppointmentType,
   ApiConcern,
   ApiExamination,
   ApiGender,
+  ApiLabStatus,
   ApiProcedureStatus,
   ApiProcedureType,
   ApiSexualOrientation,
   ApiTaskType,
-} from "@eshg/employee-portal-api/stiProtection";
-import { EnumMap } from "@eshg/lib-portal/types/helpers";
+} from "@eshg/sti-protection-api";
 import { DefaultColorPalette } from "@mui/joy/styles/types";
 
 export const procedureTypes = [ApiProcedureType.StiProtection];
@@ -112,3 +113,9 @@ export const examinableIllnessNames = {
   hiv: "HIV",
   syphilis: "Syphilis (Lues)",
 } as const satisfies Record<ExaminableIllnesses, string>;
+
+export const LAB_STATUS_VALUES: EnumMap<ApiLabStatus> = {
+  [ApiLabStatus.Open]: "Offen",
+  [ApiLabStatus.InProgress]: "In Bearbeitung",
+  [ApiLabStatus.Closed]: "Geschlossen",
+};

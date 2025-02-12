@@ -166,7 +166,9 @@ public class ProphylaxisSessionsPopulator
 
   private void randomExaminations(Faker faker) {
     List<Examination> someExaminations =
-        randomElements(faker, examinationRepository.findAllByChildStatus(ProcedureStatus.OPEN));
+        randomElements(
+            faker,
+            examinationRepository.findAllByChildStatusWhereResultIsNull(ProcedureStatus.OPEN));
 
     for (Examination examination : someExaminations) {
       UpdateExaminationRequest request =
@@ -180,21 +182,28 @@ public class ProphylaxisSessionsPopulator
 
   private static ExaminationResultDto randomResult(Faker faker, Examination examination) {
     ProphylaxisSession prophylaxisSession = examination.getProphylaxisSession();
+    boolean isScreening = prophylaxisSession.isScreening();
     boolean hasFluoridationVarnish = prophylaxisSession.hasFluoridationVarnish();
+
+    if (isScreening || hasFluoridationVarnish) {
+      if (faker.random().nextDouble() < 0.1) {
+        return new AbsenceExaminationResultDto(randomElement(faker, ReasonForAbsenceDto.values()));
+      }
+    }
+
     boolean isFluoridationConsentGiven =
         examination.getChild().isFluoridationConsentCurrentlyGiven();
-    if (prophylaxisSession.isScreening()) {
+
+    if (isScreening) {
       return new ScreeningExaminationResultDto(
-          hasFluoridationVarnish && isFluoridationConsentGiven && faker.bool().bool(),
+          optional(
+              faker, hasFluoridationVarnish && isFluoridationConsentGiven && faker.bool().bool()),
           optional(faker, randomElement(faker, OralHygieneStatusDto.values())),
           randomToothDiagnoses(faker));
     } else if (hasFluoridationVarnish) {
       return new FluoridationExaminationResultDto(
-          isFluoridationConsentGiven && faker.bool().bool());
+          optional(faker, isFluoridationConsentGiven && faker.bool().bool()));
     } else {
-      if (faker.random().nextDouble() <= 0.5) {
-        return new AbsenceExaminationResultDto(randomElement(faker, ReasonForAbsenceDto.values()));
-      }
       return null;
     }
   }

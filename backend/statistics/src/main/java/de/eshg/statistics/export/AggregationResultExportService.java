@@ -227,7 +227,7 @@ public class AggregationResultExportService {
     return tableRowPage.getSize();
   }
 
-  @Transactional(readOnly = true)
+  @Transactional
   public void auditLogAggregationResultDataExport(
       UUID id, AbstractAggregationResultService service, String function) {
     AbstractAggregationResult aggregationResult = service.getAbstractAggregationResultInternal(id);

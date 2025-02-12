@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetProcedureDraftResponse } from "@eshg/employee-portal-api/medicalRegistry";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
+import { ApiGetProcedureDraftResponse } from "@eshg/medical-registry-api";
 import { Stack, Typography } from "@mui/joy";
 import { isDefined } from "remeda";
 

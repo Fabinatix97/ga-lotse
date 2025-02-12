@@ -3,17 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { MutationPassThrough } from "@eshg/lib-portal/types/query";
 import {
   ApiCreateAppointmentRequest,
+  ApiCreateFollowUpProcedureRequest,
+  ApiCreateFollowUpProcedureResponse,
   ApiCreateProcedureRequest,
   ApiCreateProcedureResponse,
   ApiUpdateAppointmentRequest,
   ApiUpdatePersonDetailsRequest,
   CancelAppointmentRequest,
-} from "@eshg/employee-portal-api/stiProtection";
-import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { MutationPassThrough } from "@eshg/lib-portal/types/query";
+} from "@eshg/sti-protection-api";
 import { MutationOptions } from "@tanstack/react-query";
 
 import { useStiProtectionProcedureApi } from "@/lib/businessModules/stiProtection/api/clients";
@@ -46,13 +48,8 @@ export function useCreateStiProcedureMutation({
   ApiCreateProcedureRequest,
   ApiCreateProcedureResponse
 > = {}) {
-  const api = useStiProtectionProcedureApi();
-  return useHandledMutation({
-    mutationFn: (data: ApiCreateProcedureRequest) => api.createProcedure(data),
-    mutationKey: stiProtectionApiQueryKey(["procedures"]),
-    onSuccess,
-    onError,
-  });
+  const options = useCreateStiProcedureOptions({ onSuccess, onError });
+  return useHandledMutation(options);
 }
 
 export function useCloseProcedureMutation({
@@ -107,6 +104,43 @@ export function useReopenProcedure({
     },
     onError,
   });
+}
+
+interface CreateFollowUpProcedureParams {
+  id: string;
+  data: ApiCreateFollowUpProcedureRequest;
+}
+
+export function useCreateStiFollowUpProcedureOptions({
+  onSuccess,
+  onError,
+}: MutationPassThrough<
+  CreateFollowUpProcedureParams,
+  ApiCreateFollowUpProcedureResponse
+> = {}): MutationOptions<
+  ApiCreateFollowUpProcedureResponse,
+  Error,
+  CreateFollowUpProcedureParams
+> {
+  const api = useStiProtectionProcedureApi();
+  return {
+    mutationFn: ({ id, data }: CreateFollowUpProcedureParams) =>
+      api.createFollowUpProcedure(id, data),
+    mutationKey: stiProtectionApiQueryKey(["procedures"]),
+    onSuccess,
+    onError,
+  };
+}
+
+export function useCreateStiFollowUpProcedureMutation({
+  onSuccess,
+  onError,
+}: MutationPassThrough<
+  CreateFollowUpProcedureParams,
+  ApiCreateFollowUpProcedureResponse
+> = {}) {
+  const options = useCreateStiFollowUpProcedureOptions({ onSuccess, onError });
+  return useHandledMutation(options);
 }
 
 interface UpdatePersonDetailsParams {

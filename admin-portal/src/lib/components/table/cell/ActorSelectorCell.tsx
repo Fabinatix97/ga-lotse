@@ -173,7 +173,7 @@ function SingleSelect(
     );
   const color = serverError ? "danger" : undefined;
 
-  const value = props.value ? props.value : "*";
+  const value = props.value ?? "*";
   const selectProps: SelectProps<string, false> = {
     value,
     multiple: false,

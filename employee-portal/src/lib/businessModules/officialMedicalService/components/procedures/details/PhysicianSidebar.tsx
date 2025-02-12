@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiEmployeeOmsProcedureDetails } from "@eshg/employee-portal-api/officialMedicalService";
+import { ApiEmployeeOmsProcedureDetails } from "@eshg/official-medical-service-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { isDefined } from "remeda";
 

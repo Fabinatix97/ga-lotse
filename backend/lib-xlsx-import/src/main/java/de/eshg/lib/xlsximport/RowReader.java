@@ -10,36 +10,48 @@ import de.eshg.base.SalutationDto;
 import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.xlsximport.model.AddressData;
 import de.eshg.lib.xlsximport.util.XlsxUtil;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import org.apache.poi.ss.usermodel.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 public abstract class RowReader<R extends RowData<R>, C extends XlsxColumn> {
 
+  private static final Logger log = LoggerFactory.getLogger(RowReader.class);
+
   private static final DataFormatter DATA_FORMATTER = new DataFormatter();
 
   private final List<C> actualColumns;
-  private final CellStyle errorCellStyle;
+  private final Map<CellStyle, CellStyle> errorCellStyles = new LinkedHashMap<>();
   private final Drawing<?> drawing;
   private final CreationHelper factory;
   private final Supplier<R> resultRowSupplier;
+  private final Clock clock;
+  private final Function<CellStyle, CellStyle> createErrorCellStyle;
 
-  protected RowReader(Sheet sheet, List<C> actualColumns, Supplier<R> resultRowSupplier) {
+  protected RowReader(
+      Sheet sheet, List<C> actualColumns, Supplier<R> resultRowSupplier, Clock clock) {
     Workbook workbook = sheet.getWorkbook();
 
     this.actualColumns = actualColumns;
-    this.errorCellStyle = createErrorStyle(workbook);
     this.drawing = sheet.createDrawingPatriarch();
     this.factory = workbook.getCreationHelper();
     this.resultRowSupplier = resultRowSupplier;
+    this.clock = clock;
+    this.createErrorCellStyle = cellStyle -> createErrorCellStyle(cellStyle, workbook);
   }
 
   public R readRow(Row xlsxRow) {
@@ -95,17 +107,19 @@ public abstract class RowReader<R extends RowData<R>, C extends XlsxColumn> {
   }
 
   protected void addCellError(Cell cell, String errorMessage) {
+    CellStyle errorCellStyle =
+        errorCellStyles.computeIfAbsent(cell.getCellStyle(), createErrorCellStyle);
     cell.setCellStyle(errorCellStyle);
     if (cell.getCellComment() == null) {
       cell.setCellComment(createComment(cell, errorMessage));
     }
   }
 
-  private CellStyle createErrorStyle(Workbook workbook) {
+  private CellStyle createErrorCellStyle(CellStyle cellStyle, Workbook workbook) {
     CellStyle errorStyle = workbook.createCellStyle();
+    errorStyle.cloneStyleFrom(cellStyle);
     errorStyle.setFillForegroundColor(XlsxUtil.newColor(255, 215, 215));
     errorStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-
     return errorStyle;
   }
 
@@ -267,13 +281,40 @@ public abstract class RowReader<R extends RowData<R>, C extends XlsxColumn> {
     return true;
   }
 
+  protected LocalDate cellAsDateOfBirth(
+      ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
+    Cell cell = col.get(column);
+    LocalDate dateOfBirth = cellAsDate(cell, errorHandler);
+    if (dateOfBirth != null) {
+      validateDateOfBirth(cell, dateOfBirth, errorHandler);
+    }
+    return dateOfBirth;
+  }
+
+  private void validateDateOfBirth(Cell cell, LocalDate dateOfBirth, ErrorHandler errorHandler) {
+    LocalDate today = LocalDate.now(clock);
+    LocalDate minDateOfBirth = today.minusYears(150);
+    LocalDate maxDateOfBirth = today.plusYears(1);
+    if (dateOfBirth.isBefore(minDateOfBirth) || dateOfBirth.isAfter(maxDateOfBirth)) {
+      log.debug(
+          "Date of birth {} is outside the valid range: {} - {}",
+          dateOfBirth,
+          minDateOfBirth,
+          maxDateOfBirth);
+      errorHandler.handleError(cell, "Ungültiges Geburtsdatum");
+    }
+  }
+
   protected LocalDate cellAsDate(ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
     return cellAsDate(col.get(column), errorHandler);
   }
 
   public static LocalDate cellAsDate(Cell cell, ErrorHandler errorHandler) {
     LocalDateTime localDateTime = cellAsDateTime(cell, errorHandler);
-    return localDateTime != null ? localDateTime.toLocalDate() : null;
+    if (localDateTime == null) {
+      return null;
+    }
+    return localDateTime.toLocalDate();
   }
 
   protected LocalDateTime cellAsDateTime(

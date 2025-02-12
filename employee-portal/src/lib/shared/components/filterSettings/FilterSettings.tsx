@@ -17,6 +17,7 @@ import {
   FilterTemplates,
   FilterTemplatesProps,
 } from "@/lib/shared/components/filterSettings/FilterTemplates";
+import { TextFilter } from "@/lib/shared/components/filterSettings/TextFilter";
 import { YearFilter } from "@/lib/shared/components/filterSettings/YearFilter";
 import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
 import { FilterDraftValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
@@ -160,6 +161,19 @@ export function FilterSettings(props: FilterSettingsProps) {
             case "Year":
               return (
                 <YearFilter
+                  definition={item.filterDefinition}
+                  value={findValueByDefinition(
+                    props.draftValues,
+                    item.filterDefinition,
+                  )}
+                  onChange={(value) =>
+                    props.onDraftValueChange(item.filterDefinition.key, value)
+                  }
+                />
+              );
+            case "Text":
+              return (
+                <TextFilter
                   definition={item.filterDefinition}
                   value={findValueByDefinition(
                     props.draftValues,

@@ -10,7 +10,7 @@ import {
   ApiGdprValidationTask,
   ApiGdprValidationTaskStatus,
   GetAllGdprValidationTasksRequest,
-} from "@eshg/employee-portal-api/businessProcedures";
+} from "@eshg/lib-procedures-api";
 import { Chip } from "@mui/joy";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createColumnHelper } from "@tanstack/react-table";

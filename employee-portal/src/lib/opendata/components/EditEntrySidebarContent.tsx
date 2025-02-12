@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiVersion } from "@eshg/employee-portal-api/opendata";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
+import { ApiVersion } from "@eshg/opendata-api";
 import { Button } from "@mui/joy";
 import { Formik } from "formik";
 

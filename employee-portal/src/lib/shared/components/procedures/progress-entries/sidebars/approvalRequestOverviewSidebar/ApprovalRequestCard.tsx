@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  ApiAbstractFile,
-  ApiApprovalRequest,
-} from "@eshg/employee-portal-api/businessProcedures";
+import { ApiAbstractFile, ApiApprovalRequest } from "@eshg/lib-procedures-api";
 import {
   Box,
   Button,

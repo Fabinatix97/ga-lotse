@@ -24,7 +24,6 @@ import { AppointmentStaffSelection } from "@/lib/shared/components/appointmentBl
 import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { FormSheet } from "@/lib/shared/components/form/FormSheet";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
 import { validateFieldArray } from "@/lib/shared/helpers/validators";
 
 const DEFAULT_PARALLEL_EXAMINATIONS = 1;
@@ -93,13 +92,15 @@ export function AppointmentBlockGroupForm(
 ) {
   const snackbar = useSnackbar();
   const physicianOptions = props.allPhysicians.map((option) => ({
-    value: option.userId,
-    label: fullName(option),
+    userId: option.userId,
+    firstName: option.firstName,
+    lastName: option.lastName,
   }));
 
   const medicalAssistantsOptions = props.allMedicalAssistants.map((option) => ({
-    value: option.userId,
-    label: fullName(option),
+    userId: option.userId,
+    firstName: option.firstName,
+    lastName: option.lastName,
   }));
 
   return (

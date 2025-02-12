@@ -5,12 +5,12 @@
 
 package de.eshg.medicalregistry.api;
 
-import de.eshg.CustomValidations.MandatoryEmailAddressConstraint;
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.centralfile.api.person.PersonDetails;
 import de.eshg.lib.common.CountryCode;
+import de.eshg.validation.constraints.MandatoryEmailAddressConstraint;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

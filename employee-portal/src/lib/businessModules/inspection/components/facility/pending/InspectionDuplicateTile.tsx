@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiInspectionForDuplicateReview } from "@eshg/employee-portal-api/inspection";
+import { ApiInspectionForDuplicateReview } from "@eshg/inspection-api";
 import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
 import { Sheet, Stack, Typography } from "@mui/joy";
 

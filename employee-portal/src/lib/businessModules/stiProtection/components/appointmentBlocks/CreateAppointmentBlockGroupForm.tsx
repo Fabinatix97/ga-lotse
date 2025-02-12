@@ -5,13 +5,13 @@
 
 "use client";
 
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
 import {
   ApiAppointmentType,
   ApiCreateDailyAppointmentBlock,
   ApiCreateDailyAppointmentBlockGroupRequest,
-} from "@eshg/employee-portal-api/stiProtection";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
+} from "@eshg/sti-protection-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";

@@ -4,6 +4,9 @@
  */
 
 import { ApiBaseFeature } from "@eshg/base-api";
+import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
+import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
+import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
 import {
   ApiBusinessModule,
   ApiGdprDownloadPackageInfo,
@@ -11,10 +14,7 @@ import {
   ApiGetGdprNotificationBannerResponse,
   GdprValidationTaskApiInterface,
   GetAllGdprValidationTasksRequest,
-} from "@eshg/employee-portal-api/businessProcedures";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
-import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
+} from "@eshg/lib-procedures-api";
 import { queryOptions, useSuspenseQueries } from "@tanstack/react-query";
 import assert from "assert";
 import { isDefined } from "remeda";

@@ -5,10 +5,7 @@
 
 "use client";
 
-import {
-  ApiInspection,
-  ApiInspectionPhase,
-} from "@eshg/employee-portal-api/inspection";
+import { ApiInspection, ApiInspectionPhase } from "@eshg/inspection-api";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { CheckOutlined, EditRoadOutlined } from "@mui/icons-material";

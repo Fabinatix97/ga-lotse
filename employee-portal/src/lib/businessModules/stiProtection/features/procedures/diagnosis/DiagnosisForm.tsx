@@ -5,17 +5,17 @@
 
 "use client";
 
-import {
-  ApiDiagnosis,
-  ApiStiProtectionProcedure,
-  ApiTestType,
-} from "@eshg/employee-portal-api/stiProtection";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import {
+  ApiDiagnosis,
+  ApiStiProtectionProcedure,
+  ApiTestType,
+  ApiTextTemplateContext,
+} from "@eshg/sti-protection-api";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import { Button, IconButton, Sheet, Stack, Typography } from "@mui/joy";
 import {
@@ -27,17 +27,21 @@ import {
 } from "formik";
 import { PropsWithChildren } from "react";
 
-import { useUpsertDiagnosis } from "@/lib/businessModules/stiProtection/api/mutations/diagnosis";
+import {
+  useUpsertDiagnosis,
+  useUpsertDiagnosisOptions,
+} from "@/lib/businessModules/stiProtection/api/mutations/diagnosis";
 import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
+import { TextareaFieldWithTextTemplates } from "@/lib/businessModules/stiProtection/components/textTemplates/TextareaFieldWithTextTemplates";
 import {
   SidecarFormLayout,
   SidecarSheet,
 } from "@/lib/businessModules/stiProtection/features/procedures/SidecarFormLayout";
 import { TabStickyBottomButtonBar } from "@/lib/businessModules/stiProtection/features/procedures/TabStickyBottomButtonBar";
 import { useOnCancelForm } from "@/lib/businessModules/stiProtection/shared/helpers";
+import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { CheckboxGroupField } from "@/lib/shared/components/formFields/CheckboxGroupField";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
 import { useIcd10Sidebar } from "./Icd10Sidebar";
 import {
@@ -57,19 +61,17 @@ export function DiagnosisForm({
   procedure: ApiStiProtectionProcedure;
   diagnosis: ApiDiagnosis;
 }>) {
-  const snackbar = useSnackbar();
-  const upsertDiagnosis = useUpsertDiagnosis(procedure.id, {
-    onSuccess: () => {
-      snackbar.confirmation("Die Diagnose wurde erfolgreich gespeichert.");
-    },
-    onError: () => {
-      snackbar.error("Die Diagnose konnte nicht gespeichert werden.");
-    },
+  const { id: procedureId } = procedure;
+  const upsertDiagnosisOptions = useUpsertDiagnosisOptions({
+    procedureId,
   });
-
+  const upsertDiagnosis = useUpsertDiagnosis({ procedureId });
   const onCancelForm = useOnCancelForm<DiagnosisFormData>();
 
-  function handleCancel({ dirty, resetForm }: FormikProps<DiagnosisFormData>) {
+  function handleCancel({
+    dirty,
+    resetForm,
+  }: Pick<FormikProps<DiagnosisFormData>, "dirty" | "resetForm">) {
     onCancelForm({
       dirty,
       reset: resetForm,
@@ -78,19 +80,38 @@ export function DiagnosisForm({
 
   function onSubmit(values: DiagnosisFormData) {
     const diagnosis = mapFormToApi(values);
-    return upsertDiagnosis.mutateAsync(diagnosis);
+    return upsertDiagnosis.mutateAsync({
+      diagnosis,
+    });
   }
 
   return (
-    <Formik initialValues={mapApiToForm(diagnosis)} onSubmit={onSubmit}>
-      {(formikProps) => (
+    <Formik
+      initialValues={mapApiToForm(diagnosis)}
+      onSubmit={onSubmit}
+      enableReinitialize
+    >
+      {({ resetForm, dirty, values }) => (
         <FormPlus sx={{ height: "100%" }}>
+          <ConfirmLeaveDirtyFormEffect
+            onSaveMutation={{
+              mutationOptions: upsertDiagnosisOptions,
+              variableSupplier: () => ({
+                procedureId,
+                diagnosis: mapFormToApi(values),
+              }),
+            }}
+          />
           <SidecarFormLayout>
             <Sheet>
               <Stack gap={5}>
                 <Typography level="h2">Diagnose</Typography>
                 <SectionGrid defaultColumn={1}>
-                  <TextareaField name="results" label="Ergebnisse" />
+                  <TextareaFieldWithTextTemplates
+                    name="results"
+                    label="Ergebnisse"
+                    context={ApiTextTemplateContext.DiagnosisResult}
+                  />
                 </SectionGrid>
                 <FieldArray name="medications" render={MedicationsSection} />
                 <FindingsSection />
@@ -103,7 +124,11 @@ export function DiagnosisForm({
                 Zusatzinfos
               </Typography>
               <Stack rowGap={5}>
-                <TextareaField name="notes" label="Allgemeine Bemerkungen" />
+                <TextareaFieldWithTextTemplates
+                  name="notes"
+                  label="Allgemeine Bemerkungen"
+                  context={ApiTextTemplateContext.DiagnosisRemark}
+                />
                 <CheckboxField
                   name="resultsShared"
                   label="Ergebnis mitgeteilt"
@@ -113,7 +138,7 @@ export function DiagnosisForm({
           </SidecarFormLayout>
           <TabStickyBottomButtonBar
             procedure={procedure}
-            onCancel={() => handleCancel(formikProps)}
+            onCancel={() => handleCancel({ dirty, resetForm })}
           />
         </FormPlus>
       )}

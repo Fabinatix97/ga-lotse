@@ -9,10 +9,8 @@ import de.eshg.base.centralfile.FacilityApi;
 import de.eshg.base.centralfile.PersonApi;
 import de.eshg.lib.procedure.cemetery.CemeteryService;
 import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
-import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedureRepository;
-import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,12 +23,6 @@ public class StiProtectionProcedureDeletionService
       PersonApi personApi,
       FacilityApi facilityApi) {
     super(stiProtectionProcedureRepository, cemeteryService, personApi, facilityApi);
-  }
-
-  public StiProtectionProcedure find(UUID externalId) {
-    return procedureRepository
-        .findByExternalId(externalId)
-        .orElseThrow(() -> new NotFoundException("Procedure " + externalId + " not found."));
   }
 
   @Override

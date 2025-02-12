@@ -7,7 +7,7 @@ import {
   ApiCLFieldOptionContext,
   type ApiCLMultiSelectContext,
   ApiCLSectionContextElementsInner,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { Add } from "@mui/icons-material";
 import { Button, Stack } from "@mui/joy";
 import { v4 as uuidv4 } from "uuid";
@@ -53,13 +53,6 @@ export function ChecklistDefinitionElementMultiInner({
     });
   }
 
-  function setItem(index: number, item: ApiCLFieldOptionContext) {
-    items[index] = item;
-    updateElement({
-      items: [...items],
-    });
-  }
-
   return (
     <Stack spacing={2}>
       {items.map((item, index) => {
@@ -73,7 +66,6 @@ export function ChecklistDefinitionElementMultiInner({
             elementIndex={elementIndex}
             itemIndex={index}
             item={item}
-            setItem={(item) => setItem(index, item)}
             onDelete={() => deleteItem(index)}
             hideDeleteButton={hideDeleteButton}
           />

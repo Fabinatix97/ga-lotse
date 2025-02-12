@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiWaitingStatus } from "@eshg/employee-portal-api/stiProtection";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
+import { ApiWaitingStatus } from "@eshg/sti-protection-api";
 
 export const WAITING_STATUS_VALUES: EnumMap<ApiWaitingStatus> = {
   [ApiWaitingStatus.WaitingForConsultation]: "Wartet auf Beratung",

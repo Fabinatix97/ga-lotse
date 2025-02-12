@@ -6,7 +6,7 @@
 import {
   ApiInspectionToJSON,
   ApiUpdateInspectionRequestFromJSON,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 
 import { uuidV4Re } from "@/serviceWorker/common/common";
 import { getFromApiCache, writeToApiCache } from "@/serviceWorker/sw/cache";

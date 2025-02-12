@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiChecklist } from "@eshg/employee-portal-api/inspection";
+import { ApiChecklist } from "@eshg/inspection-api";
 import { FormikErrors } from "formik";
 import {
   ReactNode,

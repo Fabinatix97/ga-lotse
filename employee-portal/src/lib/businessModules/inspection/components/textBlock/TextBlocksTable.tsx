@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiTextBlock } from "@eshg/employee-portal-api/inspection";
+import { ApiTextBlock } from "@eshg/inspection-api";
 import { Add, DeleteOutlined, Edit } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";

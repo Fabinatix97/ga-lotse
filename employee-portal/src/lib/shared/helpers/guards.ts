@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
+import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 
 export function isInteger(value: unknown): value is number {
   return Number.isInteger(value);

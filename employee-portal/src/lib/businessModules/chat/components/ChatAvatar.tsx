@@ -42,7 +42,7 @@ export function ChatAvatar({
       variant="solid"
       color="warning"
       size={size}
-      src={props.avatarUrl ? props.avatarUrl : undefined}
+      src={props.avatarUrl ?? undefined}
     >
       <GroupOutlinedIcon size="md" sx={{ color: "white" }} />
     </Avatar>

@@ -6,7 +6,7 @@
 import {
   ApiEditorBodyElementsInner,
   ApiUpdateEditorRequest,
-} from "@eshg/employee-portal-api/libEditor";
+} from "@eshg/lib-editor-api";
 import { Typography } from "@mui/joy";
 
 import { ContentElementFullTextEditor } from "@/lib/shared/components/contentEditor/ContentElementFullTextEditor";

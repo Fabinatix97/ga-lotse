@@ -19,6 +19,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderColumn;
 import jakarta.validation.constraints.Min;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.annotations.JdbcType;
@@ -54,6 +55,12 @@ public class HistogramChartConfiguration extends ChartConfiguration
   @Min(1)
   @Column
   private Integer numberOfBins;
+
+  @Column(precision = 10, scale = 4)
+  private BigDecimal minBin;
+
+  @Column(precision = 10, scale = 4)
+  private BigDecimal maxBin;
 
   @OneToMany(
       cascade = CascadeType.PERSIST,
@@ -123,5 +130,21 @@ public class HistogramChartConfiguration extends ChartConfiguration
   public void removeBins() {
     this.bins.forEach(bin -> bin.setHistogramChartConfiguration(null));
     this.bins.clear();
+  }
+
+  public BigDecimal getMinBin() {
+    return minBin;
+  }
+
+  public void setMinBin(BigDecimal minBin) {
+    this.minBin = minBin;
+  }
+
+  public BigDecimal getMaxBin() {
+    return maxBin;
+  }
+
+  public void setMaxBin(BigDecimal maxBin) {
+    this.maxBin = maxBin;
   }
 }

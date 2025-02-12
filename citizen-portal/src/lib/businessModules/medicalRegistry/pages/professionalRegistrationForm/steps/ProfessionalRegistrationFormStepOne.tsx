@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiTypeOfChange } from "@eshg/citizen-portal-api/medicalRegistry";
 import { changeTypeNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
 import {
   GeneralInformationFormValues,
@@ -21,6 +20,7 @@ import {
   validateLength,
   validatePastOrTodayDate,
 } from "@eshg/lib-portal/helpers/validators";
+import { ApiTypeOfChange } from "@eshg/medical-registry-api";
 import { Grid, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { useMemo } from "react";

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ObjectTypeApi } from "@eshg/employee-portal-api/inspection";
+import { ObjectTypeApi } from "@eshg/inspection-api";
 import { STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 

@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiInspection,
-  ApiInspectionPhase,
-} from "@eshg/employee-portal-api/inspection";
+import { ApiInspection, ApiInspectionPhase } from "@eshg/inspection-api";
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import ChevronRight from "@mui/icons-material/ChevronRight";
@@ -22,7 +19,7 @@ import {
   translateInspectionResult,
 } from "@/lib/businessModules/inspection/shared/enums";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
@@ -59,28 +56,24 @@ export function InspectionResultSidePanel({
     >
       {hasResult && (
         <>
-          <DetailsCell
-            name="resultName"
+          <DetailsItem
             label="Ergebnis"
             value={translateInspectionResult(inspection.result)}
           />
           {followupInfo?.followupType && (
             <>
-              <DetailsCell
-                name="followupType"
+              <DetailsItem
                 label="Folgebegehung"
                 value={translateFollowupType(followupInfo.followupType)}
               />
               {followupInfo.followupDate && (
-                <DetailsCell
-                  name="followupDate"
+                <DetailsItem
                   label="Datum der Nachprüfung"
                   value={formatDate(followupInfo.followupDate)}
                 />
               )}
               {followupInfo.followupId && (
-                <DetailsCell
-                  name="followupId"
+                <DetailsItem
                   label=""
                   value={
                     <InternalLink

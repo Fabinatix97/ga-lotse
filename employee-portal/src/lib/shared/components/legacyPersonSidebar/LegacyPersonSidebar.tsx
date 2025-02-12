@@ -90,7 +90,7 @@ export function LegacyPersonSidebar({
   const { openCancelDialog } = useConfirmationDialog();
   const sidebarPersonFormRef = useRef<SidebarFormHandle>(null);
   const sidebarSearchFormRef = useRef<SidebarFormHandle>(null);
-  const searchTitle = searchFormTitle ? searchFormTitle : personFormTitle;
+  const searchTitle = searchFormTitle ?? personFormTitle;
 
   function resetAndCloseForm() {
     onClose();

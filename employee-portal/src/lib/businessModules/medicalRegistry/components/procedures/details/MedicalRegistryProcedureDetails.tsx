@@ -6,12 +6,12 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
+import { useControlledAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
 import {
   ApiGetProcedure200Response,
   ApiGetProcedureDraftResponse,
   ApiMedicalRegistryEntryProcedureType,
-} from "@eshg/employee-portal-api/medicalRegistry";
-import { useControlledAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
+} from "@eshg/medical-registry-api";
 import { Button, Grid, Stack } from "@mui/joy";
 import { useRouter } from "next/navigation";
 

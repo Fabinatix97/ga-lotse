@@ -10,6 +10,7 @@ import de.eshg.lib.xlsximport.ImportStatus;
 import de.eshg.lib.xlsximport.Importer;
 import de.eshg.lib.xlsximport.RowData;
 import de.eshg.medicalregistry.MedicalRegistryService;
+import java.time.Clock;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -28,8 +29,12 @@ public class MedicalRegistryImporter extends Importer<MedicalRegistryRow, Medica
       XSSFSheet sheet,
       List<MedicalRegistryColumn> actualColumns,
       MedicalRegistryService medicalRegistryService,
+      Clock clock,
       int batchSize) {
-    super(sheet, new MedicalRegistryRowReader(sheet), new FeedbackColumnAccessor(actualColumns));
+    super(
+        sheet,
+        new MedicalRegistryRowReader(sheet, clock),
+        new FeedbackColumnAccessor(actualColumns));
     this.medicalRegistryService = medicalRegistryService;
     if (batchSize < 1 || batchSize > 10_000) {
       throw new IllegalArgumentException("batchSize must be between 1 and 10_000");

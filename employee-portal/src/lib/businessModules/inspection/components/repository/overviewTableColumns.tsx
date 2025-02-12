@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiChecklistDefinitionCentralRepoMetadata } from "@eshg/employee-portal-api/inspection";
+import { ApiChecklistDefinitionCentralRepoMetadata } from "@eshg/inspection-api";
 import {
   Close,
   DeleteOutlined,

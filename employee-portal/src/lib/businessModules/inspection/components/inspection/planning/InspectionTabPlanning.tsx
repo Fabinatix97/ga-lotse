@@ -7,7 +7,7 @@ import {
   ApiInspection,
   ApiInspectionAvailableCLDVersionsResponse,
   ApiInspectionPhase,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { useWindowDimensions } from "@eshg/lib-portal/hooks/useWindowDimension";
 import { Box, useTheme } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";

@@ -8,7 +8,7 @@ import {
   ApiBusinessProcedureWithInclusionStatus,
   ApiGdprProcedureType,
   GdprValidationTaskApiInterface,
-} from "@eshg/employee-portal-api/businessProcedures";
+} from "@eshg/lib-procedures-api";
 import { Typography } from "@mui/joy";
 
 import { useCloseValidationTask } from "@/lib/baseModule/api/mutations/gdpr";

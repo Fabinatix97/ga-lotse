@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiOpenDataFileType } from "@eshg/citizen-portal-api/openData";
+import { ApiOpenDataFileType } from "@eshg/opendata-api";
 
 export const fileTypeNames = {
   [ApiOpenDataFileType.Csv]: "CSV",

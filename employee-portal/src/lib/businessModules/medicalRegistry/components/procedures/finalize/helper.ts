@@ -6,7 +6,7 @@
 import {
   ApiGetProcedureDraftResponse,
   ApiTypeOfChange,
-} from "@eshg/employee-portal-api/medicalRegistry";
+} from "@eshg/medical-registry-api";
 
 export function mapToOptionalPhoneNumbers(phoneNumbers: string[]) {
   if (phoneNumbers.length === 0) {

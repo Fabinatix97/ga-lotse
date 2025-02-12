@@ -6,8 +6,8 @@
 import { Radio, RadioGroup, Typography } from "@mui/joy";
 import { useId } from "react";
 
-import { useProphylaxisSessionStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/store/ProphylaxisSessionStoreProvider";
-import { ParticipantFilters } from "@/lib/businessModules/dental/features/prophylaxisSessions/store/participantFilters";
+import { useProphylaxisSessionStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/ProphylaxisSessionStoreProvider";
+import { ParticipantFilters } from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/participantFilters";
 
 export interface ParticipantFilterDef<TValue extends string> {
   label: string;

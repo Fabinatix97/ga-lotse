@@ -4,8 +4,8 @@
  */
 
 import { ApiBusinessModule } from "@eshg/base-api";
-import { ApiOpenDataFileType } from "@eshg/citizen-portal-api/openData";
 import { parseOptionalEnum } from "@eshg/lib-portal/helpers/searchParams";
+import { ApiOpenDataFileType } from "@eshg/opendata-api";
 import { useSearchParams } from "next/navigation";
 import { isNonNullish } from "remeda";
 

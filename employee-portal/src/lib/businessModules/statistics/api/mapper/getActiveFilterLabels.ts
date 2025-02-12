@@ -8,7 +8,7 @@ import { isDefined } from "remeda";
 import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
 import { getDefinitionByValue } from "@/lib/shared/components/filterSettings/models/getDefinitionByValue";
 
-import { SuppertedEvaluationFilterValues } from "./suppertedEvaluationFilterValues";
+import { SupportedEvaluationFilterValues } from "./supportedEvaluationFilterValues";
 
 const includeNullString = "leere Felder";
 
@@ -29,7 +29,7 @@ function createNumberFilterLabels(
 }
 
 export function getActiveFilterLabels(
-  filterValues: SuppertedEvaluationFilterValues[] | undefined,
+  filterValues: SupportedEvaluationFilterValues[] | undefined,
   filterDefinitions: FilterDefinition[],
 ) {
   if (isDefined(filterValues) && filterValues.length > 0) {
@@ -37,7 +37,10 @@ export function getActiveFilterLabels(
       if (filterValue.type === "Enum") {
         const definition = getDefinitionByValue(filterDefinitions, filterValue);
         return `${definition.name}: ${filterValue.selectedValues.map((value) => definition.options.find((option) => option.value === value)!.label).join(", ")}`;
-      } else {
+      } else if (filterValue.type === "Text") {
+        const definition = getDefinitionByValue(filterDefinitions, filterValue);
+        return `${definition.name}: ${filterValue.value}`;
+      } else if (filterValue.type === "Number") {
         const includeNull =
           filterValue.comparison.nullInclusion === "INCLUDE_NULL";
         const definition = getDefinitionByValue(filterDefinitions, filterValue);

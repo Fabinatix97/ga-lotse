@@ -20,7 +20,6 @@ import {
   createDiseaseOptions,
   createInformationStatementTemplateOptions,
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/helpers";
-import { SelectionOption } from "@/lib/shared/components/appointmentBlocks/AppointmentStaffSelection";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import {
   SidebarForm,
@@ -44,6 +43,11 @@ interface InformationStatementFormProps {
   onSubmit: (values: InformationStatementFormValues) => Promise<void>;
   title: string;
   submitLabel: string;
+}
+
+export interface SelectionOption {
+  label: string;
+  value: string;
 }
 
 export function InformationStatementForm(

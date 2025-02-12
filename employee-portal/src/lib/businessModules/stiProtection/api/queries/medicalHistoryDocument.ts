@@ -6,7 +6,7 @@
 import {
   ApiConcern,
   MedicalHistoryDocumentApi,
-} from "@eshg/employee-portal-api/stiProtection";
+} from "@eshg/sti-protection-api";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useMedicalHistoryDocumentApi } from "@/lib/businessModules/stiProtection/api/clients";

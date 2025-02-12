@@ -8,7 +8,7 @@ import {
   EditorApiInterface,
   InsertEditorElementRequest,
   UpdateEditorElementRequest,
-} from "@eshg/employee-portal-api/libEditor";
+} from "@eshg/lib-editor-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 

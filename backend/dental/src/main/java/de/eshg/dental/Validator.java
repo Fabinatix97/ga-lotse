@@ -8,6 +8,8 @@ package de.eshg.dental;
 import static de.eshg.lib.procedure.util.ProcedureValidator.hasNonNullValue;
 
 import de.cronn.commons.lang.StreamUtil;
+import de.cronn.reflection.util.PropertyGetter;
+import de.cronn.reflection.util.PropertyUtils;
 import de.eshg.base.contact.api.InstitutionContactCategoryDto;
 import de.eshg.base.user.UserApi;
 import de.eshg.base.user.api.UserDto;
@@ -15,16 +17,20 @@ import de.eshg.dental.api.ChildFilterParameters;
 import de.eshg.dental.api.FluoridationConsentDto;
 import de.eshg.dental.api.ToothDiagnosisDto;
 import de.eshg.dental.api.ToothDto;
+import de.eshg.dental.domain.model.Examination;
+import de.eshg.dental.domain.model.ProphylaxisSession;
 import de.eshg.dental.domain.repository.ChildRepository;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.keycloak.TechnicalGroup;
 import de.eshg.lib.procedure.api.ProcedureSearchParameters;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.rest.service.error.BadRequestException;
+import java.beans.PropertyDescriptor;
 import java.time.Clock;
 import java.time.Year;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
@@ -36,6 +42,13 @@ public class Validator {
   private final ContactClient contactClient;
   private final ChildRepository childRepository;
   private final UserApi userApi;
+
+  private static final List<PropertyGetter<ProphylaxisSession>> UPDATABLE_WITHOUT_RESULT_ONLY =
+      List.of(
+          ProphylaxisSession::getInstitutionId,
+          ProphylaxisSession::getGroupName,
+          ProphylaxisSession::isScreening,
+          ProphylaxisSession::getFluoridationVarnish);
 
   public Validator(
       Clock clock, ContactClient contactClient, ChildRepository childRepository, UserApi userApi) {
@@ -133,6 +146,29 @@ public class Validator {
     List<ToothDto> uniqueTeeth = teeth.stream().distinct().toList();
     if (teeth.size() != uniqueTeeth.size()) {
       throw new BadRequestException("There are teeth twice in the list.");
+    }
+  }
+
+  public static void validateUpdatableFields(
+      ProphylaxisSession current, ProphylaxisSession update) {
+    boolean hasExaminationResult =
+        current.getExaminations().stream().anyMatch(Examination::hasResult);
+    if (hasExaminationResult) {
+      UPDATABLE_WITHOUT_RESULT_ONLY.forEach(
+          valueGetter -> validateNotChanged(current, update, valueGetter));
+    }
+  }
+
+  private static void validateNotChanged(
+      ProphylaxisSession current,
+      ProphylaxisSession update,
+      PropertyGetter<ProphylaxisSession> valueGetter) {
+    if (!Objects.equals(valueGetter.get(current), valueGetter.get(update))) {
+      PropertyDescriptor property = PropertyUtils.getPropertyDescriptor(current, valueGetter);
+      throw new BadRequestException(
+          String.format(
+              "The '%s' property cannot be modified once examination results have been entered.",
+              property.getDisplayName()));
     }
   }
 }

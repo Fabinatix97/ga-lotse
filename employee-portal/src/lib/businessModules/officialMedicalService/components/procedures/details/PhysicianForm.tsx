@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiUser } from "@eshg/employee-portal-api/officialMedicalService";
 import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
+import { ApiUser } from "@eshg/official-medical-service-api";
 import { Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { Ref } from "react";

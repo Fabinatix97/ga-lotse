@@ -8,7 +8,7 @@ import {
   ApiInboxProcedureStatus,
   ApiInboxProgressEntryType,
   ApiTitle,
-} from "@eshg/employee-portal-api/businessProcedures";
+} from "@eshg/lib-procedures-api";
 import { ChipProps } from "@mui/joy/Chip";
 
 export const statusNames = {

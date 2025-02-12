@@ -7,8 +7,7 @@ import {
   ApiEmployeeOmsProcedureDetails,
   ApiFacilitySync,
   ApiProcedureStatus,
-} from "@eshg/employee-portal-api/officialMedicalService";
-import { Sheet } from "@mui/joy";
+} from "@eshg/official-medical-service-api";
 import { SxProps } from "@mui/joy/styles/types";
 import { isDefined } from "remeda";
 
@@ -21,7 +20,7 @@ import {
   SyncBarrier,
   useSyncBarrier,
 } from "@/lib/shared/components/centralFile/sync/SyncBarrier";
-import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
+import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { useSidebarWithFormRef } from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 const COLUMN_STYLE: SxProps = {
@@ -37,6 +36,13 @@ export function FacilityPanel({
   const updateFacilitySidebar = useSidebarWithFormRef({
     component: UpdateFacilitySidebar,
   });
+
+  function openUpdateFacilitySidebar() {
+    updateFacilitySidebar.open({
+      procedureId: procedure.id,
+      facility: procedure.facility!,
+    });
+  }
 
   const syncRoute =
     procedure.facility?.facilitySync !== undefined
@@ -63,38 +69,33 @@ export function FacilityPanel({
   }
 
   return (
-    <Sheet data-testid="facility">
-      <DetailsSection
-        title={"Auftraggeber"}
-        buttons={
-          isDefined(procedure.facility) &&
-          !procedureClosed() && (
-            <SyncBarrier
-              outdated={procedure.facility?.facilitySync?.outdated ?? false}
-              syncHref={syncRoute}
-            >
-              <EditButton
-                aria-label="Auftraggeber bearbeiten"
-                onClick={syncBarrier(() =>
-                  updateFacilitySidebar.open({
-                    procedureId: procedure.id,
-                    facility: procedure.facility!,
-                  }),
-                )}
-              />
-            </SyncBarrier>
-          )
-        }
-      >
-        {procedureDraft() && !isDefined(procedure.facility) ? (
-          <AddFacility id={procedure.id} />
-        ) : (
-          <CentralFileFacilityDetails
-            facility={{ ...procedure.facility! }}
-            columnSx={COLUMN_STYLE}
-          ></CentralFileFacilityDetails>
-        )}
-      </DetailsSection>
-    </Sheet>
+    <InfoTile
+      data-testid="facility"
+      name="facility"
+      title="Auftraggeber"
+      controls={
+        isDefined(procedure.facility) &&
+        !procedureClosed() && (
+          <SyncBarrier
+            outdated={procedure.facility?.facilitySync?.outdated ?? false}
+            syncHref={syncRoute}
+          >
+            <EditButton
+              aria-label="Auftraggeber bearbeiten"
+              onClick={syncBarrier(openUpdateFacilitySidebar)}
+            />
+          </SyncBarrier>
+        )
+      }
+    >
+      {procedureDraft() && !isDefined(procedure.facility) ? (
+        <AddFacility id={procedure.id} />
+      ) : (
+        <CentralFileFacilityDetails
+          facility={{ ...procedure.facility! }}
+          columnSx={COLUMN_STYLE}
+        />
+      )}
+    </InfoTile>
   );
 }

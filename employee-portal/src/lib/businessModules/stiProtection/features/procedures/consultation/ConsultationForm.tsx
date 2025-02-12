@@ -5,24 +5,26 @@
 
 "use client";
 
+import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import {
   ApiConsultation,
   ApiStiProtectionProcedure,
-} from "@eshg/employee-portal-api/stiProtection";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { Divider, Sheet, Typography } from "@mui/joy";
+  ApiTextTemplateContext,
+} from "@eshg/sti-protection-api";
+import { Sheet, Typography } from "@mui/joy";
 import { Formik } from "formik";
 
-import { useUpsertConsultation } from "@/lib/businessModules/stiProtection/api/mutations/consultation";
-import { TextTemplatesSidebarProvider } from "@/lib/businessModules/stiProtection/components/textTemplates/TextTemplatesSidebarProvider";
+import {
+  useUpsertConsultation,
+  useUpsertConsultationOptions,
+} from "@/lib/businessModules/stiProtection/api/mutations/consultation";
 import { TextareaFieldWithTextTemplates } from "@/lib/businessModules/stiProtection/components/textTemplates/TextareaFieldWithTextTemplates";
-import { ApiTextTemplateContext } from "@/lib/businessModules/stiProtection/components/textTemplates/constants";
 import {
   SidecarFormLayout,
   SidecarSheet,
 } from "@/lib/businessModules/stiProtection/features/procedures/SidecarFormLayout";
 import { TabStickyBottomButtonBar } from "@/lib/businessModules/stiProtection/features/procedures/TabStickyBottomButtonBar";
+import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 
 import { GeneralSection } from "./GeneralSection";
 import { PregnancySection } from "./PregnancySection";
@@ -39,51 +41,59 @@ export function ConsultationForm({
   procedure: ApiStiProtectionProcedure;
   consultation: ApiConsultation;
 }>) {
-  const snackbar = useSnackbar();
-  const upsertConsultation = useUpsertConsultation(procedure.id, {
-    onSuccess: () => {
-      snackbar.confirmation("Die Konsultation wurde erfolgreich gespeichert.");
-    },
-    onError: () => {
-      snackbar.error("Die Konsultation konnte nicht gespeichert werden.");
-    },
+  const { id: procedureId } = procedure;
+  const upsertConsultationOptions = useUpsertConsultationOptions({
+    procedureId,
   });
+  const upsertConsultation = useUpsertConsultation({ procedureId });
 
   function onSubmit(values: ConsultationFormData) {
     const consultation = mapFormValuesToApi(values);
-    return upsertConsultation.mutateAsync(consultation);
+    return upsertConsultation.mutateAsync({ consultation });
   }
 
   return (
-    <Formik initialValues={mapApiToForm(consultation)} onSubmit={onSubmit}>
-      <FormPlus>
-        <SidecarFormLayout>
-          <Sheet>
-            <Typography level="h2" mb={5}>
-              Konsultation
-            </Typography>
+    <Formik
+      initialValues={mapApiToForm(consultation)}
+      onSubmit={onSubmit}
+      enableReinitialize
+    >
+      {({ values }) => (
+        <FormPlus>
+          <ConfirmLeaveDirtyFormEffect
+            onSaveMutation={{
+              mutationOptions: upsertConsultationOptions,
+              variableSupplier: () => ({
+                procedureId,
+                consultation: mapFormValuesToApi(values),
+              }),
+            }}
+          />
 
-            <GeneralSection />
+          <SidecarFormLayout>
+            <Sheet>
+              <Typography level="h2" mb={5}>
+                Konsultation
+              </Typography>
 
-            <Divider sx={(theme) => ({ my: theme.spacing(5) })} />
+              <GeneralSection />
 
-            <PregnancySection />
-          </Sheet>
-          <SidecarSheet>
-            <Typography level="h3" mb={3}>
-              Zusatzinfos
-            </Typography>
-            <TextTemplatesSidebarProvider>
+              <PregnancySection />
+            </Sheet>
+            <SidecarSheet>
+              <Typography level="h3" mb={3}>
+                Zusatzinfos
+              </Typography>
               <TextareaFieldWithTextTemplates
                 name="general.notes"
                 label="Allgemeine Bemerkungen"
-                context={ApiTextTemplateContext.Consultation}
+                context={ApiTextTemplateContext.ConsultationRemark}
               />
-            </TextTemplatesSidebarProvider>
-          </SidecarSheet>
-        </SidecarFormLayout>
-        <TabStickyBottomButtonBar procedure={procedure} />
-      </FormPlus>
+            </SidecarSheet>
+          </SidecarFormLayout>
+          <TabStickyBottomButtonBar procedure={procedure} />
+        </FormPlus>
+      )}
     </Formik>
   );
 }

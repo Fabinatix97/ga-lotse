@@ -8,7 +8,7 @@ import {
   ApiInspAddFacilityResponse,
   ApiProcedureStatus,
   ApiWebSearchEntry,
-} from "@eshg/employee-portal-api/inspection";
+} from "@eshg/inspection-api";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Card, Chip, Typography } from "@mui/joy";
 import { useRouter } from "next/navigation";

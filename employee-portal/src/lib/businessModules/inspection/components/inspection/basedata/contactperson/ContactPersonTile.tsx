@@ -13,7 +13,7 @@ import { isNonNullish } from "remeda";
 import { EmailSection } from "@/lib/businessModules/inspection/components/inspection/common/EmailSection";
 import { PhoneNumberSection } from "@/lib/businessModules/inspection/components/inspection/common/PhoneNumberSection";
 import { TileDivider } from "@/lib/businessModules/inspection/components/inspection/common/TileDivider";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
 
@@ -45,41 +45,24 @@ export function ContactPersonTile({
             <Grid container direction="row" sx={{ gap: 3 }}>
               {isNonNullish(contactPerson?.salutation) &&
                 contactPerson.salutation !== "NOT_SPECIFIED" && (
-                  <DetailsCell
-                    name="salutation"
+                  <DetailsItem
                     label="Anrede"
                     value={SALUTATION_VALUES[contactPerson.salutation]}
                   />
                 )}
               {isNonNullish(contactPerson?.title) &&
                 contactPerson.title !== "Keine Angabe" && (
-                  <DetailsCell
-                    name="title"
-                    label="Titel"
-                    value={contactPerson.title}
-                  />
+                  <DetailsItem label="Titel" value={contactPerson.title} />
                 )}
             </Grid>
             {isNonNullish(contactPerson?.role) && (
-              <DetailsCell
-                name="role"
-                label="Role"
-                value={contactPerson.role}
-              />
+              <DetailsItem label="Role" value={contactPerson.role} />
             )}
             {isNonNullish(contactPerson?.firstName) && (
-              <DetailsCell
-                name="name"
-                label="Vorname"
-                value={contactPerson.firstName}
-              />
+              <DetailsItem label="Vorname" value={contactPerson.firstName} />
             )}
             {isNonNullish(contactPerson?.lastName) && (
-              <DetailsCell
-                name="surname"
-                label="Nachname"
-                value={contactPerson.lastName}
-              />
+              <DetailsItem label="Nachname" value={contactPerson.lastName} />
             )}
           </Grid>
         </Grid>

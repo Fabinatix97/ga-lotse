@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiEditorBodyElementsInner } from "@eshg/employee-portal-api/inspection";
+import { ApiEditorBodyElementsInner } from "@eshg/inspection-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { v4 as uuidv4 } from "uuid";
 

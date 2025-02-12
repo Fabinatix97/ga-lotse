@@ -57,7 +57,7 @@ tasks.named('test').configure {
 }
 
 ext.listenPort=80
-ext.additionalAptPackages = "netcat node-ws nmap dnsutils"
+ext.additionalAptPackages = "netcat-openbsd node-ws nmap dnsutils"
 createDockerfile {
     healthcheck(new Dockerfile.Healthcheck("nc -z 127.0.0.1 ${listenPort}").withStartPeriod(Duration.ofSeconds(60)).withInterval(Duration.ofSeconds(5)))
 }

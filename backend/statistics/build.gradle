@@ -19,10 +19,18 @@ dependencies {
     implementation 'org.apache.poi:poi:latest.release'
     implementation 'org.apache.poi:poi-ooxml:latest.release'
 
+    // arx + dependencies
+    implementation files('lib/org/deidentifier/arx/libarx-3.9.1-min.jar')
+    implementation files('lib/de/linearbits/jhpl/jhpl-0.0.1.jar')
+    implementation 'com.carrotsearch:hppc:0.6.0'
+    implementation 'colt:colt:1.2.0'
+    implementation 'org.apache.commons:commons-math3:latest.release'
+
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
     runtimeOnly 'org.postgresql:postgresql'
 
     testImplementation testFixtures(project(':business-module-persistence-commons'))
+    testImplementation testFixtures(project(':lib-auditlog'))
 }
 
 dockerCompose {

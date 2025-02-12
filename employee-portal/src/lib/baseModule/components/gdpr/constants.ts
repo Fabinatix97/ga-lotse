@@ -7,7 +7,6 @@ import { ApiGdprProcedureStatus } from "@eshg/base-api";
 import { DefaultColorPalette } from "@mui/joy/styles/types";
 
 export const gdprProcedureStatusColor = {
-  OPEN: "neutral",
   DRAFT: "warning",
   IN_PROGRESS: "primary",
   CLOSED: "success",

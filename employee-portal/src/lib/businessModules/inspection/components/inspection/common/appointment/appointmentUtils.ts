@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiInspectionAppointment } from "@eshg/employee-portal-api/inspection";
+import { ApiInspectionAppointment } from "@eshg/inspection-api";
 import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
 import { isNonNullish } from "remeda";
 

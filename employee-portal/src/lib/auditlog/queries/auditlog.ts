@@ -8,7 +8,7 @@ import {
   GetAuditLogGrantedAccessesRequest,
   GetAuditLogGranteesCandidatesRequest,
   GetAvailableLogsRequest,
-} from "@eshg/employee-portal-api/auditlog";
+} from "@eshg/auditlog-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useSuspenseQuery } from "@tanstack/react-query";
 

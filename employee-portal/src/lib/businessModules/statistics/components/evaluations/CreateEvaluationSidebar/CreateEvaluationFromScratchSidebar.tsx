@@ -107,7 +107,7 @@ export function CreateEvaluationFromScratchSidebar({
       const attributeGroups = groupBy(
         getAttributesFromKeys(
           [
-            ...model[1].selectedAttributeKeys!,
+            ...model[1].selectedAttributeKeys!.values(),
             attributeProcedureReference,
           ].filter(isDefined),
           dataSource,
@@ -187,7 +187,7 @@ export function CreateEvaluationFromScratchSidebar({
                 },
               }),
               initialValues: {
-                selectedAttributeKeys: [],
+                selectedAttributeKeys: new Set<string>(),
               },
               validator: validateChooseAttributeStep,
             };
@@ -242,7 +242,7 @@ export function CreateEvaluationFromScratchSidebar({
                   isDefined(prevStepsValues[1].selectedAttributeKeys) &&
                   isDefined(dataSource)
                     ? getAttributesFromKeys(
-                        prevStepsValues[1].selectedAttributeKeys,
+                        [...prevStepsValues[1].selectedAttributeKeys.values()],
                         dataSource,
                       )
                     : undefined,

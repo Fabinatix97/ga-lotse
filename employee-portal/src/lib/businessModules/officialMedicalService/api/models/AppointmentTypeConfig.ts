@@ -4,13 +4,13 @@
  */
 
 import {
-  ApiAppointmentType,
-  ApiAppointmentTypeConfig,
-} from "@eshg/employee-portal-api/officialMedicalService";
-import {
   BaseEntity,
   mapBaseEntity,
 } from "@eshg/lib-employee-portal/api/models/BaseEntity";
+import {
+  ApiAppointmentType,
+  ApiAppointmentTypeConfig,
+} from "@eshg/official-medical-service-api";
 
 export interface AppointmentTypeConfig extends BaseEntity {
   appointmentTypeDto: ApiAppointmentType;

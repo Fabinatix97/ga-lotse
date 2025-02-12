@@ -46,7 +46,6 @@ import de.eshg.stiprotection.persistence.data.ResultPage;
 import de.eshg.stiprotection.persistence.data.StiProtectionProcedureData;
 import de.eshg.stiprotection.persistence.db.Concern;
 import de.eshg.stiprotection.persistence.db.Person;
-import de.eshg.stiprotection.persistence.db.Person_;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedureRepository;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure_;
@@ -170,7 +169,7 @@ public class StiProtectionProcedureService {
       Join<StiProtectionProcedure, Person> psJoin =
           root.join(Procedure_.RELATED_PERSONS, JoinType.INNER);
 
-      Path<?> sortProperty = getSortProperty(sortBy, root, psJoin);
+      Path<?> sortProperty = getSortProperty(sortBy, root);
 
       if (sortOrder == ASC) {
         query.orderBy(criteriaBuilder.asc(sortProperty));
@@ -182,16 +181,11 @@ public class StiProtectionProcedureService {
   }
 
   private static Path<?> getSortProperty(
-      GetStiProtectionProceduresSortByDto sortBy,
-      Root<StiProtectionProcedure> root,
-      Join<StiProtectionProcedure, Person> psJoin) {
+      GetStiProtectionProceduresSortByDto sortBy, Root<StiProtectionProcedure> root) {
     return switch (sortBy) {
       case CREATED_AT -> root.get(Procedure_.createdAt);
-      case STATUS -> root.get(Procedure_.procedureStatus);
-      case CONCERN -> root.get(StiProtectionProcedure_.concern);
-      case YEAR_OF_BIRTH -> psJoin.get(Person_.yearOfBirth);
-      case GENDER -> psJoin.get(Person_.gender);
-      case LAB_STATUS -> root.get(StiProtectionProcedure_.labStatus);
+      case SAMPLE_BARCODE -> root.get(StiProtectionProcedure_.sampleBarCode);
+      case APPOINTMENT -> root.get(StiProtectionProcedure_.appointmentStart);
     };
   }
 
@@ -286,12 +280,12 @@ public class StiProtectionProcedureService {
   }
 
   public void deleteAnonymousUser(StiProtectionProcedure procedure) {
-    UUID anonymousUserId = procedure.getPerson().getAnonymousUserId();
-    if (anonymousUserId == null) {
-      throw new BadRequestException("User already deleted.");
+    Person person = procedure.getPerson();
+    UUID anonymousUserId = person.getAnonymousUserId();
+    if (anonymousUserId != null) {
+      citizenAccessCodeUserApi.deleteCitizenAccessCodeUser(anonymousUserId);
+      person.setAnonymousUserId(null);
     }
-    citizenAccessCodeUserApi.deleteCitizenAccessCodeUser(anonymousUserId);
-    procedure.getPerson().setAnonymousUserId(null);
   }
 
   public void verifyAnonymousUserPin(UUID procedureId, String pin) {
