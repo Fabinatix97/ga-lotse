@@ -8,10 +8,8 @@ package de.eshg.lib.notification.spring.config;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
-@EnableScheduling
 public class NotificationLibrarySchedulingConfig {
 
   @Configuration

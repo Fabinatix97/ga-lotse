@@ -61,6 +61,11 @@ const FLUORIDATION_CONSENT_FILTERS: ParticipantFilterDef<FluoridationConsentFilt
 
 export function ProphylaxisSessionParticipantsTable() {
   const prophylaxisSessionId = useProphylaxisSessionStore((state) => state.id);
+  const isScreening = useProphylaxisSessionStore((state) => state.isScreening);
+  const isFluoridation = isDefined(
+    useProphylaxisSessionStore((state) => state.fluoridationVarnish),
+  );
+  const isExamination = isFluoridation || isScreening;
   const prophylaxisSessionVersion = useProphylaxisSessionStore(
     (state) => state.version,
   );
@@ -155,12 +160,16 @@ export function ProphylaxisSessionParticipantsTable() {
                     label="Geschlecht"
                     filters={GENDER_FILTERS}
                   />
-                  <Divider orientation="vertical" />
-                  <ParticipantFilter
-                    name="fluoridationConsentGiven"
-                    label="Fluoridierungseinverständnis"
-                    filters={FLUORIDATION_CONSENT_FILTERS}
-                  />
+                  {isFluoridation && (
+                    <>
+                      <Divider orientation="vertical" />
+                      <ParticipantFilter
+                        name="fluoridationConsentGiven"
+                        label="Fluoridierungseinverständnis"
+                        filters={FLUORIDATION_CONSENT_FILTERS}
+                      />
+                    </>
+                  )}
                 </Stack>
               </Stack>
             </>
@@ -168,7 +177,7 @@ export function ProphylaxisSessionParticipantsTable() {
           right={
             <>
               <AddChildButton />
-              {filteredParticipants.length > 0 && (
+              {isExamination && filteredParticipants.length > 0 && (
                 <InternalLinkButton href={routeToExamination(0)}>
                   Prophylaxe starten
                 </InternalLinkButton>
@@ -180,11 +189,20 @@ export function ProphylaxisSessionParticipantsTable() {
     >
       <DataTable
         data={filteredParticipants}
-        columns={columnDefs(handleRemoveParticipant, handleAbsentParticipant)}
-        rowNavigation={{
-          focusColumnAccessorKey: "lastName",
-          route: (row) => routeToExamination(row.index),
-        }}
+        columns={columnDefs(
+          handleRemoveParticipant,
+          handleAbsentParticipant,
+          isFluoridation,
+          isExamination,
+        )}
+        rowNavigation={
+          isExamination
+            ? {
+                focusColumnAccessorKey: "lastName",
+                route: (row) => routeToExamination(row.index),
+              }
+            : undefined
+        }
         sorting={tableControl.tableSorting}
         enableSortingRemoval={false}
         minWidth={1200}
@@ -206,6 +224,8 @@ const columnHelper = createColumnHelper<ChildExamination>();
 function columnDefs(
   onRemoveParticipant: (participantId: string) => void,
   onAbsentParticipant: (examination: ChildExamination) => void,
+  isFluoridation: boolean,
+  isExamination: boolean,
 ) {
   return [
     columnHelper.accessor("firstName", {
@@ -256,24 +276,34 @@ function columnDefs(
         width: 110,
       },
     }),
-    columnHelper.accessor("fluoridationConsentGiven", {
-      header: "Fluoridierungseinverständnis",
-      cell: (props) => displayBoolean(props.getValue()),
-      enableSorting: true,
-      meta: {
-        canNavigate: { parentRow: true },
-        width: 205,
-      },
-    }),
-    columnHelper.accessor("status", {
-      header: "Status",
-      cell: (props) => <ExaminationStatusChip status={props.getValue()} />,
-      enableSorting: true,
-      meta: {
-        canNavigate: { parentRow: true },
-        width: 110,
-      },
-    }),
+    ...(isFluoridation
+      ? [
+          columnHelper.accessor("currentFluoridationConsent", {
+            header: "Fluoridierungseinverständnis",
+            cell: (props) => displayBoolean(props.getValue()?.consented),
+            enableSorting: true,
+            meta: {
+              canNavigate: { parentRow: true },
+              width: 205,
+            },
+          }),
+        ]
+      : []),
+    ...(isExamination
+      ? [
+          columnHelper.accessor("status", {
+            header: "Status",
+            cell: (props) => (
+              <ExaminationStatusChip status={props.getValue()} />
+            ),
+            enableSorting: true,
+            meta: {
+              canNavigate: { parentRow: true },
+              width: 110,
+            },
+          }),
+        ]
+      : []),
     columnHelper.display({
       header: "Aktionen",
       id: "actions",
@@ -281,7 +311,7 @@ function columnDefs(
         childCanBeRemoved(props.row.original) ? (
           <ActionsMenu
             actionItems={[
-              ...(props.row.original.status !== "CLOSED"
+              ...(props.row.original.status !== "CLOSED" && isExamination
                 ? [
                     {
                       label: "Nicht anwesend",

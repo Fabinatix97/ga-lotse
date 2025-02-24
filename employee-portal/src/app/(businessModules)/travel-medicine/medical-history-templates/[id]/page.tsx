@@ -5,11 +5,12 @@
 
 "use client";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
+
 import { MedicalHistoryTemplateEditor } from "@/lib/businessModules/travelMedicine/components/templates/medicalHistory/MedicalHistoryTemplateEditor";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 
 export default function MedicalHistoryDetailsPage({
   params,

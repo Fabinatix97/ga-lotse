@@ -6,6 +6,9 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
 import { PortalError } from "@eshg/lib-portal/errorHandling/PortalError";
 import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
 
@@ -13,9 +16,6 @@ import { AuditlogAccessibleTableView } from "@/lib/auditlog/components/AuditlogA
 import { AuditlogCreatePasswordView } from "@/lib/auditlog/components/AuditlogCreatePasswordView";
 import { useGetEmployeePrivateUserKey } from "@/lib/baseModule/api/queries/users";
 import { RestrictedPage } from "@/lib/shared/components/RestrictedPage";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 
 export default function AuditlogPage() {
   return (

@@ -125,7 +125,9 @@ public class ReportService extends AbstractAggregationResultService {
 
     report.addTableColumns(
         evaluation.getTableColumns().stream()
-            .map(EvaluationCopyService::copyTableColumnWithoutCellEntriesWithoutMinMaxValues)
+            .map(
+                EvaluationCopyService
+                    ::copyTableColumnWithoutCellEntriesAndMinMaxValuesAndAnonymization)
             .toList());
     return report;
   }

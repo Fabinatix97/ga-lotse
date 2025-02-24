@@ -6,6 +6,9 @@
 "use client";
 
 import { ApiActiveUserSession } from "@eshg/base-api";
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import LaptopIcon from "@mui/icons-material/Laptop";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -16,9 +19,6 @@ import { ReactNode, useMemo } from "react";
 
 import { useInvalidateUserSessions } from "@/lib/baseModule/api/mutations/users";
 import { useGetSelfActiveSessions } from "@/lib/baseModule/api/queries/users";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { join } from "@/lib/shared/helpers/strings";

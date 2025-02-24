@@ -6,17 +6,7 @@
 package de.eshg.dental.mapper;
 
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.dental.api.AbsenceExaminationResultDto;
-import de.eshg.dental.api.ExaminationDto;
-import de.eshg.dental.api.ExaminationResultDto;
-import de.eshg.dental.api.FluoridationExaminationResultDto;
-import de.eshg.dental.api.MainResultDto;
-import de.eshg.dental.api.OralHygieneStatusDto;
-import de.eshg.dental.api.ReasonForAbsenceDto;
-import de.eshg.dental.api.ScreeningExaminationResultDto;
-import de.eshg.dental.api.SecondaryResultDto;
-import de.eshg.dental.api.ToothDiagnosisDto;
-import de.eshg.dental.api.ToothDto;
+import de.eshg.dental.api.*;
 import de.eshg.dental.domain.model.AbsenceExaminationResult;
 import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.domain.model.ExaminationResult;
@@ -62,6 +52,7 @@ public final class ExaminationMapper {
           new ScreeningExaminationResultDto(
               screeningExaminationResult.isFluorideVarnishApplied(),
               mapToDto(screeningExaminationResult.getOralHygieneStatus()),
+              DentitionTypeMapper.mapToDto(screeningExaminationResult.getDentitionType()),
               mapToDto(screeningExaminationResult.getToothDiagnoses()));
       case AbsenceExaminationResult absenceExaminationResult ->
           new AbsenceExaminationResultDto(mapToDto(absenceExaminationResult.getReasonForAbsence()));

@@ -125,10 +125,10 @@ export function CreateBackupSidebar({
         authUploadDeviceSigningKeys,
       );
       setClientState(ClientState.Prepared);
-      snackbar.confirmation("Secure Backup success");
+      snackbar.confirmation("Sicherheitsbackup erfolgreich eingerichtet");
     } catch (e) {
       handleClose();
-      snackbar.error("Secure Backup failed");
+      snackbar.error("Einrichten des Sicherheitsbackups fehlgeschlagen");
       logger.error(e);
     }
   }

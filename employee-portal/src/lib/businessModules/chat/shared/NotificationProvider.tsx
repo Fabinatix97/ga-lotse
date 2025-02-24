@@ -10,7 +10,6 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { isNullish, omit } from "remeda";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
-import { ClientState } from "@/lib/businessModules/chat/shared/enums";
 
 export interface NotificationContextType {
   unreadNotificationsPerRoom: Record<string, number>;
@@ -20,14 +19,14 @@ export const NotificationContext =
   createContext<NotificationContextType | null>(null);
 
 export function NotificationProvider({ children }: RequiresChildren) {
-  const { matrixClient, clientState } = useChatClientContext();
+  const { matrixClient, isClientPrepared } = useChatClientContext();
   const [unreadNotificationsPerRoom, setUnreadNotificationsPerRoom] = useState<
     Record<string, number>
   >({});
 
   // Initial check for unread messages
   useEffect(() => {
-    if (clientState !== ClientState.Prepared) return;
+    if (!isClientPrepared) return;
 
     const rooms = matrixClient.getRooms();
     const joinedRooms = rooms.filter(
@@ -45,11 +44,11 @@ export function NotificationProvider({ children }: RequiresChildren) {
     );
 
     setUnreadNotificationsPerRoom(initialNotifications);
-  }, [clientState, matrixClient]);
+  }, [isClientPrepared, matrixClient]);
 
   // Setting listeners for unread messages
   useEffect(() => {
-    if (clientState !== ClientState.Prepared) return;
+    if (!isClientPrepared) return;
 
     function setUnreadNotification(event: MatrixEvent, room?: Room | Error) {
       let eventRoom = room instanceof Error ? undefined : room;
@@ -88,7 +87,7 @@ export function NotificationProvider({ children }: RequiresChildren) {
         setUnreadNotification,
       );
     };
-  }, [clientState, matrixClient]);
+  }, [isClientPrepared, matrixClient]);
 
   return (
     <NotificationContext.Provider value={{ unreadNotificationsPerRoom }}>

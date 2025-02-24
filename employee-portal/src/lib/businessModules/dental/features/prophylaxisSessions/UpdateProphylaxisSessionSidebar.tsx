@@ -57,6 +57,7 @@ function UpdateProphylaxisSessionSidebar(
     groupName: prophylaxisSession.groupName,
     type: prophylaxisSession.type,
     isScreening: prophylaxisSession.isScreening,
+    dentitionType: parseOptionalValue(prophylaxisSession.dentitionType),
     isFluoridation: !!prophylaxisSession.fluoridationVarnish,
     fluoridationVarnish: parseOptionalValue(
       prophylaxisSession.fluoridationVarnish,

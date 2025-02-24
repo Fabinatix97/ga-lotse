@@ -6,24 +6,21 @@
 "use client";
 
 import ClearIcon from "@mui/icons-material/Clear";
-import { Box } from "@mui/joy";
+import { Box, styled } from "@mui/joy";
 import SvgIcon from "@mui/joy/SvgIcon";
-import { SxProps } from "@mui/joy/styles/types";
 
 import { theme } from "@/lib/baseModule/theme/theme";
+import { RemoveToothButton } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/RemoveToothButton";
+import { TOOTH_SIZE } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/styles";
 import {
   Tooth,
+  ToothContext,
+  hasPreviousExaminationResult,
   isInUpperJaw,
   isToothWithDiagnosis,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
 
-import { hasPreviousExaminationResult } from "./GeneralJawForm";
-
 const FILL_COLOR = "#555E68";
-const ICON_SIZE: SxProps = {
-  width: 60,
-  height: 66,
-};
 
 type ToothKey = keyof typeof TOOTH_COMPONENTS;
 
@@ -40,9 +37,10 @@ const TOOTH_COMPONENTS = {
 
 interface ToothProps {
   tooth: Tooth;
+  toothContext: ToothContext;
 }
 
-export function ToothIcon({ tooth }: ToothProps) {
+export function ToothIcon({ tooth, toothContext }: ToothProps) {
   const inUpperJaw = isInUpperJaw(tooth);
 
   if (!isToothWithDiagnosis(tooth)) {
@@ -51,13 +49,14 @@ export function ToothIcon({ tooth }: ToothProps) {
 
   const toothKey = getToothKey(tooth);
   const variant = inUpperJaw ? "upperJaw" : "lowerJaw";
-  const ToothIcon = TOOTH_COMPONENTS[toothKey];
+  const ToothIconComponent = TOOTH_COMPONENTS[toothKey];
 
   return (
-    <ToothIcon
+    <ToothIconComponent
       variant={variant}
       isPrimaryTooth={tooth.toothType === "PRIMARY_TOOTH"}
       hasPreviousExaminationResult={hasPreviousExaminationResult(tooth)}
+      toothContext={toothContext}
     />
   );
 }
@@ -66,11 +65,17 @@ interface ToothIconProps {
   hasPreviousExaminationResult?: boolean;
   isPrimaryTooth?: boolean;
   variant: "upperJaw" | "lowerJaw";
+  toothContext: ToothContext;
 }
 
 export function Incisor(props: ToothIconProps) {
   return (
-    <SvgIcon sx={ICON_SIZE} viewBox="0 0 60 66" fill="none">
+    <SvgIcon
+      sx={TOOTH_SIZE}
+      viewBox="0 0 60 66"
+      fill="none"
+      data-testid="tooth-icon"
+    >
       <g transform={props.variant === "upperJaw" ? "" : "rotate(180, 30, 33)"}>
         <path
           d="M30.8944 12.0249L34.6584 19.5528C34.9908 20.2177 34.5073 21 33.7639 21H26.2361C25.4927 21 25.0092 20.2177 25.3416 19.5528L29.1056 12.0249C29.4741 11.2879 30.5259 11.2879 30.8944 12.0249Z"
@@ -107,7 +112,12 @@ export function Incisor(props: ToothIconProps) {
 
 export function Premolar(props: ToothIconProps) {
   return (
-    <SvgIcon sx={ICON_SIZE} viewBox="0 0 60 66" fill="none">
+    <SvgIcon
+      sx={TOOTH_SIZE}
+      viewBox="0 0 60 66"
+      fill="none"
+      data-testid="tooth-icon"
+    >
       <g transform={props.variant === "upperJaw" ? "" : "rotate(180, 30, 33)"}>
         <path
           d="M22.8944 4.02492L26.6584 11.5528C26.9908 12.2177 26.5073 13 25.7639 13H18.2361C17.4927 13 17.0092 12.2177 17.3416 11.5528L21.1056 4.02492C21.4741 3.28787 22.5259 3.28787 22.8944 4.02492Z"
@@ -150,7 +160,12 @@ export function Premolar(props: ToothIconProps) {
 
 export function Cuspid(props: ToothIconProps) {
   return (
-    <SvgIcon sx={ICON_SIZE} viewBox="0 0 60 66" fill="none">
+    <SvgIcon
+      sx={TOOTH_SIZE}
+      viewBox="0 0 60 66"
+      fill="none"
+      data-testid="tooth-icon"
+    >
       <g transform={props.variant === "upperJaw" ? "" : "rotate(180, 30, 33)"}>
         <path
           d="M30.8944 4.02492L34.6584 11.5528C34.9908 12.2177 34.5073 13 33.7639 13H26.2361C25.4927 13 25.0092 12.2177 25.3416 11.5528L29.1056 4.02492C29.4741 3.28787 30.5259 3.28787 30.8944 4.02492Z"
@@ -185,33 +200,49 @@ export function Cuspid(props: ToothIconProps) {
   );
 }
 
+const ToothSizedContainer = styled("div")({
+  ...TOOTH_SIZE,
+  position: "relative",
+  ".remove-tooth-button": {
+    display: "none",
+  },
+  "&:hover .remove-tooth-button": {
+    display: "inline-flex",
+  },
+});
+
 export function Molar(props: ToothIconProps) {
   return (
-    <SvgIcon sx={ICON_SIZE} viewBox="0 0 60 66" fill="none">
+    <SvgIcon
+      sx={TOOTH_SIZE}
+      viewBox="0 0 60 66"
+      fill="none"
+      data-testid="tooth-icon"
+    >
       <g transform={props.variant === "upperJaw" ? "" : "rotate(180, 30, 33)"}>
         <path
           d="M14.8944 4.02492L18.6584 11.5528C18.9908 12.2177 18.5073 13 17.7639 13H10.2361C9.49269 13 9.00919 12.2177 9.34164 11.5528L13.1056 4.02492C13.4741 3.28787 14.5259 3.28787 14.8944 4.02492Z"
           fill={props.isPrimaryTooth ? "white" : FILL_COLOR}
           stroke={FILL_COLOR}
-          stroke-width="2"
+          strokeWidth="2"
         />
         <path
           d="M30.8944 4.02492L34.6584 11.5528C34.9908 12.2177 34.5073 13 33.7639 13H26.2361C25.4927 13 25.0092 12.2177 25.3416 11.5528L29.1056 4.02492C29.4741 3.28787 30.5259 3.28787 30.8944 4.02492Z"
           fill={props.isPrimaryTooth ? "white" : FILL_COLOR}
           stroke={FILL_COLOR}
-          stroke-width="2"
+          strokeWidth="2"
         />
         <path
           d="M46.8944 4.02492L50.6584 11.5528C50.9908 12.2177 50.5073 13 49.7639 13H42.2361C41.4927 13 41.0092 12.2177 41.3416 11.5528L45.1056 4.02492C45.4741 3.28787 46.5259 3.28787 46.8944 4.02492Z"
           fill={props.isPrimaryTooth ? "white" : FILL_COLOR}
           stroke={FILL_COLOR}
-          stroke-width="2"
+          strokeWidth="2"
         />
         <path
           d="M1 26C1 22.134 4.13401 19 8 19H52C55.866 19 59 22.134 59 26V58C59 61.866 55.866 65 52 65H8C4.13401 65 1 61.866 1 58V26Z"
           fill={props.isPrimaryTooth ? "white" : FILL_COLOR}
           stroke={FILL_COLOR}
-          stroke-width="2"
+          strokeWidth="2"
         />
         {props.hasPreviousExaminationResult && (
           <g
@@ -234,6 +265,15 @@ export function Molar(props: ToothIconProps) {
   );
 }
 
+export function RemovableToothIcon(props: ToothProps) {
+  return (
+    <ToothSizedContainer data-testid="tooth-icon-button">
+      <ToothIcon {...props} />
+      <RemoveToothButton toothContext={props.toothContext} />
+    </ToothSizedContainer>
+  );
+}
+
 interface NoToothIconProps {
   isInUpperJaw: boolean;
 }
@@ -242,7 +282,7 @@ function NoToothIcon(props: NoToothIconProps) {
   return (
     <Box
       sx={{
-        ...ICON_SIZE,
+        ...TOOTH_SIZE,
         padding: props.isInUpperJaw
           ? "32px 18px 10px 18px"
           : "10px 18px 32px 18px",

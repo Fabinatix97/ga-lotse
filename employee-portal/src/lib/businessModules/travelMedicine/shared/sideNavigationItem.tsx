@@ -5,11 +5,11 @@
 
 import { ApiBaseFeature, ApiUserRole } from "@eshg/base-api";
 import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
+import { UseSideNavigationItemsResult } from "@eshg/lib-employee-portal/types/sideNavigation";
 import { VaccinesOutlined } from "@mui/icons-material";
 import { isPlainObject } from "remeda";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
-import { UseSideNavigationItemsResult } from "@/lib/baseModule/components/layout/sideNavigation/types";
 
 import { routes } from "./routes";
 

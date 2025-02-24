@@ -5,9 +5,8 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
+import { UseSideNavigationItemsResult } from "@eshg/lib-employee-portal/types/sideNavigation";
 import { MedicalServicesOutlined } from "@mui/icons-material";
-
-import { UseSideNavigationItemsResult } from "@/lib/baseModule/components/layout/sideNavigation/types";
 
 import { routes } from "./routes";
 

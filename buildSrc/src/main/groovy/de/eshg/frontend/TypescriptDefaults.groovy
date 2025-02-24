@@ -7,7 +7,12 @@ import org.gradle.api.provider.ListProperty
 
 class TypescriptDefaults {
 
-  private static final List<String> DEFAULT_EXCLUDES = ["node_modules", 'build', '.gradle']
+  private static final List<String> DEFAULT_EXCLUDES = [
+    'node_modules',
+    'build',
+    '.gradle',
+    'data/test'
+  ]
 
   static List<String> getAllExcludes(ListProperty<String> additionalExcludes) {
     return DEFAULT_EXCLUDES + additionalExcludes.getOrElse([])

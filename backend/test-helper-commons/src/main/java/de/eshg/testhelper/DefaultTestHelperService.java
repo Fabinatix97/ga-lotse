@@ -13,13 +13,14 @@ import de.eshg.testhelper.interception.TestHelperInterceptionRequestFilter;
 import de.eshg.testhelper.interception.TestRequestInterceptor;
 import de.eshg.testhelper.population.BasePopulator;
 import de.eshg.testhelper.population.ListWithTotalNumber;
-import java.sql.SQLException;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.Period;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -28,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jdbc.JdbcConnectionDetails;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -43,6 +45,7 @@ public class DefaultTestHelperService implements TestHelperWithDatabaseService {
 
   protected final List<BasePopulator<?>> populators;
   protected final List<ResettableProperties> resettableProperties;
+  private final List<TestHelperServiceResetAction> resetActions;
 
   private final Map<ResettableProperties, String> initialResettablePropertiesSnapshots;
   protected final EnvironmentConfig environmentConfig;
@@ -53,6 +56,7 @@ public class DefaultTestHelperService implements TestHelperWithDatabaseService {
       Clock clock,
       List<BasePopulator<?>> populators,
       List<ResettableProperties> resettableProperties,
+      List<TestHelperServiceResetAction> resetActions,
       EnvironmentConfig environmentConfig) {
     environmentConfig.assertIsNotProduction();
     log.warn("Creating {}", getClass().getSimpleName());
@@ -62,6 +66,7 @@ public class DefaultTestHelperService implements TestHelperWithDatabaseService {
     this.clock = clock;
     this.populators = populators;
     this.resettableProperties = resettableProperties;
+    this.resetActions = assertOrdered(resetActions);
     this.initialResettablePropertiesSnapshots =
         resettableProperties.stream()
             .collect(Collectors.toMap(Function.identity(), SnapshotUtil::createSnapshot));
@@ -70,18 +75,25 @@ public class DefaultTestHelperService implements TestHelperWithDatabaseService {
   @Override
   public Instant reset() throws Exception {
     environmentConfig.assertIsNotProduction();
-    if (databaseResetHelper != null) {
-      resetDatabase();
-    }
-    resetInterceptions();
     resetResettableProperties();
-    withTestClock(TestHelperClock::reset);
+    resetActions.forEach(TestHelperServiceResetAction::reset);
     return Instant.now(clock);
   }
 
-  private void resetDatabase() throws SQLException {
-    databaseResetHelper.truncateAllTables(getTablesToExclude());
-    databaseResetHelper.resetAllSequences();
+  public String describeResetHelperSetup() {
+    if (resetActions.isEmpty()) {
+      return "TestHelperServiceResetAction beans: none";
+    } else {
+      return "TestHelperServiceResetAction beans:\n"
+          + resetActions.stream()
+              .map(TestHelperServiceResetAction::getClass)
+              .map(
+                  clazz ->
+                      "%s (@Order(%d))"
+                          .formatted(clazz.getName(), clazz.getAnnotation(Order.class).value()))
+              .collect(Collectors.joining("\n"))
+              .indent(4);
+    }
   }
 
   @Override
@@ -119,10 +131,6 @@ public class DefaultTestHelperService implements TestHelperWithDatabaseService {
     String resettablePropertiesSnapshot =
         initialResettablePropertiesSnapshots.get(resettableProperties);
     SnapshotUtil.restoreSnapshot(resettablePropertiesSnapshot, resettableProperties);
-  }
-
-  protected String[] getTablesToExclude() {
-    return new String[] {};
   }
 
   @Override
@@ -179,5 +187,26 @@ public class DefaultTestHelperService implements TestHelperWithDatabaseService {
                 })
             .toList();
     return new DefaultPopulationResponse(populations);
+  }
+
+  private List<TestHelperServiceResetAction> assertOrdered(
+      List<TestHelperServiceResetAction> actions) {
+    Set<Integer> orders = new HashSet<>();
+    actions.stream()
+        .map(TestHelperServiceResetAction::getClass)
+        .forEach(
+            actionClazz -> {
+              Order orderAnnotation = actionClazz.getAnnotation(Order.class);
+              if (orderAnnotation == null) {
+                throw new IllegalArgumentException(
+                    "Missing @Order for resetAction: %s".formatted(actionClazz.getName()));
+              }
+              if (!orders.add(orderAnnotation.value())) {
+                throw new IllegalArgumentException(
+                    "Duplicate @Order value %d for resetAction: %s"
+                        .formatted(orderAnnotation.value(), actionClazz.getName()));
+              }
+            });
+    return actions;
   }
 }

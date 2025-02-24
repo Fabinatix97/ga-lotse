@@ -56,5 +56,11 @@
   <include file="migrations/0046_add_appointment_start.xml"/>
   <include file="migrations/0047_add_auditlog_entry.xml"/>
   <include file="migrations/0048_convert_duration_columns_to_interval.xml"/>
+  <include file="migrations/0049_refactor_anonymous_user_id.xml"/>
+  <include file="migrations/0050_add_procedure_expiration.xml"/>
+  <include file="migrations/0051_differentiate_between_previous_person_and_facility_file_state.xml"/>
+  <include file="migrations/0052_oms_appointment_type_extensions.xml"/>
+  <include file="migrations/0053_idx_procedure_expiration_by_external_id.xml"/>
+  <include file="migrations/0054_rename_rapid_test_syphilis_test_data_column.xml"/>
 
 </databaseChangeLog>

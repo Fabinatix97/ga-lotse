@@ -6,6 +6,7 @@
 package de.eshg.officialmedicalservice.notification;
 
 import de.eshg.base.mail.MailApi;
+import de.eshg.base.mail.MailType;
 import de.eshg.base.mail.SendEmailRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,8 @@ public class MailClient {
   void sendMail(String to, String from, String subject, String text) {
     log.info("Sending E-Mail notification");
 
-    SendEmailRequest sendEmailRequest = new SendEmailRequest(to, from, subject, text);
+    SendEmailRequest sendEmailRequest =
+        new SendEmailRequest(to, from, subject, text, MailType.PLAIN_TEXT);
     mailApi.sendEmail(sendEmailRequest);
 
     log.info("E-Mail notification sent");

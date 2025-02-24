@@ -71,9 +71,18 @@ export interface ToothContext {
   toothIndex: number;
 }
 
-export type FieldVariant = "main" | "secondary1" | "secondary2";
+export type ResultField = "main" | "secondary1" | "secondary2";
 
-export interface Focus {
+export interface ElementContext {
   toothContext: ToothContext;
-  field: FieldVariant;
+  field?: ResultField;
+}
+
+export function hasPreviousExaminationResult(
+  tooth: ToothWithDiagnosis,
+): boolean {
+  return (
+    tooth.previousResults.length > 0 &&
+    tooth.previousResults[0] !== ApiMainResult.S
+  );
 }

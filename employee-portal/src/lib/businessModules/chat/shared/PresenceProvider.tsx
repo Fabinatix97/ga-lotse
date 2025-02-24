@@ -10,7 +10,6 @@ import { isNullish } from "remeda";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
-import { ClientState } from "@/lib/businessModules/chat/shared/enums";
 import {
   Presence,
   UsersPresence,
@@ -23,25 +22,24 @@ export interface PresenceContextType {
 export const PresenceContext = createContext<PresenceContextType | null>(null);
 
 export function PresenceProvider({ children }: Readonly<RequiresChildren>) {
-  const { matrixClient, clientState } = useChatClientContext();
+  const { matrixClient, isClientPrepared } = useChatClientContext();
   const {
     userSettings: { sharePresence },
   } = useChat();
   const [usersPresence, setUsersPresence] = useState<UsersPresence>({});
 
   useEffect(() => {
-    if (!matrixClient) return;
-    if (clientState !== ClientState.Prepared) return;
-    if (!sharePresence) return;
+    if (!matrixClient || !isClientPrepared || !sharePresence) return;
+
     const users = matrixClient.getUsers();
     const statuses = Object.fromEntries(
       users.map((user) => [user.userId, user.presence]),
     ) as UsersPresence;
     setUsersPresence(statuses);
-  }, [clientState, matrixClient, sharePresence]);
+  }, [isClientPrepared, matrixClient, sharePresence]);
 
   useEffect(() => {
-    if (clientState !== ClientState.Prepared) return;
+    if (!isClientPrepared) return;
 
     function handleUserPresence(event?: MatrixEvent, user?: User) {
       const eventType = event?.getType();
@@ -80,7 +78,7 @@ export function PresenceProvider({ children }: Readonly<RequiresChildren>) {
         handleUserPresence,
       );
     };
-  }, [clientState, matrixClient, sharePresence, usersPresence]);
+  }, [isClientPrepared, matrixClient, sharePresence, usersPresence]);
 
   const contextValues = useMemo<PresenceContextType>(
     () => ({

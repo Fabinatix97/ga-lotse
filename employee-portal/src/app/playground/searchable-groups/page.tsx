@@ -5,6 +5,7 @@
 
 "use client";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { Sheet, Stack } from "@mui/joy";
@@ -15,7 +16,6 @@ import {
   SearchableGroups,
 } from "@/lib/shared/components/SearchableGroups";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 
 export default function PlaygroundSearchableGroupsPage() {
   const groups = [

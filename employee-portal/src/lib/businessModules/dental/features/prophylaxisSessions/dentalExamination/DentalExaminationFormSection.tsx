@@ -12,7 +12,7 @@ import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSh
 
 export function DentalExaminationFormSection() {
   return (
-    <InformationSheet>
+    <InformationSheet aria-label="Gebissformular" component="section">
       <DentalExaminationJawTabs
         upperJaw={<UpperJawForm />}
         lowerJaw={<LowerJawForm />}

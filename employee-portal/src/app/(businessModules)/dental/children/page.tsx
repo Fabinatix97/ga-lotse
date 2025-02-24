@@ -5,6 +5,9 @@
 
 "use client";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
 import { Cached } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 
@@ -13,10 +16,6 @@ import { CloseSchoolYearButton } from "@/lib/businessModules/dental/features/chi
 import { CreateChildSidebar } from "@/lib/businessModules/dental/features/children/new/CreateChildSidebar";
 import { useImportChildrenSidebar } from "@/lib/businessModules/dental/import/ImportChildrenSidebar";
 import { BUTTON_SIZE } from "@/lib/businessModules/schoolEntry/features/procedures/new/constants";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 
 function ImportChildrenButton() {
   const importChildrenSidebar = useImportChildrenSidebar();
@@ -32,14 +31,6 @@ function ImportChildrenButton() {
   );
 }
 
-function CreateChildButton() {
-  return (
-    <OverlayBoundary>
-      <CreateChildSidebar />
-    </OverlayBoundary>
-  );
-}
-
 export default function DentalProceduresPage() {
   return (
     <StickyToolbarLayout toolbar={<Toolbar title="Zahnärztlicher Dienst" />}>
@@ -48,7 +39,7 @@ export default function DentalProceduresPage() {
           buttons={[
             <CloseSchoolYearButton key="closeSchoolYear" />,
             <ImportChildrenButton key="importChildren" />,
-            <CreateChildButton key="createChild" />,
+            <CreateChildSidebar key="createChild" />,
           ]}
         />
       </MainContentLayout>

@@ -5,12 +5,11 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
-import { OtherHousesOutlined } from "@mui/icons-material";
-
 import {
   SideNavigationSubItem,
   UseSideNavigationItemsResult,
-} from "@/lib/baseModule/components/layout/sideNavigation/types";
+} from "@eshg/lib-employee-portal/types/sideNavigation";
+import { OtherHousesOutlined } from "@mui/icons-material";
 
 import { routes } from "./routes";
 

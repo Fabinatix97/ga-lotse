@@ -10,12 +10,12 @@ import {
   DiagramGrouping,
   DiagramOrientation,
   DiagramScaling,
-  DiagramType,
 } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
 import {
   ChartApi,
   EChart,
 } from "@/lib/businessModules/statistics/components/shared/charts/EChart";
+import { evaluateGrouping } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
 import {
   calculateRelativeFormatting,
   formatChartLabel,
@@ -27,9 +27,6 @@ export interface BarChartProps {
   scaling?: DiagramScaling;
   orientation?: DiagramOrientation;
   eChartApi?: (eChartApi: ChartApi) => void;
-  barWidth?: string;
-  barGap?: number;
-  type?: DiagramType.BAR_CHART | DiagramType.HISTOGRAM_CHART;
 }
 
 export function mapToUnstackedSeries(
@@ -107,19 +104,6 @@ export function transformToRelativeData(data: DataGroups | number[]) {
   );
 }
 
-function evaluateGrouping(
-  grouping: DiagramGrouping | undefined,
-  scaling: DiagramScaling | undefined,
-) {
-  if (grouping === "STACKED") {
-    if (scaling === "RELATIVE") {
-      return "total";
-    }
-    return "x";
-  }
-  return undefined;
-}
-
 export function BarChart(props: BarChartProps) {
   const grouping = evaluateGrouping(props.grouping, props.scaling);
   const isStackedSeries = (props.diagramData[0]?.attributes?.length ?? 0) > 1;
@@ -148,22 +132,7 @@ export function BarChart(props: BarChartProps) {
         return formatChartLabel(text, 330);
       },
       hideOverlap: false,
-      interval:
-        props.orientation === "VERTICAL" &&
-        props.type !== DiagramType.HISTOGRAM_CHART
-          ? 0
-          : undefined,
-    },
-    axisLine: {
-      show: props.type === DiagramType.HISTOGRAM_CHART,
-    },
-    axisTick: {
-      show: props.type === DiagramType.HISTOGRAM_CHART,
-      interval: 0,
-    },
-    splitLine: {
-      show: props.type === DiagramType.HISTOGRAM_CHART,
-      interval: 0,
+      interval: props.orientation === "VERTICAL" ? 0 : undefined,
     },
   };
   const valueAxisOption: EChartsOption["xAxis"] & EChartsOption["yAxis"] = {
@@ -201,16 +170,12 @@ export function BarChart(props: BarChartProps) {
             type: "bar",
             data: (series.data as DataGroups)[serie]!.map((it) => it.value),
             stack: grouping,
-            barWidth: props.barWidth,
-            barGap: props.barGap,
           };
         })
       : [
           {
             type: "bar",
             data: series.data as number[],
-            barWidth: props.barWidth,
-            barGap: props.barGap,
           },
         ],
   };

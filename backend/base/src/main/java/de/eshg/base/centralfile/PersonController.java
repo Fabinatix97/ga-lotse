@@ -47,6 +47,8 @@ public class PersonController implements PersonApi {
   private static final String PERSON_FILE_STATE_NOT_FOUND = "PersonFileState not found";
   public static final String REFERENCE_PERSON_NOT_FOUND = "ReferencePerson not found";
 
+  private static final int MAX_RESULTS_FOR_PERSON_SEARCH_WITH_PARTIAL_KNOWLEDGE_FACTORS = 100;
+
   private final PersonRepository personRepository;
   private final PersonService personService;
   private final Clock clock;
@@ -98,9 +100,31 @@ public class PersonController implements PersonApi {
   public SearchReferencePersonsResponse searchReferencePersons(
       String firstName, String lastName, LocalDate dateOfBirth) {
     return new SearchReferencePersonsResponse(
-        personService.fuzzySearch(firstName, lastName, dateOfBirth).stream()
+        personService.fuzzySearch(firstName, lastName, dateOfBirth, false, null).stream()
             .map(PersonMapper::mapReferencePersonToApi)
             .toList());
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public SearchReferencePersonsWithPartialKnowledgeFactorsResponse
+      searchReferencePersonsWithPartialKnowledgeFactors(
+          String firstName, String lastName, LocalDate dateOfBirth) {
+    List<Person> fuzzySearchResult =
+        personService.fuzzySearch(
+            firstName,
+            lastName,
+            dateOfBirth,
+            true,
+            MAX_RESULTS_FOR_PERSON_SEARCH_WITH_PARTIAL_KNOWLEDGE_FACTORS + 1);
+    boolean overflow =
+        fuzzySearchResult.size() > MAX_RESULTS_FOR_PERSON_SEARCH_WITH_PARTIAL_KNOWLEDGE_FACTORS;
+    return new SearchReferencePersonsWithPartialKnowledgeFactorsResponse(
+        fuzzySearchResult.stream()
+            .limit(MAX_RESULTS_FOR_PERSON_SEARCH_WITH_PARTIAL_KNOWLEDGE_FACTORS)
+            .map(PersonMapper::mapReferencePersonToApi)
+            .toList(),
+        overflow);
   }
 
   @Override

@@ -35,6 +35,8 @@ import de.eshg.lib.procedure.model.gdpr.GetGdprValidationTaskDetailsResponse;
 import de.eshg.lib.procedure.model.gdpr.GetGdprValidationTaskResponse;
 import de.eshg.lib.statistics.StatisticsApi;
 import de.eshg.lib.statistics.api.GetDataSourcesResponse;
+import de.eshg.lib.statistics.api.GetDataTableHeaderRequest;
+import de.eshg.lib.statistics.api.GetDataTableHeaderResponse;
 import de.eshg.lib.statistics.api.GetSpecificDataRequest;
 import de.eshg.lib.statistics.api.GetSpecificDataResponse;
 import de.eshg.rest.client.BearerAuthInterceptor;
@@ -213,6 +215,12 @@ public class BusinessModuleClient
   @Override
   public GetDataSourcesResponse getAvailableDataSources() {
     return statisticsApiDelegate.getAvailableDataSources();
+  }
+
+  @Override
+  public GetDataTableHeaderResponse getDataTableHeader(
+      GetDataTableHeaderRequest getDataTableHeaderRequest) {
+    return statisticsApiDelegate.getDataTableHeader(getDataTableHeaderRequest);
   }
 
   @Override

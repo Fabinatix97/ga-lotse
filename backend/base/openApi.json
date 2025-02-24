@@ -3550,6 +3550,51 @@
         "tags" : [ "Person" ]
       }
     },
+    "/persons/partial" : {
+      "get" : {
+        "operationId" : "searchReferencePersonsWithPartialKnowledgeFactors",
+        "parameters" : [ {
+          "description" : "The first name of the Person (1 of 3 knowledge factors) which shall be searched for.",
+          "in" : "query",
+          "name" : "firstName",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "The last name of the Person (1 of 3 knowledge factors) which shall be searched for.",
+          "in" : "query",
+          "name" : "lastName",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "The date of birth of the Person (1 of 3 knowledge factors) which shall be searched for.",
+          "in" : "query",
+          "name" : "dateOfBirth",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SearchReferencePersonsWithPartialKnowledgeFactorsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Search reference persons for the given knowledge factors 'firstName', 'lastName' and 'dateOfBirth',\nwithout the need for specifying all three. However, searching for only a first name or only a last\nname is prohibited.\nExcludes persons created from external sources.\nCaution: The returned ids of the reference persons must not be stored.\n",
+        "tags" : [ "Person" ]
+      }
+    },
     "/persons/reference/{id}/linked-ids" : {
       "get" : {
         "operationId" : "getPersonFileStateIdsAssociatedWithReferencePerson",
@@ -9659,6 +9704,12 @@
         },
         "description" : "Location defined by latitude and longitude."
       },
+      "MailType" : {
+        "type" : "string",
+        "description" : "The content type of the email. PLAIN_TEXT mails will be sent verbatim. for HTML mails the text will be embedded in a template with a GA specific header and footer.",
+        "example" : "PLAIN_TEXT",
+        "enum" : [ "PLAIN_TEXT", "HTML" ]
+      },
       "ManualProgressEntryType" : {
         "type" : "string",
         "enum" : [ "LETTER", "PHONE_CALL", "NOTE", "EMAIL", "IMAGE", "DOCUMENT" ]
@@ -10466,6 +10517,21 @@
           }
         }
       },
+      "SearchReferencePersonsWithPartialKnowledgeFactorsResponse" : {
+        "required" : [ "overflow", "persons" ],
+        "type" : "object",
+        "properties" : {
+          "overflow" : {
+            "type" : "boolean"
+          },
+          "persons" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/GetReferencePersonResponse"
+            }
+          }
+        }
+      },
       "SearchStreetResponse" : {
         "required" : [ "cityDistricts" ],
         "type" : "object",
@@ -10513,7 +10579,7 @@
         }
       },
       "SendEmailRequest" : {
-        "required" : [ "subject", "text", "to" ],
+        "required" : [ "subject", "text", "to", "type" ],
         "type" : "object",
         "properties" : {
           "from" : {
@@ -10530,8 +10596,8 @@
           },
           "text" : {
             "type" : "string",
-            "description" : "The content of the email. Currently only plain text is possible",
-            "example" : "Dear John Doe, this a test. Best regards, Jane Doe"
+            "description" : "The content of the email. If the type is HTML, this should be an HTML fragment; otherwise, it should be plain text.",
+            "example" : "PLAIN_TEXT: 'Dear John Doe,\nthis a test.\nBest regards,\nJane Doe' HTML: 'Dear John Doe,<br>this a test.<br>Best regards,<br>Jane Doe'"
           },
           "to" : {
             "maxLength" : 254,
@@ -10539,6 +10605,9 @@
             "type" : "string",
             "description" : "The email address of the recipient of the email",
             "example" : "recipient@example.com"
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/MailType"
           }
         }
       },
@@ -11411,7 +11480,7 @@
       "UserRole" : {
         "type" : "string",
         "description" : "A filter for a role users can have",
-        "enum" : [ "INSPECTION_LEADER", "INSPECTION_LANDESAMT_LEADER", "SCHOOL_ENTRY_LEADER", "TRAVEL_MEDICINE_LEADER", "MEASLES_PROTECTION_LEADER", "STATISTICS_LEADER", "BASE_PERSONS_READ", "BASE_PERSONS_WRITE", "BASE_PERSONS_DELETE", "BASE_FACILITIES_READ", "BASE_FACILITIES_WRITE", "BASE_FACILITIES_DELETE", "BASE_RESOURCES_READ", "BASE_RESOURCES_WRITE", "BASE_INVENTORY_READ", "BASE_INVENTORY_USE", "BASE_INVENTORY_ADMINISTRATE", "BASE_LABELS_READ", "BASE_LABELS_WRITE", "BASE_CONTACTS_READ", "BASE_CONTACTS_WRITE", "BASE_GDPR_PROCEDURE_REVIEW", "BASE_GDPR_PROCEDURE_READ", "BASE_GDPR_PROCEDURE_WRITE", "BASE_MUK_FACILITY_LINK_WRITE", "BASE_BUNDID_PERSON_LINK_WRITE", "BASE_GLOBAL_CALENDARS_WRITE", "BASE_CALENDAR_BUSINESS_EVENTS_WRITE", "BASE_PROCEDURES_READ", "BASE_PROCEDURE_METRICS_READ", "BASE_TASKS_READ", "BASE_ACCESS_CODE_USER_ADMIN", "BASE_ACCESS_CODE_USER_VERIFY", "SCHOOL_ENTRY_ADMIN", "INSPECTION_NOTIFICATIONS_READ", "INSPECTION_PROCEDURE_EDIT", "INSPECTION_PROCEDURE_ASSIGN", "INSPECTION_OBJECTTYPES_READ", "INSPECTION_OBJECTTYPES_WRITE", "INSPECTION_CHECKLISTDEFINITIONS_READ", "INSPECTION_CHECKLISTDEFINITIONS_WRITE", "INSPECTION_CORECHECKLISTDEFINITIONS_EDIT", "INSPECTION_CENTRALREPOSITORY_READ", "INSPECTION_CENTRALREPOSITORY_WRITE", "INSPECTION_CENTRALREPOSITORY_DELETE", "INSPECTION_CENTRALREPOSITORY_WRITE_CORECHECKLISTS", "INSPECTION_IMPORT", "TRAVEL_MEDICINE_ADMIN", "MEASLES_PROTECTION_ADMIN", "CHAT_MANAGEMENT_WRITE", "STATISTICS_STATISTICS_READ", "STATISTICS_STATISTICS_WRITE", "STATISTICS_STATISTICS_ADMIN", "BASE_MAIL_SEND", "INBOX_PROCEDURE_WRITE", "PROCEDURE_ARCHIVE", "PROCEDURE_ARCHIVE_ADMIN", "AUDITLOG_FILE_SEND", "AUDITLOG_DECRYPT_AND_ACCESS", "AUDITLOG_AUTHORIZE_ACCESS", "AUDITLOG_PUBLIC_KEYS_READ", "STANDARD_EMPLOYEE", "STI_PROTECTION_USER", "STI_PROTECTION_MFA", "STI_PROTECTION_CONSULTANT", "STI_PROTECTION_PHYSICIAN", "STI_PROTECTION_ADMIN", "STI_PROTECTION_LEADER", "MEDICAL_REGISTRY_LEADER", "MEDICAL_REGISTRY_ADMIN", "DENTAL_LEADER", "DENTAL_ADMIN", "OPEN_DATA_ADMIN", "OPEN_DATA_LEADER", "MEDICAL_REGISTRY_IMPORT", "OFFICIAL_MEDICAL_SERVICE_LEADER", "OFFICIAL_MEDICAL_SERVICE_ADMIN", "BASE_GDPR_VALIDATION_TASK_CLEANUP" ]
+        "enum" : [ "INSPECTION_LEADER", "INSPECTION_LANDESAMT_LEADER", "SCHOOL_ENTRY_LEADER", "TRAVEL_MEDICINE_LEADER", "MEASLES_PROTECTION_LEADER", "STATISTICS_LEADER", "BASE_PERSONS_READ", "BASE_PERSONS_WRITE", "BASE_PERSONS_DELETE", "BASE_FACILITIES_READ", "BASE_FACILITIES_WRITE", "BASE_FACILITIES_DELETE", "BASE_RESOURCES_READ", "BASE_RESOURCES_WRITE", "BASE_INVENTORY_READ", "BASE_INVENTORY_USE", "BASE_INVENTORY_ADMINISTRATE", "BASE_LABELS_READ", "BASE_LABELS_WRITE", "BASE_CONTACTS_READ", "BASE_CONTACTS_WRITE", "BASE_GDPR_PROCEDURE_REVIEW", "BASE_GDPR_PROCEDURE_READ", "BASE_GDPR_PROCEDURE_WRITE", "BASE_MUK_FACILITY_LINK_WRITE", "BASE_BUNDID_PERSON_LINK_WRITE", "BASE_GLOBAL_CALENDARS_WRITE", "BASE_CALENDAR_BUSINESS_EVENTS_WRITE", "BASE_PROCEDURES_READ", "BASE_PROCEDURE_METRICS_READ", "BASE_TASKS_READ", "BASE_ACCESS_CODE_USER_ADMIN", "BASE_ACCESS_CODE_USER_VERIFY", "SCHOOL_ENTRY_ADMIN", "INSPECTION_NOTIFICATIONS_READ", "INSPECTION_PROCEDURE_EDIT", "INSPECTION_PROCEDURE_ASSIGN", "INSPECTION_OBJECTTYPES_READ", "INSPECTION_OBJECTTYPES_WRITE", "INSPECTION_CHECKLISTDEFINITIONS_READ", "INSPECTION_CHECKLISTDEFINITIONS_WRITE", "INSPECTION_CORECHECKLISTDEFINITIONS_EDIT", "INSPECTION_CENTRALREPOSITORY_READ", "INSPECTION_CENTRALREPOSITORY_WRITE", "INSPECTION_CENTRALREPOSITORY_DELETE", "INSPECTION_CENTRALREPOSITORY_WRITE_CORECHECKLISTS", "INSPECTION_IMPORT", "TRAVEL_MEDICINE_ADMIN", "MEASLES_PROTECTION_ADMIN", "CHAT_MANAGEMENT_WRITE", "STATISTICS_STATISTICS_READ", "STATISTICS_STATISTICS_WRITE", "STATISTICS_STATISTICS_ADMIN", "STATISTICS_STATISTICS_TECHNICAL_USER", "BASE_MAIL_SEND", "INBOX_PROCEDURE_WRITE", "PROCEDURE_ARCHIVE", "PROCEDURE_ARCHIVE_ADMIN", "AUDITLOG_FILE_SEND", "AUDITLOG_DECRYPT_AND_ACCESS", "AUDITLOG_AUTHORIZE_ACCESS", "AUDITLOG_PUBLIC_KEYS_READ", "STANDARD_EMPLOYEE", "STI_PROTECTION_USER", "STI_PROTECTION_MFA", "STI_PROTECTION_CONSULTANT", "STI_PROTECTION_PHYSICIAN", "STI_PROTECTION_ADMIN", "STI_PROTECTION_LEADER", "MEDICAL_REGISTRY_LEADER", "MEDICAL_REGISTRY_ADMIN", "DENTAL_LEADER", "DENTAL_ADMIN", "OPEN_DATA_ADMIN", "OPEN_DATA_LEADER", "MEDICAL_REGISTRY_IMPORT", "OFFICIAL_MEDICAL_SERVICE_LEADER", "OFFICIAL_MEDICAL_SERVICE_ADMIN", "BASE_GDPR_VALIDATION_TASK_CLEANUP" ]
       },
       "VCardAddress" : {
         "required" : [ "addressAddition", "city", "country", "houseNumber", "postBox", "postalCode", "street" ],

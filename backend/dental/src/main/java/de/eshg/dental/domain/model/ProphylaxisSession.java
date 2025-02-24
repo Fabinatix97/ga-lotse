@@ -52,6 +52,10 @@ public class ProphylaxisSession extends BaseEntityWithExternalId {
   private String groupName;
 
   @DataSensitivity(PSEUDONYMIZED)
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private DentitionType dentitionType;
+
+  @DataSensitivity(PSEUDONYMIZED)
   private boolean isScreening;
 
   @DataSensitivity(PSEUDONYMIZED)
@@ -119,6 +123,14 @@ public class ProphylaxisSession extends BaseEntityWithExternalId {
 
   public void setGroupName(String groupName) {
     this.groupName = groupName;
+  }
+
+  public DentitionType getDentitionType() {
+    return dentitionType;
+  }
+
+  public void setDentitionType(DentitionType dentitionType) {
+    this.dentitionType = dentitionType;
   }
 
   public boolean isScreening() {

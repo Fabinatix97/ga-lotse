@@ -10,6 +10,7 @@ import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.ErrorResponse;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperController;
+import de.eshg.testhelper.TestHelperServiceResetAction;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -31,6 +32,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -39,7 +41,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
 @ConditionalOnTestHelperEnabled
-public class TestRequestInterceptor extends OncePerRequestFilter {
+@Order(20)
+public class TestRequestInterceptor extends OncePerRequestFilter
+    implements TestHelperServiceResetAction {
 
   private static final Logger log = LoggerFactory.getLogger(TestRequestInterceptor.class);
 
@@ -57,6 +61,7 @@ public class TestRequestInterceptor extends OncePerRequestFilter {
     log.warn("{} is enabled!", getClass().getSimpleName());
   }
 
+  @Override
   public void reset() {
     if (!cyclicBarriers.isEmpty()) {
       log.warn("Clearing {} cyclic barriers", cyclicBarriers.size());

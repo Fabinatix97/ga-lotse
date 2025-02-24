@@ -13,6 +13,8 @@ import {
   TextSnippetOutlined,
   TimelineOutlined,
 } from "@mui/icons-material";
+import { CircularProgress } from "@mui/joy";
+import { useIsFetching } from "@tanstack/react-query";
 
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { PersonDocumentConsultation } from "@/lib/shared/components/icons/PersonDocumentConsultation";
@@ -35,6 +37,7 @@ export function ProcedureToolbar({
       items={tabItems}
       routeBack={hasStiProtectionUserRole ? routes.procedures.index : undefined}
       header={<ProcedureTabHeader procedureId={procedureId} />}
+      afterTabs={<DisplayLoadingState />}
     />
   );
 }
@@ -58,7 +61,7 @@ function buildTabItems(id: string): TabNavigationItem[] {
     },
     {
       tabButtonName: "Untersuchung",
-      href: routes.procedures.byId(id).rapidTest,
+      href: routes.procedures.byId(id).examination.index,
       decorator: <MedicalServicesOutlined />,
     },
     {
@@ -72,4 +75,10 @@ function buildTabItems(id: string): TabNavigationItem[] {
       decorator: <TimelineOutlined />,
     },
   ];
+}
+
+function DisplayLoadingState() {
+  const isFetching = useIsFetching();
+
+  return isFetching ? <CircularProgress /> : null;
 }

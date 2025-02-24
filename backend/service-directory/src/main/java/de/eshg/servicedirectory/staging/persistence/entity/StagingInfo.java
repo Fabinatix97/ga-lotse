@@ -11,7 +11,7 @@ import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import java.util.UUID;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
@@ -23,7 +23,7 @@ public class StagingInfo<T extends GloballyUniqueEntityBase> implements StagedEn
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private StagedEntityType stagedEntityType;
 
-  @OneToOne
+  @ManyToOne
   @JoinColumn(name = "audited_entity_id")
   private T auditedEntity;
 

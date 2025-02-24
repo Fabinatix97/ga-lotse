@@ -9,8 +9,10 @@ import de.eshg.domain.model.GloballyUniqueEntityBase;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.servicedirectory.orgunit.persistence.entity.AuditedOrgUnit;
+import de.eshg.servicedirectory.staging.persistence.entity.StagedInfo;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -72,6 +74,8 @@ public non-sealed class AuditedActor extends GloballyUniqueEntityBase implements
       fetch = FetchType.EAGER,
       orphanRemoval = true)
   private ActorMetadata actorMetadata;
+
+  @Embedded private final StagedInfo<StagedActor> stagedInfo = new StagedInfo<>();
 
   @Override
   public String getReadableName() {

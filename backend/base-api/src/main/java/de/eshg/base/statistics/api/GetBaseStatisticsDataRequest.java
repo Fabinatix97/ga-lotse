@@ -13,4 +13,4 @@ import java.util.UUID;
 public record GetBaseStatisticsDataRequest(
     @NotBlank String dataSourceName,
     @NotNull List<String> attributeCodes,
-    @NotNull List<UUID> centralFileIds) {}
+    @NotNull List<UUID> baseIds) {}

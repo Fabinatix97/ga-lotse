@@ -16,14 +16,13 @@ import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvid
 import AddIcon from "@mui/icons-material/Add";
 import { Button, Chip, Stack, Typography } from "@mui/joy";
 import ChipDelete from "@mui/joy/ChipDelete";
-import { useState } from "react";
 
 import {
   useDeleteWebSearchQuery,
   useSaveWebSearchQuery,
   useUpdateWebSearchEntry,
 } from "@/lib/businessModules/inspection/api/mutations/webSearch";
-import { FacilityWebSearchImportSidebar } from "@/lib/businessModules/inspection/components/facility/search/FacilityWebSearchImportSidebar";
+import { useFacilityWebSearchImportSidebar } from "@/lib/businessModules/inspection/components/facility/search/FacilityWebSearchImportSidebar";
 import {
   ignoredNames,
   webSearchStatusNames,
@@ -46,11 +45,6 @@ import {
   createFacilitySearchResultSubRowColumns,
 } from "./columns";
 
-interface SidebarState {
-  open: boolean;
-  webSearchEntry?: ApiWebSearchEntry;
-}
-
 export function FacilityWebSearchResultsTable(
   props: Readonly<{
     webSearch: ApiWebSearch;
@@ -60,6 +54,7 @@ export function FacilityWebSearchResultsTable(
   }>,
 ) {
   const { mutateAsync: updateWebSearchEntry } = useUpdateWebSearchEntry();
+  const facilityWebSearchImportSidebar = useFacilityWebSearchImportSidebar();
 
   const tableControl = useTableControl({
     serverSideSorting: true,
@@ -72,12 +67,10 @@ export function FacilityWebSearchResultsTable(
 
   const subRowColumns = createFacilitySearchResultSubRowColumns();
 
-  const [sidebarState, setSidebarState] = useState<SidebarState>({
-    open: false,
-  });
-
   function addFacility(entry: ApiWebSearchEntry) {
-    setSidebarState({ open: true, webSearchEntry: entry });
+    facilityWebSearchImportSidebar.open({
+      webSearchEntry: entry,
+    });
   }
 
   async function changeIgnored(entry: ApiWebSearchEntry, newValue: boolean) {
@@ -121,12 +114,6 @@ export function FacilityWebSearchResultsTable(
           />
         </TableSheet>
       </TablePage>
-
-      <FacilityWebSearchImportSidebar
-        open={sidebarState.open}
-        webSearchEntry={sidebarState.webSearchEntry}
-        onClose={() => setSidebarState({ open: false })}
-      />
     </>
   );
 }

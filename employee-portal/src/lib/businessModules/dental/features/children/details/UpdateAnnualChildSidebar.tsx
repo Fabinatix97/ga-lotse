@@ -155,7 +155,7 @@ function UpdateAnnualChildSidebar(props: UpdateAnnualChildSidebarProps) {
               <Stack direction="row" gap={2} flexWrap="wrap">
                 <BooleanSelectField
                   name="fluoridationConsent.consented"
-                  label="Einverständnis gegeben"
+                  label="Einverständnis"
                   required={
                     isDefined(values.fluoridationConsent?.dateOfConsent) &&
                     !isEmptyString(values.fluoridationConsent.dateOfConsent)
@@ -166,7 +166,7 @@ function UpdateAnnualChildSidebar(props: UpdateAnnualChildSidebarProps) {
                 />
                 <DateField
                   name="fluoridationConsent.dateOfConsent"
-                  label="Datum der Einverständniserklärung"
+                  label="Datum"
                   validate={(value) =>
                     isDefined(value)
                       ? validatePastOrTodayDate(value)

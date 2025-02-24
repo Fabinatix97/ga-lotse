@@ -14,6 +14,7 @@ import de.eshg.base.contact.api.InstitutionContactCategoryDto;
 import de.eshg.base.user.UserApi;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.dental.api.ChildFilterParameters;
+import de.eshg.dental.api.DentitionTypeDto;
 import de.eshg.dental.api.FluoridationConsentDto;
 import de.eshg.dental.api.ToothDiagnosisDto;
 import de.eshg.dental.api.ToothDto;
@@ -84,12 +85,6 @@ public class Validator {
     if (hasNonNullValue(filterParameters) && hasNonNullValue(searchParameters)) {
       throw new BadRequestException(
           "Filter parameters and search parameters can not be used in the same request.");
-    }
-  }
-
-  void validateAtLeastOne(List<UUID> ids, String message) {
-    if (ids == null || ids.isEmpty()) {
-      throw new BadRequestException(message);
     }
   }
 
@@ -169,6 +164,15 @@ public class Validator {
           String.format(
               "The '%s' property cannot be modified once examination results have been entered.",
               property.getDisplayName()));
+    }
+  }
+
+  public void validateDentitionType(DentitionTypeDto dentitionType, boolean isScreening) {
+    boolean hasDentitionType = dentitionType != null;
+    if (isScreening && !hasDentitionType) {
+      throw new BadRequestException("Dentition type is mandatory for screening sessions.");
+    } else if (!isScreening && hasDentitionType) {
+      throw new BadRequestException("Dentition type is not allowed for non-screening sessions.");
     }
   }
 }

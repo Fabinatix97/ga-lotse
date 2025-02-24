@@ -22,7 +22,7 @@ import {
 } from "@/lib/businessModules/chat/matrix/crypto";
 import {
   accessSecretStorage,
-  deleteBackup,
+  deleteKeyBackup,
 } from "@/lib/businessModules/chat/matrix/secretStorage";
 import { updateLocalStorageDeviceId } from "@/lib/businessModules/chat/matrix/tokens";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
@@ -76,8 +76,8 @@ export function ChatPlaygroundContent() {
     }
   }
 
-  async function deleteKBackup() {
-    await deleteBackup(matrixClient, backupInfoStatus.backupInfo);
+  async function handleDeleteKeyBackupClick() {
+    await deleteKeyBackup(matrixClient, backupInfoStatus.backupInfo);
   }
 
   async function handleDeviceVerify() {
@@ -100,7 +100,7 @@ export function ChatPlaygroundContent() {
       </Stack>
       <Stack spacing={2} direction="row">
         <Button onClick={resetBackup}>Reset backup</Button>
-        <Button onClick={deleteKBackup}>Delete backup</Button>
+        <Button onClick={handleDeleteKeyBackupClick}>Delete backup</Button>
         <Button onClick={handleDeviceVerify}>Is Device verified</Button>
       </Stack>
       <Stack spacing={2} direction={{ xxs: "column", sm: "row" }}>

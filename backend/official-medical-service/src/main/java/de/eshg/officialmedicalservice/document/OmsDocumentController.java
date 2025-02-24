@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,8 +57,9 @@ public class OmsDocumentController {
   @Operation(summary = "Completes file upload of one oms document")
   public void patchCompleteDocumentFileUpload(
       @PathVariable("id") UUID documentId,
-      @RequestPart(value = "files") List<MultipartFile> files) {
-    omsDocumentService.completeDocumentFileUploadEmployee(documentId, files);
+      @RequestPart(value = "files") List<MultipartFile> files,
+      @RequestParam(name = "note", required = false) String note) {
+    omsDocumentService.completeDocumentFileUploadEmployee(documentId, files, note);
   }
 
   @DeleteMapping(path = DOCUMENT_URL + "/{id}")

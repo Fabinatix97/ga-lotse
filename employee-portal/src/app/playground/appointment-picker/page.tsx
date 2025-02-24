@@ -5,6 +5,9 @@
 
 "use client";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
@@ -20,10 +23,6 @@ import { Box, Button, List, ListItem, Stack, Typography } from "@mui/joy";
 import { addMinutes } from "date-fns";
 import { Formik } from "formik";
 import { useState } from "react";
-
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 
 const now = new Date();
 interface Appointment {

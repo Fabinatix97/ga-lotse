@@ -1,0 +1,102 @@
+### STEP1: add email to 3pid's
+
+### Login
+POST http://localhost:8008/_matrix/client/r0/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "type":"m.login.password",
+  "user": "testuser2",
+  "password": "password"
+}
+
+### get 3pids, see empty list
+GET http://localhost:8008/_matrix/client/v3/account/3pid
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer [ACCESS_TOKEN]
+
+
+#### send request to add email to 3pid
+POST http://localhost:8008/_matrix/client/v3/account/3pid/email/requestToken
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer [ACCESS_TOKEN]
+
+{
+  "client_secret": "random_string_asdfgasdf",
+  "email": "user@example.com",
+  "send_attempt": 1,
+  "next_link": null
+}
+
+### Now, go to maildev http://localhost:1080/ and click confirmation link in new email message
+
+
+### bind email to 3pid's - first call to get the session
+POST http://localhost:8008/_matrix/client/v3/account/3pid/add
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer [ACCESS_TOKEN]
+
+{
+  "sid": "CGcCfkMNcLjSMIQE",
+  "client_secret": "random_string_asdfgasdf"
+}
+
+
+### bind 3pid - second call with session AND mandatory auth credentials (username + password)
+POST http://localhost:8008/_matrix/client/v3/account/3pid/add
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer [ACCESS_TOKEN]
+
+{
+  "sid": "CGcCfkMNcLjSMIQE",
+  "client_secret": "random_string_asdfgasdf",
+  "auth": {
+    "type": "m.login.password",
+    "user": "testuser2",
+    "password": "password",
+    "session": "tuipxIsEqdifpPGQqxmGrnCY"
+  }
+}
+
+
+### check if email was added to 3pids
+GET http://localhost:8008/_matrix/client/v3/account/3pid
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer [ACCESS_TOKEN]
+
+
+### Step 2: perform account deactivation with email
+
+##### request new 3pid token
+POST http://localhost:8008/_matrix/client/v3/account/3pid/email/requestToken
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer [ACCESS_TOKEN]
+
+{
+  "client_secret": "random_string_asdfgasdf",
+  "email": "secondemail@example.com",
+  "send_attempt": 1,
+  "next_link": null
+}
+
+
+### Deactivate account - NOT WORKING!
+POST http://localhost:8008/_matrix/client/v3/account/deactivate
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer [ACCESS_TOKEN]
+
+{
+  "threepid_creds": {
+    "sid": "DNgdmxBKwglDjWBX",
+    "client_secret": "random_string_asdfgasdf"
+  }
+}
+

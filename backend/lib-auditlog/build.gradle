@@ -11,6 +11,7 @@ dependencies {
     implementation project(':test-helper-commons')
     implementation project(':lib-security-config-urls')
     implementation project(':business-module-persistence-commons')
+    implementation project(':lib-scheduling')
 
     implementation 'org.slf4j:slf4j-api'
     implementation 'org.springframework.boot:spring-boot-autoconfigure'

@@ -5,6 +5,7 @@
 
 "use client";
 
+import { BottomToolbar } from "@eshg/lib-employee-portal/components/toolbar/BottomToolbar";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
@@ -33,9 +34,10 @@ import { SectionGrid } from "@/lib/businessModules/stiProtection/components/proc
 import { CONCERN_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";
 import { isProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
-import { StickyBottomButtonBar } from "@/lib/shared/components/buttons/StickyBottomButtonBar";
+import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
+import { StickyBottomBox } from "@/lib/shared/components/layout/StickyBottomBox";
 
 import {
   MedicalHistoryFormData,
@@ -190,40 +192,46 @@ function MedicalHistoryStickyBottomButtonBar(
   const isOpenProcedure = isProcedureOpen(stiProcedure);
 
   return (
-    <StickyBottomButtonBar
-      sx={{ padding: "0.75rem 1.5rem" }}
-      right={
-        <>
-          <InternalLinkButton
-            href={routes.procedures.byId(stiProcedure.id).details}
-            variant="plain"
-          >
-            Abbrechen
-          </InternalLinkButton>
-          <SubmitButton submitting={isSubmitting} disabled={!isOpenProcedure}>
-            Speichern
-          </SubmitButton>
-        </>
-      }
-      left={
-        <>
-          <PrintButton
-            label={"Anamnesebogen auf Deutsch herunterladen"}
-            text={"Druckvorlage herunterladen (DE)"}
-            onClick={() =>
-              fetchMedicalHistoryDocument(stiProcedure.concern, "DE")
-            }
-          />
-          <PrintButton
-            label={"Anamnesebogen auf Englisch herunterladen"}
-            text={"Druckvorlage herunterladen (EN)"}
-            onClick={() =>
-              fetchMedicalHistoryDocument(stiProcedure.concern, "EN")
-            }
-          />
-        </>
-      }
-    ></StickyBottomButtonBar>
+    <StickyBottomBox>
+      <BottomToolbar sx={{ padding: "0.75rem 1.5rem" }}>
+        <ButtonBar
+          right={
+            <>
+              <InternalLinkButton
+                href={routes.procedures.byId(stiProcedure.id).details}
+                variant="plain"
+              >
+                Abbrechen
+              </InternalLinkButton>
+              <SubmitButton
+                submitting={isSubmitting}
+                disabled={!isOpenProcedure}
+              >
+                Speichern
+              </SubmitButton>
+            </>
+          }
+          left={
+            <>
+              <PrintButton
+                label={"Anamnesebogen auf Deutsch herunterladen"}
+                text={"Druckvorlage herunterladen (DE)"}
+                onClick={() =>
+                  fetchMedicalHistoryDocument(stiProcedure.concern, "DE")
+                }
+              />
+              <PrintButton
+                label={"Anamnesebogen auf Englisch herunterladen"}
+                text={"Druckvorlage herunterladen (EN)"}
+                onClick={() =>
+                  fetchMedicalHistoryDocument(stiProcedure.concern, "EN")
+                }
+              />
+            </>
+          }
+        />
+      </BottomToolbar>
+    </StickyBottomBox>
   );
 }
 

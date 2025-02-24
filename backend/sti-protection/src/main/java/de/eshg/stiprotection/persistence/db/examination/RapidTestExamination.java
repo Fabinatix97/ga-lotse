@@ -62,8 +62,8 @@ public class RapidTestExamination extends GenericEntity<Long> {
   private RapidTestData hivData;
 
   @AttributeOverrides({
-    @AttributeOverride(name = "number", column = @Column(name = "syphillis_number")),
-    @AttributeOverride(name = "result", column = @Column(name = "syphillis_result")),
+    @AttributeOverride(name = "number", column = @Column(name = "syphilis_number")),
+    @AttributeOverride(name = "result", column = @Column(name = "syphilis_result")),
   })
   @Embedded
   private RapidTestData syphilisData;

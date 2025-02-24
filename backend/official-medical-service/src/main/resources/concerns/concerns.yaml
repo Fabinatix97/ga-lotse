@@ -1,45 +1,215 @@
 # Copyright 2025 cronn GmbH
 # SPDX-License-Identifier: Apache-2.0
 
-- # Kategorie: Studenten
-  category_de: Studenten
-  category_en: students
-  concerns:
-    - # Prüfungsfähigkeit
-      concern_de: Prüfungsfähigkeit
-      concern_en: Examination eligibility
-      description_de: Anlass zur Erstellung eines Gutachtens über die Prüfungsfähigkeit eines Studenten. Nur für in Frankfurt Studierende.
-      description_en: concern for certificates of examination eligibility. Only responsible for students at a Frankfurt university.
-      high_priority: true
-- # Kategorie: Beamte
-  category_de: Beamte
+- # Kategorie: Beamtentum
+  category_de: Beamtentum
   category_en: civil servant
   concerns:
-    - # Dienstfähigkeitsbeurteilungen
-      concern_de: Dienstfähigkeitsbeurteilungen
-      concern_en: Certificate for call of duty
-      description_de: Anlass zur Erstellung eines Gutachtens über die Dienstfähigkeitsbeurteilungen einer Person, bevor eine Verbeamtung durchgeführt wird.
-      description_en: concern for certificates of eligibilty to be announced as civil_servant.
+    - # Alkohol/Drogenscreening
+      concern_de: Alkohol/Drogenscreening
+      concern_en:
       high_priority: false
-    - # Beamtenpriorisierung
-      concern_de: Beamtenpriorisierung
-      concern_en: Prioritization of civil servants
-      description_de: Anlass in Kategorie Beamte mit hoher Priorität
-      description_en: concern in category civil servant with high priority
-      high_priority: true
+      appointment_type: OFFICIAL_MEDICAL_SERVICE_SHORT
+      online_portal_visibility: false
+    - # Arbeitsversuch / Wiedereingliederung
+      concern_de: Arbeitsversuch / Wiedereingliederung
+      concern_en:
+      high_priority: false
+      appointment_type: OFFICIAL_MEDICAL_SERVICE_LONG
+      online_portal_visibility: false
+    - # Attest (AU ab 1. Krankheitstag)
+      concern_de: Attest (AU ab 1. Krankheitstag)
+      concern_en:
+      high_priority: false
+      appointment_type: OFFICIAL_MEDICAL_SERVICE_SHORT
+      online_portal_visibility: false
+    - # Beihilfe (nach Aktenlage)
+      concern_de: Beihilfe (nach Aktenlage)
+      concern_en:
+      high_priority: false
+      appointment_type:
+      online_portal_visibility: false
+    - # Dienstfähigkeit (gebührenfrei)
+      concern_de: Dienstfähigkeit (gebührenfrei)
+      concern_en:
+      high_priority: false
+      appointment_type: OFFICIAL_MEDICAL_SERVICE_LONG
+      online_portal_visibility: false
+    - # Dienstfähigkeit (gebührenpflichtig)
+      concern_de: Dienstfähigkeit (gebührenpflichtig)
+      concern_en:
+      high_priority: false
+      appointment_type: OFFICIAL_MEDICAL_SERVICE_LONG
+      online_portal_visibility: false
+    - # Dienstfähigkeit / Ergänzung
+      concern_de: Dienstfähigkeit / Ergänzung
+      concern_en:
+      high_priority: false
+      appointment_type:
+      online_portal_visibility: false
+    - # Dienstfähigkeit / Widerspruch
+      concern_de: Dienstfähigkeit / Widerspruch
+      concern_en:
+      high_priority: false
+      appointment_type:
+      online_portal_visibility: false
+    - # Einsatzfähigkeit
+      concern_de: Einsatzfähigkeit
+      concern_en:
+      high_priority: false
+      appointment_type: OFFICIAL_MEDICAL_SERVICE_LONG
+      online_portal_visibility: false
+    - # Einstellung (gebührenfrei)
+      concern_de: Einstellung (gebührenfrei)
+      concern_en:
+      high_priority: false
+      appointment_type: OFFICIAL_MEDICAL_SERVICE_SHORT
+      online_portal_visibility: false
+    - # Einstellung (gebührenpflichtig)
+      concern_de: Einstellung (gebührenpflichtig)
+      concern_en:
+      high_priority: false
+      appointment_type: OFFICIAL_MEDICAL_SERVICE_SHORT
+      online_portal_visibility: false
+    - # Einstellung BaP / Verbeamtung auf Probe
+      concern_de: Einstellung BaP / Verbeamtung auf Probe
+      concern_en: Employment / civil servants on probation
+      high_priority: false
+      appointment_type: OFFICIAL_MEDICAL_SERVICE_SHORT
+      online_portal_visibility: true
+    - # Einstellung BaL / Verbeamtung auf Lebenszeit
+      concern_de: Einstellung BaL / Verbeamtung auf Lebenszeit
+      concern_en: Employment / civil servant
+      high_priority: false
+      appointment_type: OFFICIAL_MEDICAL_SERVICE_SHORT
+      online_portal_visibility: true
+    - # Einstellung BaW / Verbeamtung auf Widerruf
+      concern_de: Einstellung BaW / Verbeamtung auf Widerruf
+      concern_en: Employment / probationary civil servant
+      high_priority: false
+      appointment_type: OFFICIAL_MEDICAL_SERVICE_SHORT
+      online_portal_visibility: true
+    - # Einstellung BaZ / Verbeamtung auf Zeit
+      concern_de: Einstellung BaZ / Verbeamtung auf Zeit
+      concern_en: Employment / temporary civil servant
+      high_priority: false
+      appointment_type: OFFICIAL_MEDICAL_SERVICE_SHORT
+      online_portal_visibility: true
+    - # Einstellung / Widerspruch
+      concern_de: Einstellung / Widerspruch
+      concern_en:
+      high_priority: false
+      appointment_type:
+      online_portal_visibility: false
+    - # Einstellung / Werkfeuerwehr
+      concern_de: Einstellung / Werkfeuerwehr
+      concern_en:
+      high_priority: false
+      appointment_type: OFFICIAL_MEDICAL_SERVICE_SHORT
+      online_portal_visibility: false
+    - # Stundenermäßigung (Lehrkräfte)
+      concern_de: Stundenermäßigung (Lehrkräfte)
+      concern_en:
+      high_priority: false
+      appointment_type:
+      online_portal_visibility: false
+    - # Unfallbegutachtung (gebührenfrei)
+      concern_de: Unfallbegutachtung (gebührenfrei)
+      concern_en:
+      high_priority: false
+      appointment_type: OFFICIAL_MEDICAL_SERVICE_LONG
+      online_portal_visibility: false
+    - # Unfallbegutachtung (gebührenpflichtig)
+      concern_de: Unfallbegutachtung (gebührenpflichtig)
+      concern_en:
+      high_priority: false
+      appointment_type: OFFICIAL_MEDICAL_SERVICE_LONG
+      online_portal_visibility: false
 - # Kategorie: Sonstiges
   category_de: Sonstiges
   category_en: Miscellaneous
   concerns:
-    - # Vorzeitige Pensionierung
-      concern_de: Vorzeitige Pensionierung
-      concern_en: Early retirement
-      description_de: Beschreibung Vorzeitige Pensionierung
-      description_en: Description Early retirement
+    - # § 27 Hess. Rettungsdienstgesetz
+      concern_de: § 27 Hess. Rettungsdienstgesetz
+      concern_en:
       high_priority: false
-    - # Überprüfung längerer Krankschreibungen
-      concern_de: Überprüfung längerer Krankschreibungen
-      concern_en: Review of longer sick notes
-      description_de: Beschreibung Überprüfung längerer Krankschreibungen
-      description_en: Description Review of longer sick notes
+      appointment_type:
+      online_portal_visibility: false
+    - # Abstammungsgutachten
+      concern_de: Abstammungsgutachten
+      concern_en:
       high_priority: false
+      appointment_type: OFFICIAL_MEDICAL_SERVICE_SHORT
+      online_portal_visibility: false
+    - # Adoption
+      concern_de: Adoption
+      concern_en:
+      high_priority: false
+      appointment_type: OFFICIAL_MEDICAL_SERVICE_SHORT
+      online_portal_visibility: false
+    - # Arbeits-/ Erwerbsfähigkeit
+      concern_de: Arbeits-/ Erwerbsfähigkeit
+      concern_en:
+      high_priority: false
+      appointment_type: OFFICIAL_MEDICAL_SERVICE_LONG
+      online_portal_visibility: false
+    - # Gerichtl. Untersuchungsauftrag
+      concern_de: Gerichtl. Untersuchungsauftrag
+      concern_en:
+      high_priority: true
+      appointment_type: OFFICIAL_MEDICAL_SERVICE_LONG
+      online_portal_visibility: false
+    - # Aufnahme Pflegekind
+      concern_de: Aufnahme Pflegekind
+      concern_en:
+      high_priority: false
+      appointment_type: OFFICIAL_MEDICAL_SERVICE_SHORT
+      online_portal_visibility: false
+    - # Sozialmedizin
+      concern_de: Sozialmedizin
+      concern_en:
+      high_priority: false
+      appointment_type:
+      online_portal_visibility: false
+    - # S-Behinderte / § 54 SGB XII
+      concern_de: S-Behinderte / § 54 SGB XII
+      concern_en:
+      high_priority: false
+      appointment_type: OFFICIAL_MEDICAL_SERVICE_LONG
+      online_portal_visibility: false
+    - # Vorauswahl für Feuerwehr
+      concern_de: Vorauswahl für Feuerwehr
+      concern_en:
+      high_priority: false
+      appointment_type:
+      online_portal_visibility: false
+    - # Vorauswahl für Feuerwehr Sehvermögen
+      concern_de: Vorauswahl für Feuerwehr Sehvermögen
+      concern_en:
+      high_priority: false
+      appointment_type:
+      online_portal_visibility: false
+    - # Widerspruch
+      concern_de: Widerspruch
+      concern_en:
+      high_priority: false
+      appointment_type:
+      online_portal_visibility: false
+    - # Zur Vorlage beim Finanzamt (Privatpersonen)
+      concern_de: Zur Vorlage beim Finanzamt (Privatpersonen)
+      concern_en:
+      high_priority: false
+      appointment_type:
+      online_portal_visibility: false
+    - # Zur Vorlage beim Prüfungsamt
+      concern_de: Zur Vorlage beim Prüfungsamt
+      concern_en:
+      high_priority: true
+      appointment_type: OFFICIAL_MEDICAL_SERVICE_SHORT
+      online_portal_visibility: false
+    - # Sonstiges
+      concern_de: Sonstiges
+      concern_en:
+      high_priority: false
+      appointment_type:
+      online_portal_visibility: false

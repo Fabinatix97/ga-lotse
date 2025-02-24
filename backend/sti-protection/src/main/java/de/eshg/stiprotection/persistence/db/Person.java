@@ -14,7 +14,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import java.time.Year;
-import java.util.UUID;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
@@ -37,9 +36,6 @@ public class Person extends RelatedPerson<StiProtectionProcedure> {
 
   @DataSensitivity(SensitivityLevel.UNDEFINED)
   private Year inGermanySince;
-
-  @DataSensitivity(SensitivityLevel.UNDEFINED)
-  private UUID anonymousUserId;
 
   public Gender getGender() {
     return gender;
@@ -71,13 +67,5 @@ public class Person extends RelatedPerson<StiProtectionProcedure> {
 
   public void setInGermanySince(Year inGermanySince) {
     this.inGermanySince = inGermanySince;
-  }
-
-  public void setAnonymousUserId(UUID anonymousUserId) {
-    this.anonymousUserId = anonymousUserId;
-  }
-
-  public UUID getAnonymousUserId() {
-    return anonymousUserId;
   }
 }

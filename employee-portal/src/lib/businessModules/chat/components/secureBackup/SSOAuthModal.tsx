@@ -90,7 +90,7 @@ export function SSOAuthModal({ values }: SSOAuthModalProps) {
 
   useEffect(() => {
     function onMessage(e: MessageEvent) {
-      logger.debug("On Window Message", e.data);
+      logger.debug("SSOAuthModal - On Window Message", e.data);
     }
 
     window.addEventListener("message", onMessage);

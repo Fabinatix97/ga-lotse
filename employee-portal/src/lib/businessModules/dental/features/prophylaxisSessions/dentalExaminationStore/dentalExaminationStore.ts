@@ -13,27 +13,35 @@ import { createStore } from "zustand";
 import {
   addTooth,
   getToothDiagnoses,
+  removeTooth,
   setFocus,
   setMainResult,
   setSecondaryResult1,
   setSecondaryResult2,
 } from "./actions";
+import { NavigateDirection, navigate } from "./actions/navigate";
 import { createSecondaryDentition } from "./factories";
-import { DentalExaminationView, Dentition, Focus, ToothContext } from "./types";
+import {
+  DentalExaminationView,
+  Dentition,
+  ElementContext,
+  ToothContext,
+} from "./types";
 
 export interface DentalExaminationState {
   currentView: DentalExaminationView;
+  currentFocus: ElementContext;
   dentition: Dentition;
-  focus: Focus;
 }
 
 export interface DentalExaminationActions {
   setView: (newView: DentalExaminationView) => void;
+  setFocus: (focus: ElementContext) => void;
+  navigate: (direction: NavigateDirection) => void;
 
   addTooth: ToothAction;
   removeTooth: ToothAction;
   toggleToothType: ToothAction;
-  setFocus: (focus: Focus) => void;
 
   setMainResult: SetToothResultAction;
   setSecondaryResult1: SetToothResultAction;
@@ -62,7 +70,7 @@ export function initDentalExaminationStore(
     currentView: "UPPER_JAW",
     // TODO ISSUE-6584: distinguish between type of dentition
     dentition: createSecondaryDentition(toothDiagnoses),
-    focus: {
+    currentFocus: {
       toothContext: { quadrantNumber: "Q1", toothIndex: 0 },
       field: "main",
     },
@@ -81,13 +89,15 @@ export function createDentalExaminationStore(
       }));
     },
     removeTooth: (toothContext: ToothContext) => {
-      throw new Error("Not yet implemented");
+      set((state) => ({
+        dentition: removeTooth(toothContext, state.dentition),
+      }));
     },
     toggleToothType: (toothContext: ToothContext) => {
       throw new Error("Not yet implemented");
     },
-    setFocus: (focus: Focus) => {
-      set(setFocus(focus));
+    setFocus: (newFocus: ElementContext) => {
+      set(setFocus(newFocus));
     },
     setMainResult: (toothContext: ToothContext, newValue: string) =>
       set((state) => ({
@@ -102,5 +112,6 @@ export function createDentalExaminationStore(
         dentition: setSecondaryResult2(toothContext, newValue, state.dentition),
       })),
     getToothDiagnoses: () => getToothDiagnoses(get().dentition),
+    navigate: (direction) => set((state) => navigate(direction, state)),
   }));
 }

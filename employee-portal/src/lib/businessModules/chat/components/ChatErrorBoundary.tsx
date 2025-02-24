@@ -4,12 +4,15 @@
  */
 
 import { ErrorAlert } from "@eshg/lib-portal/errorHandling/ErrorAlert";
+import { useRouter } from "next/navigation";
 import { PropsWithChildren } from "react";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";
+import { logger } from "@/lib/businessModules/chat/shared/helpers";
 
 export function ChatErrorBoundary({ children }: PropsWithChildren) {
+  const { refresh } = useRouter();
   const { clientState, setClientState } = useChatClientContext();
 
   if (clientState === ClientState.Error) {
@@ -17,7 +20,12 @@ export function ChatErrorBoundary({ children }: PropsWithChildren) {
       <ErrorAlert
         error={"Chat Error"}
         onReset={() => {
-          setClientState(ClientState.Restart);
+          try {
+            refresh();
+            setClientState(ClientState.Reset);
+          } catch (error) {
+            logger.error("Chat reset error", error);
+          }
         }}
       />
     );

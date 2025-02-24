@@ -5,6 +5,8 @@
 
 package de.eshg.base.user;
 
+import net.javacrumbs.shedlock.core.LockAssert;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +19,11 @@ public class AddUserRequestMailJob {
   }
 
   @Scheduled(cron = "${de.eshg.base.user.schedule:0 * * * * *}")
+  @SchedulerLock(
+      name = "BaseAddUserRequestMailJob",
+      lockAtMostFor = "${de.eshg.base.user.lock-at-most-for:1h}")
   public void sendApprovalRequestMailRemindersIfNecessary() {
+    LockAssert.assertLocked();
     approvalRequestMailService.sendApprovalRequestMailRemindersIfNecessary();
   }
 }

@@ -5,6 +5,9 @@
 
 "use client";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { FileLike } from "@eshg/lib-portal/components/formFields/file/validators";
 import { formatFileSize } from "@eshg/lib-portal/helpers/file";
@@ -14,9 +17,6 @@ import { Formik } from "formik";
 import { useEffect, useState } from "react";
 
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 import { compressImage } from "@/lib/shared/helpers/imageCompressor";
 
 const StyledImage = styled("img")({ width: "100%" });

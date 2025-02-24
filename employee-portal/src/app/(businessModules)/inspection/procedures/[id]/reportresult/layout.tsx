@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 
 export default function InspectionReportResultLayout({
   children,

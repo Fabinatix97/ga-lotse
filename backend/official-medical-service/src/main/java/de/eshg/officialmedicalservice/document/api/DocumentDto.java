@@ -26,4 +26,5 @@ public record DocumentDto(
     String note,
     @NotNull boolean mandatoryDocument,
     @NotNull boolean uploadInCitizenPortal,
-    String reasonForRejection) {}
+    String reasonForRejection,
+    DocumentUploadedByDto uploadedBy) {}

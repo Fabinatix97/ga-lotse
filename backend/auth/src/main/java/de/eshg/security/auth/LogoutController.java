@@ -34,7 +34,6 @@ public class LogoutController {
   private static final Duration CSRF_TOKEN_MAX_AGE = Duration.ofMinutes(10);
 
   private final CsrfTokenRepository csrfTokenRepository;
-  private final AuthProperties authProperties;
   private final URI keycloakLogoutUrl;
 
   public LogoutController(
@@ -42,7 +41,6 @@ public class LogoutController {
       OAuth2ClientProperties auth2ClientProperties,
       AuthProperties authProperties) {
     this.csrfTokenRepository = csrfTokenRepository;
-    this.authProperties = authProperties;
 
     String oauthProvider =
         Iterables.getOnlyElement(auth2ClientProperties.getRegistration().keySet());

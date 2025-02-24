@@ -12,6 +12,7 @@ import de.eshg.chat.featuretoggle.ChatFeatureToggle;
 import de.eshg.chat.model.dto.UserSettingsRequest;
 import de.eshg.chat.model.dto.UserSettingsResponse;
 import de.eshg.chat.service.UserSettingsService;
+import de.eshg.persistence.IntentionalWritingTransaction;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -36,6 +37,7 @@ public class UserSettingsController {
 
   @GetMapping
   @Transactional
+  @IntentionalWritingTransaction(reason = "Default settings are created if missing")
   public UserSettingsResponse getOrCreateDefaultUserSettings(@RequestParam @Valid String userId) {
     featureToggle.assertNewFeatureIsEnabled(ChatFeature.CHAT_BASE);
     return mapTo(userSettingsService.getOrCreateDefaultSettings(userId));

@@ -6,14 +6,14 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
 import { PropsWithChildren } from "react";
 
 import { useProcedureQuery } from "@/lib/businessModules/measlesProtection/api/queries/procedures";
 import { CaseStatusSelect } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/CaseStatusSelect";
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { PersonToolbarHeader } from "@/lib/shared/components/layout/PersonToolbarHeader";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
 import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";

@@ -1,0 +1,33 @@
+### Login as admin
+POST http://localhost:8008/_matrix/client/r0/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "type":"m.login.password",
+  "user": "admin",
+  "password": "admin"
+}
+
+
+### Get user data
+GET http://localhost:8008/_synapse/admin/v2/users/@61dafa5b-2439-4165-9bb4-7ee2966577e4:synapse.local.dev
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer syt_YWRtaW4_ZWFfzXGTQDvJsYKtyLHB_3yvtFk
+
+
+### Add keycloak external_id to user
+PUT  http://localhost:8008/_synapse/admin/v2/users/@61dafa5b-2439-4165-9bb4-7ee2966577e4:synapse.local.dev
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer syt_YWRtaW4_ZWFfzXGTQDvJsYKtyLHB_3yvtFk
+
+{
+  "external_ids": [
+    {
+      "auth_provider": "oidc-keycloak",
+      "external_id": "61dafa5b-2439-4165-9bb4-7ee2966577e4"
+    }
+  ]
+}

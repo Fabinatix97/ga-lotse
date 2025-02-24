@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
 import { PropsWithChildren } from "react";
 
 import { InspectionTabNavigationToolbar } from "@/lib/businessModules/inspection/components/inspection/InspectionTabNavigationToolbar";
 import { TrackInspectionView } from "@/lib/businessModules/inspection/components/inspection/TrackInspectionView";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 
 export interface EditInspectionPageParams {
   id: string;

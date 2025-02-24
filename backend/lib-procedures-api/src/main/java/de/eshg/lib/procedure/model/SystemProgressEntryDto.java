@@ -25,7 +25,8 @@ public final class SystemProgressEntryDto extends ProgressEntryDto
   private String keyDocumentType;
   private Integer keyDocumentVersion;
   private UUID triggeredBy;
-  private UUID previousFileStateId;
+  private UUID previousPersonFileStateId;
+  private UUID previousFacilityFileStateId;
 
   public String getSystemProgressEntryType() {
     return systemProgressEntryType;
@@ -77,12 +78,12 @@ public final class SystemProgressEntryDto extends ProgressEntryDto
     this.keyDocumentType = keyDocumentType;
   }
 
-  public UUID getPreviousFileStateId() {
-    return previousFileStateId;
+  public UUID getPreviousPersonFileStateId() {
+    return previousPersonFileStateId;
   }
 
-  public void setPreviousFileStateId(UUID previousFileStateId) {
-    this.previousFileStateId = previousFileStateId;
+  public void setPreviousPersonFileStateId(UUID previousPersonFileStateId) {
+    this.previousPersonFileStateId = previousPersonFileStateId;
   }
 
   @Override
@@ -90,5 +91,13 @@ public final class SystemProgressEntryDto extends ProgressEntryDto
     LinkedHashSet<UUID> userIds = new LinkedHashSet<>(super.getResolvableUserIds());
     Optional.ofNullable(triggeredBy).ifPresent(userIds::add);
     return userIds;
+  }
+
+  public UUID getPreviousFacilityFileStateId() {
+    return previousFacilityFileStateId;
+  }
+
+  public void setPreviousFacilityFileStateId(UUID previousFacilityFileStateId) {
+    this.previousFacilityFileStateId = previousFacilityFileStateId;
   }
 }

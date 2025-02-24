@@ -65,18 +65,22 @@ public interface PersonRepository
       nativeQuery = true,
       value =
           """
-        select * from person p
-        where p.reference_person_id is null
-        and   (:includeDeleted = true or p.delete_at is null)
-        and   (:includeExternal = true or p.data_origin <> 'EXTERNAL'::DataOrigin)
-        and   p.date_of_birth = :dateOfBirth
-        and   normalize_text(p.first_name) % normalize_text(:firstName)
-        and   normalize_text(p.last_name) % normalize_text(:lastName)
-        and   similarity(normalize_text(p.first_name), normalize_text(:firstName)) >= :firstNameThreshold
-        and   similarity(normalize_text(p.last_name), normalize_text(:lastName)) >= :lastNameThreshold
-        order by similarity(normalize_text(p.last_name), normalize_text(:lastName))
-               + similarity(normalize_text(p.first_name), normalize_text(:firstName)) desc
-      """)
+              select * from person p
+              where p.reference_person_id is null
+              and   (:includeDeleted = true or p.delete_at is null)
+              and   (:includeExternal = true or p.data_origin <> 'EXTERNAL'::DataOrigin)
+              and   (p.date_of_birth = :dateOfBirth or cast(:dateOfBirth as date) is null)
+              and   (:firstName is null or :firstName = '' or normalize_text(p.first_name) % normalize_text(:firstName))
+              and   (:lastName is null or :lastName = '' or normalize_text(p.last_name) % normalize_text(:lastName))
+              and   (:firstName is null or :firstName = '' or similarity(normalize_text(p.first_name), normalize_text(:firstName)) >= :firstNameThreshold)
+              and   (:lastName is null or :lastName = '' or similarity(normalize_text(p.last_name), normalize_text(:lastName)) >= :lastNameThreshold)
+              order by coalesce(similarity(normalize_text(p.last_name), normalize_text(:lastName)), 0)
+                     + coalesce(similarity(normalize_text(p.first_name), normalize_text(:firstName)), 0) desc,
+                p.last_name asc,
+                p.first_name asc,
+                p.date_of_birth asc
+              limit :limit
+            """)
   List<Person> fuzzySearchReferencePersons(
       @Param("firstName") String firstName,
       @Param("lastName") String lastName,
@@ -84,7 +88,8 @@ public interface PersonRepository
       @Param("firstNameThreshold") double firstNameThreshold,
       @Param("lastNameThreshold") double lastNameThreshold,
       @Param("includeDeleted") boolean includeDeleted,
-      @Param("includeExternal") boolean includeExternal);
+      @Param("includeExternal") boolean includeExternal,
+      @Param("limit") Integer limit);
 
   Optional<Person> findByExternalId(UUID externalId);
 

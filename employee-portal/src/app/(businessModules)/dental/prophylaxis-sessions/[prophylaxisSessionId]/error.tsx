@@ -5,12 +5,11 @@
 
 "use client";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
 import {
   NextErrorBoundary,
   NextErrorBoundaryProps,
 } from "@eshg/lib-portal/components/boundaries/NextErrorBoundary";
-
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 
 export default function ProphylaxisSessionError(props: NextErrorBoundaryProps) {
   return (

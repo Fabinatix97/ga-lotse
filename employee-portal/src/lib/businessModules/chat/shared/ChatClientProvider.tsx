@@ -12,7 +12,6 @@ import {
   MatrixEvent,
   Room,
   RoomEvent,
-  SetPresence,
   createClient,
 } from "matrix-js-sdk";
 import { KnownMembership, Membership } from "matrix-js-sdk/lib/types";
@@ -30,10 +29,10 @@ import { isNullish } from "remeda";
 
 import { useGetDepartment } from "@/lib/businessModules/chat/api/queries/department";
 import { useMessageTeaser } from "@/lib/businessModules/chat/components/messageTeaser/MessageTeaserProvider";
-import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { useChatLifecycle } from "@/lib/businessModules/chat/shared/hooks/useChatLifecycle";
+import { useIdleTimerHook } from "@/lib/businessModules/chat/shared/hooks/useIdleTimerHook";
 import { routes } from "@/lib/businessModules/chat/shared/routes";
 import {
   RoomEventDetails,
@@ -50,6 +49,7 @@ export interface ChatClientContextType {
   clientState: ClientState;
   setClientState: Dispatch<SetStateAction<ClientState>>;
   departmentInfo?: ApiGetDepartmentInfoResponse;
+  isClientPrepared: boolean;
 }
 
 export const ChatClientContext = createContext<ChatClientContextType | null>(
@@ -58,35 +58,22 @@ export const ChatClientContext = createContext<ChatClientContextType | null>(
 
 export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
   const showMessageTeaser = useMessageTeaser();
-  const { configuration, userSettings } = useChat();
-  const baseUrl = configuration.PUBLIC_MATRIX_SERVER_URL;
-
-  const matrixClient = useRef<MatrixClient>(createClient({ baseUrl }));
+  const placeholderMatrixClient = createClient({
+    baseUrl: "",
+  });
+  const matrixClient = useRef(placeholderMatrixClient);
 
   const [clientState, setClientState] = useState<ClientState>(ClientState.Idle);
   const { data: departmentInfo } = useGetDepartment();
 
-  // CHAT INIT
+  const isClientPrepared = clientState === ClientState.Prepared;
+
+  useIdleTimerHook(matrixClient, setClientState);
   useChatLifecycle(matrixClient, clientState, setClientState);
-
-  useEffect(() => {
-    void (async () => {
-      if (!matrixClient) return;
-      if (clientState !== ClientState.Prepared) return;
-
-      if (!userSettings.sharePresence) {
-        await matrixClient.current.setSyncPresence(SetPresence.Offline);
-        await matrixClient.current.setPresence({ presence: "offline" });
-      } else {
-        await matrixClient.current.setSyncPresence(SetPresence.Online);
-        await matrixClient.current.setPresence({ presence: "online" });
-      }
-    })();
-  }, [clientState, matrixClient, userSettings.sharePresence]);
 
   // Handle chat message teaser
   useEffect(() => {
-    if (clientState !== ClientState.Prepared) return;
+    if (!isClientPrepared) return;
     const currentMatrixClient = matrixClient.current;
 
     async function onMessage({
@@ -142,7 +129,7 @@ export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
     return () => {
       currentMatrixClient.removeListener(RoomEvent.Timeline, onRoomTimeline);
     };
-  }, [clientState, showMessageTeaser]);
+  }, [isClientPrepared, showMessageTeaser]);
 
   /**
    * It notifies the user when they're not on the chat page
@@ -168,7 +155,7 @@ export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
    * Automatically join rooms when invited
    */
   useEffect(() => {
-    if (clientState !== ClientState.Prepared) return;
+    if (!isClientPrepared) return;
     const currentMatrixClient = matrixClient.current;
 
     function onMyMembership(room: Room, membership: Membership) {
@@ -187,7 +174,7 @@ export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
         onMyMembership,
       );
     };
-  }, [clientState]);
+  }, [isClientPrepared]);
 
   const contextValues = useMemo<ChatClientContextType>(
     () => ({
@@ -195,8 +182,9 @@ export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
       setClientState,
       matrixClient: matrixClient.current,
       departmentInfo,
+      isClientPrepared,
     }),
-    [clientState, departmentInfo],
+    [clientState, departmentInfo, isClientPrepared],
   );
 
   return (

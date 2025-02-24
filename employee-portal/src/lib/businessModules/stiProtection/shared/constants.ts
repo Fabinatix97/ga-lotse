@@ -16,6 +16,7 @@ import {
   ApiSexualOrientation,
   ApiTaskType,
 } from "@eshg/sti-protection-api";
+import { ChipProps } from "@mui/joy";
 import { DefaultColorPalette } from "@mui/joy/styles/types";
 
 export const procedureTypes = [ApiProcedureType.StiProtection];
@@ -30,6 +31,17 @@ export const PROCEDURE_STATUS_VALUES: EnumMap<ApiProcedureStatus> = {
   [ApiProcedureStatus.Open]: "Offen",
 };
 
+export const PROCEDURE_STATUS_COLORS: EnumMap<
+  ApiProcedureStatus,
+  ChipProps["color"]
+> = {
+  [ApiProcedureStatus.Aborted]: "warning",
+  [ApiProcedureStatus.Closed]: "success",
+  [ApiProcedureStatus.Draft]: "neutral",
+  [ApiProcedureStatus.InProgress]: "primary",
+  [ApiProcedureStatus.Open]: "neutral",
+};
+
 export const PROCEDURE_TYPES = [ApiProcedureType.StiProtection];
 
 export const TASK_TYPES = [ApiTaskType.StiProtection];
@@ -40,6 +52,7 @@ export const systemProgressEntryTypeTitles: Record<string, string> = {
   LABORATORY_TEST_EXAMINATION_UPDATED: "Labortests aktualisiert",
   APPOINTMENT_REBOOKED: "Termin geändert",
   APPOINTMENT_CANCELLED: "Termin storniert",
+  APPOINTMENT_FINALIZED: "Termin abgeschlossen",
   MEDICAL_HISTORY_UPDATED: "Anamnesebogen aktualisiert",
   CONSULTATION_UPDATED: "Konsultation aktualisiert",
   DIAGNOSIS_UPDATED: "Diagnose aktualisiert",
@@ -69,7 +82,8 @@ export const APPOINTMENT_TYPES: EnumMap<ApiAppointmentType> = {
   [ApiAppointmentType.RegularExamination]: "Regeluntersuchung",
   [ApiAppointmentType.SpecialNeeds]: "Besonderer Förderbedarf",
   [ApiAppointmentType.Vaccination]: "Impfung",
-  [ApiAppointmentType.OfficialMedicalService]: "Amtsärtzlicher Dienst",
+  [ApiAppointmentType.OfficialMedicalServiceShort]: "Kleine Untersuchung",
+  [ApiAppointmentType.OfficialMedicalServiceLong]: "Große Untersuchung",
 };
 
 export const APPOINTMENT_STATUS: EnumMap<ApiAppointmentStatus> = {
@@ -118,4 +132,10 @@ export const LAB_STATUS_VALUES: EnumMap<ApiLabStatus> = {
   [ApiLabStatus.Open]: "Offen",
   [ApiLabStatus.InProgress]: "In Bearbeitung",
   [ApiLabStatus.Closed]: "Geschlossen",
+};
+
+export const LAB_STATUS_COLORS: EnumMap<ApiLabStatus, ChipProps["color"]> = {
+  [ApiLabStatus.Open]: "neutral",
+  [ApiLabStatus.InProgress]: "primary",
+  [ApiLabStatus.Closed]: "success",
 };

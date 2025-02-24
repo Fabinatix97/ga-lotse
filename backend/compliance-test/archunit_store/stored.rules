@@ -1,5 +1,6 @@
 #
-#Thu Nov 28 14:17:47 CET 2024
+#Tue Feb 04 10:18:16 CET 2025
+classes\ that\ are\ annotated\ with\ @EnableScheduling\ should\ be\ de.eshg.lib.scheduling.spring.SchedulingConfiguration=e2982c9c-30e7-4c9f-b4bf-d5fa6716109a
 fields\ that\ are\ declared\ in\ classes\ that\ annotated\ with\ @Entity\ or\ annotated\ with\ @MappedSuperclass\ or\ annotated\ with\ @Embeddable\ and\ are\ not\ annotated\ with\ @Transient\ and\ are\ not\ static\ should\ be\ annotated\ with\ @DataSensitivity\ or\ should\ be\ declared\ in\ classes\ that\ are\ annotated\ with\ @DataSensitivity=e77d8ad7-eae8-405c-86be-ad5ea44e0614
 fields\ that\ are\ declared\ in\ classes\ that\ annotated\ with\ @Entity\ or\ annotated\ with\ @MappedSuperclass\ or\ annotated\ with\ @Embeddable\ should\ not\ declare\ insertable\=false\ in\ @Column\ /\ @JoinColumn\ definition=76ae00b4-4b81-4e06-8600-24dd9666ffa5
 fields\ that\ are\ declared\ in\ classes\ that\ annotated\ with\ @Entity\ or\ annotated\ with\ @MappedSuperclass\ or\ annotated\ with\ @Embeddable\ should\ not\ declare\ updatable\=false\ in\ @Column\ /\ @JoinColumn\ definition=552ce0b9-6b94-4214-83ca-3bdc50ce9afe

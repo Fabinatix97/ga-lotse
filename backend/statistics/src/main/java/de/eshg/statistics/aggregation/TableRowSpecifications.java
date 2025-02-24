@@ -67,7 +67,7 @@ public class TableRowSpecifications {
     };
   }
 
-  static Specification<TableRow> tableRowOfAggregationOrderByTableRowId(
+  public static Specification<TableRow> tableRowOfAggregationOrderByTableRowId(
       AbstractAggregationResult aggregationResult) {
     return (root, query, criteriaBuilder) -> {
       query.orderBy(criteriaBuilder.asc(root.get(BaseEntity_.ID)));
@@ -86,7 +86,7 @@ public class TableRowSpecifications {
     };
   }
 
-  static Specification<TableRow> createFilterSpecification(
+  public static Specification<TableRow> createFilterSpecification(
       TableColumnFilterParameter filter, AbstractAggregationResult aggregationResult) {
     TableColumn tableColumn =
         AggregationResultUtil.getTableColumn(filter.attribute(), aggregationResult);
@@ -324,7 +324,7 @@ public class TableRowSpecifications {
     };
   }
 
-  static Specification<TableRow> getValueOptionFilterSpecification(
+  public static Specification<TableRow> getValueOptionFilterSpecification(
       TableColumn tableColumn, List<String> valuesList, boolean searchForNull) {
     Set<String> values = new HashSet<>(valuesList);
     return (root, query, criteriaBuilder) -> {
@@ -343,7 +343,7 @@ public class TableRowSpecifications {
     };
   }
 
-  static Specification<TableRow> getNotNullAndNotUnknownSpecificationDecimalAndInteger(
+  public static Specification<TableRow> getNotNullAndNotUnknownSpecificationDecimalAndInteger(
       TableColumn tableColumn) {
     return switch (tableColumn.getValueType()) {
       case DECIMAL -> getNotNullAndNotUnknownSpecificationDecimal(tableColumn);
@@ -389,7 +389,7 @@ public class TableRowSpecifications {
     };
   }
 
-  static Specification<TableRow> getNotNullSpecification(TableColumn tableColumn) {
+  public static Specification<TableRow> getNotNullSpecification(TableColumn tableColumn) {
     String cellEntryValueColumn = getCellEntryValueColumn(tableColumn);
     return (root, query, criteriaBuilder) -> {
       Join<Object, Object> join = root.join(TableRow_.CELL_ENTRIES);

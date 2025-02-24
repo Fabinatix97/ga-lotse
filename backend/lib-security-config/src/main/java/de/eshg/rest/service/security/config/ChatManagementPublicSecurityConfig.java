@@ -16,6 +16,9 @@ public final class ChatManagementPublicSecurityConfig extends AbstractPublicSecu
     requestMatchers(BaseUrls.ChatManagement.USER_SETTINGS_CONTROLLER + "/**")
         .hasRole(EmployeePermissionRole.CHAT_MANAGEMENT_WRITE);
 
+    requestMatchers(BaseUrls.ChatManagement.USER_ACCOUNT_CONTROLLER + "/**")
+        .hasRole(EmployeePermissionRole.CHAT_MANAGEMENT_WRITE);
+
     requestMatchers(BaseUrls.ChatManagement.FEATURE_TOGGLES_CONTROLLER + "/**")
         .hasRole(EmployeePermissionRole.STANDARD_EMPLOYEE);
   }

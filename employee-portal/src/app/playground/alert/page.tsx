@@ -5,6 +5,9 @@
 
 "use client";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
 import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import {
@@ -18,10 +21,6 @@ import {
   Stack,
 } from "@mui/joy";
 import { useState } from "react";
-
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 
 const DEFAULT_TYPE = "error";
 const TYPES = ["error", "warning", "notification"] as const;

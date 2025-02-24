@@ -5,12 +5,12 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
-import { ChatOutlined } from "@mui/icons-material";
-
 import {
   SideNavigationItem,
   UseSideNavigationItemsResult,
-} from "@/lib/baseModule/components/layout/sideNavigation/types";
+} from "@eshg/lib-employee-portal/types/sideNavigation";
+import { ChatOutlined } from "@mui/icons-material";
+
 import { ChatMessageCounter } from "@/lib/businessModules/chat/components/ChatMessageCounter";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 

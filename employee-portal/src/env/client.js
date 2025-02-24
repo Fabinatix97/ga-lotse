@@ -5,6 +5,7 @@
 
 /* eslint-disable no-restricted-properties */
 // @ts-check
+import { nodeEnvSchema } from "@eshg/lib-portal/schemas/environment";
 import { object, parse, string } from "valibot";
 
 /*
@@ -14,6 +15,7 @@ import { object, parse, string } from "valibot";
  * Warning: do not expose any secrets here
  */
 const schema = object({
+  NODE_ENV: nodeEnvSchema,
   NEXT_PUBLIC_IMAGE_COMPRESSION_DEFAULT_QUALITY: string(),
   NEXT_PUBLIC_IMAGE_COMPRESSION_DEFAULT_MAX_SIZE: string(),
 });
@@ -24,4 +26,5 @@ export const env = parse(schema, {
     process.env.NEXT_PUBLIC_IMAGE_COMPRESSION_DEFAULT_QUALITY,
   NEXT_PUBLIC_IMAGE_COMPRESSION_DEFAULT_MAX_SIZE:
     process.env.NEXT_PUBLIC_IMAGE_COMPRESSION_DEFAULT_MAX_SIZE,
+  NODE_ENV: process.env.NODE_ENV,
 });

@@ -16,5 +16,7 @@
   <include file="migrations/0006_add_countrycodes.xml"/>
   <include file="migrations/0007_add_previous_file_state_id_to_system_progress_entry.xml"/>
   <include file="migrations/0008_add_auditlog_entry.xml"/>
+  <include file="migrations/0009_add_shedlock.xml"/>
+  <include file="migrations/0010_rename_previous_file_state.xml"/>
 
 </databaseChangeLog>

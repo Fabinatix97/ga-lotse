@@ -41,22 +41,15 @@ public class ProphylaxisSessionController {
   public static final String BASE_URL = BaseUrls.Dental.PROPHYLAXIS_SESSION_CONTROLLER;
 
   private final ProphylaxisSessionService prophylaxisSessionService;
-  private final Validator validator;
 
-  public ProphylaxisSessionController(
-      ProphylaxisSessionService prophylaxisSessionService, Validator validator) {
+  public ProphylaxisSessionController(ProphylaxisSessionService prophylaxisSessionService) {
     this.prophylaxisSessionService = prophylaxisSessionService;
-    this.validator = validator;
   }
 
   @PostMapping
   @Transactional
   public CreateProphylaxisSessionResponse createProphylaxisSession(
       @Valid @RequestBody CreateProphylaxisSessionRequest request) {
-    validator.validateInstitution(request.institutionId());
-    validator.validateAtLeastOne(request.dentistIds(), "At least one dentist is required");
-    validator.validateAtLeastOne(request.zfaIds(), "At least one zfa is required");
-    validator.validateTechnicalGroups(request.dentistIds(), request.zfaIds());
     ProphylaxisSession prophylaxisSession =
         prophylaxisSessionService.createProphylaxisSession(request);
     return new CreateProphylaxisSessionResponse(prophylaxisSession.getExternalId());

@@ -30,7 +30,8 @@ public record CreateProcedureRequest(
         Year inGermanySince,
     @NotNull AppointmentBookingTypeDto appointmentBookingType,
     @NotNull Instant appointmentStart,
-    @NotNull @Positive Integer durationInMinutes) {
+    @NotNull @Positive Integer durationInMinutes)
+    implements PersonalDetails {
 
   @AssertTrue(message = "The year of birth must be prior to the date of residence in Germany.")
   @JsonIgnore

@@ -25,12 +25,12 @@ function buildNavItems(procedureId: string): NavItem[] {
   return [
     {
       name: "Schnelltests",
-      href: routes.procedures.byId(procedureId).rapidTest,
+      href: routes.procedures.byId(procedureId).examination.rapidTest,
       icon: <LaboratoryTestOutlined />,
     },
     {
       name: "Labortests",
-      href: routes.procedures.byId(procedureId).laboratoryTest,
+      href: routes.procedures.byId(procedureId).examination.laboratoryTest,
       icon: <BiotechOutlined />,
     },
   ];

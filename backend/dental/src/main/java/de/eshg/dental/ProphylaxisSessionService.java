@@ -30,6 +30,7 @@ import de.eshg.dental.domain.model.ProphylaxisSession;
 import de.eshg.dental.domain.repository.ChildRepository;
 import de.eshg.dental.domain.repository.ExaminationRepository;
 import de.eshg.dental.domain.repository.ProphylaxisSessionRepository;
+import de.eshg.dental.mapper.DentitionTypeMapper;
 import de.eshg.dental.mapper.ProphylaxisSessionMapper;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
@@ -91,6 +92,10 @@ public class ProphylaxisSessionService {
   }
 
   public ProphylaxisSession createProphylaxisSession(CreateProphylaxisSessionRequest request) {
+    validator.validateInstitution(request.institutionId());
+    validator.validateTechnicalGroups(request.dentistIds(), request.zfaIds());
+    validator.validateDentitionType(request.dentitionType(), request.isScreening());
+
     ProphylaxisSession session = new ProphylaxisSession();
     mapProphylaxisSessionRequest(session, request);
     addExaminationsForChildren(request, session);
@@ -335,6 +340,7 @@ public class ProphylaxisSessionService {
         mapProphylaxisSessionRequest(new ProphylaxisSession(), updateRequest));
     validator.validateGroupAtInstitutionExists(
         persistedProphylaxisSession.getInstitutionId(), updateRequest.groupName());
+    validator.validateDentitionType(updateRequest.dentitionType(), updateRequest.isScreening());
 
     mapProphylaxisSessionRequest(persistedProphylaxisSession, updateRequest);
 
@@ -377,6 +383,7 @@ public class ProphylaxisSessionService {
     session.setDateAndTime(request.dateAndTime());
     session.setGroupName(request.groupName());
     session.setType(ProphylaxisSessionMapper.mapToDomain(request.type()));
+    session.setDentitionType(DentitionTypeMapper.mapToDomain(request.dentitionType()));
     session.setIsScreening(request.isScreening());
     session.setFluoridationVarnish(
         ProphylaxisSessionMapper.mapToDomain(request.fluoridationVarnish()));

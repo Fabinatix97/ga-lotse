@@ -1,0 +1,41 @@
+{
+  "pageTitle": "Mein Termin",
+  "procedureClosed": {
+    "title": "Vorgang geschlossen",
+    "message": "Der Termin kann nicht mehr geändert werden, da der Vorgang geschlossen wurde."
+  },
+  "leave": "Mein Bereich verlassen",
+  "details": {
+    "title": "Informationen",
+    "name": "Name",
+    "birthday": "Geburtstag",
+    "medicalService": "Leistungsart",
+    "schoolEntryExamination": "Einschulungsuntersuchung",
+    "date": "Datum",
+    "time": "Zeit",
+    "clock": "Uhr",
+    "duration": "Dauer:",
+    "place": "Ort"
+  },
+  "preparations": "Vorbereitung zum Termin",
+  "required": {
+    "title": "Benötigte Unterlagen",
+    "anamnesis": "ausgefüllter Elternfragebogen",
+    "vaccinationCard": "Impfausweis",
+    "medicalRecords": "das gelbe Vorsorgeheft (U-Heft)",
+    "additionalDocuments": "gegebenenfalls weitere medizinische Unterlagen, evtl. aktuelle Medikation",
+    "additionalAids": "gegebenenfalls vorhandene Hilfsmittel (Brille, Hörgerät)"
+  },
+  "anamnesis": {
+    "title": "Elternfragebogen",
+    "notSubmitted": "noch nicht vorgelegt",
+    "submitted": "ausgefüllt",
+    "fillIn": "Jetzt ausfüllen"
+  },
+  "update": {
+    "title": "Sie können den Termin nicht wahrnehmen?",
+    "appointment": "Termin verschieben",
+    "alert": "Terminverschiebung nicht mehr möglich",
+    "alertMessage": "Sie haben Ihren Termin bereits zwei Mal umgebucht. Bitte wenden Sie sich an unseren Support unter {{phoneNumber}}."
+  }
+}

@@ -6,7 +6,7 @@
 import { Alert, AlertProps } from "@eshg/lib-portal/components/Alert";
 import { Box } from "@mui/joy";
 import { useEffect, useState } from "react";
-import { isNonNullish } from "remeda";
+import { isNonNullish, isShallowEqual, isStrictEqual } from "remeda";
 
 import { chatColumnHeaderHeight } from "@/lib/businessModules/chat/components/ChatColumnHeaderWrapper";
 import { ChatIllustrationBackground } from "@/lib/businessModules/chat/components/ChatIllustrationBackground";
@@ -99,12 +99,21 @@ export function ChatPanel({
         const data = await getChatUserDirectory(matrixClient);
         if (data.results.length) {
           const users = data.results
-            .filter(
-              (user) =>
-                !!user &&
-                user.user_id !== loggedInUserId &&
-                !!user.display_name,
-            )
+            .filter((user) => {
+              const isLoggedInUser = isStrictEqual(
+                user.user_id,
+                loggedInUserId,
+              );
+
+              const isAdmin = isShallowEqual(
+                user.display_name?.toUpperCase(),
+                "ADMIN",
+              );
+
+              return (
+                isNonNullish(user.display_name) && !isLoggedInUser && !isAdmin
+              );
+            })
             .map((u) => ({ ...u, department: departmentInfo?.name }));
 
           setUserList(users);

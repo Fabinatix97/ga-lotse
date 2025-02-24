@@ -26,14 +26,12 @@ export function useGetSelfUserPresence() {
     let userPresence: Presence | undefined = undefined;
     const sharePresence = userSettings.sharePresence;
 
-    if (isChatEnabled) {
-      if (userSettings.sharePresence) {
-        userPresence = usersPresence[loggedInUserId ?? ""];
-      }
+    if (isChatEnabled && userSettings.sharePresence) {
+      userPresence = usersPresence[loggedInUserId ?? ""];
     }
     return {
       userPresence,
-      sharePresence: sharePresence && isChatEnabled,
+      sharePresence: Boolean(sharePresence && isChatEnabled),
     };
   }, [
     isChatEnabled,

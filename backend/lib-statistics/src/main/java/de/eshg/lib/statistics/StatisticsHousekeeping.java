@@ -38,7 +38,9 @@ public class StatisticsHousekeeping {
   }
 
   @Scheduled(cron = "${de.eshg.statistics.housekeeping.schedule:@daily}")
-  @SchedulerLock(name = "StatisticsHousekeeping")
+  @SchedulerLock(
+      name = "StatisticsHousekeeping",
+      lockAtMostFor = "${de.eshg.statistics.housekeeping.lock-at-most-for:23h}")
   @Transactional
   public void housekeeping() {
     LockAssert.assertLocked();

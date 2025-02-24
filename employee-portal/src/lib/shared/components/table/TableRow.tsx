@@ -176,7 +176,6 @@ export function TableRow<TData>({
         })
         .map((cell) => {
           const canNavigate = cellCanNavigate(cell);
-
           return (
             <StyledCell
               colSpan={

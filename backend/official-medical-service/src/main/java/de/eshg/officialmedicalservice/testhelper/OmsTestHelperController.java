@@ -11,6 +11,7 @@ import de.eshg.officialmedicalservice.testhelper.api.PostPopulateAdministrativeR
 import de.eshg.officialmedicalservice.testhelper.api.PostPopulateProcedureRequest;
 import de.eshg.officialmedicalservice.testhelper.api.PostPopulateProcedureResponse;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
+import de.eshg.testhelper.DefaultTestHelperService;
 import de.eshg.testhelper.TestHelperApi;
 import de.eshg.testhelper.TestHelperController;
 import de.eshg.testhelper.environment.EnvironmentConfig;
@@ -32,12 +33,12 @@ public class OmsTestHelperController extends TestHelperController
   private final AuditLogTestHelperService auditLogTestHelperService;
 
   public OmsTestHelperController(
-      OmsTestHelperService omsTestHelperService,
+      DefaultTestHelperService testHelperService,
       TestPopulateProcedureService testPopulateProcedureService,
       TestPopulateAdministrativeService testPopulateAdministrativeService,
       AuditLogTestHelperService auditLogTestHelperService,
       EnvironmentConfig environmentConfig) {
-    super(omsTestHelperService, environmentConfig);
+    super(testHelperService, environmentConfig);
     this.testPopulateProcedureService = testPopulateProcedureService;
     this.testPopulateAdministrativeService = testPopulateAdministrativeService;
     this.auditLogTestHelperService = auditLogTestHelperService;

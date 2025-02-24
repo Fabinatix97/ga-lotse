@@ -16,5 +16,6 @@
   <include file="migrations/0006_add_dental_as_audit_log_source.xml"/>
   <include file="migrations/0007_add_official_medical_service_audit_log_source.xml"/>
   <include file="migrations/0008_add_auditlog_entry.xml"/>
+  <include file="migrations/0009_add_schedlock.xml"/>
 
 </databaseChangeLog>

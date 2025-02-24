@@ -549,6 +549,25 @@
         "tags" : [ "Archiving" ]
       }
     },
+    "/citizen-public/concerns" : {
+      "get" : {
+        "operationId" : "getVisibleConcerns",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetConcernsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get all available concerns for the online portal.",
+        "tags" : [ "CitizenPublic" ]
+      }
+    },
     "/citizen-public/department-info" : {
       "get" : {
         "operationId" : "getDepartmentInfo",
@@ -568,6 +587,41 @@
         "tags" : [ "CitizenPublic" ]
       }
     },
+    "/citizen-public/free-appointments" : {
+      "get" : {
+        "operationId" : "getFreeAppointmentsForCitizen",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "appointmentType",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/AppointmentType"
+          }
+        }, {
+          "in" : "query",
+          "name" : "earliestDate",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetFreeAppointmentsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get free appointments for an appointment type.",
+        "tags" : [ "CitizenPublic" ]
+      }
+    },
     "/citizen-public/opening-hours" : {
       "get" : {
         "operationId" : "getOpeningHours",
@@ -584,6 +638,88 @@
           }
         },
         "summary" : "Get opening hours.",
+        "tags" : [ "CitizenPublic" ]
+      }
+    },
+    "/citizen-public/privacy-notice" : {
+      "get" : {
+        "operationId" : "getPrivacyNotice",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the privacy-notice document.",
+        "tags" : [ "CitizenPublic" ]
+      }
+    },
+    "/citizen-public/privacy-policy" : {
+      "get" : {
+        "operationId" : "getPrivacyPolicy",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the privacy-policy document.",
+        "tags" : [ "CitizenPublic" ]
+      }
+    },
+    "/citizen-public/procedures" : {
+      "post" : {
+        "operationId" : "postCitizenProcedure",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "files" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
+                  },
+                  "request" : {
+                    "$ref" : "#/components/schemas/PostCitizenProcedureRequest"
+                  }
+                },
+                "required" : [ "files", "request" ]
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "uuid"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Save a new citizen oms procedure.",
         "tags" : [ "CitizenPublic" ]
       }
     },
@@ -739,6 +875,13 @@
           "schema" : {
             "type" : "string",
             "format" : "uuid"
+          }
+        }, {
+          "in" : "query",
+          "name" : "note",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
           }
         } ],
         "requestBody" : {
@@ -3828,7 +3971,7 @@
       },
       "AppointmentType" : {
         "type" : "string",
-        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE" ]
+        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG" ]
       },
       "AppointmentTypeConfig" : {
         "required" : [ "appointmentTypeDto", "id", "standardDurationInMinutes" ],
@@ -4078,19 +4221,16 @@
         }
       },
       "Concern" : {
-        "required" : [ "categoryNameDe", "categoryNameEn", "descriptionDe", "descriptionEn", "highPriority", "nameDe", "nameEn", "version" ],
+        "required" : [ "categoryNameDe", "categoryNameEn", "highPriority", "nameDe", "version", "visibleInOnlinePortal" ],
         "type" : "object",
         "properties" : {
+          "appointmentType" : {
+            "$ref" : "#/components/schemas/AppointmentType"
+          },
           "categoryNameDe" : {
             "type" : "string"
           },
           "categoryNameEn" : {
-            "type" : "string"
-          },
-          "descriptionDe" : {
-            "type" : "string"
-          },
-          "descriptionEn" : {
             "type" : "string"
           },
           "highPriority" : {
@@ -4105,6 +4245,9 @@
           "version" : {
             "type" : "integer",
             "format" : "int64"
+          },
+          "visibleInOnlinePortal" : {
+            "type" : "boolean"
           }
         }
       },
@@ -4127,14 +4270,11 @@
         }
       },
       "ConcernConfig" : {
-        "required" : [ "descriptionDe", "descriptionEn", "highPriority", "nameDe", "nameEn" ],
+        "required" : [ "highPriority", "nameDe", "visibleInOnlinePortal" ],
         "type" : "object",
         "properties" : {
-          "descriptionDe" : {
-            "type" : "string"
-          },
-          "descriptionEn" : {
-            "type" : "string"
+          "appointmentType" : {
+            "$ref" : "#/components/schemas/AppointmentType"
           },
           "highPriority" : {
             "type" : "boolean"
@@ -4144,12 +4284,15 @@
           },
           "nameEn" : {
             "type" : "string"
+          },
+          "visibleInOnlinePortal" : {
+            "type" : "boolean"
           }
         }
       },
       "ConcernTestDataConfig" : {
         "type" : "string",
-        "enum" : [ "EXAMINATION_ELIGIBILITY", "CERTIFICATE_FOR_CALL_OF_DUTY", "PRIORITIZATION_OF_CIVIL_SERVANTS", "EARLY_RETIREMENT", "REVIEW_OF_LONGER_SICK_NOTES" ]
+        "enum" : [ "DRUG_SCREENING", "REINTEGRATION", "ATTESTATION", "ASSISTANCE", "CERTIFICATE_FOR_CALL_OF_DUTY_FREE", "CERTIFICATE_FOR_CALL_OF_DUTY_PAID", "CERTIFICATE_FOR_CALL_OF_DUTY_ADDITION", "CERTIFICATE_FOR_CALL_OF_DUTY_CONTRADICTION", "OPERATIONAL_CAPABILITY", "RECRUITMENT_FREE", "RECRUITMENT_PAID", "CIVIL_SERVANTS_ON_PROBATION", "CIVIL_SERVANTS", "PROBATIONARY_CIVIL_SERVANTS", "TEMPORARY_CIVIL_SERVANTS", "RECRUITMENT_CONTRADICTION", "RECRUITMENT_FIRE_DEPARTMENT", "HOURLY_DISCOUNT", "ACCIDENT_REPORT_FREE", "ACCIDENT_REPORT_PAID", "RESCUE_SERVICES_LAW", "PEDIGREE_REPORT", "ADOPTION", "WORK_EARNING_CAPACITY", "INVESTIGATION_ASSIGNMENT", "FOSTER_CHILD", "SOCIAL_MEDICINE", "S_HANDICAPPED", "PRESELECTION_FIRE_DEPARTMENT", "PRESELECTION_FIRE_DEPARTMENT_EYESIGHT", "CONTRADICTION", "TAX_OFFICE", "EXAMINATION_ELIGIBILITY", "MISCELLANEOUS" ]
       },
       "ContactDetails" : {
         "required" : [ "contactType", "salutation" ],
@@ -4460,6 +4603,9 @@
           },
           "uploadInCitizenPortal" : {
             "type" : "boolean"
+          },
+          "uploadedBy" : {
+            "$ref" : "#/components/schemas/DocumentUploadedBy"
           }
         }
       },
@@ -4493,6 +4639,10 @@
       "DocumentStatus" : {
         "type" : "string",
         "enum" : [ "MISSING", "SUBMITTED", "REJECTED", "ACCEPTED" ]
+      },
+      "DocumentUploadedBy" : {
+        "type" : "string",
+        "enum" : [ "INTERN", "EXTERN" ]
       },
       "DomesticAddress" : {
         "required" : [ "city", "country", "postalCode", "street" ],
@@ -6491,6 +6641,21 @@
           }
         }
       },
+      "PostCitizenProcedureRequest" : {
+        "required" : [ "affectedPerson", "appointment", "concern" ],
+        "type" : "object",
+        "properties" : {
+          "affectedPerson" : {
+            "$ref" : "#/components/schemas/AffectedPerson"
+          },
+          "appointment" : {
+            "$ref" : "#/components/schemas/PostOmsAppointmentRequest"
+          },
+          "concern" : {
+            "$ref" : "#/components/schemas/Concern"
+          }
+        }
+      },
       "PostDocumentRequest" : {
         "required" : [ "documentTypeDe", "mandatoryDocument", "uploadInCitizenPortal" ],
         "type" : "object",
@@ -6565,8 +6730,28 @@
           }
         }
       },
+      "PostPopulateCitizenProcedureRequest" : {
+        "required" : [ "affectedPerson", "appointment", "concern", "files" ],
+        "type" : "object",
+        "properties" : {
+          "affectedPerson" : {
+            "$ref" : "#/components/schemas/AffectedPerson"
+          },
+          "appointment" : {
+            "$ref" : "#/components/schemas/AppointmentPopulation"
+          },
+          "concern" : {
+            "$ref" : "#/components/schemas/ConcernTestDataConfig"
+          },
+          "files" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/FileTestDataConfig"
+            }
+          }
+        }
+      },
       "PostPopulateProcedureRequest" : {
-        "required" : [ "procedureData" ],
         "type" : "object",
         "properties" : {
           "appointments" : {
@@ -6611,6 +6796,9 @@
           },
           "procedureData" : {
             "$ref" : "#/components/schemas/PostEmployeeOmsProcedureRequest"
+          },
+          "procedureDataCitizen" : {
+            "$ref" : "#/components/schemas/PostPopulateCitizenProcedureRequest"
           },
           "sendEmailNotifications" : {
             "type" : "boolean"
@@ -6976,7 +7164,11 @@
               "type" : "integer",
               "format" : "int32"
             },
-            "previousFileStateId" : {
+            "previousFacilityFileStateId" : {
+              "type" : "string",
+              "format" : "uuid"
+            },
+            "previousPersonFileStateId" : {
               "type" : "string",
               "format" : "uuid"
             },

@@ -298,16 +298,16 @@ public class VaccinationConsultationService {
         procedureAccessor.accessProcedure(procedureId, ProcedureAccessor.checkNotClosed);
 
     Person person = vaccinationConsultation.getRelatedPersons().getFirst();
-    UUID previousFileStateId = person.getCentralFileStateId();
+    UUID previousPersonFileStateId = person.getCentralFileStateId();
     UUID updatedFileStateId =
-        personClient.syncPerson(previousFileStateId, request.referenceVersion());
+        personClient.syncPerson(previousPersonFileStateId, request.referenceVersion());
     person.setCentralFileStateId(updatedFileStateId);
 
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             PERSON_SYNCHRONIZED.name(), TriggerType.SYSTEM_AUTOMATIC);
     progressEntry.setProcedureId(vaccinationConsultation.getId());
-    progressEntry.setPreviousFileStateId(previousFileStateId);
+    progressEntry.setPreviousPersonFileStateId(previousPersonFileStateId);
     vaccinationConsultation.addProgressEntry(progressEntry);
   }
 
@@ -319,11 +319,11 @@ public class VaccinationConsultationService {
     }
 
     Person person = vaccinationConsultation.getRelatedPersons().getFirst();
-    UUID previousFileStateId = person.getCentralFileStateId();
+    UUID previousPersonFileStateId = person.getCentralFileStateId();
 
     try {
       UUID patientIdFromCentralFile =
-          personClient.updatePersonInCentralFile(previousFileStateId, request.patient());
+          personClient.updatePersonInCentralFile(previousPersonFileStateId, request.patient());
       vaccinationConsultationMapper.toDomainTypePatchPerson(
           patientIdFromCentralFile, vaccinationConsultation);
     } catch (Exception e) {
@@ -334,7 +334,7 @@ public class VaccinationConsultationService {
         SystemProgressEntryFactory.createSystemProgressEntry(
             PERSON_UPDATED.name(), TriggerType.SYSTEM_AUTOMATIC);
     progressEntry.setProcedureId(vaccinationConsultation.getId());
-    progressEntry.setPreviousFileStateId(previousFileStateId);
+    progressEntry.setPreviousPersonFileStateId(previousPersonFileStateId);
     vaccinationConsultation.addProgressEntry(progressEntry);
   }
 

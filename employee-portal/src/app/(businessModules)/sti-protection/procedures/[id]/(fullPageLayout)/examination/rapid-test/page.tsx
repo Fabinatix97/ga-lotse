@@ -5,24 +5,29 @@
 
 "use client";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
+import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { StiProtectionProcedurePageParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(fullPageLayout)/layout";
-import { useGetRapidTestExaminationQuery } from "@/lib/businessModules/stiProtection/api/queries/examination";
-import { useStiProcedureQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
+import { useGetRapidTestExaminationQueryOptions } from "@/lib/businessModules/stiProtection/api/queries/examination";
+import { useStiProcedureQueryOptions } from "@/lib/businessModules/stiProtection/api/queries/procedures";
 import { RapidTestExamination } from "@/lib/businessModules/stiProtection/features/procedures/examination/rapidTest/RapidTestExamination";
 import { isProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 
 export default function StiProtectionProcedureRapidTestPage({
   params: { id: procedureId },
 }: Readonly<{
   params: StiProtectionProcedurePageParams;
 }>) {
-  const { data: procedure } = useStiProcedureQuery(procedureId);
+  const [{ data: procedure }, { data: rapidTestExamination }] =
+    useSuspenseQueries({
+      queries: [
+        useStiProcedureQueryOptions(procedureId),
+        useGetRapidTestExaminationQueryOptions(procedureId),
+      ],
+    });
   const isOpen = isProcedureOpen(procedure);
-  const { data: rapidTestExamination } =
-    useGetRapidTestExaminationQuery(procedureId);
 
   return (
     <DisabledFormProvider disabled={!isOpen}>

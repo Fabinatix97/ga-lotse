@@ -10,6 +10,7 @@ import de.eshg.statistics.persistence.entity.AbstractFilterParameter;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
 import de.eshg.statistics.persistence.entity.Analysis;
+import de.eshg.statistics.persistence.entity.AnonymizationConfiguration;
 import de.eshg.statistics.persistence.entity.AttributeSelection;
 import de.eshg.statistics.persistence.entity.CellEntry;
 import de.eshg.statistics.persistence.entity.ChartConfiguration;
@@ -54,8 +55,10 @@ import de.eshg.statistics.persistence.entity.filter.NullFilterParameter;
 import de.eshg.statistics.persistence.entity.filter.TextFilterParameter;
 import de.eshg.statistics.persistence.entity.filter.ValueOptionFilterParameter;
 import de.eshg.statistics.persistence.repository.EvaluationRepository;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
@@ -89,25 +92,31 @@ public class EvaluationCopyService {
     copy.setDataSensitivity(original.getDataSensitivity());
     copy.setName(cloneEvaluationRequest.clonedEvaluationName());
     copy.setNumberOfTableRows(original.getNumberOfTableRows());
-    copy.addTableColumns(copyTableColumns(original.getTableColumns()));
+    copy.addTableColumns(copyTableColumnsWithoutCellEntries(original.getTableColumns()));
     copy.addAnalyses(copyAnalyses(original.getAnalyses()));
 
     return evaluationRepository.save(copy).getExternalId();
   }
 
-  private List<TableColumn> copyTableColumns(List<TableColumn> tableColumns) {
+  private List<TableColumn> copyTableColumnsWithoutCellEntries(List<TableColumn> tableColumns) {
     return tableColumns.stream().map(this::copyTableColumnWithoutCellEntries).toList();
   }
 
   private TableColumn copyTableColumnWithoutCellEntries(TableColumn original) {
-    TableColumn copy = copyTableColumnWithoutCellEntriesWithoutMinMaxValues(original);
+    TableColumn copy = copyTableColumnWithoutCellEntriesAndMinMaxValuesAndAnonymization(original);
     Optional.ofNullable(original.getMinMaxNullUnknownValues())
         .map(this::copyMinMaxNullUnknownValues)
         .ifPresent(copy::setMinMaxNullUnknownValues);
+    if (original.getAnonymizationConfiguration() != null) {
+      AnonymizationConfiguration anonymizationConfiguration = new AnonymizationConfiguration();
+      copy.setAnonymizationConfiguration(anonymizationConfiguration);
+      copyAnonymizationConfiguration(
+          anonymizationConfiguration, original.getAnonymizationConfiguration());
+    }
     return copy;
   }
 
-  public static TableColumn copyTableColumnWithoutCellEntriesWithoutMinMaxValues(
+  public static TableColumn copyTableColumnWithoutCellEntriesAndMinMaxValuesAndAnonymization(
       TableColumn original) {
     TableColumn copy = new TableColumn();
     copy.setBusinessModuleName(original.getBusinessModuleName());
@@ -116,7 +125,6 @@ public class EvaluationCopyService {
     copy.setBaseModuleAttributeCode(original.getBaseModuleAttributeCode());
     copy.setBaseModuleAttributeName(original.getBaseModuleAttributeName());
     copy.setValueType(original.getValueType());
-    copy.setDataPrivacyCategory(original.getDataPrivacyCategory());
     copy.setUnit(original.getUnit());
     copy.setDataSourceName(original.getDataSourceName());
     copy.setDataSourceId(original.getDataSourceId());
@@ -150,6 +158,31 @@ public class EvaluationCopyService {
     copy.setNumberOfUnknownEntries(original.getNumberOfUnknownEntries());
     copy.setUnknownValue(original.getUnknownValue());
     return copy;
+  }
+
+  static void copyAnonymizationConfiguration(
+      AnonymizationConfiguration currentConfiguration,
+      AnonymizationConfiguration newConfiguration) {
+    currentConfiguration.setDataPrivacyCategory(newConfiguration.getDataPrivacyCategory());
+    currentConfiguration.setIntervalCount(newConfiguration.getIntervalCount());
+    currentConfiguration.setMinDecimalInclusive(newConfiguration.getMinDecimalInclusive());
+    currentConfiguration.setMaxDecimalInclusive(newConfiguration.getMaxDecimalInclusive());
+    currentConfiguration.setMinIntegerInclusive(newConfiguration.getMinIntegerInclusive());
+    currentConfiguration.setMaxIntegerInclusive(newConfiguration.getMaxIntegerInclusive());
+
+    Set<BigDecimal> currentDecimalBorders = currentConfiguration.getDecimalBorders();
+    Set<BigDecimal> newDecimalBorders = newConfiguration.getDecimalBorders();
+    if (currentDecimalBorders.size() != newDecimalBorders.size()
+        || !currentDecimalBorders.containsAll(newDecimalBorders)) {
+      currentConfiguration.setDecimalBorders(newDecimalBorders);
+    }
+
+    Set<Integer> currentIntegerBorders = currentConfiguration.getIntegerBorders();
+    Set<Integer> integerBorders = newConfiguration.getIntegerBorders();
+    if (currentIntegerBorders.size() != integerBorders.size()
+        || !currentIntegerBorders.containsAll(integerBorders)) {
+      currentConfiguration.setIntegerBorders(integerBorders);
+    }
   }
 
   private List<Analysis> copyAnalyses(List<Analysis> analyses) {

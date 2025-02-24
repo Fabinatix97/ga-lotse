@@ -99,7 +99,7 @@ export function TextTemplatesOverviewTable() {
       <EmployeePortalConfirmationDialog
         open={confirmingDelete != null}
         title="Vorlage löschen?"
-        description="Möchten Sie die Vorlage “Rechtliche Grundlage” wirklich löschen? Die Aktion kann nicht rückgängig gemacht werden."
+        description={`Möchten Sie die Vorlage ${textTemplates.find((template) => template.externalId == confirmingDelete)?.name} wirklich löschen? Die Aktion kann nicht rückgängig gemacht werden.`}
         confirmLabel="Löschen"
         color="danger"
         onCancel={() => {

@@ -24,7 +24,7 @@ import { FileType } from "@/lib/types/FileType";
 
 import { FileInputButton } from "./FileInputButton";
 
-const HiddenInput = styled("input")({ display: "hidden" });
+const HiddenInput = styled("input")({ display: "none" });
 
 function resolveAcceptedFileTypes(
   accept: FileType | FileType[] | undefined,

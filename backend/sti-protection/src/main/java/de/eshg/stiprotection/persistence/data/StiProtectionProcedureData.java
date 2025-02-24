@@ -34,6 +34,10 @@ public record StiProtectionProcedureData(StiProtectionProcedure procedure, Strin
     return procedure.getConcern();
   }
 
+  public UUID anonymousUserId() {
+    return procedure.getAnonymousUserId();
+  }
+
   public Boolean isFollowUp() {
     return procedure.isFollowUp();
   }

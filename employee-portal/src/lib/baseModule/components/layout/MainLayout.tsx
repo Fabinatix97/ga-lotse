@@ -5,6 +5,7 @@
 
 "use client";
 
+import { useHeaderHeights } from "@eshg/lib-employee-portal/hooks/useHeaderHeights";
 import { Box } from "@mui/joy";
 import { ReactNode, useState } from "react";
 
@@ -14,7 +15,6 @@ import {
   sideNavigationCollapsedWidth,
   sideNavigationWidth,
 } from "@/lib/baseModule/components/layout/sizes";
-import { useHeaderHeights } from "@/lib/baseModule/components/layout/useHeaderHeights";
 import { SidebarSlot } from "@/lib/shared/components/drawer/SidebarSlot";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
@@ -75,6 +75,10 @@ export function MainLayout({ children }: { children: ReactNode }) {
                   xxs: `calc(100dvh - ${headerHeightMobile})`,
                   sm: `calc(100dvh - ${headerHeightDesktop})`,
                 },
+              },
+              minHeight: {
+                xxs: `calc(100dvh - ${headerHeightMobile})`,
+                sm: `calc(100dvh - ${headerHeightDesktop})`,
               },
             }}
           >

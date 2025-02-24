@@ -15,6 +15,7 @@ import de.eshg.officialmedicalservice.document.api.PatchDocumentInformationReque
 import de.eshg.officialmedicalservice.document.api.PatchDocumentNoteRequest;
 import de.eshg.officialmedicalservice.document.api.PatchDocumentReviewRequest;
 import de.eshg.officialmedicalservice.document.api.PostDocumentRequest;
+import de.eshg.officialmedicalservice.document.persistence.entity.DocumentUploadedBy;
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocument;
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocumentRepository;
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocumentStatus;
@@ -82,6 +83,7 @@ public class OmsDocumentService {
       document.setDocumentStatus(OmsDocumentStatus.ACCEPTED);
       document.setLastDocumentUpload(Instant.now(clock));
       document.setNote(note);
+      document.setUploadedBy(DocumentUploadedBy.INTERN);
     } else {
       document.setDocumentStatus(OmsDocumentStatus.MISSING);
     }
@@ -106,6 +108,24 @@ public class OmsDocumentService {
     }
 
     return document.getExternalId();
+  }
+
+  @Transactional
+  public void addLetterOfAssignmentCitizen(OmsProcedure procedure, List<MultipartFile> files) {
+    validateFileTypes(files);
+
+    OmsDocument document = new OmsDocument();
+    document.setDocumentTypeDe("Auftragsschreiben");
+    document.setDocumentStatus(OmsDocumentStatus.SUBMITTED);
+    document.setLastDocumentUpload(Instant.now(clock));
+    document.setMandatoryDocument(true);
+    document.setUploadInCitizenPortal(true);
+    document.setUploadedBy(DocumentUploadedBy.EXTERN);
+
+    document.setOmsProcedure(procedure);
+    omsDocumentRepository.save(document);
+
+    saveFiles(document, files);
   }
 
   @Transactional
@@ -139,7 +159,8 @@ public class OmsDocumentService {
   }
 
   @Transactional
-  public void completeDocumentFileUploadEmployee(UUID documentId, List<MultipartFile> files) {
+  public void completeDocumentFileUploadEmployee(
+      UUID documentId, List<MultipartFile> files, String note) {
     OmsDocument omsDocument = loadOmsDocument(documentId);
 
     if (omsDocument.getOmsProcedure().isFinalized()) {
@@ -155,6 +176,8 @@ public class OmsDocumentService {
     omsDocument.setReasonForRejection(null);
     omsDocument.setDocumentStatus(OmsDocumentStatus.ACCEPTED);
     omsDocument.setLastDocumentUpload(Instant.now(clock));
+    omsDocument.setNote(note);
+    omsDocument.setUploadedBy(DocumentUploadedBy.INTERN);
 
     OmsProcedure omsProcedure = omsDocument.getOmsProcedure();
     progressEntryService.createProgressEntryCompleteDocumentFileUploadEmployee(
@@ -215,6 +238,7 @@ public class OmsDocumentService {
           throw new BadRequestException("reasonForRejection must not be blank");
         }
         deleteAllFiles(document);
+        document.setUploadedBy(null);
         document.setReasonForRejection(request.reasonForRejection());
         document.setDocumentStatus(OmsDocumentStatus.REJECTED);
     }

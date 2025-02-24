@@ -33,7 +33,9 @@ export function EmployeeInformationForm(props: NestedFormProps) {
   return (
     <>
       <Grid xxs={12}>
-        <Typography level="h3">Angaben zu Mitarbeiter:innen</Typography>
+        <Typography level="h3" component="h2">
+          Angaben zu Mitarbeiter:innen
+        </Typography>
       </Grid>
       <Grid xxs={12}>
         <BooleanRadioField

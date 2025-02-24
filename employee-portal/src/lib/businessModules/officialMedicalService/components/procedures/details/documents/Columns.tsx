@@ -71,25 +71,18 @@ export function Columns({
     //   },
     //   enableSorting: true,
     // }),
-    // ToDo: missing attribute in BE "Hochgeladen von"; for now fixed value is displayed
-    // columnHelper.accessor("??", {
-    //   header: "Hochgeladen von",
-    //   cell: (props) => {
-    //     return (
-    //       <Chip color={props.getValue() ? "warning" : "primary"} size="md">
-    //         {props.getValue() ? "Extern" : "Intern"}
-    //       </Chip>
-    //     );
-    //   },
-    //   enableSorting: true,
-    // }),
-    columnHelper.display({
+    columnHelper.accessor("uploadedBy", {
       header: "Hochgeladen von",
-      cell: () => {
+      cell: (props) => {
         return (
-          <Chip color="primary" size="md">
-            Intern
-          </Chip>
+          props.getValue() && (
+            <Chip
+              color={props.getValue() === "INTERN" ? "primary" : "warning"}
+              size="md"
+            >
+              {props.getValue() === "INTERN" ? "Intern" : "Extern"}
+            </Chip>
+          )
         );
       },
       enableSorting: true,

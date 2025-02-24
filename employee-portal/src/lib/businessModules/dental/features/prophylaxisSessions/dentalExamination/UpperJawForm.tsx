@@ -3,24 +3,37 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { GeneralJawForm } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/GeneralJawForm";
+import { useId } from "react";
+
 import { JawWithHeading } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/JawWithHeading";
 import {
   QuadrantHeading,
   QuadrantHeadingRow,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/QuadrantHeading";
 
+import { Quadrant } from "./Quadrant";
+
 export function UpperJawForm() {
+  const upperJawRightId = useId();
+  const upperJawLeftId = useId();
   return (
     <JawWithHeading
       heading={
         <QuadrantHeadingRow marginBottom="24px">
-          <QuadrantHeading name="Oberkiefer rechts" index={1} />
-          <QuadrantHeading name="Oberkiefer links" index={2} />
+          <QuadrantHeading
+            name="Oberkiefer rechts"
+            index={1}
+            id={upperJawRightId}
+          />
+          <QuadrantHeading
+            name="Oberkiefer links"
+            index={2}
+            id={upperJawLeftId}
+          />
         </QuadrantHeadingRow>
       }
-      left={<GeneralJawForm quadrantNumber="Q1" />}
-      right={<GeneralJawForm quadrantNumber="Q2" />}
+      left={<Quadrant quadrantNumber="Q1" aria-labelledby={upperJawRightId} />}
+      right={<Quadrant quadrantNumber="Q2" aria-labelledby={upperJawLeftId} />}
     />
   );
 }

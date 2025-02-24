@@ -5,6 +5,8 @@
 
 package de.eshg.officialmedicalservice.concern;
 
+import de.eshg.lib.appointmentblock.AppointmentTypeMapper;
+import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import de.eshg.officialmedicalservice.procedure.api.ConcernCategoryConfigDto;
 import de.eshg.officialmedicalservice.procedure.api.ConcernConfigDto;
 import de.eshg.officialmedicalservice.procedure.api.ConcernDto;
@@ -30,12 +32,23 @@ public class ConcernMapper {
   }
 
   public static ConcernConfigDto mapToConcernConfigDto(Map<String, Object> yaml) {
+    String concernEn =
+        yaml.get("concern_en") != null ? String.valueOf(yaml.get("concern_en")) : null;
+    AppointmentTypeDto appointmentType =
+        yaml.get("appointment_type") != null
+            ? AppointmentTypeDto.valueOf(String.valueOf(yaml.get("appointment_type")))
+            : null;
+    boolean visibleInOnlinePortal = Boolean.TRUE.equals(yaml.get("online_portal_visibility"));
+    if (visibleInOnlinePortal && (concernEn == null || appointmentType == null)) {
+      throw new RuntimeException(
+          "An english concern name and appointment type must be specified when visible in online portal");
+    }
     return new ConcernConfigDto(
         String.valueOf(yaml.get("concern_de")),
-        String.valueOf(yaml.get("concern_en")),
-        String.valueOf(yaml.get("description_de")),
-        String.valueOf(yaml.get("description_en")),
-        Boolean.TRUE.equals(yaml.get("high_priority")));
+        concernEn,
+        Boolean.TRUE.equals(yaml.get("high_priority")),
+        appointmentType,
+        visibleInOnlinePortal);
   }
 
   public static ConcernDto mapToConcernDto(Concern concern) {
@@ -46,11 +59,13 @@ public class ConcernMapper {
         concern.getVersion(),
         concern.getNameDe(),
         concern.getNameEn(),
-        concern.getDescriptionDe(),
-        concern.getDescriptionEn(),
         concern.isHighPriority(),
         concern.getCategoryNameDe(),
-        concern.getCategoryNameEn());
+        concern.getCategoryNameEn(),
+        concern.getAppointmentType() != null
+            ? AppointmentTypeMapper.toInterfaceType(concern.getAppointmentType())
+            : null,
+        concern.isVisibleInOnlinePortal());
   }
 
   public static Concern mapToEntity(ConcernDto concernDto) {
@@ -62,11 +77,14 @@ public class ConcernMapper {
   public static void mapOntoExistingEntity(ConcernDto concernDto, Concern concern) {
     concern.setNameDe(concernDto.nameDe());
     concern.setNameEn(concernDto.nameEn());
-    concern.setDescriptionDe(concernDto.descriptionDe());
-    concern.setDescriptionEn(concernDto.descriptionEn());
     concern.setHighPriority(concernDto.highPriority());
     concern.setCategoryNameDe(concernDto.categoryNameDe());
     concern.setCategoryNameEn(concernDto.categoryNameEn());
+    concern.setAppointmentType(
+        concernDto.appointmentType() != null
+            ? AppointmentTypeMapper.toDomainType(concernDto.appointmentType())
+            : null);
+    concern.setVisibleInOnlinePortal(concernDto.visibleInOnlinePortal());
   }
 
   public static ConcernDto mapConcernConfigToConcernDto(
@@ -77,10 +95,10 @@ public class ConcernMapper {
         version,
         concernConfigDto.nameDe(),
         concernConfigDto.nameEn(),
-        concernConfigDto.descriptionDe(),
-        concernConfigDto.descriptionEn(),
         concernConfigDto.highPriority(),
         concernCategoryConfigDto.nameDe(),
-        concernCategoryConfigDto.nameEn());
+        concernCategoryConfigDto.nameEn(),
+        concernConfigDto.appointmentType(),
+        concernConfigDto.visibleInOnlinePortal());
   }
 }

@@ -1,0 +1,51 @@
+
+### Login with username and password to obtain AccessToken
+POST http://localhost:8008/_matrix/client/r0/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "type":"m.login.password",
+  "user": "testuser1",
+  "password": "password"
+}
+
+#### Get whoami user data (requires Authorization)
+GET http://localhost:8008/_matrix/client/v3/account/whoami
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer syt_dGVzdHVzZXIx_cCUHJQkDRgSxZMalphQc_4Ti1ZP
+
+
+### Allow replacing master cross-signing key without User-Interactive Auth (for next 10 minutes)
+
+POST http://localhost:8008/_synapse/admin/v1/users/@testuser1:synapse.local.dev/_allow_cross_signing_replacement_without_uia
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer syt_YWRtaW4_OsXwvIvsSxxsYWbwmelq_27B2FX
+
+
+### [not working] Upload cross signing keys
+POST http://localhost:8008/_matrix/client/v3/keys/device_signing/upload
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer syt_dGVzdHVzZXIx_cldbKIvdYMYZnoaaKvlk_0DhVSC
+
+{
+  "auth": {
+    "session": "wkRwhQvCrzzGpEbJqLMqrsDD"
+  },
+  "master_key": {
+    "keys": {
+      "ed25519:base64+master+public+key": "base64+master+public+key"
+    },
+    "usage": [
+      "master"
+    ],
+    "user_id": "@testuser1:synapse.local.dev"
+  }
+}
+
+
+
+

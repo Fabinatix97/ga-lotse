@@ -7,6 +7,7 @@ package de.eshg.officialmedicalservice.document;
 
 import de.eshg.officialmedicalservice.document.api.DocumentDto;
 import de.eshg.officialmedicalservice.document.api.DocumentStatusDto;
+import de.eshg.officialmedicalservice.document.api.DocumentUploadedByDto;
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocument;
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocumentStatus;
 import de.eshg.officialmedicalservice.file.OmsFileMapper;
@@ -49,7 +50,10 @@ public class OmsDocumentMapper {
         document.getNote(),
         document.isMandatoryDocument(),
         document.isUploadInCitizenPortal(),
-        document.getReasonForRejection());
+        document.getReasonForRejection(),
+        document.getUploadedBy() != null
+            ? DocumentUploadedByDto.valueOf(document.getUploadedBy().name())
+            : null);
   }
 
   public DocumentStatusDto toInterfaceType(OmsDocumentStatus documentStatus) {

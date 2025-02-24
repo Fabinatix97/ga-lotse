@@ -1,0 +1,52 @@
+{
+  "page_title_sex_work": "Sex Work",
+  "page_title_sti_consultation": "HIV-STI Consultation",
+  "information": {
+    "title": "Consulting and testing services",
+    "notice": "You do not need an ID document or an insurance card. All test results are only communicated personally.",
+    "applies_to_heading": "The offer is aimed at",
+    "applies_to_list": [
+      "People without health insurance",
+      "Sex workers",
+      "General population (you can only get advice and test with us, unfortunately we cannot make an examination)"
+    ],
+    "tests_available_heading": "Depending on the history and complaints, further tests can be carried out",
+    "tests_available_list": [
+      "Physical examinations",
+      "Blood and urine examinations",
+      "Smears"
+    ],
+    "costs_heading": "Cost",
+    "costs_info": "The costs for the laboratory tests must be covered by individuals themselves.",
+    "exceptions_heading": "Exceptions",
+    "exceptions_list": [
+      "Young people up to 24 years can be tested free of charge for HIV and chlamydia.",
+      "If you work in sex work or not insured, you can use our services free of charge."
+    ],
+    "invitation": "You can be tested anonymously for HIV and sexually transmitted infections, including hepatitis B and C, and receive advice. You can also ask questions about partnership, contraception or sexual orientation confidentially and anonymously.",
+    "cancellation": "If you are unable to attend this appointment, it should be rescheduled in a timely manner. You can conveniently do this yourself here via the online portal. Using the registration code on the invitation and your child's date of birth, you can access your personal area.",
+    "location": "The school enrollment examination takes place at the health department at {{address}}. Please report to the reception at the entrance and present the invitation letter."
+  },
+  "contact": {
+    "title": "Contact and Availability",
+    "address_section": {
+      "title": "Address"
+    },
+    "opening_hours_section": {
+      "title": "Opening and Consultation Hours"
+    },
+    "phone_section": {
+      "title": "Phone",
+      "number": "Phone: {{phoneNumber}}"
+    },
+    "email_section": {
+      "title": "Email Address"
+    }
+  },
+  "personal_area": {
+    "title": "Would you like to make an appointment?",
+    "information": "Appointments for consultation and testing can be arranged online. Appointments are always available two weeks in advance.",
+    "create_appointment": "Book new appointment",
+    "go_to_personal_area": "View my appointment"
+  }
+}

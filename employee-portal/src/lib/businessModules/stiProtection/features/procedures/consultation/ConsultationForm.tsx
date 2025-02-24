@@ -88,10 +88,11 @@ export function ConsultationForm({
                 name="general.notes"
                 label="Allgemeine Bemerkungen"
                 context={ApiTextTemplateContext.ConsultationRemark}
+                minRows={5}
               />
             </SidecarSheet>
           </SidecarFormLayout>
-          <TabStickyBottomButtonBar procedure={procedure} />
+          <TabStickyBottomButtonBar />
         </FormPlus>
       )}
     </Formik>

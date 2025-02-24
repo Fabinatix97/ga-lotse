@@ -4,11 +4,12 @@
  */
 
 import { AccessCheck } from "@eshg/lib-employee-portal/helpers/accessControl";
+import { SideNavigationItem } from "@eshg/lib-employee-portal/types/sideNavigation";
 
 import { useResolveSideNavigationItems } from "@/lib/baseModule/moduleRegister/sideNavigationItemsResolver";
 import { useAccessControl } from "@/lib/shared/hooks/useAccessControl";
 
-import { SideNavigationItem, UseSideNavigationItemGroupsResult } from "./types";
+import { UseSideNavigationItemGroupsResult } from "./types";
 
 export function filterNavigationItemsWithAccess(
   items: SideNavigationItem[],

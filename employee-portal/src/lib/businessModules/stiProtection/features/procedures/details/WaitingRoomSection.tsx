@@ -5,6 +5,10 @@
 
 import { Row } from "@eshg/lib-portal/components/Row";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
+import {
+  DisabledFormProvider,
+  useIsFormDisabled,
+} from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
@@ -17,6 +21,7 @@ import {
 } from "@eshg/sti-protection-api";
 import { Button, Sheet } from "@mui/joy";
 import { Formik, useFormikContext } from "formik";
+import { useTransition } from "react";
 
 import { useUpdateWaitingRoomDetails } from "@/lib/businessModules/stiProtection/api/mutations/waitingRoomApi";
 import { WAITING_STATUS_OPTIONS } from "@/lib/businessModules/stiProtection/features/procedures/translations";
@@ -51,56 +56,69 @@ export function WaitingRoomSection({
       snackbar.confirmation("Wartezimmerdaten aktualisiert");
     },
   });
+  const [isResetting, startReset] = useTransition();
 
   const onlyIfOpen = createOnlyIfProcedureOpen(procedure);
   const isDisabled =
-    !isProcedureOpen(procedure) || updateWaitingRoomDetails.isPending;
+    !isProcedureOpen(procedure) ||
+    updateWaitingRoomDetails.isPending ||
+    isResetting;
 
   return (
     <Sheet>
       <DetailsSection title="Wartezimmer">
-        <Formik
-          enableReinitialize
-          initialValues={initialValues(procedure.waitingRoom)}
-          onSubmit={(form) =>
-            updateWaitingRoomDetails.mutate(transformToValid(form, procedure))
-          }
-        >
-          <FormPlus sx={{ display: "contents" }}>
-            <InputField
-              label="Zusätzliche Info"
-              name="info"
-              disabled={isDisabled}
-              maxLength={ADDITIONAL_INFO_MAX_LENGTH}
-            />
-            <SelectField
-              label="Status"
-              name="status"
-              disabled={isDisabled}
-              options={WAITING_STATUS_OPTIONS}
-            />
-            {onlyIfOpen(
-              <FormButtons isSubmitting={updateWaitingRoomDetails.isPending} />,
-            )}
-          </FormPlus>
-        </Formik>
+        <DisabledFormProvider disabled={isDisabled}>
+          <Formik
+            enableReinitialize
+            initialValues={initialValues(procedure.waitingRoom)}
+            onSubmit={(form) =>
+              updateWaitingRoomDetails.mutate(transformToValid(form, procedure))
+            }
+          >
+            <FormPlus sx={{ display: "contents" }}>
+              <InputField
+                label="Zusätzliche Info"
+                name="info"
+                maxLength={ADDITIONAL_INFO_MAX_LENGTH}
+              />
+              <SelectField
+                label="Status"
+                name="status"
+                options={WAITING_STATUS_OPTIONS}
+              />
+              {onlyIfOpen(<FormButtons startReset={startReset} />)}
+            </FormPlus>
+          </Formik>
+        </DisabledFormProvider>
       </DetailsSection>
     </Sheet>
   );
 }
 
-function FormButtons({ isSubmitting }: { isSubmitting: boolean }) {
+function FormButtons({
+  startReset: startReset,
+}: {
+  startReset: (action: () => Promise<void>) => void;
+}) {
   const { setValues } = useFormikContext<WaitingRoomDetails>();
+  const disabled = useIsFormDisabled();
+
+  function resetForm() {
+    startReset(async () => {
+      await setValues({ info: "", status: null });
+    });
+  }
+
   return (
     <Row justifyContent="right">
       <Button
         variant="plain"
-        onClick={() => setValues({ info: "", status: null })}
-        aria-disabled={isSubmitting}
+        onClick={() => resetForm()}
+        aria-disabled={disabled}
       >
         Zurücksetzen
       </Button>
-      <SubmitButton submitting={isSubmitting}>Speichern</SubmitButton>
+      <SubmitButton submitting={disabled}>Speichern</SubmitButton>
     </Row>
   );
 }

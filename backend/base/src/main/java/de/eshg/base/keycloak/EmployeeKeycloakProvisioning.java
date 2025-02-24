@@ -43,6 +43,7 @@ public class EmployeeKeycloakProvisioning extends KeycloakProvisioning<EmployeeK
   public static final String BEAN_NAME = "employeeKeycloakProvisioning";
   public static final String CUSTOM_BROWSER_FLOW_ALIAS = "custom browser flow";
   private final URI synapseUrl;
+  private final URI synapseInternalUrl;
   private final String synapseClientSecret;
 
   public EmployeeKeycloakProvisioning(
@@ -50,6 +51,7 @@ public class EmployeeKeycloakProvisioning extends KeycloakProvisioning<EmployeeK
       KeycloakProperties keycloakProperties,
       @Value("${eshg.employee-portal.reverse-proxy.url}") URI reverseProxyUrl,
       @Value("${eshg.synapse.url:}") URI synapseUrl,
+      @Value("${eshg.synapse.internal.url:}") URI synapseInternalUrl,
       @Value("${eshg.synapse.client.secret:}") String synapseClientSecret,
       MutexService mutexService) {
     super(
@@ -59,6 +61,7 @@ public class EmployeeKeycloakProvisioning extends KeycloakProvisioning<EmployeeK
         keycloakProperties.employeeRealm(),
         mutexService);
     this.synapseUrl = synapseUrl;
+    this.synapseInternalUrl = synapseInternalUrl;
     this.synapseClientSecret = synapseClientSecret;
   }
 
@@ -197,7 +200,7 @@ public class EmployeeKeycloakProvisioning extends KeycloakProvisioning<EmployeeK
         getClientRepresentationAttributes(
             Map.of(
                 "backchannel.logout.url",
-                UriComponentsBuilder.fromUri(synapseUrl)
+                UriComponentsBuilder.fromUri(synapseInternalUrl)
                     .path("/_synapse/client/oidc/backchannel_logout")
                     .toUriString(),
                 "backchannel.logout.revoke.offline.tokens",

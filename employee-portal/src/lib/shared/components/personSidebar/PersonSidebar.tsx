@@ -5,11 +5,10 @@
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import { DefaultError, UseQueryOptions, useQuery } from "@tanstack/react-query";
-import { ComponentType, ReactNode, Ref, useEffect, useState } from "react";
+import { ComponentType, ReactNode, useEffect, useState } from "react";
 import { isDefined } from "remeda";
 
 import { useSearchReferencePersonsQuery } from "@/lib/baseModule/api/queries/persons";
-import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
 import {
   DefaultPersonForm,
   DefaultPersonFormValues,
@@ -31,6 +30,7 @@ import {
   SearchPersonSidebar,
 } from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
 import { useResetAlertContextOnChange } from "@/lib/shared/hooks/useResetAlertContextOnChange";
+import { SidebarWithFormRefProps } from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 import { PersonDetailsSidebar } from "./PersonDetailsSidebar";
 import { AssociatedProceduresSearchResult } from "./search/AssociatedProceduresSearchResult";
@@ -77,8 +77,8 @@ export type PersonSidebarProps<
   TCreateValues extends PersonFormValues = DefaultPersonFormValues,
   TProcedure = unknown,
 > = SearchFormProps<TSearchValues> &
+  SidebarWithFormRefProps &
   CreateFormProps<TSearchValues, TCreateValues> & {
-    onCancel: () => void;
     onBack?: () => void;
     onCreate: (props: {
       searchInputs: TSearchValues;
@@ -88,7 +88,6 @@ export type PersonSidebarProps<
       searchInputs: TSearchValues;
       person: ApiGetReferencePersonResponse;
     }) => Promise<void>;
-    sidebarFormRef: Ref<SidebarFormHandle>;
     title: string;
     submitLabel: string;
     addressRequired?: boolean;
@@ -200,8 +199,8 @@ export function PersonSidebar<
     return (
       <SearchPersonSidebar<TSearchValues>
         searchFormTitle={props.title}
-        sidebarFormRef={props.sidebarFormRef}
-        onCancel={props.onCancel}
+        sidebarFormRef={props.formRef}
+        onCancel={() => props.onClose(false)}
         onBack={props.onBack}
         initialValues={state.searchState}
         searchFormComponent={SearchFormComponent}
@@ -224,9 +223,9 @@ export function PersonSidebar<
     return (
       <PersonSearchResults
         title={props.title}
-        sidebarFormRef={props.sidebarFormRef}
+        sidebarFormRef={props.formRef}
         loadingAssociatedProcedures={getAssociatedProceduresQuery.isLoading}
-        onCancel={props.onCancel}
+        onCancel={() => props.onClose(false)}
         onBack={() => setState((previous) => ({ ...previous, mode: "search" }))}
         inputs={state.searchState}
         persons={state.searchResult}
@@ -258,8 +257,8 @@ export function PersonSidebar<
         title={props.title}
         subtitle={"Person anlegen"}
         submitLabel={props.submitLabel}
-        sidebarFormRef={props.sidebarFormRef}
-        onCancel={props.onCancel}
+        sidebarFormRef={props.formRef}
+        onCancel={() => props.onClose(false)}
         onBack={() =>
           setState((previous) => ({
             ...previous,
@@ -267,10 +266,12 @@ export function PersonSidebar<
           }))
         }
         onSubmit={async (values) =>
-          await props.onCreate({
-            searchInputs: state.searchState,
-            createInputs: values,
-          })
+          await props
+            .onCreate({
+              searchInputs: state.searchState,
+              createInputs: values,
+            })
+            .then(() => props.onClose(true))
         }
         addressRequired={props.addressRequired}
         initialValues={state.createState}
@@ -287,7 +288,7 @@ export function PersonSidebar<
     ) {
       return (
         <AssociatedProceduresSearchResult<TProcedure>
-          onCancel={props.onCancel}
+          onCancel={() => props.onClose(false)}
           onBack={() =>
             setState((previous) => ({ ...previous, mode: "search_results" }))
           }
@@ -302,7 +303,7 @@ export function PersonSidebar<
           title={props.title}
           person={state.selectedPerson}
           submitLabel={props.submitLabel}
-          onCancel={props.onCancel}
+          onCancel={() => props.onClose(false)}
           onBack={() =>
             setState((previous) => ({
               ...previous,
@@ -310,10 +311,12 @@ export function PersonSidebar<
             }))
           }
           onSubmit={(person) =>
-            props.onSelect({
-              searchInputs: state.searchState,
-              person: person,
-            })
+            props
+              .onSelect({
+                searchInputs: state.searchState,
+                person: person,
+              })
+              .then(() => props.onClose(true))
           }
         />
       );

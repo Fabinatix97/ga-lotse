@@ -15,7 +15,7 @@ import { useNotificationsSidebar } from "@/lib/baseModule/components/layout/noti
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { useGetSelfUserPresence } from "@/lib/businessModules/chat/shared/hooks/useGetSelfUserPresence";
 import {
-  getPresenseLabel,
+  getPresenceLabel,
   getStatusColor,
 } from "@/lib/businessModules/chat/shared/utils";
 
@@ -76,16 +76,14 @@ export function HeaderButtons() {
       )}
 
       <HeaderIconButton
-        aria-label={`Benutzer (${getPresenseLabel(userPresence)})`}
+        aria-label={`Benutzer (${getPresenceLabel(userPresence)})`}
         sx={{
           backgroundColor: "transparent",
         }}
         onClick={toggleUserSidebar}
       >
         <Badge
-          invisible={
-            !canAccessChat || !sharePresence || userSettings.accountDeactivated
-          }
+          invisible={!sharePresence}
           size="sm"
           badgeInset="18%"
           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}

@@ -163,6 +163,7 @@ public final class BaseUrls {
 
   public static final class StiProtection {
     public static final String PROCEDURE_CONTROLLER = "/sti-procedures";
+    public static final String CITIZEN_CONTROLLER = "/citizen/auth";
     public static final String CITIZEN_PUBLIC_CONTROLLER = "/citizen/public";
 
     private StiProtection() {}
@@ -210,6 +211,7 @@ public final class BaseUrls {
 
   public static final class ChatManagement {
     public static final String USER_SETTINGS_CONTROLLER = "/user-settings";
+    public static final String USER_ACCOUNT_CONTROLLER = "/user-account";
 
     public static final String FEATURE_TOGGLES_CONTROLLER = "/feature-toggles";
 

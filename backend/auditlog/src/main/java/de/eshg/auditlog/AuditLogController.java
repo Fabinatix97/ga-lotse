@@ -28,6 +28,7 @@ import de.eshg.base.user.api.GetUsersResponse;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.base.user.api.UserFilterParameters;
 import de.eshg.lib.auditlog.AuditLogger;
+import de.eshg.persistence.IntentionalWritingTransaction;
 import de.eshg.rest.service.error.AlreadyExistsException;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
@@ -35,16 +36,10 @@ import de.eshg.rest.service.error.ErrorResponse;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import jakarta.servlet.ServletRequest;
-import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.nio.channels.Channels;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
-import java.nio.channels.OverlappingFileLockException;
-import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
@@ -148,6 +143,7 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
 
   @Override
   @Transactional
+  @IntentionalWritingTransaction(reason = "Audit logging")
   public ResponseEntity<Resource> readAuditLogFile(
       String key, ReadAuditLogFileRequest readAuditLogFileRequest) {
     UserDto selfUser = userApi.getSelfUser();
@@ -637,18 +633,7 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
 
   private void encryptAndStoreAuditLog(
       AddAuditLogFileRequest addAuditLogFileRequest, MultipartFile file, Path targetDirPath) {
-    Path logOutputPath = getAuditLogFilePath(targetDirPath);
-
-    try (FileChannel outputChannel =
-            FileChannel.open(
-                logOutputPath, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
-        FileLock outputFileLock = outputChannel.tryLock()) {
-
-      if (outputFileLock == null) {
-        throwBadRequestExceptionBecauseFileAlreadyExists(addAuditLogFileRequest);
-      }
-      log.debug("Successfully locked file {} [{}].", logOutputPath, outputFileLock);
-
+    try {
       log.info("Encrypting received audit log symmetrically");
       EncryptedPayload encryptedPayload = SymmetricEncryption.encrypt(file.getBytes());
 
@@ -690,12 +675,14 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
           StandardOpenOption.CREATE_NEW,
           StandardOpenOption.WRITE);
 
+      Path logOutputPath = getAuditLogFilePath(targetDirPath);
       log.info("Storing symmetrically encrypted audit log at {}", logOutputPath);
-      try (ReadableByteChannel readableByteChannel =
-          Channels.newChannel(new ByteArrayInputStream(encryptedPayload.cipherText()))) {
-        outputChannel.transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
-      }
-    } catch (OverlappingFileLockException | FileAlreadyExistsException e) {
+      Files.write(
+          logOutputPath,
+          encryptedPayload.cipherText(),
+          StandardOpenOption.CREATE_NEW,
+          StandardOpenOption.WRITE);
+    } catch (FileAlreadyExistsException e) {
       throwBadRequestExceptionBecauseFileAlreadyExists(addAuditLogFileRequest);
     } catch (IOException e) {
       throw new UncheckedIOException("Unable to write received audit log to targetPath", e);

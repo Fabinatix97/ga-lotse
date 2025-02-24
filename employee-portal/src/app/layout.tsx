@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { LayoutConfigProvider } from "@eshg/lib-employee-portal/contexts/layoutConfig";
 import { ApiProvider } from "@eshg/lib-portal/api/ApiProvider";
 import { HiddenDownloadContainer } from "@eshg/lib-portal/api/files/HiddenDownloadContainer";
 import { EnvironmentTypeProvider } from "@eshg/lib-portal/components/EnvironmentTypeProvider";
@@ -14,6 +15,7 @@ import { getNonceFromHeader } from "@eshg/lib-portal/next/contentSecurityPolicyH
 import { Box } from "@mui/joy";
 import { ReactNode } from "react";
 
+import { LAYOUT_CONFIG } from "@/config/layout";
 import { env } from "@/env/server";
 import { MainLayout } from "@/lib/baseModule/components/layout/MainLayout";
 import { ThemeProvider } from "@/lib/baseModule/theme/ThemeProvider";
@@ -72,28 +74,30 @@ export default function RootLayout({
             <EnvironmentTypeProvider
               environmentType={env.PUBLIC_ENVIRONMENT_TYPE}
             >
-              <SnackbarProvider snackbar={EmployeeSnackbar}>
-                <DrawerProvider>
-                  <ApiProvider configuration={API_CONFIGURATION}>
-                    <ConfirmationDialogProvider
-                      component={EmployeePortalConfirmationDialog}
-                      errorModal={EmployeePortalErrorModal}
-                    >
-                      <ConfirmNavigationProvider>
-                        <QueryBoundary>
-                          <OfflinePasswordPrompt />
-                          <ServiceWorkerProvider>
-                            <ChatProvider configuration={CHAT_CONFIGURATION}>
-                              <MainLayout>{children}</MainLayout>
-                            </ChatProvider>
-                            {modal}
-                          </ServiceWorkerProvider>
-                        </QueryBoundary>
-                      </ConfirmNavigationProvider>
-                    </ConfirmationDialogProvider>
-                  </ApiProvider>
-                </DrawerProvider>
-              </SnackbarProvider>
+              <LayoutConfigProvider config={LAYOUT_CONFIG}>
+                <SnackbarProvider snackbar={EmployeeSnackbar}>
+                  <DrawerProvider>
+                    <ApiProvider configuration={API_CONFIGURATION}>
+                      <ConfirmationDialogProvider
+                        component={EmployeePortalConfirmationDialog}
+                        errorModal={EmployeePortalErrorModal}
+                      >
+                        <ConfirmNavigationProvider>
+                          <QueryBoundary>
+                            <OfflinePasswordPrompt />
+                            <ServiceWorkerProvider>
+                              <ChatProvider configuration={CHAT_CONFIGURATION}>
+                                <MainLayout>{children}</MainLayout>
+                              </ChatProvider>
+                              {modal}
+                            </ServiceWorkerProvider>
+                          </QueryBoundary>
+                        </ConfirmNavigationProvider>
+                      </ConfirmationDialogProvider>
+                    </ApiProvider>
+                  </DrawerProvider>
+                </SnackbarProvider>
+              </LayoutConfigProvider>
             </EnvironmentTypeProvider>
 
             <HiddenDownloadContainer />

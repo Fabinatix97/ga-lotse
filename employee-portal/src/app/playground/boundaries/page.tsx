@@ -5,6 +5,9 @@
 
 "use client";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import {
   BaseModal,
@@ -14,9 +17,6 @@ import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBound
 import { Button, Stack } from "@mui/joy";
 
 import { OpenModalButton } from "@/lib/shared/components/buttons/OpenModalButton";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 import { Sidebar, SidebarProps } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 

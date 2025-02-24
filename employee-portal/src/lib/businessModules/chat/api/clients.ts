@@ -6,6 +6,7 @@
 import {
   ChatFeatureTogglesApi,
   Configuration,
+  UserAccountApi,
   UserSettingsApi,
 } from "@eshg/chat-management-api";
 import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
@@ -26,4 +27,9 @@ export function useUserSettingsApi() {
 export function useFeatureTogglesApi() {
   const configuration = useConfiguration();
   return new ChatFeatureTogglesApi(configuration);
+}
+
+export function useUserAccountApi() {
+  const configuration = useConfiguration();
+  return new UserAccountApi(configuration);
 }

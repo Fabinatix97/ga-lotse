@@ -5,6 +5,7 @@
 
 "use client";
 
+import { BottomToolbar } from "@eshg/lib-employee-portal/components/toolbar/BottomToolbar";
 import { Grid } from "@mui/joy";
 
 import { useConfiguration } from "@/lib/businessModules/inspection/api/clients";
@@ -12,8 +13,9 @@ import { useGetInspectionAndLoadEditor } from "@/lib/businessModules/inspection/
 import { InspectionResultSidePanel } from "@/lib/businessModules/inspection/components/inspection/reportresult/InspectionResultSidePanel";
 import { ReportApprovalButtons } from "@/lib/businessModules/inspection/components/inspection/reportresult/ReportApprovalButtons";
 import { ReportDownloadButtons } from "@/lib/businessModules/inspection/components/inspection/reportresult/ReportDownloadButtons";
-import { StickyBottomButtonBar } from "@/lib/shared/components/buttons/StickyBottomButtonBar";
+import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { ContentDisplay } from "@/lib/shared/components/contentEditor/ContentDisplay";
+import { StickyBottomBox } from "@/lib/shared/components/layout/StickyBottomBox";
 
 interface InspectionTabReportResultProps {
   inspectionId: string;
@@ -63,10 +65,14 @@ export function InspectionTabReportResult({
         </Grid>
       </Grid>
 
-      <StickyBottomButtonBar
-        left={<ReportDownloadButtons reportId={editorData.id} />}
-        right={<ReportApprovalButtons inspection={inspection} />}
-      />
+      <StickyBottomBox>
+        <BottomToolbar>
+          <ButtonBar
+            left={<ReportDownloadButtons reportId={editorData.id} />}
+            right={<ReportApprovalButtons inspection={inspection} />}
+          />
+        </BottomToolbar>
+      </StickyBottomBox>
     </>
   );
 }

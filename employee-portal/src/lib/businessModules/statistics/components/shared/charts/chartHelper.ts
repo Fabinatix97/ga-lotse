@@ -104,10 +104,30 @@ export function isText(valueType: AttributeType) {
 
 export function isCategorical(valueType: AttributeType) {
   return (
-    isBoolean(valueType) || isValueWithOptions(valueType) || isText(valueType)
+    isBoolean(valueType) ||
+    isValueWithOptions(valueType) ||
+    isText(valueType) ||
+    isInteger(valueType)
   );
 }
 
+export function isInteger(valueType: AttributeType) {
+  return valueType === "IntegerAttribute";
+}
+
 export function isNumeric(valueType: AttributeType) {
-  return valueType === "DecimalAttribute" || valueType === "IntegerAttribute";
+  return valueType === "DecimalAttribute" || isInteger(valueType);
+}
+
+export function evaluateGrouping(
+  grouping: DiagramGrouping | undefined,
+  scaling: DiagramScaling | undefined,
+) {
+  if (grouping === "STACKED") {
+    if (scaling === "RELATIVE") {
+      return "total";
+    }
+    return "x";
+  }
+  return undefined;
 }

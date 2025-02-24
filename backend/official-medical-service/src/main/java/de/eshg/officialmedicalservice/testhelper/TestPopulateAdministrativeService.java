@@ -32,7 +32,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TestPopulateAdministrativeService {
 
-  public static final String OMS_NOW_KEY = "Amtsärtzlicher Dienst_heute_09_Uhr";
+  public static final String OMS_NOW_SHORT_KEY = "Amtsärztlicher Dienst_heute_kurz_09_Uhr";
+  public static final String OMS_NOW_LONG_KEY = "Amtsärztlicher Dienst_heute_lang_09_Uhr";
 
   private final AppointmentBlockService appointmentBlockService;
   private final Clock clock;
@@ -83,13 +84,13 @@ public class TestPopulateAdministrativeService {
             .toInstant();
 
     //    9th March to test months change in appointment picker
-    Instant endBlock_omsNow = startBlock_omsNow.plus(Duration.ofDays(18).plusHours(3L));
+    Instant endBlock_omsNow = startBlock_omsNow.plus(Duration.ofDays(18).plusHours(4L));
 
-    UUID appointmentBlockGroup_omsNow =
+    UUID appointmentBlockGroupShort_omsNow =
         appointmentBlockService
             .createDailyAppointmentBlocksForGroup(
                 new CreateDailyAppointmentBlockGroupRequest(
-                    AppointmentTypeDto.OFFICIAL_MEDICAL_SERVICE,
+                    AppointmentTypeDto.OFFICIAL_MEDICAL_SERVICE_SHORT,
                     2,
                     List.of(
                         new CreateDailyAppointmentBlockDto(
@@ -104,8 +105,25 @@ public class TestPopulateAdministrativeService {
                     List.of()))
             .id();
 
+    UUID appointmentBlockGroupLong_omsNow =
+        appointmentBlockService
+            .createDailyAppointmentBlocksForGroup(
+                new CreateDailyAppointmentBlockGroupRequest(
+                    AppointmentTypeDto.OFFICIAL_MEDICAL_SERVICE_LONG,
+                    2,
+                    List.of(
+                        new CreateDailyAppointmentBlockDto(
+                            startBlock_omsNow,
+                            endBlock_omsNow,
+                            List.of(DayOfWeekDto.THURSDAY, DayOfWeekDto.FRIDAY))),
+                    List.of(physician),
+                    List.of(),
+                    List.of()))
+            .id();
+
     Map<String, UUID> appointmentBlockGroups = new LinkedHashMap<>();
-    appointmentBlockGroups.put(OMS_NOW_KEY, appointmentBlockGroup_omsNow);
+    appointmentBlockGroups.put(OMS_NOW_SHORT_KEY, appointmentBlockGroupShort_omsNow);
+    appointmentBlockGroups.put(OMS_NOW_LONG_KEY, appointmentBlockGroupLong_omsNow);
     return appointmentBlockGroups;
   }
 }

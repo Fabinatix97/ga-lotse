@@ -5,16 +5,13 @@
 
 package de.eshg.schoolentry.testhelper;
 
-import de.eshg.lib.appointmentblock.persistence.CreateAppointmentTypeTask;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.domain.repository.SchoolEntryProcedureRepository;
-import de.eshg.schoolentry.population.CreateLabelsTask;
 import de.eshg.testhelper.*;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.interception.TestRequestInterceptor;
 import de.eshg.testhelper.population.BasePopulator;
 import java.time.Clock;
-import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
@@ -23,8 +20,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class SchoolEntryTestHelperService extends DefaultTestHelperService {
 
-  private final CreateAppointmentTypeTask createAppointmentTypeTask;
-  private final CreateLabelsTask createLabelsTask;
   private final SchoolEntryProcedureRepository schoolEntryProcedureRepository;
 
   protected SchoolEntryTestHelperService(
@@ -33,9 +28,8 @@ public class SchoolEntryTestHelperService extends DefaultTestHelperService {
       Clock clock,
       List<BasePopulator<?>> populators,
       List<ResettableProperties> resettableProperties,
-      CreateAppointmentTypeTask createAppointmentTypeTask,
-      CreateLabelsTask createLabelsTask,
       SchoolEntryProcedureRepository schoolEntryProcedureRepository,
+      List<TestHelperServiceResetAction> resetActions,
       EnvironmentConfig environmentConfig) {
     super(
         databaseResetHelper,
@@ -43,18 +37,9 @@ public class SchoolEntryTestHelperService extends DefaultTestHelperService {
         clock,
         populators,
         resettableProperties,
+        resetActions,
         environmentConfig);
-    this.createAppointmentTypeTask = createAppointmentTypeTask;
-    this.createLabelsTask = createLabelsTask;
     this.schoolEntryProcedureRepository = schoolEntryProcedureRepository;
-  }
-
-  @Override
-  public Instant reset() throws Exception {
-    Instant instant = super.reset();
-    createAppointmentTypeTask.createAppointmentTypes();
-    createLabelsTask.createLabels();
-    return instant;
   }
 
   public UUID getCitizenUserId(UUID procedureId) {

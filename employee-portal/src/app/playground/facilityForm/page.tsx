@@ -6,6 +6,9 @@
 "use client";
 
 import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
 import { Button, Stack, Typography } from "@mui/joy";
 import { useState } from "react";
 
@@ -14,9 +17,6 @@ import {
   Mode,
 } from "@/lib/shared/components/facilitySidebar/LegacyFacilitySidebar";
 import { BaseFacility } from "@/lib/shared/components/facilitySidebar/types";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 
 enum Sidebar {
   none,

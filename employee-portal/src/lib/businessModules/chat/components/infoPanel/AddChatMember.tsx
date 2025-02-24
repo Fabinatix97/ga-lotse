@@ -12,6 +12,7 @@ import {
   filter,
   isEmpty,
   isNonNullish,
+  isShallowEqual,
   isStrictEqual,
   map,
   pipe,
@@ -52,15 +53,22 @@ export function AddChatMember({
       const usersToInvite = pipe(
         data.results,
         filter((user) => {
-          const isLoggedInUser =
-            isStrictEqual(user.user_id, loggedInUserId) &&
-            isNonNullish(user.display_name);
-
+          const isLoggedInUser = isStrictEqual(user.user_id, loggedInUserId);
           const isDuplicated = roomMembers?.some((i) =>
             isStrictEqual(i.member.userId, user.user_id),
           );
 
-          return !isLoggedInUser && !isDuplicated;
+          const isAdmin = isShallowEqual(
+            user.display_name?.toUpperCase(),
+            "ADMIN",
+          );
+
+          return (
+            isNonNullish(user.display_name) &&
+            !isLoggedInUser &&
+            !isDuplicated &&
+            !isAdmin
+          );
         }),
         map((user) => ({
           ...user,

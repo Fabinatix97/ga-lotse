@@ -5,14 +5,13 @@
 
 "use client";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { styled } from "@mui/joy";
 import { FormikProps, FormikProvider } from "formik";
-import { ReactNode } from "react";
 
 import { ExaminationFormValues } from "@/lib/businessModules/dental/features/examinations/ExaminationFormLayout";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 
 const FullHeightFormPlus = styled(FormPlus)({
   display: "flex",
@@ -22,7 +21,6 @@ const FullHeightFormPlus = styled(FormPlus)({
 
 export interface ParticipantExaminationFormProps extends RequiresChildren {
   form: FormikProps<ExaminationFormValues>;
-  bottomBar: ReactNode;
 }
 
 export function ParticipantExaminationForm(
@@ -31,10 +29,7 @@ export function ParticipantExaminationForm(
   return (
     <FormikProvider value={props.form}>
       <FullHeightFormPlus>
-        <MainContentLayout fullViewportHeight>
-          {props.children}
-        </MainContentLayout>
-        {props.bottomBar}
+        <MainContentLayout>{props.children}</MainContentLayout>
       </FullHeightFormPlus>
     </FormikProvider>
   );

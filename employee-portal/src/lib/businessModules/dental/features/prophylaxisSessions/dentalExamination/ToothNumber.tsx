@@ -4,13 +4,20 @@
  */
 
 import { Typography } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { Tooth } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
 
-export function ToothNumber(props: { tooth: Tooth }) {
+interface ToothNumberProps {
+  tooth: Tooth;
+  sx?: SxProps;
+}
+
+export function ToothNumber(props: ToothNumberProps) {
   return (
     <Typography
+      component="legend"
       sx={{
         fontSize: theme.fontSize.md,
         borderRadius: theme.radius.sm,
@@ -19,6 +26,10 @@ export function ToothNumber(props: { tooth: Tooth }) {
         width: 36,
         height: 24,
         textAlign: "center",
+        //marginLeft and -Right needs to be set for firefox
+        marginRight: "auto",
+        marginLeft: "auto",
+        ...props.sx,
       }}
     >
       {getToothNumber(props.tooth)}

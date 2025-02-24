@@ -53,13 +53,20 @@ export function useValidateDailyAppointmentBlocksForGroup(
   });
 }
 
-export function useGetFreeAppointmentsQuery(physicianId?: string) {
+export function useGetFreeAppointmentsQuery(
+  appointmentType: ApiAppointmentType,
+  physicianId?: string,
+) {
   const appointmentApi = useAppointmentBlockApi();
   return useSuspenseQuery({
-    queryKey: appointmentBlockApiQueryKey(["getFreeAppointments", physicianId]),
+    queryKey: appointmentBlockApiQueryKey([
+      "getFreeAppointments",
+      appointmentType,
+      physicianId,
+    ]),
     queryFn: () =>
       appointmentApi.getFreeAppointments(
-        ApiAppointmentType.OfficialMedicalService,
+        appointmentType,
         undefined,
         physicianId,
       ),

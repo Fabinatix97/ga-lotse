@@ -6,6 +6,8 @@
 package de.eshg.lib.procedure.notifications;
 
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
+import net.javacrumbs.shedlock.core.LockAssert;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +24,11 @@ public class ApprovalRequestMailJob {
   }
 
   @Scheduled(cron = "${de.eshg.lib.procedure.mailreminder.schedule:0 * * * * *}")
+  @SchedulerLock(
+      name = "LibProceduresApprovalRequestMailJob",
+      lockAtMostFor = "${de.eshg.lib.procedure.mailreminder.lock-at-most-for:1h}")
   public void sendApprovalRequestMailRemindersIfNecessary() {
+    LockAssert.assertLocked();
     moduleClientAuthenticator.doWithModuleClientAuthentication(
         approvalRequestMailService::sendApprovalRequestMailRemindersIfNecessary);
   }

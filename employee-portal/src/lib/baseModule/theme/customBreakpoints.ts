@@ -5,13 +5,6 @@
 
 import { CssVarsThemeOptions } from "@mui/joy/styles";
 
-declare module "@mui/joy/styles" {
-  interface BreakpointOverrides {
-    xxs: true;
-    xxl: true;
-  }
-}
-
 export const customBreakpoints = {
   values: {
     xxs: 0,

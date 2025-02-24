@@ -8,6 +8,7 @@ package de.eshg.travelmedicine.testhelper;
 import de.eshg.auditlog.AuditLogClientTestHelperApi;
 import de.eshg.lib.auditlog.AuditLogTestHelperService;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
+import de.eshg.testhelper.DefaultTestHelperService;
 import de.eshg.testhelper.TestHelperApi;
 import de.eshg.testhelper.TestHelperController;
 import de.eshg.testhelper.environment.EnvironmentConfig;
@@ -39,7 +40,7 @@ public class TravelMedicineTestHelperController extends TestHelperController
   private final AuditLogTestHelperService auditLogTestHelperService;
 
   public TravelMedicineTestHelperController(
-      TravelMedicineTestHelperService travelMedicineTestHelperService,
+      DefaultTestHelperService travelMedicineTestHelperService,
       TravelMedicineFeatureToggle travelMedicineFeatureToggle,
       TestPopulateAdministrativeService testPopulateAdministrativeService,
       TestPopulateProcedureService testPopulateProcedureService,

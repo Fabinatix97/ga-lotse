@@ -49,7 +49,7 @@ export function ThreeColumnGrid(props: ThreeColumnGridProps) {
 interface OneColumnGridProps {
   contentTop: ReactNode;
   contentCenter: ReactNode;
-  contentBottom: ReactNode;
+  contentBottom?: ReactNode;
 }
 
 export function OneColumnGrid(props: OneColumnGridProps) {
@@ -57,7 +57,9 @@ export function OneColumnGrid(props: OneColumnGridProps) {
     <Grid container columns={GRID_COLUMNS} spacing={GRID_SPACING}>
       <Grid {...allBreakpoints(1)}>{props.contentTop}</Grid>
       <Grid {...allBreakpoints(1)}>{props.contentCenter}</Grid>
-      <Grid {...allBreakpoints(1)}>{props.contentBottom}</Grid>
+      {props.contentBottom && (
+        <Grid {...allBreakpoints(1)}>{props.contentBottom}</Grid>
+      )}
     </Grid>
   );
 }

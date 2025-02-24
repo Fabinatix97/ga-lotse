@@ -121,13 +121,12 @@ export interface ChatUserSettings {
   sharePresence: boolean;
   showReadConfirmation: boolean;
   showTypingNotification: boolean;
+  accountRegistered: boolean;
 }
 
 export interface IStoredCredentials {
-  accessToken: string;
-  userId: string;
-  deviceId: string;
-  pickleKey: string | null;
+  userId?: string;
+  deviceId?: string;
 }
 
 export interface RoomLastMessage {

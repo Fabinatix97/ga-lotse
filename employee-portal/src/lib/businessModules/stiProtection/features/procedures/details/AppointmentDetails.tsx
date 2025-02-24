@@ -9,11 +9,14 @@ import {
   ApiAppointmentHistoryEntry,
   ApiStiProtectionProcedure,
 } from "@eshg/sti-protection-api";
-import { EditCalendar, EventBusy } from "@mui/icons-material";
+import { CheckCircle, EditCalendar, EventBusy } from "@mui/icons-material";
 import { Button, Chip, Sheet, Stack } from "@mui/joy";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 
-import { useCancelAppointmentMutation } from "@/lib/businessModules/stiProtection/api/mutations/procedures";
+import {
+  useCancelAppointmentMutation,
+  useFinalizeAppointmentMutation,
+} from "@/lib/businessModules/stiProtection/api/mutations/procedures";
 import {
   APPOINTMENT_STATUS,
   APPOINTMENT_TYPES,
@@ -87,6 +90,16 @@ export function AppointmentDetails({
     setEditAppointmentType(appointmentType);
   }
 
+  const finalizeAppointment = useFinalizeAppointmentMutation({
+    onSuccess: () => {
+      snackbar.confirmation("Der Termin wurde als abgeschlossen markiert.");
+    },
+  });
+
+  function handleFinalizeAppointment() {
+    finalizeAppointment.mutate(procedure.id);
+  }
+
   const onlyIfOpen = createOnlyIfProcedureOpen(procedure);
   return (
     <Sheet>
@@ -102,6 +115,7 @@ export function AppointmentDetails({
               procedure,
               handleCancelAppointment,
               handleEditAppointment,
+              handleFinalizeAppointment,
             )}
             sorting={tableControl.tableSorting}
             enableSortingRemoval={false}
@@ -131,6 +145,7 @@ function appointmentDetailsColumns(
   _procedure: ApiStiProtectionProcedure,
   onCancelAppointment: () => void,
   onEditAppointment: (appointmentType: string) => void,
+  onFinalizeAppointment: () => void,
 ) {
   function createActionButtons(
     appointmentHistoryEntry: ApiAppointmentHistoryEntry,
@@ -147,6 +162,11 @@ function appointmentDetailsColumns(
             label: "Termin stornieren",
             onClick: onCancelAppointment,
             startDecorator: <EventBusy />,
+          },
+          {
+            label: "Termin abschließen",
+            onClick: onFinalizeAppointment,
+            startDecorator: <CheckCircle />,
           },
         ]
       : [];

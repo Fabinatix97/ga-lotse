@@ -7,6 +7,7 @@ package de.eshg.medicalregistry.api;
 
 import de.eshg.base.GenderDto;
 import de.eshg.lib.common.CountryCode;
+import de.eshg.validation.constraints.DateOfBirth;
 import de.eshg.validation.constraints.EmailAddressConstraint;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -20,7 +21,10 @@ public class CreateApplicantDto {
   private @NotNull GenderDto gender;
   private @NotNull @Size(min = 1, max = 80) String firstName;
   private @NotNull @Size(min = 1, max = 120) String lastName;
-  private @NotNull LocalDate dateOfBirth;
+  private @NotNull @DateOfBirth(
+      message =
+          "Das Alter muss mindestens {minAgeInclusive} und darf höchstens {maxAgeInclusive} Jahre betragen")
+  LocalDate dateOfBirth;
   private @Size(min = 1, max = 40) String nameAtBirth;
   private @NotNull @Size(min = 1, max = 50) String placeOfBirth;
   private @EmailAddressConstraint String emailAddress;

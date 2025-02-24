@@ -14,7 +14,7 @@ import { SecureBackupContent } from "@/lib/businessModules/chat/components/secur
 import { ResetBackupModal } from "@/lib/businessModules/chat/components/secureBackup/ResetBackupModal";
 import { fetchBackupInfo } from "@/lib/businessModules/chat/matrix/crypto";
 import {
-  restoreKeyBackupWithSecretStorage,
+  loadBackupKeyFromSecretStorage,
   validateAccessSecretStorage,
 } from "@/lib/businessModules/chat/matrix/secretStorage";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
@@ -73,19 +73,14 @@ export function RestoreBackupSidebar({
 
   async function handleSubmit(values: InitialValues) {
     try {
-      const { backupInfo, backupKeyStored } =
+      const { keyBackupInfo, has4SBackupKeyStored } =
         await fetchBackupInfo(matrixClient);
 
-      if (!backupInfo) {
-        throw new Error("No backup Info");
+      if (!keyBackupInfo || !has4SBackupKeyStored) {
+        throw new Error("No backupInfo");
       }
 
-      await restoreKeyBackupWithSecretStorage(
-        matrixClient,
-        backupInfo,
-        backupKeyStored,
-        values.passphrase,
-      );
+      await loadBackupKeyFromSecretStorage(matrixClient, values.passphrase);
       setClientState(ClientState.Prepared);
       snackbar.confirmation("Ihr Gerät wurde nun verifiziert");
     } catch (e) {

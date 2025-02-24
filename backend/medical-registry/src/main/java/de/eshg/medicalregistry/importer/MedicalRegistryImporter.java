@@ -10,7 +10,7 @@ import de.eshg.lib.xlsximport.ImportStatus;
 import de.eshg.lib.xlsximport.Importer;
 import de.eshg.lib.xlsximport.RowData;
 import de.eshg.medicalregistry.MedicalRegistryService;
-import java.time.Clock;
+import jakarta.validation.ValidatorFactory;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -29,11 +29,11 @@ public class MedicalRegistryImporter extends Importer<MedicalRegistryRow, Medica
       XSSFSheet sheet,
       List<MedicalRegistryColumn> actualColumns,
       MedicalRegistryService medicalRegistryService,
-      Clock clock,
+      ValidatorFactory validatorFactory,
       int batchSize) {
     super(
         sheet,
-        new MedicalRegistryRowReader(sheet, clock),
+        new MedicalRegistryRowReader(sheet, validatorFactory),
         new FeedbackColumnAccessor(actualColumns));
     this.medicalRegistryService = medicalRegistryService;
     if (batchSize < 1 || batchSize > 10_000) {

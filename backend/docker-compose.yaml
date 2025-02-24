@@ -19,6 +19,7 @@ services:
       service: auth-base
     environment:
       - spring.profiles.active=local, employee-portal
+      - eshg.synapse.internal.url=http://synapse:8008
     ports:
       - 8092:8080
 
@@ -370,7 +371,7 @@ services:
       file: docker-compose-common.yaml
       service: eshg-service-base
     environment:
-      - synapse.url=http://synapse:8008
+      - eshg.synapse.internal.url=http://synapse:8008
       - spring.datasource.url=jdbc:postgresql://chat-management-db/chat_management
       - de.eshg.base.service-url=http://base:8080
       - DE_ESHG_CHAT_FEATURE_TOGGLE_ENABLED_NEW_FEATURES

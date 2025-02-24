@@ -5,6 +5,9 @@
 
 package de.eshg.officialmedicalservice.eventmetadata;
 
+import static de.eshg.lib.appointmentblock.persistence.AppointmentType.OFFICIAL_MEDICAL_SERVICE_LONG;
+import static de.eshg.lib.appointmentblock.persistence.AppointmentType.OFFICIAL_MEDICAL_SERVICE_SHORT;
+
 import de.eshg.calendar.lib.EventMetadataService;
 import de.eshg.calendar.lib.api.EventWithMetaData;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
@@ -19,6 +22,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class OfficialMedicalServiceEventMetadataService implements EventMetadataService {
+  private static final List<AppointmentType> supportedAppointmentTypes =
+      List.of(OFFICIAL_MEDICAL_SERVICE_SHORT, OFFICIAL_MEDICAL_SERVICE_LONG);
 
   private final AppointmentBlockRepository appointmentBlockRepository;
   private final AppointmentBlockSlotUtil appointmentBlockSlotUtil;
@@ -46,7 +51,7 @@ public class OfficialMedicalServiceEventMetadataService implements EventMetadata
     AppointmentType type =
         appointmentBlockData.appointmentBlock().getAppointmentBlockGroup().getType();
 
-    if (type != AppointmentType.OFFICIAL_MEDICAL_SERVICE) {
+    if (!supportedAppointmentTypes.contains(type)) {
       throw new IllegalArgumentException("Unexpected appointment block type: " + type);
     }
 

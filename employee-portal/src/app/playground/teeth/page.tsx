@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
 import { Grid, Typography } from "@mui/joy";
 
 import {
@@ -11,9 +14,6 @@ import {
   Molar,
   Premolar,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/Teeth";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 
 export default function TeethPlaygroundPage() {
   return (
@@ -27,37 +27,61 @@ export default function TeethPlaygroundPage() {
           </Grid>
 
           <Grid xxs={1}>
-            <Incisor variant="upperJaw" isPrimaryTooth />
+            <Incisor
+              variant="upperJaw"
+              isPrimaryTooth
+              toothContext={{ quadrantNumber: "Q1", toothIndex: 7 }}
+            />
           </Grid>
           <Grid xxs={1}>
             <Incisor
               variant="upperJaw"
               isPrimaryTooth
               hasPreviousExaminationResult
+              toothContext={{ quadrantNumber: "Q1", toothIndex: 6 }}
             />
           </Grid>
           <Grid xxs={1}>
-            <Incisor variant="upperJaw" />
+            <Incisor
+              variant="upperJaw"
+              toothContext={{ quadrantNumber: "Q2", toothIndex: 0 }}
+            />
           </Grid>
           <Grid xxs={1}>
-            <Incisor variant="upperJaw" hasPreviousExaminationResult />
+            <Incisor
+              variant="upperJaw"
+              hasPreviousExaminationResult
+              toothContext={{ quadrantNumber: "Q2", toothIndex: 1 }}
+            />
           </Grid>
 
           <Grid xxs={1}>
-            <Incisor variant="lowerJaw" isPrimaryTooth />
+            <Incisor
+              variant="lowerJaw"
+              isPrimaryTooth
+              toothContext={{ quadrantNumber: "Q4", toothIndex: 6 }}
+            />
           </Grid>
           <Grid xxs={1}>
             <Incisor
               variant="lowerJaw"
               isPrimaryTooth
               hasPreviousExaminationResult
+              toothContext={{ quadrantNumber: "Q4", toothIndex: 7 }}
             />
           </Grid>
           <Grid xxs={1}>
-            <Incisor variant="lowerJaw" />
+            <Incisor
+              variant="lowerJaw"
+              toothContext={{ quadrantNumber: "Q3", toothIndex: 0 }}
+            />
           </Grid>
           <Grid xxs={1}>
-            <Incisor variant="lowerJaw" hasPreviousExaminationResult />
+            <Incisor
+              variant="lowerJaw"
+              hasPreviousExaminationResult
+              toothContext={{ quadrantNumber: "Q3", toothIndex: 1 }}
+            />
           </Grid>
 
           <Grid xxs={12}>
@@ -65,37 +89,61 @@ export default function TeethPlaygroundPage() {
           </Grid>
 
           <Grid xxs={1}>
-            <Cuspid variant="upperJaw" isPrimaryTooth />
+            <Cuspid
+              variant="upperJaw"
+              isPrimaryTooth
+              toothContext={{ quadrantNumber: "Q1", toothIndex: 5 }}
+            />
           </Grid>
           <Grid xxs={1}>
             <Cuspid
               variant="upperJaw"
               isPrimaryTooth
               hasPreviousExaminationResult
+              toothContext={{ quadrantNumber: "Q1", toothIndex: 4 }}
             />
           </Grid>
           <Grid xxs={1}>
-            <Cuspid variant="upperJaw" />
+            <Cuspid
+              variant="upperJaw"
+              toothContext={{ quadrantNumber: "Q2", toothIndex: 2 }}
+            />
           </Grid>
           <Grid xxs={1}>
-            <Cuspid variant="upperJaw" hasPreviousExaminationResult />
+            <Cuspid
+              variant="upperJaw"
+              hasPreviousExaminationResult
+              toothContext={{ quadrantNumber: "Q2", toothIndex: 3 }}
+            />
           </Grid>
 
           <Grid xxs={1}>
-            <Cuspid variant="lowerJaw" isPrimaryTooth />
+            <Cuspid
+              variant="lowerJaw"
+              isPrimaryTooth
+              toothContext={{ quadrantNumber: "Q4", toothIndex: 5 }}
+            />
           </Grid>
           <Grid xxs={1}>
             <Cuspid
               variant="lowerJaw"
               isPrimaryTooth
               hasPreviousExaminationResult
+              toothContext={{ quadrantNumber: "Q4", toothIndex: 4 }}
             />
           </Grid>
           <Grid xxs={1}>
-            <Cuspid variant="lowerJaw" />
+            <Cuspid
+              variant="lowerJaw"
+              toothContext={{ quadrantNumber: "Q3", toothIndex: 2 }}
+            />
           </Grid>
           <Grid xxs={1}>
-            <Cuspid variant="lowerJaw" hasPreviousExaminationResult />
+            <Cuspid
+              variant="lowerJaw"
+              hasPreviousExaminationResult
+              toothContext={{ quadrantNumber: "Q3", toothIndex: 3 }}
+            />
           </Grid>
 
           <Grid xxs={12}>
@@ -103,37 +151,61 @@ export default function TeethPlaygroundPage() {
           </Grid>
 
           <Grid xxs={1}>
-            <Premolar variant="upperJaw" isPrimaryTooth />
+            <Premolar
+              variant="upperJaw"
+              isPrimaryTooth
+              toothContext={{ quadrantNumber: "Q1", toothIndex: 3 }}
+            />
           </Grid>
           <Grid xxs={1}>
             <Premolar
               variant="upperJaw"
               isPrimaryTooth
               hasPreviousExaminationResult
+              toothContext={{ quadrantNumber: "Q1", toothIndex: 2 }}
             />
           </Grid>
           <Grid xxs={1}>
-            <Premolar variant="upperJaw" />
+            <Premolar
+              variant="upperJaw"
+              toothContext={{ quadrantNumber: "Q2", toothIndex: 4 }}
+            />
           </Grid>
           <Grid xxs={1}>
-            <Premolar variant="upperJaw" hasPreviousExaminationResult />
+            <Premolar
+              variant="upperJaw"
+              hasPreviousExaminationResult
+              toothContext={{ quadrantNumber: "Q2", toothIndex: 5 }}
+            />
           </Grid>
 
           <Grid xxs={1}>
-            <Premolar variant="lowerJaw" isPrimaryTooth />
+            <Premolar
+              variant="lowerJaw"
+              isPrimaryTooth
+              toothContext={{ quadrantNumber: "Q4", toothIndex: 3 }}
+            />
           </Grid>
           <Grid xxs={1}>
             <Premolar
               variant="lowerJaw"
               isPrimaryTooth
               hasPreviousExaminationResult
+              toothContext={{ quadrantNumber: "Q4", toothIndex: 2 }}
             />
           </Grid>
           <Grid xxs={1}>
-            <Premolar variant="lowerJaw" />
+            <Premolar
+              variant="lowerJaw"
+              toothContext={{ quadrantNumber: "Q3", toothIndex: 4 }}
+            />
           </Grid>
           <Grid xxs={1}>
-            <Premolar variant="lowerJaw" hasPreviousExaminationResult />
+            <Premolar
+              variant="lowerJaw"
+              hasPreviousExaminationResult
+              toothContext={{ quadrantNumber: "Q3", toothIndex: 5 }}
+            />
           </Grid>
 
           <Grid xxs={12}>
@@ -141,37 +213,61 @@ export default function TeethPlaygroundPage() {
           </Grid>
 
           <Grid xxs={1}>
-            <Molar variant="upperJaw" isPrimaryTooth />
+            <Molar
+              variant="upperJaw"
+              isPrimaryTooth
+              toothContext={{ quadrantNumber: "Q1", toothIndex: 1 }}
+            />
           </Grid>
           <Grid xxs={1}>
             <Molar
               variant="upperJaw"
               isPrimaryTooth
               hasPreviousExaminationResult
+              toothContext={{ quadrantNumber: "Q1", toothIndex: 0 }}
             />
           </Grid>
           <Grid xxs={1}>
-            <Molar variant="upperJaw" />
+            <Molar
+              variant="upperJaw"
+              toothContext={{ quadrantNumber: "Q2", toothIndex: 6 }}
+            />
           </Grid>
           <Grid xxs={1}>
-            <Molar variant="upperJaw" hasPreviousExaminationResult />
+            <Molar
+              variant="upperJaw"
+              hasPreviousExaminationResult
+              toothContext={{ quadrantNumber: "Q2", toothIndex: 7 }}
+            />
           </Grid>
 
           <Grid xxs={1}>
-            <Molar variant="lowerJaw" isPrimaryTooth />
+            <Molar
+              variant="lowerJaw"
+              isPrimaryTooth
+              toothContext={{ quadrantNumber: "Q4", toothIndex: 1 }}
+            />
           </Grid>
           <Grid xxs={1}>
             <Molar
               variant="lowerJaw"
               isPrimaryTooth
               hasPreviousExaminationResult
+              toothContext={{ quadrantNumber: "Q4", toothIndex: 0 }}
             />
           </Grid>
           <Grid xxs={1}>
-            <Molar variant="lowerJaw" />
+            <Molar
+              variant="lowerJaw"
+              toothContext={{ quadrantNumber: "Q3", toothIndex: 6 }}
+            />
           </Grid>
           <Grid xxs={1}>
-            <Molar variant="lowerJaw" hasPreviousExaminationResult />
+            <Molar
+              variant="lowerJaw"
+              hasPreviousExaminationResult
+              toothContext={{ quadrantNumber: "Q3", toothIndex: 7 }}
+            />
           </Grid>
         </Grid>
       </MainContentLayout>

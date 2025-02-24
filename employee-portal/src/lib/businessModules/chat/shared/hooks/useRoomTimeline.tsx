@@ -20,7 +20,6 @@ import { validate as isUUID, v4 as uuidv4 } from "uuid";
 import { useMessageTeaser } from "@/lib/businessModules/chat/components/messageTeaser/MessageTeaserProvider";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import {
-  ClientState,
   Membership,
   MessageTypeEnum,
 } from "@/lib/businessModules/chat/shared/enums";
@@ -43,7 +42,7 @@ const messagesLimit = 20;
 export function useRoomTimeline(roomId: string) {
   const [messages, setMessages] = useState<(Message | ChatSystemMessage)[]>([]);
   const [hasNextPage, setHasNextPage] = useState<boolean>(true);
-  const { matrixClient, clientState } = useChatClientContext();
+  const { matrixClient } = useChatClientContext();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const currentRoom = matrixClient.getRoom(roomId);
@@ -451,12 +450,11 @@ export function useRoomTimeline(roomId: string) {
 
   useEffect(() => {
     void (async () => {
-      if (clientState !== ClientState.Prepared) return;
       if (hasInitialData.current) return;
       hasInitialData.current = true;
       await fetchRoomMessages();
     })();
-  }, [clientState, fetchRoomMessages]);
+  }, [fetchRoomMessages]);
 
   return {
     fetchRoomMessages,

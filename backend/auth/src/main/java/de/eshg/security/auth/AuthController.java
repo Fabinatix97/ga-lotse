@@ -5,17 +5,13 @@
 
 package de.eshg.security.auth;
 
-import com.nimbusds.jwt.JWT;
-import com.nimbusds.jwt.JWTParser;
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.lib.keycloak.KeycloakRole;
 import de.eshg.rest.service.security.config.AbstractPublicSecurityConfiguration;
 import de.eshg.rest.service.security.config.AnyRole;
 import de.eshg.rest.service.security.config.Authenticated;
 import de.eshg.rest.service.security.config.AuthorizationDefinition;
 import de.eshg.rest.service.security.config.PermitAll;
 import io.swagger.v3.oas.annotations.Hidden;
-import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -75,7 +71,7 @@ public class AuthController {
 
       switch (authorizationDefinition) {
         case AnyRole anyRole -> {
-          List<String> keycloakRoleNames = getRoles(accessToken);
+          List<String> keycloakRoleNames = RolesResolver.getRoles(accessToken);
 
           if (!anyRole.intersects(keycloakRoleNames)) {
             throw new ForbiddenException("Found none of the granted roles");
@@ -143,20 +139,6 @@ public class AuthController {
   private static void validateHttpMethod(HttpMethod httpMethod) {
     if (Arrays.stream(HttpMethod.values()).noneMatch(httpMethod::equals)) {
       throw new BadRequestException("Unknown HTTP method: '%s'".formatted(httpMethod));
-    }
-  }
-
-  private static List<String> getRoles(OAuth2AccessToken accessToken) {
-    try {
-      JWT jwt = JWTParser.parse(accessToken.getTokenValue());
-      List<String> roles =
-          jwt.getJWTClaimsSet().getStringListClaim(KeycloakRole.CLAIM_NAME).stream()
-              .sorted()
-              .toList();
-      log.debug("Roles: {}", roles);
-      return roles;
-    } catch (ParseException e) {
-      throw new UnauthorizedException("Failed to parse the JWT token", e);
     }
   }
 }

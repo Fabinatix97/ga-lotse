@@ -23,7 +23,9 @@ export function GeneralInformationForm(props: NestedFormProps) {
   return (
     <>
       <Grid xxs={12}>
-        <Typography level="h3">Allgemeine Angaben</Typography>
+        <Typography level="h3" component="h2">
+          Allgemeine Angaben
+        </Typography>
       </Grid>
       <Grid xxs={6}>
         <SelectField

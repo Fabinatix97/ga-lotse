@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ClientEvent, MatrixEvent } from "matrix-js-sdk";
+import { ClientEvent, MatrixEvent, SyncState } from "matrix-js-sdk";
 import { useContext, useEffect, useState } from "react";
+import { omit } from "remeda";
 
 import { ChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
-import { ClientState } from "@/lib/businessModules/chat/shared/enums";
 import {
   Presence,
   UsersPresence,
@@ -19,14 +19,13 @@ export function usePresence(userId?: string) {
     userSettings: { sharePresence, accountDeactivated },
   } = useChat();
   const chatContext = useContext(ChatClientContext);
-  const { matrixClient, clientState } = chatContext ?? {};
+  const { matrixClient, isClientPrepared } = chatContext ?? {};
   const [usersPresence, setUsersPresence] = useState<UsersPresence>({});
 
   // Get initial users presence
   useEffect(() => {
-    if (!matrixClient) return;
-    if (clientState !== ClientState.Prepared) return;
-    if (accountDeactivated) return;
+    if (!matrixClient || !isClientPrepared || accountDeactivated) return;
+
     if (userId) {
       const user = matrixClient.getUser(userId);
       setUsersPresence({ [userId]: user?.presence } as UsersPresence);
@@ -37,11 +36,10 @@ export function usePresence(userId?: string) {
       ) as UsersPresence;
       setUsersPresence(statuses);
     }
-  }, [accountDeactivated, clientState, matrixClient, userId]);
+  }, [accountDeactivated, isClientPrepared, matrixClient, userId]);
 
   useEffect(() => {
-    if (clientState !== ClientState.Prepared) return;
-    if (accountDeactivated) return;
+    if (!isClientPrepared || accountDeactivated) return;
 
     function handleUserPresence(event: MatrixEvent) {
       const eventType = event.getType();
@@ -71,11 +69,28 @@ export function usePresence(userId?: string) {
     };
   }, [
     accountDeactivated,
-    clientState,
+    isClientPrepared,
     matrixClient,
     sharePresence,
     userId,
     usersPresence,
   ]);
+
+  useEffect(() => {
+    if (!isClientPrepared || !matrixClient) return;
+
+    function handleStoppedSync(state: SyncState) {
+      if (state === SyncState.Stopped && userId) {
+        setUsersPresence((prevState) => omit(prevState, [userId]));
+      }
+    }
+
+    matrixClient.on(ClientEvent.Sync, handleStoppedSync);
+
+    return () => {
+      matrixClient.off(ClientEvent.Sync, handleStoppedSync);
+    };
+  }, [isClientPrepared, matrixClient, userId]);
+
   return { usersPresence: sharePresence ? usersPresence : {} };
 }

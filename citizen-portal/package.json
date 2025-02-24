@@ -14,6 +14,7 @@
     "@eshg/official-medical-service-api": "workspace:*",
     "@eshg/opendata-api": "workspace:*",
     "@eshg/school-entry-api": "workspace:*",
+    "@eshg/sti-protection-api": "workspace:*",
     "@eshg/travel-medicine-api": "workspace:*",
     "@fontsource/poppins": "catalog:joy",
     "@fullcalendar/core": "catalog:fullcalendar",
@@ -41,6 +42,7 @@
     "valibot": "catalog:common"
   },
   "devDependencies": {
+    "@eshg/lib-vitest": "workspace:*",
     "@eslint/compat": "catalog:eslint",
     "@eslint/eslintrc": "catalog:eslint",
     "@next/bundle-analyzer": "catalog:next",

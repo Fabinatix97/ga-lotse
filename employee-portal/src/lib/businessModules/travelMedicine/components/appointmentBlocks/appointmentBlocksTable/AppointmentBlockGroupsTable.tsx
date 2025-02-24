@@ -20,7 +20,7 @@ import {
   AppointmentBlockGroup,
 } from "@/lib/businessModules/travelMedicine/api/models/AppointmentBlock";
 import { useGetAppointmentBlockGroupsQuery } from "@/lib/businessModules/travelMedicine/api/queries/appointmentBlocks";
-import { appointmentTypes } from "@/lib/businessModules/travelMedicine/shared/appointmentTypes";
+import { APPOINTMENT_TYPES } from "@/lib/businessModules/travelMedicine/components/appointmentTypes/translations";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { NoAppointmentBlocksAvailable } from "@/lib/shared/components/appointmentBlocks/NoAppointmentBlocksAvailable";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
@@ -55,7 +55,7 @@ const COLUMNS = [
   columnHelper.accessor("type", {
     header: "Art",
     cell: (props) =>
-      props.row.depth === 0 ? appointmentTypes[props.getValue()] : undefined,
+      props.row.depth === 0 ? APPOINTMENT_TYPES[props.getValue()] : undefined,
     enableSorting: false,
   }),
   columnHelper.accessor("start", {

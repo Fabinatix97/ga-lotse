@@ -7,11 +7,13 @@ import { ApiMainResult, ApiSecondaryResult } from "@eshg/dental-api";
 import { ToothDiagnoses } from "@eshg/dental/api/models/ExaminationResult";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 
+import { DentalExaminationState } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/dentalExaminationStore";
+
 import { createToothResult, createToothWithDiagnosis } from "./factories";
 import {
-  DentalExaminationView,
+  AddableTooth,
   Dentition,
-  Focus,
+  ElementContext,
   ToothContext,
   ToothResult,
   ToothWithDiagnosis,
@@ -144,6 +146,42 @@ export function addTooth(
   };
 }
 
+export function removeTooth(
+  toothContext: ToothContext,
+  dentition: Dentition,
+): Dentition {
+  const { quadrantNumber, toothIndex } = toothContext;
+  const targetQuadrant = dentition[quadrantNumber];
+  const tooth = targetQuadrant.teeth[toothIndex];
+
+  if (tooth === undefined) {
+    throw new Error(
+      `Tooth with index ${toothIndex} does not exist in quadrant ${quadrantNumber}`,
+    );
+  }
+
+  if (tooth.type !== "ToothWithDiagnosis") {
+    throw new Error("Tooth must be of type ToothWithDiagnosis");
+  }
+
+  if (!tooth.isRemovable) {
+    throw new Error("Tooth is not removable");
+  }
+
+  const newTooth: AddableTooth = {
+    type: "AddableTooth",
+    toothNumber: tooth.toothNumber,
+  };
+
+  return {
+    ...dentition,
+    [quadrantNumber]: {
+      ...targetQuadrant,
+      teeth: targetQuadrant.teeth.with(toothContext.toothIndex, newTooth),
+    },
+  };
+}
+
 function updateToothWithDiagnosis(
   toothContext: ToothContext,
   dentition: Dentition,
@@ -227,17 +265,16 @@ function isEmptyToothResult(toothResult: ToothResult): boolean {
   return toothResult.value === "";
 }
 
-export function setFocus(focus: Focus): {
-  focus: Focus;
-  currentView: DentalExaminationView;
-} {
-  const quadrantNumber = focus.toothContext.quadrantNumber;
+type FocusState = Pick<DentalExaminationState, "currentView" | "currentFocus">;
+
+export function setFocus(newFocus: ElementContext): FocusState {
+  const quadrantNumber = newFocus.toothContext.quadrantNumber;
   const nextView =
     quadrantNumber === "Q1" || quadrantNumber === "Q2"
       ? "UPPER_JAW"
       : "LOWER_JAW";
   return {
-    focus,
+    currentFocus: newFocus,
     currentView: nextView,
   };
 }

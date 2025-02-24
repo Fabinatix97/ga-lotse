@@ -3,45 +3,34 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { MatrixClient, decodeBase64 } from "matrix-js-sdk";
+import { MatrixClient } from "matrix-js-sdk";
 
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 
-interface RustCryptoArgs {
-  rustCryptoStoreKey?: Uint8Array;
-  rustCryptoStorePassword?: string;
-}
-
-export function getRustCryptoStoreArgs(pickleKey: string | null) {
-  const rustCryptoArgs: RustCryptoArgs = {};
-  if (pickleKey) {
-    // The pickleKey, if provided can be used for the crypto store.
-    if (pickleKey.length === 43) {
-      rustCryptoArgs.rustCryptoStoreKey = decodeBase64(pickleKey);
-    } else {
-      rustCryptoArgs.rustCryptoStorePassword = pickleKey;
-    }
-  }
-  return rustCryptoArgs;
-}
-
 export async function fetchBackupInfo(matrixClient: MatrixClient) {
-  const backupInfo = await matrixClient.getKeyBackupVersion();
-  const has4S = await matrixClient.secretStorage.hasKey();
-  const backupKeyStored = has4S
+  const crypto = matrixClient.getCrypto();
+  if (!crypto) throw new Error("CryptoApi is undefined");
+
+  const keyBackupInfo = await crypto.getKeyBackupInfo();
+  const has4SKey = await matrixClient.secretStorage.hasKey();
+  const has4SBackupKeyStored = has4SKey
     ? !!(await matrixClient.isKeyBackupKeyStored())
     : false;
 
-  logger.debug("fetchBackupInfo", { backupKeyStored, backupInfo, has4S });
+  logger.debug("fetchBackupInfo", {
+    has4SBackupKeyStored,
+    keyBackupInfo,
+    has4SKey,
+  });
 
-  return { backupInfo, has4S, backupKeyStored };
+  return { keyBackupInfo, has4SKey, has4SBackupKeyStored };
 }
 
 export async function getBackupKeyStatus(matrixClient: MatrixClient) {
   const crypto = matrixClient.getCrypto();
   if (!crypto) return;
 
-  const secretStorage = matrixClient.secretStorage;
+  const serverSideSecretStorage = matrixClient.secretStorage;
 
   const isKeyBackupKeyStored = await matrixClient.isKeyBackupKeyStored();
 
@@ -49,7 +38,7 @@ export async function getBackupKeyStatus(matrixClient: MatrixClient) {
   const backupKeyFromCache = await crypto.getSessionBackupPrivateKey();
   const backupKeyCached = !!backupKeyFromCache;
   const backupKeyWellFormed = backupKeyFromCache instanceof Uint8Array;
-  const secretStorageKeyInAccount = await secretStorage.hasKey();
+  const secretStorageKeyInAccount = await serverSideSecretStorage.hasKey();
   const secretStorageReady = await crypto.isSecretStorageReady();
 
   return {
@@ -93,10 +82,52 @@ export async function getCrossSigningStatus(matrixClient: MatrixClient) {
 }
 
 export async function isDeviceVerified(client: MatrixClient) {
-  const deviceId = client.getDeviceId();
-  const trustLevel = await client
-    .getCrypto()
-    ?.getDeviceVerificationStatus(client.getSafeUserId(), deviceId ?? "");
+  const crypto = client.getCrypto();
+  if (!crypto) {
+    logger.warn("Unable to verify device: RustCrypto is not yet initialized.");
+    return false;
+  }
 
-  return trustLevel?.crossSigningVerified ?? null;
+  const deviceId = client.getDeviceId();
+  if (!deviceId) {
+    logger.warn("Unable to verify device: MatrixClient is missing deviceId.");
+    return false;
+  }
+
+  const trustLevel = await crypto.getDeviceVerificationStatus(
+    client.getSafeUserId(),
+    deviceId,
+  );
+  if (!trustLevel) {
+    logger.warn(
+      "Unable to verify device: Device is unknown, or has not published any encryption keys.",
+    );
+    return false;
+  }
+
+  return trustLevel.crossSigningVerified;
+}
+
+/**
+ * Generates a 256-bit hash (SHA-256) from the combined string of the user's ID and device ID.
+ * This hash is returned as a Uint8Array representing the storage key.
+ */
+export async function createStorageKey(selfUserId: string, deviceId: string) {
+  const combinedString = `${selfUserId}:${deviceId}`;
+
+  const encoder = new TextEncoder();
+  const data = encoder.encode(combinedString);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = new Uint8Array(hashBuffer);
+
+  return hashArray;
+}
+
+/**
+ * Generates a random 256-bit storage key (32 bytes) using the cryptographic random number generator.
+ */
+export function generateStorageKey() {
+  const key = new Uint8Array(32);
+  crypto.getRandomValues(key);
+  return key;
 }

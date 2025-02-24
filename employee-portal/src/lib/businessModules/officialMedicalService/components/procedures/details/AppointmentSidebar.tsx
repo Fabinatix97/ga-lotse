@@ -28,13 +28,21 @@ import {
 import { Sheet, Stack, Typography } from "@mui/joy";
 import { addMinutes, isEqual } from "date-fns";
 import { Formik, FormikHelpers, useFormikContext } from "formik";
-import { ReactNode, useMemo, useReducer, useState } from "react";
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from "react";
 import { clamp, isEmpty, prop, sortBy } from "remeda";
 
 import { useBookAppointment } from "@/lib/businessModules/officialMedicalService/api/mutations/appointmentApi";
 import { usePostAppointment } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
 import { useGetFreeAppointmentsQuery } from "@/lib/businessModules/officialMedicalService/api/queries/appointmentBlocksApi";
-import { APPOINTMENT_TYPES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
+import { APPOINTMENT_TYPE_OPTIONS } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/options";
 import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
@@ -65,6 +73,7 @@ interface AppointmentFormValues {
 
 export function useCreateAppointmentSidebar(
   procedureId: string,
+  appointmentType: ApiAppointmentType,
   physician?: ApiUser,
 ) {
   const { mutateAsync: createAppointment } = usePostAppointment();
@@ -91,6 +100,7 @@ export function useCreateAppointmentSidebar(
       return EmbeddedAppointmentSidebar({
         onSave: handleSave,
         allowSelfBooking: true,
+        appointmentType: appointmentType,
         physician,
         ...props,
       });
@@ -98,7 +108,10 @@ export function useCreateAppointmentSidebar(
   });
 }
 
-export function useAppointmentSidebar(physician?: ApiUser) {
+export function useAppointmentSidebar(
+  appointmentType: ApiAppointmentType,
+  physician?: ApiUser,
+) {
   const { mutateAsync: bookAppointment } = useBookAppointment();
 
   return useSidebarWithFormRef({
@@ -120,6 +133,7 @@ export function useAppointmentSidebar(physician?: ApiUser) {
       return EmbeddedAppointmentSidebar({
         onSave: handleSave,
         allowSelfBooking: false,
+        appointmentType: appointmentType,
         physician,
         ...props,
       });
@@ -135,6 +149,7 @@ interface AppointmentSidebarProps extends SidebarWithFormRefProps {
   onSave: (values: AppointmentFormValues) => Promise<void>;
   appointment?: ApiOmsAppointment;
   allowSelfBooking: boolean;
+  appointmentType: ApiAppointmentType;
   physician?: ApiUser;
 }
 
@@ -151,16 +166,10 @@ interface SidebarStep {
   fields: (props: Readonly<FieldsProps>) => ReactNode;
 }
 
-function getAppointmentTypeOptions() {
-  return [
-    {
-      value: ApiAppointmentType.OfficialMedicalService,
-      label: APPOINTMENT_TYPES[ApiAppointmentType.OfficialMedicalService],
-    },
-  ];
-}
-
-function getSteps(editingExistingAppointment: boolean): SidebarStep[] {
+function getSteps(
+  editingExistingAppointment: boolean,
+  setCurrentAppointmentType: Dispatch<SetStateAction<ApiAppointmentType>>,
+): SidebarStep[] {
   return editingExistingAppointment
     ? [
         {
@@ -174,14 +183,15 @@ function getSteps(editingExistingAppointment: boolean): SidebarStep[] {
           title: "Termin buchen",
           subTitle: "Schritt 1 von 2",
           fields: () => (
-            <>
-              <SelectField
-                name="appointmentType"
-                label="Terminart"
-                required="Bitte eine Terminart auswählen"
-                options={getAppointmentTypeOptions()}
-              />
-            </>
+            <SelectField
+              name="appointmentType"
+              label="Terminart"
+              required="Bitte eine Terminart auswählen"
+              options={APPOINTMENT_TYPE_OPTIONS}
+              onChange={(value) =>
+                setCurrentAppointmentType(value as ApiAppointmentType)
+              }
+            />
           ),
         },
         {
@@ -199,13 +209,17 @@ function EmbeddedAppointmentSidebar({
   appointment,
   allowSelfBooking,
   physician,
+  appointmentType,
 }: Readonly<AppointmentSidebarProps>) {
+  const [currentAppointmentType, setCurrentAppointmentType] =
+    useState(appointmentType);
   const { appointments, initialValues } = useAppointments(
+    currentAppointmentType,
     appointment,
     physician?.userId,
   );
 
-  const steps = getSteps(!!appointment);
+  const steps = getSteps(!!appointment, setCurrentAppointmentType);
   const lastStepIndex = steps.length - 1;
   const [stepIndex, changeToStep] = useReducer(
     (_index: number, newIndex: number) =>
@@ -355,15 +369,20 @@ function BookingForm({
 }
 
 function useAppointments(
+  appointmentType: ApiAppointmentType,
   appointment?: ApiOmsAppointment,
   physicianId?: string,
 ): {
   appointments: ApiAppointment[];
   initialValues: AppointmentFormValues;
 } {
-  const { data } = useGetFreeAppointmentsQuery(physicianId);
+  const { data } = useGetFreeAppointmentsQuery(appointmentType, physicianId);
 
   const [appointments, setAppointments] = useState(data.appointments);
+
+  useEffect(() => {
+    setAppointments(data.appointments);
+  }, [data.appointments]);
 
   return useMemo(() => {
     let blockAppointment: ApiAppointment | undefined = undefined;
@@ -398,7 +417,7 @@ function useAppointments(
     return {
       appointments,
       initialValues: {
-        appointmentType: ApiAppointmentType.OfficialMedicalService,
+        appointmentType: appointmentType,
         bookingType:
           appointment?.bookingType ?? ApiBookingType.AppointmentBlock,
         appointment: blockAppointment,
@@ -406,7 +425,7 @@ function useAppointments(
         duration: duration ?? 30,
       },
     };
-  }, [appointments, appointment]);
+  }, [appointments, appointment, appointmentType]);
 }
 
 function AppointmentBlockForm({

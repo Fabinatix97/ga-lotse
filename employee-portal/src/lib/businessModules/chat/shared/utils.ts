@@ -23,13 +23,12 @@ import {
   ReceiptType,
   Room,
   RoomMember,
+  SetPresence,
   User,
 } from "matrix-js-sdk";
 import {
   filter,
-  forEach,
   isEmpty,
-  isNonNullish,
   isStrictEqual,
   isString,
   keys,
@@ -37,7 +36,9 @@ import {
   pipe,
 } from "remeda";
 
+import { fetchBackupInfo } from "@/lib/businessModules/chat/matrix/crypto";
 import { CommunicationType } from "@/lib/businessModules/chat/shared/enums";
+import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import {
   ChatSystemMessage,
   Message,
@@ -258,7 +259,7 @@ export function getStatusColor(status: Presence | undefined) {
   }
 }
 
-export function getPresenseLabel(status: Presence | undefined) {
+export function getPresenceLabel(status: Presence | undefined) {
   switch (status) {
     case "online":
       return "Online";
@@ -329,6 +330,103 @@ export function delayed<T>(fn: () => T, delay: number): Promise<T> {
       resolve(fn());
     }, delay);
   });
+}
+
+export async function waitUntilCryptoApiIsInitialized(
+  matrixClient: MatrixClient,
+) {
+  logger.info("Waiting crypto initialization to complete...");
+  const cryptoApi = await retryOperation(
+    () => matrixClient.getCrypto(),
+    (cryptoApi) => cryptoApi !== undefined,
+    5,
+    1000,
+  );
+  if (!cryptoApi) {
+    throw Error(
+      "Rust Crypto initialization failed: Crypto module not available.",
+    );
+  }
+  logger.info("Waiting crypto initialization to complete... - DONE");
+}
+
+export async function fetchBackupInfoWithRetry(matrixClient: MatrixClient) {
+  logger.info("Fetching backup info...");
+  const backupInfo = await retryAsyncOperation(
+    async () => await fetchBackupInfo(matrixClient),
+    (backupInfo) =>
+      !backupInfo.has4SKey && backupInfo.keyBackupInfo ? false : true,
+    3,
+    3000,
+  );
+  logger.info("Fetching backup info... - DONE");
+  return backupInfo;
+}
+
+export async function retryOperation<T>(
+  operation: () => T, // The async function to retry
+  stopCondition: (result: T) => boolean, // A condition to stop retrying
+  retries: number, // Maximum number of retries
+  delay: number, // Delay in ms between retries
+  failOnLastRetry = false, // Throw an error if retry reached its limit
+): Promise<T | undefined> {
+  let result: T | undefined = undefined;
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      result = operation();
+      if (stopCondition(result)) {
+        return result;
+      }
+      logger.info("Retrying operation... ");
+    } catch (error) {
+      if (attempt === retries - 1) {
+        throw error; // If it's the last retry, throw the error
+      }
+      logger.error("Retrying on operation error", error);
+    }
+
+    // Wait before the next retry
+    await new Promise((resolve) => setTimeout(resolve, delay));
+  }
+
+  if (failOnLastRetry) {
+    throw new Error(`Operation failed after ${retries} retries`);
+  } else {
+    return result;
+  }
+}
+
+export async function retryAsyncOperation<T>(
+  operation: () => Promise<T>, // The async function to retry
+  stopCondition: (result: T) => boolean, // A condition to stop retrying
+  retries: number, // Maximum number of retries
+  delay: number, // Delay in ms between retries
+  failOnLastRetry = false, // Throw an error if retry reached its limit
+): Promise<T | undefined> {
+  let result: T | undefined = undefined;
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      result = await operation();
+      if (stopCondition(result)) {
+        return result;
+      }
+      logger.info("Retrying operation... ");
+    } catch (error) {
+      if (attempt === retries - 1) {
+        throw error; // If it's the last retry, throw the error
+      }
+      logger.error("Retrying on operation error", error);
+    }
+
+    // Wait before the next retry
+    await new Promise((resolve) => setTimeout(resolve, delay));
+  }
+
+  if (failOnLastRetry) {
+    throw new Error(`Operation failed after ${retries} retries`);
+  } else {
+    return result;
+  }
 }
 
 function getImageUrl(matrixClient: MatrixClient, url: string | null) {
@@ -472,13 +570,10 @@ export function getReadReceipts(
 
 export function clearSearchParams(...paramNames: string[]) {
   const url = new URL(window.location.href);
-  forEach(paramNames, (paramName) => {
-    const searchParam = url.searchParams.get(paramName);
-    if (isNonNullish(searchParam)) {
-      url.searchParams.delete(paramName);
-    }
+  paramNames.forEach((paramName) => {
+    url.searchParams.delete(paramName);
   });
-  window.history.replaceState(null, "", url.href);
+  window.history.replaceState(null, "", url.toString());
 }
 
 export function getRoomAdmins(room: Room | null) {
@@ -588,4 +683,22 @@ export function isMembershipChanged(mEvent: MatrixEvent): boolean {
     mEvent.getContent().membership !== mEvent.getPrevContent().membership ||
     mEvent.getContent().reason !== mEvent.getPrevContent().reason
   );
+}
+
+export async function setPresenceOffline(matrixClient: MatrixClient) {
+  try {
+    await matrixClient.setSyncPresence(SetPresence.Offline);
+    await matrixClient.setPresence({ presence: SetPresence.Offline });
+  } catch (error) {
+    logger.error("Failed to set user presence to offline", error);
+  }
+}
+
+export async function setPresenceOnline(matrixClient: MatrixClient) {
+  try {
+    await matrixClient.setSyncPresence(SetPresence.Online);
+    await matrixClient.setPresence({ presence: SetPresence.Online });
+  } catch (error) {
+    logger.error("Failed to set user presence to online", error);
+  }
 }

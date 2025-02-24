@@ -13,10 +13,14 @@ const baseOptions: Options = {
 };
 const excludeUnitTestsPattern = "!src/**/*.test.*";
 
-export function defineLibConfig(entry: string[]) {
+export function defineLibConfig(
+  entry: string[],
+  platform?: Options["platform"],
+) {
   return defineConfig((options) => ({
-    entry: [...entry, excludeUnitTestsPattern],
     ...baseOptions,
+    entry: [...entry, excludeUnitTestsPattern],
+    platform,
     ...options,
   }));
 }

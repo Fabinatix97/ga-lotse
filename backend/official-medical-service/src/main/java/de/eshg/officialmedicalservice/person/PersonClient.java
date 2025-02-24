@@ -38,6 +38,11 @@ public class PersonClient {
     return doAndForwardErrorCodes(() -> personApi.addPersonFileState(request));
   }
 
+  public AddPersonFileStateResponse addPersonFromExternalSource(
+      ExternalAddPersonFileStateRequest request) {
+    return doAndForwardErrorCodes(() -> personApi.addPersonFromExternalSource(request));
+  }
+
   public GetPersonFileStateResponse getPersonFileState(UUID id) {
     return doAndForwardErrorCodes(() -> personApi.getPersonFileState(id));
   }

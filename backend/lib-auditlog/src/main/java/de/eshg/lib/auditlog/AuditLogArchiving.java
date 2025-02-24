@@ -22,6 +22,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import net.javacrumbs.shedlock.core.LockAssert;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException.BadRequest;
@@ -52,8 +54,12 @@ public class AuditLogArchiving {
   }
 
   @Scheduled(cron = "${de.eshg.auditlog.archiving.schedule:@daily}")
+  @SchedulerLock(
+      name = "LibAuditLogAuditLogArchiving",
+      lockAtMostFor = "${de.eshg.auditlog.archiving.lock-at-most-for:23h}")
   @Transactional
   public void runArchivingJob() {
+    LockAssert.assertLocked();
     moduleClientAuthenticator.doWithModuleClientAuthentication(this::archiveOldAuditlogFiles);
   }
 

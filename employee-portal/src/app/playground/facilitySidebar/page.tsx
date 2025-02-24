@@ -5,29 +5,36 @@
 
 "use client";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Button, Card, Stack, Typography } from "@mui/joy";
 import { FormikProps } from "formik";
-import { useRef, useState } from "react";
 
-import { FacilitySidebar } from "@/lib/shared/components/facilitySidebar/FacilitySidebar";
+import {
+  FacilitySidebar,
+  FacilitySidebarProps,
+} from "@/lib/shared/components/facilitySidebar/FacilitySidebar";
+import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { DefaultFacilitySearchForm } from "@/lib/shared/components/facilitySidebar/search/DefaultFacilitySearchForm";
 import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchForm";
-import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
 import { createEmptyAddress } from "@/lib/shared/components/form/address/helpers";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
-import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
+import {
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export default function FacilitySidebarPlaygroundPage() {
-  const [sidebarState, setSidebarState] = useState("closed");
-
-  const inactiveRef = useRef<SidebarFormHandle>(null);
-
-  const { closeSidebar, sidebarFormRef, handleClose } = useSidebarForm({
-    onClose: () => setSidebarState("closed"),
+  const facilitySidebar = useSidebarWithFormRef({
+    component: ConfiguredDefaultFacilitySidebar,
+  });
+  const extraSearchInputsFacilitySidebar = useSidebarWithFormRef({
+    component: ConfiguredExtraSearchInputsFacilitySidebar,
+  });
+  const importFromOsmFacilitySidebar = useSidebarWithFormRef({
+    component: ConfiguredImportFromOsmFacilitySidebar,
   });
 
   return (
@@ -37,126 +44,124 @@ export default function FacilitySidebarPlaygroundPage() {
       <MainContentLayout>
         <Stack gap={3}>
           <Button
-            onClick={() => setSidebarState("default")}
+            onClick={() => facilitySidebar.open()}
             sx={{ width: "fit-content" }}
           >
             Default Sidebar
           </Button>
           <Button
-            onClick={() => setSidebarState("extra search inputs")}
+            onClick={() => extraSearchInputsFacilitySidebar.open()}
             sx={{ width: "fit-content" }}
           >
             Sidebar with extra search inputs
           </Button>
           <Button
-            onClick={() => setSidebarState("import from OSM")}
+            onClick={() => importFromOsmFacilitySidebar.open()}
             sx={{ width: "fit-content" }}
           >
             WebSuche Import Sidebar
           </Button>
         </Stack>
-
-        <FacilitySidebar
-          open={sidebarState === "default"}
-          title={"Neuen Vorgang anlegen"}
-          sidebarFormRef={
-            sidebarState === "default" ? sidebarFormRef : inactiveRef
-          }
-          onClose={handleClose}
-          onCreateNew={(values) => {
-            // eslint-disable-next-line no-console
-            console.log(values);
-            closeSidebar();
-            return Promise.resolve();
-          }}
-          onSelect={(values) => {
-            // eslint-disable-next-line no-console
-            console.log(values);
-            closeSidebar();
-            return Promise.resolve();
-          }}
-        />
-
-        <FacilitySidebar
-          open={sidebarState === "extra search inputs"}
-          title={"Erweiterten Vorgang anlegen"}
-          sidebarFormRef={
-            sidebarState === "extra search inputs"
-              ? sidebarFormRef
-              : inactiveRef
-          }
-          onClose={handleClose}
-          onCreateNew={(values) => {
-            // eslint-disable-next-line no-console
-            console.log(values);
-            closeSidebar();
-            return Promise.resolve();
-          }}
-          onSelect={(values) => {
-            // eslint-disable-next-line no-console
-            console.log(values);
-            closeSidebar();
-            return Promise.resolve();
-          }}
-          initialSearchInputs={{
-            name: "",
-            objectType: "",
-          }}
-          searchFormComponent={ExtendedSearchForm}
-        />
-
-        <FacilitySidebar
-          open={sidebarState === "import from OSM"}
-          title={"OSM Einrichtung Importieren"}
-          sidebarFormRef={
-            sidebarState === "import from OSM" ? sidebarFormRef : inactiveRef
-          }
-          onClose={handleClose}
-          onCreateNew={(values) => {
-            // eslint-disable-next-line no-console
-            console.log(values);
-            closeSidebar();
-            return Promise.resolve();
-          }}
-          onSelect={(values) => {
-            // eslint-disable-next-line no-console
-            console.log(values);
-            closeSidebar();
-            return Promise.resolve();
-          }}
-          initialSearchInputs={{
-            name: "Name der importierten Einrichtung",
-          }}
-          getInitialCreateInputs={(inputs) => ({
-            ...inputs,
-            contactAddress: {
-              ...createEmptyAddress(),
-              street: "Portlandweg",
-              houseNumber: "4",
-              postalCode: "53227",
-              city: "Bonn",
-            },
-          })}
-          searchResultHeaderComponent={
-            <>
-              <Card
-                variant="soft"
-                color="success"
-                sx={{ border: "1px solid #A1E8A1" }}
-              >
-                <Typography level={"title-md"}>
-                  Name der Importierten Einrichtung
-                </Typography>
-                <Typography>Portlandweg 4, 53227 Bonn</Typography>
-              </Card>
-              Ergebnisse:
-            </>
-          }
-          mode={"import"}
-        />
       </MainContentLayout>
     </StickyToolbarLayout>
   );
+}
+
+function ConfiguredDefaultFacilitySidebar(props: SidebarWithFormRefProps) {
+  const facilitySidebarProps: FacilitySidebarProps<DefaultFacilityFormValues> =
+    {
+      title: "Neuen Vorgang anlegen",
+      onCreateNew: (values) => {
+        // eslint-disable-next-line no-console
+        console.log(values);
+        return Promise.resolve();
+      },
+      onSelect: (values) => {
+        // eslint-disable-next-line no-console
+        console.log(values);
+        return Promise.resolve();
+      },
+      ...props,
+    };
+
+  return <FacilitySidebar {...facilitySidebarProps} />;
+}
+
+function ConfiguredExtraSearchInputsFacilitySidebar(
+  props: SidebarWithFormRefProps,
+) {
+  const facilitySidebarProps: FacilitySidebarProps<ExtendedSearchFormValues> = {
+    title: "Erweiterten Vorgang anlegen",
+    onCreateNew: (values) => {
+      // eslint-disable-next-line no-console
+      console.log(values);
+      return Promise.resolve();
+    },
+    onSelect: (values) => {
+      // eslint-disable-next-line no-console
+      console.log(values);
+      return Promise.resolve();
+    },
+    initialSearchInputs: {
+      name: "",
+      objectType: "",
+    },
+    searchFormComponent: ExtendedSearchForm,
+    ...props,
+  };
+
+  return <FacilitySidebar {...facilitySidebarProps} />;
+}
+
+function ConfiguredImportFromOsmFacilitySidebar(
+  props: SidebarWithFormRefProps,
+) {
+  const facilitySidebarProps: FacilitySidebarProps<DefaultFacilityFormValues> =
+    {
+      title: "OSM Einrichtung Importieren",
+      onCreateNew: (values) => {
+        // eslint-disable-next-line no-console
+        console.log(values);
+        return Promise.resolve();
+      },
+      onSelect: (values) => {
+        // eslint-disable-next-line no-console
+        console.log(values);
+        return Promise.resolve();
+      },
+      initialSearchInputs: {
+        name: "Name der importierten Einrichtung",
+      },
+      getInitialCreateInputs: (inputs) => ({
+        ...inputs,
+        contactAddress: {
+          ...createEmptyAddress(),
+          street: "Portlandweg",
+          houseNumber: "4",
+          postalCode: "53227",
+          city: "Bonn",
+        },
+      }),
+      searchResultHeaderComponent: (
+        <>
+          <Card
+            variant="soft"
+            color="success"
+            sx={{ border: "1px solid #A1E8A1" }}
+          >
+            <Typography level={"title-md"}>
+              Name der Importierten Einrichtung
+            </Typography>
+            <Typography>Portlandweg 4, 53227 Bonn</Typography>
+          </Card>
+          Ergebnisse:
+        </>
+      ),
+      mode: "import",
+      ...props,
+    };
+
+  return <FacilitySidebar {...facilitySidebarProps} />;
 }
 
 interface ExtendedSearchFormValues extends FacilitySearchFormValues {

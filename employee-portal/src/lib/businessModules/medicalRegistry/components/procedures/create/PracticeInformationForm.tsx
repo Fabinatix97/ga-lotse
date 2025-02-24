@@ -40,7 +40,9 @@ export function PracticeInformationForm(props: PracticeInformationFormProps) {
   return (
     <>
       <Grid xxs={12}>
-        <Typography level="h3">Praxis-/Tätigkeitsangaben</Typography>
+        <Typography level="h3" component="h2">
+          Praxis-/Tätigkeitsangaben
+        </Typography>
       </Grid>
       {props.forceProprietaryPractice ? (
         <>

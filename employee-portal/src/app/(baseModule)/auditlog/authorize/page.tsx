@@ -6,13 +6,13 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
 import { SearchParams } from "@eshg/lib-portal/helpers/searchParams";
 
 import { AuditLogAuthorizePage } from "@/lib/auditlog/components/authorize/AuditLogAuthorizePage";
 import { RestrictedPage } from "@/lib/shared/components/RestrictedPage";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 
 export default function AuditLogAuthorizeAccessPage(
   props: Readonly<{

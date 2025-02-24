@@ -51,7 +51,7 @@ public class MukFacilityLinkController implements MukFacilityLinkApi {
   }
 
   @Override
-  @Transactional
+  @Transactional(readOnly = true)
   public GetReferenceFacilityResponse getReferenceFacilityLinkedToMukSelfUser() {
     featureToggle.assertNewFeatureIsEnabled(BaseFeature.MUK_FACILITY_LINK);
 

@@ -12,6 +12,7 @@ import de.eshg.measlesprotection.api.draft.OpenProcedureResponse;
 import de.eshg.measlesprotection.config.MeaslesProtectionFeature;
 import de.eshg.measlesprotection.config.MeaslesProtectionFeatureToggle;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
+import de.eshg.testhelper.DefaultTestHelperService;
 import de.eshg.testhelper.TestHelperController;
 import de.eshg.testhelper.api.PopulationRequest;
 import de.eshg.testhelper.environment.EnvironmentConfig;
@@ -32,7 +33,7 @@ public class ProtectionProcedureTestHelperController extends TestHelperControlle
   private final MeaslesProtectionFeatureToggle measlesProtectionFeatureToggle;
 
   public ProtectionProcedureTestHelperController(
-      MeaslesProtectionTestHelperService testHelperService,
+      DefaultTestHelperService testHelperService,
       ProtectionProcedurePopulator populator,
       MeaslesProtectionFeatureToggle measlesProtectionFeatureToggle,
       AuditLogTestHelperService auditLogTestHelperService,

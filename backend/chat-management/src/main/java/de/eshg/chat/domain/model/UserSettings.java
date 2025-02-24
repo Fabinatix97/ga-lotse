@@ -17,6 +17,7 @@ public class UserSettings {
   @Id private String userId;
 
   private Boolean chatConsentAsked = false;
+  private Boolean accountRegistered = false;
   private Boolean chatUsageEnabled = false;
   private Boolean sharePresence = true;
   private Boolean showTypingNotification = true;
@@ -83,6 +84,15 @@ public class UserSettings {
 
   public UserSettings accountDeactivated(Boolean accountDeactivated) {
     this.accountDeactivated = accountDeactivated;
+    return this;
+  }
+
+  public Boolean getAccountRegistered() {
+    return accountRegistered;
+  }
+
+  public UserSettings accountRegistered(Boolean accountRegistered) {
+    this.accountRegistered = accountRegistered;
     return this;
   }
 }

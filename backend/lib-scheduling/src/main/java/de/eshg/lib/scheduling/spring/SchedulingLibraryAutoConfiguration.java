@@ -5,7 +5,7 @@
 
 package de.eshg.lib.scheduling.spring;
 
-import de.eshg.lib.scheduling.Shedlock;
+import de.eshg.lib.scheduling.ShedlockResetAction;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
@@ -13,8 +13,5 @@ import org.springframework.context.annotation.Import;
 
 @AutoConfiguration
 @AutoConfigureAfter(JpaRepositoriesAutoConfiguration.class)
-@Import({
-  SchedulingConfiguration.class,
-  Shedlock.class,
-})
+@Import({SchedulingConfiguration.class, ShedlockResetAction.class})
 public class SchedulingLibraryAutoConfiguration {}

@@ -7,6 +7,7 @@
 
 import { ApiAddContact200Response } from "@eshg/base-api";
 import { ApiCreateChildRequest } from "@eshg/dental-api";
+import { ApiChild } from "@eshg/dental-api";
 import { useCreateChild } from "@eshg/dental/api/mutations/childApi";
 import { getChildrenByPersonQuery } from "@eshg/dental/api/queries/childApi";
 import { useDentalApi } from "@eshg/dental/shared/DentalProvider";
@@ -17,16 +18,18 @@ import { ApiCreatePerson } from "@eshg/school-entry-api";
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
 
 import { SCHOOL_OR_DAYCARE } from "@/lib/baseModule/api/queries/contacts";
 import { ChildProcedureCard } from "@/lib/businessModules/dental/features/children/new/ChildProcedureCard";
 import { SearchGroupField } from "@/lib/businessModules/dental/features/prophylaxisSessions/SearchGroupField";
 import { BUTTON_SIZE } from "@/lib/businessModules/schoolEntry/features/procedures/new/constants";
-import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
 import { SelectContactField } from "@/lib/shared/components/formFields/SelectContactField";
 import { SchoolYearField } from "@/lib/shared/components/formFields/schoolYear";
-import { PersonSidebar } from "@/lib/shared/components/personSidebar/PersonSidebar";
+import {
+  PersonSidebar,
+  PersonSidebarProps,
+} from "@/lib/shared/components/personSidebar/PersonSidebar";
+import { DefaultPersonFormValues } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
 import { mapToPersonAddRequest } from "@/lib/shared/components/personSidebar/helpers";
 import {
   DefaultSearchPersonForm,
@@ -37,9 +40,11 @@ import {
   SearchPersonFormProps,
   SearchPersonFormValues,
 } from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { getInstitutionOptionLabel } from "@/lib/shared/helpers/selectOptionMapper";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
+import {
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 interface DentalSearchForm extends SearchPersonFormValues {
   schoolYear: OptionalFieldValue<number>;
@@ -88,25 +93,25 @@ function DentalSearchFormComponent(
 }
 
 export function CreateChildSidebar() {
-  const [open, setOpen] = useState(false);
+  const personSidebar = useSidebarWithFormRef({
+    component: ConfiguredPersonSidebar,
+  });
+
+  return (
+    <Button
+      startDecorator={<Add />}
+      onClick={() => personSidebar.open()}
+      size={BUTTON_SIZE}
+    >
+      Neues Kind anlegen
+    </Button>
+  );
+}
+
+function ConfiguredPersonSidebar(props: SidebarWithFormRefProps) {
   const router = useRouter();
   const createChild = useCreateChild();
-  const sidebarFormRef = useRef<SidebarFormHandle>(null);
-  const { openCancelDialog } = useConfirmationDialog();
-
-  function closeSidebar() {
-    setOpen(false);
-  }
-
-  function handleClose() {
-    if (sidebarFormRef.current?.dirty) {
-      openCancelDialog({
-        onConfirm: closeSidebar,
-      });
-    } else {
-      closeSidebar();
-    }
-  }
+  const { childApi } = useDentalApi();
 
   async function handleCreate(
     child: ApiCreatePerson,
@@ -118,60 +123,46 @@ export function CreateChildSidebar() {
       mapToCreateChildRequest(child, schoolYear, institutionId, groupName),
       {
         onSuccess: (response) => {
-          closeSidebar();
           router.push(routes.children.byId(response.id).details);
         },
       },
     );
   }
 
-  const { childApi } = useDentalApi();
-  return (
-    <>
-      <Button
-        startDecorator={<Add />}
-        onClick={() => setOpen(true)}
-        size={BUTTON_SIZE}
-      >
-        Neues Kind anlegen
-      </Button>
+  const personSidebarProps: PersonSidebarProps<
+    DentalSearchForm,
+    DefaultPersonFormValues,
+    ApiChild
+  > = {
+    title: "Neues Kind anlegen",
+    onCreate: async ({ searchInputs, createInputs }) => {
+      await handleCreate(
+        mapToPersonAddRequest(createInputs),
+        searchInputs.schoolYear,
+        searchInputs.institution?.id ?? "",
+        searchInputs.groupName,
+      );
+    },
+    onSelect: async ({ searchInputs, person }) => {
+      await handleCreate(
+        mapToPersonAddRequest(person),
+        searchInputs.schoolYear,
+        searchInputs.institution?.id ?? "",
+        searchInputs.groupName,
+      );
+    },
+    submitLabel: "Kind anlegen",
+    searchFormComponent: DentalSearchFormComponent,
+    initialSearchState: personSearchFormInitialValues,
+    addressRequired: true,
+    associatedProcedures: {
+      getQuery: (personId) => getChildrenByPersonQuery(childApi, personId),
+      cardComponent: ChildProcedureCard,
+    },
+    ...props,
+  };
 
-      <Sidebar open={open} onClose={handleClose}>
-        {open && (
-          <PersonSidebar
-            title={"Neues Kind anlegen"}
-            onCancel={handleClose}
-            onCreate={async ({ searchInputs, createInputs }) => {
-              await handleCreate(
-                mapToPersonAddRequest(createInputs),
-                searchInputs.schoolYear,
-                searchInputs.institution?.id ?? "",
-                searchInputs.groupName,
-              );
-            }}
-            onSelect={async ({ searchInputs, person }) => {
-              await handleCreate(
-                mapToPersonAddRequest(person),
-                searchInputs.schoolYear,
-                searchInputs.institution?.id ?? "",
-                searchInputs.groupName,
-              );
-            }}
-            submitLabel={"Kind anlegen"}
-            sidebarFormRef={sidebarFormRef}
-            searchFormComponent={DentalSearchFormComponent}
-            initialSearchState={personSearchFormInitialValues}
-            addressRequired
-            associatedProcedures={{
-              getQuery: (personId) =>
-                getChildrenByPersonQuery(childApi, personId),
-              cardComponent: ChildProcedureCard,
-            }}
-          />
-        )}
-      </Sidebar>
-    </>
-  );
+  return <PersonSidebar {...personSidebarProps} />;
 }
 
 function mapToCreateChildRequest(

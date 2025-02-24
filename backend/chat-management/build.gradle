@@ -32,6 +32,12 @@ tasks.named("composeUp").configure {
     dependsOn project(":synapse").tasks.named("composeUp")
 }
 
+evaluationDependsOn(':synapse')
+
+tasks.named("test") {
+    dependsOn project(':synapse').tasks.named("composeUp")
+}
+
 dependencyTrack {
     projectId = project.findProperty('dependency-track-project-id-chat-management') ?: "unspecified"
 }

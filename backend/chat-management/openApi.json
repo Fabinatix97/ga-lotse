@@ -246,6 +246,27 @@
         "tags" : [ "TestHelper" ]
       }
     },
+    "/user-account/bind-keycloak-id" : {
+      "post" : {
+        "operationId" : "bindKeycloakId",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BindKeycloakIdRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "UserAccount" ]
+      }
+    },
     "/user-settings" : {
       "get" : {
         "operationId" : "getOrCreateDefaultUserSettings",
@@ -309,6 +330,15 @@
             "minimum" : 1,
             "type" : "integer",
             "format" : "int64"
+          }
+        }
+      },
+      "BindKeycloakIdRequest" : {
+        "required" : [ "matrixUserId" ],
+        "type" : "object",
+        "properties" : {
+          "matrixUserId" : {
+            "type" : "string"
           }
         }
       },
@@ -461,6 +491,9 @@
           "accountDeactivated" : {
             "type" : "boolean"
           },
+          "accountRegistered" : {
+            "type" : "boolean"
+          },
           "chatConsentAsked" : {
             "type" : "boolean"
           },
@@ -486,6 +519,9 @@
         "type" : "object",
         "properties" : {
           "accountDeactivated" : {
+            "type" : "boolean"
+          },
+          "accountRegistered" : {
             "type" : "boolean"
           },
           "chatConsentAsked" : {

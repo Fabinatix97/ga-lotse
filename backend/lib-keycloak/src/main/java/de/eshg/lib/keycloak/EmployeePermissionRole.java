@@ -189,6 +189,10 @@ public enum EmployeePermissionRole implements PermissionRole {
       WRITE_PERMISSION_TEMPLATE.formatted("Statistiken"),
       "Kann Vorlagen erstellen und löschen, die Prozesskennzahlen aus verschiedenen Quellen zu statistischen Zwecken zusammentragen. Kann mithilfe einer solchen Vorlage einen Datensatz erstellen und statistisch auswerten lassen sowie die Resultate abrufen",
       Module.STATISTICS),
+  STATISTICS_STATISTICS_TECHNICAL_USER(
+      "Technischer User Statistiken",
+      "Technischer User des Statistik-Moduls, um die konkreten Statistikdaten von den Fachmodulen zusammenzutragen, nicht für echte User bestimmt",
+      Module.STATISTICS),
 
   INBOX_PROCEDURE_WRITE(
       WRITE_PERMISSION_TEMPLATE.formatted("Posteingangsvorgänge"),

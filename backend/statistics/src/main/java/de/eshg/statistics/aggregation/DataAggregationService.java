@@ -12,6 +12,8 @@ import de.eshg.base.statistics.api.BaseAttribute;
 import de.eshg.base.statistics.api.BaseDataTableHeader;
 import de.eshg.base.statistics.api.GetBaseStatisticsDataRequest;
 import de.eshg.base.statistics.api.GetBaseStatisticsDataResponse;
+import de.eshg.base.statistics.api.GetBaseStatisticsDataTableHeaderRequest;
+import de.eshg.base.statistics.api.GetBaseStatisticsDataTableHeaderResponse;
 import de.eshg.base.statistics.api.SubjectType;
 import de.eshg.lib.aggregation.BusinessModuleAggregationHelper;
 import de.eshg.lib.aggregation.ClientResponse;
@@ -21,6 +23,8 @@ import de.eshg.lib.statistics.api.DataPrivacyCategory;
 import de.eshg.lib.statistics.api.DataRow;
 import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.api.DataTableHeader;
+import de.eshg.lib.statistics.api.GetDataTableHeaderRequest;
+import de.eshg.lib.statistics.api.GetDataTableHeaderResponse;
 import de.eshg.lib.statistics.api.GetSpecificDataRequest;
 import de.eshg.lib.statistics.api.GetSpecificDataResponse;
 import de.eshg.lib.statistics.api.ValueType;
@@ -35,6 +39,7 @@ import de.eshg.statistics.mapper.EvaluationMapper;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
+import de.eshg.statistics.persistence.entity.AnonymizationConfiguration;
 import de.eshg.statistics.persistence.entity.CellEntry;
 import de.eshg.statistics.persistence.entity.Evaluation;
 import de.eshg.statistics.persistence.entity.MinMaxNullUnknownValues;
@@ -74,6 +79,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class DataAggregationService {
+  private static final String ERROR_BUSINESS_MODULE_AGGREGATION =
+      "Could not retrieve data from business module";
+
   private final BusinessModuleAggregationHelper businessModuleAggregationHelper;
   private final BaseStatisticsApi baseModuleStatisticsApi;
   private final int businessModuleDataRequestPageSize;
@@ -103,22 +111,17 @@ public class DataAggregationService {
       Instant timeRangeEnd,
       DataSourceSensitivity sensitivity,
       boolean anonymized) {
-    GetSpecificDataRequest request =
-        new GetSpecificDataRequest(
+    GetDataTableHeaderRequest request =
+        new GetDataTableHeaderRequest(
             timeRangeStart,
             timeRangeEnd,
             dataSource.id(),
             anonymized,
-            dataSource.attributeCodes().stream().map(BusinessDataAttribute::code).toList(),
-            0,
-            1);
+            dataSource.attributeCodes().stream().map(BusinessDataAttribute::code).toList());
 
-    GetSpecificDataResponse dataFromBusinessModule =
-        getDataFromBusinessModule(request, dataSource.businessModuleName());
+    GetDataTableHeaderResponse dataFromBusinessModule =
+        getDataTableHeaderFromBusinessModule(request, dataSource.businessModuleName());
 
-    if (anonymized && !dataFromBusinessModule.anonymized()) {
-      throw new BadRequestException("Data was not anonymized");
-    }
     if (!sensitivity.equals(dataFromBusinessModule.sensitivity())) {
       throw new BadRequestException(
           "Different sensitivities from business module, datasource %s - data %s"
@@ -136,7 +139,13 @@ public class DataAggregationService {
                     BusinessDataAttribute::code, BusinessDataAttribute::baseAttributeCodes));
     Map<Integer, BaseStatisticsData> indexToBaseData =
         retrieveDataFromBase(
-            indexToBaseReferenceAttribute, codeToBaseAttributeCodes, Collections.emptyList());
+            indexToBaseReferenceAttribute,
+            codeToBaseAttributeCodes,
+            Collections.emptyList(),
+            baseRetrievalInformation ->
+                retrieveDataTableHeaderFromBase(
+                    baseRetrievalInformation.subjectType(),
+                    baseRetrievalInformation.attributeCodes()));
 
     List<TableColumn> tableColumns =
         createTableColumns(
@@ -162,39 +171,41 @@ public class DataAggregationService {
     evaluation.addTableColumns(tableColumns);
     evaluation.setNumberOfTableRows(0);
     evaluation.setState(AggregationResultState.CREATING);
-    evaluation.setPendingState(
-        dataFromBusinessModule.totalNumberOfElements() == 0
-            ? AggregationResultPendingState.MIN_MAX_DETERMINATION
-            : AggregationResultPendingState.DATA_AGGREGATION);
+    evaluation.setPendingState(AggregationResultPendingState.DATA_AGGREGATION);
 
     return evaluation;
   }
 
-  private GetSpecificDataResponse getDataFromBusinessModule(
-      GetSpecificDataRequest businessModuleRequest, String businessModuleName) {
-    String message = "Could not retrieve data from business module";
+  private GetDataTableHeaderResponse getDataTableHeaderFromBusinessModule(
+      GetDataTableHeaderRequest businessModuleRequest, String businessModuleName) {
 
-    List<ClientResponse<GetSpecificDataResponse>> clientResponses =
+    List<ClientResponse<GetDataTableHeaderResponse>> clientResponses =
         businessModuleAggregationHelper.requestFromBusinessModulesClients(
             Set.of(businessModuleName),
             null,
-            client -> client.getSpecificData(businessModuleRequest));
+            client -> client.getDataTableHeader(businessModuleRequest));
     if (clientResponses.isEmpty()) {
-      throw new BadRequestException(message);
+      throw new BadRequestException(ERROR_BUSINESS_MODULE_AGGREGATION);
     }
 
-    ClientResponse<GetSpecificDataResponse> clientResponse = clientResponses.getFirst();
-    GetSpecificDataResponse getSpecificDataResponse = clientResponse.response();
-    if (getSpecificDataResponse == null) {
-      ErrorResponseWithLocation errorResponseWithLocation = clientResponse.errorResponse();
-      if (errorResponseWithLocation == null) {
-        throw new BadRequestException(message);
-      } else {
-        message += ": %s".formatted(errorResponseWithLocation.message());
-        throw new BadRequestException(errorResponseWithLocation.errorCode(), message);
-      }
+    ClientResponse<GetDataTableHeaderResponse> clientResponse = clientResponses.getFirst();
+    GetDataTableHeaderResponse getDataTableHeaderResponse = clientResponse.response();
+    if (getDataTableHeaderResponse == null) {
+      handleAggregationError(clientResponse);
     }
-    return getSpecificDataResponse;
+    return getDataTableHeaderResponse;
+  }
+
+  private static void handleAggregationError(ClientResponse<?> clientResponse) {
+    ErrorResponseWithLocation errorResponseWithLocation = clientResponse.errorResponse();
+    if (errorResponseWithLocation == null) {
+      throw new BadRequestException(ERROR_BUSINESS_MODULE_AGGREGATION);
+    } else {
+      throw new BadRequestException(
+          errorResponseWithLocation.errorCode(),
+          ERROR_BUSINESS_MODULE_AGGREGATION
+              + ": %s".formatted(errorResponseWithLocation.message()));
+    }
   }
 
   private static Map<Integer, Attribute> findBaseModuleIdColumns(DataTableHeader dataTableHeader) {
@@ -207,10 +218,23 @@ public class DataAggregationService {
         .collect(Collectors.toMap(index -> index, dataTableHeader.attributes()::get));
   }
 
+  private BaseStatisticsData retrieveDataTableHeaderFromBase(
+      SubjectType subjectType, List<String> attributeCodes) {
+    GetBaseStatisticsDataTableHeaderRequest baseStatisticsDataTableRequest =
+        new GetBaseStatisticsDataTableHeaderRequest(subjectType.name(), attributeCodes);
+
+    GetBaseStatisticsDataTableHeaderResponse dataTableHeaderResponse =
+        baseModuleStatisticsApi.getDataTableHeader(baseStatisticsDataTableRequest);
+
+    return new BaseStatisticsData(
+        dataTableHeaderResponse.dataTableHeader(), Collections.emptyList());
+  }
+
   private Map<Integer, BaseStatisticsData> retrieveDataFromBase(
       Map<Integer, Attribute> indexToBaseReferenceAttribute,
       Map<String, List<String>> codeToBaseAttributeCodes,
-      List<DataRow> dataRows) {
+      List<DataRow> dataRows,
+      Function<BaseRetrievalInformation, BaseStatisticsData> baseRetrievalFunction) {
     Map<Integer, BaseStatisticsData> indexToDataFromBase = new HashMap<>();
 
     indexToBaseReferenceAttribute.forEach(
@@ -230,7 +254,10 @@ public class DataAggregationService {
               SubjectType subjectType =
                   DataSourceAggregationService.mapToSubjectType(value.valueType());
               indexToDataFromBase.put(
-                  key, retrieveDataFromBase(subjectType, baseAttributeCodes, baseModuleIds));
+                  key,
+                  baseRetrievalFunction.apply(
+                      new BaseRetrievalInformation(
+                          subjectType, baseAttributeCodes, baseModuleIds)));
             }
           }
         });
@@ -250,17 +277,6 @@ public class DataAggregationService {
       }
     }
     return null;
-  }
-
-  private BaseStatisticsData retrieveDataFromBase(
-      SubjectType subjectType, List<String> attributeCodes, List<UUID> baseModuleIds) {
-    GetBaseStatisticsDataRequest baseStatisticsDataRequest =
-        new GetBaseStatisticsDataRequest(subjectType.name(), attributeCodes, baseModuleIds);
-
-    GetBaseStatisticsDataResponse specificData =
-        baseModuleStatisticsApi.getSpecificData(baseStatisticsDataRequest);
-
-    return new BaseStatisticsData(specificData.dataTableHeader(), specificData.dataRows());
   }
 
   private static List<TableColumn> createTableColumns(
@@ -312,24 +328,32 @@ public class DataAggregationService {
     tableColumn.setDataSourceName(dataSourceName);
     tableColumn.setDataSourceId(dataSourceId);
 
+    DataPrivacyCategory dataPrivacyCategory;
     if (baseModuleAttribute == null) {
       tableColumn.setValueType(mapToTableColumnValueType(businessModuleAttribute.valueType()));
-      tableColumn.setDataPrivacyCategory(
-          mapToTableColumnDataPrivacyCategory(businessModuleAttribute.dataPrivacyCategory()));
       tableColumn.setUnit(businessModuleAttribute.unit());
       tableColumn.addValueToMeanings(
           EvaluationMapper.mapToValueToMeanings(businessModuleAttribute.valueOptions()));
       tableColumn.setMandatory(businessModuleAttribute.mandatory());
+
+      dataPrivacyCategory = businessModuleAttribute.dataPrivacyCategory();
     } else {
       tableColumn.setBaseModuleAttributeCode(baseModuleAttribute.code());
       tableColumn.setBaseModuleAttributeName(baseModuleAttribute.name());
       tableColumn.setValueType(mapToTableColumnValueType(baseModuleAttribute.valueType()));
-      tableColumn.setDataPrivacyCategory(
-          mapToTableColumnDataPrivacyCategory(baseModuleAttribute.dataPrivacyCategory()));
       tableColumn.setUnit(baseModuleAttribute.unit());
       tableColumn.addValueToMeanings(
           EvaluationMapper.mapToValueToMeanings(baseModuleAttribute.valueOptions()));
       tableColumn.setMandatory(baseModuleAttribute.mandatory());
+
+      dataPrivacyCategory = baseModuleAttribute.dataPrivacyCategory();
+    }
+
+    if (dataPrivacyCategory != null) {
+      AnonymizationConfiguration anonymizationConfiguration = new AnonymizationConfiguration();
+      anonymizationConfiguration.setDataPrivacyCategory(
+          TableColumnDataPrivacyCategory.valueOf(dataPrivacyCategory.name()));
+      tableColumn.setAnonymizationConfiguration(anonymizationConfiguration);
     }
 
     tableColumn.setSearchKey(
@@ -344,13 +368,6 @@ public class DataAggregationService {
 
   private static TableColumnValueType mapToTableColumnValueType(ValueType valueType) {
     return TableColumnValueType.valueOf(valueType.name());
-  }
-
-  private static TableColumnDataPrivacyCategory mapToTableColumnDataPrivacyCategory(
-      DataPrivacyCategory dataPrivacyCategory) {
-    return dataPrivacyCategory == null
-        ? null
-        : TableColumnDataPrivacyCategory.valueOf(dataPrivacyCategory.name());
   }
 
   private static List<TableColumn> createTableColumnsForBaseAttributes(
@@ -414,7 +431,12 @@ public class DataAggregationService {
         retrieveDataFromBase(
             indexToBaseReferenceAttribute,
             codeToBaseAttributeCodes,
-            dataFromBusinessModule.dataRows());
+            dataFromBusinessModule.dataRows(),
+            baseRetrievalInformation ->
+                retrieveSpecificDataFromBase(
+                    baseRetrievalInformation.subjectType(),
+                    baseRetrievalInformation.attributeCodes(),
+                    baseRetrievalInformation.baseModuleIds()));
 
     validateAndUpdateTableColumns(
         aggregationResult,
@@ -467,6 +489,25 @@ public class DataAggregationService {
     }
   }
 
+  private GetSpecificDataResponse getDataFromBusinessModule(
+      GetSpecificDataRequest businessModuleRequest, String businessModuleName) {
+    List<ClientResponse<GetSpecificDataResponse>> clientResponses =
+        businessModuleAggregationHelper.requestFromBusinessModulesClients(
+            Set.of(businessModuleName),
+            null,
+            client -> client.getSpecificData(businessModuleRequest));
+    if (clientResponses.isEmpty()) {
+      throw new BadRequestException(ERROR_BUSINESS_MODULE_AGGREGATION);
+    }
+
+    ClientResponse<GetSpecificDataResponse> clientResponse = clientResponses.getFirst();
+    GetSpecificDataResponse getSpecificDataResponse = clientResponse.response();
+    if (getSpecificDataResponse == null) {
+      handleAggregationError(clientResponse);
+    }
+    return getSpecificDataResponse;
+  }
+
   private static void validateAnonymizationAndSensitivity(
       boolean dataNeedsAnonymization,
       GetSpecificDataResponse dataFromBusinessModule,
@@ -481,6 +522,17 @@ public class DataAggregationService {
       throw new BadRequestException(
           "Sensitivity changed to %s".formatted(dataFromBusinessModule.sensitivity()));
     }
+  }
+
+  private BaseStatisticsData retrieveSpecificDataFromBase(
+      SubjectType subjectType, List<String> attributeCodes, List<UUID> baseModuleIds) {
+    GetBaseStatisticsDataRequest baseStatisticsDataRequest =
+        new GetBaseStatisticsDataRequest(subjectType.name(), attributeCodes, baseModuleIds);
+
+    GetBaseStatisticsDataResponse specificData =
+        baseModuleStatisticsApi.getSpecificData(baseStatisticsDataRequest);
+
+    return new BaseStatisticsData(specificData.dataTableHeader(), specificData.dataRows());
   }
 
   private static List<String> getBusinessModuleAttributeCodes(
@@ -523,6 +575,9 @@ public class DataAggregationService {
 
               updateValueToMeaningIfAllowed(
                   currentTableColumn, newTableColumn.getValueToMeanings());
+
+              updateAnonymizationConfiguration(
+                  currentTableColumn, newTableColumn.getAnonymizationConfiguration());
             });
 
     if (IntStream.range(0, aggregationResult.getTableColumns().size())
@@ -556,6 +611,23 @@ public class DataAggregationService {
     }
   }
 
+  private static void updateAnonymizationConfiguration(
+      TableColumn currentTableColumn, AnonymizationConfiguration newConfiguration) {
+    if (newConfiguration == null) {
+      currentTableColumn.setAnonymizationConfiguration(null);
+    } else {
+      AnonymizationConfiguration currentConfiguration;
+      if (currentTableColumn.getAnonymizationConfiguration() == null) {
+        currentConfiguration = new AnonymizationConfiguration();
+        currentTableColumn.setAnonymizationConfiguration(currentConfiguration);
+      } else {
+        currentConfiguration = currentTableColumn.getAnonymizationConfiguration();
+      }
+
+      EvaluationCopyService.copyAnonymizationConfiguration(currentConfiguration, newConfiguration);
+    }
+  }
+
   private static boolean isDifferentTableColumn(
       TableColumn firstTableColumn, TableColumn secondTableColumn) {
     if (!firstTableColumn.getBusinessModuleName().equals(secondTableColumn.getBusinessModuleName())
@@ -568,10 +640,7 @@ public class DataAggregationService {
             firstTableColumn.getBaseModuleAttributeCode(),
             secondTableColumn.getBaseModuleAttributeCode())
         || !Objects.equals(firstTableColumn.getUnit(), secondTableColumn.getUnit())
-        || firstTableColumn.isMandatory() != secondTableColumn.isMandatory()
-        || !Objects.equals(
-            firstTableColumn.getDataPrivacyCategory(),
-            secondTableColumn.getDataPrivacyCategory())) {
+        || firstTableColumn.isMandatory() != secondTableColumn.isMandatory()) {
       return true;
     }
     if (firstTableColumn.getValueToMeanings().size()
@@ -960,6 +1029,9 @@ public class DataAggregationService {
                 })
             .collect(Collectors.joining(", ")));
   }
+
+  private record BaseRetrievalInformation(
+      SubjectType subjectType, List<String> attributeCodes, List<UUID> baseModuleIds) {}
 
   private record BaseStatisticsData(BaseDataTableHeader dataTableHeader, List<DataRow> dataRows) {}
 

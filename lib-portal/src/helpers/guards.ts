@@ -30,3 +30,9 @@ export function isDict(value: unknown): value is Record<string, unknown> {
 export function isBlankString(value: string): value is string {
   return value.trim() === "";
 }
+
+export function isNonEmptyArray<T>(
+  value: T[] | null | undefined,
+): value is T[] {
+  return Array.isArray(value) && value.length > 0;
+}

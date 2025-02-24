@@ -206,7 +206,6 @@ public class ServiceDirectoryCommitService {
         .toList();
   }
 
-  // TODO ISSUE-1921: we risk overwriting certificates set by postTopology here
   private void commit(StagedActor actor) {
     switch (actor.getStagedEntityType()) {
       case ADD -> commit(createNewAuditedActor(actor), actor);

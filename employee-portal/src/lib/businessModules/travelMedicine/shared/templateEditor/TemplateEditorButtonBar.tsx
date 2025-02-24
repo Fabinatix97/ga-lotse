@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { BottomToolbar } from "@eshg/lib-employee-portal/components/toolbar/BottomToolbar";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 
-import { StickyBottomButtonBar } from "@/lib/shared/components/buttons/StickyBottomButtonBar";
+import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
+import { StickyBottomBox } from "@/lib/shared/components/layout/StickyBottomBox";
 
 export function TemplateEditorButtonBar({
   publish,
@@ -22,29 +24,33 @@ export function TemplateEditorButtonBar({
   disabled: boolean;
 }>) {
   return (
-    <StickyBottomButtonBar
-      right={
-        <>
-          <InternalLinkButton href={cancelRoute} variant="plain">
-            Abbrechen
-          </InternalLinkButton>
-          <SubmitButton
-            submitting={isSubmitting}
-            onClick={save}
-            variant="outlined"
-            disabled={disabled}
-          >
-            Entwurf speichern
-          </SubmitButton>
-          <SubmitButton
-            submitting={isSubmitting}
-            onClick={publish}
-            disabled={disabled}
-          >
-            Veröffentlichen
-          </SubmitButton>
-        </>
-      }
-    ></StickyBottomButtonBar>
+    <StickyBottomBox>
+      <BottomToolbar>
+        <ButtonBar
+          right={
+            <>
+              <InternalLinkButton href={cancelRoute} variant="plain">
+                Abbrechen
+              </InternalLinkButton>
+              <SubmitButton
+                submitting={isSubmitting}
+                onClick={save}
+                variant="outlined"
+                disabled={disabled}
+              >
+                Entwurf speichern
+              </SubmitButton>
+              <SubmitButton
+                submitting={isSubmitting}
+                onClick={publish}
+                disabled={disabled}
+              >
+                Veröffentlichen
+              </SubmitButton>
+            </>
+          }
+        />
+      </BottomToolbar>
+    </StickyBottomBox>
   );
 }

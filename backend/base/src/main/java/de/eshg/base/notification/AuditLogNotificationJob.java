@@ -6,6 +6,8 @@
 package de.eshg.base.notification;
 
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
+import net.javacrumbs.shedlock.core.LockAssert;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +25,11 @@ public class AuditLogNotificationJob {
   }
 
   @Scheduled(cron = "${eshg.base.auditlog.notification.schedule:@daily}")
+  @SchedulerLock(
+      name = "BaseAuditLogNotificationJob",
+      lockAtMostFor = "${eshg.base.auditlog.notification.lock-at-most-for:23h}")
   public void run() {
+    LockAssert.assertLocked();
     moduleClientAuthenticator.doWithModuleClientAuthentication(
         auditLogNotificationService::sendNotifications);
   }

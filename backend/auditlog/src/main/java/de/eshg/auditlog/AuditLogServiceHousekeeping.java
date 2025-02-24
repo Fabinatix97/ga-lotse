@@ -18,6 +18,8 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
+import net.javacrumbs.shedlock.core.LockAssert;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -43,7 +45,11 @@ class AuditLogServiceHousekeeping {
   }
 
   @Scheduled(cron = "${de.eshg.auditlog.housekeeping.schedule:@daily}")
+  @SchedulerLock(
+      name = "AuditlogAuditLogServiceHousekeeping",
+      lockAtMostFor = "${de.eshg.auditlog.housekeeping.lock-at-most-for:23h}")
   void performHousekeeping() {
+    LockAssert.assertLocked();
     deleteExpiredGrants();
     deleteOldAuditlogs();
   }

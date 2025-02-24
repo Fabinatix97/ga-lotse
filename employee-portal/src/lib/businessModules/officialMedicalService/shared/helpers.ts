@@ -9,7 +9,9 @@ import {
 } from "@eshg/base-api";
 import {
   ApiAffectedPerson,
+  ApiAppointmentState,
   ApiFacility,
+  ApiOmsAppointment,
   ApiPatchAffectedPersonRequest,
   ApiPatchEmployeeOmsProcedureFacilityRequest,
   ApiPostEmployeeOmsProcedureRequest,
@@ -129,4 +131,12 @@ export function isProcedureOpenOrInProgress(procedure: {
     ApiProcedureStatus.InProgress,
   ];
   return openOrInProgressStates.includes(procedure.status);
+}
+
+export function procedureHasOpenAppointments(procedure: {
+  appointments: ApiOmsAppointment[];
+}): boolean {
+  return procedure.appointments.some(
+    (appointment) => appointment.appointmentState === ApiAppointmentState.Open,
+  );
 }

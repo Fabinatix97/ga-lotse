@@ -1,0 +1,83 @@
+import org.apache.commons.io.FileUtils
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+
+plugins {
+    id "eshg.java-lib"
+    id "de.undercouch.download" version "latest.release"
+    id "org.openapi.generator" version "latest.release"
+}
+
+dependencies {
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    implementation 'org.springframework:spring-web'
+    implementation 'jakarta.annotation:jakarta.annotation-api'
+    implementation 'org.openapitools:jackson-databind-nullable:latest.release'
+}
+
+ext {
+    matrixSpecVersion = '1.12'
+    zipFile = layout.buildDirectory.file("matrix-spec-${matrixSpecVersion}.zip")
+    zipDir = layout.buildDirectory.dir("matrix-spec").get().asFile
+}
+
+tasks.withType(JavaCompile).configureEach {
+    def removed = options.compilerArgs.remove("-Xlint:all,-processing")
+    assert removed: "Unexpected compiler Args: ${options.compilerArgs}"
+    options.compilerArgs.add("-Xlint:all,-serial,-deprecation,-this-escape")
+}
+
+tasks.register('downloadMatrixSpec', Download) {
+    src "https://github.com/matrix-org/matrix-spec/archive/refs/tags/v${matrixSpecVersion}.zip"
+    dest zipFile
+    overwrite false
+}
+
+tasks.register('verifyDownloadedMatrixSpec', Verify) {
+    dependsOn downloadMatrixSpec
+    src zipFile
+    algorithm 'SHA256'
+    checksum '4a8239325cd8c3b1f67103b05b59b279ab17017ae0d97817ef5c9e61d0e587b3'
+}
+
+tasks.register('unzipDownloadedMatrixSpec', Copy) {
+    dependsOn verifyDownloadedMatrixSpec
+    inputs.file file(zipFile)
+    outputs.dir zipDir
+
+    doFirst {
+        FileUtils.cleanDirectory(zipDir)
+    }
+
+    from zipTree(zipFile)
+    into zipDir
+    include "matrix-spec-${matrixSpecVersion}/data/api/client-server/**"
+}
+
+def registerGenerateMatrixClientTask(String type) {
+    String taskName = "generateMatrixClient-${type}"
+    String inputSpecPath = "${zipDir}/matrix-spec-${matrixSpecVersion}/data/api/client-server/${type}.yaml"
+    def outputDirPath = layout.buildDirectory.dir("generated/sources/matrix/${type}").get().asFile
+    def generateMatrixClientTask = tasks.register(taskName, GenerateTask) {
+        dependsOn unzipDownloadedMatrixSpec
+        generatorName = 'java'
+        library = 'restclient'
+        inputSpec = inputSpecPath
+        outputDir = outputDirPath.path
+        invokerPackage = "org.matrix.${type}"
+        modelPackage = "org.matrix.${type}.model"
+        apiPackage = "org.matrix.${type}.api"
+
+        doFirst {
+            FileUtils.cleanDirectory(outputDirPath)
+        }
+    }
+
+    sourceSets.main.java.srcDirs += "${outputDirPath}/src/main/java"
+    compileJava.dependsOn generateMatrixClientTask
+}
+
+def clients = ["login", "refresh", "logout"]
+clients.forEach { String client ->
+    registerGenerateMatrixClientTask(client)
+}

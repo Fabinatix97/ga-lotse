@@ -1,0 +1,52 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1738858770228-1">
+    <createTable tableName="anonymization_configuration">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_anonymization_configuration"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="data_privacy_category" type="TABLECOLUMNDATAPRIVACYCATEGORY"/>
+      <column name="interval_count" type="INTEGER"/>
+      <column name="min_decimal_inclusive" type="numeric(10, 4)"/>
+      <column name="max_decimal_inclusive" type="numeric(10, 4)"/>
+      <column name="min_integer_inclusive" type="INTEGER"/>
+      <column name="max_integer_inclusive" type="INTEGER"/>
+    </createTable>
+
+    <createTable tableName="decimal_interval_border_values">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="border" type="numeric(10, 4)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="integer_interval_border_values">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="border" type="INTEGER">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <addColumn tableName="table_column">
+      <column name="anonymization_configuration_id" type="BIGINT"/>
+    </addColumn>
+    <dropColumn columnName="data_privacy_category" tableName="table_column"/>
+
+    <addUniqueConstraint columnNames="anonymization_configuration_id" constraintName="table_column_anonymization_configuration_id_key" tableName="table_column"/>
+    <addForeignKeyConstraint baseColumnNames="anonymization_configuration_id" baseTableName="table_column" constraintName="fk_table_column_anonymization_configuration" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="anonymization_configuration" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="id" baseTableName="decimal_interval_border_values" constraintName="fk_decimal_interval_border_values_anonymization_configuration" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="anonymization_configuration" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="id" baseTableName="integer_interval_border_values" constraintName="fk_integer_interval_border_values_anonymization_configuration" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="anonymization_configuration" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

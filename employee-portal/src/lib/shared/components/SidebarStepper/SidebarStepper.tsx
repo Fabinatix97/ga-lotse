@@ -169,7 +169,7 @@ export function SidebarStepper<TStepperFormModel extends FormikValues[]>({
                 <Stack gap={0.5}>
                   <DialogTitle
                     sx={{ color: "text.primary" }}
-                    level="h3"
+                    level="h2"
                     component="h1"
                   >
                     {currentStepProps.title}

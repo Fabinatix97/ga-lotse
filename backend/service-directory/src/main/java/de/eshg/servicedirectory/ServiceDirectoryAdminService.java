@@ -428,7 +428,7 @@ public class ServiceDirectoryAdminService {
 
   private void assertEmptyDatabase() {
     ExportResponse currentDatabaseContent = serviceDirectoryReadService.getAllForExport(false);
-    if (!currentDatabaseContent.orgUnits().isEmpty()) {
+    if (!currentDatabaseContent.isEmpty()) {
       throw new ServiceDirectoryBadRequestException("Import into non-empty database not allowed");
     }
   }

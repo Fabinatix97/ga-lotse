@@ -33,7 +33,9 @@ public class WebSearchJob {
   }
 
   @Scheduled(cron = "${eshg.inspection.scheduling.job.websearch.cron}")
-  @SchedulerLock(name = "scheduledTaskName")
+  @SchedulerLock(
+      name = "scheduledTaskName",
+      lockAtMostFor = "${eshg.inspection.scheduling.job.websearch.lock-at-most-for:23h}")
   public void runJob() {
     LockAssert.assertLocked();
     log.info("job {} starts...", getClass().getSimpleName());

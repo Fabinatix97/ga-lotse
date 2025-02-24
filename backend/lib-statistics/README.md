@@ -12,9 +12,6 @@ and
 
 A liquibase migration is needed for `ProcedureReferenceForStatistics` and the `StatisticsProcedureReferenceHousekeeping` with `shedlock`.
 
-The role `STATISTICS_STATISTICS_WRITE` is used for most endpoints because reading
-statistics information from a business module should only be done by users who can write statistics in the statistics module.
-
 ## Anonymization
 If the business module supports anonymization (see below `canBeAnonymized` = true) there are currently these options to do that:
 * For all kinds of data sources:

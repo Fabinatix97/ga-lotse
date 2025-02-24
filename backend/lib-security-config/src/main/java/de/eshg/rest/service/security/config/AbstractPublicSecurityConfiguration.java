@@ -209,13 +209,7 @@ public abstract class AbstractPublicSecurityConfiguration {
   }
 
   protected void grantAccessToStatistics(PermissionRole procedureAccessRole) {
-    requestMatchers(GET, BaseUrls.STATISTICS + "/**")
-        .hasAnyRole(
-            EmployeePermissionRole.STATISTICS_STATISTICS_READ,
-            EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
     requestMatchers(POST, BaseUrls.STATISTICS + "/procedure-ids/**").hasRole(procedureAccessRole);
-    requestMatchers(POST, BaseUrls.STATISTICS + "/specific-data/**")
-        .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
   }
 
   @CheckReturnValue

@@ -1,1 +1,2 @@
 de.eshg.lib.scheduling.spring.SchedulingLibraryAutoConfiguration
+de.eshg.lib.scheduling.spring.SchedulingLibraryDomainModelAutoConfiguration

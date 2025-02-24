@@ -11,6 +11,7 @@ import de.eshg.inspection.feature.InspectionFeature;
 import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.lib.auditlog.AuditLogTestHelperService;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
+import de.eshg.testhelper.DefaultTestHelperService;
 import de.eshg.testhelper.TestHelperController;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,12 +30,12 @@ public class InspectionTestHelperController extends TestHelperController
   private final ChecklistRepository checklistRepository;
 
   public InspectionTestHelperController(
-      InspectionTestHelperService inspectionTestHelperService,
+      DefaultTestHelperService testHelperService,
       AuditLogTestHelperService auditLogTestHelperService,
       InspectionFeatureToggle inspectionFeatureToggle,
       EnvironmentConfig environmentConfig,
       ChecklistRepository checklistRepository) {
-    super(inspectionTestHelperService, environmentConfig);
+    super(testHelperService, environmentConfig);
     this.auditLogTestHelperService = auditLogTestHelperService;
     this.inspectionFeatureToggle = inspectionFeatureToggle;
     this.checklistRepository = checklistRepository;

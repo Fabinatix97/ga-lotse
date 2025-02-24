@@ -33,7 +33,8 @@ export function Chat() {
   const userIdForChatStart = searchParams.get("userId");
   const lastUserIdForChatStart = useRef("");
   const theme = useTheme();
-  const { clientState, matrixClient } = useChatClientContext();
+  const { clientState, matrixClient, isClientPrepared } =
+    useChatClientContext();
   const { infoPanelState } = useInfoPanelContext();
   const { createNewChat } = useCreateNewChat();
   const [chatPanelView, setChatPanelView] = useState<ChatPanelView>(
@@ -61,13 +62,13 @@ export function Chat() {
 
     if (
       userIdForChatStart &&
-      clientState === ClientState.Prepared &&
+      isClientPrepared &&
       lastUserIdForChatStart.current !== userIdForChatStart
     ) {
       void createDMChat(userIdForChatStart);
       lastUserIdForChatStart.current = userIdForChatStart;
     }
-  }, [clientState, userIdForChatStart, matrixClient, createNewChat]);
+  }, [userIdForChatStart, matrixClient, createNewChat, isClientPrepared]);
 
   if (
     clientState === ClientState.CreateBackupKey ||
@@ -76,7 +77,7 @@ export function Chat() {
     return <BackupSetupView />;
   }
 
-  if (clientState !== ClientState.Prepared) {
+  if (!isClientPrepared) {
     return <LoadingIndicator text="Seite wird geladen…" fullHeight />;
   }
 

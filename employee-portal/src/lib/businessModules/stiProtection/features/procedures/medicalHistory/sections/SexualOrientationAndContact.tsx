@@ -55,7 +55,7 @@ export function SexualOrientationAndContact({
         <CheckboxGroupField
           sx={{ gridColumnStart: 1, gridColumnEnd: 3 }}
           name="sexualOrientationAndContact.sexualContactFactors"
-          label={"Bisherige Sexparter:innen ist/hat"}
+          label={"Bisherige Sexpartner:innen ist/hat"}
           options={sexualContactFactorOptions}
         />
         {isForSexWork ? (

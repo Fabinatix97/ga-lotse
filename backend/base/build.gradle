@@ -34,6 +34,7 @@ dependencies {
         exclude group: "org.codehaus.groovy", module: "*"
         exclude group: "javax.cache", module: "cache-api"
     }
+    implementation 'org.apache.xmlgraphics:batik-transcoder:latest.release'
 
     implementation 'com.googlecode.ez-vcard:ez-vcard:latest.release'
 

@@ -6,6 +6,7 @@
 "use client";
 
 import {
+  ApiDentitionType,
   ApiExaminationResult,
   UpdateExaminationRequest,
 } from "@eshg/dental-api";
@@ -100,6 +101,7 @@ function mapExaminationResultRequest(
       oralHygieneStatus: mapOptionalValue(formValues.oralHygieneStatus),
       fluorideVarnishApplied:
         mapOptionalValue(formValues.fluorideVarnishApplied) ?? false,
+      dentitionType: ApiDentitionType.Mixed,
       toothDiagnoses: Object.values(toothDiagnoses),
     };
   }

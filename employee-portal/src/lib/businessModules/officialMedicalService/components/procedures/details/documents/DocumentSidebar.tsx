@@ -73,6 +73,7 @@ function DocumentSidebar({
     const request: PatchCompleteDocumentFileUploadRequest = {
       id: document.id,
       files: values.files as Blob[],
+      note: values.note,
     };
 
     await patchCompleteDocumentFileUpload.mutateAsync(request, {

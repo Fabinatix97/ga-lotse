@@ -249,7 +249,7 @@ importers:
         version: 3.4.2
       tsup:
         specifier: catalog:common
-        version: 8.3.6(postcss@8.4.38)(tsx@4.19.2)(typescript@5.7.3)
+        version: 8.3.6(postcss@8.4.38)(tsx@4.19.2)(typescript@5.7.3)(yaml@2.7.0)
       typescript:
         specifier: catalog:common
         version: 5.7.3
@@ -425,6 +425,9 @@ importers:
       '@eshg/school-entry-api':
         specifier: workspace:*
         version: link:../packages/school-entry-api
+      '@eshg/sti-protection-api':
+        specifier: workspace:*
+        version: link:../packages/sti-protection-api
       '@eshg/travel-medicine-api':
         specifier: workspace:*
         version: link:../packages/travel-medicine-api
@@ -501,6 +504,9 @@ importers:
         specifier: catalog:common
         version: 0.42.1(typescript@5.7.3)
     devDependencies:
+      '@eshg/lib-vitest':
+        specifier: workspace:*
+        version: link:../packages/lib-vitest
       '@eslint/compat':
         specifier: catalog:eslint
         version: 1.2.6(eslint@9.19.0)
@@ -684,12 +690,15 @@ importers:
       vitest:
         specifier: catalog:vitest
         version: 3.0.4(@types/debug@4.1.12)(@types/node@22.13.0)(terser@5.36.0)
+      yaml:
+        specifier: 2.7.0
+        version: 2.7.0
 
   employee-portal:
     dependencies:
       '@ducanh2912/next-pwa':
         specifier: 10.2.9
-        version: 10.2.9(@types/babel__core@7.20.5)(next@14.2.14(@babel/core@7.26.0)(@playwright/test@1.50.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(webpack@5.92.1)
+        version: 10.2.9(@types/babel__core@7.20.5)(next@14.2.14(@babel/core@7.26.0)(@playwright/test@1.50.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(webpack@5.92.1(esbuild@0.24.2))
       '@emotion/react':
         specifier: catalog:joy
         version: 11.14.0(@types/react@18.3.12)(react@18.3.1)
@@ -823,8 +832,8 @@ importers:
         specifier: 2.1.2
         version: 2.1.2
       matrix-js-sdk:
-        specifier: 34.13.0
-        version: 34.13.0
+        specifier: 36.2.0
+        version: 36.2.0
       next:
         specifier: catalog:next
         version: 14.2.14(@babel/core@7.26.0)(@playwright/test@1.50.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -837,6 +846,9 @@ importers:
       react-error-boundary:
         specifier: catalog:common
         version: 5.0.0(react@18.3.1)
+      react-idle-timer:
+        specifier: ^5.7.2
+        version: 5.7.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-infinite-scroll-hook:
         specifier: 5.0.1
         version: 5.0.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -868,6 +880,9 @@ importers:
         specifier: catalog:common
         version: 5.0.3(@types/react@18.3.12)(react@18.3.1)(use-sync-external-store@1.2.2(react@18.3.1))
     devDependencies:
+      '@eshg/lib-vitest':
+        specifier: workspace:*
+        version: link:../packages/lib-vitest
       '@eslint/compat':
         specifier: catalog:eslint
         version: 1.2.6(eslint@9.19.0)
@@ -980,6 +995,9 @@ importers:
         specifier: catalog:common
         version: 0.42.1(typescript@5.7.3)
     devDependencies:
+      '@eshg/lib-vitest':
+        specifier: workspace:*
+        version: link:../packages/lib-vitest
       '@eslint/compat':
         specifier: catalog:eslint
         version: 1.2.6(eslint@9.19.0)
@@ -1135,7 +1153,7 @@ importers:
         version: 0.8.23(typescript@5.7.3)
       tsup:
         specifier: catalog:common
-        version: 8.3.6(postcss@8.4.38)(tsx@4.19.2)(typescript@5.7.3)
+        version: 8.3.6(postcss@8.4.38)(tsx@4.19.2)(typescript@5.7.3)(yaml@2.7.0)
       typescript:
         specifier: catalog:common
         version: 5.7.3
@@ -1238,7 +1256,7 @@ importers:
         version: 0.8.23(typescript@5.7.3)
       tsup:
         specifier: catalog:common
-        version: 8.3.6(postcss@8.4.38)(tsx@4.19.2)(typescript@5.7.3)
+        version: 8.3.6(postcss@8.4.38)(tsx@4.19.2)(typescript@5.7.3)(yaml@2.7.0)
       typescript:
         specifier: catalog:common
         version: 5.7.3
@@ -1255,6 +1273,61 @@ importers:
   packages/lib-procedures-api: {}
 
   packages/lib-statistics-api: {}
+
+  packages/lib-vitest:
+    dependencies:
+      vitest:
+        specifier: catalog:vitest
+        version: 3.0.4(@types/debug@4.1.12)(@types/node@22.13.0)(terser@5.36.0)
+    devDependencies:
+      '@eslint/compat':
+        specifier: catalog:eslint
+        version: 1.2.6(eslint@9.19.0)
+      '@eslint/eslintrc':
+        specifier: catalog:eslint
+        version: 3.2.0
+      '@trivago/prettier-plugin-sort-imports':
+        specifier: catalog:prettier
+        version: 5.2.2(prettier@3.4.2)
+      '@types/node':
+        specifier: catalog:common
+        version: 22.13.0
+      '@vitest/coverage-istanbul':
+        specifier: catalog:vitest
+        version: 3.0.4(vitest@3.0.4(@types/debug@4.1.12)(@types/node@22.13.0)(terser@5.36.0))
+      eslint:
+        specifier: catalog:eslint
+        version: 9.19.0
+      eslint-config-prettier:
+        specifier: catalog:eslint
+        version: 10.0.1(eslint@9.19.0)
+      eslint-plugin-import:
+        specifier: catalog:eslint
+        version: 2.31.0(@typescript-eslint/parser@8.22.0(eslint@9.19.0)(typescript@5.7.3))(eslint-import-resolver-typescript@3.6.3)(eslint@9.19.0)
+      eslint-plugin-promise:
+        specifier: catalog:eslint
+        version: 7.2.1(eslint@9.19.0)
+      eslint-plugin-unused-imports:
+        specifier: catalog:eslint
+        version: 4.1.4(@typescript-eslint/eslint-plugin@8.22.0(@typescript-eslint/parser@8.22.0(eslint@9.19.0)(typescript@5.7.3))(eslint@9.19.0)(typescript@5.7.3))(eslint@9.19.0)
+      prettier:
+        specifier: catalog:prettier
+        version: 3.4.2
+      resolve-tspaths:
+        specifier: catalog:common
+        version: 0.8.23(typescript@5.7.3)
+      tsup:
+        specifier: catalog:common
+        version: 8.3.6(postcss@8.4.38)(tsx@4.19.2)(typescript@5.7.3)(yaml@2.7.0)
+      typescript:
+        specifier: catalog:common
+        version: 5.7.3
+      typescript-eslint:
+        specifier: catalog:eslint
+        version: 8.22.0(eslint@9.19.0)(typescript@5.7.3)
+      vite-tsconfig-paths:
+        specifier: catalog:vitest
+        version: 5.1.4(typescript@5.7.3)(vite@5.3.1(@types/node@22.13.0)(terser@5.36.0))
 
   packages/measles-protection-api: {}
 
@@ -2715,9 +2788,9 @@ packages:
     resolution: {integrity: sha512-dOC64QbdYkAp8tv8rwdyerQMovV1cE58C/t8LeBGzvFYrJf+aCOA30qKXu8hNu7fRVvP8AWJ3u45X3lAZFhSYA==}
     engines: {node: '>=18'}
 
-  '@matrix-org/matrix-sdk-crypto-wasm@9.1.0':
-    resolution: {integrity: sha512-CtPoNcoRW6ehwxpRQAksG3tR+NJ7k4DV02nMFYTDwQtie1V4R8OTY77BjEIs97NOblhtS26jU8m1lWsOBEz0Og==}
-    engines: {node: '>= 10'}
+  '@matrix-org/matrix-sdk-crypto-wasm@13.0.0':
+    resolution: {integrity: sha512-2gtpjnxL42sdJAgkwitpMMI4cw7Gcjf5sW0MXoe+OAlXPlxIzyM+06F5JJ8ENvBeHkuV2RqtFIRrh8i90HLsMw==}
+    engines: {node: '>= 18'}
 
   '@matrix-org/olm@3.2.15':
     resolution: {integrity: sha512-S7lOrndAK9/8qOtaTq/WhttJC/o4GAzdfK0MUPpo8ApzsJEC0QjtwrkC3KBXdFP1cD1MXi/mlKR7aaoVMKgs6Q==}
@@ -2728,6 +2801,7 @@ packages:
   '@mui/base@5.0.0-beta.40-0':
     resolution: {integrity: sha512-hG3atoDUxlvEy+0mqdMpWd04wca8HKr2IHjW/fAjlkCHQolSLazhZM46vnHjOf15M4ESu25mV/3PgjczyjVM4w==}
     engines: {node: '>=12.0.0'}
+    deprecated: This package has been replaced by @base-ui-components/react
     peerDependencies:
       '@types/react': ^17.0.0 || ^18.0.0 || ^19.0.0
       react: ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -5913,8 +5987,8 @@ packages:
   matrix-events-sdk@0.0.1:
     resolution: {integrity: sha512-1QEOsXO+bhyCroIe2/A5OwaxHvBm7EsSQ46DEDn8RBIfQwN5HWBpFvyWWR4QY0KHPPnnJdI99wgRiAl7Ad5qaA==}
 
-  matrix-js-sdk@34.13.0:
-    resolution: {integrity: sha512-AAU8ZdCawca+7ucQfdcC3LA85OtCTV7QeqcjvKt/ZZhU3xL9VoawuoRQ+4R6H8KZnqyJmT4j7bdeC0jG4qcqLg==}
+  matrix-js-sdk@36.2.0:
+    resolution: {integrity: sha512-pP44qfqLA9tiJjx5YjxBPPkUmNsA2G0nb04ZUTuPbtQFmfK5cEQgIpvoCq69oqU6aulufeYpxJmd9yNffOvF9g==}
     engines: {node: '>=20.0.0'}
 
   matrix-widget-api@1.10.0:
@@ -6804,6 +6878,12 @@ packages:
         optional: true
       react-native:
         optional: true
+
+  react-idle-timer@5.7.2:
+    resolution: {integrity: sha512-+BaPfc7XEUU5JFkwZCx6fO1bLVK+RBlFH+iY4X34urvIzZiZINP6v2orePx3E6pAztJGE7t4DzvL7if2SL/0GQ==}
+    peerDependencies:
+      react: '>=16'
+      react-dom: '>=16'
 
   react-infinite-scroll-hook@5.0.1:
     resolution: {integrity: sha512-fn6+8BAZLQ9C1fvO5kPicGjDR2WHxK7rP4aaSWuaJkvtoJjYuudGJ9wjgPox7dghKm5Xj9cpKFycM86/wAJ3ig==}
@@ -8180,6 +8260,11 @@ packages:
     resolution: {integrity: sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==}
     engines: {node: '>= 6'}
 
+  yaml@2.7.0:
+    resolution: {integrity: sha512-+hSoy/QHluxmC9kCIJyL/uyFmLmc+e5CFR5Wa+bpIhIj85LVb9ZH2nVnqrHoSvKogwODv0ClqZkmiSSaIH5LTA==}
+    engines: {node: '>= 14'}
+    hasBin: true
+
   yargs-parser@21.1.1:
     resolution: {integrity: sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==}
     engines: {node: '>=12'}
@@ -9110,15 +9195,15 @@ snapshots:
 
   '@drauu/core@0.4.2': {}
 
-  '@ducanh2912/next-pwa@10.2.9(@types/babel__core@7.20.5)(next@14.2.14(@babel/core@7.26.0)(@playwright/test@1.50.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(webpack@5.92.1)':
+  '@ducanh2912/next-pwa@10.2.9(@types/babel__core@7.20.5)(next@14.2.14(@babel/core@7.26.0)(@playwright/test@1.50.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(webpack@5.92.1(esbuild@0.24.2))':
     dependencies:
       fast-glob: 3.3.2
       next: 14.2.14(@babel/core@7.26.0)(@playwright/test@1.50.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       semver: 7.6.3
-      webpack: 5.92.1
+      webpack: 5.92.1(esbuild@0.24.2)
       workbox-build: 7.1.1(@types/babel__core@7.20.5)
       workbox-core: 7.1.0
-      workbox-webpack-plugin: 7.1.0(@types/babel__core@7.20.5)(webpack@5.92.1)
+      workbox-webpack-plugin: 7.1.0(@types/babel__core@7.20.5)(webpack@5.92.1(esbuild@0.24.2))
       workbox-window: 7.1.0
     transitivePeerDependencies:
       - '@types/babel__core'
@@ -9625,7 +9710,7 @@ snapshots:
       url-join: 5.0.0
       url-template: 3.1.1
 
-  '@matrix-org/matrix-sdk-crypto-wasm@9.1.0': {}
+  '@matrix-org/matrix-sdk-crypto-wasm@13.0.0': {}
 
   '@matrix-org/olm@3.2.15': {}
 
@@ -13453,10 +13538,10 @@ snapshots:
 
   matrix-events-sdk@0.0.1: {}
 
-  matrix-js-sdk@34.13.0:
+  matrix-js-sdk@36.2.0:
     dependencies:
       '@babel/runtime': 7.25.6
-      '@matrix-org/matrix-sdk-crypto-wasm': 9.1.0
+      '@matrix-org/matrix-sdk-crypto-wasm': 13.0.0
       '@matrix-org/olm': 3.2.15
       another-json: 0.2.0
       bs58: 6.0.0
@@ -14422,12 +14507,13 @@ snapshots:
 
   possible-typed-array-names@1.0.0: {}
 
-  postcss-load-config@6.0.1(postcss@8.4.38)(tsx@4.19.2):
+  postcss-load-config@6.0.1(postcss@8.4.38)(tsx@4.19.2)(yaml@2.7.0):
     dependencies:
       lilconfig: 3.1.3
     optionalDependencies:
       postcss: 8.4.38
       tsx: 4.19.2
+      yaml: 2.7.0
 
   postcss-selector-parser@6.1.2:
     dependencies:
@@ -14604,6 +14690,11 @@ snapshots:
       i18next: 24.2.2(typescript@5.7.3)
       react: 18.3.1
     optionalDependencies:
+      react-dom: 18.3.1(react@18.3.1)
+
+  react-idle-timer@5.7.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
   react-infinite-scroll-hook@5.0.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
@@ -15397,14 +15488,16 @@ snapshots:
       type-fest: 0.16.0
       unique-string: 2.0.0
 
-  terser-webpack-plugin@5.3.10(webpack@5.92.1):
+  terser-webpack-plugin@5.3.10(esbuild@0.24.2)(webpack@5.92.1(esbuild@0.24.2)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
       jest-worker: 27.5.1
       schema-utils: 3.3.0
       serialize-javascript: 6.0.2
       terser: 5.36.0
-      webpack: 5.92.1
+      webpack: 5.92.1(esbuild@0.24.2)
+    optionalDependencies:
+      esbuild: 0.24.2
 
   terser@5.36.0:
     dependencies:
@@ -15501,7 +15594,7 @@ snapshots:
 
   tslib@2.8.1: {}
 
-  tsup@8.3.6(postcss@8.4.38)(tsx@4.19.2)(typescript@5.7.3):
+  tsup@8.3.6(postcss@8.4.38)(tsx@4.19.2)(typescript@5.7.3)(yaml@2.7.0):
     dependencies:
       bundle-require: 5.1.0(esbuild@0.24.2)
       cac: 6.7.14
@@ -15511,7 +15604,7 @@ snapshots:
       esbuild: 0.24.2
       joycon: 3.1.1
       picocolors: 1.1.1
-      postcss-load-config: 6.0.1(postcss@8.4.38)(tsx@4.19.2)
+      postcss-load-config: 6.0.1(postcss@8.4.38)(tsx@4.19.2)(yaml@2.7.0)
       resolve-from: 5.0.0
       rollup: 4.30.1
       source-map: 0.8.0-beta.0
@@ -15910,7 +16003,7 @@ snapshots:
 
   webpack-sources@3.2.3: {}
 
-  webpack@5.92.1:
+  webpack@5.92.1(esbuild@0.24.2):
     dependencies:
       '@types/eslint-scope': 3.7.7
       '@types/estree': 1.0.6
@@ -15933,7 +16026,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 3.3.0
       tapable: 2.2.1
-      terser-webpack-plugin: 5.3.10(webpack@5.92.1)
+      terser-webpack-plugin: 5.3.10(esbuild@0.24.2)(webpack@5.92.1(esbuild@0.24.2))
       watchpack: 2.4.2
       webpack-sources: 3.2.3
     transitivePeerDependencies:
@@ -16182,12 +16275,12 @@ snapshots:
 
   workbox-sw@7.1.0: {}
 
-  workbox-webpack-plugin@7.1.0(@types/babel__core@7.20.5)(webpack@5.92.1):
+  workbox-webpack-plugin@7.1.0(@types/babel__core@7.20.5)(webpack@5.92.1(esbuild@0.24.2)):
     dependencies:
       fast-json-stable-stringify: 2.1.0
       pretty-bytes: 5.6.0
       upath: 1.2.0
-      webpack: 5.92.1
+      webpack: 5.92.1(esbuild@0.24.2)
       webpack-sources: 1.4.3
       workbox-build: 7.1.0(@types/babel__core@7.20.5)
     transitivePeerDependencies:
@@ -16262,6 +16355,8 @@ snapshots:
   yallist@5.0.0: {}
 
   yaml@1.10.2: {}
+
+  yaml@2.7.0: {}
 
   yargs-parser@21.1.1: {}
 

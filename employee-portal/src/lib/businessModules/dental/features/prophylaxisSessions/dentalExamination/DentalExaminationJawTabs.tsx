@@ -4,7 +4,7 @@
  */
 
 import { Box, Button, Stack, ToggleButtonGroup } from "@mui/joy";
-import { ReactNode } from "react";
+import { MouseEvent, ReactNode } from "react";
 
 import { useDentalExaminationStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
 import { DentalExaminationView } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
@@ -34,6 +34,15 @@ export function DentalExaminationJawTabs({
     }
   }
 
+  function handleChange(
+    _: MouseEvent<HTMLElement>,
+    newValue: DentalExaminationView | null,
+  ) {
+    if (newValue !== null) {
+      setView(newValue);
+    }
+  }
+
   return (
     <Stack alignItems="center" spacing={2}>
       <ToggleButtonGroup
@@ -41,11 +50,12 @@ export function DentalExaminationJawTabs({
         color="primary"
         size="md"
         value={currentView}
-        onChange={(_, newValue) => setView(newValue ?? "UPPER_JAW")}
+        onChange={handleChange}
         sx={{
           width: { xxs: "100%", md: "65%" },
           display: "flex",
         }}
+        aria-label="Gebiss-Ansicht"
       >
         <Button sx={{ flex: "1 1 0%" }} value="UPPER_JAW">
           Oberkiefer

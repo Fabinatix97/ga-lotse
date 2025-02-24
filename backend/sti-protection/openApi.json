@@ -549,15 +549,159 @@
         "tags" : [ "Archiving" ]
       }
     },
+    "/citizen/auth" : {
+      "get" : {
+        "operationId" : "getCitizenProcedure",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CitizenProcedure"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get STI protection procedure data belonging to a user.",
+        "tags" : [ "Citizen" ]
+      }
+    },
+    "/citizen/public/appointments" : {
+      "post" : {
+        "operationId" : "bookAppointment",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BookAppointmentRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BookAppointmentResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Book an appointment.",
+        "tags" : [ "CitizenPublic" ]
+      }
+    },
+    "/citizen/public/appointments/{id}/anonymous-user" : {
+      "post" : {
+        "operationId" : "createAnonymousUser",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateAnonymousUserRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CreateAnonymousUserResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Create a new anonymous user identified by an access code and PIN",
+        "tags" : [ "CitizenPublic" ]
+      }
+    },
+    "/citizen/public/appointments/{id}/confirm" : {
+      "post" : {
+        "operationId" : "confirmAppointment",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "CitizenPublic" ]
+      }
+    },
+    "/citizen/public/appointments/{id}/personal-details" : {
+      "put" : {
+        "operationId" : "addPersonalDetails",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AddPersonalDetailsRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AddPersonalDetailsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Add personal details for an appointment",
+        "tags" : [ "CitizenPublic" ]
+      }
+    },
     "/citizen/public/department-info" : {
       "get" : {
         "operationId" : "getDepartmentInfo",
         "parameters" : [ {
           "in" : "query",
-          "name" : "request",
-          "required" : true,
+          "name" : "concern",
+          "required" : false,
           "schema" : {
-            "$ref" : "#/components/schemas/GetDepartmentInfoRequest"
+            "$ref" : "#/components/schemas/Concern"
           }
         } ],
         "responses" : {
@@ -573,7 +717,7 @@
           }
         },
         "summary" : "Get department info",
-        "tags" : [ "StiProtectionCitizen" ]
+        "tags" : [ "CitizenPublic" ]
       }
     },
     "/citizen/public/free-appointments" : {
@@ -584,7 +728,7 @@
           "name" : "appointmentType",
           "required" : true,
           "schema" : {
-            "$ref" : "#/components/schemas/StiAppointmentType"
+            "$ref" : "#/components/schemas/Concern"
           }
         }, {
           "in" : "query",
@@ -608,7 +752,7 @@
           }
         },
         "summary" : "Get free appointments for an appointment type.",
-        "tags" : [ "StiProtectionCitizen" ]
+        "tags" : [ "CitizenPublic" ]
       }
     },
     "/citizen/public/opening-hours" : {
@@ -616,10 +760,10 @@
         "operationId" : "getOpeningHours",
         "parameters" : [ {
           "in" : "query",
-          "name" : "request",
+          "name" : "concern",
           "required" : true,
           "schema" : {
-            "$ref" : "#/components/schemas/GetOpeningHoursRequest"
+            "$ref" : "#/components/schemas/Concern"
           }
         } ],
         "responses" : {
@@ -635,7 +779,7 @@
           }
         },
         "summary" : "Get opening hours",
-        "tags" : [ "StiProtectionCitizen" ]
+        "tags" : [ "CitizenPublic" ]
       }
     },
     "/files/{fileId}" : {
@@ -2450,24 +2594,6 @@
       }
     },
     "/sti-procedures/{id}" : {
-      "delete" : {
-        "operationId" : "deleteProcedure",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "OK"
-          }
-        },
-        "tags" : [ "StiProtectionProcedure" ]
-      },
       "get" : {
         "operationId" : "getStiProcedure",
         "parameters" : [ {
@@ -2602,6 +2728,27 @@
           }
         },
         "summary" : "Cancel current appointment of an STI procedure.",
+        "tags" : [ "StiProtectionProcedure" ]
+      }
+    },
+    "/sti-procedures/{id}/appointment/finalize" : {
+      "post" : {
+        "operationId" : "finalizeAppointment",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Finalize current appointment of an STI procedure.",
         "tags" : [ "StiProtectionProcedure" ]
       }
     },
@@ -3419,6 +3566,34 @@
         "tags" : [ "TestHelper" ]
       }
     },
+    "/test-helper/procedure/{procedureId}/citizen-user-id" : {
+      "get" : {
+        "operationId" : "getCitizenUserId",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "procedureId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "uuid"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
     "/test-helper/request-interceptor" : {
       "post" : {
         "operationId" : "interceptNextRequest",
@@ -3679,6 +3854,45 @@
           }
         }
       },
+      "AddPersonalDetailsRequest" : {
+        "required" : [ "gender", "yearOfBirth" ],
+        "type" : "object",
+        "properties" : {
+          "countryOfBirth" : {
+            "$ref" : "#/components/schemas/CountryCode"
+          },
+          "gender" : {
+            "$ref" : "#/components/schemas/Gender"
+          },
+          "inGermanySince" : {
+            "type" : "integer",
+            "description" : "The year since the person has been residing in Germany.",
+            "format" : "int32",
+            "example" : 2022
+          },
+          "yearOfBirth" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "AddPersonalDetailsResponse" : {
+        "required" : [ "appointmentStart", "concern", "yearOfBirth" ],
+        "type" : "object",
+        "properties" : {
+          "appointmentStart" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "concern" : {
+            "$ref" : "#/components/schemas/Concern"
+          },
+          "yearOfBirth" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
       "Address" : {
         "required" : [ "@type" ],
         "type" : "object",
@@ -3749,7 +3963,7 @@
       },
       "AppointmentType" : {
         "type" : "string",
-        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE" ]
+        "enum" : [ "CONSULTATION", "VACCINATION", "REGULAR_EXAMINATION", "CAN_CHILD", "ENTRY_LEVEL", "SPECIAL_NEEDS", "PROOF_SUBMISSION", "HIV_STI_CONSULTATION", "SEX_WORK", "RESULTS_REVIEW", "OFFICIAL_MEDICAL_SERVICE_SHORT", "OFFICIAL_MEDICAL_SERVICE_LONG" ]
       },
       "AppointmentTypeConfig" : {
         "required" : [ "appointmentTypeDto", "id", "standardDurationInMinutes" ],
@@ -3881,6 +4095,33 @@
           }
         }
       },
+      "BookAppointmentRequest" : {
+        "required" : [ "appointmentStart", "concern", "durationInMinutes" ],
+        "type" : "object",
+        "properties" : {
+          "appointmentStart" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "concern" : {
+            "$ref" : "#/components/schemas/Concern"
+          },
+          "durationInMinutes" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "BookAppointmentResponse" : {
+        "required" : [ "procedureId" ],
+        "type" : "object",
+        "properties" : {
+          "procedureId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
       "BulkUpdateProceduresArchivingRelevanceRequest" : {
         "required" : [ "archivingRelevance", "procedures" ],
         "type" : "object",
@@ -3970,6 +4211,27 @@
               "type" : "string",
               "format" : "uuid"
             }
+          }
+        }
+      },
+      "CitizenProcedure" : {
+        "required" : [ "appointmentHistory", "concern", "person" ],
+        "type" : "object",
+        "properties" : {
+          "appointment" : {
+            "$ref" : "#/components/schemas/Appointment"
+          },
+          "appointmentHistory" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppointmentHistoryEntry"
+            }
+          },
+          "concern" : {
+            "$ref" : "#/components/schemas/Concern"
+          },
+          "person" : {
+            "$ref" : "#/components/schemas/Person"
           }
         }
       },
@@ -4152,6 +4414,37 @@
         "description" : "List of country codes in ISO 3166-1 alpha-2 format. With custom extensions for stateless, non-standard countries, and unknown countries.",
         "enum" : [ "AD", "AE", "AF", "AG", "AI", "AL", "AM", "AO", "AQ", "AR", "AS", "AT", "AU", "AW", "AX", "AZ", "BA", "BB", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BL", "BM", "BN", "BO", "BQ", "BR", "BS", "BT", "BV", "BW", "BY", "BZ", "CA", "CC", "CD", "CF", "CG", "CH", "CI", "CK", "CL", "CM", "CN", "CO", "CR", "CU", "CV", "CW", "CX", "CY", "CZ", "DE", "DJ", "DK", "DM", "DO", "DZ", "EC", "EE", "EG", "EH", "ER", "ES", "ET", "FI", "FJ", "FK", "FM", "FO", "FR", "GA", "GB", "GD", "GE", "GF", "GG", "GH", "GI", "GL", "GM", "GN", "GP", "GQ", "GR", "GS", "GT", "GU", "GW", "GY", "HK", "HM", "HN", "HR", "HT", "HU", "ID", "IE", "IL", "IM", "IN", "IO", "IQ", "IR", "IS", "IT", "JE", "JM", "JO", "JP", "KE", "KG", "KH", "KI", "KM", "KN", "KP", "KR", "KW", "KY", "KZ", "LA", "LB", "LC", "LI", "LK", "LR", "LS", "LT", "LU", "LV", "LY", "MA", "MC", "MD", "ME", "MF", "MG", "MH", "MK", "ML", "MM", "MN", "MO", "MP", "MQ", "MR", "MS", "MT", "MU", "MV", "MW", "MX", "MY", "MZ", "NA", "NC", "NE", "NF", "NG", "NI", "NL", "NO", "NP", "NR", "NU", "NZ", "OM", "PA", "PE", "PF", "PG", "PH", "PK", "PL", "PM", "PN", "PR", "PS", "PT", "PW", "PY", "QA", "RE", "RO", "RS", "RU", "RW", "SA", "SB", "SC", "SD", "SE", "SG", "SH", "SI", "SJ", "SK", "SL", "SM", "SN", "SO", "SR", "SS", "ST", "SV", "SX", "SY", "SZ", "TC", "TD", "TF", "TG", "TH", "TJ", "TK", "TL", "TM", "TN", "TO", "TR", "TT", "TV", "TW", "TZ", "UA", "UG", "UM", "US", "UY", "UZ", "VA", "VC", "VE", "VG", "VI", "VN", "VU", "WF", "WS", "YE", "YT", "ZA", "ZM", "ZW", "XK", "UNKNOWN", "STATELESS" ]
       },
+      "CreateAnonymousUserRequest" : {
+        "required" : [ "pin" ],
+        "type" : "object",
+        "properties" : {
+          "pin" : {
+            "pattern" : "\\d{6}",
+            "type" : "string",
+            "description" : "The PIN for anonymous authorization.",
+            "example" : "654321"
+          }
+        }
+      },
+      "CreateAnonymousUserResponse" : {
+        "required" : [ "accessCode", "userId" ],
+        "type" : "object",
+        "properties" : {
+          "accessCode" : {
+            "maxLength" : 17,
+            "minLength" : 17,
+            "type" : "string",
+            "description" : "The access code for the anonymous citizen user",
+            "example" : "Wzhu89yP4F728jVTT"
+          },
+          "userId" : {
+            "type" : "string",
+            "description" : "ID of the anonymous citizen user",
+            "format" : "uuid",
+            "example" : "UUID_1"
+          }
+        }
+      },
       "CreateAppointmentBlockGroupResponse" : {
         "required" : [ "appointmentBlockIds", "id" ],
         "type" : "object",
@@ -4167,7 +4460,7 @@
             "type" : "string",
             "description" : "Id of the AppointmentBlockGroup.",
             "format" : "uuid",
-            "example" : "UUID_1"
+            "example" : "UUID_2"
           }
         }
       },
@@ -5006,7 +5299,7 @@
             "type" : "string",
             "description" : "Id of the AppointmentBlock.",
             "format" : "uuid",
-            "example" : "UUID_1"
+            "example" : "UUID_2"
           },
           "numberOfBookedAppointments" : {
             "minimum" : 0,
@@ -5041,7 +5334,7 @@
             "type" : "string",
             "description" : "Id of the AppointmentBlockGroup.",
             "format" : "uuid",
-            "example" : "UUID_1"
+            "example" : "UUID_2"
           },
           "location" : {
             "$ref" : "#/components/schemas/AppointmentLocation"
@@ -5132,14 +5425,6 @@
           "gracePeriodMonths" : {
             "type" : "integer",
             "format" : "int32"
-          }
-        }
-      },
-      "GetDepartmentInfoRequest" : {
-        "type" : "object",
-        "properties" : {
-          "concern" : {
-            "$ref" : "#/components/schemas/Concern"
           }
         }
       },
@@ -5267,7 +5552,7 @@
             "type" : "string",
             "description" : "Id of the Facility.",
             "format" : "uuid",
-            "example" : "UUID_2"
+            "example" : "UUID_1"
           },
           "name" : {
             "maxLength" : 300,
@@ -5439,15 +5724,6 @@
           }
         }
       },
-      "GetOpeningHoursRequest" : {
-        "required" : [ "concern" ],
-        "type" : "object",
-        "properties" : {
-          "concern" : {
-            "$ref" : "#/components/schemas/Concern"
-          }
-        }
-      },
       "GetOpeningHoursResponse" : {
         "required" : [ "de", "en" ],
         "type" : "object",
@@ -5518,7 +5794,7 @@
             "type" : "string",
             "description" : "Id of the Person.",
             "format" : "uuid",
-            "example" : "UUID_2"
+            "example" : "UUID_1"
           },
           "lastName" : {
             "maxLength" : 120,
@@ -7262,10 +7538,6 @@
         "type" : "string",
         "enum" : [ "ASC", "DESC" ]
       },
-      "StiAppointmentType" : {
-        "type" : "string",
-        "enum" : [ "HIV_STI_CONSULTATION", "SEX_WORK" ]
-      },
       "StiConsultationMedicalHistory" : {
         "type" : "object",
         "allOf" : [ {
@@ -7447,7 +7719,11 @@
               "type" : "integer",
               "format" : "int32"
             },
-            "previousFileStateId" : {
+            "previousFacilityFileStateId" : {
+              "type" : "string",
+              "format" : "uuid"
+            },
+            "previousPersonFileStateId" : {
               "type" : "string",
               "format" : "uuid"
             },

@@ -14,6 +14,8 @@ import java.time.Period;
 import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.List;
+import net.javacrumbs.shedlock.core.LockAssert;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -39,7 +41,11 @@ public class NotificationHousekeeping {
 
   @Transactional
   @Scheduled(cron = "${de.eshg.notifications.housekeeping.schedule:@daily}")
+  @SchedulerLock(
+      name = "LibNotificationNotificationHousekeeping",
+      lockAtMostFor = "${de.eshg.notifications.housekeeping.lock-at-most-for:23h}")
   public void cleanupNotifications() {
+    LockAssert.assertLocked();
     for (NotificationRepository<?> repository : notificationRepositories) {
       if (log.isInfoEnabled()) {
         log.info("Performing housekeeping for: {}", tryGetRepositoryName(repository));

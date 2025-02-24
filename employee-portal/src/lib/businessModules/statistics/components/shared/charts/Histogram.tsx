@@ -3,15 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { EChartsOption, SeriesOption } from "echarts";
+
 import {
-  AnalysisDiagramBarChart,
   AnalysisDiagramHistogram,
   DiagramGrouping,
   DiagramScaling,
-  DiagramType,
 } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
-import { BarChart } from "@/lib/businessModules/statistics/components/shared/charts/BarChart";
-import { ChartApi } from "@/lib/businessModules/statistics/components/shared/charts/EChart";
+import {
+  ChartApi,
+  EChart,
+} from "@/lib/businessModules/statistics/components/shared/charts/EChart";
+import { evaluateGrouping } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
+import { calculateRelativeFormatting } from "@/lib/businessModules/statistics/components/shared/charts/dataHelper";
 
 interface HistogramProps {
   diagramData: AnalysisDiagramHistogram["data"];
@@ -20,37 +24,127 @@ interface HistogramProps {
   eChartApi?: (eChartApi: ChartApi) => void;
 }
 
-export function mapToBarChartDiagramData(
+type DataGroups = Record<string, [number, number][]>;
+
+export function mapToStackedSeries(
   diagramData: AnalysisDiagramHistogram["data"],
-): AnalysisDiagramBarChart["data"] {
-  // On a 1920 width display 15 Bars barely fit the whole label
-  const tooManyBars = diagramData.length > 15;
-  return diagramData
-    .toSorted((l, r) => l.min - r.min)
-    .map((it) => ({
-      label: tooManyBars
-        ? `${it.min.toFixed(2)}`
-        : `${it.min.toFixed(2)} - ${it.max.toFixed(2)}`,
-      attributes: it.attributes,
-    }));
+) {
+  const dataGroups: DataGroups = {};
+  const sortedData = diagramData.toSorted((l, r) => l.min - r.min);
+
+  sortedData.forEach((item) => {
+    item.attributes.forEach((attribute) => {
+      if (!dataGroups[attribute.label]) {
+        dataGroups[attribute.label] = [];
+      }
+      dataGroups[attribute.label]!.push([item.min, attribute.value]);
+    });
+  });
+  return {
+    min: sortedData[0]!.min,
+    max: sortedData[sortedData.length - 1]!.max,
+    dataGroups,
+  };
+}
+
+function transformToRelativeData(dataGroups: DataGroups) {
+  function mapToRelative(value: number, total: number) {
+    if (total === 0) {
+      return 0;
+    }
+    return value / total;
+  }
+
+  const totals = Object.keys(dataGroups).reduce(
+    (acc, it) => {
+      dataGroups[it]!.forEach(([x, y]) => {
+        acc[x] = (acc[x] ?? 0) + y;
+      });
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
+
+  return Object.keys(dataGroups).reduce(
+    (acc, it) => ({
+      ...acc,
+      [it]: dataGroups[it]!.map(([x, y]) => [x, mapToRelative(y, totals[x]!)]),
+    }),
+    {},
+  );
 }
 
 export function Histogram(props: HistogramProps) {
-  const data = mapToBarChartDiagramData(props.diagramData);
+  const series = mapToStackedSeries(props.diagramData);
   const numAttributes = props.diagramData[0]?.attributes?.length ?? 1;
+  const isStackedSeries = numAttributes > 1;
   const barWidth =
     props.grouping === "STACKED" ? "99.8%" : `${99.8 / numAttributes}%`;
+  const grouping = evaluateGrouping(props.grouping, props.scaling);
 
-  return (
-    <BarChart
-      diagramData={data}
-      grouping={props.grouping}
-      scaling={props.scaling}
-      orientation={"VERTICAL"}
-      eChartApi={props.eChartApi}
-      barGap={0}
-      barWidth={barWidth}
-      type={DiagramType.HISTOGRAM_CHART}
-    />
-  );
+  if (props.scaling === "RELATIVE") {
+    series.dataGroups = transformToRelativeData(series.dataGroups);
+  }
+
+  function formatter(value: number) {
+    return props.scaling !== "RELATIVE"
+      ? `${value}`
+      : calculateRelativeFormatting(value);
+  }
+
+  const seriesData = Object.keys(series.dataGroups).map((serie) => {
+    return {
+      name: serie,
+      type: "bar",
+      data: series.dataGroups[serie]!,
+      stack: grouping,
+      barWidth: barWidth,
+      barGap: 0,
+      xAxisIndex: 0,
+    };
+  }) satisfies SeriesOption[];
+
+  const option: EChartsOption = {
+    xAxis: [
+      // We require two axis to trick ECharts to stack bars properly.
+      // https://github.com/apache/echarts/issues/7937#issuecomment-375918207
+      {
+        type: "category",
+        show: false,
+      },
+      {
+        type: "value",
+        min: series.min,
+        max: series.max,
+        position: "bottom",
+      },
+    ],
+    yAxis: {
+      type: "value",
+      splitLine: { show: true },
+      axisLabel: {
+        formatter,
+      },
+      axisLine: {
+        onZero: false,
+      },
+    },
+    tooltip: {
+      show: true,
+      valueFormatter: (params) => formatter(params as number),
+    },
+    grid: {
+      containLabel: true,
+    },
+    series: isStackedSeries
+      ? seriesData
+      : [
+          {
+            ...seriesData[0]!,
+            name: undefined,
+          },
+        ],
+  };
+
+  return <EChart option={option} chartApi={props.eChartApi} />;
 }

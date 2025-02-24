@@ -22,7 +22,6 @@ import {
   FieldArray,
   FieldArrayRenderProps,
   Formik,
-  FormikProps,
   useFormikContext,
 } from "formik";
 import { PropsWithChildren } from "react";
@@ -38,7 +37,6 @@ import {
   SidecarSheet,
 } from "@/lib/businessModules/stiProtection/features/procedures/SidecarFormLayout";
 import { TabStickyBottomButtonBar } from "@/lib/businessModules/stiProtection/features/procedures/TabStickyBottomButtonBar";
-import { useOnCancelForm } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { CheckboxGroupField } from "@/lib/shared/components/formFields/CheckboxGroupField";
@@ -66,17 +64,6 @@ export function DiagnosisForm({
     procedureId,
   });
   const upsertDiagnosis = useUpsertDiagnosis({ procedureId });
-  const onCancelForm = useOnCancelForm<DiagnosisFormData>();
-
-  function handleCancel({
-    dirty,
-    resetForm,
-  }: Pick<FormikProps<DiagnosisFormData>, "dirty" | "resetForm">) {
-    onCancelForm({
-      dirty,
-      reset: resetForm,
-    });
-  }
 
   function onSubmit(values: DiagnosisFormData) {
     const diagnosis = mapFormToApi(values);
@@ -91,7 +78,7 @@ export function DiagnosisForm({
       onSubmit={onSubmit}
       enableReinitialize
     >
-      {({ resetForm, dirty, values }) => (
+      {({ values }) => (
         <FormPlus sx={{ height: "100%" }}>
           <ConfirmLeaveDirtyFormEffect
             onSaveMutation={{
@@ -127,6 +114,7 @@ export function DiagnosisForm({
                 <TextareaFieldWithTextTemplates
                   name="notes"
                   label="Allgemeine Bemerkungen"
+                  minRows={5}
                   context={ApiTextTemplateContext.DiagnosisRemark}
                 />
                 <CheckboxField
@@ -136,10 +124,7 @@ export function DiagnosisForm({
               </Stack>
             </SidecarSheet>
           </SidecarFormLayout>
-          <TabStickyBottomButtonBar
-            procedure={procedure}
-            onCancel={() => handleCancel({ dirty, resetForm })}
-          />
+          <TabStickyBottomButtonBar />
         </FormPlus>
       )}
     </Formik>
@@ -152,6 +137,7 @@ function FindingsSection() {
     setFieldValue,
   } = useFormikContext<DiagnosisFormData>();
   const icd10Sidebar = useIcd10Sidebar();
+  const hasFindings = (findings?.length ?? 0) > 0;
 
   function handleClickIcd10Code() {
     icd10Sidebar.open({
@@ -190,11 +176,11 @@ function FindingsSection() {
       <HiddenIfDisabled>
         <Button
           sx={{ width: "fit-content" }}
-          startDecorator={<Edit />}
+          startDecorator={hasFindings ? <Edit /> : <Add />}
           variant="plain"
           onClick={handleClickIcd10Code}
         >
-          Befund bearbeiten
+          {hasFindings ? "Befund bearbeiten" : "Befund hinzufügen"}
         </Button>
       </HiddenIfDisabled>
     </SectionGrid>

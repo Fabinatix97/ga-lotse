@@ -18,7 +18,6 @@ import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.domain.model.FluoridationConsent;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import java.time.Year;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -86,10 +85,10 @@ public final class ChildMapper {
     return examinations.stream().map(ExaminationMapper::mapToDto).toList();
   }
 
-  private static List<FluoridationConsentDto> mapFluoridationToDto(
+  public static List<FluoridationConsentDto> mapFluoridationToDto(
       List<FluoridationConsent> fluoridationConsent) {
     if (fluoridationConsent == null) {
-      return new ArrayList<>();
+      return List.of();
     }
     return fluoridationConsent.stream()
         .map(f -> new FluoridationConsentDto(f.getDateOfConsent(), f.isConsented(), f.hasAllergy()))

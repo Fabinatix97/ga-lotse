@@ -38,6 +38,7 @@ import de.eshg.lib.procedure.model.gdpr.GetGdprNotificationBannerResponse;
 import de.eshg.lib.procedure.model.gdpr.GetGdprValidationTaskDetailsResponse;
 import de.eshg.lib.procedure.model.gdpr.GetGdprValidationTaskResponse;
 import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
+import de.eshg.persistence.IntentionalWritingTransaction;
 import de.eshg.rest.service.error.BadRequestException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.nio.charset.StandardCharsets;
@@ -242,6 +243,7 @@ public class GdprValidationTaskController<
 
   @Override
   @Transactional
+  @IntentionalWritingTransaction(reason = "Audit logging")
   public GetGdprValidationTaskDetailsResponse getGdprValidationTaskDetails(UUID gdprId) {
     assertNewFeatureEnabled(BaseFeature.GDPR, baseFeatureTogglesApi.getFeatureToggles());
     List<UUID> fileStateIds = service.getAndValidateFileStateIds(gdprId);

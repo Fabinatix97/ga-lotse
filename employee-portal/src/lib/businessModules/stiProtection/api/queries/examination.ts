@@ -9,7 +9,7 @@ import { useExaminationApi } from "@/lib/businessModules/stiProtection/api/clien
 
 import { stiProtectionApiQueryKey } from "./apiQueryKeys";
 
-function useGetRapidTestExaminationQueryOptions(procedureId: string) {
+export function useGetRapidTestExaminationQueryOptions(procedureId: string) {
   const examinationApi = useExaminationApi();
 
   return queryOptions({

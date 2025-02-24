@@ -34,22 +34,22 @@ public class ProgressEntryService {
   }
 
   public void createProgressEntryForUpdateAffectedPerson(
-      OmsProcedure procedure, UUID previousFileStateId) {
+      OmsProcedure procedure, UUID previousPersonFileStateId) {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             OmsProgressEntryType.UPDATE_AFFECTED_PERSON.name(), TriggerType.SYSTEM_AUTOMATIC);
     progressEntry.setProcedureId(procedure.getId());
-    progressEntry.setPreviousFileStateId(previousFileStateId);
+    progressEntry.setPreviousPersonFileStateId(previousPersonFileStateId);
     procedure.addProgressEntry(progressEntry);
   }
 
   public void createProgressEntryForSyncAffectedPerson(
-      OmsProcedure procedure, UUID previousFileStateId) {
+      OmsProcedure procedure, UUID previousPersonFileStateId) {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             OmsProgressEntryType.SYNC_AFFECTED_PERSON.name(), TriggerType.SYSTEM_AUTOMATIC);
     progressEntry.setProcedureId(procedure.getId());
-    progressEntry.setPreviousFileStateId(previousFileStateId);
+    progressEntry.setPreviousPersonFileStateId(previousPersonFileStateId);
     procedure.addProgressEntry(progressEntry);
   }
 

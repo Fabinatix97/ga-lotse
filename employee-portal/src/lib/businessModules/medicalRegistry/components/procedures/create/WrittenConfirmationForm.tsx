@@ -16,7 +16,9 @@ export function WrittenConfirmationForm(props: NestedFormProps) {
 
   return (
     <>
-      <Typography level="h3">Bescheinigung</Typography>
+      <Typography level="h3" component="h2">
+        Bescheinigung
+      </Typography>
       <BooleanRadioField
         name={fieldName("requestForWrittenConfirmation")}
         label="Es soll eine schriftliche Meldebestätigung per Post versendet werden."

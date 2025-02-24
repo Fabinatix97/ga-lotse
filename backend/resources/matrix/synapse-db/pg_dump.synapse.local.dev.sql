@@ -394,6 +394,40 @@ CREATE TABLE public.dehydrated_devices (
 ALTER TABLE public.dehydrated_devices OWNER TO synapse;
 
 --
+-- Name: delayed_events; Type: TABLE; Schema: public; Owner: synapse
+--
+
+CREATE TABLE public.delayed_events (
+    delay_id text NOT NULL,
+    user_localpart text NOT NULL,
+    device_id text,
+    delay bigint NOT NULL,
+    send_ts bigint NOT NULL,
+    room_id text NOT NULL,
+    event_type text NOT NULL,
+    state_key text,
+    origin_server_ts bigint,
+    content bytea NOT NULL,
+    is_processed boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE public.delayed_events OWNER TO synapse;
+
+--
+-- Name: delayed_events_stream_pos; Type: TABLE; Schema: public; Owner: synapse
+--
+
+CREATE TABLE public.delayed_events_stream_pos (
+    lock character(1) DEFAULT 'X'::bpchar NOT NULL,
+    stream_id bigint NOT NULL,
+    CONSTRAINT delayed_events_stream_pos_lock_check CHECK ((lock = 'X'::bpchar))
+);
+
+
+ALTER TABLE public.delayed_events_stream_pos OWNER TO synapse;
+
+--
 -- Name: deleted_pushers; Type: TABLE; Schema: public; Owner: synapse
 --
 
@@ -2267,6 +2301,57 @@ ALTER TABLE public.sliding_sync_connections ALTER COLUMN connection_key ADD GENE
 
 
 --
+-- Name: sliding_sync_joined_rooms; Type: TABLE; Schema: public; Owner: synapse
+--
+
+CREATE TABLE public.sliding_sync_joined_rooms (
+    room_id text NOT NULL,
+    event_stream_ordering bigint NOT NULL,
+    bump_stamp bigint,
+    room_type text,
+    room_name text,
+    is_encrypted boolean DEFAULT false NOT NULL,
+    tombstone_successor_room_id text
+);
+
+
+ALTER TABLE public.sliding_sync_joined_rooms OWNER TO synapse;
+
+--
+-- Name: sliding_sync_joined_rooms_to_recalculate; Type: TABLE; Schema: public; Owner: synapse
+--
+
+CREATE TABLE public.sliding_sync_joined_rooms_to_recalculate (
+    room_id text NOT NULL
+);
+
+
+ALTER TABLE public.sliding_sync_joined_rooms_to_recalculate OWNER TO synapse;
+
+--
+-- Name: sliding_sync_membership_snapshots; Type: TABLE; Schema: public; Owner: synapse
+--
+
+CREATE TABLE public.sliding_sync_membership_snapshots (
+    room_id text NOT NULL,
+    user_id text NOT NULL,
+    sender text NOT NULL,
+    membership_event_id text NOT NULL,
+    membership text NOT NULL,
+    forgotten integer DEFAULT 0 NOT NULL,
+    event_stream_ordering bigint NOT NULL,
+    event_instance_name text NOT NULL,
+    has_known_state boolean DEFAULT false NOT NULL,
+    room_type text,
+    room_name text,
+    is_encrypted boolean DEFAULT false NOT NULL,
+    tombstone_successor_room_id text
+);
+
+
+ALTER TABLE public.sliding_sync_membership_snapshots OWNER TO synapse;
+
+--
 -- Name: state_events; Type: TABLE; Schema: public; Owner: synapse
 --
 
@@ -2859,6 +2944,7 @@ ALTER TABLE ONLY public.instance_map ALTER COLUMN instance_id SET DEFAULT nextva
 COPY public.access_tokens (id, user_id, device_id, token, valid_until_ms, puppets_user_id, last_validated, refresh_token_id, used) FROM stdin;
 2	@testuser1:synapse.local.dev	BPMXXVDUCI	syt_dGVzdHVzZXIx_GZuOBWyZRwLKNIAOieLt_0wO9QR	\N	\N	1725968857673	\N	f
 3	@testuser2:synapse.local.dev	RXIMDAEIPS	syt_dGVzdHVzZXIy_FKbuJWxXATBAWNYpwTRm_22Vqex	\N	\N	1725968863447	\N	f
+4	@admin:synapse.local.dev	AVOHDDOCEU	syt_YWRtaW4_wdeHUQwxaESbkyuItiOJ_2nphGL	1737304753154	\N	1737302953160	\N	f
 \.
 
 
@@ -3001,6 +3087,14 @@ COPY public.applied_schema_deltas (version, file) FROM stdin;
 86	86/01_authenticate_media.sql
 86	86/02_receipts_event_id_index.sql
 87	87/02_per_connection_state.sql
+87	87/01_sliding_sync_memberships.sql
+87	87/03_current_state_index.sql
+88	88/01_add_delayed_events.sql
+88	88/02_fix_sliding_sync_membership_snapshots_forgotten_column.sql
+88	88/03_add_otk_ts_added_index.sql
+88	88/04_current_state_delta_index.sql
+88	88/05_drop_old_otks.sql.postgres
+88	88/05_sliding_sync_room_config_index.sql
 \.
 
 
@@ -3042,26 +3136,9 @@ COPY public.blocked_rooms (room_id, user_id) FROM stdin;
 --
 
 COPY public.cache_invalidation_stream_by_instance (stream_id, instance_name, cache_func, keys, invalidation_ts) FROM stdin;
-2	master	user_last_seen_monthly_active	\N	1725968425148
-3	master	get_monthly_active_count	{}	1725968425151
-4	master	get_user_by_id	{@testuser1:synapse.local.dev}	1725968857659
-5	master	get_user_by_id	{@testuser2:synapse.local.dev}	1725968863438
-6	master	count_e2e_one_time_keys	{@testuser1:synapse.local.dev,NSMZZFGEGB}	1725968914316
-7	master	get_e2e_unused_fallback_key_types	{@testuser1:synapse.local.dev,NSMZZFGEGB}	1725968914319
-8	master	_get_bare_e2e_cross_signing_keys	{@testuser1:synapse.local.dev}	1725968914370
-9	master	_get_bare_e2e_cross_signing_keys	{@testuser1:synapse.local.dev}	1725968914375
-10	master	_get_bare_e2e_cross_signing_keys	{@testuser1:synapse.local.dev}	1725968914379
-11	master	get_user_by_access_token	{syt_dGVzdHVzZXIx_qnRcwingSiUqfdAAQGLF_2RZZpl}	1725968949948
-12	master	count_e2e_one_time_keys	{@testuser1:synapse.local.dev,NSMZZFGEGB}	1725968949951
-13	master	get_e2e_unused_fallback_key_types	{@testuser1:synapse.local.dev,NSMZZFGEGB}	1725968949952
-14	master	count_e2e_one_time_keys	{@testuser2:synapse.local.dev,VWJYXSFKXB}	1725968955550
-15	master	get_e2e_unused_fallback_key_types	{@testuser2:synapse.local.dev,VWJYXSFKXB}	1725968955553
-16	master	_get_bare_e2e_cross_signing_keys	{@testuser2:synapse.local.dev}	1725968955600
-17	master	_get_bare_e2e_cross_signing_keys	{@testuser2:synapse.local.dev}	1725968955604
-18	master	_get_bare_e2e_cross_signing_keys	{@testuser2:synapse.local.dev}	1725968955609
-19	master	get_user_by_access_token	{syt_dGVzdHVzZXIy_uiIOEaUaPUjsEZPnCsXy_30ruqe}	1725968990909
-20	master	count_e2e_one_time_keys	{@testuser2:synapse.local.dev,VWJYXSFKXB}	1725968990913
-21	master	get_e2e_unused_fallback_key_types	{@testuser2:synapse.local.dev,VWJYXSFKXB}	1725968990914
+22	master	user_last_seen_monthly_active	\N	1737302708830
+23	master	get_monthly_active_count	{}	1737302708831
+24	master	get_user_by_id	{@admin:synapse.local.dev}	1737302953148
 \.
 
 
@@ -3086,6 +3163,23 @@ COPY public.current_state_events (event_id, room_id, type, state_key, membership
 --
 
 COPY public.dehydrated_devices (user_id, device_id, device_data) FROM stdin;
+\.
+
+
+--
+-- Data for Name: delayed_events; Type: TABLE DATA; Schema: public; Owner: synapse
+--
+
+COPY public.delayed_events (delay_id, user_localpart, device_id, delay, send_ts, room_id, event_type, state_key, origin_server_ts, content, is_processed) FROM stdin;
+\.
+
+
+--
+-- Data for Name: delayed_events_stream_pos; Type: TABLE DATA; Schema: public; Owner: synapse
+--
+
+COPY public.delayed_events_stream_pos (lock, stream_id) FROM stdin;
+X	1
 \.
 
 
@@ -3150,7 +3244,7 @@ COPY public.device_inbox (user_id, device_id, stream_id, message_json, instance_
 --
 
 COPY public.device_lists_changes_converted_stream_position (lock, stream_id, room_id, instance_name) FROM stdin;
-X	17		master
+X	18		master
 \.
 
 
@@ -3223,6 +3317,7 @@ COPY public.device_lists_stream (stream_id, user_id, device_id, instance_name) F
 14	@testuser2:synapse.local.dev	6eC6wF1kZa2jvwKKXYc8EQQVdfcTHwk6qrHuYfqzWlM	master
 15	@testuser2:synapse.local.dev	QQZr70RkwRfInAf6B5PohDfYJynAvbqOquI0xjG4VDc	master
 17	@testuser2:synapse.local.dev	VWJYXSFKXB	master
+18	@admin:synapse.local.dev	AVOHDDOCEU	master
 \.
 
 
@@ -3239,6 +3334,7 @@ COPY public.devices (user_id, device_id, display_name, last_seen, ip, user_agent
 @testuser2:synapse.local.dev	6eC6wF1kZa2jvwKKXYc8EQQVdfcTHwk6qrHuYfqzWlM	master signing key	\N	\N	\N	t
 @testuser2:synapse.local.dev	QQZr70RkwRfInAf6B5PohDfYJynAvbqOquI0xjG4VDc	self_signing signing key	\N	\N	\N	t
 @testuser2:synapse.local.dev	+b3Uy1RlEu4Qki1BUfqZ0gjyJLtxNeBulbtUGAlC/Co	user_signing signing key	\N	\N	\N	t
+@admin:synapse.local.dev	AVOHDDOCEU	\N	\N	\N	\N	f
 \.
 
 
@@ -3631,8 +3727,8 @@ COPY public.per_user_experimental_features (user_id, feature, enabled) FROM stdi
 --
 
 COPY public.presence_stream (stream_id, user_id, state, last_active_ts, last_federation_update_ts, last_user_sync_ts, status_msg, currently_active, instance_name) FROM stdin;
-5	@testuser2:synapse.local.dev	online	1725968959331	1725968955489	1725968959331	\N	t	master
 6	@testuser1:synapse.local.dev	offline	1725968946810	1725968979664	1725968949968	\N	t	master
+7	@testuser2:synapse.local.dev	offline	1725968959331	1737302743693	1725968959331	\N	t	master
 \.
 
 
@@ -3643,6 +3739,7 @@ COPY public.presence_stream (stream_id, user_id, state, last_active_ts, last_fed
 COPY public.profiles (user_id, displayname, avatar_url, full_user_id) FROM stdin;
 testuser1	testuser1	\N	@testuser1:synapse.local.dev
 testuser2	testuser2	\N	@testuser2:synapse.local.dev
+admin	admin	\N	@admin:synapse.local.dev
 \.
 
 
@@ -3884,8 +3981,7 @@ COPY public.rooms (room_id, is_public, creator, room_version, has_auth_chain_ind
 --
 
 COPY public.scheduled_tasks (id, action, status, "timestamp", resource_id, params, result, error) FROM stdin;
-kmwbZCPxIgFRwtaG	delete_device_messages	complete	1725968949956	NSMZZFGEGB	{"user_id":"@testuser1:synapse.local.dev","device_id":"NSMZZFGEGB","up_to_stream_id":1}	\N	\N
-HYZEPGpnXbIIzPWk	delete_device_messages	complete	1725968990921	VWJYXSFKXB	{"user_id":"@testuser2:synapse.local.dev","device_id":"VWJYXSFKXB","up_to_stream_id":1}	\N	\N
+delete_old_otks_task	delete_old_otks	complete	1737302768709	\N	\N	\N	\N
 \.
 
 
@@ -3903,7 +3999,7 @@ X	84
 --
 
 COPY public.schema_version (lock, version, upgraded) FROM stdin;
-X	87	t
+X	88	t
 \.
 
 
@@ -3972,6 +4068,30 @@ COPY public.sliding_sync_connections (connection_key, user_id, effective_device_
 
 
 --
+-- Data for Name: sliding_sync_joined_rooms; Type: TABLE DATA; Schema: public; Owner: synapse
+--
+
+COPY public.sliding_sync_joined_rooms (room_id, event_stream_ordering, bump_stamp, room_type, room_name, is_encrypted, tombstone_successor_room_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: sliding_sync_joined_rooms_to_recalculate; Type: TABLE DATA; Schema: public; Owner: synapse
+--
+
+COPY public.sliding_sync_joined_rooms_to_recalculate (room_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: sliding_sync_membership_snapshots; Type: TABLE DATA; Schema: public; Owner: synapse
+--
+
+COPY public.sliding_sync_membership_snapshots (room_id, user_id, sender, membership_event_id, membership, forgotten, event_stream_ordering, event_instance_name, has_known_state, room_type, room_name, is_encrypted, tombstone_successor_room_id) FROM stdin;
+\.
+
+
+--
 -- Data for Name: state_events; Type: TABLE DATA; Schema: public; Owner: synapse
 --
 
@@ -4026,9 +4146,9 @@ COPY public.stream_ordering_to_exterm (stream_ordering, room_id, event_id) FROM 
 
 COPY public.stream_positions (stream_name, instance_name, stream_id) FROM stdin;
 e2e_cross_signing_keys	master	7
-presence_stream	master	6
 account_data	master	19
-device_lists_stream	master	17
+presence_stream	master	7
+device_lists_stream	master	18
 \.
 
 
@@ -4127,6 +4247,7 @@ COPY public.user_daily_visits (user_id, device_id, "timestamp", user_agent) FROM
 COPY public.user_directory (user_id, room_id, display_name, avatar_url) FROM stdin;
 @testuser1:synapse.local.dev	\N	testuser1	\N
 @testuser2:synapse.local.dev	\N	testuser2	\N
+@admin:synapse.local.dev	\N	admin	\N
 \.
 
 
@@ -4137,6 +4258,7 @@ COPY public.user_directory (user_id, room_id, display_name, avatar_url) FROM std
 COPY public.user_directory_search (user_id, vector) FROM stdin;
 @testuser1:synapse.local.dev	'synapse.local.dev':2 'testuser1':1A,3B
 @testuser2:synapse.local.dev	'synapse.local.dev':2 'testuser2':1A,3B
+@admin:synapse.local.dev	'admin':1A,3B 'synapse.local.dev':2
 \.
 
 
@@ -4153,7 +4275,7 @@ COPY public.user_directory_stale_remote_users (user_id, user_server_name, next_t
 --
 
 COPY public.user_directory_stream_pos (lock, stream_id) FROM stdin;
-X	-1
+X	1
 \.
 
 
@@ -4180,8 +4302,6 @@ testuser2	0	\\x7b22726f6f6d223a7b227374617465223a7b226c617a795f6c6f61645f6d656d6
 --
 
 COPY public.user_ips (user_id, access_token, device_id, ip, user_agent, last_seen) FROM stdin;
-@testuser1:synapse.local.dev	syt_dGVzdHVzZXIx_qnRcwingSiUqfdAAQGLF_2RZZpl	NSMZZFGEGB	::ffff:172.18.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36	1725968914031
-@testuser2:synapse.local.dev	syt_dGVzdHVzZXIy_uiIOEaUaPUjsEZPnCsXy_30ruqe	VWJYXSFKXB	::ffff:172.18.0.1	Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36	1725968955250
 \.
 
 
@@ -4202,6 +4322,7 @@ COPY public.user_signature_stream (stream_id, from_user_id, user_ids, instance_n
 COPY public.user_stats_current (user_id, joined_rooms, completed_delta_stream_id) FROM stdin;
 @testuser1:synapse.local.dev	0	-1
 @testuser2:synapse.local.dev	0	-1
+@admin:synapse.local.dev	0	-1
 \.
 
 
@@ -4228,6 +4349,7 @@ COPY public.user_threepids (user_id, medium, address, validated_at, added_at) FR
 COPY public.users (name, password_hash, creation_ts, admin, upgrade_ts, is_guest, appservice_id, consent_version, consent_server_notice_sent, user_type, deactivated, shadow_banned, consent_ts, approved, locked, suspended) FROM stdin;
 @testuser1:synapse.local.dev	$2b$12$ZCjwkIrkb5g76FMnuyZYZ.h3L3.tZEwZUasgi21wZww/IHhoJJXEO	1725968857	0	\N	0	\N	\N	\N	\N	0	f	\N	t	f	f
 @testuser2:synapse.local.dev	$2b$12$eZ9YU6VYPL5X.54/Luym9etjeOafqBf3.yMixOjF84taZOKOuYPze	1725968863	0	\N	0	\N	\N	\N	\N	0	f	\N	t	f	f
+@admin:synapse.local.dev	$2b$12$5dKsMLWO4kw6FNySb6v6Dus5VuRa2/SrolFml.LDfU7uCACi.niri	1737302953	1	\N	0	\N	\N	\N	\N	0	f	\N	t	f	f
 \.
 
 
@@ -4305,7 +4427,7 @@ SELECT pg_catalog.setval('public.application_services_txn_id_seq', 1, false);
 -- Name: cache_invalidation_stream_seq; Type: SEQUENCE SET; Schema: public; Owner: synapse
 --
 
-SELECT pg_catalog.setval('public.cache_invalidation_stream_seq', 21, true);
+SELECT pg_catalog.setval('public.cache_invalidation_stream_seq', 24, true);
 
 
 --
@@ -4319,7 +4441,7 @@ SELECT pg_catalog.setval('public.device_inbox_sequence', 1, true);
 -- Name: device_lists_sequence; Type: SEQUENCE SET; Schema: public; Owner: synapse
 --
 
-SELECT pg_catalog.setval('public.device_lists_sequence', 17, true);
+SELECT pg_catalog.setval('public.device_lists_sequence', 18, true);
 
 
 --
@@ -4361,7 +4483,7 @@ SELECT pg_catalog.setval('public.instance_map_instance_id_seq', 1, false);
 -- Name: presence_stream_sequence; Type: SEQUENCE SET; Schema: public; Owner: synapse
 --
 
-SELECT pg_catalog.setval('public.presence_stream_sequence', 6, true);
+SELECT pg_catalog.setval('public.presence_stream_sequence', 7, true);
 
 
 --
@@ -4536,6 +4658,22 @@ ALTER TABLE ONLY public.current_state_events
 
 ALTER TABLE ONLY public.dehydrated_devices
     ADD CONSTRAINT dehydrated_devices_pkey PRIMARY KEY (user_id);
+
+
+--
+-- Name: delayed_events delayed_events_pkey; Type: CONSTRAINT; Schema: public; Owner: synapse
+--
+
+ALTER TABLE ONLY public.delayed_events
+    ADD CONSTRAINT delayed_events_pkey PRIMARY KEY (user_localpart, delay_id);
+
+
+--
+-- Name: delayed_events_stream_pos delayed_events_stream_pos_lock_key; Type: CONSTRAINT; Schema: public; Owner: synapse
+--
+
+ALTER TABLE ONLY public.delayed_events_stream_pos
+    ADD CONSTRAINT delayed_events_stream_pos_lock_key UNIQUE (lock);
 
 
 --
@@ -5091,6 +5229,30 @@ ALTER TABLE ONLY public.sliding_sync_connections
 
 
 --
+-- Name: sliding_sync_joined_rooms sliding_sync_joined_rooms_pkey; Type: CONSTRAINT; Schema: public; Owner: synapse
+--
+
+ALTER TABLE ONLY public.sliding_sync_joined_rooms
+    ADD CONSTRAINT sliding_sync_joined_rooms_pkey PRIMARY KEY (room_id);
+
+
+--
+-- Name: sliding_sync_joined_rooms_to_recalculate sliding_sync_joined_rooms_to_recalculate_pkey; Type: CONSTRAINT; Schema: public; Owner: synapse
+--
+
+ALTER TABLE ONLY public.sliding_sync_joined_rooms_to_recalculate
+    ADD CONSTRAINT sliding_sync_joined_rooms_to_recalculate_pkey PRIMARY KEY (room_id);
+
+
+--
+-- Name: sliding_sync_membership_snapshots sliding_sync_membership_snapshots_pkey; Type: CONSTRAINT; Schema: public; Owner: synapse
+--
+
+ALTER TABLE ONLY public.sliding_sync_membership_snapshots
+    ADD CONSTRAINT sliding_sync_membership_snapshots_pkey PRIMARY KEY (room_id, user_id);
+
+
+--
 -- Name: state_events state_events_event_id_key; Type: CONSTRAINT; Schema: public; Owner: synapse
 --
 
@@ -5290,6 +5452,13 @@ CREATE INDEX current_state_delta_stream_idx ON public.current_state_delta_stream
 
 
 --
+-- Name: current_state_delta_stream_room_idx; Type: INDEX; Schema: public; Owner: synapse
+--
+
+CREATE INDEX current_state_delta_stream_room_idx ON public.current_state_delta_stream USING btree (room_id, stream_id);
+
+
+--
 -- Name: current_state_events_member_index; Type: INDEX; Schema: public; Owner: synapse
 --
 
@@ -5297,10 +5466,38 @@ CREATE INDEX current_state_events_member_index ON public.current_state_events US
 
 
 --
+-- Name: current_state_events_members_room_index; Type: INDEX; Schema: public; Owner: synapse
+--
+
+CREATE INDEX current_state_events_members_room_index ON public.current_state_events USING btree (room_id, membership) WHERE (type = 'm.room.member'::text);
+
+
+--
 -- Name: current_state_events_stream_ordering_idx; Type: INDEX; Schema: public; Owner: synapse
 --
 
 CREATE INDEX current_state_events_stream_ordering_idx ON public.current_state_events USING btree (event_stream_ordering);
+
+
+--
+-- Name: delayed_events_is_processed; Type: INDEX; Schema: public; Owner: synapse
+--
+
+CREATE INDEX delayed_events_is_processed ON public.delayed_events USING btree (is_processed);
+
+
+--
+-- Name: delayed_events_room_state_event_idx; Type: INDEX; Schema: public; Owner: synapse
+--
+
+CREATE INDEX delayed_events_room_state_event_idx ON public.delayed_events USING btree (room_id, event_type, state_key) WHERE (state_key IS NOT NULL);
+
+
+--
+-- Name: delayed_events_send_ts; Type: INDEX; Schema: public; Owner: synapse
+--
+
+CREATE INDEX delayed_events_send_ts ON public.delayed_events USING btree (send_ts);
 
 
 --
@@ -5483,6 +5680,13 @@ CREATE UNIQUE INDEX e2e_cross_signing_keys_stream_idx ON public.e2e_cross_signin
 --
 
 CREATE INDEX e2e_cross_signing_signatures2_idx ON public.e2e_cross_signing_signatures USING btree (user_id, target_user_id, target_device_id);
+
+
+--
+-- Name: e2e_one_time_keys_json_user_id_device_id_algorithm_ts_added_idx; Type: INDEX; Schema: public; Owner: synapse
+--
+
+CREATE INDEX e2e_one_time_keys_json_user_id_device_id_algorithm_ts_added_idx ON public.e2e_one_time_keys_json USING btree (user_id, device_id, algorithm, ts_added_ms);
 
 
 --
@@ -6207,6 +6411,13 @@ CREATE UNIQUE INDEX sliding_sync_connection_room_configs_idx ON public.sliding_s
 
 
 --
+-- Name: sliding_sync_connection_room_configs_required_state_id_idx; Type: INDEX; Schema: public; Owner: synapse
+--
+
+CREATE INDEX sliding_sync_connection_room_configs_required_state_id_idx ON public.sliding_sync_connection_room_configs USING btree (required_state_id);
+
+
+--
 -- Name: sliding_sync_connection_streams_idx; Type: INDEX; Schema: public; Owner: synapse
 --
 
@@ -6225,6 +6436,27 @@ CREATE INDEX sliding_sync_connections_idx ON public.sliding_sync_connections USI
 --
 
 CREATE INDEX sliding_sync_connections_ts_idx ON public.sliding_sync_connections USING btree (created_ts);
+
+
+--
+-- Name: sliding_sync_joined_rooms_event_stream_ordering; Type: INDEX; Schema: public; Owner: synapse
+--
+
+CREATE UNIQUE INDEX sliding_sync_joined_rooms_event_stream_ordering ON public.sliding_sync_joined_rooms USING btree (event_stream_ordering);
+
+
+--
+-- Name: sliding_sync_membership_snapshots_event_stream_ordering; Type: INDEX; Schema: public; Owner: synapse
+--
+
+CREATE UNIQUE INDEX sliding_sync_membership_snapshots_event_stream_ordering ON public.sliding_sync_membership_snapshots USING btree (event_stream_ordering);
+
+
+--
+-- Name: sliding_sync_membership_snapshots_user_id; Type: INDEX; Schema: public; Owner: synapse
+--
+
+CREATE INDEX sliding_sync_membership_snapshots_user_id ON public.sliding_sync_membership_snapshots USING btree (user_id);
 
 
 --
@@ -6752,6 +6984,54 @@ ALTER TABLE ONLY public.sliding_sync_connection_room_configs
 
 ALTER TABLE ONLY public.sliding_sync_connection_streams
     ADD CONSTRAINT sliding_sync_connection_streams_connection_position_fkey FOREIGN KEY (connection_position) REFERENCES public.sliding_sync_connection_positions(connection_position) ON DELETE CASCADE;
+
+
+--
+-- Name: sliding_sync_joined_rooms sliding_sync_joined_rooms_event_stream_ordering_fkey; Type: FK CONSTRAINT; Schema: public; Owner: synapse
+--
+
+ALTER TABLE ONLY public.sliding_sync_joined_rooms
+    ADD CONSTRAINT sliding_sync_joined_rooms_event_stream_ordering_fkey FOREIGN KEY (event_stream_ordering) REFERENCES public.events(stream_ordering);
+
+
+--
+-- Name: sliding_sync_joined_rooms sliding_sync_joined_rooms_room_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: synapse
+--
+
+ALTER TABLE ONLY public.sliding_sync_joined_rooms
+    ADD CONSTRAINT sliding_sync_joined_rooms_room_id_fkey FOREIGN KEY (room_id) REFERENCES public.rooms(room_id);
+
+
+--
+-- Name: sliding_sync_joined_rooms_to_recalculate sliding_sync_joined_rooms_to_recalculate_room_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: synapse
+--
+
+ALTER TABLE ONLY public.sliding_sync_joined_rooms_to_recalculate
+    ADD CONSTRAINT sliding_sync_joined_rooms_to_recalculate_room_id_fkey FOREIGN KEY (room_id) REFERENCES public.rooms(room_id);
+
+
+--
+-- Name: sliding_sync_membership_snapshots sliding_sync_membership_snapshots_event_stream_ordering_fkey; Type: FK CONSTRAINT; Schema: public; Owner: synapse
+--
+
+ALTER TABLE ONLY public.sliding_sync_membership_snapshots
+    ADD CONSTRAINT sliding_sync_membership_snapshots_event_stream_ordering_fkey FOREIGN KEY (event_stream_ordering) REFERENCES public.events(stream_ordering);
+
+
+--
+-- Name: sliding_sync_membership_snapshots sliding_sync_membership_snapshots_membership_event_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: synapse
+--
+
+ALTER TABLE ONLY public.sliding_sync_membership_snapshots
+    ADD CONSTRAINT sliding_sync_membership_snapshots_membership_event_id_fkey FOREIGN KEY (membership_event_id) REFERENCES public.events(event_id);
+
+
+--
+-- Name: sliding_sync_membership_snapshots sliding_sync_membership_snapshots_room_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: synapse
+--
+
+ALTER TABLE ONLY public.sliding_sync_membership_snapshots
+    ADD CONSTRAINT sliding_sync_membership_snapshots_room_id_fkey FOREIGN KEY (room_id) REFERENCES public.rooms(room_id);
 
 
 --

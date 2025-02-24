@@ -21,6 +21,7 @@ import { FormControl, IconButton, Input, Select, Stack } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 
+import { NoEntries } from "@/lib/baseModule/components/NoEntries";
 import { useGetAllProcedureAppointmentSummaries } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
 import { NewPerson } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/new/NewPerson";
 import {
@@ -254,6 +255,9 @@ export function VaccinationConsultationsOverviewTable(
             focusColumnAccessorKey: "lastName",
           }}
           minWidth={1600}
+          noDataComponent={
+            queryResult.isFetching ? () => undefined : () => <NoEntries />
+          }
         />
       </TableSheet>
     </TablePage>

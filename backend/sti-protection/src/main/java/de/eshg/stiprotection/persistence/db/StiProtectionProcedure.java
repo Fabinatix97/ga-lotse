@@ -9,9 +9,12 @@ import static java.lang.Boolean.TRUE;
 
 import de.eshg.lib.appointmentblock.EntityWithAppointment;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
+import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.lib.procedure.domain.model.Procedure;
+import de.eshg.lib.procedure.domain.model.ProcedureStatus;
+import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.stiprotection.persistence.db.consultation.Consultation;
 import de.eshg.stiprotection.persistence.db.consultation.Consultation_;
 import de.eshg.stiprotection.persistence.db.diagnosis.Diagnosis;
@@ -37,6 +40,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import java.time.Clock;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +66,9 @@ public class StiProtectionProcedure
   @JdbcType(PostgreSQLEnumJdbcType.class)
   @Column(nullable = false)
   private Concern concern;
+
+  @DataSensitivity(SensitivityLevel.UNDEFINED)
+  private UUID anonymousUserId;
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @Column(nullable = false)
@@ -150,6 +157,15 @@ public class StiProtectionProcedure
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Instant appointmentStart;
 
+  public static StiProtectionProcedure newProcedure(
+      Concern concern, Clock clock, AuditLogger auditLogger) {
+    StiProtectionProcedure procedure = new StiProtectionProcedure();
+    procedure.setProcedureType(ProcedureType.STI_PROTECTION);
+    procedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
+    procedure.setConcern(concern);
+    return procedure;
+  }
+
   @Transient
   public Person getPerson() {
     Assert.isTrue(getRelatedPersons().size() == 1, "There should be exactly one related person");
@@ -162,6 +178,14 @@ public class StiProtectionProcedure
 
   public void setConcern(Concern concern) {
     this.concern = concern;
+  }
+
+  public UUID getAnonymousUserId() {
+    return anonymousUserId;
+  }
+
+  public void setAnonymousUserId(UUID anonymousUserId) {
+    this.anonymousUserId = anonymousUserId;
   }
 
   public Boolean isFollowUp() {

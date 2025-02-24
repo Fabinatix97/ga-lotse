@@ -8,6 +8,8 @@ package de.eshg.base.statistics;
 import de.eshg.base.statistics.api.GetBaseDataSourcesResponse;
 import de.eshg.base.statistics.api.GetBaseStatisticsDataRequest;
 import de.eshg.base.statistics.api.GetBaseStatisticsDataResponse;
+import de.eshg.base.statistics.api.GetBaseStatisticsDataTableHeaderRequest;
+import de.eshg.base.statistics.api.GetBaseStatisticsDataTableHeaderResponse;
 import de.eshg.lib.statistics.StatisticsApi;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -26,6 +28,12 @@ public interface BaseStatisticsApi {
       description = "Returns the available data sources with the corresponding attributes")
   @Operation(summary = "Get available data sources")
   GetBaseDataSourcesResponse getAvailableDataSources();
+
+  @PostExchange("/data-table-header")
+  @Operation(summary = "Get the data table header for the requested attributes")
+  GetBaseStatisticsDataTableHeaderResponse getDataTableHeader(
+      @Valid @RequestBody
+          GetBaseStatisticsDataTableHeaderRequest getBaseStatisticsDataTableHeaderRequest);
 
   @PostExchange("/specific-data")
   @Operation(summary = "Get specific data for the requested attributes")

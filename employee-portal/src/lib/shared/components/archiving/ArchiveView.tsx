@@ -4,6 +4,9 @@
  */
 
 import { ApiUserRole } from "@eshg/base-api";
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
 import { ApiProcedureType } from "@eshg/lib-procedures-api";
 
 import { UseBulkUpdateProceduresArchivingRelevance } from "@/lib/shared/api/mutations/archiving";
@@ -13,9 +16,6 @@ import {
 } from "@/lib/shared/api/queries/archiving";
 import { RestrictedPage } from "@/lib/shared/components/RestrictedPage";
 import { ArchiveTable } from "@/lib/shared/components/archiving/components/archiveView/ArchiveTable";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 
 export interface ArchiveViewProps {
   title: string;

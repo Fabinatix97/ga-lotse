@@ -55,4 +55,5 @@
     <include file="migrations/0045_data_privacy_category.xml"/>
     <include file="migrations/0046_add_minBin_and_maxBin.xml"/>
     <include file="migrations/0047_migrate_minBin_and_maxBin.xml"/>
+    <include file="migrations/0048_anonymization_configuration.xml"/>
 </databaseChangeLog>

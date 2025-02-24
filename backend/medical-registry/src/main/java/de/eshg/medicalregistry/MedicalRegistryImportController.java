@@ -18,6 +18,7 @@ import de.eshg.medicalregistry.importer.MedicalRegistryImporter;
 import de.eshg.rest.service.security.config.BaseUrls.MedicalRegistry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.ValidatorFactory;
 import java.io.IOException;
 import java.time.Clock;
 import org.slf4j.Logger;
@@ -48,17 +49,18 @@ public class MedicalRegistryImportController {
 
   private static final int IMPORTER_BATCH_SIZE = 1000;
 
-  private final Clock clock;
   private final MedicalRegistryService medicalRegistryService;
   private final MedicalRegistryProperties medicalRegistryProperties;
+  private final ValidatorFactory validatorFactory;
 
   public MedicalRegistryImportController(
       Clock clock,
       MedicalRegistryService medicalRegistryService,
-      MedicalRegistryProperties medicalRegistryProperties) {
-    this.clock = clock;
+      MedicalRegistryProperties medicalRegistryProperties,
+      ValidatorFactory validatorFactory) {
     this.medicalRegistryService = medicalRegistryService;
     this.medicalRegistryProperties = medicalRegistryProperties;
+    this.validatorFactory = validatorFactory;
   }
 
   @GetMapping(path = "/template", produces = CustomMediaTypes.APPLICATION_XLSX_VALUE)
@@ -82,7 +84,11 @@ public class MedicalRegistryImportController {
             (sheet, actualColumns) -> {
               MedicalRegistryImporter importer =
                   new MedicalRegistryImporter(
-                      sheet, actualColumns, medicalRegistryService, clock, IMPORTER_BATCH_SIZE);
+                      sheet,
+                      actualColumns,
+                      medicalRegistryService,
+                      validatorFactory,
+                      IMPORTER_BATCH_SIZE);
               return importer.process();
             });
     log.info(
@@ -90,6 +96,7 @@ public class MedicalRegistryImportController {
         result.statistics().total(),
         result.statistics().created(),
         result.statistics().failed());
-    return FileResponseUtil.mapImportResultToMultipartResponse(result, filename(clock));
+    return FileResponseUtil.mapImportResultToMultipartResponse(
+        result, filename(validatorFactory.getClockProvider().getClock()));
   }
 }

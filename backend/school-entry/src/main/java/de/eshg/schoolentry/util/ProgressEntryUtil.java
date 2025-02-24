@@ -76,14 +76,14 @@ public class ProgressEntryUtil {
     progressEntryService.addSystemProgressEntry(procedure, progressEntry, file);
   }
 
-  public void addProgressEntryWithPreviousFileStateId(
+  public void addProgressEntryWithPreviousPersonFileStateId(
       SchoolEntryProcedure procedure,
       SchoolEntrySystemProgressEntryType progressEntryType,
-      UUID previousFileStateId) {
+      UUID previousPersonFileStateId) {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             progressEntryType.name(), TriggerType.SYSTEM_AUTOMATIC);
-    progressEntry.setPreviousFileStateId(previousFileStateId);
+    progressEntry.setPreviousPersonFileStateId(previousPersonFileStateId);
 
     progressEntryService.addSystemProgressEntry(procedure, progressEntry);
   }

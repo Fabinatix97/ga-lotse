@@ -7,6 +7,7 @@ package de.eshg.officialmedicalservice.person;
 
 import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateRequest;
+import de.eshg.base.centralfile.api.person.ExternalAddPersonFileStateRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.PersonDetailsDto;
 import de.eshg.base.centralfile.api.person.UpdatePersonRequest;
@@ -47,6 +48,14 @@ public class PersonMapper {
     }
     return new AddPersonFileStateRequest(
         mapToPersonDetailsDto(affectedPersonDto), DataOriginDto.MANUAL);
+  }
+
+  public static ExternalAddPersonFileStateRequest mapToExternalAddPersonFileStateRequest(
+      AffectedPersonDto affectedPersonDto) {
+    if (affectedPersonDto == null) {
+      return null;
+    }
+    return new ExternalAddPersonFileStateRequest(mapToPersonDetailsDto(affectedPersonDto));
   }
 
   public static UpdatePersonRequest mapToUpdatePersonRequest(AffectedPersonDto affectedPersonDto) {

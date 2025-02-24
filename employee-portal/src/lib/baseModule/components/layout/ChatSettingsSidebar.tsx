@@ -25,14 +25,18 @@ import {
   DeactivateModalProps,
 } from "@/lib/businessModules/chat/components/deactivate/DeactivateModal";
 import {
+  clearCachedCredentials,
   clearMatrixStores,
-  deleteCachedCredentials,
 } from "@/lib/businessModules/chat/matrix/tokens";
 import { ChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { useUserSettings } from "@/lib/businessModules/chat/shared/hooks/useUserSettings";
 import { termsOfUseText } from "@/lib/businessModules/chat/shared/termsOfUseText";
+import {
+  setPresenceOffline,
+  setPresenceOnline,
+} from "@/lib/businessModules/chat/shared/utils";
 import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
 import {
   UseSidebarResult,
@@ -49,12 +53,12 @@ export function useChatUserSidebar(): UseSidebarResult {
 }
 
 function ChatSettingsSidebar({ onClose }: DrawerProps) {
-  const { matrixClient } = useContext(ChatClientContext) ?? {};
+  const { matrixClient, isClientPrepared } =
+    useContext(ChatClientContext) ?? {};
   const { tryNavigate } = useNavigation();
   const [modalValues, setModalValues] = useState<DeactivateModalProps>();
   const [termsOfUseModal, setTermsOfUseModal] = useState(false);
   const snackbar = useSnackbar();
-  const { deactivateAccount } = useUserSettings();
 
   const chatUserId = matrixClient?.getUserId();
 
@@ -73,6 +77,19 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
   const updateSelfUser = useUpdateSelfUserChatUsername();
   const { data: selfUser } = useGetSelfUser();
   const { data: userData } = useGetUserProfile(selfUser.userId);
+  const { deactivateAccount } = useUserSettings();
+
+  const handlePresenceStatusChange = useCallback(async () => {
+    togglePresenceStatus(sharePresence);
+
+    if (matrixClient && isClientPrepared) {
+      if (!sharePresence) {
+        await setPresenceOffline(matrixClient);
+      } else {
+        await setPresenceOnline(matrixClient);
+      }
+    }
+  }, [isClientPrepared, matrixClient, sharePresence, togglePresenceStatus]);
 
   const handleStopChat = useCallback(async () => {
     if (!matrixClient) return;
@@ -87,8 +104,8 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
       logger.error(e);
     }
     try {
-      await deleteCachedCredentials();
-      void clearMatrixStores();
+      clearCachedCredentials();
+      await clearMatrixStores();
     } catch (error) {
       logger.error(error);
     }
@@ -134,15 +151,14 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
           session: session,
           authData: error.data as AuthDict,
         });
-        onClose();
-        deactivateAccount(true);
         const { confirmed } = await modalPromise;
         if (confirmed) {
+          deactivateAccount(true);
           snackbar.notification("Account Deactivated");
         }
       }
     }
-  }, [deactivateAccount, matrixClient, onClose, showSSOModal, snackbar]);
+  }, [deactivateAccount, matrixClient, showSSOModal, snackbar]);
 
   return (
     <>
@@ -161,7 +177,7 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
             startDecorator={
               <Switch
                 checked={sharePresence}
-                onChange={() => togglePresenceStatus(sharePresence)}
+                onChange={handlePresenceStatusChange}
               />
             }
           >

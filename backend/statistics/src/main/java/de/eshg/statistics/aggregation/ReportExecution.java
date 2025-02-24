@@ -8,6 +8,7 @@ package de.eshg.statistics.aggregation;
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
 import de.eshg.statistics.api.AddDiagramRequest;
 import de.eshg.statistics.api.AnalysisDto;
+import de.eshg.statistics.diagramcreation.DiagramCreationService;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
 import java.util.Map;
@@ -38,7 +39,9 @@ public class ReportExecution {
   }
 
   @Scheduled(cron = "${de.eshg.statistics.auto-report.schedule:@hourly}")
-  @SchedulerLock(name = "HandlePlannedReports")
+  @SchedulerLock(
+      name = "HandlePlannedReports",
+      lockAtMostFor = "${de.eshg.statistics.auto-report.lock-at-most-for:1h}")
   public void handlePlannedReports() {
     LockAssert.assertLocked();
     log.info("Starting job 'HandlePlannedReports'");

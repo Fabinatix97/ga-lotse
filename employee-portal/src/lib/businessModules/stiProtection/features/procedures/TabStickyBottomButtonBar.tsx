@@ -3,48 +3,64 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { BottomToolbar } from "@eshg/lib-employee-portal/components/toolbar/BottomToolbar";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { ApiStiProtectionProcedure } from "@eshg/sti-protection-api";
+import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { Button } from "@mui/joy";
+import { useQueryClient } from "@tanstack/react-query";
 import { useFormikContext } from "formik";
-import { useRouter } from "next/navigation";
 
-import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
-import { StickyBottomButtonBar } from "@/lib/shared/components/buttons/StickyBottomButtonBar";
+import { stiProtectionApiQueryKey } from "@/lib/businessModules/stiProtection/api/queries/apiQueryKeys";
+import { useOnCancelForm } from "@/lib/businessModules/stiProtection/shared/helpers";
+import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
+import { StickyBottomBox } from "@/lib/shared/components/layout/StickyBottomBox";
 
 export interface TabStickyBottomButtonBarProps {
   onCancel?: () => void;
-  procedure: ApiStiProtectionProcedure;
 }
 
 export function TabStickyBottomButtonBar({
-  procedure,
   onCancel,
 }: TabStickyBottomButtonBarProps) {
-  const router = useRouter();
-  const { isSubmitting } = useFormikContext();
+  const queryClient = useQueryClient();
+  const { isSubmitting, dirty, resetForm } = useFormikContext();
+  const disabled = useIsFormDisabled();
+
+  const onCancelForm = useOnCancelForm();
+
+  if (disabled) {
+    return null;
+  }
 
   return (
-    <StickyBottomButtonBar
-      sx={{ padding: "0.75rem 1.5rem" }}
-      right={
-        <>
-          <Button
-            variant="plain"
-            onClick={() => {
-              if (onCancel) {
-                onCancel();
-              } else {
-                router.push(routes.procedures.byId(procedure.id).details);
-              }
-            }}
-            aria-disabled={isSubmitting}
-          >
-            Abbrechen
-          </Button>
-          <SubmitButton submitting={isSubmitting}>Speichern</SubmitButton>
-        </>
-      }
-    ></StickyBottomButtonBar>
+    <StickyBottomBox>
+      <BottomToolbar sx={{ padding: "0.75rem 1.5rem" }}>
+        <ButtonBar
+          right={
+            <>
+              <Button
+                variant="plain"
+                onClick={() => {
+                  onCancelForm({
+                    dirty,
+                    reset: resetForm,
+                    onConfirm() {
+                      void queryClient.invalidateQueries({
+                        queryKey: stiProtectionApiQueryKey([]),
+                      });
+                    },
+                  });
+                  onCancel?.();
+                }}
+                aria-disabled={isSubmitting}
+              >
+                Abbrechen
+              </Button>
+              <SubmitButton submitting={isSubmitting}>Speichern</SubmitButton>
+            </>
+          }
+        />
+      </BottomToolbar>
+    </StickyBottomBox>
   );
 }

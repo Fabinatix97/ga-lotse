@@ -3,11 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import {
+  Toolbar,
+  ToolbarProps,
+} from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar, ToolbarProps } from "@/lib/shared/components/layout/Toolbar";
 
 type MeaslesProtectionLayoutProps = RequiresChildren & ToolbarProps;
 export function MeaslesProtectionLayout({

@@ -47,6 +47,7 @@ public class ServiceDirectoryTestHelperService extends DefaultTestHelperService 
       OrgUnitPopulator orgUnitPopulator,
       ServiceDirectoryCommitService serviceDirectoryCommitService,
       ServiceDirectoryReadService serviceDirectoryReadService,
+      List<TestHelperServiceResetAction> resetActions,
       EnvironmentConfig environmentConfig) {
     super(
         databaseResetHelper,
@@ -54,6 +55,7 @@ public class ServiceDirectoryTestHelperService extends DefaultTestHelperService 
         clock,
         populators,
         resettableProperties,
+        resetActions,
         environmentConfig);
     this.orgUnitPopulator = orgUnitPopulator;
     this.serviceDirectoryCommitService = serviceDirectoryCommitService;

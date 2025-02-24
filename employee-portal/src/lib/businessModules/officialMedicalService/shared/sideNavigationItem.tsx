@@ -5,12 +5,12 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
-import { isPlainObject } from "remeda";
-
 import {
   SideNavigationItem,
   UseSideNavigationItemsResult,
-} from "@/lib/baseModule/components/layout/sideNavigation/types";
+} from "@eshg/lib-employee-portal/types/sideNavigation";
+import { isPlainObject } from "remeda";
+
 import { StethoscopeIcon } from "@/lib/businessModules/officialMedicalService/components/icons/StethoscopeIcon";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 

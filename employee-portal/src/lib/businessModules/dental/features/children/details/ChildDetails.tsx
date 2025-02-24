@@ -5,19 +5,16 @@
 
 import { ChildDetails } from "@eshg/dental/api/models/ChildDetails";
 import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { Divider, Grid, Stack, Typography } from "@mui/joy";
+import { Divider, Grid, Stack } from "@mui/joy";
 
 import { AnnualInstitutionsTable } from "@/lib/businessModules/dental/features/children/details/AnnualInstitutionsTable";
-import { FluoridationConsentTable } from "@/lib/businessModules/dental/features/children/details/FluoridationConsentTable";
 import { useUpdateAnnualChildSidebar } from "@/lib/businessModules/dental/features/children/details/UpdateAnnualChildSidebar";
-import { IconTooltipButton } from "@/lib/shared/components/buttons/IconTooltipButton";
+import { FluoridationConsentInformationSection } from "@/lib/businessModules/dental/shared/FluoridationConsentInformationSection";
 import { CentralFilePersonDetails } from "@/lib/shared/components/centralFile/display/CentralFilePersonDetails";
 import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { PageGrid } from "@/lib/shared/components/page/PageGrid";
-import { displayBoolean } from "@/lib/shared/helpers/booleans";
 
 const SPACING = { xxs: 2, sm: 3, md: 4, xxl: 5 };
 
@@ -60,48 +57,10 @@ export function ChildDetailsPage(props: ChildDetailsProps) {
             <Stack gap={1}>
               <DetailsItem label="Einrichtung" value={child.institution.name} />
               <DetailsItem label="Gruppe" value={child.groupName} />
-              {child.currentFluoridationConsent ? (
-                <>
-                  <Divider />
-                  <Typography>
-                    Einverständnis zur Fluoridierung{" "}
-                    <IconTooltipButton
-                      title="Übersicht Einverständnis zur Fluoridierung"
-                      infoText={
-                        <FluoridationConsentTable
-                          fluoridationConsent={child.allFluoridationConsents}
-                        />
-                      }
-                      icon="(Übersicht)"
-                    />
-                  </Typography>
-                  <Stack direction="row" gap={2} flexWrap="wrap">
-                    <DetailsItem
-                      label="Einverständis"
-                      value={displayBoolean(
-                        child.currentFluoridationConsent.consented,
-                      )}
-                    />
-                    <DetailsItem
-                      label="Datum der Einverständniserklärung"
-                      value={formatDate(
-                        child.currentFluoridationConsent.dateOfConsent,
-                      )}
-                    />
-                    <DetailsItem
-                      label="Allergie"
-                      value={displayBoolean(
-                        child.currentFluoridationConsent.hasAllergy,
-                      )}
-                    />
-                  </Stack>
-                </>
-              ) : (
-                <DetailsItem
-                  label="Einverständis zur Fluoridierung"
-                  value="Liegt nicht vor"
-                />
-              )}
+              <Divider orientation="horizontal" />
+              <FluoridationConsentInformationSection
+                allFluoridationConsents={child.allFluoridationConsents}
+              />
             </Stack>
           </DetailsSection>
         </ContentPanel>

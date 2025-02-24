@@ -5,6 +5,7 @@
 
 "use client";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
 
 import { StiProtectionProcedurePageParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(fullPageLayout)/layout";
@@ -12,7 +13,6 @@ import { useGetLaboratoryTestExaminationQuery } from "@/lib/businessModules/stiP
 import { useStiProcedureQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
 import { LaboratoryTestExamination } from "@/lib/businessModules/stiProtection/features/procedures/examination/laboratoryTest/LaboratoryTestExamination";
 import { isProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 
 export default function StiProtectionProcedureLaboratoryTestPage({
   params: { id: procedureId },

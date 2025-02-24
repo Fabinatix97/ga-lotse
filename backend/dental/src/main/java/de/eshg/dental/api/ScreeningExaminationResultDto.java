@@ -14,18 +14,21 @@ import java.util.List;
 public record ScreeningExaminationResultDto(
     Boolean fluorideVarnishApplied,
     OralHygieneStatusDto oralHygieneStatus,
+    @NotNull DentitionTypeDto dentitionType,
     @NotNull @Valid List<ToothDiagnosisDto> toothDiagnoses)
     implements ExaminationResultDto, IsFluorideVarnishApplicable {
 
   static final String SCHEMA_NAME = "ScreeningExaminationResult";
 
-  public ScreeningExaminationResultDto() {
-    this(null, null, List.of());
+  public ScreeningExaminationResultDto(DentitionTypeDto dentitionType) {
+    this(null, null, dentitionType, List.of());
   }
 
   public ScreeningExaminationResultDto(
-      Boolean fluorideVarnishApplied, OralHygieneStatusDto oralHygieneStatus) {
-    this(fluorideVarnishApplied, oralHygieneStatus, List.of());
+      Boolean fluorideVarnishApplied,
+      OralHygieneStatusDto oralHygieneStatus,
+      DentitionTypeDto dentitionType) {
+    this(fluorideVarnishApplied, oralHygieneStatus, dentitionType, List.of());
   }
 
   @Override

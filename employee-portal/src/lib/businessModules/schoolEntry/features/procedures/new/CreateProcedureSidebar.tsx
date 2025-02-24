@@ -13,10 +13,10 @@ import {
   ApiCreateProcedureRequest,
   ApiSchoolEntryProcedureType,
 } from "@eshg/school-entry-api";
+import { ApiProcedureDetails } from "@eshg/school-entry-api";
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
 
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { useCreateProcedure } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
@@ -25,8 +25,11 @@ import { ProcedureCard } from "@/lib/businessModules/schoolEntry/features/proced
 import { BUTTON_SIZE } from "@/lib/businessModules/schoolEntry/features/procedures/new/constants";
 import { PROCEDURE_TYPE_OPTIONS_EXCLUDING_DRAFT } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
-import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
-import { PersonSidebar } from "@/lib/shared/components/personSidebar/PersonSidebar";
+import {
+  PersonSidebar,
+  PersonSidebarProps,
+} from "@/lib/shared/components/personSidebar/PersonSidebar";
+import { DefaultPersonFormValues } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
 import { mapToPersonAddRequest } from "@/lib/shared/components/personSidebar/helpers";
 import {
   DefaultSearchPersonForm,
@@ -37,8 +40,10 @@ import {
   SearchPersonFormProps,
   SearchPersonFormValues,
 } from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
+import {
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 interface EsuSearchForm extends SearchPersonFormValues {
   type: OptionalFieldValue<ApiSchoolEntryProcedureType>;
@@ -70,25 +75,25 @@ function EsuSearchFormComponent(props: SearchPersonFormProps<EsuSearchForm>) {
 }
 
 export function CreateProcedureSidebar() {
-  const [open, setOpen] = useState(false);
+  const personSidebar = useSidebarWithFormRef({
+    component: ConfiguredPersonSidebar,
+  });
+
+  return (
+    <Button
+      startDecorator={<Add />}
+      onClick={() => personSidebar.open()}
+      size={BUTTON_SIZE}
+    >
+      Neuen Vorgang anlegen
+    </Button>
+  );
+}
+
+function ConfiguredPersonSidebar(props: SidebarWithFormRefProps) {
   const router = useRouter();
   const createProcedure = useCreateProcedure();
-  const sidebarFormRef = useRef<SidebarFormHandle>(null);
-  const { openCancelDialog } = useConfirmationDialog();
-
-  function closeSidebar() {
-    setOpen(false);
-  }
-
-  function handleClose() {
-    if (sidebarFormRef.current?.dirty) {
-      openCancelDialog({
-        onConfirm: closeSidebar,
-      });
-    } else {
-      closeSidebar();
-    }
-  }
+  const schoolEntryApi = useSchoolEntryApi();
 
   async function handleCreate(
     child: ApiCreatePerson,
@@ -98,55 +103,40 @@ export function CreateProcedureSidebar() {
       mapToCreateProcedureRequest(child, type),
       {
         onSuccess: (response) => {
-          closeSidebar();
           router.push(routes.procedures.byId(response.procedureId).details);
         },
       },
     );
   }
-  const schoolEntryApi = useSchoolEntryApi();
-  return (
-    <>
-      <Button
-        startDecorator={<Add />}
-        onClick={() => setOpen(true)}
-        size={BUTTON_SIZE}
-      >
-        Neuen Vorgang anlegen
-      </Button>
 
-      <Sidebar open={open} onClose={handleClose}>
-        {open && (
-          <PersonSidebar
-            title={"Neuen Vorgang anlegen"}
-            onCancel={handleClose}
-            onCreate={async ({ searchInputs, createInputs }) => {
-              await handleCreate(
-                mapToPersonAddRequest(createInputs),
-                searchInputs.type,
-              );
-            }}
-            onSelect={async ({ searchInputs, person }) => {
-              await handleCreate(
-                mapToPersonAddRequest(person),
-                searchInputs.type,
-              );
-            }}
-            submitLabel={"Vorgang anlegen"}
-            sidebarFormRef={sidebarFormRef}
-            searchFormComponent={EsuSearchFormComponent}
-            initialSearchState={personSearchFormInitialValues}
-            addressRequired
-            associatedProcedures={{
-              getQuery: (personId) =>
-                getProceduresByPersonQuery(schoolEntryApi, personId),
-              cardComponent: ProcedureCard,
-            }}
-          />
-        )}
-      </Sidebar>
-    </>
-  );
+  const personSidebarProps: PersonSidebarProps<
+    EsuSearchForm,
+    DefaultPersonFormValues,
+    ApiProcedureDetails
+  > = {
+    title: "Neuen Vorgang anlegen",
+    onCreate: async ({ searchInputs, createInputs }) => {
+      await handleCreate(
+        mapToPersonAddRequest(createInputs),
+        searchInputs.type,
+      );
+    },
+    onSelect: async ({ searchInputs, person }) => {
+      await handleCreate(mapToPersonAddRequest(person), searchInputs.type);
+    },
+    submitLabel: "Vorgang anlegen",
+    searchFormComponent: EsuSearchFormComponent,
+    initialSearchState: personSearchFormInitialValues,
+    addressRequired: true,
+    associatedProcedures: {
+      getQuery: (personId) =>
+        getProceduresByPersonQuery(schoolEntryApi, personId),
+      cardComponent: ProcedureCard,
+    },
+    ...props,
+  };
+
+  return <PersonSidebar {...personSidebarProps} />;
 }
 
 function mapToCreateProcedureRequest(

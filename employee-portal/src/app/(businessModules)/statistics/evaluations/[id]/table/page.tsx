@@ -5,6 +5,7 @@
 
 "use client";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
 import { ApiSortDirection } from "@eshg/statistics-api";
 import { startTransition, useEffect, useState } from "react";
 import { isDefined } from "remeda";
@@ -23,7 +24,6 @@ import {
   EvaluationDetailsTable,
   EvaluationDetailsTableProps,
 } from "@/lib/businessModules/statistics/components/evaluations/details/table/EvaluationDetailsTable";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { usePagination } from "@/lib/shared/hooks/table/usePagination";
 import { useTableSorting } from "@/lib/shared/hooks/table/useTableSorting";
 

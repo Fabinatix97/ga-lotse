@@ -5,7 +5,9 @@
 
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { IconButton } from "@mui/joy";
+import { styled } from "@mui/joy";
 
+import { TOOTH_SIZE } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/styles";
 import { useDentalExaminationStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
 import { QuadrantNumber } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
 
@@ -14,12 +16,21 @@ interface AddToothButtonProps {
   quadrantNumber: QuadrantNumber;
 }
 
+export const ToothIconButton = styled(IconButton)({
+  padding: 2,
+  ...TOOTH_SIZE,
+});
+
+const SizedAddCircleIcon = styled(AddCircleIcon)({
+  width: 28,
+  height: 28,
+});
+
 export function AddToothButton(props: AddToothButtonProps) {
   const addTooth = useDentalExaminationStore((state) => state.addTooth);
 
   return (
-    <IconButton
-      sx={{ padding: 2 }}
+    <ToothIconButton
       onClick={() => {
         addTooth({
           quadrantNumber: props.quadrantNumber,
@@ -27,7 +38,7 @@ export function AddToothButton(props: AddToothButtonProps) {
         });
       }}
     >
-      <AddCircleIcon color="primary" />
-    </IconButton>
+      <SizedAddCircleIcon color="primary" />
+    </ToothIconButton>
   );
 }

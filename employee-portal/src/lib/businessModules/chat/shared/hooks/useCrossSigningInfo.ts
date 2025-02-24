@@ -4,18 +4,18 @@
  */
 
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { ClientEvent, CryptoEvent, MatrixEvent } from "matrix-js-sdk";
+import { ClientEvent, MatrixEvent } from "matrix-js-sdk";
+import { CryptoEvent } from "matrix-js-sdk/lib/crypto-api";
 import { useCallback, useEffect, useState } from "react";
 
 import { getCrossSigningStatus } from "@/lib/businessModules/chat/matrix/crypto";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
-import { ClientState } from "@/lib/businessModules/chat/shared/enums";
 
 type RTCrossSigningStatus = Awaited<ReturnType<typeof getCrossSigningStatus>>;
 type CsStatus = Partial<RTCrossSigningStatus>;
 
 export function useCrossSigningInfo() {
-  const { clientState, matrixClient } = useChatClientContext();
+  const { matrixClient, isClientPrepared } = useChatClientContext();
   const [crossSigningStatus, setCrossSigningStatus] = useState<CsStatus>();
 
   const getUpdatedStatus = useCallback(async () => {
@@ -37,7 +37,7 @@ export function useCrossSigningInfo() {
   );
 
   useEffect(() => {
-    if (clientState !== ClientState.Prepared) return;
+    if (!isClientPrepared) return;
 
     matrixClient.on(ClientEvent.AccountData, onAccountData);
     matrixClient.on(CryptoEvent.UserTrustStatusChanged, getUpdatedStatus);
@@ -49,7 +49,7 @@ export function useCrossSigningInfo() {
       matrixClient.off(CryptoEvent.UserTrustStatusChanged, getUpdatedStatus);
       matrixClient.off(CryptoEvent.KeysChanged, getUpdatedStatus);
     };
-  }, [clientState, getUpdatedStatus, matrixClient, onAccountData]);
+  }, [getUpdatedStatus, isClientPrepared, matrixClient, onAccountData]);
 
   return { crossSigningStatus, loadCrossSigningStatus: getUpdatedStatus };
 }

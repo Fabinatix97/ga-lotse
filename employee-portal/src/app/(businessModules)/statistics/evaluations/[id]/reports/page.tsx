@@ -5,10 +5,11 @@
 
 "use client";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+
 import { useGetEvaluationReports } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationReports";
 import { EvaluationDetailsLayout } from "@/lib/businessModules/statistics/components/evaluations/details/EvaluationDetailsLayout";
 import { EvaluationReports } from "@/lib/businessModules/statistics/components/evaluations/details/reports/EvaluationReports";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 
 export default function EvaluationDetailsReportsPage(
   props: Readonly<{ params: { id: string } }>,

@@ -3684,6 +3684,9 @@
               "format" : "uuid"
             }
           },
+          "dentitionType" : {
+            "$ref" : "#/components/schemas/DentitionType"
+          },
           "fluoridationVarnish" : {
             "$ref" : "#/components/schemas/FluoridationVarnish"
           },
@@ -3765,6 +3768,10 @@
         "discriminator" : {
           "propertyName" : "@type"
         }
+      },
+      "DentitionType" : {
+        "type" : "string",
+        "enum" : [ "PRIMARY", "MIXED", "SECONDARY" ]
       },
       "DetailedFacility" : {
         "required" : [ "facilityFileState", "facilityType" ],
@@ -5771,9 +5778,15 @@
         }
       },
       "ProphylaxisSessionChildExamination" : {
-        "required" : [ "childId", "dateOfBirth", "examinationId", "examinationVersion", "firstName", "groupName", "lastName", "previousExaminationResults" ],
+        "required" : [ "allFluoridationConsents", "childId", "dateOfBirth", "examinationId", "examinationVersion", "firstName", "groupName", "lastName", "previousExaminationResults" ],
         "type" : "object",
         "properties" : {
+          "allFluoridationConsents" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/FluoridationConsent"
+            }
+          },
           "childId" : {
             "type" : "string",
             "format" : "uuid"
@@ -5792,9 +5805,6 @@
           },
           "firstName" : {
             "type" : "string"
-          },
-          "fluoridationConsentGiven" : {
-            "type" : "boolean"
           },
           "gender" : {
             "$ref" : "#/components/schemas/Gender"
@@ -5848,6 +5858,9 @@
                 "$ref" : "#/components/schemas/NonExistingUser"
               } ]
             }
+          },
+          "dentitionType" : {
+            "$ref" : "#/components/schemas/DentitionType"
           },
           "fluoridationVarnish" : {
             "$ref" : "#/components/schemas/FluoridationVarnish"
@@ -5924,13 +5937,16 @@
         "enum" : [ "NOT_SPECIFIED", "NEUTRAL", "FEMALE", "MALE" ]
       },
       "ScreeningExaminationResult" : {
-        "required" : [ "toothDiagnoses" ],
+        "required" : [ "dentitionType", "toothDiagnoses" ],
         "type" : "object",
         "allOf" : [ {
           "$ref" : "#/components/schemas/DentalExaminationResult"
         }, {
           "type" : "object",
           "properties" : {
+            "dentitionType" : {
+              "$ref" : "#/components/schemas/DentitionType"
+            },
             "fluorideVarnishApplied" : {
               "type" : "boolean"
             },
@@ -5960,7 +5976,7 @@
       },
       "SecondaryResult" : {
         "type" : "string",
-        "enum" : [ "DA", "FA", "FIS", "ID", "INS", "LUE", "RET", "TR", "WR", "ZA" ]
+        "enum" : [ "DA", "FA", "FIS", "ID", "INS", "LÜ", "RET", "TR", "WR", "ZA" ]
       },
       "SelfAssignTaskRequest" : {
         "required" : [ "taskVersion" ],
@@ -5998,7 +6014,11 @@
               "type" : "integer",
               "format" : "int32"
             },
-            "previousFileStateId" : {
+            "previousFacilityFileStateId" : {
+              "type" : "string",
+              "format" : "uuid"
+            },
+            "previousPersonFileStateId" : {
               "type" : "string",
               "format" : "uuid"
             },
@@ -6339,6 +6359,9 @@
               "type" : "string",
               "format" : "uuid"
             }
+          },
+          "dentitionType" : {
+            "$ref" : "#/components/schemas/DentitionType"
           },
           "fluoridationVarnish" : {
             "$ref" : "#/components/schemas/FluoridationVarnish"

@@ -9,6 +9,8 @@ import de.eshg.lib.procedure.domain.repository.CemeteryRepository;
 import jakarta.transaction.Transactional;
 import java.time.Clock;
 import java.time.Instant;
+import net.javacrumbs.shedlock.core.LockAssert;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -26,8 +28,12 @@ public class CemeteryHousekeeping {
   }
 
   @Scheduled(cron = "${de.eshg.lib.procedure.housekeeping.cemetery.schedule:@daily}")
+  @SchedulerLock(
+      name = "LibProceduresCemeteryHousekeeping",
+      lockAtMostFor = "${de.eshg.lib.procedure.housekeeping.cemetery.lock-at-most-for:23h}")
   @Transactional
   void run() {
+    LockAssert.assertLocked();
     logger.info("Attempting to delete all cemetery entries with deleteAfter in the past");
     long numberOfDeletedEntries = repository.deleteByDeleteAtBefore(Instant.now(clock));
     logger.info("Successfully deleted {} cemetery entries", numberOfDeletedEntries);

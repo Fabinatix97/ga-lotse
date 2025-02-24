@@ -8,7 +8,7 @@
 import { ApiUserRole } from "@eshg/base-api";
 import { ApiChatFeature } from "@eshg/chat-management-api";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-import { createContext, useContext, useMemo } from "react";
+import { createContext, useContext, useEffect, useMemo } from "react";
 import { doNothing, isNullish, omit } from "remeda";
 
 import { useGetSelfUser } from "@/lib/baseModule/api/queries/users";
@@ -16,6 +16,7 @@ import { useMessagesSidebar } from "@/lib/baseModule/components/layout/messagesS
 import { useIsNewFeatureEnabledUnsuspended } from "@/lib/businessModules/chat/api/queries/featureTogglesApi";
 import { useGetUserSettings } from "@/lib/businessModules/chat/api/queries/userSettingsApi";
 import { MessageTeaserProvider } from "@/lib/businessModules/chat/components/messageTeaser/MessageTeaserProvider";
+import { validateCachedCredentials } from "@/lib/businessModules/chat/matrix/login";
 import { ChatClientProvider } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { NotificationProvider } from "@/lib/businessModules/chat/shared/NotificationProvider";
 import { ChatConfiguration } from "@/lib/businessModules/chat/shared/config";
@@ -68,6 +69,14 @@ function InnerChatProvider({ children, configuration }: ChatProviderProps) {
     canAccessChat,
   );
 
+  useEffect(() => {
+    if (!selfUser) return;
+    void validateCachedCredentials(
+      selfUser.externalChatUsername,
+      /* initialValidation */ true,
+    );
+  }, [selfUser]);
+
   // Chat user settings
   const userSettings = useMemo<ChatUserSettings>(
     () => ({
@@ -77,6 +86,7 @@ function InnerChatProvider({ children, configuration }: ChatProviderProps) {
       sharePresence: false,
       showReadConfirmation: false,
       showTypingNotification: false,
+      accountRegistered: false,
       ...(userSettingsData && omit(userSettingsData, ["userId"])),
     }),
     [userSettingsData],
@@ -129,6 +139,7 @@ function InnerChatProviderMock({ children, configuration }: ChatProviderProps) {
           sharePresence: false,
           showReadConfirmation: false,
           showTypingNotification: false,
+          accountRegistered: false,
         },
         canAccessChat: false,
         isSettingsLoading: false,

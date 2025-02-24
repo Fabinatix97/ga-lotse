@@ -19,6 +19,7 @@ import de.eshg.lib.procedure.api.ProcedureSearchParameters;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.TaskType;
 import de.eshg.lib.procedure.util.ProcedureValidator;
+import de.eshg.persistence.IntentionalWritingTransaction;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.rest.service.security.config.BaseUrls;
@@ -144,6 +145,7 @@ public class SchoolEntryController {
 
   @GetMapping("/{procedureId}")
   @Transactional
+  @IntentionalWritingTransaction(reason = "Audit logging")
   @Operation(summary = "Get school entry procedure by id.")
   public ProcedureDetailsDto getProcedure(@PathVariable("procedureId") UUID procedureId) {
     ProcedureDetailsData procedureDetailsData =

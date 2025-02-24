@@ -16,6 +16,7 @@ import de.eshg.dental.ProphylaxisSessionController;
 import de.eshg.dental.api.AbsenceExaminationResultDto;
 import de.eshg.dental.api.CreateProphylaxisSessionRequest;
 import de.eshg.dental.api.CreateProphylaxisSessionResponse;
+import de.eshg.dental.api.DentitionTypeDto;
 import de.eshg.dental.api.ExaminationResultDto;
 import de.eshg.dental.api.FluoridationExaminationResultDto;
 import de.eshg.dental.api.FluoridationVarnishDto;
@@ -131,13 +132,15 @@ public class ProphylaxisSessionsPopulator
             .map(UserDto::userId)
             .toList();
 
+    boolean isScreening = faker.random().nextBoolean();
     CreateProphylaxisSessionRequest createProphylaxisSessionRequest =
         new CreateProphylaxisSessionRequest(
             date,
             institutionId,
             groupName,
             randomProphylaxisType(faker),
-            faker.random().nextBoolean(),
+            isScreening,
+            isScreening ? randomDentitionType(faker) : null,
             randomFluoridationVarnish(faker),
             dentistIds,
             zfaIds);
@@ -158,6 +161,10 @@ public class ProphylaxisSessionsPopulator
 
   private static ProphylaxisTypeDto randomProphylaxisType(Faker faker) {
     return randomElement(faker, ProphylaxisTypeDto.values());
+  }
+
+  private static DentitionTypeDto randomDentitionType(Faker faker) {
+    return randomElement(faker, DentitionTypeDto.values());
   }
 
   private static FluoridationVarnishDto randomFluoridationVarnish(Faker faker) {
@@ -199,6 +206,7 @@ public class ProphylaxisSessionsPopulator
           optional(
               faker, hasFluoridationVarnish && isFluoridationConsentGiven && faker.bool().bool()),
           optional(faker, randomElement(faker, OralHygieneStatusDto.values())),
+          randomDentitionType(faker),
           randomToothDiagnoses(faker));
     } else if (hasFluoridationVarnish) {
       return new FluoridationExaminationResultDto(

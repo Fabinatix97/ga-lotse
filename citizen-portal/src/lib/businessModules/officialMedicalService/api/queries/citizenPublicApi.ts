@@ -23,3 +23,15 @@ export function useGetOpeningHoursQuery() {
     queryFn: () => departmentApi.getOpeningHours(),
   });
 }
+
+export function useGetFreeAppointmentsForCitizen() {
+  const citizenPublicApi = useCitizenPublicApi();
+
+  return queryOptions({
+    queryKey: citizenPublicApiQueryKey(["getFreeAppointmentsForCitizen"]),
+    queryFn: () =>
+      citizenPublicApi.getFreeAppointmentsForCitizen(
+        "OFFICIAL_MEDICAL_SERVICE_SHORT",
+      ),
+  });
+}

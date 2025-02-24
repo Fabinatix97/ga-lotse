@@ -19,7 +19,6 @@ import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import de.eshg.officialmedicalservice.concern.ConcernMapper;
 import de.eshg.officialmedicalservice.procedure.api.EmployeeOmsProcedureOverviewDto;
 import de.eshg.officialmedicalservice.procedure.api.MedicalOpinionStatusDto;
-import de.eshg.officialmedicalservice.procedure.api.PostEmployeeOmsProcedureRequest;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.MedicalOpinionStatus;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsTask;
@@ -42,10 +41,7 @@ public class OmsProcedureOverviewMapper {
   }
 
   public OmsProcedure toDomainType(
-      PostEmployeeOmsProcedureRequest request,
-      UUID currentUserId,
-      AddPersonFileStateResponse affectedPersonBaseResponse,
-      UUID physicianId) {
+      UUID currentUserId, AddPersonFileStateResponse affectedPersonBaseResponse, UUID physicianId) {
 
     OmsProcedure procedure = new OmsProcedure();
 

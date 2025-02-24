@@ -5,6 +5,7 @@
 
 "use client";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
@@ -13,7 +14,6 @@ import { useConsultationQueryOptions } from "@/lib/businessModules/stiProtection
 import { useStiProcedureQueryOptions } from "@/lib/businessModules/stiProtection/api/queries/procedures";
 import { ConsultationForm } from "@/lib/businessModules/stiProtection/features/procedures/consultation/ConsultationForm";
 import { isProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 
 export default function ConsultationPage({
   params: { id: procedureId },

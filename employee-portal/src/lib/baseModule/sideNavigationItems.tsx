@@ -9,6 +9,10 @@ import {
   noCheck,
 } from "@eshg/lib-employee-portal/helpers/accessControl";
 import {
+  SideNavigationItem,
+  UseSideNavigationItemsResult,
+} from "@eshg/lib-employee-portal/types/sideNavigation";
+import {
   CalendarTodayOutlined,
   ContactsOutlined,
   ContentPasteSearch,
@@ -24,10 +28,6 @@ import {
 } from "@mui/icons-material";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
-import {
-  SideNavigationItem,
-  UseSideNavigationItemsResult,
-} from "@/lib/baseModule/components/layout/sideNavigation/types";
 
 import { routes } from "./shared/routes";
 

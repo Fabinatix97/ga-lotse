@@ -5,6 +5,9 @@
 
 package de.eshg.measlesprotection;
 
+import static de.eshg.rest.service.PrivacyDocumentHelper.privacyNoticeAttachmentResponse;
+import static de.eshg.rest.service.PrivacyDocumentHelper.privacyPolicyAttachmentResponse;
+
 import de.eshg.measlesprotection.api.citizenportal.ReportCaseRequest;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,8 +15,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,29 +52,12 @@ public class OrganisationPortalController {
   @GetMapping(path = "/documents/privacy-notice")
   @Operation(summary = "Get the privacy-notice document.")
   public ResponseEntity<Resource> getPrivacyNotice() {
-    return getPrivacyDocument(privacyNotice);
+    return privacyNoticeAttachmentResponse(privacyNotice);
   }
 
   @GetMapping(path = "/documents/privacy-policy")
   @Operation(summary = "Get the privacy-policy document.")
   public ResponseEntity<Resource> getPrivacyPolicy() {
-    return getPrivacyDocument(privacyPolicy);
-  }
-
-  private static ResponseEntity<Resource> getPrivacyDocument(Resource privacyDocument) {
-    return ResponseEntity.ok()
-        .header(
-            HttpHeaders.CONTENT_DISPOSITION,
-            fileAttachment(privacyDocument.getFilename()).toString())
-        .header(HttpHeaders.CONTENT_TYPE, "application/pdf")
-        .body(privacyDocument);
-  }
-
-  private static ContentDisposition fileAttachment(String filename) {
-    return file(filename, ContentDisposition.attachment());
-  }
-
-  private static ContentDisposition file(String filename, ContentDisposition.Builder builder) {
-    return builder.name("file").filename(filename).build();
+    return privacyPolicyAttachmentResponse(privacyPolicy);
   }
 }

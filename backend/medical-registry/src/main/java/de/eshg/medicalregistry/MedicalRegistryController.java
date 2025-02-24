@@ -47,6 +47,7 @@ import de.eshg.medicalregistry.domain.model.TypeOfChange;
 import de.eshg.medicalregistry.featuretoggle.MedicalRegistryFeature;
 import de.eshg.medicalregistry.featuretoggle.MedicalRegistryFeatureToggle;
 import de.eshg.medicalregistry.mapper.EntryMapper;
+import de.eshg.persistence.IntentionalWritingTransaction;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.NotFoundException;
@@ -348,6 +349,7 @@ public class MedicalRegistryController {
 
   @GetMapping("/{procedureId}")
   @Transactional
+  @IntentionalWritingTransaction(reason = "Audit logging")
   @Operation(summary = "Get medical registry procedure by id.")
   public GetProcedureResponse getProcedure(@PathVariable("procedureId") UUID procedureId) {
     MedicalRegistryProcedure medicalRegistryProcedure =

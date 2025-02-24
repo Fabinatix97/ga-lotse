@@ -10,7 +10,6 @@ import { ApiPostEmployeeOmsProcedureRequest } from "@eshg/official-medical-servi
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
 
 import { usePostEmployeeProcedure } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
 import {
@@ -18,18 +17,31 @@ import {
   mapToCreateProcedureRequest,
 } from "@/lib/businessModules/officialMedicalService/shared/helpers";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
-import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
-import { PersonSidebar } from "@/lib/shared/components/personSidebar/PersonSidebar";
+import {
+  PersonSidebar,
+  PersonSidebarProps,
+} from "@/lib/shared/components/personSidebar/PersonSidebar";
 import { DefaultPersonFormValues } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
+import {
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function CreateProcedure() {
+  const personSidebar = useSidebarWithFormRef({
+    component: ConfiguredPersonSidebar,
+  });
+
+  return (
+    <Button startDecorator={<Add />} onClick={() => personSidebar.open()}>
+      Neuen Vorgang anlegen
+    </Button>
+  );
+}
+
+function ConfiguredPersonSidebar(props: SidebarWithFormRefProps) {
   const router = useRouter();
   const postEmployeeProcedure = usePostEmployeeProcedure();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const sidebarFormRef = useRef<SidebarFormHandle>(null);
-  const { openCancelDialog } = useConfirmationDialog();
 
   async function createProcedureWithNewPerson(person: DefaultPersonFormValues) {
     const request: ApiPostEmployeeOmsProcedureRequest =
@@ -58,48 +70,18 @@ export function CreateProcedure() {
     });
   }
 
-  function openSidebar() {
-    setSidebarOpen(true);
-  }
+  const personSidebarProps: PersonSidebarProps = {
+    onSelect: async (values) => {
+      await createProcedureWithExistingPerson(values.person);
+    },
+    onCreate: async (values) => {
+      await createProcedureWithNewPerson(values.createInputs);
+    },
+    title: "Vorgang anlegen",
+    submitLabel: "Vorgang anlegen",
+    addressRequired: true,
+    ...props,
+  };
 
-  function closeSidebar() {
-    setSidebarOpen(false);
-  }
-
-  function handleClose() {
-    if (sidebarFormRef.current?.dirty) {
-      openCancelDialog({
-        onConfirm: closeSidebar,
-      });
-    } else {
-      closeSidebar();
-    }
-  }
-
-  return (
-    <>
-      <Button startDecorator={<Add />} onClick={() => openSidebar()}>
-        Neuen Vorgang anlegen
-      </Button>
-      <Sidebar open={sidebarOpen} onClose={handleClose}>
-        <PersonSidebar
-          onCancel={handleClose}
-          onSelect={async (values) => {
-            await createProcedureWithExistingPerson(values.person);
-            closeSidebar();
-            return Promise.resolve();
-          }}
-          onCreate={async (values) => {
-            await createProcedureWithNewPerson(values.createInputs);
-            closeSidebar();
-            return Promise.resolve();
-          }}
-          sidebarFormRef={sidebarFormRef}
-          title={"Vorgang anlegen"}
-          submitLabel={"Vorgang anlegen"}
-          addressRequired
-        />
-      </Sidebar>
-    </>
-  );
+  return <PersonSidebar {...personSidebarProps} />;
 }

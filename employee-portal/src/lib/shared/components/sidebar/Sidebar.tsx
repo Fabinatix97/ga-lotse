@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useHeaderHeights } from "@eshg/lib-employee-portal/hooks/useHeaderHeights";
 import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { Drawer, DrawerProps, ModalClose, Stack, ZIndex } from "@mui/joy";
 import { PropsWithChildren } from "react";
-
-import { useHeaderHeights } from "@/lib/baseModule/components/layout/useHeaderHeights";
 
 export const sidebarPadding = 3;
 

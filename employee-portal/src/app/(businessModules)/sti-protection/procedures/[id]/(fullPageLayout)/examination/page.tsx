@@ -15,5 +15,5 @@ export default function StiProtectionProcedureExaminationPage({
 }: Readonly<{
   params: StiProtectionProcedurePageParams;
 }>) {
-  redirect(routes.procedures.byId(procedureId).rapidTest);
+  redirect(routes.procedures.byId(procedureId).examination.rapidTest);
 }

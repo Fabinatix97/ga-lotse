@@ -4543,7 +4543,11 @@
               "type" : "integer",
               "format" : "int32"
             },
-            "previousFileStateId" : {
+            "previousFacilityFileStateId" : {
+              "type" : "string",
+              "format" : "uuid"
+            },
+            "previousPersonFileStateId" : {
               "type" : "string",
               "format" : "uuid"
             },

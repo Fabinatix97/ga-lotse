@@ -19,7 +19,7 @@ import {
 } from "@/lib/businessModules/inspection/api/mutations/facility";
 import { useFetchInboxProcedure } from "@/lib/businessModules/inspection/api/queries/inboxProcedures";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { EmbeddedFacilitySidebar } from "@/lib/shared/components/facilitySidebar/FacilitySidebar";
+import { FacilitySidebar } from "@/lib/shared/components/facilitySidebar/FacilitySidebar";
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchForm";
 import { BaseAddressFormInputs } from "@/lib/shared/components/form/address/helpers";
@@ -39,11 +39,11 @@ export function InspectionInboxProcedureCreateSidebar({
 
   const router = useRouter();
   const snackbar = useSnackbar();
-  const { mutate: linkBaseFacility } = useLinkBaseFacility();
-  const { mutate: addInspectionFacility } = useAddInspectionFacility();
+  const { mutateAsync: linkBaseFacility } = useLinkBaseFacility();
+  const { mutateAsync: addInspectionFacility } = useAddInspectionFacility();
 
   function handleSaveFacility(facility: DefaultFacilityFormValues) {
-    addInspectionFacility(
+    return addInspectionFacility(
       { facility, inboxProcedureId },
       {
         onSuccess: ({ procedureId }) => {
@@ -52,11 +52,10 @@ export function InspectionInboxProcedureCreateSidebar({
         },
       },
     );
-    return Promise.resolve();
   }
 
   function handleSelectFacility(facility: ApiGetReferenceFacilityResponse) {
-    linkBaseFacility(
+    return linkBaseFacility(
       { facility, inboxProcedureId },
       {
         onSuccess: ({ inspectionId, procedureStatus, isNew }) => {
@@ -75,7 +74,6 @@ export function InspectionInboxProcedureCreateSidebar({
         },
       },
     );
-    return Promise.resolve();
   }
 
   const initialSearchInputs = inboxProcedure.contactDetails.facilityName
@@ -85,7 +83,7 @@ export function InspectionInboxProcedureCreateSidebar({
     : undefined;
 
   return (
-    <EmbeddedFacilitySidebar
+    <FacilitySidebar
       mode="default"
       title="Neuen Vorgang anlegen"
       searchResultHeaderComponent={false}
@@ -96,8 +94,7 @@ export function InspectionInboxProcedureCreateSidebar({
       onSelect={async (values) => {
         await handleSelectFacility(values.facility);
       }}
-      sidebarFormRef={formRef}
-      open={true}
+      formRef={formRef}
       onClose={onClose}
       getInitialCreateInputs={(searchInputs?: FacilitySearchFormValues) => ({
         ...createBaseFacilityFromInboxProcedure(inboxProcedure, searchInputs),

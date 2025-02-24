@@ -14,40 +14,41 @@ import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvid
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 import {
   useAddInspectionFacility,
   useLinkBaseFacility,
 } from "@/lib/businessModules/inspection/api/mutations/facility";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { FacilitySidebar } from "@/lib/shared/components/facilitySidebar/FacilitySidebar";
+import {
+  FacilitySidebar,
+  FacilitySidebarProps,
+} from "@/lib/shared/components/facilitySidebar/FacilitySidebar";
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
-import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
+import {
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function NewFacilityButton() {
+  const facilitySidebar = useSidebarWithFormRef({
+    component: ConfiguredFacilitySidebar,
+  });
+
   return (
-    <OverlayBoundary>
-      <NewFacilityButtonWithinOverlay />
-    </OverlayBoundary>
+    <Button onClick={() => facilitySidebar.open()} startDecorator={<Add />}>
+      Neue Erstbesichtigung anlegen
+    </Button>
   );
 }
 
-function NewFacilityButtonWithinOverlay() {
-  const [open, setOpen] = useState(false);
+function ConfiguredFacilitySidebar(props: SidebarWithFormRefProps) {
   const router = useRouter();
   const snackbar = useSnackbar();
   const { mutateAsync: linkBaseFacility } = useLinkBaseFacility();
   const { mutateAsync: addInspectionFacility } = useAddInspectionFacility();
 
-  const { handleClose, closeSidebar, sidebarFormRef } = useSidebarForm({
-    onClose: () => setOpen(false),
-  });
-
   function afterSave(addFacilityResponse: ApiInspAddFacilityResponse) {
-    closeSidebar();
-
     // If we get an inspection that is not in draft status, we should route to that inspection and not to the new inspection dialog.
     if (addFacilityResponse.procedureStatus !== ApiProcedureStatus.Draft) {
       router.push(routes.procedures.details(addFacilityResponse.procedureId));
@@ -96,21 +97,14 @@ function NewFacilityButtonWithinOverlay() {
     );
   }
 
-  return (
-    <>
-      <Button onClick={() => setOpen(true)} startDecorator={<Add />}>
-        Neue Erstbesichtigung anlegen
-      </Button>
+  const facilitySidebarProps: FacilitySidebarProps<DefaultFacilityFormValues> =
+    {
+      title: "Neue Erstbesichtigung anlegen",
+      submitLabel: "Anlegen",
+      onCreateNew: (values) => handleSubmit(values.createInputs),
+      onSelect: (values) => handleSelectFacility(values.facility),
+      ...props,
+    };
 
-      <FacilitySidebar
-        title="Neue Erstbesichtigung anlegen"
-        submitLabel="Anlegen"
-        sidebarFormRef={sidebarFormRef}
-        onCreateNew={(values) => handleSubmit(values.createInputs)}
-        onSelect={(values) => handleSelectFacility(values.facility)}
-        onClose={handleClose}
-        open={open}
-      />
-    </>
-  );
+  return <FacilitySidebar {...facilitySidebarProps} />;
 }

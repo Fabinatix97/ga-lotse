@@ -46,7 +46,9 @@ export function RequiredDocumentsForm(props: RequiredDocumentsFormProps) {
   return (
     <>
       <Grid xxs={12}>
-        <Typography level="h3">Erforderliche Unterlagen</Typography>
+        <Typography level="h3" component="h2">
+          Erforderliche Unterlagen
+        </Typography>
       </Grid>
 
       {props.enableOptionalDocuments && (

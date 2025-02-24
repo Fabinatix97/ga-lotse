@@ -13,6 +13,8 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
+import net.javacrumbs.shedlock.core.LockAssert;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,7 +39,11 @@ public class InboxProcedureCleanupJob {
   }
 
   @Scheduled(cron = "${de.eshg.lib.procedure.housekeeping.inbox.schedule:@daily}")
+  @SchedulerLock(
+      name = "LibProceduresInboxProcedureCleanupJob",
+      lockAtMostFor = "${de.eshg.lib.procedure.housekeeping.inbox.lock-at-most-for:23h}")
   void run() {
+    LockAssert.assertLocked();
     Set<Long> inboxProceduresForDeletion = getInboxProcedures();
     logger.info("Attempting to delete {} inbox procedures", inboxProceduresForDeletion.size());
     if (logger.isDebugEnabled()) {

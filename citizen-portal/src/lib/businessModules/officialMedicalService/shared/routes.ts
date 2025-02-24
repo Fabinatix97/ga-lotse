@@ -11,9 +11,10 @@ import { useGivenLang } from "@/lib/i18n/useLang";
 
 export function citizenRoutes(locale: SupportedLanguage | undefined) {
   return defineRoutes(
-    `${baseRoutes(locale).citizenPath.index}/amtsaerztlicherdienst `,
+    `${baseRoutes(locale).citizenPath.index}/amtsaerztlicherdienst`,
     (officialMedicalServicePath) => ({
       overview: officialMedicalServicePath("/"),
+      appointment: officialMedicalServicePath("/termin"),
     }),
   );
 }

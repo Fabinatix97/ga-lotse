@@ -43,6 +43,9 @@ import de.eshg.officialmedicalservice.appointment.persistence.entity.OmsAppointm
 import de.eshg.officialmedicalservice.concern.ConcernMapper;
 import de.eshg.officialmedicalservice.document.OmsDocumentMapper;
 import de.eshg.officialmedicalservice.document.api.GetDocumentsResponse;
+import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocument;
+import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocumentRepository;
+import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocumentStatus;
 import de.eshg.officialmedicalservice.facility.FacilityClient;
 import de.eshg.officialmedicalservice.facility.FacilityMapper;
 import de.eshg.officialmedicalservice.notification.NotificationService;
@@ -137,6 +140,7 @@ public class EmployeeOmsProcedureService {
       SecurityContextHolder.getContextHolderStrategy();
   private final ModuleClientAuthenticator moduleClientAuthenticator;
   private final CitizenAccessCodeUserClient citizenAccessCodeUserClient;
+  private final OmsDocumentRepository omsDocumentRepository;
 
   public EmployeeOmsProcedureService(
       OmsProcedureRepository omsProcedureRepository,
@@ -153,7 +157,8 @@ public class EmployeeOmsProcedureService {
       OmsDocumentMapper omsDocumentMapper,
       NotificationService notificationService,
       ModuleClientAuthenticator moduleClientAuthenticator,
-      CitizenAccessCodeUserClient citizenAccessCodeUserClient) {
+      CitizenAccessCodeUserClient citizenAccessCodeUserClient,
+      OmsDocumentRepository omsDocumentRepository) {
     this.omsProcedureRepository = omsProcedureRepository;
     this.omsProcedureOverviewMapper = omsProcedureOverviewMapper;
     this.omsAppointmentMapper = omsAppointmentMapper;
@@ -169,6 +174,7 @@ public class EmployeeOmsProcedureService {
     this.notificationService = notificationService;
     this.moduleClientAuthenticator = moduleClientAuthenticator;
     this.citizenAccessCodeUserClient = citizenAccessCodeUserClient;
+    this.omsDocumentRepository = omsDocumentRepository;
   }
 
   @Transactional
@@ -179,9 +185,17 @@ public class EmployeeOmsProcedureService {
 
     OmsProcedure procedure =
         omsProcedureOverviewMapper.toDomainType(
-            request, CurrentUserHelper.getCurrentUserId(), affectedPersonBaseResponse, null);
+            CurrentUserHelper.getCurrentUserId(), affectedPersonBaseResponse, null);
 
     omsProcedureRepository.save(procedure);
+
+    OmsDocument document = new OmsDocument();
+    document.setDocumentStatus(OmsDocumentStatus.MISSING);
+    document.setDocumentTypeDe("Auftragsschreiben");
+    document.setUploadInCitizenPortal(false);
+    document.setMandatoryDocument(true);
+    document.setOmsProcedure(procedure);
+    omsDocumentRepository.save(document);
 
     return procedure.getExternalId();
   }
@@ -506,7 +520,10 @@ public class EmployeeOmsProcedureService {
     String accessCode = citizenAccessCodeUser.accessCode();
 
     omsProcedure.setCitizenUserId(citizenAccessCodeUser.userId());
-    omsProcedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
+
+    Instant now = clock.instant();
+    omsProcedure.setStartedAt(now);
+    omsProcedure.updateProcedureStatus(ProcedureStatus.OPEN, now, auditLogger);
 
     NotificationService.NotificationSummary notificationSummary =
         notificationService.notifyNewCitizenUser(

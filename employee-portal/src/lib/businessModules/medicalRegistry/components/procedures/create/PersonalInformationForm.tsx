@@ -41,7 +41,9 @@ export function PersonalInformationForm(props: NestedFormProps) {
   return (
     <>
       <Grid xxs={12}>
-        <Typography level="h3">Angaben zur antragstellenden Person</Typography>
+        <Typography level="h3" component="h2">
+          Angaben zur antragstellenden Person
+        </Typography>
       </Grid>
 
       <Grid xxs={6}>

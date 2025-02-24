@@ -5,10 +5,6 @@
 
 "use client";
 
-import {
-  ApiReportingReason,
-  ApiRoleStatus,
-} from "@eshg/measles-protection-api";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";
 import {
   Accordion,
@@ -203,20 +199,23 @@ export function ReportCaseOverview({ onCancel, sx }: ReportCaseOverviewProps) {
                       )}
                       <DetailsField
                         label={t("affectedPerson.fields.roleStatus")}
-                        value={t(
-                          roleStatusNames[
-                            affectedPerson.roleStatus as ApiRoleStatus
-                          ],
-                        )}
+                        value={
+                          affectedPerson.roleStatus
+                            ? t(roleStatusNames[affectedPerson.roleStatus])
+                            : ""
+                        }
                       />
                       <DetailsField
                         label={t("affectedPerson.fields.reportingReason")}
-                        value={t(
-                          reportingReasonNames[
-                            affectedPerson.reportData
-                              .reportingReason as ApiReportingReason
-                          ],
-                        )}
+                        value={
+                          affectedPerson.reportData.reportingReason
+                            ? t(
+                                reportingReasonNames[
+                                  affectedPerson.reportData.reportingReason
+                                ],
+                              )
+                            : ""
+                        }
                       />
                     </Grid>
                   </Sheet>

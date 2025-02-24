@@ -24,6 +24,6 @@ export function usePinCheck(procedureId: string, pin: string | undefined) {
     },
     queryKey: ["pin-validation", procedureId, pin],
     enabled: pin != null,
-    staleTime: STATIC_QUERY_OPTIONS.staleTime,
+    ...STATIC_QUERY_OPTIONS,
   });
 }

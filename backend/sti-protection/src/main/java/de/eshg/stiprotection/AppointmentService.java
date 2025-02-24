@@ -76,6 +76,13 @@ public class AppointmentService {
     cancelAppointmentHistoryEntry(procedure);
   }
 
+  public void finalizeAppointment(StiProtectionProcedure procedure) {
+    procedure.setAppointment(null);
+    procedure.setCalendarEventId(null);
+    procedure.setUserDefinedAppointment(null);
+    finalizeAppointmentHistoryEntry(procedure);
+  }
+
   private void bookAppointment(StiProtectionProcedure procedure, AppointmentData appointment) {
     AppointmentType type = appointment.appointmentType();
     Instant start = appointment.appointmentStart();
@@ -204,6 +211,14 @@ public class AppointmentService {
     }
   }
 
+  private void finalizeAppointmentHistoryEntry(StiProtectionProcedure procedure) {
+    List<AppointmentHistoryEntry> appointmentHistory = procedure.getAppointmentHistory();
+    if (!appointmentHistory.isEmpty()) {
+      AppointmentHistoryEntry appointmentHistoryEntry = appointmentHistory.getLast();
+      appointmentHistoryEntry.setAppointmentStatus(AppointmentStatus.CLOSED);
+    }
+  }
+
   public AppointmentHistoryEntry getOpenAppointmentHistoryEntry(StiProtectionProcedure procedure) {
     AppointmentHistoryEntry appointmentHistoryEntry = procedure.getAppointmentHistory().getLast();
     if (appointmentHistoryEntry.getAppointmentStatus() != AppointmentStatus.OPEN) {
@@ -225,5 +240,15 @@ public class AppointmentService {
     String timeStart = zonedDateTimeStart.format(timeFormatter);
     String timeEnd = zonedDateTimeEnd.format(timeFormatter);
     return "%s von %s bis %s".formatted(date, timeStart, timeEnd);
+  }
+
+  public void bookPublicAppointment(StiProtectionProcedure procedure, AppointmentData appointment) {
+    finalizeExistingAppointment(procedure);
+    AppointmentType type = appointment.appointmentType();
+    Instant start = appointment.appointmentStart();
+    Instant end = start.plus(Duration.ofMinutes(appointment.durationInMinutes()));
+    procedure.setUserDefinedAppointment(null);
+    appointmentBlockSlotUtil.updateAppointment(type, null, null, procedure, start, end);
+    addAppointmentHistoryEntry(procedure, appointment);
   }
 }

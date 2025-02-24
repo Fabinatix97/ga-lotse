@@ -3,12 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiDentitionType, ApiTooth } from "@eshg/dental-api";
 import {
   ExaminationResult,
   FluoridationExaminationResult,
   ScreeningExaminationResult,
   isEmptyExaminationResult,
 } from "@eshg/dental/api/models/ExaminationResult";
+import { ToothDiagnosis } from "@eshg/dental/api/models/ToothDiagnosis";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { useFormik } from "formik";
 
@@ -16,6 +18,7 @@ import {
   ExaminationFormValues,
   mapToExaminationFormValues,
 } from "@/lib/businessModules/dental/features/examinations/ExaminationFormLayout";
+import { useDentalExaminationStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
 import { useProphylaxisSessionStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/ProphylaxisSessionStoreProvider";
 
 interface ExaminationInputValues {
@@ -39,6 +42,9 @@ export function useParticipantExaminationForm(
   const { initialValues, onSubmit } = params;
 
   const isScreening = useProphylaxisSessionStore((state) => state.isScreening);
+  const getToothDiagnoses = useDentalExaminationStore(
+    (state) => state.getToothDiagnoses,
+  );
 
   return useFormik({
     initialValues: mapToExaminationFormValues(
@@ -46,7 +52,9 @@ export function useParticipantExaminationForm(
       initialValues.note,
     ),
     onSubmit: (formValues: ExaminationFormValues) => {
-      onSubmit(mapToExaminationValues(isScreening, formValues));
+      onSubmit(
+        mapToExaminationValues(isScreening, formValues, getToothDiagnoses()),
+      );
     },
     enableReinitialize: true,
   });
@@ -55,9 +63,10 @@ export function useParticipantExaminationForm(
 function mapToExaminationValues(
   screening: boolean,
   formValues: ExaminationFormValues,
+  toothDiagnoses: Partial<Record<ApiTooth, ToothDiagnosis>>,
 ): ExaminationOutputValues {
   return {
-    result: mapToExaminationResult(screening, formValues),
+    result: mapToExaminationResult(screening, formValues, toothDiagnoses),
     note: mapOptionalValue(formValues.note),
   };
 }
@@ -65,6 +74,7 @@ function mapToExaminationValues(
 function mapToExaminationResult(
   screening: boolean,
   formValues: ExaminationFormValues,
+  toothDiagnoses: Partial<Record<ApiTooth, ToothDiagnosis>>,
 ): ExaminationResult | undefined {
   let result: FluoridationExaminationResult | ScreeningExaminationResult;
   if (screening) {
@@ -74,7 +84,8 @@ function mapToExaminationResult(
       fluorideVarnishApplied: mapOptionalValue(
         formValues.fluorideVarnishApplied,
       ),
-      toothDiagnoses: {},
+      dentitionType: ApiDentitionType.Mixed,
+      toothDiagnoses: toothDiagnoses,
     };
   } else {
     // TODO: Remove when fluoridation only examination is handled without form

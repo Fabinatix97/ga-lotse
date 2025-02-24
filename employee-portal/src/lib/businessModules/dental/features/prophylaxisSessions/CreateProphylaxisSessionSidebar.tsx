@@ -5,6 +5,7 @@
 
 "use client";
 
+import { ApiDentitionType } from "@eshg/dental-api";
 import { useCreateProphylaxisSession } from "@eshg/dental/api/mutations/prophylaxisSessionApi";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Formik } from "formik";
@@ -42,6 +43,7 @@ function CreateProphylaxisSessionSidebar(props: SidebarWithFormRefProps) {
     groupName: "",
     type: "",
     isScreening: false,
+    dentitionType: ApiDentitionType.Mixed,
     isFluoridation: false,
     fluoridationVarnish: "",
     dentistIds: [],

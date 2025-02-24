@@ -11,6 +11,7 @@ dependencies {
     implementation project(':lib-base-client')
     implementation project(':lib-auditlog')
     implementation project(':file-commons')
+    implementation project(':lib-scheduling')
 
     implementation 'commons-io:commons-io:latest.release'
     implementation 'org.bouncycastle:bcprov-jdk18on:latest.release'

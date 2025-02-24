@@ -18,6 +18,7 @@ public record CreateProphylaxisSessionRequest(
     @NotBlank String groupName,
     @NotNull ProphylaxisTypeDto type,
     @NotNull boolean isScreening,
+    DentitionTypeDto dentitionType,
     FluoridationVarnishDto fluoridationVarnish,
     @NotEmpty(message = "At least one dentist is required") List<UUID> dentistIds,
     @NotEmpty(message = "At least one zfa is required") List<UUID> zfaIds)
@@ -29,6 +30,6 @@ public record CreateProphylaxisSessionRequest(
       ProphylaxisTypeDto type,
       List<UUID> dentistIds,
       List<UUID> zfaIds) {
-    this(dateAndTime, institutionId, groupName, type, false, null, dentistIds, zfaIds);
+    this(dateAndTime, institutionId, groupName, type, false, null, null, dentistIds, zfaIds);
   }
 }

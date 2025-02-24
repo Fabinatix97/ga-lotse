@@ -7,6 +7,7 @@ package de.eshg.dental.domain.model;
 
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
+import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -28,6 +29,10 @@ public class ScreeningExaminationResult extends ExaminationResult {
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private OralHygieneStatus oralHygieneStatus;
 
+  @Column(nullable = false)
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private DentitionType dentitionType;
+
   @ElementCollection
   @MapKeyJdbcType(PostgreSQLEnumJdbcType.class)
   @MapKeyColumn(name = "tooth")
@@ -41,6 +46,14 @@ public class ScreeningExaminationResult extends ExaminationResult {
 
   public void setOralHygieneStatus(OralHygieneStatus oralHygieneStatus) {
     this.oralHygieneStatus = oralHygieneStatus;
+  }
+
+  public DentitionType getDentitionType() {
+    return dentitionType;
+  }
+
+  public void setDentitionType(DentitionType dentitionType) {
+    this.dentitionType = dentitionType;
   }
 
   public Map<Tooth, ToothDiagnosis> getToothDiagnoses() {

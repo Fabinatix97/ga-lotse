@@ -13,6 +13,7 @@ import { ProphylaxisSessionParticipantsTable } from "@/lib/businessModules/denta
 import { useUpdateProphylaxisSessionSidebar } from "@/lib/businessModules/dental/features/prophylaxisSessions/UpdateProphylaxisSessionSidebar";
 import { useProphylaxisSessionStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/ProphylaxisSessionStoreProvider";
 import {
+  DENTITION_TYPES,
   PROPHYLAXIS_TYPES,
   fluoridationDescription,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/translations";
@@ -26,6 +27,9 @@ import { displayBoolean } from "@/lib/shared/helpers/booleans";
 export function ProphylaxisSessionDetails() {
   const prophylaxisSession = useProphylaxisSessionStore((state) => state);
   const updateProphylaxisSidebar = useUpdateProphylaxisSessionSidebar();
+  const detentionType = prophylaxisSession.dentitionType
+    ? DENTITION_TYPES[prophylaxisSession.dentitionType]
+    : "";
 
   return (
     <Stack gap={4}>
@@ -63,6 +67,7 @@ export function ProphylaxisSessionDetails() {
                 label="Reihenuntersuchung"
                 value={displayBoolean(prophylaxisSession.isScreening)}
               />
+              <DetailsItem label="Gebisstyp" value={detentionType} />
               <DetailsItem
                 label="Teilnehmer"
                 value={prophylaxisSession.participants.length}

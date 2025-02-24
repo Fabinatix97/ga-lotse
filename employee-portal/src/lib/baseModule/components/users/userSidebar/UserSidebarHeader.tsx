@@ -9,7 +9,7 @@ import { Badge, DialogTitle, Stack, Typography } from "@mui/joy";
 import { UserAvatar } from "@/lib/baseModule/components/users/UserAvatar";
 import { useGetSelfUserPresence } from "@/lib/businessModules/chat/shared/hooks/useGetSelfUserPresence";
 import {
-  getPresenseLabel,
+  getPresenceLabel,
   getStatusColor,
 } from "@/lib/businessModules/chat/shared/utils";
 import { sidebarPadding } from "@/lib/shared/components/sidebar/Sidebar";
@@ -32,7 +32,7 @@ export function UserSidebarHeader({ selfUser }: { selfUser: ApiUser }) {
         invisible={!sharePresence}
         variant="solid"
         size="md"
-        aria-label={`Benutzer (${getPresenseLabel(userPresence)})`}
+        aria-label={`Benutzer (${getPresenceLabel(userPresence)})`}
         sx={{
           "& .MuiBadge-badge": {
             backgroundColor: getStatusColor(userPresence),

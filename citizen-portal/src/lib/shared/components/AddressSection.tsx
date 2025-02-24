@@ -30,7 +30,7 @@ export function AddressSection({
 
   return (
     <InfoSection icon={<FmdGoodOutlined />}>
-      <InfoSectionTitle>{t("contact.addressSection.title")}</InfoSectionTitle>
+      <InfoSectionTitle>{t("contact.address_section.title")}</InfoSectionTitle>
       <Typography>
         {department.name}
         <br />

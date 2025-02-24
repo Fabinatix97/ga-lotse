@@ -13,39 +13,11 @@ import "@fontsource/poppins/600.css";
 import "@fontsource/poppins/700.css";
 import "@fontsource/source-code-pro/400.css";
 import "@fontsource/source-code-pro/600.css";
-import { FontSize, Theme, extendTheme } from "@mui/joy/styles";
+import { Theme, extendTheme } from "@mui/joy/styles";
 import { SxProps } from "@mui/joy/styles/types";
 import { isNullish } from "remeda";
 
 import { customBreakpoints } from "./customBreakpoints";
-
-declare module "@mui/joy/styles" {
-  interface BreakpointOverrides {
-    xxs: true;
-    xxl: true;
-  }
-}
-
-declare module "@mui/joy/styles/types/zIndex" {
-  interface ZIndexOverrides {
-    toolbar: true;
-    sidebar: true;
-    sideNavigation: true;
-    header: true;
-  }
-}
-
-declare module "@mui/joy/ToggleButtonGroup" {
-  interface ToggleButtonGroupPropsVariantOverrides {
-    tabs: true;
-  }
-}
-
-type FontSizeOverrides = { [_k in keyof FontSize]: true };
-declare module "@mui/joy/SvgIcon" {
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  interface SvgIconPropsSizeOverrides extends FontSizeOverrides {}
-}
 
 const noBackdrop = {
   backdropFilter: "none",
@@ -239,9 +211,6 @@ export const theme = extendTheme({
             color: theme.palette[ownerState.color].plainColor,
           }),
           lineHeight: 1.5,
-          [theme.breakpoints.up("sm")]: {
-            fontSize: "1.25rem",
-          },
         }),
       },
     },

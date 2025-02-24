@@ -1,0 +1,14 @@
+{
+  "title": "Available Appointments",
+  "notAvailable": "No appointments currently available",
+  "notAvailableMessage": "Our Health Department staff have already been informed. Please try again later.",
+  "available": "Reschedule Appointment",
+  "availableMessage": "You are allowed to reschedule {{changesLeft}} more times.",
+  "result": {
+    "title": "Overview",
+    "name": "Name",
+    "birthday": "Date of Birth",
+    "confirm": "Confirm Appointment",
+    "back": "Back"
+  }
+}

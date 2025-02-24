@@ -83,7 +83,7 @@ public class FacilityController {
 
   @GetMapping(path = "/pending")
   @Operation(summary = "get overview of facilities with pending inspections")
-  @Transactional
+  @Transactional(readOnly = true)
   public InspPendingFacilitiesOverviewResponse getPendingFacilities(
       @InlineParameterObject @ParameterObject @Valid GetPendingFacilitiesFilterOptionsDto filters,
       @InlineParameterObject @ParameterObject @Valid

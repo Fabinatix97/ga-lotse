@@ -18,3 +18,7 @@ export const chatFeatureTogglesApiQueryKey = queryKeyFactory(
 export const departmentApiQueryKey = queryKeyFactory(
   apiQueryKey(["departmentApi"]),
 );
+
+export const userAccountApiQueryKey = queryKeyFactory(
+  apiQueryKey(["userAccountApi"]),
+);

@@ -17,7 +17,6 @@ import { useCallback, useEffect, useState } from "react";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import {
-  ClientState,
   CommunicationType,
   MessageTypeEnum,
 } from "@/lib/businessModules/chat/shared/enums";
@@ -34,7 +33,7 @@ import {
 } from "@/lib/businessModules/chat/shared/utils";
 
 export function useChatRoomList() {
-  const { matrixClient, clientState } = useChatClientContext();
+  const { matrixClient } = useChatClientContext();
   const [roomList, setRoomList] = useState<RoomData[]>([]);
 
   const onMessage = useCallback(
@@ -80,9 +79,6 @@ export function useChatRoomList() {
 
   useEffect(() => {
     void (async () => {
-      if (clientState !== ClientState.Prepared) {
-        return;
-      }
       await matrixClient.syncLeftRooms();
       const rooms = matrixClient.getRooms();
       const joinedRooms = rooms.filter(
@@ -125,7 +121,7 @@ export function useChatRoomList() {
       );
       setRoomList(roomWithTypeFiltered);
     })();
-  }, [clientState, getLatestMessage, matrixClient]);
+  }, [getLatestMessage, matrixClient]);
 
   // Listening for my membership in chat rooms
   useEffect(() => {

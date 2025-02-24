@@ -25,7 +25,9 @@ import org.springframework.context.annotation.*;
   DefaultTestHelperService.class,
   TestRequestInterceptor.class,
   PopulateWithAccessTokenHelper.class,
-  DatabaseResetHelper.class
+  DatabaseResetHelper.class,
+  DatabaseResetAction.class,
+  TestHelperClockResetAction.class,
 })
 @ConditionalOnTestHelperEnabled
 public class TestHelperAutoConfiguration {

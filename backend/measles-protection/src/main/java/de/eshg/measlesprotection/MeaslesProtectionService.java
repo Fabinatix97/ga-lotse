@@ -13,6 +13,7 @@ import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.domain.model.BaseEntity_;
 import de.eshg.lib.appointmentblock.AppointmentMapper;
 import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
+import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.Procedure_;
 import de.eshg.lib.procedure.domain.model.RelatedPerson;
 import de.eshg.lib.procedure.domain.model.RelatedPerson_;
@@ -52,6 +53,7 @@ import de.eshg.measlesprotection.persistence.db.ReportData;
 import de.eshg.measlesprotection.persistence.db.RoleStatus;
 import de.eshg.measlesprotection.persistence.support.MeaslesProtectionProcedureSpecification;
 import de.eshg.measlesprotection.persistence.support.ResultPage;
+import de.eshg.rest.service.error.BadRequestException;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -367,7 +369,11 @@ public class MeaslesProtectionService {
 
   @Transactional
   public void deleteProcedure(UUID id) {
-    procedureDeletionService.deleteAndWriteToCemetery(
-        procedureFinder.findProcedureByExternalId(id));
+    MeaslesProtectionProcedure procedure = procedureFinder.findProcedureByExternalId(id);
+    if (procedure.getProcedureStatus().equals(ProcedureStatus.DRAFT)) {
+      procedureDeletionService.deleteAndWriteToCemetery(procedure);
+    } else {
+      throw new BadRequestException("Non-draft procedures cannot be deleted!");
+    }
   }
 }

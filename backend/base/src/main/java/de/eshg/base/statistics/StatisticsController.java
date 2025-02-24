@@ -5,6 +5,8 @@
 
 package de.eshg.base.statistics;
 
+import static java.util.Collections.emptyList;
+
 import de.eshg.base.address.persistence.embeddable.EmbeddableDomesticAddress;
 import de.eshg.base.centralfile.persistence.entity.*;
 import de.eshg.base.centralfile.persistence.repository.FacilityRepository;
@@ -19,6 +21,8 @@ import de.eshg.base.statistics.api.BaseDataTableHeader;
 import de.eshg.base.statistics.api.GetBaseDataSourcesResponse;
 import de.eshg.base.statistics.api.GetBaseStatisticsDataRequest;
 import de.eshg.base.statistics.api.GetBaseStatisticsDataResponse;
+import de.eshg.base.statistics.api.GetBaseStatisticsDataTableHeaderRequest;
+import de.eshg.base.statistics.api.GetBaseStatisticsDataTableHeaderResponse;
 import de.eshg.base.statistics.api.SubjectType;
 import de.eshg.base.statistics.options.GenderOptions;
 import de.eshg.base.street.DistrictDto;
@@ -33,10 +37,10 @@ import de.eshg.rest.service.error.BadRequestException;
 import io.swagger.v3.oas.annotations.Hidden;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Stream;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
@@ -93,39 +97,52 @@ public class StatisticsController implements BaseStatisticsApi {
 
   @Override
   @Transactional(readOnly = true)
+  public GetBaseStatisticsDataTableHeaderResponse getDataTableHeader(
+      GetBaseStatisticsDataTableHeaderRequest getDataTableHeaderRequest) {
+    List<String> attributeCodes = getDataTableHeaderRequest.attributeCodes();
+    GetBaseStatisticsDataResponse dataResponse =
+        switch (getSubjectType(getDataTableHeaderRequest.dataSourceName())) {
+          case PERSON -> getPersonFileStateResponse(attributeCodes, emptyList());
+          case FACILITY -> getFacilityFileStateResponse(attributeCodes, emptyList());
+          case CONTACT -> getContactResponse(attributeCodes, emptyList());
+        };
+    return new GetBaseStatisticsDataTableHeaderResponse(dataResponse.dataTableHeader());
+  }
+
+  @Override
+  @Transactional(readOnly = true)
   public GetBaseStatisticsDataResponse getSpecificData(
       GetBaseStatisticsDataRequest getSpecificDataRequest) {
-    SubjectType subjectType =
-        Arrays.stream(SubjectType.values())
-            .filter(sT -> sT.name().equals(getSpecificDataRequest.dataSourceName()))
-            .findFirst()
-            .orElseThrow(
-                () ->
-                    new BadRequestException(
-                        "Data source with name '%s' not found"
-                            .formatted(getSpecificDataRequest.dataSourceName())));
-
-    return switch (subjectType) {
-      case PERSON -> getPersonFileStateResponse(getSpecificDataRequest);
-      case FACILITY -> getFacilityFileStateResponse(getSpecificDataRequest);
-      case CONTACT -> getContactResponse(getSpecificDataRequest);
+    List<String> attributeCodes = getSpecificDataRequest.attributeCodes();
+    List<UUID> baseIds = getSpecificDataRequest.baseIds();
+    return switch (getSubjectType(getSpecificDataRequest.dataSourceName())) {
+      case PERSON -> getPersonFileStateResponse(attributeCodes, baseIds);
+      case FACILITY -> getFacilityFileStateResponse(attributeCodes, baseIds);
+      case CONTACT -> getContactResponse(attributeCodes, baseIds);
     };
   }
 
+  private static SubjectType getSubjectType(String dataSourceName) {
+    return Arrays.stream(SubjectType.values())
+        .filter(sT -> sT.name().equals(dataSourceName))
+        .findFirst()
+        .orElseThrow(
+            () ->
+                new BadRequestException(
+                    "Data source with name '%s' not found".formatted(dataSourceName)));
+  }
+
   private GetBaseStatisticsDataResponse getPersonFileStateResponse(
-      GetBaseStatisticsDataRequest getSpecificDataRequest) {
-    List<CommonAttribute> relevantCommonAttributes =
-        getRelevantPersonAttributes(getSpecificDataRequest.attributeCodes());
+      List<String> attributeCodes, List<UUID> centralFileIds) {
+    List<CommonAttribute> relevantCommonAttributes = getRelevantPersonAttributes(attributeCodes);
     if (relevantCommonAttributes.isEmpty()) {
-      return new GetBaseStatisticsDataResponse(
-          new BaseDataTableHeader(Collections.emptyList()), null);
+      return new GetBaseStatisticsDataResponse(new BaseDataTableHeader(emptyList()), null);
     }
 
     List<BaseAttribute> attributes = getAttributes(relevantCommonAttributes, SubjectType.PERSON);
 
     List<Person> persons =
-        personRepository.findAllByExternalIdInAndReferencePersonIsNotNullOrderById(
-            getSpecificDataRequest.centralFileIds());
+        personRepository.findAllByExternalIdInAndReferencePersonIsNotNullOrderById(centralFileIds);
     List<DataRow> dataRows =
         persons.stream().map(person -> createDataRow(person, relevantCommonAttributes)).toList();
 
@@ -297,18 +314,16 @@ public class StatisticsController implements BaseStatisticsApi {
   }
 
   private GetBaseStatisticsDataResponse getFacilityFileStateResponse(
-      GetBaseStatisticsDataRequest getSpecificDataRequest) {
-    List<AddressAttribute> relevantAddressAttributes =
-        getRelevantAddressAttributes(getSpecificDataRequest.attributeCodes());
+      List<String> attributeCodes, List<UUID> centralFileIds) {
+    List<AddressAttribute> relevantAddressAttributes = getRelevantAddressAttributes(attributeCodes);
     if (relevantAddressAttributes.isEmpty()) {
-      return new GetBaseStatisticsDataResponse(
-          new BaseDataTableHeader(Collections.emptyList()), null);
+      return new GetBaseStatisticsDataResponse(new BaseDataTableHeader(emptyList()), null);
     }
     List<BaseAttribute> attributes = getAttributes(relevantAddressAttributes, SubjectType.FACILITY);
 
     List<Facility> facilities =
         facilityRepository.findAllByExternalIdInAndReferenceFacilityIsNotNullOrderById(
-            getSpecificDataRequest.centralFileIds());
+            centralFileIds);
     List<DataRow> dataRows =
         facilities.stream()
             .map(facility -> createDataRow(facility, relevantAddressAttributes))
@@ -359,17 +374,16 @@ public class StatisticsController implements BaseStatisticsApi {
   }
 
   private GetBaseStatisticsDataResponse getContactResponse(
-      GetBaseStatisticsDataRequest getSpecificDataRequest) {
+      List<String> attributeCodes, List<UUID> contactIds) {
     List<ContactAttributes> relevantContactAttributes =
-        getRelevantContactAttributes(getSpecificDataRequest.attributeCodes());
+        getRelevantContactAttributes(attributeCodes);
     if (relevantContactAttributes.isEmpty()) {
-      return new GetBaseStatisticsDataResponse(
-          new BaseDataTableHeader(Collections.emptyList()), null);
+      return new GetBaseStatisticsDataResponse(new BaseDataTableHeader(emptyList()), null);
     }
 
     List<BaseAttribute> attributes = getAttributes(relevantContactAttributes, SubjectType.CONTACT);
 
-    List<Contact> contacts = contactService.findAllById(getSpecificDataRequest.centralFileIds());
+    List<Contact> contacts = contactService.findAllById(contactIds);
     List<DataRow> dataRows =
         contacts.stream()
             .map(contact -> createDataRow(contact, relevantContactAttributes))

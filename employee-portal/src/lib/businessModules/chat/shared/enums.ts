@@ -4,15 +4,16 @@
  */
 
 export enum ClientState {
-  Idle = "Idle",
+  Registration = "REGISTRATION",
+  Idle = "IDLE",
   Authorized = "AUTHORIZED",
   ClientCreated = "CLIENT_CREATED",
   ReadyForEncryption = "READY_FOR_ENCRYPTION",
   CreateBackupKey = "CREATE_BACKUP_KEY",
   RestoreBackupKey = "RESTORE_BACKUP_KEY",
-  BackupSetupComplete = "BACKUP_SETUP_COMPLETE",
   Prepared = "PREPARED",
   Restart = "RESTART",
+  Reset = "RESET",
   Error = "ERROR",
 }
 

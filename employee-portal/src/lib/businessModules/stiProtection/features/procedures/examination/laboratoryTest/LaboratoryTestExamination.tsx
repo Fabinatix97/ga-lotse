@@ -18,9 +18,8 @@ import {
   useUpsertLaboratoryTestOptions,
 } from "@/lib/businessModules/stiProtection/api/mutations/examination";
 import { TextareaFieldWithTextTemplates } from "@/lib/businessModules/stiProtection/components/textTemplates/TextareaFieldWithTextTemplates";
-import { ExaminationStickyBottomButtonBar } from "@/lib/businessModules/stiProtection/features/procedures/examination/ExaminationStickyBottomButtonBar";
+import { TabStickyBottomButtonBar } from "@/lib/businessModules/stiProtection/features/procedures/TabStickyBottomButtonBar";
 import { ExaminationTabNavPanel } from "@/lib/businessModules/stiProtection/features/procedures/examination/ExaminationTabNavPanel";
-import { useOnCancelForm } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { SidePanel } from "@/lib/shared/components/sidePanel/SidePanel";
@@ -51,7 +50,6 @@ export function LaboratoryTestExamination(
     procedureId,
   });
   const upsertLaboratoryTests = useUpsertLaboratoryTest({ procedureId });
-  const onCancel = useOnCancelForm<LaboratoryTestExaminationData>();
 
   function onSubmit(values: LaboratoryTestExaminationData) {
     return upsertLaboratoryTests.mutateAsync({
@@ -69,7 +67,7 @@ export function LaboratoryTestExamination(
       onSubmit={onSubmit}
       enableReinitialize
     >
-      {({ resetForm, dirty, isSubmitting, values }) => (
+      {({ values }) => (
         <FormPlus sx={{ height: "100%", overflow: "hidden" }}>
           <ConfirmLeaveDirtyFormEffect
             onSaveMutation={{
@@ -205,10 +203,7 @@ export function LaboratoryTestExamination(
               </Grid>
             </Grid>
           </Box>
-          <ExaminationStickyBottomButtonBar
-            isSubmitting={isSubmitting}
-            onClick={() => onCancel({ dirty, reset: resetForm })}
-          />
+          <TabStickyBottomButtonBar />
         </FormPlus>
       )}
     </Formik>
@@ -227,10 +222,10 @@ function ExaminationTabInfo() {
         aria-label={"Weitere Angaben zu den Labortests"}
       >
         <Stack paddingTop={1}>
-          <Typography>Allgemeine Bemerkung</Typography>
           <TextareaFieldWithTextTemplates
             name="generalRemarks"
-            minRows={4}
+            label="Allgemeine Bemerkungen"
+            minRows={5}
             context={ApiTextTemplateContext.LaboratoryTestsRemark}
           />
         </Stack>

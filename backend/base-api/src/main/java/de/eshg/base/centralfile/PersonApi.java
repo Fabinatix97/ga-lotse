@@ -90,6 +90,35 @@ public interface PersonApi {
           @RequestParam(name = "dateOfBirth")
           LocalDate dateOfBirth);
 
+  @GetExchange("/partial")
+  @ApiResponse(responseCode = "200")
+  @Operation(
+      summary =
+          """
+Search reference persons for the given knowledge factors 'firstName', 'lastName' and 'dateOfBirth',
+without the need for specifying all three. However, searching for only a first name or only a last
+name is prohibited.
+Excludes persons created from external sources.
+Caution: The returned ids of the reference persons must not be stored.
+""")
+  SearchReferencePersonsWithPartialKnowledgeFactorsResponse
+      searchReferencePersonsWithPartialKnowledgeFactors(
+          @Parameter(
+                  description =
+                      "The first name of the Person (1 of 3 knowledge factors) which shall be searched for.")
+              @RequestParam(name = "firstName")
+              String firstName,
+          @Parameter(
+                  description =
+                      "The last name of the Person (1 of 3 knowledge factors) which shall be searched for.")
+              @RequestParam(name = "lastName")
+              String lastName,
+          @Parameter(
+                  description =
+                      "The date of birth of the Person (1 of 3 knowledge factors) which shall be searched for.")
+              @RequestParam(name = "dateOfBirth")
+              LocalDate dateOfBirth);
+
   @GetExchange(FILE_STATES_URL + "/{id}/linked-ids")
   @ApiResponse(responseCode = "200")
   @Operation(

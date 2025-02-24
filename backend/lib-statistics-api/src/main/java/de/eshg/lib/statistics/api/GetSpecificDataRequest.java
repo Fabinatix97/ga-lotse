@@ -20,7 +20,8 @@ public record GetSpecificDataRequest(
     @NotNull boolean anonymizationRequired,
     @NotNull List<String> attributeCodes,
     @Min(0) @Schema(defaultValue = "0") Integer page,
-    @Min(1) @Schema(defaultValue = "25") Integer pageSize) {
+    @Min(1) @Schema(defaultValue = "25") Integer pageSize)
+    implements GetDataInformationRequest {
 
   public GetSpecificDataRequest(
       Instant timeRangeStart,

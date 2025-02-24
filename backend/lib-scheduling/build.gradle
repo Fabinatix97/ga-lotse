@@ -6,6 +6,7 @@ dependencies {
     api 'net.javacrumbs.shedlock:shedlock-spring:latest.release'
 
     implementation project(':lib-commons')
+    implementation project(':test-helper-commons')
 
     implementation 'jakarta.persistence:jakarta.persistence-api'
     implementation 'org.springframework:spring-context'

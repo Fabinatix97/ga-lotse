@@ -6,6 +6,9 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
 import AddIcon from "@mui/icons-material/Add";
 import { Button, Stack } from "@mui/joy";
 import { useState } from "react";
@@ -15,9 +18,6 @@ import { InventoryBooking } from "@/lib/baseModule/components/inventory/Inventor
 import { InventoryDetails } from "@/lib/baseModule/components/inventory/InventoryDetails";
 import { useInventoryRestockSidebar } from "@/lib/baseModule/components/inventory/modals/InventoryRestockSidebar";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 export default function InventoryDetailsPage({

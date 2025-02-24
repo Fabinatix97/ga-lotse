@@ -42,7 +42,11 @@ public non-sealed class SystemProgressEntry extends ProgressEntry
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @Column(unique = true)
-  private UUID previousFileStateId;
+  private UUID previousPersonFileStateId;
+
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @Column(unique = true)
+  private UUID previousFacilityFileStateId;
 
   public String getSystemProgressEntryType() {
     return systemProgressEntryType;
@@ -76,12 +80,20 @@ public non-sealed class SystemProgressEntry extends ProgressEntry
     this.changeDescription = changeDescription;
   }
 
-  public UUID getPreviousFileStateId() {
-    return previousFileStateId;
+  public UUID getPreviousPersonFileStateId() {
+    return previousPersonFileStateId;
   }
 
-  public void setPreviousFileStateId(UUID previousFileStateId) {
-    this.previousFileStateId = previousFileStateId;
+  public void setPreviousPersonFileStateId(UUID previousFileStateId) {
+    this.previousPersonFileStateId = previousFileStateId;
+  }
+
+  public UUID getPreviousFacilityFileStateId() {
+    return previousFacilityFileStateId;
+  }
+
+  public void setPreviousFacilityFileStateId(UUID previousFacilityFileStateId) {
+    this.previousFacilityFileStateId = previousFacilityFileStateId;
   }
 
   @Override

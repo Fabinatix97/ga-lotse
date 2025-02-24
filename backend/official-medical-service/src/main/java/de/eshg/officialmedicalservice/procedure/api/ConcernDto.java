@@ -5,6 +5,7 @@
 
 package de.eshg.officialmedicalservice.procedure.api;
 
+import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -13,9 +14,9 @@ import jakarta.validation.constraints.NotNull;
 public record ConcernDto(
     @NotNull long version,
     @NotBlank String nameDe, // reason_de
-    @NotBlank String nameEn,
-    @NotBlank String descriptionDe,
-    @NotBlank String descriptionEn,
+    String nameEn,
     @NotNull boolean highPriority,
     @NotBlank String categoryNameDe,
-    @NotBlank String categoryNameEn) {}
+    @NotBlank String categoryNameEn,
+    AppointmentTypeDto appointmentType,
+    @NotNull boolean visibleInOnlinePortal) {}

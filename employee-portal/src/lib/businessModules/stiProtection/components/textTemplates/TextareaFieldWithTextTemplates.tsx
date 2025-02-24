@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { ApiTextTemplateContext } from "@eshg/sti-protection-api";
 import { Add } from "@mui/icons-material";
 import { Button, styled } from "@mui/joy";
@@ -33,6 +34,7 @@ export function TextareaFieldWithTextTemplates({
 }: TextareaWithTextTemplatesProps) {
   const { setFieldValue, getFieldMeta } = useFormikContext();
   const { value } = getFieldMeta(props.name);
+  const disabled = useIsFormDisabled();
 
   const ref = useRef<HTMLTextAreaElement | null>(null);
   const appendTextRef = useRef<AppendText | null>(null);
@@ -83,15 +85,17 @@ export function TextareaFieldWithTextTemplates({
         {...props}
         slotProps={{ textarea: { ref, rows: 20, onKeyDownCapture: onKeyDown } }}
       />
-      <Button
-        startDecorator={<Add />}
-        aria-keyshortcuts="Control+Space"
-        variant="plain"
-        onClick={open}
-        title="Menü der Textvorlagen öffnen (Strg+Leertaste)"
-      >
-        Textvorlage einfügen
-      </Button>
+      {!disabled && (
+        <Button
+          startDecorator={<Add />}
+          aria-keyshortcuts="Control+Space"
+          variant="plain"
+          onClick={open}
+          title="Menü der Textvorlagen öffnen (Strg+Leertaste)"
+        >
+          Textvorlage einfügen
+        </Button>
+      )}
     </FieldSetColumn>
   );
 }

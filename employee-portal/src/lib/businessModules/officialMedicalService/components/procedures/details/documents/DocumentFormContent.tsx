@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import {
   ApiDocument,
   ApiDocumentStatus,
@@ -17,6 +18,7 @@ import {
   Stack,
   Typography,
 } from "@mui/joy";
+import { useField } from "formik";
 import { ReactNode } from "react";
 import { isEmpty } from "remeda";
 
@@ -34,6 +36,15 @@ export function DocumentFormContent(props: {
   onEditNote?: () => void;
   isProcedureFinalized: boolean;
 }) {
+  const [{ value: files }] = useField<File[]>("files");
+
+  const canAddFiles =
+    (props.document.documentStatus === ApiDocumentStatus.Missing ||
+      props.document.documentStatus === ApiDocumentStatus.Rejected) &&
+    !props.isProcedureFinalized;
+
+  const showNoteField = !isEmpty(files) && canAddFiles;
+
   return (
     <SidebarContent title={props.title}>
       <Stack rowGap={3}>
@@ -58,9 +69,11 @@ export function DocumentFormContent(props: {
             <ChipItem
               label="Hochgeladen von"
               color={
-                props.document.uploadInCitizenPortal ? "warning" : "primary"
+                props.document.uploadedBy === "EXTERN" ? "warning" : "primary"
               }
-              value={props.document.uploadInCitizenPortal ? "Extern" : "Intern"}
+              value={
+                props.document.uploadedBy === "EXTERN" ? "Extern" : "Intern"
+              }
             />
           )}
           <ChipItem
@@ -104,34 +117,39 @@ export function DocumentFormContent(props: {
             )}
           <FilesSection
             name="files"
-            canAdd={
-              (props.document.documentStatus === ApiDocumentStatus.Missing ||
-                props.document.documentStatus === ApiDocumentStatus.Rejected) &&
-              !props.isProcedureFinalized
-            }
+            canAdd={canAddFiles}
             withInitialField={false}
             addLabel="Datei hinzufügen"
             files={props.document.files}
           />
-          <Stack
-            direction="row"
-            gap={2}
-            justifyContent="space-between"
-            alignItems="start"
-            data-testid="noteSection"
-          >
-            <DetailsItem
-              label="Stichwörter"
-              value={!isEmpty(props.document.note) ? props.document.note : "-"}
-              slotProps={{ value: { pt: 1 } }}
-            />
-            {!isEmpty(props.document.files) && !props.isProcedureFinalized && (
-              <EditButton
-                aria-label="Stichwörter bearbeiten"
-                onClick={props.onEditNote}
+          {showNoteField ? (
+            <Box data-testid="noteSection">
+              <InputField name="note" label="Stichwörter" />
+            </Box>
+          ) : (
+            <Stack
+              direction="row"
+              gap={2}
+              justifyContent="space-between"
+              alignItems="start"
+              data-testid="noteSection"
+            >
+              <DetailsItem
+                label="Stichwörter"
+                value={
+                  !isEmpty(props.document.note) ? props.document.note : "-"
+                }
+                slotProps={{ value: { pt: 1 } }}
               />
-            )}
-          </Stack>
+              {!isEmpty(props.document.files) &&
+                !props.isProcedureFinalized && (
+                  <EditButton
+                    aria-label="Stichwörter bearbeiten"
+                    onClick={props.onEditNote}
+                  />
+                )}
+            </Stack>
+          )}
         </Stack>
 
         <Divider orientation="horizontal" />

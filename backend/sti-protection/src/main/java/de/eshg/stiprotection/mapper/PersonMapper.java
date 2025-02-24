@@ -5,11 +5,17 @@
 
 package de.eshg.stiprotection.mapper;
 
-import de.eshg.stiprotection.api.CreateProcedureRequest;
+import de.eshg.lib.appointmentblock.MappingUtil;
+import de.eshg.stiprotection.api.AddPersonalDetailsResponse;
+import de.eshg.stiprotection.api.ConcernDto;
 import de.eshg.stiprotection.api.PersonDto;
+import de.eshg.stiprotection.api.PersonalDetails;
 import de.eshg.stiprotection.api.UpdatePersonDetailsRequest;
 import de.eshg.stiprotection.persistence.data.PersonData;
 import de.eshg.stiprotection.persistence.db.Person;
+import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
+import java.time.Instant;
+import java.time.Year;
 
 public class PersonMapper {
 
@@ -25,7 +31,7 @@ public class PersonMapper {
         accessCode);
   }
 
-  public static PersonData toDataType(CreateProcedureRequest request) {
+  public static PersonData toDataType(PersonalDetails request) {
     return new PersonData(
         GenderMapper.toDatabaseType(request.gender()),
         request.yearOfBirth(),
@@ -56,5 +62,12 @@ public class PersonMapper {
     person.setCountryOfBirth(data.countryOfBirth());
     person.setInGermanySince(data.inGermanySince());
     return person;
+  }
+
+  public static AddPersonalDetailsResponse toInterfaceType(StiProtectionProcedure procedure) {
+    ConcernDto concern = MappingUtil.mapEnum(ConcernDto.class, procedure.getConcern());
+    Instant appointmentStart = procedure.getAppointmentStart();
+    Year yearOfBirth = procedure.getPerson().getYearOfBirth();
+    return new AddPersonalDetailsResponse(concern, appointmentStart, yearOfBirth);
   }
 }

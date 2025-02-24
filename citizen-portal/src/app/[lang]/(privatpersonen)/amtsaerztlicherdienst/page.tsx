@@ -12,11 +12,17 @@ import { LandingpageContent } from "@/lib/businessModules/officialMedicalService
 import { LandingpageSidePanel } from "@/lib/businessModules/officialMedicalService/components/landing/LandingpageSidePanel";
 import { useTranslation } from "@/lib/i18n/client";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
-import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
+import {
+  OneColumnGrid,
+  TwoColumnGrid,
+} from "@/lib/shared/components/layout/grid";
 import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
+import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 export default function CitizenOmsEntryPage() {
   const { t } = useTranslation(["officialMedicalService/landing"]);
+  const isMobile = useIsMobile();
+
   const [{ data: departmentInfo }] = useSuspenseQueries({
     queries: [useGetDepartmentInfoQuery()],
   });
@@ -25,10 +31,19 @@ export default function CitizenOmsEntryPage() {
     <PageLayout banner="private">
       <PageContent>
         <PageTitle>{t("pageTitle")}</PageTitle>
-        <TwoColumnGrid
-          content={<LandingpageContent departmentInfo={departmentInfo} />}
-          sidePanel={<LandingpageSidePanel />}
-        />
+        {isMobile ? (
+          <OneColumnGrid
+            contentTop={<LandingpageSidePanel />}
+            contentCenter={
+              <LandingpageContent departmentInfo={departmentInfo} />
+            }
+          />
+        ) : (
+          <TwoColumnGrid
+            content={<LandingpageContent departmentInfo={departmentInfo} />}
+            sidePanel={<LandingpageSidePanel />}
+          />
+        )}
       </PageContent>
     </PageLayout>
   );

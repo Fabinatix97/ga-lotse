@@ -10,7 +10,7 @@ export const StyledButton = styled(Button)(({ theme }) => ({
   padding: theme.spacing(1, 6),
 }));
 
-interface FileButtonProps
+export interface FileButtonProps
   extends Pick<
     ButtonProps,
     | "sx"

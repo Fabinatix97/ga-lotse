@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useLayoutConfig } from "@eshg/lib-employee-portal/contexts/layoutConfig";
+import { useHeaderHeights } from "@eshg/lib-employee-portal/hooks/useHeaderHeights";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Divider, Sheet, Stack, Typography } from "@mui/joy";
 import { isNonNullish } from "remeda";
 
-import { simpleToolbarHeight } from "@/lib/baseModule/components/layout/sizes";
-import { useHeaderHeights } from "@/lib/baseModule/components/layout/useHeaderHeights";
 import { useExportReportData } from "@/lib/businessModules/statistics/api/downloads/useExportReportData";
 import {
   DataSourceSensitivity,
@@ -47,6 +47,7 @@ export interface ReportDetailsTileProps {
 }
 
 export function ReportDetailsTile(props: ReportDetailsTileProps) {
+  const { simpleToolbarHeight } = useLayoutConfig();
   const updateReportSidebar = useUpdateReportSidebar();
   const canWrite = useStatisticsRoleChecks().canWrite();
   const canDelete = useStatisticsRoleChecks().canDelete(props.userId);

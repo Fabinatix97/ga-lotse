@@ -10,7 +10,7 @@ import { logger } from "@/lib/businessModules/chat/shared/helpers";
 
 import { getSecretStorageKey } from "./cryptoCallbacks";
 
-export async function deleteBackup(
+export async function deleteKeyBackup(
   matrixClient: MatrixClient,
   backupInfo?: KeyBackupInfo | null,
 ) {
@@ -31,55 +31,43 @@ export async function deleteBackup(
   }
 }
 
-export async function restoreKeyBackupWithCache(
-  matrixClient: MatrixClient,
-  backupInfo?: KeyBackupInfo | null,
-) {
+export async function restoreKeyBackup(matrixClient: MatrixClient) {
   let handled = false;
+  try {
+    const crypto = matrixClient.getCrypto();
+    if (!crypto) throw new Error("CryptoApi is undefined");
 
-  if (backupInfo) {
-    try {
-      const gotCache = await matrixClient.restoreKeyBackupWithCache(
-        undefined /* targetRoomId */,
-        undefined /* targetSessionId */,
-        backupInfo,
-      );
-      if (gotCache) {
-        handled = true;
-        logger.debug("RestoreKeyBackup: found cached backup key");
-      }
-    } catch (e) {
-      logger.debug("restoreKeyBackupWithCache failed", e);
+    const keyBackup = await crypto.restoreKeyBackup();
+    if (keyBackup) {
+      handled = true;
+      logger.debug("Key backup restored successfully");
     }
+  } catch (e) {
+    logger.softError("Failed to restore key backup", e);
   }
-
   return handled;
 }
 
-export async function restoreKeyBackupWithSecretStorage(
+export async function loadBackupKeyFromSecretStorage(
   matrixClient: MatrixClient,
-  backupInfo?: KeyBackupInfo | null,
-  backupKeyStored?: boolean,
   passphrase?: string,
 ) {
   let handled = false;
 
-  if (backupKeyStored) {
-    try {
-      if (backupInfo) {
-        await accessSecretStorage(matrixClient, passphrase);
-        const keyBackup = await matrixClient.restoreKeyBackupWithSecretStorage(
-          backupInfo,
-          undefined,
-          undefined,
-        );
-        handled = true;
-        logger.debug("restoreKeyBackupWithSecretStorage", { keyBackup });
-      }
-    } catch (e) {
-      logger.softError("restoreKeyBackupWithSecretStorage failed");
-      throw e;
+  try {
+    await accessSecretStorage(matrixClient, passphrase);
+    const crypto = matrixClient.getCrypto();
+    if (!crypto) throw new Error("CryptoApi is undefined");
+
+    await crypto.loadSessionBackupPrivateKeyFromSecretStorage();
+    const keyBackup = await crypto.restoreKeyBackup();
+    if (keyBackup) {
+      handled = true;
+      logger.debug("Key backup successfully loaded from secret storage");
     }
+  } catch (e) {
+    logger.softError("Failed to load key backup from secret storage");
+    throw e;
   }
 
   return handled;
@@ -94,7 +82,7 @@ export async function setupNewSecretStorage(
     const crypto = matrixClient.getCrypto();
     if (!crypto) {
       throw new Error(
-        "End-to-end encryption is disabled - unable to access secret storage.",
+        "SetupNewSecretStorage: End-to-end encryption is disabled - unable to create secret storage.",
       );
     }
 
@@ -125,7 +113,7 @@ export async function accessSecretStorage(
     const crypto = matrixClient.getCrypto();
     if (!crypto) {
       throw new Error(
-        "End-to-end encryption is disabled - unable to access secret storage.",
+        "AccessSecretStorage: End-to-end encryption is disabled - unable to access secret storage.",
       );
     }
 

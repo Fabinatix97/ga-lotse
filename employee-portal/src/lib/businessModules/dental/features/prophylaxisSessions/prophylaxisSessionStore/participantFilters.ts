@@ -44,5 +44,5 @@ function matchesFluoridationConsent(
   }
 
   const requiresConsent = filter === "YES";
-  return participant.fluoridationConsentGiven === requiresConsent;
+  return participant.currentFluoridationConsent?.consented === requiresConsent;
 }

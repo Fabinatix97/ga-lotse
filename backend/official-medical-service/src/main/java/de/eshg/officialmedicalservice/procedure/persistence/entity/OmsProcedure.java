@@ -26,6 +26,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -58,7 +59,7 @@ public class OmsProcedure extends Procedure<OmsProcedure, OmsTask, Person, Facil
       mappedBy = OmsDocument_.OMS_PROCEDURE,
       cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
       orphanRemoval = true)
-  @OrderBy
+  @OrderBy(OmsDocument_.DOCUMENT_TYPE_DE)
   @BatchSize(size = 100)
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private final List<OmsDocument> documents = new ArrayList<>();
@@ -84,6 +85,10 @@ public class OmsProcedure extends Procedure<OmsProcedure, OmsTask, Person, Facil
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @Column
   private UUID citizenUserId;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  @Column
+  private Instant startedAt;
 
   public Person findAffectedPerson() {
     if (getRelatedPersons().isEmpty()) {
@@ -152,5 +157,13 @@ public class OmsProcedure extends Procedure<OmsProcedure, OmsTask, Person, Facil
 
   public void setCitizenUserId(UUID citizenUserId) {
     this.citizenUserId = citizenUserId;
+  }
+
+  public Instant getStartedAt() {
+    return startedAt;
+  }
+
+  public void setStartedAt(Instant startedAt) {
+    this.startedAt = startedAt;
   }
 }

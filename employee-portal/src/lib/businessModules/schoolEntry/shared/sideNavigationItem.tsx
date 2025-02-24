@@ -5,15 +5,15 @@
 
 import { ApiBaseFeature, ApiUserRole } from "@eshg/base-api";
 import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
+import {
+  SideNavigationSubItem,
+  UseSideNavigationItemsResult,
+} from "@eshg/lib-employee-portal/types/sideNavigation";
 import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
 import { WcOutlined } from "@mui/icons-material";
 import { useQuery } from "@tanstack/react-query";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
-import {
-  SideNavigationSubItem,
-  UseSideNavigationItemsResult,
-} from "@/lib/baseModule/components/layout/sideNavigation/types";
 import { useConfigApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { getLocationSelectionModeQuery } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
 

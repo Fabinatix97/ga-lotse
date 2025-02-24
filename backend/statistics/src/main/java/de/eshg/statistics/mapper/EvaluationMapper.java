@@ -71,6 +71,10 @@ public class EvaluationMapper {
   }
 
   private static TableColumnHeader mapToApi(TableColumn tableColumn) {
+    TableColumnDataPrivacyCategory dataPrivacyCategory =
+        tableColumn.getAnonymizationConfiguration() == null
+            ? null
+            : tableColumn.getAnonymizationConfiguration().getDataPrivacyCategory();
     if (tableColumn.getBaseModuleAttributeCode() == null) {
       return new TableColumnHeader(
           getAttributeDisplayName(tableColumn, false),
@@ -84,7 +88,7 @@ public class EvaluationMapper {
               tableColumn.getUnit(),
               tableColumn.getValueToMeanings(),
               tableColumn.getMinMaxNullUnknownValues()),
-          mapDataPrivacyCategory(tableColumn.getDataPrivacyCategory()));
+          mapDataPrivacyCategory(dataPrivacyCategory));
     } else {
       return new TableColumnHeader(
           getAttributeDisplayName(tableColumn, false),
@@ -101,7 +105,7 @@ public class EvaluationMapper {
                   tableColumn.getUnit(),
                   tableColumn.getValueToMeanings(),
                   tableColumn.getMinMaxNullUnknownValues())),
-          mapDataPrivacyCategory(tableColumn.getDataPrivacyCategory()));
+          mapDataPrivacyCategory(dataPrivacyCategory));
     }
   }
 

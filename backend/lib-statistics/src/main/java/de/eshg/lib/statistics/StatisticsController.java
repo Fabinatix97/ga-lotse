@@ -7,6 +7,8 @@ package de.eshg.lib.statistics;
 
 import de.eshg.lib.statistics.api.DataSourceInfo;
 import de.eshg.lib.statistics.api.GetDataSourcesResponse;
+import de.eshg.lib.statistics.api.GetDataTableHeaderRequest;
+import de.eshg.lib.statistics.api.GetDataTableHeaderResponse;
 import de.eshg.lib.statistics.api.GetSpecificDataRequest;
 import de.eshg.lib.statistics.api.GetSpecificDataResponse;
 import de.eshg.lib.statistics.datasource.DataSource;
@@ -39,6 +41,13 @@ public class StatisticsController implements StatisticsApi {
                         dataSource.isCanBeAnonymized(),
                         statisticsService.getAttributes(dataSource)))
             .toList());
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public GetDataTableHeaderResponse getDataTableHeader(
+      GetDataTableHeaderRequest getDataTableHeaderRequest) {
+    return statisticsService.getDataTableHeader(getDataTableHeaderRequest);
   }
 
   @Override

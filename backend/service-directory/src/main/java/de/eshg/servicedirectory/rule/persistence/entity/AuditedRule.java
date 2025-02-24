@@ -8,6 +8,7 @@ package de.eshg.servicedirectory.rule.persistence.entity;
 import de.eshg.domain.model.GloballyUniqueEntityBase;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
+import de.eshg.servicedirectory.staging.persistence.entity.StagedInfo;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -68,6 +69,8 @@ public non-sealed class AuditedRule extends GloballyUniqueEntityBase implements 
 
   @Column(nullable = false)
   private Boolean active;
+
+  @Embedded private final StagedInfo<StagedRule> stagedInfo = new StagedInfo<>();
 
   @Override
   public String getDescription() {

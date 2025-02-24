@@ -87,6 +87,11 @@ public class OmsDocument extends GloballyUniqueEntityBase {
   private boolean uploadInCitizenPortal;
 
   @Column
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  private DocumentUploadedBy uploadedBy;
+
+  @Column
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private String reasonForRejection;
 
@@ -172,6 +177,14 @@ public class OmsDocument extends GloballyUniqueEntityBase {
 
   public void setUploadInCitizenPortal(boolean uploadInCitizenPortal) {
     this.uploadInCitizenPortal = uploadInCitizenPortal;
+  }
+
+  public DocumentUploadedBy getUploadedBy() {
+    return uploadedBy;
+  }
+
+  public void setUploadedBy(DocumentUploadedBy uploadedBy) {
+    this.uploadedBy = uploadedBy;
   }
 
   public String getReasonForRejection() {

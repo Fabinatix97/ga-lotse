@@ -1,8 +1,22 @@
 {
   "pageTitle": "Official Medical Service",
   "information": {
-    "title": "Information",
-    "text": "Much Information Very Official Medical Service"
+    "title": "Informationen",
+    "pleaseCome": "Bitte kommen Sie am Untersuchungstag nüchtern zu uns:",
+    "pleaseBring": "Bringen Sie folgende Unterlagen zur amtsärztlichen Untersuchung mit:",
+    "perso": "Personalausweis / Reisepass",
+    "anamnesis": "Ausgefüllter Anamnesebogen (siehe Downloadbox)",
+    "orderLetter": "Auftragsschreiben (Schreiben des Dienstherrn mit Angabe des Untersuchungsgrundes) in Kopie",
+    "medicalDocuments": "ärztliche Unterlagen in Kopie (z.B. Krankenhausentlassungsberichte, Atteste, Bescheinigungen etc.)",
+    "meds": "einen Nachweis der zurzeit verordneten Medikamente (falls vorhanden)",
+    "forAttests": "Für Atteste zur Prüfungsfähigkeit ist Folgendes zu beachten und mitzubringen",
+    "onlyFrankfurt": "Wir sind nur für in Frankfurt Studierende zuständig",
+    "comeOnDay": "Kommen Sie bitte bei Prüfungen spätestens am Prüfungstag (auch ohne Termin) zu uns oder bei Abgabe einer wissenschaftlichen Arbeit nach vorheriger telefonischer Terminvereinbarung",
+    "definitelyBring": "Zum Termin unbedingt mitzubringen sind",
+    "docsDoctor": "Ihre ärztlichen Unterlagen mit Diagnose von Ihrem niedergelassenen Arzt.",
+    "docsUniversity": "Bescheinigung der Universität oder Hochschule über den Prüfungstermin.",
+    "studentCard": "Studentenausweis + Personalausweis oder Reisepass.",
+    "fee": "Gebühr in Höhe von 50 Euro (zahlbar bar oder mit EC-Karte)."
   },
   "contact": {
     "title": "Contact and Availability",
@@ -19,8 +33,9 @@
     }
   },
   "personalArea": {
-    "title": "Process",
-    "information": "All the Information about the Process",
+    "title": "Here you can report your concern for an official medical examination.",
+    "information": "To report a concern, a confirmation letter is needed",
+    "bookAppointment": "Report Concern",
     "goToPersonalArea": "View Process"
   }
 }

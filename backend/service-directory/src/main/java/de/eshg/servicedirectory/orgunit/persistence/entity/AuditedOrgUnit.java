@@ -10,7 +10,9 @@ import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.FederalState;
 import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.servicedirectory.actor.persistence.entity.AuditedActor;
+import de.eshg.servicedirectory.staging.persistence.entity.StagedInfo;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
@@ -53,6 +55,8 @@ public non-sealed class AuditedOrgUnit extends GloballyUniqueEntityBase implemen
   @NotAudited
   @OrderBy
   private final List<AuditedActor> actors = new ArrayList<>();
+
+  @Embedded private final StagedInfo<StagedOrgUnit> stagedInfo = new StagedInfo<>();
 
   @Override
   public String getReadableName() {

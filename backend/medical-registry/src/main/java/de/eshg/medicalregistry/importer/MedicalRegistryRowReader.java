@@ -18,13 +18,11 @@ import de.eshg.medicalregistry.api.CreatePracticeDto;
 import de.eshg.medicalregistry.api.CreateProfessionInformationDto;
 import de.eshg.medicalregistry.api.PracticeAddressDto;
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
 import jakarta.validation.ValidatorFactory;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.metadata.ConstraintDescriptor;
-import java.time.Clock;
 import java.util.Arrays;
 import java.util.Set;
 import org.apache.poi.ss.usermodel.Cell;
@@ -32,11 +30,15 @@ import org.apache.poi.ss.usermodel.Sheet;
 
 class MedicalRegistryRowReader extends RowReader<MedicalRegistryRow, MedicalRegistryColumn> {
 
-  private static final ValidatorFactory validatorFactory =
-      Validation.buildDefaultValidatorFactory();
+  private final ValidatorFactory validatorFactory;
 
-  MedicalRegistryRowReader(Sheet sheet, Clock clock) {
-    super(sheet, Arrays.asList(MedicalRegistryColumn.values()), MedicalRegistryRow::new, clock);
+  MedicalRegistryRowReader(Sheet sheet, ValidatorFactory validatorFactory) {
+    super(
+        sheet,
+        Arrays.asList(MedicalRegistryColumn.values()),
+        MedicalRegistryRow::new,
+        validatorFactory.getClockProvider().getClock());
+    this.validatorFactory = validatorFactory;
   }
 
   @Override

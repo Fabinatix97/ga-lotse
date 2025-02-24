@@ -4,6 +4,7 @@
  */
 
 import {
+  ApiFluoridationConsent,
   ApiGender,
   ApiProphylaxisSessionChildExamination,
 } from "@eshg/dental-api";
@@ -21,7 +22,8 @@ export interface ChildExamination {
   readonly dateOfBirth: Date;
   readonly groupName: string;
   readonly gender?: ApiGender;
-  readonly fluoridationConsentGiven?: boolean;
+  readonly currentFluoridationConsent?: ApiFluoridationConsent;
+  readonly allFluoridationConsents: ApiFluoridationConsent[];
   readonly status: ExaminationStatus;
   readonly result?: ExaminationResult;
   readonly note?: string;
@@ -39,7 +41,8 @@ export function mapChildExamination(
     dateOfBirth: response.dateOfBirth,
     groupName: response.groupName,
     gender: response.gender,
-    fluoridationConsentGiven: response.fluoridationConsentGiven,
+    currentFluoridationConsent: response.allFluoridationConsents[0],
+    allFluoridationConsents: response.allFluoridationConsents,
     status: mapToExaminationStatus(response.result),
     result: mapOptional(response.result, mapExaminationResult),
     note: response.note,

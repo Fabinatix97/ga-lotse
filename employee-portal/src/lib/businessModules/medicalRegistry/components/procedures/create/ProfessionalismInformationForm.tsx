@@ -27,7 +27,9 @@ export function ProfessionalismInformationForm(props: NestedFormProps) {
   return (
     <>
       <Grid xxs={12}>
-        <Typography level="h3">Angaben zur Berufsausübung</Typography>
+        <Typography level="h3" component="h2">
+          Angaben zur Berufsausübung
+        </Typography>
       </Grid>
       <Grid xxs={12}>
         <RadioGroupField

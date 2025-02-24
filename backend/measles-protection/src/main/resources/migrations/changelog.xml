@@ -55,5 +55,8 @@
   <include file="migrations/0045_add_previous_file_state_id_to_system_progress_entry.xml"/>
   <include file="migrations/0046_add_auditlog_entry.xml"/>
   <include file="migrations/0047_convert_duration_columns_to_interval.xml"/>
+  <include file="migrations/0048_differentiate_between_previous_person_and_facility_file_state.xml"/>
+  <include file="migrations/0049_oms_appointment_type_extensions.xml"/>
+  <include file="migrations/0050_add_shedlock.xml"/>
 
 </databaseChangeLog>

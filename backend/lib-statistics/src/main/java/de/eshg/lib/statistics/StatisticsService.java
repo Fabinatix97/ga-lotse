@@ -8,6 +8,9 @@ package de.eshg.lib.statistics;
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.statistics.api.Attribute;
 import de.eshg.lib.statistics.api.DataTableHeader;
+import de.eshg.lib.statistics.api.GetDataInformationRequest;
+import de.eshg.lib.statistics.api.GetDataTableHeaderRequest;
+import de.eshg.lib.statistics.api.GetDataTableHeaderResponse;
 import de.eshg.lib.statistics.api.GetSpecificDataRequest;
 import de.eshg.lib.statistics.api.GetSpecificDataResponse;
 import de.eshg.lib.statistics.api.ValueType;
@@ -35,6 +38,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -90,36 +94,63 @@ public class StatisticsService {
     };
   }
 
+  public final GetDataTableHeaderResponse getDataTableHeader(
+      GetDataTableHeaderRequest getDataTableHeaderRequest) {
+    GetSpecificDataResponse specificDataResponse =
+        getSpecificDataResponse(getDataTableHeaderRequest, ignored -> DataRowPage.empty());
+    return new GetDataTableHeaderResponse(
+        specificDataResponse.dataSourceName(),
+        specificDataResponse.timeRangeStart(),
+        specificDataResponse.timeRangeEnd(),
+        specificDataResponse.sensitivity(),
+        specificDataResponse.dataTableHeader());
+  }
+
   public final GetSpecificDataResponse getSpecificData(
       GetSpecificDataRequest getSpecificDataRequest) {
-    if (!getSpecificDataRequest.timeRangeStart().isBefore(getSpecificDataRequest.timeRangeEnd())) {
+    return getSpecificDataResponse(
+        getSpecificDataRequest,
+        dataForDataRowRetrieval ->
+            getDataRowPage(
+                dataForDataRowRetrieval.dataSource(),
+                getSpecificDataRequest,
+                dataForDataRowRetrieval.requestedAttributeInfos(),
+                dataForDataRowRetrieval.dataTableHeader()));
+  }
+
+  private GetSpecificDataResponse getSpecificDataResponse(
+      GetDataInformationRequest getDataInformationRequest,
+      Function<DataForDataRowRetrieval, DataRowPage> dataRowPageFunction) {
+    if (!getDataInformationRequest
+        .timeRangeStart()
+        .isBefore(getDataInformationRequest.timeRangeEnd())) {
       throw new BadRequestException("Time range is invalid: start not before end");
     }
 
     @SuppressWarnings("unchecked")
     DataSource<AttributeInfo> dataSource =
-        (DataSource<AttributeInfo>) getDataSource(getSpecificDataRequest.dataSourceId());
-    if (getSpecificDataRequest.anonymizationRequired() && !dataSource.isCanBeAnonymized()) {
+        (DataSource<AttributeInfo>) getDataSource(getDataInformationRequest.dataSourceId());
+    if (getDataInformationRequest.anonymizationRequired() && !dataSource.isCanBeAnonymized()) {
       throw new BadRequestException("Data cannot be anonymized");
     }
 
     List<AttributeInfo> requestedAttributeInfos =
-        getRequestedAttributeInfos(getSpecificDataRequest.attributeCodes(), dataSource);
+        getRequestedAttributeInfos(getDataInformationRequest.attributeCodes(), dataSource);
 
     DataTableHeader dataTableHeader = getDataTableHeader(requestedAttributeInfos);
 
     DataRowPage dataRowPage =
-        getDataRowPage(
-            dataSource, getSpecificDataRequest, requestedAttributeInfos, dataTableHeader);
+        dataRowPageFunction.apply(
+            new DataForDataRowRetrieval(dataSource, requestedAttributeInfos, dataTableHeader));
 
     return new GetSpecificDataResponse(
         dataSource.getName(),
-        getSpecificDataRequest.timeRangeStart(),
-        getSpecificDataRequest.timeRangeEnd(),
+        getDataInformationRequest.timeRangeStart(),
+        getDataInformationRequest.timeRangeEnd(),
         dataSource.getSensitivity(),
-        getSpecificDataRequest.anonymizationRequired(),
+        getDataInformationRequest.anonymizationRequired(),
         dataTableHeader,
-        getSpecificDataRequest.anonymizationRequired()
+        getDataInformationRequest.anonymizationRequired()
             ? dataSource.bulkAnonymizeDataRows(dataTableHeader, dataRowPage.dataRows())
             : dataRowPage.dataRows(),
         dataRowPage.totalNumberOfElements());
@@ -172,4 +203,9 @@ public class StatisticsService {
             .map(this::mapToAttribute)
             .toList());
   }
+
+  private record DataForDataRowRetrieval(
+      DataSource<AttributeInfo> dataSource,
+      List<AttributeInfo> requestedAttributeInfos,
+      DataTableHeader dataTableHeader) {}
 }

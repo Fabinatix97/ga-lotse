@@ -6,6 +6,8 @@
 package de.eshg.lib.statistics;
 
 import de.eshg.lib.statistics.api.GetDataSourcesResponse;
+import de.eshg.lib.statistics.api.GetDataTableHeaderRequest;
+import de.eshg.lib.statistics.api.GetDataTableHeaderResponse;
 import de.eshg.lib.statistics.api.GetSpecificDataRequest;
 import de.eshg.lib.statistics.api.GetSpecificDataResponse;
 import de.eshg.rest.service.security.config.BaseUrls;
@@ -27,6 +29,11 @@ public interface StatisticsApi {
       description = "Returns the available data sources with the corresponding attributes")
   @Operation(summary = "Get available data sources")
   GetDataSourcesResponse getAvailableDataSources();
+
+  @PostExchange("/data-table-header")
+  @Operation(summary = "Get data table header for the requested attributes")
+  GetDataTableHeaderResponse getDataTableHeader(
+      @Valid @RequestBody GetDataTableHeaderRequest getDataTableHeaderRequest);
 
   @PostExchange("/specific-data")
   @Operation(summary = "Get specific data for the requested attributes")

@@ -5,11 +5,11 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
-
 import {
   SideNavigationSubItem,
   UseSideNavigationItemsResult,
-} from "@/lib/baseModule/components/layout/sideNavigation/types";
+} from "@eshg/lib-employee-portal/types/sideNavigation";
+
 import { HivOutlined } from "@/lib/shared/components/icons/HivOutlined";
 
 import { routes } from "./routes";

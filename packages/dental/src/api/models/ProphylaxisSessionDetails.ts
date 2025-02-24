@@ -4,6 +4,7 @@
  */
 
 import {
+  ApiDentitionType,
   ApiPerformingPerson,
   ApiProphylaxisSessionDetails,
 } from "@eshg/dental-api";
@@ -16,6 +17,7 @@ import {
 
 export interface ProphylaxisSessionDetails extends ProphylaxisSession {
   version: number;
+  dentitionType?: ApiDentitionType;
   participants: ChildExamination[];
   dentists: ApiPerformingPerson[];
   zfas: ApiPerformingPerson[];
@@ -27,6 +29,7 @@ export function mapProphylaxisSessionDetails(
   return {
     ...response,
     ...mapProphylaxisSession(response),
+    dentitionType: response.dentitionType,
     participants: response.participants.map(mapChildExamination),
     version: response.version,
   };

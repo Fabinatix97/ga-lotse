@@ -7,9 +7,15 @@ package de.eshg.libservicedirectoryadminapi.api.impex;
 
 import de.eshg.libservicedirectoryadminapi.api.orgunit.OrgUnitDto;
 import de.eshg.libservicedirectoryadminapi.api.rule.RuleDto;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public record ExportResponse(
-    @NotNull @Valid List<OrgUnitDto> orgUnits, @NotNull @Valid List<RuleDto> rules) {}
+    @NotNull @Valid List<OrgUnitDto> orgUnits, @NotNull @Valid List<RuleDto> rules) {
+  @Schema(hidden = true)
+  public boolean isEmpty() {
+    return orgUnits.isEmpty() && rules.isEmpty();
+  }
+}

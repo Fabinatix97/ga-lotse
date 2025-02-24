@@ -5,15 +5,15 @@
 
 "use client";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
 import { Stack } from "@mui/joy";
 
 import { useGetUserProfile } from "@/lib/baseModule/api/queries/users";
 import { UserAbsence } from "@/lib/baseModule/components/users/UserAbsence";
 import { UserProfileDetails } from "@/lib/baseModule/components/users/UserProfileDetails";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 export default function UserProfilePage({

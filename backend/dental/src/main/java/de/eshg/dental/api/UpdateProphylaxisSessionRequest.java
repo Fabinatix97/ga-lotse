@@ -19,6 +19,7 @@ public record UpdateProphylaxisSessionRequest(
     @NotBlank String groupName,
     @NotNull ProphylaxisTypeDto type,
     @NotNull boolean isScreening,
+    DentitionTypeDto dentitionType,
     FluoridationVarnishDto fluoridationVarnish,
     @NotEmpty List<UUID> dentistIds,
     @NotEmpty List<UUID> zfaIds)
@@ -31,6 +32,16 @@ public record UpdateProphylaxisSessionRequest(
       ProphylaxisTypeDto type,
       List<UUID> dentistIds,
       List<UUID> zfaIds) {
-    this(version, institutionId, dateAndTime, groupName, type, false, null, dentistIds, zfaIds);
+    this(
+        version,
+        institutionId,
+        dateAndTime,
+        groupName,
+        type,
+        false,
+        null,
+        null,
+        dentistIds,
+        zfaIds);
   }
 }

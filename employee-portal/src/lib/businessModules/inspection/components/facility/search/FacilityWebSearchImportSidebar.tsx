@@ -20,47 +20,39 @@ import {
   useLinkBaseFacility,
 } from "@/lib/businessModules/inspection/api/mutations/facility";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { EmbeddedFacilitySidebar } from "@/lib/shared/components/facilitySidebar/FacilitySidebar";
+import { FacilitySidebar } from "@/lib/shared/components/facilitySidebar/FacilitySidebar";
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { BaseFacility } from "@/lib/shared/components/facilitySidebar/types";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { fullAddress } from "@/lib/shared/helpers/facilityUtils";
-import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
+import {
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 type FacilityWebSearchImportSidebarProps = Readonly<{
-  open: boolean;
   webSearchEntry: ApiWebSearchEntry | undefined;
-  onClose: () => void;
-}>;
+}> &
+  SidebarWithFormRefProps;
 
-export function FacilityWebSearchImportSidebar(
-  props: FacilityWebSearchImportSidebarProps,
-) {
-  return (
-    <OverlayBoundary>
-      <FacilityWebSearchImportSidebarWithinBoundary {...props} />
-    </OverlayBoundary>
-  );
+export function useFacilityWebSearchImportSidebar() {
+  return useSidebarWithFormRef({
+    component: FacilityWebSearchImportSidebar,
+  });
 }
 
-function FacilityWebSearchImportSidebarWithinBoundary(
+function FacilityWebSearchImportSidebar(
   props: FacilityWebSearchImportSidebarProps,
 ) {
   const snackbar = useSnackbar();
   const router = useRouter();
-  const { mutate: linkBaseFacility } = useLinkBaseFacility();
-  const { mutate: addInspectionFacility } = useAddInspectionFacility();
-
-  const { handleClose, sidebarFormRef } = useSidebarForm({
-    onClose: props.onClose,
-  });
+  const { mutateAsync: linkBaseFacility } = useLinkBaseFacility();
+  const { mutateAsync: addInspectionFacility } = useAddInspectionFacility();
 
   function handleSaveFacility(
     facility: DefaultFacilityFormValues,
     webSearchEntryId: string,
   ) {
-    addInspectionFacility(
+    return addInspectionFacility(
       {
         facility,
         webSearchEntryId,
@@ -69,7 +61,6 @@ function FacilityWebSearchImportSidebarWithinBoundary(
         onSuccess: afterSave,
       },
     );
-    return Promise.resolve();
   }
 
   function afterSave(addFacilityResponse: ApiInspAddFacilityResponse) {
@@ -81,7 +72,7 @@ function FacilityWebSearchImportSidebarWithinBoundary(
     facility: ApiGetReferenceFacilityResponse,
     webSearchEntryId: string,
   ) {
-    linkBaseFacility(
+    return linkBaseFacility(
       {
         facility,
         webSearchEntryId,
@@ -103,41 +94,38 @@ function FacilityWebSearchImportSidebarWithinBoundary(
         },
       },
     );
-    return Promise.resolve();
   }
 
   const webSearchEntry = props.webSearchEntry;
 
-  return (
-    <Sidebar open={props.open} onClose={handleClose}>
-      {isDefined(webSearchEntry) && (
-        <EmbeddedFacilitySidebar
-          mode={"import"}
-          title={"Neuen Vorgang anlegen"}
-          searchResultHeaderComponent={
-            <OsmFacilityCard
-              facility={createBaseFacilityFromWebSearchEntry(webSearchEntry)}
-            />
-          }
-          initialSearchInputs={{
-            name: webSearchEntry.name,
-          }}
-          onCreateNew={async (values) => {
-            await handleSaveFacility(values.createInputs, webSearchEntry.id);
-          }}
-          onSelect={async (values) => {
-            await handleSelectFacility(values.facility, webSearchEntry.id);
-          }}
-          sidebarFormRef={sidebarFormRef}
-          open={props.open}
-          onClose={handleClose}
-          getInitialCreateInputs={() => ({
-            ...createBaseFacilityFromWebSearchEntry(webSearchEntry),
-          })}
-        />
-      )}
-    </Sidebar>
-  );
+  if (isDefined(webSearchEntry)) {
+    return (
+      <FacilitySidebar
+        mode={"import"}
+        title={"Neuen Vorgang anlegen"}
+        searchResultHeaderComponent={
+          <OsmFacilityCard
+            facility={createBaseFacilityFromWebSearchEntry(webSearchEntry)}
+          />
+        }
+        initialSearchInputs={{
+          name: webSearchEntry.name,
+        }}
+        onCreateNew={async (values) => {
+          await handleSaveFacility(values.createInputs, webSearchEntry.id);
+        }}
+        onSelect={async (values) => {
+          await handleSelectFacility(values.facility, webSearchEntry.id);
+        }}
+        formRef={props.formRef}
+        onClose={props.onClose}
+        getInitialCreateInputs={() => ({
+          ...createBaseFacilityFromWebSearchEntry(webSearchEntry),
+        })}
+      />
+    );
+  }
+  return <></>;
 }
 
 function createBaseFacilityFromWebSearchEntry(

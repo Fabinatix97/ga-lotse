@@ -8,10 +8,9 @@ import {
   hasAnyUserRoles,
   hasUserRole,
 } from "@eshg/lib-employee-portal/helpers/accessControl";
+import { UseSideNavigationItemsResult } from "@eshg/lib-employee-portal/types/sideNavigation";
 import { BarChartOutlined } from "@mui/icons-material";
 import { isPlainObject } from "remeda";
-
-import { UseSideNavigationItemsResult } from "@/lib/baseModule/components/layout/sideNavigation/types";
 
 import { routes } from "./routes";
 

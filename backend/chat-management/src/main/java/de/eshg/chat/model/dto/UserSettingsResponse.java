@@ -14,4 +14,5 @@ public record UserSettingsResponse(
     Boolean showTypingNotification,
     Boolean chatConsentAsked,
     Boolean showReadConfirmation,
-    Boolean accountDeactivated) {}
+    Boolean accountDeactivated,
+    Boolean accountRegistered) {}

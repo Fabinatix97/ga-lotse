@@ -5,13 +5,13 @@
 
 import { ApiBaseFeature, ApiUserRole } from "@eshg/base-api";
 import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
-import { HubOutlined } from "@mui/icons-material";
-
-import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import {
   SideNavigationSubItem,
   UseSideNavigationItemsResult,
-} from "@/lib/baseModule/components/layout/sideNavigation/types";
+} from "@eshg/lib-employee-portal/types/sideNavigation";
+import { HubOutlined } from "@mui/icons-material";
+
+import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 
 import { routes } from "./routes";
 

@@ -57,7 +57,7 @@ public class PersonService {
 
     if (!currentFileStateId.equals(updatedFileStateId)) {
       child.setCentralFileStateId(updatedFileStateId);
-      progressEntryUtil.addProgressEntryWithPreviousFileStateId(
+      progressEntryUtil.addProgressEntryWithPreviousPersonFileStateId(
           procedure, CHILD_MODIFIED, currentFileStateId);
       personRepository.flush();
     }
@@ -109,7 +109,7 @@ public class PersonService {
 
     if (!newCentralFileStateId.equals(centralFileStateId)) {
       person.setCentralFileStateId(newCentralFileStateId);
-      progressEntryUtil.addProgressEntryWithPreviousFileStateId(
+      progressEntryUtil.addProgressEntryWithPreviousPersonFileStateId(
           person.getProcedure(), CUSTODIAN_MODIFIED, centralFileStateId);
       personRepository.flush();
     }

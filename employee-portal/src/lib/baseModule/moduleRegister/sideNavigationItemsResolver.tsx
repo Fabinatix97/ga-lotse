@@ -5,14 +5,14 @@
 
 import { ApiBusinessModule } from "@eshg/base-api";
 import { useSideNavigationItems as useDentalSideNavigationItems } from "@eshg/dental/shared/useSideNavigationItems";
+import {
+  SideNavigationItem,
+  UseSideNavigationItemsResult,
+} from "@eshg/lib-employee-portal/types/sideNavigation";
 import { mapToObj } from "remeda";
 
 import { useServerConfig } from "@/lib/baseModule/api/queries/config";
-import {
-  SideNavItemGroups,
-  SideNavigationItem,
-  UseSideNavigationItemsResult,
-} from "@/lib/baseModule/components/layout/sideNavigation/types";
+import { SideNavItemGroups } from "@/lib/baseModule/components/layout/sideNavigation/types";
 import {
   useSideNavigationItems as useBaseSideNavigationItems,
   useDashboardItem,

@@ -5,7 +5,12 @@
 
 import { ApiTooth } from "@eshg/dental-api";
 
+import { NavigateDirection } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/actions/navigate";
+
 import { ToothType } from "./types";
+
+export const MIN_TOOTH_INDEX = 0;
+export const MAX_TOOTH_INDEX = 7;
 
 /**
  * Defines a mapping from milk teeth to permanent teeth and vice versa
@@ -139,3 +144,10 @@ export const OPTIONAL_TEETH = new Set<ApiTooth>([
   "T47",
   "T48",
 ]);
+
+export const NAVIGATE_DIRECTIONS: Record<string, NavigateDirection> = {
+  ArrowUp: "UP",
+  ArrowDown: "DOWN",
+  ArrowLeft: "LEFT",
+  ArrowRight: "RIGHT",
+};

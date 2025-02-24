@@ -5,6 +5,7 @@
 
 "use client";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
 import { Option, Select, Sheet, Stack, Switch, Typography } from "@mui/joy";
 import { ReactNode, useState } from "react";
 
@@ -24,7 +25,6 @@ import { Histogram } from "@/lib/businessModules/statistics/components/shared/ch
 import { LineChart } from "@/lib/businessModules/statistics/components/shared/charts/LineChart";
 import { PieChart } from "@/lib/businessModules/statistics/components/shared/charts/PieChart";
 import { ScatterChart } from "@/lib/businessModules/statistics/components/shared/charts/ScatterChart";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 
 function PlaygroundChartBox({
   title,
@@ -68,6 +68,7 @@ export default function PlaygroundChartsPage() {
 
   const orientationSwitch = (
     <Typography
+      key="orientationSwitch"
       component="label"
       endDecorator={
         <Switch
@@ -84,6 +85,7 @@ export default function PlaygroundChartsPage() {
 
   const groupingSwitch = (
     <Typography
+      key="groupingSwitch"
       component="label"
       endDecorator={
         <Switch
@@ -100,6 +102,7 @@ export default function PlaygroundChartsPage() {
 
   const scalingSwitch = (
     <Typography
+      key="scalingSwitch"
       component="label"
       endDecorator={
         <Switch
@@ -116,6 +119,7 @@ export default function PlaygroundChartsPage() {
 
   const axisRangeSwitch = (
     <Typography
+      key="axisRangeSwitch"
       component="label"
       endDecorator={
         <Switch
@@ -132,6 +136,7 @@ export default function PlaygroundChartsPage() {
 
   const trendLineSwitch = (
     <Typography
+      key="trendLineSwitch"
       component="label"
       endDecorator={
         <Switch
@@ -146,6 +151,7 @@ export default function PlaygroundChartsPage() {
 
   const colorSchemeSelect = (
     <Typography
+      key="colorSchemeSelect"
       component="label"
       endDecorator={
         <Select
@@ -164,6 +170,7 @@ export default function PlaygroundChartsPage() {
 
   const characteristicParameterSelect = (
     <Typography
+      key="characteristicParameterSelect"
       component="label"
       endDecorator={
         <Select

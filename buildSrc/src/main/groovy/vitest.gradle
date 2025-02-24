@@ -1,4 +1,5 @@
 import com.github.gradle.node.pnpm.task.PnpmTask
+import de.eshg.frontend.FindUnusedValidationFiles
 
 plugins {
   id 'workspace-package'
@@ -12,16 +13,18 @@ def testConfigFiles = [
   "${projectDir}/vitest.config.ts"
 ]
 def testSrcDir = "${projectDir}/src"
+def validationFilesDir = project.layout.projectDirectory.dir('data/test')
 
-tasks.named('check').configure { dependsOn 'test' }
-
-tasks.register('test', PnpmTask) {
+def test = tasks.register('test', PnpmTask) {
   group = 'verification'
   dependsOn 'prepareEnvironment'
   environment = testEnvironment
   inputs.files testConfigFiles
   inputs.dir testSrcDir
-  outputs.upToDateWhen { true }
+  if (validationFilesDir.asFile.exists()) {
+    inputs.dir validationFilesDir
+    outputs.dir validationFilesDir
+  }
   // Pass with no tests to avoid writing a dummy test within the new portal tests.
   // This parameter can be removed once we have tests in each portal project.
   args = ['vitest', 'run', '--passWithNoTests', '--silent']
@@ -32,4 +35,15 @@ tasks.register('testWatch', PnpmTask) {
   dependsOn 'prepareEnvironment'
   environment = testEnvironment
   args = ['vitest', 'watch']
+}
+
+def findUnusedValidationFiles = tasks.register('findUnusedValidationFiles', FindUnusedValidationFiles) {
+  group = 'verification'
+  dependsOn test
+  onlyIf { validationFilesDir.asFile.exists() }
+}
+
+tasks.named('check').configure {
+  dependsOn test
+  dependsOn findUnusedValidationFiles
 }

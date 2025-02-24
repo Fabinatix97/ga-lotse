@@ -11,6 +11,9 @@ import {
   ApiContactType,
   ApiSortDirection,
 } from "@eshg/base-api";
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
 import {
   parseOptionalEnum,
   parseOptionalString,
@@ -23,9 +26,6 @@ import {
   ContactsOverview,
 } from "@/lib/baseModule/components/contacts/ContactsOverview";
 import { contactSearchParamNames } from "@/lib/baseModule/components/contacts/constants";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 
 function parseSearchParams(
   searchParams: ReadonlyURLSearchParams,

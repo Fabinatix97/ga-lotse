@@ -5,6 +5,7 @@
 
 "use client";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
 import { Button, Switch, Typography } from "@mui/joy";
 import { useState } from "react";
 
@@ -20,7 +21,6 @@ import {
   NumberFilterNumericComparison,
 } from "@/lib/shared/components/filterSettings/models/NumberFilter";
 import { useFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { DataTable } from "@/lib/shared/components/table/DataTable";

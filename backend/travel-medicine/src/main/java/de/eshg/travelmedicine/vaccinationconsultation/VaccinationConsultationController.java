@@ -7,6 +7,7 @@ package de.eshg.travelmedicine.vaccinationconsultation;
 
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
+import de.eshg.persistence.IntentionalWritingTransaction;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.travelmedicine.certificate.CertificateService;
@@ -154,6 +155,7 @@ public class VaccinationConsultationController {
   @GetMapping(path = "/{procedureId}" + DETAILS_URL)
   @Operation(summary = "Get vaccination consultation details")
   @Transactional
+  @IntentionalWritingTransaction(reason = "Audit logging")
   public GetVaccinationConsultationDetailsResponse getVaccinationConsultationDetails(
       @PathVariable("procedureId") UUID procedureId) {
     GetVaccinationConsultationDetailsResponse vaccinationConsultationDetails =
@@ -300,7 +302,7 @@ public class VaccinationConsultationController {
 
   @GetMapping(path = "/{procedureId}" + MEDICAL_HISTORY_URL)
   @Operation(summary = "Get medical histories for this VaccinationConsultation.")
-  @Transactional
+  @Transactional(readOnly = true)
   public GetMedicalHistoriesResponse getMedicalHistories(
       @PathVariable("procedureId") UUID procedureId) {
     return medicalHistoryService.getMedicalHistoriesForEmployeePortal(procedureId);
@@ -325,7 +327,7 @@ public class VaccinationConsultationController {
   @Operation(
       summary =
           "Collect all services which have been applied to any of (and grouped by) the VaccinationConsultation's steps.")
-  @Transactional
+  @Transactional(readOnly = true)
   public GetStepsWithAppliedServicesResponse getStepsWithAppliedServices(
       @PathVariable("procedureId") UUID procedureId) {
     return vaccinationConsultationService.getStepsWithAppliedServices(procedureId);
@@ -333,7 +335,7 @@ public class VaccinationConsultationController {
 
   @GetMapping(path = "/{procedureId}" + STATUS)
   @Operation(summary = "Retrieve the current state of the procedure.")
-  @Transactional
+  @Transactional(readOnly = true)
   public ProcedureStatusDto getStatus(@PathVariable("procedureId") UUID procedureId) {
     return vaccinationConsultationService.getProcedureStatus(procedureId);
   }
@@ -349,7 +351,7 @@ public class VaccinationConsultationController {
 
   @GetMapping(path = "/{procedureId}" + INFORMATION_STATEMENT_URL)
   @Operation(summary = "Get information statements for this VaccinationConsultation.")
-  @Transactional
+  @Transactional(readOnly = true)
   public GetInformationStatementsResponse getInformationStatements(
       @PathVariable("procedureId") UUID procedureId) {
     return informationStatementService.getInformationStatementsForEmployeePortal(procedureId);

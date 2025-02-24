@@ -38,6 +38,7 @@ export function TabNavigationToolbar(props: TabNavigationToolbarProps) {
       sx={{
         padding: 0,
         borderRadius: 0,
+        borderLeft: 0,
       }}
       data-testid="tabNavigationToolbar"
     >

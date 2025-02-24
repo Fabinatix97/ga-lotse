@@ -8,8 +8,12 @@ import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreB
 import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 import { ApiFileType } from "@eshg/lib-procedures-api";
 import { ApiOmsFile } from "@eshg/official-medical-service-api";
-import { Delete, FileDownloadOutlined } from "@mui/icons-material";
-import { Stack } from "@mui/joy";
+import {
+  Delete,
+  FileDownloadOutlined,
+  Remove as RemoveIcon,
+} from "@mui/icons-material";
+import { Button, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { isDefined } from "remeda";
 
@@ -42,6 +46,8 @@ export function FilesSection(props: Readonly<FilesSectionProps>) {
   const { download } = useFileDownload((fileId: string) =>
     omsFileApi.getDownloadFileRaw({ fileId }),
   );
+
+  const accept = [FileType.Pdf, FileType.Jpeg, FileType.Png];
 
   return (
     <Stack gap={2} data-testid="files">
@@ -117,25 +123,48 @@ export function FilesSection(props: Readonly<FilesSectionProps>) {
               label="Datei hochladen (PDF, JPG oder PNG)"
               name="files"
               placeholder="Auswählen"
-              accept={[FileType.Pdf, FileType.Jpeg, FileType.Png]}
+              accept={accept}
               onChange={async (value) => {
                 await setFieldTouched("files", true, false);
-                await setFieldValue(
-                  props.name,
-                  [...values.files!, value],
-                  false,
-                );
-                toggleActive();
+
+                // Only add this file if it is a valid file type
+                if (accept.some((a) => a.mimeType === value?.type)) {
+                  await setFieldValue(
+                    props.name,
+                    [...values.files!, value],
+                    false,
+                  );
+                  // Only remove the upload card if the file was valid and added, otherwise it should stay and show the error
+                  toggleActive();
+                } else {
+                  // We still need to set this value, but without the new file
+                  await setFieldValue(props.name, [...values.files!], false);
+                }
               }}
             />
           )}
-          <FormAddMoreButton
-            onClick={() => {
-              toggleActive();
-            }}
-          >
-            {props.addLabel}
-          </FormAddMoreButton>
+          {active ? (
+            <Button
+              color={"primary"}
+              variant={"plain"}
+              size={"sm"}
+              sx={{ justifyContent: "flex-start" }}
+              startDecorator={<RemoveIcon />}
+              onClick={() => {
+                toggleActive();
+              }}
+            >
+              Hinzufügen abbrechen
+            </Button>
+          ) : (
+            <FormAddMoreButton
+              onClick={() => {
+                toggleActive();
+              }}
+            >
+              {props.addLabel}
+            </FormAddMoreButton>
+          )}
         </>
       )}
     </Stack>

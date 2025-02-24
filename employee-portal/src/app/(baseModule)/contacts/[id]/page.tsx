@@ -5,6 +5,9 @@
 
 "use client";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
 import { Box, Grid, Typography } from "@mui/joy";
 
 import {
@@ -16,9 +19,6 @@ import { fullContactName } from "@/lib/baseModule/components/contacts/helpers";
 import { ContactHistory } from "@/lib/baseModule/components/contacts/history/ContactHistory";
 import { routes } from "@/lib/baseModule/shared/routes";
 import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 
 export default function ContactDetailsPage({
   params,

@@ -20,7 +20,7 @@ export function General({ isForSexWork }: { isForSexWork: boolean }) {
   const { values } = useFormikContext<MedicalHistoryFormData>();
 
   return (
-    <SectionGrid aria-label="Allgemein">
+    <SectionGrid aria-label="Allgemein" columns="3fr 3fr">
       <TextareaField
         name="general.examinationReason"
         label={"Grund für die heutige Beratung"}

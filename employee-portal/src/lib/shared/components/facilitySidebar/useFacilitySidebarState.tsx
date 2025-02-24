@@ -228,7 +228,7 @@ export function useFacilitySidebarState<
       name: state.searchState.name,
     },
     {
-      enabled: props.open && state.queryEnabled,
+      enabled: state.queryEnabled,
     },
   );
 

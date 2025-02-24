@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -243,23 +242,34 @@ public interface ProcedureRepository<ProcedureT extends Procedure<ProcedureT, ?,
    WHERE person.centralFileStateId IN :centralFileStateIds
    ORDER BY person.id ASC
 
-   UNION ALL
+   UNION
 
    SELECT facility.centralFileStateId AS centralFileStateId
    FROM #{#entityName} procedure
    JOIN procedure.relatedFacilities facility
    WHERE facility.centralFileStateId IN :centralFileStateIds
    ORDER BY facility.id ASC
-   """)
-  List<UUID> findCentralFileStateIdsInUse(
-      @Param("centralFileStateIds") List<UUID> centralFileStateIds);
 
-  default List<UUID> findCentralFileStateIdsInUseNoDuplicates(
-      @Param("centralFileStateIds") List<UUID> centralFileStateIds) {
-    return findCentralFileStateIdsInUse(centralFileStateIds).stream()
-        .distinct()
-        .collect(Collectors.toList());
-  }
+   UNION
+
+   SELECT systemProgressEntry.previousPersonFileStateId AS centralFileStateId
+   FROM #{#entityName} procedure
+   JOIN procedure.progressEntries progressEntry
+   JOIN treat(progressEntry as SystemProgressEntry) systemProgressEntry
+   WHERE systemProgressEntry.previousPersonFileStateId IN :centralFileStateIds
+   ORDER BY progressEntry.id ASC
+
+   UNION
+
+   SELECT systemProgressEntry.previousFacilityFileStateId AS centralFileStateId
+   FROM #{#entityName} procedure
+   JOIN procedure.progressEntries progressEntry
+   JOIN treat(progressEntry as SystemProgressEntry) systemProgressEntry
+   WHERE systemProgressEntry.previousFacilityFileStateId IN :centralFileStateIds
+   ORDER BY progressEntry.id ASC
+   """)
+  List<UUID> findCentralFileStateIdsInUseNoDuplicates(
+      @Param("centralFileStateIds") List<UUID> centralFileStateIds);
 
   @Query(
       """

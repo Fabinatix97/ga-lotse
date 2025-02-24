@@ -49,11 +49,12 @@
     "formik": "catalog:common",
     "hpke-js": "1.6.1",
     "iso8601-duration": "2.1.2",
-    "matrix-js-sdk": "34.13.0",
+    "matrix-js-sdk": "36.2.0",
     "next": "catalog:next",
     "react": "catalog:react",
     "react-dom": "catalog:react",
     "react-error-boundary": "catalog:common",
+    "react-idle-timer": "^5.7.2",
     "react-infinite-scroll-hook": "5.0.1",
     "remeda": "catalog:common",
     "server-only": "catalog:common",
@@ -66,6 +67,7 @@
     "zustand": "catalog:common"
   },
   "devDependencies": {
+    "@eshg/lib-vitest": "workspace:*",
     "@eslint/compat": "catalog:eslint",
     "@eslint/eslintrc": "catalog:eslint",
     "@next/bundle-analyzer": "catalog:next",

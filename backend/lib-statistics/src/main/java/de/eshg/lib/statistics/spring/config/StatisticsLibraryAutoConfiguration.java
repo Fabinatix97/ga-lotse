@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Import;
 @Import({
   StatisticsController.class,
   StatisticsService.class,
+  StatisticsLibraryInternalSecurityConfig.class,
   StatisticsProcedureReferenceController.class,
   StatisticsHousekeeping.class,
   StatisticsLibrarySchedulingConfig.class

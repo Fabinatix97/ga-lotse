@@ -86,5 +86,7 @@
   <include file="migrations/0076_add_waiting_status.xml"/>
   <include file="migrations/0077_add_auditlog_entry.xml"/>
   <include file="migrations/0078_convert_duration_columns_to_interval.xml"/>
+  <include file="migrations/0079_differentiate_between_previous_person_and_facility_file_state.xml"/>
+  <include file="migrations/0080_oms_appointment_type_extensions.xml"/>
 
 </databaseChangeLog>

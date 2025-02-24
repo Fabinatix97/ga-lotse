@@ -51,7 +51,7 @@ public class BundIdPersonLinkController implements BundIdPersonLinkApi {
   }
 
   @Override
-  @Transactional
+  @Transactional(readOnly = true)
   public GetReferencePersonResponse getReferencePersonLinkedToBundIdSelfUser() {
     featureToggle.assertNewFeatureIsEnabled(BaseFeature.BUNDID_PERSON_LINK);
 

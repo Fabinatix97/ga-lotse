@@ -7,6 +7,7 @@ import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Sheet, Stack, Typography } from "@mui/joy";
 
 import { theme } from "@/lib/baseModule/theme/theme";
+import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 interface FormSheetProps extends RequiresChildren {
   "data-testid"?: string;
@@ -33,8 +34,10 @@ interface FormSheetTitleProps extends RequiresChildren {
 }
 
 export function FormSheetTitle(props: FormSheetTitleProps) {
+  const isMobile = useIsMobile();
+
   return (
-    <Stack>
+    <Stack gap={isMobile ? 1 : 0}>
       <Typography level="h2">{props.children}</Typography>
       {props.requiredTitle && (
         <Typography

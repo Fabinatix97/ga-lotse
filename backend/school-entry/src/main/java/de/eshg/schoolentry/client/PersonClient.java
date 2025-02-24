@@ -459,7 +459,7 @@ public class PersonClient {
       SchoolEntryProcedure procedure = updatedProceduresByChildId.get(previousCentralFileStateId);
       procedure.getChild().setCentralFileStateId(newCentralFileStateId);
       if (!Objects.equals(previousCentralFileStateId, newCentralFileStateId)) {
-        progressEntryUtil.addProgressEntryWithPreviousFileStateId(
+        progressEntryUtil.addProgressEntryWithPreviousPersonFileStateId(
             procedure,
             SchoolEntrySystemProgressEntryType.CHILD_MODIFIED,
             previousCentralFileStateId);

@@ -5,6 +5,9 @@
 
 package de.eshg.officialmedicalservice.appointment;
 
+import static de.eshg.lib.appointmentblock.api.AppointmentTypeDto.OFFICIAL_MEDICAL_SERVICE_LONG;
+import static de.eshg.lib.appointmentblock.api.AppointmentTypeDto.OFFICIAL_MEDICAL_SERVICE_SHORT;
+
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
 import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
@@ -35,7 +38,7 @@ public class OmsAppointmentService {
   private final AppointmentBlockSlotUtil appointmentBlockSlotUtil;
 
   private static final List<AppointmentTypeDto> supportedAppointmentTypes =
-      List.of(AppointmentTypeDto.OFFICIAL_MEDICAL_SERVICE);
+      List.of(OFFICIAL_MEDICAL_SERVICE_SHORT, OFFICIAL_MEDICAL_SERVICE_LONG);
   private final ProgressEntryService progressEntryService;
 
   public OmsAppointmentService(
@@ -63,6 +66,10 @@ public class OmsAppointmentService {
       throw new BadRequestException("Unsupported appointment type.");
     }
 
+    if (procedureHasOpenAppointment(procedure)) {
+      throw new BadRequestException("Procedure already has an open appointment");
+    }
+
     AppointmentType appointmentType = omsAppointmentMapper.toDomainType(request.appointmentType());
 
     // create bookable appointment
@@ -85,6 +92,26 @@ public class OmsAppointmentService {
     }
 
     return appointment.getExternalId();
+  }
+
+  @Transactional
+  public void addAppointmentCitizen(OmsProcedure procedure, PostOmsAppointmentRequest request) {
+    if (procedure.isFinalized()) {
+      throw new BadRequestException("Procedure already closed");
+    }
+    if (!supportedAppointmentTypes.contains(request.appointmentType())) {
+      throw new BadRequestException("Unsupported appointment type.");
+    }
+
+    AppointmentType appointmentType = omsAppointmentMapper.toDomainType(request.appointmentType());
+
+    OmsAppointment appointment = new OmsAppointment(appointmentType);
+    appointment.setProcedure(procedure);
+    procedure.getAppointments().add(appointment);
+
+    processBooking(request.bookingInfo(), appointment);
+
+    omsAppointmentRepository.save(appointment);
   }
 
   @Transactional
@@ -155,6 +182,11 @@ public class OmsAppointmentService {
     }
 
     appointment.setAppointmentState(AppointmentState.CLOSED);
+  }
+
+  private boolean procedureHasOpenAppointment(OmsProcedure omsProcedure) {
+    return omsProcedure.getAppointments().stream()
+        .anyMatch(appointment -> appointment.getAppointmentState() == AppointmentState.OPEN);
   }
 
   private void processBooking(BookingInfoDto bookingInfo, OmsAppointment appointment) {

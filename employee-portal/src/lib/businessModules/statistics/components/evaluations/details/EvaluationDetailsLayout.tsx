@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
 import {
   BookOutlined,
   DiamondOutlined,
@@ -16,7 +17,6 @@ import {
   EvaluationDetailsTabHeaderProps,
 } from "@/lib/businessModules/statistics/components/evaluations/details/EvaluationDetailsTabHeader";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
 import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
 

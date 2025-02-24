@@ -8,6 +8,7 @@ package de.eshg.statistics.aggregation;
 import static de.eshg.statistics.persistence.entity.AggregationResultPendingState.TABLE_ROWS_REMOVAL;
 
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
+import de.eshg.statistics.diagramcreation.DiagramCreationService;
 import de.eshg.statistics.exception.IncompleteDeletionException;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AggregationResultState;

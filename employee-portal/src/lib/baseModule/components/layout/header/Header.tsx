@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useLayoutConfig } from "@eshg/lib-employee-portal/contexts/layoutConfig";
 import { EnvironmentIndicator } from "@eshg/lib-portal/components/EnvironmentIndicator";
 import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -10,16 +11,13 @@ import { Box, Typography } from "@mui/joy";
 
 import { HeaderButtons } from "@/lib/baseModule/components/layout/header/HeaderButtons";
 import { HeaderIconButton } from "@/lib/baseModule/components/layout/header/HeaderIconButton";
-import {
-  appBarHeightDesktop,
-  appBarHeightMobile,
-} from "@/lib/baseModule/components/layout/sizes";
 import { useSidenav } from "@/lib/shared/components/drawer/useSidenav";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 export function Header() {
   const sidenav = useSidenav();
   const isOffline = useIsOffline();
+  const { appBarHeightMobile, appBarHeightDesktop } = useLayoutConfig();
 
   function toggleSidenav(): void {
     if (sidenav.isOpen) {

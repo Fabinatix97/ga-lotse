@@ -13,7 +13,7 @@ import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_GDPR_VALIDATION_T
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_MAIL_SEND;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_PERSONS_DELETE;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.STANDARD_EMPLOYEE;
-import static de.eshg.lib.keycloak.EmployeePermissionRole.STATISTICS_STATISTICS_WRITE;
+import static de.eshg.lib.keycloak.EmployeePermissionRole.STATISTICS_STATISTICS_TECHNICAL_USER;
 
 import de.eshg.lib.keycloak.EmployeePermissionRole;
 import java.util.List;
@@ -31,7 +31,7 @@ public enum ModuleClient {
       "measles-protection", List.of(BASE_MAIL_SEND, BASE_PERSONS_DELETE, BASE_FACILITIES_DELETE)),
   SCHOOL_ENTRY(
       "school-entry", List.of(BASE_MAIL_SEND, BASE_PERSONS_DELETE, BASE_FACILITIES_DELETE)),
-  STATISTICS("statistics", List.of(STATISTICS_STATISTICS_WRITE)),
+  STATISTICS("statistics", List.of(STATISTICS_STATISTICS_TECHNICAL_USER)),
   TRAVEL_MEDICINE(
       "travel-medicine",
       List.of(
@@ -40,7 +40,12 @@ public enum ModuleClient {
           BASE_PERSONS_DELETE,
           BASE_FACILITIES_DELETE)),
   STI_PROTECTION(
-      "sti-protection", List.of(BASE_MAIL_SEND, BASE_PERSONS_DELETE, BASE_FACILITIES_DELETE)),
+      "sti-protection",
+      List.of(
+          BASE_MAIL_SEND,
+          BASE_PERSONS_DELETE,
+          BASE_FACILITIES_DELETE,
+          BASE_ACCESS_CODE_USER_ADMIN)),
   MEDICAL_REGISTRY(
       "medical-registry", List.of(BASE_MAIL_SEND, BASE_PERSONS_DELETE, BASE_FACILITIES_DELETE)),
   DENTAL("dental", List.of(BASE_MAIL_SEND, BASE_PERSONS_DELETE, BASE_FACILITIES_DELETE)),

@@ -3,16 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useHeaderHeights } from "@eshg/lib-employee-portal/hooks/useHeaderHeights";
 import { Box, Drawer } from "@mui/joy";
 import { Dispatch, SetStateAction } from "react";
 
-import { NavigationListCollapsed } from "@/lib/baseModule/components/layout/sideNavigation/NavigationListCollapsed";
+import { NavigationListCollapsed } from "@/lib/baseModule/components/layout/sideNavigation/lists/NavigationListCollapsed";
+import { NavigationListExpanded } from "@/lib/baseModule/components/layout/sideNavigation/lists/NavigationListExpanded";
+import { useNavigationItems } from "@/lib/baseModule/components/layout/sideNavigation/useNavigationItems";
 import { sideNavigationWidth } from "@/lib/baseModule/components/layout/sizes";
-import { useHeaderHeights } from "@/lib/baseModule/components/layout/useHeaderHeights";
 import { useSidenav } from "@/lib/shared/components/drawer/useSidenav";
-
-import { NavigationListExpanded } from "./NavigationListExpanded";
-import { useNavigationItems } from "./useNavigationItems";
 
 export function SideNavigation({
   collapsed,
@@ -41,13 +40,13 @@ export function SideNavigation({
         {!collapsed ? (
           <NavigationListExpanded
             showCollapseButton
-            setCollapsed={setCollapsed}
+            onCollapse={() => setCollapsed(true)}
             itemGroups={itemGroups}
             isLoading={isLoading}
           />
         ) : (
           <NavigationListCollapsed
-            setCollapsed={setCollapsed}
+            onExpand={() => setCollapsed(false)}
             itemGroups={itemGroups}
           />
         )}

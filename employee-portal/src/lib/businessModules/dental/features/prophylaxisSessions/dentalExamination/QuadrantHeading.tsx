@@ -29,9 +29,13 @@ export function QuadrantHeadingRow(props: QuadrantHeadingRowProps) {
   );
 }
 
-export function QuadrantHeading(props: { name: string; index: number }) {
+export function QuadrantHeading(props: {
+  name: string;
+  index: number;
+  id?: string;
+}) {
   return (
-    <Typography component="h3">
+    <Typography component="h3" id={props.id}>
       <Typography
         component="span"
         sx={{

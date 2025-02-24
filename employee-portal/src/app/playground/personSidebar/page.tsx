@@ -5,19 +5,20 @@
 
 "use client";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { ApiSchoolEntryProcedureType } from "@eshg/school-entry-api";
 import { Button, Stack } from "@mui/joy";
-import { useRef, useState } from "react";
 
 import { PROCEDURE_TYPE_OPTIONS_EXCLUDING_DRAFT } from "@/lib/businessModules/schoolEntry/features/procedures/options";
-import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
-import { PersonSidebar } from "@/lib/shared/components/personSidebar/PersonSidebar";
+import {
+  PersonSidebar,
+  PersonSidebarProps,
+} from "@/lib/shared/components/personSidebar/PersonSidebar";
 import { DefaultPersonFormValues } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
 import {
   DefaultSearchPersonForm,
@@ -28,102 +29,93 @@ import {
   SearchPersonFormProps,
   SearchPersonFormValues,
 } from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
+import {
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export default function PersonSidebarPage() {
-  const [sidebarOpen, setSidebarOpen] = useState("none");
-  const { openCancelDialog } = useConfirmationDialog();
-  const snackbar = useSnackbar();
-
-  const sidebarFormRef = useRef<SidebarFormHandle>(null);
-
-  function closeSidebar() {
-    setSidebarOpen("none");
-  }
-
-  function handleClose() {
-    if (sidebarFormRef.current?.dirty) {
-      openCancelDialog({
-        onConfirm: closeSidebar,
-      });
-    } else {
-      closeSidebar();
-    }
-  }
+  const personSidebar = useSidebarWithFormRef({
+    component: ConfiguredDefaultPersonSidebar,
+  });
+  const esuPersonSidebar = useSidebarWithFormRef({
+    component: ConfiguredEsuPersonSidebar,
+  });
 
   return (
     <StickyToolbarLayout toolbar={<Toolbar title="Person Sidebar" />}>
       <MainContentLayout fullViewportHeight>
         <Stack gap={3}>
-          <Button onClick={() => setSidebarOpen("default")}>
+          <Button onClick={() => personSidebar.open()}>
             Open Default Sidebar
           </Button>
-          <Button onClick={() => setSidebarOpen("esu")}>
+          <Button onClick={() => esuPersonSidebar.open()}>
             Open ESU Sidebar
           </Button>
         </Stack>
-
-        <Sidebar open={sidebarOpen !== "none"} onClose={handleClose}>
-          {sidebarOpen === "default" && (
-            <PersonSidebar
-              onCancel={handleClose}
-              onSelect={(values) => {
-                // eslint-disable-next-line no-console
-                console.log(values);
-                snackbar.confirmation("Vorgang wurde angelegt");
-                closeSidebar();
-                return Promise.resolve();
-              }}
-              onCreate={(values) => {
-                // eslint-disable-next-line no-console
-                console.log("Default Form Result", values);
-                snackbar.confirmation("Vorgang wurde angelegt");
-                closeSidebar();
-                return Promise.resolve();
-              }}
-              sidebarFormRef={sidebarFormRef}
-              title={"Vorgang anlegen"}
-              submitLabel={"Fertig"}
-              addressRequired
-            />
-          )}
-          {sidebarOpen === "esu" && (
-            <PersonSidebar<EsuPersonSearchFormValues, EsuPersonCreateFormValues>
-              title={"Vorgang anlegen"}
-              submitLabel={"Vorgang anlegen"}
-              sidebarFormRef={sidebarFormRef}
-              onCancel={handleClose}
-              onSelect={(values) => {
-                // eslint-disable-next-line no-console
-                console.log(values);
-                snackbar.confirmation("Vorgang wurde angelegt");
-                closeSidebar();
-                return Promise.resolve();
-              }}
-              onCreate={({ searchInputs, createInputs }) => {
-                // eslint-disable-next-line no-console
-                console.log("ESU Form Result", {
-                  // inputs on the search step
-                  searchInputs,
-                  // inputs on the create / edit step
-                  createInputs,
-                });
-                snackbar.confirmation("Vorgang wurde angelegt");
-                closeSidebar();
-                return Promise.resolve();
-              }}
-              searchFormComponent={EsuPersonSearchForm}
-              initialSearchState={{
-                ...defaultSearchPersonValues(),
-                type: "REGULAR_EXAMINATION",
-              }}
-            />
-          )}
-        </Sidebar>
       </MainContentLayout>
     </StickyToolbarLayout>
   );
+}
+
+function ConfiguredDefaultPersonSidebar(props: SidebarWithFormRefProps) {
+  const snackbar = useSnackbar();
+  const personSidebarProps: PersonSidebarProps = {
+    onSelect: (values) => {
+      // eslint-disable-next-line no-console
+      console.log(values);
+      snackbar.confirmation("Vorgang wurde angelegt");
+      return Promise.resolve();
+    },
+    onCreate: (values) => {
+      // eslint-disable-next-line no-console
+      console.log("Default Form Result", values);
+      snackbar.confirmation("Vorgang wurde angelegt");
+      return Promise.resolve();
+    },
+    title: "Vorgang anlegen",
+    submitLabel: "Fertig",
+    addressRequired: true,
+    ...props,
+  };
+
+  return <PersonSidebar {...personSidebarProps} />;
+}
+
+function ConfiguredEsuPersonSidebar(props: SidebarWithFormRefProps) {
+  const snackbar = useSnackbar();
+  const personSidebarProps: PersonSidebarProps<
+    EsuPersonSearchFormValues,
+    EsuPersonCreateFormValues
+  > = {
+    title: "Vorgang anlegen",
+    submitLabel: "Vorgang anlegen",
+    onSelect: (values) => {
+      // eslint-disable-next-line no-console
+      console.log(values);
+      snackbar.confirmation("Vorgang wurde angelegt");
+      return Promise.resolve();
+    },
+    onCreate: ({ searchInputs, createInputs }) => {
+      // eslint-disable-next-line no-console
+      console.log("ESU Form Result", {
+        // inputs on the search step
+        searchInputs,
+        // inputs on the create / edit step
+        createInputs,
+      });
+      snackbar.confirmation("Vorgang wurde angelegt");
+      return Promise.resolve();
+    },
+    searchFormComponent: EsuPersonSearchForm,
+    initialSearchState: {
+      ...defaultSearchPersonValues(),
+      type: "REGULAR_EXAMINATION",
+    },
+    ...props,
+  };
+
+  return <PersonSidebar {...personSidebarProps} />;
 }
 
 interface EsuPersonCreateFormValues extends DefaultPersonFormValues {

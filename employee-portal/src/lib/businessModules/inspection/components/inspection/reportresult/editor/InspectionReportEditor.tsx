@@ -6,6 +6,7 @@
 "use client";
 
 import { ApiEditorBodyElementsInner } from "@eshg/inspection-api";
+import { BottomToolbar } from "@eshg/lib-employee-portal/components/toolbar/BottomToolbar";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { v4 as uuidv4 } from "uuid";
 
@@ -19,12 +20,13 @@ import {
   loadEditorQuery,
 } from "@/lib/businessModules/inspection/api/queries/inspectionReport";
 import { ReportDownloadButtons } from "@/lib/businessModules/inspection/components/inspection/reportresult/ReportDownloadButtons";
-import { StickyBottomButtonBar } from "@/lib/shared/components/buttons/StickyBottomButtonBar";
+import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { ContentEditor } from "@/lib/shared/components/contentEditor/ContentEditor";
 import {
   PaletteItem,
   PaletteItemType,
 } from "@/lib/shared/components/contentEditor/types";
+import { StickyBottomBox } from "@/lib/shared/components/layout/StickyBottomBox";
 
 export function InspectionReportEditor({
   reportId,
@@ -78,9 +80,11 @@ export function InspectionReportEditor({
         onAddItem={onAddItem}
         imagesBasePath={`${basePath}/checklists/file/`}
       />
-      <StickyBottomButtonBar
-        left={<ReportDownloadButtons reportId={reportId} />}
-      />
+      <StickyBottomBox>
+        <BottomToolbar>
+          <ButtonBar left={<ReportDownloadButtons reportId={reportId} />} />
+        </BottomToolbar>
+      </StickyBottomBox>
     </>
   );
 }

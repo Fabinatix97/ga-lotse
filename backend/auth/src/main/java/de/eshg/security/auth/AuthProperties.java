@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,7 +25,8 @@ import org.springframework.validation.annotation.Validated;
 public record AuthProperties(
     @NotNull @Valid Auth auth,
     @NotNull @Valid HavingUrl reverseProxy,
-    @NotNull @Valid Keycloak keycloak) {
+    @NotNull @Valid Keycloak keycloak,
+    @Valid SynapseProperties synapse) {
   private static final Logger log = LoggerFactory.getLogger(AuthProperties.class);
 
   public AuthProperties {
@@ -62,11 +64,20 @@ public record AuthProperties(
       List<String> bundIdUrlPatterns,
       @Valid UserAgentFilter userAgentFilter) {}
 
-  record Keycloak(@NotNull HavingUrl logout) {}
+  record Keycloak(@NotNull @Valid HavingUrl logout) {}
 
   record HavingUrl(@NotNull URI url) {}
 
-  record UserAgentFilter(boolean enabled, @NotEmpty Map<String, UserAgentMinimumVersion> allowed) {}
+  record UserAgentFilter(
+      boolean enabled, @Valid @NotEmpty Map<String, UserAgentMinimumVersion> allowed) {}
 
   record UserAgentMinimumVersion(Pattern userAgentPattern, String minimumVersion) {}
+
+  public record SynapseProperties(
+      @Valid SynapseInternal internal,
+      Duration refreshClockSkew,
+      @NotNull Boolean activeLogoutEnabled) {
+
+    public record SynapseInternal(@NotNull URI url) {}
+  }
 }

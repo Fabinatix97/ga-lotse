@@ -3,15 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable no-restricted-properties */
+import { env } from "@/env/client";
+
 /* eslint-disable no-console */
-
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export const logger = (() => {
-  const isDev = process.env.NODE_ENV !== "production";
+  const isDev = env.NODE_ENV !== "production";
 
   function print(type: string, ...messages: any[]) {
     if (isDev) {

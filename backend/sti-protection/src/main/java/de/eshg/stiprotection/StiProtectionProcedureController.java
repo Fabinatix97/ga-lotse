@@ -10,6 +10,7 @@ import static de.eshg.stiprotection.persistence.db.StiProtectionSystemProgressEn
 import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.model.Pdf;
+import de.eshg.persistence.IntentionalWritingTransaction;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.rest.service.security.config.BaseUrls;
@@ -52,7 +53,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -110,6 +110,7 @@ public class StiProtectionProcedureController {
   @GetMapping("/{id}")
   @Operation(summary = "Get STI protection procedure by id.")
   @Transactional
+  @IntentionalWritingTransaction(reason = "Audit logging")
   public GetProcedureResponse getStiProcedure(@PathVariable("id") UUID procedureId) {
     auditLogger.log(
         "Vorgangsbearbeitung",
@@ -125,6 +126,7 @@ public class StiProtectionProcedureController {
 
   @GetMapping
   @Transactional
+  @IntentionalWritingTransaction(reason = "Audit logging")
   @Operation(summary = "Get sorted and paginated STI procedures.")
   public GetProceduresOverviewResponse getStiProcedures(
       @Valid @ParameterObject @InlineParameterObject
@@ -191,6 +193,20 @@ public class StiProtectionProcedureController {
         procedureId, StiProtectionSystemProgressEntryType.APPOINTMENT_CANCELLED);
   }
 
+  @PostMapping("/{id}/appointment/finalize")
+  @Operation(summary = "Finalize current appointment of an STI procedure.")
+  @Transactional
+  public void finalizeAppointment(@PathVariable("id") UUID procedureId) {
+    StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
+    if (procedure.getAppointment() == null && procedure.getUserDefinedAppointment() == null) {
+      throw new BadRequestException(
+          "Procedure %s has no outstanding appointment".formatted(procedure.getExternalId()));
+    }
+    appointmentService.finalizeAppointment(procedure);
+    progressEntryUtil.addProgressEntry(
+        procedureId, StiProtectionSystemProgressEntryType.APPOINTMENT_FINALIZED);
+  }
+
   @PutMapping("/{id}/close")
   @Operation(summary = "Close an STI procedure.")
   @Transactional
@@ -241,13 +257,6 @@ public class StiProtectionProcedureController {
       @Valid @RequestBody VerifyAnonymousUserPinRequest request) {
     String pin = request.pin();
     stiProtectionService.verifyAnonymousUserPin(procedureId, pin);
-  }
-
-  @DeleteMapping("/{id}")
-  @Transactional
-  public void deleteProcedure(@PathVariable("id") UUID procedureId) {
-    procedureDeletionService.deleteAndWriteToCemetery(
-        procedureFinder.findByExternalId(procedureId));
   }
 
   @PostMapping("/{id}/follow-up")

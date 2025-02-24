@@ -47,7 +47,6 @@ export function PersonDetails({
           width="100%"
         >
           <DetailsColumn>
-            <DetailsCell label="Aktenzeichen" value="-" />
             <DetailsCell
               label="Geburtsjahr"
               value={procedure.person.yearOfBirth.toString()}

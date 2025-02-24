@@ -15,13 +15,18 @@ import de.eshg.stiprotection.api.TextTemplatePopulationRequest;
 import de.eshg.stiprotection.api.TextTemplatePopulationResponse;
 import de.eshg.stiprotection.api.texttemplate.TextTemplateDto;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
+import de.eshg.testhelper.DefaultTestHelperService;
 import de.eshg.testhelper.TestHelperController;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.ListWithTotalNumber;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.PostExchange;
 
 @RestController
@@ -33,19 +38,22 @@ public class StiProtectionTestHelperController extends TestHelperController
   private final StiProtectionPopulator populator;
   private final TextTemplatePopulator textTemplatePopulator;
   private final OverdueProceduresNotifier overdueProceduresNotifier;
+  private final StiProtectionTestHelperService testHelperService;
 
   public StiProtectionTestHelperController(
-      StiProtectionTestHelperService testHelperService,
+      DefaultTestHelperService testHelperService,
       AuditLogTestHelperService auditLogTestHelperService,
       StiProtectionPopulator populator,
       TextTemplatePopulator textTemplatePopulator,
       EnvironmentConfig environmentConfig,
-      OverdueProceduresNotifier overdueProceduresNotifier) {
+      OverdueProceduresNotifier overdueProceduresNotifier,
+      StiProtectionTestHelperService testHelperService1) {
     super(testHelperService, environmentConfig);
     this.auditLogTestHelperService = auditLogTestHelperService;
     this.populator = populator;
     this.textTemplatePopulator = textTemplatePopulator;
     this.overdueProceduresNotifier = overdueProceduresNotifier;
+    this.testHelperService = testHelperService1;
   }
 
   @PostExchange("/population/procedures")
@@ -69,6 +77,12 @@ public class StiProtectionTestHelperController extends TestHelperController
   public ResponseEntity<Void> notifyOfOverdueProcedures() {
     overdueProceduresNotifier.runNow();
     return ResponseEntity.ok().build();
+  }
+
+  @GetExchange("/procedure/{procedureId}/citizen-user-id")
+  @Transactional(readOnly = true)
+  public UUID getCitizenUserId(@PathVariable("procedureId") UUID procedureId) {
+    return testHelperService.getCitizenUserId(procedureId);
   }
 
   @Override

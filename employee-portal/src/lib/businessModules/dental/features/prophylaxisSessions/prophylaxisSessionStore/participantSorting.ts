@@ -15,15 +15,21 @@ export interface ParticipantSorting {
   sortDirection: ParticipantSortDirection;
 }
 
-export type ParticipantSortKey = keyof Omit<
+type ParticipantSortAttributes = Omit<
   ChildExamination,
-  "childId" | "result" | "note" | "examinationId" | "examinationVersion"
+  | "childId"
+  | "result"
+  | "note"
+  | "examinationId"
+  | "examinationVersion"
+  | "allFluoridationConsents"
 >;
+export type ParticipantSortKey = keyof ParticipantSortAttributes;
 export type ParticipantSortDirection = "asc" | "desc";
 
 type ParticipantComparator = (
-  a: ChildExamination,
-  b: ChildExamination,
+  a: ParticipantSortAttributes,
+  b: ParticipantSortAttributes,
 ) => number;
 
 export function sortParticipants(
@@ -43,11 +49,14 @@ export function sortParticipants(
 }
 
 function compareMultiple(
-  ...comparators: ((a: ChildExamination, b: ChildExamination) => number)[]
+  ...comparators: ((
+    a: ParticipantSortAttributes,
+    b: ParticipantSortAttributes,
+  ) => number)[]
 ): ParticipantComparator {
   return function compareInOrder(
-    a: ChildExamination,
-    b: ChildExamination,
+    a: ParticipantSortAttributes,
+    b: ParticipantSortAttributes,
   ): number {
     for (const comparator of comparators) {
       const result = comparator(a, b);
@@ -62,13 +71,13 @@ function compareBy(
   sortDirection: ParticipantSortDirection,
 ): ParticipantComparator {
   return function compareParticipant(
-    a: ChildExamination,
-    b: ChildExamination,
+    a: ParticipantSortAttributes,
+    b: ParticipantSortAttributes,
   ): number {
     switch (sortKey) {
       case "dateOfBirth":
         return b.dateOfBirth.getDate() - a.dateOfBirth.getDate();
-      case "fluoridationConsentGiven":
+      case "currentFluoridationConsent":
         return compareFluoridation(a, b, sortDirection);
       case "gender":
         return compareGender(a, b, sortDirection);
@@ -81,19 +90,19 @@ function compareBy(
 }
 
 function compareFluoridation(
-  a: ChildExamination,
-  b: ChildExamination,
+  a: ParticipantSortAttributes,
+  b: ParticipantSortAttributes,
   sortDirection: ParticipantSortDirection,
 ): number {
-  const aValue = displayBoolean(a.fluoridationConsentGiven);
-  const bValue = displayBoolean(b.fluoridationConsentGiven);
+  const aValue = displayBoolean(a.currentFluoridationConsent?.consented);
+  const bValue = displayBoolean(b.currentFluoridationConsent?.consented);
 
   return compareAndSortEmptyStringToEnd(aValue, bValue, sortDirection);
 }
 
 function compareGender(
-  a: ChildExamination,
-  b: ChildExamination,
+  a: ParticipantSortAttributes,
+  b: ParticipantSortAttributes,
   sortDirection: ParticipantSortDirection,
 ): number {
   const aValue = isDefined(a.gender) ? GENDER_VALUES[a.gender] : "";
@@ -102,7 +111,10 @@ function compareGender(
   return compareAndSortEmptyStringToEnd(aValue, bValue, sortDirection);
 }
 
-function compareStatus(a: ChildExamination, b: ChildExamination): number {
+function compareStatus(
+  a: ParticipantSortAttributes,
+  b: ParticipantSortAttributes,
+): number {
   const aValue = EXAMINATION_STATUS[a.status];
   const bValue = EXAMINATION_STATUS[b.status];
 

@@ -5,6 +5,7 @@
 
 package de.eshg.opendata;
 
+import de.eshg.file.common.CsvValidator;
 import de.eshg.file.common.FileTypeDetector;
 import de.eshg.file.common.FileValidator;
 import de.eshg.file.common.PdfAConformanceValidator;
@@ -158,13 +159,17 @@ public class OpenDataService {
   private OpenDataFileType getFileTypeAndValidateFile(MultipartFile file) {
     try {
       FileValidator.validate(file);
-      OpenDataFileType fileType =
-          OpenDataMapper.mapToOpenDataFileType(FileTypeDetector.getSupportedFileTypeOrThrow(file));
-
-      if (fileType.equals(OpenDataFileType.PDF)) {
-        PdfAConformanceValidator.validate(file.getBytes());
-      }
-      return fileType;
+      return switch (FileTypeDetector.getSupportedFileTypeOrThrow(file)) {
+        case PDF -> {
+          PdfAConformanceValidator.validate(file.getBytes());
+          yield OpenDataFileType.PDF;
+        }
+        case CSV -> {
+          CsvValidator.validate(file.getBytes());
+          yield OpenDataFileType.CSV;
+        }
+        case EML, JPEG, PNG -> throw new BadRequestException("File type not permitted");
+      };
     } catch (IOException e) {
       log.error("File header was corrupt", e);
       throw new BadRequestException("File header was corrupt");

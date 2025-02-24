@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiFluoridationVarnish, ApiProphylaxisType } from "@eshg/dental-api";
+import {
+  ApiDentitionType,
+  ApiFluoridationVarnish,
+  ApiProphylaxisType,
+} from "@eshg/dental-api";
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
 
 export const PROPHYLAXIS_TYPES: EnumMap<ApiProphylaxisType> = {
@@ -14,6 +18,12 @@ export const PROPHYLAXIS_TYPES: EnumMap<ApiProphylaxisType> = {
   [ApiProphylaxisType.P5]: "P5 (P+3.FL)",
   [ApiProphylaxisType.P6]: "P6 (P+4.FL)",
   [ApiProphylaxisType.P7]: "P7 (nur Unterrichtseinheit)",
+};
+
+export const DENTITION_TYPES: EnumMap<ApiDentitionType> = {
+  [ApiDentitionType.Primary]: "Milchgebiss",
+  [ApiDentitionType.Mixed]: "Wechselgebiss",
+  [ApiDentitionType.Secondary]: "Bleibendes Gebiss",
 };
 
 export const FLUORIDATION_VARNISH_TYPES: EnumMap<ApiFluoridationVarnish> = {

@@ -5,10 +5,15 @@
 
 package de.eshg.lib.scheduling.spring;
 
+import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
+import java.util.Optional;
+import java.util.function.Supplier;
 import javax.sql.DataSource;
-import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider;
+import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider.Configuration.Builder;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
+import net.javacrumbs.shedlock.support.StorageBasedLockProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,12 +29,25 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableSchedulerLock(defaultLockAtMostFor = "1h")
 public class SchedulingConfiguration {
 
+  @FunctionalInterface
+  public interface LockedByValueSupplier extends Supplier<String> {}
+
   @Bean
-  public LockProvider lockProvider(DataSource dataSource) {
+  @ConditionalOnTestHelperEnabled
+  public LockedByValueSupplier lockProviderLockedByValueSupplier() {
+    return () -> "[HOSTNAME]";
+  }
+
+  @Bean
+  public StorageBasedLockProvider lockProvider(
+      DataSource dataSource,
+      @Autowired(required = false) LockedByValueSupplier lockedByValueSupplier) {
+    Builder builder = JdbcTemplateLockProvider.Configuration.builder();
+
+    Optional.ofNullable(lockedByValueSupplier)
+        .ifPresent(supplier -> builder.withLockedByValue(supplier.get()));
+
     return new JdbcTemplateLockProvider(
-        JdbcTemplateLockProvider.Configuration.builder()
-            .withJdbcTemplate(new JdbcTemplate(dataSource))
-            .usingDbTime()
-            .build());
+        builder.withJdbcTemplate(new JdbcTemplate(dataSource)).usingDbTime().build());
   }
 }

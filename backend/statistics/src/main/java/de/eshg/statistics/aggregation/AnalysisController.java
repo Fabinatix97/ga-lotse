@@ -15,6 +15,7 @@ import de.eshg.statistics.api.AnalysisWithDiagrams;
 import de.eshg.statistics.api.UpdateAnalysisRequest;
 import de.eshg.statistics.api.diagram.DiagramDto;
 import de.eshg.statistics.api.diagram.UpdateDiagramRequest;
+import de.eshg.statistics.diagramcreation.DiagramCreationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;

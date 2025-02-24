@@ -209,6 +209,20 @@ export function useCancelAppointmentMutation({
   });
 }
 
+export function useFinalizeAppointmentMutation({
+  onSuccess,
+  onError,
+}: MutationPassThrough<string, void> = {}) {
+  const api = useStiProtectionProcedureApi();
+
+  return useHandledMutation({
+    mutationFn: (id: string) => api.finalizeAppointment(id),
+    mutationKey: stiProtectionApiQueryKey(["appointment", "finalize"]),
+    onSuccess,
+    onError,
+  });
+}
+
 interface UpdateAppointmentParams {
   id: string;
   data: ApiUpdateAppointmentRequest;

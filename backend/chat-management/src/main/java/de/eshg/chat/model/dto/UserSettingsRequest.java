@@ -14,4 +14,5 @@ public record UserSettingsRequest(
     Boolean sharePresence,
     Boolean showReadConfirmation,
     Boolean showTypingNotification,
-    Boolean accountDeactivated) {}
+    Boolean accountDeactivated,
+    Boolean accountRegistered) {}

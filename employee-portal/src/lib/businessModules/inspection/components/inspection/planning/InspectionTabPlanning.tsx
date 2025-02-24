@@ -8,12 +8,12 @@ import {
   ApiInspectionAvailableCLDVersionsResponse,
   ApiInspectionPhase,
 } from "@eshg/inspection-api";
+import { useHeaderHeights } from "@eshg/lib-employee-portal/hooks/useHeaderHeights";
 import { useWindowDimensions } from "@eshg/lib-portal/hooks/useWindowDimension";
 import { Box, useTheme } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
-import { useHeaderHeights } from "@/lib/baseModule/components/layout/useHeaderHeights";
 import { useInspectionApi } from "@/lib/businessModules/inspection/api/clients";
 import {
   getAvailableCLDVsQuery,

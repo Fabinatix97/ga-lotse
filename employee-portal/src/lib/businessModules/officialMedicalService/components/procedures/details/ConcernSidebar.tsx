@@ -41,6 +41,8 @@ export function useConcernSidebar() {
   });
 }
 
+const ALL_CATEGORIES_KEY = "ALL_CATEGORIES";
+
 export function ConcernSidebar({
   onClose,
   procedure,
@@ -52,7 +54,7 @@ export function ConcernSidebar({
   const initialValues: ConcernFormType = {
     category: procedure.concern
       ? getCategoryKeyFromConcern(procedure.concern)
-      : null,
+      : ALL_CATEGORIES_KEY,
     concern: procedure.concern
       ? getConcernKeyFromConcern(procedure.concern)
       : null,
@@ -71,7 +73,9 @@ export function ConcernSidebar({
 
   const categoryMap: Map<string, ApiConcernCategoryConfig> =
     allConcernsResponse.categories.reduce((map, category) => {
-      map.set(getCategoryKeyFromCategoryConfig(category), category);
+      for (const concern of category.concerns) {
+        map.set(getConcernKeyFromConcernConfig(concern), category);
+      }
       return map;
     }, new Map<string, ApiConcernCategoryConfig>());
 
@@ -84,8 +88,8 @@ export function ConcernSidebar({
           concern: {
             ...concern,
             version: procedure.concern?.version ?? 0,
-            categoryNameDe: categoryMap.get(values.category!)!.nameDe,
-            categoryNameEn: categoryMap.get(values.category!)!.nameEn,
+            categoryNameDe: categoryMap.get(values.concern)!.nameDe,
+            categoryNameEn: categoryMap.get(values.concern)!.nameEn,
           },
         },
         {
@@ -145,7 +149,9 @@ function CategoryField({
 
 function ConcernField({
   allConcernsResponse,
-}: Readonly<{ allConcernsResponse: ApiGetConcernsResponse }>) {
+}: Readonly<{
+  allConcernsResponse: ApiGetConcernsResponse;
+}>) {
   const {
     values: { category },
   } = useFormikContext<ConcernFormType>();
@@ -170,7 +176,9 @@ function optionsFromConcernsResponse(
 ): SelectOption<string>[] {
   return concernsResponse.categories
     .filter(
-      (category) => categoryKey === getCategoryKeyFromCategoryConfig(category),
+      (category) =>
+        categoryKey === ALL_CATEGORIES_KEY ||
+        categoryKey === getCategoryKeyFromCategoryConfig(category),
     )
     .flatMap((category) =>
       category.concerns.map((concern) => ({
@@ -183,10 +191,16 @@ function optionsFromConcernsResponse(
 function categoryOptionsFromConcernsResponse(
   concernsResponse: ApiGetConcernsResponse,
 ) {
-  return concernsResponse.categories.map((category) => ({
-    value: getCategoryKeyFromCategoryConfig(category),
-    label: category.nameDe,
-  }));
+  return [
+    {
+      value: ALL_CATEGORIES_KEY,
+      label: "Alle Kategorien",
+    },
+    ...concernsResponse.categories.map((category) => ({
+      value: getCategoryKeyFromCategoryConfig(category),
+      label: category.nameDe,
+    })),
+  ];
 }
 
 function getCategoryKeyFromCategoryConfig(

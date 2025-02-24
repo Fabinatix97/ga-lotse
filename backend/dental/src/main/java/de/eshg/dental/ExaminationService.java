@@ -19,6 +19,7 @@ import de.eshg.dental.domain.model.FluoridationExaminationResult;
 import de.eshg.dental.domain.model.ProphylaxisSession;
 import de.eshg.dental.domain.model.ScreeningExaminationResult;
 import de.eshg.dental.domain.repository.ExaminationRepository;
+import de.eshg.dental.mapper.DentitionTypeMapper;
 import de.eshg.dental.mapper.ExaminationMapper;
 import de.eshg.dental.util.ChildSystemProgressEntryType;
 import de.eshg.dental.util.ExceptionUtil;
@@ -149,6 +150,8 @@ public class ExaminationService {
           existingResult.setFluorideVarnishApplied(newResult.fluorideVarnishApplied());
           existingResult.setOralHygieneStatus(
               ExaminationMapper.mapToDomain(newResult.oralHygieneStatus()));
+          existingResult.setDentitionType(
+              DentitionTypeMapper.mapToDomain(newResult.dentitionType()));
           existingResult.setToothDiagnoses(
               ExaminationMapper.mapToDomain(newResult.toothDiagnoses()));
         });

@@ -13,6 +13,7 @@ import {
   initReactI18next,
   useTranslation,
 } from "react-i18next";
+import { flat, isArray, pipe, unique } from "remeda";
 
 import {
   options,
@@ -42,6 +43,7 @@ function createClient(lang: string) {
   void client.init();
   return client;
 }
+
 function useTranslationWrapper(
   ns?: string | string[],
   options?: UseTranslationOptions<undefined>,
@@ -62,8 +64,45 @@ function useTranslationWrapper(
     },
     [i18n, t],
   );
-  return { t: tFunction, i18n, ready };
+  return { t: useTWithCamelCase(tFunction), i18n, ready };
 }
-export type TranslateFn = ReturnType<typeof useTranslationWrapper>["t"];
+
+export type TranslateFn = (
+  key: string | string[],
+  tOptions?: TOptions,
+) => string;
+
+function fromSnakeToCamel(snakeCase: string): string {
+  return snakeCase
+    .split(".")
+    .map((keyPart) => {
+      const words = keyPart.split("_");
+      const capitalizedWords = words
+        .slice(1)
+        .map((t) => t[0]?.toUpperCase() + t.slice(1));
+      return [words[0], ...capitalizedWords].join("");
+    })
+    .join(".");
+}
+
+export function useTWithCamelCase(t: TranslateFn): TranslateFn {
+  return useCallback(
+    (args, tOptions) => {
+      const keys: string[] = (isArray(args) ? args : [args]).filter(
+        (t) => t != null,
+      );
+      if (keys.length === 0) {
+        return t(args, tOptions);
+      }
+      const newKeys: string[] = pipe(
+        keys.map((k) => [k, fromSnakeToCamel(k)]),
+        flat(),
+        unique(),
+      );
+      return t(newKeys, tOptions);
+    },
+    [t],
+  );
+}
 
 export { useTranslationWrapper as useTranslation };

@@ -1,0 +1,19 @@
+### Login as admin
+
+POST http://localhost:8008/_matrix/client/r0/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "type":"m.login.password",
+  "user": "admin",
+  "password": "admin"
+}
+
+
+### Allow replacing master cross-signing key without User-Interactive Auth (for next 10 minutes)
+
+POST http://localhost:8008/_synapse/admin/v1/users/@testuser1:synapse.local.dev/_allow_cross_signing_replacement_without_uia
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer [SYNAPSE_ACCESS_TOKEN]

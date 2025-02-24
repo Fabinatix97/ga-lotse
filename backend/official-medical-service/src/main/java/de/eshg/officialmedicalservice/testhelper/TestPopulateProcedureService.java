@@ -9,6 +9,7 @@ import static de.eshg.lib.procedure.model.ProcedureStatusDto.CLOSED;
 import static de.eshg.lib.procedure.model.ProcedureStatusDto.OPEN;
 
 import de.eshg.officialmedicalservice.appointment.OmsAppointmentService;
+import de.eshg.officialmedicalservice.citizenpublic.CitizenProcedureService;
 import de.eshg.officialmedicalservice.concern.ConcernMapper;
 import de.eshg.officialmedicalservice.concern.ConcernService;
 import de.eshg.officialmedicalservice.document.OmsDocumentService;
@@ -22,8 +23,12 @@ import de.eshg.officialmedicalservice.procedure.api.ConcernDto;
 import de.eshg.officialmedicalservice.procedure.api.PatchConcernRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchEmployeeOmsProcedureEmailNotificationsRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchEmployeeOmsProcedurePhysicianRequest;
+import de.eshg.officialmedicalservice.procedure.api.PostCitizenProcedureRequest;
 import de.eshg.officialmedicalservice.testhelper.api.AppointmentPopulationDto;
+import de.eshg.officialmedicalservice.testhelper.api.ConcernTestDataConfig;
 import de.eshg.officialmedicalservice.testhelper.api.DocumentPopulationDto;
+import de.eshg.officialmedicalservice.testhelper.api.FileTestDataConfig;
+import de.eshg.officialmedicalservice.testhelper.api.PostPopulateCitizenProcedureRequest;
 import de.eshg.officialmedicalservice.testhelper.api.PostPopulateProcedureRequest;
 import de.eshg.officialmedicalservice.testhelper.api.PostPopulateProcedureResponse;
 import de.eshg.officialmedicalservice.waitingroom.WaitingRoomService;
@@ -38,12 +43,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -111,6 +118,7 @@ API Response
 public class TestPopulateProcedureService {
 
   private final EmployeeOmsProcedureService employeeOmsProcedureService;
+  private final CitizenProcedureService citizenProcedureService;
   private final ConcernService concernService;
   private final OmsAppointmentService appointmentService;
   private final PopulateWithAccessTokenHelper populateWithAccessTokenHelper;
@@ -120,6 +128,7 @@ public class TestPopulateProcedureService {
 
   public TestPopulateProcedureService(
       EmployeeOmsProcedureService employeeOmsProcedureService,
+      CitizenProcedureService citizenProcedureService,
       ConcernService concernService,
       OmsAppointmentService appointmentService,
       PopulateWithAccessTokenHelper populateWithAccessTokenHelper,
@@ -127,6 +136,7 @@ public class TestPopulateProcedureService {
       OmsDocumentRepository omsDocumentRepository,
       WaitingRoomService waitingRoomService) {
     this.employeeOmsProcedureService = employeeOmsProcedureService;
+    this.citizenProcedureService = citizenProcedureService;
     this.concernService = concernService;
     this.appointmentService = appointmentService;
     this.populateWithAccessTokenHelper = populateWithAccessTokenHelper;
@@ -146,8 +156,12 @@ public class TestPopulateProcedureService {
           Map<String, UUID> documentMap = new HashMap<>();
 
           // 1. create procedure
-          procedureId =
-              employeeOmsProcedureService.createEmployeeProcedure((request.procedureData()));
+          if (request.procedureData() != null) {
+            procedureId =
+                employeeOmsProcedureService.createEmployeeProcedure((request.procedureData()));
+          } else {
+            procedureId = addCitizenProcedure(request.procedureDataCitizen());
+          }
 
           // 2. Deactivate email notifications
           if (request.sendEmailNotifications() != null) {
@@ -164,22 +178,7 @@ public class TestPopulateProcedureService {
 
           // 4. add concern
           if (request.concern() != null) {
-            ConcernDto concern =
-                concernService.getConcerns().categories().stream()
-                    .flatMap(
-                        category ->
-                            category.concerns().stream()
-                                .filter(
-                                    concernDto ->
-                                        concernDto.nameDe().equals(request.concern().getNameDe()))
-                                .map(
-                                    concernConfigDto ->
-                                        ConcernMapper.mapConcernConfigToConcernDto(
-                                            concernConfigDto, category, 0))
-                                .findFirst()
-                                .stream())
-                    .findFirst()
-                    .orElseThrow();
+            ConcernDto concern = loadConcern(request.concern());
 
             employeeOmsProcedureService.updateOmsProcedureConcern(
                 procedureId, new PatchConcernRequest(concern));
@@ -196,30 +195,29 @@ public class TestPopulateProcedureService {
             employeeOmsProcedureService.acceptDraftProcedure(procedureId);
           }
 
-          // 7. add appointments
-          appointmentMap = addAppointments(procedureId, request.appointments());
+          // 7. add (and cancel and close) appointments
+          appointmentMap =
+              addAppointments(
+                  procedureId,
+                  request.appointments(),
+                  request.cancelledAppointments(),
+                  request.closedAppointments());
 
-          // 8. cancel appointments
-          cancelAppointments(request.cancelledAppointments(), appointmentMap);
-
-          // 9. close appointments
-          closeAppointments(request.closedAppointments(), appointmentMap);
-
-          // 10. add documents
+          // 8. add documents
           documentMap = addDocuments(procedureId, request.documents());
 
-          // 11. update medical opinion status
+          // 9. update medical opinion status
           if (request.medicalOpinionStatus() != null) {
             employeeOmsProcedureService.updateMedicalOpinionStatus(
                 procedureId, request.medicalOpinionStatus());
           }
 
-          // 12. update waiting room
+          // 10. update waiting room
           if (request.waitingRoom() != null) {
             waitingRoomService.updateWaitingRoom(procedureId, request.waitingRoom());
           }
 
-          // 13. close procedure
+          // 11. close procedure
           if (Objects.equals(CLOSED, request.targetState())) {
             employeeOmsProcedureService.closeOpenProcedure(procedureId);
           }
@@ -229,45 +227,42 @@ public class TestPopulateProcedureService {
         });
   }
 
+  private UUID addCitizenProcedure(PostPopulateCitizenProcedureRequest procedureDataCitizen) {
+    PostCitizenProcedureRequest request =
+        new PostCitizenProcedureRequest(
+            loadConcern(procedureDataCitizen.concern()),
+            procedureDataCitizen.appointment().request(),
+            procedureDataCitizen.affectedPerson());
+    return citizenProcedureService.createCitizenProcedure(
+        request, loadFiles(procedureDataCitizen.files()));
+  }
+
   private Map<String, UUID> addAppointments(
-      UUID procedureId, List<AppointmentPopulationDto> appointmentPopulations) {
+      UUID procedureId,
+      List<AppointmentPopulationDto> appointmentPopulations,
+      List<String> canceledAppointments,
+      List<String> closedAppointments) {
     Map<String, UUID> appointmentMap = new LinkedHashMap<>();
+    Set<String> canceledAppointmentsSet =
+        new HashSet<>(
+            canceledAppointments != null ? canceledAppointments : Collections.emptyList());
+    Set<String> closedAppointmentsSet =
+        new HashSet<>(closedAppointments != null ? closedAppointments : Collections.emptyList());
     if (appointmentPopulations != null) {
       appointmentPopulations.forEach(
           population -> {
             UUID appointmentId =
                 appointmentService.addAppointmentEmployee(procedureId, population.request());
             appointmentMap.put(population.key(), appointmentId);
+            if (canceledAppointmentsSet.contains(population.key())) {
+              appointmentService.cancelAppointmentEmployee(appointmentId);
+            }
+            if (closedAppointmentsSet.contains(population.key())) {
+              appointmentService.closeAppointmentEmployee(appointmentId);
+            }
           });
     }
     return appointmentMap;
-  }
-
-  private void cancelAppointments(
-      List<String> cancelledAppointmentList, Map<String, UUID> appointmentMap) {
-    if (cancelledAppointmentList == null) {
-      return;
-    }
-    cancelledAppointmentList.forEach(
-        appointment -> {
-          UUID appointmentId =
-              Optional.of(appointmentMap.get(appointment))
-                  .orElseThrow(() -> new RuntimeException("Unknown appointment key"));
-          appointmentService.cancelAppointmentEmployee(appointmentId);
-        });
-  }
-
-  private void closeAppointments(List<String> appointmentList, Map<String, UUID> appointmentMap) {
-    if (appointmentList == null) {
-      return;
-    }
-    appointmentList.forEach(
-        appointment -> {
-          UUID appointmentId =
-              Optional.of(appointmentMap.get(appointment))
-                  .orElseThrow(() -> new RuntimeException("Unknown appointment key"));
-          appointmentService.closeAppointmentEmployee(appointmentId);
-        });
   }
 
   private Map<String, UUID> addDocuments(
@@ -280,27 +275,7 @@ public class TestPopulateProcedureService {
             String note = null;
             if (document.targetState() == DocumentStatusDto.ACCEPTED
                 || document.targetState() == DocumentStatusDto.SUBMITTED) {
-              document
-                  .files()
-                  .forEach(
-                      config -> {
-                        try {
-                          Path filePath =
-                              Paths.get(
-                                  getClass()
-                                      .getClassLoader()
-                                      .getResource("documents/" + config.getName())
-                                      .toURI());
-                          File file = filePath.toFile();
-
-                          filesToAdd.add(
-                              new OmsDocumentTestHelperFile(
-                                  file.getName(), Files.probeContentType(file.toPath()), file));
-                        } catch (IOException | URISyntaxException e) {
-                          throw new RuntimeException(
-                              "Fehler beim Laden der Testdatei: " + config.getName(), e);
-                        }
-                      });
+              filesToAdd = loadFiles(document.files());
 
               if (!document.files().isEmpty()) {
                 note = document.note();
@@ -311,7 +286,7 @@ public class TestPopulateProcedureService {
                 omsDocumentService.addDocumentEmployee(
                     procedureId, document.request(), filesToAdd, note);
 
-            // TODO: use document service once citizen portal document service functions exist
+            // TODO ISSUE-7371: use citizen portal document function from document service
             if (DocumentStatusDto.SUBMITTED == document.targetState()
                 || DocumentStatusDto.REJECTED == document.targetState()) {
               omsDocumentRepository
@@ -331,5 +306,44 @@ public class TestPopulateProcedureService {
           });
     }
     return documentMap;
+  }
+
+  private ConcernDto loadConcern(ConcernTestDataConfig concern) {
+    return concernService.getConcerns().categories().stream()
+        .flatMap(
+            category ->
+                category.concerns().stream()
+                    .filter(concernDto -> concernDto.nameDe().equals(concern.getNameDe()))
+                    .map(
+                        concernConfigDto ->
+                            ConcernMapper.mapConcernConfigToConcernDto(
+                                concernConfigDto, category, 0))
+                    .findFirst()
+                    .stream())
+        .findFirst()
+        .orElseThrow();
+  }
+
+  private List<MultipartFile> loadFiles(List<FileTestDataConfig> files) {
+    List<MultipartFile> filesToAdd = new ArrayList<>();
+    files.forEach(
+        config -> {
+          try {
+            Path filePath =
+                Paths.get(
+                    getClass()
+                        .getClassLoader()
+                        .getResource("documents/" + config.getName())
+                        .toURI());
+            File file = filePath.toFile();
+
+            filesToAdd.add(
+                new OmsDocumentTestHelperFile(
+                    file.getName(), Files.probeContentType(file.toPath()), file));
+          } catch (IOException | URISyntaxException e) {
+            throw new RuntimeException("Fehler beim Laden der Testdatei: " + config.getName(), e);
+          }
+        });
+    return filesToAdd;
   }
 }

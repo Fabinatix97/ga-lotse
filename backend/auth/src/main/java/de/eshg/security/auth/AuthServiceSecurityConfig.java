@@ -8,8 +8,13 @@ package de.eshg.security.auth;
 import com.google.common.collect.Iterables;
 import de.eshg.lib.common.TimeoutConstants;
 import de.eshg.security.auth.login.LoginMethod;
+import de.eshg.security.auth.synapse.SynapseAuthController;
+import de.eshg.security.auth.synapse.SynapseLogoutHandler;
 import java.time.Clock;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
@@ -39,6 +44,8 @@ import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 
 @Configuration
 public class AuthServiceSecurityConfig {
+
+  private static final Logger log = LoggerFactory.getLogger(AuthServiceSecurityConfig.class);
 
   // We explicitly reconfigure the Spring OAuth client endpoints to live under /auth
   // This makes it easier to configure the proxy_pass in the Nginx reverse proxy.
@@ -90,6 +97,7 @@ public class AuthServiceSecurityConfig {
       HttpSecurity http,
       List<LoginMethod> loginMethods,
       ReverseProxyAwareSavedRequestAwareAuthenticationSuccessHandler oauthLoginSuccessHandler,
+      @Autowired(required = false) SynapseLogoutHandler synapseLogoutHandler,
       ClientRegistrationRepository clientRegistrationRepository,
       CsrfTokenRepository csrfTokenRepository)
       throws Exception {
@@ -108,6 +116,7 @@ public class AuthServiceSecurityConfig {
                   .authenticated();
 
               auth.requestMatchers(HttpMethod.GET, AuthController.BASE_URL).authenticated();
+              auth.requestMatchers(HttpMethod.GET, SynapseAuthController.BASE_URL).authenticated();
 
               auth.anyRequest().denyAll();
             })
@@ -127,12 +136,17 @@ public class AuthServiceSecurityConfig {
                                         loginMethods,
                                         AUTHORIZATION_ENDPOINT_BASE_URL))))
         .logout(
-            logout ->
-                logout
-                    .logoutUrl(LOGOUT_URL)
-                    .logoutRequestMatcher(LOGOUT_REQUEST_MATCHER)
-                    .logoutSuccessHandler(logoutSuccessHandler(clientRegistrationRepository))
-                    .addLogoutHandler(new LogoutCsrfTokenCookieClearingLogoutHandler()))
+            logout -> {
+              logout
+                  .logoutUrl(LOGOUT_URL)
+                  .logoutRequestMatcher(LOGOUT_REQUEST_MATCHER)
+                  .logoutSuccessHandler(logoutSuccessHandler(clientRegistrationRepository))
+                  .addLogoutHandler(new LogoutCsrfTokenCookieClearingLogoutHandler());
+              if (synapseLogoutHandler != null) {
+                log.info("Adding logout handler for Synapse");
+                logout.addLogoutHandler(synapseLogoutHandler);
+              }
+            })
         .csrf(
             csrf ->
                 csrf.csrfTokenRepository(csrfTokenRepository)

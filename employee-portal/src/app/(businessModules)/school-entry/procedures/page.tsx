@@ -5,6 +5,9 @@
 
 "use client";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
 import { Cached } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 
@@ -12,10 +15,6 @@ import { useImportDataSidebar } from "@/lib/businessModules/schoolEntry/features
 import { CreateProcedureSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/new/CreateProcedureSidebar";
 import { BUTTON_SIZE } from "@/lib/businessModules/schoolEntry/features/procedures/new/constants";
 import { ProceduresTable } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/ProceduresTable";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 
 function ImportDataButton() {
   const importDataSidebar = useImportDataSidebar();
@@ -32,14 +31,6 @@ function ImportDataButton() {
   );
 }
 
-function CreateProcedureButton() {
-  return (
-    <OverlayBoundary>
-      <CreateProcedureSidebar />
-    </OverlayBoundary>
-  );
-}
-
 export default function SchoolEntryProceduresPage() {
   return (
     <StickyToolbarLayout toolbar={<Toolbar title="Einschulungsuntersuchung" />}>
@@ -47,7 +38,7 @@ export default function SchoolEntryProceduresPage() {
         <ProceduresTable
           buttons={[
             <ImportDataButton key="importData" />,
-            <CreateProcedureButton key="createProcedure" />,
+            <CreateProcedureSidebar key="createProcedure" />,
           ]}
         />
       </MainContentLayout>

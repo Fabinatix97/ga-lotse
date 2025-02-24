@@ -6,11 +6,14 @@
 package de.eshg.officialmedicalservice.procedure.persistence.entity;
 
 import de.eshg.domain.model.BaseEntity;
+import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotNull;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
 public class Concern extends BaseEntity {
@@ -20,20 +23,9 @@ public class Concern extends BaseEntity {
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private String nameDe;
 
-  @Column(nullable = false)
-  @NotNull
+  @Column
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private String nameEn;
-
-  @Column(nullable = false)
-  @NotNull
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  private String descriptionDe;
-
-  @Column(nullable = false)
-  @NotNull
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  private String descriptionEn;
 
   @Column(nullable = false)
   @NotNull
@@ -50,6 +42,16 @@ public class Concern extends BaseEntity {
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private String categoryNameEn;
 
+  @Column
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  private AppointmentType appointmentType;
+
+  @Column(nullable = false)
+  @NotNull
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  private boolean visibleInOnlinePortal;
+
   public @NotNull String getNameDe() {
     return nameDe;
   }
@@ -58,28 +60,12 @@ public class Concern extends BaseEntity {
     this.nameDe = nameDe;
   }
 
-  public @NotNull String getNameEn() {
+  public String getNameEn() {
     return nameEn;
   }
 
-  public void setNameEn(@NotNull String nameEn) {
+  public void setNameEn(String nameEn) {
     this.nameEn = nameEn;
-  }
-
-  public @NotNull String getDescriptionDe() {
-    return descriptionDe;
-  }
-
-  public void setDescriptionDe(@NotNull String descriptionDe) {
-    this.descriptionDe = descriptionDe;
-  }
-
-  public @NotNull String getDescriptionEn() {
-    return descriptionEn;
-  }
-
-  public void setDescriptionEn(@NotNull String descriptionEn) {
-    this.descriptionEn = descriptionEn;
   }
 
   @NotNull
@@ -105,5 +91,21 @@ public class Concern extends BaseEntity {
 
   public void setCategoryNameEn(@NotNull String categoryNameEn) {
     this.categoryNameEn = categoryNameEn;
+  }
+
+  public AppointmentType getAppointmentType() {
+    return appointmentType;
+  }
+
+  public void setAppointmentType(AppointmentType appointmentType) {
+    this.appointmentType = appointmentType;
+  }
+
+  public boolean isVisibleInOnlinePortal() {
+    return visibleInOnlinePortal;
+  }
+
+  public void setVisibleInOnlinePortal(boolean visibleInOnlinePortal) {
+    this.visibleInOnlinePortal = visibleInOnlinePortal;
   }
 }

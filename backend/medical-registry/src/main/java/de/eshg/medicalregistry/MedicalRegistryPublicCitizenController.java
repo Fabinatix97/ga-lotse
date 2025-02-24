@@ -5,6 +5,8 @@
 
 package de.eshg.medicalregistry;
 
+import static de.eshg.rest.service.PrivacyDocumentHelper.privacyNoticeAttachmentResponse;
+import static de.eshg.rest.service.PrivacyDocumentHelper.privacyPolicyAttachmentResponse;
 import static de.eshg.rest.service.security.config.BaseUrls.MedicalRegistry.CITIZEN_PORTAL_ENDPOINT;
 
 import de.eshg.medicalregistry.config.MedicalRegistryProperties;
@@ -13,12 +15,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,26 +52,13 @@ public class MedicalRegistryPublicCitizenController {
   @Operation(summary = "Get the privacy-notice document.")
   @Transactional(readOnly = true)
   public ResponseEntity<Resource> getPrivacyNotice() {
-    return getPrivacyDocument(privacyNotice, "Datenschutz-Information.pdf");
+    return privacyNoticeAttachmentResponse(privacyNotice);
   }
 
   @GetMapping(path = DOCUMENTS_PRIVACY_POLICY)
   @Operation(summary = "Get the privacy-policy document.")
   @Transactional(readOnly = true)
   public ResponseEntity<Resource> getPrivacyPolicy() {
-    return getPrivacyDocument(privacyPolicy, "Datenschutzerklaerung.pdf");
-  }
-
-  private static ResponseEntity<Resource> getPrivacyDocument(
-      Resource privacyDocument, String filename) {
-    return ResponseEntity.ok()
-        .header(
-            HttpHeaders.CONTENT_DISPOSITION,
-            ContentDisposition.attachment()
-                .filename(filename, StandardCharsets.UTF_8)
-                .build()
-                .toString())
-        .contentType(MediaType.APPLICATION_PDF)
-        .body(privacyDocument);
+    return privacyPolicyAttachmentResponse(privacyPolicy);
   }
 }

@@ -25,6 +25,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import net.javacrumbs.shedlock.core.LockAssert;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -59,7 +61,11 @@ public class ArchivingJob<ProcedureT extends Procedure<ProcedureT, ?, ?, ?>> {
 
   @Transactional
   @Scheduled(cron = "${de.eshg.lib.procedure.housekeeping.archiving.schedule:@daily}")
+  @SchedulerLock(
+      name = "LibProceduresArchivingJob",
+      lockAtMostFor = "${de.eshg.lib.procedure.housekeeping.archiving.lock-at-most-for:23h}")
   public void run() {
+    LockAssert.assertLocked();
     boolean withinGracePeriod = isWithinGracePeriod();
     logger.info(
         "Started with grace period of {} months, is within grace period: {}",

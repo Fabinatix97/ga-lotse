@@ -14,6 +14,7 @@ import java.time.Period;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
+import net.javacrumbs.shedlock.core.LockAssert;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +52,7 @@ public class GdprCleanupJob {
   @Scheduled(cron = "${eshg.gdpr.cleanup.cron}")
   @SchedulerLock(name = "GdprCleanupJob", lockAtMostFor = "1h", lockAtLeastFor = "1m")
   public void executeScheduledCleanup() {
+    LockAssert.assertLocked();
     performGdprCleanup();
   }
 

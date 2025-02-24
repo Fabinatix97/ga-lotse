@@ -40,7 +40,9 @@ export function OccupationalInformationForm(props: NestedFormProps) {
   return (
     <>
       <Grid xxs={12}>
-        <Typography level="h3">Berufsangaben</Typography>
+        <Typography level="h3" component="h2">
+          Berufsangaben
+        </Typography>
       </Grid>
       <Grid xxs={6}>
         <SelectField

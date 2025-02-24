@@ -5,6 +5,8 @@
 
 "use client";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import {
   DocumentScanner,
@@ -37,9 +39,7 @@ import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { ContentPanelTitle } from "@/lib/shared/components/contentPanel/ContentPanelTitle";
 import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
 import { useSidebar } from "@/lib/shared/components/drawer/useSidebar";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { PersonToolbarHeader } from "@/lib/shared/components/layout/PersonToolbarHeader";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";

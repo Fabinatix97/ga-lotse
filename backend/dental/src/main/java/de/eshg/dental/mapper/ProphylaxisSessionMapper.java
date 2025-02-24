@@ -19,9 +19,11 @@ import de.eshg.dental.api.ProphylaxisTypeDto;
 import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedData;
 import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedInstitution;
 import de.eshg.dental.domain.model.Examination;
+import de.eshg.dental.domain.model.FluoridationConsent;
 import de.eshg.dental.domain.model.FluoridationVarnish;
 import de.eshg.dental.domain.model.ProphylaxisSession;
 import de.eshg.dental.domain.model.ProphylaxisType;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -85,6 +87,7 @@ public final class ProphylaxisSessionMapper {
         session.getGroupName(),
         mapToDto(session.getType()),
         session.isScreening(),
+        DentitionTypeMapper.mapToDto(session.getDentitionType()),
         mapToDto(session.getFluoridationVarnish()),
         getParticipants(prophylaxisSession),
         mapPersons(session.getDentistIds(), userMap),
@@ -127,7 +130,10 @@ public final class ProphylaxisSessionMapper {
         examination.getChild().getGroupName().trim(),
         fileStateResponse.gender(),
         examination.getNote(),
-        examination.getChild().isFluoridationConsentCurrentlyGivenOptionally(),
+        ChildMapper.mapFluoridationToDto(
+            examination.getChild().getFluoridationConsents().stream()
+                .sorted(Comparator.comparing(FluoridationConsent::getModifiedAt).reversed())
+                .toList()),
         ExaminationMapper.mapToDto(examination.getResult()),
         previousExaminations.stream()
             .map(Examination::getResult)

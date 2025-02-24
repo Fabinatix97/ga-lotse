@@ -5,10 +5,11 @@
 
 "use client";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+
 import { useGetCompletenessInformation } from "@/lib/businessModules/statistics/api/queries/useGetCompletenessInformation";
 import { EvaluationDetailsLayout } from "@/lib/businessModules/statistics/components/evaluations/details/EvaluationDetailsLayout";
 import { EvaluationDataQuality } from "@/lib/businessModules/statistics/components/evaluations/details/dataQuality/EvaluationDataQuality";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 
 export default function EvaluationDetailsDataQualityPage(
   props: Readonly<{ params: { id: string } }>,

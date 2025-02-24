@@ -24,7 +24,6 @@ import de.eshg.lib.document.generator.department.DepartmentLogo;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PersonType;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
-import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.domain.model.Procedure_;
 import de.eshg.lib.procedure.domain.model.RelatedPerson;
 import de.eshg.lib.procedure.domain.model.TaskStatus;
@@ -51,13 +50,12 @@ import de.eshg.stiprotection.persistence.db.StiProtectionProcedureRepository;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure_;
 import de.eshg.stiprotection.persistence.db.StiProtectionTask;
 import de.eshg.stiprotection.util.ProgressEntryUtil;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Root;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.domain.Page;
@@ -99,12 +97,14 @@ public class StiProtectionProcedureService {
   }
 
   public StiProtectionProcedure createProcedure(Concern concern) {
-    StiProtectionProcedure procedure = new StiProtectionProcedure();
-    procedure.setProcedureType(ProcedureType.STI_PROTECTION);
-    procedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
-    procedure.setConcern(concern);
+    StiProtectionProcedure procedure =
+        StiProtectionProcedure.newProcedure(concern, clock, auditLogger);
     procedure.addTask(createTask());
     return repository.save(procedure);
+  }
+
+  public StiProtectionProcedure saveProcedure(Concern concern) {
+    return repository.save(StiProtectionProcedure.newProcedure(concern, clock, auditLogger));
   }
 
   public void addPerson(StiProtectionProcedure procedure, PersonData personData) {
@@ -166,9 +166,6 @@ public class StiProtectionProcedureService {
       GetStiProtectionProceduresSortOrderDto sortOrder,
       GetStiProtectionProceduresSortByDto sortBy) {
     return (root, query, criteriaBuilder) -> {
-      Join<StiProtectionProcedure, Person> psJoin =
-          root.join(Procedure_.RELATED_PERSONS, JoinType.INNER);
-
       Path<?> sortProperty = getSortProperty(sortBy, root);
 
       if (sortOrder == ASC) {
@@ -190,7 +187,7 @@ public class StiProtectionProcedureService {
   }
 
   private StiProtectionProcedureData toProcedureData(StiProtectionProcedure procedure) {
-    UUID anonymousUserId = procedure.getPerson().getAnonymousUserId();
+    UUID anonymousUserId = procedure.getAnonymousUserId();
     String accessCode =
         anonymousUserId != null
             ? citizenAccessCodeUserApi.getCitizenAccessCodeUser(anonymousUserId).accessCode()
@@ -252,7 +249,7 @@ public class StiProtectionProcedureService {
   }
 
   private String getAccessCode(StiProtectionProcedureData procedure) {
-    UUID anonymousUserId = procedure.person().getAnonymousUserId();
+    UUID anonymousUserId = procedure.anonymousUserId();
     if (anonymousUserId == null) {
       throw new BadRequestException("Anonymous user not registered");
     }
@@ -269,34 +266,38 @@ public class StiProtectionProcedureService {
   }
 
   public void registerAnonymousUser(StiProtectionProcedure procedure, String pin) {
-    UUID anonymousUserId = procedure.getPerson().getAnonymousUserId();
+    UUID anonymousUserId = procedure.getAnonymousUserId();
     if (anonymousUserId != null) {
       throw new BadRequestException("User already registered.");
     }
     CitizenAccessCodeUserDto user =
         citizenAccessCodeUserApi.addCitizenAccessCodeUserWithPinCredential(
             new AddCitizenAccessCodeUserWithPinCredentialRequest(pin));
-    procedure.getPerson().setAnonymousUserId(user.userId());
+    procedure.setAnonymousUserId(user.userId());
   }
 
   public void deleteAnonymousUser(StiProtectionProcedure procedure) {
-    Person person = procedure.getPerson();
-    UUID anonymousUserId = person.getAnonymousUserId();
+    UUID anonymousUserId = procedure.getAnonymousUserId();
     if (anonymousUserId != null) {
       citizenAccessCodeUserApi.deleteCitizenAccessCodeUser(anonymousUserId);
-      person.setAnonymousUserId(null);
+      procedure.setAnonymousUserId(null);
     }
   }
 
   public void verifyAnonymousUserPin(UUID procedureId, String pin) {
     StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
-    Person person = procedure.getPerson();
     try {
+      UUID userId =
+          Optional.ofNullable(procedure.getAnonymousUserId())
+              .orElseThrow(() -> new BadRequestException("Procedure has no user"));
       citizenAccessCodeUserApi.verifyCitizenAccessCodeUserCredentials(
-          person.getAnonymousUserId(),
-          new VerifyCitizenAccessCodeUserCredentialsRequest(CredentialTypeDto.PIN, pin));
+          userId, new VerifyCitizenAccessCodeUserCredentialsRequest(CredentialTypeDto.PIN, pin));
     } catch (HttpClientErrorException.BadRequest e) {
       throw new BadRequestException("Invalid credentials");
     }
+  }
+
+  public StiProtectionProcedure findByExternalId(UUID procedureId) {
+    return procedureFinder.findByExternalId(procedureId);
   }
 }

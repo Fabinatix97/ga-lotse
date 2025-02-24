@@ -6,7 +6,7 @@
 import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
 import { LoadingIndicator } from "@eshg/lib-portal/components/LoadingIndicator";
 import { FormikProps } from "formik";
-import { ComponentType, ReactNode, Ref } from "react";
+import { ComponentType, ReactNode } from "react";
 import { isDefined } from "remeda";
 
 import { FacilityDetailsSidebar } from "@/lib/shared/components/facilitySidebar/FacilityDetailsSidebar";
@@ -23,14 +23,11 @@ import {
 import { FacilitySearchResults } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchResults";
 import { useFacilitySidebarState } from "@/lib/shared/components/facilitySidebar/useFacilitySidebarState";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import {
-  SidebarFormHandle,
-  useSidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
+import { useSidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { useResetAlertContextOnChange } from "@/lib/shared/hooks/useResetAlertContextOnChange";
+import { SidebarWithFormRefProps } from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 type OptionalSearchFormComponent<TSearchValues> =
   | {
@@ -50,8 +47,6 @@ export type FacilitySidebarProps<TSearchValues> = {
   getInitialCreateInputs?: (
     searchInputs: TSearchValues,
   ) => Partial<DefaultFacilityFormValues>;
-
-  sidebarFormRef: Ref<SidebarFormHandle>;
   onCreateNew: (props: {
     searchInputs: FacilitySearchFormValues;
     createInputs: DefaultFacilityFormValues;
@@ -60,31 +55,28 @@ export type FacilitySidebarProps<TSearchValues> = {
     searchInputs: FacilitySearchFormValues;
     facility: ApiGetReferenceFacilityResponse;
   }) => Promise<void>;
-  onClose: () => void;
-  open: boolean;
-} & OptionalSearchFormComponent<TSearchValues>;
+} & SidebarWithFormRefProps &
+  OptionalSearchFormComponent<TSearchValues>;
 
 export function FacilitySidebar<
   TSearchValues extends FacilitySearchFormValues = FacilitySearchFormValues,
 >(props: FacilitySidebarProps<TSearchValues>) {
   return (
-    <Sidebar open={props.open} onClose={props.onClose}>
-      <EmbeddedFacilitySidebar
-        {...props}
-        searchFormComponent={
-          isDefined(props.searchFormComponent)
-            ? (props.searchFormComponent as ComponentType<
-                FormikProps<TSearchValues>
-              >)
-            : undefined
-        }
-        initialSearchInputs={props.initialSearchInputs as TSearchValues}
-      />
-    </Sidebar>
+    <EmbeddedFacilitySidebar
+      {...props}
+      searchFormComponent={
+        isDefined(props.searchFormComponent)
+          ? (props.searchFormComponent as ComponentType<
+              FormikProps<TSearchValues>
+            >)
+          : undefined
+      }
+      initialSearchInputs={props.initialSearchInputs as TSearchValues}
+    />
   );
 }
 
-export function EmbeddedFacilitySidebar<
+function EmbeddedFacilitySidebar<
   TSearchValues extends FacilitySearchFormValues,
 >(props: FacilitySidebarProps<TSearchValues>) {
   const SearchFormComponent = (props.searchFormComponent ??
@@ -98,7 +90,7 @@ export function EmbeddedFacilitySidebar<
     dispatch({ type: "RESET" });
   }
 
-  useSidebarFormHandle(props.sidebarFormRef, {
+  useSidebarFormHandle(props.formRef, {
     dirty: state.dirty,
     resetForm,
   });
@@ -106,7 +98,10 @@ export function EmbeddedFacilitySidebar<
   return (
     <>
       {state.stage === "loading" && (
-        <LoadingStage onCancel={props.onClose} title={props.title} />
+        <LoadingStage
+          onCancel={() => props.onClose(false)}
+          title={props.title}
+        />
       )}
       {state.stage === "search" && (
         <FacilitySearchForm
@@ -114,7 +109,8 @@ export function EmbeddedFacilitySidebar<
           loading={state.queryEnabled}
           initialValues={state.searchState}
           formFieldsComponent={SearchFormComponent}
-          onCancel={props.onClose}
+          sidebarFormRef={props.formRef}
+          onCancel={() => props.onClose(false)}
           onSearch={(inputs) =>
             dispatch({
               type: "SEARCH_START",
@@ -128,11 +124,12 @@ export function EmbeddedFacilitySidebar<
           title={props.title}
           inputs={state.searchState}
           facilities={state.searchResult}
+          sidebarFormRef={props.formRef}
           header={props.searchResultHeaderComponent}
           onBack={
             state.backEnabled ? () => dispatch({ type: "BACK" }) : undefined
           }
-          onCancel={props.onClose}
+          onCancel={() => props.onClose(false)}
           onSelect={(facility) => {
             dispatch({
               type: "SELECTED",
@@ -147,6 +144,7 @@ export function EmbeddedFacilitySidebar<
           title={props.title}
           submitLabel={props.submitLabel ?? "Vorgang anlegen"}
           searchInputs={state.searchState}
+          sidebarFormRef={props.formRef}
           initialValues={
             (state.createState ?? isDefined(props.getInitialCreateInputs))
               ? getInitialFacilityFormValues(
@@ -157,7 +155,7 @@ export function EmbeddedFacilitySidebar<
               : undefined
           }
           mode={state.stage}
-          onCancel={props.onClose}
+          onCancel={() => props.onClose(false)}
           onBack={
             state.backEnabled
               ? (values) =>
@@ -167,11 +165,12 @@ export function EmbeddedFacilitySidebar<
                   })
               : undefined
           }
-          onSubmit={(values) => {
-            return props.onCreateNew({
+          onSubmit={async (values) => {
+            await props.onCreateNew({
               searchInputs: state.searchState,
               createInputs: normalizeValues(values),
             });
+            return props.onClose(true);
           }}
         />
       )}
@@ -181,15 +180,17 @@ export function EmbeddedFacilitySidebar<
           submitLabel={props.submitLabel ?? "Vorgang anlegen"}
           facility={state.selectedFacility}
           onSubmit={(facility) =>
-            props.onSelect({
-              searchInputs: state.searchState,
-              facility,
-            })
+            props
+              .onSelect({
+                searchInputs: state.searchState,
+                facility,
+              })
+              .then(() => props.onClose(true))
           }
           onBack={
             state.backEnabled ? () => dispatch({ type: "BACK" }) : undefined
           }
-          onCancel={props.onClose}
+          onCancel={() => props.onClose(false)}
         />
       )}
     </>

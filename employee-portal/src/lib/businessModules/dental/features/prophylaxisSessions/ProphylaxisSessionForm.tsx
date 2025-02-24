@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiFluoridationVarnish, ApiProphylaxisType } from "@eshg/dental-api";
+import {
+  ApiDentitionType,
+  ApiFluoridationVarnish,
+  ApiProphylaxisType,
+} from "@eshg/dental-api";
 import { Institution } from "@eshg/dental/api/models/Institution";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
@@ -24,10 +28,11 @@ import {
   AppointmentStaffField,
   StaffUser,
 } from "@/lib/shared/components/appointmentBlocks/AppointmentStaffField";
-import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { DateTimeField } from "@/lib/shared/components/formFields/DateTimeField";
 import { SelectContactField } from "@/lib/shared/components/formFields/SelectContactField";
 import { getInstitutionOptionLabel } from "@/lib/shared/helpers/selectOptionMapper";
+
+import { ScreeningField } from "./ScreeningField";
 
 interface ProphylaxisSessionFormProps {
   values: ProphylaxisSessionValues;
@@ -43,6 +48,7 @@ export interface ProphylaxisSessionValues {
   groupName: string;
   type: OptionalFieldValue<ApiProphylaxisType>;
   isScreening: boolean;
+  dentitionType: OptionalFieldValue<ApiDentitionType>;
   isFluoridation: boolean;
   fluoridationVarnish: OptionalFieldValue<ApiFluoridationVarnish>;
   dentistIds: string[];
@@ -101,11 +107,7 @@ export function ProphylaxisSessionForm(props: ProphylaxisSessionFormProps) {
         options={PROPHYLAXIS_TYPE_OPTIONS}
         required="Bitte den Typ der Prophylaxe angeben."
       />
-      <CheckboxField
-        name="isScreening"
-        label="Reihenuntersuchung"
-        disabled={hasExaminationResults}
-      />
+      <ScreeningField screeningDisabled={hasExaminationResults} />
       <FluoridationField disabled={hasExaminationResults} />
       <Typography component="h3" level="title-sm">
         Durchführende Personen
@@ -137,6 +139,9 @@ export function mapValues(values: ProphylaxisSessionValues) {
     groupName: mapRequiredValue(values.groupName),
     type: mapRequiredValue(values.type),
     isScreening: values.isScreening,
+    dentitionType: values.isScreening
+      ? mapRequiredValue(values.dentitionType)
+      : undefined,
     fluoridationVarnish: values.isFluoridation
       ? mapRequiredValue(values.fluoridationVarnish)
       : undefined,

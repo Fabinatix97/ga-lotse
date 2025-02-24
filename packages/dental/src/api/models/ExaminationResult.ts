@@ -5,6 +5,7 @@
 
 import {
   ApiAbsenceExaminationResult,
+  ApiDentitionType,
   ApiExaminationResult,
   ApiFluoridationExaminationResult,
   ApiOralHygieneStatus,
@@ -30,6 +31,7 @@ export interface ScreeningExaminationResult {
   readonly type: "screening";
   readonly oralHygieneStatus?: ApiOralHygieneStatus;
   readonly fluorideVarnishApplied?: boolean;
+  readonly dentitionType: ApiDentitionType;
   readonly toothDiagnoses: ToothDiagnoses;
 }
 
@@ -69,6 +71,7 @@ function mapScreeningExaminationResult(
     type: "screening",
     oralHygieneStatus: response.oralHygieneStatus,
     fluorideVarnishApplied: response.fluorideVarnishApplied,
+    dentitionType: response.dentitionType,
     toothDiagnoses: mapToObj(
       response.toothDiagnoses,
       (toothDiagnosisResponse) => [
@@ -92,17 +95,18 @@ type FieldFunctionMap<T> = {
   [K in keyof T]-?: (value: T[K]) => boolean;
 };
 
+function isUndefined<T>(data: T | undefined) {
+  return data === undefined;
+}
+
 const screeningResultEmptinessChecks: FieldFunctionMap<ScreeningExaminationResult> =
   {
     type: (value) => {
       return value === "screening";
     },
-    oralHygieneStatus: (value) => {
-      return value === undefined;
-    },
-    fluorideVarnishApplied: (value) => {
-      return value === undefined;
-    },
+    oralHygieneStatus: isUndefined,
+    fluorideVarnishApplied: isUndefined,
+    dentitionType: () => true,
     toothDiagnoses: (value) => {
       return Object.keys(value).length === 0;
     },
@@ -113,9 +117,7 @@ const fluoridationResultEmptinessChecks: FieldFunctionMap<FluoridationExaminatio
     type: (value) => {
       return value === "fluoridation";
     },
-    fluorideVarnishApplied: (value) => {
-      return value === undefined;
-    },
+    fluorideVarnishApplied: isUndefined,
   };
 
 function isEmptyResult<T extends ExaminationResult>(

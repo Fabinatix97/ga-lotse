@@ -10,7 +10,8 @@ import { APPOINTMENT_TYPES } from "@/lib/businessModules/officialMedicalService/
 import { WAITING_STATUS_VALUES } from "@/lib/businessModules/officialMedicalService/shared/translations";
 
 const SUPPORTED_APPOINTMENT_TYPES: string[] = [
-  ApiAppointmentType.OfficialMedicalService,
+  ApiAppointmentType.OfficialMedicalServiceShort,
+  ApiAppointmentType.OfficialMedicalServiceLong,
 ];
 
 export const APPOINTMENT_TYPE_OPTIONS = buildEnumOptions(

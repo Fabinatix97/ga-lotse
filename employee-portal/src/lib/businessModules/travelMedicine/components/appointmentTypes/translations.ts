@@ -20,7 +20,8 @@ export const APPOINTMENT_TYPES: EnumMap<ApiAppointmentType> = {
   [ApiAppointmentType.HivStiConsultation]: "HIV-STI-Beratung",
   [ApiAppointmentType.SexWork]: "Sexarbeit",
   [ApiAppointmentType.ResultsReview]: "Ergebnisbesprechung",
-  [ApiAppointmentType.OfficialMedicalService]: "Amtsärtzlicher Dienst",
+  [ApiAppointmentType.OfficialMedicalServiceShort]: "Kleine Untersuchung",
+  [ApiAppointmentType.OfficialMedicalServiceLong]: "Große Untersuchung",
 };
 
 export const CREATED_BY_USER_TYPES: EnumMap<ApiCreatedByUserType> = {

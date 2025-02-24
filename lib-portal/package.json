@@ -23,6 +23,7 @@
     "valibot": "catalog:common"
   },
   "devDependencies": {
+    "@eshg/lib-vitest": "workspace:*",
     "@eslint/compat": "catalog:eslint",
     "@eslint/eslintrc": "catalog:eslint",
     "@tanstack/eslint-plugin-query": "catalog:common",

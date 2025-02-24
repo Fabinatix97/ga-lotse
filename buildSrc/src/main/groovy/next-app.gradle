@@ -24,7 +24,7 @@ def dockerBuildDir = layout.buildDirectory.dir('docker')
 
 prettier {
   include = ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.json']
-  additionalExcludes = ['next-env.d.ts', '.next']
+  additionalExcludes = ['next-env.d.ts', '.next', 'data/test']
 }
 
 eslint {
@@ -106,6 +106,9 @@ tasks.register('testCoverage', PnpmTask) {
   args = ['vitest', 'run', '--coverage', '--passWithNoTests', '--silent']
 }
 
+tasks.named('findUnusedValidationFiles').configure {
+  mustRunAfter 'testCoverage'
+}
 
 tasks.register('analyzeBundle', PnpmTask) {
   dependsOn 'prepareEnvironment'

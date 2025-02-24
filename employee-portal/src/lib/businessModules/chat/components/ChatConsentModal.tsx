@@ -24,8 +24,8 @@ type ChatConsentModalProps = Omit<
 export function ChatConsentModal(props: ChatConsentModalProps) {
   const { updateChatUserConsents } = useUserSettings();
 
-  async function handleAcceptClick() {
-    await clearCachedCredentials();
+  function handleAcceptClick() {
+    clearCachedCredentials();
     updateChatUserConsents({
       isChatConsentAsked: true,
       isChatUsageEnabled: true,

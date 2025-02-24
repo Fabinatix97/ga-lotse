@@ -7,6 +7,7 @@ import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
 import {
   ApiAppointmentState,
+  ApiAppointmentType,
   ApiBookingState,
   ApiEmployeeOmsProcedureDetails,
   ApiOmsAppointment,
@@ -217,6 +218,8 @@ export function AppointmentsTable({
   procedure: ApiEmployeeOmsProcedureDetails;
 }>) {
   const { open: openBookingSidebar } = useAppointmentSidebar(
+    procedure.concern?.appointmentType ??
+      ApiAppointmentType.OfficialMedicalServiceShort,
     procedure.physician,
   );
   const { openConfirmationDialog } = useConfirmationDialog();

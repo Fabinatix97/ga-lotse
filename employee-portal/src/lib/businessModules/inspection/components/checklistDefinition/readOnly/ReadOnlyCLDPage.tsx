@@ -4,12 +4,12 @@
  */
 
 import { ApiChecklistDefinitionVersion } from "@eshg/inspection-api";
+import { useLayoutConfig } from "@eshg/lib-employee-portal/contexts/layoutConfig";
+import { useHeaderHeights } from "@eshg/lib-employee-portal/hooks/useHeaderHeights";
 import { InfoOutlined } from "@mui/icons-material";
 import { Alert, Box } from "@mui/joy";
 import { ReactNode } from "react";
 
-import { simpleToolbarHeight } from "@/lib/baseModule/components/layout/sizes";
-import { useHeaderHeights } from "@/lib/baseModule/components/layout/useHeaderHeights";
 import { CLDInfoCard } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/CLDInfoCard";
 import { ReadOnlyCLDContent } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/ReadOnlyCLDContent";
 
@@ -23,6 +23,8 @@ export function ReadOnlyCLDPage({
   infoCard,
 }: Readonly<ReadOnlyCLDPageProps>) {
   const { headerHeightDesktop } = useHeaderHeights();
+  const { simpleToolbarHeight } = useLayoutConfig();
+
   return (
     <Box
       sx={{

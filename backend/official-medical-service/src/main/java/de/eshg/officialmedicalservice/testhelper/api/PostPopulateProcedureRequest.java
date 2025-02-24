@@ -11,12 +11,12 @@ import de.eshg.officialmedicalservice.procedure.api.PostEmployeeOmsProcedureFaci
 import de.eshg.officialmedicalservice.procedure.api.PostEmployeeOmsProcedureRequest;
 import de.eshg.officialmedicalservice.waitingroom.api.WaitingRoomDto;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 
 public record PostPopulateProcedureRequest(
-    @NotNull @Valid PostEmployeeOmsProcedureRequest procedureData,
+    @Valid PostEmployeeOmsProcedureRequest procedureData,
+    @Valid PostPopulateCitizenProcedureRequest procedureDataCitizen,
     @Valid PostEmployeeOmsProcedureFacilityRequest facility,
     ConcernTestDataConfig concern,
     UUID physician,

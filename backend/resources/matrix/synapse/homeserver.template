@@ -15,6 +15,14 @@ listeners:
       - names: [client, federation]
         compress: false
 
+email:
+  smtp_host: maildev
+  smtp_port: 1025
+  smtp_user: "testuser"
+  smtp_pass: "testpassword"
+  require_transport_security: false
+  notif_from: "Your Friendly %(app)s homeserver <noreply@localhost.dev>"
+
 database:
   name: psycopg2
   args:
@@ -98,9 +106,13 @@ oidc_providers:
 
 jwt_config:
   enabled: true
-  issuer: "http://localhost:4003/realms/eshg"
   algorithm: "RS256"
   secret: "$KEYCLOAK_RS256_PEM"
+
+session_lifetime: 600m
+refresh_token_lifetime: 600m # No need to have RefreshToken lifetime longer than 10 hours, because employee-portal will always log out user after 10 hours of *Activity* and requires user to re-authenticate with Keycloak.
+refreshable_access_token_lifetime: 5m
+nonrefreshable_access_token_lifetime: 5m
 
 #templates:
 #  custom_template_directory: "/data/templates/"

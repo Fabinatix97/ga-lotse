@@ -6,6 +6,8 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
 import { hasAnyUserRoles } from "@eshg/lib-employee-portal/helpers/accessControl";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import {
@@ -14,8 +16,6 @@ import {
 } from "@mui/icons-material";
 
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
 import {
   TabNavigationHeader,

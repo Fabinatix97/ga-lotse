@@ -6,6 +6,7 @@
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { ApiStiProtectionProcedure } from "@eshg/sti-protection-api";
 import { Sheet, Stack } from "@mui/joy";
+import { isDefined } from "remeda";
 
 import { useAnonymousIdentificationDocumentQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
 import { DisplayAccessCode } from "@/lib/businessModules/stiProtection/features/procedures/DisplayAccessCode";
@@ -18,6 +19,7 @@ export function AnonIdentityDocumentCard({
 }: Readonly<{ procedure: ApiStiProtectionProcedure }>) {
   const anonymousIdentificationDocument =
     useAnonymousIdentificationDocumentQuery(procedure.id);
+  const hasAppointment = isDefined(procedure.appointment);
 
   return (
     <Sheet>
@@ -30,19 +32,26 @@ export function AnonIdentityDocumentCard({
               <DisplayAccessCode code={procedure.person.accessCode} bold />
             }
           />
-          <DetailsCell
-            label="Identifizierungs-Dokument als PDF"
-            valueIsDiv
-            value={
-              <Stack direction="row" gap={1}>
-                <ButtonLink
-                  onClick={() => anonymousIdentificationDocument.download()}
-                >
-                  PDF herunterladen
-                </ButtonLink>
-              </Stack>
-            }
-          />
+          {hasAppointment ? (
+            <DetailsCell
+              label="Identifizierungs-Dokument als PDF"
+              valueIsDiv
+              value={
+                <Stack direction="row" gap={1}>
+                  <ButtonLink
+                    onClick={() => anonymousIdentificationDocument.download()}
+                  >
+                    PDF herunterladen
+                  </ButtonLink>
+                </Stack>
+              }
+            />
+          ) : (
+            <DetailsCell
+              label="Identifizierungs-Dokument als PDF"
+              value="Zum Download des Dokuments ist ein aktueller Termin erforderlich."
+            />
+          )}
         </DetailsColumn>
       </DetailsSection>
     </Sheet>

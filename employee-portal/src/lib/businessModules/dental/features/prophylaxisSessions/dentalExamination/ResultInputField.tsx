@@ -3,57 +3,52 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Input, VariantProp } from "@mui/joy";
+import { Input, InputProps, VariantProp } from "@mui/joy";
 import { useEffect, useRef } from "react";
+import { isDefined } from "remeda";
+import { useShallow } from "zustand/react/shallow";
 
 import { useDentalExaminationStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
+import { NAVIGATE_DIRECTIONS } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/constants";
 import { SetToothResultAction } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/dentalExaminationStore";
 import {
-  FieldVariant,
-  QuadrantNumber,
+  ElementContext,
+  ResultField,
+  ToothContext,
   ToothResult,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
 
-interface ResultInputFieldProps {
-  quadrantNumber: QuadrantNumber;
-  index: number;
-  setResultAction: SetToothResultAction;
-  field: FieldVariant;
+interface ResultInputFieldProps extends InputProps {
+  field: ResultField;
   result: ToothResult;
+  toothContext: ToothContext;
   variant?: VariantProp;
+  setResultAction: SetToothResultAction;
 }
 
 export function ResultInputField(props: ResultInputFieldProps) {
-  const focus = useDentalExaminationStore((state) => state.focus);
+  const elementContext: ElementContext = {
+    field: props.field,
+    toothContext: props.toothContext,
+  };
+  const isFocused = useIsFocused(elementContext);
   const setFocus = useDentalExaminationStore((state) => state.setFocus);
+  const navigate = useDentalExaminationStore((state) => state.navigate);
   const input = useRef<HTMLInputElement>(null);
 
-  const { quadrantNumber, toothIndex } = focus.toothContext;
-  const focusReferencesThisInput =
-    quadrantNumber === props.quadrantNumber &&
-    toothIndex === props.index &&
-    focus.field === props.field;
-
   useEffect(() => {
-    if (focusReferencesThisInput) {
+    if (isFocused) {
       input?.current?.focus();
     }
-  }, [input, focusReferencesThisInput]);
+  }, [input, isFocused]);
 
   function handleOnFocus() {
-    if (!focusReferencesThisInput) {
-      setFocus({
-        toothContext: {
-          quadrantNumber: props.quadrantNumber,
-          toothIndex: props.index,
-        },
-        field: props.field,
-      });
-    }
+    setFocus(elementContext);
   }
 
   return (
     <Input
+      {...props}
       slotProps={{ input: { ref: input } }}
       value={props.result.value}
       sx={{ width: 60 }}
@@ -63,13 +58,36 @@ export function ResultInputField(props: ResultInputFieldProps) {
       onFocus={handleOnFocus}
       onChange={(event) => {
         props.setResultAction(
-          {
-            quadrantNumber: props.quadrantNumber,
-            toothIndex: props.index,
-          },
+          props.toothContext,
           event.target.value.toUpperCase(),
         );
       }}
+      onKeyDown={(event) => {
+        const direction = NAVIGATE_DIRECTIONS[event.code];
+
+        if (isDefined(direction)) {
+          navigate(direction);
+        }
+      }}
     />
+  );
+}
+
+function useIsFocused(element: ElementContext) {
+  return useDentalExaminationStore(
+    useShallow((state) => equalsElement(element, state.currentFocus)),
+  );
+}
+
+function equalsElement(
+  elementContext: ElementContext,
+  currentFocus: ElementContext,
+): boolean {
+  return (
+    currentFocus.toothContext.quadrantNumber ===
+      elementContext.toothContext.quadrantNumber &&
+    currentFocus.toothContext.toothIndex ===
+      elementContext.toothContext.toothIndex &&
+    currentFocus.field === elementContext.field
   );
 }

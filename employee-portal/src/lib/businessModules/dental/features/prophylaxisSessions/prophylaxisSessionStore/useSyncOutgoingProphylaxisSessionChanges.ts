@@ -94,6 +94,7 @@ function mapScreeningResult(
     type: "ScreeningExaminationResult",
     fluorideVarnishApplied: screeningResult.fluorideVarnishApplied,
     oralHygieneStatus: screeningResult.oralHygieneStatus,
+    dentitionType: screeningResult.dentitionType,
     toothDiagnoses: Object.values(screeningResult.toothDiagnoses),
   };
 }

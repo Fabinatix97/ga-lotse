@@ -52,10 +52,6 @@ public class TableColumn extends BaseEntity {
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private TableColumnValueType valueType;
 
-  @Column
-  @JdbcType(PostgreSQLEnumJdbcType.class)
-  private TableColumnDataPrivacyCategory dataPrivacyCategory;
-
   @Column private String unit;
 
   @OneToMany(
@@ -85,6 +81,9 @@ public class TableColumn extends BaseEntity {
       mappedBy = MinMaxNullUnknownValues_.TABLE_COLUMN,
       orphanRemoval = true)
   private MinMaxNullUnknownValues minMaxNullUnknownValues;
+
+  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, orphanRemoval = true)
+  private AnonymizationConfiguration anonymizationConfiguration;
 
   @Column(nullable = false)
   private String searchKey;
@@ -143,14 +142,6 @@ public class TableColumn extends BaseEntity {
 
   public void setValueType(TableColumnValueType valueType) {
     this.valueType = valueType;
-  }
-
-  public TableColumnDataPrivacyCategory getDataPrivacyCategory() {
-    return dataPrivacyCategory;
-  }
-
-  public void setDataPrivacyCategory(TableColumnDataPrivacyCategory dataPrivacyCategory) {
-    this.dataPrivacyCategory = dataPrivacyCategory;
   }
 
   public String getUnit() {
@@ -214,6 +205,14 @@ public class TableColumn extends BaseEntity {
       minMaxNullUnknownValues.setTableColumn(this);
     }
     this.minMaxNullUnknownValues = minMaxNullUnknownValues;
+  }
+
+  public AnonymizationConfiguration getAnonymizationConfiguration() {
+    return anonymizationConfiguration;
+  }
+
+  public void setAnonymizationConfiguration(AnonymizationConfiguration anonymizationConfiguration) {
+    this.anonymizationConfiguration = anonymizationConfiguration;
   }
 
   public String getSearchKey() {

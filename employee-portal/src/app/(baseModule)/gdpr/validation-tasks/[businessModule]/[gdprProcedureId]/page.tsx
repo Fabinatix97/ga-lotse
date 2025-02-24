@@ -5,6 +5,9 @@
 
 "use client";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { formatIdentityName } from "@/lib/baseModule/components/gdpr/helpers";
@@ -12,9 +15,6 @@ import { ValidationTaskProceduresTable } from "@/lib/baseModule/components/gdpr/
 import { routes } from "@/lib/baseModule/shared/routes";
 import { useGdprValidationTaskApi } from "@/lib/shared/api/clients";
 import { getGdprValidationTaskDetailsQuery } from "@/lib/shared/api/queries/gdpr";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 import { isBusinessModule } from "@/lib/shared/helpers/guards";
 
 export default function GdprValidationTaskPage({

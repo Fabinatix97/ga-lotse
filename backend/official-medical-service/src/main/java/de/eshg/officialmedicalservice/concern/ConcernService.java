@@ -5,6 +5,8 @@
 
 package de.eshg.officialmedicalservice.concern;
 
+import de.eshg.officialmedicalservice.procedure.api.ConcernCategoryConfigDto;
+import de.eshg.officialmedicalservice.procedure.api.ConcernConfigDto;
 import de.eshg.officialmedicalservice.procedure.api.GetConcernsResponse;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
@@ -37,5 +39,23 @@ public class ConcernService {
           ErrorCode.UNEXPECTED_ERROR,
           "Cannot read concerns config file: " + concernsResource.getFilename());
     }
+  }
+
+  public GetConcernsResponse getConcernsVisibleInOnlinePortal() {
+    List<ConcernCategoryConfigDto> filteredCategories =
+        getConcerns().categories().stream()
+            .map(
+                category ->
+                    new ConcernCategoryConfigDto(
+                        category.nameDe(),
+                        category.nameEn(),
+                        category.concerns().stream()
+                            .filter(ConcernConfigDto::visibleInOnlinePortal)
+                            .toList()))
+            .filter( // filter out categories without concerns
+                category -> !category.concerns().isEmpty())
+            .toList();
+
+    return new GetConcernsResponse(filteredCategories);
   }
 }

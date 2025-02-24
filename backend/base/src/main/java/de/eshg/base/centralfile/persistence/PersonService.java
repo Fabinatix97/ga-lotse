@@ -27,6 +27,7 @@ import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.validation.ValidationUtil;
+import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import java.time.Clock;
@@ -157,21 +158,37 @@ public class PersonService {
         .collect(StreamUtil.toLinkedHashSet());
   }
 
-  public List<Person> fuzzySearch(String firstName, String lastName, LocalDate dateOfBirth) {
+  public List<Person> fuzzySearch(
+      String firstName,
+      String lastName,
+      LocalDate dateOfBirth,
+      boolean allowPartialKnowledgeFactors,
+      Integer limit) {
+    if (allowPartialKnowledgeFactors) {
+      if ((StringUtils.isBlank(firstName) && dateOfBirth == null)
+          || (StringUtils.isBlank(lastName) && dateOfBirth == null)) {
+        throw new BadRequestException(
+            ErrorCode.BAD_REQUEST, "Only searching for first name or last name is not allowed.");
+      }
+    } else if (StringUtils.isBlank(firstName)
+        || StringUtils.isBlank(lastName)
+        || dateOfBirth == null) {
+      return Collections.emptyList();
+    }
     configureSimilarityThreshold(firstName, lastName);
-    return fuzzySearch(firstName, lastName, dateOfBirth, false, false);
+    return fuzzySearch(firstName, lastName, dateOfBirth, false, false, limit);
   }
 
   public List<Person> fuzzySearchIncludingDeletedAndExternal(
       String firstName, String lastName, LocalDate dateOfBirth) {
     configureSimilarityThreshold(firstName, lastName);
-    return fuzzySearch(firstName, lastName, dateOfBirth, true, true);
+    return fuzzySearch(firstName, lastName, dateOfBirth, true, true, null);
   }
 
   public List<Person> fuzzySearchIncludingDeleted(
       String firstName, String lastName, LocalDate dateOfBirth) {
     configureSimilarityThreshold(firstName, lastName);
-    return fuzzySearch(firstName, lastName, dateOfBirth, true, false);
+    return fuzzySearch(firstName, lastName, dateOfBirth, true, false, null);
   }
 
   private List<Person> fuzzySearch(
@@ -179,7 +196,8 @@ public class PersonService {
       String lastName,
       LocalDate dateOfBirth,
       boolean includeDeleted,
-      boolean includeExternal) {
+      boolean includeExternal,
+      Integer limit) {
     configureSimilarityThreshold(firstName, lastName);
     return personRepository.fuzzySearchReferencePersons(
         firstName,
@@ -188,12 +206,15 @@ public class PersonService {
         getSimilarityThreshold(firstName),
         getSimilarityThreshold(lastName),
         includeDeleted,
-        includeExternal);
+        includeExternal,
+        limit);
   }
 
   private void configureSimilarityThreshold(String firstName, String lastName) {
-    double threshold =
-        Math.min(getSimilarityThreshold(firstName), getSimilarityThreshold(lastName));
+    double similarityThresholdFirstName =
+        firstName != null ? getSimilarityThreshold(firstName) : 1.0;
+    double similarityThresholdLastName = lastName != null ? getSimilarityThreshold(lastName) : 1.0;
+    double threshold = Math.min(similarityThresholdFirstName, similarityThresholdLastName);
     fuzzySearchHelper.setSimilarityThreshold(threshold);
   }
 

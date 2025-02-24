@@ -13,10 +13,12 @@ import {
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 import { ApiStiProtectionProcedureOverview } from "@eshg/sti-protection-api";
 import { EditOutlined, ToggleOffOutlined } from "@mui/icons-material";
+import { Chip } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 
 import { useStiProceduresQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
+import { DisplayAccessCode } from "@/lib/businessModules/stiProtection/features/procedures/DisplayAccessCode";
 import {
   ReopenConfirmationDialog,
   UseCloseAndReopenConfirmationDialog,
@@ -25,7 +27,9 @@ import {
 import {
   CONCERN_VALUES,
   GENDER_VALUES,
+  LAB_STATUS_COLORS,
   LAB_STATUS_VALUES,
+  PROCEDURE_STATUS_COLORS,
   PROCEDURE_STATUS_VALUES,
 } from "@/lib/businessModules/stiProtection/shared/constants";
 import { isProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
@@ -60,9 +64,10 @@ function getProceduresColumns({
   return [
     columnHelper.accessor("accessCode", {
       header: "Anmeldecode",
-      cell: ({ getValue }) => getValue(),
+      cell: (props) => <DisplayAccessCode code={props.getValue()} />,
       enableSorting: false,
       meta: {
+        width: 200,
         canNavigate: {
           parentRow: true,
         },
@@ -90,7 +95,11 @@ function getProceduresColumns({
     }),
     columnHelper.accessor("status", {
       header: "Status",
-      cell: ({ getValue }) => PROCEDURE_STATUS_VALUES[getValue()],
+      cell: ({ getValue }) => (
+        <Chip color={PROCEDURE_STATUS_COLORS[getValue()]}>
+          {PROCEDURE_STATUS_VALUES[getValue()]}
+        </Chip>
+      ),
       enableSorting: false,
       meta: {
         canNavigate: {
@@ -140,7 +149,11 @@ function getProceduresColumns({
     }),
     columnHelper.accessor("labStatus", {
       header: "Laborstatus",
-      cell: ({ getValue }) => LAB_STATUS_VALUES[getValue()],
+      cell: ({ getValue }) => (
+        <Chip color={LAB_STATUS_COLORS[getValue()]}>
+          {LAB_STATUS_VALUES[getValue()]}
+        </Chip>
+      ),
       enableSorting: false,
       meta: {
         canNavigate: {

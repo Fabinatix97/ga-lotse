@@ -3,13 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { CryptoEvent } from "matrix-js-sdk";
-import { BackupTrustInfo, KeyBackupInfo } from "matrix-js-sdk/lib/crypto-api";
+import {
+  BackupTrustInfo,
+  CryptoEvent,
+  KeyBackupInfo,
+} from "matrix-js-sdk/lib/crypto-api";
 import { useCallback, useEffect, useState } from "react";
 
 import { getBackupKeyStatus } from "@/lib/businessModules/chat/matrix/crypto";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
-import { ClientState } from "@/lib/businessModules/chat/shared/enums";
+import { logger } from "@/lib/businessModules/chat/shared/helpers";
 
 type BKStatus = Awaited<ReturnType<typeof getBackupKeyStatus>>;
 
@@ -23,7 +26,7 @@ type BackupStatus = Partial<
 >;
 
 export function useBackupInfo() {
-  const { clientState, matrixClient } = useChatClientContext();
+  const { matrixClient, isClientPrepared } = useChatClientContext();
   const [backupStatus, setBackupStatus] = useState<BackupStatus>();
 
   const updateState = useCallback((data: BackupStatus) => {
@@ -33,7 +36,10 @@ export function useBackupInfo() {
   const loadBackupStatus = useCallback(async () => {
     const backupKeyStatus = await getBackupKeyStatus(matrixClient);
     try {
-      const backupInfo = await matrixClient.getKeyBackupVersion();
+      const crypto = matrixClient.getCrypto();
+      if (!crypto) throw new Error("CryptoApi is undefined");
+
+      const backupInfo = await crypto.getKeyBackupInfo();
       const backupTrustInfo = backupInfo
         ? await matrixClient.getCrypto()?.isKeyBackupTrusted(backupInfo)
         : undefined;
@@ -48,12 +54,13 @@ export function useBackupInfo() {
         activeBackupVersion,
         ...backupKeyStatus,
       });
-    } catch {
+    } catch (error) {
       updateState({
         backupInfo: null,
         backupTrustInfo: undefined,
         activeBackupVersion: null,
       });
+      logger.error(error);
     }
   }, [matrixClient, updateState]);
 
@@ -65,7 +72,7 @@ export function useBackupInfo() {
   );
 
   useEffect(() => {
-    if (clientState !== ClientState.Prepared) return;
+    if (!isClientPrepared) return;
 
     void loadBackupStatus();
 
@@ -87,7 +94,7 @@ export function useBackupInfo() {
       );
     };
   }, [
-    clientState,
+    isClientPrepared,
     loadBackupStatus,
     matrixClient,
     onKeyBackupSessionsRemaining,

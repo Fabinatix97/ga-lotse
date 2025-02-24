@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Grid, Stack, Typography } from "@mui/joy";
+import { Button, Grid, GridProps, Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
+import { useId } from "react";
 
 import { Quadrant } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/Quadrant";
 import {
@@ -21,33 +22,60 @@ import {
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
 
 export function FullDentitionOverview() {
+  const upperJawRightId = useId();
+  const upperJawLeftId = useId();
+  const lowerJawRightId = useId();
+  const lowerJawLeftId = useId();
   return (
     <Stack>
       <QuadrantHeadingRow marginBottom="24px">
-        <QuadrantHeading name="Oberkiefer rechts" index={1} />
-        <QuadrantHeading name="Oberkiefer links" index={2} />
+        <QuadrantHeading
+          name="Oberkiefer rechts"
+          index={1}
+          id={upperJawRightId}
+        />
+        <QuadrantHeading
+          name="Oberkiefer links"
+          index={2}
+          id={upperJawLeftId}
+        />
       </QuadrantHeadingRow>
       <Grid container>
-        <QuadrantSection quadrantNumber="Q1" />
-        <QuadrantSection quadrantNumber="Q2" />
+        <QuadrantSection
+          quadrantNumber="Q1"
+          aria-labelledby={upperJawRightId}
+        />
+        <QuadrantSection quadrantNumber="Q2" aria-labelledby={upperJawLeftId} />
       </Grid>
       <Grid container>
-        <QuadrantSection quadrantNumber="Q4" />
-        <QuadrantSection quadrantNumber="Q3" />
+        <QuadrantSection
+          quadrantNumber="Q4"
+          aria-labelledby={lowerJawRightId}
+        />
+        <QuadrantSection quadrantNumber="Q3" aria-labelledby={lowerJawLeftId} />
       </Grid>
       <QuadrantHeadingRow>
-        <QuadrantHeading name="Unterkiefer rechts" index={4} />
-        <QuadrantHeading name="Unterkiefer links" index={3} />
+        <QuadrantHeading
+          name="Unterkiefer rechts"
+          index={4}
+          id={lowerJawRightId}
+        />
+        <QuadrantHeading
+          name="Unterkiefer links"
+          index={3}
+          id={lowerJawLeftId}
+        />
       </QuadrantHeadingRow>
     </Stack>
   );
 }
 
-interface QuadrantSectionProps {
+interface QuadrantSectionProps extends GridProps {
   quadrantNumber: QuadrantNumber;
 }
 
-function QuadrantSection({ quadrantNumber }: QuadrantSectionProps) {
+function QuadrantSection(props: QuadrantSectionProps) {
+  const quadrantNumber = props.quadrantNumber;
   const styles: SxProps = {
     padding:
       quadrantNumber === "Q1" || quadrantNumber === "Q4"
@@ -73,7 +101,7 @@ function QuadrantSection({ quadrantNumber }: QuadrantSectionProps) {
 
   const setFocus = useDentalExaminationStore((state) => state.setFocus);
   return (
-    <Grid xxs={6} sx={styles}>
+    <Grid {...props} xxs={6} sx={styles} component="section">
       <Quadrant quadrantNumber={quadrantNumber} gap={0}>
         {(tooth, index) => (
           <Button
@@ -99,7 +127,10 @@ function QuadrantSection({ quadrantNumber }: QuadrantSectionProps) {
             }
           >
             <ToothNumber tooth={tooth} />
-            <ToothIcon tooth={tooth} />
+            <ToothIcon
+              tooth={tooth}
+              toothContext={{ quadrantNumber, toothIndex: index }}
+            />
             <ExaminationResult tooth={tooth} />
           </Button>
         )}

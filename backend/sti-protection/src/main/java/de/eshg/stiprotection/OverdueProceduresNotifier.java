@@ -46,7 +46,7 @@ public class OverdueProceduresNotifier {
   }
 
   @Scheduled(cron = "${eshg.sti-protection.overdue-procedures.cron}")
-  @SchedulerLock(name = "OverdueProceduresNotifier")
+  @SchedulerLock(name = "OverdueProceduresNotifier", lockAtMostFor = "30m", lockAtLeastFor = "1m")
   @Transactional
   public void run() {
     LockAssert.assertLocked();

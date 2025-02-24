@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useHeaderHeights } from "@eshg/lib-employee-portal/hooks/useHeaderHeights";
 import { InternalLinkIconButton } from "@eshg/lib-portal/components/navigation/InternalLinkIconButton";
 import ChevronLeft from "@mui/icons-material/ChevronLeft";
 import { Divider, Sheet, Stack, Typography } from "@mui/joy";
-
-import { useHeaderHeights } from "@/lib/baseModule/components/layout/useHeaderHeights";
 
 export function SubPageHeader({
   routeBack,

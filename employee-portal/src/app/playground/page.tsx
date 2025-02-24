@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
-
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 
 export default function PlaygroundIndexPage() {
   return (
@@ -106,6 +105,11 @@ export default function PlaygroundIndexPage() {
           </li>
           <li>
             <InternalLink href="/playground/sidebar">Sidebar</InternalLink>
+          </li>
+          <li>
+            <InternalLink href="/playground/sideNavigation">
+              SideNavigation
+            </InternalLink>
           </li>
           <li>
             <InternalLink href="/playground/alert">Alert</InternalLink>

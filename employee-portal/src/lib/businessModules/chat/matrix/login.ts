@@ -3,13 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiUser } from "@eshg/base-api";
-import { MatrixClient, SSOAction, createClient } from "matrix-js-sdk";
+import { MatrixClient, createClient } from "matrix-js-sdk";
+import { isStrictEqual } from "remeda";
 
-import {
-  createPickleKey,
-  getPickleKey,
-} from "@/lib/businessModules/chat/matrix/pickling";
 import {
   clearCachedCredentials,
   clearMatrixStores,
@@ -18,208 +14,118 @@ import {
 } from "@/lib/businessModules/chat/matrix/tokens";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 
-export interface ILoginParams {
-  baseUrl: string;
-  selfUser: ApiUser;
+export function fetchFn(
+  input: RequestInfo | URL,
+  init?: RequestInit,
+  deviceId?: string,
+): Promise<Response> {
+  const headers = deviceId
+    ? {
+        ...init?.headers,
+        "X-Forwarded-Matrix-Device-Id": deviceId,
+      }
+    : init?.headers;
+
+  return fetch(input, {
+    ...init,
+    credentials: "same-origin",
+    headers,
+  });
 }
 
-async function healthcheckHomeserver(matrixClient: MatrixClient) {
-  try {
-    const response = await fetch(
-      `${matrixClient.getHomeserverUrl()}/_matrix/client/versions`,
+export async function getCredentials(
+  baseUrl: string,
+  selfUserChatUserId?: string,
+) {
+  let credentials = getCachedCredentials();
+
+  if (
+    !hasValidCachedCredentials(
+      credentials.userId,
+      credentials.deviceId,
+      selfUserChatUserId,
+    )
+  ) {
+    logger.debug("Clear cache and Login to synapse and get new deviceId");
+    const temporaryMatrixClient = createTemporaryMatrixClient(baseUrl);
+    await clearMatrixStores();
+    clearCachedCredentials();
+    credentials = await requestCredentials(temporaryMatrixClient);
+    persistCredentials(credentials);
+  } else {
+    logger.debug("Login to synapse with cached deviceId");
+    const temporaryMatrixClient = createTemporaryMatrixClient(
+      baseUrl,
+      credentials.deviceId,
     );
-    if (!response.ok) {
-      throw new Error("Synapse is unavailable");
-    }
-    return true;
-  } catch (error) {
-    logger.error("Synapse health check failed:", error);
+    await requestCredentials(temporaryMatrixClient);
+  }
+
+  return credentials;
+}
+
+export async function validateCachedCredentials(
+  selfUserChatUserId?: string,
+  initialValidation = false,
+) {
+  logger.debug("Validate cached credentials", selfUserChatUserId);
+  const credentials = getCachedCredentials();
+
+  if (initialValidation && !credentials.deviceId && !credentials.userId) return;
+
+  if (
+    !hasValidCachedCredentials(
+      credentials.userId,
+      credentials.deviceId,
+      selfUserChatUserId,
+    )
+  ) {
+    await clearMatrixStores();
+    clearCachedCredentials();
+  }
+}
+
+function hasValidCachedCredentials(
+  userId?: string,
+  deviceId?: string,
+  selfUserChatUserId?: string,
+) {
+  if (!deviceId || !userId) {
+    logger.debug("deviceId or userId not found in cache");
     return false;
   }
-}
 
-function startSingleSignOn(
-  matrixClient: MatrixClient,
-  loginType: "sso" | "cas" = "sso",
-  idpId?: string,
-  action?: SSOAction,
-) {
-  logger.debug("Starting Synapse SSO login flow.");
-  const callbackUrl = new URL(window.location.href).toString();
-
-  window.location.href = matrixClient.getSsoLoginUrl(
-    callbackUrl,
-    loginType,
-    idpId,
-    action,
-  );
-}
-
-function extractSSOFailureMessage() {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get("synapseError");
-}
-
-function extractLoginToken() {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get("loginToken");
-}
-
-async function handleSSOLogin(matrixClient: MatrixClient) {
-  const synapseHealthy = await healthcheckHomeserver(matrixClient);
-  if (!synapseHealthy) {
-    logger.error("Synapse is offline, aborting login to chat.");
-    return undefined;
+  if (!isStrictEqual(selfUserChatUserId, userId)) {
+    logger.debug("Cached userId is not matching logged-in user.");
+    return false;
   }
-
-  const ssoRedirectFailure = extractSSOFailureMessage();
-  if (ssoRedirectFailure) {
-    logger.error("Synapse SSO redirect failed, aborting login to chat.");
-    return undefined;
-  }
-
-  const loginToken = extractLoginToken();
-  if (!loginToken) {
-    // if token not found, start SSO flow
-    void startSingleSignOn(matrixClient);
-
-    // Return undefined to stop login process
-    return undefined;
-  }
-
-  logger.debug(
-    "Synapse SSO flow finished successfully, performing login to matrix chat with loginToken.",
-  );
-  return matrixClient.loginWithToken(loginToken);
+  return true;
 }
 
-function verifyCachedUserId(chatUsername?: string, userId?: string) {
-  return userId?.toLowerCase() === chatUsername?.toLowerCase();
-}
+export async function requestCredentials(matrixClient: MatrixClient) {
+  logger.debug("Requesting userId and deviceid from matrix whoami endpoint");
 
-async function createLoggedInClient(payload: ILoginParams) {
-  // Create guest client
-  const matrixClient = createClient({
-    baseUrl: payload.baseUrl,
-  });
-
-  // Clear stores
-  await clearCachedCredentials();
-  void clearMatrixStores();
-
-  // Start SSO, redirect the page to receive the login token.
-  // Once the token is received in the search parameters, we can initiate the login process.
-  // desc: https://spec.matrix.org/v1.11/client-server-api/#client-login-via-sso
-  const response = await handleSSOLogin(matrixClient);
-
-  // If response is undefined that means the SSO process is ongoing.
-  // Return `undefined` here and await redirection with the login token,
-  // otherwise, a guest client will be returned.
-  if (!response) return undefined;
-
-  return matrixClient;
-}
-
-async function createCachedClient(payload: ILoginParams) {
-  const { accessToken, deviceId, userId } = await getCachedCredentials();
-
-  const isMatchedUser = verifyCachedUserId(
-    payload.selfUser.externalChatUsername,
-    userId,
-  );
-
-  if (!isMatchedUser) {
-    logger.debug("No match found with cached user.");
-  }
-
-  // Create client based on stored credentials
-  if (accessToken && deviceId && userId && isMatchedUser) {
-    logger.debug("Prepare matrix client using cached credentials.");
-
-    return createClient({
-      baseUrl: payload.baseUrl,
-      deviceId,
-      userId,
-      accessToken,
-    });
-  }
-
-  return undefined;
-}
-
-/**
- * Create and store a pickle key for encrypting react-sdk-crypto data..
- *
- * Returns the pickle key which can be used for the rust crypto store.
- */
-
-async function initPickleKey(userId: string, deviceId: string) {
-  let pickleKey = await getPickleKey(userId, deviceId);
-
-  if (!pickleKey) {
-    pickleKey = await createPickleKey(userId, deviceId);
-    if (pickleKey) {
-      logger.debug("Created pickle key");
-    } else {
-      logger.debug("Pickle key not created");
-    }
-  }
-
-  return pickleKey;
-}
-
-async function createInitialClient(payload: ILoginParams) {
-  let matrixClient = await createCachedClient(payload);
-
-  // Send login request if credentials were not stored.
-  if (!matrixClient) {
-    matrixClient = await createLoggedInClient(payload);
-  }
-
-  return matrixClient;
-}
-
-async function getCredentials(matrixClient: MatrixClient) {
   try {
-    const whoami = await matrixClient.whoami();
-    const accessToken = matrixClient.getAccessToken() ?? undefined;
-
-    if (!accessToken) {
-      throw new Error("Unable to retrieve access token");
-    }
-
-    if (!whoami.device_id || !whoami.user_id) {
+    const whoamiResponse = await matrixClient.whoami();
+    if (!whoamiResponse.device_id || !whoamiResponse.user_id) {
       throw new Error("Unable to retrieve whoami data");
     }
-
-    const pickleKey = await initPickleKey(whoami.user_id, whoami.device_id);
-
     return {
-      accessToken,
-      userId: whoami.user_id,
-      deviceId: whoami.device_id,
-      pickleKey,
+      userId: whoamiResponse.user_id,
+      deviceId: whoamiResponse.device_id,
     };
   } catch (error) {
-    logger.softError("Client verification failed");
+    logger.softError("Unable to get client credentials");
     throw error;
   }
 }
 
-export async function chatLogin(baseUrl: string, selfUser: ApiUser) {
-  const matrixClient = await createInitialClient({
-    baseUrl,
-    selfUser,
+export function createTemporaryMatrixClient(
+  baseUrl: string,
+  deviceId?: string,
+) {
+  return createClient({
+    baseUrl: baseUrl,
+    fetchFn: (input, init) => fetchFn(input, init, deviceId),
   });
-
-  if (!matrixClient) {
-    logger.softError("Temporary client creation failed");
-    return;
-  }
-
-  // Verify created client and get credentials
-  const credentials = await getCredentials(matrixClient);
-
-  await persistCredentials(credentials);
-  return credentials;
 }

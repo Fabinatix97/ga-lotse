@@ -1,0 +1,27 @@
+### Get login options
+GET http://localhost:8008/_matrix/client/r0/login
+Accept: application/json
+Content-Type: application/json
+
+
+### Obtain synapseAccessToken from MatrixLoginClient.java (temporary add println synapseAccessToken to login method)
+
+
+### Test token with whoami user data (requires Authorization)
+GET http://localhost:8008/_matrix/client/v3/account/whoami
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer [ACCESS_TOKEN]
+
+
+### Deactivate account - NOT WORKING
+POST http://localhost:8008/_matrix/client/v3/account/deactivate
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer [ACCESS_TOKEN]
+
+{
+  "auth": {
+    "session": "xVkTWYHtZDboNjdfiZFyYxAL"
+  }
+}

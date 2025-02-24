@@ -5,12 +5,13 @@
 
 "use client";
 
+import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
+
 import { useGetReportDetails } from "@/lib/businessModules/statistics/api/queries/useGetReportDetails";
 import { ReportDetails } from "@/lib/businessModules/statistics/components/reports/ReportDetails";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 
 export default function ReportDetailsPage(
   props: Readonly<{ params: { id: string } }>,

@@ -7,16 +7,19 @@ package de.eshg.medicalregistry;
 
 import static de.eshg.medicalregistry.Validator.asMapper;
 import static de.eshg.medicalregistry.mapper.ProcedureMapper.mapToSystemProgressEntryType;
+import static java.util.function.Predicate.not;
 import static org.springframework.data.domain.PageRequest.ofSize;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
+import de.eshg.lib.procedure.domain.model.BasicSystemProgressEntryType;
 import de.eshg.lib.procedure.domain.model.Image;
 import de.eshg.lib.procedure.domain.model.ImageMetaData;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
+import de.eshg.lib.procedure.domain.model.ProgressEntry;
 import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
@@ -46,10 +49,14 @@ import de.eshg.medicalregistry.domain.specification.MedicalRegistryProcedureOver
 import de.eshg.medicalregistry.importer.MedicalRegistryRow;
 import de.eshg.medicalregistry.mapper.CreationMapper;
 import de.eshg.medicalregistry.mapper.EntryMapper;
+import de.eshg.medicalregistry.mapper.ProcedureMapper;
 import de.eshg.validation.ValidationUtil;
 import java.time.Clock;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +65,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.collections4.ListUtils;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -69,6 +78,11 @@ public class MedicalRegistryService {
   private static final Logger log = LoggerFactory.getLogger(MedicalRegistryService.class);
   private static final Set<TypeOfChange> DEREGISTRATION_TYPE_OF_CHANGES =
       EnumSet.of(TypeOfChange.DEREGISTRATION, TypeOfChange.RELOCATION);
+  private static final Set<String> MEDICAL_REGISTRY_ENTRY_CHANGE_PROGRESS_ENTRY_TYPES =
+      Arrays.stream(TypeOfChange.values())
+          .map(ProcedureMapper::mapToSystemProgressEntryType)
+          .map(Enum::name)
+          .collect(Collectors.toSet());
 
   private final MedicalRegistryProcedureRepository medicalRegistryProcedureRepository;
   private final ProcedureDeletionService<MedicalRegistryProcedure> procedureDeletionService;
@@ -188,14 +202,10 @@ public class MedicalRegistryService {
     copyValuesFromDraft(draftMedicalRegistryEntry, medicalRegistryEntry);
 
     updateOrConfirmProfessional(
-        draftMedicalRegistryEntry.getProfessional(),
-        medicalRegistryEntry,
-        professionalReferencePerson);
+        draftMedicalRegistryEntry, medicalRegistryEntry, professionalReferencePerson);
 
     updateOrConfirmPractice(
-        draftMedicalRegistryEntry.getRelatedFacilities(),
-        medicalRegistryEntry,
-        practiceReferenceFacility);
+        draftMedicalRegistryEntry, medicalRegistryEntry, practiceReferenceFacility);
 
     updateProfessionInformation(draftMedicalRegistryEntry, medicalRegistryEntry);
 
@@ -268,16 +278,55 @@ public class MedicalRegistryService {
   }
 
   private void updateOrConfirmProfessional(
-      Professional sourceProfessional,
+      MedicalRegistryEntryChange sourceEntry,
       MedicalRegistryProcedure targetEntry,
       ProfessionalReferencePersonDto professionalReferencePerson) {
-    Professional targetProfessional =
+    Professional existingProfessional =
         targetEntry.getRelatedPersons().stream()
             .collect(StreamUtil.toSingleOptionalElement())
-            .orElseGet(() -> addProfessionalToEntry(sourceProfessional, targetEntry));
+            .orElse(null);
 
-    updateOrConfirmProfessional(
-        sourceProfessional, targetProfessional, professionalReferencePerson);
+    if (existingProfessional == null) {
+      Professional professional = sourceEntry.getProfessional();
+      targetEntry.addRelatedPerson(professional);
+      updateOrConfirmProfessional(professional, professional, professionalReferencePerson);
+    } else {
+      UUID previousPersonCentralFileState = existingProfessional.getCentralFileStateId();
+
+      updateOrConfirmProfessional(
+          sourceEntry.getProfessional(), existingProfessional, professionalReferencePerson);
+
+      documentPreviousPersonCentralFileStateIfNecessary(
+          sourceEntry,
+          previousPersonCentralFileState,
+          existingProfessional.getCentralFileStateId());
+    }
+  }
+
+  private static void documentPreviousPersonCentralFileStateIfNecessary(
+      MedicalRegistryEntryChange entry,
+      UUID previousPersonCentralFileState,
+      UUID newPersonCentralFileState) {
+    if (!newPersonCentralFileState.equals(previousPersonCentralFileState)) {
+      getLatestMedicalRegistryEntryChangeProgressEntry(entry)
+          .setPreviousPersonFileStateId(previousPersonCentralFileState);
+    }
+  }
+
+  private static SystemProgressEntry getLatestMedicalRegistryEntryChangeProgressEntry(
+      MedicalRegistryEntryChange medicalRegistryEntryChange) {
+    return medicalRegistryEntryChange.getProgressEntries().stream()
+        .filter(SystemProgressEntry.class::isInstance)
+        .map(SystemProgressEntry.class::cast)
+        .filter(MedicalRegistryService::isMedicalRegistryEntryChangeProgressEntry)
+        .max(Comparator.comparing(ProgressEntry::getCreatedAt).thenComparing(ProgressEntry::getId))
+        .orElseThrow(IllegalStateException::new);
+  }
+
+  private static boolean isMedicalRegistryEntryChangeProgressEntry(
+      SystemProgressEntry progressEntry) {
+    return MEDICAL_REGISTRY_ENTRY_CHANGE_PROGRESS_ENTRY_TYPES.contains(
+        progressEntry.getSystemProgressEntryType());
   }
 
   private void updateOrConfirmProfessional(
@@ -291,38 +340,42 @@ public class MedicalRegistryService {
             sourceProfessional.getCentralFileStateId(), professionalReferencePerson));
   }
 
-  private Professional addProfessionalToEntry(
-      Professional professional, MedicalRegistryProcedure entry) {
-    entry.addRelatedPerson(professional);
-    return professional;
-  }
-
   private void updateOrConfirmPractice(
-      List<Practice> sourcePractices,
+      MedicalRegistryEntryChange sourceEntry,
       MedicalRegistryProcedure targetEntry,
       PracticeReferenceFacilityDto practiceReferenceFacility) {
-    sourcePractices.stream()
+    sourceEntry.getRelatedFacilities().stream()
         .collect(StreamUtil.toSingleOptionalElement())
         .ifPresent(
-            sourcePractice ->
-                updateOrConfirmPractice(sourcePractice, targetEntry, practiceReferenceFacility));
+            sourcePractice -> {
+              Practice existingPractice =
+                  facilityService
+                      .findTargetPractice(
+                          targetEntry.getRelatedFacilities(), practiceReferenceFacility)
+                      .orElse(null);
+
+              if (existingPractice == null) {
+                targetEntry.addRelatedFacility(sourcePractice);
+                updateOrConfirmPractice(sourcePractice, sourcePractice, practiceReferenceFacility);
+              } else {
+                UUID previousFacilityFileState = existingPractice.getCentralFileStateId();
+                updateOrConfirmPractice(
+                    sourcePractice, existingPractice, practiceReferenceFacility);
+
+                documentPreviousFacilityCentralFileStateIfNecessary(
+                    sourceEntry,
+                    previousFacilityFileState,
+                    existingPractice.getCentralFileStateId());
+              }
+            });
   }
 
-  private void updateOrConfirmPractice(
-      Practice sourcePractice,
-      MedicalRegistryProcedure targetEntry,
-      PracticeReferenceFacilityDto practiceReferenceFacility) {
-    Practice targetPractice =
-        facilityService
-            .findTargetPractice(targetEntry.getRelatedFacilities(), practiceReferenceFacility)
-            .orElseGet(() -> addPracticeToEntry(sourcePractice, targetEntry));
-
-    updateOrConfirmPractice(sourcePractice, targetPractice, practiceReferenceFacility);
-  }
-
-  private Practice addPracticeToEntry(Practice practice, MedicalRegistryProcedure target) {
-    target.addRelatedFacility(practice);
-    return practice;
+  private static void documentPreviousFacilityCentralFileStateIfNecessary(
+      MedicalRegistryEntryChange entry, UUID previousFacilityFileState, UUID newFacilityFileState) {
+    if (!newFacilityFileState.equals(previousFacilityFileState)) {
+      getLatestMedicalRegistryEntryChangeProgressEntry(entry)
+          .setPreviousFacilityFileStateId(previousFacilityFileState);
+    }
   }
 
   private void updateOrConfirmPractice(
@@ -425,7 +478,43 @@ public class MedicalRegistryService {
     target.setRequestForWrittenConfirmation(source.isRequestForWrittenConfirmation());
     getIsEmployeesEmployed(source).ifPresent(target::setEmployeesEmployed);
 
-    source.getProgressEntries().forEach(target::addProgressEntry);
+    replaceProgressEntries(target, merge(target.getProgressEntries(), source.getProgressEntries()));
+  }
+
+  private static void replaceProgressEntries(
+      MedicalRegistryEntry target, List<ProgressEntry> progressEntries) {
+    target.getProgressEntries().clear();
+    target.getProgressEntries().addAll(progressEntries);
+  }
+
+  private static List<ProgressEntry> merge(
+      List<ProgressEntry> targetProgressEntries, List<ProgressEntry> sourceProgressEntries) {
+    List<ProgressEntry> finalProgressEntries = new ArrayList<>();
+
+    Stream.concat(targetProgressEntries.stream(), sourceProgressEntries.stream())
+        .filter(MedicalRegistryService::isCreatedProgressEntry)
+        .min(Comparator.comparing(ProgressEntry::getCreatedAt).thenComparing(ProgressEntry::getId))
+        .ifPresent(finalProgressEntries::add);
+
+    finalProgressEntries.addAll(
+        targetProgressEntries.stream()
+            .filter(not(MedicalRegistryService::isCreatedProgressEntry))
+            .toList());
+    finalProgressEntries.addAll(
+        sourceProgressEntries.stream()
+            .filter(not(MedicalRegistryService::isCreatedProgressEntry))
+            .toList());
+
+    return finalProgressEntries;
+  }
+
+  private static boolean isCreatedProgressEntry(ProgressEntry progressEntry) {
+    if (Hibernate.unproxy(progressEntry) instanceof SystemProgressEntry systemProgressEntry) {
+      return BasicSystemProgressEntryType.CREATED
+          .name()
+          .equals(systemProgressEntry.getSystemProgressEntryType());
+    }
+    return false;
   }
 
   public GetMedicalRegistryEntries getProceduresOverview(

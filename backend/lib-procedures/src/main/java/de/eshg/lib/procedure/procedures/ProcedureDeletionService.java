@@ -5,6 +5,7 @@
 
 package de.eshg.lib.procedure.procedures;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.FacilityApi;
 import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.centralfile.api.DeleteFileStatesRequest;
@@ -12,13 +13,15 @@ import de.eshg.lib.procedure.cemetery.CemeteryService;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.RelatedFacility;
 import de.eshg.lib.procedure.domain.model.RelatedPerson;
+import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
 import de.eshg.rest.service.error.NotFoundException;
 import java.time.Period;
-import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -126,41 +129,79 @@ public class ProcedureDeletionService<ProcedureT extends Procedure<ProcedureT, ?
   }
 
   protected void markRelatedFileStatesForDeletion(ProcedureT procedure) {
-    if (!procedure.getRelatedPersons().isEmpty()) {
+    Set<UUID> personFileStatesToDelete = collectPersonFileStatesToDelete(procedure);
+    if (!personFileStatesToDelete.isEmpty()) {
       log.debug(
-          "Attempting to mark {} related persons for deletion. ",
-          procedure.getRelatedPersons().size());
+          "Attempting to mark {} related person file states for deletion. ",
+          personFileStatesToDelete.size());
       personApi.markPersonFileStateForDeletion(
-          deletionRequest(procedure.getRelatedPersons(), RelatedPerson::getCentralFileStateId));
+          new DeleteFileStatesRequest(personFileStatesToDelete));
     }
-    if (!procedure.getRelatedFacilities().isEmpty()) {
+    Set<UUID> facilityFileStatesToDelete = collectFacilityFileStatesToDelete(procedure);
+    if (!facilityFileStatesToDelete.isEmpty()) {
       log.debug(
-          "Attempting to mark {} related facilities for deletion",
-          procedure.getRelatedFacilities().size());
+          "Attempting to mark {} related facility file states for deletion",
+          facilityFileStatesToDelete.size());
       facilityApi.markFacilityFileStateForDeletion(
-          deletionRequest(
-              procedure.getRelatedFacilities(), RelatedFacility::getCentralFileStateId));
+          new DeleteFileStatesRequest(facilityFileStatesToDelete));
     }
   }
 
   protected void deleteRelatedFileStatesDuringArchiving(ProcedureT procedure) {
-    if (!procedure.getRelatedPersons().isEmpty()) {
-      log.debug("Attempting to delete {} related persons", procedure.getRelatedPersons().size());
-      personApi.deletePersonFileStateDuringArchive(
-          deletionRequest(procedure.getRelatedPersons(), RelatedPerson::getCentralFileStateId));
-    }
-    if (!procedure.getRelatedFacilities().isEmpty()) {
+    Set<UUID> personFileStatesToDelete = collectPersonFileStatesToDelete(procedure);
+    if (!personFileStatesToDelete.isEmpty()) {
       log.debug(
-          "Attempting to delete {} related facilities", procedure.getRelatedFacilities().size());
+          "Attempting to delete {} related persons file states", personFileStatesToDelete.size());
+      personApi.deletePersonFileStateDuringArchive(
+          new DeleteFileStatesRequest(personFileStatesToDelete));
+    }
+    Set<UUID> relatedFacilitiesToDelete = collectFacilityFileStatesToDelete(procedure);
+    if (!relatedFacilitiesToDelete.isEmpty()) {
+      log.debug(
+          "Attempting to delete {} related facilities file states",
+          relatedFacilitiesToDelete.size());
       facilityApi.deleteFacilityFileStateDuringArchive(
-          deletionRequest(
-              procedure.getRelatedFacilities(), RelatedFacility::getCentralFileStateId));
+          new DeleteFileStatesRequest(relatedFacilitiesToDelete));
     }
   }
 
-  private <T> DeleteFileStatesRequest deletionRequest(
-      List<T> entities, Function<T, UUID> uuidExtractor) {
-    return new DeleteFileStatesRequest(
-        entities.stream().map(uuidExtractor).collect(Collectors.toSet()));
+  private Set<UUID> collectPersonFileStatesToDelete(ProcedureT procedure) {
+    return Stream.concat(
+            streamCurrentPersonFileStates(procedure), streamPreviousPersonFileFileStates(procedure))
+        .collect(StreamUtil.toLinkedHashSet());
+  }
+
+  private Set<UUID> collectFacilityFileStatesToDelete(ProcedureT procedure) {
+    return Stream.concat(
+            streamCurrentFacilityFileStates(procedure), streamPreviousFacilityFileStates(procedure))
+        .collect(StreamUtil.toLinkedHashSet());
+  }
+
+  private Stream<UUID> streamCurrentPersonFileStates(ProcedureT procedure) {
+    return procedure.getRelatedPersons().stream().map(RelatedPerson::getCentralFileStateId);
+  }
+
+  private Stream<UUID> streamPreviousPersonFileFileStates(ProcedureT procedure) {
+    return streamSystemProgressEntries(procedure)
+        .map(SystemProgressEntry::getPreviousPersonFileStateId)
+        .filter(Objects::nonNull);
+  }
+
+  private Stream<UUID> streamPreviousFacilityFileStates(ProcedureT procedure) {
+    return streamSystemProgressEntries(procedure)
+        .map(SystemProgressEntry::getPreviousFacilityFileStateId)
+        .filter(Objects::nonNull);
+  }
+
+  private <ProcedureT extends Procedure<ProcedureT, ?, ?, ?>>
+      Stream<UUID> streamCurrentFacilityFileStates(ProcedureT procedure) {
+    return procedure.getRelatedFacilities().stream().map(RelatedFacility::getCentralFileStateId);
+  }
+
+  private Stream<SystemProgressEntry> streamSystemProgressEntries(ProcedureT procedure) {
+    return procedure.getProgressEntries().stream()
+        .map(Hibernate::unproxy)
+        .filter(SystemProgressEntry.class::isInstance)
+        .map(SystemProgressEntry.class::cast);
   }
 }

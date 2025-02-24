@@ -9,6 +9,7 @@ import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +24,6 @@ public interface StiProtectionProcedureRepository
   List<StiProtectionProcedure> findAllByCalendarEventIdOrderById(Collection<UUID> calendarEventIds);
 
   List<StiProtectionProcedure> findByCreatedAtBefore(Instant overdueDate);
+
+  Optional<StiProtectionProcedure> findByAnonymousUserId(UUID anonymousUserId);
 }

@@ -5,13 +5,13 @@
 
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
-import { UserConfigExport, configDefaults } from "vitest/config";
+import { ViteUserConfig, configDefaults } from "vitest/config";
 
 export const VITEST_OUT_DIR = "./build/vitest";
 export const VITEST_COVERAGE_EXCLUDES = ["**/*.d.ts"];
 
 // https://vitejs.dev/config/
-export const VITEST_BASE_CONFIG: UserConfigExport = {
+export const VITEST_BASE_CONFIG: ViteUserConfig = {
   plugins: [react(), tsconfigPaths()],
   test: {
     exclude: configDefaults.exclude,
