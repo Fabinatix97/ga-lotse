@@ -40,6 +40,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import jakarta.validation.constraints.NotNull;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -57,6 +58,10 @@ import org.springframework.util.Assert;
       @Index(
           name = "idx_sti_protection_procedure_appointment_start",
           columnList = "appointment_start"),
+      @Index(columnList = "concern"),
+      @Index(columnList = "lab_status"),
+      @Index(columnList = "procedure_status"),
+      @Index(columnList = "created_by"),
     })
 public class StiProtectionProcedure
     extends Procedure<StiProtectionProcedure, StiProtectionTask, Person, Facility>
@@ -157,12 +162,19 @@ public class StiProtectionProcedure
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Instant appointmentStart;
 
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  @Column(nullable = false)
+  @NotNull
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private CreatedByUserType createdBy;
+
   public static StiProtectionProcedure newProcedure(
-      Concern concern, Clock clock, AuditLogger auditLogger) {
+      Concern concern, CreatedByUserType createdBy, Clock clock, AuditLogger auditLogger) {
     StiProtectionProcedure procedure = new StiProtectionProcedure();
     procedure.setProcedureType(ProcedureType.STI_PROTECTION);
     procedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
     procedure.setConcern(concern);
+    procedure.setCreatedBy(createdBy);
     return procedure;
   }
 
@@ -369,5 +381,13 @@ public class StiProtectionProcedure
 
   public Instant getAppointmentStart() {
     return appointmentStart;
+  }
+
+  public CreatedByUserType getCreatedBy() {
+    return createdBy;
+  }
+
+  public void setCreatedBy(CreatedByUserType createdBy) {
+    this.createdBy = createdBy;
   }
 }

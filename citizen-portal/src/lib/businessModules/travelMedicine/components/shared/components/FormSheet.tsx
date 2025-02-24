@@ -5,9 +5,10 @@
 
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Sheet, Stack, Typography } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
 
 import { theme } from "@/lib/baseModule/theme/theme";
-import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
+import { byBreakpoint } from "@/lib/shared/breakpoints";
 
 interface FormSheetProps extends RequiresChildren {
   "data-testid"?: string;
@@ -31,13 +32,12 @@ export function FormSheet(props: FormSheetProps) {
 
 interface FormSheetTitleProps extends RequiresChildren {
   requiredTitle?: string;
+  sx?: SxProps;
 }
 
 export function FormSheetTitle(props: FormSheetTitleProps) {
-  const isMobile = useIsMobile();
-
   return (
-    <Stack gap={isMobile ? 1 : 0}>
+    <Stack gap={byBreakpoint({ mobile: 1, desktop: 0 })} sx={props.sx}>
       <Typography level="h2">{props.children}</Typography>
       {props.requiredTitle && (
         <Typography

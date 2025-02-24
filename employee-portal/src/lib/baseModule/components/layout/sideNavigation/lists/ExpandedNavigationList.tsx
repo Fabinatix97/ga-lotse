@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SideNavigationItem } from "@eshg/lib-employee-portal/types/sideNavigation";
-import { LoadingOverlay } from "@eshg/lib-portal/components/LoadingOverlay";
 import { ExpandNavigation } from "@eshg/lib-portal/components/icons/ExpandNavigation";
 import { Button, Stack, Typography } from "@mui/joy";
 
@@ -12,31 +10,19 @@ import {
   navItemIconColor,
   sideNavAriaLabel,
 } from "@/lib/baseModule/components/layout/sideNavigation/constants";
-import { NavigationItem } from "@/lib/baseModule/components/layout/sideNavigation/items/NavigationItem";
-import { StyledList } from "@/lib/baseModule/components/layout/sideNavigation/lists/StyledList";
+import { NavigationItemGroup } from "@/lib/baseModule/components/layout/sideNavigation/lists/NavigationItemGroup";
+import { NavigationListContext } from "@/lib/baseModule/components/layout/sideNavigation/lists/NavigationListContext";
 import { SideNavItemGroups } from "@/lib/baseModule/components/layout/sideNavigation/types";
 import { sideNavigationWidth } from "@/lib/baseModule/components/layout/sizes";
 
-function NavigationItemGroup(props: { itemGroup: SideNavigationItem[] }) {
-  if (props.itemGroup.length === 0) {
-    return undefined;
-  }
-  const list = props.itemGroup.map((item) => {
-    return <NavigationItem key={item.name} item={item} />;
-  });
-  return <StyledList>{list}</StyledList>;
-}
-
-export function NavigationListExpanded({
+export function ExpandedNavigationList({
   onCollapse,
   showCollapseButton,
   itemGroups,
-  isLoading,
 }: {
   onCollapse?: () => void;
   showCollapseButton: boolean;
   itemGroups: SideNavItemGroups;
-  isLoading: boolean;
 }) {
   return (
     <Stack
@@ -69,10 +55,11 @@ export function NavigationListExpanded({
         </Button>
       )}
       <Stack flex={1} sx={{ overflowY: "auto", paddingInline: 2, gap: 3 }}>
-        <NavigationItemGroup itemGroup={itemGroups.dashboardItem} />
-        <NavigationItemGroup itemGroup={itemGroups.businessItems} />
-        <NavigationItemGroup itemGroup={itemGroups.baseItems} />
-        {isLoading && <LoadingOverlay />}
+        <NavigationListContext.Provider value={false}>
+          <NavigationItemGroup itemGroup={itemGroups.dashboardItem} />
+          <NavigationItemGroup itemGroup={itemGroups.businessItems} />
+          <NavigationItemGroup itemGroup={itemGroups.baseItems} />
+        </NavigationListContext.Provider>
       </Stack>
     </Stack>
   );

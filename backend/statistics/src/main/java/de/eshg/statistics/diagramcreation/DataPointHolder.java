@@ -7,5 +7,4 @@ package de.eshg.statistics.diagramcreation;
 
 import java.math.BigDecimal;
 
-public record DataPointHolder(
-    Long rowId, BigDecimal xCoordinate, BigDecimal yCoordinate, String secondaryKey) {}
+public record DataPointHolder(Long rowId, BigDecimal xCoordinate, BigDecimal yCoordinate) {}

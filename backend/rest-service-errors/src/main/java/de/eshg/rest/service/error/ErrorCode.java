@@ -22,6 +22,8 @@ public enum ErrorCode {
   NOT_FOUND,
   /** Equivalent to http status 409: Conflict */
   CONFLICT,
+  /** Equivalent to http status 500: Internal server error */
+  INTERNAL_SERVER_ERROR,
   /** Use when ConstraintViolationException is thrown */
   CONSTRAINT_VIOLATION,
   /** Use when TimeoutException is thrown */

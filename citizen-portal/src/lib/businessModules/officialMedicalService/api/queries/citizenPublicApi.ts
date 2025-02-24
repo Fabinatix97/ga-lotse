@@ -3,10 +3,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiAppointmentType } from "@eshg/official-medical-service-api";
 import { queryOptions } from "@tanstack/react-query";
 
 import { useCitizenPublicApi } from "@/lib/businessModules/officialMedicalService/api/clients";
 import { citizenPublicApiQueryKey } from "@/lib/businessModules/officialMedicalService/api/queries/apiQueryKeys";
+import { mapToConcernApiList } from "@/lib/businessModules/officialMedicalService/shared/helpers";
+
+export function useGetAllAppointmentTypesQuery() {
+  const citizenPublicApi = useCitizenPublicApi();
+  return queryOptions({
+    queryKey: citizenPublicApiQueryKey(["getAppointmentTypesForCitizen"]),
+    queryFn: () => citizenPublicApi.getAppointmentTypesForCitizen(),
+    select: (response) => response.appointmentTypeConfigDtos ?? [],
+    refetchOnWindowFocus: false,
+  });
+}
 
 export function useGetDepartmentInfoQuery() {
   const departmentApi = useCitizenPublicApi();
@@ -24,14 +36,28 @@ export function useGetOpeningHoursQuery() {
   });
 }
 
-export function useGetFreeAppointmentsForCitizen() {
+export function useGetFreeAppointmentsForCitizen(
+  appointmentType: ApiAppointmentType,
+) {
   const citizenPublicApi = useCitizenPublicApi();
 
   return queryOptions({
-    queryKey: citizenPublicApiQueryKey(["getFreeAppointmentsForCitizen"]),
+    queryKey: citizenPublicApiQueryKey([
+      "getFreeAppointmentsForCitizen",
+      appointmentType,
+    ]),
     queryFn: () =>
-      citizenPublicApi.getFreeAppointmentsForCitizen(
-        "OFFICIAL_MEDICAL_SERVICE_SHORT",
-      ),
+      citizenPublicApi.getFreeAppointmentsForCitizen(appointmentType),
+  });
+}
+
+export function useGetConcerns() {
+  const citizenPublicApi = useCitizenPublicApi();
+
+  return queryOptions({
+    queryKey: citizenPublicApiQueryKey(["getVisibleConcerns"]),
+    queryFn: () => citizenPublicApi.getVisibleConcerns(),
+    select: (data) =>
+      data.categories.flatMap((category) => mapToConcernApiList(category)),
   });
 }

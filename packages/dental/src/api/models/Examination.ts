@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiExamination, ApiProphylaxisType } from "@eshg/dental-api";
+import {
+  ApiDentitionType,
+  ApiExamination,
+  ApiProphylaxisType,
+} from "@eshg/dental-api";
 import {
   BaseEntity,
   mapBaseEntity,
@@ -21,6 +25,7 @@ export interface Examination extends BaseEntity, Versioned {
   readonly dateAndTime: Date;
   readonly prophylaxisType: ApiProphylaxisType;
   readonly screening: boolean;
+  readonly prophylaxisDentitionType?: ApiDentitionType;
   readonly fluoridation: boolean;
   readonly fluoridationConsentGiven?: boolean;
   readonly note?: string;
@@ -29,16 +34,18 @@ export interface Examination extends BaseEntity, Versioned {
 }
 
 export function mapExamination(response: ApiExamination): Examination {
+  const result = mapOptional(response.result, mapExaminationResult);
   return {
     ...mapBaseEntity(response),
     ...mapVersioned(response),
     dateAndTime: response.dateAndTime,
     prophylaxisType: response.prophylaxisType,
     screening: response.isScreening,
+    prophylaxisDentitionType: response.prophylaxisDentitionType,
     fluoridation: response.isFluoridation,
     fluoridationConsentGiven: response.fluoridationConsentGiven,
     note: response.note,
-    result: mapOptional(response.result, mapExaminationResult),
-    status: mapToExaminationStatus(response.result),
+    result: result,
+    status: mapToExaminationStatus(result),
   };
 }

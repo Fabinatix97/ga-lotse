@@ -64,6 +64,16 @@ export function useStiProceduresQuery(
         mapSortOrder(sortState?.desc),
         page.pageNumber,
         page.pageSize,
+        undefined, // startDate
+        undefined, // endDate
+        undefined, // yearOfBirth
+        undefined, // appointmentStart
+        undefined, // appointmentEnd
+        undefined, // gender
+        undefined, // concern
+        undefined, // procedureStatus
+        undefined, // labStatus
+        undefined, // createdBy
         { signal },
       ),
 

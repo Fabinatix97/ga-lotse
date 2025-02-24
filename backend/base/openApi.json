@@ -4265,7 +4265,7 @@
         }, {
           "description" : "Limit of returned tasks",
           "in" : "query",
-          "name" : "limit",
+          "name" : "pageSize",
           "required" : false,
           "schema" : {
             "maximum" : 200,
@@ -4277,10 +4277,10 @@
         }, {
           "description" : "Offset used for pagination",
           "in" : "query",
-          "name" : "offset",
+          "name" : "pageNumber",
           "required" : false,
           "schema" : {
-            "maximum" : 2000,
+            "maximum" : 10,
             "minimum" : 0,
             "type" : "integer",
             "format" : "int32",
@@ -7072,7 +7072,7 @@
       },
       "ErrorCode" : {
         "type" : "string",
-        "enum" : [ "UNEXPECTED_ERROR", "BAD_REQUEST", "UNAUTHORIZED", "INSUFFICIENT_USER_RIGHTS", "NOT_FOUND", "CONFLICT", "CONSTRAINT_VIOLATION", "TIMEOUT", "DATA_INTEGRITY_VIOLATION", "ALREADY_EXISTS", "AGGREGATION_EXCEPTION", "INVALID_FILE", "NONCONFORM_PDF", "CORRUPT", "LOCKED", "XLSX_TOO_MANY_ROWS" ]
+        "enum" : [ "UNEXPECTED_ERROR", "BAD_REQUEST", "UNAUTHORIZED", "INSUFFICIENT_USER_RIGHTS", "NOT_FOUND", "CONFLICT", "INTERNAL_SERVER_ERROR", "CONSTRAINT_VIOLATION", "TIMEOUT", "DATA_INTEGRITY_VIOLATION", "ALREADY_EXISTS", "AGGREGATION_EXCEPTION", "INVALID_FILE", "NONCONFORM_PDF", "CORRUPT", "LOCKED", "XLSX_TOO_MANY_ROWS" ]
       },
       "ErrorResponseWithLocation" : {
         "required" : [ "errorCode", "errorLocation" ],

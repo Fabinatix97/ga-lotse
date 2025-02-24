@@ -11,7 +11,10 @@ import {
   isEmptyExaminationResult,
 } from "@eshg/dental/api/models/ExaminationResult";
 import { ToothDiagnosis } from "@eshg/dental/api/models/ToothDiagnosis";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import {
+  mapOptionalValue,
+  mapRequiredValue,
+} from "@eshg/lib-portal/helpers/form";
 import { useFormik } from "formik";
 
 import {
@@ -24,6 +27,7 @@ import { useProphylaxisSessionStore } from "@/lib/businessModules/dental/feature
 interface ExaminationInputValues {
   result?: ExaminationResult;
   note?: string;
+  prophylaxisDentitionType?: ApiDentitionType;
 }
 
 interface ExaminationOutputValues {
@@ -50,6 +54,7 @@ export function useParticipantExaminationForm(
     initialValues: mapToExaminationFormValues(
       initialValues.result,
       initialValues.note,
+      initialValues.prophylaxisDentitionType,
     ),
     onSubmit: (formValues: ExaminationFormValues) => {
       onSubmit(
@@ -80,11 +85,11 @@ function mapToExaminationResult(
   if (screening) {
     result = {
       type: "screening",
+      dentitionType: mapRequiredValue(formValues.dentitionType),
       oralHygieneStatus: mapOptionalValue(formValues.oralHygieneStatus),
       fluorideVarnishApplied: mapOptionalValue(
         formValues.fluorideVarnishApplied,
       ),
-      dentitionType: ApiDentitionType.Mixed,
       toothDiagnoses: toothDiagnoses,
     };
   } else {

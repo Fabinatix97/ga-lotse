@@ -1,0 +1,71 @@
+# Copyright 2025 cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+services:
+  reverse-proxy-base:
+    image: nginx:1.27.1
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx
+      - /var/run
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    volumes:
+      - ./reverse-proxy/forward_headers.conf:/etc/nginx/forward_headers.conf:ro
+      - ./reverse-proxy/auth_request.conf:/etc/nginx/auth_request.conf:ro
+      - ./reverse-proxy/auth_api_request.conf:/etc/nginx/auth_api_request.conf:ro
+      - ./reverse-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+
+  employee-portal-reverse-proxy:
+    extends:
+      service: reverse-proxy-base
+    ports:
+      - 4000:4000
+    volumes:
+      - ./reverse-proxy/employee-portal.conf:/etc/nginx/conf.d/default.conf:ro
+
+  citizen-portal-reverse-proxy:
+    extends:
+      service: reverse-proxy-base
+    ports:
+      - 4001:4001
+    volumes:
+      - ./reverse-proxy/citizen-portal.conf:/etc/nginx/conf.d/default.conf:ro
+
+  admin-portal-reverse-proxy:
+    extends:
+      service: reverse-proxy-base
+    ports:
+      - 4002:4002
+    volumes:
+      - ./reverse-proxy/admin-portal.conf:/etc/nginx/conf.d/default.conf:ro
+
+  employee-portal:
+    image: ga-lotse/employee-portal:${EMPLOYEE_PORTAL_TAG:-latest}
+    environment:
+      - HOSTNAME=0.0.0.0
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    depends_on:
+      - employee-portal-reverse-proxy
+
+  citizen-portal:
+    image: ga-lotse/citizen-portal:${CITIZEN_PORTAL_TAG:-latest}
+    environment:
+      - HOSTNAME=0.0.0.0
+    restart: unless-stopped
+    ports:
+      - 3001:3001
+    depends_on:
+      - citizen-portal-reverse-proxy
+
+  admin-portal:
+    image: ga-lotse/admin-portal:${ADMIN_PORTAL_TAG:-latest}
+    environment:
+      - HOSTNAME=0.0.0.0
+    restart: unless-stopped
+    ports:
+      - 3002:3002
+    depends_on:
+      - admin-portal-reverse-proxy

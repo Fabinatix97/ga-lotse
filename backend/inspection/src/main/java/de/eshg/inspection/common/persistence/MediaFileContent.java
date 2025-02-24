@@ -7,6 +7,7 @@ package de.eshg.inspection.common.persistence;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import de.eshg.domain.model.BaseEntity;
+import de.eshg.domain.model.HasFileContent;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.CascadeType;
@@ -26,8 +27,8 @@ import org.hibernate.annotations.JdbcTypeCode;
 
 @Entity
 @DataSensitivity(SensitivityLevel.PROTECTED)
-@JsonIgnoreProperties("mediaFiles")
-public class MediaFileContent extends BaseEntity {
+@JsonIgnoreProperties({MediaFileContent_.MEDIA_FILES, "filename", "content"})
+public class MediaFileContent extends BaseEntity implements HasFileContent {
 
   @Lob
   @JdbcTypeCode(Types.BINARY)
@@ -60,5 +61,15 @@ public class MediaFileContent extends BaseEntity {
     } catch (IOException | SQLException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  public String getFileName() {
+    return getMediaFiles().stream().map(MediaFile::getFileName).findFirst().orElse("media");
+  }
+
+  @Override
+  public byte[] getContent() {
+    return getAllBytes();
   }
 }

@@ -2282,6 +2282,101 @@
             "format" : "int32",
             "default" : 25
           }
+        }, {
+          "in" : "query",
+          "name" : "creationDateStart",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "in" : "query",
+          "name" : "creationDateEnd",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "in" : "query",
+          "name" : "yearOfBirth",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "in" : "query",
+          "name" : "appointmentDateStart",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "in" : "query",
+          "name" : "appointmentDateEnd",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "in" : "query",
+          "name" : "gender",
+          "required" : false,
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Gender"
+            }
+          }
+        }, {
+          "in" : "query",
+          "name" : "concern",
+          "required" : false,
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Concern"
+            }
+          }
+        }, {
+          "in" : "query",
+          "name" : "procedureStatus",
+          "required" : false,
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProcedureStatus"
+            }
+          }
+        }, {
+          "in" : "query",
+          "name" : "labStatus",
+          "required" : false,
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/LabStatus"
+            }
+          }
+        }, {
+          "in" : "query",
+          "name" : "createdBy",
+          "required" : false,
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CreatedByUserType"
+            }
+          }
         } ],
         "responses" : {
           "200" : {
@@ -3321,7 +3416,7 @@
           "name" : "limit",
           "required" : false,
           "schema" : {
-            "maximum" : 200,
+            "maximum" : 2200,
             "minimum" : 1,
             "type" : "integer",
             "format" : "int32",
@@ -4737,6 +4832,10 @@
             "format" : "uuid"
           }
         }
+      },
+      "CreatedByUserType" : {
+        "type" : "string",
+        "enum" : [ "EMPLOYEE", "CITIZEN_PORTAL" ]
       },
       "DataOrigin" : {
         "type" : "string",

@@ -19,6 +19,7 @@ export function useSideNavigationItems(): UseSideNavigationItemsResult {
     isLoading: false,
     items: [
       {
+        type: "SideNavigationParentItem",
         name: "Statistik",
         decorator: <BarChartOutlined />,
         subItems: [

@@ -4,6 +4,7 @@
  */
 
 /* eslint-disable unused-imports/no-unused-vars */
+import { ApiDentitionType } from "@eshg/dental-api";
 import {
   ExaminationResult,
   ToothDiagnoses,
@@ -11,16 +12,21 @@ import {
 import { createStore } from "zustand";
 
 import {
+  calculateDmftValue,
+  setMainResult,
+  setSecondaryResult1,
+  setSecondaryResult2,
+} from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/actions/result";
+
+import { NavigateDirection, navigate } from "./actions/navigate";
+import { navigateTo } from "./actions/navigateTo";
+import {
   addTooth,
   getToothDiagnoses,
   removeTooth,
   setFocus,
-  setMainResult,
-  setSecondaryResult1,
-  setSecondaryResult2,
-} from "./actions";
-import { NavigateDirection, navigate } from "./actions/navigate";
-import { createSecondaryDentition } from "./factories";
+} from "./actions/tooth";
+import { createPrimaryDentition, createSecondaryDentition } from "./factories";
 import {
   DentalExaminationView,
   Dentition,
@@ -32,12 +38,14 @@ export interface DentalExaminationState {
   currentView: DentalExaminationView;
   currentFocus: ElementContext;
   dentition: Dentition;
+  dmftValues: { primaryTeeth: number; secondaryTeeth: number };
 }
 
 export interface DentalExaminationActions {
   setView: (newView: DentalExaminationView) => void;
   setFocus: (focus: ElementContext) => void;
   navigate: (direction: NavigateDirection) => void;
+  navigateTo: (toothContext: ToothContext) => void;
 
   addTooth: ToothAction;
   removeTooth: ToothAction;
@@ -58,22 +66,39 @@ export type SetToothResultAction = (
 export type DentalExaminationStore = DentalExaminationState &
   DentalExaminationActions;
 
+export type DmftValuesState = Pick<DentalExaminationState, "dmftValues">;
+
+export function calculateDmftValues(dentition: Dentition) {
+  return {
+    primaryTeeth: calculateDmftValue(dentition, "PRIMARY_TOOTH"),
+    secondaryTeeth: calculateDmftValue(dentition, "SECONDARY_TOOTH"),
+  };
+}
+
 export function initDentalExaminationStore(
   examinationResult: ExaminationResult | undefined,
+  defaultDentitionType: ApiDentitionType | undefined,
 ): DentalExaminationState {
-  const toothDiagnoses =
-    examinationResult?.type === "screening"
-      ? examinationResult.toothDiagnoses
-      : {};
+  const isScreening = examinationResult?.type === "screening";
+
+  const toothDiagnoses = isScreening ? examinationResult.toothDiagnoses : {};
+
+  const dentitionType =
+    (isScreening ? examinationResult.dentitionType : undefined) ??
+    defaultDentitionType;
+  const dentition =
+    dentitionType === ApiDentitionType.Primary
+      ? createPrimaryDentition(toothDiagnoses)
+      : createSecondaryDentition(toothDiagnoses);
 
   return {
     currentView: "UPPER_JAW",
-    // TODO ISSUE-6584: distinguish between type of dentition
-    dentition: createSecondaryDentition(toothDiagnoses),
+    dentition: dentition,
     currentFocus: {
       toothContext: { quadrantNumber: "Q1", toothIndex: 0 },
       field: "main",
     },
+    dmftValues: calculateDmftValues(dentition),
   };
 }
 
@@ -89,9 +114,7 @@ export function createDentalExaminationStore(
       }));
     },
     removeTooth: (toothContext: ToothContext) => {
-      set((state) => ({
-        dentition: removeTooth(toothContext, state.dentition),
-      }));
+      set((state) => removeTooth(toothContext, state.dentition));
     },
     toggleToothType: (toothContext: ToothContext) => {
       throw new Error("Not yet implemented");
@@ -100,18 +123,14 @@ export function createDentalExaminationStore(
       set(setFocus(newFocus));
     },
     setMainResult: (toothContext: ToothContext, newValue: string) =>
-      set((state) => ({
-        dentition: setMainResult(toothContext, newValue, state.dentition),
-      })),
+      set((state) => setMainResult(toothContext, newValue, state)),
     setSecondaryResult1: (toothContext: ToothContext, newValue: string) =>
-      set((state) => ({
-        dentition: setSecondaryResult1(toothContext, newValue, state.dentition),
-      })),
+      set((state) => setSecondaryResult1(toothContext, newValue, state)),
     setSecondaryResult2: (toothContext: ToothContext, newValue: string) =>
-      set((state) => ({
-        dentition: setSecondaryResult2(toothContext, newValue, state.dentition),
-      })),
+      set((state) => setSecondaryResult2(toothContext, newValue, state)),
     getToothDiagnoses: () => getToothDiagnoses(get().dentition),
     navigate: (direction) => set((state) => navigate(direction, state)),
+    navigateTo: (toothContext) =>
+      set((state) => navigateTo(toothContext, state)),
   }));
 }

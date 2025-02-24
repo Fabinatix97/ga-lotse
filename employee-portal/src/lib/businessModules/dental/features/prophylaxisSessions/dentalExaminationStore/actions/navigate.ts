@@ -134,11 +134,17 @@ function navigateRight(state: NavigateState): NavigateState {
   }
 
   if (quadrantNumber === "Q2") {
-    return navigateToLastTooth("LOWER_JAW", "Q3");
+    return navigateToLastTooth(
+      currentView === "FULL_DENTITION" ? "FULL_DENTITION" : "LOWER_JAW",
+      "Q3",
+    );
   }
 
   if (quadrantNumber === "Q3") {
-    return navigateToLastTooth("UPPER_JAW", "Q2");
+    return navigateToLastTooth(
+      currentView === "FULL_DENTITION" ? "FULL_DENTITION" : "UPPER_JAW",
+      "Q2",
+    );
   }
 
   if (quadrantNumber === "Q4") {

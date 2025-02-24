@@ -5,7 +5,7 @@
 
 package de.eshg.base.street;
 
-import de.eshg.base.department.DepartmentConfiguration;
+import de.eshg.base.config.DepartmentConfigurationService;
 import de.eshg.base.street.csv.CsvMapper;
 import de.eshg.base.street.csv.MunicipalityDirectoryCsvEntry;
 import java.util.List;
@@ -28,10 +28,11 @@ public class MunicipalityDirectory {
 
   private final List<DirectoryEntry> entries;
 
-  public MunicipalityDirectory(DepartmentConfiguration departmentConfiguration) {
+  public MunicipalityDirectory(DepartmentConfigurationService departmentConfigurationService) {
     List<MunicipalityDirectoryCsvEntry> csvEntries =
         CsvMapper.csvToBeans(
-            departmentConfiguration.municipalityDirectory(), MunicipalityDirectoryCsvEntry.class);
+            departmentConfigurationService.getDepartmentConfiguration().getMunicipalityDirectory(),
+            MunicipalityDirectoryCsvEntry.class);
 
     this.entries = convertToDirectoryStructure(csvEntries);
   }

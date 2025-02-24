@@ -62,5 +62,6 @@
   <include file="migrations/0052_oms_appointment_type_extensions.xml"/>
   <include file="migrations/0053_idx_procedure_expiration_by_external_id.xml"/>
   <include file="migrations/0054_rename_rapid_test_syphilis_test_data_column.xml"/>
+  <include file="migrations/0055_filter_procedures.xml"/>
 
 </databaseChangeLog>

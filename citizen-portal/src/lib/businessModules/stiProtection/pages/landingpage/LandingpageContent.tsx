@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+"use client";
+
 import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 import { ApiConcern } from "@eshg/sti-protection-api";
 import { CallOutlined, MailOutlineOutlined } from "@mui/icons-material";

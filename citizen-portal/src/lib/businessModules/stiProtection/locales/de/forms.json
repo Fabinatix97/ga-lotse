@@ -1,0 +1,67 @@
+{
+  "common": {
+    "appointment_booking_title": "Termin buchen",
+    "required_title": "*Pflichtfeld",
+    "current_step": "Schritt {{currentStep}} von {{totalSteps}}",
+    "hiv_sti_consultation": "HIV-STI-Beratung",
+    "sex_work": "Sexarbeit"
+  },
+  "time_slot": {
+    "title": "Verfügbare Termine",
+    "consent_note_title": "Einverständnis",
+    "consent_note_message": "Derpy merpus pee derpler berps! Perp sherper herp terp herpy derpler. Sherper merp herpler herp pee. Derpler terpus, mer re berp der perp se?",
+    "no_appointments_available": "Derzeit sind keine Termine verfügbar",
+    "try_later": "Wir schalten in kürze weitere Termine frei. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut."
+  },
+  "personal_data": {
+    "title": "Persönliche Daten",
+    "fields": {
+      "first_name": "Vorname",
+      "first_name_required": "Bitte Vorname eingeben.",
+      "last_name": "Nachname",
+      "last_name_required": "Bitte Nachname eingeben.",
+      "date_of_birth": "Geburtsdatum",
+      "date_of_birth_required": "Bitte Geburtsdatum eingeben.",
+      "phone_numbers": "Telefon",
+      "email_addresses": "E-Mail-Adresse",
+      "email_addresses_required": "Bitte E-Mail-Adresse eingeben.",
+      "confirm_online_services": "Ich bestätige, dass ich die Online-Dienste für die Impfberatung nutzen und die hierzu notwendigen E-Mails erhalten möchte.",
+      "confirm_online_services_required": "Bitte Zustimmung erteilen um fortzufahren."
+    }
+  },
+  "appointment_calendar": {
+    "required_appointment": "Bitte einen Termin auswählen",
+    "required_day": "Bitte einen Tag auswählen",
+    "month_selection": "Termin Kalendermonat",
+    "next_month": "zum nächsten Monat",
+    "prev_month": "zum vorherigen Monat",
+    "list_label": "Verfügbare Uhrzeiten *",
+    "calendar_label": "Datum *",
+    "available": "verfügbar"
+  },
+  "appointment_info_section": {
+    "title": "Informationen zum Termin",
+    "alert_header": "Vorbereitungen zum Termin",
+    "alert_message": "Bitte bringen Sie Ihren Impfpass mit",
+    "info_text": "Sie erhalten in <t1>den nächsten Minuten</t1> eine <t1>Terminbestätigung</t1> per E-Mail. Dort sind alle Informationen zum Termin enthalten. Sie haben zudem die Möglichkeit den Termin zu ändern oder zu stornieren",
+    "required_documents_header": "Notwendige Dokumente, welche Sie bitte zum Termin mitbringen, sind:",
+    "list_item_id_card": "Personalausweis",
+    "list_item_vaccination_card": "Impfpass",
+    "closing_greeting": "Mit freundlichen Grüßen",
+    "health_department": "Ihr Gesundheitsamt"
+  },
+  "confirmation_section": {
+    "title": "Terminbuchung",
+    "submit": "Termin verbindlich buchen",
+    "on_prev_step": "Zurück",
+    "on_cancel": "Abbrechen",
+    "fields": {
+      "confirm_privacy_notice": "Ich akzeptiere den Datenschutzhinweis.",
+      "privacy_notice": "Zum Datenschutzhinweis",
+      "confirm_privacy_notice_required": "Bitte Zustimmung erteilen um fortzufahren.",
+      "confirm_privacy_policy": "Ich akzeptiere die Datenschutzerklärung.",
+      "privacy_policy": "Zur Datenschutzerklärung",
+      "confirm_privacy_policy_required": "Bitte Zustimmung erteilen um fortzufahren."
+    }
+  }
+}

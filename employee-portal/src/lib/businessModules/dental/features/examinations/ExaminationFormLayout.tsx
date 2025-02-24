@@ -5,6 +5,7 @@
 
 "use client";
 
+import { ApiDentitionType } from "@eshg/dental-api";
 import { ExaminationResult } from "@eshg/dental/api/models/ExaminationResult";
 import { parseOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { Grid } from "@mui/joy";
@@ -53,18 +54,21 @@ export function ExaminationFormLayout(props: ExaminationFormLayoutProps) {
 export function mapToExaminationFormValues(
   examinationResult: ExaminationResult | undefined,
   note: string | undefined,
+  defaultDentitionType: ApiDentitionType | undefined,
 ): ExaminationFormValues {
   return {
     note: parseOptionalValue(note),
-    ...mapExaminationResultFormValues(examinationResult),
+    ...mapExaminationResultFormValues(examinationResult, defaultDentitionType),
   };
 }
 
 function mapExaminationResultFormValues(
   examinationResult: ExaminationResult | undefined,
+  defaultDentitionType: ApiDentitionType | undefined,
 ): AdditionalInformationFormValues {
   if (examinationResult?.type === "screening") {
     return {
+      dentitionType: parseOptionalValue(examinationResult.dentitionType),
       oralHygieneStatus: parseOptionalValue(
         examinationResult.oralHygieneStatus,
       ),
@@ -76,6 +80,7 @@ function mapExaminationResultFormValues(
 
   if (examinationResult?.type === "fluoridation") {
     return {
+      dentitionType: "",
       oralHygieneStatus: "",
       fluorideVarnishApplied: parseOptionalValue(
         examinationResult.fluorideVarnishApplied,
@@ -83,5 +88,9 @@ function mapExaminationResultFormValues(
     };
   }
 
-  return { oralHygieneStatus: "", fluorideVarnishApplied: "" };
+  return {
+    dentitionType: defaultDentitionType ?? "",
+    oralHygieneStatus: "",
+    fluorideVarnishApplied: "",
+  };
 }

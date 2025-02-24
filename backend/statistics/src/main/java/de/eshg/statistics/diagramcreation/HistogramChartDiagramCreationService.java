@@ -19,7 +19,6 @@ import de.eshg.statistics.persistence.entity.Analysis;
 import de.eshg.statistics.persistence.entity.ChartConfiguration;
 import de.eshg.statistics.persistence.entity.Diagram;
 import de.eshg.statistics.persistence.entity.TableColumn;
-import de.eshg.statistics.persistence.entity.TableColumnValueType;
 import de.eshg.statistics.persistence.entity.TableRow;
 import de.eshg.statistics.persistence.entity.chart.HistogramBin;
 import de.eshg.statistics.persistence.entity.chart.HistogramChartConfiguration;
@@ -32,7 +31,6 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.hibernate.Hibernate;
@@ -43,7 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class HistogramChartDiagramCreationService
     extends AbstractChartDiagramCreationService<
-        Map<Long, Map<String, Integer>>, HistogramChartConfigurationDto> {
+        Map<Long, Map<Object, Integer>>, HistogramChartConfigurationDto> {
   public HistogramChartDiagramCreationService(
       AnalysisService analysisService,
       AnalysisRepository analysisRepository,
@@ -53,8 +51,30 @@ public class HistogramChartDiagramCreationService
   }
 
   @Override
-  Map<Long, Map<String, Integer>> initializeChartDataHolder() {
-    return new HashMap<>();
+  @Transactional(readOnly = true)
+  public Map<Long, Map<Object, Integer>> initializeChartDataHolder(
+      UUID analysisId,
+      HistogramChartConfigurationDto histogramChartConfigurationDto,
+      List<TableColumnFilterParameter> filters) {
+    Analysis analysis = analysisService.getAnalysisInternal(analysisId);
+    AbstractAggregationResult aggregationResult = analysis.getAggregationResult();
+
+    AggregationResultUtil.validateColumnFilters(filters, aggregationResult);
+
+    HistogramChartConfiguration chartConfiguration =
+        (HistogramChartConfiguration)
+            Hibernate.unproxy(analysis.getChartConfiguration(), ChartConfiguration.class);
+    TableColumn secondaryTableColumn =
+        AggregationResultUtil.getTableColumn(
+            histogramChartConfigurationDto.secondaryAttribute(), aggregationResult);
+
+    Map<Long, Map<Object, Integer>> chartDataHolder = new HashMap<>();
+
+    chartConfiguration
+        .getBins()
+        .forEach(bin -> chartDataHolder.put(bin.getId(), createCountingMap(secondaryTableColumn)));
+
+    return chartDataHolder;
   }
 
   @Override
@@ -64,7 +84,7 @@ public class HistogramChartDiagramCreationService
       HistogramChartConfigurationDto histogramChartConfigurationDto,
       List<TableColumnFilterParameter> filters,
       int page,
-      Map<Long, Map<String, Integer>> chartDataHolder) {
+      Map<Long, Map<Object, Integer>> chartDataHolder) {
     Analysis analysis = analysisService.getAnalysisInternal(analysisId);
     AbstractAggregationResult aggregationResult = analysis.getAggregationResult();
     HistogramChartConfiguration chartConfiguration =
@@ -81,9 +101,6 @@ public class HistogramChartDiagramCreationService
     TableColumn secondaryTableColumn =
         AggregationResultUtil.getTableColumn(
             histogramChartConfigurationDto.secondaryAttribute(), aggregationResult);
-    if (page == 0) {
-      AggregationResultUtil.validateColumnFilters(filters, aggregationResult);
-    }
 
     Specification<TableRow> notNullNotUnknownSpecification =
         TableRowSpecifications.getNotNullAndNotUnknownSpecificationDecimalAndInteger(
@@ -115,7 +132,7 @@ public class HistogramChartDiagramCreationService
 
   private static void addTableRowToCollectedHistogramChartData(
       TableRow tableRow,
-      Map<Long, Map<String, Integer>> chartDataHolder,
+      Map<Long, Map<Object, Integer>> chartDataHolder,
       List<HistogramBin> bins,
       TableColumn primaryTableColumn,
       TableColumn secondaryTableColumn) {
@@ -133,15 +150,16 @@ public class HistogramChartDiagramCreationService
             .map(BaseEntity::getId)
             .orElse(null);
 
-    String secondaryKey;
+    Object secondaryKey;
     if (secondaryTableColumn == null) {
-      secondaryKey = String.valueOf(primaryKey);
+      secondaryKey = primaryKey;
     } else {
       secondaryKey =
-          getKeyForCellEntryBooleanTextOrValueOption(getCellEntry(tableRow, secondaryTableColumn));
+          getKeyForCellEntryBooleanIntegerTextOrValueOption(
+              getCellEntry(tableRow, secondaryTableColumn));
     }
 
-    addTableRowToCollectedChartData(primaryKey, secondaryKey, chartDataHolder);
+    addTableRowToChartDataHolder(chartDataHolder, primaryKey, secondaryKey, secondaryTableColumn);
   }
 
   @Override
@@ -150,16 +168,13 @@ public class HistogramChartDiagramCreationService
       UUID analysisId,
       HistogramChartConfigurationDto histogramChartConfigurationDto,
       AddDiagramRequest addDiagramRequest,
-      Map<Long, Map<String, Integer>> chartDataHolder) {
+      Map<Long, Map<Object, Integer>> chartDataHolder) {
     Analysis analysis = analysisService.getAnalysisInternal(analysisId);
     HistogramChartConfiguration chartConfiguration =
         (HistogramChartConfiguration)
             Hibernate.unproxy(analysis.getChartConfiguration(), ChartConfiguration.class);
-    fillHistogramChartDataWithMissingValues(
-        chartDataHolder,
-        chartConfiguration.getBins(),
-        analysis.getAggregationResult(),
-        histogramChartConfigurationDto);
+    fillChartDataHolderWithMissingValues(
+        chartDataHolder, histogramChartConfigurationDto.secondaryAttribute() == null);
 
     List<HistogramGroupData> histogramGroupDatas =
         chartConfiguration.getBins().stream()
@@ -195,48 +210,18 @@ public class HistogramChartDiagramCreationService
     return diagram.getExternalId();
   }
 
-  private static void fillHistogramChartDataWithMissingValues(
-      Map<Long, Map<String, Integer>> chartDataHolder,
-      List<HistogramBin> bins,
-      AbstractAggregationResult aggregationResult,
-      HistogramChartConfigurationDto histogramChartConfigurationDto) {
-    TableColumn secondaryTableColumn =
-        AggregationResultUtil.getTableColumn(
-            histogramChartConfigurationDto.secondaryAttribute(), aggregationResult);
-    bins.forEach(bin -> chartDataHolder.computeIfAbsent(bin.getId(), k -> new HashMap<>()));
-    if (secondaryTableColumn == null) {
-      chartDataHolder.forEach(
-          (key, secondaryMap) -> {
-            String stringKey = String.valueOf(key);
-            secondaryMap.computeIfAbsent(stringKey, k -> 0);
-          });
-    } else {
-      Set<String> secondaryKeys;
-      if (secondaryTableColumn.getValueType().equals(TableColumnValueType.TEXT)) {
-        secondaryKeys = getKeysForTextValues(chartDataHolder);
-      } else {
-        secondaryKeys = getKeysForBooleanOrValueOption(secondaryTableColumn);
-      }
-      chartDataHolder
-          .values()
-          .forEach(
-              secondaryMap ->
-                  secondaryKeys.forEach(key -> secondaryMap.computeIfAbsent(key, k -> 0)));
-    }
-  }
-
   private static HistogramGroupData mapToHistogramGroupData(
       HistogramBin bin,
-      Map<Long, Map<String, Integer>> chartDataHolder,
+      Map<Long, Map<Object, Integer>> chartDataHolder,
       boolean withSecondaryAttribute) {
     HistogramGroupData histogramGroupData = new HistogramGroupData();
     bin.addHistogramGroupData(histogramGroupData);
 
-    Map<String, Integer> dataForBin = chartDataHolder.get(bin.getId());
+    Map<Object, Integer> dataForBin = chartDataHolder.get(bin.getId());
     if (withSecondaryAttribute) {
-      histogramGroupData.addKeyToCounts(mapToSortedKeyToCountList(dataForBin));
+      histogramGroupData.addKeyToCounts(mapToKeyToCounts(dataForBin));
     } else {
-      histogramGroupData.setCount(dataForBin.values().stream().mapToInt(count -> count).sum());
+      histogramGroupData.setCount(dataForBin.get(bin.getId()));
     }
     return histogramGroupData;
   }

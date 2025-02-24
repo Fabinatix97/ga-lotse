@@ -128,7 +128,11 @@ public class GdprValidationTaskController<
 
     ZipEditor zipEditor = zipEditorProvider.create(fileStateIds);
     byte[] zip =
-        serializationService.toZip("DSGVO-Vorgang_" + businessProcedureId, procedure, zipEditor);
+        serializationService.toZip(
+            "DSGVO-Vorgang_" + businessProcedureId,
+            procedure,
+            zipEditor,
+            SerializationUtil.createNormalizedSequenceIdObjectMapperCustomizer());
     UUID downloadId =
         service.createAndSaveDownloadPackage(businessProcedureId, zip).getExternalId();
     service.sendDownloadId(gdprProcedureId, downloadId);

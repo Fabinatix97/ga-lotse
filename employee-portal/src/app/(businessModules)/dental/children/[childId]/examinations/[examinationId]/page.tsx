@@ -36,7 +36,10 @@ export default function ExaminationDetailsPage(props: DentalChildPageProps) {
   );
 
   return (
-    <DentalExaminationStoreProvider examinationResult={examination.result}>
+    <DentalExaminationStoreProvider
+      examinationResult={examination.result}
+      defaultDentitionType={examination.prophylaxisDentitionType}
+    >
       <ChildExaminationForm examination={examination}>
         <ExaminationFormLayout
           childInformation={

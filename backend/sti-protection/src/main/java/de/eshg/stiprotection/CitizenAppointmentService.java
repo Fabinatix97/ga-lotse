@@ -11,6 +11,7 @@ import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
 import de.eshg.stiprotection.persistence.data.PersonData;
 import de.eshg.stiprotection.persistence.db.Concern;
+import de.eshg.stiprotection.persistence.db.CreatedByUserType;
 import de.eshg.stiprotection.persistence.db.ProcedureExpiration;
 import de.eshg.stiprotection.persistence.db.ProcedureExpirationRepository;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
@@ -38,7 +39,8 @@ public class CitizenAppointmentService {
   }
 
   public StiProtectionProcedure createProcedureWithExpiryDate(Concern concern) {
-    StiProtectionProcedure procedure = stiProtectionService.saveProcedure(concern);
+    StiProtectionProcedure procedure =
+        stiProtectionService.saveProcedure(concern, CreatedByUserType.CITIZEN_PORTAL);
     ProcedureExpiration procedureExpiration = new ProcedureExpiration(procedure);
     procedureExpirationRepository.save(procedureExpiration);
     return procedure;

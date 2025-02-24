@@ -549,6 +549,25 @@
         "tags" : [ "Archiving" ]
       }
     },
+    "/citizen-public/appointment-types" : {
+      "get" : {
+        "operationId" : "getAppointmentTypesForCitizen",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetAppointmentTypesResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Gets all Appointment Types",
+        "tags" : [ "CitizenPublic" ]
+      }
+    },
     "/citizen-public/concerns" : {
       "get" : {
         "operationId" : "getVisibleConcerns",
@@ -3218,6 +3237,35 @@
         "tags" : [ "ProgressEntry" ]
       }
     },
+    "/statistics/procedure-ids" : {
+      "post" : {
+        "operationId" : "getProcedureIds",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/GetProcedureIdsRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetProcedureIdsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get procedure ids for procedure references",
+        "tags" : [ "StatisticsProcedureReference" ]
+      }
+    },
     "/task-metrics" : {
       "get" : {
         "operationId" : "getTaskMetrics",
@@ -3325,7 +3373,7 @@
           "name" : "limit",
           "required" : false,
           "schema" : {
-            "maximum" : 200,
+            "maximum" : 2200,
             "minimum" : 1,
             "type" : "integer",
             "format" : "int32",
@@ -5809,6 +5857,34 @@
           "procedureId" : {
             "type" : "string",
             "format" : "uuid"
+          }
+        }
+      },
+      "GetProcedureIdsRequest" : {
+        "required" : [ "procedureReferences" ],
+        "type" : "object",
+        "properties" : {
+          "procedureReferences" : {
+            "maxItems" : 200,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
+      },
+      "GetProcedureIdsResponse" : {
+        "required" : [ "referenceToId" ],
+        "type" : "object",
+        "properties" : {
+          "referenceToId" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
           }
         }
       },

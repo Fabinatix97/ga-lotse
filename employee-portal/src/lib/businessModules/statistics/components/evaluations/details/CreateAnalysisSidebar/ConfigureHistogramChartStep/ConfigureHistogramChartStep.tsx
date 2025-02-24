@@ -12,8 +12,7 @@ import { isDefined, isNonNullish } from "remeda";
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 import {
   ChartsSamplePreview,
-  getHistogramGroupedSampleData,
-  getHistogramSimpleSampleData,
+  getHistogramSampleData,
 } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/ChartsSamplePreview";
 import { ConfigureChartFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/createAnalysisFormModel";
 import { mapAttributeToAutocompleteSelectionOption } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/mapAttribute";
@@ -101,7 +100,7 @@ export function ConfigureHistogramChartStep({
           {showBins && (
             <>
               <SliderField
-                min={1}
+                min={2}
                 max={50}
                 name={fieldName("bins")}
                 ariaLabel="Anzahl Bins"
@@ -122,19 +121,19 @@ export function ConfigureHistogramChartStep({
       </Stack>
       <ChartsSamplePreview
         chart={
-          showGroupedConfigurations ? (
-            <Histogram
-              key={"groupedHistogram"}
-              diagramData={getHistogramGroupedSampleData(values.bins)}
-              grouping={values.grouping}
-              scaling={values.scaling}
-            />
-          ) : (
-            <Histogram
-              key={"simpleHistogram"}
-              diagramData={getHistogramSimpleSampleData(values.bins)}
-            />
-          )
+          <Histogram
+            key={
+              showGroupedConfigurations ? "groupedHistogram" : "simpleHistogram"
+            }
+            diagramData={getHistogramSampleData(
+              showGroupedConfigurations,
+              values.bins,
+              values.minBin,
+              values.maxBin,
+            )}
+            grouping={showGroupedConfigurations ? values.grouping : undefined}
+            scaling={showGroupedConfigurations ? values.scaling : undefined}
+          />
         }
       />
     </Stack>

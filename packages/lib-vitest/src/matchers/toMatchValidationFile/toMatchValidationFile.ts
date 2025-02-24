@@ -86,6 +86,7 @@ function normalizeTestName(name: string): string {
   return name
     .replaceAll(/[ .:]/g, "_")
     .replaceAll(/'(\w+)'/g, "$1")
+    .replaceAll(/\+0/g, "0")
     .replaceAll(/'/g, "_")
     .replaceAll(/,/g, "");
 }

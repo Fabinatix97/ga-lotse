@@ -4,6 +4,7 @@
  */
 
 import {
+  ApiDentitionType,
   ApiFluoridationConsent,
   ApiGender,
   ApiProphylaxisSessionChildExamination,
@@ -27,11 +28,13 @@ export interface ChildExamination {
   readonly status: ExaminationStatus;
   readonly result?: ExaminationResult;
   readonly note?: string;
+  readonly prophylaxisDentitionType?: ApiDentitionType;
 }
 
 export function mapChildExamination(
   response: ApiProphylaxisSessionChildExamination,
 ): ChildExamination {
+  const result = mapOptional(response.result, mapExaminationResult);
   return {
     childId: response.childId,
     examinationId: response.examinationId,
@@ -43,8 +46,9 @@ export function mapChildExamination(
     gender: response.gender,
     currentFluoridationConsent: response.allFluoridationConsents[0],
     allFluoridationConsents: response.allFluoridationConsents,
-    status: mapToExaminationStatus(response.result),
-    result: mapOptional(response.result, mapExaminationResult),
+    result: result,
+    status: mapToExaminationStatus(result),
     note: response.note,
+    prophylaxisDentitionType: response.prophylaxisDentitionType,
   };
 }

@@ -90,26 +90,6 @@ tasks.register('build') {
   dependsOn 'assemble'
 }
 
-tasks.register('testCoverage', PnpmTask) {
-  environment = ['TZ': 'UTC']
-  inputs.file "${rootDir}/config/tsconfig.base.json"
-  inputs.file "${rootDir}/config/vitest.base.ts"
-  inputs.file "${rootDir}/vitest.config.ts"
-  if (file("${projectDir}/vitest.config.ts").exists()) {
-    dependsOn project.tasks.named('prepareEnvironment')
-    inputs.file "${projectDir}/tsconfig.json"
-    inputs.file "${projectDir}/vitest.config.ts"
-    inputs.dir "${projectDir}/src"
-  }
-
-  outputs.dir layout.buildDirectory.dir('vitest')
-  args = ['vitest', 'run', '--coverage', '--passWithNoTests', '--silent']
-}
-
-tasks.named('findUnusedValidationFiles').configure {
-  mustRunAfter 'testCoverage'
-}
-
 tasks.register('analyzeBundle', PnpmTask) {
   dependsOn 'prepareEnvironment'
   inputs.files fileTree(srcDir)
@@ -206,7 +186,6 @@ sonar {
       '**/*.test.tsx',
       '**/*.test.ts'
     ]
-    property 'sonar.javascript.lcov.reportPaths', 'build/vitest/coverage/lcov.info'
     property 'sonar.projectKey', nextExtension.sonarProjectKey.get()
     property 'sonar.qualitygate.wait', true
     property 'sonar.gradle.skipCompile', true

@@ -7,6 +7,7 @@
 
 import { ApiStiProtectionProcedure } from "@eshg/sti-protection-api";
 import { Grid, Stack } from "@mui/joy";
+import { isDefined } from "remeda";
 
 import { AdditionalDataSection } from "./AdditionalDataSection";
 import { AnonIdentityDocumentCard } from "./AnonIdentityDocumentCard";
@@ -21,6 +22,7 @@ import { WaitingRoomSection } from "./WaitingRoomSection";
 export function ProcedureDetails({
   procedure,
 }: Readonly<{ procedure: ApiStiProtectionProcedure }>) {
+  const hasAccessCode = isDefined(procedure.person.accessCode);
   return (
     <>
       <Grid container spacing={2}>
@@ -28,9 +30,11 @@ export function ProcedureDetails({
           <Grid xxs={12} mb={2}>
             <PersonDetails procedure={procedure} />
           </Grid>
-          <Grid xxs={12} mb={2}>
-            <AnonIdentityDocumentCard procedure={procedure} />
-          </Grid>
+          {hasAccessCode && (
+            <Grid xxs={12} mb={2}>
+              <AnonIdentityDocumentCard procedure={procedure} />
+            </Grid>
+          )}
           <Grid xxs={12}>
             <AppointmentDetails procedure={procedure} />
           </Grid>
@@ -38,7 +42,7 @@ export function ProcedureDetails({
         <Grid xxs={12} lg={4}>
           <Stack spacing={2}>
             <AdditionalDataSection procedure={procedure} />
-            <CheckPinSection procedure={procedure} />
+            {hasAccessCode && <CheckPinSection procedure={procedure} />}
             <WaitingRoomSection procedure={procedure} />
             <FinalProcedureActionPanel procedure={procedure} />
           </Stack>

@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Sheet, Stack, Typography } from "@mui/joy";
 import { ReactNode } from "react";
+import { isNumber } from "remeda";
 
 export function ChartsSamplePreview({ chart }: { chart: ReactNode }) {
   return (
@@ -123,50 +125,54 @@ export const barChartGroupedSampleData = [
   },
 ];
 
-export function getHistogramSimpleSampleData(bins: number) {
-  const histogramSimple = [];
-  for (let i = 0; i < bins; i++) {
-    histogramSimple.push({
-      min: i,
-      max: i + 1,
-      attributes: [
-        {
-          label: "A",
-          value: 5 + i,
-        },
-      ],
-    });
-  }
-  return histogramSimple;
-}
+export function getHistogramSampleData(
+  isGrouped: boolean,
+  bins: number,
+  minBinCenter: OptionalFieldValue<number>,
+  maxBinCenter: OptionalFieldValue<number>,
+) {
+  const DEFAULT_INTERVAL = 1;
+  const DEFAULT_MIN = 0;
 
-export function getHistogramGroupedSampleData(bins: number) {
-  const histogramGrouped = [];
+  const hasMinMax =
+    isNumber(minBinCenter) &&
+    isNumber(maxBinCenter) &&
+    minBinCenter < maxBinCenter;
+  const interval = hasMinMax
+    ? (maxBinCenter - minBinCenter) / (bins - 1)
+    : DEFAULT_INTERVAL;
+  const min = hasMinMax ? minBinCenter - interval / 2 : DEFAULT_MIN;
+
+  const histogramData = [];
   for (let i = 0; i < bins; i++) {
-    histogramGrouped.push({
-      min: i,
-      max: i + 1,
+    histogramData.push({
+      min: i * interval + min,
+      max: (i + 1) * interval + min,
       attributes: [
         {
           label: "A",
           value: 5 + i,
         },
-        {
-          label: "B",
-          value: 8,
-        },
-        {
-          label: "C",
-          value: 3,
-        },
-        {
-          label: "D",
-          value: 15 - 0.5 * i,
-        },
+        ...(isGrouped
+          ? [
+              {
+                label: "B",
+                value: 8,
+              },
+              {
+                label: "C",
+                value: 3,
+              },
+              {
+                label: "D",
+                value: 15 - 0.5 * i,
+              },
+            ]
+          : []),
       ],
     });
   }
-  return histogramGrouped;
+  return histogramData;
 }
 
 export const pieChartSampleData = [
@@ -279,3 +285,67 @@ export const chartSampleConfiguration = {
     unit: "kg",
   },
 };
+
+export const choroplethLandArea = [
+  {
+    name: "Afrika",
+    value: 30_365_000,
+  },
+  {
+    name: "Asien",
+    value: 44_614_000,
+  },
+  {
+    name: "Australien",
+    value: 8_510_926,
+  },
+  {
+    name: "Südamerika",
+    value: 17_814_000,
+  },
+  {
+    name: "Europa",
+    value: 10_000_000,
+  },
+  {
+    name: "Nordamerika",
+    value: 24_230_000,
+  },
+];
+
+export const choroplethCountryCount = [
+  {
+    name: "Afrika",
+    value: 54,
+  },
+  {
+    name: "Asien",
+    value: 47,
+  },
+  {
+    name: "Australien",
+    value: 14,
+  },
+  {
+    name: "Südamerika",
+    value: 12,
+  },
+  {
+    name: "Europa",
+    value: 43,
+  },
+  {
+    name: "Nordamerika",
+    value: 23,
+  },
+];
+
+export const choroplethAverageLandArea = choroplethLandArea.map((sum) => ({
+  name: sum.name,
+  value: parseFloat(
+    (
+      sum.value /
+      choroplethCountryCount.find((simple) => simple.name === sum.name)!.value
+    ).toFixed(2),
+  ),
+}));

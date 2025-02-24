@@ -6,8 +6,8 @@
 import { ApiUserRole } from "@eshg/base-api";
 import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
 import {
+  SideNavigationItem,
   SideNavigationSubItem,
-  UseSideNavigationItemsResult,
 } from "@eshg/lib-employee-portal/types/sideNavigation";
 
 import { HivOutlined } from "@/lib/shared/components/icons/HivOutlined";
@@ -17,7 +17,6 @@ import { routes } from "./routes";
 const sideNavigationItem = {
   name: "HIV-STI",
   decorator: <HivOutlined />,
-  accessCheck: hasUserRole(ApiUserRole.StiProtectionUser),
 };
 
 const defaultSubItems: SideNavigationSubItem[] = [
@@ -48,12 +47,13 @@ const defaultSubItems: SideNavigationSubItem[] = [
   },
 ];
 
-export function useSideNavigationItems(
-  enabled: boolean,
-): UseSideNavigationItemsResult {
+export function resolveSideNavigationItems(): SideNavigationItem[] {
   const subItems = defaultSubItems;
-  return {
-    isLoading: false,
-    items: enabled ? [{ ...sideNavigationItem, subItems }] : [],
-  };
+  return [
+    {
+      type: "SideNavigationParentItem",
+      ...sideNavigationItem,
+      subItems,
+    },
+  ];
 }

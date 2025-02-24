@@ -2536,7 +2536,7 @@
           "name" : "limit",
           "required" : false,
           "schema" : {
-            "maximum" : 200,
+            "maximum" : 2200,
             "minimum" : 1,
             "type" : "integer",
             "format" : "int32",
@@ -2683,6 +2683,34 @@
           }
         },
         "tags" : [ "Task" ]
+      }
+    },
+    "/test-helper/calculation/dmft" : {
+      "post" : {
+        "operationId" : "calculateDmftValues",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CalculateDmftValuesRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DmftValues"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
       }
     },
     "/test-helper/population" : {
@@ -3238,6 +3266,18 @@
           },
           "inclusionStatus" : {
             "$ref" : "#/components/schemas/BusinessProcedureInclusionStatus"
+          }
+        }
+      },
+      "CalculateDmftValuesRequest" : {
+        "required" : [ "toothDiagnoses" ],
+        "type" : "object",
+        "properties" : {
+          "toothDiagnoses" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/ToothDiagnosis"
+            }
           }
         }
       },
@@ -3812,6 +3852,20 @@
           }
         }
       },
+      "DmftValues" : {
+        "required" : [ "dmftPrimary", "dmftSecondary" ],
+        "type" : "object",
+        "properties" : {
+          "dmftPrimary" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "dmftSecondary" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
       "DomesticAddress" : {
         "required" : [ "city", "country", "postalCode", "street" ],
         "type" : "object",
@@ -3892,6 +3946,9 @@
           },
           "note" : {
             "type" : "string"
+          },
+          "prophylaxisDentitionType" : {
+            "$ref" : "#/components/schemas/DentitionType"
           },
           "prophylaxisType" : {
             "$ref" : "#/components/schemas/ProphylaxisType"
@@ -5829,6 +5886,9 @@
                 "$ref" : "#/components/schemas/ScreeningExaminationResult"
               } ]
             }
+          },
+          "prophylaxisDentitionType" : {
+            "$ref" : "#/components/schemas/DentitionType"
           },
           "result" : {
             "oneOf" : [ {

@@ -5,64 +5,82 @@
 
 package de.eshg.dental.domain.model;
 
+import static de.eshg.dental.domain.model.ToothType.PRIMARY;
+import static de.eshg.dental.domain.model.ToothType.SECONDARY;
+import static de.eshg.dental.domain.model.ToothType.WISDOM;
+
 public enum Tooth {
-  T11,
-  T12,
-  T13,
-  T14,
-  T15,
-  T16,
-  T17,
-  T18,
+  T11(SECONDARY),
+  T12(SECONDARY),
+  T13(SECONDARY),
+  T14(SECONDARY),
+  T15(SECONDARY),
+  T16(SECONDARY),
+  T17(SECONDARY),
+  T18(WISDOM),
 
-  T21,
-  T22,
-  T23,
-  T24,
-  T25,
-  T26,
-  T27,
-  T28,
+  T21(SECONDARY),
+  T22(SECONDARY),
+  T23(SECONDARY),
+  T24(SECONDARY),
+  T25(SECONDARY),
+  T26(SECONDARY),
+  T27(SECONDARY),
+  T28(WISDOM),
 
-  T31,
-  T32,
-  T33,
-  T34,
-  T35,
-  T36,
-  T37,
-  T38,
+  T31(SECONDARY),
+  T32(SECONDARY),
+  T33(SECONDARY),
+  T34(SECONDARY),
+  T35(SECONDARY),
+  T36(SECONDARY),
+  T37(SECONDARY),
+  T38(WISDOM),
 
-  T41,
-  T42,
-  T43,
-  T44,
-  T45,
-  T46,
-  T47,
-  T48,
+  T41(SECONDARY),
+  T42(SECONDARY),
+  T43(SECONDARY),
+  T44(SECONDARY),
+  T45(SECONDARY),
+  T46(SECONDARY),
+  T47(SECONDARY),
+  T48(WISDOM),
 
-  T51,
-  T52,
-  T53,
-  T54,
-  T55,
+  T51(PRIMARY),
+  T52(PRIMARY),
+  T53(PRIMARY),
+  T54(PRIMARY),
+  T55(PRIMARY),
 
-  T61,
-  T62,
-  T63,
-  T64,
-  T65,
+  T61(PRIMARY),
+  T62(PRIMARY),
+  T63(PRIMARY),
+  T64(PRIMARY),
+  T65(PRIMARY),
 
-  T71,
-  T72,
-  T73,
-  T74,
-  T75,
+  T71(PRIMARY),
+  T72(PRIMARY),
+  T73(PRIMARY),
+  T74(PRIMARY),
+  T75(PRIMARY),
 
-  T81,
-  T82,
-  T83,
-  T84,
-  T85,
+  T81(PRIMARY),
+  T82(PRIMARY),
+  T83(PRIMARY),
+  T84(PRIMARY),
+  T85(PRIMARY);
+
+  private final ToothType type;
+
+  Tooth(ToothType type) {
+    this.type = type;
+  }
+
+  public boolean isPrimaryTooth() {
+    return this.type == PRIMARY;
+  }
+
+  public boolean isSecondaryTooth() {
+    return this.type == SECONDARY;
+  }
 }

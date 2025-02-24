@@ -12,7 +12,7 @@ import de.eshg.base.centralfile.persistence.entity.Facility;
 import de.eshg.base.centralfile.persistence.entity.Person;
 import de.eshg.base.centralfile.persistence.repository.FacilityRepository;
 import de.eshg.base.centralfile.persistence.repository.PersonRepository;
-import de.eshg.base.department.DepartmentConfiguration;
+import de.eshg.base.config.DepartmentConfigurationService;
 import de.eshg.base.department.DepartmentController;
 import de.eshg.base.gdpr.persistence.CentralFileIdWrapper;
 import de.eshg.base.gdpr.persistence.GdprFacility;
@@ -26,8 +26,6 @@ import de.eshg.file.common.CustomMediaTypes;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -46,7 +44,7 @@ public class GdprRightToObjectLetterGenerator {
   private final ClassPathResource templateFile;
   private final DocumentGenerator documentGenerator;
   private final DepartmentController departmentController;
-  private final DepartmentConfiguration departmentConfiguration;
+  private final DepartmentConfigurationService departmentConfigurationService;
   private final FacilityRepository facilityRepository;
   private final PersonRepository personRepository;
 
@@ -54,13 +52,13 @@ public class GdprRightToObjectLetterGenerator {
       @Value(TEMPLATE_PATH) ClassPathResource templateFile,
       DocumentGenerator documentGenerator,
       DepartmentController departmentController,
-      DepartmentConfiguration departmentConfiguration,
+      DepartmentConfigurationService departmentConfigurationService,
       FacilityRepository facilityRepository,
       PersonRepository personRepository) {
     this.templateFile = templateFile;
     this.documentGenerator = documentGenerator;
     this.departmentController = departmentController;
-    this.departmentConfiguration = departmentConfiguration;
+    this.departmentConfigurationService = departmentConfigurationService;
     this.facilityRepository = facilityRepository;
     this.personRepository = personRepository;
   }
@@ -130,14 +128,10 @@ public class GdprRightToObjectLetterGenerator {
   }
 
   private DepartmentLogo getDepartmentLogo() {
-    try {
-      return new DepartmentLogo(
-          CustomMediaTypes.IMAGE_SVG_XML,
-          Base64.getEncoder()
-              .encodeToString(departmentConfiguration.logo().getContentAsByteArray()));
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    return new DepartmentLogo(
+        CustomMediaTypes.IMAGE_SVG_XML,
+        Base64.getEncoder()
+            .encodeToString(departmentConfigurationService.getDepartmentConfiguration().getLogo()));
   }
 
   public byte[] generatePdf(GdprProcedure procedure) {

@@ -25,7 +25,8 @@ public class ImportValidator {
 
   private ImportValidator() {}
 
-  static <C extends XlsxColumn> List<C> validateHeaderFormat(C[] expectedColumns, XSSFSheet sheet) {
+  public static <C extends XlsxColumn> List<C> validateHeaderFormat(
+      C[] expectedColumns, XSSFSheet sheet) {
     Row headerRow = sheet.getRow(0);
     XSSFCellStyle headerCellStyle = XlsxUtil.createHeaderCellStyle(sheet);
     List<C> foundColumns = new ArrayList<>();

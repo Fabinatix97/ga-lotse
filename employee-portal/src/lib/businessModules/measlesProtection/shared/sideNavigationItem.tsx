@@ -3,15 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBaseFeature, ApiUserRole } from "@eshg/base-api";
+import { ApiUserRole } from "@eshg/base-api";
 import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
 import {
+  SideNavigationItem,
+  SideNavigationItemsProps,
   SideNavigationSubItem,
-  UseSideNavigationItemsResult,
 } from "@eshg/lib-employee-portal/types/sideNavigation";
 import { HubOutlined } from "@mui/icons-material";
-
-import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 
 import { routes } from "./routes";
 
@@ -39,15 +38,17 @@ const inboxNavigationItem: SideNavigationSubItem = {
   accessCheck: hasUserRole(ApiUserRole.MeaslesProtectionAdmin),
 };
 
-export function useSideNavigationItems(
-  enabled: boolean,
-): UseSideNavigationItemsResult {
-  const isInboxEnabled = useIsNewFeatureEnabled(ApiBaseFeature.Inbox);
+export function resolveSideNavigationItems({
+  isInboxEnabled,
+}: SideNavigationItemsProps): SideNavigationItem[] {
   const subItems = isInboxEnabled
     ? [...defaultSubItems, inboxNavigationItem]
     : defaultSubItems;
-  return {
-    isLoading: false,
-    items: enabled ? [{ ...sideNavigationItem, subItems }] : [],
-  };
+  return [
+    {
+      type: "SideNavigationParentItem",
+      ...sideNavigationItem,
+      subItems,
+    },
+  ];
 }

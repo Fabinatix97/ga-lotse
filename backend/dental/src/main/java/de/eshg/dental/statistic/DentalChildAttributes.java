@@ -8,6 +8,7 @@ package de.eshg.dental.statistic;
 import static de.eshg.lib.statistics.util.ConvertToValueOptionHelper.convertToValueOptions;
 
 import de.eshg.dental.statistic.model.Group;
+import de.eshg.dental.statistic.model.OralHygieneStatus;
 import de.eshg.lib.statistics.attributes.AttributeData;
 import de.eshg.lib.statistics.attributes.AttributeInfo;
 import de.eshg.lib.statistics.attributes.CentralFileIdPersonAttribute;
@@ -43,6 +44,22 @@ public enum DentalChildAttributes implements AttributeInfo {
           "ANZAHL_PROPHYLAXEN",
           DentalChildAttributes.CATEGORY_PROPHYLAXIS,
           true)),
+
+  MUNDHYGIENE_STATUS(
+      new ValueWithOptionsAttribute(
+          "Mundhygienestatus",
+          "MUNDHYGIENE_STATUS",
+          convertToValueOptions(OralHygieneStatus.values()),
+          DentalChildAttributes.CATEGORY_PROPHYLAXIS,
+          true)),
+
+  DMFT_MILCH(
+      new IntegerAttribute(
+          "dmft-t", "DMFT_MILCH", DentalChildAttributes.CATEGORY_PROPHYLAXIS, true)),
+
+  DMFT_BLEIBEND(
+      new IntegerAttribute(
+          "DMF-T", "DMFT_BLEIBEND", DentalChildAttributes.CATEGORY_PROPHYLAXIS, true)),
   ;
 
   static final String CATEGORY_CHILD = "Kind";

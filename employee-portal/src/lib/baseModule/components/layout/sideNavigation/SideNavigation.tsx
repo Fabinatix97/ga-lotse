@@ -7,10 +7,10 @@ import { useHeaderHeights } from "@eshg/lib-employee-portal/hooks/useHeaderHeigh
 import { Box, Drawer } from "@mui/joy";
 import { Dispatch, SetStateAction } from "react";
 
-import { NavigationListCollapsed } from "@/lib/baseModule/components/layout/sideNavigation/lists/NavigationListCollapsed";
-import { NavigationListExpanded } from "@/lib/baseModule/components/layout/sideNavigation/lists/NavigationListExpanded";
-import { useNavigationItems } from "@/lib/baseModule/components/layout/sideNavigation/useNavigationItems";
+import { CollapsedNavigationList } from "@/lib/baseModule/components/layout/sideNavigation/lists/CollapsedNavigationList";
+import { ExpandedNavigationList } from "@/lib/baseModule/components/layout/sideNavigation/lists/ExpandedNavigationList";
 import { sideNavigationWidth } from "@/lib/baseModule/components/layout/sizes";
+import { useResolveSideNavigationItems } from "@/lib/baseModule/moduleRegister/sideNavigationItemsResolver";
 import { useSidenav } from "@/lib/shared/components/drawer/useSidenav";
 
 export function SideNavigation({
@@ -21,7 +21,7 @@ export function SideNavigation({
   setCollapsed: Dispatch<SetStateAction<boolean>>;
 }) {
   const sidenav = useSidenav();
-  const { isLoading, itemGroups } = useNavigationItems();
+  const itemGroups = useResolveSideNavigationItems();
   const { headerHeightMobile, headerHeightDesktop } = useHeaderHeights();
 
   return (
@@ -38,14 +38,13 @@ export function SideNavigation({
         }}
       >
         {!collapsed ? (
-          <NavigationListExpanded
+          <ExpandedNavigationList
             showCollapseButton
             onCollapse={() => setCollapsed(true)}
             itemGroups={itemGroups}
-            isLoading={isLoading}
           />
         ) : (
-          <NavigationListCollapsed
+          <CollapsedNavigationList
             onExpand={() => setCollapsed(false)}
             itemGroups={itemGroups}
           />
@@ -77,10 +76,9 @@ export function SideNavigation({
             display: "flex",
           }}
         >
-          <NavigationListExpanded
+          <ExpandedNavigationList
             showCollapseButton={false}
             itemGroups={itemGroups}
-            isLoading={isLoading}
           />
         </Box>
       </Drawer>

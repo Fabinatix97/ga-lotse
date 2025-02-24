@@ -7,6 +7,7 @@
 
 import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
 import { Option, Select, Sheet, Stack, Switch, Typography } from "@mui/joy";
+import { MapSeriesOption } from "echarts";
 import { ReactNode, useState } from "react";
 
 import {
@@ -18,6 +19,8 @@ import {
   DiagramScaling,
   DiagramType,
 } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
+import { choroplethCountryCount } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/ChartsSamplePreview";
+import { continentsGeoJSON } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/worldContinentsGeoJSON";
 import { AnalysisDiagramBox } from "@/lib/businessModules/statistics/components/shared/AnalysisAccordion/AnalysisDiagramBox";
 import { BarChart } from "@/lib/businessModules/statistics/components/shared/charts/BarChart";
 import { ChoroplethMap } from "@/lib/businessModules/statistics/components/shared/charts/ChoroplethMap";
@@ -65,6 +68,7 @@ export default function PlaygroundChartsPage() {
   const [characteristicParameter, setCharacteristicParameter] = useState<
     DiagramCharacteristicParameter | undefined
   >();
+  const [aspectScale, setAspectScale] = useState(false);
 
   const orientationSwitch = (
     <Typography
@@ -188,6 +192,22 @@ export default function PlaygroundChartsPage() {
       }
     >
       Darstellung
+    </Typography>
+  );
+
+  const aspectScaleSwitch = (
+    <Typography
+      component="label"
+      endDecorator={
+        <Switch
+          checked={aspectScale}
+          onChange={(event) => setAspectScale(event.target.checked)}
+          startDecorator={<p>0.75 (default)</p>}
+          endDecorator={<p>1</p>}
+        />
+      }
+    >
+      Aspect Scale
     </Typography>
   );
 
@@ -757,68 +777,6 @@ export default function PlaygroundChartsPage() {
     },
   };
 
-  const choroplethData = [
-    {
-      name: "Altstadt",
-      value: 10,
-    },
-    {
-      name: "Neustadt",
-      value: 23,
-    },
-  ];
-
-  const geoJson = JSON.stringify({
-    type: "FeatureCollection",
-    features: [
-      {
-        type: "Feature",
-        geometry: {
-          type: "MultiPolygon",
-          coordinates: [
-            [
-              [
-                [8, 50],
-                [9, 50],
-                [9, 52],
-                [8, 52],
-                [8, 50],
-              ],
-            ],
-          ],
-        },
-        properties: {
-          name: "Altstadt",
-          cartodb_id: 1,
-          created_at: "2015-02-27T08:56:16Z",
-          updated_at: "2015-02-22T00:00:00Z",
-        },
-      },
-      {
-        type: "Feature",
-        geometry: {
-          type: "MultiPolygon",
-          coordinates: [
-            [
-              [
-                [9, 50],
-                [9, 52],
-                [10, 51],
-                [9, 50],
-              ],
-            ],
-          ],
-        },
-        properties: {
-          name: "Neustadt",
-          cartodb_id: 2,
-          created_at: "2015-02-27T08:56:16Z",
-          updated_at: "2015-02-22T00:00:00Z",
-        },
-      },
-    ],
-  });
-
   return (
     <MainContentLayout>
       <Stack gap={3}>
@@ -987,13 +945,25 @@ export default function PlaygroundChartsPage() {
           title="Choroplethenkarte"
           chart={
             <ChoroplethMap
-              diagramData={choroplethData}
+              key={`${aspectScale}`}
+              diagramData={choroplethCountryCount}
               colorScheme={colorScheme}
               characteristicParameter={characteristicParameter}
-              geoJson={geoJson}
+              geoJson={continentsGeoJSON}
+              additionalEchartsSeriesOptions={
+                aspectScale
+                  ? ({
+                      aspectScale: 1,
+                    } as MapSeriesOption)
+                  : undefined
+              }
             />
           }
-          switches={[colorSchemeSelect, characteristicParameterSelect]}
+          switches={[
+            colorSchemeSelect,
+            characteristicParameterSelect,
+            aspectScaleSwitch,
+          ]}
         />
       </Stack>
     </MainContentLayout>

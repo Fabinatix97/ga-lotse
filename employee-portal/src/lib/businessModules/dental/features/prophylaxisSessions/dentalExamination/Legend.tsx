@@ -6,7 +6,7 @@
 import CircleIcon from "@mui/icons-material/Circle";
 import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
 import ErrorIcon from "@mui/icons-material/Error";
-import { Button, Stack, Typography } from "@mui/joy";
+import { Button, List, ListItem, Stack, Typography } from "@mui/joy";
 import { ReactNode } from "react";
 
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
@@ -21,20 +21,44 @@ export function Legend() {
   });
   return (
     <Stack direction="row" sx={{ justifyContent: "space-between" }}>
-      <Stack direction="row" gap={3}>
-        <LegendItem
-          icon={<ErrorIcon color="danger" />}
-          helpText="Vorbefund vorhanden"
-        />
-        <LegendItem
-          icon={<CircleIcon color="neutral" />}
-          helpText="Bleibender Zahn"
-        />
-        <LegendItem
-          icon={<CircleOutlinedIcon color="neutral" />}
-          helpText="Milchzahn"
-        />
-      </Stack>
+      <List orientation="horizontal" size="sm" aria-label="Legende">
+        <ListItem>
+          <LegendItem
+            icon={
+              <ErrorIcon
+                color="danger"
+                aria-label="Ausrufezeichen"
+                aria-hidden={false}
+              />
+            }
+            helpText="Vorbefund vorhanden"
+          />
+        </ListItem>
+        <ListItem>
+          <LegendItem
+            icon={
+              <CircleIcon
+                color="neutral"
+                aria-label="Ausgefüllt"
+                aria-hidden={false}
+              />
+            }
+            helpText="Bleibender Zahn"
+          />
+        </ListItem>
+        <ListItem>
+          <LegendItem
+            icon={
+              <CircleOutlinedIcon
+                color="neutral"
+                aria-label="Nicht ausgefüllt"
+                aria-hidden={false}
+              />
+            }
+            helpText="Milchzahn"
+          />
+        </ListItem>
+      </List>
       <Button variant="plain" onClick={findingsOverviewSidebar.open}>
         <Typography component="u" color="primary">
           Befundwerte?
@@ -53,7 +77,7 @@ function LegendItem({ icon, helpText }: LegendItemProps) {
   return (
     <Stack direction="row" gap={0.5} alignItems="center">
       {icon}
-      <Typography>= {helpText}</Typography>
+      <Typography component="span">= {helpText}</Typography>
     </Stack>
   );
 }
@@ -62,15 +86,17 @@ function FindingsOverviewSidebar({ onClose }: DrawerProps) {
   return (
     <>
       <SidebarContent title="Mögliche Befundwerte">
-        <Stack>
+        <List size="sm" aria-label="Abkürzungsverzeichnis">
           {Object.entries(POSSIBLE_DIAGNOSES).map(([abbr, expl]) => (
-            <Diagnosis
-              key={abbr}
-              abbreviation={abbr as Abbreviation}
-              explanation={expl}
-            />
+            <ListItem key={abbr}>
+              <Diagnosis
+                key={abbr}
+                abbreviation={abbr as Abbreviation}
+                explanation={expl}
+              />
+            </ListItem>
           ))}
-        </Stack>
+        </List>
       </SidebarContent>
       <SidebarActions>
         <ButtonBar
@@ -128,11 +154,17 @@ interface DiagnosisProp {
 
 function Diagnosis({ abbreviation, explanation }: DiagnosisProp) {
   return (
-    <Stack direction="row" gap={2}>
-      <Typography sx={{ fontWeight: 600, width: 24 }}>
+    <Stack direction="row" gap={1}>
+      <Typography
+        component="span"
+        level="title-md"
+        sx={{ fontWeight: 600, width: 24 }}
+      >
         {abbreviation}
       </Typography>
-      <Typography>= {explanation}</Typography>
+      <Typography component="span" level="body-md">
+        = {explanation}
+      </Typography>
     </Stack>
   );
 }

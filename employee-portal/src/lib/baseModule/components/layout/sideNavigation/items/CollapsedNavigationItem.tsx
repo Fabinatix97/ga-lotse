@@ -4,9 +4,9 @@
  */
 
 import {
-  SideNavigationItem,
-  SideNavigationItemWithSubItems,
-  SideNavigationItemWithoutSubItems,
+  SideNavigationLinkItem,
+  SideNavigationParentItem,
+  SideNavigationSuspenseItem,
 } from "@eshg/lib-employee-portal/types/sideNavigation";
 import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 import {
@@ -17,12 +17,12 @@ import {
   Menu,
   MenuButton,
   MenuItem,
+  Skeleton,
   Tooltip,
   Typography,
 } from "@mui/joy";
 import { usePathname } from "next/navigation";
-import { KeyboardEvent, useContext, useRef, useState } from "react";
-import { isDefined } from "remeda";
+import { KeyboardEvent, useRef, useState } from "react";
 
 import {
   navItemSelectedBackgroundColor,
@@ -31,19 +31,19 @@ import {
 import { ModuleErrorModal } from "@/lib/baseModule/components/layout/sideNavigation/items/ModuleErrorModal";
 import { NavigationItemError } from "@/lib/baseModule/components/layout/sideNavigation/items/NavigationItemError";
 import { isItemSelected } from "@/lib/baseModule/components/layout/sideNavigation/items/isItemSelected";
-import { NavigationListCollapsedContext } from "@/lib/baseModule/components/layout/sideNavigation/lists/NavigationListCollapsedContext";
+import { useCollapsedNavigationListContext } from "@/lib/baseModule/components/layout/sideNavigation/lists/CollapsedNavigationListContext";
 import { tooltipEnterDelay } from "@/lib/baseModule/components/layout/sizes";
 
-function NavigationIconItemWithoutSubItems({
+export function CollapsedNavigationLinkItem({
   item,
 }: {
-  item: SideNavigationItemWithoutSubItems;
+  item: SideNavigationLinkItem;
 }) {
-  const { setOpenMenuItemName } = useContext(NavigationListCollapsedContext);
+  const { setOpenMenuItemName } = useCollapsedNavigationListContext();
   const pathname = usePathname();
   const selected = isItemSelected(item, pathname);
 
-  function resetActiveIndex() {
+  function closeNavigationMenu() {
     setOpenMenuItemName(null);
   }
 
@@ -67,9 +67,9 @@ function NavigationIconItemWithoutSubItems({
               "--Icon-color": navItemSelectedIconColor,
             },
           }}
-          onMouseEnter={resetActiveIndex}
-          onKeyDown={resetActiveIndex}
-          onClick={resetActiveIndex}
+          onMouseEnter={closeNavigationMenu}
+          onKeyDown={closeNavigationMenu}
+          onClick={closeNavigationMenu}
         >
           {item.decorator}
         </ListItemButton>
@@ -78,15 +78,15 @@ function NavigationIconItemWithoutSubItems({
   );
 }
 
-function ErrorNavigationIconItem({
+export function CollapsedNavigationErrorItem({
   item,
 }: {
-  item: SideNavigationItemWithSubItems;
+  item: SideNavigationSuspenseItem;
 }) {
-  const { setOpenMenuItemName } = useContext(NavigationListCollapsedContext);
+  const { setOpenMenuItemName } = useCollapsedNavigationListContext();
   const [errorModalOpen, setErrorModalOpen] = useState(false);
 
-  function resetActiveIndex() {
+  function closeNavigationMenu() {
     setOpenMenuItemName(null);
   }
 
@@ -108,10 +108,10 @@ function ErrorNavigationIconItem({
             sx={{
               padding: 1,
             }}
-            onMouseEnter={resetActiveIndex}
-            onKeyDown={resetActiveIndex}
+            onMouseEnter={closeNavigationMenu}
+            onKeyDown={closeNavigationMenu}
             onClick={() => {
-              resetActiveIndex();
+              closeNavigationMenu();
               setErrorModalOpen(true);
             }}
           >
@@ -124,8 +124,25 @@ function ErrorNavigationIconItem({
   );
 }
 
-interface NavigationIconItemWithSubItemsProps {
-  item: SideNavigationItemWithSubItems;
+export function CollapsedNavigationLoadingItem({
+  item,
+}: {
+  item: SideNavigationSuspenseItem;
+}) {
+  return (
+    <ListItem>
+      <ListItemButton
+        sx={{
+          padding: 1,
+        }}
+        disabled
+      >
+        <Skeleton variant="circular" width={20} height={20}>
+          {item.decorator}
+        </Skeleton>
+      </ListItemButton>
+    </ListItem>
+  );
 }
 
 const modifiers = [
@@ -142,12 +159,13 @@ const modifiers = [
   },
 ];
 
-function NavigationIconItemWithSubItems({
+export function CollapsedNavigationParentItem({
   item,
-}: NavigationIconItemWithSubItemsProps) {
-  const { openMenuItemName, setOpenMenuItemName } = useContext(
-    NavigationListCollapsedContext,
-  );
+}: {
+  item: SideNavigationParentItem;
+}) {
+  const { openMenuItemName, setOpenMenuItemName } =
+    useCollapsedNavigationListContext();
   const pathname = usePathname();
 
   const isItemMenuOpen = openMenuItemName === item.name;
@@ -275,14 +293,4 @@ function NavigationIconItemWithSubItems({
       </Menu>
     </Dropdown>
   );
-}
-
-export function NavigationIconItem({ item }: { item: SideNavigationItem }) {
-  if ("subItems" in item) {
-    if (isDefined(item.error)) {
-      return <ErrorNavigationIconItem item={item} />;
-    }
-    return <NavigationIconItemWithSubItems item={item} />;
-  }
-  return <NavigationIconItemWithoutSubItems item={item} />;
 }

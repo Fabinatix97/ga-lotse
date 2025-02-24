@@ -4,6 +4,7 @@
  */
 
 import { ExaminationResult } from "@eshg/dental/api/models/ExaminationResult";
+import { mapToExaminationStatus } from "@eshg/dental/api/models/ExaminationStatus";
 
 import { ParticipantFilters } from "./participantFilters";
 import { ProphylaxisSessionState } from "./prophylaxisSessionStore";
@@ -40,9 +41,15 @@ export function setExamination(
     if (participant.examinationId !== examinationId) {
       return participant;
     }
+    if (participant.result?.type === "absence") {
+      return participant;
+    }
+
+    const status = mapToExaminationStatus(result);
 
     return {
       ...participant,
+      status,
       result,
       note,
     };

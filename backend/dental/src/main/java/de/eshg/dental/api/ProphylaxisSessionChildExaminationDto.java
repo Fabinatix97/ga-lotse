@@ -24,6 +24,7 @@ public record ProphylaxisSessionChildExaminationDto(
     @NotNull String groupName,
     GenderDto gender,
     String note,
+    DentitionTypeDto prophylaxisDentitionType,
     @Valid @NotNull List<FluoridationConsentDto> allFluoridationConsents,
     @Valid ExaminationResultDto result,
     @Valid @NotNull List<ExaminationResultDto> previousExaminationResults) {}

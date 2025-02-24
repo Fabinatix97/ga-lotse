@@ -56,7 +56,7 @@ tasks.register('unzipDownloadedMatrixSpec', Copy) {
 
 def registerGenerateMatrixClientTask(String type) {
     String taskName = "generateMatrixClient-${type}"
-    String inputSpecPath = "${zipDir}/matrix-spec-${matrixSpecVersion}/data/api/client-server/${type}.yaml"
+    String inputSpecPath = "${zipDir.toURI()}/matrix-spec-${matrixSpecVersion}/data/api/client-server/${type}.yaml"
     def outputDirPath = layout.buildDirectory.dir("generated/sources/matrix/${type}").get().asFile
     def generateMatrixClientTask = tasks.register(taskName, GenerateTask) {
         dependsOn unzipDownloadedMatrixSpec

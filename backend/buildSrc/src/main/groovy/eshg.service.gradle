@@ -96,8 +96,8 @@ tasks.register('createDockerfile', Dockerfile) {
     def groupName = 'eshg'
     def userName = 'eshg'
 
-    runCommand("addgroup --system ${groupName}")
-    runCommand("adduser --shell /usr/sbin/nologin --system --home /app --ingroup ${groupName} ${userName}")
+    runCommand("addgroup --system --gid 1001 ${groupName}")
+    runCommand("adduser --shell /usr/sbin/nologin --system --home /app --ingroup ${groupName} --uid 1001 ${userName}")
     if (additionalAptPackages != null) {
         runCommand("DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y ${additionalAptPackages} && rm -rf /var/lib/apt/lists/*")
     }

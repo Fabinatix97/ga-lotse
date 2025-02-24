@@ -32,7 +32,7 @@ export function AffectedPersonForm(props: { name: string }) {
   const fieldName = createFieldNameMapper<ApiAffectedPerson>(props.name);
 
   return (
-    <ContentSheet>
+    <ContentSheet data-testid={"personal-data-form"}>
       <FormSheetTitle requiredTitle={t("common.requiredTitle")}>
         {t("affectedPerson.title")}
       </FormSheetTitle>

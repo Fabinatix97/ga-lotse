@@ -52,10 +52,11 @@ public class TaskAggregationService {
 
     long aggregatedCount = aggregateCount(taskResponses);
 
-    if (tas.offset() > aggregatedCount) {
+    long offset = (long) tas.pageNumber() * tas.pageSize();
+    if (offset > aggregatedCount) {
       throw new BadRequestException(
           ErrorCode.AGGREGATION_EXCEPTION,
-          "Could not aggregate tasks, offset is larger than amount of tasks.");
+          "Could not aggregate tasks, requested page does not exist.");
     }
 
     List<TaskDto> aggregatedTasks = aggregateTasks(taskResponses, tas);
@@ -99,23 +100,24 @@ public class TaskAggregationService {
 
   private static List<TaskDto> aggregateTasks(
       List<ClientResponse<TaskResponse>> responses, TaskAggregationSpecification tas) {
-    return aggregateTasks(responses, tas.sortBy(), tas.sortOrder(), tas.offset(), tas.limit());
+    return aggregateTasks(
+        responses, tas.sortBy(), tas.sortOrder(), tas.pageNumber(), tas.pageSize());
   }
 
   private static List<TaskDto> aggregateTasks(
       List<ClientResponse<TaskResponse>> businessModuleResponses,
       GetTasksSortByDto sortBy,
       GetTasksSortOrderDto sortOrder,
-      int offset,
-      int limit) {
+      int pageNumber,
+      int pageSize) {
     return businessModuleResponses.stream()
         .map(ClientResponse::response)
         .filter(Objects::nonNull)
         .map(TaskResponse::tasks)
         .flatMap(Collection::stream)
         .sorted(TaskSortHelper.getComparator(sortBy, sortOrder))
-        .skip(offset)
-        .limit(limit)
+        .skip((long) pageNumber * pageSize)
+        .limit(pageSize)
         .toList();
   }
 
@@ -129,6 +131,10 @@ public class TaskAggregationService {
 
   private List<ClientResponse<TaskResponse>> requestTasksFromBusinessModules(
       TaskAggregationSpecification tas) {
+    // Due to sorting over aggregated tasks, the tasks on page `pageNumber` lie anywhere between the
+    // 1st and the (`pageSize * pageNumber + pageSize`)-th task in business modules
+    int limit = tas.pageSize() * (tas.pageNumber() + 1);
+
     return requestTasksFromBusinessModules(
         tas.businessModules(),
         client ->
@@ -136,7 +142,7 @@ public class TaskAggregationService {
                 new GetTasksFilterOptions(
                     tas.assigneeId(), tas.assignedById(), tas.taskTypes(), tas.taskStatuses()),
                 new GetTasksSortOptions(tas.sortBy(), tas.sortOrder()),
-                tas.limit() + tas.offset()));
+                limit));
   }
 
   private List<ClientResponse<TaskResponse>> requestTasksFromBusinessModulesForDashboard() {

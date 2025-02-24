@@ -6,11 +6,9 @@
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { Typography } from "@mui/joy";
 
+import { RemoveToothButton } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/RemoveToothButton";
 import { ResultInputField } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/ResultInputField";
-import {
-  RemovableToothIcon,
-  ToothIcon,
-} from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/Teeth";
+import { ToothIcon } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/Teeth";
 import { useDentalExaminationStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
 import {
   QuadrantNumber,
@@ -42,7 +40,7 @@ export function ToothForm(props: ToothFormProps) {
   return (
     <>
       {tooth.isRemovable ? (
-        <RemovableToothIcon tooth={tooth} toothContext={toothContext} />
+        <RemoveToothButton tooth={tooth} toothContext={toothContext} />
       ) : (
         <ToothIcon tooth={tooth} toothContext={toothContext} />
       )}

@@ -23,13 +23,13 @@ import de.eshg.statistics.persistence.entity.entry.IntegerEntry;
 import de.eshg.statistics.persistence.repository.AnalysisRepository;
 import de.eshg.statistics.persistence.repository.TableRowRepository;
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -40,6 +40,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.CollectionUtils;
 
 public abstract class AbstractChartDiagramCreationService<D, C> {
+  private static final List<String> BOOLEAN_KEYS = List.of("Ja", "Nein");
+
   protected final AnalysisService analysisService;
   protected final AnalysisRepository analysisRepository;
 
@@ -57,7 +59,8 @@ public abstract class AbstractChartDiagramCreationService<D, C> {
     this.pageSizeForCollectionDiagramData = statisticsConfig.diagramData().pageSize();
   }
 
-  abstract D initializeChartDataHolder();
+  abstract D initializeChartDataHolder(
+      UUID analysisId, C chartConfigurationDto, List<TableColumnFilterParameter> filters);
 
   abstract int collectChartData(
       UUID analysisId,
@@ -71,6 +74,33 @@ public abstract class AbstractChartDiagramCreationService<D, C> {
       C chartConfigurationDto,
       AddDiagramRequest addDiagramRequest,
       D chartDataHolder);
+
+  protected static Map<Object, Integer> createCountingMap(TableColumn tableColumn) {
+    if (tableColumn == null) {
+      return new HashMap<>();
+    } else if (tableColumn.getValueType().equals(TableColumnValueType.BOOLEAN)
+        || tableColumn.getValueType().equals(TableColumnValueType.VALUE_WITH_OPTIONS)) {
+      LinkedHashMap<Object, Integer> countingMap = new LinkedHashMap<>();
+      initiallyFillKeyToCountingMapForStringKeys(
+          countingMap, getKeysForBooleanOrValueOptionsList(tableColumn));
+      return countingMap;
+    } else {
+      return new TreeMap<>();
+    }
+  }
+
+  protected static List<String> getKeysForBooleanOrValueOptionsList(TableColumn tableColumn) {
+    if (tableColumn.getValueType().equals(TableColumnValueType.BOOLEAN)) {
+      return BOOLEAN_KEYS;
+    } else {
+      return tableColumn.getValueToMeanings().stream().map(ValueToMeaning::getValue).toList();
+    }
+  }
+
+  protected static void initiallyFillKeyToCountingMapForStringKeys(
+      Map<Object, Integer> destination, List<String> keys) {
+    keys.forEach(key -> destination.put(key, 0));
+  }
 
   protected static CellEntry getCellEntry(TableRow tableRow, TableColumn tableColumn) {
     return tableRow.getCellEntries().stream()
@@ -122,38 +152,44 @@ public abstract class AbstractChartDiagramCreationService<D, C> {
         .map(filter -> TableRowSpecifications.createFilterSpecification(filter, aggregationResult));
   }
 
-  protected static String getKeyForCellEntryBooleanTextOrValueOption(CellEntry cellEntry) {
+  protected static Object getKeyForCellEntryBooleanIntegerTextOrValueOption(CellEntry cellEntry) {
     if (cellEntry.getValue() == null) {
       return null;
     }
     if (cellEntry.getTableColumn().getValueType().equals(TableColumnValueType.BOOLEAN)) {
       return Boolean.TRUE.equals(cellEntry.getValue()) ? "Ja" : "Nein";
     }
+    if (cellEntry.getTableColumn().getValueType().equals(TableColumnValueType.INTEGER)) {
+      return cellEntry.getValue();
+    }
     if (cellEntry.getTableColumn().getValueType().equals(TableColumnValueType.TEXT)) {
       return cellEntry.getValue().toString();
     }
     String stringValue = cellEntry.getValue().toString();
     if (cellEntry.getTableColumn().getValueType().equals(TableColumnValueType.VALUE_WITH_OPTIONS)
-        && getValueToMeaningKeys(cellEntry.getTableColumn()).contains(stringValue)) {
+        && getValueToMeaningKeysSet(cellEntry.getTableColumn()).contains(stringValue)) {
       return stringValue;
     }
     return null;
   }
 
-  protected static Set<String> getValueToMeaningKeys(TableColumn tableColumn) {
+  protected static Set<String> getValueToMeaningKeysSet(TableColumn tableColumn) {
     return tableColumn.getValueToMeanings().stream()
         .map(ValueToMeaning::getValue)
         .collect(Collectors.toSet());
   }
 
-  protected static <T> void addTableRowToCollectedChartData(
-      T primaryKey, String secondaryKey, Map<T, Map<String, Integer>> collectedChartData) {
+  protected static <T> void addTableRowToChartDataHolder(
+      Map<T, Map<Object, Integer>> chartDataHolder,
+      T primaryKey,
+      Object secondaryKey,
+      TableColumn secondaryTableColumn) {
     if (primaryKey == null || secondaryKey == null) {
       return;
     }
 
-    Map<String, Integer> secondaryToIntegerMap =
-        collectedChartData.computeIfAbsent(primaryKey, key -> new HashMap<>());
+    Map<Object, Integer> secondaryToIntegerMap =
+        chartDataHolder.computeIfAbsent(primaryKey, key -> createCountingMap(secondaryTableColumn));
     secondaryToIntegerMap.compute(secondaryKey, (key, count) -> (count == null) ? 1 : count + 1);
   }
 
@@ -171,37 +207,38 @@ public abstract class AbstractChartDiagramCreationService<D, C> {
     };
   }
 
-  protected static <T> Set<String> getKeysForTextValues(Map<T, Map<String, Integer>> valueMap) {
-    Set<String> keys = new HashSet<>();
-    valueMap.values().forEach(map -> keys.addAll(map.keySet()));
-    return keys;
+  protected static <T> void fillChartDataHolderWithMissingValues(
+      Map<T, Map<Object, Integer>> chartDataHolder, boolean onlyPrimaryAttribute) {
+    if (onlyPrimaryAttribute) {
+      chartDataHolder
+          .keySet()
+          .forEach(key -> chartDataHolder.get(key).computeIfAbsent(key, k -> 0));
+    } else {
+      Set<Object> secondaryKeys =
+          chartDataHolder.values().stream()
+              .map(Map::keySet)
+              .flatMap(Collection::stream)
+              .collect(Collectors.toSet());
+      chartDataHolder
+          .values()
+          .forEach(
+              secondaryToIntegerMap ->
+                  secondaryKeys.forEach(
+                      key -> secondaryToIntegerMap.computeIfAbsent(key, secondaryKey -> 0)));
+    }
   }
 
-  protected static Set<String> getKeysForBooleanOrValueOption(TableColumn tableColumn) {
-    if (tableColumn == null) {
-      return Collections.emptySet();
-    }
-    if (tableColumn.getValueType().equals(TableColumnValueType.BOOLEAN)) {
-      return Set.of("Ja", "Nein");
-    }
-    if (tableColumn.getValueType().equals(TableColumnValueType.VALUE_WITH_OPTIONS)) {
-      return getValueToMeaningKeys(tableColumn);
-    }
-    return Collections.emptySet();
-  }
-
-  protected static List<KeyToCount> mapToSortedKeyToCountList(
-      Map<String, Integer> keyToCountStringIntegerMap) {
+  protected static List<KeyToCount> mapToKeyToCounts(
+      Map<Object, Integer> keyToCountStringIntegerMap) {
     return keyToCountStringIntegerMap.entrySet().stream()
-        .map(AbstractChartDiagramCreationService::getKeyToCount)
-        .sorted(Comparator.comparing(KeyToCount::getKey))
+        .map(entry -> getKeyToCount(String.valueOf(entry.getKey()), entry.getValue()))
         .toList();
   }
 
-  private static KeyToCount getKeyToCount(Map.Entry<String, Integer> entry) {
+  private static KeyToCount getKeyToCount(String key, Integer count) {
     KeyToCount keyToCount = new KeyToCount();
-    keyToCount.setKey(entry.getKey());
-    keyToCount.setCount(entry.getValue());
+    keyToCount.setKey(key);
+    keyToCount.setCount(count);
     return keyToCount;
   }
 }

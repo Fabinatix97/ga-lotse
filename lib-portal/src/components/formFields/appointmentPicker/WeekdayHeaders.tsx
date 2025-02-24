@@ -6,10 +6,10 @@
 import { Box } from "@mui/joy";
 import { PropsWithChildren } from "react";
 
-import { getWeekdayShortCodes } from "./helpers";
+import { Weekday, getWeekdayShortCodes } from "./helpers";
 
-export function WeekdayHeaders() {
-  const weekdayShortCodes = getWeekdayShortCodes();
+export function WeekdayHeaders({ showWeekdays }: { showWeekdays?: Weekday[] }) {
+  const weekdayShortCodes = getWeekdayShortCodes(showWeekdays);
   return (
     <>
       {weekdayShortCodes.map((w) => (

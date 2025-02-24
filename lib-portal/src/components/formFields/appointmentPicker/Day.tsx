@@ -23,19 +23,24 @@ export interface DayProps
     AppointmentCalendarProps,
     "monthSelectionLabel" | keyof MonthSelectionProps
   > {
-  date: Date;
+  date: Date | null;
   currentInterval: Interval;
 }
 
-export const DaysGrid = styled("div")`
-  display: grid;
-  gap: 8px;
-  grid-template-columns: repeat(7, 36px);
-  grid-template-rows: repeat(7, 40px);
-  text-align: center;
-  justify-content: space-between;
-  width: 320px;
-`;
+export const DaysGrid = styled("div", {
+  shouldForwardProp: (propName) =>
+    !["columns", "padDays"].includes(propName as string),
+})<{ columns?: number; padDays?: boolean }>(
+  ({ columns = 7, padDays = true }) => ({
+    display: "grid",
+    gap: "8px",
+    gridTemplateColumns: `repeat(${columns}, 36px)`,
+    gridTemplateRows: `repeat(${padDays ? 7 : 6}, 40px)`,
+    textAlign: "center",
+    justifyContent: "space-between",
+    width: "320px",
+  }),
+);
 
 export function Day({
   date,
@@ -45,6 +50,9 @@ export function Day({
   appointments: monthAppointments,
 }: DayProps) {
   const theme = useTheme();
+  if (date == null) {
+    return <div></div>;
+  }
   const boldProp = isSunday(date)
     ? { fontWeight: "bold" }
     : { fontWeight: "normal" };
@@ -91,7 +99,9 @@ export function Day({
       >
         {date.getDate()}
       </Button>
-      {hasAppointments && <AppointmentMarker aria-hidden />}
+      {hasAppointments && !isSelected ? (
+        <AppointmentMarker aria-hidden />
+      ) : null}
     </Stack>
   );
 }

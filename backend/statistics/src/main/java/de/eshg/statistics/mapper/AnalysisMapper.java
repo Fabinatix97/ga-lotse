@@ -521,43 +521,68 @@ public class AnalysisMapper {
   }
 
   private static DiagramDataDto mapToApi(LineOrScatterChartData lineOrScatterChartData) {
-    ChartConfiguration chartConfiguration =
-        Hibernate.unproxy(
-            lineOrScatterChartData.getDiagram().getAnalysis().getChartConfiguration(),
-            ChartConfiguration.class);
+    return switch (Hibernate.unproxy(
+        lineOrScatterChartData.getDiagram().getAnalysis().getChartConfiguration(),
+        ChartConfiguration.class)) {
+      case LineChartConfiguration lineChartConfiguration ->
+          mapToApiLineChartData(lineOrScatterChartData, lineChartConfiguration);
+      case ScatterChartConfiguration scatterChartConfiguration ->
+          mapToApiScatterChartData(lineOrScatterChartData, scatterChartConfiguration);
+      default -> throw new IllegalStateException("");
+    };
+  }
 
-    boolean isSimple;
-    boolean isLineChart;
-    if (chartConfiguration instanceof LineChartConfiguration lineChartConfiguration) {
-      isSimple = lineChartConfiguration.getSecondaryAttributeSelection() == null;
-      isLineChart = true;
+  private static DiagramDataDto mapToApiScatterChartData(
+      LineOrScatterChartData lineOrScatterChartData,
+      ScatterChartConfiguration scatterChartConfiguration) {
+    boolean isSimple = scatterChartConfiguration.getSecondaryAttributeSelection() == null;
+    boolean mapTrendLine = scatterChartConfiguration.showTrendLine();
+    if (isSimple) {
+      return mapToApiScatterSimple(lineOrScatterChartData, mapTrendLine);
     } else {
-      isSimple =
-          ((ScatterChartConfiguration) chartConfiguration).getSecondaryAttributeSelection() == null;
-      isLineChart = false;
+      return mapToApiScatterCategorized(lineOrScatterChartData, mapTrendLine);
     }
-    if (isLineChart) {
-      if (isSimple) {
-        return new LineChartDataSimpleDto(
-            mapToDataPoints(lineOrScatterChartData.getDataPointGroups().getFirst()));
-      } else {
-        return new LineChartDataCategorizedDto(
-            lineOrScatterChartData.getDataPointGroups().stream()
-                .map(AnalysisMapper::mapToApi)
-                .toList());
-      }
+  }
+
+  private static ScatterChartDataSimpleDto mapToApiScatterSimple(
+      LineOrScatterChartData lineOrScatterChartData, boolean mapTrendLine) {
+    DataPointGroup dataPointGroup = lineOrScatterChartData.getDataPointGroups().getFirst();
+    return new ScatterChartDataSimpleDto(
+        mapToDataPoints(dataPointGroup),
+        mapTrendLine ? mapToApi(dataPointGroup.getTrendLine()) : null);
+  }
+
+  private static ScatterChartDataCategorizedDto mapToApiScatterCategorized(
+      LineOrScatterChartData lineOrScatterChartData, boolean mapTrendLine) {
+    return new ScatterChartDataCategorizedDto(
+        lineOrScatterChartData.getDataPointGroups().stream()
+            .map(dataPointGroup -> AnalysisMapper.mapToApi(dataPointGroup, mapTrendLine))
+            .toList());
+  }
+
+  private static DiagramDataDto mapToApiLineChartData(
+      LineOrScatterChartData lineOrScatterChartData,
+      LineChartConfiguration lineChartConfiguration) {
+    boolean isSimple = lineChartConfiguration.getSecondaryAttributeSelection() == null;
+    if (isSimple) {
+      return mapToApiLineSimple(lineOrScatterChartData);
     } else {
-      if (isSimple) {
-        DataPointGroup dataPointGroup = lineOrScatterChartData.getDataPointGroups().getFirst();
-        return new ScatterChartDataSimpleDto(
-            mapToDataPoints(dataPointGroup), mapToApi(dataPointGroup.getTrendLine()));
-      } else {
-        return new ScatterChartDataCategorizedDto(
-            lineOrScatterChartData.getDataPointGroups().stream()
-                .map(AnalysisMapper::mapToApi)
-                .toList());
-      }
+      return mapToApiLineCategorized(lineOrScatterChartData);
     }
+  }
+
+  private static LineChartDataSimpleDto mapToApiLineSimple(
+      LineOrScatterChartData lineOrScatterChartData) {
+    return new LineChartDataSimpleDto(
+        mapToDataPoints(lineOrScatterChartData.getDataPointGroups().getFirst()));
+  }
+
+  private static LineChartDataCategorizedDto mapToApiLineCategorized(
+      LineOrScatterChartData lineOrScatterChartData) {
+    return new LineChartDataCategorizedDto(
+        lineOrScatterChartData.getDataPointGroups().stream()
+            .map(AnalysisMapper::mapToApi)
+            .toList());
   }
 
   private static List<DataPointDto> mapToDataPoints(DataPointGroup dataPointGroup) {
@@ -568,17 +593,21 @@ public class AnalysisMapper {
     return new DataPointDto(dataPoint.getXCoordinate(), dataPoint.getYCoordinate());
   }
 
+  private static DataPointGroupDto mapToApi(DataPointGroup dataPointGroup) {
+    return mapToApi(dataPointGroup, false);
+  }
+
+  private static DataPointGroupDto mapToApi(DataPointGroup dataPointGroup, boolean mapTrendLine) {
+    return new DataPointGroupDto(
+        dataPointGroup.getKey(),
+        dataPointGroup.getDataPoints().stream().map(AnalysisMapper::mapToApi).toList(),
+        mapTrendLine ? mapToApi(dataPointGroup.getTrendLine()) : null);
+  }
+
   private static TrendLineDto mapToApi(TrendLine trendLine) {
     return trendLine == null
         ? null
         : new TrendLineDto(trendLine.getLineSlope(), trendLine.getLineOffset());
-  }
-
-  private static DataPointGroupDto mapToApi(DataPointGroup dataPointGroup) {
-    return new DataPointGroupDto(
-        dataPointGroup.getKey(),
-        dataPointGroup.getDataPoints().stream().map(AnalysisMapper::mapToApi).toList(),
-        mapToApi(dataPointGroup.getTrendLine()));
   }
 
   private static DiagramDataDto mapToApi(PieChartData pieChartData) {

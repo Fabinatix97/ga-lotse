@@ -170,7 +170,7 @@ export function FileArrayField({
                   <Typography>{labels.helperText}</Typography>
                 )}
               {isNonEmptyArray(field.input.value) && (
-                <Typography>
+                <Typography data-testid="uploadedFiles">
                   {labels.inputSummary(field.input.value.length)}
                 </Typography>
               )}
@@ -214,7 +214,12 @@ export function FileArrayField({
             </Box>
           </ResponsiveGrid>
           {isNonEmptyArray(field.input.value) && (
-            <Stack direction="column" gap={2} sx={{ width: "100%" }}>
+            <Stack
+              data-testid={`documents`}
+              direction="column"
+              gap={2}
+              sx={{ width: "100%" }}
+            >
               {field.input.value.map((file, index) => (
                 <FileSheet
                   key={`${file.name}.${index}`}

@@ -59,6 +59,7 @@ export function ChipWithTooltip(props: Props) {
           onClick={() => {
             setOpen(true);
           }}
+          onKeyDown={(event) => event.stopPropagation()}
         >
           {props.name}
         </StyledChip>

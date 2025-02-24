@@ -35,3 +35,24 @@ export function useOpeningHoursQuery(concern: ApiConcern) {
 export function useOpeningHours(concern: ApiConcern) {
   return useSuspenseQuery(useOpeningHoursQuery(concern));
 }
+
+export function useFreeAppointments({
+  concern,
+  earliestDate,
+}: {
+  concern: ApiConcern;
+  earliestDate: Date;
+}) {
+  const publicCitizenApi = useCitizenPublicApi();
+  return useSuspenseQuery({
+    queryKey: stiProtectionPublicCitizenApiQueryKey([
+      "freeAppointments",
+      { concern, earliestDate },
+    ]),
+    queryFn: () =>
+      publicCitizenApi.getFreeAppointmentsForCitizen(concern, earliestDate),
+    select(data) {
+      return data.appointments;
+    },
+  });
+}

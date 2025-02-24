@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package de.eshg.base.department;
+package de.eshg.base.config;
 
 import de.eshg.lib.common.CountryCode;
 import jakarta.validation.constraints.NotBlank;
@@ -15,7 +15,7 @@ import org.springframework.validation.annotation.Validated;
 
 @Validated
 @ConfigurationProperties(prefix = "eshg.department")
-public record DepartmentConfiguration(
+record InitialDepartmentConfigurationDefaults(
     @NotBlank String name,
     @NotBlank String abbreviation,
     @NotBlank String street,
@@ -34,7 +34,7 @@ public record DepartmentConfiguration(
     @NotNull Resource streetDirectory,
     @NotNull Resource municipalityDirectory) {
 
-  public DepartmentConfiguration(
+  InitialDepartmentConfigurationDefaults(
       @NotBlank String name,
       @NotBlank String abbreviation,
       @NotBlank String street,

@@ -6,8 +6,8 @@
 import { ApiUserRole } from "@eshg/base-api";
 import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
 import {
+  SideNavigationItem,
   SideNavigationSubItem,
-  UseSideNavigationItemsResult,
 } from "@eshg/lib-employee-portal/types/sideNavigation";
 import { SvgIcon, SvgIconProps } from "@mui/joy";
 
@@ -31,14 +31,15 @@ const defaultSubItems: SideNavigationSubItem[] = [
   },
 ];
 
-export function useSideNavigationItems(
-  enabled: boolean,
-): UseSideNavigationItemsResult {
+export function resolveSideNavigationItems(): SideNavigationItem[] {
   const subItems = defaultSubItems;
-  return {
-    isLoading: false,
-    items: enabled ? [{ ...sideNavigationItem, subItems }] : [],
-  };
+  return [
+    {
+      type: "SideNavigationParentItem",
+      ...sideNavigationItem,
+      subItems,
+    },
+  ];
 }
 
 function DentalSidenavIcon(props: SvgIconProps) {

@@ -11,13 +11,16 @@ import static de.eshg.stiprotection.pdf.identification.DocumentParameters.toAppo
 import static de.eshg.stiprotection.pdf.identification.DocumentParameters.toConsultationAppointment;
 import static de.eshg.stiprotection.pdf.identification.DocumentParameters.toDocumentDate;
 import static de.eshg.stiprotection.persistence.db.StiProtectionSystemProgressEntryType.PERSON_DETAILS_UPDATED;
+import static org.springframework.data.jpa.domain.Specification.allOf;
 
+import de.eshg.base.GenderDto;
 import de.eshg.base.calendar.api.TimeRange;
 import de.eshg.base.citizenuser.CitizenAccessCodeUserApi;
 import de.eshg.base.citizenuser.api.AddCitizenAccessCodeUserWithPinCredentialRequest;
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
 import de.eshg.base.citizenuser.api.CredentialTypeDto;
 import de.eshg.base.citizenuser.api.VerifyCitizenAccessCodeUserCredentialsRequest;
+import de.eshg.lib.appointmentblock.MappingUtil;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
@@ -28,12 +31,17 @@ import de.eshg.lib.procedure.domain.model.Procedure_;
 import de.eshg.lib.procedure.domain.model.RelatedPerson;
 import de.eshg.lib.procedure.domain.model.TaskStatus;
 import de.eshg.lib.procedure.domain.model.TaskType;
+import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.CurrentUserHelper;
+import de.eshg.stiprotection.api.ConcernDto;
+import de.eshg.stiprotection.api.CreatedByUserTypeDto;
+import de.eshg.stiprotection.api.GetStiProtectionProceduresFilterOptions;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresPaginationOptions;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresSortByDto;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresSortOptions;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresSortOrderDto;
+import de.eshg.stiprotection.api.LabStatusDto;
 import de.eshg.stiprotection.mapper.PersonMapper;
 import de.eshg.stiprotection.pdf.identification.AnonymousIdentificationDocument;
 import de.eshg.stiprotection.pdf.identification.AnonymousIdentificationDocumentService;
@@ -44,7 +52,11 @@ import de.eshg.stiprotection.persistence.data.PersonData;
 import de.eshg.stiprotection.persistence.data.ResultPage;
 import de.eshg.stiprotection.persistence.data.StiProtectionProcedureData;
 import de.eshg.stiprotection.persistence.db.Concern;
+import de.eshg.stiprotection.persistence.db.CreatedByUserType;
+import de.eshg.stiprotection.persistence.db.Gender;
+import de.eshg.stiprotection.persistence.db.LabStatus;
 import de.eshg.stiprotection.persistence.db.Person;
+import de.eshg.stiprotection.persistence.db.Person_;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedureRepository;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure_;
@@ -52,10 +64,17 @@ import de.eshg.stiprotection.persistence.db.StiProtectionTask;
 import de.eshg.stiprotection.util.ProgressEntryUtil;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Root;
+import jakarta.persistence.metamodel.SingularAttribute;
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Year;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.domain.Page;
@@ -96,15 +115,16 @@ public class StiProtectionProcedureService {
     this.progressEntryUtil = progressEntryUtil;
   }
 
-  public StiProtectionProcedure createProcedure(Concern concern) {
+  public StiProtectionProcedure createProcedure(Concern concern, CreatedByUserType createdBy) {
     StiProtectionProcedure procedure =
-        StiProtectionProcedure.newProcedure(concern, clock, auditLogger);
+        StiProtectionProcedure.newProcedure(concern, createdBy, clock, auditLogger);
     procedure.addTask(createTask());
     return repository.save(procedure);
   }
 
-  public StiProtectionProcedure saveProcedure(Concern concern) {
-    return repository.save(StiProtectionProcedure.newProcedure(concern, clock, auditLogger));
+  public StiProtectionProcedure saveProcedure(Concern concern, CreatedByUserType createdBy) {
+    return repository.save(
+        StiProtectionProcedure.newProcedure(concern, createdBy, clock, auditLogger));
   }
 
   public void addPerson(StiProtectionProcedure procedure, PersonData personData) {
@@ -142,16 +162,25 @@ public class StiProtectionProcedureService {
 
   public ResultPage<StiProtectionProcedureData> getProcedures(
       GetStiProtectionProceduresSortOptions sortOptions,
-      GetStiProtectionProceduresPaginationOptions paginationOptions) {
+      GetStiProtectionProceduresPaginationOptions paginationOptions,
+      GetStiProtectionProceduresFilterOptions filterOptions) {
 
     PageRequest pageRequest =
         PageRequest.of(paginationOptions.pageNumber(), paginationOptions.pageSize());
 
-    Page<StiProtectionProcedure> procedures =
-        repository.findAll(
-            Specification.where(joinPersonAndSort(sortOptions.sortOrder(), sortOptions.sortBy())),
-            pageRequest);
+    Specification<StiProtectionProcedure> spec =
+        allOf(
+            filterByCreatedAt(filterOptions),
+            filterByYearOfBirth(filterOptions),
+            filterByAppointmentDate(filterOptions),
+            filterByGender(filterOptions),
+            filterByConcern(filterOptions),
+            filterByProcedureStatus(filterOptions),
+            filterByLabStatus(filterOptions),
+            filterByCreatedBy(filterOptions),
+            orderBy(sortOptions.sortOrder(), sortOptions.sortBy()));
 
+    Page<StiProtectionProcedure> procedures = repository.findAll(spec, pageRequest);
     if (procedures.isEmpty()) {
       return new ResultPage<>(0, 0, List.of());
     }
@@ -162,7 +191,137 @@ public class StiProtectionProcedureService {
         procedures.stream().map(this::toProcedureData).toList());
   }
 
-  private Specification<StiProtectionProcedure> joinPersonAndSort(
+  private Specification<StiProtectionProcedure> filterByCreatedBy(
+      GetStiProtectionProceduresFilterOptions filterOptions) {
+    Set<CreatedByUserTypeDto> dto = filterOptions.createdBy();
+    if (dto != null) {
+      return (root, query, criteriaBuilder) ->
+          root.get(StiProtectionProcedure_.CREATED_BY)
+              .in(mapFilterBy(CreatedByUserType.class, dto));
+    } else {
+      return (root, query, criteriaBuilder) -> criteriaBuilder.conjunction();
+    }
+  }
+
+  private static <T extends Enum<T>, S extends Enum<S>> List<S> mapFilterBy(
+      Class<S> targetEnum, Collection<T> sourceValues) {
+    return sourceValues.stream()
+        .filter(Objects::nonNull)
+        .map(val -> MappingUtil.mapEnum(targetEnum, val))
+        .toList();
+  }
+
+  private Specification<StiProtectionProcedure> filterByLabStatus(
+      GetStiProtectionProceduresFilterOptions filterOptions) {
+    Set<LabStatusDto> dto = filterOptions.labStatus();
+    if (dto != null) {
+      return (root, query, criteriaBuilder) ->
+          root.get(StiProtectionProcedure_.LAB_STATUS).in(mapFilterBy(LabStatus.class, dto));
+    } else {
+      return (root, query, criteriaBuilder) -> criteriaBuilder.conjunction();
+    }
+  }
+
+  private Specification<StiProtectionProcedure> filterByProcedureStatus(
+      GetStiProtectionProceduresFilterOptions filterOptions) {
+    Set<ProcedureStatusDto> dto = filterOptions.procedureStatus();
+    if (dto != null) {
+      return (root, query, criteriaBuilder) ->
+          root.get(Procedure_.PROCEDURE_STATUS).in(mapFilterBy(ProcedureStatus.class, dto));
+    } else {
+      return (root, query, criteriaBuilder) -> criteriaBuilder.conjunction();
+    }
+  }
+
+  private Specification<StiProtectionProcedure> filterByConcern(
+      GetStiProtectionProceduresFilterOptions filterOptions) {
+    Set<ConcernDto> dto = filterOptions.concern();
+    if (dto != null) {
+      return (root, query, criteriaBuilder) ->
+          root.get(StiProtectionProcedure_.CONCERN).in(mapFilterBy(Concern.class, dto));
+    } else {
+      return (root, query, criteriaBuilder) -> criteriaBuilder.conjunction();
+    }
+  }
+
+  private Specification<StiProtectionProcedure> filterByGender(
+      GetStiProtectionProceduresFilterOptions filterOptions) {
+    Set<GenderDto> dto = filterOptions.gender();
+    if (dto != null) {
+      return (root, query, criteriaBuilder) ->
+          root.join(Procedure_.relatedPersons)
+              .get(Person_.GENDER)
+              .in(mapFilterBy(Gender.class, dto));
+    } else {
+      return (root, query, criteriaBuilder) -> criteriaBuilder.conjunction();
+    }
+  }
+
+  private Specification<StiProtectionProcedure> filterByAppointmentDate(
+      GetStiProtectionProceduresFilterOptions filterOptions) {
+    Instant start = atStartOfDay(filterOptions.appointmentDateStart());
+    Instant end = atEndOfDay(filterOptions.appointmentDateEnd());
+    SingularAttribute<StiProtectionProcedure, Instant> appointmentStart =
+        StiProtectionProcedure_.appointmentStart;
+    if (start != null && end != null) {
+      return (root, query, criteriaBuilder) ->
+          criteriaBuilder.between(root.get(appointmentStart), start, end);
+    } else if (start != null) {
+      return (root, query, criteriaBuilder) ->
+          criteriaBuilder.greaterThanOrEqualTo(root.get(appointmentStart), start);
+    } else if (end != null) {
+      return (root, query, criteriaBuilder) ->
+          criteriaBuilder.lessThanOrEqualTo(root.get(appointmentStart), end);
+    } else {
+      return (root, query, criteriaBuilder) -> criteriaBuilder.conjunction();
+    }
+  }
+
+  private Specification<StiProtectionProcedure> filterByYearOfBirth(
+      GetStiProtectionProceduresFilterOptions filterOptions) {
+    Year yearOfBirth = filterOptions.yearOfBirth();
+    if (yearOfBirth != null) {
+      return (root, query, criteriaBuilder) ->
+          criteriaBuilder.equal(
+              root.join(Procedure_.relatedPersons).get(Person_.YEAR_OF_BIRTH), yearOfBirth);
+    } else {
+      return (root, query, criteriaBuilder) -> criteriaBuilder.conjunction();
+    }
+  }
+
+  private Specification<StiProtectionProcedure> filterByCreatedAt(
+      GetStiProtectionProceduresFilterOptions filterOptions) {
+    Instant start = atStartOfDay(filterOptions.creationDateStart());
+    Instant end = atEndOfDay(filterOptions.creationDateEnd());
+    if (start != null && end != null) {
+      return (root, query, criteriaBuilder) ->
+          criteriaBuilder.between(root.get(Procedure_.createdAt), start, end);
+    } else if (start != null) {
+      return (root, query, criteriaBuilder) ->
+          criteriaBuilder.greaterThanOrEqualTo(root.get(Procedure_.createdAt), start);
+    } else if (end != null) {
+      return (root, query, criteriaBuilder) ->
+          criteriaBuilder.lessThanOrEqualTo(root.get(Procedure_.createdAt), end);
+    } else {
+      return (root, query, criteriaBuilder) -> criteriaBuilder.conjunction();
+    }
+  }
+
+  private Instant atStartOfDay(LocalDate date) {
+    if (date == null) {
+      return null;
+    }
+    return date.atStartOfDay(clock.getZone()).toInstant();
+  }
+
+  private Instant atEndOfDay(LocalDate date) {
+    if (date == null) {
+      return null;
+    }
+    return atStartOfDay(date).plus(Duration.ofDays(1)).minusSeconds(1);
+  }
+
+  private Specification<StiProtectionProcedure> orderBy(
       GetStiProtectionProceduresSortOrderDto sortOrder,
       GetStiProtectionProceduresSortByDto sortBy) {
     return (root, query, criteriaBuilder) -> {

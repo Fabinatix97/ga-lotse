@@ -10,8 +10,3 @@ export interface SideNavItemGroups {
   businessItems: SideNavigationItem[];
   baseItems: SideNavigationItem[];
 }
-
-export interface UseSideNavigationItemGroupsResult {
-  isLoading: boolean;
-  itemGroups: SideNavItemGroups;
-}

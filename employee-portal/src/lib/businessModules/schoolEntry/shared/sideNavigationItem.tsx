@@ -3,17 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBaseFeature, ApiUserRole } from "@eshg/base-api";
+import { ApiUserRole } from "@eshg/base-api";
 import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
 import {
+  SideNavigationItem,
+  SideNavigationItemsProps,
   SideNavigationSubItem,
-  UseSideNavigationItemsResult,
+  SideNavigationSuspenseItem,
 } from "@eshg/lib-employee-portal/types/sideNavigation";
 import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
 import { WcOutlined } from "@mui/icons-material";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
+import { NavigationItem } from "@/lib/baseModule/components/layout/sideNavigation/items/NavigationItem";
 import { useConfigApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { getLocationSelectionModeQuery } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
 
@@ -50,25 +52,25 @@ const inboxNavigationItem: SideNavigationSubItem = {
   accessCheck: hasUserRole(ApiUserRole.SchoolEntryAdmin),
 };
 
-export function useSideNavigationItems(
-  enabled: boolean,
-): UseSideNavigationItemsResult {
-  const isInboxEnabled = useIsNewFeatureEnabled(ApiBaseFeature.Inbox);
+const sideNavigationItem: SideNavigationSuspenseItem = {
+  type: "SideNavigationSuspenseItem",
+  name: "Einschulung",
+  decorator: <WcOutlined />,
+  accessCheck: hasUserRole(ApiUserRole.SchoolEntryAdmin),
+  component: SchoolEntrySideNavigationItem,
+};
 
+export function resolveSideNavigationItems(): SideNavigationItem[] {
+  return [sideNavigationItem];
+}
+
+function SchoolEntrySideNavigationItem({
+  isInboxEnabled,
+}: SideNavigationItemsProps) {
   const configApi = useConfigApi();
-  const {
-    data: locationSelectionMode,
-    isError: isLocationModeError,
-    isLoading: isLocationModeLoading,
-  } = useQuery({
-    ...getLocationSelectionModeQuery(configApi),
-    throwOnError: false,
-    enabled,
-  });
-
-  if (!enabled) {
-    return { isLoading: false, items: [] };
-  }
+  const { data: locationSelectionMode } = useSuspenseQuery(
+    getLocationSelectionModeQuery(configApi),
+  );
 
   const hasLocationMode =
     locationSelectionMode !== ApiLocationSelectionMode.None;
@@ -80,16 +82,14 @@ export function useSideNavigationItems(
     ...(isInboxEnabled ? [inboxNavigationItem] : []),
   ];
 
-  const sideNavigationItem = {
-    name: "Einschulung",
-    decorator: <WcOutlined />,
-    error: isLocationModeError
-      ? "Bei der Verbindung zum Einschulungsmodul ist ein Fehler aufgetreten."
-      : undefined,
-  };
-
-  return {
-    isLoading: isLocationModeLoading,
-    items: [{ ...sideNavigationItem, subItems }],
-  };
+  return (
+    <NavigationItem
+      item={{
+        type: "SideNavigationParentItem",
+        name: sideNavigationItem.name,
+        decorator: sideNavigationItem.decorator,
+        subItems,
+      }}
+    />
+  );
 }

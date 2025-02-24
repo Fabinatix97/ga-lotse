@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { EChartsOption, registerMap } from "echarts";
+import { EChartsOption, MapSeriesOption, registerMap } from "echarts";
 import { useState } from "react";
 import { isNonNullish, randomString } from "remeda";
 
@@ -24,6 +24,7 @@ export interface ChoroplethMapProps {
   characteristicParameter?: DiagramCharacteristicParameter;
   geoJson: string;
   eChartApi?: (eChartApi: ChartApi) => void;
+  additionalEchartsSeriesOptions?: Partial<MapSeriesOption>;
 }
 
 export function getDefinedDiagramValues(
@@ -85,15 +86,15 @@ export function ChoroplethMap(props: ChoroplethMapProps) {
     series: [
       {
         name: getChoroplethAggregationMethod(props.characteristicParameter),
-        type: "map",
+        type: "map" as const,
         map: mapId,
         data: props.diagramData,
         roam: true,
         select: { disabled: true },
         emphasis: { label: { show: false } },
+        ...(props.additionalEchartsSeriesOptions ?? {}),
       },
     ],
-
     legend: undefined,
   };
 

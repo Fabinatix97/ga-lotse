@@ -19,7 +19,9 @@ export function AppointmentFormSidePanel() {
   const { currentStep, totalSteps } = useMultiStepForm();
 
   return (
-    <ContentSheet>
+    <ContentSheet
+      data-testid={currentStep === totalSteps ? "confirmation-form" : undefined}
+    >
       {currentStep !== totalSteps && (
         <OverviewSection
           buttonBar={

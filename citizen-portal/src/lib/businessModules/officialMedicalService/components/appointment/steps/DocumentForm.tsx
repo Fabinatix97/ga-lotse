@@ -15,8 +15,14 @@ export function DocumentForm() {
   const { t } = useTranslation(["officialMedicalService/appointment"]);
 
   return (
-    <ContentSheet sx={{ paddingX: byBreakpoint({ mobile: 0, desktop: 3 }) }}>
-      <FormSheetTitle requiredTitle={t("common.requiredTitle")}>
+    <ContentSheet
+      sx={{ paddingX: byBreakpoint({ mobile: 0, desktop: 3 }) }}
+      data-testid={"documents-form"}
+    >
+      <FormSheetTitle
+        requiredTitle={t("common.requiredTitle")}
+        sx={{ paddingX: byBreakpoint({ mobile: 2, desktop: 0 }) }}
+      >
         {t("documents.title")}
       </FormSheetTitle>
       <FileArrayField

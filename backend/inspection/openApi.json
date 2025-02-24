@@ -4476,7 +4476,7 @@
           "name" : "limit",
           "required" : false,
           "schema" : {
-            "maximum" : 200,
+            "maximum" : 2200,
             "minimum" : 1,
             "type" : "integer",
             "format" : "int32",

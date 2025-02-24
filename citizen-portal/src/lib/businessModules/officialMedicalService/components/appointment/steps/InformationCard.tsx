@@ -15,7 +15,7 @@ export function InformationCard() {
   const { t, i18n } = useTranslation(["officialMedicalService/appointment"]);
 
   return (
-    <ContentSheet>
+    <ContentSheet data-testid={"information-card"}>
       <FormSheetTitle>{t("appointmentInformation.title")}</FormSheetTitle>
       <Alert
         color="primary"
@@ -54,8 +54,11 @@ export function InformationCard() {
         </ListItem>
       </List>
       <Typography>
-        {t("appointmentInformation.closingGreeting")} <br />
-        {t("appointmentInformation.healthDepartment")}
+        <Trans
+          i18nKey="appointmentInformation.closingGreeting"
+          ns="officialMedicalService/appointment"
+          i18n={i18n}
+        />
       </Typography>
     </ContentSheet>
   );

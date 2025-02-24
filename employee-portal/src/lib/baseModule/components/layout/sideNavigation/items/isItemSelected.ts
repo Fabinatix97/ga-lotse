@@ -4,12 +4,12 @@
  */
 
 import {
-  SideNavigationItemWithoutSubItems,
+  SideNavigationLinkItem,
   SideNavigationSubItem,
 } from "@eshg/lib-employee-portal/types/sideNavigation";
 
 export function isItemSelected(
-  item: SideNavigationItemWithoutSubItems | SideNavigationSubItem,
+  item: SideNavigationLinkItem | SideNavigationSubItem,
   pathname: string,
 ) {
   return item.href !== "/"

@@ -22,7 +22,7 @@ export const VITEST_BASE_CONFIG: ViteUserConfig = {
       provider: "istanbul",
       all: true,
       reportsDirectory: `${VITEST_OUT_DIR}/coverage`,
-      reporter: ["html", "lcov"],
+      reporter: ["text-summary", "html"],
       include: ["src/**/*"],
       exclude: VITEST_COVERAGE_EXCLUDES,
     },

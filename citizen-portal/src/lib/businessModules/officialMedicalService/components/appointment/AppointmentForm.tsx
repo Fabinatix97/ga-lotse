@@ -11,6 +11,8 @@ import {
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import {
   ApiAppointment,
+  ApiAppointmentType,
+  ApiConcern,
   ApiSalutation,
   ApiTitle,
   PostCitizenProcedureRequest,
@@ -49,7 +51,14 @@ export interface AppointmentFormValues {
       city: string;
     };
   };
-  concern: string;
+  concern: Omit<
+    ApiConcern,
+    "version" | "visibleInOnlinePortal" | "appointmentType"
+  > & {
+    index: string;
+    appointmentType: OptionalFieldValue<ApiAppointmentType>;
+    standardDurationInMinutes: string;
+  };
   appointment?: ApiAppointment;
   confirmOnlineServices: boolean;
   confirmPrivacyNotice: boolean;
@@ -64,7 +73,16 @@ const STEPS: StepFactory<AppointmentFormValues>[] = [
 ];
 
 const INITIAL_VALUES: AppointmentFormValues = {
-  concern: "",
+  concern: {
+    index: "",
+    standardDurationInMinutes: "",
+    appointmentType: "",
+    categoryNameDe: "",
+    categoryNameEn: "",
+    highPriority: false,
+    nameDe: "",
+    nameEn: "",
+  },
   affectedPerson: {
     salutation: "",
     title: "",
@@ -119,7 +137,7 @@ export function AppointmentForm() {
             <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
               {(formikProps) => (
                 <FormPlus>
-                  {Outlet.name !== "AppointmentStepWrapper" ? (
+                  {currentStep !== STEPS.indexOf(AppointmentStepWrapper) + 1 ? (
                     <TwoColumnGrid
                       content={<Outlet {...formikProps} />}
                       sidePanel={<AppointmentFormSidePanel />}

@@ -6,5 +6,5 @@
 package de.eshg.testhelper;
 
 public interface TestHelperServiceResetAction {
-  void reset();
+  void reset() throws Exception;
 }

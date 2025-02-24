@@ -5,7 +5,11 @@ plugins {
 dependencies {
     implementation project(':rest-service-errors')
     implementation 'org.springframework:spring-web'
+
+    implementation platform('org.apache.tika:tika-bom:latest.release')
     implementation 'org.apache.tika:tika-core:latest.release'
+    implementation 'org.apache.tika:tika-parser-microsoft-module'
+
     implementation 'org.verapdf:validation-model-jakarta:latest.release'
     implementation 'de.cronn:reflection-util:latest.release'
     implementation 'org.apache.commons:commons-text:latest.release'

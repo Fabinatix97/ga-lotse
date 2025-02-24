@@ -3,22 +3,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBaseFeature, ApiUserRole } from "@eshg/base-api";
+import { ApiUserRole } from "@eshg/base-api";
 import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
-import { UseSideNavigationItemsResult } from "@eshg/lib-employee-portal/types/sideNavigation";
+import {
+  SideNavigationItem,
+  SideNavigationItemsProps,
+} from "@eshg/lib-employee-portal/types/sideNavigation";
 import { VaccinesOutlined } from "@mui/icons-material";
 import { isPlainObject } from "remeda";
 
-import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
-
 import { routes } from "./routes";
 
-export function useSideNavigationItems(
-  enabled: boolean,
-): UseSideNavigationItemsResult {
-  // their toggles
-  const isInboxEnabled = useIsNewFeatureEnabled(ApiBaseFeature.Inbox);
-
+export function resolveSideNavigationItems({
+  isInboxEnabled,
+}: SideNavigationItemsProps): SideNavigationItem[] {
   const SUB_NAVIGATION_ITEMS = [
     {
       name: "Vorgänge",
@@ -72,16 +70,12 @@ export function useSideNavigationItems(
     },
   ];
 
-  return {
-    isLoading: false,
-    items: enabled
-      ? [
-          {
-            name: "Impfberatung",
-            decorator: <VaccinesOutlined />,
-            subItems: SUB_NAVIGATION_ITEMS.filter(isPlainObject),
-          },
-        ]
-      : [],
-  };
+  return [
+    {
+      type: "SideNavigationParentItem",
+      name: "Impfberatung",
+      decorator: <VaccinesOutlined />,
+      subItems: SUB_NAVIGATION_ITEMS.filter(isPlainObject),
+    },
+  ];
 }

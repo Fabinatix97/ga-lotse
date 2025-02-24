@@ -5,6 +5,7 @@
 
 package de.eshg.base.testhelper;
 
+import de.eshg.base.config.DepartmentConfiguration;
 import de.eshg.base.icd10.persistence.entity.Icd10Code;
 import de.eshg.base.icd10.persistence.entity.Icd10Group;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
@@ -24,6 +25,8 @@ public class BaseDatabaseResetAction extends DatabaseResetAction {
 
   @Override
   protected String[] getTablesToExclude() {
-    return new String[] {Icd10Code.TABLE_NAME, Icd10Group.TABLE_NAME};
+    return new String[] {
+      DepartmentConfiguration.TABLE_NAME, Icd10Code.TABLE_NAME, Icd10Group.TABLE_NAME
+    };
   }
 }

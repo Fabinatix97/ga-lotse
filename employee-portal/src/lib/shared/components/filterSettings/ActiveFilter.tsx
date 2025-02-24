@@ -4,7 +4,7 @@
  */
 
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
-import { Chip, ChipDelete, Stack, Typography } from "@mui/joy";
+import { Chip, ChipDelete, List, ListItem, Stack, Typography } from "@mui/joy";
 import { useState } from "react";
 
 export interface ActiveFilter<TKey extends string = string> {
@@ -58,7 +58,14 @@ function ActiveFilterList<TKey extends string = string>(
 
   return (
     <Stack gap={1} data-testid="activeFilterList">
-      <Stack gap={1} flexDirection="row" flexWrap="wrap">
+      <Stack
+        aria-label="Filter"
+        component={List}
+        sx={{ "--List-padding": 0 }}
+        gap={1}
+        flexDirection="row"
+        flexWrap="wrap"
+      >
         {props.filterValues
           .slice(0, showAll ? props.filterValues.length : props.maxVisible)
           .map((filterValue) => (
@@ -89,6 +96,7 @@ function ActiveFilterChip<TKey extends string = string>(
 ) {
   return (
     <Chip
+      component={ListItem}
       variant={"soft"}
       color={"primary"}
       endDecorator={
@@ -98,6 +106,8 @@ function ActiveFilterChip<TKey extends string = string>(
       sx={{
         alignItems: "flex-start",
         gap: 0.75,
+        "--ListItem-paddingX": 0,
+        "--ListItem-paddingY": 0,
       }}
       slotProps={{
         label: {

@@ -5,12 +5,13 @@
 
 package de.eshg.lib.xlsximport;
 
+import de.eshg.file.common.CustomMediaTypes;
+import de.eshg.file.common.FileValidator;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Objects;
 import org.apache.poi.openxml4j.exceptions.NotOfficeXmlFileException;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -18,12 +19,15 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
 public class XlsxImport {
 
   private static final Logger log = LoggerFactory.getLogger(XlsxImport.class);
+
+  private static final String NOT_A_VALID_XLSX_ERROR_MESSAGE =
+      "The provided file is not a valid XLSX document.";
 
   private XlsxImport() {}
 
@@ -38,17 +42,8 @@ public class XlsxImport {
       C[] expectedColumns,
       SheetProcessor<T, C> sheetProcessor)
       throws IOException {
-    return processWorkbook(file.getResource(), maxNumberOfRows, expectedColumns, sheetProcessor);
-  }
-
-  public static <T, C extends XlsxColumn> T processWorkbook(
-      Resource resource,
-      int maxNumberOfRows,
-      C[] expectedColumns,
-      SheetProcessor<T, C> sheetProcessor)
-      throws IOException {
-    validateFileExistsAndHasCorrectType(resource);
-    try (InputStream inputStream = resource.getInputStream();
+    validateMediaType(FileValidator.validate(file));
+    try (InputStream inputStream = file.getInputStream();
         XSSFWorkbook workbook = new XSSFWorkbook(inputStream)) {
       validateSheet(workbook);
       Sheet sheet = workbook.getSheetAt(0);
@@ -64,18 +59,17 @@ public class XlsxImport {
       }
     } catch (NotOfficeXmlFileException e) {
       log.error("Failed to import from provided XLSX file", e);
-      throw new BadRequestException(
-          ErrorCode.INVALID_FILE, "The provided file is not a valid XLSX document.");
+      throw new BadRequestException(ErrorCode.INVALID_FILE, NOT_A_VALID_XLSX_ERROR_MESSAGE);
     }
   }
 
-  private static void validateFileExistsAndHasCorrectType(Resource resource) {
-    if (!resource.exists()) {
+  private static void validateMediaType(MediaType detectedMediaType) {
+    if (!CustomMediaTypes.APPLICATION_XLSX.equals(detectedMediaType)) {
       throw new BadRequestException(
-          ErrorCode.INVALID_FILE, "The file %s does not exist.".formatted(resource.getFilename()));
-    }
-    if (!Objects.requireNonNull(resource.getFilename()).endsWith(".xlsx")) {
-      throw new BadRequestException(ErrorCode.INVALID_FILE, "The file type is not xlsx.");
+          ErrorCode.INVALID_FILE,
+          NOT_A_VALID_XLSX_ERROR_MESSAGE,
+          "The detected media type %s is not %s"
+              .formatted(detectedMediaType, CustomMediaTypes.APPLICATION_XLSX_VALUE));
     }
   }
 

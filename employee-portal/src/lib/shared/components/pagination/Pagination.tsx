@@ -48,10 +48,18 @@ export function Pagination(props: Readonly<PaginationProps>) {
   }
 
   function goToPreviousPage() {
+    if (props.pageNumber === 0) {
+      return;
+    }
+
     props.onPageChange(props.pageNumber - 1);
   }
 
   function goToNextPage() {
+    if (props.pageNumber === lastPage) {
+      return;
+    }
+
     props.onPageChange(props.pageNumber + 1);
   }
 
@@ -96,14 +104,14 @@ export function Pagination(props: Readonly<PaginationProps>) {
         >
           <IconButton
             label={"Zur ersten Seite"}
-            disabled={isFirstPage}
+            ariaDisabled={isFirstPage}
             onClick={goToFirstPage}
           >
             <SkipPrevious />
           </IconButton>
           <IconButton
             label={"Zur vorherigen Seite"}
-            disabled={isFirstPage}
+            ariaDisabled={isFirstPage}
             onClick={goToPreviousPage}
           >
             <ChevronLeft />
@@ -135,14 +143,14 @@ export function Pagination(props: Readonly<PaginationProps>) {
         >
           <IconButton
             label={"Zur nächsten Seite"}
-            disabled={isLastPage}
+            ariaDisabled={isLastPage}
             onClick={goToNextPage}
           >
             <ChevronRight />
           </IconButton>
           <IconButton
             label={"Zur letzten Seite"}
-            disabled={isLastPage}
+            ariaDisabled={isLastPage}
             onClick={goToLastPage}
           >
             <SkipNext />
@@ -156,14 +164,14 @@ export function Pagination(props: Readonly<PaginationProps>) {
         >
           <IconButton
             label={"Zur vorherigen Seite"}
-            disabled={isFirstPage}
+            ariaDisabled={isFirstPage}
             onClick={goToPreviousPage}
           >
             <ChevronLeft />
           </IconButton>
           <IconButton
             label={"Zur nächsten Seite"}
-            disabled={isLastPage}
+            ariaDisabled={isLastPage}
             onClick={goToNextPage}
           >
             <ChevronRight />

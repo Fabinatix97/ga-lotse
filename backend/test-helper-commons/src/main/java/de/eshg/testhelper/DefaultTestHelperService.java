@@ -76,7 +76,9 @@ public class DefaultTestHelperService implements TestHelperWithDatabaseService {
   public Instant reset() throws Exception {
     environmentConfig.assertIsNotProduction();
     resetResettableProperties();
-    resetActions.forEach(TestHelperServiceResetAction::reset);
+    for (TestHelperServiceResetAction resetAction : resetActions) {
+      resetAction.reset();
+    }
     return Instant.now(clock);
   }
 

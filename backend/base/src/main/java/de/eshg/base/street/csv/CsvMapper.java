@@ -8,28 +8,30 @@ package de.eshg.base.street.csv;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.util.List;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 
-public class CsvMapper {
+public final class CsvMapper {
 
-  public static <T> List<T> csvToBeans(Resource resource, Class<T> clazz) {
-    try (BufferedReader reader = Files.newBufferedReader(resource.getFile().toPath())) {
+  private CsvMapper() {}
+
+  public static <T> List<T> csvToBeans(byte[] resource, Class<T> clazz) {
+    try (BufferedReader reader =
+        new BufferedReader(new InputStreamReader(new ByteArrayInputStream(resource)))) {
       return csvToBeans(reader, clazz);
     } catch (IOException e) {
-      throw new UncheckedIOException(
-          "Could not parse CSV file '%s".formatted(resource.getFilename()), e);
+      throw new UncheckedIOException(e);
     }
   }
 
-  public static <T> List<T> csvToBeans(File file, Class<T> clazz) {
-    return csvToBeans(new FileSystemResource(file), clazz);
+  public static <T> List<T> csvToBeans(File file, Class<T> clazz) throws IOException {
+    return csvToBeans(Files.readAllBytes(file.toPath()), clazz);
   }
 
   public static <T> List<T> csvToBeans(Reader reader, Class<T> clazz) {

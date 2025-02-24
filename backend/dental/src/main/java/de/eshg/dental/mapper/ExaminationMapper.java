@@ -36,6 +36,7 @@ public final class ExaminationMapper {
         prophylaxisSession.getDateAndTime(),
         ProphylaxisSessionMapper.mapToDto(prophylaxisSession.getType()),
         prophylaxisSession.isScreening(),
+        DentitionTypeMapper.mapToDto(prophylaxisSession.getDentitionType()),
         prophylaxisSession.hasFluoridationVarnish(),
         examination.getChild().isFluoridationConsentCurrentlyGivenOptionally(),
         examination.getNote(),
@@ -80,6 +81,15 @@ public final class ExaminationMapper {
 
   public static Map<Tooth, ToothDiagnosis> mapToDomain(List<ToothDiagnosisDto> toothDiagnoses) {
     return toothDiagnoses.stream()
+        .collect(
+            StreamUtil.toLinkedHashMap(
+                toothDiagnosis -> mapToDomain(toothDiagnosis.tooth()),
+                ExaminationMapper::mapResultsToDomain));
+  }
+
+  public static Map<Tooth, ToothDiagnosis> mapToDomain(
+      Map<ToothDto, ToothDiagnosisDto> toothDiagnosesDto) {
+    return toothDiagnosesDto.values().stream()
         .collect(
             StreamUtil.toLinkedHashMap(
                 toothDiagnosis -> mapToDomain(toothDiagnosis.tooth()),

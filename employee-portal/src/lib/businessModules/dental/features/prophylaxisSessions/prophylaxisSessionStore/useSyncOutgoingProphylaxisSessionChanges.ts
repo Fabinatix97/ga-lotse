@@ -92,9 +92,9 @@ function mapScreeningResult(
 ): ApiExaminationResult {
   return {
     type: "ScreeningExaminationResult",
+    dentitionType: screeningResult.dentitionType,
     fluorideVarnishApplied: screeningResult.fluorideVarnishApplied,
     oralHygieneStatus: screeningResult.oralHygieneStatus,
-    dentitionType: screeningResult.dentitionType,
     toothDiagnoses: Object.values(screeningResult.toothDiagnoses),
   };
 }

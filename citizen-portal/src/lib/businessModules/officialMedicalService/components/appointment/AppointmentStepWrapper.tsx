@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiAppointmentType } from "@eshg/official-medical-service-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { isAfter, isEqual } from "date-fns";
 import { useFormikContext } from "formik";
@@ -23,9 +24,13 @@ function isDateCurrentDateOrGreater(date: Date) {
 }
 
 export function AppointmentStepWrapper() {
-  const { setFieldValue } = useFormikContext<AppointmentFormValues>();
+  const { setFieldValue, values } = useFormikContext<AppointmentFormValues>();
   const [{ data: freeAppointments }] = useSuspenseQueries({
-    queries: [useGetFreeAppointmentsForCitizen()],
+    queries: [
+      useGetFreeAppointmentsForCitizen(
+        values.concern.appointmentType as ApiAppointmentType,
+      ),
+    ],
   });
   const [isInitialDate, setIsInitialDate] = useState(false);
 

@@ -20,6 +20,7 @@ import {
   AppointmentBlockGroup,
 } from "@/lib/businessModules/officialMedicalService/api/models/AppointmentBlockGroup";
 import { useGetAppointmentBlockGroupsQuery } from "@/lib/businessModules/officialMedicalService/api/queries/appointmentBlocksApi";
+import { APPOINTMENT_TYPES } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/constants";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { NoAppointmentBlocksAvailable } from "@/lib/shared/components/appointmentBlocks/NoAppointmentBlocksAvailable";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
@@ -50,6 +51,11 @@ const COLUMNS = [
           )
         : formatCalendarWeek(props.getValue()),
     enableSorting: false,
+  }),
+  columnHelper.accessor("type", {
+    header: "Art",
+    cell: (props) => APPOINTMENT_TYPES[props.getValue()],
+    enableSorting: true,
   }),
   columnHelper.accessor("start", {
     header: "Start",

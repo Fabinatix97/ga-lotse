@@ -15,9 +15,11 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.io.Serial;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.data.domain.Sort;
@@ -40,8 +42,16 @@ public class WaitingRoomSpecification implements Specification<StiProtectionProc
       Root<StiProtectionProcedure> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
     List<Predicate> conjunctions = defaultProcedureFilters(root, criteriaBuilder);
 
-    query.orderBy(getSortOrder(root, criteriaBuilder));
+    query.orderBy(getSortOrder(root, criteriaBuilder), createdAt(root, criteriaBuilder));
     return criteriaBuilder.and(conjunctions.toArray(Predicate[]::new));
+  }
+
+  private Order createdAt(Root<StiProtectionProcedure> root, CriteriaBuilder criteriaBuilder) {
+    Path<Instant> createdAt = root.get(Procedure_.createdAt);
+    return switch (sortDirection) {
+      case ASC -> criteriaBuilder.asc(createdAt);
+      case DESC -> criteriaBuilder.desc(createdAt);
+    };
   }
 
   private List<Predicate> defaultProcedureFilters(

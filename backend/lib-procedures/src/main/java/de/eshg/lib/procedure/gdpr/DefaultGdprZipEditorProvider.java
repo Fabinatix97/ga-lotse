@@ -20,6 +20,7 @@ public class DefaultGdprZipEditorProvider extends AbstractGdprZipEditorProvider 
     super(resource);
   }
 
+  @Override
   protected ZipEditor createSpecificFilter() {
     return (jsonNode, zipFileWrapper) -> {};
   }

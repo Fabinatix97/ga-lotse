@@ -5,10 +5,7 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
-import {
-  SideNavigationItem,
-  UseSideNavigationItemsResult,
-} from "@eshg/lib-employee-portal/types/sideNavigation";
+import { SideNavigationItem } from "@eshg/lib-employee-portal/types/sideNavigation";
 import { isPlainObject } from "remeda";
 
 import { StethoscopeIcon } from "@/lib/businessModules/officialMedicalService/components/icons/StethoscopeIcon";
@@ -16,6 +13,7 @@ import { routes } from "@/lib/businessModules/officialMedicalService/shared/rout
 
 const NAVIGATION_ITEMS: SideNavigationItem[] = [
   {
+    type: "SideNavigationParentItem",
     name: "Amtsärztl. Dienst",
     decorator: <StethoscopeIcon />,
     subItems: [
@@ -38,11 +36,6 @@ const NAVIGATION_ITEMS: SideNavigationItem[] = [
   },
 ];
 
-export function useSideNavigationItems(
-  enabled: boolean,
-): UseSideNavigationItemsResult {
-  return {
-    isLoading: false,
-    items: enabled ? NAVIGATION_ITEMS : [],
-  };
+export function resolveSideNavigationItems(): SideNavigationItem[] {
+  return NAVIGATION_ITEMS;
 }

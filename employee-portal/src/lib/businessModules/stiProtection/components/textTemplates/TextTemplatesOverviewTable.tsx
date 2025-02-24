@@ -41,12 +41,12 @@ export function TextTemplatesOverviewTable() {
 
   const addMutation = useCreateTextTemplate({
     onSuccess: () => {
-      snackbar.confirmation("Die Vorlage wurde erzeugt.");
+      snackbar.confirmation("Die Vorlage wurde erstellt.");
     },
   });
   const updateMutation = useUpdateTextTemplate({
     onSuccess: () => {
-      snackbar.confirmation("Der Vorlage wurde aktualisiert.");
+      snackbar.confirmation("Die Vorlage wurde aktualisiert.");
     },
   });
   const deleteMutation = useDeleteTextTemplate({

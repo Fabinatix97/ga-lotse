@@ -83,7 +83,7 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
     togglePresenceStatus(sharePresence);
 
     if (matrixClient && isClientPrepared) {
-      if (!sharePresence) {
+      if (sharePresence) {
         await setPresenceOffline(matrixClient);
       } else {
         await setPresenceOnline(matrixClient);

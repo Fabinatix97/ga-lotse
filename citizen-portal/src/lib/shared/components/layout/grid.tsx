@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+"use client";
+
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Grid, Stack } from "@mui/joy";
 import { ReactNode } from "react";

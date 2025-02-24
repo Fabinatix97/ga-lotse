@@ -149,23 +149,6 @@ tasks.register('outdatedDependencies', PnpmTask) {
   args = ['outdated', '--recursive']
 }
 
-tasks.register('testCoverage', PnpmTask) {
-  environment = ['TZ': 'UTC']
-  inputs.file "${rootDir}/config/tsconfig.base.json"
-  inputs.file "${rootDir}/config/vitest.base.ts"
-  inputs.file "${rootDir}/vitest.config.ts"
-  subprojects {
-    if (file("${projectDir}/vitest.config.ts").exists()) {
-      dependsOn project.tasks.named('prepareEnvironment')
-      inputs.file "${projectDir}/tsconfig.json"
-      inputs.file "${projectDir}/vitest.config.ts"
-      inputs.dir "${projectDir}/src"
-    }
-  }
-  outputs.dir rootProject.layout.buildDirectory.dir('vitest')
-  args = ['vitest', 'run', '--coverage', '--silent']
-}
-
 tasks.register('clean') {
   dependsOn 'cleanDependencies'
   delete layout.buildDirectory

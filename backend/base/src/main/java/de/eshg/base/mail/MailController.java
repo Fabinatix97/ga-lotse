@@ -5,9 +5,8 @@
 
 package de.eshg.base.mail;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
-import de.eshg.base.department.DepartmentConfiguration;
+import de.eshg.base.config.DepartmentConfiguration;
+import de.eshg.base.config.DepartmentConfigurationService;
 import de.eshg.base.user.UserService;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.rest.service.error.BadRequestException;
@@ -15,6 +14,7 @@ import de.eshg.rest.service.security.CurrentUserHelper;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
@@ -27,7 +27,6 @@ import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,29 +39,27 @@ public class MailController implements MailApi {
 
   private final AuditLogger auditLogger;
   private final UserService userService;
-  private final DepartmentConfiguration departmentConfiguration;
+  private final DepartmentConfigurationService departmentConfigurationService;
   private final JavaMailSender mailSender;
   private final TemplateEngine templateEngine;
   private final String defaultFrom;
   private final String citizenPortalUrl;
-  private final Supplier<String> logoBase64PngSupplier;
 
   public MailController(
       AuditLogger auditLogger,
       UserService userService,
-      DepartmentConfiguration departmentConfiguration,
+      DepartmentConfigurationService departmentConfigurationService,
       JavaMailSender mailSender,
       TemplateEngine templateEngine,
       @Value("${eshg.mail.noreply}") String defaultFrom,
       @Value("${eshg.citizen-portal.reverse-proxy.url}") String citizenPortalUrl) {
     this.auditLogger = auditLogger;
     this.userService = userService;
-    this.departmentConfiguration = departmentConfiguration;
+    this.departmentConfigurationService = departmentConfigurationService;
     this.mailSender = mailSender;
     this.templateEngine = templateEngine;
     this.defaultFrom = defaultFrom;
     this.citizenPortalUrl = citizenPortalUrl;
-    logoBase64PngSupplier = Suppliers.memoize(() -> svgToBase64Png(departmentConfiguration.logo()));
   }
 
   @Override
@@ -92,15 +89,18 @@ public class MailController implements MailApi {
               .getUserById(request.userId())
               .orElseThrow(() -> new BadRequestException("User does not exist."));
 
+      DepartmentConfiguration departmentConfiguration =
+          departmentConfigurationService.getDepartmentConfiguration();
+
       Context context = new Context();
       context.setVariable("notificationMessage", request.notificationMessage());
       context.setVariable("firstName", addressee.getFirstName());
       context.setVariable("lastName", addressee.getLastName());
-      context.setVariable("departmentName", departmentConfiguration.name());
-      context.setVariable("departmentStreet", departmentConfiguration.street());
-      context.setVariable("departmentHouseNumber", departmentConfiguration.houseNumber());
-      context.setVariable("departmentCity", departmentConfiguration.city());
-      context.setVariable("departmentPostalCode", departmentConfiguration.postalCode());
+      context.setVariable("departmentName", departmentConfiguration.getName());
+      context.setVariable("departmentStreet", departmentConfiguration.getStreet());
+      context.setVariable("departmentHouseNumber", departmentConfiguration.getHouseNumber());
+      context.setVariable("departmentCity", departmentConfiguration.getCity());
+      context.setVariable("departmentPostalCode", departmentConfiguration.getPostalCode());
 
       String process = templateEngine.process("user-notification-mail", context);
 
@@ -110,7 +110,8 @@ public class MailController implements MailApi {
       helper.setFrom(defaultFrom);
       helper.setTo(addressee.getEmail());
       helper.setSubject(
-          "(GA-Lotse %s) Neue Benachrichtigung".formatted(departmentConfiguration.abbreviation()));
+          "(GA-Lotse %s) Neue Benachrichtigung"
+              .formatted(departmentConfiguration.getAbbreviation()));
       helper.setText(process, true);
       mailSender.send(message);
       writeAuditLog(
@@ -121,12 +122,14 @@ public class MailController implements MailApi {
   }
 
   String applyHtmlTemplate(String subject, String content) {
+    DepartmentConfiguration departmentConfiguration =
+        departmentConfigurationService.getDepartmentConfiguration();
     Context context = new Context();
     context.setVariable("title", subject);
     context.setVariable("content", content);
-    context.setVariable("departmentName", departmentConfiguration.name());
-    context.setVariable("departmentCity", departmentConfiguration.city());
-    context.setVariable("logoBase64Png", logoBase64PngSupplier.get());
+    context.setVariable("departmentName", departmentConfiguration.getName());
+    context.setVariable("departmentCity", departmentConfiguration.getCity());
+    context.setVariable("logoBase64Png", svgToBase64Png(departmentConfiguration.getLogo()));
     context.setVariable("citizenPortalUrl", citizenPortalUrl);
     context.setVariable("year", Calendar.getInstance().get(Calendar.YEAR));
 
@@ -141,9 +144,10 @@ public class MailController implements MailApi {
     auditLogger.log("Mail", "Versand", attributes);
   }
 
-  public static String svgToBase64Png(Resource svg) {
-    try (ByteArrayOutputStream pngStream = new ByteArrayOutputStream()) {
-      TranscoderInput transcoderInput = new TranscoderInput(svg.getInputStream());
+  private static String svgToBase64Png(byte[] svg) {
+    try (ByteArrayInputStream svgInputStream = new ByteArrayInputStream(svg);
+        ByteArrayOutputStream pngStream = new ByteArrayOutputStream()) {
+      TranscoderInput transcoderInput = new TranscoderInput(svgInputStream);
       TranscoderOutput transcoderOutput = new TranscoderOutput(pngStream);
       PNGTranscoder pngTranscoder = new PNGTranscoder();
       pngTranscoder.transcode(transcoderInput, transcoderOutput);

@@ -73,7 +73,7 @@ public class AnalysisService {
   private static final String PRIMARY_ATTRIBUTE = "primaryAttribute";
   private static final String SECONDARY_ATTRIBUTE = "secondaryAttribute";
   private static final String ERROR_MESSAGE_ATTRIBUTE_TYPE =
-      "'%s': %ss require an attribute of type BOOLEAN, TEXT or VALUE_WITH_OPTIONS as '%s'";
+      "'%s': %ss require an attribute of type BOOLEAN, INTEGER, TEXT or VALUE_WITH_OPTIONS as '%s'";
 
   private final EvaluationService evaluationService;
   private final GeoShapeService geoShapeService;
@@ -234,7 +234,7 @@ public class AnalysisService {
             barChartConfiguration.primaryAttribute(), aggregationResult);
 
     String configName = "BarChartConfiguration";
-    validateTableColumBooleanTextOrValueOption(
+    validateTableColumBooleanIntegerTextOrValueOption(
         tableColumnPrimary,
         ERROR_MESSAGE_ATTRIBUTE_TYPE.formatted(name, configName, PRIMARY_ATTRIBUTE));
 
@@ -248,7 +248,7 @@ public class AnalysisService {
       TableColumn tableColumnSecondary =
           AggregationResultUtil.getTableColumn(
               barChartConfiguration.secondaryAttribute(), aggregationResult);
-      validateTableColumBooleanTextOrValueOption(
+      validateTableColumBooleanIntegerTextOrValueOption(
           tableColumnSecondary,
           ERROR_MESSAGE_ATTRIBUTE_TYPE.formatted(name, configName, SECONDARY_ATTRIBUTE));
       validateThatTableColumnsAreDifferent(tableColumnPrimary, tableColumnSecondary, name);
@@ -313,7 +313,7 @@ public class AnalysisService {
       TableColumn tableColumnSecondary =
           AggregationResultUtil.getTableColumn(
               histogramChartConfiguration.secondaryAttribute(), aggregationResult);
-      validateTableColumBooleanTextOrValueOption(
+      validateTableColumBooleanIntegerTextOrValueOption(
           tableColumnSecondary,
           ERROR_MESSAGE_ATTRIBUTE_TYPE.formatted(name, configName, SECONDARY_ATTRIBUTE));
 
@@ -457,9 +457,9 @@ public class AnalysisService {
         AggregationResultUtil.getTableColumn(
             pieChartConfigurationDto.attribute(), aggregationResult);
 
-    validateTableColumBooleanTextOrValueOption(
+    validateTableColumBooleanIntegerTextOrValueOption(
         tableColumnPrimary,
-        "'%s': PieChartConfigurations require an attribute of type BOOLEAN, TEXT or VALUE_WITH_OPTIONS"
+        "'%s': PieChartConfigurations require an attribute of type BOOLEAN, INTEGER, TEXT or VALUE_WITH_OPTIONS"
             .formatted(name));
   }
 
@@ -498,7 +498,7 @@ public class AnalysisService {
           AggregationResultUtil.getTableColumn(
               chartConfiguration.secondaryAttribute(), aggregationResult);
 
-      validateTableColumBooleanTextOrValueOption(
+      validateTableColumBooleanIntegerTextOrValueOption(
           tableColumnSecondary,
           ERROR_MESSAGE_ATTRIBUTE_TYPE.formatted(name, configName, SECONDARY_ATTRIBUTE));
     }
@@ -512,11 +512,12 @@ public class AnalysisService {
     }
   }
 
-  private static void validateTableColumBooleanTextOrValueOption(
+  private static void validateTableColumBooleanIntegerTextOrValueOption(
       TableColumn tableColumn, String errorMessage) {
-    if (!tableColumn.getValueType().equals(TableColumnValueType.TEXT)
-        && !tableColumn.getValueType().equals(TableColumnValueType.VALUE_WITH_OPTIONS)
-        && !tableColumn.getValueType().equals(TableColumnValueType.BOOLEAN)) {
+    if (!tableColumn.getValueType().equals(TableColumnValueType.BOOLEAN)
+        && !tableColumn.getValueType().equals(TableColumnValueType.INTEGER)
+        && !tableColumn.getValueType().equals(TableColumnValueType.TEXT)
+        && !tableColumn.getValueType().equals(TableColumnValueType.VALUE_WITH_OPTIONS)) {
       throw new BadRequestException(errorMessage);
     }
   }

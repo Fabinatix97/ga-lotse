@@ -11,9 +11,11 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import de.eshg.base.department.GetDepartmentInfoResponse;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
+import de.eshg.lib.appointmentblock.AppointmentTypeService;
 import de.eshg.lib.appointmentblock.MappingUtil;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
+import de.eshg.lib.appointmentblock.api.GetAppointmentTypesResponse;
 import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.officialmedicalservice.citizenpublic.api.GetOpeningHoursResponse;
@@ -33,6 +35,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,6 +59,7 @@ public class CitizenPublicController {
   public static final String PRIVACY_NOTICE_URL = "/privacy-notice";
   public static final String PRIVACY_POLICY_URL = "/privacy-policy";
   public static final String CONCERNS_URL = "/concerns";
+  public static final String APPOINTMENT_TYPES_URL = "/appointment-types";
 
   private final OpeningHoursProperties openingHoursProperties;
   private final DepartmentInfoService departmentInfoService;
@@ -65,6 +69,7 @@ public class CitizenPublicController {
   private final Resource privacyNotice;
   private final Resource privacyPolicy;
   private final ConcernService concernService;
+  private final AppointmentTypeService appointmentTypeService;
 
   public CitizenPublicController(
       OpeningHoursProperties openingHoursProperties,
@@ -74,7 +79,8 @@ public class CitizenPublicController {
       Clock clock,
       @Value("${de.eshg.official-medical-service.privacy-notice-location}") Resource privacyNotice,
       @Value("${de.eshg.official-medical-service.privacy-policy-location}") Resource privacyPolicy,
-      ConcernService concernService) {
+      ConcernService concernService,
+      AppointmentTypeService appointmentTypeService) {
     this.openingHoursProperties = openingHoursProperties;
     this.departmentInfoService = departmentInfoService;
     this.citizenProcedureService = citizenProcedureService;
@@ -83,6 +89,7 @@ public class CitizenPublicController {
     this.privacyNotice = privacyNotice;
     this.privacyPolicy = privacyPolicy;
     this.concernService = concernService;
+    this.appointmentTypeService = appointmentTypeService;
   }
 
   @Operation(summary = "Get opening hours.")
@@ -145,5 +152,12 @@ public class CitizenPublicController {
   @GetMapping(path = CONCERNS_URL)
   public GetConcernsResponse getVisibleConcerns() {
     return concernService.getConcernsVisibleInOnlinePortal();
+  }
+
+  @Operation(summary = "Gets all Appointment Types")
+  @GetMapping(path = APPOINTMENT_TYPES_URL)
+  @Transactional(readOnly = true)
+  public GetAppointmentTypesResponse getAppointmentTypesForCitizen() {
+    return appointmentTypeService.getAppointmentTypes();
   }
 }

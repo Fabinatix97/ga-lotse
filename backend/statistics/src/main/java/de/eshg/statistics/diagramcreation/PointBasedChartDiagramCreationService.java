@@ -30,10 +30,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -44,7 +44,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PointBasedChartDiagramCreationService
     extends AbstractChartDiagramCreationService<
-        Map<String, List<DataPointHolder>>, PointBasedChartConfigurationDto> {
+        Map<Object, List<DataPointHolder>>, PointBasedChartConfigurationDto> {
+
+  private static final String EMPTY_KEY = "";
+
   public PointBasedChartDiagramCreationService(
       AnalysisService analysisService,
       AnalysisRepository analysisRepository,
@@ -54,8 +57,46 @@ public class PointBasedChartDiagramCreationService
   }
 
   @Override
-  Map<String, List<DataPointHolder>> initializeChartDataHolder() {
-    return new HashMap<>();
+  @Transactional(readOnly = true)
+  public Map<Object, List<DataPointHolder>> initializeChartDataHolder(
+      UUID analysisId,
+      PointBasedChartConfigurationDto pointBasedChartConfiguration,
+      List<TableColumnFilterParameter> filters) {
+    Analysis analysis = analysisService.getAnalysisInternal(analysisId);
+    AbstractAggregationResult aggregationResult = analysis.getAggregationResult();
+
+    AggregationResultUtil.validateColumnFilters(filters, aggregationResult);
+
+    TableColumn secondaryTableColumn =
+        AggregationResultUtil.getTableColumn(
+            pointBasedChartConfiguration.secondaryAttribute(), aggregationResult);
+
+    Map<Object, List<DataPointHolder>> chartDataHolder =
+        createChartDataHolderMap(secondaryTableColumn);
+    getKeysForSecondaryTableColumn(secondaryTableColumn)
+        .forEach(key -> chartDataHolder.put(key, new ArrayList<>()));
+
+    return chartDataHolder;
+  }
+
+  private static Map<Object, List<DataPointHolder>> createChartDataHolderMap(
+      TableColumn secondaryTableColumn) {
+    if (secondaryTableColumn == null) {
+      return new LinkedHashMap<>();
+    } else {
+      return switch (secondaryTableColumn.getValueType()) {
+        case BOOLEAN, VALUE_WITH_OPTIONS -> new LinkedHashMap<>();
+        default -> new TreeMap<>();
+      };
+    }
+  }
+
+  private static List<String> getKeysForSecondaryTableColumn(TableColumn secondaryTableColumn) {
+    if (secondaryTableColumn == null) {
+      return List.of(EMPTY_KEY);
+    } else {
+      return getKeysForBooleanOrValueOptionsList(secondaryTableColumn);
+    }
   }
 
   @Override
@@ -65,17 +106,13 @@ public class PointBasedChartDiagramCreationService
       PointBasedChartConfigurationDto pointBasedChartConfiguration,
       List<TableColumnFilterParameter> filters,
       int page,
-      Map<String, List<DataPointHolder>> chartDataHolder) {
+      Map<Object, List<DataPointHolder>> chartDataHolder) {
     Analysis analysis = analysisService.getAnalysisInternal(analysisId);
     AbstractAggregationResult aggregationResult = analysis.getAggregationResult();
 
     TableColumn secondaryTableColumn =
         AggregationResultUtil.getTableColumn(
             pointBasedChartConfiguration.secondaryAttribute(), aggregationResult);
-    if (page == 0) {
-      AggregationResultUtil.validateColumnFilters(filters, aggregationResult);
-      initiallyFillPointBasedChartMap(chartDataHolder, secondaryTableColumn);
-    }
 
     TableColumn xTableColumn =
         AggregationResultUtil.getTableColumn(
@@ -98,12 +135,6 @@ public class PointBasedChartDiagramCreationService
                 tableRow, chartDataHolder, xTableColumn, yTableColumn, secondaryTableColumn));
   }
 
-  private static void initiallyFillPointBasedChartMap(
-      Map<String, List<DataPointHolder>> chartDataHolder, TableColumn secondaryTableColumn) {
-    Set<String> secondaryKeys = getKeysForBooleanOrValueOption(secondaryTableColumn);
-    secondaryKeys.forEach(key -> chartDataHolder.put(key, new ArrayList<>()));
-  }
-
   private static List<Specification<TableRow>> getNotNullSpecificationsForDataPointCharts(
       TableColumn xTableColumn, TableColumn yTableColumn, TableColumn secondaryTableColumn) {
     List<Specification<TableRow>> notNullSpecifications = new ArrayList<>();
@@ -122,7 +153,7 @@ public class PointBasedChartDiagramCreationService
 
   private static void addTableRowToCollectedPointBasedChartData(
       TableRow tableRow,
-      Map<String, List<DataPointHolder>> chartDataHolder,
+      Map<Object, List<DataPointHolder>> chartDataHolder,
       TableColumn xTableColumn,
       TableColumn yTableColumn,
       TableColumn secondaryTableColumn) {
@@ -133,16 +164,14 @@ public class PointBasedChartDiagramCreationService
         getValueAsBigDecimal(yTableColumn.getValueType(), getCellEntry(tableRow, yTableColumn));
 
     if (secondaryTableColumn == null) {
-      chartDataHolder
-          .computeIfAbsent("", key -> new ArrayList<>())
-          .add(new DataPointHolder(tableRow.getId(), xValue, yValue, null));
+      chartDataHolder.get(EMPTY_KEY).add(new DataPointHolder(tableRow.getId(), xValue, yValue));
     } else {
       CellEntry secondaryCellEntry = getCellEntry(tableRow, secondaryTableColumn);
-      String secondaryKey = getKeyForCellEntryBooleanTextOrValueOption(secondaryCellEntry);
+      Object secondaryKey = getKeyForCellEntryBooleanIntegerTextOrValueOption(secondaryCellEntry);
       if (secondaryKey != null) {
         chartDataHolder
             .computeIfAbsent(secondaryKey, key -> new ArrayList<>())
-            .add(new DataPointHolder(tableRow.getId(), xValue, yValue, secondaryKey));
+            .add(new DataPointHolder(tableRow.getId(), xValue, yValue));
       }
     }
   }
@@ -153,7 +182,7 @@ public class PointBasedChartDiagramCreationService
       UUID analysisId,
       PointBasedChartConfigurationDto pointBasedChartConfiguration,
       AddDiagramRequest addDiagramRequest,
-      Map<String, List<DataPointHolder>> chartDataHolder) {
+      Map<Object, List<DataPointHolder>> chartDataHolder) {
     Analysis analysis = analysisService.getAnalysisInternal(analysisId);
 
     Comparator<DataPointHolder> comparator =
@@ -168,32 +197,27 @@ public class PointBasedChartDiagramCreationService
     List<DataPointGroup> dataPointGroups = new ArrayList<>();
     if (pointBasedChartConfiguration.secondaryAttribute() == null) {
       List<DataPoint> dataPoints =
-          chartDataHolder.computeIfAbsent("", key -> new ArrayList<>()).stream()
-              .sorted(comparator)
-              .map(mapFunction)
-              .toList();
+          chartDataHolder.get(EMPTY_KEY).stream().sorted(comparator).map(mapFunction).toList();
       DataPointGroup dataPointGroup = new DataPointGroup();
       dataPointGroup.addDataPoints(dataPoints);
       dataPointGroups.add(dataPointGroup);
       evaluatedDataAmount.addAndGet(dataPoints.size());
     } else {
-      chartDataHolder.keySet().stream()
-          .sorted()
+      chartDataHolder
+          .keySet()
           .forEach(
               key -> {
                 List<DataPoint> dataPoints =
                     chartDataHolder.get(key).stream().sorted(comparator).map(mapFunction).toList();
                 DataPointGroup dataPointGroup = new DataPointGroup();
-                dataPointGroup.setKey(key);
+                dataPointGroup.setKey(String.valueOf(key));
                 dataPointGroup.addDataPoints(dataPoints);
                 dataPointGroups.add(dataPointGroup);
                 evaluatedDataAmount.addAndGet(dataPoints.size());
               });
     }
 
-    if (pointBasedChartConfiguration
-            instanceof ScatterChartConfigurationDto scatterChartConfigurationDto
-        && scatterChartConfigurationDto.trendLine()) {
+    if (pointBasedChartConfiguration instanceof ScatterChartConfigurationDto) {
       dataPointGroups.forEach(
           dataPointGroup -> dataPointGroup.setTrendLine(determineTrendLine(dataPointGroup)));
     }

@@ -22,8 +22,10 @@ import org.springframework.web.service.annotation.GetExchange;
 
 public interface TaskListApi {
 
-  GetTasksSortByDto DASHBOARD_SORT_BY = GetTasksSortByDto.PRIORITY;
+  int MAXIMUM_AGGREGATION_PAGE_NUMBER = 10;
+  int MAXIMUM_AGGREGATION_PAGE_SIZE = 200;
   int DASHBOARD_LIMIT = 10;
+  GetTasksSortByDto DASHBOARD_SORT_BY = GetTasksSortByDto.PRIORITY;
 
   class QueryParameter {
     private QueryParameter() {}
@@ -50,6 +52,6 @@ public interface TaskListApi {
       @InlineParameterObject @ParameterObject @Valid GetTasksSortOptions sortOptions,
       @RequestParam(name = QueryParameter.LIMIT, required = false, defaultValue = "50")
           @Min(1)
-          @Max(200)
+          @Max((MAXIMUM_AGGREGATION_PAGE_NUMBER + 1) * MAXIMUM_AGGREGATION_PAGE_SIZE)
           Integer limit);
 }

@@ -1,0 +1,67 @@
+{
+  "common": {
+    "appointment_booking_title": "Book appointment",
+    "required_title": "*Required field",
+    "current_step": "Step {{currentStep}} of {{totalSteps}}",
+    "hiv_sti_consultation": "HIV / STI Consultation",
+    "sex_work": "Sex work"
+  },
+  "time_slot": {
+    "title": "Available Appointments",
+    "consent_note_title": "Consent",
+    "consent_note_message": "Derpy merpus pee derpler berps! Perp sherper herp terp herpy derpler. Sherper merp herpler herp pee. Derpler terpus, mer re berp der perp se?",
+    "no_appointments_available": "There are currently no appointments available",
+    "try_later": "We will add more appointments shortly. Please try again at a later date"
+  },
+  "personal_data": {
+    "title": "Personal Data",
+    "fields": {
+      "first_name": "First Name",
+      "first_name_required": "Please enter your first name.",
+      "last_name": "Last Name",
+      "last_name_required": "Please enter your last name.",
+      "date_of_birth": "Date of Birth",
+      "date_of_birth_required": "Please enter your date of birth.",
+      "phone_numbers": "Phone",
+      "email_addresses": "Email Address",
+      "email_addresses_required": "Please enter your email address.",
+      "confirm_online_services": "I confirm that I wish to use the online services for vaccination consultation and receive the necessary emails.",
+      "confirm_online_services_required": "Please provide consent to continue."
+    }
+  },
+  "appointment_calendar": {
+    "required_appointment": "Please select an appointment",
+    "required_day": "Please select a day",
+    "month_selection": "Date of calendar month",
+    "next_month": "next month",
+    "prev_month": "previous month",
+    "list_label": "Available times *",
+    "calendar_label": "Date *",
+    "available": "available"
+  },
+  "appointment_info_section": {
+    "title": "Appointment Information",
+    "alert_header": "Preparations for the Appointment",
+    "alert_message": "Please bring your International Certificate of Vaccination or Prophylaxis (yellow card)",
+    "info_text": "You will receive an <t1>appointment confirmation</t1> via email in <t1>the next few minutes</t1>. All information about the appointment is included. You will also have the option to change or cancel the appointment.",
+    "required_documents_header": "Necessary documents that you should bring to the appointment are:",
+    "list_item_id_card": "Passport or identity card",
+    "list_item_vaccination_card": "International Certificate of Vaccination or Prophylaxis (yellow card)",
+    "closing_greeting": "Sincerely,",
+    "health_department": "Your Health Department"
+  },
+  "confirmation_section": {
+    "title": "Appointment Booking",
+    "submit": "Book Appointment",
+    "on_prev_step": "Back",
+    "on_cancel": "Cancel",
+    "fields": {
+      "confirm_privacy_notice": "I accept the data protection notice.",
+      "privacy_notice": "Go to the data protection notice",
+      "confirm_privacy_notice_required": "Please give your consent to continue.",
+      "confirm_privacy_policy": "I accept the privacy policy.",
+      "privacy_policy": "Go to the privacy policy",
+      "confirm_privacy_policy_required": "Please give your consent to continue."
+    }
+  }
+}

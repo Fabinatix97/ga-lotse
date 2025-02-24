@@ -5,10 +5,34 @@
 
 import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
-import { PostCitizenProcedureRequest } from "@eshg/official-medical-service-api";
+import {
+  ApiAppointmentType,
+  ApiConcern,
+  ApiConcernCategoryConfig,
+  PostCitizenProcedureRequest,
+} from "@eshg/official-medical-service-api";
 import { isDefined, isEmpty } from "remeda";
 
 import { AppointmentFormValues } from "@/lib/businessModules/officialMedicalService/components/appointment/AppointmentForm";
+
+export function mapToConcernApiList(
+  val: ApiConcernCategoryConfig,
+): ApiConcern[] {
+  const newArray: ApiConcern[] = [];
+  val.concerns.forEach((concern) => {
+    newArray.push({
+      appointmentType: mapOptionalValue(concern.appointmentType),
+      categoryNameDe: val.nameDe,
+      categoryNameEn: val.nameEn,
+      highPriority: concern.highPriority,
+      nameDe: concern.nameDe,
+      nameEn: mapOptionalValue(concern.nameEn),
+      version: 0,
+      visibleInOnlinePortal: true,
+    });
+  });
+  return newArray;
+}
 
 export function mapToPostCitizenProcedureRequest(
   values: AppointmentFormValues,
@@ -40,7 +64,9 @@ export function mapToPostCitizenProcedureRequest(
         version: 0,
       },
       appointment: {
-        appointmentType: "OFFICIAL_MEDICAL_SERVICE_SHORT", // ToDo: change in upcoming ticket
+        appointmentType:
+          mapOptionalValue(values.concern.appointmentType) ??
+          ApiAppointmentType.OfficialMedicalServiceShort,
         bookingInfo: {
           bookingType: "APPOINTMENT_BLOCK",
           duration: isDefined(values.appointment)
@@ -52,13 +78,13 @@ export function mapToPostCitizenProcedureRequest(
           start: values.appointment!.start,
         },
       },
-      // ToDo: change in upcoming ticket
       concern: {
-        categoryNameDe: "categoryNameDe",
-        categoryNameEn: "categoryNameEn",
-        highPriority: true,
-        nameDe: "nameDe",
-        nameEn: "nameEn",
+        appointmentType: mapOptionalValue(values.concern.appointmentType),
+        categoryNameDe: values.concern.categoryNameDe,
+        categoryNameEn: values.concern.categoryNameEn,
+        highPriority: values.concern.highPriority,
+        nameDe: values.concern.nameDe,
+        nameEn: mapOptionalValue(values.concern.nameEn),
         version: 0,
         visibleInOnlinePortal: true,
       },

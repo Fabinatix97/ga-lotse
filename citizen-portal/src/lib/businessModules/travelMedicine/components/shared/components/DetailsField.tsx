@@ -8,7 +8,7 @@ import { ReactNode } from "react";
 
 export interface DetailsFieldProps {
   icon: ReactNode;
-  value: string;
+  value: string | ReactNode;
 }
 
 export function DetailsField(props: Readonly<DetailsFieldProps>) {

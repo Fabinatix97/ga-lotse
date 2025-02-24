@@ -11,6 +11,7 @@ const dateFormatter = Intl.DateTimeFormat(undefined, {
   month: "long",
   year: "numeric",
 });
+
 export const FIELD_LABELS_DE = {
   requiredAppointment: "Bitte einen Termin auswählen",
   requiredDay: "Bitte einen Tag auswählen",

@@ -29,6 +29,18 @@ public class NotificationText {
   @Value("${de.eshg.official-medical-service.notification.template.new_citizen_user.body}")
   private Resource newCitizenUserBodyTemplate;
 
+  @Value("${de.eshg.official-medical-service.notification.template.new_citizen_procedure.subject}")
+  private String newCitizenProcedureSubject;
+
+  @Value("${de.eshg.official-medical-service.notification.template.new_citizen_procedure.body}")
+  private Resource newCitizenProcedureBodyTemplate;
+
+  @Value("${de.eshg.official-medical-service.notification.template.new_document.subject}")
+  private String newDocumentSubject;
+
+  @Value("${de.eshg.official-medical-service.notification.template.new_document.body}")
+  private Resource newDocumentBodyTemplate;
+
   public String getNewCitizenUserSubject() {
     return newCitizenUserSubject;
   }
@@ -39,6 +51,25 @@ public class NotificationText {
     String templateBody = readTemplateBody(newCitizenUserBodyTemplate);
 
     return String.format(templateBody, firstName, lastName, loginUrl, accessCode, greeting);
+  }
+
+  public String getNewCitizenProcedureSubject() {
+    return newCitizenProcedureSubject;
+  }
+
+  public String assembleNewCitizenProcedureBody(String firstName, String lastName) {
+    String templateBody = readTemplateBody(newCitizenProcedureBodyTemplate);
+    return String.format(templateBody, firstName, lastName);
+  }
+
+  public String getNewDocumentSubject() {
+    return newDocumentSubject;
+  }
+
+  public String assembleNewDocumentBody(
+      String firstName, String lastName, String documentTypeDe, String helpTextDe) {
+    String templateBody = readTemplateBody(newDocumentBodyTemplate);
+    return String.format(templateBody, firstName, lastName, documentTypeDe, helpTextDe);
   }
 
   private static String readTemplateBody(Resource bodyTemplateResource) {

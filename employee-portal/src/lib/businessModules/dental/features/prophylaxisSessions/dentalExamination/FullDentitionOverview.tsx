@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Grid, GridProps, Stack, Typography } from "@mui/joy";
+import { Grid, GridProps, Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { useId } from "react";
 
@@ -12,14 +12,9 @@ import {
   QuadrantHeading,
   QuadrantHeadingRow,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/QuadrantHeading";
-import { ToothIcon } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/Teeth";
-import { ToothNumber } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/ToothNumber";
-import { useDentalExaminationStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
-import {
-  QuadrantNumber,
-  Tooth,
-  isToothWithDiagnosis,
-} from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
+import { QuadrantNumber } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
+
+import { ReadonlyToothButton } from "./ReadonlyToothButton";
 
 export function FullDentitionOverview() {
   const upperJawRightId = useId();
@@ -99,62 +94,18 @@ function QuadrantSection(props: QuadrantSectionProps) {
         : "none",
   };
 
-  const setFocus = useDentalExaminationStore((state) => state.setFocus);
   return (
     <Grid {...props} xxs={6} sx={styles} component="section">
       <Quadrant quadrantNumber={quadrantNumber} gap={0}>
         {(tooth, index) => (
-          <Button
+          <ReadonlyToothButton
             key={tooth.toothNumber}
-            variant="plain"
-            sx={{
-              padding: "4px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "flex-start",
-              gap: 2,
-              backgroundColor: "none",
-            }}
-            onClick={() =>
-              setFocus({
-                toothContext: {
-                  quadrantNumber,
-                  toothIndex: index,
-                },
-                field: "main",
-              })
-            }
-          >
-            <ToothNumber tooth={tooth} />
-            <ToothIcon
-              tooth={tooth}
-              toothContext={{ quadrantNumber, toothIndex: index }}
-            />
-            <ExaminationResult tooth={tooth} />
-          </Button>
+            quadrantNumber={quadrantNumber}
+            index={index}
+            tooth={tooth}
+          />
         )}
       </Quadrant>
     </Grid>
-  );
-}
-
-function ExaminationResult({ tooth }: { tooth: Tooth }) {
-  if (!isToothWithDiagnosis(tooth)) {
-    return undefined;
-  }
-  const mainResult = tooth.mainResult;
-  const secondaryResult1 = tooth.secondaryResult1;
-  const secondaryResult2 = tooth.secondaryResult2;
-  return (
-    <Stack sx={{ alignItems: "center" }}>
-      <Typography>{mainResult?.value ? mainResult.value : "-"}</Typography>
-      <Typography>
-        {secondaryResult1?.value ? secondaryResult1.value : undefined}
-      </Typography>
-      <Typography>
-        {secondaryResult2?.value ? secondaryResult2.value : undefined}
-      </Typography>
-    </Stack>
   );
 }

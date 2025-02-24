@@ -21,5 +21,5 @@ public record TaskAggregationSpecification(
     Set<TaskStatusDto> taskStatuses,
     GetTasksSortByDto sortBy,
     GetTasksSortOrderDto sortOrder,
-    Integer limit,
-    Integer offset) {}
+    Integer pageSize,
+    Integer pageNumber) {}

@@ -14,4 +14,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface AuditLogEntryRepository extends JpaRepository<AuditLogEntry, Long> {
   @EntityGraph(value = "AuditLogEntry.additionalData", type = EntityGraphType.LOAD)
   List<AuditLogEntry> findByCreatedAtBeforeOrderByCreatedAtAscIdAsc(Instant createdAt);
+
+  long deleteAuditLogEntryByCreatedAtBefore(Instant threshold);
 }

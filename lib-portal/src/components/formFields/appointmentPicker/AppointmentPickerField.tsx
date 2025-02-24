@@ -7,7 +7,7 @@ import { FormControl, FormHelperText, Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { isSameDay } from "date-fns";
 import { useFormikContext } from "formik";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useId, useState } from "react";
 import { isDate } from "remeda";
 
 import { getPropertyIf } from "../../../helpers/getProperty";
@@ -15,6 +15,7 @@ import { useBaseField } from "../BaseField";
 
 import {
   AppointmentCalendar,
+  AppointmentCalendarProps,
   MonthSelectionPassThroughProps,
 } from "./AppointmentCalendar";
 import {
@@ -23,18 +24,22 @@ import {
   AppointmentListProps,
   useAppointmentList,
 } from "./AppointmentListForDate";
+import { Weekday } from "./helpers";
 
 export { FIELD_LABELS_DE } from "./labels";
 
 export interface Appointment {
   start: Date;
+  end?: Date;
 }
 
 export interface AppointmentPickerLayoutProps {
   calendar: ReactNode;
+  calendarError?: ReactNode;
   appointmentList: ReactNode;
   sx?: SxProps;
   className?: string;
+  labels: AppointmentPickerFieldLabels;
 }
 
 export interface AppointmentPickerFieldLabels {
@@ -44,6 +49,8 @@ export interface AppointmentPickerFieldLabels {
   prevMonth: string;
   requiredDay: string;
   requiredAppointment: string;
+  calendarLabel?: string;
+  availableLegend?: string;
 }
 
 export interface AppointmentPickerFieldProps<T extends Appointment>
@@ -55,10 +62,17 @@ export interface AppointmentPickerFieldProps<T extends Appointment>
   active?: boolean;
   monthAppointments: T[];
   onAppointmentSelected?: (d: T) => unknown;
+  onDateSelected?: (d: Date) => unknown;
   isAppointmentEqual?: (apt1: T, apt2: T) => boolean;
   layout?: (props: AppointmentPickerLayoutProps) => ReactNode;
   appointmentList?: (props: AppointmentListProps<T>) => ReactNode;
   labels: AppointmentPickerFieldLabels;
+  showWeekdays?: Weekday[];
+  padDays?: boolean;
+  autoSelectFirst?: true;
+  slots?: {
+    calendar?: AppointmentCalendarProps["slots"];
+  };
 }
 
 export function AppointmentPickerField<T extends Appointment>({
@@ -74,6 +88,11 @@ export function AppointmentPickerField<T extends Appointment>({
   appointmentList: AppointmentListOverride,
   layout,
   labels,
+  showWeekdays,
+  slots,
+  padDays,
+  onDateSelected,
+  autoSelectFirst,
   ...props
 }: AppointmentPickerFieldProps<T>) {
   const {
@@ -84,11 +103,11 @@ export function AppointmentPickerField<T extends Appointment>({
     requiredDay: requiredDayWarning,
     requiredAppointment: requiredAppointmentWarning,
   } = labels;
-  const { getFieldMeta } = useFormikContext();
-  const { value } = getFieldMeta(props.name);
-  const [selectedDay, setSelectedDayRaw] = useState<Date | undefined>(
-    getPropertyIf(value, "start", isDate),
-  );
+  const { getFieldMeta, getFieldHelpers } = useFormikContext();
+  const { value, error } = getFieldMeta(props.name);
+  const { setValue } = getFieldHelpers(props.name);
+  const start = getPropertyIf(value, "start", isDate);
+  const [selectedDay, setSelectedDayRaw] = useState<Date | undefined>(start);
   const requiredWarning =
     selectedDay == null ? requiredDayWarning : requiredAppointmentWarning;
   const field = useBaseField<T | null>({
@@ -107,17 +126,51 @@ export function AppointmentPickerField<T extends Appointment>({
     if (!selectedDay || !isSameDay(d, selectedDay)) {
       void field.helpers.setValue(null);
     }
+    onDateSelected?.(d);
   }
+
+  // When auto select first is on
+  // auto-select the first appointment in the list
+  useEffect(() => {
+    const appt = monthAppointments[0];
+    if (autoSelectFirst == null || selectedDay != null || appt == null) {
+      return;
+    }
+    setSelectedDayRaw(appt.start);
+    onDateSelected?.(appt.start);
+    void setValue(appt);
+    onAppointmentSelected?.(appt);
+  }, [
+    selectedDay,
+    setValue,
+    monthAppointments,
+    autoSelectFirst,
+    onDateSelected,
+    onAppointmentSelected,
+  ]);
 
   const dateAppointments = monthAppointments.map((t) => t.start);
 
   const Layout = layout ?? DefaultLayout;
   const AppointmentList = AppointmentListOverride ?? AppointmentListForDate;
+  const calendarErrorId = useId();
+  const calendarError =
+    selectedDay == null && error ? (
+      <FormHelperText
+        component="p"
+        sx={(theme) => ({ my: 1, color: theme.palette.danger.plainColor })}
+        id={calendarErrorId}
+        aria-live="polite"
+      >
+        {error}
+      </FormHelperText>
+    ) : undefined;
 
   return (
     <Layout
       className={className}
       sx={sx}
+      labels={labels}
       calendar={
         <AppointmentCalendar
           selectedDay={active ? selectedDay : undefined}
@@ -128,10 +181,19 @@ export function AppointmentPickerField<T extends Appointment>({
           monthSelectionLabel={monthSelectionLabel}
           nextMonthLabel={nextMonthLabel}
           prevMonthLabel={prevMonthLabel}
+          showWeekdays={showWeekdays}
+          slots={slots?.calendar}
+          padDays={padDays}
+          errorMessageId={calendarErrorId}
         />
       }
+      calendarError={calendarError}
       appointmentList={
-        <FormControl error={field.error} required={field.required}>
+        <FormControl
+          error={field.error}
+          required={field.required}
+          sx={{ flex: 1 }}
+        >
           <AppointmentList
             {...listProps}
             field={field}
@@ -140,7 +202,7 @@ export function AppointmentPickerField<T extends Appointment>({
             isAppointmentEqual={isAppointmentEqual}
           />
           {field.helperText != null && (
-            <FormHelperText component="p" sx={{ my: 1 }}>
+            <FormHelperText component="p" sx={{ my: 1 }} aria-live="polite">
               {field.helperText}
             </FormHelperText>
           )}
@@ -154,6 +216,7 @@ function DefaultLayout({
   sx,
   className,
   calendar,
+  calendarError,
   appointmentList,
 }: AppointmentPickerLayoutProps) {
   const givenSx = sx == null ? [] : sx instanceof Array ? sx : [sx];
@@ -166,6 +229,7 @@ function DefaultLayout({
       aria-label={"Terminkalender"}
     >
       {calendar}
+      {calendarError}
       {appointmentList}
     </Stack>
   );

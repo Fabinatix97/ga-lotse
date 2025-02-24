@@ -16,7 +16,7 @@ export function NoAppointmentCard() {
   const citizenRoutes = useCitizenRoutes();
 
   return (
-    <ContentSheet>
+    <ContentSheet data-testid={"no-appointment-form"}>
       <Typography level="h2">{t("appointment.title")}</Typography>
       <Stack
         direction="column"

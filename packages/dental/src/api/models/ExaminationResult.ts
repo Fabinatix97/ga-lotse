@@ -29,9 +29,9 @@ export interface FluoridationExaminationResult {
 
 export interface ScreeningExaminationResult {
   readonly type: "screening";
+  readonly dentitionType: ApiDentitionType;
   readonly oralHygieneStatus?: ApiOralHygieneStatus;
   readonly fluorideVarnishApplied?: boolean;
-  readonly dentitionType: ApiDentitionType;
   readonly toothDiagnoses: ToothDiagnoses;
 }
 
@@ -69,9 +69,9 @@ function mapScreeningExaminationResult(
 ): ScreeningExaminationResult {
   return {
     type: "screening",
+    dentitionType: response.dentitionType,
     oralHygieneStatus: response.oralHygieneStatus,
     fluorideVarnishApplied: response.fluorideVarnishApplied,
-    dentitionType: response.dentitionType,
     toothDiagnoses: mapToObj(
       response.toothDiagnoses,
       (toothDiagnosisResponse) => [

@@ -86,16 +86,16 @@ public class TaskAggregationController {
                   Sorting order. Possible options  "ASC" for ascending and "DESC" for descending
                   """)
           GetTasksSortOrderDto sortOrder,
-      @RequestParam(name = "limit", required = false, defaultValue = "50")
+      @RequestParam(name = "pageSize", required = false, defaultValue = "50")
           @Min(1)
           @Max(200)
           @Parameter(description = "Limit of returned tasks")
-          Integer limit,
-      @RequestParam(name = "offset", required = false, defaultValue = "0")
+          Integer pageSize,
+      @RequestParam(name = "pageNumber", required = false, defaultValue = "0")
           @Min(0)
-          @Max(2000)
+          @Max(10)
           @Parameter(description = "Offset used for pagination")
-          Integer offset) {
+          Integer pageNumber) {
     if (!eitherAssigneeIdOrAssignedByIdAreGiven(assigneeId, assignedById)) {
       throw new BadRequestException("One of 'assigneeId' and 'assignedById' must be given.");
     }
@@ -108,8 +108,8 @@ public class TaskAggregationController {
             .setTaskStatus(taskStatuses)
             .setSortBy(sortBy)
             .setSortOrder(sortOrder)
-            .setLimit(limit)
-            .setOffset(offset)
+            .setPageSize(pageSize)
+            .setPageNumber(pageNumber)
             .createTaskAggregationSpecification());
   }
 

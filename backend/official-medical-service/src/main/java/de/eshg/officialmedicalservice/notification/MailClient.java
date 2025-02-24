@@ -22,11 +22,10 @@ public class MailClient {
     this.mailApi = mailApi;
   }
 
-  void sendMail(String to, String from, String subject, String text) {
+  void sendMail(String to, String from, String subject, String text, MailType mailType) {
     log.info("Sending E-Mail notification");
 
-    SendEmailRequest sendEmailRequest =
-        new SendEmailRequest(to, from, subject, text, MailType.PLAIN_TEXT);
+    SendEmailRequest sendEmailRequest = new SendEmailRequest(to, from, subject, text, mailType);
     mailApi.sendEmail(sendEmailRequest);
 
     log.info("E-Mail notification sent");

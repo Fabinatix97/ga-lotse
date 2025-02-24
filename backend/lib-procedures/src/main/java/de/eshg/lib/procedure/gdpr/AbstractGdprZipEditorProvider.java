@@ -8,6 +8,8 @@ package de.eshg.lib.procedure.gdpr;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import de.eshg.domain.model.BaseEntity_;
+import de.eshg.domain.model.SequencedBaseEntity_;
 import de.eshg.domain.model.serialization.ZipEditor;
 import de.eshg.domain.model.serialization.ZipFileWrapper;
 import de.eshg.lib.procedure.domain.model.FileContent_;
@@ -29,6 +31,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
@@ -36,6 +39,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.Resource;
 
 public abstract class AbstractGdprZipEditorProvider {
+
+  protected static final Set<String> COMMON_SEQUENCE_ID_KEYS =
+      Set.copyOf(
+          List.of(
+              BaseEntity_.ID,
+              SequencedBaseEntity_.ID,
+              MetaData_.ID,
+              ProgressEntry_.PROCEDURE_ID,
+              RelatedPerson_.PROCEDURE,
+              RelatedFacility_.PROCEDURE,
+              Task_.PROCEDURE));
 
   private final Resource resource;
 

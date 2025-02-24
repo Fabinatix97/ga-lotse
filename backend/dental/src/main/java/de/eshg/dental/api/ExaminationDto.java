@@ -18,6 +18,7 @@ public record ExaminationDto(
     @NotNull Instant dateAndTime,
     @NotNull ProphylaxisTypeDto prophylaxisType,
     @NotNull boolean isScreening,
+    DentitionTypeDto prophylaxisDentitionType,
     @NotNull boolean isFluoridation,
     Boolean fluoridationConsentGiven,
     String note,

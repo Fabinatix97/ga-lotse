@@ -24,20 +24,16 @@ public class AsymmetricEncryption {
 
   private static final Logger log = LoggerFactory.getLogger(AsymmetricEncryption.class);
 
-  private final PublicKeyService publicKeyProvider;
-
-  public AsymmetricEncryption(PublicKeyService publicKeyProvider) {
-    this.publicKeyProvider = publicKeyProvider;
-
+  public AsymmetricEncryption() {
     Security.addProvider(new BouncyCastleProvider());
   }
 
-  public List<EncryptedKey> encrypt(byte[] symmetricKey) {
+  public List<EncryptedKey> encrypt(byte[] symmetricKey, List<UserPublicKey> publicKeys) {
     HPKE hpke =
         new HPKE(HPKE.mode_base, HPKE.kem_P256_SHA256, HPKE.kdf_HKDF_SHA256, HPKE.aead_AES_GCM256);
 
     List<EncryptedKey> encryptedKeys = new ArrayList<>();
-    for (UserPublicKey userPublicKey : publicKeyProvider.getPublicKeys()) {
+    for (UserPublicKey userPublicKey : publicKeys) {
       log.info("Encrypting symmetric key for user {}", userPublicKey.userId());
       encryptedKeys.add(encryptAsymmetricallyForUser(userPublicKey, hpke, symmetricKey));
     }

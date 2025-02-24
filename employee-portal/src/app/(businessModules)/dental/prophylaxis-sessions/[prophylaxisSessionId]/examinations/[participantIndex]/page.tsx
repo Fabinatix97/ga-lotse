@@ -39,7 +39,10 @@ export default function ProphylaxisSessionExaminationPage(
   }
 
   return (
-    <DentalExaminationStoreProvider examinationResult={participant.result}>
+    <DentalExaminationStoreProvider
+      examinationResult={participant.result}
+      defaultDentitionType={participant.prophylaxisDentitionType}
+    >
       <ParticipantExaminationPage
         participant={participant}
         participantIndex={participantIndex}

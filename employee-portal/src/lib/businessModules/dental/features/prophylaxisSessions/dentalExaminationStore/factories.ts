@@ -6,9 +6,10 @@
 import { ApiTooth } from "@eshg/dental-api";
 import { ToothDiagnoses } from "@eshg/dental/api/models/ExaminationResult";
 import { ToothDiagnosis } from "@eshg/dental/api/models/ToothDiagnosis";
+import { RELATED_TEETH } from "@eshg/dental/config/teeth";
 import { isDefined } from "remeda";
 
-import { OPTIONAL_TEETH, RELATED_TEETH, TOOTH_TYPES } from "./constants";
+import { OPTIONAL_TEETH, TOOTH_TYPES } from "./constants";
 import {
   AddableTooth,
   Dentition,

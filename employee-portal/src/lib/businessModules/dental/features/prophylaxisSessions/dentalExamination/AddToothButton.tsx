@@ -37,6 +37,7 @@ export function AddToothButton(props: AddToothButtonProps) {
           toothIndex: props.index,
         });
       }}
+      aria-label={"Zahn hinzufügen"}
     >
       <SizedAddCircleIcon color="primary" />
     </ToothIconButton>

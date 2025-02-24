@@ -5,9 +5,11 @@
 
 package de.eshg.base.department;
 
+import de.eshg.base.config.DepartmentConfiguration;
+import de.eshg.base.config.DepartmentConfigurationService;
 import de.eshg.file.common.CustomMediaTypes;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.io.IOException;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,15 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Tag(name = "Department")
 public class DepartmentController implements DepartmentApi {
-  private final DepartmentConfiguration departmentConfiguration;
+  private final DepartmentConfigurationService departmentConfigurationService;
 
-  public DepartmentController(DepartmentConfiguration departmentConfiguration) {
-    this.departmentConfiguration = departmentConfiguration;
+  public DepartmentController(DepartmentConfigurationService departmentConfiguration) {
+    this.departmentConfigurationService = departmentConfiguration;
   }
 
   @Override
   public GetDepartmentInfoResponse getDepartmentInfo() {
-    return mapToResponse(departmentConfiguration);
+    return mapToResponse(departmentConfigurationService.getDepartmentConfiguration());
   }
 
   @Override
@@ -32,45 +34,42 @@ public class DepartmentController implements DepartmentApi {
     // svg may contain JavaScript. Make sure the image comes from a trustworthy source.
     return ResponseEntity.ok()
         .contentType(CustomMediaTypes.IMAGE_SVG_XML)
-        .body(departmentConfiguration.logo());
+        .body(
+            new ByteArrayResource(
+                departmentConfigurationService.getDepartmentConfiguration().getLogo()));
   }
 
   @Override
   public ResponseEntity<byte[]> getSecurityTxt() {
-    try {
-      byte[] securityTxt = departmentConfiguration.securityTxt().getContentAsByteArray();
-      return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body(securityTxt);
-    } catch (IOException e) {
-      throw new RuntimeException("Could not read security txt file.", e);
-    }
+    byte[] securityTxt =
+        departmentConfigurationService.getDepartmentConfiguration().getSecurityTxt();
+    return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body(securityTxt);
   }
 
   @Override
   public ResponseEntity<byte[]> getSecurityTxtPublicKey() {
-    try {
-      byte[] securityTxt = departmentConfiguration.securityTxtPublicKey().getContentAsByteArray();
-      return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body(securityTxt);
-    } catch (IOException e) {
-      throw new RuntimeException("Could not read security txt public key file.", e);
-    }
+    byte[] securityTxt =
+        departmentConfigurationService.getDepartmentConfiguration().getSecurityTxtPublicKey();
+    return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body(securityTxt);
   }
 
-  private GetDepartmentInfoResponse mapToResponse(DepartmentConfiguration departmentConfig) {
+  private GetDepartmentInfoResponse mapToResponse(DepartmentConfiguration departmentConfiguration) {
     return new GetDepartmentInfoResponse(
-        departmentConfig.name(),
-        departmentConfig.abbreviation(),
-        departmentConfig.street(),
-        departmentConfig.houseNumber(),
-        departmentConfig.postalCode(),
-        departmentConfig.city(),
-        departmentConfig.country(),
-        departmentConfig.phoneNumber(),
-        departmentConfig.homepage(),
-        departmentConfig.email(),
-        mapLocationToApi(departmentConfig));
+        departmentConfiguration.getName(),
+        departmentConfiguration.getAbbreviation(),
+        departmentConfiguration.getStreet(),
+        departmentConfiguration.getHouseNumber(),
+        departmentConfiguration.getPostalCode(),
+        departmentConfiguration.getCity(),
+        departmentConfiguration.getCountry(),
+        departmentConfiguration.getPhoneNumber(),
+        departmentConfiguration.getHomepage(),
+        departmentConfiguration.getEmail(),
+        mapLocationToApi(departmentConfiguration));
   }
 
-  private static LocationDto mapLocationToApi(DepartmentConfiguration departmentConfig) {
-    return new LocationDto(departmentConfig.latitude(), departmentConfig.longitude());
+  private static LocationDto mapLocationToApi(DepartmentConfiguration departmentConfiguration) {
+    return new LocationDto(
+        departmentConfiguration.getLatitude(), departmentConfiguration.getLongitude());
   }
 }

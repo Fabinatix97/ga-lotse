@@ -54,9 +54,6 @@ export function useFetchTasksForOverviewQueryOptions(
     ? ApiGetTasksSortOrderFromJSON(searchParams.sortDirection.toUpperCase())
     : ApiGetTasksSortOrder.Desc;
 
-  const limit = searchParams.pageSize ?? 25;
-  const offset = searchParams.pageNumber ? limit * searchParams.pageNumber : 0;
-
   const request: AggregateTasksRequest = {
     assigneeId: selfUser.userId,
     assignedById: filter.assignedById,
@@ -65,8 +62,8 @@ export function useFetchTasksForOverviewQueryOptions(
     taskStatus: filter.taskStatus,
     sortBy: sortBy,
     sortOrder: sortOrder,
-    limit: limit,
-    offset: offset,
+    pageSize: searchParams.pageSize ?? 25,
+    pageNumber: searchParams.pageNumber ?? 0,
   };
 
   return queryOptions({

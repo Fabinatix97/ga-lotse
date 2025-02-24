@@ -52,8 +52,26 @@ public class ChoroplethMapDiagramCreationService
   }
 
   @Override
-  Map<String, List<BigDecimal>> initializeChartDataHolder() {
-    return new TreeMap<>();
+  @Transactional(readOnly = true)
+  public Map<String, List<BigDecimal>> initializeChartDataHolder(
+      UUID analysisId,
+      ChoroplethMapConfigurationDto choroplethMapConfigurationDto,
+      List<TableColumnFilterParameter> filters) {
+    Analysis analysis = analysisService.getAnalysisInternal(analysisId);
+    AbstractAggregationResult aggregationResult = analysis.getAggregationResult();
+
+    AggregationResultUtil.validateColumnFilters(filters, aggregationResult);
+
+    Map<String, List<BigDecimal>> chartDataHolder = new TreeMap<>();
+    List<String> geoKeys = GeoJsonHandler.getGeoKeys(choroplethMapConfigurationDto.geoJson());
+    initializeChoroplethMapData(chartDataHolder, geoKeys);
+
+    return chartDataHolder;
+  }
+
+  private static void initializeChoroplethMapData(
+      Map<String, List<BigDecimal>> chartDataHolder, List<String> geoKeys) {
+    geoKeys.forEach(geoKey -> chartDataHolder.computeIfAbsent(geoKey, key -> new ArrayList<>()));
   }
 
   @Override
@@ -75,11 +93,6 @@ public class ChoroplethMapDiagramCreationService
             choroplethMapConfigurationDto.secondaryAttribute(), aggregationResult);
     List<String> geoKeys = GeoJsonHandler.getGeoKeys(choroplethMapConfigurationDto.geoJson());
 
-    if (page == 0) {
-      AggregationResultUtil.validateColumnFilters(filters, aggregationResult);
-      initializeChoroplethMapData(chartDataHolder, geoKeys);
-    }
-
     List<Specification<TableRow>> specifications =
         getNotNullSpecificationsForChoroplethMap(primaryTableColumn, secondaryTableColumn);
 
@@ -95,11 +108,6 @@ public class ChoroplethMapDiagramCreationService
         tableRow ->
             addTableRowToCollectedChoroplethMapData(
                 tableRow, chartDataHolder, primaryTableColumn, secondaryTableColumn));
-  }
-
-  private static void initializeChoroplethMapData(
-      Map<String, List<BigDecimal>> chartDataHolder, List<String> geoKeys) {
-    geoKeys.forEach(geoKey -> chartDataHolder.computeIfAbsent(geoKey, key -> new ArrayList<>()));
   }
 
   private static List<Specification<TableRow>> getNotNullSpecificationsForChoroplethMap(
@@ -153,7 +161,7 @@ public class ChoroplethMapDiagramCreationService
     return switch (cellEntry.getTableColumn().getValueType()) {
       case TableColumnValueType.TEXT -> stringValue;
       case TableColumnValueType.VALUE_WITH_OPTIONS -> {
-        if (getValueToMeaningKeys(cellEntry.getTableColumn()).contains(stringValue)) {
+        if (getValueToMeaningKeysSet(cellEntry.getTableColumn()).contains(stringValue)) {
           yield stringValue;
         } else {
           yield null;

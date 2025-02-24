@@ -12,6 +12,7 @@ import { routes } from "./routes";
 
 export const sideNavigationItems: SideNavigationItem[] = [
   {
+    type: "SideNavigationParentItem",
     name: "Archivierung",
     decorator: <Inventory2Outlined />,
     subItems: [
@@ -48,6 +49,7 @@ export const sideNavigationItems: SideNavigationItem[] = [
     ],
   },
   {
+    type: "SideNavigationParentItem",
     name: "Archiv-Admin",
     decorator: <Inventory2Outlined />,
     subItems: [

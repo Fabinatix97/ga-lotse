@@ -5,13 +5,12 @@
 
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Stack, Typography } from "@mui/joy";
-import { Property } from "csstype";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 
 interface QuadrantHeadingRowProps extends RequiresChildren {
-  marginTop?: Property.MarginTop;
-  marginBottom?: Property.MarginBottom;
+  marginTop?: string;
+  marginBottom?: string;
 }
 
 export function QuadrantHeadingRow(props: QuadrantHeadingRowProps) {

@@ -9,6 +9,7 @@ import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
 import de.eshg.officialmedicalservice.appointment.OmsAppointmentService;
 import de.eshg.officialmedicalservice.concern.ConcernMapper;
 import de.eshg.officialmedicalservice.document.OmsDocumentService;
+import de.eshg.officialmedicalservice.notification.NotificationService;
 import de.eshg.officialmedicalservice.person.PersonClient;
 import de.eshg.officialmedicalservice.person.PersonMapper;
 import de.eshg.officialmedicalservice.procedure.OmsProcedureOverviewMapper;
@@ -28,18 +29,21 @@ public class CitizenProcedureService {
   private final OmsProcedureOverviewMapper omsProcedureOverviewMapper;
   private final OmsProcedureRepository omsProcedureRepository;
   private final OmsDocumentService omsDocumentService;
+  private final NotificationService notificationService;
 
   public CitizenProcedureService(
       OmsAppointmentService appointmentService,
       PersonClient personClient,
       OmsProcedureOverviewMapper omsProcedureOverviewMapper,
       OmsProcedureRepository omsProcedureRepository,
-      OmsDocumentService omsDocumentService) {
+      OmsDocumentService omsDocumentService,
+      NotificationService notificationService) {
     this.omsAppointmentService = appointmentService;
     this.personClient = personClient;
     this.omsProcedureOverviewMapper = omsProcedureOverviewMapper;
     this.omsProcedureRepository = omsProcedureRepository;
     this.omsDocumentService = omsDocumentService;
+    this.notificationService = notificationService;
   }
 
   @Transactional
@@ -59,6 +63,8 @@ public class CitizenProcedureService {
     procedure.setConcern(ConcernMapper.mapToEntity(request.concern()));
 
     omsDocumentService.addLetterOfAssignmentCitizen(procedure, files);
+
+    notificationService.notifyNewCitizenProcedure(request.affectedPerson());
 
     return procedure.getExternalId();
   }

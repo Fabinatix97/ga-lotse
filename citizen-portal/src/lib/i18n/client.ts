@@ -95,7 +95,7 @@ export function useTWithCamelCase(t: TranslateFn): TranslateFn {
         return t(args, tOptions);
       }
       const newKeys: string[] = pipe(
-        keys.map((k) => [k, fromSnakeToCamel(k)]),
+        keys.map((k) => [fromSnakeToCamel(k), k]),
         flat(),
         unique(),
       );

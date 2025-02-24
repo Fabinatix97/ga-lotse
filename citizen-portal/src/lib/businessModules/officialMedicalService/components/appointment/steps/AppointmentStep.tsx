@@ -38,10 +38,12 @@ export function AppointmentStep({
   appointments,
 }: Readonly<AppointmentStepProps>) {
   const { t } = useTranslation(["officialMedicalService/appointment"]);
-  const [month, setMonth] = useState<Date>(new Date());
+  const [month, setMonth] = useState<Date>(
+    appointments[0]?.start ?? new Date(),
+  );
 
   return (
-    <ContentSheet>
+    <ContentSheet data-testid={"appointment-slot-form"}>
       <Typography level="h2">{t("appointment.title")}</Typography>
       <AppointmentPickerField
         name="appointment"

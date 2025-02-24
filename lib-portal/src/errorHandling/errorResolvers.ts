@@ -23,6 +23,7 @@ const STATUS_MAPPING: Record<number, PortalErrorCode> = {
 const ERROR_MAPPING: Record<ApiErrorCode, PortalErrorCode> = {
   [ApiErrorCode.NotFound]: PortalErrorCode.NotFound,
   [ApiErrorCode.Conflict]: PortalErrorCode.Conflict,
+  [ApiErrorCode.InternalServerError]: PortalErrorCode.UnexpectedError,
   [ApiErrorCode.Unauthorized]: PortalErrorCode.Unauthorized,
   [ApiErrorCode.InsufficientUserRights]: PortalErrorCode.InsufficientUserRights,
   [ApiErrorCode.Timeout]: PortalErrorCode.Timeout,

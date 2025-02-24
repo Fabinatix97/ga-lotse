@@ -13,6 +13,13 @@
     "infoText": {
       "title": "Schulbezogene Anliegen",
       "description": "Kommen Sie bitte bei Prüfungen spätestens am Prüfungstag (auch ohne Termin) zu uns oder bei Abgabe einer wissenschaftlichen Arbeit nach vorheriger telefonischer Terminvereinbarung"
+    },
+    "filter": {
+      "category": "Kategorie",
+      "category_all": "Alle"
+    },
+    "fields": {
+      "concern_required": "Pflichtfeld ausfüllen."
     }
   },
   "appointment": {
@@ -93,7 +100,8 @@
     "cancel": "Abbrechen",
     "values": {
       "confirmOnlineServices": "Bestätigungsmail senden",
-      "appointmentDuration": "(ca. {{ durationInMinutes }} Minuten)"
+      "appointmentDuration": "(ca. {{ durationInMinutes }} Minuten)",
+      "contactAddress": "{{ street }} <br> {{ city }} </br>"
     }
   },
   "appointmentInformation": {
@@ -104,8 +112,7 @@
     "listItemIdCard": "Personalausweis / Reisepass ",
     "listItemMedicalDocuments": "ärztliche Unterlagen in Kopie (z.B. Krankenhausentlassungsberichte, Atteste, Bescheinigungen etc.)",
     "listItemCurrentMedication": "einen Nachweis der zurzeit verordneten Medikamente (falls vorhanden)",
-    "closingGreeting": "Mit freundlichen Grüßen",
-    "healthDepartment": "Ihr Gesundheitsamt"
+    "closingGreeting": "Mit freundlichen Grüßen <br> Ihr Gesundheitsamt </br> "
   },
   "confirmation": {
     "title": "Anliegen amtsärztliches Gutachten",

@@ -5,12 +5,12 @@
 
 "use client";
 
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import ClearIcon from "@mui/icons-material/Clear";
-import { Box, styled } from "@mui/joy";
+import { Box } from "@mui/joy";
 import SvgIcon from "@mui/joy/SvgIcon";
 
 import { theme } from "@/lib/baseModule/theme/theme";
-import { RemoveToothButton } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/RemoveToothButton";
 import { TOOTH_SIZE } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/styles";
 import {
   Tooth,
@@ -38,9 +38,10 @@ const TOOTH_COMPONENTS = {
 interface ToothProps {
   tooth: Tooth;
   toothContext: ToothContext;
+  className?: string;
 }
 
-export function ToothIcon({ tooth, toothContext }: ToothProps) {
+export function ToothIcon({ tooth, toothContext, className }: ToothProps) {
   const inUpperJaw = isInUpperJaw(tooth);
 
   if (!isToothWithDiagnosis(tooth)) {
@@ -57,6 +58,7 @@ export function ToothIcon({ tooth, toothContext }: ToothProps) {
       isPrimaryTooth={tooth.toothType === "PRIMARY_TOOTH"}
       hasPreviousExaminationResult={hasPreviousExaminationResult(tooth)}
       toothContext={toothContext}
+      className={className}
     />
   );
 }
@@ -66,16 +68,12 @@ interface ToothIconProps {
   isPrimaryTooth?: boolean;
   variant: "upperJaw" | "lowerJaw";
   toothContext: ToothContext;
+  className?: string;
 }
 
 export function Incisor(props: ToothIconProps) {
   return (
-    <SvgIcon
-      sx={TOOTH_SIZE}
-      viewBox="0 0 60 66"
-      fill="none"
-      data-testid="tooth-icon"
-    >
+    <ToothSvgIcon className={props.className}>
       <g transform={props.variant === "upperJaw" ? "" : "rotate(180, 30, 33)"}>
         <path
           d="M30.8944 12.0249L34.6584 19.5528C34.9908 20.2177 34.5073 21 33.7639 21H26.2361C25.4927 21 25.0092 20.2177 25.3416 19.5528L29.1056 12.0249C29.4741 11.2879 30.5259 11.2879 30.8944 12.0249Z"
@@ -106,18 +104,13 @@ export function Incisor(props: ToothIconProps) {
           </g>
         )}
       </g>
-    </SvgIcon>
+    </ToothSvgIcon>
   );
 }
 
 export function Premolar(props: ToothIconProps) {
   return (
-    <SvgIcon
-      sx={TOOTH_SIZE}
-      viewBox="0 0 60 66"
-      fill="none"
-      data-testid="tooth-icon"
-    >
+    <ToothSvgIcon className={props.className}>
       <g transform={props.variant === "upperJaw" ? "" : "rotate(180, 30, 33)"}>
         <path
           d="M22.8944 4.02492L26.6584 11.5528C26.9908 12.2177 26.5073 13 25.7639 13H18.2361C17.4927 13 17.0092 12.2177 17.3416 11.5528L21.1056 4.02492C21.4741 3.28787 22.5259 3.28787 22.8944 4.02492Z"
@@ -154,18 +147,13 @@ export function Premolar(props: ToothIconProps) {
           </g>
         )}
       </g>
-    </SvgIcon>
+    </ToothSvgIcon>
   );
 }
 
 export function Cuspid(props: ToothIconProps) {
   return (
-    <SvgIcon
-      sx={TOOTH_SIZE}
-      viewBox="0 0 60 66"
-      fill="none"
-      data-testid="tooth-icon"
-    >
+    <ToothSvgIcon className={props.className}>
       <g transform={props.variant === "upperJaw" ? "" : "rotate(180, 30, 33)"}>
         <path
           d="M30.8944 4.02492L34.6584 11.5528C34.9908 12.2177 34.5073 13 33.7639 13H26.2361C25.4927 13 25.0092 12.2177 25.3416 11.5528L29.1056 4.02492C29.4741 3.28787 30.5259 3.28787 30.8944 4.02492Z"
@@ -196,29 +184,13 @@ export function Cuspid(props: ToothIconProps) {
           </g>
         )}
       </g>
-    </SvgIcon>
+    </ToothSvgIcon>
   );
 }
 
-const ToothSizedContainer = styled("div")({
-  ...TOOTH_SIZE,
-  position: "relative",
-  ".remove-tooth-button": {
-    display: "none",
-  },
-  "&:hover .remove-tooth-button": {
-    display: "inline-flex",
-  },
-});
-
 export function Molar(props: ToothIconProps) {
   return (
-    <SvgIcon
-      sx={TOOTH_SIZE}
-      viewBox="0 0 60 66"
-      fill="none"
-      data-testid="tooth-icon"
-    >
+    <ToothSvgIcon className={props.className}>
       <g transform={props.variant === "upperJaw" ? "" : "rotate(180, 30, 33)"}>
         <path
           d="M14.8944 4.02492L18.6584 11.5528C18.9908 12.2177 18.5073 13 17.7639 13H10.2361C9.49269 13 9.00919 12.2177 9.34164 11.5528L13.1056 4.02492C13.4741 3.28787 14.5259 3.28787 14.8944 4.02492Z"
@@ -261,16 +233,21 @@ export function Molar(props: ToothIconProps) {
           </g>
         )}
       </g>
-    </SvgIcon>
+    </ToothSvgIcon>
   );
 }
 
-export function RemovableToothIcon(props: ToothProps) {
+function ToothSvgIcon(props: RequiresChildren & { className?: string }) {
   return (
-    <ToothSizedContainer data-testid="tooth-icon-button">
-      <ToothIcon {...props} />
-      <RemoveToothButton toothContext={props.toothContext} />
-    </ToothSizedContainer>
+    <SvgIcon
+      sx={TOOTH_SIZE}
+      viewBox="0 0 60 66"
+      fill="none"
+      data-testid="tooth-icon"
+      className={props.className}
+    >
+      {props.children}
+    </SvgIcon>
   );
 }
 

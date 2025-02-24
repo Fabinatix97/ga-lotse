@@ -13,7 +13,8 @@ public enum FileExtension {
   PNG("png"),
   PDF("pdf"),
   EML("eml"),
-  CSV("csv");
+  CSV("csv"),
+  XLSX("xlsx");
 
   private final String value;
 

@@ -7,7 +7,8 @@ import { ReactNode } from "react";
 
 import { AccessCheck } from "@/helpers/accessControl";
 
-export interface SideNavigationItemWithoutSubItems {
+export interface SideNavigationLinkItem {
+  type: "SideNavigationLinkItem";
   name: string;
   href: string;
   decorator: ReactNode;
@@ -15,16 +16,19 @@ export interface SideNavigationItemWithoutSubItems {
   chip?: ReactNode;
 }
 
-export interface SideNavigationItemWithSubItems {
+export interface SideNavigationParentItem {
+  type: "SideNavigationParentItem";
   name: string;
   decorator: ReactNode;
   subItems: SideNavigationSubItem[];
-  /**
-   * Errors can occur when resolving the navigation items.
-   * This can happen, for example, when querying feature toggles of a module that's currently not available.
-   * In this case, the main navigation item is deactivated and an error icon with tooltip is displayed.
-   */
-  error?: string;
+}
+
+export interface SideNavigationSuspenseItem {
+  type: "SideNavigationSuspenseItem";
+  name: string;
+  decorator: ReactNode;
+  accessCheck: AccessCheck;
+  component: (props: SideNavigationItemsProps) => ReactNode;
 }
 
 export interface SideNavigationSubItem {
@@ -34,10 +38,15 @@ export interface SideNavigationSubItem {
 }
 
 export type SideNavigationItem =
-  | SideNavigationItemWithoutSubItems
-  | SideNavigationItemWithSubItems;
+  | SideNavigationLinkItem
+  | SideNavigationParentItem
+  | SideNavigationSuspenseItem;
 
 export interface UseSideNavigationItemsResult {
   isLoading: boolean;
   items: SideNavigationItem[];
+}
+
+export interface SideNavigationItemsProps {
+  isInboxEnabled: boolean;
 }

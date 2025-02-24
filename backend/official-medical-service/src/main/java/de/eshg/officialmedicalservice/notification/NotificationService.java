@@ -5,6 +5,10 @@
 
 package de.eshg.officialmedicalservice.notification;
 
+import static de.eshg.base.mail.MailType.HTML;
+import static de.eshg.base.mail.MailType.PLAIN_TEXT;
+
+import de.eshg.base.mail.MailType;
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
 import de.eshg.officialmedicalservice.procedure.api.AffectedPersonDto;
 import java.util.List;
@@ -86,10 +90,33 @@ public class NotificationService {
         newCitizenUserSubject,
         () ->
             sendMailWithModuleClientAuthentication(
-                newCitizenUserSubject, newCitizenUserBody, person));
+                newCitizenUserSubject, newCitizenUserBody, person, PLAIN_TEXT));
   }
 
-  private final NotificationSummary doNotification(
+  public void notifyNewCitizenProcedure(AffectedPersonDto person) {
+    String newCitizenProcedureSubject = notificationText.getNewCitizenProcedureSubject();
+    String newCitizenProcedureBody =
+        notificationText.assembleNewCitizenProcedureBody(person.firstName(), person.lastName());
+
+    sendMailWithModuleClientAuthentication(
+        newCitizenProcedureSubject, newCitizenProcedureBody, person, HTML);
+  }
+
+  public void notifyNewDocument(
+      AffectedPersonDto person, String documentTypeDe, String helpTextDe) {
+    String newCitizenProcedureSubject = notificationText.getNewDocumentSubject();
+    if (!helpTextDe.isBlank()) {
+      helpTextDe = "- " + helpTextDe;
+    }
+    String newCitizenProcedureBody =
+        notificationText.assembleNewDocumentBody(
+            person.firstName(), person.lastName(), documentTypeDe, helpTextDe);
+
+    sendMailWithModuleClientAuthentication(
+        newCitizenProcedureSubject, newCitizenProcedureBody, person, HTML);
+  }
+
+  private NotificationSummary doNotification(
       MailEnabledProvider procedure,
       AffectedPersonDto person,
       String subject,
@@ -107,23 +134,25 @@ public class NotificationService {
     return new NotificationSummary(subject, numSentMails, null);
   }
 
-  private final int sendMailWithModuleClientAuthentication(
-      String subject, String body, AffectedPersonDto personDto) {
+  private int sendMailWithModuleClientAuthentication(
+      String subject, String body, AffectedPersonDto personDto, MailType mailType) {
     SecurityContext previousContext = securityContextHolderStrategy.getContext();
     try {
       securityContextHolderStrategy.clearContext();
       return moduleClientAuthenticator.doWithModuleClientAuthentication(
-          () -> doSendMail(subject, body, personDto));
+          () -> doSendMail(subject, body, personDto, mailType));
     } finally {
       securityContextHolderStrategy.setContext(previousContext);
     }
   }
 
-  private final int doSendMail(String subject, String body, AffectedPersonDto personDto) {
+  private int doSendMail(
+      String subject, String body, AffectedPersonDto personDto, MailType mailType) {
     log.info("send mail(s): " + subject);
 
     for (String emailAddress : personDto.emailAddresses()) {
-      mailClient.sendMail(emailAddress, notificationProperties.fromAddress(), subject, body);
+      mailClient.sendMail(
+          emailAddress, notificationProperties.fromAddress(), subject, body, mailType);
     }
     return personDto.emailAddresses().size();
   }

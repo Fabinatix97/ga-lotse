@@ -16,6 +16,8 @@ def testSrcDir = "${projectDir}/src"
 def validationFilesDir = project.layout.projectDirectory.dir('data/test')
 
 def test = tasks.register('test', PnpmTask) {
+  def coverageEnabled = project.hasProperty('coverage')
+
   group = 'verification'
   dependsOn 'prepareEnvironment'
   environment = testEnvironment
@@ -25,9 +27,13 @@ def test = tasks.register('test', PnpmTask) {
     inputs.dir validationFilesDir
     outputs.dir validationFilesDir
   }
+  if (coverageEnabled) {
+    outputs.dir project.layout.buildDirectory.dir('vitest')
+  }
   // Pass with no tests to avoid writing a dummy test within the new portal tests.
   // This parameter can be removed once we have tests in each portal project.
-  args = ['vitest', 'run', '--passWithNoTests', '--silent']
+  args = ['vitest', 'run', '--passWithNoTests', '--silent'] +
+    (coverageEnabled ? ['--coverage'] : [])
 }
 
 tasks.register('testWatch', PnpmTask) {

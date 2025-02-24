@@ -11,7 +11,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.ext.SqlBlobSerializer;
@@ -25,7 +24,6 @@ import de.eshg.domain.model.GenericEntity;
 import java.io.UncheckedIOException;
 import java.sql.Blob;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.apache.commons.lang3.StringUtils;
@@ -36,11 +34,8 @@ import org.springframework.stereotype.Component;
 public class SerializationService {
 
   private final ObjectMapper jsonObjectMapper;
-  private final Optional<SerializationObjectMapperConfigurer> serializationObjectMapperConfigurer;
 
-  public SerializationService(
-      ObjectMapper objectMapper,
-      Optional<SerializationObjectMapperConfigurer> serializationObjectMapperConfigurer) {
+  public SerializationService(ObjectMapper objectMapper) {
     jsonObjectMapper =
         objectMapper
             .copy()
@@ -50,7 +45,6 @@ public class SerializationService {
             .setVisibility(PropertyAccessor.ALL, Visibility.NONE)
             .setVisibility(PropertyAccessor.FIELD, Visibility.ANY)
             .addMixIn(GenericEntity.class, GenericEntityMixin.class);
-    this.serializationObjectMapperConfigurer = serializationObjectMapperConfigurer;
   }
 
   public String toJson(GenericEntity<?> entity) {
@@ -73,21 +67,17 @@ public class SerializationService {
   }
 
   public byte[] toZip(String dataFileBaseName, EntityWithExternalId entity) {
-    return toZip(dataFileBaseName, entity, (n, z) -> {});
+    return toZip(dataFileBaseName, entity, (n, z) -> {}, o -> {});
   }
 
-  public byte[] toZip(String dataFileBaseName, EntityWithExternalId entity, ZipEditor zipEditor) {
+  public byte[] toZip(
+      String dataFileBaseName,
+      EntityWithExternalId entity,
+      ZipEditor zipEditor,
+      ObjectMapperCustomizer objectMapperCustomizer) {
     ZipFileWrapper zipFileWrapper = new ZipFileWrapper();
 
-    FileContentSerializer fileContentSerializer =
-        new FileContentSerializer(
-            zipFileWrapper::addEntry, zipFileWrapper::getCollisionFreeFileName);
-
-    ObjectMapper objectMapper = createObjectMapperWithSerializer(fileContentSerializer);
-    serializationObjectMapperConfigurer.ifPresent(
-        p ->
-            p.configure(
-                objectMapper, zipFileWrapper::addEntry, zipFileWrapper::getCollisionFreeFileName));
+    ObjectMapper objectMapper = createObjectMapper(zipFileWrapper, objectMapperCustomizer);
 
     JsonNode jsonNode = toJsonNode(entity, objectMapper);
     zipEditor.filter(jsonNode, zipFileWrapper);
@@ -98,8 +88,21 @@ public class SerializationService {
     return zipFileWrapper.asByteArray();
   }
 
-  private ObjectMapper createObjectMapperWithSerializer(JsonSerializer<?> serializer) {
-    return jsonObjectMapper.copy().registerModule(new SimpleModule().addSerializer(serializer));
+  private ObjectMapper createObjectMapper(
+      ZipFileWrapper zipFileWrapper, ObjectMapperCustomizer objectMapperCustomizer) {
+    ObjectMapper objectMapper =
+        jsonObjectMapper
+            .copy()
+            .registerModule(createFileContentSerializationModule(zipFileWrapper));
+    objectMapperCustomizer.customize(objectMapper);
+    return objectMapper;
+  }
+
+  private static SimpleModule createFileContentSerializationModule(ZipFileWrapper zipFileWrapper) {
+    return new SimpleModule()
+        .addSerializer(
+            new FileContentSerializer(
+                zipFileWrapper::addEntry, zipFileWrapper::getCollisionFreeFileName));
   }
 
   private String jsonNodeToCsv(String baseKey, JsonNode node) {

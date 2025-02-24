@@ -6,7 +6,7 @@
 package de.eshg.base.street;
 
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.base.department.DepartmentConfiguration;
+import de.eshg.base.config.DepartmentConfigurationService;
 import de.eshg.base.street.csv.CsvMapper;
 import de.eshg.base.street.csv.StreetDirectoryCsvEntry;
 import java.util.*;
@@ -32,8 +32,11 @@ public class StreetDirectoryService implements StreetDirectory {
   private final PatriciaTrie<StreetDirectoryEntry> directory;
 
   @Autowired
-  public StreetDirectoryService(DepartmentConfiguration configuration) {
-    this(CsvMapper.csvToBeans(configuration.streetDirectory(), StreetDirectoryCsvEntry.class));
+  public StreetDirectoryService(DepartmentConfigurationService departmentConfigurationService) {
+    this(
+        CsvMapper.csvToBeans(
+            departmentConfigurationService.getDepartmentConfiguration().getStreetDirectory(),
+            StreetDirectoryCsvEntry.class));
   }
 
   public StreetDirectoryService(List<StreetDirectoryCsvEntry> csvEntries) {

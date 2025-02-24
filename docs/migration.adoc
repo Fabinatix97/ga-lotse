@@ -1,0 +1,19 @@
+= Migration Guide
+GA-Lotse
+:toc:
+
+This document provides migration notes for all version changes, starting with v1.6.4.
+
+== Version History
+
+=== v1.6.5
+
+- No changes that made a migration necessary
+
+=== v1.6.4
+
+- The Auditlog is now a database module which needs a new permission rule in the service directory:
+[source]
+----
+client XYZ/FM/* -> server XYZ/FM/auditlog
+----

@@ -49,5 +49,6 @@
   <include file="migrations/0039-add-countrycodes.xml"/>
   <include file="migrations/0040_add_auditlog_entry.xml"/>
   <include file="migrations/0041_remove_gdpr_status_open.xml"/>
+  <include file="migrations/0042_department_config.xml"/>
 
 </databaseChangeLog>

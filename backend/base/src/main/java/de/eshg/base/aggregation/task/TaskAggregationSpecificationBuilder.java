@@ -22,8 +22,8 @@ public class TaskAggregationSpecificationBuilder {
   private Set<TaskStatusDto> taskStatuses;
   private GetTasksSortByDto sortBy = GetTasksSortByDto.PRIORITY;
   private GetTasksSortOrderDto sortOrder = GetTasksSortOrderDto.ASC;
-  private Integer limit = 50;
-  private Integer offset = 0;
+  private Integer pageSize = 50;
+  private Integer pageNumber = 0;
 
   public TaskAggregationSpecificationBuilder setAssigneeId(UUID assigneeId) {
     this.assigneeId = assigneeId;
@@ -61,13 +61,13 @@ public class TaskAggregationSpecificationBuilder {
     return this;
   }
 
-  public TaskAggregationSpecificationBuilder setLimit(Integer limit) {
-    this.limit = limit;
+  public TaskAggregationSpecificationBuilder setPageSize(Integer pageSize) {
+    this.pageSize = pageSize;
     return this;
   }
 
-  public TaskAggregationSpecificationBuilder setOffset(Integer offset) {
-    this.offset = offset;
+  public TaskAggregationSpecificationBuilder setPageNumber(Integer pageNumber) {
+    this.pageNumber = pageNumber;
     return this;
   }
 
@@ -80,7 +80,7 @@ public class TaskAggregationSpecificationBuilder {
         taskStatuses,
         sortBy,
         sortOrder,
-        limit,
-        offset);
+        pageSize,
+        pageNumber);
   }
 }

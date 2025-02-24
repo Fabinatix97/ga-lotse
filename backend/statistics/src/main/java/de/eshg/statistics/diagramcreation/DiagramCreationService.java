@@ -95,7 +95,9 @@ public class DiagramCreationService {
       UUID analysisId,
       C chartConfigurationDto,
       AddDiagramRequest addDiagramRequest) {
-    D chartDataHolder = service.initializeChartDataHolder();
+    D chartDataHolder =
+        service.initializeChartDataHolder(
+            analysisId, chartConfigurationDto, addDiagramRequest.filters());
     collectData(service, analysisId, chartConfigurationDto, addDiagramRequest, chartDataHolder);
     return service.addDiagram(
         analysisId, chartConfigurationDto, addDiagramRequest, chartDataHolder);

@@ -15,6 +15,8 @@ import de.eshg.auditlog.crypto.AsymmetricEncryption;
 import de.eshg.auditlog.crypto.AsymmetricEncryption.EncryptedKey;
 import de.eshg.auditlog.crypto.AuditLogDecryptionException;
 import de.eshg.auditlog.crypto.AuditLogEncryptionException;
+import de.eshg.auditlog.crypto.PublicKeyService;
+import de.eshg.auditlog.crypto.PublicKeyService.UserPublicKey;
 import de.eshg.auditlog.crypto.SymmetricEncryption;
 import de.eshg.auditlog.crypto.SymmetricEncryption.EncryptedPayload;
 import de.eshg.auditlog.domain.model.AuditLogAccessibleProjection;
@@ -33,6 +35,7 @@ import de.eshg.rest.service.error.AlreadyExistsException;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.ErrorResponse;
+import de.eshg.rest.service.error.InternalServerErrorException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import jakarta.servlet.ServletRequest;
@@ -108,6 +111,7 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
   private final Clock clock;
   private final UserApi userApi;
   private final AuditLogger auditLogger;
+  private final PublicKeyService publicKeyService;
   private final AsymmetricEncryption asymmetricEncryption;
 
   public AuditLogController(
@@ -116,12 +120,14 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
       Clock clock,
       UserApi userApi,
       AuditLogger auditLogger,
+      PublicKeyService publicKeyService,
       AsymmetricEncryption asymmetricEncryption) {
     this.auditLogServiceConfig = auditLogServiceConfig;
     this.grantedAccessRepository = grantedAccessRepository;
     this.clock = clock;
     this.userApi = userApi;
     this.auditLogger = auditLogger;
+    this.publicKeyService = publicKeyService;
     this.asymmetricEncryption = asymmetricEncryption;
   }
 
@@ -638,7 +644,9 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
       EncryptedPayload encryptedPayload = SymmetricEncryption.encrypt(file.getBytes());
 
       log.info("Encrypting symmetric key asymmetrically for each user");
-      List<EncryptedKey> encryptedKeys = asymmetricEncryption.encrypt(encryptedPayload.key());
+      List<EncryptedKey> encryptedKeys =
+          asymmetricEncryption.encrypt(
+              encryptedPayload.key(), requireNotEmpty(publicKeyService.getPublicKeys()));
 
       for (EncryptedKey encryptedKey : encryptedKeys) {
         Path dateAndServiceSpecificDir =
@@ -688,6 +696,14 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
       throw new UncheckedIOException("Unable to write received audit log to targetPath", e);
     } catch (GeneralSecurityException e) {
       throw new AuditLogEncryptionException("Unable to perform crypto operations on audit log", e);
+    }
+  }
+
+  private List<UserPublicKey> requireNotEmpty(List<UserPublicKey> publicKeys) {
+    if (publicKeys.isEmpty()) {
+      throw new InternalServerErrorException("No public key(s) found");
+    } else {
+      return publicKeys;
     }
   }
 

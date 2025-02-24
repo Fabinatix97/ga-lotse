@@ -209,6 +209,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return logAndMapToErrorResponse(ex);
   }
 
+  @ExceptionHandler
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  public ErrorResponse handleInternalServerErrorException(InternalServerErrorException ex) {
+    return logAndMapToErrorResponse(ex);
+  }
+
   private static ErrorResponse logAndMapToErrorResponse(EshgBusinessException businessException) {
     ErrorResponse errorResponse =
         new ErrorResponse(

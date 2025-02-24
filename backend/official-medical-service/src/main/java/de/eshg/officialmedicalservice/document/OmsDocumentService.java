@@ -10,6 +10,7 @@ import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 
+import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.model.FileTypeDto;
 import de.eshg.officialmedicalservice.document.api.PatchDocumentInformationRequest;
 import de.eshg.officialmedicalservice.document.api.PatchDocumentNoteRequest;
@@ -21,10 +22,15 @@ import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocumentRep
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocumentStatus;
 import de.eshg.officialmedicalservice.file.persistence.entity.OmsFile;
 import de.eshg.officialmedicalservice.file.persistence.entity.OmsFileRepository;
+import de.eshg.officialmedicalservice.notification.NotificationService;
+import de.eshg.officialmedicalservice.person.PersonClient;
+import de.eshg.officialmedicalservice.person.PersonMapper;
 import de.eshg.officialmedicalservice.procedure.OmsProgressEntryType;
 import de.eshg.officialmedicalservice.procedure.ProgressEntryService;
+import de.eshg.officialmedicalservice.procedure.api.AffectedPersonDto;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedureRepository;
+import de.eshg.officialmedicalservice.procedure.persistence.entity.Person;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import java.io.IOException;
@@ -46,20 +52,26 @@ public class OmsDocumentService {
   private final OmsFileRepository omsFileRepository;
   private final ProgressEntryService progressEntryService;
   private final Clock clock;
+  private final NotificationService notificationService;
 
   private static final Logger logger = LoggerFactory.getLogger(OmsDocumentService.class);
+  private final PersonClient personClient;
 
   public OmsDocumentService(
       OmsProcedureRepository omsProcedureRepository,
       OmsDocumentRepository omsDocumentRepository,
       OmsFileRepository omsFileRepository,
       ProgressEntryService progressEntryService,
-      Clock clock) {
+      Clock clock,
+      NotificationService notificationService,
+      PersonClient personClient) {
     this.omsProcedureRepository = omsProcedureRepository;
     this.omsDocumentRepository = omsDocumentRepository;
     this.omsFileRepository = omsFileRepository;
     this.progressEntryService = progressEntryService;
     this.clock = clock;
+    this.notificationService = notificationService;
+    this.personClient = personClient;
   }
 
   @Transactional
@@ -107,6 +119,17 @@ public class OmsDocumentService {
           omsProcedure, OmsProgressEntryType.DOCUMENT_ACCEPTED, document);
     }
 
+    if (omsProcedure.getProcedureStatus() == ProcedureStatus.OPEN
+        && omsProcedure.isSendEmailNotifications()
+        && document.isUploadInCitizenPortal()) {
+      Person person = omsProcedure.findAffectedPerson();
+      AffectedPersonDto affectedPersonDto =
+          PersonMapper.mapToAffectedPersonDto(
+              personClient.getPersonFileState(person.getCentralFileStateId()), person.getVersion());
+      notificationService.notifyNewDocument(
+          affectedPersonDto, document.getDocumentTypeDe(), document.getHelpTextDe());
+    }
+
     return document.getExternalId();
   }
 
@@ -143,6 +166,7 @@ public class OmsDocumentService {
 
     String oldDocumentTypeDe = omsDocument.getDocumentTypeDe();
     String oldHelpTextDe = omsDocument.getHelpTextDe();
+    boolean oldIsUploadInCitizenPortal = omsDocument.isUploadInCitizenPortal();
     omsDocument.setDocumentTypeDe(request.documentTypeDe());
     omsDocument.setDocumentTypeEn(request.documentTypeEn());
     omsDocument.setHelpTextDe(request.helpTextDe());
@@ -155,6 +179,22 @@ public class OmsDocumentService {
       OmsProcedure omsProcedure = omsDocument.getOmsProcedure();
       progressEntryService.createProgressEntryUpdateDocumentInformation(
           omsProcedure, omsDocument, oldDocumentTypeDe, oldHelpTextDe);
+    }
+
+    OmsProcedure omsProcedure = omsDocument.getOmsProcedure();
+    boolean newIsUploadInCitizenPortal = omsDocument.isUploadInCitizenPortal();
+    Person person = omsProcedure.findAffectedPerson();
+    AffectedPersonDto affectedPersonDto =
+        PersonMapper.mapToAffectedPersonDto(
+            personClient.getPersonFileState(person.getCentralFileStateId()), person.getVersion());
+    if (omsProcedure.getProcedureStatus() == ProcedureStatus.OPEN
+        && omsProcedure.isSendEmailNotifications()
+        && !affectedPersonDto.emailAddresses().isEmpty()
+        && omsDocument.getDocumentStatus() == OmsDocumentStatus.MISSING
+        && !oldIsUploadInCitizenPortal
+        && newIsUploadInCitizenPortal) {
+      notificationService.notifyNewDocument(
+          affectedPersonDto, omsDocument.getDocumentTypeDe(), omsDocument.getHelpTextDe());
     }
   }
 

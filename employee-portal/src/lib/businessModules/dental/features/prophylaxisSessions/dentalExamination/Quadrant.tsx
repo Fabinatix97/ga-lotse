@@ -4,7 +4,6 @@
  */
 
 import { Stack } from "@mui/joy";
-import { Property } from "csstype";
 import { ReactNode } from "react";
 
 import { useDentalExaminationStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
@@ -18,7 +17,7 @@ import { ToothColumn } from "./ToothColumn";
 interface QuadrantProps {
   quadrantNumber: QuadrantNumber;
   children?: (tooth: Tooth, index: number) => ReactNode;
-  gap?: Property.Gap;
+  gap?: number;
   "aria-labelledby"?: string;
 }
 

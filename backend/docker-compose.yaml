@@ -317,6 +317,7 @@ services:
       - de.eshg.business-modules.clients[SCHOOL_ENTRY].url=http://school-entry:8080
       - de.eshg.business-modules.clients[INSPECTION].url=http://inspection:8080
       - de.eshg.business-modules.clients[DENTAL].url=http://dental:8080
+      - de.eshg.business-modules.clients[OFFICIAL_MEDICAL_SERVICE].url=http://official-medical-service:8080
       - de.eshg.auditlog.service-url=http://auditlog:8080
       - de.eshg.centralrepository.service-url=http://central-repository:8080
       - de.eshg.centralrepository.mock-cert-subject-cn=statistics.frankfurt.ga-lotse
@@ -445,6 +446,9 @@ services:
       - spring.datasource.url=jdbc:postgresql://auditlog-db/auditlog
       - de.eshg.base.service-url=http://base:8080
       - de.eshg.auditlog.log-storage-dir=/tmp/auditlog-storage
+    depends_on:
+      auditlog-db:
+        condition: service_healthy
 
   auditlog-db:
     extends:
@@ -573,8 +577,19 @@ services:
       - de.eshg.base.service-url=http://base:8080
       - eshg.keycloak.internal.url=http://keycloak:8080
       - de.eshg.auditlog.service-url=http://auditlog:8080
+      - de.eshg.official-medical-service.department-info.name=Amtsärztlicher Dienst
+      - de.eshg.official-medical-service.department-info.abbreviation=TMD
+      - de.eshg.official-medical-service.department-info.street=Wanderluststraße
+      - de.eshg.official-medical-service.department-info.houseNumber=202
+      - de.eshg.official-medical-service.department-info.postalCode=12345
+      - de.eshg.official-medical-service.department-info.city=Wandern Stadt
+      - de.eshg.official-medical-service.department-info.country=DE
+      - de.eshg.official-medical-service.department-info.phoneNumber=+49 123 12345678
+      - de.eshg.official-medical-service.department-info.homepage=www.oms.de
+      - de.eshg.official-medical-service.department-info.email=gutachten@oms.de
       - de.eshg.official-medical-service.notification.fromAddress=tba@stadt-frankfurt.de
       - de.eshg.official-medical-service.notification.greeting=Ihr TBA-Team der Stadt Frankfurt
+      - de.eshg.official-medical-service.concerns.config=classpath:$${de.eshg.official-medical-service.concerns.templates.path}/concerns.test.yaml
     depends_on:
       official-medical-service-db:
         condition: service_healthy

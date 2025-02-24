@@ -22,6 +22,7 @@ import de.eshg.stiprotection.api.CreateProcedureRequest;
 import de.eshg.stiprotection.api.CreateProcedureResponse;
 import de.eshg.stiprotection.api.GetProcedureResponse;
 import de.eshg.stiprotection.api.GetProceduresOverviewResponse;
+import de.eshg.stiprotection.api.GetStiProtectionProceduresFilterOptions;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresPaginationOptions;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresSortOptions;
 import de.eshg.stiprotection.api.UpdateAppointmentRequest;
@@ -35,6 +36,7 @@ import de.eshg.stiprotection.persistence.data.AppointmentData;
 import de.eshg.stiprotection.persistence.data.ResultPage;
 import de.eshg.stiprotection.persistence.data.StiProtectionProcedureData;
 import de.eshg.stiprotection.persistence.db.AppointmentHistoryEntry;
+import de.eshg.stiprotection.persistence.db.CreatedByUserType;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.StiProtectionSystemProgressEntryType;
 import de.eshg.stiprotection.util.ProgressEntryUtil;
@@ -71,7 +73,6 @@ public class StiProtectionProcedureController {
   private final StiProtectionProcedureService stiProtectionService;
   private final AppointmentService appointmentService;
   private final AuditLogger auditLogger;
-  private final StiProtectionProcedureDeletionService procedureDeletionService;
   private final StiProtectionProcedureFinder procedureFinder;
   private final ProgressEntryUtil progressEntryUtil;
   private final FollowUpProcedureService followUpProcedureService;
@@ -80,14 +81,12 @@ public class StiProtectionProcedureController {
       StiProtectionProcedureService stiProtectionService,
       AppointmentService appointmentService,
       AuditLogger auditLogger,
-      StiProtectionProcedureDeletionService procedureDeletionService,
       StiProtectionProcedureFinder procedureFinder,
       ProgressEntryUtil progressEntryUtil,
       FollowUpProcedureService followUpProcedureService) {
     this.stiProtectionService = stiProtectionService;
     this.appointmentService = appointmentService;
     this.auditLogger = auditLogger;
-    this.procedureDeletionService = procedureDeletionService;
     this.procedureFinder = procedureFinder;
     this.progressEntryUtil = progressEntryUtil;
     this.followUpProcedureService = followUpProcedureService;
@@ -99,7 +98,8 @@ public class StiProtectionProcedureController {
   public CreateProcedureResponse createProcedure(
       @Valid @RequestBody CreateProcedureRequest request) {
     StiProtectionProcedure procedure =
-        stiProtectionService.createProcedure(ConcernMapper.toDatabaseType(request.concern()));
+        stiProtectionService.createProcedure(
+            ConcernMapper.toDatabaseType(request.concern()), CreatedByUserType.EMPLOYEE);
     stiProtectionService.addPerson(procedure, PersonMapper.toDataType(request));
     appointmentService.createAppointment(procedure, AppointmentMapper.toDataType(request));
     String pin = stiProtectionService.generatePin();
@@ -132,10 +132,12 @@ public class StiProtectionProcedureController {
       @Valid @ParameterObject @InlineParameterObject
           GetStiProtectionProceduresSortOptions sortOptions,
       @Valid @ParameterObject @InlineParameterObject
-          GetStiProtectionProceduresPaginationOptions paginationOptions) {
+          GetStiProtectionProceduresPaginationOptions paginationOptions,
+      @Valid @ParameterObject @InlineParameterObject
+          GetStiProtectionProceduresFilterOptions filterOptions) {
 
     ResultPage<StiProtectionProcedureData> procedures =
-        stiProtectionService.getProcedures(sortOptions, paginationOptions);
+        stiProtectionService.getProcedures(sortOptions, paginationOptions, filterOptions);
 
     return new GetProceduresOverviewResponse(
         procedures.totalPages(),
@@ -213,7 +215,9 @@ public class StiProtectionProcedureController {
   @ProcedureStatusTransition
   public void closeProcedure(@PathVariable("id") UUID procedureId) {
     StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
-    appointmentService.cancelAppointment(procedure);
+    if (procedure.getAppointment() != null || procedure.getUserDefinedAppointment() != null) {
+      appointmentService.cancelAppointment(procedure);
+    }
     stiProtectionService.closeProcedure(procedure);
   }
 
@@ -268,12 +272,15 @@ public class StiProtectionProcedureController {
       @Valid @RequestBody CreateFollowUpProcedureRequest request) {
     StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
     if (procedure.getProcedureStatus().isOpen()) {
-      appointmentService.cancelAppointment(procedure);
       stiProtectionService.closeProcedure(procedure);
+      if (procedure.getAppointment() != null || procedure.getUserDefinedAppointment() != null) {
+        appointmentService.cancelAppointment(procedure);
+      }
     }
 
     StiProtectionProcedure followUpProcedure =
-        stiProtectionService.createProcedure(ConcernMapper.toDatabaseType(request.concern()));
+        stiProtectionService.createProcedure(
+            ConcernMapper.toDatabaseType(request.concern()), CreatedByUserType.EMPLOYEE);
     followUpProcedure.setFollowUp(true);
     stiProtectionService.addPerson(
         followUpProcedure, PersonMapper.toDataType(procedure.getPerson()));

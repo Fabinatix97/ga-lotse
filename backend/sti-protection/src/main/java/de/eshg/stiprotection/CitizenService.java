@@ -23,15 +23,14 @@ public class CitizenService {
   }
 
   public StiProtectionProcedureData getProcedure(Jwt principal) {
-    return new StiProtectionProcedureData(
-        findByAnonymouseUserlId(getCitizenUserId(principal)), null);
+    return new StiProtectionProcedureData(findByAnonymousUserId(getCitizenUserId(principal)), null);
   }
 
   private UUID getCitizenUserId(Jwt principal) {
     return UUID.fromString(principal.getSubject());
   }
 
-  private StiProtectionProcedure findByAnonymouseUserlId(UUID anonymousUserId) {
+  private StiProtectionProcedure findByAnonymousUserId(UUID anonymousUserId) {
     return repository
         .findByAnonymousUserId(anonymousUserId)
         .orElseThrow(

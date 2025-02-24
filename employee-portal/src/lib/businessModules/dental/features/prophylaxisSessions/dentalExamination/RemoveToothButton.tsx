@@ -8,17 +8,17 @@ import { styled } from "@mui/joy";
 
 import { ToothIconButton } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/AddToothButton";
 import { useDentalExaminationStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
-import { ToothContext } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
+import {
+  Tooth,
+  ToothContext,
+} from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
+
+import { ToothIcon } from "./Teeth";
 
 interface RemoveToothButtonProps {
+  tooth: Tooth;
   toothContext: ToothContext;
 }
-
-const DeleteIconButton = styled(ToothIconButton)({
-  position: "absolute",
-  top: 0,
-  right: 0,
-});
 
 const RoundedDeleteIcon = styled(DeleteOutlined)(({ theme }) => ({
   padding: 4,
@@ -31,16 +31,31 @@ export function RemoveToothButton(props: RemoveToothButtonProps) {
   const removeTooth = useDentalExaminationStore((state) => state.removeTooth);
 
   return (
-    <DeleteIconButton
+    <ToothIconButton
       color="danger"
       variant="plain"
-      className="remove-tooth-button"
-      onClick={() => {
-        removeTooth(props.toothContext);
+      aria-label="Zahn entfernen"
+      onClick={() => removeTooth(props.toothContext)}
+      sx={{
+        ".remove-icon": {
+          display: "none",
+        },
+        "&:hover": {
+          ".tooth-icon": {
+            display: "none",
+          },
+          ".remove-icon": {
+            display: "inline-flex",
+          },
+        },
       }}
-      aria-label={"Zahn entfernen"}
     >
-      <RoundedDeleteIcon />
-    </DeleteIconButton>
+      <ToothIcon
+        tooth={props.tooth}
+        toothContext={props.toothContext}
+        className="tooth-icon"
+      />
+      <RoundedDeleteIcon className="remove-icon" />
+    </ToothIconButton>
   );
 }

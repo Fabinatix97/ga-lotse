@@ -8,8 +8,8 @@ package de.eshg.dental.domain.model;
 public enum OralHygieneStatus {
   /** keine Zahnbeläge */
   EXCELLENT,
-  /* vereinzelte Zahnbeläge */
+  /** vereinzelte Zahnbeläge */
   GOOD,
-  /* massive Zahnbeläge */
+  /** massive Zahnbeläge */
   POOR
 }

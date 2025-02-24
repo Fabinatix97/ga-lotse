@@ -6,19 +6,14 @@
 import { ApiUserRole } from "@eshg/base-api";
 import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
 import {
+  SideNavigationItem,
   SideNavigationSubItem,
-  UseSideNavigationItemsResult,
 } from "@eshg/lib-employee-portal/types/sideNavigation";
 import { OtherHousesOutlined } from "@mui/icons-material";
 
 import { routes } from "./routes";
 
-const sideNavigationItem = {
-  name: "Begehung",
-  decorator: <OtherHousesOutlined />,
-};
-
-const defaultSubItems: SideNavigationSubItem[] = [
+const subItems: SideNavigationSubItem[] = [
   {
     name: "Vorgänge",
     href: routes.procedures.index,
@@ -66,18 +61,13 @@ const defaultSubItems: SideNavigationSubItem[] = [
   },
 ];
 
-export function useSideNavigationItems(
-  enabled: boolean,
-): UseSideNavigationItemsResult {
-  return {
-    isLoading: false,
-    items: enabled
-      ? [
-          {
-            ...sideNavigationItem,
-            subItems: defaultSubItems,
-          },
-        ]
-      : [],
-  };
+export function resolveSideNavigationItems(): SideNavigationItem[] {
+  return [
+    {
+      type: "SideNavigationParentItem",
+      name: "Begehung",
+      decorator: <OtherHousesOutlined />,
+      subItems,
+    },
+  ];
 }

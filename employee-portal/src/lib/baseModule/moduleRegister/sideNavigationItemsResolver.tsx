@@ -4,90 +4,70 @@
  */
 
 import { ApiBusinessModule } from "@eshg/base-api";
-import { useSideNavigationItems as useDentalSideNavigationItems } from "@eshg/dental/shared/useSideNavigationItems";
+import { resolveSideNavigationItems as resolveDentalSideNavigationItems } from "@eshg/dental/shared/sideNavigationItem";
 import {
   SideNavigationItem,
+  SideNavigationItemsProps,
   UseSideNavigationItemsResult,
 } from "@eshg/lib-employee-portal/types/sideNavigation";
-import { mapToObj } from "remeda";
+import { entries } from "remeda";
 
 import { useServerConfig } from "@/lib/baseModule/api/queries/config";
 import { SideNavItemGroups } from "@/lib/baseModule/components/layout/sideNavigation/types";
+import { useSideNavigationItemProps } from "@/lib/baseModule/components/layout/sideNavigation/useSideNavigationItemProps";
 import {
+  dashboardItem,
   useSideNavigationItems as useBaseSideNavigationItems,
-  useDashboardItem,
-} from "@/lib/baseModule/sideNavigationItems";
+} from "@/lib/baseModule/sideNavigationItem";
 import { useSideNavigationItems as useChatSideNavigationItems } from "@/lib/businessModules/chat/shared/sideNavigationItem";
-import { useSideNavigationItems as useInspectionSideNavigationItems } from "@/lib/businessModules/inspection/shared/sideNavigationItem";
-import { useSideNavigationItems as useMeaslesProtectionSideNavigationItems } from "@/lib/businessModules/measlesProtection/shared/sideNavigationItem";
-import { useSideNavigationItems as useMedicalRegistrySideNavigationItems } from "@/lib/businessModules/medicalRegistry/shared/sideNavigationItem";
-import { useSideNavigationItems as useOfficialMedicalServiceSideNavigationItems } from "@/lib/businessModules/officialMedicalService/shared/sideNavigationItem";
-import { useSideNavigationItems as useSchoolEntrySideNavigationItems } from "@/lib/businessModules/schoolEntry/shared/sideNavigationItem";
+import { resolveSideNavigationItems as resolveInspectionSideNavigationItems } from "@/lib/businessModules/inspection/shared/sideNavigationItem";
+import { resolveSideNavigationItems as resolveMeaslesProtectionSideNavigationItems } from "@/lib/businessModules/measlesProtection/shared/sideNavigationItem";
+import { resolveSideNavigationItems as resolveMedicalRegistrySideNavigationItems } from "@/lib/businessModules/medicalRegistry/shared/sideNavigationItem";
+import { resolveSideNavigationItems as resolveOfficialMedicalServiceSideNavigationItems } from "@/lib/businessModules/officialMedicalService/shared/sideNavigationItem";
+import { resolveSideNavigationItems as resolveSchoolEntrySideNavigationItems } from "@/lib/businessModules/schoolEntry/shared/sideNavigationItem";
 import { useSideNavigationItems as useStatisticsSideNavigationItems } from "@/lib/businessModules/statistics/shared/sideNavigationItem";
-import { useSideNavigationItems as useStiProtectionSideNavigationItems } from "@/lib/businessModules/stiProtection/shared/sideNavigationItem";
-import { useSideNavigationItems as useTravelMedicineSideNavigationItems } from "@/lib/businessModules/travelMedicine/shared/sideNavigationItem";
+import { resolveSideNavigationItems as resolveStiProtectionSideNavigationItems } from "@/lib/businessModules/stiProtection/shared/sideNavigationItem";
+import { resolveSideNavigationItems as resolveTravelMedicineSideNavigationItems } from "@/lib/businessModules/travelMedicine/shared/sideNavigationItem";
 import { sideNavigationItems as archivingSideNavigationItems } from "@/lib/shared/components/archiving/shared/sideNavigationItem";
 
-interface UseSideNavigationItemGroupsResult {
-  isLoading: boolean;
-  itemGroups: SideNavItemGroups;
-}
+export type ResolveSideNavigationItems = (
+  params: SideNavigationItemsProps,
+) => SideNavigationItem[];
 
-export function useResolveSideNavigationItems(): UseSideNavigationItemGroupsResult {
+const businessItemResolvers: Record<
+  ApiBusinessModule,
+  ResolveSideNavigationItems
+> = {
+  [ApiBusinessModule.SchoolEntry]: resolveSchoolEntrySideNavigationItems,
+  [ApiBusinessModule.Inspection]: resolveInspectionSideNavigationItems,
+  [ApiBusinessModule.TravelMedicine]: resolveTravelMedicineSideNavigationItems,
+  [ApiBusinessModule.MeaslesProtection]:
+    resolveMeaslesProtectionSideNavigationItems,
+  [ApiBusinessModule.StiProtection]: resolveStiProtectionSideNavigationItems,
+  [ApiBusinessModule.MedicalRegistry]:
+    resolveMedicalRegistrySideNavigationItems,
+  [ApiBusinessModule.Dental]: resolveDentalSideNavigationItems,
+  [ApiBusinessModule.OfficialMedicalService]:
+    resolveOfficialMedicalServiceSideNavigationItems,
+};
+
+function useBusinessItems(): SideNavigationItem[] {
   const config = useServerConfig();
   const activeModules = config.data.activeModules;
-  const activeModulesMap = mapToObj(
-    Object.values(ApiBusinessModule),
-    (module) => [module, activeModules.includes(module)],
-  );
+  const resolveParams = useSideNavigationItemProps();
 
-  const inspectionSideNavigation = useInspectionSideNavigationItems(
-    activeModulesMap.INSPECTION,
-  );
-  const schoolEntrySideNavigation = useSchoolEntrySideNavigationItems(
-    activeModulesMap.SCHOOL_ENTRY,
-  );
-  const travelMedicineSideNavigation = useTravelMedicineSideNavigationItems(
-    activeModulesMap.TRAVEL_MEDICINE,
-  );
-  const measlesProtectionSideNavigation =
-    useMeaslesProtectionSideNavigationItems(
-      activeModulesMap.MEASLES_PROTECTION,
-    );
-  const stiProtectionSideNavigation = useStiProtectionSideNavigationItems(
-    activeModulesMap.STI_PROTECTION,
-  );
-  const medicalRegistrySideNavigationItems =
-    useMedicalRegistrySideNavigationItems(activeModulesMap.MEDICAL_REGISTRY);
+  return entries(businessItemResolvers)
+    .filter(([module]) => activeModules.includes(module))
+    .map(([_, resolveSideNavigationItems]) => {
+      return resolveSideNavigationItems(resolveParams);
+    })
+    .flat();
+}
+
+function useBaseItems(): SideNavigationItem[] {
   const statisticsSideNavigation = useStatisticsSideNavigationItems();
   const chatSideNavigation = useChatSideNavigationItems();
-  const dashboardItem = useDashboardItem();
   const baseSideNavigation = useBaseSideNavigationItems();
-  const dentalSideNavigationItems = useDentalSideNavigationItems(
-    activeModulesMap.DENTAL,
-  );
-  const officialMedicalServiceSideNavigationItems =
-    useOfficialMedicalServiceSideNavigationItems(
-      activeModulesMap.OFFICIAL_MEDICAL_SERVICE,
-    );
-
-  const businessModules: [ApiBusinessModule, UseSideNavigationItemsResult][] = [
-    [ApiBusinessModule.SchoolEntry, schoolEntrySideNavigation],
-    [ApiBusinessModule.Inspection, inspectionSideNavigation],
-    [ApiBusinessModule.TravelMedicine, travelMedicineSideNavigation],
-    [ApiBusinessModule.MeaslesProtection, measlesProtectionSideNavigation],
-    [ApiBusinessModule.StiProtection, stiProtectionSideNavigation],
-    [ApiBusinessModule.MedicalRegistry, medicalRegistrySideNavigationItems],
-    [ApiBusinessModule.Dental, dentalSideNavigationItems],
-    [
-      ApiBusinessModule.OfficialMedicalService,
-      officialMedicalServiceSideNavigationItems,
-    ],
-  ];
-  const orderedSideNavigationItems: UseSideNavigationItemsResult[] =
-    businessModules
-      .filter(([module]) => activeModulesMap[module])
-      .map(([_, items]) => items);
 
   const orderedBaseItems: UseSideNavigationItemsResult[] = [
     baseSideNavigation,
@@ -96,18 +76,18 @@ export function useResolveSideNavigationItems(): UseSideNavigationItemGroupsResu
     chatSideNavigation,
   ];
 
-  return {
-    isLoading: orderedSideNavigationItems.some(isLoading),
-    itemGroups: {
-      dashboardItem: dashboardItem.map(getItems).flat(),
-      businessItems: orderedSideNavigationItems.map(getItems).flat(),
-      baseItems: orderedBaseItems.map(getItems).flat(),
-    },
-  };
+  return orderedBaseItems.map(getItems).flat();
 }
 
-function isLoading(result: UseSideNavigationItemsResult): boolean {
-  return result.isLoading;
+export function useResolveSideNavigationItems(): SideNavItemGroups {
+  const businessItems = useBusinessItems();
+  const baseItems = useBaseItems();
+
+  return {
+    dashboardItem: [dashboardItem],
+    businessItems,
+    baseItems,
+  };
 }
 
 function getItems(result: UseSideNavigationItemsResult): SideNavigationItem[] {

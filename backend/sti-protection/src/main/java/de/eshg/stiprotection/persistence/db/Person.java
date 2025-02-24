@@ -18,7 +18,12 @@ import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
-@Table(indexes = @Index(columnList = "procedure_id", unique = true))
+@Table(
+    indexes = {
+      @Index(columnList = "procedure_id", unique = true),
+      @Index(columnList = "gender"),
+      @Index(columnList = "yearOfBirth"),
+    })
 public class Person extends RelatedPerson<StiProtectionProcedure> {
 
   @JdbcType(PostgreSQLEnumJdbcType.class)

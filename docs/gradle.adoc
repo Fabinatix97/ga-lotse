@@ -38,7 +38,7 @@ These are also available within the subprojects.
 | `./gradlew [project-name]:run`                | Start the application in production mode
 | `./gradlew [project-name]:runDev [-Pwebpack]` | Start the application in development mode (hot-code reloading). Use `-Pwebpack` to use webpack instead of Turbopack (default).
 | `./gradlew [project-name]:build`              | Run all checks and builds the {project-name}
-| `./gradlew [project-name]:test`               | Run all tests in a single run
+| `./gradlew [project-name]:test [-Pcoverage]`  | Run all tests in a single run. Add `-Pcoverage` to enable coverage reporting.
 | `./gradlew [project-name]:testWatch`          | Run all tests in watch mode (reruns tests when they change)
 | `./gradlew [project-name]:analyzeBundle`      | Generates a visual report of the size of each module and their dependencies
 |===

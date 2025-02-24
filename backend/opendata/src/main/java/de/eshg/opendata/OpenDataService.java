@@ -168,7 +168,7 @@ public class OpenDataService {
           CsvValidator.validate(file.getBytes());
           yield OpenDataFileType.CSV;
         }
-        case EML, JPEG, PNG -> throw new BadRequestException("File type not permitted");
+        default -> throw new BadRequestException("File type not permitted");
       };
     } catch (IOException e) {
       log.error("File header was corrupt", e);

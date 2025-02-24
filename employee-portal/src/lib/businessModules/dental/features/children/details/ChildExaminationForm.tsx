@@ -6,7 +6,6 @@
 "use client";
 
 import {
-  ApiDentitionType,
   ApiExaminationResult,
   UpdateExaminationRequest,
 } from "@eshg/dental-api";
@@ -55,6 +54,7 @@ export function ChildExaminationForm(props: ChildExaminationFormProps) {
       initialValues={mapToExaminationFormValues(
         examination.result,
         examination.note,
+        examination.prophylaxisDentitionType,
       )}
       onSubmit={handleSubmit}
       enableReinitialize
@@ -98,10 +98,10 @@ function mapExaminationResultRequest(
   if (examination.screening) {
     return {
       type: "ScreeningExaminationResult",
+      dentitionType: mapRequiredValue(formValues.dentitionType),
       oralHygieneStatus: mapOptionalValue(formValues.oralHygieneStatus),
       fluorideVarnishApplied:
         mapOptionalValue(formValues.fluorideVarnishApplied) ?? false,
-      dentitionType: ApiDentitionType.Mixed,
       toothDiagnoses: Object.values(toothDiagnoses),
     };
   }

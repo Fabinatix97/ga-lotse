@@ -13,6 +13,7 @@ import de.eshg.lib.procedure.gdpr.AbstractGdprZipEditorProvider;
 import de.eshg.travelmedicine.document.medicalhistory.persistence.entity.MedicalHistory_;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.ProcedureStep_;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.VaccinationConsultation_;
+import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.Vaccination_;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.VcService_;
 import java.util.Iterator;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,7 +41,12 @@ public class TravelMedicineGdprZipEditorProvider extends AbstractGdprZipEditorPr
                 ProcedureStep_.SERVICES))
         .andThen(
             removeFieldFromNestedArray(
-                VcService_.MFA, VaccinationConsultation_.PROCEDURE_STEPS, ProcedureStep_.SERVICES));
+                VcService_.MFA, VaccinationConsultation_.PROCEDURE_STEPS, ProcedureStep_.SERVICES))
+        .andThen(
+            removeFieldFromNestedArray(
+                Vaccination_.BOOKING_ID,
+                VaccinationConsultation_.PROCEDURE_STEPS,
+                ProcedureStep_.SERVICES));
   }
 
   protected ZipEditor removeFieldFromNestedArray(

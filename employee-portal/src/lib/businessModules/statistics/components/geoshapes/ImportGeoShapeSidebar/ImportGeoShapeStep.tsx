@@ -20,7 +20,7 @@ export function ImportGeoShapeStep({
       <DeletableFileField
         name={fieldName("file")}
         label="Karten-Datei für den Import auswählen:"
-        required="Bitte Shapefile importieren."
+        required="Bitte GeoJSON-Datei importieren."
         accept={FileType.Geojson}
         placeholder=".geojson"
       />

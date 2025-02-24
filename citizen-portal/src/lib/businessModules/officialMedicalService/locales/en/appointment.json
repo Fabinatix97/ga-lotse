@@ -13,6 +13,13 @@
     "infoText": {
       "title": "School-related concern",
       "description": "For exams, please come to us at the latest on the day of the exam (even without an appointment) or if you are submitting an academic paper, please make an appointment by telephone in advance"
+    },
+    "filter": {
+      "category": "Category",
+      "category_all": "All"
+    },
+    "fields": {
+      "concern_required": "Required"
     }
   },
   "appointment": {
@@ -71,16 +78,16 @@
       "contactAddress": {
         "street": "Street",
         "street_required": "Required",
-        "houseNumber": "House number",
+        "houseNumber": "House Nr.",
         "houseNumber_required": "Required",
-        "addressAddition": "Apartment, unit, suite etc",
+        "addressAddition": "Apartment, unit, suite etc.",
         "postalCode": "Postal Code",
         "postalCode_required": "Required",
         "city": "City",
         "city_required": "Required"
       },
       "phoneNumbers": "Phone",
-      "emailAddresses": "E-Mail Addresses",
+      "emailAddresses": "E-Mail Address",
       "emailAddresses_required": "Required",
       "confirmOnlineServices": "I confirm that I would like to use the online services and receive the necessary emails.",
       "confirmOnlineServices_required": "Please confirm."
@@ -93,7 +100,8 @@
     "cancel": "Cancel",
     "values": {
       "confirmOnlineServices": "Send confirmation email",
-      "appointmentDuration": "(ca. {{ durationInMinutes }} Minutes)"
+      "appointmentDuration": "(ca. {{ durationInMinutes }} Minutes)",
+      "contactAddress": "{{ street }} <br> {{ city }} </br>"
     }
   },
   "appointmentInformation": {
@@ -104,8 +112,7 @@
     "listItemIdCard": "ID / Passport",
     "listItemMedicalDocuments": "Copies of medical documents (e.g. hospital discharge reports, certificates, etc.)",
     "listItemCurrentMedication": "proof of the currently prescribed medication (if any)",
-    "closingGreeting": "Sincerely",
-    "healthDepartment": "Your Health Department"
+    "closingGreeting": "Sincerely <br> Your Health Department </br>"
   },
   "confirmation": {
     "title": "Request an official medical report",

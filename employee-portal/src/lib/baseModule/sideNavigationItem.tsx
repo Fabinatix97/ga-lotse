@@ -31,20 +31,13 @@ import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 
 import { routes } from "./shared/routes";
 
-const dashboardItem: SideNavigationItem[] = [
-  {
-    name: "Dashboard",
-    href: routes.index,
-    decorator: <DashboardOutlined />,
-    accessCheck: noCheck(),
-  },
-];
-
-export function useDashboardItem(): UseSideNavigationItemsResult[] {
-  const items = dashboardItem;
-
-  return [{ isLoading: false, items }];
-}
+export const dashboardItem: SideNavigationItem = {
+  type: "SideNavigationLinkItem",
+  name: "Dashboard",
+  href: routes.index,
+  decorator: <DashboardOutlined />,
+  accessCheck: noCheck(),
+};
 
 /**
  * These are the side navigation items of base module pages.
@@ -52,66 +45,77 @@ export function useDashboardItem(): UseSideNavigationItemsResult[] {
  */
 const sideNavigationItems: SideNavigationItem[] = [
   {
+    type: "SideNavigationLinkItem",
     name: "DSGVO",
     href: routes.gdpr.index,
     decorator: <GppGoodOutlined />,
     accessCheck: hasUserRole(ApiUserRole.BaseGdprProcedureRead),
   },
   {
+    type: "SideNavigationLinkItem",
     name: "Benutzer",
     href: routes.users.index,
     decorator: <PeopleAltOutlined />,
     accessCheck: noCheck(),
   },
   {
+    type: "SideNavigationLinkItem",
     name: "Kalender",
     href: routes.calendar,
     decorator: <CalendarTodayOutlined />,
     accessCheck: noCheck(),
   },
   {
+    type: "SideNavigationLinkItem",
     name: "Ressourcen",
     href: routes.resources.index,
     decorator: <WarehouseOutlined />,
     accessCheck: hasUserRole(ApiUserRole.BaseResourcesRead),
   },
   {
+    type: "SideNavigationLinkItem",
     name: "Inventar",
     href: routes.inventory.index,
     decorator: <InventoryOutlined />,
     accessCheck: hasUserRole(ApiUserRole.BaseInventoryRead),
   },
   {
+    type: "SideNavigationLinkItem",
     name: "Kontakte",
     href: routes.contacts.index,
     decorator: <ContactsOutlined />,
     accessCheck: hasUserRole(ApiUserRole.BaseContactsRead),
   },
   {
+    type: "SideNavigationLinkItem",
     name: "Kennzahlen",
     href: routes.metrics.index,
     decorator: <TrackChangesOutlined />,
     accessCheck: hasUserRole(ApiUserRole.BaseProcedureMetricsRead),
   },
   {
+    type: "SideNavigationLinkItem",
     name: "Auditlog",
     href: routes.auditlog.index,
     decorator: <ContentPasteSearchOutlined />,
     accessCheck: hasUserRole(ApiUserRole.AuditlogDecryptAndAccess),
   },
   {
+    type: "SideNavigationLinkItem",
     name: "Auditlog Freigabe",
     href: routes.auditlog.authorize,
     decorator: <ContentPasteSearch />,
     accessCheck: hasUserRole(ApiUserRole.AuditlogAuthorizeAccess),
   },
   {
+    type: "SideNavigationLinkItem",
     name: "Open Data",
     href: routes.opendata.index,
     decorator: <PermMediaOutlined />,
     accessCheck: hasUserRole(ApiUserRole.OpenDataAdmin),
   },
   {
+    type: "SideNavigationLinkItem",
     name: "Posteingang",
     href: routes.inbox,
     decorator: <MailOutline />,

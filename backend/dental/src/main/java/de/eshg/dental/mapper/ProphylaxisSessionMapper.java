@@ -130,6 +130,7 @@ public final class ProphylaxisSessionMapper {
         examination.getChild().getGroupName().trim(),
         fileStateResponse.gender(),
         examination.getNote(),
+        DentitionTypeMapper.mapToDto(examination.getProphylaxisSession().getDentitionType()),
         ChildMapper.mapFluoridationToDto(
             examination.getChild().getFluoridationConsents().stream()
                 .sorted(Comparator.comparing(FluoridationConsent::getModifiedAt).reversed())

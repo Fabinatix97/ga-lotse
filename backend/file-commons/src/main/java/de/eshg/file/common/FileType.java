@@ -20,7 +20,8 @@ public enum FileType {
   PNG(MediaType.IMAGE_PNG, FileExtension.PNG),
   PDF(MediaType.APPLICATION_PDF, FileExtension.PDF),
   EML(CustomMediaTypes.EML, FileExtension.EML),
-  CSV(CustomMediaTypes.CSV, FileExtension.CSV);
+  CSV(CustomMediaTypes.CSV, FileExtension.CSV),
+  XLSX(CustomMediaTypes.APPLICATION_XLSX, FileExtension.XLSX);
 
   private final MediaType mediaType;
   private final FileExtension defaultFileExtension;
