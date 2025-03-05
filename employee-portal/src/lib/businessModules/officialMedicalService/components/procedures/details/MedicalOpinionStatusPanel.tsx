@@ -10,6 +10,7 @@ import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import {
   ApiEmployeeOmsProcedureDetails,
   ApiMedicalOpinionStatus,
+  ApiProcedureStatus,
 } from "@eshg/official-medical-service-api";
 import { Formik, FormikHelpers } from "formik";
 
@@ -30,8 +31,14 @@ export function MedicalOpinionStatusPanel({
   const patchMedicalOpinionStatus = usePatchMedicalOpinionStatus();
   const snackbar = useSnackbar();
 
-  function isMedicalOpinionAccomplished(status: ApiMedicalOpinionStatus) {
-    return status === ApiMedicalOpinionStatus.Accomplished;
+  function isMedicalOpinionAccomplished() {
+    return (
+      procedure.medicalOpinionStatus === ApiMedicalOpinionStatus.Accomplished
+    );
+  }
+
+  function isProcedureClosed() {
+    return procedure.status === ApiProcedureStatus.Closed;
   }
 
   function handleSubmit(
@@ -64,18 +71,15 @@ export function MedicalOpinionStatusPanel({
       name="medicalOpinionStatus"
       title="Gutachtenstatus"
     >
-      <Formik
-        initialValues={procedure}
-        onSubmit={(values, helpers) => handleSubmit(values, helpers)}
-        enableReinitialize
-      >
-        {({ isSubmitting, handleSubmit, initialValues }) => {
-          const opinionUnacomplished = !isMedicalOpinionAccomplished(
-            initialValues.medicalOpinionStatus,
-          );
-          return (
-            <FormStack onSubmit={handleSubmit}>
-              {opinionUnacomplished ? (
+      {!isProcedureClosed() && !isMedicalOpinionAccomplished() ? (
+        <Formik
+          initialValues={procedure}
+          onSubmit={(values, helpers) => handleSubmit(values, helpers)}
+          enableReinitialize
+        >
+          {({ isSubmitting, handleSubmit }) => {
+            return (
+              <FormStack onSubmit={handleSubmit}>
                 <SelectField
                   label="Status"
                   name="medicalOpinionStatus"
@@ -83,17 +87,6 @@ export function MedicalOpinionStatusPanel({
                     STATUS_NAMES_MEDICAL_OPINION_STATUS,
                   )}
                 />
-              ) : (
-                <DetailsItem
-                  label="Status"
-                  value={
-                    STATUS_NAMES_MEDICAL_OPINION_STATUS[
-                      initialValues.medicalOpinionStatus
-                    ]
-                  }
-                ></DetailsItem>
-              )}
-              {opinionUnacomplished && (
                 <ButtonBar
                   right={
                     <SubmitButton submitting={isSubmitting}>
@@ -101,11 +94,18 @@ export function MedicalOpinionStatusPanel({
                     </SubmitButton>
                   }
                 />
-              )}
-            </FormStack>
-          );
-        }}
-      </Formik>
+              </FormStack>
+            );
+          }}
+        </Formik>
+      ) : (
+        <DetailsItem
+          label="Status"
+          value={
+            STATUS_NAMES_MEDICAL_OPINION_STATUS[procedure.medicalOpinionStatus]
+          }
+        ></DetailsItem>
+      )}
     </InfoTile>
   );
 }

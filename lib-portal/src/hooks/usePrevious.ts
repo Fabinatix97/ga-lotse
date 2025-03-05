@@ -8,8 +8,11 @@ import { useEffect, useRef } from "react";
 /**
  * Memoizes value and returns the previous value
  */
-export function usePrevious<TValue>(value: TValue): TValue | undefined {
-  const ref = useRef<TValue>(value);
+export function usePrevious<TValue>(
+  value: TValue,
+  initiallyEmpty = false,
+): TValue | undefined {
+  const ref = useRef<TValue | undefined>(initiallyEmpty ? undefined : value);
 
   useEffect(() => {
     ref.current = value;

@@ -106,13 +106,15 @@
   },
   "appointmentInformation": {
     "title": "Appointment information",
-    "alertMessage": "Please come to Breite Gasse 28, 60313 Frankfurt am Main (room 3.04) sober on the day of the examination.",
+    "alertMessage": "Please come sober on the day of the examination to: <br> {{ department }} </br>",
     "infoText": "We will review your request. After successful verification, you will receive a <t1> appointment confirmation </t1> by email. All information about the appointment can be found there. You also have the option to change or cancel the appointment.",
-    "requiredDocumentsHeader": "The necessary documents that you should bring with you to the appointment are:",
-    "listItemIdCard": "ID / Passport",
-    "listItemMedicalDocuments": "Copies of medical documents (e.g. hospital discharge reports, certificates, etc.)",
-    "listItemCurrentMedication": "proof of the currently prescribed medication (if any)",
-    "closingGreeting": "Sincerely <br> Your Health Department </br>"
+    "closingGreeting": "Sincerely <br> Your Health Department </br>",
+    "requiredDocuments_header": "The necessary documents that you should bring with you to the appointment are:",
+    "requiredDocuments_list": [
+      "ID / Passport",
+      "Copies of medical documents (e.g. hospital discharge reports, certificates, etc.)",
+      "proof of the currently prescribed medication (if any)"
+    ]
   },
   "confirmation": {
     "title": "Request an official medical report",

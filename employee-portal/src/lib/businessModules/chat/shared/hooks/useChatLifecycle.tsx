@@ -39,7 +39,7 @@ import {
   getCredentials,
   requestCredentials,
 } from "@/lib/businessModules/chat/matrix/login";
-import { restoreKeyBackup } from "@/lib/businessModules/chat/matrix/secretStorage";
+import { restoreKeyBackupFromCache } from "@/lib/businessModules/chat/matrix/secretStorage";
 import {
   clearCachedCredentials,
   clearMatrixStores,
@@ -253,7 +253,7 @@ export function useChatLifecycle(
       if (!backupInfo?.has4SKey || !backupInfo?.keyBackupInfo) {
         setClientState(ClientState.CreateBackupKey);
       } else {
-        const isKeyBackupRestored = await restoreKeyBackup(
+        const isKeyBackupRestored = await restoreKeyBackupFromCache(
           matrixClient.current,
         );
 

@@ -6,6 +6,7 @@
 package de.eshg.measlesprotection;
 
 import de.eshg.lib.common.BusinessModule;
+import de.eshg.measlesprotection.config.InitialMeaslesProtectionConfiguration;
 import de.eshg.measlesprotection.config.MeaslesProtectionFeatureToggle;
 import de.eshg.rest.service.security.config.MeaslesProtectionPublicSecurityConfig;
 import org.springframework.boot.SpringApplication;
@@ -16,7 +17,10 @@ import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
 @Import(MeaslesProtectionPublicSecurityConfig.class)
-@EnableConfigurationProperties({MeaslesProtectionFeatureToggle.class})
+@EnableConfigurationProperties({
+  MeaslesProtectionFeatureToggle.class,
+  InitialMeaslesProtectionConfiguration.class
+})
 public class MeaslesProtectionApplication {
 
   @Bean

@@ -6,7 +6,6 @@
 import { ApiExistingUser, ApiPerformingPerson } from "@eshg/dental-api";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
-import { Person } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
 
 import { ProphylaxisSessionParticipantsTable } from "@/lib/businessModules/dental/features/prophylaxisSessions/ProphylaxisSessionParticipantsTable";
@@ -53,10 +52,16 @@ export function ProphylaxisSessionDetails() {
                 label="Einrichtung"
                 value={prophylaxisSession.institution.name}
               />
-              <DetailsItem
-                label="Gruppe"
-                value={prophylaxisSession.groupName}
-              />
+              <Stack direction="row" gap={3}>
+                <DetailsItem
+                  label="Gruppe"
+                  value={prophylaxisSession.groupName}
+                />
+                <DetailsItem
+                  label="Teilnehmer"
+                  value={prophylaxisSession.participants.length}
+                />
+              </Stack>
             </DetailsColumn>
             <DetailsColumn>
               <DetailsItem
@@ -68,10 +73,6 @@ export function ProphylaxisSessionDetails() {
                 value={displayBoolean(prophylaxisSession.isScreening)}
               />
               <DetailsItem label="Gebisstyp" value={detentionType} />
-              <DetailsItem
-                label="Teilnehmer"
-                value={prophylaxisSession.participants.length}
-              />
               <DetailsItem
                 label="Fluoridierung"
                 value={fluoridationDescription(
@@ -104,17 +105,13 @@ export function ProphylaxisSessionDetails() {
 function PerformingPersons(props: { persons: ApiPerformingPerson[] }) {
   return (
     <Stack>
-      {props.persons.map((person, i) =>
+      {props.persons.map((person) =>
         isExistingUser(person) ? (
-          <Stack key={i} direction="row" gap={1}>
-            <Person size="sm" />
-            {formatPersonName(person)}
-          </Stack>
+          <Typography key={person.id}>{formatPersonName(person)}</Typography>
         ) : (
-          <Stack key={i} direction="row" gap={1}>
-            <Person size="sm" color="neutral" />
-            <Typography color="neutral">Gelöschter Nutzer</Typography>
-          </Stack>
+          <Typography key={person.id} color="neutral">
+            Gelöschter Nutzer
+          </Typography>
         ),
       )}
     </Stack>

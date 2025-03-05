@@ -8,7 +8,6 @@ import { resolveSideNavigationItems as resolveDentalSideNavigationItems } from "
 import {
   SideNavigationItem,
   SideNavigationItemsProps,
-  UseSideNavigationItemsResult,
 } from "@eshg/lib-employee-portal/types/sideNavigation";
 import { entries } from "remeda";
 
@@ -25,7 +24,7 @@ import { resolveSideNavigationItems as resolveMeaslesProtectionSideNavigationIte
 import { resolveSideNavigationItems as resolveMedicalRegistrySideNavigationItems } from "@/lib/businessModules/medicalRegistry/shared/sideNavigationItem";
 import { resolveSideNavigationItems as resolveOfficialMedicalServiceSideNavigationItems } from "@/lib/businessModules/officialMedicalService/shared/sideNavigationItem";
 import { resolveSideNavigationItems as resolveSchoolEntrySideNavigationItems } from "@/lib/businessModules/schoolEntry/shared/sideNavigationItem";
-import { useSideNavigationItems as useStatisticsSideNavigationItems } from "@/lib/businessModules/statistics/shared/sideNavigationItem";
+import { sideNavigationItems as statisticsSideNavigationItems } from "@/lib/businessModules/statistics/shared/sideNavigationItem";
 import { resolveSideNavigationItems as resolveStiProtectionSideNavigationItems } from "@/lib/businessModules/stiProtection/shared/sideNavigationItem";
 import { resolveSideNavigationItems as resolveTravelMedicineSideNavigationItems } from "@/lib/businessModules/travelMedicine/shared/sideNavigationItem";
 import { sideNavigationItems as archivingSideNavigationItems } from "@/lib/shared/components/archiving/shared/sideNavigationItem";
@@ -65,18 +64,17 @@ function useBusinessItems(): SideNavigationItem[] {
 }
 
 function useBaseItems(): SideNavigationItem[] {
-  const statisticsSideNavigation = useStatisticsSideNavigationItems();
-  const chatSideNavigation = useChatSideNavigationItems();
-  const baseSideNavigation = useBaseSideNavigationItems();
+  const chatSideNavigations = useChatSideNavigationItems();
+  const baseSideNavigations = useBaseSideNavigationItems();
 
-  const orderedBaseItems: UseSideNavigationItemsResult[] = [
-    baseSideNavigation,
-    statisticsSideNavigation,
-    { isLoading: false, items: archivingSideNavigationItems },
-    chatSideNavigation,
+  const baseItems: SideNavigationItem[][] = [
+    baseSideNavigations,
+    statisticsSideNavigationItems,
+    archivingSideNavigationItems,
+    chatSideNavigations,
   ];
 
-  return orderedBaseItems.map(getItems).flat();
+  return baseItems.flat();
 }
 
 export function useResolveSideNavigationItems(): SideNavItemGroups {
@@ -88,8 +86,4 @@ export function useResolveSideNavigationItems(): SideNavItemGroups {
     businessItems,
     baseItems,
   };
-}
-
-function getItems(result: UseSideNavigationItemsResult): SideNavigationItem[] {
-  return result.items;
 }

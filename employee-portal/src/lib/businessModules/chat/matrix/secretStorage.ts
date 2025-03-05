@@ -31,7 +31,7 @@ export async function deleteKeyBackup(
   }
 }
 
-export async function restoreKeyBackup(matrixClient: MatrixClient) {
+export async function restoreKeyBackupFromCache(matrixClient: MatrixClient) {
   let handled = false;
   try {
     const crypto = matrixClient.getCrypto();
@@ -40,20 +40,18 @@ export async function restoreKeyBackup(matrixClient: MatrixClient) {
     const keyBackup = await crypto.restoreKeyBackup();
     if (keyBackup) {
       handled = true;
-      logger.debug("Key backup restored successfully");
+      logger.debug("Key backup restored successfully from cache");
     }
   } catch (e) {
-    logger.softError("Failed to restore key backup", e);
+    logger.softError("Failed to restore key backup from cache", e);
   }
   return handled;
 }
 
-export async function loadBackupKeyFromSecretStorage(
+export async function restoreBackupKeyFromSecretStorage(
   matrixClient: MatrixClient,
   passphrase?: string,
 ) {
-  let handled = false;
-
   try {
     await accessSecretStorage(matrixClient, passphrase);
     const crypto = matrixClient.getCrypto();
@@ -61,16 +59,16 @@ export async function loadBackupKeyFromSecretStorage(
 
     await crypto.loadSessionBackupPrivateKeyFromSecretStorage();
     const keyBackup = await crypto.restoreKeyBackup();
-    if (keyBackup) {
-      handled = true;
-      logger.debug("Key backup successfully loaded from secret storage");
-    }
+    if (!keyBackup) throw new Error("KeyBackup is null");
+
+    logger.debug("Key backup successfully loaded from secret storage");
+    logger.debug(
+      `Total keys: ${keyBackup.total}, Imported keys: ${keyBackup.imported}`,
+    );
   } catch (e) {
     logger.softError("Failed to load key backup from secret storage");
     throw e;
   }
-
-  return handled;
 }
 
 export async function setupNewSecretStorage(
@@ -90,7 +88,6 @@ export async function setupNewSecretStorage(
 
     await crypto.bootstrapSecretStorage({
       createSecretStorageKey: () => recoveryKey,
-      setupNewKeyBackup: true,
       setupNewSecretStorage: true,
     });
 
@@ -98,6 +95,8 @@ export async function setupNewSecretStorage(
       authUploadDeviceSigningKeys,
       setupNewCrossSigning: true,
     });
+
+    await crypto.resetKeyBackup();
   } catch (e) {
     logger.softError("SetupNewSecretStorage: error during operation", e);
     throw e;
@@ -120,14 +119,8 @@ export async function accessSecretStorage(
     matrixClient.cryptoCallbacks.getSecretStorageKey = (keys) =>
       getSecretStorageKey(keys, matrixClient, passphrase, disableCache);
 
-    await crypto.bootstrapSecretStorage({
-      setupNewKeyBackup: false,
-      setupNewSecretStorage: false,
-    });
-
-    await crypto.bootstrapCrossSigning({
-      setupNewCrossSigning: false,
-    });
+    await crypto.bootstrapCrossSigning({});
+    await crypto.bootstrapSecretStorage({});
   } catch (e) {
     logger.softError("AccessSecretStorage: error during operation", e);
     throw e;

@@ -5,7 +5,7 @@
 
 package de.eshg.opendata;
 
-import de.eshg.opendata.config.OpenDataProperties;
+import de.eshg.opendata.config.InitialOpenDataConfiguration;
 import de.eshg.rest.service.security.config.OpenDataPublicSecurityConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,7 +13,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Import;
 
 @Import(OpenDataPublicSecurityConfig.class)
-@EnableConfigurationProperties(OpenDataProperties.class)
+@EnableConfigurationProperties(InitialOpenDataConfiguration.class)
 @SpringBootApplication
 public class OpenDataApplication {
   public static void main(String[] args) {

@@ -5,7 +5,7 @@
 
 package de.eshg.stiprotection.persistence.db;
 
-public enum CreatedByUserType {
-  EMPLOYEE,
+public enum StiProcedureOrigin {
+  EMPLOYEE_PORTAL,
   CITIZEN_PORTAL
 }

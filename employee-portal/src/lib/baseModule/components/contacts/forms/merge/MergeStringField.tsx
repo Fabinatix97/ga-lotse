@@ -33,7 +33,6 @@ export function MergeStringField({
   }
 
   function normalizeValue(value: string | undefined) {
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     return value === undefined || value === "" ? (emptyValue ?? " ") : value;
   }
 

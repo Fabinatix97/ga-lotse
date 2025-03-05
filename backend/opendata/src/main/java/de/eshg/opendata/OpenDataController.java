@@ -15,7 +15,7 @@ import de.eshg.opendata.api.PostOpenDocumentRequest;
 import de.eshg.opendata.api.ResourceDto;
 import de.eshg.opendata.api.UpdateVersionMetaDataRequest;
 import de.eshg.opendata.api.VersionDto;
-import de.eshg.opendata.config.OpenDataProperties;
+import de.eshg.opendata.config.OpenDataConfigService;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -47,17 +47,17 @@ public class OpenDataController {
   private final OpenDataService openDataService;
   private final OpenDataValidations openDataValidations;
   private final OpenDataFiltering openDataFiltering;
-  private final OpenDataProperties openDataProperties;
+  private final OpenDataConfigService openDataConfigService;
 
   public OpenDataController(
       OpenDataService openDataService,
       OpenDataValidations openDataValidations,
       OpenDataFiltering openDataFiltering,
-      OpenDataProperties openDataProperties) {
+      OpenDataConfigService openDataConfigService) {
     this.openDataService = openDataService;
     this.openDataValidations = openDataValidations;
     this.openDataFiltering = openDataFiltering;
-    this.openDataProperties = openDataProperties;
+    this.openDataConfigService = openDataConfigService;
   }
 
   @GetMapping
@@ -146,6 +146,7 @@ public class OpenDataController {
   @Operation(summary = "get the configured fallback license url")
   public ResponseEntity<GetFallbackLicenseUrlResponse> getFallbackLicenseUrl() {
     return ResponseEntity.ok(
-        new GetFallbackLicenseUrlResponse(openDataProperties.getFallbackLicenseUrl()));
+        new GetFallbackLicenseUrlResponse(
+            openDataConfigService.getConfig().getFallbackLicenseUrl()));
   }
 }

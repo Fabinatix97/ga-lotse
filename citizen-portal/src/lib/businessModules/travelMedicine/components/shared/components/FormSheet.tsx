@@ -9,6 +9,7 @@ import { SxProps } from "@mui/joy/styles/types";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
+import { ContentSheetTitle } from "@/lib/shared/components/layout/contentSheet";
 
 interface FormSheetProps extends RequiresChildren {
   "data-testid"?: string;
@@ -38,7 +39,7 @@ interface FormSheetTitleProps extends RequiresChildren {
 export function FormSheetTitle(props: FormSheetTitleProps) {
   return (
     <Stack gap={byBreakpoint({ mobile: 1, desktop: 0 })} sx={props.sx}>
-      <Typography level="h2">{props.children}</Typography>
+      <ContentSheetTitle>{props.children}</ContentSheetTitle>
       {props.requiredTitle && (
         <Typography
           level="body-xs"

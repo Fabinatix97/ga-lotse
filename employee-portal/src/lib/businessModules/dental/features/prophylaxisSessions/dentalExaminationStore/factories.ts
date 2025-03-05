@@ -16,12 +16,14 @@ import {
   Quadrant,
   QuadrantNumber,
   Tooth,
+  ToothDiagnosisResult,
   ToothResult,
   ToothWithDiagnosis,
 } from "./types";
 
 export function createPrimaryDentition(
   toothDiagnoses: ToothDiagnoses = {},
+  previousToothDiagnoses: ToothDiagnoses = {},
 ): Dentition {
   return createDentition(
     ["T18", "T17", "T16", "T55", "T54", "T53", "T52", "T51"],
@@ -29,12 +31,14 @@ export function createPrimaryDentition(
     ["T71", "T72", "T73", "T74", "T75", "T36", "T37", "T38"],
     ["T48", "T47", "T46", "T85", "T84", "T83", "T82", "T81"],
     toothDiagnoses,
+    previousToothDiagnoses,
     true,
   );
 }
 
 export function createSecondaryDentition(
   toothDiagnoses: ToothDiagnoses = {},
+  previousToothDiagnoses: ToothDiagnoses = {},
 ): Dentition {
   return createDentition(
     ["T18", "T17", "T16", "T15", "T14", "T13", "T12", "T11"],
@@ -42,6 +46,7 @@ export function createSecondaryDentition(
     ["T31", "T32", "T33", "T34", "T35", "T36", "T37", "T38"],
     ["T48", "T47", "T46", "T45", "T44", "T43", "T42", "T41"],
     toothDiagnoses,
+    previousToothDiagnoses,
     false,
   );
 }
@@ -52,6 +57,7 @@ function createDentition(
   teethQuadrant3: ApiTooth[],
   teethQuadrant4: ApiTooth[],
   toothDiagnoses: ToothDiagnoses = {},
+  previousToothDiagnoses: ToothDiagnoses = {},
   isPrimaryDentition: boolean,
 ): Dentition {
   function createToothWithType(
@@ -61,7 +67,7 @@ function createDentition(
       resolveToothDiagnosis(tooth, toothDiagnoses) === undefined &&
       isPrimaryDentition
       ? createAddableTooth(tooth)
-      : createToothWithDiagnosis(tooth, toothDiagnoses);
+      : createToothWithDiagnosis(tooth, toothDiagnoses, previousToothDiagnoses);
   }
 
   function processQuadrant(teeth: ApiTooth[]) {
@@ -89,8 +95,13 @@ function createQuadrant(
 export function createToothWithDiagnosis(
   tooth: ApiTooth,
   toothDiagnoses: ToothDiagnoses = {},
+  previousToothDiagnoses: ToothDiagnoses = {},
 ): ToothWithDiagnosis {
   const diagnosis = resolveToothDiagnosis(tooth, toothDiagnoses);
+  const previousDiagnosis = resolvePreviousToothDiagnosis(
+    tooth,
+    previousToothDiagnoses,
+  );
   const toothNumber = diagnosis?.tooth ?? tooth;
 
   return {
@@ -101,7 +112,7 @@ export function createToothWithDiagnosis(
     mainResult: createToothResult(diagnosis?.mainResult),
     secondaryResult1: createToothResult(diagnosis?.secondaryResult1),
     secondaryResult2: createToothResult(diagnosis?.secondaryResult2),
-    previousResults: [],
+    previousResults: previousDiagnosis,
   };
 }
 
@@ -119,6 +130,36 @@ function resolveToothDiagnosis(
   }
 
   return toothDiagnoses[relatedTooth];
+}
+
+function resolvePreviousToothDiagnosis(
+  toothNumber: ApiTooth,
+  toothDiagnoses: ToothDiagnoses,
+): ToothDiagnosisResult[] {
+  let result = resolveToothDiagnosisResult(toothNumber, toothDiagnoses);
+
+  if (result.length === 0) {
+    const relatedTooth = RELATED_TEETH[toothNumber];
+    if (isDefined(relatedTooth)) {
+      result = resolveToothDiagnosisResult(relatedTooth, toothDiagnoses);
+    }
+  }
+  return result;
+}
+
+function resolveToothDiagnosisResult(
+  toothNumber: ApiTooth,
+  toothDiagnoses: ToothDiagnoses,
+): ToothDiagnosisResult[] {
+  const toothDiagnosis = toothDiagnoses[toothNumber];
+  if (isDefined(toothDiagnosis)) {
+    return [
+      toothDiagnosis.mainResult,
+      toothDiagnosis.secondaryResult1,
+      toothDiagnosis.secondaryResult2,
+    ].filter(isDefined);
+  }
+  return [];
 }
 
 export function createToothResult(value = "", isInvalid = false): ToothResult {

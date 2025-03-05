@@ -44,8 +44,7 @@ public class NotificationService {
     }
   }
 
-  private static final String CITIZEN_PORTAL_OMS_LOGIN_PATH =
-      "amtsärztlichegutachten/allesnurgeraten/meine-termine";
+  private static final String CITIZEN_PORTAL_OMS_LOGIN_PATH = "amtsaerztlicherdienst/mein-bereich";
 
   private final ModuleClientAuthenticator moduleClientAuthenticator;
   private final MailClient mailClient;

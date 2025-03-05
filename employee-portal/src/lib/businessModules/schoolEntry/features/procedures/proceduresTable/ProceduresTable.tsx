@@ -232,6 +232,7 @@ const COLUMNS = [
       canNavigate: {
         parentRow: true,
       },
+      isRowHeader: true,
     },
   }),
   columnHelper.accessor("child.dateOfBirth", {

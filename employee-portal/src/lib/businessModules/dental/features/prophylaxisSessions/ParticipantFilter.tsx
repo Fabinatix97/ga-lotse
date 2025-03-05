@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Radio, RadioGroup, Typography } from "@mui/joy";
+import { Radio, RadioGroup, Stack, Typography } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
 import { useId } from "react";
 
 import { useProphylaxisSessionStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/ProphylaxisSessionStoreProvider";
@@ -18,6 +19,7 @@ interface ParticipantFilterProps<TValue extends string> {
   name: keyof ParticipantFilters;
   label: string;
   filters: ParticipantFilterDef<TValue>[];
+  sx?: SxProps;
 }
 
 export function ParticipantFilter<TValue extends string>(
@@ -32,8 +34,12 @@ export function ParticipantFilter<TValue extends string>(
   const labelId = useId();
 
   return (
-    <>
-      <Typography fontWeight={600} id={labelId}>
+    <Stack
+      direction="row"
+      gap={3}
+      sx={{ flexWrap: "wrap", alignItems: "center", ...props.sx }}
+    >
+      <Typography level="title-md" id={labelId}>
         {props.label}:
       </Typography>
       <RadioGroup
@@ -52,6 +58,6 @@ export function ParticipantFilter<TValue extends string>(
           />
         ))}
       </RadioGroup>
-    </>
+    </Stack>
   );
 }

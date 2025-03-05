@@ -14,4 +14,5 @@ public record PostPopulateProcedureResponse(
     @NotNull UUID procedureId,
     UUID facilityId,
     @NotNull @Valid Map<String, UUID> appointments,
-    @Valid Map<String, UUID> documentMap) {}
+    @Valid Map<String, UUID> documentMap,
+    @Valid CitizenPortalCredentialsDto credentials) {}

@@ -42,6 +42,11 @@ export default function ProphylaxisSessionExaminationPage(
     <DentalExaminationStoreProvider
       examinationResult={participant.result}
       defaultDentitionType={participant.prophylaxisDentitionType}
+      previousExaminationResult={
+        participant.previousExaminationResults.length > 0
+          ? participant.previousExaminationResults[0]
+          : undefined
+      }
     >
       <ParticipantExaminationPage
         participant={participant}

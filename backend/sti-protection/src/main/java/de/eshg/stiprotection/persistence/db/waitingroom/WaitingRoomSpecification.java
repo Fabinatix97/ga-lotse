@@ -20,7 +20,6 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.io.Serial;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -56,20 +55,14 @@ public class WaitingRoomSpecification implements Specification<StiProtectionProc
 
   private List<Predicate> defaultProcedureFilters(
       Root<StiProtectionProcedure> root, CriteriaBuilder criteriaBuilder) {
-    List<Predicate> defaultFilter = new ArrayList<>();
-
-    defaultFilter.add(
-        criteriaBuilder.equal(root.get(Procedure_.procedureStatus), ProcedureStatus.OPEN));
-    defaultFilter.add(
-        criteriaBuilder.isNotNull(
-            root.get(StiProtectionProcedure_.waitingRoom).get(WaitingRoom_.status)));
-    defaultFilter.add(
-        criteriaBuilder.not(
-            root.get(StiProtectionProcedure_.waitingRoom)
-                .get(WaitingRoom_.status)
-                .in(WaitingStatus.DONE, WaitingStatus.CANCELLED)));
-
-    return defaultFilter;
+    Path<WaitingStatus> waitingRoomStatus =
+        root.get(StiProtectionProcedure_.waitingRoom).get(WaitingRoom_.status);
+    Predicate isOpenProcedure =
+        criteriaBuilder.equal(root.get(Procedure_.procedureStatus), ProcedureStatus.OPEN);
+    Predicate hasWaitingRoomStatus = criteriaBuilder.isNotNull(waitingRoomStatus);
+    Predicate isNotFinalStatus =
+        criteriaBuilder.not(waitingRoomStatus.in(WaitingStatus.DONE, WaitingStatus.CANCELLED));
+    return List.of(isOpenProcedure, hasWaitingRoomStatus, isNotFinalStatus);
   }
 
   private Order getSortOrder(Root<StiProtectionProcedure> root, CriteriaBuilder criteriaBuilder) {

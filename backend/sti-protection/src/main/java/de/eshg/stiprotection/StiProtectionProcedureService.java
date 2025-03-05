@@ -35,13 +35,13 @@ import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.stiprotection.api.ConcernDto;
-import de.eshg.stiprotection.api.CreatedByUserTypeDto;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresFilterOptions;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresPaginationOptions;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresSortByDto;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresSortOptions;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresSortOrderDto;
 import de.eshg.stiprotection.api.LabStatusDto;
+import de.eshg.stiprotection.api.StiProcedureOriginDto;
 import de.eshg.stiprotection.mapper.PersonMapper;
 import de.eshg.stiprotection.pdf.identification.AnonymousIdentificationDocument;
 import de.eshg.stiprotection.pdf.identification.AnonymousIdentificationDocumentService;
@@ -52,11 +52,11 @@ import de.eshg.stiprotection.persistence.data.PersonData;
 import de.eshg.stiprotection.persistence.data.ResultPage;
 import de.eshg.stiprotection.persistence.data.StiProtectionProcedureData;
 import de.eshg.stiprotection.persistence.db.Concern;
-import de.eshg.stiprotection.persistence.db.CreatedByUserType;
 import de.eshg.stiprotection.persistence.db.Gender;
 import de.eshg.stiprotection.persistence.db.LabStatus;
 import de.eshg.stiprotection.persistence.db.Person;
 import de.eshg.stiprotection.persistence.db.Person_;
+import de.eshg.stiprotection.persistence.db.StiProcedureOrigin;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedureRepository;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure_;
@@ -115,16 +115,18 @@ public class StiProtectionProcedureService {
     this.progressEntryUtil = progressEntryUtil;
   }
 
-  public StiProtectionProcedure createProcedure(Concern concern, CreatedByUserType createdBy) {
+  public StiProtectionProcedure createProcedure(
+      Concern concern, StiProcedureOrigin stiProcedureOrigin) {
     StiProtectionProcedure procedure =
-        StiProtectionProcedure.newProcedure(concern, createdBy, clock, auditLogger);
+        StiProtectionProcedure.newProcedure(concern, stiProcedureOrigin, clock, auditLogger);
     procedure.addTask(createTask());
     return repository.save(procedure);
   }
 
-  public StiProtectionProcedure saveProcedure(Concern concern, CreatedByUserType createdBy) {
+  public StiProtectionProcedure saveProcedure(
+      Concern concern, StiProcedureOrigin stiProcedureOrigin) {
     return repository.save(
-        StiProtectionProcedure.newProcedure(concern, createdBy, clock, auditLogger));
+        StiProtectionProcedure.newProcedure(concern, stiProcedureOrigin, clock, auditLogger));
   }
 
   public void addPerson(StiProtectionProcedure procedure, PersonData personData) {
@@ -177,7 +179,7 @@ public class StiProtectionProcedureService {
             filterByConcern(filterOptions),
             filterByProcedureStatus(filterOptions),
             filterByLabStatus(filterOptions),
-            filterByCreatedBy(filterOptions),
+            filterByStiProcedureOrigin(filterOptions),
             orderBy(sortOptions.sortOrder(), sortOptions.sortBy()));
 
     Page<StiProtectionProcedure> procedures = repository.findAll(spec, pageRequest);
@@ -191,13 +193,13 @@ public class StiProtectionProcedureService {
         procedures.stream().map(this::toProcedureData).toList());
   }
 
-  private Specification<StiProtectionProcedure> filterByCreatedBy(
+  private Specification<StiProtectionProcedure> filterByStiProcedureOrigin(
       GetStiProtectionProceduresFilterOptions filterOptions) {
-    Set<CreatedByUserTypeDto> dto = filterOptions.createdBy();
+    Set<StiProcedureOriginDto> dto = filterOptions.procedureOrigin();
     if (dto != null) {
       return (root, query, criteriaBuilder) ->
-          root.get(StiProtectionProcedure_.CREATED_BY)
-              .in(mapFilterBy(CreatedByUserType.class, dto));
+          root.get(StiProtectionProcedure_.STI_PROCEDURE_ORIGIN)
+              .in(mapFilterBy(StiProcedureOrigin.class, dto));
     } else {
       return (root, query, criteriaBuilder) -> criteriaBuilder.conjunction();
     }

@@ -8,6 +8,7 @@ package de.eshg.officialmedicalservice.procedure.api;
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.base.address.AddressDto;
+import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.lib.common.CountryCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -33,4 +34,5 @@ public record AffectedPersonDto(
     @Size(min = 1, max = 119) String title,
     GenderDto gender,
     @NotNull @Valid AddressDto contactAddress,
-    @Valid AffectedPersonSyncDto affectedPersonSync) {}
+    @Valid AffectedPersonSyncDto affectedPersonSync,
+    DataOriginDto dataOrigin) {}

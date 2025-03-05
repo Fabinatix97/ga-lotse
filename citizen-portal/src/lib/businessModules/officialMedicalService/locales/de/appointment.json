@@ -106,13 +106,15 @@
   },
   "appointmentInformation": {
     "title": "Informationen zum Termin",
-    "alertMessage": "Bitte kommen Sie am Untersuchungstag nüchtern in die Breite Gasse 28, 60313 Frankfurt am Main (Zimmer 3.04).",
+    "alertMessage": "Bitte kommen Sie am Untersuchungstag nüchtern zu uns: <br> {{ department }} </br>",
     "infoText": "Wir prüfen Ihre Anfrage. Nach erfolgreicher Prüfung erhalten Sie eine <t1> Terminbestätigung </t1> per E-Mail. Dort sind alle Informationen zum Termin enthalten. Sie haben zudem die Möglichkeit den Termin zu ändern oder zu stornieren.",
-    "requiredDocumentsHeader": "Die notwendigen Dokumente, die Sie bitte zum Termin mitbringen sollten, sind:",
-    "listItemIdCard": "Personalausweis / Reisepass ",
-    "listItemMedicalDocuments": "ärztliche Unterlagen in Kopie (z.B. Krankenhausentlassungsberichte, Atteste, Bescheinigungen etc.)",
-    "listItemCurrentMedication": "einen Nachweis der zurzeit verordneten Medikamente (falls vorhanden)",
-    "closingGreeting": "Mit freundlichen Grüßen <br> Ihr Gesundheitsamt </br> "
+    "closingGreeting": "Mit freundlichen Grüßen <br> Ihr Gesundheitsamt </br> ",
+    "requiredDocuments_header": "Die notwendigen Dokumente, die Sie bitte zum Termin mitbringen sollten, sind:",
+    "requiredDocuments_list": [
+      "Personalausweis / Reisepass",
+      "ärztliche Unterlagen in Kopie (z.B. Krankenhausentlassungsberichte, Atteste, Bescheinigungen etc.)",
+      "einen Nachweis der zurzeit verordneten Medikamente (falls vorhanden)"
+    ]
   },
   "confirmation": {
     "title": "Anliegen amtsärztliches Gutachten",

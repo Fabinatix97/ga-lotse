@@ -8,6 +8,7 @@ package de.eshg.officialmedicalservice.testhelper;
 import static de.eshg.lib.procedure.model.ProcedureStatusDto.CLOSED;
 import static de.eshg.lib.procedure.model.ProcedureStatusDto.OPEN;
 
+import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
 import de.eshg.officialmedicalservice.appointment.OmsAppointmentService;
 import de.eshg.officialmedicalservice.citizenpublic.CitizenProcedureService;
 import de.eshg.officialmedicalservice.concern.ConcernMapper;
@@ -20,17 +21,21 @@ import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocumentRep
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocumentStatus;
 import de.eshg.officialmedicalservice.procedure.EmployeeOmsProcedureService;
 import de.eshg.officialmedicalservice.procedure.api.ConcernDto;
+import de.eshg.officialmedicalservice.procedure.api.PatchAcceptDraftProcedureRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchConcernRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchEmployeeOmsProcedureEmailNotificationsRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchEmployeeOmsProcedurePhysicianRequest;
 import de.eshg.officialmedicalservice.procedure.api.PostCitizenProcedureRequest;
+import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedureRepository;
 import de.eshg.officialmedicalservice.testhelper.api.AppointmentPopulationDto;
+import de.eshg.officialmedicalservice.testhelper.api.CitizenPortalCredentialsDto;
 import de.eshg.officialmedicalservice.testhelper.api.ConcernTestDataConfig;
 import de.eshg.officialmedicalservice.testhelper.api.DocumentPopulationDto;
 import de.eshg.officialmedicalservice.testhelper.api.FileTestDataConfig;
 import de.eshg.officialmedicalservice.testhelper.api.PostPopulateCitizenProcedureRequest;
 import de.eshg.officialmedicalservice.testhelper.api.PostPopulateProcedureRequest;
 import de.eshg.officialmedicalservice.testhelper.api.PostPopulateProcedureResponse;
+import de.eshg.officialmedicalservice.user.CitizenAccessCodeUserClient;
 import de.eshg.officialmedicalservice.waitingroom.WaitingRoomService;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.population.PopulateWithAccessTokenHelper;
@@ -41,10 +46,10 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -125,6 +130,8 @@ public class TestPopulateProcedureService {
   private final OmsDocumentService omsDocumentService;
   private final OmsDocumentRepository omsDocumentRepository;
   private final WaitingRoomService waitingRoomService;
+  private final CitizenAccessCodeUserClient citizenAccessCodeUserClient;
+  private final OmsProcedureRepository omsProcedureRepository;
 
   public TestPopulateProcedureService(
       EmployeeOmsProcedureService employeeOmsProcedureService,
@@ -134,7 +141,9 @@ public class TestPopulateProcedureService {
       PopulateWithAccessTokenHelper populateWithAccessTokenHelper,
       OmsDocumentService omsDocumentService,
       OmsDocumentRepository omsDocumentRepository,
-      WaitingRoomService waitingRoomService) {
+      WaitingRoomService waitingRoomService,
+      CitizenAccessCodeUserClient citizenAccessCodeUserClient,
+      OmsProcedureRepository omsProcedureRepository) {
     this.employeeOmsProcedureService = employeeOmsProcedureService;
     this.citizenProcedureService = citizenProcedureService;
     this.concernService = concernService;
@@ -143,6 +152,8 @@ public class TestPopulateProcedureService {
     this.omsDocumentService = omsDocumentService;
     this.omsDocumentRepository = omsDocumentRepository;
     this.waitingRoomService = waitingRoomService;
+    this.citizenAccessCodeUserClient = citizenAccessCodeUserClient;
+    this.omsProcedureRepository = omsProcedureRepository;
   }
 
   @Transactional
@@ -153,7 +164,9 @@ public class TestPopulateProcedureService {
           UUID procedureId;
           UUID facilityId = null;
           Map<String, UUID> appointmentMap;
-          Map<String, UUID> documentMap = new HashMap<>();
+          Map<String, UUID> documentMap;
+          UUID citizenUserId;
+          CitizenPortalCredentialsDto citizenPortalCredentials = null;
 
           // 1. create procedure
           if (request.procedureData() != null) {
@@ -192,7 +205,13 @@ public class TestPopulateProcedureService {
 
           // 6. start procedure
           if (Arrays.asList(OPEN, CLOSED).contains(request.targetState())) {
-            employeeOmsProcedureService.acceptDraftProcedure(procedureId);
+            employeeOmsProcedureService.acceptDraftProcedure(
+                procedureId, new PatchAcceptDraftProcedureRequest(null, null));
+            if (request.procedureDataCitizen() != null) {
+              citizenUserId = getCitizenUserId(procedureId);
+              citizenPortalCredentials =
+                  createCredentials(citizenUserId, request.procedureDataCitizen());
+            }
           }
 
           // 7. add (and cancel and close) appointments
@@ -223,7 +242,7 @@ public class TestPopulateProcedureService {
           }
 
           return new PostPopulateProcedureResponse(
-              procedureId, facilityId, appointmentMap, documentMap);
+              procedureId, facilityId, appointmentMap, documentMap, citizenPortalCredentials);
         });
   }
 
@@ -235,6 +254,19 @@ public class TestPopulateProcedureService {
             procedureDataCitizen.affectedPerson());
     return citizenProcedureService.createCitizenProcedure(
         request, loadFiles(procedureDataCitizen.files()));
+  }
+
+  private UUID getCitizenUserId(UUID procedureId) {
+    return omsProcedureRepository.findByExternalId(procedureId).orElseThrow().getCitizenUserId();
+  }
+
+  private CitizenPortalCredentialsDto createCredentials(
+      UUID citizenUserId, PostPopulateCitizenProcedureRequest citizenProcedureRequest) {
+    LocalDate dateOfBirth = citizenProcedureRequest.affectedPerson().dateOfBirth();
+
+    CitizenAccessCodeUserDto citizenAccessCode =
+        citizenAccessCodeUserClient.getCitizenAccessCode(citizenUserId);
+    return new CitizenPortalCredentialsDto(citizenAccessCode.accessCode(), dateOfBirth);
   }
 
   private Map<String, UUID> addAppointments(

@@ -50,6 +50,7 @@ declare module "@tanstack/react-table" {
     spanWhenParentRow?: number;
     // to ensure accessibility for hidden header labels, set isHeaderLabelHidden to true and provide a headerLabel
     isHeaderLabelHidden?: boolean;
+    isRowHeader?: boolean;
   }
 }
 
@@ -83,6 +84,7 @@ export interface RowSelectionProps<TData>
   state: RowSelectionTableState;
   getRowId: (originalRow: TData, index: number, parent?: Row<TData>) => string;
 }
+
 type SupportedRowSelectionOptions =
   | "enableRowSelection"
   | "onRowSelectionChange";
@@ -90,6 +92,7 @@ type SupportedRowSelectionOptions =
 export type RowNavigation<TData> =
   | RowRouteNavigation<TData>
   | RowClickNavigation<TData>;
+
 interface RowNavigationBase<TData> {
   /**
    * focusColumnAccessorKey should be set to the accessor key of an accessor column containing non-interactive cells.
@@ -97,9 +100,11 @@ interface RowNavigationBase<TData> {
    */
   focusColumnAccessorKey: DeepKeys<TData> & string;
 }
+
 interface RowRouteNavigation<TData> extends RowNavigationBase<TData> {
   route: (row: Row<TData>) => string | undefined;
 }
+
 interface RowClickNavigation<TData> extends RowNavigationBase<TData> {
   /**
    * onClick accepts a nested function. It will only handle the action if the function is returned. When undefined, the row will be shown as not navigable.
@@ -220,7 +225,7 @@ export function DataTable<TData>(props: Readonly<DataTableProps<TData>>) {
   };
 
   return (
-    <Stack sx={{ flex: 1, overflow: "auto", gap: 2 }}>
+    <Stack sx={{ flex: 1, gap: 2, overflow: "auto" }}>
       <JoyTable
         stickyHeader
         noWrap={!wrapContent}

@@ -23,9 +23,9 @@ import { TravelInformationOverviewDetails } from "@/lib/businessModules/travelMe
 import { InitialAppointmentFormValues } from "@/lib/businessModules/travelMedicine/components/appointment/types";
 import { DetailsField } from "@/lib/businessModules/travelMedicine/components/shared/components/DetailsField";
 import { useDepartmentContext } from "@/lib/businessModules/travelMedicine/components/shared/contexts/DepartmentContext";
-import { formatDepartmentAddress } from "@/lib/businessModules/travelMedicine/helpers/appointmentFormHelper";
 import { APPOINTMENT_TYPE } from "@/lib/businessModules/travelMedicine/helpers/translations";
 import { useTranslation } from "@/lib/i18n/client";
+import { formatDepartmentAddress } from "@/lib/shared/formatters/address";
 
 export function AppointmentOverviewDetails() {
   const { t } = useTranslation(["travelMedicine/forms"]);

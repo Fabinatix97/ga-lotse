@@ -7,8 +7,8 @@ package de.eshg.stiprotection.api;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "CreatedByUserType")
-public enum CreatedByUserTypeDto {
-  EMPLOYEE,
+@Schema(name = "StiProcedureOrigin")
+public enum StiProcedureOriginDto {
+  EMPLOYEE_PORTAL,
   CITIZEN_PORTAL
 }

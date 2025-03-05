@@ -30,6 +30,7 @@ export function FilterSettingsSheet({
       id={id}
       sx={{
         width: scalingWidth ? "100%" : 250,
+        minHeight: "15rem",
         padding: 0,
         display: "flex",
         flexDirection: "column",

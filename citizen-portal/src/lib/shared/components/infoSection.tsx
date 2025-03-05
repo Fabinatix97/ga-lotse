@@ -4,7 +4,7 @@
  */
 
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-import { Grid, Stack, Typography, styled } from "@mui/joy";
+import { Grid, Stack, StackProps, Typography, styled } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { Children, ReactNode, createContext, useContext, useId } from "react";
 
@@ -22,9 +22,10 @@ export function InfoSectionGrid(props: InfoSectionGridProps) {
       columns={byBreakpoint({ mobile: 1, desktop: 2 })}
       data-testid={props["data-testid"]}
     >
-      {Children.map(props.children, (infoSection) => (
-        <Grid xxs={1}>{infoSection}</Grid>
-      ))}
+      {Children.map(
+        props.children,
+        (infoSection) => infoSection && <Grid xxs={1}>{infoSection}</Grid>,
+      )}
     </Grid>
   );
 }
@@ -41,6 +42,10 @@ interface InfoSectionProps extends RequiresChildren {
   icon?: ReactNode;
   sx?: SxProps;
   "data-testid"?: string;
+  slotProps?: {
+    section?: StackProps;
+    stack?: StackProps;
+  };
 }
 
 const InfoSectionTitleIdContext = createContext<string | undefined>(undefined);
@@ -59,7 +64,15 @@ export function InfoSection(props: InfoSectionProps) {
         data-testid={props["data-testid"]}
       >
         {props.icon}
-        <Stack gap={0.5} sx={{ overflow: "hidden", flexGrow: 1 }}>
+        <Stack
+          gap={0.5}
+          {...props.slotProps?.stack}
+          sx={{
+            overflow: "hidden",
+            flexGrow: 1,
+            ...props.slotProps?.stack?.sx,
+          }}
+        >
           {props.children}
         </Stack>
       </SectionStack>
@@ -70,6 +83,7 @@ export function InfoSection(props: InfoSectionProps) {
 interface InfoSectionTitleProps extends RequiresChildren {
   "data-testid"?: string;
   level?: 2 | 3;
+  sx?: SxProps;
 }
 
 export function InfoSectionTitle(props: InfoSectionTitleProps) {
@@ -80,6 +94,7 @@ export function InfoSectionTitle(props: InfoSectionTitleProps) {
       level="title-md"
       data-testid={props["data-testid"]}
       id={titleId}
+      sx={props.sx}
     >
       {props.children}
     </Typography>

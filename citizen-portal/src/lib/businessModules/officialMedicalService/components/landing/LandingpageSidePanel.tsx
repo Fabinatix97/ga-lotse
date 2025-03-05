@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Stack, Typography } from "@mui/joy";
-import { useRouter } from "next/navigation";
+import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { Stack, Typography } from "@mui/joy";
 
 import { useCitizenRoutes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
@@ -12,32 +12,27 @@ import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
+import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 export function LandingpageSidePanel() {
   const { t } = useTranslation(["officialMedicalService/landing"]);
-  const router = useRouter();
   const citizenRoutes = useCitizenRoutes();
-
-  function handleBookAppointment() {
-    router.push(citizenRoutes.appointment);
-  }
+  const accessCode = useAccessCodeParam();
 
   return (
     <ContentSheet>
       <ContentSheetTitle>{t("personalArea.title")}</ContentSheetTitle>
       <Typography>{t("personalArea.information")}</Typography>
       <Stack direction="column" gap={2}>
-        <Button
-          type="submit"
-          onClick={() => {
-            handleBookAppointment();
-          }}
-        >
+        <InternalLinkButton href={citizenRoutes.appointment}>
           {t("personalArea.bookAppointment")}
-        </Button>
-        <Button type="submit" variant="outlined">
+        </InternalLinkButton>
+        <InternalLinkButton
+          variant="outlined"
+          href={citizenRoutes.personalArea(accessCode)}
+        >
           {t("personalArea.goToPersonalArea")}
-        </Button>
+        </InternalLinkButton>
       </Stack>
     </ContentSheet>
   );

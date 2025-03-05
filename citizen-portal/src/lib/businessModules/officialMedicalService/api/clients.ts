@@ -5,6 +5,7 @@
 
 import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 import {
+  CitizenAuthApi,
   CitizenPublicApi,
   Configuration,
 } from "@eshg/official-medical-service-api";
@@ -18,4 +19,8 @@ function useConfiguration() {
 
 export function useCitizenPublicApi() {
   return new CitizenPublicApi(useConfiguration());
+}
+
+export function useCitizenAuthApi() {
+  return new CitizenAuthApi(useConfiguration());
 }

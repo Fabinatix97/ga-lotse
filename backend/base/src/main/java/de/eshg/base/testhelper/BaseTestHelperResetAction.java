@@ -30,7 +30,7 @@ public class BaseTestHelperResetAction implements TestHelperServiceResetAction {
   }
 
   @Override
-  public void reset() throws Exception {
+  public void reset() {
     userControllerRateLimiter.reset();
     icd10CodeTestHelper.repopulateIcd10CodesIfNecessary();
     departmentConfigurationService.init();

@@ -10,6 +10,14 @@ export type DentalExaminationView =
   | "LOWER_JAW"
   | "FULL_DENTITION";
 
+export function isDentalExaminationView(
+  value: number | string | null | undefined,
+): value is DentalExaminationView {
+  return ["UPPER_JAW", "LOWER_JAW", "FULL_DENTITION"].includes(
+    value as DentalExaminationView,
+  );
+}
+
 export type Dentition = Record<QuadrantNumber, Quadrant>;
 
 export interface Quadrant {
@@ -59,7 +67,7 @@ export function isInUpperJaw(tooth: Tooth) {
 
 export type ToothType = "PRIMARY_TOOTH" | "SECONDARY_TOOTH";
 
-type ToothDiagnosisResult = ApiMainResult | ApiSecondaryResult;
+export type ToothDiagnosisResult = ApiMainResult | ApiSecondaryResult;
 
 export interface ToothResult {
   value: string;

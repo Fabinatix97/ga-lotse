@@ -25,4 +25,4 @@ public record GetStiProtectionProceduresFilterOptions(
     @BindParam("concern") @Parameter Set<ConcernDto> concern,
     @BindParam("procedureStatus") @Parameter Set<ProcedureStatusDto> procedureStatus,
     @BindParam("labStatus") @Parameter Set<LabStatusDto> labStatus,
-    @BindParam("createdBy") @Parameter Set<CreatedByUserTypeDto> createdBy) {}
+    @BindParam("procedureOrigin") @Parameter Set<StiProcedureOriginDto> procedureOrigin) {}

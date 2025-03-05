@@ -1,0 +1,153 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="GA-Lotse" id="1740127475955-1">
+        <ext:createPostgresEnumType name="opendatafiletype" values="CSV, PDF"/>
+    </changeSet>
+    <changeSet author="GA-Lotse" id="1740127475955-2">
+        <ext:createPostgresEnumType name="businessmodule" values="DENTAL, INSPECTION, MEASLES_PROTECTION, MEDICAL_REGISTRY, OFFICIAL_MEDICAL_SERVICE, SCHOOL_ENTRY, STI_PROTECTION, TRAVEL_MEDICINE"/>
+    </changeSet>
+    <changeSet author="GA-Lotse" id="1740127475955-3">
+        <createTable tableName="resource">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_resource"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="resource_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="GA-Lotse" id="1740127475955-4">
+        <createTable tableName="version">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_version"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="author" type="TEXT"/>
+            <column name="description" type="TEXT"/>
+            <column name="file_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_size" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_type" type="OPENDATAFILETYPE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="licence" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="major" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="minor" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="publication_date" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="statistic_end_date" type="date"/>
+            <column name="statistic_start_date" type="date"/>
+            <column name="version_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="resource_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="GA-Lotse" id="1740127475955-5">
+        <createTable tableName="version_sources">
+            <column name="version_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_version_sources"/>
+            </column>
+            <column name="sources" type="BUSINESSMODULE">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_version_sources"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="GA-Lotse" id="1740127475955-6">
+        <addUniqueConstraint columnNames="resource_name" constraintName="resource_resource_name_key" tableName="resource"/>
+    </changeSet>
+    <changeSet author="GA-Lotse" id="1740127475955-7">
+        <addUniqueConstraint columnNames="document_id" constraintName="version_document_id_key" tableName="version"/>
+    </changeSet>
+    <changeSet author="GA-Lotse" id="1740127475955-8">
+        <addUniqueConstraint columnNames="external_id" constraintName="version_external_id_key" tableName="version"/>
+    </changeSet>
+    <changeSet author="GA-Lotse" id="1740127475955-9">
+        <createTable tableName="default_revision_entity">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_default_revision_entity"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="GA-Lotse" id="1740127475955-10">
+        <createTable tableName="file_content">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_file_content"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="BYTEA">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="GA-Lotse" id="1740127475955-11">
+        <createTable tableName="open_data_configuration">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_open_data_configuration"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="author" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fallback_license_url" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="terms_of_use" type="BYTEA">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="GA-Lotse" id="1740127475955-12">
+        <createIndex indexName="idx_version_resource_id" tableName="version">
+            <column name="resource_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="GA-Lotse" id="1740127475955-13">
+        <addForeignKeyConstraint baseColumnNames="document_id" baseTableName="version" constraintName="fk_version_file_content" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="file_content" validate="true"/>
+    </changeSet>
+    <changeSet author="GA-Lotse" id="1740127475955-14">
+        <addForeignKeyConstraint baseColumnNames="resource_id" baseTableName="version" constraintName="fk_version_resource" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="resource" validate="true"/>
+    </changeSet>
+    <changeSet author="GA-Lotse" id="1740127475955-15">
+        <addForeignKeyConstraint baseColumnNames="version_id" baseTableName="version_sources" constraintName="fk_version_sources_version" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="version" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

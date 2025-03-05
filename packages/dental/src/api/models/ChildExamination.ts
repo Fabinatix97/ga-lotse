@@ -29,6 +29,7 @@ export interface ChildExamination {
   readonly result?: ExaminationResult;
   readonly note?: string;
   readonly prophylaxisDentitionType?: ApiDentitionType;
+  readonly previousExaminationResults: ExaminationResult[];
 }
 
 export function mapChildExamination(
@@ -50,5 +51,7 @@ export function mapChildExamination(
     status: mapToExaminationStatus(result),
     note: response.note,
     prophylaxisDentitionType: response.prophylaxisDentitionType,
+    previousExaminationResults:
+      response.previousExaminationResults.map(mapExaminationResult),
   };
 }

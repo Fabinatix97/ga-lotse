@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useHasChanged } from "@eshg/lib-portal/hooks/useHasChanged";
 import { useEffect, useRef } from "react";
 import { useShallow } from "zustand/react/shallow";
 
@@ -17,13 +18,15 @@ export function useElementFocus<TElement extends HTMLElement>(
   const isFocused = useDentalExaminationStore(
     useShallow((state) => equalsElement(elementContext, state.currentFocus)),
   );
+  const focusChanged = useHasChanged(isFocused, { changedOnInit: true });
   const setFocus = useDentalExaminationStore((state) => state.setFocus);
 
+  const focus = isFocused && focusChanged;
   useEffect(() => {
-    if (isFocused && elementRef.current !== null) {
+    if (focus && elementRef.current !== null) {
       onFocus(elementRef.current);
     }
-  }, [elementRef, isFocused, onFocus]);
+  }, [elementRef, focus, onFocus]);
 
   function focusHandler(): void {
     setFocus(elementContext);

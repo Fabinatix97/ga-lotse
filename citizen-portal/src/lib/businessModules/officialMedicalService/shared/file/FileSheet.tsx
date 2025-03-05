@@ -3,26 +3,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
-import { FileLike } from "@eshg/lib-portal/components/formFields/file/validators";
 import { formatFileSize } from "@eshg/lib-portal/helpers/file";
 import { DeleteOutlined } from "@mui/icons-material";
 import { Box, IconButton, Sheet, Typography } from "@mui/joy";
 import { PropsWithChildren } from "react";
 
 import { theme } from "@/lib/baseModule/theme/theme";
+import { FileDescriptor } from "@/lib/businessModules/officialMedicalService/shared/file/FileSheetArray";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 
 export interface FileSheet {
-  file: File;
-  acceptedFileTypes: FileType[];
+  file: FileDescriptor;
   removeLabel?: string;
-  onDelete?: () => Promise<void>;
+  onRemove?: (file: FileDescriptor) => void;
 }
+
 export function FileSheet({
   file,
-  acceptedFileTypes,
-  onDelete,
+  onRemove,
   removeLabel,
 }: Readonly<FileSheet>) {
   return (
@@ -41,7 +39,7 @@ export function FileSheet({
           {file.name}
         </Typography>
         <Typography sx={{ gridArea: "fileFormat", justifySelf: "end" }}>
-          {formatFileType(acceptedFileTypes, file)}
+          {file.fileType}
         </Typography>
         <Typography
           sx={{
@@ -54,11 +52,11 @@ export function FileSheet({
         >
           {formatFileSize(file.size)}
         </Typography>
-        {onDelete && (
+        {onRemove && (
           <IconButton
             aria-label={removeLabel}
             color="danger"
-            onClick={onDelete}
+            onClick={() => onRemove(file)}
             sx={{
               minHeight: "24px",
               minWidth: "24px",
@@ -73,14 +71,6 @@ export function FileSheet({
       </ResponsiveGrid>
     </Sheet>
   );
-}
-
-function formatFileType(acceptedFileType: FileType[], file: FileLike) {
-  return acceptedFileType.map((fileType) => {
-    if (file.type === fileType.mimeType) {
-      return fileType.name;
-    }
-  });
 }
 
 function ResponsiveGrid({ children }: Readonly<PropsWithChildren>) {

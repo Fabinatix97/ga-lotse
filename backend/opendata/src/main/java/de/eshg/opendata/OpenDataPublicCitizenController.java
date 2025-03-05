@@ -10,7 +10,7 @@ import de.eshg.opendata.api.GetOpenDocumentsPaginationOptions;
 import de.eshg.opendata.api.GetOpenDocumentsRequest;
 import de.eshg.opendata.api.GetOpenDocumentsResponse;
 import de.eshg.opendata.api.VersionDto;
-import de.eshg.opendata.config.OpenDataProperties;
+import de.eshg.opendata.config.OpenDataConfigService;
 import de.eshg.rest.service.security.config.BaseUrls.OpenData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,14 +18,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.io.UncheckedIOException;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -44,25 +41,17 @@ public class OpenDataPublicCitizenController {
   private final OpenDataService openDataService;
   private final OpenDataValidations openDataValidations;
   private final OpenDataFiltering openDataFiltering;
-  private final Resource termsOfUse;
+  private final OpenDataConfigService openDataConfigService;
 
   public OpenDataPublicCitizenController(
       OpenDataService openDataService,
       OpenDataValidations openDataValidations,
       OpenDataFiltering openDataFiltering,
-      OpenDataProperties openDataProperties) {
+      OpenDataConfigService openDataConfigService) {
     this.openDataService = openDataService;
     this.openDataValidations = openDataValidations;
     this.openDataFiltering = openDataFiltering;
-    termsOfUse = toResource(openDataProperties.getTermsOfUse());
-  }
-
-  private static Resource toResource(URI documentLocation) {
-    try {
-      return new UrlResource(documentLocation);
-    } catch (MalformedURLException e) {
-      throw new UncheckedIOException("Unable to load resource from " + documentLocation, e);
-    }
+    this.openDataConfigService = openDataConfigService;
   }
 
   @GetMapping
@@ -116,6 +105,9 @@ public class OpenDataPublicCitizenController {
   }
 
   private ResponseEntity<Resource> createTermsOfUseResponse() {
+    ByteArrayResource termsOfUse =
+        new ByteArrayResource(openDataConfigService.getConfig().getTermsOfUse());
+
     return ResponseEntity.ok()
         .header(
             HttpHeaders.CONTENT_DISPOSITION,

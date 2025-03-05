@@ -22,6 +22,7 @@ import de.eshg.officialmedicalservice.procedure.api.EmployeePagedOmsProcedures;
 import de.eshg.officialmedicalservice.procedure.api.GetEmployeeOmsProcedureOverviewResponse;
 import de.eshg.officialmedicalservice.procedure.api.GetOmsProceduresFilterOptionsDto;
 import de.eshg.officialmedicalservice.procedure.api.MedicalOpinionStatusDto;
+import de.eshg.officialmedicalservice.procedure.api.PatchAcceptDraftProcedureRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchAffectedPersonRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchConcernRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchEmployeeOmsProcedureEmailNotificationsRequest;
@@ -180,8 +181,10 @@ public class EmployeeOmsProcedureController {
 
   @PatchMapping(path = PROCEDURES_URL + "/{id}" + ACCEPT_DRAFT_URL)
   @Operation(summary = "Accept draft oms procedure")
-  public AcceptDraftProcedureResponse acceptDraftProcedure(@PathVariable("id") UUID procedureId) {
-    return employeeOmsProcedureService.acceptDraftProcedure(procedureId);
+  public AcceptDraftProcedureResponse acceptDraftProcedure(
+      @PathVariable("id") UUID procedureId,
+      @Valid @RequestBody PatchAcceptDraftProcedureRequest request) {
+    return employeeOmsProcedureService.acceptDraftProcedure(procedureId, request);
   }
 
   @PatchMapping(path = PROCEDURES_URL + "/{id}" + CLOSE_PROCEDURE_URL)

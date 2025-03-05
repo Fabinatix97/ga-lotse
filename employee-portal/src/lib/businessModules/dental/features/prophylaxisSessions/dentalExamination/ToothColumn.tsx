@@ -5,8 +5,8 @@
 
 import { Stack } from "@mui/joy";
 
-import { AddToothButton } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/AddToothButton";
 import { ToothForm } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/ToothForm";
+import { AddToothButton } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/ToothIconButtons";
 import { ToothNumber } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/ToothNumber";
 import {
   QuadrantNumber,

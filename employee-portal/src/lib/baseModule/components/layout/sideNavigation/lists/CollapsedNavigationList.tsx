@@ -38,7 +38,6 @@ export function CollapsedNavigationList({
         width: sideNavigationCollapsedWidth,
         backgroundColor: "background.body",
         paddingTop: 5,
-        paddingBottom: 3,
       }}
     >
       <Stack alignItems="center">

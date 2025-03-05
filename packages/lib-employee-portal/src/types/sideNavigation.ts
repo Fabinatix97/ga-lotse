@@ -42,11 +42,6 @@ export type SideNavigationItem =
   | SideNavigationParentItem
   | SideNavigationSuspenseItem;
 
-export interface UseSideNavigationItemsResult {
-  isLoading: boolean;
-  items: SideNavigationItem[];
-}
-
 export interface SideNavigationItemsProps {
   isInboxEnabled: boolean;
 }

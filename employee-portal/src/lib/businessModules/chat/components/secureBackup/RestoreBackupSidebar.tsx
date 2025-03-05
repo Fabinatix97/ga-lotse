@@ -14,7 +14,7 @@ import { SecureBackupContent } from "@/lib/businessModules/chat/components/secur
 import { ResetBackupModal } from "@/lib/businessModules/chat/components/secureBackup/ResetBackupModal";
 import { fetchBackupInfo } from "@/lib/businessModules/chat/matrix/crypto";
 import {
-  loadBackupKeyFromSecretStorage,
+  restoreBackupKeyFromSecretStorage,
   validateAccessSecretStorage,
 } from "@/lib/businessModules/chat/matrix/secretStorage";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
@@ -80,7 +80,7 @@ export function RestoreBackupSidebar({
         throw new Error("No backupInfo");
       }
 
-      await loadBackupKeyFromSecretStorage(matrixClient, values.passphrase);
+      await restoreBackupKeyFromSecretStorage(matrixClient, values.passphrase);
       setClientState(ClientState.Prepared);
       snackbar.confirmation("Ihr Gerät wurde nun verifiziert");
     } catch (e) {

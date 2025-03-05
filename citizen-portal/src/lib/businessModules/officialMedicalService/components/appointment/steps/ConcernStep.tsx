@@ -21,7 +21,10 @@ import { useConcernFilterValues } from "@/lib/businessModules/officialMedicalSer
 import { RadioSheet } from "@/lib/businessModules/travelMedicine/components/shared/components/RadioSheet";
 import { RadioGroupField } from "@/lib/businessModules/travelMedicine/components/shared/components/formField/RadioGroupField";
 import { useTranslation } from "@/lib/i18n/client";
-import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
+import {
+  ContentSheet,
+  ContentSheetTitle,
+} from "@/lib/shared/components/layout/contentSheet";
 
 export function ConcernStep() {
   const { t, i18n } = useTranslation(["officialMedicalService/appointment"]);
@@ -61,7 +64,7 @@ export function ConcernStep() {
 
   return (
     <ContentSheet data-testid={"concern-form"}>
-      <Typography level="h2">{t("concern.title")}</Typography>
+      <ContentSheetTitle>{t("concern.title")}</ContentSheetTitle>
       <Alert
         title={t("concern.infoText.title")}
         color="primary"

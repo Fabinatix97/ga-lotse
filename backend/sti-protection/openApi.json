@@ -597,6 +597,35 @@
         "tags" : [ "CitizenPublic" ]
       }
     },
+    "/citizen/public/appointments/{id}/anon-ident-document" : {
+      "get" : {
+        "operationId" : "getAnonymousIdentificationDocument_1",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/pdf" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get an anonymous identification document for an appointment",
+        "tags" : [ "CitizenPublic" ]
+      }
+    },
     "/citizen/public/appointments/{id}/anonymous-user" : {
       "post" : {
         "operationId" : "createAnonymousUser",
@@ -2368,13 +2397,13 @@
           }
         }, {
           "in" : "query",
-          "name" : "createdBy",
+          "name" : "procedureOrigin",
           "required" : false,
           "schema" : {
             "uniqueItems" : true,
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/CreatedByUserType"
+              "$ref" : "#/components/schemas/StiProcedureOrigin"
             }
           }
         } ],
@@ -4832,10 +4861,6 @@
             "format" : "uuid"
           }
         }
-      },
-      "CreatedByUserType" : {
-        "type" : "string",
-        "enum" : [ "EMPLOYEE", "CITIZEN_PORTAL" ]
       },
       "DataOrigin" : {
         "type" : "string",
@@ -7684,6 +7709,10 @@
           }
         } ]
       },
+      "StiProcedureOrigin" : {
+        "type" : "string",
+        "enum" : [ "EMPLOYEE_PORTAL", "CITIZEN_PORTAL" ]
+      },
       "StiProtectionProcedure" : {
         "required" : [ "appointmentHistory", "concern", "createdAt", "id", "isFollowUp", "labStatus", "person", "status" ],
         "type" : "object",
@@ -7729,7 +7758,7 @@
         }
       },
       "StiProtectionProcedureOverview" : {
-        "required" : [ "concern", "createdAt", "gender", "id", "labStatus", "status", "yearOfBirth" ],
+        "required" : [ "concern", "createdAt", "gender", "id", "labStatus", "procedureOrigin", "status", "yearOfBirth" ],
         "type" : "object",
         "properties" : {
           "accessCode" : {
@@ -7761,6 +7790,9 @@
           },
           "labStatus" : {
             "$ref" : "#/components/schemas/LabStatus"
+          },
+          "procedureOrigin" : {
+            "$ref" : "#/components/schemas/StiProcedureOrigin"
           },
           "sampleBarCode" : {
             "type" : "string"

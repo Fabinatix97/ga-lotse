@@ -37,7 +37,7 @@ Refer to the link:./gradle.adoc#e2e-tasks[e2e tasks] for an overview of the comm
 == Smoke testing deployed environments
 
 The playwright configuration for smoke testing actual environments is kept a bit separate from the normal configuration.
-For each environment a `src/config/playwright.<env>.config.ts` file exists.
+For each environment a `src/smokeTestConfig/playwright.<env>.config.ts` file exists.
 
 In most environments the dummy user still exists but has a different password. The project is setup to check the `DUMMY_PASSWORD` environment variable
 and use its value instead. In a CI pipeline the password could be read from a kubernetes secret:

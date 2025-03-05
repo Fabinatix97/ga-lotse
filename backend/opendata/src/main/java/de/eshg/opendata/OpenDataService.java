@@ -13,7 +13,7 @@ import de.eshg.opendata.api.PostOpenDocumentRequest;
 import de.eshg.opendata.api.ResourceDto;
 import de.eshg.opendata.api.UpdateVersionMetaDataRequest;
 import de.eshg.opendata.api.VersionDto;
-import de.eshg.opendata.config.OpenDataProperties;
+import de.eshg.opendata.config.OpenDataConfigService;
 import de.eshg.opendata.domain.model.FileContent;
 import de.eshg.opendata.domain.model.OpenDataFileType;
 import de.eshg.opendata.domain.model.Resource;
@@ -49,17 +49,17 @@ public class OpenDataService {
   private final ResourceRepository resourceRepository;
   private final VersionRepository versionRepository;
   private final Clock clock;
-  private final OpenDataProperties openDataProperties;
+  private final OpenDataConfigService openDataConfigService;
 
   public OpenDataService(
       ResourceRepository resourceRepository,
       VersionRepository versionRepository,
       Clock clock,
-      OpenDataProperties openDataProperties) {
+      OpenDataConfigService openDataConfigService) {
     this.resourceRepository = resourceRepository;
     this.versionRepository = versionRepository;
     this.clock = clock;
-    this.openDataProperties = openDataProperties;
+    this.openDataConfigService = openDataConfigService;
   }
 
   public VersionDto getSpecificVersion(UUID versionId) {
@@ -118,7 +118,7 @@ public class OpenDataService {
     version.setStatisticStartDate(postRequest.statisticStartDate());
     version.setStatisticEndDate(postRequest.statisticEndDate());
     version.setSources(postRequest.sources());
-    version.setAuthor(openDataProperties.getAuthor());
+    version.setAuthor(openDataConfigService.getConfig().getAuthor());
     version.setDescription(postRequest.description());
     version.setPublicationDate(Instant.now(clock));
     version.setVersionName(postRequest.versionName());

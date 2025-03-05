@@ -1,0 +1,76 @@
+{
+  "common": {
+    "pageTitle": "Mein Anliegen",
+    "requiredTitle": "*Pflichtfeld",
+    "logoutButton": "Mein Bereich verlassen"
+  },
+  "information": {
+    "title": "Informationen",
+    "nameSection": {
+      "title": "Name"
+    },
+    "birthdateSection": {
+      "title": "Geburtsdatum"
+    },
+    "appointmentStatusSection": {
+      "title": "Terminstatus",
+      "bookingState": {
+        "BOOKABLE": "Noch nicht gebucht",
+        "BOOKED": "Gebucht",
+        "CANCELLED": "Abgesagt",
+        "WITHDRAWN": "Zurückgezogen"
+      }
+    },
+    "concernSection": {
+      "title": "Anliegen"
+    },
+    "appointmentDateSection": {
+      "title": "Termin Datum"
+    },
+    "appointmentTimeSection": {
+      "title": "Zeit",
+      "time": "{{ time }} Uhr",
+      "duration": "Dauer: {{ duration }} Minuten"
+    }
+  },
+  "contact": {
+    "addressSection": {
+      "title": "Ort"
+    },
+    "contactSection": {
+      "title": "Kontakt",
+      "phoneNumber": "Telefon: {{ phoneNumber }}",
+      "eMail": "E-Mail:"
+    }
+  },
+  "documents": {
+    "title": "Unterlagen zum Vorgang",
+    "files": {
+      "title": "Dokument",
+      "required": "Bitte Dokument hochladen",
+      "helperText": "Datei als PDF, PNG oder JPG hochladen",
+      "inputSummary_one": "{{count}} Datei hochgeladen",
+      "inputSummary_other": "{{count}} Dateien hochgeladen",
+      "placeholder": "Datei auswählen",
+      "file": "Datei",
+      "size": "Größe",
+      "format": "Format",
+      "delete": "Entfernen",
+      "deleteAll": "Alles entfernen",
+      "error": "Die Datei konnte nicht hochgeladen werden. Bitte versuchen Sie es erneut."
+    }
+  },
+  "sidePanel": {
+    "booked": {
+      "title": "Sie können den Termin nicht wahrnehmen?",
+      "rescheduleAppointment": "Termin verschieben",
+      "cancelAppointment": "Termin absagen"
+    },
+    "cancelled": {
+      "rescheduleAppointment": "Neuen Termin buchen"
+    },
+    "bookable": {
+      "bookAppointment": "Termin buchen"
+    }
+  }
+}

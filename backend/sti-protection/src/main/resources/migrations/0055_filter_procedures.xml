@@ -4,52 +4,39 @@
  SPDX-License-Identifier: AGPL-3.0-only
 -->
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-  <changeSet author="GA-Lotse" id="1740055903378-1">
-    <ext:createPostgresEnumType name="createdbyusertype"
-      values="CITIZEN_PORTAL, EMPLOYEE"/>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1740407511195-1">
+    <ext:createPostgresEnumType name="stiprocedureorigin" values="CITIZEN_PORTAL, EMPLOYEE_PORTAL"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1740055903378-2">
+  <changeSet author="GA-Lotse" id="1740407511195-2">
     <addColumn tableName="sti_protection_procedure">
-      <column name="created_by" type="CREATEDBYUSERTYPE">
+      <column name="sti_procedure_origin" type="STIPROCEDUREORIGIN">
         <constraints nullable="false"/>
       </column>
     </addColumn>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1740055903378-3">
+  <changeSet author="GA-Lotse" id="1740407511195-3">
     <createIndex indexName="idx_person_gender" tableName="person">
       <column name="gender"/>
     </createIndex>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1740055903378-4">
+  <changeSet author="GA-Lotse" id="1740407511195-4">
     <createIndex indexName="idx_person_year_of_birth" tableName="person">
       <column name="year_of_birth"/>
     </createIndex>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1740055903378-5">
-    <createIndex indexName="idx_sti_protection_procedure_concern"
-      tableName="sti_protection_procedure">
+  <changeSet author="GA-Lotse" id="1740407511195-5">
+    <createIndex indexName="idx_sti_protection_procedure_concern" tableName="sti_protection_procedure">
       <column name="concern"/>
     </createIndex>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1740055903378-6">
-    <createIndex indexName="idx_sti_protection_procedure_created_by"
-      tableName="sti_protection_procedure">
-      <column name="created_by"/>
-    </createIndex>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1740055903378-7">
-    <createIndex indexName="idx_sti_protection_procedure_lab_status"
-      tableName="sti_protection_procedure">
+  <changeSet author="GA-Lotse" id="1740407511195-6">
+    <createIndex indexName="idx_sti_protection_procedure_lab_status" tableName="sti_protection_procedure">
       <column name="lab_status"/>
     </createIndex>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1740055903378-8">
-    <createIndex indexName="idx_sti_protection_procedure_procedure_status"
-      tableName="sti_protection_procedure">
+  <changeSet author="GA-Lotse" id="1740407511195-7">
+    <createIndex indexName="idx_sti_protection_procedure_procedure_status" tableName="sti_protection_procedure">
       <column name="procedure_status"/>
     </createIndex>
   </changeSet>

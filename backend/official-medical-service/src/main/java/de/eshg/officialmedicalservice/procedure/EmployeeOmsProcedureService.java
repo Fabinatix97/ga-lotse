@@ -8,20 +8,28 @@ package de.eshg.officialmedicalservice.procedure;
 import static de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory.createSystemProgressEntry;
 import static de.eshg.officialmedicalservice.concern.ConcernMapper.mapToConcernDto;
 import static de.eshg.officialmedicalservice.concern.ConcernMapper.mapToEntity;
+import static de.eshg.officialmedicalservice.person.PersonMapper.mapToAddPersonRequest;
+import static de.eshg.officialmedicalservice.person.PersonMapper.mapToUpdatePersonRequest;
 import static java.util.Comparator.comparing;
 import static java.util.Comparator.naturalOrder;
 import static java.util.Comparator.nullsLast;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 import de.eshg.base.SortDirection;
+import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesRequest;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesResponse;
+import de.eshg.base.centralfile.api.person.AddPersonFileStateRequest;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesResponse;
+import de.eshg.base.centralfile.api.person.GetReferencePersonResponse;
+import de.eshg.base.centralfile.api.person.SearchReferencePersonsResponse;
+import de.eshg.base.centralfile.api.person.UpdatePersonRequest;
+import de.eshg.base.centralfile.api.person.UpdateReferencePersonRequest;
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.lib.auditlog.AuditLogger;
@@ -62,6 +70,7 @@ import de.eshg.officialmedicalservice.procedure.api.EmployeePagedOmsProcedures;
 import de.eshg.officialmedicalservice.procedure.api.FacilityDto;
 import de.eshg.officialmedicalservice.procedure.api.GetOmsProceduresFilterOptionsDto;
 import de.eshg.officialmedicalservice.procedure.api.MedicalOpinionStatusDto;
+import de.eshg.officialmedicalservice.procedure.api.PatchAcceptDraftProcedureRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchAffectedPersonRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchConcernRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchEmployeeOmsProcedureEmailNotificationsRequest;
@@ -496,7 +505,8 @@ public class EmployeeOmsProcedureService {
   }
 
   @Transactional
-  public AcceptDraftProcedureResponse acceptDraftProcedure(UUID externalId) {
+  public AcceptDraftProcedureResponse acceptDraftProcedure(
+      UUID externalId, PatchAcceptDraftProcedureRequest request) {
     OmsProcedureAndAffectedPerson omsProcedureAndAffectedPerson =
         getOmsProcedureAndAffectedPerson(externalId);
 
@@ -507,8 +517,23 @@ public class EmployeeOmsProcedureService {
     requireFacility(omsProcedure);
     requireConcern(omsProcedure);
 
-    AffectedPersonDto affectedPersonDto = omsProcedureAndAffectedPerson.affectedPerson();
-    UUID personFileStateId = personClient.createPersonFromExternalSource(affectedPersonDto);
+    AffectedPersonDto affectedPersonDto =
+        request.affectedPerson() != null
+            ? request.affectedPerson()
+            : omsProcedureAndAffectedPerson.affectedPerson();
+
+    Person person = omsProcedure.findAffectedPerson();
+    UUID personFileStateId = person.getCentralFileStateId();
+    GetPersonFileStateResponse personFileState = personClient.getPersonFileState(personFileStateId);
+    if (personFileState.dataOrigin() == DataOriginDto.EXTERNAL) {
+      if (request.referencePersonId() != null) {
+        useExistingPersonFromCentralFile(personFileState, request, omsProcedure);
+      } else if (request.affectedPerson() != null) {
+        saveAsNewPerson(affectedPersonDto, omsProcedure);
+      } else {
+        updateCurrentPerson(personFileStateId, affectedPersonDto, omsProcedure);
+      }
+    }
 
     // temporarily skip the access token authentication (and use a module authentication
     // instead) in order to create a citizen keycloak user
@@ -516,7 +541,9 @@ public class EmployeeOmsProcedureService {
         disabledCurrentAuthentication(
             () ->
                 moduleClientAuthenticator.doWithModuleClientAuthentication(
-                    () -> citizenAccessCodeUserClient.addCitizenAccessCodeUser(personFileStateId)));
+                    () ->
+                        citizenAccessCodeUserClient.addCitizenAccessCodeUser(
+                            omsProcedure.findAffectedPerson().getCentralFileStateId())));
     String accessCode = citizenAccessCodeUser.accessCode();
 
     omsProcedure.setCitizenUserId(citizenAccessCodeUser.userId());
@@ -866,6 +893,105 @@ public class EmployeeOmsProcedureService {
   private UserDto getPhysicianForOmsProcedure(
       OmsProcedure omsProcedure, Map<UUID, UserDto> physicianMap) {
     return Optional.ofNullable(omsProcedure.getPhysicianId()).map(physicianMap::get).orElse(null);
+  }
+
+  private void useExistingPersonFromCentralFile(
+      GetPersonFileStateResponse personFileState,
+      PatchAcceptDraftProcedureRequest request,
+      OmsProcedure omsProcedure) {
+    SearchReferencePersonsResponse searchReferencePersons =
+        personClient.searchReferencePersons(
+            personFileState.firstName(), personFileState.lastName(), personFileState.dateOfBirth());
+    GetReferencePersonResponse referencePerson =
+        searchReferencePersons.persons().stream()
+            .filter(p -> p.id().equals(request.referencePersonId()))
+            .findFirst()
+            .orElseThrow(() -> new BadRequestException("Reference person not found."));
+    boolean dataAdded = addEmailAndPhoneNumberToReferencePerson(referencePerson, personFileState);
+    UpdatePersonRequest updatePersonRequest = mapToUpdatePersonRequest(referencePerson);
+
+    if (dataAdded) {
+      UpdateReferencePersonRequest updateReferencePersonRequest =
+          new UpdateReferencePersonRequest(updatePersonRequest, referencePerson.version());
+      UUID personFileStateId =
+          personClient
+              .updateReferencePerson(request.referencePersonId(), updateReferencePersonRequest)
+              .id();
+
+      omsProcedure.findAffectedPerson().setCentralFileStateId(personFileStateId);
+    } else {
+      AddPersonFileStateRequest addPersonRequest = mapToAddPersonRequest(referencePerson);
+      UUID personFileStateId = personClient.addPersonFileState(addPersonRequest).id();
+
+      omsProcedure.findAffectedPerson().setCentralFileStateId(personFileStateId);
+    }
+  }
+
+  private void saveAsNewPerson(AffectedPersonDto affectedPersonDto, OmsProcedure omsProcedure) {
+    UUID personFileStateId =
+        personClient
+            .addPersonFileState(PersonMapper.mapToAddPersonFileStateRequest(affectedPersonDto))
+            .id();
+    omsProcedure.findAffectedPerson().setCentralFileStateId(personFileStateId);
+  }
+
+  private void updateCurrentPerson(
+      UUID personFileStateId, AffectedPersonDto affectedPersonDto, OmsProcedure omsProcedure) {
+    personFileStateId =
+        personClient
+            .updatePersonFileStateAndReference(
+                personFileStateId, PersonMapper.mapToUpdatePersonRequest(affectedPersonDto))
+            .id();
+    omsProcedure.findAffectedPerson().setCentralFileStateId(personFileStateId);
+  }
+
+  private boolean addEmailAndPhoneNumberToReferencePerson(
+      GetReferencePersonResponse referencePerson,
+      GetPersonFileStateResponse personFromCentralFile) {
+    boolean mailAdded =
+        addEmailsToReferencePerson(referencePerson, personFromCentralFile.emailAddresses());
+    boolean phoneNumberAdded =
+        addPhoneNumbersToReferencePerson(referencePerson, personFromCentralFile.phoneNumbers());
+    return (mailAdded || phoneNumberAdded);
+  }
+
+  private boolean addPhoneNumbersToReferencePerson(
+      GetReferencePersonResponse referencePerson, List<String> phoneNumbers) {
+    boolean phoneNumberAdded = false;
+    HashSet<String> referenceNumbers =
+        referencePerson.phoneNumbers().stream()
+            .map(this::normalizePhoneNumber)
+            .collect(Collectors.toCollection(HashSet::new));
+
+    for (String phoneNumber : phoneNumbers) {
+      String normalizedNumber = normalizePhoneNumber(phoneNumber);
+      if (!referenceNumbers.contains(normalizedNumber)) {
+        referencePerson.phoneNumbers().add(phoneNumber);
+        phoneNumberAdded = true;
+      }
+    }
+    return phoneNumberAdded;
+  }
+
+  private String normalizePhoneNumber(String phoneNumber) {
+
+    phoneNumber = phoneNumber.replaceAll("[^\\d.]", "");
+    if (phoneNumber.startsWith("00")) {
+      phoneNumber = phoneNumber.substring(2);
+    }
+    return phoneNumber;
+  }
+
+  private boolean addEmailsToReferencePerson(
+      GetReferencePersonResponse referencePerson, List<String> emails) {
+    boolean mailsAdded = false;
+    for (String email : emails) {
+      if (!referencePerson.emailAddresses().contains(email)) {
+        referencePerson.emailAddresses().add(email);
+        mailsAdded = true;
+      }
+    }
+    return mailsAdded;
   }
 
   private record OmsProcedureAndAffectedPerson(

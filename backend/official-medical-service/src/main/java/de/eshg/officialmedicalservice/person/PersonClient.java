@@ -13,15 +13,16 @@ import de.eshg.base.centralfile.api.person.GetPersonDiffResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesResponse;
+import de.eshg.base.centralfile.api.person.SearchReferencePersonsResponse;
 import de.eshg.base.centralfile.api.person.SyncFileStateRequest;
 import de.eshg.base.centralfile.api.person.UpdatePersonRequest;
-import de.eshg.officialmedicalservice.procedure.api.AffectedPersonDto;
+import de.eshg.base.centralfile.api.person.UpdateReferencePersonRequest;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.ErrorResponse;
+import java.time.LocalDate;
 import java.util.UUID;
 import java.util.function.Supplier;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -56,6 +57,17 @@ public class PersonClient {
     return doAndForwardErrorCodes(() -> personApi.updatePersonFileStateAndReference(id, request));
   }
 
+  public AddPersonFileStateResponse updateReferencePerson(
+      UUID id, UpdateReferencePersonRequest request) {
+    return doAndForwardErrorCodes(() -> personApi.updateReferencePerson(id, request));
+  }
+
+  public SearchReferencePersonsResponse searchReferencePersons(
+      String firstName, String lastName, LocalDate dateOfBirth) {
+    return doAndForwardErrorCodes(
+        () -> personApi.searchReferencePersons(firstName, lastName, dateOfBirth));
+  }
+
   public UUID syncAffectedPerson(UUID fileStateId, long referenceVersion) {
     return doAndForwardErrorCodes(
         () ->
@@ -64,27 +76,6 @@ public class PersonClient {
 
   public GetPersonDiffResponse getAffectedPersonDiff(UUID fileStateId) {
     return doAndForwardErrorCodes(() -> personApi.getPersonDiff(fileStateId));
-  }
-
-  public UUID createPersonFromExternalSource(AffectedPersonDto person) {
-    ExternalAddPersonFileStateRequest request =
-        new ExternalAddPersonFileStateRequest(
-            StringUtils.trimToNull(person.title()),
-            person.salutation(),
-            person.gender(),
-            person.firstName().trim(),
-            person.lastName().trim(),
-            person.dateOfBirth(),
-            StringUtils.trimToNull(person.nameAtBirth()),
-            StringUtils.trimToNull(person.placeOfBirth()),
-            person.countryOfBirth(),
-            person.emailAddresses(),
-            person.phoneNumbers(),
-            person.contactAddress(),
-            null);
-    AddPersonFileStateResponse personFromExternalSource =
-        personApi.addPersonFromExternalSource(request);
-    return personFromExternalSource.id();
   }
 
   private <T> T doAndForwardErrorCodes(Supplier<T> action) {

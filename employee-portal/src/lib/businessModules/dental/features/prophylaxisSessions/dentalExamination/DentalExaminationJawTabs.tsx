@@ -3,11 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Box, Button, Stack, ToggleButtonGroup } from "@mui/joy";
-import { MouseEvent, ReactNode } from "react";
+import { Box, Stack, Tab, TabList, TabPanel, Tabs, styled } from "@mui/joy";
+import { ReactNode, SyntheticEvent } from "react";
 
 import { useDentalExaminationStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
-import { DentalExaminationView } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
+import {
+  DentalExaminationView,
+  isDentalExaminationView,
+} from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
 
 interface DentalExaminationJawTabsProps {
   upperJaw: ReactNode;
@@ -23,58 +26,117 @@ export function DentalExaminationJawTabs({
   const currentView = useDentalExaminationStore((state) => state.currentView);
   const setView = useDentalExaminationStore((state) => state.setView);
 
-  function getCurrentContent(view: DentalExaminationView) {
-    switch (view) {
-      case "UPPER_JAW":
-        return upperJaw;
-      case "LOWER_JAW":
-        return lowerJaw;
-      case "FULL_DENTITION":
-        return fullDentition;
-    }
-  }
-
   function handleChange(
-    _: MouseEvent<HTMLElement>,
-    newValue: DentalExaminationView | null,
+    _: SyntheticEvent | null,
+    newValue: number | string | null,
   ) {
-    if (newValue !== null) {
+    if (isDentalExaminationView(newValue)) {
       setView(newValue);
     }
   }
 
   return (
-    <Stack alignItems="center" spacing={2}>
-      <ToggleButtonGroup
-        variant="tabs"
-        color="primary"
-        size="md"
-        value={currentView}
-        onChange={handleChange}
-        sx={{
-          width: { xxs: "100%", md: "65%" },
-          display: "flex",
-        }}
-        aria-label="Gebiss-Ansicht"
-      >
-        <Button sx={{ flex: "1 1 0%" }} value="UPPER_JAW">
-          Oberkiefer
-        </Button>
-        <Button sx={{ flex: "1 1 0%" }} value="LOWER_JAW">
-          Unterkiefer
-        </Button>
-        <Button sx={{ flex: "1 1 0%" }} value="FULL_DENTITION">
-          Gesamtgebiss
-        </Button>
-      </ToggleButtonGroup>
-      <Box
-        sx={{
-          overflow: "auto",
-          maxWidth: "100%",
-        }}
-      >
-        <Box sx={{ minWidth: "1121px" }}>{getCurrentContent(currentView)}</Box>
-      </Box>
+    <Stack spacing={2} sx={{ alignItems: "center" }}>
+      <JawTabs value={currentView} onChange={handleChange}>
+        <JawTabList
+          disableUnderline
+          sx={{
+            width: { xxs: "100%", md: "65%" },
+            height: 40,
+          }}
+          aria-label="Gebiss-Ansicht"
+        >
+          <JawTab
+            disableIndicator
+            color="primary"
+            variant="soft"
+            value="UPPER_JAW"
+          >
+            Oberkiefer
+          </JawTab>
+          <MiddleJawTab
+            disableIndicator
+            color="primary"
+            variant="soft"
+            value="LOWER_JAW"
+            currentView={currentView}
+          >
+            Unterkiefer
+          </MiddleJawTab>
+          <JawTab
+            disableIndicator
+            color="primary"
+            variant="soft"
+            value="FULL_DENTITION"
+          >
+            Gesamtgebiss
+          </JawTab>
+        </JawTabList>
+        <Box
+          sx={{
+            overflow: "auto",
+            maxWidth: "100%",
+          }}
+        >
+          <Box sx={{ minWidth: "1161px" }}>
+            <TabPanel value="UPPER_JAW">{upperJaw}</TabPanel>
+            <TabPanel value="LOWER_JAW">{lowerJaw}</TabPanel>
+            <TabPanel value="FULL_DENTITION">{fullDentition}</TabPanel>
+          </Box>
+        </Box>
+      </JawTabs>
     </Stack>
   );
 }
+
+const JawTabs = styled(Tabs)(({ theme }) => ({
+  maxWidth: "100%",
+  alignItems: "center",
+  backgroundColor: theme.palette.background.body,
+}));
+
+const JawTabList = styled(TabList)({
+  display: "flex",
+  borderRadius: "8px",
+  overflow: "hidden",
+});
+
+const JawTab = styled(
+  Tab,
+  {},
+)(({ theme }) => ({
+  flex: "1 1 0%",
+  backgroundColor: theme.palette.background.level1,
+  color: theme.palette.text.primary,
+  "&.Mui-selected": {
+    backgroundColor: theme.palette.focusVisible,
+    color: theme.palette.background.body,
+    fontWeight: theme.typography["title-md"].fontWeight,
+  },
+}));
+
+const MiddleJawTab = styled(JawTab, {
+  shouldForwardProp: (prop) => prop !== "currentView",
+})<{ currentView: DentalExaminationView }>(({ theme, currentView }) => ({
+  flex: "1 1 0%",
+  backgroundColor: theme.palette.background.level1,
+  color: theme.palette.text.primary,
+  "&.Mui-selected": {
+    backgroundColor: theme.palette.focusVisible,
+    color: theme.palette.background.body,
+    fontWeight: theme.typography["title-md"].fontWeight,
+  },
+
+  borderLeftWidth: 1,
+  borderLeftStyle: "solid",
+  borderLeftColor:
+    currentView === "FULL_DENTITION"
+      ? "rgba(99, 107, 116, 0.3)"
+      : theme.palette.focusVisible,
+  borderRightWidth: 1,
+  borderRightStyle: "solid",
+  borderRightColor:
+    currentView === "UPPER_JAW"
+      ? "rgba(99, 107, 116, 0.3)"
+      : theme.palette.focusVisible,
+}));

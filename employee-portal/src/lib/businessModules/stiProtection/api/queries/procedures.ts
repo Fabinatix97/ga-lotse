@@ -73,7 +73,7 @@ export function useStiProceduresQuery(
         undefined, // concern
         undefined, // procedureStatus
         undefined, // labStatus
-        undefined, // createdBy
+        undefined, // procedureOrigin
         { signal },
       ),
 

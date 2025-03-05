@@ -178,6 +178,11 @@ export function TableRow<TData>({
           const canNavigate = cellCanNavigate(cell);
           return (
             <StyledCell
+              role={
+                cell.column.columnDef.meta?.isRowHeader
+                  ? "rowheader"
+                  : undefined
+              }
               colSpan={
                 isParentRow(row) &&
                 isDefined(cell.column.columnDef.meta?.spanWhenParentRow)

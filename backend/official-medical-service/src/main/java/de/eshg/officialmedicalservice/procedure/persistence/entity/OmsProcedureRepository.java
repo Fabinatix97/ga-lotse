@@ -7,6 +7,7 @@ package de.eshg.officialmedicalservice.procedure.persistence.entity;
 
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.springframework.data.jpa.repository.Query;
@@ -49,4 +50,6 @@ public interface OmsProcedureRepository extends ProcedureRepository<OmsProcedure
     where o.waitingRoom.status in ('WAITING_FOR_CONSULTATION', 'IN_CONSULTATION')
     """)
   Stream<OmsProcedure> findAllByWaitingRoomStatusInWaitingOrInConsultation();
+
+  Optional<OmsProcedure> getByCitizenUserId(UUID citizenUserId);
 }

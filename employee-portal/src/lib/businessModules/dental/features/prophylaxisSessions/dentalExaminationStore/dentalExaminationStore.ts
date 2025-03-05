@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable unused-imports/no-unused-vars */
 import { ApiDentitionType } from "@eshg/dental-api";
 import {
   ExaminationResult,
@@ -25,6 +24,7 @@ import {
   getToothDiagnoses,
   removeTooth,
   setFocus,
+  toggleToothType,
 } from "./actions/tooth";
 import { createPrimaryDentition, createSecondaryDentition } from "./factories";
 import {
@@ -78,18 +78,23 @@ export function calculateDmftValues(dentition: Dentition) {
 export function initDentalExaminationStore(
   examinationResult: ExaminationResult | undefined,
   defaultDentitionType: ApiDentitionType | undefined,
+  previousExaminationResult: ExaminationResult | undefined,
 ): DentalExaminationState {
   const isScreening = examinationResult?.type === "screening";
+  const previousWasScreening = previousExaminationResult?.type === "screening";
 
   const toothDiagnoses = isScreening ? examinationResult.toothDiagnoses : {};
+  const previousToothDiagnoses = previousWasScreening
+    ? previousExaminationResult.toothDiagnoses
+    : {};
 
   const dentitionType =
     (isScreening ? examinationResult.dentitionType : undefined) ??
     defaultDentitionType;
   const dentition =
     dentitionType === ApiDentitionType.Primary
-      ? createPrimaryDentition(toothDiagnoses)
-      : createSecondaryDentition(toothDiagnoses);
+      ? createPrimaryDentition(toothDiagnoses, previousToothDiagnoses)
+      : createSecondaryDentition(toothDiagnoses, previousToothDiagnoses);
 
   return {
     currentView: "UPPER_JAW",
@@ -117,7 +122,9 @@ export function createDentalExaminationStore(
       set((state) => removeTooth(toothContext, state.dentition));
     },
     toggleToothType: (toothContext: ToothContext) => {
-      throw new Error("Not yet implemented");
+      set((state) => ({
+        dentition: toggleToothType(toothContext, state.dentition),
+      }));
     },
     setFocus: (newFocus: ElementContext) => {
       set(setFocus(newFocus));

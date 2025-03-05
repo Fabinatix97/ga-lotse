@@ -6,6 +6,7 @@
 package de.eshg.rest.service;
 
 import java.nio.charset.StandardCharsets;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -19,8 +20,16 @@ public final class PrivacyDocumentHelper {
 
   private PrivacyDocumentHelper() {}
 
+  public static ResponseEntity<Resource> privacyNoticeAttachmentResponse(byte[] privacyNotice) {
+    return privacyNoticeAttachmentResponse(new ByteArrayResource(privacyNotice));
+  }
+
   public static ResponseEntity<Resource> privacyNoticeAttachmentResponse(Resource privacyNotice) {
     return pdfAttachmentResponse(privacyNotice, PRIVACY_NOTICE_PDF_FILENAME);
+  }
+
+  public static ResponseEntity<Resource> privacyPolicyAttachmentResponse(byte[] privacyPolicy) {
+    return privacyPolicyAttachmentResponse(new ByteArrayResource(privacyPolicy));
   }
 
   public static ResponseEntity<Resource> privacyPolicyAttachmentResponse(Resource privacyPolicy) {

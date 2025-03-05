@@ -5,6 +5,7 @@
 
 import { useSuspenseQueries } from "@tanstack/react-query";
 
+import { OpeningHoursSection } from "@/lib/businessModules/officialMedicalService/shared/components/OpeningHoursSection";
 import {
   useGetDepartmentInfoQuery,
   useGetOpeningHoursQuery,
@@ -12,7 +13,6 @@ import {
 import { useTranslation } from "@/lib/i18n/client";
 import { AddressSection } from "@/lib/shared/components/AddressSection";
 import { ContactSection } from "@/lib/shared/components/ContactSection";
-import { OpeningHoursSection } from "@/lib/shared/components/OpeningHoursSection";
 import { InfoSectionGrid } from "@/lib/shared/components/infoSection";
 import {
   ContentSheet,
@@ -39,11 +39,11 @@ export function LandingpageContent() {
             department={department}
             localePath="travelMedicine/landing"
           />
+          <OpeningHoursSection
+            openingHours={openingHours}
+            localePath="officialMedicalService/landing"
+          />
         </InfoSectionGrid>
-        <OpeningHoursSection
-          openingHours={openingHours}
-          localePath="travelMedicine/landing"
-        />
       </ContentSheet>
     </GridColumnStack>
   );

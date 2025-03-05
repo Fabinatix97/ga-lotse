@@ -29,6 +29,7 @@ import {
   GENDER_VALUES,
   LAB_STATUS_COLORS,
   LAB_STATUS_VALUES,
+  PROCEDURE_ORIGIN_VALUES,
   PROCEDURE_STATUS_COLORS,
   PROCEDURE_STATUS_VALUES,
 } from "@/lib/businessModules/stiProtection/shared/constants";
@@ -154,6 +155,16 @@ function getProceduresColumns({
           {LAB_STATUS_VALUES[getValue()]}
         </Chip>
       ),
+      enableSorting: false,
+      meta: {
+        canNavigate: {
+          parentRow: true,
+        },
+      },
+    }),
+    columnHelper.accessor("procedureOrigin", {
+      header: "Ursprung",
+      cell: ({ getValue }) => PROCEDURE_ORIGIN_VALUES[getValue()],
       enableSorting: false,
       meta: {
         canNavigate: {

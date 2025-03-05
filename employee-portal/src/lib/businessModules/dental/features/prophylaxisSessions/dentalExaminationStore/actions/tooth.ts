@@ -5,6 +5,7 @@
 
 import { ApiSecondaryResult } from "@eshg/dental-api";
 import { ToothDiagnoses } from "@eshg/dental/api/models/ExaminationResult";
+import { RELATED_TEETH } from "@eshg/dental/config/teeth";
 
 import {
   DentalExaminationState,
@@ -17,6 +18,7 @@ import {
   ElementContext,
   ToothContext,
   ToothResult,
+  ToothWithDiagnosis,
   isAddableTooth,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
 
@@ -98,6 +100,46 @@ export function removeTooth(
   return {
     dentition: newDentition,
     dmftValues: calculateDmftValues(newDentition),
+  };
+}
+
+export function toggleToothType(
+  toothContext: ToothContext,
+  dentition: Dentition,
+): Dentition {
+  const { quadrantNumber, toothIndex } = toothContext;
+  const targetQuadrant = dentition[quadrantNumber];
+  const tooth = targetQuadrant.teeth[toothIndex];
+
+  if (tooth === undefined) {
+    throw Error(
+      `Tooth with index ${toothIndex} does not exist in quadrant ${quadrantNumber}`,
+    );
+  }
+
+  if (tooth.type !== "ToothWithDiagnosis") {
+    throw new Error("Tooth must be of type ToothWithDiagnosis");
+  }
+
+  const relatedTooth = RELATED_TEETH[tooth.toothNumber];
+
+  if (relatedTooth === undefined) {
+    throw Error(`${tooth.toothNumber} has no related tooth`);
+  }
+
+  const newTooth: ToothWithDiagnosis = {
+    ...tooth,
+    toothNumber: relatedTooth,
+    toothType:
+      tooth.toothType === "PRIMARY_TOOTH" ? "SECONDARY_TOOTH" : "PRIMARY_TOOTH",
+  };
+
+  return {
+    ...dentition,
+    [quadrantNumber]: {
+      ...targetQuadrant,
+      teeth: targetQuadrant.teeth.with(toothContext.toothIndex, newTooth),
+    },
   };
 }
 

@@ -1,0 +1,76 @@
+{
+  "common": {
+    "pageTitle": "My concern",
+    "requiredTitle": "*Required",
+    "logoutButton": "Leave my area"
+  },
+  "information": {
+    "title": "Information",
+    "nameSection": {
+      "title": "Name"
+    },
+    "birthdateSection": {
+      "title": "Birthdate"
+    },
+    "appointmentStatusSection": {
+      "title": "Appointment status",
+      "bookingState": {
+        "BOOKABLE": "Not yet booked",
+        "BOOKED": "Booked",
+        "CANCELLED": "Cancelled",
+        "WITHDRAWN": "Withdrawn"
+      }
+    },
+    "concernSection": {
+      "title": "Concern"
+    },
+    "appointmentDateSection": {
+      "title": "Appointment date"
+    },
+    "appointmentTimeSection": {
+      "title": "Time",
+      "time": "{{ time }}",
+      "duration": "Duration: {{ duration }} minutes"
+    }
+  },
+  "contact": {
+    "addressSection": {
+      "title": "Address"
+    },
+    "contactSection": {
+      "title": "Contact",
+      "phoneNumber": "Phone: {{ phoneNumber }}",
+      "eMail": "Email:"
+    }
+  },
+  "documents": {
+    "title": "Documents for the process",
+    "files": {
+      "title": "Document",
+      "required": "Please upload document",
+      "helperText": "Upload file as PDF, PNG or JPG",
+      "inputSummary_one": "{{count}} file uploaded",
+      "inputSummary_other": "{{count}} files uploaded",
+      "placeholder": "Select file",
+      "file": "File",
+      "size": "Size",
+      "format": "Format",
+      "delete": "Delete",
+      "deleteAll": "Delete all",
+      "error": "File could not be uploaded. Please try again"
+    }
+  },
+  "sidePanel": {
+    "booked": {
+      "title": "Can't make the appointment?",
+      "rescheduleAppointment": "Reschedule appointment",
+      "cancelAppointment": "Cancel appointment"
+    },
+    "cancelled": {
+      "rescheduleAppointment": "Book new appointment"
+    },
+    "bookable": {
+      "bookAppointment": "Book appointment"
+    }
+  }
+}

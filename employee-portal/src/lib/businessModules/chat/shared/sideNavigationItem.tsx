@@ -5,10 +5,7 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
-import {
-  SideNavigationItem,
-  UseSideNavigationItemsResult,
-} from "@eshg/lib-employee-portal/types/sideNavigation";
+import { SideNavigationItem } from "@eshg/lib-employee-portal/types/sideNavigation";
 import { ChatOutlined } from "@mui/icons-material";
 
 import { ChatMessageCounter } from "@/lib/businessModules/chat/components/ChatMessageCounter";
@@ -25,14 +22,10 @@ export const sideNavigationItem: SideNavigationItem = {
   chip: <ChatMessageCounter />,
 };
 
-export function useSideNavigationItems(): UseSideNavigationItemsResult {
+export function useSideNavigationItems(): SideNavigationItem[] {
   const { canAccessChat, userSettings } = useChat();
 
-  return {
-    isLoading: false,
-    items:
-      canAccessChat && !userSettings.accountDeactivated
-        ? [sideNavigationItem]
-        : [],
-  };
+  return canAccessChat && !userSettings.accountDeactivated
+    ? [sideNavigationItem]
+    : [];
 }

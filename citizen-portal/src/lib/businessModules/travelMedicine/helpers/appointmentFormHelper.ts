@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetDepartmentInfoResponse } from "@eshg/base-api";
 import { toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
@@ -75,13 +74,6 @@ function mapToApiTravelInformation(
       ? travelInformation.travelType
       : ApiTravelType.NoTravel,
   };
-}
-
-export function formatDepartmentAddress(
-  department: ApiGetDepartmentInfoResponse,
-) {
-  const { name, city, houseNumber, postalCode, street } = department;
-  return `${name}, ${street} ${houseNumber}, ${postalCode} ${city}`;
 }
 
 export function formatTravelDuration(

@@ -64,6 +64,7 @@ public class StiProtectionProcedureMapper {
         procedureData.accessCode(),
         LabStatusMapper.toInterfaceData(procedureData.procedure().getLabStatus()),
         procedureData.sampleBarCode(),
-        procedureData.appointmentStart());
+        procedureData.appointmentStart(),
+        StiProcedureOriginMapper.toInterfaceData(procedureData.createdBy()));
   }
 }

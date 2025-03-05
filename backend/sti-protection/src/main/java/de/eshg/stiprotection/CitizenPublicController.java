@@ -12,12 +12,14 @@ import de.eshg.lib.appointmentblock.MappingUtil;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
+import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.stiprotection.api.AddPersonalDetailsRequest;
 import de.eshg.stiprotection.api.AddPersonalDetailsResponse;
 import de.eshg.stiprotection.api.ConcernDto;
 import de.eshg.stiprotection.api.CreateAnonymousUserRequest;
 import de.eshg.stiprotection.api.CreateAnonymousUserResponse;
+import de.eshg.stiprotection.api.ResponseEntities;
 import de.eshg.stiprotection.api.citizen.BookAppointmentRequest;
 import de.eshg.stiprotection.api.citizen.BookAppointmentResponse;
 import de.eshg.stiprotection.api.citizen.GetOpeningHoursResponse;
@@ -27,6 +29,9 @@ import de.eshg.stiprotection.mapper.PersonMapper;
 import de.eshg.stiprotection.persistence.data.PersonData;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -36,6 +41,8 @@ import java.util.List;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -151,5 +158,20 @@ public class CitizenPublicController {
   @Transactional
   public void confirmAppointment(@PathVariable("id") UUID procedureId) {
     citizenAppointmentService.confirmAppointment(procedureId);
+  }
+
+  @GetMapping(path = "/appointments/{id}/anon-ident-document")
+  @Operation(summary = "Get an anonymous identification document for an appointment")
+  @Transactional(readOnly = true)
+  @ApiResponse(
+      responseCode = "200",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_PDF_VALUE,
+              schema = @Schema(format = "binary")))
+  public ResponseEntity<byte[]> getAnonymousIdentificationDocument(
+      @PathVariable("id") UUID procedureId) {
+    Pdf pdf = citizenAppointmentService.getAnonymousIdentificationDocument(procedureId);
+    return ResponseEntities.pdfContent(pdf.getFileName(), pdf.getFileContent().getContent());
   }
 }

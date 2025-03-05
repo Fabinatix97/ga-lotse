@@ -9,11 +9,11 @@ import static de.eshg.rest.service.PrivacyDocumentHelper.privacyNoticeAttachment
 import static de.eshg.rest.service.PrivacyDocumentHelper.privacyPolicyAttachmentResponse;
 
 import de.eshg.measlesprotection.api.citizenportal.ReportCaseRequest;
+import de.eshg.measlesprotection.config.MeaslesProtectionConfigService;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,16 +29,13 @@ public class OrganisationPortalController {
   public static final String BASE_URL = BaseUrls.MeaslesProtection.ORGANISATION_CONTROLLER;
 
   private final OrganisationPortalService publicMeaslesProtectionService;
-  private final Resource privacyNotice;
-  private final Resource privacyPolicy;
+  private final MeaslesProtectionConfigService measlesProtectionConfigService;
 
   public OrganisationPortalController(
       OrganisationPortalService publicMeaslesProtectionService,
-      @Value("${de.eshg.measles-protection.privacy-notice-location}") Resource privacyNotice,
-      @Value("${de.eshg.measles-protection.privacy-policy-location}") Resource privacyPolicy) {
+      MeaslesProtectionConfigService measlesProtectionConfigService) {
     this.publicMeaslesProtectionService = publicMeaslesProtectionService;
-    this.privacyNotice = privacyNotice;
-    this.privacyPolicy = privacyPolicy;
+    this.measlesProtectionConfigService = measlesProtectionConfigService;
   }
 
   @PostMapping("/report")
@@ -52,12 +49,14 @@ public class OrganisationPortalController {
   @GetMapping(path = "/documents/privacy-notice")
   @Operation(summary = "Get the privacy-notice document.")
   public ResponseEntity<Resource> getPrivacyNotice() {
-    return privacyNoticeAttachmentResponse(privacyNotice);
+    return privacyNoticeAttachmentResponse(
+        measlesProtectionConfigService.getConfig().getPrivacyNotice());
   }
 
   @GetMapping(path = "/documents/privacy-policy")
   @Operation(summary = "Get the privacy-policy document.")
   public ResponseEntity<Resource> getPrivacyPolicy() {
-    return privacyPolicyAttachmentResponse(privacyPolicy);
+    return privacyPolicyAttachmentResponse(
+        measlesProtectionConfigService.getConfig().getPrivacyPolicy());
   }
 }

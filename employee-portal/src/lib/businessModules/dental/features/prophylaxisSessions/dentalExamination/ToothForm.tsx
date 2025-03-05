@@ -6,9 +6,11 @@
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { Typography } from "@mui/joy";
 
-import { RemoveToothButton } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/RemoveToothButton";
 import { ResultInputField } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/ResultInputField";
-import { ToothIcon } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/Teeth";
+import {
+  RemoveToothButton,
+  ToggleToothTypeButton,
+} from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/ToothIconButtons";
 import { useDentalExaminationStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
 import {
   QuadrantNumber,
@@ -42,7 +44,7 @@ export function ToothForm(props: ToothFormProps) {
       {tooth.isRemovable ? (
         <RemoveToothButton tooth={tooth} toothContext={toothContext} />
       ) : (
-        <ToothIcon tooth={tooth} toothContext={toothContext} />
+        <ToggleToothTypeButton tooth={tooth} toothContext={toothContext} />
       )}
       <ResultInputField
         result={tooth.mainResult}

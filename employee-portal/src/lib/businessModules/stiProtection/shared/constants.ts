@@ -14,6 +14,7 @@ import {
   ApiProcedureStatus,
   ApiProcedureType,
   ApiSexualOrientation,
+  ApiStiProcedureOrigin,
   ApiTaskType,
 } from "@eshg/sti-protection-api";
 import { ChipProps } from "@mui/joy";
@@ -138,4 +139,9 @@ export const LAB_STATUS_COLORS: EnumMap<ApiLabStatus, ChipProps["color"]> = {
   [ApiLabStatus.Open]: "neutral",
   [ApiLabStatus.InProgress]: "primary",
   [ApiLabStatus.Closed]: "success",
+};
+
+export const PROCEDURE_ORIGIN_VALUES: EnumMap<ApiStiProcedureOrigin> = {
+  [ApiStiProcedureOrigin.CitizenPortal]: "Bürger",
+  [ApiStiProcedureOrigin.EmployeePortal]: "Mitarbeiter",
 };

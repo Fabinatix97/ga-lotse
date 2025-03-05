@@ -60,11 +60,9 @@ function getStartBuffer(
   travelTime: ApiInspectionTravelTime | undefined,
   objectType: ApiObjectType | undefined,
 ) {
-  return travelTime?.startBufferInMinutes
-    ? travelTime.startBufferInMinutes
-    : objectType?.standardBufferTime
-      ? objectType.standardBufferTime
-      : "";
+  return (
+    travelTime?.startBufferInMinutes ?? objectType?.standardBufferTime ?? ""
+  );
 }
 
 function calculateStartTime(
@@ -86,11 +84,7 @@ function getEndBuffer(
   travelTime: ApiInspectionTravelTime | undefined,
   objectType: ApiObjectType | undefined,
 ) {
-  return travelTime?.endBufferInMinutes
-    ? travelTime.endBufferInMinutes
-    : objectType?.standardBufferTime
-      ? objectType.standardBufferTime
-      : "";
+  return travelTime?.endBufferInMinutes ?? objectType?.standardBufferTime ?? "";
 }
 
 function calculateEndTime(

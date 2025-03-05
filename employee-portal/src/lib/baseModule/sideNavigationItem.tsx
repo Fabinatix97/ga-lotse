@@ -8,10 +8,7 @@ import {
   hasUserRole,
   noCheck,
 } from "@eshg/lib-employee-portal/helpers/accessControl";
-import {
-  SideNavigationItem,
-  UseSideNavigationItemsResult,
-} from "@eshg/lib-employee-portal/types/sideNavigation";
+import { SideNavigationItem } from "@eshg/lib-employee-portal/types/sideNavigation";
 import {
   CalendarTodayOutlined,
   ContactsOutlined,
@@ -123,7 +120,7 @@ const sideNavigationItems: SideNavigationItem[] = [
   },
 ];
 
-export function useSideNavigationItems(): UseSideNavigationItemsResult {
+export function useSideNavigationItems(): SideNavigationItem[] {
   const isGdprEnabled = useIsNewFeatureEnabled(ApiBaseFeature.Gdpr);
   const isOpenDataEnabled = useIsNewFeatureEnabled(ApiBaseFeature.OpenData);
 
@@ -135,5 +132,5 @@ export function useSideNavigationItems(): UseSideNavigationItemsResult {
     items = items.filter((item) => item.name !== "Open Data");
   }
 
-  return { isLoading: false, items };
+  return items;
 }

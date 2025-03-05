@@ -39,6 +39,7 @@ public class DateOfBirthAccessCodeForm extends AccessCodeForm {
         switch (contextInfoKey) {
           case "esu" -> "esuDateOfBirthPageTitleInfo";
           case "tm" -> "tmDateOfBirthPageTitleInfo";
+          case "oms" -> "omsDateOfBirthPageTitleInfo";
           default -> "defaultDateOfBirthPageTitleInfo";
         };
     formData.add(CONTEXT_INFO_QUERY_PARAMETER, contextInfoQueryParameter);

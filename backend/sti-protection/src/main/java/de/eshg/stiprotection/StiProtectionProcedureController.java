@@ -25,6 +25,7 @@ import de.eshg.stiprotection.api.GetProceduresOverviewResponse;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresFilterOptions;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresPaginationOptions;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresSortOptions;
+import de.eshg.stiprotection.api.ResponseEntities;
 import de.eshg.stiprotection.api.UpdateAppointmentRequest;
 import de.eshg.stiprotection.api.UpdatePersonDetailsRequest;
 import de.eshg.stiprotection.api.VerifyAnonymousUserPinRequest;
@@ -36,7 +37,7 @@ import de.eshg.stiprotection.persistence.data.AppointmentData;
 import de.eshg.stiprotection.persistence.data.ResultPage;
 import de.eshg.stiprotection.persistence.data.StiProtectionProcedureData;
 import de.eshg.stiprotection.persistence.db.AppointmentHistoryEntry;
-import de.eshg.stiprotection.persistence.db.CreatedByUserType;
+import de.eshg.stiprotection.persistence.db.StiProcedureOrigin;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.StiProtectionSystemProgressEntryType;
 import de.eshg.stiprotection.util.ProgressEntryUtil;
@@ -46,12 +47,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,7 +97,7 @@ public class StiProtectionProcedureController {
       @Valid @RequestBody CreateProcedureRequest request) {
     StiProtectionProcedure procedure =
         stiProtectionService.createProcedure(
-            ConcernMapper.toDatabaseType(request.concern()), CreatedByUserType.EMPLOYEE);
+            ConcernMapper.toDatabaseType(request.concern()), StiProcedureOrigin.EMPLOYEE_PORTAL);
     stiProtectionService.addPerson(procedure, PersonMapper.toDataType(request));
     appointmentService.createAppointment(procedure, AppointmentMapper.toDataType(request));
     String pin = stiProtectionService.generatePin();
@@ -241,16 +239,7 @@ public class StiProtectionProcedureController {
   public ResponseEntity<byte[]> getAnonymousIdentificationDocument(
       @PathVariable("id") UUID procedureId) {
     Pdf pdf = stiProtectionService.getAnonymousIdentificationDocument(procedureId);
-    byte[] content = pdf.getFileContent().getContent();
-    return ResponseEntity.ok()
-        .contentType(MediaType.APPLICATION_PDF)
-        .header(
-            HttpHeaders.CONTENT_DISPOSITION,
-            ContentDisposition.attachment()
-                .filename(pdf.getFileName(), StandardCharsets.UTF_8)
-                .build()
-                .toString())
-        .body(content);
+    return ResponseEntities.pdfContent(pdf.getFileName(), pdf.getFileContent().getContent());
   }
 
   @PostMapping("/{id}/verify-pin")
@@ -280,7 +269,7 @@ public class StiProtectionProcedureController {
 
     StiProtectionProcedure followUpProcedure =
         stiProtectionService.createProcedure(
-            ConcernMapper.toDatabaseType(request.concern()), CreatedByUserType.EMPLOYEE);
+            ConcernMapper.toDatabaseType(request.concern()), StiProcedureOrigin.EMPLOYEE_PORTAL);
     followUpProcedure.setFollowUp(true);
     stiProtectionService.addPerson(
         followUpProcedure, PersonMapper.toDataType(procedure.getPerson()));

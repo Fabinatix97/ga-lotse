@@ -89,8 +89,7 @@ public class MailController implements MailApi {
               .getUserById(request.userId())
               .orElseThrow(() -> new BadRequestException("User does not exist."));
 
-      DepartmentConfiguration departmentConfiguration =
-          departmentConfigurationService.getDepartmentConfiguration();
+      DepartmentConfiguration departmentConfiguration = departmentConfigurationService.getConfig();
 
       Context context = new Context();
       context.setVariable("notificationMessage", request.notificationMessage());
@@ -122,8 +121,7 @@ public class MailController implements MailApi {
   }
 
   String applyHtmlTemplate(String subject, String content) {
-    DepartmentConfiguration departmentConfiguration =
-        departmentConfigurationService.getDepartmentConfiguration();
+    DepartmentConfiguration departmentConfiguration = departmentConfigurationService.getConfig();
     Context context = new Context();
     context.setVariable("title", subject);
     context.setVariable("content", content);

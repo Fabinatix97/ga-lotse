@@ -31,7 +31,7 @@ abstract class PlaywrightTask extends PnpmTask {
 
         def smokeTestEnv = project.findProperty("smokeTestEnv")
         if (smokeTestEnv != null && additionalArgs.contains('test')) {
-          task.args = ['playwright'] + additionalArgs + ['-c', "src/config/playwright.${smokeTestEnv}.config.ts"]
+          task.args = ['playwright'] + additionalArgs + ['-c', "src/smokeTestConfig/playwright.${smokeTestEnv}.config.ts"]
         } else {
           task.args = ['playwright'] + additionalArgs
         }

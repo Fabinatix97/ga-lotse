@@ -9,6 +9,7 @@ import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateRequest;
 import de.eshg.base.centralfile.api.person.ExternalAddPersonFileStateRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
+import de.eshg.base.centralfile.api.person.GetReferencePersonResponse;
 import de.eshg.base.centralfile.api.person.PersonDetailsDto;
 import de.eshg.base.centralfile.api.person.UpdatePersonRequest;
 import de.eshg.officialmedicalservice.procedure.api.AffectedPersonDto;
@@ -38,7 +39,8 @@ public class PersonMapper {
         personFileState.gender(),
         personFileState.contactAddress(),
         new AffectedPersonSyncDto(
-            personFileState.id(), personFileState.referenceVersion(), personFileState.outdated()));
+            personFileState.id(), personFileState.referenceVersion(), personFileState.outdated()),
+        personFileState.dataOrigin());
   }
 
   public static AddPersonFileStateRequest mapToAddPersonFileStateRequest(
@@ -80,5 +82,43 @@ public class PersonMapper {
         affectedPersonDto.phoneNumbers(),
         affectedPersonDto.contactAddress(),
         null);
+  }
+
+  public static AddPersonFileStateRequest mapToAddPersonRequest(
+      GetReferencePersonResponse referencePerson) {
+    return new AddPersonFileStateRequest(
+        referencePerson.id(),
+        referencePerson.title(),
+        referencePerson.salutation(),
+        referencePerson.gender(),
+        referencePerson.firstName().trim(),
+        referencePerson.lastName().trim(),
+        referencePerson.dateOfBirth(),
+        referencePerson.nameAtBirth(),
+        referencePerson.placeOfBirth(),
+        referencePerson.countryOfBirth(),
+        referencePerson.emailAddresses(),
+        referencePerson.phoneNumbers(),
+        referencePerson.contactAddress(),
+        referencePerson.differentBillingAddress(),
+        DataOriginDto.MANUAL);
+  }
+
+  public static UpdatePersonRequest mapToUpdatePersonRequest(
+      GetReferencePersonResponse referencePerson) {
+    return new UpdatePersonRequest(
+        referencePerson.title(),
+        referencePerson.salutation(),
+        referencePerson.gender(),
+        referencePerson.firstName().trim(),
+        referencePerson.lastName().trim(),
+        referencePerson.dateOfBirth(),
+        referencePerson.nameAtBirth(),
+        referencePerson.placeOfBirth(),
+        referencePerson.countryOfBirth(),
+        referencePerson.emailAddresses(),
+        referencePerson.phoneNumbers(),
+        referencePerson.contactAddress(),
+        referencePerson.differentBillingAddress());
   }
 }

@@ -58,5 +58,6 @@
   <include file="migrations/0048_differentiate_between_previous_person_and_facility_file_state.xml"/>
   <include file="migrations/0049_oms_appointment_type_extensions.xml"/>
   <include file="migrations/0050_add_shedlock.xml"/>
+  <include file="migrations/0051_add_config.xml"/>
 
 </databaseChangeLog>

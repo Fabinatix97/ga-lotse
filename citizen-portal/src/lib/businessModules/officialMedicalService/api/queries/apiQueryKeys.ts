@@ -10,3 +10,7 @@ const apiQueryKey = queryKeyFactory(["officialMedicalService"]);
 export const citizenPublicApiQueryKey = queryKeyFactory(
   apiQueryKey(["citizenPublicApi"]),
 );
+
+export const citizenAuthApiQueryKey = queryKeyFactory(
+  apiQueryKey(["citizenAuthApi"]),
+);

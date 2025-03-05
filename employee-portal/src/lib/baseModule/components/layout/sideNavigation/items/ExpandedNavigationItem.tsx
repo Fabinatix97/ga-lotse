@@ -58,7 +58,7 @@ function listItemButtonStyle(expanded: boolean): SxProps {
     "&.Mui-selected": {
       backgroundColor: navItemSelectedBackgroundColor,
     },
-    marginBottom: expanded ? "0.5rem" : 0,
+    marginBottom: expanded ? "0.5rem" : undefined,
   };
 }
 

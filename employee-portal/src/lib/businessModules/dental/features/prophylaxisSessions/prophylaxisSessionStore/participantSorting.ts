@@ -24,6 +24,7 @@ type ParticipantSortAttributes = Omit<
   | "examinationVersion"
   | "allFluoridationConsents"
   | "prophylaxisDentitionType"
+  | "previousExaminationResults"
 >;
 export type ParticipantSortKey = keyof ParticipantSortAttributes;
 export type ParticipantSortDirection = "asc" | "desc";

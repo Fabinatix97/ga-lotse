@@ -13,11 +13,13 @@ import { useRouter } from "next/navigation";
 import { ReactNode } from "react";
 import { isDefined } from "remeda";
 
+import { useSearchReferencePersonsQuery } from "@/lib/baseModule/api/queries/persons";
 import {
   useAbortDraftProcedure,
   useAcceptDraftProcedure,
   useCloseOpenProcedure,
 } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
+import { useStartProcedureSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/StartProcedureSidebar";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
@@ -34,20 +36,49 @@ export function ProcedureActionsPanel(
   const acceptDraftProcedure = useAcceptDraftProcedure();
   const closeOpenProcedure = useCloseOpenProcedure();
   const snackbar = useSnackbar();
+  const startProcedureSidebar = useStartProcedureSidebar();
+
+  const searchReferencePersonsQuery = useSearchReferencePersonsQuery(
+    {
+      firstName: props.procedure.affectedPerson.firstName.trim(),
+      lastName: props.procedure.affectedPerson.lastName.trim(),
+      dateOfBirth: new Date(props.procedure.affectedPerson.dateOfBirth),
+    },
+    {
+      enabled: props.procedure.status === ApiProcedureStatus.Draft,
+    },
+  );
 
   function handleAcceptDraftProcedure() {
     if (
       isDefined(props.procedure.facility) &&
       isDefined(props.procedure.concern)
     ) {
-      openConfirmationDialog({
-        onConfirm: async () => {
-          await acceptDraftProcedure.mutateAsync({ id: props.procedure.id });
-        },
-        confirmLabel: "Anlegen",
-        title: "Vorgang anlegen?",
-        description: "Der Vorgang erhält den Status “Offen”.",
-      });
+      if (
+        props.procedure.affectedPerson.dataOrigin === "EXTERNAL" &&
+        searchReferencePersonsQuery.isSuccess &&
+        searchReferencePersonsQuery.data.persons.length > 0
+      ) {
+        startProcedureSidebar.open({
+          procedure: props.procedure,
+          queryResults: searchReferencePersonsQuery.data.persons,
+        });
+      } else {
+        openConfirmationDialog({
+          onConfirm: async () => {
+            await acceptDraftProcedure.mutateAsync({
+              id: props.procedure.id,
+              apiPatchAcceptDraftProcedureRequest: {
+                affectedPerson: undefined,
+                referencePersonId: undefined,
+              },
+            });
+          },
+          confirmLabel: "Anlegen",
+          title: "Vorgang anlegen?",
+          description: "Der Vorgang erhält den Status “Offen”.",
+        });
+      }
     } else {
       snackbar.error("Vorgang enthält keinen Auftraggeber und/oder Anliegen.", {
         manualClose: false,

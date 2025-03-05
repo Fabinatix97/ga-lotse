@@ -34,7 +34,7 @@
     "@fullcalendar/list": "catalog:fullcalendar",
     "@fullcalendar/react": "catalog:fullcalendar",
     "@fullcalendar/timegrid": "catalog:fullcalendar",
-    "@hello-pangea/dnd": "17.0.0",
+    "@hello-pangea/dnd": "18.0.1",
     "@mdx-js/mdx": "3.1.0",
     "@mui/icons-material": "catalog:joy",
     "@mui/joy": "catalog:joy",

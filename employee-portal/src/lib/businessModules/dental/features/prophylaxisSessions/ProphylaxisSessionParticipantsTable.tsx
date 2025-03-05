@@ -11,7 +11,9 @@ import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/Inter
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Add } from "@mui/icons-material";
 import CancelIcon from "@mui/icons-material/Cancel";
+import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import StartIcon from "@mui/icons-material/Start";
 import { Button, Divider, Stack, Typography } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
@@ -139,46 +141,27 @@ export function ProphylaxisSessionParticipantsTable() {
     });
   }, [setParticipantSorting, sortKey, sortDirection]);
 
+  const completedParticipants = allParticipants.filter(
+    (participant) => participant.status !== "OPEN",
+  ).length;
+
   return (
     <TablePage
       controls={
         <ButtonBar
           left={
-            <>
-              <Stack>
-                <Typography level="h4" component="h2" marginBottom={1}>
-                  Teilnehmende Kinder
-                </Typography>
-                <Stack
-                  direction="row"
-                  gap={3}
-                  alignItems="center"
-                  flexWrap="wrap"
-                >
-                  <ParticipantFilter
-                    name="gender"
-                    label="Geschlecht"
-                    filters={GENDER_FILTERS}
-                  />
-                  {isFluoridation && (
-                    <>
-                      <Divider orientation="vertical" />
-                      <ParticipantFilter
-                        name="fluoridationConsentGiven"
-                        label="Fluoridierungseinverständnis"
-                        filters={FLUORIDATION_CONSENT_FILTERS}
-                      />
-                    </>
-                  )}
-                </Stack>
-              </Stack>
-            </>
+            <Typography level="h3" component="h2">
+              Teilnehmende Kinder
+            </Typography>
           }
           right={
             <>
               <AddChildButton />
               {isExamination && filteredParticipants.length > 0 && (
-                <InternalLinkButton href={routeToExamination(0)}>
+                <InternalLinkButton
+                  href={routeToExamination(0)}
+                  endDecorator={<StartIcon />}
+                >
                   Prophylaxe starten
                 </InternalLinkButton>
               )}
@@ -187,6 +170,31 @@ export function ProphylaxisSessionParticipantsTable() {
         />
       }
     >
+      <Divider />
+      <Stack direction="row" sx={{ justifyContent: "space-between" }}>
+        <Stack direction="row" gap={3} alignItems="center" flexWrap="wrap">
+          <Typography level="title-md">Filter:</Typography>
+          <ParticipantFilter
+            name="gender"
+            label="Geschlecht"
+            filters={GENDER_FILTERS}
+          />
+          {isFluoridation && (
+            <ParticipantFilter
+              name="fluoridationConsentGiven"
+              label="Fluoridierungseinverständnis"
+              filters={FLUORIDATION_CONSENT_FILTERS}
+              sx={{ marginLeft: { xxs: 0, xl: 5 } }}
+            />
+          )}
+        </Stack>
+        {(isScreening || isFluoridation) && (
+          <Stack direction="row" gap={2}>
+            <Typography level="title-md">{`${completedParticipants} von ${allParticipants.length} abgeschlossen`}</Typography>
+            <CheckCircleOutline color="success" />
+          </Stack>
+        )}
+      </Stack>
       <DataTable
         data={filteredParticipants}
         columns={columnDefs(
@@ -371,6 +379,7 @@ function AddChildButton() {
 
   return (
     <Button
+      variant="outlined"
       startDecorator={<Add />}
       onClick={() =>
         sidebar.open({

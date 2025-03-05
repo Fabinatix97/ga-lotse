@@ -72,7 +72,7 @@ public class OmsProcedure extends Procedure<OmsProcedure, OmsTask, Person, Facil
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @Column(nullable = false)
-  private boolean sendEmailNotifications = true;
+  private boolean sendEmailNotifications = false;
 
   @OneToOne(
       optional = false,

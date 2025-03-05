@@ -62,7 +62,8 @@ public class AccessCodeLoginMethod extends LoginMethod {
 
   private static String determineCredentialProviderId(AccessCodeLoginType variant) {
     return switch (variant) {
-      case SCHOOL_ENTRY, TRAVEL_MEDICINE -> "date-of-birth"; // DateOfBirthCredentialProvider
+      case SCHOOL_ENTRY, TRAVEL_MEDICINE, OFFICIAL_MEDICAL_SERVICE ->
+          "date-of-birth"; // DateOfBirthCredentialProvider
       case STI_PROTECTION -> "pin"; // PinCredentialProvider
     };
   }
@@ -72,6 +73,7 @@ public class AccessCodeLoginMethod extends LoginMethod {
         switch (variant) {
           case SCHOOL_ENTRY -> "esu";
           case TRAVEL_MEDICINE -> "tm";
+          case OFFICIAL_MEDICAL_SERVICE -> "oms";
           case STI_PROTECTION -> null;
         });
   }

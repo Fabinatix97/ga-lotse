@@ -549,6 +549,25 @@
         "tags" : [ "Archiving" ]
       }
     },
+    "/citizen-auth/procedure" : {
+      "get" : {
+        "operationId" : "getProcedureDetails",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetCitizenProcedureDetailsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get procedure details",
+        "tags" : [ "CitizenAuth" ]
+      }
+    },
     "/citizen-public/appointment-types" : {
       "get" : {
         "operationId" : "getAppointmentTypesForCitizen",
@@ -1189,6 +1208,16 @@
             "format" : "uuid"
           }
         } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PatchAcceptDraftProcedureRequest"
+              }
+            }
+          },
+          "required" : true
+        },
         "responses" : {
           "200" : {
             "content" : {
@@ -3897,6 +3926,9 @@
           "countryOfBirth" : {
             "$ref" : "#/components/schemas/CountryCode"
           },
+          "dataOrigin" : {
+            "$ref" : "#/components/schemas/DataOrigin"
+          },
           "dateOfBirth" : {
             "type" : "string",
             "format" : "date"
@@ -4265,6 +4297,19 @@
               "type" : "string",
               "format" : "uuid"
             }
+          }
+        }
+      },
+      "CitizenPortalCredentials" : {
+        "required" : [ "accessCode", "dateOfBirth" ],
+        "type" : "object",
+        "properties" : {
+          "accessCode" : {
+            "type" : "string"
+          },
+          "dateOfBirth" : {
+            "type" : "string",
+            "format" : "date"
           }
         }
       },
@@ -5361,6 +5406,41 @@
           "gracePeriodMonths" : {
             "type" : "integer",
             "format" : "int32"
+          }
+        }
+      },
+      "GetCitizenProcedureDetailsResponse" : {
+        "required" : [ "concern", "dateOfBirth", "documents", "firstName", "lastName", "medicalOpinionStatus", "procedureId" ],
+        "type" : "object",
+        "properties" : {
+          "appointment" : {
+            "$ref" : "#/components/schemas/OmsAppointment"
+          },
+          "concern" : {
+            "$ref" : "#/components/schemas/Concern"
+          },
+          "dateOfBirth" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "documents" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Document"
+            }
+          },
+          "firstName" : {
+            "type" : "string"
+          },
+          "lastName" : {
+            "type" : "string"
+          },
+          "medicalOpinionStatus" : {
+            "$ref" : "#/components/schemas/MedicalOpinionStatus"
+          },
+          "procedureId" : {
+            "type" : "string",
+            "format" : "uuid"
           }
         }
       },
@@ -6546,6 +6626,18 @@
         "type" : "string",
         "enum" : [ "DELETE" ]
       },
+      "PatchAcceptDraftProcedureRequest" : {
+        "type" : "object",
+        "properties" : {
+          "affectedPerson" : {
+            "$ref" : "#/components/schemas/AffectedPerson"
+          },
+          "referencePersonId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
       "PatchAffectedPersonRequest" : {
         "required" : [ "affectedPerson" ],
         "type" : "object",
@@ -6897,6 +6989,9 @@
               "type" : "string",
               "format" : "uuid"
             }
+          },
+          "credentials" : {
+            "$ref" : "#/components/schemas/CitizenPortalCredentials"
           },
           "documentMap" : {
             "type" : "object",

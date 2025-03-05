@@ -5,7 +5,7 @@
 
 import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 
-import { FileArrayField } from "@/lib/businessModules/officialMedicalService/shared/file/FileArrayField";
+import { FileSheetArrayField } from "@/lib/businessModules/officialMedicalService/shared/file/FileSheetArrayField";
 import { FormSheetTitle } from "@/lib/businessModules/travelMedicine/components/shared/components/FormSheet";
 import { useTranslation } from "@/lib/i18n/client";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
@@ -25,12 +25,11 @@ export function DocumentForm() {
       >
         {t("documents.title")}
       </FormSheetTitle>
-      <FileArrayField
+      <FileSheetArrayField
         name="files"
         labels={{
           label: t("documents.fileField.title"),
           placeholder: t("documents.fileField.placeholder"),
-          placeholderSelected: t("documents.fileField.placeholder"),
           helperText: t("documents.fileField.helperText"),
           inputSummary: (count: number) =>
             t("documents.fileField.inputSummary", {

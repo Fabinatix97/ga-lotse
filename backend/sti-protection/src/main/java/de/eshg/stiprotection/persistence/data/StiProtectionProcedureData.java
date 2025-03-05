@@ -10,6 +10,7 @@ import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.stiprotection.persistence.db.AppointmentHistoryEntry;
 import de.eshg.stiprotection.persistence.db.Concern;
 import de.eshg.stiprotection.persistence.db.Person;
+import de.eshg.stiprotection.persistence.db.StiProcedureOrigin;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.UserDefinedAppointment;
 import de.eshg.stiprotection.persistence.db.waitingroom.WaitingRoom;
@@ -68,5 +69,9 @@ public record StiProtectionProcedureData(StiProtectionProcedure procedure, Strin
 
   public Instant appointmentStart() {
     return procedure.getAppointmentStart();
+  }
+
+  public StiProcedureOrigin createdBy() {
+    return procedure.getStiProcedureOrigin();
   }
 }

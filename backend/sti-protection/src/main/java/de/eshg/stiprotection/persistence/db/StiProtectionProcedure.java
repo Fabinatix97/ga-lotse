@@ -166,15 +166,18 @@ public class StiProtectionProcedure
   @Column(nullable = false)
   @NotNull
   @JdbcType(PostgreSQLEnumJdbcType.class)
-  private CreatedByUserType createdBy;
+  private StiProcedureOrigin stiProcedureOrigin;
 
   public static StiProtectionProcedure newProcedure(
-      Concern concern, CreatedByUserType createdBy, Clock clock, AuditLogger auditLogger) {
+      Concern concern,
+      StiProcedureOrigin stiProcedureOrigin,
+      Clock clock,
+      AuditLogger auditLogger) {
     StiProtectionProcedure procedure = new StiProtectionProcedure();
     procedure.setProcedureType(ProcedureType.STI_PROTECTION);
     procedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
     procedure.setConcern(concern);
-    procedure.setCreatedBy(createdBy);
+    procedure.setStiProcedureOrigin(stiProcedureOrigin);
     return procedure;
   }
 
@@ -383,11 +386,11 @@ public class StiProtectionProcedure
     return appointmentStart;
   }
 
-  public CreatedByUserType getCreatedBy() {
-    return createdBy;
+  public StiProcedureOrigin getStiProcedureOrigin() {
+    return stiProcedureOrigin;
   }
 
-  public void setCreatedBy(CreatedByUserType createdBy) {
-    this.createdBy = createdBy;
+  public void setStiProcedureOrigin(StiProcedureOrigin stiProcedureOrigin) {
+    this.stiProcedureOrigin = stiProcedureOrigin;
   }
 }

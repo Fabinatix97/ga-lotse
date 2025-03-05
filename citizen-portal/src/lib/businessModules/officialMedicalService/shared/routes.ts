@@ -8,6 +8,7 @@ import { defineRoutes } from "@eshg/lib-portal/helpers/routes";
 import { routes as baseRoutes } from "@/lib/baseModule/shared/routes";
 import { SupportedLanguage } from "@/lib/i18n/options";
 import { useGivenLang } from "@/lib/i18n/useLang";
+import { accessCodeRoute } from "@/lib/shared/helpers/accessCode";
 
 export function citizenRoutes(locale: SupportedLanguage | undefined) {
   return defineRoutes(
@@ -15,6 +16,9 @@ export function citizenRoutes(locale: SupportedLanguage | undefined) {
     (officialMedicalServicePath) => ({
       overview: officialMedicalServicePath("/"),
       appointment: officialMedicalServicePath("/termin"),
+      personalArea: accessCodeRoute(
+        officialMedicalServicePath("/mein-bereich"),
+      ),
     }),
   );
 }

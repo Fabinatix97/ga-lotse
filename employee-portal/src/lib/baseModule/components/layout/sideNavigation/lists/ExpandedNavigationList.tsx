@@ -33,7 +33,6 @@ export function ExpandedNavigationList({
         width: { xxs: "100vw", sm: sideNavigationWidth },
         backgroundColor: "background.body",
         paddingTop: 5,
-        paddingBottom: 3,
       }}
     >
       {showCollapseButton && (

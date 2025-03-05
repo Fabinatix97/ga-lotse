@@ -27,7 +27,10 @@ import { isEqual } from "date-fns";
 import { useId, useState } from "react";
 
 import { useTranslation } from "@/lib/i18n/client";
-import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
+import {
+  ContentSheet,
+  ContentSheetTitle,
+} from "@/lib/shared/components/layout/contentSheet";
 import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 interface AppointmentStepProps {
@@ -44,7 +47,7 @@ export function AppointmentStep({
 
   return (
     <ContentSheet data-testid={"appointment-slot-form"}>
-      <Typography level="h2">{t("appointment.title")}</Typography>
+      <ContentSheetTitle>{t("appointment.title")}</ContentSheetTitle>
       <AppointmentPickerField
         name="appointment"
         currentMonth={month}

@@ -10,7 +10,7 @@ import { ReactElement, ReactNode } from "react";
 
 export const StyledSheet = styled(Sheet)(({ theme }) => ({
   flex: 1,
-  minHeight: 0,
+  minHeight: "15rem",
   display: "flex",
   flexDirection: "column",
   overflow: "auto",
@@ -30,7 +30,11 @@ export function TableSheet(props: TableSheetProps): ReactElement {
     <StyledSheet aria-label={props["aria-label"]}>
       <Stack flex={1} overflow="auto">
         {props.title}
-        {props.hideTable ? <Box flex={1} overflow="auto" /> : props.children}
+        {props.hideTable ? (
+          <Box flex={1} overflow="auto"></Box>
+        ) : (
+          props.children
+        )}
       </Stack>
       {props.footer}
       {props.loading && <LoadingOverlay zIndex={zIndexTable} />}

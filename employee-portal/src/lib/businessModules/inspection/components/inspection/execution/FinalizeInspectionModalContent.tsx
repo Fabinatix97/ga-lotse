@@ -76,7 +76,6 @@ export function FinalizeInspectionModalContent({
     ) {
       router.push(routes.procedures.reportResult(inspectionId));
     }
-    router.refresh(); // to update disabled tabs
   }
 
   async function handleSubmit({ signer }: typeof initialValues) {

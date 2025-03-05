@@ -74,6 +74,7 @@ export function AffectedPersonPanel({
       title="Betroffene Person"
       controls={
         procedure.status !== ApiProcedureStatus.Closed &&
+        person.dataOrigin !== "EXTERNAL" &&
         person.affectedPersonSync !== undefined && (
           <SyncBarrier
             outdated={person.affectedPersonSync.outdated}

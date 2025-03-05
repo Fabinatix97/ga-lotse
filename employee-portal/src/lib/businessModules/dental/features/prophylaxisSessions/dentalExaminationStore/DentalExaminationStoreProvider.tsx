@@ -27,16 +27,22 @@ const DentalExaminationStoreContext =
 interface DentalExaminationStoreProviderProps extends RequiresChildren {
   examinationResult?: ExaminationResult;
   defaultDentitionType?: ApiDentitionType;
+  previousExaminationResult?: ExaminationResult;
 }
 
 export function DentalExaminationStoreProvider({
   examinationResult,
   defaultDentitionType,
+  previousExaminationResult,
   children,
 }: DentalExaminationStoreProviderProps) {
   const [store] = useState(() =>
     createDentalExaminationStore(
-      initDentalExaminationStore(examinationResult, defaultDentitionType),
+      initDentalExaminationStore(
+        examinationResult,
+        defaultDentitionType,
+        previousExaminationResult,
+      ),
     ),
   );
 

@@ -29,4 +29,5 @@ public record StiProtectionProcedureOverviewDto(
     String accessCode,
     @NotNull LabStatusDto labStatus,
     String sampleBarCode,
-    Instant appointmentStart) {}
+    Instant appointmentStart,
+    @NotNull StiProcedureOriginDto procedureOrigin) {}

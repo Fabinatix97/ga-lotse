@@ -18,7 +18,7 @@ import {
   MedicalServicesOutlined,
   PersonOutlined,
 } from "@mui/icons-material";
-import { Stack, Typography } from "@mui/joy";
+import { Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { ReactNode } from "react";
 import { Trans } from "react-i18next";
@@ -27,9 +27,10 @@ import { isDefined } from "remeda";
 import { AppointmentFormValues } from "@/lib/businessModules/officialMedicalService/components/appointment/AppointmentForm";
 import { useDepartmentContext } from "@/lib/businessModules/officialMedicalService/shared/contexts/DepartmentContext";
 import { DetailsField } from "@/lib/businessModules/travelMedicine/components/shared/components/DetailsField";
-import { formatDepartmentAddress } from "@/lib/businessModules/travelMedicine/helpers/appointmentFormHelper";
 import { useTranslation } from "@/lib/i18n/client";
+import { ContentSheetTitle } from "@/lib/shared/components/layout/contentSheet";
 import {
+  formatDepartmentAddress,
   formatPostalCodeAndCity,
   formatStreetAndHouseNumber,
 } from "@/lib/shared/formatters/address";
@@ -46,7 +47,7 @@ export function OverviewSection({ buttonBar }: Readonly<OverviewSectionProps>) {
 
   return (
     <Stack gap={2} data-testid={"overview"}>
-      <Typography level="h2">{t("overview.title")}</Typography>
+      <ContentSheetTitle>{t("overview.title")}</ContentSheetTitle>
       <Stack gap={1} data-testid={"appointment-overview-summary"}>
         {currentStep > 1 && (
           <DetailsField
@@ -95,25 +96,23 @@ export function OverviewSection({ buttonBar }: Readonly<OverviewSectionProps>) {
               values.affectedPerson.contactAddress.houseNumber &&
               values.affectedPerson.contactAddress.houseNumber &&
               values.affectedPerson.contactAddress.city && (
-                <Stack gap={0}>
-                  <DetailsField
-                    value={
-                      <Trans
-                        i18nKey="overview.values.contactAddress"
-                        ns="officialMedicalService/appointment"
-                        values={{
-                          street: formatStreetAndHouseNumber(
-                            values.affectedPerson.contactAddress,
-                          ),
-                          city: formatPostalCodeAndCity(
-                            values.affectedPerson.contactAddress,
-                          ),
-                        }}
-                      />
-                    }
-                    icon={<HomeOutlined sx={{ alignSelf: "self-start" }} />}
-                  />
-                </Stack>
+                <DetailsField
+                  value={
+                    <Trans
+                      i18nKey="overview.values.contactAddress"
+                      ns="officialMedicalService/appointment"
+                      values={{
+                        street: formatStreetAndHouseNumber(
+                          values.affectedPerson.contactAddress,
+                        ),
+                        city: formatPostalCodeAndCity(
+                          values.affectedPerson.contactAddress,
+                        ),
+                      }}
+                    />
+                  }
+                  icon={<HomeOutlined sx={{ alignSelf: "self-start" }} />}
+                />
               )}
             {values.affectedPerson.emailAddresses && (
               <DetailsField

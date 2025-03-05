@@ -55,6 +55,7 @@ public class CitizenProcedureService {
 
     OmsProcedure procedure =
         omsProcedureOverviewMapper.toDomainType(null, affectedPersonBaseResponse, null);
+    procedure.setSendEmailNotifications(true);
 
     omsProcedureRepository.save(procedure);
 

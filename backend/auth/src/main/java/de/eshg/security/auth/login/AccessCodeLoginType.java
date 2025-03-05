@@ -8,5 +8,6 @@ package de.eshg.security.auth.login;
 public enum AccessCodeLoginType {
   SCHOOL_ENTRY,
   TRAVEL_MEDICINE,
-  STI_PROTECTION
+  STI_PROTECTION,
+  OFFICIAL_MEDICAL_SERVICE,
 }

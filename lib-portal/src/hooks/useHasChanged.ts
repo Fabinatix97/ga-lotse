@@ -5,6 +5,21 @@
 
 import { usePrevious } from "./usePrevious";
 
+interface UseHasChangedOptions<TValue> {
+  /**
+   * Defines the comparison function determining a changed value
+   *
+   * @default sameAs - Compare values by strict equality (===)
+   */
+  compareFn?: (prevValue: TValue | undefined, currentValue: TValue) => boolean;
+  /**
+   * When true, the initial value is counted as a change
+   *
+   * @default false
+   */
+  changedOnInit?: boolean;
+}
+
 /**
  * Compares value to previous value and return true when the value changed
  *
@@ -12,9 +27,12 @@ import { usePrevious } from "./usePrevious";
  */
 export function useHasChanged<TValue>(
   value: TValue,
-  compareFn = sameAs<TValue>,
+  options: UseHasChangedOptions<TValue> = {},
 ): boolean {
-  const previousValue = usePrevious(value);
+  const compareFn = options.compareFn ?? sameAs<TValue>;
+  const changedOnInit = options.changedOnInit ?? false;
+
+  const previousValue = usePrevious(value, changedOnInit);
   return !compareFn(previousValue, value);
 }
 
