@@ -21,12 +21,8 @@ import org.springframework.data.domain.Page;
 public abstract class EntityDataSource<E extends GenericEntity<?>, A extends AttributeInfo>
     extends DataSource<A> {
   protected EntityDataSource(
-      UUID id,
-      String name,
-      DataSourceSensitivity sensitivity,
-      A[] attributes,
-      boolean canBeAnonymized) {
-    super(id, name, sensitivity, attributes, canBeAnonymized);
+      UUID id, String name, DataSourceSensitivity sensitivity, A[] attributes) {
+    super(id, name, sensitivity, attributes);
   }
 
   @Override

@@ -42,3 +42,33 @@ retry --until=fail -- pnpm playwright test path/to/test.spec.ts:123
 `retry` is also a useful utility to verify whether a potential fix actually stabilizes a flaky test.
 
 Note: `retry` is only available for UNIX systems. Windows users will need another tool.
+
+== Common causes and fixes for flaky tests
+
+=== The page is still loading
+
+Before running any assertion, the page should usually be in a stable state. Otherwise, assertions might sometimes run too early, leading to flakiness.
+
+It's recommended to use `AbstractPage.waitUntilProgressbarDisappears()` to await any loading animation. There are also scoped variants of `waitUntilProgressbarDisappears`, e.g. on `Sidebar`.
+
+On the initial page load, it can also be useful to wait for the expected URL and page-specific information, like the header.
+
+=== Missing loading indicator
+
+Sometimes flakiness results from missing loading indicators in the UI. This can both be a test and UX problem, because loading states should - in general - be visible to the user.
+
+In this case, adding a loading indicator improves the UX and enables to await a stable state when testing.
+
+=== A button is clicked before it becomes interactive
+
+When using JavaScript events in the browser, it can happen that early interactions on the initial page load get lost when they are triggered before JavaScript can attach the event handlers on the respective element.
+
+A user might retry clicking the button. To mimic this behavior, the interaction can be auto-retried depending on an expected state after the interaction, e.g. opening a modal :
+
+[,ts]
+----
+await expect(async () => {
+  await procedureDetails.reopenProcedureButton.click();
+  await procedureDetails.reopenProcedureModal.waitUntilLoaded();
+}).toPass();
+----

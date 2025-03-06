@@ -203,8 +203,8 @@ public class PersonService {
         firstName,
         lastName,
         dateOfBirth,
-        getSimilarityThreshold(firstName),
-        getSimilarityThreshold(lastName),
+        firstName != null ? getSimilarityThreshold(firstName) : 1.0,
+        lastName != null ? getSimilarityThreshold(lastName) : 1.0,
         includeDeleted,
         includeExternal,
         limit);

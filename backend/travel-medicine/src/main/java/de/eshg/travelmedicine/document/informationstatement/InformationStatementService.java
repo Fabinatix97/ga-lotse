@@ -7,16 +7,17 @@ package de.eshg.travelmedicine.document.informationstatement;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.eshg.departmentinfo.DepartmentInfoService;
 import de.eshg.file.common.FileValidator;
 import de.eshg.file.common.ImageRewriter;
 import de.eshg.lib.document.generator.DocumentGenerator;
+import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
 import de.eshg.lib.procedure.file.FileFactory;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.travelmedicine.citizenauth.api.PatchInformationStatementRequest;
-import de.eshg.travelmedicine.citizenpublic.DepartmentInfoService;
 import de.eshg.travelmedicine.document.DocumentModifier;
 import de.eshg.travelmedicine.document.api.DocumentContentDto;
 import de.eshg.travelmedicine.document.informationstatement.api.InformationStatementDto;
@@ -76,6 +77,7 @@ public class InformationStatementService {
   private final PersonClient personClient;
   private final Clock clock;
   private final DepartmentInfoService departmentInfoService;
+  private final DepartmentClient departmentClient;
   private final DocumentGenerator documentGenerator;
   private final SignatureRepository signatureRepository;
   private final ProgressEntryService progressEntryService;
@@ -92,10 +94,12 @@ public class InformationStatementService {
       PersonClient personClient,
       Clock clock,
       DepartmentInfoService departmentInfoService,
+      DepartmentClient departmentClient,
       DocumentGenerator documentGenerator,
       SignatureRepository signatureRepository,
       ProgressEntryService progressEntryService,
       InformationStatementProperties informationStatementProperties) {
+
     this.progressEntryService = progressEntryService;
     this.informationStatementProperties = informationStatementProperties;
     Assert.isTrue(
@@ -110,6 +114,7 @@ public class InformationStatementService {
     this.personClient = personClient;
     this.clock = clock;
     this.departmentInfoService = departmentInfoService;
+    this.departmentClient = departmentClient;
     this.documentGenerator = documentGenerator;
     this.signatureRepository = signatureRepository;
   }
@@ -314,7 +319,7 @@ public class InformationStatementService {
     InformationStatementPdfParameters pdfParameters =
         new InformationStatementPdfParameters(
             departmentInfoService.getDepartmentInfo(),
-            departmentInfoService.getDepartmentLogo(),
+            departmentClient.getDepartmentLogo(),
             patient.firstName(),
             patient.lastName(),
             patient.dateOfBirth().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),

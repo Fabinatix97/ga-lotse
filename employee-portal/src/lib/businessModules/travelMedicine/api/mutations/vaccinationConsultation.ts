@@ -6,7 +6,6 @@
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { ApiSyncPersonRequest } from "@eshg/travel-medicine-api";
 import {
   AbortDraftVaccinationConsultationRequest,
   AcceptDraftVaccinationConsultationRequest,
@@ -16,6 +15,7 @@ import {
   ApiPostPutCertificateRequest,
   ApiPostVaccinationConsultationRequest,
   ApiProcedureStatus,
+  ApiSyncPersonRequest,
   AssignStepToServiceRequest,
   PatchOtherServiceRequest,
   PatchVaccinationRequest,

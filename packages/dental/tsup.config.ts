@@ -5,4 +5,4 @@
 
 import { defineLibConfig } from "../../config/tsup.base";
 
-export default defineLibConfig(["src"]);
+export default defineLibConfig({ entry: ["src"], isNextJsLib: true });

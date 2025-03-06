@@ -4,10 +4,7 @@
  */
 
 import { ApiChildDetails, ApiFluoridationConsent } from "@eshg/dental-api";
-import {
-  Versioned,
-  mapVersioned,
-} from "@eshg/lib-employee-portal/api/models/Versioned";
+import { Versioned, mapVersioned } from "@eshg/lib-employee-portal";
 
 import { Child, mapChild } from "./Child";
 import { Examination, mapExamination } from "./Examination";

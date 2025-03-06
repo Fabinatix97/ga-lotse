@@ -6,7 +6,7 @@
 import {
   SideNavigationLinkItem,
   SideNavigationSubItem,
-} from "@eshg/lib-employee-portal/types/sideNavigation";
+} from "@eshg/lib-employee-portal";
 
 export function isItemSelected(
   item: SideNavigationLinkItem | SideNavigationSubItem,

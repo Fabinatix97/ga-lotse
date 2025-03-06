@@ -1,0 +1,24 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1740674946837-1">
+    <createIndex
+      indexName="idx_sti_protection_procedure_procedure_status_created_at"
+      tableName="sti_protection_procedure">
+      <column name="procedure_status"/>
+      <column name="created_at"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1740674946837-2">
+    <createIndex indexName="idx_sti_protection_procedure_sti_procedure_origin"
+      tableName="sti_protection_procedure">
+      <column name="sti_procedure_origin"/>
+    </createIndex>
+  </changeSet>
+</databaseChangeLog>

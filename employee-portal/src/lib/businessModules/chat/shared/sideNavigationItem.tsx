@@ -4,8 +4,7 @@
  */
 
 import { ApiUserRole } from "@eshg/base-api";
-import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
-import { SideNavigationItem } from "@eshg/lib-employee-portal/types/sideNavigation";
+import { SideNavigationItem, hasUserRole } from "@eshg/lib-employee-portal";
 import { ChatOutlined } from "@mui/icons-material";
 
 import { ChatMessageCounter } from "@/lib/businessModules/chat/components/ChatMessageCounter";

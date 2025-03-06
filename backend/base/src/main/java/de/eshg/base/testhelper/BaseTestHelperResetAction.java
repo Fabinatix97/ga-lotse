@@ -5,6 +5,7 @@
 
 package de.eshg.base.testhelper;
 
+import de.eshg.base.config.BaseDepartmentInfoService;
 import de.eshg.base.config.DepartmentConfigurationService;
 import de.eshg.base.user.UserControllerRateLimiter;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
@@ -19,14 +20,17 @@ public class BaseTestHelperResetAction implements TestHelperServiceResetAction {
   private final UserControllerRateLimiter userControllerRateLimiter;
   private final Icd10CodeTestHelper icd10CodeTestHelper;
   private final DepartmentConfigurationService departmentConfigurationService;
+  private final BaseDepartmentInfoService baseDepartmentInfoService;
 
   public BaseTestHelperResetAction(
       UserControllerRateLimiter userControllerRateLimiter,
       Icd10CodeTestHelper icd10CodeTestHelper,
-      DepartmentConfigurationService departmentConfigurationService) {
+      DepartmentConfigurationService departmentConfigurationService,
+      BaseDepartmentInfoService baseDepartmentInfoService) {
     this.userControllerRateLimiter = userControllerRateLimiter;
     this.icd10CodeTestHelper = icd10CodeTestHelper;
     this.departmentConfigurationService = departmentConfigurationService;
+    this.baseDepartmentInfoService = baseDepartmentInfoService;
   }
 
   @Override
@@ -34,5 +38,6 @@ public class BaseTestHelperResetAction implements TestHelperServiceResetAction {
     userControllerRateLimiter.reset();
     icd10CodeTestHelper.repopulateIcd10CodesIfNecessary();
     departmentConfigurationService.init();
+    baseDepartmentInfoService.init();
   }
 }

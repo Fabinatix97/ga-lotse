@@ -221,6 +221,24 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
     return procedureRepository.findByRelatedPersonsCentralFileStateIds(fileStateIds, personType);
   }
 
+  public List<ProcedureT> searchProceduresByPartialPersonData(
+      String firstName, String lastName, LocalDate dateOfBirth, PersonType personType) {
+    List<UUID> fileStateIds =
+        personApi
+            .searchReferencePersonsWithPartialKnowledgeFactors(firstName, lastName, dateOfBirth)
+            .persons()
+            .stream()
+            .map(GetReferencePersonResponse::id)
+            .map(
+                referencePersonId ->
+                    personApi
+                        .getPersonFileStateIdsAssociatedWithReferencePerson(referencePersonId)
+                        .fileStateIds())
+            .flatMap(Collection::stream)
+            .toList();
+    return procedureRepository.findByRelatedPersonsCentralFileStateIds(fileStateIds, personType);
+  }
+
   private Function<ProcedureT, SearchableProcedure<ProcedureT>> formatAsSearchable(
       Map<UUID, GetPersonFileStateResponse> personFileStatesById,
       Map<UUID, GetFacilityFileStateResponse> facilityFileStatesById) {

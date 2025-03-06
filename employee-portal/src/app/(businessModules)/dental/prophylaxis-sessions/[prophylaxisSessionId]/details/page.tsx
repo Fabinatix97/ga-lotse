@@ -5,10 +5,12 @@
 
 "use client";
 
-import { routes } from "@eshg/dental/shared/routes";
-import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
+import { routes } from "@eshg/dental";
+import {
+  MainContentLayout,
+  StickyToolbarLayout,
+  Toolbar,
+} from "@eshg/lib-employee-portal";
 
 import { ProphylaxisSessionDetails } from "@/lib/businessModules/dental/features/prophylaxisSessions/ProphylaxisSessionDetails";
 import { useProphylaxisSessionStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/ProphylaxisSessionStoreProvider";

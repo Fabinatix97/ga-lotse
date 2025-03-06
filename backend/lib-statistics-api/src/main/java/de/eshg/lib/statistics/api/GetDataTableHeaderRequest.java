@@ -14,6 +14,5 @@ public record GetDataTableHeaderRequest(
     @NotNull Instant timeRangeStart,
     @NotNull Instant timeRangeEnd,
     @NotNull UUID dataSourceId,
-    @NotNull boolean anonymizationRequired,
     @NotNull List<String> attributeCodes)
     implements GetDataInformationRequest {}

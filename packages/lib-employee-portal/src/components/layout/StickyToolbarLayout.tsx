@@ -3,14 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-"use client";
-
 import { Box } from "@mui/joy";
 import { ReactNode } from "react";
 
 import { useHeaderHeights } from "@/hooks/useHeaderHeights";
 
-export interface StickyToolbarLayoutProps {
+interface StickyToolbarLayoutProps {
   children: ReactNode;
   toolbar: ReactNode;
   bottomToolbar?: ReactNode;

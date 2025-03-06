@@ -19,7 +19,7 @@ import {
 
 export type MonthSelectionPassThroughProps = Omit<
   MonthSelectionProps,
-  "label" | "nextMonthLabel" | "prevMonthLabel" | "slots"
+  "label" | "nextMonthLabel" | "prevMonthLabel" | "slotProps"
 >;
 export interface AppointmentCalendarProps
   extends MonthSelectionPassThroughProps {
@@ -32,8 +32,8 @@ export interface AppointmentCalendarProps
   showWeekdays?: Weekday[];
   padDays?: boolean;
   errorMessageId?: string;
-  slots?: {
-    monthSelection?: MonthSelectionProps["slots"];
+  slotProps?: {
+    monthSelection?: MonthSelectionProps["slotProps"];
   };
 }
 export function AppointmentCalendar({
@@ -47,11 +47,11 @@ export function AppointmentCalendar({
   prevMonthLabel,
   showWeekdays,
   padDays,
-  slots,
+  slotProps,
   errorMessageId,
 }: AppointmentCalendarProps) {
   return (
-    <Box sx={{ width: "min-content" }}>
+    <Box>
       <Row justifyContent="space-around">
         <MonthSelection
           currentMonth={currentMonth}
@@ -59,7 +59,7 @@ export function AppointmentCalendar({
           label={monthSelectionLabel}
           nextMonthLabel={nextMonthLabel}
           prevMonthLabel={prevMonthLabel}
-          slots={slots?.monthSelection}
+          slotProps={slotProps?.monthSelection}
         />
         <MonthGrid
           errorMessageId={errorMessageId}

@@ -6,9 +6,7 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
-import { getChildDetailsQuery } from "@eshg/dental/api/queries/childApi";
-import { useDentalApi } from "@eshg/dental/shared/DentalProvider";
-import { routes } from "@eshg/dental/shared/routes";
+import { getChildDetailsQuery, routes, useDentalApi } from "@eshg/dental";
 import {
   FormatListBulletedOutlined,
   TextSnippetOutlined,

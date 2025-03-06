@@ -6,8 +6,8 @@
 import {
   BaseEntity,
   mapBaseEntity,
-} from "@eshg/lib-employee-portal/api/models/BaseEntity";
-import { mapOptional } from "@eshg/lib-employee-portal/api/models/utils";
+  mapOptional,
+} from "@eshg/lib-employee-portal";
 import {
   ApiSchoolEntryProcedure,
   ApiSchoolEntryProcedureType,

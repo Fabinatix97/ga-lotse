@@ -24,15 +24,15 @@ import { Button, Sheet } from "@mui/joy";
 import { useRouter } from "next/navigation";
 
 import { theme } from "@/lib/baseModule/theme/theme";
-import { AppointmentOverviewButtonElement } from "@/lib/businessModules/travelMedicine/components/viewAppointment/AppointmentOverviewButtonElement";
+import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
+import { useTranslation } from "@/lib/i18n/client";
+import { AppointmentOverviewButtonElement } from "@/lib/shared/components/appointments/AppointmentOverviewButtonElement";
 import {
   AppointmentOverviewSection,
   AppointmentOverviewSectionGrid,
   AppointmentOverviewSectionText,
   AppointmentOverviewSectionTitle,
-} from "@/lib/businessModules/travelMedicine/components/viewAppointment/AppointmentOverviewSection";
-import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
-import { useTranslation } from "@/lib/i18n/client";
+} from "@/lib/shared/components/appointments/AppointmentOverviewSection";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 

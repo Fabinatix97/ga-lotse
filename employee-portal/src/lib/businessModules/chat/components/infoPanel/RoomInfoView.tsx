@@ -76,6 +76,7 @@ export function RoomInfoView({ roomId, onClose }: Readonly<RoomInfoViewProps>) {
     <>
       <InfoPanelHeader close={onClose} roomId={roomId} />
       <Box
+        data-testid="chat-room-info-panel"
         sx={{
           overflowY: "auto",
         }}

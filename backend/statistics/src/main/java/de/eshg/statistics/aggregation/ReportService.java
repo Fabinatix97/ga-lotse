@@ -23,6 +23,7 @@ import de.eshg.statistics.api.filter.TextFilterParameterDto;
 import de.eshg.statistics.api.filter.ValueOptionFilterParameterDto;
 import de.eshg.statistics.api.report.GetReportDetailPageResponse;
 import de.eshg.statistics.config.StatisticsConfig;
+import de.eshg.statistics.config.StatisticsFeatureToggle;
 import de.eshg.statistics.mapper.AnalysisMapper;
 import de.eshg.statistics.mapper.EvaluationMapper;
 import de.eshg.statistics.mapper.FilterParameterMapper;
@@ -79,8 +80,14 @@ public class ReportService extends AbstractAggregationResultService {
       ReportSeriesRepository reportSeriesRepository,
       StatisticsUserService userService,
       Clock clock,
-      AnalysisService analysisService) {
-    super(dataSourceValidator, dataAggregationService, tableRowRepository, statisticsConfig);
+      AnalysisService analysisService,
+      StatisticsFeatureToggle featureToggle) {
+    super(
+        dataSourceValidator,
+        dataAggregationService,
+        tableRowRepository,
+        featureToggle,
+        statisticsConfig);
     this.reportRepository = reportRepository;
     this.reportSeriesRepository = reportSeriesRepository;
     this.userService = userService;
@@ -126,8 +133,10 @@ public class ReportService extends AbstractAggregationResultService {
     report.addTableColumns(
         evaluation.getTableColumns().stream()
             .map(
-                EvaluationCopyService
-                    ::copyTableColumnWithoutCellEntriesAndMinMaxValuesAndAnonymization)
+                tableColumn ->
+                    EvaluationCopyService
+                        .copyTableColumnWithoutCellEntriesAndMinMaxValuesAndAnonymization(
+                            tableColumn, false))
             .toList());
     return report;
   }

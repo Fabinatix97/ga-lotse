@@ -14,7 +14,6 @@ import de.eshg.persistence.IntentionalWritingTransaction;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.rest.service.security.config.BaseUrls;
-import de.eshg.stiprotection.annotations.ProcedureStatusTransition;
 import de.eshg.stiprotection.api.CreateAppointmentRequest;
 import de.eshg.stiprotection.api.CreateFollowUpProcedureRequest;
 import de.eshg.stiprotection.api.CreateFollowUpProcedureResponse;
@@ -29,6 +28,7 @@ import de.eshg.stiprotection.api.ResponseEntities;
 import de.eshg.stiprotection.api.UpdateAppointmentRequest;
 import de.eshg.stiprotection.api.UpdatePersonDetailsRequest;
 import de.eshg.stiprotection.api.VerifyAnonymousUserPinRequest;
+import de.eshg.stiprotection.aspect.ProcedureStatusTransition;
 import de.eshg.stiprotection.mapper.AppointmentMapper;
 import de.eshg.stiprotection.mapper.ConcernMapper;
 import de.eshg.stiprotection.mapper.PersonMapper;
@@ -261,6 +261,7 @@ public class StiProtectionProcedureController {
       @Valid @RequestBody CreateFollowUpProcedureRequest request) {
     StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
     if (procedure.getProcedureStatus().isOpen()) {
+      stiProtectionService.deleteAnonymousUser(procedure);
       stiProtectionService.closeProcedure(procedure);
       if (procedure.getAppointment() != null || procedure.getUserDefinedAppointment() != null) {
         appointmentService.cancelAppointment(procedure);

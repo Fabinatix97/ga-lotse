@@ -1,0 +1,33 @@
+{
+  "header": {
+    "title": "Termine",
+    "logout": "Mein Bereich verlassen"
+  },
+  "type_switch_buttons": {
+    "upcoming": "Anstehende",
+    "past": "Vergangene"
+  },
+  "appointment_card": {
+    "start": "{{ time }} Uhr",
+    "duration": "Dauer: {{ appointmentDuration }} Minuten",
+    "appointment_type": {
+      "hiv_sti": "HIV-STI",
+      "sex_work": "Sexarbeit",
+      "consultation": "Beratung"
+    }
+  },
+  "appointment_status": {
+    "booked": "Termin gebucht",
+    "non_booked": "Termin noch nicht gebucht",
+    "cancelled": "Termin abgesagt"
+  },
+  "appointments": {
+    "upcoming": "Anstehende Termine",
+    "past": "Vergangene Termine",
+    "no_data": {
+      "default": "Es liegen keine Termine vor",
+      "upcoming": "Keine anstehenden Termine",
+      "past": "Keine vergangenen Termine"
+    }
+  }
+}

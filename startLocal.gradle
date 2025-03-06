@@ -1,0 +1,97 @@
+def neededPortals = ["employee-portal", "citizen-portal", "admin-portal"]
+def neededBackendServicesWithDb = ["auditlog", "base", "inspection", "school-entry", "measles-protection", "opendata", "travel-medicine", "statistics", "service-directory", "central-repository", "chat-management", "synapse", "sti-protection", "medical-registry", "dental", "official-medical-service"]
+def neededBackendServices = ["keycloak"]
+
+def startFirstIfSlow = [ "keycloak", "base" ]
+def businessModulesFirstSet = [ "inspection", "school-entry", "travel-medicine"]
+
+def neededServices = neededBackendServices + neededBackendServicesWithDb + neededBackendServicesWithDb.collect { "${it}-db".toString() } as List<String>
+
+dockerCompose {
+  localBackend {
+    projectName = "backend"
+    useComposeFiles = ["backend/docker-compose.yaml"]
+    startedServices = neededServices + ["auth-employee-portal", "auth-citizen-portal"]
+    upAdditionalArgs = ["--quiet-pull"]
+
+    if (project.hasProperty("disablePopulation")) {
+      environment.put "POPULATION_ENABLED", "false"
+    }
+  }
+
+  localFrontend {
+    projectName = "frontend"
+    useComposeFiles = ["docker-compose.yaml"]
+    startedServices = neededPortals
+    upAdditionalArgs = ["--quiet-pull"]
+  }
+
+  serviceDirectory {
+    projectName = "backend"
+    useComposeFiles = ["backend/docker-compose.yaml"]
+    startedServices = ["service-directory"]
+    upAdditionalArgs = ["--quiet-pull"]
+  }
+}
+
+def localBackendKeycloakAndBaseUp = tasks.register("localBackendKeycloakAndBaseUp") {
+  startFirstIfSlow.forEach { moduleName ->
+    dependsOn gradle.includedBuild("backend").task(":${moduleName}:composeUp")
+  }
+}
+
+def localBackendPartialBusinessModulesUp = tasks.register("localBackendPartialBusinessModulesUp") {
+  dependsOn localBackendKeycloakAndBaseUp
+  businessModulesFirstSet.forEach { moduleName ->
+    dependsOn gradle.includedBuild("backend").task(":${moduleName}:composeUp")
+  }
+}
+
+def localBackendComposeUp = tasks.named("localBackendComposeUp") {
+  (neededBackendServices + neededBackendServicesWithDb + ["auth"]).forEach { moduleName ->
+    dependsOn gradle.includedBuild("backend").task(":${moduleName}:buildDockerImage")
+  }
+
+  if (project.hasProperty("slow")) {
+    dependsOn localBackendPartialBusinessModulesUp
+  }
+}
+
+tasks.named("localFrontendComposeUp") {
+  neededPortals.forEach { portalName ->
+    dependsOn project(":${portalName}").tasks.named("buildDockerImage")
+  }
+
+  if (project.hasProperty("slow")) {
+    dependsOn localBackendComposeUp
+  }
+}
+
+tasks.named("serviceDirectoryComposeUp") {
+  dependsOn gradle.includedBuild("backend").task(":service-directory:buildDockerImage")
+}
+
+def startLocalEmployeePortal = tasks.register("startLocalEmployeePortal") {
+  dependsOn tasks.named("localBackendComposeUp")
+  finalizedBy project(":employee-portal").tasks.named("run")
+}
+
+tasks.register("startLocalCitizenPortal") {
+  dependsOn tasks.named("localBackendComposeUp")
+  finalizedBy project(":citizen-portal").tasks.named("run")
+}
+
+// alias for startLocalEmployeePortal
+tasks.register("startLocal") {
+  dependsOn startLocalEmployeePortal
+}
+
+tasks.register("startLocalAdminPortal") {
+  dependsOn tasks.named("serviceDirectoryComposeUp")
+  finalizedBy project(":admin-portal").tasks.named("run")
+}
+
+tasks.register("startLocalDocker") {
+  dependsOn tasks.named("localBackendComposeUp")
+  dependsOn tasks.named("localFrontendComposeUp")
+}

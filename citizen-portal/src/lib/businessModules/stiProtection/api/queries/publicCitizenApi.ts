@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import { ApiConcern } from "@eshg/sti-protection-api";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
@@ -24,6 +25,33 @@ export function useDepartmentInfo(concern: ApiConcern) {
   return useSuspenseQuery(useDepartmentInfoQuery(concern));
 }
 
+interface GetFreeAppointmentsParams {
+  concern: ApiConcern;
+  earliestDate: Date;
+}
+
+export function useFreeAppointmentsQuery({
+  concern,
+  earliestDate,
+}: GetFreeAppointmentsParams) {
+  const publicCitizenApi = useCitizenPublicApi();
+  return queryOptions({
+    queryKey: stiProtectionPublicCitizenApiQueryKey([
+      "freeAppointments",
+      { concern, earliestDate },
+    ]),
+    queryFn: () =>
+      publicCitizenApi.getFreeAppointmentsForCitizen(concern, earliestDate),
+    select(data) {
+      return data.appointments;
+    },
+  });
+}
+
+export function useFreeAppointments(params: GetFreeAppointmentsParams) {
+  return useSuspenseQuery(useFreeAppointmentsQuery(params));
+}
+
 export function useOpeningHoursQuery(concern: ApiConcern) {
   const publicCitizenApi = useCitizenPublicApi();
   return queryOptions({
@@ -36,23 +64,11 @@ export function useOpeningHours(concern: ApiConcern) {
   return useSuspenseQuery(useOpeningHoursQuery(concern));
 }
 
-export function useFreeAppointments({
-  concern,
-  earliestDate,
-}: {
-  concern: ApiConcern;
-  earliestDate: Date;
-}) {
+export function useAnonymousIdentificationDocumentQuery(procedureId: string) {
   const publicCitizenApi = useCitizenPublicApi();
-  return useSuspenseQuery({
-    queryKey: stiProtectionPublicCitizenApiQueryKey([
-      "freeAppointments",
-      { concern, earliestDate },
-    ]),
-    queryFn: () =>
-      publicCitizenApi.getFreeAppointmentsForCitizen(concern, earliestDate),
-    select(data) {
-      return data.appointments;
-    },
-  });
+  return useFileDownload(() =>
+    publicCitizenApi.getAnonymousIdentificationDocument1Raw({
+      id: procedureId,
+    }),
+  );
 }

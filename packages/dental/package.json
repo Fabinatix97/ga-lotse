@@ -4,11 +4,11 @@
   "type": "module",
   "private": true,
   "exports": {
-    "./*": {
+    ".": {
       "types": [
-        "./build/types/src/*.d.ts"
+        "./build/types/src/index.d.ts"
       ],
-      "import": "./build/lib/*.js"
+      "import": "./build/lib/index.js"
     }
   },
   "dependencies": {

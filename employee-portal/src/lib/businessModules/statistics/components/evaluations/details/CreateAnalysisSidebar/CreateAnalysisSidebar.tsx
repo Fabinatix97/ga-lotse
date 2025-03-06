@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+
 import { DiagramType } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 import { GeoShapeInfo } from "@/lib/businessModules/statistics/api/models/geoShapesTableView";
@@ -53,6 +55,7 @@ function CreateAnalysisSidebar({
 }: CreateAnalysisSidebarProps) {
   const addAnalysis = useAddAnalysis(evaluationId, () => onClose(true));
   const addDiagram = useAddDiagram();
+  const snackbar = useSnackbar();
 
   const initialChartConfigurationValues: ConfigureChartFormModel = {
     primaryAttribute: null,
@@ -87,7 +90,10 @@ function CreateAnalysisSidebar({
             filterValues: [],
             attributes: [],
           },
-          {},
+          {
+            onError: () =>
+              snackbar.error("Das Diagramm konnte nicht erstellt werden."),
+          },
         ),
     );
   }

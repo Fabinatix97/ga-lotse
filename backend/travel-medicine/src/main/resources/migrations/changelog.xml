@@ -69,5 +69,7 @@
   <include file="migrations/0059_differentiate_between_previous_person_and_facility_file_state.xml"/>
   <include file="migrations/0060_oms_appointment_type_extensions.xml"/>
   <include file="migrations/0061_add_shedlock.xml"/>
+  <include file="migrations/0062_department_info.xml"/>
+  <include file="migrations/0063_opening_hours.xml"/>
 
 </databaseChangeLog>

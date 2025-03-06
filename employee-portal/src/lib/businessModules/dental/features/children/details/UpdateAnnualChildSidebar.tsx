@@ -3,10 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ChildDetails, Institution, useUpdateAnnualChild } from "@eshg/dental";
 import { UpdateChildRequest } from "@eshg/dental-api";
-import { ChildDetails } from "@eshg/dental/api/models/ChildDetails";
-import { Institution } from "@eshg/dental/api/models/Institution";
-import { useUpdateAnnualChild } from "@eshg/dental/api/mutations/childApi";
 import { BooleanSelectField } from "@eshg/lib-portal/components/formFields/BooleanSelectField";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";

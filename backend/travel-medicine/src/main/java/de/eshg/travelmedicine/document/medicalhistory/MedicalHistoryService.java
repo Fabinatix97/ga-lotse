@@ -9,13 +9,14 @@ import static de.eshg.travelmedicine.document.DocumentDtoHelper.isDocumentConten
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.eshg.departmentinfo.DepartmentInfoService;
 import de.eshg.lib.document.generator.DocumentGenerator;
+import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
 import de.eshg.lib.procedure.file.FileFactory;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
-import de.eshg.travelmedicine.citizenpublic.DepartmentInfoService;
 import de.eshg.travelmedicine.document.api.DocumentContentDto;
 import de.eshg.travelmedicine.document.medicalhistory.api.MedicalHistoryDto;
 import de.eshg.travelmedicine.document.medicalhistory.api.PatchMedicalHistoryRequest;
@@ -54,6 +55,7 @@ public class MedicalHistoryService {
   private final PersonClient personClient;
   private final Clock clock;
   private final DepartmentInfoService departmentInfoService;
+  private final DepartmentClient departmentClient;
   private final DocumentGenerator documentGenerator;
   private final ProgressEntryService progressEntryService;
 
@@ -63,11 +65,13 @@ public class MedicalHistoryService {
       PersonClient personClient,
       Clock clock,
       DepartmentInfoService departmentInfoService,
+      DepartmentClient departmentClient,
       DocumentGenerator documentGenerator,
       ProgressEntryService progressEntryService) {
     this.personClient = personClient;
     this.clock = clock;
     this.departmentInfoService = departmentInfoService;
+    this.departmentClient = departmentClient;
     this.documentGenerator = documentGenerator;
     this.progressEntryService = progressEntryService;
     Assert.isTrue(medicalHistoryResource.exists(), medicalHistoryResource + " does not exist");
@@ -196,7 +200,7 @@ public class MedicalHistoryService {
     MedicalHistoryPdfParameters pdfParameters =
         new MedicalHistoryPdfParameters(
             departmentInfoService.getDepartmentInfo(),
-            departmentInfoService.getDepartmentLogo(),
+            departmentClient.getDepartmentLogo(),
             patient.firstName(),
             patient.lastName(),
             patient.address() != null && patient.address().street() != null

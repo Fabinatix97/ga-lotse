@@ -6,9 +6,11 @@
 "use client";
 
 import { ApiBusinessModule, ApiUserRole } from "@eshg/base-api";
-import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
+import {
+  MainContentLayout,
+  StickyToolbarLayout,
+  Toolbar,
+} from "@eshg/lib-employee-portal";
 
 import { Teamview } from "@/lib/baseModule/components/task/Teamview";
 import { moduleUserGroup } from "@/lib/businessModules/inspection/shared/moduleUserGroup";

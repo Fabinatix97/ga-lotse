@@ -7,7 +7,9 @@ package de.eshg.travelmedicine.certificate;
 
 import static de.eshg.travelmedicine.util.TravelMedicineProgressEntryType.CERTIFICATE_FOR_HEALTH_INSURANCE;
 
+import de.eshg.departmentinfo.DepartmentInfoService;
 import de.eshg.lib.document.generator.DocumentGenerator;
+import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
 import de.eshg.lib.procedure.domain.model.File;
 import de.eshg.lib.procedure.domain.model.Pdf;
@@ -23,7 +25,6 @@ import de.eshg.travelmedicine.certificate.api.GetCertificatesResponse;
 import de.eshg.travelmedicine.certificate.api.PostPutCertificateRequest;
 import de.eshg.travelmedicine.certificate.persistence.entity.Certificate;
 import de.eshg.travelmedicine.certificate.persistence.entity.CertificateRepository;
-import de.eshg.travelmedicine.citizenpublic.DepartmentInfoService;
 import de.eshg.travelmedicine.vaccinationconsultation.PersonClient;
 import de.eshg.travelmedicine.vaccinationconsultation.ProcedureAccessor;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatientDto;
@@ -62,6 +63,7 @@ public class CertificateService {
   private final Clock clock;
   private final ProcedureAccessor procedureAccessor;
   private final DepartmentInfoService departmentInfoService;
+  private final DepartmentClient departmentClient;
 
   public CertificateService(
       CertificateRepository certificateRepository,
@@ -73,7 +75,8 @@ public class CertificateService {
       ProgressEntryRepository progressEntryRepository,
       Clock clock,
       ProcedureAccessor procedureAccessor,
-      DepartmentInfoService departmentInfoService) {
+      DepartmentInfoService departmentInfoService,
+      DepartmentClient departmentClient) {
     Assert.isTrue(
         certificateTemplateResource.exists(), certificateTemplateResource + " does not exist");
     this.certificateRepository = certificateRepository;
@@ -86,6 +89,7 @@ public class CertificateService {
     this.clock = clock;
     this.procedureAccessor = procedureAccessor;
     this.departmentInfoService = departmentInfoService;
+    this.departmentClient = departmentClient;
   }
 
   public static final String PDF_FILENAME = "bescheinigung_krankenkasse.pdf";
@@ -158,8 +162,7 @@ public class CertificateService {
         .toList();
   }
 
-  private static HealthInsuranceCertificatePdfParameters collectHealthInsuranceCertificatePdfData(
-      DepartmentInfoService departmentInfoService,
+  private HealthInsuranceCertificatePdfParameters collectHealthInsuranceCertificatePdfData(
       VaccinationConsultation vaccinationConsultation,
       PatientDto patientFromCentralFile,
       List<VcService> services) {
@@ -168,7 +171,7 @@ public class CertificateService {
 
     return new HealthInsuranceCertificatePdfParameters(
         departmentInfoService.getDepartmentInfo(),
-        departmentInfoService.getDepartmentLogo(),
+        departmentClient.getDepartmentLogo(),
         (patientFromCentralFile.salutation() != null
             ? patientFromCentralFile.salutation().name()
             : ""),
@@ -215,8 +218,7 @@ public class CertificateService {
     PatientDto patient = personClient.getPatientFromCentralFile(patientId);
 
     HealthInsuranceCertificatePdfParameters pdfParameters =
-        collectHealthInsuranceCertificatePdfData(
-            departmentInfoService, vaccinationConsultation, patient, services);
+        collectHealthInsuranceCertificatePdfData(vaccinationConsultation, patient, services);
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     documentGenerator.createPdfFromTemplate(certificateTemplateResource, pdfParameters, baos);

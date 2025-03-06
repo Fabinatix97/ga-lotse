@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
 import {
+  MainContentLayout,
+  StickyToolbarLayout,
   Toolbar,
   ToolbarProps,
-} from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
+} from "@eshg/lib-employee-portal";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 type MeaslesProtectionLayoutProps = RequiresChildren & ToolbarProps;

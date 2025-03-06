@@ -4,8 +4,7 @@
  */
 
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { IconButton } from "@mui/joy";
-import { styled } from "@mui/joy";
+import { IconButton, styled } from "@mui/joy";
 
 import { TOOTH_SIZE } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/styles";
 import { useDentalExaminationStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";

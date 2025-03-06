@@ -3557,7 +3557,7 @@
           "description" : "The first name of the Person (1 of 3 knowledge factors) which shall be searched for.",
           "in" : "query",
           "name" : "firstName",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -3565,7 +3565,7 @@
           "description" : "The last name of the Person (1 of 3 knowledge factors) which shall be searched for.",
           "in" : "query",
           "name" : "lastName",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -3573,7 +3573,7 @@
           "description" : "The date of birth of the Person (1 of 3 knowledge factors) which shall be searched for.",
           "in" : "query",
           "name" : "dateOfBirth",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string",
             "format" : "date"
@@ -5159,6 +5159,52 @@
           }
         },
         "summary" : "Invalidates the provided sessions of the currently active user",
+        "tags" : [ "User" ]
+      }
+    },
+    "/users/self/chat-attributes" : {
+      "get" : {
+        "operationId" : "getSelfUserChatAttributes",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserChatAttributes"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the user chat attributes which is currently active",
+        "tags" : [ "User" ]
+      },
+      "put" : {
+        "operationId" : "updateSelfUserChatAttributes",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateSelfUserChatAttributesRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserChatAttributes"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update user chat attributes which is currently active",
         "tags" : [ "User" ]
       }
     },
@@ -11309,6 +11355,24 @@
           }
         }
       },
+      "UpdateSelfUserChatAttributesRequest" : {
+        "type" : "object",
+        "properties" : {
+          "chatCryptoStoreDeriveKeySecret" : {
+            "maxLength" : 128,
+            "minLength" : 32,
+            "type" : "string",
+            "description" : "Secret value used as a part of derive key used to encrypt user's local crypto store containing KeyBackup",
+            "example" : "UUID_8"
+          },
+          "externalChatUsername" : {
+            "pattern" : "^@[\\w.-]+:[\\w.-]+$",
+            "type" : "string",
+            "description" : "Matrix User ID (MXID) of the gematik TI-Messenger (matrix chat)",
+            "example" : "@username:matrix_homeserver_url"
+          }
+        }
+      },
       "UpdateSelfUserRequest" : {
         "type" : "object",
         "properties" : {
@@ -11374,7 +11438,7 @@
             "type" : "string",
             "description" : "The Id of the user.",
             "format" : "uuid",
-            "example" : "UUID_8"
+            "example" : "UUID_9"
           },
           "username" : {
             "type" : "string",
@@ -11394,6 +11458,40 @@
           "userId" : {
             "type" : "string",
             "format" : "uuid"
+          }
+        }
+      },
+      "UserChatAttributes" : {
+        "required" : [ "firstName", "lastName", "userId" ],
+        "type" : "object",
+        "properties" : {
+          "chatCryptoStoreDeriveKeySecret" : {
+            "maxLength" : 128,
+            "minLength" : 32,
+            "type" : "string",
+            "description" : "Secret value used as a part of derive key used to encrypt user's local crypto store containing KeyBackup",
+            "example" : "UUID_8"
+          },
+          "externalChatUsername" : {
+            "type" : "string",
+            "description" : "Matrix User ID (MXID) of the gematik TI-Messenger (matrix chat)",
+            "example" : "@username:matrix_homeserver_url"
+          },
+          "firstName" : {
+            "type" : "string",
+            "description" : "The given name(s) of a user.",
+            "example" : "John"
+          },
+          "lastName" : {
+            "type" : "string",
+            "description" : "The last name of a user.",
+            "example" : "Doe"
+          },
+          "userId" : {
+            "type" : "string",
+            "description" : "The Id of the user.",
+            "format" : "uuid",
+            "example" : "UUID_9"
           }
         }
       },

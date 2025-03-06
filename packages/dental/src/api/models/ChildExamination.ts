@@ -9,7 +9,7 @@ import {
   ApiGender,
   ApiProphylaxisSessionChildExamination,
 } from "@eshg/dental-api";
-import { mapOptional } from "@eshg/lib-employee-portal/api/models/utils";
+import { mapOptional } from "@eshg/lib-employee-portal";
 
 import { ExaminationResult, mapExaminationResult } from "./ExaminationResult";
 import { ExaminationStatus, mapToExaminationStatus } from "./ExaminationStatus";

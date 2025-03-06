@@ -37,6 +37,7 @@ export function RoomsPanel({ setChatPanelView }: Readonly<RoomsPanelProps>) {
         }}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
+        roomSearchDisabled={roomList.length === 0}
       />
       <Stack
         sx={{

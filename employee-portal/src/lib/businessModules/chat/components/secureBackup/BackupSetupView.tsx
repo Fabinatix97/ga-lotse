@@ -48,7 +48,7 @@ export function BackupSetupView() {
   return (
     <>
       <Sheet
-        data-testid={"secureBackupSheet"}
+        data-testid={"create-key-backup"}
         sx={{
           display: "flex",
           alignItems: "center",

@@ -106,17 +106,17 @@ Caution: The returned ids of the reference persons must not be stored.
           @Parameter(
                   description =
                       "The first name of the Person (1 of 3 knowledge factors) which shall be searched for.")
-              @RequestParam(name = "firstName")
+              @RequestParam(name = "firstName", required = false)
               String firstName,
           @Parameter(
                   description =
                       "The last name of the Person (1 of 3 knowledge factors) which shall be searched for.")
-              @RequestParam(name = "lastName")
+              @RequestParam(name = "lastName", required = false)
               String lastName,
           @Parameter(
                   description =
                       "The date of birth of the Person (1 of 3 knowledge factors) which shall be searched for.")
-              @RequestParam(name = "dateOfBirth")
+              @RequestParam(name = "dateOfBirth", required = false)
               LocalDate dateOfBirth);
 
   @GetExchange(FILE_STATES_URL + "/{id}/linked-ids")

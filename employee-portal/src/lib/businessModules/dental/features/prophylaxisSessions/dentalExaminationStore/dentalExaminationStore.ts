@@ -3,30 +3,30 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiDentitionType } from "@eshg/dental-api";
 import {
   ExaminationResult,
   ToothDiagnoses,
-} from "@eshg/dental/api/models/ExaminationResult";
+  ToothDiagnosis,
+} from "@eshg/dental";
+import { ApiDentitionType, ApiTooth } from "@eshg/dental-api";
 import { createStore } from "zustand";
 
+import { initFocus, setFocus } from "./actions/focus";
+import { NavigateDirection, navigate } from "./actions/navigate";
+import { navigateTo } from "./actions/navigateTo";
 import {
   calculateDmftValue,
   setMainResult,
   setSecondaryResult1,
   setSecondaryResult2,
-} from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/actions/result";
-
-import { NavigateDirection, navigate } from "./actions/navigate";
-import { navigateTo } from "./actions/navigateTo";
+} from "./actions/result";
 import {
   addTooth,
   getToothDiagnoses,
   removeTooth,
-  setFocus,
   toggleToothType,
 } from "./actions/tooth";
-import { createPrimaryDentition, createSecondaryDentition } from "./factories";
+import { DENTITION_FACTORIES } from "./factories";
 import {
   DentalExaminationView,
   Dentition,
@@ -36,14 +36,16 @@ import {
 
 export interface DentalExaminationState {
   currentView: DentalExaminationView;
-  currentFocus: ElementContext;
+  currentFocus: ElementContext | undefined;
   dentition: Dentition;
   dmftValues: { primaryTeeth: number; secondaryTeeth: number };
+  previousToothDiagnoses: Partial<Record<ApiTooth, ToothDiagnosis>>;
+  dirty: boolean;
 }
 
 export interface DentalExaminationActions {
   setView: (newView: DentalExaminationView) => void;
-  setFocus: (focus: ElementContext) => void;
+  setFocus: (focus: ElementContext | undefined) => void;
   navigate: (direction: NavigateDirection) => void;
   navigateTo: (toothContext: ToothContext) => void;
 
@@ -55,6 +57,8 @@ export interface DentalExaminationActions {
   setSecondaryResult1: SetToothResultAction;
   setSecondaryResult2: SetToothResultAction;
   getToothDiagnoses: () => ToothDiagnoses;
+
+  toggleDentition: (dentitionType: ApiDentitionType) => void;
 }
 
 export type ToothAction = (toothContext: ToothContext) => void;
@@ -67,6 +71,7 @@ export type DentalExaminationStore = DentalExaminationState &
   DentalExaminationActions;
 
 export type DmftValuesState = Pick<DentalExaminationState, "dmftValues">;
+export type DirtyState = Pick<DentalExaminationState, "dirty">;
 
 export function calculateDmftValues(dentition: Dentition) {
   return {
@@ -77,7 +82,7 @@ export function calculateDmftValues(dentition: Dentition) {
 
 export function initDentalExaminationStore(
   examinationResult: ExaminationResult | undefined,
-  defaultDentitionType: ApiDentitionType | undefined,
+  defaultDentitionType: ApiDentitionType = ApiDentitionType.Mixed,
   previousExaminationResult: ExaminationResult | undefined,
 ): DentalExaminationState {
   const isScreening = examinationResult?.type === "screening";
@@ -91,19 +96,20 @@ export function initDentalExaminationStore(
   const dentitionType =
     (isScreening ? examinationResult.dentitionType : undefined) ??
     defaultDentitionType;
-  const dentition =
-    dentitionType === ApiDentitionType.Primary
-      ? createPrimaryDentition(toothDiagnoses, previousToothDiagnoses)
-      : createSecondaryDentition(toothDiagnoses, previousToothDiagnoses);
+  const dentition = DENTITION_FACTORIES[dentitionType](
+    toothDiagnoses,
+    previousToothDiagnoses,
+  );
+
+  const currentView: DentalExaminationView = "UPPER_JAW";
 
   return {
-    currentView: "UPPER_JAW",
-    dentition: dentition,
-    currentFocus: {
-      toothContext: { quadrantNumber: "Q1", toothIndex: 0 },
-      field: "main",
-    },
+    currentView,
+    dentition,
+    currentFocus: initFocus(currentView, dentition.Q1, "FIRST_TOOTH"),
     dmftValues: calculateDmftValues(dentition),
+    previousToothDiagnoses,
+    dirty: false,
   };
 }
 
@@ -114,19 +120,21 @@ export function createDentalExaminationStore(
     ...initialState,
     setView: (newView: DentalExaminationView) => set({ currentView: newView }),
     addTooth: (toothContext: ToothContext) => {
-      set((state) => ({
-        dentition: addTooth(toothContext, state.dentition),
-      }));
+      set((state) => addTooth(toothContext, state.dentition));
     },
     removeTooth: (toothContext: ToothContext) => {
       set((state) => removeTooth(toothContext, state.dentition));
     },
     toggleToothType: (toothContext: ToothContext) => {
-      set((state) => ({
-        dentition: toggleToothType(toothContext, state.dentition),
-      }));
+      set((state) =>
+        toggleToothType(
+          toothContext,
+          state.dentition,
+          state.previousToothDiagnoses,
+        ),
+      );
     },
-    setFocus: (newFocus: ElementContext) => {
+    setFocus: (newFocus: ElementContext | undefined) => {
       set(setFocus(newFocus));
     },
     setMainResult: (toothContext: ToothContext, newValue: string) =>
@@ -139,5 +147,9 @@ export function createDentalExaminationStore(
     navigate: (direction) => set((state) => navigate(direction, state)),
     navigateTo: (toothContext) =>
       set((state) => navigateTo(toothContext, state)),
+    toggleDentition: (dentitionType) =>
+      set(() => ({
+        dentition: DENTITION_FACTORIES[dentitionType]({}, {}),
+      })),
   }));
 }

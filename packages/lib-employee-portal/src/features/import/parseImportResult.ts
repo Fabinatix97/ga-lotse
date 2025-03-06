@@ -1,0 +1,32 @@
+/**
+ * Copyright 2025 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { ApiResponse } from "@eshg/base-api";
+
+export interface ImportDataResult<TStatistics> {
+  file: File;
+  statistics: TStatistics;
+}
+
+/**
+ * We parse the response manually, because it was not possible to strictly type the multipart-part content
+ */
+export async function parseImportResult<TStatistics>(
+  response: ApiResponse<object>,
+): Promise<ImportDataResult<TStatistics>> {
+  const formData = await response.raw.formData();
+  const file = formData.get("file");
+  const statisticsJson = formData.get("statistics");
+
+  if (!(file instanceof File && typeof statisticsJson === "string")) {
+    throw new Error("Response contains invalid import result.");
+  }
+
+  const statistics = JSON.parse(statisticsJson) as TStatistics;
+  return {
+    file,
+    statistics,
+  };
+}

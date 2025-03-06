@@ -597,6 +597,26 @@
         "tags" : [ "CitizenPublic" ]
       }
     },
+    "/citizen/public/appointments/{id}" : {
+      "delete" : {
+        "operationId" : "cancelAppointment_1",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "CitizenPublic" ]
+      }
+    },
     "/citizen/public/appointments/{id}/anon-ident-document" : {
       "get" : {
         "operationId" : "getAnonymousIdentificationDocument_1",
@@ -661,26 +681,6 @@
           }
         },
         "summary" : "Create a new anonymous user identified by an access code and PIN",
-        "tags" : [ "CitizenPublic" ]
-      }
-    },
-    "/citizen/public/appointments/{id}/confirm" : {
-      "post" : {
-        "operationId" : "confirmAppointment",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "OK"
-          }
-        },
         "tags" : [ "CitizenPublic" ]
       }
     },

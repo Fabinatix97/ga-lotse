@@ -5,10 +5,12 @@
 
 "use client";
 
+import {
+  ProphylaxisSession,
+  routes,
+  useGetProphylaxisSessions,
+} from "@eshg/dental";
 import { ApiProphylaxisSessionSortKey } from "@eshg/dental-api";
-import { ProphylaxisSession } from "@eshg/dental/api/models/ProphylaxisSession";
-import { useGetProphylaxisSessions } from "@eshg/dental/api/queries/prophylaxisSessionApi";
-import { routes } from "@eshg/dental/shared/routes";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { useToggleableState } from "@eshg/lib-portal/hooks/useToggleableState";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
@@ -97,6 +99,7 @@ export function ProphylaxisSessionsTable(props: ProphylaxisSessionsTableProps) {
           ]}
           right={props.buttons}
           alignItems="flex-end"
+          invertDomOrder={true}
         />
       }
       filterSettings={

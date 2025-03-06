@@ -16,7 +16,9 @@ import de.eshg.statistics.api.attributes.BaseModuleIdAttribute;
 import de.eshg.statistics.api.attributes.BooleanAttribute;
 import de.eshg.statistics.api.attributes.DateAttribute;
 import de.eshg.statistics.api.attributes.DecimalAttribute;
+import de.eshg.statistics.api.attributes.DecimalIntervalAttribute;
 import de.eshg.statistics.api.attributes.IntegerAttribute;
+import de.eshg.statistics.api.attributes.IntegerIntervalAttribute;
 import de.eshg.statistics.api.attributes.ProcedureReferenceAttribute;
 import de.eshg.statistics.api.attributes.TextAttribute;
 import de.eshg.statistics.api.attributes.ValueOption;
@@ -148,8 +150,24 @@ public class EvaluationMapper {
               mapMeaningsToApi(valueToMeanings),
               getNumberValue(minMaxNullUnknownValues, MinMaxNullUnknownValues::getMinDecimal),
               getNumberValue(minMaxNullUnknownValues, MinMaxNullUnknownValues::getMaxDecimal));
+      case DECIMAL_INTERVAL ->
+          new DecimalIntervalAttribute(
+              attributeName,
+              attributeCode,
+              unit,
+              mapMeaningsToApi(valueToMeanings),
+              getNumberValue(minMaxNullUnknownValues, MinMaxNullUnknownValues::getMinDecimal),
+              getNumberValue(minMaxNullUnknownValues, MinMaxNullUnknownValues::getMaxDecimal));
       case INTEGER ->
           new IntegerAttribute(
+              attributeName,
+              attributeCode,
+              unit,
+              mapMeaningsToApi(valueToMeanings),
+              getNumberValue(minMaxNullUnknownValues, MinMaxNullUnknownValues::getMinInteger),
+              getNumberValue(minMaxNullUnknownValues, MinMaxNullUnknownValues::getMaxInteger));
+      case INTEGER_INTERVAL ->
+          new IntegerIntervalAttribute(
               attributeName,
               attributeCode,
               unit,

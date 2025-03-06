@@ -5,6 +5,8 @@
 
 package de.eshg.stiprotection.persistence.config;
 
+import de.eshg.departmentinfo.initialization.MandatoryInitialOpeningHours;
+import de.eshg.departmentinfo.initialization.OptionalInitialDepartmentInfo;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -12,14 +14,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "de.eshg.sti-protection")
 public class DepartmentInfoConfig {
 
-  private final Map<String, DepartmentInfoProperties> departmentInfo = new HashMap<>();
-  private final Map<String, OpeningHoursProperties> openingHours = new HashMap<>();
+  private final Map<String, OptionalInitialDepartmentInfo> departmentInfo = new HashMap<>();
+  private final Map<String, MandatoryInitialOpeningHours> openingHours = new HashMap<>();
 
-  public Map<String, DepartmentInfoProperties> getDepartmentInfo() {
+  public Map<String, OptionalInitialDepartmentInfo> getDepartmentInfo() {
     return departmentInfo;
   }
 
-  public Map<String, OpeningHoursProperties> getOpeningHours() {
+  public Map<String, MandatoryInitialOpeningHours> getOpeningHours() {
     return openingHours;
   }
 }

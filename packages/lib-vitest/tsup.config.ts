@@ -5,7 +5,7 @@
 
 import { defineLibConfig } from "../../config/tsup.base";
 
-export default defineLibConfig(
-  ["src/index.ts", "src/extend-expect.ts"],
-  "node",
-);
+export default defineLibConfig({
+  entry: ["src/index.ts", "src/extend-expect.ts"],
+  platform: "node",
+});

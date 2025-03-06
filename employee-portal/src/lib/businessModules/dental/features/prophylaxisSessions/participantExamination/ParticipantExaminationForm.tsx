@@ -5,7 +5,7 @@
 
 "use client";
 
-import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { MainContentLayout } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { styled } from "@mui/joy";

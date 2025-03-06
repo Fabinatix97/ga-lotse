@@ -70,8 +70,8 @@ export interface AppointmentPickerFieldProps<T extends Appointment>
   showWeekdays?: Weekday[];
   padDays?: boolean;
   autoSelectFirst?: true;
-  slots?: {
-    calendar?: AppointmentCalendarProps["slots"];
+  slotProps?: {
+    calendar?: AppointmentCalendarProps["slotProps"];
   };
 }
 
@@ -89,7 +89,7 @@ export function AppointmentPickerField<T extends Appointment>({
   layout,
   labels,
   showWeekdays,
-  slots,
+  slotProps,
   padDays,
   onDateSelected,
   autoSelectFirst,
@@ -154,17 +154,17 @@ export function AppointmentPickerField<T extends Appointment>({
   const Layout = layout ?? DefaultLayout;
   const AppointmentList = AppointmentListOverride ?? AppointmentListForDate;
   const calendarErrorId = useId();
-  const calendarError =
-    selectedDay == null && error ? (
-      <FormHelperText
-        component="p"
-        sx={(theme) => ({ my: 1, color: theme.palette.danger.plainColor })}
-        id={calendarErrorId}
-        aria-live="polite"
-      >
-        {error}
-      </FormHelperText>
-    ) : undefined;
+  const hasCalendarError = selectedDay == null && error;
+  const calendarError = hasCalendarError ? (
+    <FormHelperText
+      component="p"
+      sx={(theme) => ({ my: 1, color: theme.palette.danger.plainColor })}
+      id={calendarErrorId}
+      aria-live="polite"
+    >
+      {error}
+    </FormHelperText>
+  ) : undefined;
 
   return (
     <Layout
@@ -182,9 +182,9 @@ export function AppointmentPickerField<T extends Appointment>({
           nextMonthLabel={nextMonthLabel}
           prevMonthLabel={prevMonthLabel}
           showWeekdays={showWeekdays}
-          slots={slots?.calendar}
+          slotProps={slotProps?.calendar}
           padDays={padDays}
-          errorMessageId={calendarErrorId}
+          errorMessageId={hasCalendarError ? calendarErrorId : undefined}
         />
       }
       calendarError={calendarError}

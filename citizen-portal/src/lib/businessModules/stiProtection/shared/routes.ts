@@ -14,12 +14,21 @@ export function citizenRoutes(locale: SupportedLanguage | undefined) {
   return defineRoutes(
     `${baseRoutes(locale).citizenPath.index}/sexuelle-gesundheit`,
     (stiProtectionPath) => ({
-      sexWork: stiProtectionPath("/sexarbeit"),
-      stiConsultation: stiProtectionPath("/sti-beratung"),
+      sexWork: defineRoutes(stiProtectionPath("/sexarbeit"), (path) => ({
+        index: path("/"),
+        bookAppointment: path("/termin-buchen"),
+      })),
+      stiConsultation: defineRoutes(
+        stiProtectionPath("/sti-beratung"),
+        (path) => ({
+          index: path("/"),
+          bookAppointment: path("/termin-buchen"),
+        }),
+      ),
       appointments: defineRoutes(
         stiProtectionPath("/meine-termine"),
-        (appointmentPath) => ({
-          index: accessCodeRoute(appointmentPath("/")),
+        (appointmentsPath) => ({
+          index: accessCodeRoute(appointmentsPath("/")),
         }),
       ),
     }),

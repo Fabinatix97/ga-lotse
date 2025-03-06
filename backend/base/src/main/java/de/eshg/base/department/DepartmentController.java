@@ -5,7 +5,7 @@
 
 package de.eshg.base.department;
 
-import de.eshg.base.config.DepartmentConfiguration;
+import de.eshg.base.config.BaseDepartmentInfoService;
 import de.eshg.base.config.DepartmentConfigurationService;
 import de.eshg.file.common.CustomMediaTypes;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,14 +19,18 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Department")
 public class DepartmentController implements DepartmentApi {
   private final DepartmentConfigurationService departmentConfigurationService;
+  private final BaseDepartmentInfoService baseDepartmentInfoService;
 
-  public DepartmentController(DepartmentConfigurationService departmentConfiguration) {
+  public DepartmentController(
+      DepartmentConfigurationService departmentConfiguration,
+      BaseDepartmentInfoService departmentInfoService) {
     this.departmentConfigurationService = departmentConfiguration;
+    this.baseDepartmentInfoService = departmentInfoService;
   }
 
   @Override
   public GetDepartmentInfoResponse getDepartmentInfo() {
-    return mapToResponse(departmentConfigurationService.getConfig());
+    return baseDepartmentInfoService.getDepartmentInfo();
   }
 
   @Override
@@ -47,25 +51,5 @@ public class DepartmentController implements DepartmentApi {
   public ResponseEntity<byte[]> getSecurityTxtPublicKey() {
     byte[] securityTxt = departmentConfigurationService.getConfig().getSecurityTxtPublicKey();
     return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body(securityTxt);
-  }
-
-  private GetDepartmentInfoResponse mapToResponse(DepartmentConfiguration departmentConfiguration) {
-    return new GetDepartmentInfoResponse(
-        departmentConfiguration.getName(),
-        departmentConfiguration.getAbbreviation(),
-        departmentConfiguration.getStreet(),
-        departmentConfiguration.getHouseNumber(),
-        departmentConfiguration.getPostalCode(),
-        departmentConfiguration.getCity(),
-        departmentConfiguration.getCountry(),
-        departmentConfiguration.getPhoneNumber(),
-        departmentConfiguration.getHomepage(),
-        departmentConfiguration.getEmail(),
-        mapLocationToApi(departmentConfiguration));
-  }
-
-  private static LocationDto mapLocationToApi(DepartmentConfiguration departmentConfiguration) {
-    return new LocationDto(
-        departmentConfiguration.getLatitude(), departmentConfiguration.getLongitude());
   }
 }

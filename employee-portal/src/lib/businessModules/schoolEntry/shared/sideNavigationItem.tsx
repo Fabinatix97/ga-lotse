@@ -4,13 +4,13 @@
  */
 
 import { ApiUserRole } from "@eshg/base-api";
-import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
 import {
   SideNavigationItem,
   SideNavigationItemsProps,
   SideNavigationSubItem,
   SideNavigationSuspenseItem,
-} from "@eshg/lib-employee-portal/types/sideNavigation";
+  hasUserRole,
+} from "@eshg/lib-employee-portal";
 import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
 import { WcOutlined } from "@mui/icons-material";
 import { useSuspenseQuery } from "@tanstack/react-query";

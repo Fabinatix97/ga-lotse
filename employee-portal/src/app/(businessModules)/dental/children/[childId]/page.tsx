@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { routes } from "@eshg/dental/shared/routes";
+import { routes } from "@eshg/dental";
 import { redirect } from "next/navigation";
 
 import { DentalChildPageProps } from "@/app/(businessModules)/dental/children/[childId]/layout";

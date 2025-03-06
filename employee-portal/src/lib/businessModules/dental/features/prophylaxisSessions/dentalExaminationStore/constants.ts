@@ -3,16 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiTooth } from "@eshg/dental-api";
+import { ApiDentitionType, ApiTooth } from "@eshg/dental-api";
 
 import { NavigateDirection } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/actions/navigate";
 
 import { QuadrantNumber, ToothType } from "./types";
 
 export const QUADRANT_NUMBERS: QuadrantNumber[] = ["Q1", "Q2", "Q3", "Q4"];
-
-export const MIN_TOOTH_INDEX = 0;
-export const MAX_TOOTH_INDEX = 7;
 
 export const TOOTH_TYPES: Record<ApiTooth, ToothType> = {
   T11: "SECONDARY_TOOTH",
@@ -76,6 +73,8 @@ export const TOOTH_TYPES: Record<ApiTooth, ToothType> = {
   T85: "PRIMARY_TOOTH",
 };
 
+export const WISDOM_TEETH = new Set<ApiTooth>(["T18", "T28", "T38", "T48"]);
+
 /**
  * Defines teeth which can be added and removed
  */
@@ -94,7 +93,14 @@ export const OPTIONAL_TEETH = new Set<ApiTooth>([
   "T48",
 ]);
 
-export const WISDOM_TEETH = new Set<ApiTooth>(["T18", "T28", "T38", "T48"]);
+export const INITIALLY_TOGGLED_OPTIONAL_TEETH: Record<
+  ApiDentitionType,
+  Set<ApiTooth>
+> = {
+  PRIMARY: new Set<ApiTooth>([]),
+  MIXED: new Set<ApiTooth>(["T16", "T26", "T36", "T46"]),
+  SECONDARY: OPTIONAL_TEETH,
+};
 
 export const NAVIGATE_DIRECTIONS: Record<string, NavigateDirection> = {
   ArrowUp: "UP",

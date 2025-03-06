@@ -39,8 +39,7 @@ public class DentalChildDataSource extends ProcedureDataSource<Child, DentalChil
         DATA_SOURCE_NAME,
         DataSourceSensitivity.SENSITIVE,
         childRepository,
-        DentalChildAttributes.values(),
-        false);
+        DentalChildAttributes.values());
   }
 
   @Override

@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import {
+  MainContentLayout,
+  StickyToolbarLayout,
+} from "@eshg/lib-employee-portal";
 import ProcedureIcon from "@mui/icons-material/TextSnippetOutlined";
 import { ReactNode } from "react";
 

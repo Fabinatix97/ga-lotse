@@ -5,8 +5,7 @@
 
 "use client";
 
-import { getChildDetailsQuery } from "@eshg/dental/api/queries/childApi";
-import { useDentalApi } from "@eshg/dental/shared/DentalProvider";
+import { getChildDetailsQuery, useDentalApi } from "@eshg/dental";
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { useSuspenseQuery } from "@tanstack/react-query";
 

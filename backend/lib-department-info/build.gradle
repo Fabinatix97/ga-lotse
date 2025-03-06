@@ -1,0 +1,14 @@
+plugins {
+    id 'eshg.java-lib'
+}
+
+dependencies {
+    implementation project(':base-api')
+    implementation project(':business-module-persistence-commons')
+
+    testImplementation project(':test-commons')
+    testImplementation testFixtures(project(':business-module-persistence-commons'))
+    testImplementation 'org.instancio:instancio-core:latest.release'
+
+    annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
+}

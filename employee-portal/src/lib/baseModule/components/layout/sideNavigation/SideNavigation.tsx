@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useHeaderHeights } from "@eshg/lib-employee-portal/hooks/useHeaderHeights";
+import { useHeaderHeights } from "@eshg/lib-employee-portal";
 import { Box, Drawer } from "@mui/joy";
 import { Dispatch, SetStateAction } from "react";
 

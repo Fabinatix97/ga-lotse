@@ -7,11 +7,10 @@ import {
   SelectOption,
   SelectOptions,
 } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { Select } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { isNonNullish } from "remeda";
 
-import { ResetButton } from "@/lib/shared/components/ResetButton";
+import { ResettableSingleSelect } from "@/lib/shared/components/ResettableSingleSelect";
 import { UseTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
 export function SingleSelectFilter(props: {
@@ -27,32 +26,22 @@ export function SingleSelectFilter(props: {
 
   if (isNonNullish(selectProps.value)) {
     selectProps.indicator = null;
-    selectProps.endDecorator = (
-      <ResetButton
-        onReset={() => {
-          props.tableControl.setFilter([
-            {
-              name: props.searchParamName,
-              value: undefined,
-            },
-          ]);
-        }}
-      />
-    );
   }
 
   return (
-    <Select
+    <ResettableSingleSelect
       size="sm"
-      sx={{
-        width: 140,
-        ...props.sx,
-      }}
+      sx={{ width: 140, ...props.sx }}
       placeholder={props.placeholder}
       aria-label={props.placeholder}
+      onResetSelect={() => {
+        props.tableControl.setFilter([
+          { name: props.searchParamName, value: undefined },
+        ]);
+      }}
       {...selectProps}
     >
       <SelectOptions options={props.options} />
-    </Select>
+    </ResettableSingleSelect>
   );
 }

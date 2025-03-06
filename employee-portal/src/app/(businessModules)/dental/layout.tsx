@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DentalProvider } from "@eshg/dental/shared/DentalProvider";
+import { DentalProvider } from "@eshg/dental";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 import { env } from "@/env/server";

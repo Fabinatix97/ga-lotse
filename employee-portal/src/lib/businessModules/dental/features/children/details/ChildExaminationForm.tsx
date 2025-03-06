@@ -6,12 +6,14 @@
 "use client";
 
 import {
+  Examination,
+  ToothDiagnoses,
+  useUpdateExamination,
+} from "@eshg/dental";
+import {
   ApiExaminationResult,
   UpdateExaminationRequest,
 } from "@eshg/dental-api";
-import { Examination } from "@eshg/dental/api/models/Examination";
-import { ToothDiagnoses } from "@eshg/dental/api/models/ExaminationResult";
-import { useUpdateExamination } from "@eshg/dental/api/mutations/childApi";
 import {
   mapOptionalValue,
   mapRequiredValue,
@@ -102,6 +104,10 @@ function mapExaminationResultRequest(
       oralHygieneStatus: mapOptionalValue(formValues.oralHygieneStatus),
       fluorideVarnishApplied:
         mapOptionalValue(formValues.fluorideVarnishApplied) ?? false,
+      plaque: formValues.plaque,
+      calculus: formValues.calculus,
+      gingivitis: formValues.gingivitis,
+      parodontitis: formValues.parodontitis,
       toothDiagnoses: Object.values(toothDiagnoses),
     };
   }

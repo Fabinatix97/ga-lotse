@@ -333,7 +333,7 @@ function mapRiskContactsToApi(
     ),
     partnerRiskFactors: new Set(form.sexualContactFactors),
     sexualContacts: new Set(form.sexualContactGenders),
-    sexualOrientation: form.sexualOrientation ?? undefined,
+    sexualOrientation: mapOptionalValue(form.sexualOrientation ?? ""),
   };
 }
 

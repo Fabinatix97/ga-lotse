@@ -51,12 +51,13 @@ public abstract class EshgConfigurationService<T extends BaseEntity> {
         () -> {
           long numberOfConfigEntries = countConfigEntries();
           if (numberOfConfigEntries == 0) {
+            T initialConfiguration = getInitialConfiguration();
+            Assert.notNull(initialConfiguration, "No initial config provided.");
             log.info("Initializing configurations in db.");
-            entityManager.persist(getInitialConfiguration());
+            entityManager.persist(initialConfiguration);
           } else {
             Assert.isTrue(
-                numberOfConfigEntries == 1,
-                "Found more than one department configuration entries in the database.");
+                numberOfConfigEntries == 1, "Found more than one config entry in the database.");
           }
         });
   }

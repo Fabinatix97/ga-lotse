@@ -58,9 +58,7 @@ const SearchFormSheet = styled(FormSheet)(({ theme }) => ({
       transform: "rotate(90deg)",
       margin: theme.spacing(-1, 0), // achieve lower gap between fields and icons
     },
-    "& > .MuiButton-root": {
-      margin: theme.spacing(0, 0, 3, 0),
-    },
+    "& > .MuiButton-root": { margin: theme.spacing(0, 0, 3, 0) },
   },
 }));
 
@@ -206,12 +204,5 @@ export function usePersonSearch() {
     onReset: reset,
   } as const satisfies Partial<PersonSearchFormProps>;
 
-  return {
-    formValues,
-    searchParams,
-    buttonProps,
-    formProps,
-    setValues,
-    reset,
-  };
+  return { formValues, searchParams, buttonProps, formProps, setValues, reset };
 }

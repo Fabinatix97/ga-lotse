@@ -5,9 +5,11 @@
 
 "use client";
 
-import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
+import {
+  MainContentLayout,
+  StickyToolbarLayout,
+  Toolbar,
+} from "@eshg/lib-employee-portal";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Button, Card, Stack, Typography } from "@mui/joy";

@@ -44,16 +44,15 @@ import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
+import {
+  StiProtectionProceduresTableFilters,
+  useProceduresFilters,
+} from "./StiProtectionProceduresTableFilters";
+
 const initialSorting: ColumnSort = {
   id: "createdAt",
   desc: true,
 };
-
-export function formatProcedureId(procedureId: string): string {
-  return procedureId.length > 8
-    ? procedureId.slice(-8).toUpperCase()
-    : procedureId;
-}
 
 const columnHelper = createColumnHelper<ApiStiProtectionProcedureOverview>();
 
@@ -220,6 +219,8 @@ function closedActions({
 }
 
 export function StiProtectionProceduresTable() {
+  const filters = useProceduresFilters();
+
   const tableControl = useTableControl({
     serverSideSorting: true,
     initialSorting,
@@ -230,6 +231,7 @@ export function StiProtectionProceduresTable() {
   const proceduresQuery = useStiProceduresQuery(
     tableControl.paginationProps,
     tableControl.tableSorting,
+    filters,
   );
   const gdprBannerQuery = useGetGdprValidationBannerQuery(
     ApiBusinessModule.StiProtection,
@@ -253,7 +255,10 @@ export function StiProtectionProceduresTable() {
   const reopenDialog = useCloseAndReopenProcedure();
 
   return (
-    <TablePage aria-label="Vorgänge">
+    <TablePage
+      aria-label="Vorgänge"
+      filterSettings={<StiProtectionProceduresTableFilters />}
+    >
       <TableSheet
         loading={isLoading}
         footer={

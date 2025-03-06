@@ -31,7 +31,7 @@ export function Landingpage({ concern }: { concern: ApiConcern }) {
               }
             />
           }
-          sidePanel={<LandingpageSidePanel />}
+          sidePanel={<LandingpageSidePanel concern={concern} />}
         />
       </PageContent>
     </PageLayout>

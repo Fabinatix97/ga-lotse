@@ -5,10 +5,10 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import {
+  SideNavigationItem,
   hasAnyUserRoles,
   hasUserRole,
-} from "@eshg/lib-employee-portal/helpers/accessControl";
-import { SideNavigationItem } from "@eshg/lib-employee-portal/types/sideNavigation";
+} from "@eshg/lib-employee-portal";
 import { BarChartOutlined } from "@mui/icons-material";
 
 import { routes } from "./routes";

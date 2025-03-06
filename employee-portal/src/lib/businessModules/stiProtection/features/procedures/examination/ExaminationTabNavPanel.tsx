@@ -45,7 +45,7 @@ export function ExaminationTabNavPanel(
     <Stack gap={3}>
       <SidePanel>
         <SidePanelTitle component={"h3"} fontSize={"1.25rem"}>
-          Untersuchungen
+          Tests
         </SidePanelTitle>
         <SidePanelNav>
           {navItems.map((navItem) => (

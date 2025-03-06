@@ -17,6 +17,7 @@ import de.eshg.base.user.api.EmployeeUserKeysDto;
 import de.eshg.base.user.api.GroupMemberDto;
 import de.eshg.base.user.api.PrivateEmployeeUserKeyDto;
 import de.eshg.base.user.api.PublicEmployeeUserKeyDto;
+import de.eshg.base.user.api.UserChatAttributesDto;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.base.user.api.UserEventDto;
 import de.eshg.base.user.api.UserEventTypeDto;
@@ -75,6 +76,18 @@ public class UserMapper {
         user.getFirstName(),
         user.getLastName(),
         user.isEnabled());
+  }
+
+  public static UserChatAttributesDto mapChatUserAttributesToApi(UserRepresentation user) {
+    return new UserChatAttributesDto(
+        UUID.fromString(user.getId()),
+        user.getFirstName(),
+        user.getLastName(),
+        getUserAttribute(
+                user.getAttributes(), EmployeeUserAttribute.CHAT_CRYPTO_STORE_DERIVE_KEY_SECRET)
+            .orElse(null),
+        getUserAttribute(user.getAttributes(), EmployeeUserAttribute.EXTERNAL_CHAT_USERNAME)
+            .orElse(null));
   }
 
   public static UserProfileDto mapUserProfileToApi(
@@ -323,6 +336,25 @@ public class UserMapper {
     } else {
       attributes.remove(EmployeeUserAttribute.SALUTATION.getKey());
     }
+    return attributes;
+  }
+
+  public static Map<String, List<String>> mapChatAttributesToDm(
+      Map<String, List<String>> attributes,
+      String chatCryptoStoreDeriveKeySecret,
+      String externalChatUsername) {
+
+    if (chatCryptoStoreDeriveKeySecret != null) {
+      attributes.put(
+          EmployeeUserAttribute.CHAT_CRYPTO_STORE_DERIVE_KEY_SECRET.getKey(),
+          List.of(chatCryptoStoreDeriveKeySecret));
+    }
+
+    if (externalChatUsername != null) {
+      attributes.put(
+          EmployeeUserAttribute.EXTERNAL_CHAT_USERNAME.getKey(), List.of(externalChatUsername));
+    }
+
     return attributes;
   }
 

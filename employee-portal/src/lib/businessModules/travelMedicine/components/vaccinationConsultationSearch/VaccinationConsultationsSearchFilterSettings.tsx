@@ -10,12 +10,11 @@ import {
   toUtcDate,
 } from "@eshg/lib-portal/helpers/dateTime";
 import { ApiProcedureStatus } from "@eshg/travel-medicine-api";
-import { FormControl, FormLabel, Input, Select } from "@mui/joy";
+import { FormControl, FormLabel, Input } from "@mui/joy";
 import { useEffect, useState } from "react";
-import { isDefined } from "remeda";
 
 import { PROCEDURE_STATUS_OPTIONS_FOR_SEARCH } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/options";
-import { ResetButton } from "@/lib/shared/components/ResetButton";
+import { ResettableSingleSelect } from "@/lib/shared/components/ResettableSingleSelect";
 import { ActiveFilter } from "@/lib/shared/components/filterSettings/ActiveFilter";
 import { FilterSettingsContent } from "@/lib/shared/components/filterSettings/FilterSettingsContent";
 import {
@@ -146,7 +145,7 @@ export function VaccinationConsultationsSearchFilterSettings(
         </FormControl>
         <FormControl>
           <FormLabel>Status</FormLabel>
-          <Select
+          <ResettableSingleSelect
             aria-label="Status"
             value={props.filterFormValues.status ?? ""}
             onChange={(_, newValue) => {
@@ -155,19 +154,13 @@ export function VaccinationConsultationsSearchFilterSettings(
               }
               props.setFilterFormValue("status", newValue);
             }}
-            endDecorator={
-              isDefined(props.filterFormValues.status) ? (
-                <ResetButton
-                  onReset={() => {
-                    props.setFilterFormValue("status", undefined);
-                    props.deleteFilterValue("status");
-                  }}
-                />
-              ) : undefined
-            }
+            onResetSelect={() => {
+              props.setFilterFormValue("status", undefined);
+              props.deleteFilterValue("status");
+            }}
           >
             <SelectOptions options={PROCEDURE_STATUS_OPTIONS_FOR_SEARCH} />
-          </Select>
+          </ResettableSingleSelect>
         </FormControl>
       </FilterSettingsContent>
     </FilterSettingsSheet>

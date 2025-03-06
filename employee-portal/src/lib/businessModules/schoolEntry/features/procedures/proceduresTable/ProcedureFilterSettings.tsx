@@ -10,13 +10,13 @@ import {
   toUtcDate,
 } from "@eshg/lib-portal/helpers/dateTime";
 import { GetProceduresRequest } from "@eshg/school-entry-api";
-import { FormControl, FormLabel, Input, Select } from "@mui/joy";
-import { isDefined, isEmpty } from "remeda";
+import { FormControl, FormLabel, Input } from "@mui/joy";
+import { isEmpty } from "remeda";
 
 import { Label } from "@/lib/businessModules/schoolEntry/api/models/Label";
 import { PROCEDURE_TYPE_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 import { LabelAutocomplete } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/LabelAutocomplete";
-import { ResetButton } from "@/lib/shared/components/ResetButton";
+import { ResettableSingleSelect } from "@/lib/shared/components/ResettableSingleSelect";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { ActiveFilter } from "@/lib/shared/components/filterSettings/ActiveFilter";
 import { FilterSettingsContent } from "@/lib/shared/components/filterSettings/FilterSettingsContent";
@@ -108,7 +108,7 @@ export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
           </FormControl>
           <FormControl>
             <FormLabel>Termin</FormLabel>
-            <Select
+            <ResettableSingleSelect
               value={evaluateBooleanValue(
                 props.filterFormValues.hasAppointmentFilter,
               )}
@@ -121,18 +121,9 @@ export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
                   evaluateStringAsBoolean(newValue),
                 );
               }}
-              endDecorator={
-                isDefined(props.filterFormValues.hasAppointmentFilter) ? (
-                  <ResetButton
-                    onReset={() => {
-                      props.setFilterFormValue(
-                        "hasAppointmentFilter",
-                        undefined,
-                      );
-                    }}
-                  />
-                ) : undefined
-              }
+              onResetSelect={() => {
+                props.setFilterFormValue("hasAppointmentFilter", undefined);
+              }}
             >
               <SelectOptions
                 options={[
@@ -140,11 +131,11 @@ export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
                   { value: "false", label: "ohne Termin" },
                 ]}
               />
-            </Select>
+            </ResettableSingleSelect>
           </FormControl>
           <FormControl>
             <FormLabel>Einladung versandt</FormLabel>
-            <Select
+            <ResettableSingleSelect
               value={evaluateBooleanValue(
                 props.filterFormValues.isInvitationSentFilter,
               )}
@@ -157,18 +148,9 @@ export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
                   evaluateStringAsBoolean(newValue),
                 );
               }}
-              endDecorator={
-                isDefined(props.filterFormValues.isInvitationSentFilter) ? (
-                  <ResetButton
-                    onReset={() => {
-                      props.setFilterFormValue(
-                        "isInvitationSentFilter",
-                        undefined,
-                      );
-                    }}
-                  />
-                ) : undefined
-              }
+              onResetSelect={() => {
+                props.setFilterFormValue("isInvitationSentFilter", undefined);
+              }}
             >
               <SelectOptions
                 options={[
@@ -176,7 +158,7 @@ export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
                   { value: "false", label: "Nein" },
                 ]}
               />
-            </Select>
+            </ResettableSingleSelect>
           </FormControl>
           <FormControl>
             <FormLabel>Schuljahr</FormLabel>
@@ -202,7 +184,7 @@ export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
           </FormControl>
           <FormControl>
             <FormLabel>Art</FormLabel>
-            <Select
+            <ResettableSingleSelect
               aria-label="Art"
               value={props.filterFormValues.procedureTypeFilter ?? ""}
               onChange={(_, newValue) => {
@@ -211,21 +193,12 @@ export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
                 }
                 props.setFilterFormValue("procedureTypeFilter", newValue);
               }}
-              endDecorator={
-                isDefined(props.filterFormValues.procedureTypeFilter) ? (
-                  <ResetButton
-                    onReset={() => {
-                      props.setFilterFormValue(
-                        "procedureTypeFilter",
-                        undefined,
-                      );
-                    }}
-                  />
-                ) : undefined
-              }
+              onResetSelect={() => {
+                props.setFilterFormValue("procedureTypeFilter", undefined);
+              }}
             >
               <SelectOptions options={PROCEDURE_TYPE_OPTIONS} />
-            </Select>
+            </ResettableSingleSelect>
           </FormControl>
           <FormControl>
             <FormLabel>Kennungen</FormLabel>

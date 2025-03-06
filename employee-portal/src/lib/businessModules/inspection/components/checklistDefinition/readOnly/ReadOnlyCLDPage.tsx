@@ -4,8 +4,7 @@
  */
 
 import { ApiChecklistDefinitionVersion } from "@eshg/inspection-api";
-import { useLayoutConfig } from "@eshg/lib-employee-portal/contexts/layoutConfig";
-import { useHeaderHeights } from "@eshg/lib-employee-portal/hooks/useHeaderHeights";
+import { useHeaderHeights, useLayoutConfig } from "@eshg/lib-employee-portal";
 import { InfoOutlined } from "@mui/icons-material";
 import { Alert, Box } from "@mui/joy";
 import { ReactNode } from "react";

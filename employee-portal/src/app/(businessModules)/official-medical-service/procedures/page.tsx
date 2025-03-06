@@ -3,9 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
+import {
+  MainContentLayout,
+  StickyToolbarLayout,
+  Toolbar,
+} from "@eshg/lib-employee-portal";
 import { SearchParams } from "@eshg/lib-portal/helpers/searchParams";
 
 import { CreateProcedure } from "@/lib/businessModules/officialMedicalService/components/procedures/overview/CreateProcedure";

@@ -10,6 +10,9 @@ import static de.eshg.rest.service.PrivacyDocumentHelper.privacyPolicyAttachment
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import de.eshg.base.department.GetDepartmentInfoResponse;
+import de.eshg.departmentinfo.DepartmentInfoService;
+import de.eshg.departmentinfo.OpeningHoursService;
+import de.eshg.departmentinfo.domain.OpeningHours;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
 import de.eshg.lib.appointmentblock.AppointmentTypeService;
 import de.eshg.lib.appointmentblock.MappingUtil;
@@ -61,7 +64,7 @@ public class CitizenPublicController {
   public static final String CONCERNS_URL = "/concerns";
   public static final String APPOINTMENT_TYPES_URL = "/appointment-types";
 
-  private final OpeningHoursProperties openingHoursProperties;
+  private final OpeningHoursService openingHoursService;
   private final DepartmentInfoService departmentInfoService;
   private final CitizenProcedureService citizenProcedureService;
   private final AppointmentBlockService appointmentBlockService;
@@ -72,7 +75,7 @@ public class CitizenPublicController {
   private final AppointmentTypeService appointmentTypeService;
 
   public CitizenPublicController(
-      OpeningHoursProperties openingHoursProperties,
+      OpeningHoursService openingHoursService,
       DepartmentInfoService departmentInfoService,
       CitizenProcedureService citizenProcedureService,
       AppointmentBlockService appointmentBlockService,
@@ -81,7 +84,7 @@ public class CitizenPublicController {
       @Value("${de.eshg.official-medical-service.privacy-policy-location}") Resource privacyPolicy,
       ConcernService concernService,
       AppointmentTypeService appointmentTypeService) {
-    this.openingHoursProperties = openingHoursProperties;
+    this.openingHoursService = openingHoursService;
     this.departmentInfoService = departmentInfoService;
     this.citizenProcedureService = citizenProcedureService;
     this.appointmentBlockService = appointmentBlockService;
@@ -94,13 +97,12 @@ public class CitizenPublicController {
 
   @Operation(summary = "Get opening hours.")
   @GetMapping(path = OPENING_HOURS_URL)
+  @Transactional(readOnly = true)
   public GetOpeningHoursResponse getOpeningHours() {
-
+    OpeningHours openingHours = openingHoursService.getConfig();
     return new GetOpeningHoursResponse(
-        openingHoursProperties.de() == null ? Collections.emptyList() : openingHoursProperties.de(),
-        openingHoursProperties.en() == null
-            ? Collections.emptyList()
-            : openingHoursProperties.en());
+        Collections.unmodifiableList(openingHours.getDe()),
+        Collections.unmodifiableList(openingHours.getEn()));
   }
 
   @Operation(summary = "Get department info.")

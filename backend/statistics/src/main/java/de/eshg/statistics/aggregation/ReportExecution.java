@@ -82,18 +82,15 @@ public class ReportExecution {
 
   public void completeReport(UUID reportId) {
     try {
-      boolean dataNeedsAnonymization =
-          moduleClientAuthenticator.doWithModuleClientAuthentication(
-              () -> reportService.getDataNeedsAnonymization(reportId));
       AggregationResultStateInformation stateInfo = reportService.getStateInformation(reportId);
       while (stateInfo.state().equals(AggregationResultState.CREATING)) {
         AggregationResultPendingState pendingState = stateInfo.pendingState();
         moduleClientAuthenticator.doWithModuleClientAuthentication(
             () -> {
               switch (pendingState) {
-                case DATA_AGGREGATION ->
-                    reportService.aggregateData(reportId, dataNeedsAnonymization);
+                case DATA_AGGREGATION -> reportService.aggregateData(reportId);
                 case MIN_MAX_DETERMINATION -> reportService.minMaxDetermination(reportId);
+                case ANONYMIZATION -> reportService.anonymization(reportId);
                 case ANALYSIS_CONDUCTION -> reportService.analysisConduction(reportId);
                 case DIAGRAM_CREATION -> {
                   Map<AnalysisDto, AddDiagramRequest> map =

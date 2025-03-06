@@ -169,7 +169,7 @@ public class AggregationResultExportService {
   private CellType getCellType(TableColumnValueType valueType) {
     return switch (valueType) {
       case BOOLEAN -> CellType.BOOLEAN;
-      case DATE, TEXT, VALUE_WITH_OPTIONS -> CellType.STRING;
+      case DATE, DECIMAL_INTERVAL, INTEGER_INTERVAL, TEXT, VALUE_WITH_OPTIONS -> CellType.STRING;
       case DECIMAL, INTEGER -> CellType.NUMERIC;
       default -> throw new IllegalArgumentException("Unexpected type %s".formatted(valueType));
     };

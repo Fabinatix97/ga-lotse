@@ -3,6 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DentalIndexPage } from "@eshg/dental/pages/DentalIndexPage";
+import { DentalIndexPage } from "@eshg/dental";
 
 export default DentalIndexPage;

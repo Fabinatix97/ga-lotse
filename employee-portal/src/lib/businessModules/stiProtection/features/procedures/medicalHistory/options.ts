@@ -24,6 +24,7 @@ import { StandardRiskFactors } from "./MedicalHistoryForm.config";
 
 export const sexualOrientationOptions = buildEnumOptions<ApiSexualOrientation>(
   sexualOrientationNames,
+  true,
 );
 export const sexualContactGenderOptions = buildEnumOptions<ApiGender>(
   sexualContactGenderNames,
@@ -38,9 +39,9 @@ export const sexualContactFactorNames = {
   [ApiPartnerRiskFactors.SexWorker]: "im Sexgewerbe tätig",
 } as const satisfies Record<ApiPartnerRiskFactors, string>;
 
-export const sexualContactFactorOptions = Object.entries(
+export const sexualContactFactorOptions = buildEnumOptions(
   sexualContactFactorNames,
-).map(([value, label]) => ({ value, label }));
+);
 
 export const sexWorkTypeNames = {
   [ApiSexWorkLocation.Bordello]: "Bordell",
@@ -54,9 +55,7 @@ export const sexWorkTypeNames = {
   [ApiSexWorkLocation.Other]: "Sonstiges",
 } as const;
 
-export const sexWorkTypeOptions = Object.entries(sexWorkTypeNames).map(
-  ([value, label]) => ({ value, label }),
-);
+export const sexWorkTypeOptions = buildEnumOptions(sexWorkTypeNames);
 
 export const vaccineNames = {
   [ApiVaccination.HepatitisA]: "Hepatitis A",
@@ -64,9 +63,7 @@ export const vaccineNames = {
   [ApiVaccination.Hpv]: "HPV",
 } as const satisfies Record<ApiVaccination, string>;
 
-export const vaccineOptions = Object.entries(vaccineNames).map(
-  ([value, label]) => ({ value, label }),
-);
+export const vaccineOptions = buildEnumOptions(vaccineNames);
 
 export const safeSexRegularityNames = {
   [ApiSafeSexPractice.Always]: "Immer",
@@ -75,9 +72,9 @@ export const safeSexRegularityNames = {
   [ApiSafeSexPractice.Never]: "Nie",
 } as const satisfies Record<ApiSafeSexPractice, string>;
 
-export const safeSexRegularityOptions = Object.entries(
+export const safeSexRegularityOptions = buildEnumOptions(
   safeSexRegularityNames,
-).map(([value, label]) => ({ value, label }));
+);
 
 export const stiProtectiveMeasuresNames = {
   CONDOM: "Kondome",
@@ -88,9 +85,9 @@ export const stiProtectiveMeasuresNames = {
   OTHER: "Sonstiges",
 } as const satisfies Record<ApiProtectionMethod, string>;
 
-export const stiProtectiveMeasuresOptions = Object.entries(
+export const stiProtectiveMeasuresOptions = buildEnumOptions(
   stiProtectiveMeasuresNames,
-).map(([value, label]) => ({ value, label }));
+);
 
 export const standardRiskFactorNames = {
   unprotectedVaginal: "Ungeschützter Vaginalverkehr",
@@ -100,9 +97,9 @@ export const standardRiskFactorNames = {
 
 export type StandardRiskFactor = keyof typeof standardRiskFactorNames;
 
-export const standardRiskFactorOptions = Object.entries(
+export const standardRiskFactorOptions = buildEnumOptions(
   standardRiskFactorNames,
-).map(([value, label]) => ({ value, label }));
+);
 
 export const relationshipModelNames = {
   NO_COMMITMENT: "Keine feste Beziehung",
@@ -110,6 +107,7 @@ export const relationshipModelNames = {
   OPEN: "Offen",
 } as const satisfies Record<ApiRelationshipModel, string>;
 
-export const relationshipModelOptions = Object.entries(
+export const relationshipModelOptions = buildEnumOptions(
   relationshipModelNames,
-).map(([value, label]) => ({ value, label }));
+  true,
+);

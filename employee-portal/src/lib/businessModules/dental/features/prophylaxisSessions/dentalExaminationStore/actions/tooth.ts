@@ -3,35 +3,34 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiSecondaryResult } from "@eshg/dental-api";
-import { ToothDiagnoses } from "@eshg/dental/api/models/ExaminationResult";
-import { RELATED_TEETH } from "@eshg/dental/config/teeth";
+import { RELATED_TEETH, ToothDiagnoses, ToothDiagnosis } from "@eshg/dental";
+import { ApiMainResult, ApiSecondaryResult, ApiTooth } from "@eshg/dental-api";
 
 import {
   DentalExaminationState,
   calculateDmftValues,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/dentalExaminationStore";
-import { createToothWithDiagnosis } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/factories";
+import {
+  createToothWithDiagnosis,
+  resolveToothDiagnosisResult,
+} from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/factories";
 import {
   AddableTooth,
   Dentition,
-  ElementContext,
   ToothContext,
   ToothResult,
   ToothWithDiagnosis,
   isAddableTooth,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
 
-import {
-  isEmptyToothResult,
-  isValidMainResult,
-  isValidSecondaryResult,
-} from "./result";
+import { isValidMainResult, isValidSecondaryResult } from "./result";
+
+type AddToothState = Pick<DentalExaminationState, "dentition" | "dirty">;
 
 export function addTooth(
   toothContext: ToothContext,
   dentition: Dentition,
-): Dentition {
+): AddToothState {
   const { quadrantNumber, toothIndex } = toothContext;
   const targetQuadrant = dentition[quadrantNumber];
   const tooth = targetQuadrant.teeth[toothIndex];
@@ -49,17 +48,20 @@ export function addTooth(
   const newTooth = createToothWithDiagnosis(tooth.toothNumber);
 
   return {
-    ...dentition,
-    [quadrantNumber]: {
-      ...targetQuadrant,
-      teeth: targetQuadrant.teeth.with(toothContext.toothIndex, newTooth),
+    dentition: {
+      ...dentition,
+      [quadrantNumber]: {
+        ...targetQuadrant,
+        teeth: targetQuadrant.teeth.with(toothContext.toothIndex, newTooth),
+      },
     },
+    dirty: true,
   };
 }
 
 type RemoveToothState = Pick<
   DentalExaminationState,
-  "dentition" | "dmftValues"
+  "dentition" | "dmftValues" | "dirty"
 >;
 
 export function removeTooth(
@@ -100,13 +102,15 @@ export function removeTooth(
   return {
     dentition: newDentition,
     dmftValues: calculateDmftValues(newDentition),
+    dirty: true,
   };
 }
 
 export function toggleToothType(
   toothContext: ToothContext,
   dentition: Dentition,
-): Dentition {
+  previousToothDiagnoses: Partial<Record<ApiTooth, ToothDiagnosis>>,
+): Pick<DentalExaminationState, "dentition" | "dirty" | "dmftValues"> {
   const { quadrantNumber, toothIndex } = toothContext;
   const targetQuadrant = dentition[quadrantNumber];
   const tooth = targetQuadrant.teeth[toothIndex];
@@ -132,14 +136,23 @@ export function toggleToothType(
     toothNumber: relatedTooth,
     toothType:
       tooth.toothType === "PRIMARY_TOOTH" ? "SECONDARY_TOOTH" : "PRIMARY_TOOTH",
+    previousResults: resolveToothDiagnosisResult(
+      relatedTooth,
+      previousToothDiagnoses,
+    ),
   };
 
-  return {
+  const newDentition = {
     ...dentition,
     [quadrantNumber]: {
       ...targetQuadrant,
       teeth: targetQuadrant.teeth.with(toothContext.toothIndex, newTooth),
     },
+  };
+  return {
+    dentition: newDentition,
+    dmftValues: calculateDmftValues(newDentition),
+    dirty: true,
   };
 }
 
@@ -156,18 +169,9 @@ export function getToothDiagnoses(dentition: Dentition): ToothDiagnoses {
       const { toothNumber, mainResult, secondaryResult1, secondaryResult2 } =
         tooth;
 
-      assertIsValid(mainResult);
-
-      if (
-        isEmptyToothResult(mainResult) ||
-        !isValidMainResult(mainResult.value)
-      ) {
-        return;
-      }
-
       toothDiagnoses[toothNumber] = {
         tooth: toothNumber,
-        mainResult: mainResult.value,
+        mainResult: resolveMainResult(mainResult),
         secondaryResult1: resolveSecondaryResult(secondaryResult1),
         secondaryResult2: resolveSecondaryResult(secondaryResult2),
       };
@@ -188,16 +192,20 @@ function resolveSecondaryResult(
   return toothResult.value;
 }
 
+function resolveMainResult(
+  toothResult: ToothResult,
+): ApiMainResult | undefined {
+  assertIsValid(toothResult);
+
+  if (!isValidMainResult(toothResult.value)) {
+    return undefined;
+  }
+
+  return toothResult.value;
+}
+
 function assertIsValid(toothResult: ToothResult): void {
   if (toothResult.isInvalid) {
     throw new Error("Invalid tooth result");
   }
-}
-
-type FocusOutputState = Pick<DentalExaminationState, "currentFocus">;
-
-export function setFocus(newFocus: ElementContext): FocusOutputState {
-  return {
-    currentFocus: newFocus,
-  };
 }

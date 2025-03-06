@@ -153,6 +153,31 @@ public class UserController implements UserApi {
   }
 
   @Override
+  public UserChatAttributesDto getSelfUserChatAttributes() {
+    return UserMapper.mapChatUserAttributesToApi(userService.getSelfUser());
+  }
+
+  @Override
+  public UserChatAttributesDto updateSelfUserChatAttributes(
+      UpdateSelfUserChatAttributesRequest request) {
+    UserRepresentation updated =
+        userService.updateUser(
+            EmployeeKeycloakClient.getSelfUserId(),
+            user -> {
+              Map<String, List<String>> currentAttributes =
+                  Objects.requireNonNullElseGet(user.getAttributes(), LinkedHashMap::new);
+              Map<String, List<String>> attributes =
+                  UserMapper.mapChatAttributesToDm(
+                      currentAttributes,
+                      request.chatCryptoStoreDeriveKeySecret(),
+                      request.externalChatUsername());
+              user.setAttributes(attributes);
+            });
+
+    return UserMapper.mapChatUserAttributesToApi(updated);
+  }
+
+  @Override
   public EmployeeUserKeysDto addEmployeeSelfUserKeys(EmployeeUserKeysDto employeeUserKeys) {
     return UserMapper.mapUserKeysToApi(
         userService.addEmployeeUserKeys(UserMapper.mapUserKeysToDm(employeeUserKeys)));

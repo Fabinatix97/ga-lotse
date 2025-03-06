@@ -11,9 +11,9 @@ import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import {
   ApiCreatePerson,
   ApiCreateProcedureRequest,
+  ApiProcedureDetails,
   ApiSchoolEntryProcedureType,
 } from "@eshg/school-entry-api";
-import { ApiProcedureDetails } from "@eshg/school-entry-api";
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 import { useRouter } from "next/navigation";

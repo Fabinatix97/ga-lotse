@@ -9,7 +9,7 @@ To register the extended theme types in your package, add the following types to
 ```json
 {
   "compilerOptions": {
-    "types": ["@eshg/lib-employee-portal/types/theme"]
+    "types": ["@eshg/lib-employee-portal/theme"]
   }
 }
 ```

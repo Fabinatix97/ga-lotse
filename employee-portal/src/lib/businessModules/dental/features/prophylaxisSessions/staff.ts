@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  getAllDentalAssistantsQuery,
-  getAllDentistsQuery,
-} from "@eshg/dental/api/queries/staffApi";
+import { getAllDentalAssistantsQuery, getAllDentistsQuery } from "@eshg/dental";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";

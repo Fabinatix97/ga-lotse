@@ -19,12 +19,12 @@ export function useCitizenNavigationItems(): NavigationItem[] {
       subItems: [
         {
           name: t("landing.sti_consultation_title"),
-          href: citizenRoutes.stiConsultation,
+          href: citizenRoutes.stiConsultation.index,
           icon: StickyNote2Outlined,
         },
         {
           name: t("landing.sex_work_title"),
-          href: citizenRoutes.sexWork,
+          href: citizenRoutes.sexWork.index,
           icon: StickyNote2Outlined,
         },
       ],

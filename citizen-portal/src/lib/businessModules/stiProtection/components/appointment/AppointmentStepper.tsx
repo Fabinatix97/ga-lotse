@@ -3,35 +3,53 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Appointment } from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentPickerField";
-import { ApiConcern } from "@eshg/sti-protection-api";
+import { ApiCountryCode, ApiGender } from "@eshg/base-api";
+import { ApiAppointment, ApiConcern } from "@eshg/sti-protection-api";
 
 import { Stepper } from "@/lib/businessModules/stiProtection/components/shared/StepContext";
 
 import { FormDataProvider } from "./AppointmentDataContext";
+import { PersonalDataStep } from "./PersonalDataStep";
+import { PinStep } from "./PinStep";
+import { ShareAuthStep } from "./ShareAuthStep";
 import { TimeSlotStep } from "./TimeSlotStep";
 
-const steps = [
-  TimeSlotStep,
-  TimeSlotStep,
-  // PersonalDataStep,
-  // PinStep,
-  // ShareAuthStep,
-  // AppointmentReviewStep,
-] as const;
+const steps = [TimeSlotStep, PersonalDataStep, PinStep, ShareAuthStep] as const;
 
 export function AppointmentStepper({ concern }: { concern: ApiConcern }) {
   return (
-    <FormDataProvider initialData={{ concern } as AppointmentFormData}>
+    <FormDataProvider initialData={{ concern }}>
       <Stepper steps={steps} />
     </FormDataProvider>
   );
 }
-
 export interface AppointmentFormData {
   concern: ApiConcern;
 
   // Timeslot Step
-  appointment?: Appointment;
-  date?: Date;
+  appointment?: ApiAppointment | null;
+  date?: Date | null;
+
+  // From Booked Appointment
+  procedureId?: string;
+  bookedAppointment?: ApiAppointment;
+
+  // Personal Data Step
+  gender?: ApiGender | null;
+  birthYear?: number | "";
+  countryOfBirth?: ApiCountryCode | null;
+  inGermanySince?: number | "";
+
+  // Pin Step
+  pin?: string;
+  repeatedPin?: string;
+
+  // From Creating a user
+  accessCode?: string;
+
+  // Share Auth Step
+  hasSavedPin?: boolean;
+  hasDownloadedDoc?: boolean;
 }
+
+export type FormDataWithoutConcern = Omit<AppointmentFormData, "concern">;

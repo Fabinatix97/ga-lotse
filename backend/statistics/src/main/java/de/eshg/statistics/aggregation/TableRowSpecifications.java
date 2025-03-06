@@ -13,17 +13,18 @@ import de.eshg.statistics.api.filter.DecimalValueFilterParameterDto;
 import de.eshg.statistics.api.filter.IntegerRangeFilterParameterDto;
 import de.eshg.statistics.api.filter.IntegerValueFilterParameterDto;
 import de.eshg.statistics.api.filter.NullFilterParameterDto;
-import de.eshg.statistics.api.filter.NumericComparisonDto;
+import de.eshg.statistics.api.filter.RangeFilterParameterDto;
 import de.eshg.statistics.api.filter.TableColumnFilterParameter;
 import de.eshg.statistics.api.filter.TextFilterParameterDto;
+import de.eshg.statistics.api.filter.ValueFilterParameterDto;
 import de.eshg.statistics.api.filter.ValueOptionFilterParameterDto;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.CellEntry_;
 import de.eshg.statistics.persistence.entity.TableColumn;
+import de.eshg.statistics.persistence.entity.TableColumnValueType;
 import de.eshg.statistics.persistence.entity.TableRow;
 import de.eshg.statistics.persistence.entity.TableRow_;
 import de.eshg.statistics.persistence.entity.entry.BooleanEntry_;
-import de.eshg.statistics.persistence.entity.entry.DateEntry_;
 import de.eshg.statistics.persistence.entity.entry.DecimalEntry_;
 import de.eshg.statistics.persistence.entity.entry.IntegerEntry_;
 import de.eshg.statistics.persistence.entity.entry.TextEntry_;
@@ -78,10 +79,9 @@ public class TableRowSpecifications {
   private static String getCellEntryValueColumn(TableColumn tableColumn) {
     return switch (tableColumn.getValueType()) {
       case BOOLEAN -> BooleanEntry_.BOOL_VALUE;
-      case DATE -> DateEntry_.DATE_VALUE;
-      case DECIMAL -> DecimalEntry_.BIG_DECIMAL_VALUE;
-      case INTEGER -> IntegerEntry_.INTEGER_VALUE;
-      case TEXT, VALUE_WITH_OPTIONS -> TextEntry_.TEXT_VALUE;
+      case DECIMAL, DECIMAL_INTERVAL -> DecimalEntry_.BIG_DECIMAL_VALUE;
+      case INTEGER, INTEGER_INTERVAL -> IntegerEntry_.INTEGER_VALUE;
+      case DATE, TEXT, VALUE_WITH_OPTIONS -> TextEntry_.TEXT_VALUE;
       case PROCEDURE_REFERENCE -> UuidEntry_.UUID_VALUE;
     };
   }
@@ -99,29 +99,13 @@ public class TableRowSpecifications {
               booleanFilterParameter.searchForFalse(),
               booleanFilterParameter.searchForNull());
       case DecimalRangeFilterParameterDto decimalRangeFilterParameter ->
-          getDecimalRangeFilterSpecification(
-              tableColumn,
-              decimalRangeFilterParameter.minValueInclusive(),
-              decimalRangeFilterParameter.maxValueInclusive(),
-              decimalRangeFilterParameter.withNullValues());
+          getDecimalRangeFilterSpecification(tableColumn, decimalRangeFilterParameter);
       case DecimalValueFilterParameterDto decimalValueFilterParameter ->
-          getDecimalValueFilterSpecification(
-              tableColumn,
-              decimalValueFilterParameter.value(),
-              decimalValueFilterParameter.numericComparison(),
-              decimalValueFilterParameter.withNullValues());
+          getDecimalValueFilterSpecification(tableColumn, decimalValueFilterParameter);
       case IntegerRangeFilterParameterDto integerRangeFilterParameter ->
-          getIntegerRangeFilterSpecification(
-              tableColumn,
-              integerRangeFilterParameter.minValueInclusive(),
-              integerRangeFilterParameter.maxValueInclusive(),
-              integerRangeFilterParameter.withNullValues());
+          getIntegerRangeFilterSpecification(tableColumn, integerRangeFilterParameter);
       case IntegerValueFilterParameterDto integerValueFilterParameter ->
-          getIntegerValueFilterSpecification(
-              tableColumn,
-              integerValueFilterParameter.value(),
-              integerValueFilterParameter.numericComparison(),
-              integerValueFilterParameter.withNullValues());
+          getIntegerValueFilterSpecification(tableColumn, integerValueFilterParameter);
       case NullFilterParameterDto ignored -> getNullSpecification(tableColumn);
       case TextFilterParameterDto textFilterParameter ->
           getTextFilterSpecificationSearch(tableColumn, textFilterParameter.text());
@@ -160,62 +144,99 @@ public class TableRowSpecifications {
   }
 
   private static Specification<TableRow> getDecimalRangeFilterSpecification(
-      TableColumn tableColumn,
-      BigDecimal minValueInclusive,
-      BigDecimal maxValueInclusive,
-      boolean withNullValues) {
-    return (root, query, criteriaBuilder) -> {
-      Join<Object, Object> join = root.join(TableRow_.CELL_ENTRIES);
-      Path<BigDecimal> fieldPath = join.get(DecimalEntry_.BIG_DECIMAL_VALUE);
+      TableColumn tableColumn, RangeFilterParameterDto<BigDecimal> decimalRangeFilter) {
+    if (tableColumn.getValueType().equals(TableColumnValueType.DECIMAL_INTERVAL)) {
+      return (root, query, criteriaBuilder) -> {
+        Join<Object, Object> join = root.join(TableRow_.CELL_ENTRIES);
+        Predicate tableColumnPredicate =
+            criteriaBuilder.equal(join.get(CellEntry_.TABLE_COLUMN), tableColumn);
 
-      Predicate tableColumnPredicate =
-          criteriaBuilder.equal(join.get(CellEntry_.TABLE_COLUMN), tableColumn);
+        return addAdditionalPredicatesForNumericRangeInInterval(
+            criteriaBuilder,
+            join.get(DecimalEntry_.BIG_DECIMAL_VALUE),
+            join.get(DecimalEntry_.DECIMAL_LOWER_BOUND),
+            join.get(DecimalEntry_.DECIMAL_UPPER_BOUND),
+            decimalRangeFilter,
+            tableColumnPredicate);
+      };
+    } else {
+      return (root, query, criteriaBuilder) -> {
+        Join<Object, Object> join = root.join(TableRow_.CELL_ENTRIES);
+        Path<BigDecimal> fieldPath = join.get(DecimalEntry_.BIG_DECIMAL_VALUE);
 
-      return addAdditionalPredicatesForNumericRange(
-          criteriaBuilder,
-          fieldPath,
-          minValueInclusive,
-          maxValueInclusive,
-          withNullValues,
-          tableColumnPredicate);
-    };
+        Predicate tableColumnPredicate =
+            criteriaBuilder.equal(join.get(CellEntry_.TABLE_COLUMN), tableColumn);
+
+        return addAdditionalPredicatesForNumericRange(
+            criteriaBuilder, fieldPath, decimalRangeFilter, tableColumnPredicate);
+      };
+    }
   }
 
   public static Specification<TableRow> getDecimalValueFilterSpecification(
-      TableColumn tableColumn,
-      BigDecimal value,
-      NumericComparisonDto numericComparison,
-      boolean withNullValues) {
-    return (root, query, criteriaBuilder) -> {
-      Join<Object, Object> join = root.join(TableRow_.CELL_ENTRIES);
-      Path<BigDecimal> fieldPath = join.get(DecimalEntry_.BIG_DECIMAL_VALUE);
+      TableColumn tableColumn, ValueFilterParameterDto<BigDecimal> decimalValueFilter) {
+    if (tableColumn.getValueType().equals(TableColumnValueType.DECIMAL_INTERVAL)) {
+      return (root, query, criteriaBuilder) -> {
+        Join<Object, Object> join = root.join(TableRow_.CELL_ENTRIES);
+        Predicate tableColumnPredicate =
+            criteriaBuilder.equal(join.get(CellEntry_.TABLE_COLUMN), tableColumn);
 
-      Predicate tableColumnPredicate =
-          criteriaBuilder.equal(join.get(CellEntry_.TABLE_COLUMN), tableColumn);
+        return addAdditionalPredicatesForNumericValueInInterval(
+            criteriaBuilder,
+            join.get(DecimalEntry_.BIG_DECIMAL_VALUE),
+            join.get(DecimalEntry_.DECIMAL_LOWER_BOUND),
+            join.get(DecimalEntry_.DECIMAL_UPPER_BOUND),
+            decimalValueFilter,
+            tableColumnPredicate);
+      };
+    } else {
+      return (root, query, criteriaBuilder) -> {
+        Join<Object, Object> join = root.join(TableRow_.CELL_ENTRIES);
+        Path<BigDecimal> fieldPath = join.get(DecimalEntry_.BIG_DECIMAL_VALUE);
 
-      return addAdditionalPredicatesForNumericValue(
-          criteriaBuilder,
-          fieldPath,
-          value,
-          numericComparison,
-          withNullValues,
-          tableColumnPredicate);
-    };
+        Predicate tableColumnPredicate =
+            criteriaBuilder.equal(join.get(CellEntry_.TABLE_COLUMN), tableColumn);
+
+        return addAdditionalPredicatesForNumericValue(
+            criteriaBuilder, fieldPath, decimalValueFilter, tableColumnPredicate);
+      };
+    }
   }
 
-  private static <T extends Comparable<? super T>> Predicate addAdditionalPredicatesForNumericRange(
+  private static <N extends Comparable<? super N>>
+      Predicate addAdditionalPredicatesForNumericRangeInInterval(
+          CriteriaBuilder criteriaBuilder,
+          Path<N> fieldPathValue,
+          Path<N> fieldPathLowerBound,
+          Path<N> fieldPathUpperBound,
+          RangeFilterParameterDto<N> rangeFilter,
+          Predicate tableColumnPredicate) {
+    Predicate predicate =
+        criteriaBuilder.and(
+            criteriaBuilder.lessThanOrEqualTo(fieldPathLowerBound, rangeFilter.maxValueInclusive()),
+            criteriaBuilder.greaterThanOrEqualTo(
+                fieldPathUpperBound, rangeFilter.minValueInclusive()));
+
+    if (rangeFilter.withNullValues()) {
+      return criteriaBuilder.and(
+          tableColumnPredicate,
+          criteriaBuilder.or(predicate, criteriaBuilder.isNull(fieldPathValue)));
+    } else {
+      return criteriaBuilder.and(tableColumnPredicate, predicate);
+    }
+  }
+
+  private static <N extends Comparable<? super N>> Predicate addAdditionalPredicatesForNumericRange(
       CriteriaBuilder criteriaBuilder,
-      Path<T> fieldPath,
-      T minValueInclusive,
-      T maxValueInclusive,
-      boolean withNullValues,
+      Path<N> fieldPath,
+      RangeFilterParameterDto<N> rangeFilter,
       Predicate tableColumnPredicate) {
     Predicate predicate =
         criteriaBuilder.and(
-            criteriaBuilder.greaterThanOrEqualTo(fieldPath, minValueInclusive),
-            criteriaBuilder.lessThanOrEqualTo(fieldPath, maxValueInclusive));
+            criteriaBuilder.greaterThanOrEqualTo(fieldPath, rangeFilter.minValueInclusive()),
+            criteriaBuilder.lessThanOrEqualTo(fieldPath, rangeFilter.maxValueInclusive()));
 
-    if (withNullValues) {
+    if (rangeFilter.withNullValues()) {
       return criteriaBuilder.and(
           tableColumnPredicate, criteriaBuilder.or(predicate, criteriaBuilder.isNull(fieldPath)));
     } else {
@@ -223,15 +244,44 @@ public class TableRowSpecifications {
     }
   }
 
-  private static <T extends Comparable<? super T>> Predicate addAdditionalPredicatesForNumericValue(
-      CriteriaBuilder criteriaBuilder,
-      Path<T> fieldPath,
-      T value,
-      NumericComparisonDto numericComparison,
-      boolean withNullValues,
-      Predicate tableColumnPredicate) {
+  private static <N extends Comparable<? super N>>
+      Predicate addAdditionalPredicatesForNumericValueInInterval(
+          CriteriaBuilder criteriaBuilder,
+          Path<N> fieldPathValue,
+          Path<N> fieldPathLowerBound,
+          Path<N> fieldPathUpperBound,
+          ValueFilterParameterDto<N> valueFilter,
+          Predicate tableColumnPredicate) {
+    N value = valueFilter.value();
     Predicate predicate =
-        switch (numericComparison) {
+        switch (valueFilter.numericComparison()) {
+          case EQUAL ->
+              criteriaBuilder.and(
+                  criteriaBuilder.lessThanOrEqualTo(fieldPathLowerBound, value),
+                  criteriaBuilder.greaterThanOrEqualTo(fieldPathUpperBound, value));
+          case GREATER_EQUAL -> criteriaBuilder.lessThanOrEqualTo(fieldPathLowerBound, value);
+          case GREATER_THAN -> criteriaBuilder.lessThan(fieldPathLowerBound, value);
+          case LESS_EQUAL -> criteriaBuilder.greaterThanOrEqualTo(fieldPathUpperBound, value);
+          case LESS_THAN -> criteriaBuilder.greaterThan(fieldPathUpperBound, value);
+        };
+
+    if (valueFilter.withNullValues()) {
+      return criteriaBuilder.and(
+          tableColumnPredicate,
+          criteriaBuilder.or(predicate, criteriaBuilder.isNull(fieldPathValue)));
+    } else {
+      return criteriaBuilder.and(tableColumnPredicate, predicate);
+    }
+  }
+
+  private static <N extends Comparable<? super N>> Predicate addAdditionalPredicatesForNumericValue(
+      CriteriaBuilder criteriaBuilder,
+      Path<N> fieldPath,
+      ValueFilterParameterDto<N> valueFilter,
+      Predicate tableColumnPredicate) {
+    N value = valueFilter.value();
+    Predicate predicate =
+        switch (valueFilter.numericComparison()) {
           case EQUAL -> criteriaBuilder.equal(fieldPath, value);
           case GREATER_EQUAL -> criteriaBuilder.greaterThanOrEqualTo(fieldPath, value);
           case GREATER_THAN -> criteriaBuilder.greaterThan(fieldPath, value);
@@ -239,7 +289,7 @@ public class TableRowSpecifications {
           case LESS_THAN -> criteriaBuilder.lessThan(fieldPath, value);
         };
 
-    if (withNullValues) {
+    if (valueFilter.withNullValues()) {
       return criteriaBuilder.and(
           tableColumnPredicate, criteriaBuilder.or(predicate, criteriaBuilder.isNull(fieldPath)));
     } else {
@@ -248,47 +298,63 @@ public class TableRowSpecifications {
   }
 
   private static Specification<TableRow> getIntegerRangeFilterSpecification(
-      TableColumn tableColumn,
-      Integer minValueInclusive,
-      Integer maxValueInclusive,
-      boolean withNullValues) {
-    return (root, query, criteriaBuilder) -> {
-      Join<Object, Object> join = root.join(TableRow_.CELL_ENTRIES);
-      Path<Integer> fieldPath = join.get(IntegerEntry_.INTEGER_VALUE);
+      TableColumn tableColumn, RangeFilterParameterDto<Integer> integerRangeFilter) {
+    if (tableColumn.getValueType().equals(TableColumnValueType.INTEGER_INTERVAL)) {
+      return (root, query, criteriaBuilder) -> {
+        Join<Object, Object> join = root.join(TableRow_.CELL_ENTRIES);
+        Predicate tableColumnPredicate =
+            criteriaBuilder.equal(join.get(CellEntry_.TABLE_COLUMN), tableColumn);
 
-      Predicate tableColumnPredicate =
-          criteriaBuilder.equal(join.get(CellEntry_.TABLE_COLUMN), tableColumn);
+        return addAdditionalPredicatesForNumericRangeInInterval(
+            criteriaBuilder,
+            join.get(IntegerEntry_.INTEGER_VALUE),
+            join.get(IntegerEntry_.INTEGER_LOWER_BOUND),
+            join.get(IntegerEntry_.INTEGER_UPPER_BOUND),
+            integerRangeFilter,
+            tableColumnPredicate);
+      };
+    } else {
+      return (root, query, criteriaBuilder) -> {
+        Join<Object, Object> join = root.join(TableRow_.CELL_ENTRIES);
+        Path<Integer> fieldPath = join.get(IntegerEntry_.INTEGER_VALUE);
 
-      return addAdditionalPredicatesForNumericRange(
-          criteriaBuilder,
-          fieldPath,
-          minValueInclusive,
-          maxValueInclusive,
-          withNullValues,
-          tableColumnPredicate);
-    };
+        Predicate tableColumnPredicate =
+            criteriaBuilder.equal(join.get(CellEntry_.TABLE_COLUMN), tableColumn);
+
+        return addAdditionalPredicatesForNumericRange(
+            criteriaBuilder, fieldPath, integerRangeFilter, tableColumnPredicate);
+      };
+    }
   }
 
   public static Specification<TableRow> getIntegerValueFilterSpecification(
-      TableColumn tableColumn,
-      Integer value,
-      NumericComparisonDto numericComparison,
-      boolean withNullValues) {
-    return (root, query, criteriaBuilder) -> {
-      Join<Object, Object> join = root.join(TableRow_.CELL_ENTRIES);
-      Path<Integer> fieldPath = join.get(IntegerEntry_.INTEGER_VALUE);
+      TableColumn tableColumn, ValueFilterParameterDto<Integer> integerValueFilter) {
+    if (tableColumn.getValueType().equals(TableColumnValueType.INTEGER_INTERVAL)) {
+      return (root, query, criteriaBuilder) -> {
+        Join<Object, Object> join = root.join(TableRow_.CELL_ENTRIES);
+        Predicate tableColumnPredicate =
+            criteriaBuilder.equal(join.get(CellEntry_.TABLE_COLUMN), tableColumn);
 
-      Predicate tableColumnPredicate =
-          criteriaBuilder.equal(join.get(CellEntry_.TABLE_COLUMN), tableColumn);
+        return addAdditionalPredicatesForNumericValueInInterval(
+            criteriaBuilder,
+            join.get(IntegerEntry_.INTEGER_VALUE),
+            join.get(IntegerEntry_.INTEGER_LOWER_BOUND),
+            join.get(IntegerEntry_.INTEGER_UPPER_BOUND),
+            integerValueFilter,
+            tableColumnPredicate);
+      };
+    } else {
+      return (root, query, criteriaBuilder) -> {
+        Join<Object, Object> join = root.join(TableRow_.CELL_ENTRIES);
+        Path<Integer> fieldPath = join.get(IntegerEntry_.INTEGER_VALUE);
 
-      return addAdditionalPredicatesForNumericValue(
-          criteriaBuilder,
-          fieldPath,
-          value,
-          numericComparison,
-          withNullValues,
-          tableColumnPredicate);
-    };
+        Predicate tableColumnPredicate =
+            criteriaBuilder.equal(join.get(CellEntry_.TABLE_COLUMN), tableColumn);
+
+        return addAdditionalPredicatesForNumericValue(
+            criteriaBuilder, fieldPath, integerValueFilter, tableColumnPredicate);
+      };
+    }
   }
 
   public static Specification<TableRow> getNullSpecification(TableColumn tableColumn) {
@@ -346,8 +412,8 @@ public class TableRowSpecifications {
   public static Specification<TableRow> getNotNullAndNotUnknownSpecificationDecimalAndInteger(
       TableColumn tableColumn) {
     return switch (tableColumn.getValueType()) {
-      case DECIMAL -> getNotNullAndNotUnknownSpecificationDecimal(tableColumn);
-      case INTEGER -> getNotNullAndNotUnknownSpecificationInteger(tableColumn);
+      case DECIMAL, DECIMAL_INTERVAL -> getNotNullAndNotUnknownSpecificationDecimal(tableColumn);
+      case INTEGER, INTEGER_INTERVAL -> getNotNullAndNotUnknownSpecificationInteger(tableColumn);
       default -> throw new IllegalStateException("Unexpected value: " + tableColumn.getValueType());
     };
   }
@@ -405,7 +471,7 @@ public class TableRowSpecifications {
       Join<Object, Object> join = root.join(TableRow_.CELL_ENTRIES);
       return criteriaBuilder.and(
           criteriaBuilder.equal(join.get(CellEntry_.TABLE_COLUMN), tableColumn),
-          criteriaBuilder.equal(join.get(DateEntry_.DATE_VALUE), date));
+          criteriaBuilder.equal(join.get(TextEntry_.TEXT_VALUE), date.toString()));
     };
   }
 }

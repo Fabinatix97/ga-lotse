@@ -13,8 +13,7 @@ import {
 } from "@eshg/travel-medicine-api";
 import { Grid, Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
-import { useState } from "react";
-import { Ref } from "react";
+import { Ref, useState } from "react";
 
 import { CountryFieldMulti } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/CountryFieldMulti";
 import {

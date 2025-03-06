@@ -207,6 +207,10 @@ public class ProphylaxisSessionsPopulator
               faker, hasFluoridationVarnish && isFluoridationConsentGiven && faker.bool().bool()),
           optional(faker, randomElement(faker, OralHygieneStatusDto.values())),
           randomDentitionType(faker),
+          faker.bool().bool(),
+          faker.bool().bool(),
+          faker.bool().bool(),
+          faker.bool().bool(),
           randomToothDiagnoses(faker));
     } else if (hasFluoridationVarnish) {
       return new FluoridationExaminationResultDto(

@@ -56,4 +56,6 @@
     <include file="migrations/0046_add_minBin_and_maxBin.xml"/>
     <include file="migrations/0047_migrate_minBin_and_maxBin.xml"/>
     <include file="migrations/0048_anonymization_configuration.xml"/>
+    <include file="migrations/0049_add_last_sensitivity_and_pending_state.xml"/>
+    <include file="migrations/0050_anonymization_cell_entry_intervals_and_dates_as_text.xml"/>
 </databaseChangeLog>

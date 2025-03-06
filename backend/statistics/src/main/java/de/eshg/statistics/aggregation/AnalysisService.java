@@ -17,11 +17,21 @@ import de.eshg.statistics.api.chart.BarChartConfigurationDto;
 import de.eshg.statistics.api.chart.BinningModeDto;
 import de.eshg.statistics.api.chart.ChartConfigurationDto;
 import de.eshg.statistics.api.chart.ChoroplethMapConfigurationDto;
+import de.eshg.statistics.api.chart.GroupingDto;
 import de.eshg.statistics.api.chart.HistogramChartConfigurationDto;
 import de.eshg.statistics.api.chart.LineChartConfigurationDto;
+import de.eshg.statistics.api.chart.OrientationDto;
 import de.eshg.statistics.api.chart.PieChartConfigurationDto;
 import de.eshg.statistics.api.chart.PointBasedChartConfigurationDto;
+import de.eshg.statistics.api.chart.RangeDto;
+import de.eshg.statistics.api.chart.ScalingDto;
 import de.eshg.statistics.api.chart.ScatterChartConfigurationDto;
+import de.eshg.statistics.api.chart.UpdateBarChartConfigurationDto;
+import de.eshg.statistics.api.chart.UpdateChartConfigurationDto;
+import de.eshg.statistics.api.chart.UpdateChoroplethMapConfigurationDto;
+import de.eshg.statistics.api.chart.UpdateHistogramChartConfigurationDto;
+import de.eshg.statistics.api.chart.UpdateLineChartConfigurationDto;
+import de.eshg.statistics.api.chart.UpdateScatterChartConfigurationDto;
 import de.eshg.statistics.api.diagram.DiagramDto;
 import de.eshg.statistics.api.diagram.UpdateDiagramRequest;
 import de.eshg.statistics.api.filter.TableColumnFilterParameter;
@@ -37,6 +47,7 @@ import de.eshg.statistics.persistence.entity.Evaluation;
 import de.eshg.statistics.persistence.entity.TableColumn;
 import de.eshg.statistics.persistence.entity.TableColumnValueType;
 import de.eshg.statistics.persistence.entity.TableRow;
+import de.eshg.statistics.persistence.entity.chart.BarChartConfiguration;
 import de.eshg.statistics.persistence.entity.chart.ChoroplethMapConfiguration;
 import de.eshg.statistics.persistence.entity.chart.HistogramBin;
 import de.eshg.statistics.persistence.entity.chart.HistogramChartConfiguration;
@@ -61,6 +72,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 import org.hibernate.Hibernate;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -567,6 +580,31 @@ public class AnalysisService {
   public AnalysisDto updateAnalysis(UUID analysisId, UpdateAnalysisRequest updateAnalysisRequest) {
     Analysis analysis = getAnalysisInternal(analysisId);
     validateAnalysisNotInReport(analysis);
+    if (updateAnalysisRequest.updateChartConfigurationDto() != null) {
+      ChartConfiguration chartConfiguration =
+          Hibernate.unproxy(analysis.getChartConfiguration(), ChartConfiguration.class);
+      switch (chartConfiguration) {
+        case BarChartConfiguration barChartConfiguration ->
+            updateBarChartConfiguration(
+                barChartConfiguration, updateAnalysisRequest.updateChartConfigurationDto());
+        case ChoroplethMapConfiguration choroplethMapConfiguration ->
+            updateChoroplethMapConfiguration(
+                choroplethMapConfiguration, updateAnalysisRequest.updateChartConfigurationDto());
+        case HistogramChartConfiguration histogramChartConfiguration ->
+            updateHistogramChartConfiguration(
+                histogramChartConfiguration, updateAnalysisRequest.updateChartConfigurationDto());
+        case LineChartConfiguration lineChartConfiguration ->
+            updateLineChartConfiguration(
+                lineChartConfiguration, updateAnalysisRequest.updateChartConfigurationDto());
+        case ScatterChartConfiguration scatterChartConfiguration ->
+            updateScatterChartConfiguration(
+                scatterChartConfiguration, updateAnalysisRequest.updateChartConfigurationDto());
+        default ->
+            throw new BadRequestException(
+                "Chart configuration of type '%s' cannot be updated"
+                    .formatted(chartConfiguration.getClass().getSimpleName()));
+      }
+    }
     analysis.setName(updateAnalysisRequest.name());
 
     return AnalysisMapper.mapToApi(analysis);
@@ -576,6 +614,122 @@ public class AnalysisService {
     if (Hibernate.unproxy(analysis.getAggregationResult(), AbstractAggregationResult.class)
         instanceof Report) {
       throw new BadRequestException("Analyses of reports can not be changed");
+    }
+  }
+
+  private void updateBarChartConfiguration(
+      BarChartConfiguration barChartConfiguration,
+      UpdateChartConfigurationDto updateChartConfiguration) {
+    if (updateChartConfiguration
+        instanceof
+        UpdateBarChartConfigurationDto(
+            ScalingDto scaling,
+            GroupingDto grouping,
+            OrientationDto orientation)) {
+      if (barChartConfiguration.getSecondaryAttributeSelection() == null) {
+        if (scaling != null || grouping != null) {
+          throw new BadRequestException(
+              "BarChartConfiguration has no secondary attribute, scaling and grouping cannot be updated");
+        }
+      } else {
+        setValueInChartConfigurationIfNotNull(
+            barChartConfiguration,
+            scaling,
+            AnalysisMapper::mapToScaling,
+            BarChartConfiguration::setScaling);
+        setValueInChartConfigurationIfNotNull(
+            barChartConfiguration,
+            grouping,
+            AnalysisMapper::mapToGrouping,
+            BarChartConfiguration::setGrouping);
+      }
+      setValueInChartConfigurationIfNotNull(
+          barChartConfiguration,
+          orientation,
+          AnalysisMapper::mapToOrientation,
+          BarChartConfiguration::setOrientation);
+    } else {
+      throw new BadRequestException("Analysis configuration is of type BarChartConfiguration");
+    }
+  }
+
+  private void updateChoroplethMapConfiguration(
+      ChoroplethMapConfiguration choroplethMapConfiguration,
+      UpdateChartConfigurationDto updateChartConfiguration) {
+    if (updateChartConfiguration
+        instanceof UpdateChoroplethMapConfigurationDto(String colorScheme)) {
+      choroplethMapConfiguration.setColorScheme(colorScheme);
+    } else {
+      throw new BadRequestException("Analysis configuration is of type ChoroplethMapConfiguration");
+    }
+  }
+
+  private void updateHistogramChartConfiguration(
+      HistogramChartConfiguration histogramChartConfiguration,
+      UpdateChartConfigurationDto updateChartConfiguration) {
+    if (updateChartConfiguration
+        instanceof UpdateHistogramChartConfigurationDto(ScalingDto scaling, GroupingDto grouping)) {
+      if (histogramChartConfiguration.getSecondaryAttributeSelection() == null) {
+        if (scaling != null || grouping != null) {
+          throw new BadRequestException(
+              "HistogramChartConfiguration has no secondary attribute, scaling and grouping cannot be updated");
+        }
+      } else {
+        setValueInChartConfigurationIfNotNull(
+            histogramChartConfiguration,
+            scaling,
+            AnalysisMapper::mapToScaling,
+            HistogramChartConfiguration::setScaling);
+        setValueInChartConfigurationIfNotNull(
+            histogramChartConfiguration,
+            grouping,
+            AnalysisMapper::mapToGrouping,
+            HistogramChartConfiguration::setGrouping);
+      }
+    } else {
+      throw new BadRequestException(
+          "Analysis configuration is of type HistogramChartConfiguration");
+    }
+  }
+
+  private void updateLineChartConfiguration(
+      LineChartConfiguration lineChartConfiguration,
+      UpdateChartConfigurationDto updateChartConfiguration) {
+    if (updateChartConfiguration instanceof UpdateLineChartConfigurationDto(RangeDto range)) {
+      setValueInChartConfigurationIfNotNull(
+          lineChartConfiguration,
+          range,
+          AnalysisMapper::mapToRange,
+          LineChartConfiguration::setRange);
+    } else {
+      throw new BadRequestException("Analysis configuration is of type LineChartConfiguration");
+    }
+  }
+
+  private void updateScatterChartConfiguration(
+      ScatterChartConfiguration scatterChartConfiguration,
+      UpdateChartConfigurationDto updateChartConfiguration) {
+    if (updateChartConfiguration
+        instanceof UpdateScatterChartConfigurationDto(RangeDto range, Boolean trendLine)) {
+      setValueInChartConfigurationIfNotNull(
+          scatterChartConfiguration,
+          range,
+          AnalysisMapper::mapToRange,
+          ScatterChartConfiguration::setRange);
+      setValueInChartConfigurationIfNotNull(
+          scatterChartConfiguration,
+          trendLine,
+          Function.identity(),
+          ScatterChartConfiguration::setTrendLine);
+    } else {
+      throw new BadRequestException("Analysis configuration is of type ScatterChartConfiguration");
+    }
+  }
+
+  private static <C, V, D> void setValueInChartConfigurationIfNotNull(
+      C chartConfiguration, D dto, Function<D, V> mapFunction, BiConsumer<C, V> setter) {
+    if (dto != null) {
+      setter.accept(chartConfiguration, mapFunction.apply(dto));
     }
   }
 

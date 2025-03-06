@@ -72,6 +72,7 @@ export function GDPRTable({ params }: { params: GetGdprProceduresRequest }) {
               </Button>
             )
           }
+          invertDomOrder={true}
         />
       }
     >

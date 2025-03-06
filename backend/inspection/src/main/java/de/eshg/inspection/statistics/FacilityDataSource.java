@@ -32,8 +32,7 @@ public class FacilityDataSource extends EntityDataSource<Facility, FacilityAttri
         DATA_SOURCE_ID,
         DATA_SOURCE_NAME,
         DataSourceSensitivity.INTERNAL_USAGE,
-        FacilityAttributes.values(),
-        false);
+        FacilityAttributes.values());
     this.facilityRepository = facilityRepository;
     AttributeUtil.addValueOptions(FacilityAttributes.OBJECT_TYPE, objectTypeProperties);
   }

@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { AccessCheck } from "@eshg/lib-employee-portal/helpers/accessControl";
-import { SideNavigationItem } from "@eshg/lib-employee-portal/types/sideNavigation";
+import { AccessCheck, SideNavigationItem } from "@eshg/lib-employee-portal";
 
 export function filterNavigationItemsWithAccess(
   items: SideNavigationItem[],

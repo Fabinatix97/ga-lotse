@@ -5,7 +5,7 @@
 
 "use client";
 
-import { useHeaderHeights } from "@eshg/lib-employee-portal/hooks/useHeaderHeights";
+import { useHeaderHeights } from "@eshg/lib-employee-portal";
 import { Box } from "@mui/joy";
 import { ReactNode, useState } from "react";
 

@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useLayoutConfig } from "@eshg/lib-employee-portal/contexts/layoutConfig";
-import { useHeaderHeights } from "@eshg/lib-employee-portal/hooks/useHeaderHeights";
+import { useHeaderHeights, useLayoutConfig } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Divider, Sheet, Stack, Typography } from "@mui/joy";
 import { isNonNullish } from "remeda";

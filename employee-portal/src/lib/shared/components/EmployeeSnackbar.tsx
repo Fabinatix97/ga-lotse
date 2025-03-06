@@ -5,7 +5,7 @@
 
 "use client";
 
-import { useHeaderHeights } from "@eshg/lib-employee-portal/hooks/useHeaderHeights";
+import { useHeaderHeights } from "@eshg/lib-employee-portal";
 import { SnackbarComponentProps } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Snackbar, Theme, styled } from "@mui/joy";
 

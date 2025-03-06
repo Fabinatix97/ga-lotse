@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Institution } from "@eshg/dental";
 import {
   ApiDentitionType,
   ApiFluoridationVarnish,
   ApiProphylaxisType,
 } from "@eshg/dental-api";
-import { Institution } from "@eshg/dental/api/models/Institution";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {

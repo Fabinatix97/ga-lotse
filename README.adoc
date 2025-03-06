@@ -30,6 +30,7 @@ We appreciate your help in improving the project!
 - link:docs/content-security-policy-header.adoc[Content Security Policy (CSP) Header]
 - link:docs/flaky-tests.adoc[Flaky Tests]
 - link:docs/migration.adoc[Migration Guide]
+- link:docs/authoring-libraries.adoc[Authoring Libraries]
 
 == Licensing
 

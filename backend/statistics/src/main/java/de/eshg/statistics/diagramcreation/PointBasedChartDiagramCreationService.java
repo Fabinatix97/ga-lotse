@@ -19,6 +19,7 @@ import de.eshg.statistics.persistence.entity.Analysis;
 import de.eshg.statistics.persistence.entity.CellEntry;
 import de.eshg.statistics.persistence.entity.Diagram;
 import de.eshg.statistics.persistence.entity.TableColumn;
+import de.eshg.statistics.persistence.entity.TableColumnValueType;
 import de.eshg.statistics.persistence.entity.TableRow;
 import de.eshg.statistics.persistence.entity.diagramdata.DataPoint;
 import de.eshg.statistics.persistence.entity.diagramdata.DataPointGroup;
@@ -29,6 +30,7 @@ import de.eshg.statistics.persistence.repository.TableRowRepository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -95,7 +97,12 @@ public class PointBasedChartDiagramCreationService
     if (secondaryTableColumn == null) {
       return List.of(EMPTY_KEY);
     } else {
-      return getKeysForBooleanOrValueOptionsList(secondaryTableColumn);
+      if (secondaryTableColumn.getValueType().equals(TableColumnValueType.BOOLEAN)
+          || secondaryTableColumn.getValueType().equals(TableColumnValueType.VALUE_WITH_OPTIONS)) {
+        return getKeysForBooleanOrValueOptionsList(secondaryTableColumn);
+      } else {
+        return Collections.emptyList();
+      }
     }
   }
 

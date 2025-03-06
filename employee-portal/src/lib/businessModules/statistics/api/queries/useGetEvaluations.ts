@@ -15,9 +15,9 @@ import { useEvaluationApi } from "@/lib/businessModules/statistics/api/clients";
 import { extractFilterValue } from "@/lib/businessModules/statistics/api/mapper/extractFilterValue";
 import { mapDateSpanFilterToApiDateSpan } from "@/lib/businessModules/statistics/api/mapper/mapDateSpanFilterToApiDateSpan";
 import { mapTimeRangeEndApiToFrontend } from "@/lib/businessModules/statistics/api/mapper/mapTimeRangeEnd";
-import { mapDataSourceSensitivityApiToFrontend } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import {
   DataSourceSensitivity,
+  mapDataSourceSensitivityApiToFrontend,
   mapEvaluationDataSourceSensitivityFrontendToApi,
 } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import {

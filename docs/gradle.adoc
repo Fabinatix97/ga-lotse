@@ -31,6 +31,20 @@ These are also available within the subprojects.
 | `./gradlew clean`       | Deletes all build outputs
 |===
 
+== Root Project Tasks
+
+These tasks are part of the root gradle project and allow to start a working local test instance (backend and frontend) of the software.
+These are necessary for the e2e tests and for developing performance tests against a local setup.
+
+[cols="1,1"]
+|===
+| *Command*                            | *Description*
+| `./gradlew startLocalEmployeePortal` | Start all backend containers and serve the employee portal locally in "production mode"
+| `./gradlew startLocalCitizenPortal`  | Start all backend containers and serve the citizen portal locally in "production mode"
+| `./gradlew startLocalAdminPortal`    | Start **only** a service-directory container and serve the admin portal locally in "production mode"
+| `./gradlew startLocalDocker`         | Start all backend containers and dockerized employee, citizen and admin portals
+|===
+
 == Tasks for the subprojects
 [cols="1,1"]
 |===
@@ -57,10 +71,6 @@ All common tasks are also available within the e2e project.
 [cols="1,1"]
 |===
 | *Command*                                  | *Description*
-| `./gradlew e2e:startLocalEmployeePortal`   | Start all backend containers and serve the employee portal locally in "production mode"
-| `./gradlew e2e:startLocalCitizenPortal`    | Start all backend containers and serve the citizen portal locally in "production mode"
-| `./gradlew e2e:startLocalAdminPortal`      | Start **only** a service-directory container and serve the admin portal locally in "production mode"
-| `./gradlew e2e:startLocalDocker`           | Start all backend containers and dockerized employee, citizen and admin portals
 | `./gradlew e2e:test`                       | Run all tests in headless mode
 | `./gradlew e2e:testUi`                     | Open Playwright in UI mode (enables running and debugging individual tests)
 | `./gradlew e2e:testFile -Pfile=FILE`       | Run test for single file matching the specified name (can include paths)

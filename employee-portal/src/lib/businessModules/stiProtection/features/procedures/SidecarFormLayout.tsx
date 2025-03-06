@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Sheet, styled } from "@mui/joy";
+import { Sheet, Stack, styled } from "@mui/joy";
 
 export const SidecarFormLayout = styled("div")(({ theme }) => ({
   display: "grid",
@@ -23,4 +23,11 @@ export const SidecarSheet = styled(Sheet)(() => ({
   position: "sticky",
   top: "12rem",
   width: "100%",
+}));
+
+export const SidecarContainer = styled(Stack)(({ theme }) => ({
+  position: "sticky",
+  top: "12rem",
+  width: "100%",
+  gap: theme.spacing(3),
 }));

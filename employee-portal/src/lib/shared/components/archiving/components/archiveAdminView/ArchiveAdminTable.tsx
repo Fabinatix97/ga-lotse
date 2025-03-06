@@ -142,6 +142,7 @@ export function ArchiveAdminTable(props: ArchiveAdminTableProps) {
               </>
             ) : undefined
           }
+          invertDomOrder={true}
         />
       }
       filterSettings={

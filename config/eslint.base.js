@@ -53,6 +53,7 @@ export const eslintBaseConfig = tseslint.config(
           patterns: [restrictRelativeImportsPattern],
         },
       ],
+      "no-duplicate-imports": ["warn"],
 
       "@typescript-eslint/unbound-method": "off",
       "@typescript-eslint/no-misused-promises": [

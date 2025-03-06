@@ -4,12 +4,12 @@
  */
 
 import { ApiUserRole } from "@eshg/base-api";
-import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
 import {
   SideNavigationItem,
   SideNavigationItemsProps,
   SideNavigationSubItem,
-} from "@eshg/lib-employee-portal/types/sideNavigation";
+  hasUserRole,
+} from "@eshg/lib-employee-portal";
 import { HubOutlined } from "@mui/icons-material";
 
 import { routes } from "./routes";

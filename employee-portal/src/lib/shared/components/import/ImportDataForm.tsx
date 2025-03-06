@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ImportStatistics } from "@eshg/lib-employee-portal/api/models/import/ImportStatistics";
-import { ImportDataResult } from "@eshg/lib-employee-portal/helpers/import";
+import { ImportDataResult, ImportStatistics } from "@eshg/lib-employee-portal";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { CircularProgress, Stack, Typography, styled } from "@mui/joy";
 import { useFormikContext } from "formik";

@@ -32,6 +32,8 @@ import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorResponseWithLocation;
 import de.eshg.statistics.api.datasource.BusinessDataAttribute;
 import de.eshg.statistics.api.datasource.DataSourceDto;
+import de.eshg.statistics.api.filter.DecimalValueFilterParameterDto;
+import de.eshg.statistics.api.filter.IntegerValueFilterParameterDto;
 import de.eshg.statistics.api.filter.NumericComparisonDto;
 import de.eshg.statistics.config.StatisticsConfig;
 import de.eshg.statistics.mapper.AttributeSelectionMapper;
@@ -50,7 +52,6 @@ import de.eshg.statistics.persistence.entity.TableColumnValueType;
 import de.eshg.statistics.persistence.entity.TableRow;
 import de.eshg.statistics.persistence.entity.ValueToMeaning;
 import de.eshg.statistics.persistence.entity.entry.BooleanEntry;
-import de.eshg.statistics.persistence.entity.entry.DateEntry;
 import de.eshg.statistics.persistence.entity.entry.DecimalEntry;
 import de.eshg.statistics.persistence.entity.entry.IntegerEntry;
 import de.eshg.statistics.persistence.entity.entry.TextEntry;
@@ -116,7 +117,6 @@ public class DataAggregationService {
             timeRangeStart,
             timeRangeEnd,
             dataSource.id(),
-            anonymized,
             dataSource.attributeCodes().stream().map(BusinessDataAttribute::code).toList());
 
     GetDataTableHeaderResponse dataFromBusinessModule =
@@ -158,13 +158,14 @@ public class DataAggregationService {
     if (tableColumns.isEmpty()) {
       throw new BadRequestException("Evaluation has no valid fields");
     }
+    StatisticsDataSensitivity originalSensitivity =
+        StatisticsDataSensitivity.valueOf(sensitivity.name());
     StatisticsDataSensitivity statisticsDataSensitivity =
-        anonymized
-            ? StatisticsDataSensitivity.ANONYMOUS
-            : StatisticsDataSensitivity.valueOf(sensitivity.name());
+        anonymized ? StatisticsDataSensitivity.ANONYMOUS : originalSensitivity;
 
     Evaluation evaluation = new Evaluation();
     evaluation.setDataSensitivity(statisticsDataSensitivity);
+    evaluation.setLastDataSensitivityFromBusinessModule(originalSensitivity);
     evaluation.setName(name);
     evaluation.setTimeRangeStart(timeRangeStart);
     evaluation.setTimeRangeEnd(timeRangeEnd);
@@ -398,8 +399,7 @@ public class DataAggregationService {
     }
   }
 
-  public void collectTableRows(
-      AbstractAggregationResult aggregationResult, boolean dataNeedsAnonymization) {
+  public void collectTableRows(AbstractAggregationResult aggregationResult) {
     Long tableRowsCount = tableRowRepository.countTableRowByAggregationResult(aggregationResult);
     int page = (int) (tableRowsCount / businessModuleDataRequestPageSize);
     int ignoreTableRowsCount = (int) (tableRowsCount % businessModuleDataRequestPageSize);
@@ -411,7 +411,6 @@ public class DataAggregationService {
             aggregationResult.getTimeRangeStart(),
             aggregationResult.getTimeRangeEnd(),
             firstTableColumn.getDataSourceId(),
-            dataNeedsAnonymization,
             attributeCodes,
             page,
             businessModuleDataRequestPageSize);
@@ -419,8 +418,7 @@ public class DataAggregationService {
     GetSpecificDataResponse dataFromBusinessModule =
         getDataFromBusinessModule(request, firstTableColumn.getBusinessModuleName());
 
-    validateAnonymizationAndSensitivity(
-        dataNeedsAnonymization, dataFromBusinessModule, aggregationResult.getDataSensitivity());
+    validateAndUpdateSensitivity(dataFromBusinessModule, aggregationResult);
 
     Map<Integer, Attribute> indexToBaseReferenceAttribute =
         findBaseModuleIdColumns(dataFromBusinessModule.dataTableHeader());
@@ -508,17 +506,14 @@ public class DataAggregationService {
     return getSpecificDataResponse;
   }
 
-  private static void validateAnonymizationAndSensitivity(
-      boolean dataNeedsAnonymization,
-      GetSpecificDataResponse dataFromBusinessModule,
-      StatisticsDataSensitivity statisticsDataSensitivity) {
-    if (dataNeedsAnonymization && !dataFromBusinessModule.anonymized()) {
-      throw new BadRequestException("Data was not anonymized");
-    }
-    if (!(statisticsDataSensitivity.equals(StatisticsDataSensitivity.ANONYMOUS)
-            && dataFromBusinessModule.anonymized())
-        && !statisticsDataSensitivity.equals(
-            StatisticsDataSensitivity.valueOf(dataFromBusinessModule.sensitivity().name()))) {
+  private static void validateAndUpdateSensitivity(
+      GetSpecificDataResponse dataFromBusinessModule, AbstractAggregationResult aggregationResult) {
+    StatisticsDataSensitivity sensitivityFromModule =
+        StatisticsDataSensitivity.valueOf(dataFromBusinessModule.sensitivity().name());
+
+    aggregationResult.setLastDataSensitivityFromBusinessModule(sensitivityFromModule);
+    if (!aggregationResult.getDataSensitivity().equals(StatisticsDataSensitivity.ANONYMOUS)
+        && !aggregationResult.getDataSensitivity().equals(sensitivityFromModule)) {
       throw new BadRequestException(
           "Sensitivity changed to %s".formatted(dataFromBusinessModule.sensitivity()));
     }
@@ -777,11 +772,13 @@ public class DataAggregationService {
     CellEntry cellEntry =
         switch (tableColumn.getValueType()) {
           case BOOLEAN -> createBooleanEntry(value);
-          case DATE -> createDateEntry(value);
+          case DATE -> createDateAsTextEntry(value);
           case DECIMAL -> createDecimalEntry(value);
           case INTEGER -> createIntegerEntry(value);
           case TEXT, VALUE_WITH_OPTIONS -> createTextEntry(value);
           case PROCEDURE_REFERENCE -> createUuidEntry(value);
+          case DECIMAL_INTERVAL, INTEGER_INTERVAL ->
+              throw new IllegalStateException("Intervals not allowed in aggregation");
         };
 
     tableColumn.addCellEntry(cellEntry);
@@ -796,11 +793,11 @@ public class DataAggregationService {
     return entry;
   }
 
-  private static DateEntry createDateEntry(Object value) {
-    DateEntry entry = new DateEntry();
+  private static TextEntry createDateAsTextEntry(Object value) {
+    TextEntry entry = new TextEntry();
     if (value instanceof String stringValue) {
       try {
-        entry.setDateValue(LocalDate.parse(stringValue));
+        entry.setTextValue(LocalDate.parse(stringValue).toString());
       } catch (DateTimeParseException ignored) {
         // ignore broken value
       }
@@ -852,6 +849,9 @@ public class DataAggregationService {
             case INTEGER -> determineNullUnknownValuesInteger(tableColumn);
             case TEXT, VALUE_WITH_OPTIONS -> determineNullUnknownValuesText(tableColumn);
             case PROCEDURE_REFERENCE -> null;
+            case DECIMAL_INTERVAL, INTEGER_INTERVAL ->
+                throw new IllegalStateException(
+                    "Intervals not allowed during min/max determination");
           };
       tableColumn.setMinMaxNullUnknownValues(minMaxNullUnknownValues);
     }
@@ -914,7 +914,9 @@ public class DataAggregationService {
             ? null
             : tableRowRepository.count(
                 TableRowSpecifications.getDecimalValueFilterSpecification(
-                    tableColumn, unknownValue, NumericComparisonDto.EQUAL, false)));
+                    tableColumn,
+                    new DecimalValueFilterParameterDto(
+                        null, unknownValue, NumericComparisonDto.EQUAL, false))));
     minMaxNullUnknownValues.setUnknownValue(unknownValue == null ? null : unknownValue.toString());
 
     return minMaxNullUnknownValues;
@@ -936,7 +938,9 @@ public class DataAggregationService {
             ? null
             : tableRowRepository.count(
                 TableRowSpecifications.getIntegerValueFilterSpecification(
-                    tableColumn, unknownValue, NumericComparisonDto.EQUAL, false)));
+                    tableColumn,
+                    new IntegerValueFilterParameterDto(
+                        null, unknownValue, NumericComparisonDto.EQUAL, false))));
     minMaxNullUnknownValues.setUnknownValue(unknownValue == null ? null : unknownValue.toString());
 
     return minMaxNullUnknownValues;

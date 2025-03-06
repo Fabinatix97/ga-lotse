@@ -5,7 +5,7 @@
 
 "use client";
 
-import { noCheck } from "@eshg/lib-employee-portal/helpers/accessControl";
+import { noCheck } from "@eshg/lib-employee-portal";
 import { Stack } from "@mui/joy";
 
 import { TabNavigationItemButton } from "@/lib/shared/components/tabNavigation/TabNavigationButton";

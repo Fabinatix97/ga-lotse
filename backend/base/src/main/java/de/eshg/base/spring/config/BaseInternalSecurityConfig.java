@@ -58,8 +58,7 @@ public class BaseInternalSecurityConfig {
       auth.requestMatchers(GET, StatisticsApi.BASE_URL + "/**")
           .hasAnyRole(
               EmployeePermissionRole.STATISTICS_STATISTICS_READ.name(),
-              EmployeePermissionRole.STATISTICS_STATISTICS_WRITE.name(),
-              EmployeePermissionRole.STATISTICS_STATISTICS_TECHNICAL_USER.name());
+              EmployeePermissionRole.STATISTICS_STATISTICS_WRITE.name());
       auth.requestMatchers(POST, StatisticsApi.BASE_URL + "/data-table-header/**")
           .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE.name());
       auth.requestMatchers(POST, StatisticsApi.BASE_URL + "/specific-data/**")

@@ -44,7 +44,7 @@ export function RoomList({
   }, [roomList]);
 
   return (
-    <List sx={{ py: 0 }}>
+    <List sx={{ py: 0 }} data-testid="chat-room-list">
       {sortedChats?.map((data) => {
         return (
           <ListItem key={data.room.roomId}>

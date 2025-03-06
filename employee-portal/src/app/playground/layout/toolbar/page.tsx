@@ -5,10 +5,12 @@
 
 "use client";
 
-import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
-import { BottomToolbar } from "@eshg/lib-employee-portal/components/toolbar/BottomToolbar";
-import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
+import {
+  BottomToolbar,
+  MainContentLayout,
+  StickyToolbarLayout,
+  Toolbar,
+} from "@eshg/lib-employee-portal";
 import { Sheet, Slider, Switch, Typography } from "@mui/joy";
 import { useState } from "react";
 

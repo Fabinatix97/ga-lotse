@@ -4,20 +4,34 @@
  */
 
 import { Alert } from "@eshg/lib-portal/components/Alert";
+import { isSameAppointment } from "@eshg/lib-portal/components/formFields/appointmentPicker/helpers";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { ApiConcern } from "@eshg/sti-protection-api";
 import { DateRangeOutlined } from "@mui/icons-material";
 import { Sheet, Stack, Typography } from "@mui/joy";
-import { startOfMonth } from "date-fns";
+import assert from "assert";
+import { differenceInMinutes, startOfMonth } from "date-fns";
+import { prop, sortBy } from "remeda";
 
+import { useBookAppointment } from "@/lib/businessModules/stiProtection/api/mutations/publicCitizensApi";
 import { useFreeAppointments } from "@/lib/businessModules/stiProtection/api/queries/publicCitizenApi";
 import { useCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
+import { AppointmentPickerSection } from "@/lib/shared/components/AppointmentPickerSection";
 
 import { useFormData } from "./AppointmentDataContext";
-import { AppointmentPickerSection } from "./AppointmentPickerSection";
 import { AppointmentFormData } from "./AppointmentStepper";
 import { BookAppointmentTitle, StepLayout } from "./StepLayout";
+import { StepSubTitle } from "./StepSubTitle";
+
+interface TimeSlotData {
+  appointment: Required<AppointmentFormData["appointment"]>;
+  date: AppointmentFormData["date"];
+}
+const initialValues = {
+  appointment: null,
+  date: null,
+};
 
 export function TimeSlotStep() {
   const { t } = useTranslation("stiProtection/forms");
@@ -28,20 +42,51 @@ export function TimeSlotStep() {
     earliestDate: now,
   });
 
+  const appointmentsWithBooked =
+    formData.bookedAppointment != null
+      ? [formData.bookedAppointment, ...(appointments ?? [])]
+      : (appointments ?? []);
+  const sortedAppointments = sortBy(appointmentsWithBooked, prop("start"));
+
+  const bookAppointment = useBookAppointment();
   if ((appointments?.length ?? 0) === 0) {
     return <NoAppointmentAvailable concern={formData.concern} />;
   }
 
+  async function onSubmit(timeSlotData: TimeSlotData) {
+    assert.ok(timeSlotData.appointment);
+    if (
+      formData.bookedAppointment != null &&
+      isSameAppointment(formData.bookedAppointment, timeSlotData.appointment)
+    ) {
+      return {};
+    }
+    const { procedureId } = await bookAppointment.mutateAsync({
+      appointmentStart: timeSlotData.appointment.start,
+      concern: formData.concern,
+      durationInMinutes: differenceInMinutes(
+        timeSlotData.appointment.end,
+        timeSlotData.appointment.start,
+      ),
+    });
+    return {
+      ...timeSlotData,
+      date: timeSlotData.date ?? timeSlotData.appointment.start,
+      procedureId,
+      bookedAppointment: timeSlotData.appointment,
+    };
+  }
+
   return (
-    <StepLayout>
-      <Typography level="h2">{t("time_slot.title")}</Typography>
+    <StepLayout initialValues={initialValues} onSubmit={onSubmit}>
+      <StepSubTitle title={t("time_slot.title")} />
       <Alert
         color="primary"
         title={t("time_slot.consent_note_title")}
         message={t("time_slot.consent_note_message")}
       />
       <AppointmentPickerSection
-        appointments={appointments ?? []}
+        appointments={sortedAppointments}
         name="appointment"
         t={t}
         onDateSelected={(value) =>
@@ -87,8 +132,8 @@ function NoAppointmentAvailable({ concern }: { concern: ApiConcern }) {
           <InternalLinkButton
             href={
               concern === ApiConcern.SexWork
-                ? routes.sexWork
-                : routes.stiConsultation
+                ? routes.sexWork.index
+                : routes.stiConsultation.index
             }
             size="lg"
             sx={(theme) => ({

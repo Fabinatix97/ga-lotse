@@ -8,9 +8,11 @@ import { useCallback, useEffect, useState } from "react";
 import { mapToObj, pickBy } from "remeda";
 
 import { RowSelectionProps } from "@/lib/shared/components/table/DataTable";
+import { ToggleSelectColumnProps } from "@/lib/shared/components/table/columns/ToggleSelectColumn";
 
 interface UseRowSelectionOptions {
   initialRowSelection?: RowSelectionState;
+  toggleSelectProps?: ToggleSelectColumnProps;
 }
 
 interface UseRowSelectionResult<TData> {
@@ -42,6 +44,7 @@ export function useRowSelection<TData extends UniqueEntity>(
       state: { rowSelection },
       getRowId: getUniqueEntityId,
       onRowSelectionChange,
+      toggleSelectProps: options.toggleSelectProps ?? {},
     },
   };
 }

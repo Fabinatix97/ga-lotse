@@ -5,11 +5,13 @@
 
 "use client";
 
-import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@eshg/lib-employee-portal/components/toolbar/Toolbar";
-import { noCheck } from "@eshg/lib-employee-portal/helpers/accessControl";
-import { SideNavigationItem } from "@eshg/lib-employee-portal/types/sideNavigation";
+import {
+  MainContentLayout,
+  SideNavigationItem,
+  StickyToolbarLayout,
+  Toolbar,
+  noCheck,
+} from "@eshg/lib-employee-portal";
 import {
   AcUnitOutlined,
   AppsOutlined,

@@ -16,7 +16,7 @@ public record IntegerRangeFilterParameterDto(
     @NotNull Integer minValueInclusive,
     @NotNull Integer maxValueInclusive,
     @NotNull boolean withNullValues)
-    implements TableColumnFilterParameter {
+    implements TableColumnFilterParameter, RangeFilterParameterDto<Integer> {
   static final String SCHEMA_NAME = "IntegerRangeFilterParameter";
 
   @Override

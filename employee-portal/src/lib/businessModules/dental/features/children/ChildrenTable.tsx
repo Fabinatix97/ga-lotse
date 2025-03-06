@@ -5,10 +5,8 @@
 
 "use client";
 
+import { Child, routes, useGetChildrenQuery } from "@eshg/dental";
 import { ApiChildSortKey } from "@eshg/dental-api";
-import { Child } from "@eshg/dental/api/models/Child";
-import { useGetChildrenQuery } from "@eshg/dental/api/queries/childApi";
-import { routes } from "@eshg/dental/shared/routes";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { useToggleableState } from "@eshg/lib-portal/hooks/useToggleableState";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
@@ -133,6 +131,7 @@ export function ChildrenTable(props: ChildrenTableProps) {
           ]}
           right={props.buttons}
           alignItems="flex-end"
+          invertDomOrder={true}
         />
       }
       search={

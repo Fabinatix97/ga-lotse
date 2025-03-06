@@ -1,0 +1,22 @@
+= Authoring Libraries
+:sectnums:
+
+== Barrel files
+
+In library packages, we use so called barrel files (`index.ts`) re-exporting contents of the package. This enables us to make the public API of a package explicit while hiding internals to consumers of the library.
+
+Hiding internals to consumers also improves the performance of the TypeScript language service, since it needs to load less types from a library.
+
+**Caution:** Never use barrel files for library-internal imports, because it can lead to errors. Instead, always import from the source files directly.
+
+== Adding new public exports
+
+New files added to a library are not exported automatically and need to be explicitly added to the barrel file defining the public exports:
+
+```ts
+// re-export named types only (recommended)
+export { NewComponent } from "./new-feature";
+
+// re-export everything
+export * from "./new-feature";
+```

@@ -44,16 +44,28 @@ public final class ExaminationMapper {
   }
 
   public static ExaminationResultDto mapToDto(ExaminationResult result) {
+    if (result == null) {
+      return null;
+    }
+    boolean fluoridationIsConsented =
+        result.getExamination().getChild().isFluoridationConsentCurrentlyGiven();
     return switch (result) {
-      case null -> null;
       case FluoridationExaminationResult fluoridationExaminationResult ->
           new FluoridationExaminationResultDto(
-              fluoridationExaminationResult.isFluorideVarnishApplied());
+              fluoridationIsConsented
+                  ? fluoridationExaminationResult.isFluorideVarnishApplied()
+                  : Boolean.FALSE);
       case ScreeningExaminationResult screeningExaminationResult ->
           new ScreeningExaminationResultDto(
-              screeningExaminationResult.isFluorideVarnishApplied(),
+              fluoridationIsConsented
+                  ? screeningExaminationResult.isFluorideVarnishApplied()
+                  : Boolean.FALSE,
               mapToDto(screeningExaminationResult.getOralHygieneStatus()),
               DentitionTypeMapper.mapToDto(screeningExaminationResult.getDentitionType()),
+              screeningExaminationResult.hasPlaque(),
+              screeningExaminationResult.hasCalculus(),
+              screeningExaminationResult.hasGingivitis(),
+              screeningExaminationResult.hasParodontitis(),
               mapToDto(screeningExaminationResult.getToothDiagnoses()));
       case AbsenceExaminationResult absenceExaminationResult ->
           new AbsenceExaminationResultDto(mapToDto(absenceExaminationResult.getReasonForAbsence()));
@@ -102,14 +114,15 @@ public final class ExaminationMapper {
         .toList();
   }
 
-  private static ToothDiagnosis mapResultsToDomain(ToothDiagnosisDto toothDiagnosis) {
-    if (toothDiagnosis == null) {
+  private static ToothDiagnosis mapResultsToDomain(ToothDiagnosisDto dto) {
+    if (dto == null) {
       return null;
     }
-    return new ToothDiagnosis(
-        mapToDomain(toothDiagnosis.mainResult()),
-        mapToDomain(toothDiagnosis.secondaryResult1()),
-        mapToDomain(toothDiagnosis.secondaryResult2()));
+    ToothDiagnosis toothDiagnosis = new ToothDiagnosis();
+    toothDiagnosis.setMainResult(mapToDomain(dto.mainResult()));
+    toothDiagnosis.setSecondaryResult1(mapToDomain(dto.secondaryResult1()));
+    toothDiagnosis.setSecondaryResult2(mapToDomain(dto.secondaryResult2()));
+    return toothDiagnosis;
   }
 
   private static ToothDiagnosisDto mapToDto(Tooth tooth, ToothDiagnosis toothDiagnosis) {

@@ -36,7 +36,7 @@ public class ProtectedProcedureAspect {
   @Pointcut("args(externalId, ..)")
   public void hasExternalId(UUID externalId) {}
 
-  @Pointcut("@annotation(de.eshg.stiprotection.annotations.ProcedureStatusTransition)")
+  @Pointcut("@annotation(de.eshg.stiprotection.aspect.ProcedureStatusTransition)")
   public void statusTransition() {}
 
   @Pointcut("@annotation(org.springframework.web.bind.annotation.PostMapping)")

@@ -63,5 +63,10 @@
   <include file="migrations/0053_idx_procedure_expiration_by_external_id.xml"/>
   <include file="migrations/0054_rename_rapid_test_syphilis_test_data_column.xml"/>
   <include file="migrations/0055_filter_procedures.xml"/>
+  <include file="migrations/0056_department_info.xml"/>
+  <include file="migrations/0057_find_expired_users.xml"/>
+  <include file="migrations/0058_refactor_sti_procedure_indexes.xml"/>
+  <include file="migrations/0059_opening_hours.xml"/>
+  <include file="migrations/0060_opening_hours_sti_protection.xml"/>
 
 </databaseChangeLog>

@@ -1782,6 +1782,18 @@
           "propertyName" : "@type"
         }
       },
+      "AbstractUpdateChartConfiguration" : {
+        "required" : [ "@type" ],
+        "type" : "object",
+        "properties" : {
+          "@type" : {
+            "type" : "string"
+          }
+        },
+        "discriminator" : {
+          "propertyName" : "@type"
+        }
+      },
       "AbstractUpdateEvaluationRequest" : {
         "required" : [ "@type" ],
         "type" : "object",
@@ -2366,7 +2378,11 @@
               }, {
                 "$ref" : "#/components/schemas/DecimalAttribute"
               }, {
+                "$ref" : "#/components/schemas/DecimalIntervalAttribute"
+              }, {
                 "$ref" : "#/components/schemas/IntegerAttribute"
+              }, {
+                "$ref" : "#/components/schemas/IntegerIntervalAttribute"
               }, {
                 "$ref" : "#/components/schemas/ProcedureReferenceAttribute"
               }, {
@@ -2773,6 +2789,38 @@
         }
       },
       "DecimalAttribute" : {
+        "required" : [ "code", "name" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/AbstractTableColumnHeaderAttribute"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "code" : {
+              "type" : "string"
+            },
+            "maxValue" : {
+              "type" : "number"
+            },
+            "minValue" : {
+              "type" : "number"
+            },
+            "name" : {
+              "type" : "string"
+            },
+            "unit" : {
+              "type" : "string"
+            },
+            "valueOptions" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/ValueOption"
+              }
+            }
+          }
+        } ]
+      },
+      "DecimalIntervalAttribute" : {
         "required" : [ "code", "name" ],
         "type" : "object",
         "allOf" : [ {
@@ -3995,6 +4043,40 @@
           }
         } ]
       },
+      "IntegerIntervalAttribute" : {
+        "required" : [ "code", "name" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/AbstractTableColumnHeaderAttribute"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "code" : {
+              "type" : "string"
+            },
+            "maxValue" : {
+              "type" : "integer",
+              "format" : "int32"
+            },
+            "minValue" : {
+              "type" : "integer",
+              "format" : "int32"
+            },
+            "name" : {
+              "type" : "string"
+            },
+            "unit" : {
+              "type" : "string"
+            },
+            "valueOptions" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/ValueOption"
+              }
+            }
+          }
+        } ]
+      },
       "IntegerRangeFilterParameter" : {
         "required" : [ "attribute", "maxValueInclusive", "minValueInclusive", "withNullValues" ],
         "type" : "object",
@@ -4464,7 +4546,7 @@
       },
       "StatisticsFeature" : {
         "type" : "string",
-        "enum" : [ "DUMMY" ]
+        "enum" : [ "DUMMY", "ANONYMIZATION" ]
       },
       "TableColumnFilterParameter" : {
         "required" : [ "@type" ],
@@ -4492,7 +4574,11 @@
             }, {
               "$ref" : "#/components/schemas/DecimalAttribute"
             }, {
+              "$ref" : "#/components/schemas/DecimalIntervalAttribute"
+            }, {
               "$ref" : "#/components/schemas/IntegerAttribute"
+            }, {
+              "$ref" : "#/components/schemas/IntegerIntervalAttribute"
             }, {
               "$ref" : "#/components/schemas/ProcedureReferenceAttribute"
             }, {
@@ -4676,8 +4762,54 @@
         "properties" : {
           "name" : {
             "type" : "string"
+          },
+          "updateChartConfigurationDto" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/UpdateBarChartConfiguration"
+            }, {
+              "$ref" : "#/components/schemas/UpdateChoroplethMapConfiguration"
+            }, {
+              "$ref" : "#/components/schemas/UpdateHistogramChartConfiguration"
+            }, {
+              "$ref" : "#/components/schemas/UpdateLineChartConfiguration"
+            }, {
+              "$ref" : "#/components/schemas/UpdateScatterChartConfiguration"
+            } ]
           }
         }
+      },
+      "UpdateBarChartConfiguration" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/AbstractUpdateChartConfiguration"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "grouping" : {
+              "$ref" : "#/components/schemas/Grouping"
+            },
+            "orientation" : {
+              "$ref" : "#/components/schemas/Orientation"
+            },
+            "scaling" : {
+              "$ref" : "#/components/schemas/Scaling"
+            }
+          }
+        } ]
+      },
+      "UpdateChoroplethMapConfiguration" : {
+        "required" : [ "colorScheme" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/AbstractUpdateChartConfiguration"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "colorScheme" : {
+              "type" : "string"
+            }
+          }
+        } ]
       },
       "UpdateDiagramRequest" : {
         "required" : [ "title" ],
@@ -4731,6 +4863,35 @@
           }
         } ]
       },
+      "UpdateHistogramChartConfiguration" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/AbstractUpdateChartConfiguration"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "grouping" : {
+              "$ref" : "#/components/schemas/Grouping"
+            },
+            "scaling" : {
+              "$ref" : "#/components/schemas/Scaling"
+            }
+          }
+        } ]
+      },
+      "UpdateLineChartConfiguration" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/AbstractUpdateChartConfiguration"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "rangeDto" : {
+              "$ref" : "#/components/schemas/Range"
+            }
+          }
+        } ]
+      },
       "UpdateReportSeriesRequest" : {
         "required" : [ "name" ],
         "type" : "object",
@@ -4742,6 +4903,22 @@
             "type" : "string"
           }
         }
+      },
+      "UpdateScatterChartConfiguration" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/AbstractUpdateChartConfiguration"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "rangeDto" : {
+              "$ref" : "#/components/schemas/Range"
+            },
+            "trendLine" : {
+              "type" : "boolean"
+            }
+          }
+        } ]
       },
       "User" : {
         "required" : [ "enabled", "firstName", "lastName", "userId", "username" ],

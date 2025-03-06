@@ -1,0 +1,77 @@
+/**
+ * Copyright 2025 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Alert } from "@eshg/lib-portal/components/Alert";
+import { Typography } from "@mui/joy";
+import assert from "assert";
+import { useRouter } from "next/navigation";
+import { useId } from "react";
+
+import { useCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
+import { useTranslation } from "@/lib/i18n/client";
+import { ConfirmationCheckboxField } from "@/lib/shared/components/form/ConfirmationCheckboxField";
+
+import { useFormData } from "./AppointmentDataContext";
+import { AppointmentFormData } from "./AppointmentStepper";
+import { DownloadDocumentCardField } from "./DownloadDocumentCardField";
+import { parsePin } from "./PinField";
+import { StepLayout } from "./StepLayout";
+import { StepSubTitle } from "./StepSubTitle";
+
+interface ShareAuthData {
+  hasSavedPin: boolean;
+  hasDownloadedDoc: boolean;
+}
+const initialValues = {
+  hasSavedPin: false,
+  hasDownloadedDoc: false,
+} as const;
+
+export function ShareAuthStep() {
+  const { t } = useTranslation("stiProtection/forms");
+  const router = useRouter();
+  const routes = useCitizenRoutes();
+  const pinTitleId = useId();
+
+  const [{ accessCode, pin }] = useFormData<AppointmentFormData>();
+  assert.ok(accessCode);
+  assert.ok(pin);
+
+  function onSubmit(_values: ShareAuthData) {
+    router.push(routes.appointments.index(accessCode));
+  }
+
+  return (
+    <StepLayout
+      initialValues={initialValues}
+      onSubmit={onSubmit}
+      submit={t("share_auth.submit")}
+    >
+      <StepSubTitle title={t("share_auth.title")} />
+      <Typography>{t("share_auth.text")}</Typography>
+      <Alert color="warning" message={t("share_auth.notice")} />
+      <Typography id={pinTitleId}>{t("share_auth.pin_title")}</Typography>
+      <Typography
+        level="h3"
+        aria-describedby={pinTitleId}
+        sx={{ alignSelf: "center" }}
+      >
+        {parsePin(pin)}
+      </Typography>
+      <DownloadDocumentCardField
+        documentTitle={t("share_auth.auth_document_title")}
+        required={t("share_auth.auth_document_required")}
+        hint={t("share_auth.auth_document_hint")}
+        downloadLabel={t("share_auth.download_button")}
+        downloadedLabel={t("share_auth.downloaded_button")}
+      />
+      <ConfirmationCheckboxField
+        name="hasSavedPin"
+        label={t("share_auth.confirm_pin_saved")}
+        required={t("share_auth.confirm_pin_saved_required")}
+      />
+    </StepLayout>
+  );
+}

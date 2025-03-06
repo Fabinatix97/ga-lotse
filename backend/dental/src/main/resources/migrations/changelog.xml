@@ -43,5 +43,7 @@
   <include file="migrations/0033_add_prophylaxis_session_dentition_type.xml"/>
   <include file="migrations/0034_differentiate_between_previous_person_and_facility_file_state.xml"/>
   <include file="migrations/0035_add_examination_result_dentition_type.xml"/>
+  <include file="/migrations/0036_make_main_result_optional_and_add_flag.xml"/>
+  <include file="migrations/0037_add_parodontal_fields.xml"/>
 
 </databaseChangeLog>

@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiDentitionType, ApiTooth } from "@eshg/dental-api";
 import {
   ExaminationResult,
   FluoridationExaminationResult,
   ScreeningExaminationResult,
+  ToothDiagnosis,
   isEmptyExaminationResult,
-} from "@eshg/dental/api/models/ExaminationResult";
-import { ToothDiagnosis } from "@eshg/dental/api/models/ToothDiagnosis";
+} from "@eshg/dental";
+import { ApiDentitionType, ApiTooth } from "@eshg/dental-api";
 import {
   mapOptionalValue,
   mapRequiredValue,
@@ -90,6 +90,10 @@ function mapToExaminationResult(
       fluorideVarnishApplied: mapOptionalValue(
         formValues.fluorideVarnishApplied,
       ),
+      plaque: formValues.plaque,
+      calculus: formValues.calculus,
+      gingivitis: formValues.gingivitis,
+      parodontitis: formValues.parodontitis,
       toothDiagnoses: toothDiagnoses,
     };
   } else {

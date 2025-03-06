@@ -7,7 +7,7 @@ import { ApiMainResult, ApiSecondaryResult } from "@eshg/dental-api";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 
 import {
-  NavigateState,
+  NavigateOutputState,
   navigate,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/actions/navigate";
 import {
@@ -16,6 +16,7 @@ import {
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/constants";
 import {
   DentalExaminationState,
+  DirtyState,
   DmftValuesState,
   calculateDmftValues,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/dentalExaminationStore";
@@ -30,14 +31,14 @@ import {
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
 
 type SetResultState = Pick<DentalExaminationState, "dentition">;
-type SetMainResultState = SetResultState & NavigateState;
+type SetMainResultState = SetResultState & NavigateOutputState;
 
 export function setMainResult(
   toothContext: ToothContext,
   newValue: string,
   state: SetMainResultState,
-): SetMainResultState & DmftValuesState {
-  const { dentition, ...navigateState } = state;
+): SetMainResultState & DmftValuesState & DirtyState {
+  const { dentition, currentView, currentFocus } = state;
   const tooth = getToothFromToothContext(dentition, toothContext);
 
   const isInvalid = isEmptyString(newValue)
@@ -45,16 +46,18 @@ export function setMainResult(
       !isEmptyString(tooth.secondaryResult2.value)
     : !isValidMainResult(newValue);
 
-  const navigateDirection =
-    navigateState.currentView === "UPPER_JAW" ? "RIGHT" : "LEFT";
+  const navigateDirection = currentView === "UPPER_JAW" ? "RIGHT" : "LEFT";
   const newDentition = updateToothWithDiagnosis(toothContext, dentition, {
     mainResult: createToothResult(newValue, isInvalid),
   });
 
   return {
-    ...(isInvalid ? navigateState : navigate(navigateDirection, navigateState)),
+    ...(isInvalid
+      ? { currentView, currentFocus }
+      : navigate(navigateDirection, state)),
     dentition: newDentition,
     dmftValues: calculateDmftValues(newDentition),
+    dirty: true,
   };
 }
 
@@ -62,7 +65,7 @@ export function setSecondaryResult1(
   toothContext: ToothContext,
   newValue: string,
   state: SetResultState,
-): SetResultState {
+): SetResultState & DirtyState {
   const { dentition } = state;
   const tooth = getToothFromToothContext(dentition, toothContext);
 
@@ -80,6 +83,7 @@ export function setSecondaryResult1(
       mainResult,
       secondaryResult1: createToothResult(newValue, isInvalid),
     }),
+    dirty: true,
   };
 }
 
@@ -87,7 +91,7 @@ export function setSecondaryResult2(
   toothContext: ToothContext,
   newValue: string,
   state: SetResultState,
-): SetResultState {
+): SetResultState & DirtyState {
   const { dentition } = state;
   const tooth = getToothFromToothContext(dentition, toothContext);
 
@@ -105,6 +109,7 @@ export function setSecondaryResult2(
       mainResult,
       secondaryResult2: createToothResult(newValue, isInvalid),
     }),
+    dirty: true,
   };
 }
 

@@ -152,6 +152,10 @@ public class ExaminationService {
               ExaminationMapper.mapToDomain(newResult.oralHygieneStatus()));
           existingResult.setDentitionType(
               DentitionTypeMapper.mapToDomain(newResult.dentitionType()));
+          existingResult.setPlaque(newResult.plaque());
+          existingResult.setCalculus(newResult.calculus());
+          existingResult.setGingivitis(newResult.gingivitis());
+          existingResult.setParodontitis(newResult.parodontitis());
           existingResult.setToothDiagnoses(
               ExaminationMapper.mapToDomain(newResult.toothDiagnoses()));
         });

@@ -4,8 +4,7 @@
  */
 
 import { ApiUserRole } from "@eshg/base-api";
-import { hasUserRole } from "@eshg/lib-employee-portal/helpers/accessControl";
-import { SideNavigationItem } from "@eshg/lib-employee-portal/types/sideNavigation";
+import { SideNavigationItem, hasUserRole } from "@eshg/lib-employee-portal";
 import { isPlainObject } from "remeda";
 
 import { StethoscopeIcon } from "@/lib/businessModules/officialMedicalService/components/icons/StethoscopeIcon";
@@ -23,13 +22,13 @@ const NAVIGATION_ITEMS: SideNavigationItem[] = [
         accessCheck: hasUserRole(ApiUserRole.OfficialMedicalServiceAdmin),
       },
       {
-        name: "Terminblöcke",
-        href: routes.appointmentBlockGroups.index,
+        name: "Wartezimmer",
+        href: routes.waitingRoom,
         accessCheck: hasUserRole(ApiUserRole.OfficialMedicalServiceAdmin),
       },
       {
-        name: "Wartezimmer",
-        href: routes.waitingRoom,
+        name: "Terminblöcke",
+        href: routes.appointmentBlockGroups.index,
         accessCheck: hasUserRole(ApiUserRole.OfficialMedicalServiceAdmin),
       },
     ].filter(isPlainObject),

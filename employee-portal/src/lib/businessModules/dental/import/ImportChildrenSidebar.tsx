@@ -4,7 +4,7 @@
  */
 
 import { ApiAddContact200Response } from "@eshg/base-api";
-import { useImportChildren } from "@eshg/dental/api/mutations/importApi";
+import { useImportChildren } from "@eshg/dental";
 import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
 import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";

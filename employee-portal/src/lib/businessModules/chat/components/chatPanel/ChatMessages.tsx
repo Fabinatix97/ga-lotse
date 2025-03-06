@@ -96,6 +96,7 @@ export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
           height: "calc(100% - 2rem)",
           overflowY: "auto",
         }}
+        data-testid="chat-messages"
       >
         {messages?.map((message, index: number) => {
           if (!message) return null;

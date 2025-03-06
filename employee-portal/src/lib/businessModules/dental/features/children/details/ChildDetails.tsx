@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ChildDetails } from "@eshg/dental/api/models/ChildDetails";
+import { ChildDetails } from "@eshg/dental";
 import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { Divider, Grid, Stack } from "@mui/joy";
 

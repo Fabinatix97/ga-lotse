@@ -54,14 +54,13 @@ import org.springframework.util.Assert;
 @Entity
 @Table(
     indexes = {
-      @Index(name = "idx_sti_protection_procedure_sample_bar_code", columnList = "sample_bar_code"),
-      @Index(
-          name = "idx_sti_protection_procedure_appointment_start",
-          columnList = "appointment_start"),
+      @Index(columnList = "sample_bar_code"),
+      @Index(columnList = "appointment_start"),
       @Index(columnList = "concern"),
       @Index(columnList = "lab_status"),
       @Index(columnList = "procedure_status"),
-      @Index(columnList = "created_by"),
+      @Index(columnList = "sti_procedure_origin"),
+      @Index(columnList = "closed_at"),
     })
 public class StiProtectionProcedure
     extends Procedure<StiProtectionProcedure, StiProtectionTask, Person, Facility>

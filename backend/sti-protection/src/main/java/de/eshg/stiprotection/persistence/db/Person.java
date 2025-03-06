@@ -73,4 +73,13 @@ public class Person extends RelatedPerson<StiProtectionProcedure> {
   public void setInGermanySince(Year inGermanySince) {
     this.inGermanySince = inGermanySince;
   }
+
+  public void copyFrom(Person source) {
+    setGender(source.getGender());
+    setYearOfBirth(source.getYearOfBirth());
+    setCountryOfBirth(source.getCountryOfBirth());
+    setInGermanySince(source.getInGermanySince());
+    setPersonType(source.getPersonType());
+    setCentralFileStateId(source.getCentralFileStateId());
+  }
 }

@@ -13,6 +13,7 @@ import de.eshg.officialmedicalservice.appointment.api.BookingInfoDto;
 import de.eshg.officialmedicalservice.appointment.api.PostOmsAppointmentRequest;
 import de.eshg.officialmedicalservice.appointment.persistence.entity.OmsAppointment;
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocument;
+import de.eshg.officialmedicalservice.procedure.persistence.entity.MedicalOpinionStatus;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
 import java.time.Clock;
 import java.time.format.DateTimeFormatter;
@@ -267,5 +268,59 @@ public class ProgressEntryService {
     if (helpTextDe != null && !helpTextDe.isEmpty())
       documentDescription.append(" - ").append(helpTextDe);
     return documentDescription.toString();
+  }
+
+  public void createProgressEntryForFacilityAdded(OmsProcedure procedure, String facilityName) {
+    String changeDescription =
+        new StringBuilder()
+            .append("Die Einrichtung ")
+            .append(facilityName)
+            .append(" wurde als Auftraggeber eingetragen.")
+            .toString();
+
+    SystemProgressEntry progressEntry =
+        SystemProgressEntryFactory.createSystemProgressEntry(
+            OmsProgressEntryType.FACILITY_ADDED.name(),
+            changeDescription,
+            TriggerType.SYSTEM_AUTOMATIC);
+    progressEntry.setProcedureId(procedure.getId());
+    procedure.addProgressEntry(progressEntry);
+  }
+
+  public void createProgressEntryForMedicalOpinionStatusChanged(
+      OmsProcedure procedure, MedicalOpinionStatus oldStatus, MedicalOpinionStatus newStatus) {
+    String changeDescription =
+        new StringBuilder()
+            .append("Der Gutachtenstatus wurde von ")
+            .append(oldStatus)
+            .append(" auf ")
+            .append(newStatus)
+            .append(" gesetzt.")
+            .toString();
+
+    SystemProgressEntry progressEntry =
+        SystemProgressEntryFactory.createSystemProgressEntry(
+            OmsProgressEntryType.MEDICAL_OPINION_STATUS_CHANGED.name(),
+            changeDescription,
+            TriggerType.SYSTEM_AUTOMATIC);
+    progressEntry.setProcedureId(procedure.getId());
+    procedure.addProgressEntry(progressEntry);
+  }
+
+  public void createProgressEntryForConcernChanged(OmsProcedure procedure, String concernNameDe) {
+    String changeDescription =
+        new StringBuilder()
+            .append("Das Anliegen wurde auf ")
+            .append(concernNameDe)
+            .append(" gesetzt.")
+            .toString();
+
+    SystemProgressEntry progressEntry =
+        SystemProgressEntryFactory.createSystemProgressEntry(
+            OmsProgressEntryType.CONCERN_CHANGED.name(),
+            changeDescription,
+            TriggerType.SYSTEM_AUTOMATIC);
+    progressEntry.setProcedureId(procedure.getId());
+    procedure.addProgressEntry(progressEntry);
   }
 }

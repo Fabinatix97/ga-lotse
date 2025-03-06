@@ -3,9 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ChildExamination } from "@eshg/dental/api/models/ChildExamination";
-import { useDeleteProphylaxisSessionParticipantOptions } from "@eshg/dental/api/mutations/prophylaxisSessionApi";
-import { routes } from "@eshg/dental/shared/routes";
+import {
+  ChildExamination,
+  routes,
+  useDeleteProphylaxisSessionParticipantOptions,
+} from "@eshg/dental";
 import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
@@ -167,6 +169,7 @@ export function ProphylaxisSessionParticipantsTable() {
               )}
             </>
           }
+          invertDomOrder={true}
         />
       }
     >

@@ -5,17 +5,20 @@
 
 package de.eshg.stiprotection;
 
+import static de.eshg.stiprotection.persistence.db.StiProcedureOrigin.CITIZEN_PORTAL;
+
 import de.eshg.base.citizenuser.CitizenAccessCodeUserApi;
 import de.eshg.base.citizenuser.api.AddCitizenAccessCodeUserWithPinCredentialRequest;
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
+import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
 import de.eshg.stiprotection.persistence.data.PersonData;
 import de.eshg.stiprotection.persistence.db.Concern;
 import de.eshg.stiprotection.persistence.db.ProcedureExpiration;
 import de.eshg.stiprotection.persistence.db.ProcedureExpirationRepository;
-import de.eshg.stiprotection.persistence.db.StiProcedureOrigin;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -40,8 +43,7 @@ public class CitizenAppointmentService {
   }
 
   public StiProtectionProcedure createProcedureWithExpiryDate(Concern concern) {
-    StiProtectionProcedure procedure =
-        stiProtectionService.saveProcedure(concern, StiProcedureOrigin.CITIZEN_PORTAL);
+    StiProtectionProcedure procedure = stiProtectionService.saveProcedure(concern, CITIZEN_PORTAL);
     ProcedureExpiration procedureExpiration = new ProcedureExpiration(procedure);
     procedureExpirationRepository.save(procedureExpiration);
     return procedure;
@@ -83,5 +85,20 @@ public class CitizenAppointmentService {
   public Pdf getAnonymousIdentificationDocument(UUID procedureId) {
     return moduleClientAuthenticator.doWithModuleClientAuthentication(
         () -> stiProtectionService.getAnonymousIdentificationDocument(procedureId));
+  }
+
+  public void cancelAppointment(UUID procedureId) {
+    Optional<ProcedureExpiration> expirationOptional =
+        procedureExpirationRepository.findByProcedureExternalId(procedureId);
+    Assert.isTrue(
+        expirationOptional.isPresent(), "Pending appointment must have an expiration procedure");
+    StiProtectionProcedure procedure = stiProtectionService.findByExternalId(procedureId);
+    Appointment appointment = procedure.getAppointment();
+    Assert.notNull(appointment, "A procedure must reference an appointment to cancel");
+    Assert.isTrue(
+        CITIZEN_PORTAL.equals(procedure.getStiProcedureOrigin()),
+        "Required a procedure originated from Citizen Portal");
+    stiProtectionService.deleteProcedure(procedure);
+    procedureExpirationRepository.delete(expirationOptional.get());
   }
 }

@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { routes } from "@eshg/dental";
 import { ApiChild } from "@eshg/dental-api";
-import { routes } from "@eshg/dental/shared/routes";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { InternalLinkIconButton } from "@eshg/lib-portal/components/navigation/InternalLinkIconButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";

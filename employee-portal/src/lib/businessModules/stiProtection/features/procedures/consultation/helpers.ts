@@ -11,6 +11,7 @@ import {
   mapBoolToYesOrNo,
   mapYesOrNoToBool,
 } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
+import { guardValue } from "@/lib/businessModules/stiProtection/shared/helpers";
 
 import { GeneralSectionData } from "./GeneralSection";
 import { PregnancySectionData } from "./PregnancySection";
@@ -18,14 +19,19 @@ import { PregnancySectionData } from "./PregnancySection";
 export function mapFormValuesToApi(
   formData: ConsultationFormData,
 ): ApiConsultation {
+  const hasSufficientGermanLanguageSkills = mapYesOrNoToBool(
+    formData.general.hasSufficientGermanLanguageSkills,
+  );
+
   return {
     general: {
       mainReason: mapOptionalValue(formData.general.mainReason),
       furtherGenderInfo: mapOptionalValue(formData.general.furtherGenderInfo),
-      hasSufficientGermanLanguageSkills: mapYesOrNoToBool(
-        formData.general.hasSufficientGermanLanguageSkills,
+      hasSufficientGermanLanguageSkills: hasSufficientGermanLanguageSkills,
+      isIlliterate: guardValue(
+        !hasSufficientGermanLanguageSkills,
+        formData.general.isIlliterate,
       ),
-      isIlliterate: formData.general.isIlliterate,
       otherKnownLanguages: mapOptionalValue(
         formData.general.otherKnownLanguages,
       ),
@@ -43,26 +49,39 @@ export function mapFormValuesToApi(
     pregnancy: {
       hasPregnancyRelatedInfo:
         formData.pregnancy.hasPregnancyRelatedInfo ?? undefined,
-      lastCytologyTest: ifDefined(
-        mapOptionalValue(formData.pregnancy.lastCytologyTest),
-        (a) => new Date(a),
+      lastCytologyTest: guardValue(
+        formData.pregnancy.hasPregnancyRelatedInfo,
+        ifDefined(
+          mapOptionalValue(formData.pregnancy.lastCytologyTest),
+          (a) => new Date(a),
+        ),
       ),
-      startOfLastPeriod: ifDefined(
-        mapOptionalValue(formData.pregnancy.startOfLastPeriod),
-        (a) => new Date(a),
+      startOfLastPeriod: guardValue(
+        formData.pregnancy.hasPregnancyRelatedInfo,
+        ifDefined(
+          mapOptionalValue(formData.pregnancy.startOfLastPeriod),
+          (a) => new Date(a),
+        ),
       ),
-      numberOfPregnancies: mapOptionalValue(
-        formData.pregnancy.numberOfPregnancies,
+      numberOfPregnancies: guardValue(
+        formData.pregnancy.hasPregnancyRelatedInfo,
+        mapOptionalValue(formData.pregnancy.numberOfPregnancies),
       ),
-      numberOfInducedAbortions: mapOptionalValue(
-        formData.pregnancy.numberOfInducedAbortions,
+      numberOfInducedAbortions: guardValue(
+        formData.pregnancy.hasPregnancyRelatedInfo,
+        mapOptionalValue(formData.pregnancy.numberOfInducedAbortions),
       ),
-      numberOfBirths: mapOptionalValue(formData.pregnancy.numberOfBirths),
-      numberOfOtherAbortions: mapOptionalValue(
-        formData.pregnancy.numberOfOtherAbortions,
+      numberOfBirths: guardValue(
+        formData.pregnancy.hasPregnancyRelatedInfo,
+        mapOptionalValue(formData.pregnancy.numberOfBirths),
       ),
-      numberOfEctopicPregnancies: mapOptionalValue(
-        formData.pregnancy.numberOfEctopicPregnancies,
+      numberOfOtherAbortions: guardValue(
+        formData.pregnancy.hasPregnancyRelatedInfo,
+        mapOptionalValue(formData.pregnancy.numberOfOtherAbortions),
+      ),
+      numberOfEctopicPregnancies: guardValue(
+        formData.pregnancy.hasPregnancyRelatedInfo,
+        mapOptionalValue(formData.pregnancy.numberOfEctopicPregnancies),
       ),
     },
   };

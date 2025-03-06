@@ -122,6 +122,25 @@ public class Validator {
     List<ToothDto> teeth = toothDiagnoses.stream().map(ToothDiagnosisDto::tooth).toList();
     validateUniqueTeeth(teeth);
     validateMilkOrPermanentTooth(teeth);
+    validateDiagnoses(toothDiagnoses);
+  }
+
+  private static void validateDiagnoses(List<ToothDiagnosisDto> toothDiagnoses) {
+    List<ToothDto> invalidDiagnoses =
+        toothDiagnoses.stream()
+            .filter(
+                toothDiagnosis ->
+                    toothDiagnosis.mainResult() == null
+                        && (toothDiagnosis.secondaryResult1() != null
+                            || toothDiagnosis.secondaryResult2() != null))
+            .map(ToothDiagnosisDto::tooth)
+            .toList();
+
+    if (!invalidDiagnoses.isEmpty()) {
+      throw new BadRequestException(
+          "Invalid diagnoses for %s: Secondary results cannot be set without main result"
+              .formatted(invalidDiagnoses));
+    }
   }
 
   private static void validateMilkOrPermanentTooth(List<ToothDto> teeth) {

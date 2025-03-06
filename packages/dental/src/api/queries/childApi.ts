@@ -8,7 +8,7 @@ import {
   ChildApi,
   GetChildrenRequest,
 } from "@eshg/dental-api";
-import { mapPaginatedList } from "@eshg/lib-employee-portal/api/models/PaginatedList";
+import { mapPaginatedList } from "@eshg/lib-employee-portal";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { isBlankString } from "@eshg/lib-portal/helpers/guards";
 import { queryOptions, useQuery } from "@tanstack/react-query";

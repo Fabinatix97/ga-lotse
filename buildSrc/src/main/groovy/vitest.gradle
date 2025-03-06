@@ -53,3 +53,7 @@ tasks.named('check').configure {
   dependsOn test
   dependsOn findUnusedValidationFiles
 }
+
+tasks.register('cleanValidationFilesOutput', Delete) {
+  delete validationFilesDir.dir('output')
+}

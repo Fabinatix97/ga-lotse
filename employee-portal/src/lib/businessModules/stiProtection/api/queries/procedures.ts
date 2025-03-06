@@ -14,6 +14,7 @@ import {
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useStiProtectionProcedureApi } from "@/lib/businessModules/stiProtection/api/clients";
+import { ProcedureFilters } from "@/lib/businessModules/stiProtection/components/procedures/proceduresTable/StiProtectionProceduresTableFilters";
 import { PaginationProps } from "@/lib/shared/components/pagination/Pagination";
 import {
   AutomaticSortingProps,
@@ -50,6 +51,7 @@ export function useStiProcedureQueryOptions(procedureId?: string) {
 export function useStiProceduresQuery(
   page: PageRequest,
   sorting: SortingRequest,
+  filters: ProcedureFilters,
 ) {
   const stiProtectionApi = useStiProtectionProcedureApi();
   const sortState =
@@ -64,21 +66,37 @@ export function useStiProceduresQuery(
         mapSortOrder(sortState?.desc),
         page.pageNumber,
         page.pageSize,
-        undefined, // startDate
-        undefined, // endDate
-        undefined, // yearOfBirth
-        undefined, // appointmentStart
-        undefined, // appointmentEnd
-        undefined, // gender
-        undefined, // concern
-        undefined, // procedureStatus
-        undefined, // labStatus
-        undefined, // procedureOrigin
+        filters.creationDateStart,
+        filters.creationDateEnd,
+        filters.yearOfBirth,
+        filters.appointmentDateStart,
+        filters.appointmentDateEnd,
+        filters.gender,
+        filters.concern,
+        filters.procedureStatus,
+        filters.labStatus,
+        filters.procedureOrigin,
         { signal },
       ),
 
-    queryKey: proceduresQueryKey(["list", { page, sortState }]),
+    queryKey: proceduresQueryKey([
+      "list",
+      { page, sortState },
+      makeFiltersQueryKeyPart(filters),
+    ]),
   });
+}
+
+function makeFiltersQueryKeyPart(filters: ProcedureFilters) {
+  return Object.fromEntries(
+    Object.entries(filters).map(([key, value]) => {
+      if (value instanceof Set) {
+        return [key, Array.from(value).join(",")];
+      }
+
+      return [key, value];
+    }),
+  );
 }
 
 export function useAnonymousIdentificationDocumentQuery(procedureId: string) {

@@ -15,7 +15,41 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Embeddable
 @DataSensitivity(SENSITIVE)
-public record ToothDiagnosis(
-    @Column(nullable = false) @JdbcType(PostgreSQLEnumJdbcType.class) MainResult mainResult,
-    @JdbcType(PostgreSQLEnumJdbcType.class) SecondaryResult secondaryResult1,
-    @JdbcType(PostgreSQLEnumJdbcType.class) SecondaryResult secondaryResult2) {}
+public class ToothDiagnosis {
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private MainResult mainResult;
+
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private SecondaryResult secondaryResult1;
+
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private SecondaryResult secondaryResult2;
+
+  // flag necessary for hibernate to not ignore empty diagnoses
+  @Column(nullable = false)
+  private boolean present = true;
+
+  public MainResult mainResult() {
+    return mainResult;
+  }
+
+  public void setMainResult(MainResult mainResult) {
+    this.mainResult = mainResult;
+  }
+
+  public SecondaryResult secondaryResult1() {
+    return secondaryResult1;
+  }
+
+  public void setSecondaryResult1(SecondaryResult secondaryResult1) {
+    this.secondaryResult1 = secondaryResult1;
+  }
+
+  public SecondaryResult secondaryResult2() {
+    return secondaryResult2;
+  }
+
+  public void setSecondaryResult2(SecondaryResult secondaryResult2) {
+    this.secondaryResult2 = secondaryResult2;
+  }
+}

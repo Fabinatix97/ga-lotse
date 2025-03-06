@@ -32,13 +32,21 @@ export function useElementFocus<TElement extends HTMLElement>(
     setFocus(elementContext);
   }
 
-  return { elementRef, isFocused, focusHandler };
+  function blurHandler(): void {
+    setFocus(undefined);
+  }
+
+  return { elementRef, isFocused, focusHandler, blurHandler };
 }
 
 function equalsElement(
   elementContext: ElementContext,
-  currentFocus: ElementContext,
+  currentFocus: ElementContext | undefined,
 ): boolean {
+  if (currentFocus === undefined) {
+    return false;
+  }
+
   return (
     currentFocus.toothContext.quadrantNumber ===
       elementContext.toothContext.quadrantNumber &&

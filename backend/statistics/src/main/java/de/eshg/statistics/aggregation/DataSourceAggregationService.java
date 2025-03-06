@@ -25,6 +25,8 @@ import de.eshg.statistics.api.datasource.BusinessDataSourceAttribute;
 import de.eshg.statistics.api.datasource.GetAvailableDataSourcesResponse;
 import de.eshg.statistics.config.StatisticsConfig;
 import de.eshg.statistics.config.StatisticsConfig.BusinessModuleConfig;
+import de.eshg.statistics.config.StatisticsFeature;
+import de.eshg.statistics.config.StatisticsFeatureToggle;
 import de.eshg.statistics.mapper.EvaluationMapper;
 import java.util.Collection;
 import java.util.Comparator;
@@ -39,14 +41,17 @@ public class DataSourceAggregationService {
   private final BusinessModuleAggregationHelper businessModuleAggregationHelper;
   private final BaseStatisticsApi baseModuleStatisticsApi;
   private final BusinessModuleConfig businessModuleConfig;
+  private final StatisticsFeatureToggle statisticsFeatureToggle;
 
   public DataSourceAggregationService(
       BusinessModuleAggregationHelper businessModuleAggregationHelper,
       BaseStatisticsApi baseModuleStatisticsApi,
-      StatisticsConfig statisticsConfig) {
+      StatisticsConfig statisticsConfig,
+      StatisticsFeatureToggle statisticsFeatureToggle) {
     this.businessModuleAggregationHelper = businessModuleAggregationHelper;
     this.baseModuleStatisticsApi = baseModuleStatisticsApi;
     this.businessModuleConfig = statisticsConfig.businessModule();
+    this.statisticsFeatureToggle = statisticsFeatureToggle;
   }
 
   public GetAvailableDataSourcesResponse getAvailableDataSources() {
@@ -123,9 +128,12 @@ public class DataSourceAggregationService {
         dataSource.id(),
         dataSource.name(),
         dataSource.sensitivity(),
-        !DataSourceSensitivity.ANONYMOUS.equals(dataSource.sensitivity())
-            && dataSource.canBeAnonymized(),
+        !DataSourceSensitivity.ANONYMOUS.equals(dataSource.sensitivity()) && canBeAnonymized(),
         mapAndExtendAttributes(dataSource.attributes(), baseAvailableDataSources));
+  }
+
+  private boolean canBeAnonymized() {
+    return statisticsFeatureToggle.isNewFeatureEnabled(StatisticsFeature.ANONYMIZATION);
   }
 
   public static boolean isSensitiveDataAllowed(

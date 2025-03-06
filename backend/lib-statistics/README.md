@@ -12,19 +12,6 @@ and
 
 A liquibase migration is needed for `ProcedureReferenceForStatistics` and the `StatisticsProcedureReferenceHousekeeping` with `shedlock`.
 
-## Anonymization
-If the business module supports anonymization (see below `canBeAnonymized` = true) there are currently these options to do that:
-* For all kinds of data sources:
-  * in the method `bulkAnonymizeDataRows`, the method needs to be overwritten if there is a data source with `canBeAnonymized` = true
-  * if the anonymization is already done in a different method this method can be empty
-  * the method is only called if `getSpecificDataRequest.anonymizationRequired()` is true
-* Procedure based data sources:
-  * in the method `getSpecificValue` if `anonymizationRequired` is true
-* For other data sources:
-  * in the method `getSpecificDataNotProcedureBased` if `getSpecificDataRequest.anonymizationRequired()` is true
-
-For each data source the anonymization should only happen in one place.
-
 ## StatisticsService
 
 Each business module must provide data sources as Spring beans (type `DataSource`).
@@ -36,10 +23,6 @@ in the statistics module.
 * `SENSITIVE` means only users with the permission for the business module can see/use the data.
 * `INTERNAL_USAGE` means all statistics users can see/use the data, the data should not be published.
 * `ANONYMOUS` is for data sources that deliver data that can be published.
-
-IMPORTANT: `canBeAnonymized` can only be true if the business module has an algorithm for the
-anonymization of the data. 
-`canBeAnonymized` should always be false if `DataSourceSensitivity` = `ANONYMOUS`.
 
 Based on the available data sources the user will select the wanted statistics data fields. The values should fit to
 the corresponding `AttributeInfo`. `null` is also a valid value.

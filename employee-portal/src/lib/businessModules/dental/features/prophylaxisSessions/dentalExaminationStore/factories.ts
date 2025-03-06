@@ -3,13 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiTooth } from "@eshg/dental-api";
-import { ToothDiagnoses } from "@eshg/dental/api/models/ExaminationResult";
-import { ToothDiagnosis } from "@eshg/dental/api/models/ToothDiagnosis";
-import { RELATED_TEETH } from "@eshg/dental/config/teeth";
+import { RELATED_TEETH, ToothDiagnoses, ToothDiagnosis } from "@eshg/dental";
+import { ApiDentitionType, ApiTooth } from "@eshg/dental-api";
 import { isDefined } from "remeda";
 
-import { OPTIONAL_TEETH, TOOTH_TYPES } from "./constants";
+import {
+  INITIALLY_TOGGLED_OPTIONAL_TEETH,
+  OPTIONAL_TEETH,
+  TOOTH_TYPES,
+  WISDOM_TEETH,
+} from "./constants";
 import {
   AddableTooth,
   Dentition,
@@ -20,6 +23,17 @@ import {
   ToothResult,
   ToothWithDiagnosis,
 } from "./types";
+
+type DentitionFactory = (
+  toothDiagnoses: ToothDiagnoses,
+  previousToothDiagnoses: ToothDiagnoses,
+) => Dentition;
+
+export const DENTITION_FACTORIES: Record<ApiDentitionType, DentitionFactory> = {
+  PRIMARY: createPrimaryDentition,
+  MIXED: createMixedDentition,
+  SECONDARY: createSecondaryDentition,
+};
 
 export function createPrimaryDentition(
   toothDiagnoses: ToothDiagnoses = {},
@@ -32,7 +46,22 @@ export function createPrimaryDentition(
     ["T48", "T47", "T46", "T85", "T84", "T83", "T82", "T81"],
     toothDiagnoses,
     previousToothDiagnoses,
-    true,
+    INITIALLY_TOGGLED_OPTIONAL_TEETH[ApiDentitionType.Primary],
+  );
+}
+
+export function createMixedDentition(
+  toothDiagnoses: ToothDiagnoses = {},
+  previousToothDiagnoses: ToothDiagnoses = {},
+): Dentition {
+  return createDentition(
+    ["T18", "T17", "T16", "T55", "T54", "T53", "T12", "T11"],
+    ["T21", "T22", "T63", "T64", "T65", "T26", "T27", "T28"],
+    ["T31", "T32", "T73", "T74", "T75", "T36", "T37", "T38"],
+    ["T48", "T47", "T46", "T85", "T84", "T83", "T42", "T41"],
+    toothDiagnoses,
+    previousToothDiagnoses,
+    INITIALLY_TOGGLED_OPTIONAL_TEETH[ApiDentitionType.Mixed],
   );
 }
 
@@ -47,7 +76,7 @@ export function createSecondaryDentition(
     ["T48", "T47", "T46", "T45", "T44", "T43", "T42", "T41"],
     toothDiagnoses,
     previousToothDiagnoses,
-    false,
+    INITIALLY_TOGGLED_OPTIONAL_TEETH[ApiDentitionType.Secondary],
   );
 }
 
@@ -58,14 +87,26 @@ function createDentition(
   teethQuadrant4: ApiTooth[],
   toothDiagnoses: ToothDiagnoses = {},
   previousToothDiagnoses: ToothDiagnoses = {},
-  isPrimaryDentition: boolean,
+  initiallyToggledOptionalTeeth: Set<ApiTooth>,
 ): Dentition {
   function createToothWithType(
     tooth: ApiTooth,
   ): ToothWithDiagnosis | AddableTooth {
+    const toothExists = isDefined(toothDiagnoses[tooth]);
+    if (toothExists) {
+      return createToothWithDiagnosis(
+        tooth,
+        toothDiagnoses,
+        previousToothDiagnoses,
+      );
+    }
+
+    if (WISDOM_TEETH.has(tooth)) {
+      return createAddableTooth(tooth);
+    }
+
     return OPTIONAL_TEETH.has(tooth) &&
-      resolveToothDiagnosis(tooth, toothDiagnoses) === undefined &&
-      isPrimaryDentition
+      !initiallyToggledOptionalTeeth.has(tooth)
       ? createAddableTooth(tooth)
       : createToothWithDiagnosis(tooth, toothDiagnoses, previousToothDiagnoses);
   }
@@ -98,11 +139,12 @@ export function createToothWithDiagnosis(
   previousToothDiagnoses: ToothDiagnoses = {},
 ): ToothWithDiagnosis {
   const diagnosis = resolveToothDiagnosis(tooth, toothDiagnoses);
-  const previousDiagnosis = resolvePreviousToothDiagnosis(
-    tooth,
+  const toothNumber = diagnosis?.tooth ?? tooth;
+
+  const previousResults = resolveToothDiagnosisResult(
+    toothNumber,
     previousToothDiagnoses,
   );
-  const toothNumber = diagnosis?.tooth ?? tooth;
 
   return {
     type: "ToothWithDiagnosis",
@@ -112,7 +154,7 @@ export function createToothWithDiagnosis(
     mainResult: createToothResult(diagnosis?.mainResult),
     secondaryResult1: createToothResult(diagnosis?.secondaryResult1),
     secondaryResult2: createToothResult(diagnosis?.secondaryResult2),
-    previousResults: previousDiagnosis,
+    previousResults,
   };
 }
 
@@ -132,34 +174,16 @@ function resolveToothDiagnosis(
   return toothDiagnoses[relatedTooth];
 }
 
-function resolvePreviousToothDiagnosis(
-  toothNumber: ApiTooth,
-  toothDiagnoses: ToothDiagnoses,
-): ToothDiagnosisResult[] {
-  let result = resolveToothDiagnosisResult(toothNumber, toothDiagnoses);
-
-  if (result.length === 0) {
-    const relatedTooth = RELATED_TEETH[toothNumber];
-    if (isDefined(relatedTooth)) {
-      result = resolveToothDiagnosisResult(relatedTooth, toothDiagnoses);
-    }
-  }
-  return result;
-}
-
-function resolveToothDiagnosisResult(
+export function resolveToothDiagnosisResult(
   toothNumber: ApiTooth,
   toothDiagnoses: ToothDiagnoses,
 ): ToothDiagnosisResult[] {
   const toothDiagnosis = toothDiagnoses[toothNumber];
-  if (isDefined(toothDiagnosis)) {
-    return [
-      toothDiagnosis.mainResult,
-      toothDiagnosis.secondaryResult1,
-      toothDiagnosis.secondaryResult2,
-    ].filter(isDefined);
-  }
-  return [];
+  return [
+    toothDiagnosis?.mainResult,
+    toothDiagnosis?.secondaryResult1,
+    toothDiagnosis?.secondaryResult2,
+  ].filter(isDefined);
 }
 
 export function createToothResult(value = "", isInvalid = false): ToothResult {

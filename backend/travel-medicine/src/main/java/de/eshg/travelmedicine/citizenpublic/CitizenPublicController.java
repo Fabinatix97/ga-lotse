@@ -9,6 +9,9 @@ import static de.eshg.rest.service.PrivacyDocumentHelper.privacyNoticeAttachment
 import static de.eshg.rest.service.PrivacyDocumentHelper.privacyPolicyAttachmentResponse;
 
 import de.eshg.base.department.GetDepartmentInfoResponse;
+import de.eshg.departmentinfo.DepartmentInfoService;
+import de.eshg.departmentinfo.OpeningHoursService;
+import de.eshg.departmentinfo.domain.OpeningHours;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
 import de.eshg.lib.appointmentblock.AppointmentTypeService;
 import de.eshg.lib.appointmentblock.MappingUtil;
@@ -59,7 +62,7 @@ public class CitizenPublicController {
   private final DepartmentInfoService departmentInfoService;
   private final Resource privacyNotice;
   private final Resource privacyPolicy;
-  private final OpeningHoursProperties openingHoursProperties;
+  private final OpeningHoursService openingHoursService;
   private final Clock clock;
 
   public CitizenPublicController(
@@ -70,7 +73,7 @@ public class CitizenPublicController {
       DepartmentInfoService departmentInfoService,
       @Value("${de.eshg.travel-medicine.privacy-notice-location}") Resource privacyNotice,
       @Value("${de.eshg.travel-medicine.privacy-policy-location}") Resource privacyPolicy,
-      OpeningHoursProperties openingHoursProperties,
+      OpeningHoursService openingHoursService,
       Clock clock) {
     this.diseaseService = diseaseService;
     this.appointmentBlockService = appointmentBlockService;
@@ -79,7 +82,7 @@ public class CitizenPublicController {
     this.departmentInfoService = departmentInfoService;
     this.privacyNotice = privacyNotice;
     this.privacyPolicy = privacyPolicy;
-    this.openingHoursProperties = openingHoursProperties;
+    this.openingHoursService = openingHoursService;
     this.clock = clock;
   }
 
@@ -139,11 +142,10 @@ public class CitizenPublicController {
   @Transactional(readOnly = true)
   public GetOpeningHoursResponse getOpeningHours() {
 
+    OpeningHours openingHours = openingHoursService.getConfig();
     return new GetOpeningHoursResponse(
-        openingHoursProperties.de() == null ? Collections.emptyList() : openingHoursProperties.de(),
-        openingHoursProperties.en() == null
-            ? Collections.emptyList()
-            : openingHoursProperties.en());
+        Collections.unmodifiableList(openingHours.getDe()),
+        Collections.unmodifiableList(openingHours.getEn()));
   }
 
   @GetMapping(path = "/documents/privacy-notice")

@@ -13,14 +13,22 @@ import { useTranslation } from "@/lib/i18n/client";
 import { useTranslateCountry } from "@/lib/i18n/useTranslateCountry";
 
 interface CountryFieldProps
-  extends Omit<SingleAutocompleteFieldProps, "options" | "validate"> {
+  extends Omit<
+    SingleAutocompleteFieldProps,
+    "options" | "validate" | "required"
+  > {
   label: string;
+  required?: string | undefined | true;
 }
 
 export function CountryField(props: CountryFieldProps) {
   const { countryOptions } = useTranslateCountry();
   const options = countryOptions();
   const { t } = useTranslation("validation");
+  const requiredText =
+    props.required === true
+      ? t("select_country", { label: props.label })
+      : props.required;
   return (
     <SingleAutocompleteField
       {...props}
@@ -30,10 +38,11 @@ export function CountryField(props: CountryFieldProps) {
           isEmptyString(value) ||
           options.find((opt) => opt.value === value)
         ) {
-          return undefined;
+          return;
         }
-        return t("select_country", { label: props.label });
+        return requiredText;
       }}
+      required={requiredText}
     />
   );
 }

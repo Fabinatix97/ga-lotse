@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { BottomToolbar } from "@eshg/lib-employee-portal/components/toolbar/BottomToolbar";
+import { BottomToolbar } from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { Button } from "@mui/joy";
 import { useQueryClient } from "@tanstack/react-query";
 import { useFormikContext } from "formik";
+import { ReactNode } from "react";
 
 import { stiProtectionApiQueryKey } from "@/lib/businessModules/stiProtection/api/queries/apiQueryKeys";
 import { useOnCancelForm } from "@/lib/businessModules/stiProtection/shared/helpers";
@@ -16,10 +17,12 @@ import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { StickyBottomBox } from "@/lib/shared/components/layout/StickyBottomBox";
 
 export interface TabStickyBottomButtonBarProps {
+  left?: ReactNode | ReactNode[];
   onCancel?: () => void;
 }
 
 export function TabStickyBottomButtonBar({
+  left,
   onCancel,
 }: TabStickyBottomButtonBarProps) {
   const queryClient = useQueryClient();
@@ -36,6 +39,7 @@ export function TabStickyBottomButtonBar({
     <StickyBottomBox>
       <BottomToolbar sx={{ padding: "0.75rem 1.5rem" }}>
         <ButtonBar
+          left={left}
           right={
             <>
               <Button
@@ -52,7 +56,8 @@ export function TabStickyBottomButtonBar({
                   });
                   onCancel?.();
                 }}
-                aria-disabled={isSubmitting}
+                disabled={!dirty}
+                aria-disabled={isSubmitting || !dirty}
               >
                 Abbrechen
               </Button>

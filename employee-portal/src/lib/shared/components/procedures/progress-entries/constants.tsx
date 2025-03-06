@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { systemProgressEntryTypeTitles as dentalSystemProgressEntryTypeTitles } from "@eshg/dental/shared/progressEntries";
+import { systemProgressEntryTypeTitles as dentalSystemProgressEntryTypeTitles } from "@eshg/dental";
 import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 import {
   ApiInboxProgressEntryType,

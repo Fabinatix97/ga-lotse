@@ -25,6 +25,8 @@ dockerCompose {
   projectName = "frontend"
 }
 
+apply from: "startLocal.gradle"
+
 //CAUTION: run ./gradlew wrapper (twice) after changes to this task!
 //See https://docs.gradle.org/current/userguide/gradle_wrapper.html#sec:upgrading_wrapper
 wrapper {

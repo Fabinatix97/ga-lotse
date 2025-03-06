@@ -7,6 +7,7 @@ import {
   Dentition,
   Tooth,
   ToothContext,
+  isToothWithDiagnosis,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
 
 export function resolveTooth(
@@ -21,4 +22,12 @@ export function resolveTooth(
   }
 
   return tooth;
+}
+
+export function firstToothWithDiagnosisIndex(teeth: Tooth[]): number {
+  return teeth.findIndex(isToothWithDiagnosis);
+}
+
+export function lastToothWithDiagnosisIndex(teeth: Tooth[]): number {
+  return teeth.findLastIndex(isToothWithDiagnosis);
 }

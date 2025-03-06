@@ -8,7 +8,7 @@ import {
   ApiInspectionAvailableCLDVersionsResponse,
   ApiInspectionPhase,
 } from "@eshg/inspection-api";
-import { useHeaderHeights } from "@eshg/lib-employee-portal/hooks/useHeaderHeights";
+import { useHeaderHeights } from "@eshg/lib-employee-portal";
 import { useWindowDimensions } from "@eshg/lib-portal/hooks/useWindowDimension";
 import { Box, useTheme } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";

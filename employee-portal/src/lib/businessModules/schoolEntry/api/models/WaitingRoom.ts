@@ -5,12 +5,10 @@
 
 import {
   BaseEntity,
-  mapBaseEntity,
-} from "@eshg/lib-employee-portal/api/models/BaseEntity";
-import {
   Versioned,
+  mapBaseEntity,
   mapVersioned,
-} from "@eshg/lib-employee-portal/api/models/Versioned";
+} from "@eshg/lib-employee-portal";
 import {
   ApiWaitingRoom,
   ApiWaitingRoomProcedure,

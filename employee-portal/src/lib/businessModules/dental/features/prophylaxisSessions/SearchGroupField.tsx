@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useSearchInstitutionGroups } from "@eshg/dental/api/queries/childApi";
+import { useSearchInstitutionGroups } from "@eshg/dental";
 import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
 
 import { mapToSelectOption } from "@/lib/shared/helpers/selectOptionMapper";

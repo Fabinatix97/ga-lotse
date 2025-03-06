@@ -3,12 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-"use client";
-
 import { AlertSlot } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { Stack, StackProps, styled } from "@mui/joy";
 
-export interface MainContentLayoutProps extends StackProps {
+interface MainContentLayoutProps extends StackProps {
   /**
    * If true, the layout will limit it's height to the height of the viewport.
    * This can be used to create an app-like layout.

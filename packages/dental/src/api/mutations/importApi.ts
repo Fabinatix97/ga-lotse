@@ -4,7 +4,7 @@
  */
 
 import { ApiImportStatistics, ImportXlsxRequest } from "@eshg/dental-api";
-import { parseImportResult } from "@eshg/lib-employee-portal/helpers/import";
+import { parseImportResult } from "@eshg/lib-employee-portal";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 
 import { useDentalApi } from "@/shared/DentalProvider";

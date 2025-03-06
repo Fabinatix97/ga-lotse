@@ -18,6 +18,7 @@ import de.eshg.statistics.persistence.entity.Diagram;
 import de.eshg.statistics.persistence.entity.Evaluation;
 import de.eshg.statistics.persistence.entity.MinMaxNullUnknownValues;
 import de.eshg.statistics.persistence.entity.TableColumn;
+import de.eshg.statistics.persistence.entity.TableColumnValueType;
 import de.eshg.statistics.persistence.entity.TableRow;
 import de.eshg.statistics.persistence.entity.ValueToMeaning;
 import de.eshg.statistics.persistence.entity.chart.BarChartConfiguration;
@@ -41,7 +42,6 @@ import de.eshg.statistics.persistence.entity.diagramdata.LineOrScatterChartData;
 import de.eshg.statistics.persistence.entity.diagramdata.PieChartData;
 import de.eshg.statistics.persistence.entity.diagramdata.TrendLine;
 import de.eshg.statistics.persistence.entity.entry.BooleanEntry;
-import de.eshg.statistics.persistence.entity.entry.DateEntry;
 import de.eshg.statistics.persistence.entity.entry.DecimalEntry;
 import de.eshg.statistics.persistence.entity.entry.IntegerEntry;
 import de.eshg.statistics.persistence.entity.entry.TextEntry;
@@ -99,32 +99,35 @@ public class EvaluationCopyService {
   }
 
   private List<TableColumn> copyTableColumnsWithoutCellEntries(List<TableColumn> tableColumns) {
-    return tableColumns.stream().map(this::copyTableColumnWithoutCellEntries).toList();
-  }
-
-  private TableColumn copyTableColumnWithoutCellEntries(TableColumn original) {
-    TableColumn copy = copyTableColumnWithoutCellEntriesAndMinMaxValuesAndAnonymization(original);
-    Optional.ofNullable(original.getMinMaxNullUnknownValues())
-        .map(this::copyMinMaxNullUnknownValues)
-        .ifPresent(copy::setMinMaxNullUnknownValues);
-    if (original.getAnonymizationConfiguration() != null) {
-      AnonymizationConfiguration anonymizationConfiguration = new AnonymizationConfiguration();
-      copy.setAnonymizationConfiguration(anonymizationConfiguration);
-      copyAnonymizationConfiguration(
-          anonymizationConfiguration, original.getAnonymizationConfiguration());
-    }
-    return copy;
+    return tableColumns.stream()
+        .map(
+            original -> {
+              TableColumn copy =
+                  copyTableColumnWithoutCellEntriesAndMinMaxValuesAndAnonymization(original, true);
+              Optional.ofNullable(original.getMinMaxNullUnknownValues())
+                  .map(this::copyMinMaxNullUnknownValues)
+                  .ifPresent(copy::setMinMaxNullUnknownValues);
+              if (original.getAnonymizationConfiguration() != null) {
+                AnonymizationConfiguration anonymizationConfiguration =
+                    new AnonymizationConfiguration();
+                copy.setAnonymizationConfiguration(anonymizationConfiguration);
+                copyAnonymizationConfiguration(
+                    anonymizationConfiguration, original.getAnonymizationConfiguration());
+              }
+              return copy;
+            })
+        .toList();
   }
 
   public static TableColumn copyTableColumnWithoutCellEntriesAndMinMaxValuesAndAnonymization(
-      TableColumn original) {
+      TableColumn original, boolean keepIntervalValueType) {
     TableColumn copy = new TableColumn();
     copy.setBusinessModuleName(original.getBusinessModuleName());
     copy.setBusinessModuleAttributeCode(original.getBusinessModuleAttributeCode());
     copy.setBusinessModuleAttributeName(original.getBusinessModuleAttributeName());
     copy.setBaseModuleAttributeCode(original.getBaseModuleAttributeCode());
     copy.setBaseModuleAttributeName(original.getBaseModuleAttributeName());
-    copy.setValueType(original.getValueType());
+    copy.setValueType(getCorrectValueType(original.getValueType(), keepIntervalValueType));
     copy.setUnit(original.getUnit());
     copy.setDataSourceName(original.getDataSourceName());
     copy.setDataSourceId(original.getDataSourceId());
@@ -133,6 +136,19 @@ public class EvaluationCopyService {
 
     copy.addValueToMeanings(copyValueToMeanings(original.getValueToMeanings()));
     return copy;
+  }
+
+  public static TableColumnValueType getCorrectValueType(
+      TableColumnValueType valueType, boolean keepIntervalValueType) {
+    if (keepIntervalValueType) {
+      return valueType;
+    } else {
+      return switch (valueType) {
+        case DECIMAL_INTERVAL -> TableColumnValueType.DECIMAL;
+        case INTEGER_INTERVAL -> TableColumnValueType.INTEGER;
+        default -> valueType;
+      };
+    }
   }
 
   private static List<ValueToMeaning> copyValueToMeanings(List<ValueToMeaning> valueToMeanings) {
@@ -616,7 +632,6 @@ public class EvaluationCopyService {
   private CellEntry copyCellEntry(CellEntry original) {
     return switch (original) {
       case BooleanEntry booleanEntry -> copyBooleanEntry(booleanEntry);
-      case DateEntry dateEntry -> copyDateEntry(dateEntry);
       case DecimalEntry decimalEntry -> copyDecimalEntry(decimalEntry);
       case IntegerEntry integerEntry -> copyIntegerEntry(integerEntry);
       case TextEntry textEntry -> copyTextEntry(textEntry);
@@ -631,21 +646,19 @@ public class EvaluationCopyService {
     return copy;
   }
 
-  private DateEntry copyDateEntry(DateEntry original) {
-    DateEntry copy = new DateEntry();
-    copy.setDateValue(original.getDateValue());
-    return copy;
-  }
-
   private DecimalEntry copyDecimalEntry(DecimalEntry original) {
     DecimalEntry copy = new DecimalEntry();
     copy.setBigDecimalValue(original.getBigDecimalValue());
+    copy.setDecimalLowerBound(original.getDecimalLowerBound());
+    copy.setDecimalUpperBound(original.getDecimalUpperBound());
     return copy;
   }
 
   private IntegerEntry copyIntegerEntry(IntegerEntry original) {
     IntegerEntry copy = new IntegerEntry();
     copy.setIntegerValue(original.getIntegerValue());
+    copy.setIntegerLowerBound(original.getIntegerLowerBound());
+    copy.setIntegerUpperBound(original.getIntegerUpperBound());
     return copy;
   }
 

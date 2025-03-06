@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Row } from "@eshg/lib-portal/components/Row";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { ApiConcern } from "@eshg/sti-protection-api";
 import {
   AccessTimeOutlined,
+  CakeOutlined,
   DateRange,
   MedicalServicesOutlined,
 } from "@mui/icons-material";
@@ -15,33 +17,53 @@ import { formatDate } from "date-fns";
 import { Formik } from "formik";
 import { PropsWithChildren } from "react";
 
-import { Row } from "@/lib/businessModules/measlesProtection/shared/components/Row";
 import { useStepContext } from "@/lib/businessModules/stiProtection/components/shared/StepContext";
 import { useTranslation } from "@/lib/i18n/client";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
 import { PageTitle } from "@/lib/shared/components/layout/page";
 
 import { useFormData } from "./AppointmentDataContext";
-import { AppointmentFormData } from "./AppointmentStepper";
+import {
+  AppointmentFormData,
+  FormDataWithoutConcern,
+} from "./AppointmentStepper";
 import { StepButtons } from "./StepButtons";
 
-export function StepLayout({ children }: PropsWithChildren) {
-  const [formData, updateFormData] = useFormData<AppointmentFormData>();
+type InitialValues<T extends FormDataWithoutConcern> = {
+  readonly [K in keyof T]: T[K] | "" | null;
+};
+export type StepLayoutProps<T extends FormDataWithoutConcern> =
+  PropsWithChildren<{
+    initialValues: InitialValues<T>;
+    submit?: string | undefined;
+    onSubmit: (e: T) => Promise<FormDataWithoutConcern | void> | void;
+  }>;
+export function StepLayout<T extends FormDataWithoutConcern>({
+  children,
+  initialValues: givenInitialValues,
+  submit,
+  onSubmit,
+}: StepLayoutProps<T>) {
+  const [formData, updateFormData] = useFormData<T & AppointmentFormData>();
   const { goForward } = useStepContext();
 
-  function handleSubmit(values: AppointmentFormData) {
-    updateFormData(values);
-    goForward();
+  async function handleSubmit(values: T) {
+    const newValues = await onSubmit(values);
+    if (newValues) {
+      updateFormData(newValues as T & AppointmentFormData);
+      goForward();
+    }
   }
+
+  const initialValues = {
+    ...givenInitialValues,
+    ...formData,
+  };
 
   return (
     <>
       <BookAppointmentTitle />
-      <Formik
-        enableReinitialize
-        initialValues={formData}
-        onSubmit={handleSubmit}
-      >
+      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
         <FormPlus>
           <TwoColumnGrid
             content={
@@ -53,12 +75,12 @@ export function StepLayout({ children }: PropsWithChildren) {
                       [theme.breakpoints.up("md")]: { display: "none" },
                     })}
                   >
-                    <StepButtons />
+                    <StepButtons submit={submit} />
                   </Box>
                 </Stack>
               </Sheet>
             }
-            sidePanel={<AppointmentOverview />}
+            sidePanel={<AppointmentOverview submit={submit} />}
           />
         </FormPlus>
       </Formik>
@@ -89,9 +111,9 @@ export function BookAppointmentTitle() {
   );
 }
 
-function AppointmentOverview() {
+function AppointmentOverview({ submit }: { submit?: string | undefined }) {
   const { t } = useTranslation("stiProtection/forms");
-  const [{ concern, appointment, date }] = useFormData<AppointmentFormData>();
+  const [{ concern, ...data }] = useFormData<AppointmentFormData>();
   const concernLabel =
     concern === ApiConcern.SexWork
       ? t("common.sex_work")
@@ -103,27 +125,32 @@ function AppointmentOverview() {
       })}
     >
       <Stack gap={3}>
-        <Typography level="h2">Termin Übersicht</Typography>
+        <Typography level="h2">{t("common.overview_title")}</Typography>
         <Stack gap={2}>
-          <Row>
+          <Row sx={{ flexWrap: "nowrap" }}>
             <MedicalServicesOutlined /> {concernLabel}
           </Row>
-          {date != null ? (
-            <Row>
-              <DateRange /> {formatDate(date, "EEEE, d. MMMM y")}
+          {data.date != null ? (
+            <Row sx={{ flexWrap: "nowrap" }}>
+              <DateRange /> {formatDate(data.date, "EEEE, d. MMMM y")}
             </Row>
           ) : null}
-          {appointment != null ? (
-            <Row>
+          {data.appointment != null ? (
+            <Row sx={{ flexWrap: "nowrap" }}>
               <AccessTimeOutlined />{" "}
-              {appointment.start.toLocaleTimeString(undefined, {
+              {data.appointment.start.toLocaleTimeString(undefined, {
                 hour: "numeric",
                 minute: "2-digit",
               })}
             </Row>
           ) : null}
+          {data.birthYear ? (
+            <Row sx={{ flexWrap: "nowrap" }}>
+              <CakeOutlined /> {data.birthYear}
+            </Row>
+          ) : null}
         </Stack>
-        <StepButtons />
+        <StepButtons submit={submit} />
       </Stack>
     </Sheet>
   );

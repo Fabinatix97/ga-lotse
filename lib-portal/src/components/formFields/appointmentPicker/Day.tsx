@@ -38,7 +38,7 @@ export const DaysGrid = styled("div", {
     gridTemplateRows: `repeat(${padDays ? 7 : 6}, 40px)`,
     textAlign: "center",
     justifyContent: "space-between",
-    width: "320px",
+    width: "100%",
   }),
 );
 

@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-"use client";
-
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { createContext, useContext } from "react";
 

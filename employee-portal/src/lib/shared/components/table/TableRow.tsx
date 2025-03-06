@@ -14,7 +14,10 @@ import { StyledCellProps, getRowCellStyles } from "./cellStyles";
 
 const StyledRow = styled("tr")<{ subRow: boolean }>(({ theme, subRow }) => ({
   background: subRow ? theme.palette.background.level2 : undefined,
-  "&:focus-visible": theme.focus.default,
+  "&:focus-visible": {
+    ...theme.focus.default,
+    outlineOffset: "-2px",
+  },
   "&:has(.cellCanNavigate:hover)": {
     cursor: "pointer",
     backgroundColor: theme.palette.neutral.plainHoverBg,

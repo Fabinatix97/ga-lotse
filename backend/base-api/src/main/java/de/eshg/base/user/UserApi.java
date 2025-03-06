@@ -26,6 +26,7 @@ public interface UserApi {
   String KEYS_URL = BaseUrls.Base.USER_KEYS_URL;
   String PUBLIC_KEYS_URL = BaseUrls.Base.USER_PUBLIC_KEYS_URL;
   String SELF_URL = BaseUrls.Base.USER_SELF_URL;
+  String USER_SELF_CHAT_URL = BaseUrls.Base.USER_SELF_CHAT_ATTRIBUTES_URL;
 
   @GetExchange
   @ApiResponse(responseCode = "200")
@@ -82,6 +83,17 @@ public interface UserApi {
   @ApiResponse(responseCode = "200")
   @Operation(summary = "Update the user which is currently active")
   UserDto updateSelfUser(@Valid @RequestBody UpdateSelfUserRequest request);
+
+  @GetExchange(USER_SELF_CHAT_URL)
+  @ApiResponse(responseCode = "200")
+  @Operation(summary = "Get the user chat attributes which is currently active")
+  UserChatAttributesDto getSelfUserChatAttributes();
+
+  @PutExchange(USER_SELF_CHAT_URL)
+  @ApiResponse(responseCode = "200")
+  @Operation(summary = "Update user chat attributes which is currently active")
+  UserChatAttributesDto updateSelfUserChatAttributes(
+      @Valid @RequestBody UpdateSelfUserChatAttributesRequest request);
 
   @PostExchange(SELF_URL + KEYS_URL)
   @ApiResponse(responseCode = "200")

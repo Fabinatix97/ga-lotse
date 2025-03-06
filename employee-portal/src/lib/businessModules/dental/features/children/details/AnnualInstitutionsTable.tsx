@@ -5,7 +5,7 @@
 
 "use client";
 
-import { AnnualInstitution } from "@eshg/dental/api/models/Institution";
+import { AnnualInstitution } from "@eshg/dental";
 import { createColumnHelper } from "@tanstack/react-table";
 
 import { DataTable } from "@/lib/shared/components/table/DataTable";

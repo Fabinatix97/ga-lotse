@@ -5,6 +5,8 @@
 
 package de.eshg.travelmedicine.testhelper;
 
+import de.eshg.departmentinfo.DepartmentInfoService;
+import de.eshg.departmentinfo.OpeningHoursService;
 import de.eshg.lib.appointmentblock.persistence.CreateAppointmentTypeTask;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperServiceResetAction;
@@ -19,17 +21,25 @@ public class TravelMedicineTestHelperResetAction implements TestHelperServiceRes
 
   private final CreateAppointmentTypeTask createAppointmentTypeTask;
   private final CreateMedicalHistoryTemplateTask createMedicalHistoryTemplateTask;
+  private final DepartmentInfoService departmentInfoService;
+  private final OpeningHoursService openingHoursService;
 
   public TravelMedicineTestHelperResetAction(
       CreateAppointmentTypeTask createAppointmentTypeTask,
-      CreateMedicalHistoryTemplateTask createMedicalHistoryTemplateTask) {
+      CreateMedicalHistoryTemplateTask createMedicalHistoryTemplateTask,
+      DepartmentInfoService departmentInfoService,
+      OpeningHoursService openingHoursService) {
     this.createAppointmentTypeTask = createAppointmentTypeTask;
     this.createMedicalHistoryTemplateTask = createMedicalHistoryTemplateTask;
+    this.departmentInfoService = departmentInfoService;
+    this.openingHoursService = openingHoursService;
   }
 
   @Override
   public void reset() {
     createAppointmentTypeTask.createAppointmentTypes();
     createMedicalHistoryTemplateTask.createMedicalHistoryTemplate();
+    departmentInfoService.init();
+    openingHoursService.init();
   }
 }

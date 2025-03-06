@@ -6,12 +6,13 @@
 "use client";
 
 import { ApiAddContact200Response } from "@eshg/base-api";
-import { ApiCreateChildRequest } from "@eshg/dental-api";
-import { ApiChild } from "@eshg/dental-api";
-import { useCreateChild } from "@eshg/dental/api/mutations/childApi";
-import { getChildrenByPersonQuery } from "@eshg/dental/api/queries/childApi";
-import { useDentalApi } from "@eshg/dental/shared/DentalProvider";
-import { routes } from "@eshg/dental/shared/routes";
+import {
+  getChildrenByPersonQuery,
+  routes,
+  useCreateChild,
+  useDentalApi,
+} from "@eshg/dental";
+import { ApiChild, ApiCreateChildRequest } from "@eshg/dental-api";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { ApiCreatePerson } from "@eshg/school-entry-api";

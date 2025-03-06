@@ -12,17 +12,22 @@ import de.eshg.lib.appointmentblock.MappingUtil;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
+import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.procedure.domain.model.Pdf;
-import de.eshg.rest.service.security.config.BaseUrls;
-import de.eshg.stiprotection.api.AddPersonalDetailsRequest;
-import de.eshg.stiprotection.api.AddPersonalDetailsResponse;
+import de.eshg.rest.service.security.config.BaseUrls.StiProtection;
 import de.eshg.stiprotection.api.ConcernDto;
-import de.eshg.stiprotection.api.CreateAnonymousUserRequest;
-import de.eshg.stiprotection.api.CreateAnonymousUserResponse;
 import de.eshg.stiprotection.api.ResponseEntities;
+import de.eshg.stiprotection.api.citizen.AddPersonalDetailsRequest;
+import de.eshg.stiprotection.api.citizen.AddPersonalDetailsResponse;
 import de.eshg.stiprotection.api.citizen.BookAppointmentRequest;
 import de.eshg.stiprotection.api.citizen.BookAppointmentResponse;
+import de.eshg.stiprotection.api.citizen.CreateAnonymousUserRequest;
+import de.eshg.stiprotection.api.citizen.CreateAnonymousUserResponse;
 import de.eshg.stiprotection.api.citizen.GetOpeningHoursResponse;
+import de.eshg.stiprotection.department.SexWorkDepartmentInfoService;
+import de.eshg.stiprotection.department.SexWorkOpeningHoursService;
+import de.eshg.stiprotection.department.StiConsultationDepartmentInfoService;
+import de.eshg.stiprotection.department.StiConsultationOpeningHoursService;
 import de.eshg.stiprotection.mapper.AppointmentMapper;
 import de.eshg.stiprotection.mapper.ConcernMapper;
 import de.eshg.stiprotection.mapper.PersonMapper;
@@ -44,6 +49,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,25 +66,37 @@ public class CitizenPublicController {
 
   private static final Logger log = LoggerFactory.getLogger(CitizenPublicController.class);
 
-  public static final String BASE_URL = BaseUrls.StiProtection.CITIZEN_PUBLIC_CONTROLLER;
+  public static final String BASE_URL = StiProtection.CITIZEN_PUBLIC_CONTROLLER;
 
-  private final DepartmentInfoService departmentInfoService;
   private final AppointmentBlockService appointmentBlockService;
   private final AppointmentService appointmentService;
   private final CitizenAppointmentService citizenAppointmentService;
   private final Clock clock;
+  private final StiConsultationDepartmentInfoService stiConsultationDepartmentInfoService;
+  private final SexWorkDepartmentInfoService sexWorkDepartmentInfoService;
+  private final DepartmentClient departmentClient;
+  private final StiConsultationOpeningHoursService stiConsultationOpeningHoursService;
+  private final SexWorkOpeningHoursService sexWorkOpeningHoursService;
 
   public CitizenPublicController(
-      DepartmentInfoService departmentInfoService,
       AppointmentBlockService appointmentBlockService,
       AppointmentService appointmentService,
       CitizenAppointmentService citizenAppointmentService,
-      Clock clock) {
-    this.departmentInfoService = departmentInfoService;
+      Clock clock,
+      StiConsultationDepartmentInfoService stiConsultationDepartmentInfoService,
+      SexWorkDepartmentInfoService sexWorkDepartmentInfoService,
+      DepartmentClient departmentClient,
+      StiConsultationOpeningHoursService stiConsultationOpeningHoursService,
+      SexWorkOpeningHoursService sexWorkOpeningHoursService) {
     this.appointmentBlockService = appointmentBlockService;
     this.appointmentService = appointmentService;
     this.citizenAppointmentService = citizenAppointmentService;
     this.clock = clock;
+    this.stiConsultationDepartmentInfoService = stiConsultationDepartmentInfoService;
+    this.sexWorkDepartmentInfoService = sexWorkDepartmentInfoService;
+    this.departmentClient = departmentClient;
+    this.stiConsultationOpeningHoursService = stiConsultationOpeningHoursService;
+    this.sexWorkOpeningHoursService = sexWorkOpeningHoursService;
   }
 
   @GetMapping("/department-info")
@@ -86,7 +104,11 @@ public class CitizenPublicController {
   @Transactional(readOnly = true)
   public GetDepartmentInfoResponse getDepartmentInfo(
       @RequestParam(name = "concern", required = false) ConcernDto concern) {
-    return departmentInfoService.getDepartmentInfo(ConcernMapper.toDatabaseType(concern));
+    return switch (concern) {
+      case null -> departmentClient.getDepartmentInfo();
+      case HIV_STI_CONSULTATION -> stiConsultationDepartmentInfoService.getDepartmentInfo();
+      case SEX_WORK -> sexWorkDepartmentInfoService.getDepartmentInfo();
+    };
   }
 
   @GetMapping("/opening-hours")
@@ -94,7 +116,10 @@ public class CitizenPublicController {
   @Transactional(readOnly = true)
   public GetOpeningHoursResponse getOpeningHours(
       @RequestParam(name = "concern") ConcernDto concern) {
-    return departmentInfoService.getOpeningHours(ConcernMapper.toDatabaseType(concern));
+    return switch (concern) {
+      case HIV_STI_CONSULTATION -> stiConsultationOpeningHoursService.getOpeningHours();
+      case SEX_WORK -> sexWorkOpeningHoursService.getOpeningHours();
+    };
   }
 
   @Operation(summary = "Get free appointments for an appointment type.")
@@ -140,6 +165,7 @@ public class CitizenPublicController {
       @Valid @RequestBody CreateAnonymousUserRequest request) {
     CitizenAccessCodeUserDto user =
         citizenAppointmentService.createAnonymousUser(procedureId, request.pin());
+    citizenAppointmentService.confirmAppointment(procedureId);
     return new CreateAnonymousUserResponse(user.userId(), user.accessCode());
   }
 
@@ -152,12 +178,6 @@ public class CitizenPublicController {
     StiProtectionProcedure procedure =
         citizenAppointmentService.setPersonalDetails(procedureId, personData);
     return PersonMapper.toInterfaceType(procedure);
-  }
-
-  @PostMapping("/appointments/{id}/confirm")
-  @Transactional
-  public void confirmAppointment(@PathVariable("id") UUID procedureId) {
-    citizenAppointmentService.confirmAppointment(procedureId);
   }
 
   @GetMapping(path = "/appointments/{id}/anon-ident-document")
@@ -173,5 +193,11 @@ public class CitizenPublicController {
       @PathVariable("id") UUID procedureId) {
     Pdf pdf = citizenAppointmentService.getAnonymousIdentificationDocument(procedureId);
     return ResponseEntities.pdfContent(pdf.getFileName(), pdf.getFileContent().getContent());
+  }
+
+  @DeleteMapping("/appointments/{id}")
+  @Transactional
+  public void cancelAppointment(@PathVariable("id") UUID procedureId) {
+    citizenAppointmentService.cancelAppointment(procedureId);
   }
 }

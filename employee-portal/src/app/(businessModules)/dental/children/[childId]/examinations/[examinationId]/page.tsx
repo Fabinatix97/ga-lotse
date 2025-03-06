@@ -8,8 +8,8 @@
 import {
   getChildDetailsQuery,
   getExaminationQuery,
-} from "@eshg/dental/api/queries/childApi";
-import { useDentalApi } from "@eshg/dental/shared/DentalProvider";
+  useDentalApi,
+} from "@eshg/dental";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { DentalChildPageProps } from "@/app/(businessModules)/dental/children/[childId]/layout";

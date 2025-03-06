@@ -12,7 +12,7 @@ import {
 import { useToggleableState } from "@eshg/lib-portal/hooks/useToggleableState";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 import { ApiSchoolEntryProcedureSortKey } from "@eshg/school-entry-api";
-import { Chip, Stack } from "@mui/joy";
+import { Chip, Stack, Tab } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import {
   ColumnSort,
@@ -51,6 +51,9 @@ import {
   getSortDirection,
   getSortKeyWithSpecificMapping,
 } from "@/lib/shared/components/table/sorting";
+import { UnstyledTabList } from "@/lib/shared/components/unstyledTab/UnstyledTabList";
+import { UnstyledTabPanel } from "@/lib/shared/components/unstyledTab/UnstyledTabPanel";
+import { UnstyledTabs } from "@/lib/shared/components/unstyledTab/UnstyledTabs";
 import { formatSchoolYear } from "@/lib/shared/helpers/formatters";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 import {
@@ -67,10 +70,7 @@ interface ProceduresTableProps {
   buttons?: ReactNode[];
 }
 
-const initialSorting: ColumnSort = {
-  id: "child_dateOfBirth",
-  desc: true,
-};
+const initialSorting: ColumnSort = { id: "child_dateOfBirth", desc: true };
 
 export function ProceduresTable(props: ProceduresTableProps) {
   const [activePanel, toggleActivePanel] = useToggleableState<PanelName>();
@@ -81,7 +81,14 @@ export function ProceduresTable(props: ProceduresTableProps) {
     sortDirectionName: "sortDirection",
     initialSorting: initialSorting,
   });
-  const { rowSelection, rowSelectionProps } = useRowSelection<Procedure>();
+  const { rowSelection, rowSelectionProps } = useRowSelection<Procedure>({
+    toggleSelectProps: {
+      ariaLabelSelectRow: "Vorgang auswählen",
+      ariaLabelDeselectRow: "Vorgang abwählen",
+      ariaLabelSelectAllRows: "Alle Vorgänge auswählen",
+      ariaLabelDeselectAllRows: "Alle Vorgänge abwählen",
+    },
+  });
   const personSearch = usePersonSearch();
   const {
     filterValues,
@@ -134,79 +141,106 @@ export function ProceduresTable(props: ProceduresTableProps) {
   }
 
   return (
-    <TablePage
-      fullHeight
-      controls={
-        <ButtonBar
-          left={[
-            <FilterButton
-              {...filterButtonProps}
-              key="filterButton"
-              isFilterVisible={activePanel === "filters"}
-              onClick={() => toggleActivePanel("filters")}
-            />,
-            <TogglePersonSearchButton
-              {...personSearch.buttonProps}
-              key="personSearchButton"
-              expanded={activePanel === "personSearch"}
-              onClick={() => toggleActivePanel("personSearch")}
-            />,
-          ]}
-          right={props.buttons}
-          alignItems="flex-end"
-        />
+    <UnstyledTabs
+      onChange={(_e, value) => {
+        toggleActivePanel(
+          value === 0 ? "filters" : value === 1 ? "personSearch" : undefined,
+        );
+      }}
+      value={
+        activePanel === "filters"
+          ? 0
+          : activePanel === "personSearch"
+            ? 1
+            : null
       }
-      search={
-        activePanel === "personSearch" && (
-          <PersonSearchForm
-            {...personSearch.formProps}
-            onChange={handleChangePersonSearch}
-          />
-        )
-      }
-      filterSettings={
-        activePanel === "filters" && (
-          <ProcedureFilterSettings
-            filterFormValues={filterFormValues}
-            setFilterFormValue={setFilterFormValue}
-            deleteFilterValue={deleteFilterValue}
-            clearFilterValues={clearFilterValues}
-            filterSettingsSheetProps={filterSettingsSheetProps}
-            activeFilters={activeFilters}
-          />
-        )
-      }
-      data-testid="procedureTable"
     >
-      <TableSheet
-        loading={procedures.isFetching}
-        title={
-          <ProceduresTableTitle
-            procedures={procedures.data.elements}
-            rowSelection={rowSelection}
+      <TablePage
+        fullHeight
+        controls={
+          <ButtonBar
+            left={
+              <UnstyledTabList>
+                <FilterButton
+                  {...filterButtonProps}
+                  component={Tab}
+                  key="filterButton"
+                  isFilterVisible={activePanel === "filters"}
+                  id="Filter-TabPanel"
+                />
+                <TogglePersonSearchButton
+                  {...personSearch.buttonProps}
+                  component={Tab}
+                  key="personSearchButton"
+                  expanded={activePanel === "personSearch"}
+                  id="Personensuche-TabPanel"
+                />
+              </UnstyledTabList>
+            }
+            right={props.buttons}
+            alignItems="flex-end"
+            invertDomOrder={true}
           />
         }
-        footer={
-          <Pagination
-            totalCount={procedures.data.totalNumberOfElements}
-            {...tableControl.paginationProps}
-          />
+        search={
+          activePanel === "personSearch" && (
+            <UnstyledTabPanel
+              aria-labelledby="Personensuche-TabPanel"
+              value={1}
+            >
+              <PersonSearchForm
+                {...personSearch.formProps}
+                onChange={handleChangePersonSearch}
+              />
+            </UnstyledTabPanel>
+          )
         }
+        filterSettings={
+          activePanel === "filters" && (
+            <UnstyledTabPanel aria-labelledby="Filter-TabPanel" value={0}>
+              <ProcedureFilterSettings
+                filterFormValues={filterFormValues}
+                setFilterFormValue={setFilterFormValue}
+                deleteFilterValue={deleteFilterValue}
+                clearFilterValues={clearFilterValues}
+                filterSettingsSheetProps={filterSettingsSheetProps}
+                activeFilters={activeFilters}
+              />
+            </UnstyledTabPanel>
+          )
+        }
+        data-testid="procedureTable"
       >
-        <DataTable
-          data={procedures.data.elements}
-          columns={columns}
-          sorting={tableControl.tableSorting}
-          enableSortingRemoval={false}
-          rowSelectionProps={rowSelectionProps}
-          rowNavigation={{
-            route: (row) => routes.procedures.byId(row.original.id).details,
-            focusColumnAccessorKey: "child.lastName",
-          }}
-          minWidth={1600}
-        />
-      </TableSheet>
-    </TablePage>
+        <TableSheet
+          loading={procedures.isFetching}
+          title={
+            <ProceduresTableTitle
+              procedures={procedures.data.elements}
+              rowSelection={rowSelection}
+            />
+          }
+          footer={
+            <Pagination
+              totalCount={procedures.data.totalNumberOfElements}
+              {...tableControl.paginationProps}
+            />
+          }
+        >
+          <DataTable
+            data={procedures.data.elements}
+            columns={columns}
+            sorting={tableControl.tableSorting}
+            enableSortingRemoval={false}
+            rowSelectionProps={rowSelectionProps}
+            rowNavigation={{
+              route: (row) => routes.procedures.byId(row.original.id).details,
+              focusColumnAccessorKey: "child.lastName",
+            }}
+            minWidth={1600}
+          />
+        </TableSheet>
+      </TablePage>
+    </UnstyledTabs>
   );
 }
 
@@ -216,68 +250,37 @@ const COLUMNS = [
     header: "Vorname",
     cell: (props) => props.getValue(),
     enableSorting: true,
-    meta: {
-      width: 180,
-      canNavigate: {
-        parentRow: true,
-      },
-    },
+    meta: { width: 180, canNavigate: { parentRow: true } },
   }),
   columnHelper.accessor("child.lastName", {
     header: "Nachname",
     cell: (props) => props.getValue(),
     enableSorting: true,
-    meta: {
-      width: 180,
-      canNavigate: {
-        parentRow: true,
-      },
-      isRowHeader: true,
-    },
+    meta: { width: 180, canNavigate: { parentRow: true }, isRowHeader: true },
   }),
   columnHelper.accessor("child.dateOfBirth", {
     header: "Geburtsdatum",
     cell: (props) => formatDate(props.getValue()),
     enableSorting: true,
-    meta: {
-      width: 155,
-      canNavigate: {
-        parentRow: true,
-      },
-    },
+    meta: { width: 155, canNavigate: { parentRow: true } },
   }),
   columnHelper.accessor("schoolYear", {
     header: "Schuljahr",
     cell: (props) => formatSchoolYear(props.getValue()),
     enableSorting: true,
-    meta: {
-      width: 116,
-      canNavigate: {
-        parentRow: true,
-      },
-    },
+    meta: { width: 116, canNavigate: { parentRow: true } },
   }),
   columnHelper.accessor("school.name", {
     header: "Schule",
     cell: (props) => props.getValue(),
     enableSorting: false,
-    meta: {
-      width: 200,
-      canNavigate: {
-        parentRow: true,
-      },
-    },
+    meta: { width: 200, canNavigate: { parentRow: true } },
   }),
   columnHelper.accessor("type", {
     header: "Art",
     cell: (props) => PROCEDURE_TYPES[props.getValue()],
     enableSorting: true,
-    meta: {
-      width: 200,
-      canNavigate: {
-        parentRow: true,
-      },
-    },
+    meta: { width: 200, canNavigate: { parentRow: true } },
   }),
   columnHelper.accessor("status", {
     header: "Status",
@@ -285,12 +288,7 @@ const COLUMNS = [
       <Chip variant="soft">{PROCEDURE_STATUS[props.getValue()]}</Chip>
     ),
     enableSorting: false,
-    meta: {
-      width: 100,
-      canNavigate: {
-        parentRow: true,
-      },
-    },
+    meta: { width: 100, canNavigate: { parentRow: true } },
   }),
   columnHelper.accessor("labels", {
     header: "Kennungen",
@@ -307,9 +305,7 @@ const COLUMNS = [
       </Stack>
     ),
     enableSorting: false,
-    meta: {
-      width: 250,
-    },
+    meta: { width: 250 },
   }),
   columnHelper.accessor("appointmentStart", {
     header: "Termin",
@@ -318,11 +314,7 @@ const COLUMNS = [
         ? ""
         : `${formatDateTime(props.getValue())} Uhr`,
     enableSorting: true,
-    meta: {
-      canNavigate: {
-        parentRow: true,
-      },
-    },
+    meta: { canNavigate: { parentRow: true } },
   }),
 ];
 

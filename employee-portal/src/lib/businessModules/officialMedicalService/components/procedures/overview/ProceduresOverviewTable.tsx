@@ -174,6 +174,7 @@ export function ProceduresOverviewTable(
           ]}
           right={props.buttons}
           alignItems="flex-end"
+          invertDomOrder={true}
         />
       }
       data-testid="procedures-table"

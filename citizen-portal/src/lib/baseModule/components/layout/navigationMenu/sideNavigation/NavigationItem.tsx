@@ -23,7 +23,7 @@ import {
   NavigationItem as NavigationItemType,
   SubNavigationItem as SubNavigationItemType,
 } from "@/lib/baseModule/components/layout/types";
-import { GradientIcon } from "@/lib/shared/components/icon/GradientIcon";
+import { GradientIcon } from "@/lib/shared/components/icons/GradientIcon";
 
 export function NavigationItem({
   item,

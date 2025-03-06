@@ -70,6 +70,12 @@ public class OmsProcedure extends Procedure<OmsProcedure, OmsTask, Person, Facil
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private MedicalOpinionStatus medicalOpinionStatus;
 
+  @Column(nullable = false)
+  @NotNull
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private MedicalOpinionResult medicalOpinionResult;
+
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @Column(nullable = false)
   private boolean sendEmailNotifications = false;
@@ -165,5 +171,13 @@ public class OmsProcedure extends Procedure<OmsProcedure, OmsTask, Person, Facil
 
   public void setStartedAt(Instant startedAt) {
     this.startedAt = startedAt;
+  }
+
+  public @NotNull MedicalOpinionResult getMedicalOpinionResult() {
+    return medicalOpinionResult;
+  }
+
+  public void setMedicalOpinionResult(@NotNull MedicalOpinionResult medicalOpinionResult) {
+    this.medicalOpinionResult = medicalOpinionResult;
   }
 }

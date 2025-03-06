@@ -1,0 +1,33 @@
+{
+  "header": {
+    "title": "Appointments",
+    "logout": "Logout"
+  },
+  "type_switch_buttons": {
+    "upcoming": "Upcoming",
+    "past": "Past"
+  },
+  "appointment_card": {
+    "start": "{{ time }}",
+    "duration": "Duration: {{ appointmentDuration }} minutes",
+    "appointment_type": {
+      "hiv_sti": "HIV-STI",
+      "sex_work": "Sex work",
+      "consultation": "Consultation"
+    }
+  },
+  "appointment_status": {
+    "booked": "Appointment booked",
+    "non_booked": "Appointment not yet booked",
+    "cancelled": "Appointment canceled"
+  },
+  "appointments": {
+    "upcoming": "Upcoming appointments",
+    "past": "Past appointments",
+    "no_data": {
+      "default": "There are no appointments available",
+      "upcoming": "No upcoming appointments",
+      "past": "No past appointments"
+    }
+  }
+}

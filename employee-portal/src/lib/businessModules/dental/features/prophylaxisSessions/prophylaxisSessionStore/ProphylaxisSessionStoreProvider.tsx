@@ -5,8 +5,7 @@
 
 "use client";
 
-import { ChildExamination } from "@eshg/dental/api/models/ChildExamination";
-import { ProphylaxisSessionDetails } from "@eshg/dental/api/models/ProphylaxisSessionDetails";
+import { ChildExamination, ProphylaxisSessionDetails } from "@eshg/dental";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { createContext, useContext, useState } from "react";
 import { useStore } from "zustand";

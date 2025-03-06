@@ -7,7 +7,7 @@ import {
   SideNavigationLinkItem,
   SideNavigationParentItem,
   SideNavigationSuspenseItem,
-} from "@eshg/lib-employee-portal/types/sideNavigation";
+} from "@eshg/lib-employee-portal";
 import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import {

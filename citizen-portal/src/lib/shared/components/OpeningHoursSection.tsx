@@ -6,6 +6,7 @@
 import { ApiGetOpeningHoursResponse } from "@eshg/travel-medicine-api";
 import { AccessTimeOutlined } from "@mui/icons-material";
 import { Stack, Typography, styled } from "@mui/joy";
+import { Fragment } from "react";
 import { isDefined, map, partition, pipe, zip } from "remeda";
 
 import { useTranslation } from "@/lib/i18n/client";
@@ -90,10 +91,10 @@ function OpeningTime({
       </Typography>
       <Typography component="dd" sx={{ margin: 0 }}>
         {availabilities.map((t, index) => (
-          <>
+          <Fragment key={t}>
             {t}
             {index !== availabilities.length - 1 ? <br /> : null}
-          </>
+          </Fragment>
         ))}
       </Typography>
     </OpeningTimePair>

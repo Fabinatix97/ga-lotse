@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { ApiInspectionResource } from "@eshg/inspection-api";
-import { ApiResourceType } from "@eshg/inspection-api";
+import {
+  type ApiInspectionResource,
+  ApiResourceType,
+} from "@eshg/inspection-api";
 import {
   CameraAltOutlined,
   DeleteOutlined,

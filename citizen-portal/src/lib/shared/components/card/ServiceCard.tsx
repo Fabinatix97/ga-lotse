@@ -9,7 +9,7 @@ import Card from "@mui/joy/Card";
 import { useId } from "react";
 
 import { SubNavigationItem } from "@/lib/baseModule/components/layout/types";
-import { GradientIcon } from "@/lib/shared/components/icon/GradientIcon";
+import { GradientIcon } from "@/lib/shared/components/icons/GradientIcon";
 
 type ServiceCardProps = Omit<SubNavigationItem, "description">;
 

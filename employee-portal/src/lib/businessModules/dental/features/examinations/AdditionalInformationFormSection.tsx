@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ExaminationStatus } from "@eshg/dental";
 import { ApiDentitionType, ApiOralHygieneStatus } from "@eshg/dental-api";
-import { ExaminationStatus } from "@eshg/dental/api/models/ExaminationStatus";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import {
   SoftRequiredBooleanSelectField,
@@ -13,13 +13,14 @@ import {
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
-import { Divider, Stack, Typography } from "@mui/joy";
+import { Divider, Grid, Stack, Typography } from "@mui/joy";
 
 import { ExaminationStatusChip } from "@/lib/businessModules/dental/features/examinations/ExaminationStatusChip";
 import { useDentalExaminationStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
 import { DENTITION_TYPE_OPTIONS } from "@/lib/businessModules/dental/features/prophylaxisSessions/options";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
+import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 
 import { ORAL_HYGIENE_STATUS } from "./translations";
@@ -31,6 +32,10 @@ export interface AdditionalInformationFormValues {
   dentitionType: OptionalFieldValue<ApiDentitionType>;
   oralHygieneStatus?: OptionalFieldValue<ApiOralHygieneStatus>;
   fluorideVarnishApplied: OptionalFieldValue<boolean>;
+  plaque: boolean;
+  calculus: boolean;
+  gingivitis: boolean;
+  parodontitis: boolean;
 }
 
 interface AdditionalInformationFormSectionProps {
@@ -44,40 +49,38 @@ export function AdditionalInformationFormSection(
   props: AdditionalInformationFormSectionProps,
 ) {
   const { screening, fluoridation, fluoridationConsentGiven, status } = props;
-  const dmftValues = useDentalExaminationStore((store) => store.dmftValues);
 
   return (
     <InformationSheet>
       <DetailsSection title="Zusatzinfos">
         <ExaminationStatusChip status={status} />
-        {screening && <ScreeningFields />}
         {fluoridation && (
           <FluoridationField
             fluoridationConsentGiven={fluoridationConsentGiven}
           />
         )}
-        <Divider orientation="horizontal" />
-        <Typography component="h3" fontWeight={600}>
-          Automatisierte Werte
-        </Typography>
-        <Stack direction="row" gap={3}>
-          <DetailsItem
-            label="dmf-t/DMF-T"
-            value={`${dmftValues.primaryTeeth}/${dmftValues.secondaryTeeth}`}
-          />
-        </Stack>
+        {screening && <ScreeningFields />}
       </DetailsSection>
     </InformationSheet>
   );
 }
 
 function ScreeningFields() {
+  const dmftValues = useDentalExaminationStore((store) => store.dmftValues);
+
+  const toggleDentition = useDentalExaminationStore(
+    (state) => state.toggleDentition,
+  );
+
   return (
     <>
       <SelectField
         name="dentitionType"
         label="Gebisstyp"
         options={DENTITION_TYPE_OPTIONS}
+        onChange={(value) => {
+          toggleDentition(value as ApiDentitionType);
+        }}
       />
       <SoftRequiredSelectField
         name="oralHygieneStatus"
@@ -85,6 +88,21 @@ function ScreeningFields() {
         options={ORAL_HYGIENE_STATUS_OPTIONS}
         orientation="vertical"
       />
+      <Divider orientation="horizontal" />
+      <Typography component="h3" fontWeight={600}>
+        Parodontalstatus
+      </Typography>
+      <ParodontalCheckboxes />
+      <Divider orientation="horizontal" />
+      <Typography component="h3" fontWeight={600}>
+        Automatisierte Werte
+      </Typography>
+      <Stack direction="row" gap={3}>
+        <DetailsItem
+          label="dmf-t/DMF-T"
+          value={`${dmftValues.primaryTeeth}/${dmftValues.secondaryTeeth}`}
+        />
+      </Stack>
     </>
   );
 }
@@ -110,5 +128,24 @@ function FluoridationField(props: FluoridationFieldProps) {
       orientation="vertical"
       softRequired
     />
+  );
+}
+
+function ParodontalCheckboxes() {
+  return (
+    <Grid container spacing={2}>
+      <Grid md={12} xl={6}>
+        <CheckboxField name="plaque" label="Plaque" />
+      </Grid>
+      <Grid md={12} xl={6}>
+        <CheckboxField name="calculus" label="Zahnstein" />
+      </Grid>
+      <Grid md={12} xl={6}>
+        <CheckboxField name="gingivitis" label="Gingivitis" />
+      </Grid>
+      <Grid md={12} xl={6}>
+        <CheckboxField name="parodontitis" label="Parodontitis" />
+      </Grid>
+    </Grid>
   );
 }

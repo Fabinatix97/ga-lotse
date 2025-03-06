@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   Box,
   Button,
@@ -28,10 +29,15 @@ import { updateLocalStorageDeviceId } from "@/lib/businessModules/chat/matrix/to
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { useBackupInfo } from "@/lib/businessModules/chat/shared/hooks/useBackupInfo";
+import { useChatRoomList } from "@/lib/businessModules/chat/shared/hooks/useChatRoomList";
 import { useCrossSigningInfo } from "@/lib/businessModules/chat/shared/hooks/useCrossSigningInfo";
+import { RoomData } from "@/lib/businessModules/chat/shared/types";
+import { leaveRoom } from "@/lib/businessModules/chat/shared/utils";
 
 export function ChatPlaygroundContent() {
   const { matrixClient } = useChatClientContext();
+  const { roomList } = useChatRoomList();
+  const snackbar = useSnackbar();
 
   const { backupStatus, loadBackupStatus } = useBackupInfo();
   const { crossSigningStatus, loadCrossSigningStatus } = useCrossSigningInfo();
@@ -49,6 +55,21 @@ export function ChatPlaygroundContent() {
   async function refreshStatus() {
     await loadBackupStatus();
     await loadCrossSigningStatus();
+  }
+
+  async function leaveAllRooms() {
+    try {
+      await Promise.all(
+        roomList.map(
+          async (roomData: RoomData) =>
+            await leaveRoom(matrixClient, roomData.room.roomId),
+        ),
+      );
+      snackbar.confirmation("Successfully left all chat rooms.");
+    } catch (error) {
+      snackbar.error("Failed to leave all chat rooms.");
+      logger.error(error);
+    }
   }
 
   function clearStores() {
@@ -90,6 +111,9 @@ export function ChatPlaygroundContent() {
       <Stack spacing={2} direction="row">
         <Button color="danger" onClick={clearStores}>
           Reset Client
+        </Button>
+        <Button color="danger" onClick={leaveAllRooms}>
+          Leave all rooms
         </Button>
         <Button color="success" onClick={refreshStatus}>
           Refresh Status

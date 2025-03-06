@@ -3,15 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSearchInstitutionGroups } from "@eshg/dental";
 import { GetChildrenRequest } from "@eshg/dental-api";
-import { useSearchInstitutionGroups } from "@eshg/dental/api/queries/childApi";
 import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { useHasChanged } from "@eshg/lib-portal/hooks/useHasChanged";
-import { CircularProgress, FormControl, FormLabel, Select } from "@mui/joy";
+import { CircularProgress, FormControl, FormLabel } from "@mui/joy";
 import { useEffect } from "react";
-import { isDefined } from "remeda";
 
-import { ResetButton } from "@/lib/shared/components/ResetButton";
+import { ResettableSingleSelect } from "@/lib/shared/components/ResettableSingleSelect";
 import { ActiveFilter } from "@/lib/shared/components/filterSettings/ActiveFilter";
 import { FilterSettingsContent } from "@/lib/shared/components/filterSettings/FilterSettingsContent";
 import {
@@ -90,7 +89,7 @@ export function ChildrenFilterSettings(props: ChildrenFilterSettingsProps) {
         </FormControl>
         <FormControl>
           <FormLabel>Gruppe</FormLabel>
-          <Select
+          <ResettableSingleSelect
             aria-label="Gruppe"
             value={props.filterFormValues.groupNameFilter ?? ""}
             onChange={(_, newValue) => {
@@ -99,21 +98,17 @@ export function ChildrenFilterSettings(props: ChildrenFilterSettingsProps) {
               }
               props.setFilterFormValue("groupNameFilter", newValue);
             }}
-            endDecorator={
-              <>
-                {searchGroups.isLoading ? <CircularProgress size="sm" /> : null}
-                {isDefined(props.filterFormValues.groupNameFilter) ? (
-                  <ResetButton
-                    onReset={() => {
-                      props.setFilterFormValue("groupNameFilter", undefined);
-                    }}
-                  />
-                ) : null}
-              </>
+            onResetSelect={() => {
+              props.setFilterFormValue("groupNameFilter", undefined);
+            }}
+            otherEndDecorator={
+              searchGroups.isLoading ? (
+                <CircularProgress size="sm" />
+              ) : undefined
             }
           >
             <SelectOptions options={groupOptions} />
-          </Select>
+          </ResettableSingleSelect>
         </FormControl>
       </FilterSettingsContent>
     </FilterSettingsSheet>

@@ -21,13 +21,13 @@ import de.eshg.officialmedicalservice.procedure.api.EmployeeOmsProcedurePaginati
 import de.eshg.officialmedicalservice.procedure.api.EmployeePagedOmsProcedures;
 import de.eshg.officialmedicalservice.procedure.api.GetEmployeeOmsProcedureOverviewResponse;
 import de.eshg.officialmedicalservice.procedure.api.GetOmsProceduresFilterOptionsDto;
-import de.eshg.officialmedicalservice.procedure.api.MedicalOpinionStatusDto;
 import de.eshg.officialmedicalservice.procedure.api.PatchAcceptDraftProcedureRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchAffectedPersonRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchConcernRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchEmployeeOmsProcedureEmailNotificationsRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchEmployeeOmsProcedureFacilityRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchEmployeeOmsProcedurePhysicianRequest;
+import de.eshg.officialmedicalservice.procedure.api.PatchMedicalOpinionStatusRequest;
 import de.eshg.officialmedicalservice.procedure.api.PostEmployeeOmsProcedureFacilityRequest;
 import de.eshg.officialmedicalservice.procedure.api.PostEmployeeOmsProcedureRequest;
 import de.eshg.officialmedicalservice.procedure.api.SyncAffectedPersonRequest;
@@ -228,7 +228,8 @@ public class EmployeeOmsProcedureController {
   @PatchMapping(path = PROCEDURES_URL + "/{id}" + MEDICAL_OPINION_STATUS_URL)
   @Operation(summary = "Updates the medical opinion status of a oms procedure")
   public void patchMedicalOpinionStatus(
-      @PathVariable("id") UUID externalId, @Valid @RequestBody MedicalOpinionStatusDto request) {
+      @PathVariable("id") UUID externalId,
+      @Valid @RequestBody PatchMedicalOpinionStatusRequest request) {
     employeeOmsProcedureService.updateMedicalOpinionStatus(externalId, request);
   }
 

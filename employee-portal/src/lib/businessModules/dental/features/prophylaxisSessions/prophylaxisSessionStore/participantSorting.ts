@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ChildExamination } from "@eshg/dental/api/models/ChildExamination";
+import { ChildExamination } from "@eshg/dental";
 import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { isDefined } from "remeda";
 

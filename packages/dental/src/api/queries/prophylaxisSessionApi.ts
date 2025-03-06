@@ -8,7 +8,7 @@ import {
   GetProphylaxisSessionsRequest,
   ProphylaxisSessionApi,
 } from "@eshg/dental-api";
-import { mapPaginatedList } from "@eshg/lib-employee-portal/api/models/PaginatedList";
+import { mapPaginatedList } from "@eshg/lib-employee-portal";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 

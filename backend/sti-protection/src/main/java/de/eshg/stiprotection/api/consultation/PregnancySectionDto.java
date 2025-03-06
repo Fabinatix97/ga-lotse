@@ -5,7 +5,9 @@
 
 package de.eshg.stiprotection.api.consultation;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.AssertFalse;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.time.LocalDate;
@@ -43,4 +45,21 @@ public record PregnancySectionDto(
         @Schema(
             description = "Number of ectopic pregnancies, developed outside the uterus.",
             example = "1")
-        Integer numberOfEctopicPregnancies) {}
+        Integer numberOfEctopicPregnancies) {
+
+  @AssertFalse(
+      message =
+          "If hasPregnancyRelatedInfo is set to false or null, all other pregnancy section fields should be null.")
+  @JsonIgnore
+  @SuppressWarnings("unused")
+  public boolean isFilledPregnancySectionWithHasPregnancyRelatedInfoSetToFalse() {
+    return Boolean.TRUE.equals(hasPregnancyRelatedInfo())
+        && lastCytologyTest() == null
+        && startOfLastPeriod() == null
+        && numberOfPregnancies() == null
+        && numberOfInducedAbortions() == null
+        && numberOfBirths() == null
+        && numberOfOtherAbortions() == null
+        && numberOfEctopicPregnancies() == null;
+  }
+}

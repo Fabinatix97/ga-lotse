@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ExaminationResult } from "@eshg/dental/api/models/ExaminationResult";
-import { mapToExaminationStatus } from "@eshg/dental/api/models/ExaminationStatus";
+import { ExaminationResult, mapToExaminationStatus } from "@eshg/dental";
 
 import { ParticipantFilters } from "./participantFilters";
 import { ProphylaxisSessionState } from "./prophylaxisSessionStore";

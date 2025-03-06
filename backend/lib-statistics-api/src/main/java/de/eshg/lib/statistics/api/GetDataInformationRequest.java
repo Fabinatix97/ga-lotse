@@ -17,7 +17,5 @@ public interface GetDataInformationRequest {
 
   UUID dataSourceId();
 
-  boolean anonymizationRequired();
-
   List<String> attributeCodes();
 }

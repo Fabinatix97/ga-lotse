@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { moduleUserGroup as dentalModuleUserGroup } from "@eshg/dental/shared/moduleUserGroup";
-import { ModuleUserGroupConfig } from "@eshg/lib-employee-portal/types/module";
+import { moduleUserGroup as dentalModuleUserGroup } from "@eshg/dental";
+import { ModuleUserGroupConfig } from "@eshg/lib-employee-portal";
 
 import { moduleUserGroup as inspectionModuleUserGroup } from "@/lib/businessModules/inspection/shared/moduleUserGroup";
 import { moduleUserGroup as measlesProtectionModuleUserGroup } from "@/lib/businessModules/measlesProtection/shared/moduleUserGroup";

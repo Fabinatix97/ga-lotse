@@ -1,0 +1,21 @@
+/**
+ * Copyright 2025 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { useSuspenseQuery } from "@tanstack/react-query";
+
+import { useUserApi } from "@/lib/baseModule/api/clients";
+import { selfUserChatAttributesApiQueryKey } from "@/lib/businessModules/chat/api/queries/apiQueryKeys";
+
+export function getSelfUserChatAttributesQueryKey() {
+  return selfUserChatAttributesApiQueryKey(["getSelfUserChatAttributes"]);
+}
+
+export function useGetSelfUserChatAttributes() {
+  const userApi = useUserApi();
+  return useSuspenseQuery({
+    queryKey: getSelfUserChatAttributesQueryKey(),
+    queryFn: () => userApi.getSelfUserChatAttributes(),
+  });
+}

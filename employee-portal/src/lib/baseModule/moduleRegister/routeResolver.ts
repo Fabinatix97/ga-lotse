@@ -4,7 +4,7 @@
  */
 
 import { ApiBusinessModule, ApiProcedureStatus } from "@eshg/base-api";
-import { routes as dentalRoutes } from "@eshg/dental/shared/routes";
+import { routes as dentalRoutes } from "@eshg/dental";
 
 import { routes as inspectionRoutes } from "@/lib/businessModules/inspection/shared/routes";
 import { routes as measlesProtectionRoutes } from "@/lib/businessModules/measlesProtection/shared/routes";

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { BottomToolbar } from "@eshg/lib-employee-portal/components/toolbar/BottomToolbar";
+import { BottomToolbar } from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 

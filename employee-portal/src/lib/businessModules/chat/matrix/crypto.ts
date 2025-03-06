@@ -112,8 +112,12 @@ export async function isDeviceVerified(client: MatrixClient) {
  * Generates a 256-bit hash (SHA-256) from the combined string of the user's ID and device ID.
  * This hash is returned as a Uint8Array representing the storage key.
  */
-export async function createStorageKey(selfUserId: string, deviceId: string) {
-  const combinedString = `${selfUserId}:${deviceId}`;
+export async function createStorageKey(
+  selfUserId: string,
+  deviceId: string,
+  selfUserDeriveKeySecret: string,
+) {
+  const combinedString = `${selfUserId}:${deviceId}:${selfUserDeriveKeySecret}`;
 
   const encoder = new TextEncoder();
   const data = encoder.encode(combinedString);
@@ -124,10 +128,10 @@ export async function createStorageKey(selfUserId: string, deviceId: string) {
 }
 
 /**
- * Generates a random 256-bit storage key (32 bytes) using the cryptographic random number generator.
+ * NOTE: We want UUID created with cryptographically secure random number
+ * generator which standard RFC9562 UUIDs generator does not provide.
  */
-export function generateStorageKey() {
-  const key = new Uint8Array(32);
-  crypto.getRandomValues(key);
-  return key;
+export function generateCryptoRandomUUID() {
+  // eslint-disable-next-line no-restricted-properties
+  return crypto.randomUUID();
 }

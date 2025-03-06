@@ -5,11 +5,10 @@
 
 "use client";
 
-import type {
-  EmotionCache,
-  Options as OptionsOfCreateCache,
+import createCache, {
+  type EmotionCache,
+  type Options as OptionsOfCreateCache,
 } from "@emotion/cache";
-import createCache from "@emotion/cache";
 import { CacheProvider as DefaultCacheProvider } from "@emotion/react";
 import { useServerInsertedHTML } from "next/navigation";
 import { Fragment, ReactElement, ReactNode, useState } from "react";

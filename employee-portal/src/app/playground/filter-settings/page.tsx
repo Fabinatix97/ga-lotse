@@ -5,7 +5,7 @@
 
 "use client";
 
-import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { MainContentLayout } from "@eshg/lib-employee-portal";
 import { Button, Switch, Typography } from "@mui/joy";
 import { useState } from "react";
 

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { LayoutConfig } from "@eshg/lib-employee-portal/contexts/layoutConfig";
+import { LayoutConfig } from "@eshg/lib-employee-portal";
 
 export const LAYOUT_CONFIG: LayoutConfig = {
   appBarHeightMobile: "3.5rem", // 56px

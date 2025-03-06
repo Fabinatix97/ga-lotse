@@ -18,7 +18,7 @@ export interface MonthSelectionProps {
   label: string;
   nextMonthLabel: string;
   prevMonthLabel: string;
-  slots?: {
+  slotProps?: {
     arrows?: IconButtonProps;
   };
 }
@@ -28,7 +28,7 @@ export function MonthSelection({
   label,
   nextMonthLabel,
   prevMonthLabel,
-  slots,
+  slotProps,
 }: MonthSelectionProps) {
   const monthYearId = useId();
   const previousMonth = addMonths(currentMonth, -1);
@@ -48,7 +48,7 @@ export function MonthSelection({
           aria-controls={monthYearId}
           onClick={() => setCurrentMonth(previousMonth)}
           disabled={previousMonth < nowMonth}
-          {...slots?.arrows}
+          {...slotProps?.arrows}
         >
           <ChevronLeft />
         </IconButton>
@@ -59,7 +59,7 @@ export function MonthSelection({
           title={nextMonthLabel}
           aria-controls={monthYearId}
           onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-          {...slots?.arrows}
+          {...slotProps?.arrows}
         >
           <ChevronRight />
         </IconButton>

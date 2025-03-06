@@ -6,15 +6,14 @@
 package de.eshg.statistics.aggregation;
 
 import de.eshg.domain.model.SequencedBaseEntity_;
-import de.eshg.lib.statistics.api.DataSourceSensitivity;
-import de.eshg.rest.service.error.AggregationException;
-import de.eshg.statistics.api.datasource.AvailableDataSource;
+import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.statistics.config.StatisticsConfig;
+import de.eshg.statistics.config.StatisticsFeature;
+import de.eshg.statistics.config.StatisticsFeatureToggle;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
 import de.eshg.statistics.persistence.entity.StatisticsDataSensitivity;
-import de.eshg.statistics.persistence.entity.TableColumn;
 import de.eshg.statistics.persistence.entity.TableRow;
 import de.eshg.statistics.persistence.repository.TableRowRepository;
 import java.util.UUID;
@@ -35,16 +34,19 @@ public abstract class AbstractAggregationResultService {
   protected final DataSourceValidator dataSourceValidator;
   protected final DataAggregationService dataAggregationService;
   protected final TableRowRepository tableRowRepository;
+  protected final StatisticsFeatureToggle featureToggle;
   private final int tableRowPageSize;
 
   protected AbstractAggregationResultService(
       DataSourceValidator dataSourceValidator,
       DataAggregationService dataAggregationService,
       TableRowRepository tableRowRepository,
+      StatisticsFeatureToggle featureToggle,
       StatisticsConfig statisticsConfig) {
     this.dataSourceValidator = dataSourceValidator;
     this.dataAggregationService = dataAggregationService;
     this.tableRowRepository = tableRowRepository;
+    this.featureToggle = featureToggle;
     this.tableRowPageSize = statisticsConfig.tableRows().pageSize();
   }
 
@@ -68,22 +70,6 @@ public abstract class AbstractAggregationResultService {
   }
 
   @Transactional(readOnly = true)
-  public boolean getDataNeedsAnonymization(UUID id) {
-    AbstractAggregationResult aggregationResult = getAbstractAggregationResultInternal(id);
-    if (!aggregationResult.getDataSensitivity().equals(StatisticsDataSensitivity.ANONYMOUS)) {
-      return false;
-    }
-    TableColumn firstTableColumn = aggregationResult.getTableColumns().getFirst();
-    AvailableDataSource availableDataSource =
-        dataSourceValidator.getAllAvailableDataSources().stream()
-            .filter(
-                dataSource -> AggregationResultUtil.isSameDataSource(firstTableColumn, dataSource))
-            .findFirst()
-            .orElseThrow(() -> new AggregationException("Data source not found"));
-    return !availableDataSource.sensitivity().equals(DataSourceSensitivity.ANONYMOUS);
-  }
-
-  @Transactional(readOnly = true)
   public AggregationResultStateInformation getStateInformation(UUID id) {
     AbstractAggregationResult aggregationResult = getAbstractAggregationResultInternal(id);
     return new AggregationResultStateInformation(
@@ -97,10 +83,10 @@ public abstract class AbstractAggregationResultService {
   }
 
   @Transactional
-  public void aggregateData(UUID id, boolean dataNeedsAnonymization) {
+  public void aggregateData(UUID id) {
     AbstractAggregationResult aggregationResult = getAbstractAggregationResultInternal(id);
     try {
-      dataAggregationService.collectTableRows(aggregationResult, dataNeedsAnonymization);
+      dataAggregationService.collectTableRows(aggregationResult);
     } catch (Exception exception) {
       log.error("Error while collecting table rows for {}", id, exception);
       aggregationResult.setState(AggregationResultState.FAILED);
@@ -111,7 +97,27 @@ public abstract class AbstractAggregationResultService {
   public void minMaxDetermination(UUID id) {
     AbstractAggregationResult aggregationResult = getAbstractAggregationResultInternal(id);
     dataAggregationService.determineMinMaxNullUnknownValues(aggregationResult);
-    aggregationResult.setPendingState(AggregationResultPendingState.ANALYSIS_CONDUCTION);
+    finishMinMaxDetermination(aggregationResult);
+  }
+
+  private static void finishMinMaxDetermination(AbstractAggregationResult aggregationResult) {
+    if (aggregationResult.getDataSensitivity().equals(StatisticsDataSensitivity.ANONYMOUS)
+        && !StatisticsDataSensitivity.ANONYMOUS.equals(
+            aggregationResult.getLastDataSensitivityFromBusinessModule())) {
+      aggregationResult.setPendingState(AggregationResultPendingState.ANONYMIZATION);
+    } else {
+      aggregationResult.setPendingState(AggregationResultPendingState.ANALYSIS_CONDUCTION);
+    }
+  }
+
+  @Transactional
+  public void anonymization(UUID id) {
+    if (!featureToggle.isNewFeatureEnabled(StatisticsFeature.ANONYMIZATION)) {
+      throw new BadRequestException("Data anonymization is required but feature is not enabled");
+    } else {
+      AbstractAggregationResult aggregationResult = getAbstractAggregationResultInternal(id);
+      aggregationResult.setPendingState(AggregationResultPendingState.ANALYSIS_CONDUCTION);
+    }
   }
 
   protected void removeTableRows(AbstractAggregationResult aggregationResult) {

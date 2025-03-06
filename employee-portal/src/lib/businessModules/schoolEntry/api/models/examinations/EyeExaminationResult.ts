@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  Versioned,
-  mapVersioned,
-} from "@eshg/lib-employee-portal/api/models/Versioned";
+import { Versioned, mapVersioned } from "@eshg/lib-employee-portal";
 import {
   ApiExaminationResult,
   ApiEyeExaminationResult,

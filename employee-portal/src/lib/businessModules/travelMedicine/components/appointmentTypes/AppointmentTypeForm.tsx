@@ -14,8 +14,10 @@ import { Ref } from "react";
 
 import { translateAppointmentType } from "@/lib/businessModules/travelMedicine/components/appointmentTypes/translations";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
+import {
+  SidebarForm,
+  SidebarFormHandle,
+} from "@/lib/shared/components/form/SidebarForm";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 

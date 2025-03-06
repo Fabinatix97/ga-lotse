@@ -185,7 +185,16 @@ function optionsFromConcernsResponse(
         value: getConcernKeyFromConcernConfig(concern),
         label: concern.nameDe,
       })),
-    );
+    )
+    .sort((c1, c2) => {
+      if (c1.label > c2.label) {
+        return 1;
+      }
+      if (c1.label < c2.label) {
+        return -1;
+      }
+      return 0;
+    });
 }
 
 function categoryOptionsFromConcernsResponse(

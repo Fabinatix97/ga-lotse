@@ -30,6 +30,7 @@ import { isDefined, isFunction } from "remeda";
 import { NoEntries } from "@/lib/baseModule/components/NoEntries";
 import { TableRow } from "@/lib/shared/components/table/TableRow";
 import { TableSubRow } from "@/lib/shared/components/table/TableSubRow";
+import { ToggleSelectColumnProps } from "@/lib/shared/components/table/columns/ToggleSelectColumn";
 
 import { Header } from "./Header";
 import { addFeatureColumns } from "./columns/addFeatureColumns";
@@ -83,6 +84,7 @@ export interface RowSelectionProps<TData>
   > {
   state: RowSelectionTableState;
   getRowId: (originalRow: TData, index: number, parent?: Row<TData>) => string;
+  toggleSelectProps: ToggleSelectColumnProps;
 }
 
 type SupportedRowSelectionOptions =
@@ -150,7 +152,7 @@ export function DataTable<TData>(props: Readonly<DataTableProps<TData>>) {
     data: props.data,
     columns: addFeatureColumns(props.columns, {
       toggleExpand: hasSubRows,
-      toggleSelect: isDefined(props.rowSelectionProps),
+      toggleSelectProps: props.rowSelectionProps?.toggleSelectProps,
     }),
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),

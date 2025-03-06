@@ -69,6 +69,7 @@ import de.eshg.officialmedicalservice.procedure.api.EmployeeOmsProcedureSortKey;
 import de.eshg.officialmedicalservice.procedure.api.EmployeePagedOmsProcedures;
 import de.eshg.officialmedicalservice.procedure.api.FacilityDto;
 import de.eshg.officialmedicalservice.procedure.api.GetOmsProceduresFilterOptionsDto;
+import de.eshg.officialmedicalservice.procedure.api.MedicalOpinionResultDto;
 import de.eshg.officialmedicalservice.procedure.api.MedicalOpinionStatusDto;
 import de.eshg.officialmedicalservice.procedure.api.PatchAcceptDraftProcedureRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchAffectedPersonRequest;
@@ -76,6 +77,7 @@ import de.eshg.officialmedicalservice.procedure.api.PatchConcernRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchEmployeeOmsProcedureEmailNotificationsRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchEmployeeOmsProcedureFacilityRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchEmployeeOmsProcedurePhysicianRequest;
+import de.eshg.officialmedicalservice.procedure.api.PatchMedicalOpinionStatusRequest;
 import de.eshg.officialmedicalservice.procedure.api.PostEmployeeOmsProcedureFacilityRequest;
 import de.eshg.officialmedicalservice.procedure.api.PostEmployeeOmsProcedureRequest;
 import de.eshg.officialmedicalservice.procedure.api.SyncAffectedPersonRequest;
@@ -83,6 +85,7 @@ import de.eshg.officialmedicalservice.procedure.api.SyncFacilityRequest;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.Concern;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.Concern_;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.Facility;
+import de.eshg.officialmedicalservice.procedure.persistence.entity.MedicalOpinionResult;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.MedicalOpinionStatus;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedureRepository;
@@ -247,6 +250,8 @@ public class EmployeeOmsProcedureService {
             omsProcedureAndAffectedPerson.omsProcedure.getProcedureStatus()),
         MedicalOpinionStatusDto.valueOf(
             omsProcedureAndAffectedPerson.omsProcedure.getMedicalOpinionStatus().name()),
+        MedicalOpinionResultDto.fromDomainType(
+            omsProcedureAndAffectedPerson.omsProcedure.getMedicalOpinionResult()),
         WaitingRoomMapper.mapToDto(omsProcedureAndAffectedPerson.omsProcedure.getWaitingRoom()),
         omsProcedureAndAffectedPerson.affectedPerson,
         facility,
@@ -264,16 +269,30 @@ public class EmployeeOmsProcedureService {
       EmployeeOmsProcedurePaginationAndSortParameters paginationAndSortParameters,
       ProcedureSearchParameters searchParameters) {
 
-    List<OmsProcedureView> candidates = null;
+    List<OmsProcedureView> candidates;
 
     if (ProcedureValidator.hasNonNullValue(searchParameters)) {
 
-      List<OmsProcedure> allProcedures =
-          procedureSearchService.searchProceduresByPerson(
-              searchParameters.searchFirstName(),
-              searchParameters.searchLastName(),
-              searchParameters.searchDateOfBirth(),
-              PersonType.PATIENT);
+      List<OmsProcedure> allProcedures;
+      if (allSearchParametersAreNotNull(searchParameters)) {
+        allProcedures =
+            procedureSearchService.searchProceduresByPerson(
+                searchParameters.searchFirstName(),
+                searchParameters.searchLastName(),
+                searchParameters.searchDateOfBirth(),
+                PersonType.PATIENT);
+      } else {
+        allProcedures =
+            procedureSearchService
+                .searchProceduresByPartialPersonData(
+                    searchParameters.searchFirstName(),
+                    searchParameters.searchLastName(),
+                    searchParameters.searchDateOfBirth(),
+                    PersonType.PATIENT)
+                .stream()
+                .filter(procedure -> procedure.getProcedureStatus().isOpen())
+                .toList();
+      }
 
       candidates = allProcedures.stream().flatMap(this::convertToProcedureViewStream).toList();
     } else {
@@ -312,6 +331,14 @@ public class EmployeeOmsProcedureService {
     return new EmployeePagedOmsProcedures(result, omsProcedureOverviewDtos.size());
   }
 
+  private boolean allSearchParametersAreNotNull(ProcedureSearchParameters searchParameters) {
+    return (searchParameters.searchFirstName() != null
+            && !searchParameters.searchFirstName().isBlank())
+        && (searchParameters.searchLastName() != null
+            && !searchParameters.searchLastName().isBlank())
+        && (searchParameters.searchDateOfBirth() != null);
+  }
+
   // temporarily skip the current authentication
   private <T> T disabledCurrentAuthentication(Supplier<T> supplier) {
     SecurityContext oldContext = securityContextHolderStrategy.getContext();
@@ -328,7 +355,7 @@ public class EmployeeOmsProcedureService {
     List<OmsAppointment> appointments = procedure.getAppointments();
 
     if (appointments.isEmpty()) {
-      return Stream.of(new OmsProcedureView(procedure, procedure.getConcern(), null));
+      return Stream.of(new OmsProcedureView(procedure, concern, null));
     } else {
       return appointments.stream()
           .map(appointment -> new OmsProcedureView(procedure, concern, appointment));
@@ -655,6 +682,8 @@ public class EmployeeOmsProcedureService {
     facility.setFacilityType(FacilityType.OTHER);
     procedure.addRelatedFacility(facility);
 
+    progressEntryService.createProgressEntryForFacilityAdded(procedure, facilityFileState.name());
+
     return facilityFileState.id();
   }
 
@@ -754,6 +783,9 @@ public class EmployeeOmsProcedureService {
     } else {
       omsProcedure.setConcern(mapToEntity(request.concern()));
     }
+
+    progressEntryService.createProgressEntryForConcernChanged(
+        omsProcedure, request.concern().nameDe());
   }
 
   @Transactional(readOnly = true)
@@ -764,15 +796,28 @@ public class EmployeeOmsProcedureService {
 
   @Transactional
   public void updateMedicalOpinionStatus(
-      UUID externalId, MedicalOpinionStatusDto medicalOpinionStatus) {
+      UUID externalId, PatchMedicalOpinionStatusRequest request) {
     OmsProcedure procedure = loadOmsProcedureForUpdate(externalId);
 
     if (procedure.isFinalized()) {
       throw new BadRequestException(
           "Medical opinion status can not be updated when the procedure is finalized.");
     }
+    if (request.status() == MedicalOpinionStatusDto.ACCOMPLISHED) {
+      if (request.result() == null) {
+        throw new BadRequestException(
+            "A result must be given when setting the status to ACCOMPLISHED");
+      } else {
+        procedure.setMedicalOpinionResult(MedicalOpinionResult.valueOf(request.result().name()));
+      }
+    }
 
-    procedure.setMedicalOpinionStatus(MedicalOpinionStatus.valueOf(medicalOpinionStatus.name()));
+    MedicalOpinionStatus oldStatus = procedure.getMedicalOpinionStatus();
+
+    procedure.setMedicalOpinionStatus(MedicalOpinionStatus.valueOf(request.status().name()));
+
+    progressEntryService.createProgressEntryForMedicalOpinionStatusChanged(
+        procedure, oldStatus, procedure.getMedicalOpinionStatus());
   }
 
   @Transactional

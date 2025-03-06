@@ -7084,6 +7084,8 @@
         "type" : "object",
         "properties" : {
           "affectedPersons" : {
+            "maxItems" : 50,
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/ReportPerson"

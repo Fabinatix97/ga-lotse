@@ -3,12 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ChildExamination, useUpdateExamination } from "@eshg/dental";
 import {
   ApiReasonForAbsence,
   UpdateExaminationRequest,
 } from "@eshg/dental-api";
-import { ChildExamination } from "@eshg/dental/api/models/ChildExamination";
-import { useUpdateExamination } from "@eshg/dental/api/mutations/childApi";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
   buildEnumOptions,

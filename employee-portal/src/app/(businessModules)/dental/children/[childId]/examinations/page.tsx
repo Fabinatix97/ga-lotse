@@ -5,8 +5,7 @@
 
 "use client";
 
-import { getChildDetailsQuery } from "@eshg/dental/api/queries/childApi";
-import { useDentalApi } from "@eshg/dental/shared/DentalProvider";
+import { getChildDetailsQuery, useDentalApi } from "@eshg/dental";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { DentalChildPageProps } from "@/app/(businessModules)/dental/children/[childId]/layout";

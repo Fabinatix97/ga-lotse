@@ -16,6 +16,7 @@ import de.eshg.lib.statistics.attributes.IntegerAttribute;
 import de.eshg.lib.statistics.attributes.ProcedureAttribute;
 import de.eshg.lib.statistics.attributes.TextAttribute;
 import de.eshg.lib.statistics.attributes.ValueWithOptionsAttribute;
+import de.eshg.officialmedicalservice.procedure.persistence.entity.MedicalOpinionResult;
 import java.util.Arrays;
 
 public enum OmsProcedureAttributes implements AttributeInfo {
@@ -79,6 +80,19 @@ public enum OmsProcedureAttributes implements AttributeInfo {
       new IntegerAttribute(
           "Anzahl der abgesagten Termine",
           "NUMBER_OF_CANCELLED_APPOINTMENTS",
+          ATTRIBUTE_CATEGORY_OFFICIAL_MEDICAL_SERVICE,
+          true)),
+
+  MEDICAL_OPINION_RESULT(
+      new ValueWithOptionsAttribute(
+          "Gutachtenergebnis",
+          "MEDICAL_OPINION_RESULT",
+          Arrays.stream(MedicalOpinionResult.values())
+              .map(
+                  entry ->
+                      new ValueOptionInternal(
+                          entry.name(), entry.name(), entry == MedicalOpinionResult.UNKNOWN))
+              .toList(),
           ATTRIBUTE_CATEGORY_OFFICIAL_MEDICAL_SERVICE,
           true)),
   ;

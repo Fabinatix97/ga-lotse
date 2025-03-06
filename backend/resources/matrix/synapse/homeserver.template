@@ -50,8 +50,17 @@ user_directory:
   prefer_local_users: true
   show_locked_users: false
 
-rc_messages_per_second: 200000
-rc_message_burst_count: 100000
+rc_message:
+  per_second: 100
+  burst_count: 100
+
+rc_registration:
+  per_second: 100
+  burst_count: 100
+
+rc_registration_token_validity:
+  per_second: 100
+  burst_count: 100
 
 rc_login:
   address:
@@ -61,6 +70,30 @@ rc_login:
     per_second: 100
     burst_count: 100
   failed_attempts:
+    per_second: 100
+    burst_count: 100
+
+rc_joins:
+  local:
+    per_second: 100
+    burst_count: 100
+  remote:
+    per_second: 100
+    burst_count: 100
+
+rc_invites:
+  per_room:
+    per_second: 100
+    burst_count: 100
+  per_user:
+    per_second: 100
+    burst_count: 100
+  per_issuer:
+    per_second: 100
+    burst_count: 100
+
+rc_presence:
+  per_user:
     per_second: 100
     burst_count: 100
 
@@ -109,8 +142,10 @@ jwt_config:
   algorithm: "RS256"
   secret: "$KEYCLOAK_RS256_PEM"
 
-session_lifetime: 600m
-refresh_token_lifetime: 600m # No need to have RefreshToken lifetime longer than 10 hours, because employee-portal will always log out user after 10 hours of *Activity* and requires user to re-authenticate with Keycloak.
+#XXX: keep infinite synapse session and refresh token until refreshing expired token issue is not resolved in backend/auth and backend/chat-management
+#session_lifetime: 600m
+#refresh_token_lifetime: 600m # No need to have RefreshToken lifetime longer than 10 hours, because employee-portal will always log out user after 10 hours of *Activity* and requires user to re-authenticate with Keycloak.
+#XXX
 refreshable_access_token_lifetime: 5m
 nonrefreshable_access_token_lifetime: 5m
 

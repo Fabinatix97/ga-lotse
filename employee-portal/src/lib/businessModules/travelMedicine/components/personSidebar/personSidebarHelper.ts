@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
-import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
+import {
+  durationBetweenDatesInMinutes,
+  toDateString,
+} from "@eshg/lib-portal/helpers/dateTime";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import {
   ApiAppointmentBookingType,

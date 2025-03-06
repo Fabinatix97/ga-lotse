@@ -302,6 +302,7 @@ public class GdprProcedureController implements GdprProcedureApi {
   @Transactional
   public void addDownloads(UUID id, AddGdprDownloadsRequest request) {
     baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR);
+    validateStatusDownloadIdsChange(service.getGdprProcedureFromDb(id));
     service.addGdprDownloads(id, request.downloadIds());
   }
 
@@ -319,6 +320,7 @@ public class GdprProcedureController implements GdprProcedureApi {
   @Transactional
   public void deleteDownloads(UUID id, DeleteGdprDownloadsRequest request) {
     baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR);
+    validateStatusDownloadIdsChange(service.getGdprProcedureFromDb(id));
     service.deleteGdprDownloads(id, request.downloadIds());
   }
 
@@ -513,6 +515,13 @@ public class GdprProcedureController implements GdprProcedureApi {
   private static void validateStatusTransitionToInProgress(GdprProcedure procedure) {
     if (isInvalidStatus(procedure, GdprProcedureStatus.DRAFT)) {
       throw badStatusTransition(GdprProcedureStatusDto.IN_PROGRESS, procedure.getStatus());
+    }
+  }
+
+  private static void validateStatusDownloadIdsChange(GdprProcedure procedure) {
+    if (isInvalidStatus(procedure, GdprProcedureStatus.IN_PROGRESS)) {
+      throw new BadRequestException(
+          "Invalid status of procedure for adding / removing download ids.");
     }
   }
 

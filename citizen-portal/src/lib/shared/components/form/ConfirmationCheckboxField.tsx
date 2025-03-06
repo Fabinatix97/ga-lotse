@@ -63,7 +63,7 @@ export function ConfirmationCheckboxField(
 }
 
 function RequiredFormLabel(props: FormLabelProps) {
-  return <FormLabel {...props} required />;
+  return <FormLabel sx={{ display: "inline" }} {...props} required />;
 }
 
 function createValueCheckedValidation(

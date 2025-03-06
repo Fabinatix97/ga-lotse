@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useHeaderHeights } from "@eshg/lib-employee-portal/hooks/useHeaderHeights";
+import { useHeaderHeights } from "@eshg/lib-employee-portal";
 import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { Drawer, DrawerProps, ModalClose, Stack, ZIndex } from "@mui/joy";
 import { PropsWithChildren } from "react";

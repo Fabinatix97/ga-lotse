@@ -24,20 +24,9 @@ public class DepartmentConfigurationService
     this.initialDepartmentConfiguration = initialDepartmentConfiguration;
   }
 
+  @Override
   protected DepartmentConfiguration getInitialConfiguration() throws Exception {
     DepartmentConfiguration departmentConfiguration = new DepartmentConfiguration();
-    departmentConfiguration.setName(initialDepartmentConfiguration.name());
-    departmentConfiguration.setAbbreviation(initialDepartmentConfiguration.abbreviation());
-    departmentConfiguration.setStreet(initialDepartmentConfiguration.street());
-    departmentConfiguration.setHouseNumber(initialDepartmentConfiguration.houseNumber());
-    departmentConfiguration.setPostalCode(initialDepartmentConfiguration.postalCode());
-    departmentConfiguration.setCity(initialDepartmentConfiguration.city());
-    departmentConfiguration.setCountry(initialDepartmentConfiguration.country());
-    departmentConfiguration.setPhoneNumber(initialDepartmentConfiguration.phoneNumber());
-    departmentConfiguration.setHomepage(initialDepartmentConfiguration.homepage());
-    departmentConfiguration.setEmail(initialDepartmentConfiguration.email());
-    departmentConfiguration.setLatitude(initialDepartmentConfiguration.latitude());
-    departmentConfiguration.setLongitude(initialDepartmentConfiguration.longitude());
     departmentConfiguration.setLogo(initialDepartmentConfiguration.logo().getContentAsByteArray());
     departmentConfiguration.setSecurityTxt(
         initialDepartmentConfiguration.securityTxt().getContentAsByteArray());

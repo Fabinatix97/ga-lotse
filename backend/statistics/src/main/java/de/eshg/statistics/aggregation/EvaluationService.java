@@ -44,6 +44,8 @@ import de.eshg.statistics.api.report.GetReportSeriesEntriesOfEvaluationResponse;
 import de.eshg.statistics.api.report.ReportSeriesDto;
 import de.eshg.statistics.config.StatisticsConfig;
 import de.eshg.statistics.config.StatisticsConfig.BusinessModuleConfig;
+import de.eshg.statistics.config.StatisticsFeature;
+import de.eshg.statistics.config.StatisticsFeatureToggle;
 import de.eshg.statistics.datatransfer.AnalysisTemplateData;
 import de.eshg.statistics.datatransfer.DiagramTemplateData;
 import de.eshg.statistics.datatransfer.EvaluationTemplateData;
@@ -114,8 +116,14 @@ public class EvaluationService extends AbstractAggregationResultService {
       StatisticsUserService userService,
       EvaluationTemplateService evaluationTemplateService,
       DataSourceValidator dataSourceValidator,
+      StatisticsFeatureToggle statisticsFeatureToggle,
       StatisticsConfig statisticsConfig) {
-    super(dataSourceValidator, dataAggregationService, tableRowRepository, statisticsConfig);
+    super(
+        dataSourceValidator,
+        dataAggregationService,
+        tableRowRepository,
+        statisticsFeatureToggle,
+        statisticsConfig);
     this.evaluationRepository = evaluationRepository;
     this.userService = userService;
     this.evaluationTemplateService = evaluationTemplateService;
@@ -208,9 +216,10 @@ public class EvaluationService extends AbstractAggregationResultService {
       throw new BadRequestException(
           "Only anonymous evaluations allowed for data source '%s'".formatted(dataSource.id()));
     }
-    if (anonymized && !DataSourceValidator.getCanBeAnonymized(availableDataSources)) {
-      throw new BadRequestException(
-          "Data source '%s' cannot be anonymized".formatted(dataSource.id()));
+    if (anonymized
+        && !sensitivity.equals(DataSourceSensitivity.ANONYMOUS)
+        && !featureToggle.isNewFeatureEnabled(StatisticsFeature.ANONYMIZATION)) {
+      throw new BadRequestException("Data anonymization is required but feature is not enabled");
     }
 
     Evaluation evaluation =
@@ -267,6 +276,13 @@ public class EvaluationService extends AbstractAggregationResultService {
     evaluation.setNumberOfTableRows(0);
     evaluation.setState(AggregationResultState.UPDATING);
     evaluation.setPendingState(AggregationResultPendingState.TABLE_ROWS_REMOVAL);
+
+    evaluation
+        .getTableColumns()
+        .forEach(
+            tableColumn ->
+                tableColumn.setValueType(
+                    EvaluationCopyService.getCorrectValueType(tableColumn.getValueType(), false)));
   }
 
   @Transactional(readOnly = true)

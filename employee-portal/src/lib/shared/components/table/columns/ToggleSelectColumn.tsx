@@ -6,30 +6,44 @@
 import { Checkbox, styled } from "@mui/joy";
 import { DisplayColumnDef } from "@tanstack/react-table";
 
-export const ToggleSelectColumn: DisplayColumnDef<unknown> = {
-  id: "toggleSelect",
-  meta: {
-    width: "46px",
-    headerLabel: "Zeile an-/abwählen",
-    cellStyle: "checkbox",
-  },
-  header: ({ table }) => (
-    <SelectRowCheckbox
-      header
-      targetName="Alle Zeilen"
-      selected={table.getIsAllRowsSelected()}
-      indeterminate={table.getIsSomeRowsSelected()}
-      toggleSelected={() => table.toggleAllRowsSelected()}
-    />
-  ),
-  cell: ({ row }) => (
-    <SelectRowCheckbox
-      targetName="Zeile"
-      selected={row.getIsSelected()}
-      toggleSelected={() => row.toggleSelected()}
-    />
-  ),
-};
+export interface ToggleSelectColumnProps {
+  ariaLabelSelectAllRows?: string;
+  ariaLabelDeselectAllRows?: string;
+  ariaLabelSelectRow?: string;
+  ariaLabelDeselectRow?: string;
+}
+
+export function ToggleSelectColumn(
+  props: ToggleSelectColumnProps,
+): DisplayColumnDef<unknown> {
+  return {
+    id: "toggleSelect",
+    meta: {
+      width: "46px",
+      cellStyle: "checkbox",
+    },
+    header: ({ table }) => (
+      <SelectRowCheckbox
+        header
+        ariaLabelDeselect={
+          props.ariaLabelDeselectAllRows ?? "Alle Zeilen abwählen"
+        }
+        ariaLabelSelect={props.ariaLabelSelectAllRows ?? "Alle Zeilen anwählen"}
+        selected={table.getIsAllRowsSelected()}
+        indeterminate={table.getIsSomeRowsSelected()}
+        toggleSelected={() => table.toggleAllRowsSelected()}
+      />
+    ),
+    cell: ({ row }) => (
+      <SelectRowCheckbox
+        ariaLabelDeselect={props.ariaLabelDeselectRow ?? "Zeile abwählen"}
+        ariaLabelSelect={props.ariaLabelSelectRow ?? "Zeile anwählen"}
+        selected={row.getIsSelected()}
+        toggleSelected={() => row.toggleSelected()}
+      />
+    ),
+  };
+}
 
 interface StyledCheckboxProps {
   header?: boolean;
@@ -41,10 +55,11 @@ const StyledCheckbox = styled(Checkbox)<StyledCheckboxProps>(({ theme }) => ({
 }));
 
 interface SelectRowCheckboxProps extends StyledCheckboxProps {
-  targetName: string;
   selected: boolean;
   indeterminate?: boolean;
   toggleSelected: () => void;
+  ariaLabelSelect: string;
+  ariaLabelDeselect: string;
 }
 
 function SelectRowCheckbox(props: SelectRowCheckboxProps) {
@@ -58,8 +73,8 @@ function SelectRowCheckbox(props: SelectRowCheckboxProps) {
       slotProps={{
         input: {
           "aria-label": props.selected
-            ? `${props.targetName} abwählen`
-            : `${props.targetName} anwählen`,
+            ? props.ariaLabelDeselect
+            : props.ariaLabelSelect,
         },
       }}
     />

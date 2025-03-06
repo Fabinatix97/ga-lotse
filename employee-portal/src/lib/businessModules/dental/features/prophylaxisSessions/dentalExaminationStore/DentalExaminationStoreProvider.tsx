@@ -5,8 +5,8 @@
 
 "use client";
 
+import { ExaminationResult } from "@eshg/dental";
 import { ApiDentitionType } from "@eshg/dental-api";
-import { ExaminationResult } from "@eshg/dental/api/models/ExaminationResult";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { createContext, useContext, useState } from "react";
 import { useStore } from "zustand";

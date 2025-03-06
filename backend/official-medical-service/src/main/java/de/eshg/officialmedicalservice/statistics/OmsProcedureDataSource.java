@@ -30,8 +30,7 @@ public class OmsProcedureDataSource
         DATA_SOURCE_NAME,
         DataSourceSensitivity.INTERNAL_USAGE,
         omsProcedureRepository,
-        OmsProcedureAttributes.values(),
-        false);
+        OmsProcedureAttributes.values());
   }
 
   @Override
@@ -55,6 +54,7 @@ public class OmsProcedureDataSource
           procedure.getAppointments().stream()
               .filter(appointment -> BookingState.CANCELLED.equals(appointment.getBookingState()))
               .count();
+      case MEDICAL_OPINION_RESULT -> procedure.getMedicalOpinionResult().toString();
     };
   }
 

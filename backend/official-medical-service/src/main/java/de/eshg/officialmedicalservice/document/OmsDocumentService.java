@@ -5,11 +5,14 @@
 
 package de.eshg.officialmedicalservice.document;
 
+import static de.eshg.lib.procedure.file.MultipartFileParser.validateAndParseFile;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 
+import de.eshg.lib.procedure.domain.model.File;
+import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.model.FileTypeDto;
 import de.eshg.officialmedicalservice.document.api.PatchDocumentInformationRequest;
@@ -82,7 +85,7 @@ public class OmsDocumentService {
     if (omsProcedure.isFinalized()) {
       throw new BadRequestException("Document cannot be added when the procedure is finalized.");
     }
-    validateFileTypes(files);
+    List<File> parsedFiles = validateAndParseFiles(files);
 
     OmsDocument document = new OmsDocument();
     document.setDocumentTypeDe(request.documentTypeDe());
@@ -106,7 +109,7 @@ public class OmsDocumentService {
     document.setOmsProcedure(omsProcedure);
     omsDocumentRepository.save(document);
 
-    saveFiles(document, files);
+    saveFiles(document, parsedFiles);
 
     if (document.isUploadInCitizenPortal() && document.getFiles().isEmpty()) {
       progressEntryService.createProgressEntryAddDocumentEmployee(
@@ -135,7 +138,7 @@ public class OmsDocumentService {
 
   @Transactional
   public void addLetterOfAssignmentCitizen(OmsProcedure procedure, List<MultipartFile> files) {
-    validateFileTypes(files);
+    List<File> parsedFiles = validateAndParseFiles(files);
 
     OmsDocument document = new OmsDocument();
     document.setDocumentTypeDe("Auftragsschreiben");
@@ -148,7 +151,7 @@ public class OmsDocumentService {
     document.setOmsProcedure(procedure);
     omsDocumentRepository.save(document);
 
-    saveFiles(document, files);
+    saveFiles(document, parsedFiles);
   }
 
   @Transactional
@@ -210,9 +213,9 @@ public class OmsDocumentService {
     if (omsDocument.getDocumentStatus() == OmsDocumentStatus.ACCEPTED) {
       throw new BadRequestException("Files can not be uploaded twice");
     }
-    validateFileTypes(files);
+    List<File> parsedFiles = validateAndParseFiles(files);
 
-    saveFiles(omsDocument, files);
+    saveFiles(omsDocument, parsedFiles);
     omsDocument.setReasonForRejection(null);
     omsDocument.setDocumentStatus(OmsDocumentStatus.ACCEPTED);
     omsDocument.setLastDocumentUpload(Instant.now(clock));
@@ -301,33 +304,37 @@ public class OmsDocumentService {
         .orElseThrow(() -> new NotFoundException("Document not found"));
   }
 
-  private void validateFileTypes(List<MultipartFile> files) {
+  private List<File> validateAndParseFiles(List<MultipartFile> files) {
+    return files.stream()
+        .map(
+            file -> {
+              validateFileType(file);
+              try {
+                return validateAndParseFile(file, 5_000);
+              } catch (IOException e) {
+                throw new RuntimeException("Error while parsing file: ", e);
+              }
+            })
+        .toList();
+  }
+
+  private void validateFileType(MultipartFile file) {
     List<String> allowedFileTypes =
         List.of(APPLICATION_PDF_VALUE, IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE);
 
-    for (MultipartFile file : files) {
-      String contentType = file.getContentType();
-      if (!allowedFileTypes.contains(contentType)) {
-        throw new BadRequestException(
-            "Invalid file type: " + contentType + ". Only PDF, JPG, and PNG are allowed.");
-      }
+    String contentType = file.getContentType();
+    if (!allowedFileTypes.contains(contentType)) {
+      throw new BadRequestException(
+          "Invalid file type: " + contentType + ". Only PDF, JPG, and PNG are allowed.");
     }
   }
 
-  private byte[] getBytes(MultipartFile file) {
-    try {
-      return file.getBytes();
-    } catch (IOException e) {
-      throw new BadRequestException("Corrupt file content");
-    }
-  }
-
-  private void saveFiles(OmsDocument omsDocument, List<MultipartFile> files) {
-    for (MultipartFile file : files) {
+  private void saveFiles(OmsDocument omsDocument, List<File> files) {
+    for (File file : files) {
       OmsFile omsFile = new OmsFile();
-      omsFile.setFileName(file.getOriginalFilename());
-      omsFile.setContent(getBytes(file));
-      omsFile.setFileType(getFileType(file.getContentType()));
+      omsFile.setFileName(file.getFileName());
+      omsFile.setContent(file.getFileContent().getContent());
+      omsFile.setFileType(getFileType(file.getFileType()));
       omsFile.setCreatedDate(Instant.now(clock));
       omsFile.setDocument(omsDocument);
 
@@ -336,15 +343,15 @@ public class OmsDocumentService {
     }
   }
 
-  private FileTypeDto getFileType(String contentType) {
-    if (contentType == null || contentType.isBlank()) {
+  private FileTypeDto getFileType(ProcedureFileType contentType) {
+    if (contentType == null) {
       throw new BadRequestException("Content type is missing or empty.");
     }
 
     return switch (contentType) {
-      case APPLICATION_PDF_VALUE -> FileTypeDto.PDF;
-      case IMAGE_JPEG_VALUE -> FileTypeDto.JPEG;
-      case IMAGE_PNG_VALUE -> FileTypeDto.PNG;
+      case ProcedureFileType.PDF -> FileTypeDto.PDF;
+      case ProcedureFileType.JPEG -> FileTypeDto.JPEG;
+      case ProcedureFileType.PNG -> FileTypeDto.PNG;
       default ->
           throw new BadRequestException(
               "Invalid file type: " + contentType + ". Only PDF, JPG, and PNG are allowed.");

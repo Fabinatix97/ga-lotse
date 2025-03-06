@@ -60,7 +60,7 @@ function buildTabItems(id: string): TabNavigationItem[] {
       decorator: <PersonDocumentConsultation />,
     },
     {
-      tabButtonName: "Untersuchung",
+      tabButtonName: "Tests",
       href: routes.procedures.byId(id).examination.index,
       decorator: <MedicalServicesOutlined />,
     },

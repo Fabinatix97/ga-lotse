@@ -61,8 +61,7 @@ public class SchoolEntryProcedureDataSource
         DATA_SOURCE_NAME,
         DataSourceSensitivity.SENSITIVE,
         schoolEntryProcedureRepository,
-        EsuAttributes.allAttributes(),
-        false);
+        EsuAttributes.allAttributes());
     this.anamnesisStatistics = anamnesisStatistics;
     this.clock = clock;
   }

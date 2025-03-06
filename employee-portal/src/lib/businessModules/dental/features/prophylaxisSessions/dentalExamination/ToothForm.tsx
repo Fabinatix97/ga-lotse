@@ -4,7 +4,7 @@
  */
 
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
-import { Typography } from "@mui/joy";
+import { Stack, Typography } from "@mui/joy";
 
 import { ResultInputField } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/ResultInputField";
 import {
@@ -68,11 +68,19 @@ export function ToothForm(props: ToothFormProps) {
         field="secondary2"
         aria-label="Nebenbefund 2"
       />
-      {hasPreviousExaminationResult(tooth) && (
-        <Typography color="danger">
-          {tooth.previousResults.join(",")}
-        </Typography>
-      )}
+      {hasPreviousExaminationResult(tooth) && <PreviousResults tooth={tooth} />}
     </>
+  );
+}
+
+function PreviousResults(props: { tooth: ToothWithDiagnosis }) {
+  return (
+    <Stack sx={{ alignItems: "center" }}>
+      {props.tooth.previousResults.map((result) => (
+        <Typography color="danger" key={result}>
+          {result}
+        </Typography>
+      ))}
+    </Stack>
   );
 }

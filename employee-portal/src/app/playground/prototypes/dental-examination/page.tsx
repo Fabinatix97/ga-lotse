@@ -5,8 +5,10 @@
 
 "use client";
 
-import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import {
+  MainContentLayout,
+  StickyToolbarLayout,
+} from "@eshg/lib-employee-portal";
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import {
   DocumentScanner,

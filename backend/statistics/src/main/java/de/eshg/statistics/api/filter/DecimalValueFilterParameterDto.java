@@ -17,7 +17,7 @@ public record DecimalValueFilterParameterDto(
     @NotNull BigDecimal value,
     @NotNull NumericComparisonDto numericComparison,
     @NotNull boolean withNullValues)
-    implements TableColumnFilterParameter {
+    implements TableColumnFilterParameter, ValueFilterParameterDto<BigDecimal> {
   static final String SCHEMA_NAME = "DecimalValueFilterParameter";
 
   @Override

@@ -4,7 +4,7 @@
  */
 
 import { ApiUserRole } from "@eshg/base-api";
-import { ModuleUserGroupConfig } from "@eshg/lib-employee-portal/types/module";
+import { ModuleUserGroupConfig } from "@eshg/lib-employee-portal";
 
 export const moduleUserGroup: ModuleUserGroupConfig = {
   group: "[System] Statistik",

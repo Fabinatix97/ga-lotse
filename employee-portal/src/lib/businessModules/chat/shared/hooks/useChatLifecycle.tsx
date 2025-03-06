@@ -18,15 +18,13 @@ import {
   useRef,
 } from "react";
 
-import { useUpdateSelfUserChatUsername } from "@/lib/baseModule/api/mutations/users";
-import {
-  useGetSelfUser,
-  useGetUserProfile,
-} from "@/lib/baseModule/api/queries/users";
+import { useUpdateSelfUserChatAttributes } from "@/lib/businessModules/chat/api/mutations/selfUserApi";
 import { useBindKeycloakId } from "@/lib/businessModules/chat/api/mutations/userAccountApi";
 import { useCreateOrUpdateUserSettings } from "@/lib/businessModules/chat/api/mutations/userSettingsApi";
+import { useGetSelfUserChatAttributes } from "@/lib/businessModules/chat/api/queries/selfUserApi";
 import {
   createStorageKey,
+  generateCryptoRandomUUID,
   isDeviceVerified,
 } from "@/lib/businessModules/chat/matrix/crypto";
 import {
@@ -61,13 +59,13 @@ export function useChatLifecycle(
   clientState: ClientState,
   setClientState: Dispatch<SetStateAction<ClientState>>,
 ) {
-  const { data: selfUser } = useGetSelfUser();
-  const { data: userData } = useGetUserProfile(selfUser.userId);
-  const updateSelfUser = useUpdateSelfUserChatUsername();
+  const { data: selfUserChatAttributesData } = useGetSelfUserChatAttributes();
   const { configuration, userSettings } = useChat();
 
   const { mutateAsync: bindKeycloakId } = useBindKeycloakId();
   const { mutateAsync: registerAccount } = useCreateOrUpdateUserSettings();
+  const { mutateAsync: updateSelfUserChatAttributes } =
+    useUpdateSelfUserChatAttributes();
 
   const baseUrl = configuration.PUBLIC_MATRIX_SERVER_URL;
   const credentialsRef = useRef<IStoredCredentials | null>(null);
@@ -130,14 +128,37 @@ export function useChatLifecycle(
       const credentials = await requestCredentials(temporaryMatrixClient);
       persistCredentials(credentials);
 
-      await bindKeycloakId({ matrixUserId: credentials.userId });
-      await registerAccount({
-        userId: selfUser.userId,
-        accountRegistered: true,
-      });
+      try {
+        await updateSelfUserChatAttributes({
+          externalChatUsername: credentials.userId,
+          chatCryptoStoreDeriveKeySecret: generateCryptoRandomUUID(),
+        });
+      } catch (err) {
+        throw new Error("Error updating keycloak chatUser", {
+          cause: err,
+        });
+      }
+
+      try {
+        await bindKeycloakId({ matrixUserId: credentials.userId });
+      } catch (err) {
+        throw new Error("Error binding keycloak id to synapse user", {
+          cause: err,
+        });
+      }
+
+      try {
+        await registerAccount({
+          userId: selfUserChatAttributesData.userId,
+          accountRegistered: true,
+        });
+      } catch (err) {
+        throw new Error("Error marking user as registered", {
+          cause: err,
+        });
+      }
 
       logger.info("Registered new chat user: ", credentials);
-
       wasRegisterFlowFinished.current = true;
       setClientState(ClientState.Restart);
     } catch (error) {
@@ -146,12 +167,13 @@ export function useChatLifecycle(
     }
     clearSearchParams(chatSearchParamNames.loginToken);
   }, [
-    userSettings.accountRegistered,
-    setClientState,
     baseUrl,
     bindKeycloakId,
     registerAccount,
-    selfUser.userId,
+    selfUserChatAttributesData.userId,
+    setClientState,
+    updateSelfUserChatAttributes,
+    userSettings.accountRegistered,
   ]);
 
   /**
@@ -176,7 +198,7 @@ export function useChatLifecycle(
     try {
       const credentials = await getCredentials(
         baseUrl,
-        selfUser.externalChatUsername,
+        selfUserChatAttributesData.externalChatUsername,
       );
 
       logger.info("Setting credentialsRef: ", credentials);
@@ -202,10 +224,10 @@ export function useChatLifecycle(
     logger.info("FINISHED Step 1/4: INIT MATRIX CLIENT");
   }, [
     baseUrl,
-    selfUser.externalChatUsername,
-    setClientState,
-    userSettings,
     matrixClient,
+    selfUserChatAttributesData.externalChatUsername,
+    setClientState,
+    userSettings.accountRegistered,
   ]);
 
   /**
@@ -218,9 +240,17 @@ export function useChatLifecycle(
 
     try {
       logger.info("Step 2/4: INIT RUST CRYPTO");
+
+      if (!selfUserChatAttributesData.chatCryptoStoreDeriveKeySecret) {
+        throw new Error(
+          "Unable to init E2EE - please setup chatCryptoStoreDeriveKeySecret.",
+        );
+      }
+
       const storageKey = await createStorageKey(
-        selfUser.userId,
+        selfUserChatAttributesData.userId,
         credentialsRef.current.deviceId,
+        selfUserChatAttributesData.chatCryptoStoreDeriveKeySecret,
       );
       await matrixClient.current.initRustCrypto({
         storageKey,
@@ -240,7 +270,7 @@ export function useChatLifecycle(
       logger.error("Error starting matrix client", error);
       setClientState(ClientState.Error);
     }
-  }, [matrixClient, selfUser.userId, setClientState]);
+  }, [matrixClient, setClientState, selfUserChatAttributesData]);
 
   /**
    * Initialize E2EE key stores
@@ -282,7 +312,9 @@ export function useChatLifecycle(
         "displayname",
       );
       const matrixUserDisplayName =
-        selfUser.firstName + " " + selfUser.lastName;
+        selfUserChatAttributesData.firstName +
+        " " +
+        selfUserChatAttributesData.lastName;
       if (matrixUserDisplayName !== profile?.displayname) {
         logger.info("Updating matrixUserDisplayName: " + matrixUserDisplayName);
         await matrixClient.current.setDisplayName(matrixUserDisplayName);
@@ -290,32 +322,35 @@ export function useChatLifecycle(
     } catch (error) {
       logger.softError("Error updating matrix user displayName: ", error);
     }
-  }, [matrixClient, selfUser.firstName, selfUser.lastName]);
+  }, [
+    matrixClient,
+    selfUserChatAttributesData.firstName,
+    selfUserChatAttributesData.lastName,
+  ]);
 
   const updateSelfUserChatUsername = useCallback(async () => {
     if (!credentialsRef.current?.userId) return;
     if (wasExternalChatUsernameUpdated.current) return;
 
-    if (credentialsRef.current.userId !== userData.user.externalChatUsername) {
+    if (
+      credentialsRef.current.userId !==
+      selfUserChatAttributesData.externalChatUsername
+    ) {
       logger.info(
         "Updating selfUser externalChatUsername: ",
         credentialsRef.current.userId,
       );
 
       wasExternalChatUsernameUpdated.current = true;
-      await updateSelfUser
-        .mutateAsync({
-          externalChatUsername: credentialsRef.current.userId,
-          phoneNumber: userData.user.phoneNumber, //TODO: provide new api endpoint to update only externalChatUsername
-          salutation: userData.salutation,
-          title: userData.title,
-        })
-        .catch((error) => {
-          wasExternalChatUsernameUpdated.current = false;
-          logger.softError("Error updating selfUser's chat userId: ", error);
-        });
+
+      await updateSelfUserChatAttributes({
+        externalChatUsername: credentialsRef.current.userId,
+      }).catch((error) => {
+        wasExternalChatUsernameUpdated.current = false;
+        logger.softError("Error updating selfUser's chat userId: ", error);
+      });
     }
-  }, [updateSelfUser, userData]);
+  }, [selfUserChatAttributesData, updateSelfUserChatAttributes]);
 
   useEffect(() => {
     switch (clientState) {

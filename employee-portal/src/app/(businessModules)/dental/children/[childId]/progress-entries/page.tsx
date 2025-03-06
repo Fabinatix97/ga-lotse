@@ -8,14 +8,12 @@
 import { ApiUserRole } from "@eshg/base-api";
 import {
   fileApiQueryKey,
-  progressEntryApiQueryKey,
-} from "@eshg/dental/api/queries/apiQueryKeys";
-import { useDentalApi } from "@eshg/dental/shared/DentalProvider";
-import { moduleUserGroup } from "@eshg/dental/shared/moduleUserGroup";
-import {
   keyDocumentTypes,
+  moduleUserGroup,
+  progressEntryApiQueryKey,
   systemProgressEntryTypeTitles,
-} from "@eshg/dental/shared/progressEntries";
+  useDentalApi,
+} from "@eshg/dental";
 
 import { DentalChildPageParams } from "@/app/(businessModules)/dental/children/[childId]/layout";
 import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";

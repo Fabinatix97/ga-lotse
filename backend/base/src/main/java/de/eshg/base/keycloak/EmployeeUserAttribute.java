@@ -58,6 +58,11 @@ public enum EmployeeUserAttribute implements KeycloakUserAttribute {
       "Chatname",
       new ValidationRule.Length(3, 255),
       new ValidationRule.Pattern("\\p{ASCII}+")),
+  CHAT_CRYPTO_STORE_DERIVE_KEY_SECRET(
+      "eshg.chat_crypto_store_derive_key_secret",
+      "Chat Local CryptoStore Derive Key Secret",
+      new ValidationRule.Length(32, 128),
+      new ValidationRule.Pattern("\\p{ASCII}+")),
   SUGGESTED_BY("eshg.suggested_by", "Vorgeschlagen von"),
   AUDIT_LOG_ENCRYPTED_PRIVATE_KEY(
       "eshg.audit_log.encrypted_private_key", "Audit Log - Privater Schlüssel (verschlüsselt)"),

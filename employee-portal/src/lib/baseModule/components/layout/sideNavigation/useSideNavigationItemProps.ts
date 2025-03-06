@@ -4,7 +4,7 @@
  */
 
 import { ApiBaseFeature } from "@eshg/base-api";
-import { SideNavigationItemsProps } from "@eshg/lib-employee-portal/types/sideNavigation";
+import { SideNavigationItemsProps } from "@eshg/lib-employee-portal";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 

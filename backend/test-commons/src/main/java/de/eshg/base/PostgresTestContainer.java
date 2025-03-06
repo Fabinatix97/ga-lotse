@@ -8,6 +8,7 @@ package de.eshg.base;
 import java.time.Duration;
 import java.util.Map;
 import java.util.function.Consumer;
+import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
@@ -107,6 +108,12 @@ public class PostgresTestContainer {
   public String startAndGetJdbcUrl() {
     GenericContainer<?> container = start();
     return getJdbcUrl(container);
+  }
+
+  public void startAndRegister(MockEnvironment environment) {
+    startAndRegister(
+        (name, valueSupplier) ->
+            environment.setProperty(name, String.valueOf(valueSupplier.get())));
   }
 
   public void startAndRegister(DynamicPropertyRegistry registry) {

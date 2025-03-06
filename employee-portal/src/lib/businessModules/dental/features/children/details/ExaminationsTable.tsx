@@ -5,8 +5,7 @@
 
 "use client";
 
-import { Examination } from "@eshg/dental/api/models/Examination";
-import { routes } from "@eshg/dental/shared/routes";
+import { Examination, routes } from "@eshg/dental";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 

@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import {
+  formatDate,
+  formatDateTime,
+} from "@eshg/lib-portal/formatters/dateTime";
 import { ApiEmployeeOmsProcedureOverview } from "@eshg/official-medical-service-api";
 import { WarningAmberOutlined } from "@mui/icons-material";
 import { Chip, Tooltip } from "@mui/joy";

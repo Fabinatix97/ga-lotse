@@ -133,7 +133,11 @@ public class StiProtectionProcedureService {
     Person person = PersonMapper.toDatabaseType(personData);
     person.setCentralFileStateId(createUniqueDummyCentralFileStateId());
     person.setPersonType(PersonType.PATIENT);
-    procedure.addRelatedPerson(person);
+    if (procedure.getRelatedPersons().isEmpty()) {
+      procedure.addRelatedPerson(person);
+    } else {
+      procedure.getPerson().copyFrom(person);
+    }
   }
 
   /**
@@ -373,7 +377,6 @@ public class StiProtectionProcedureService {
   public void closeProcedure(StiProtectionProcedure procedure) {
     ProcedureStatus procedureStatus = procedure.getProcedureStatus();
     if (procedureStatus.isOpen()) {
-      deleteAnonymousUser(procedure);
       procedure.updateProcedureStatus(ProcedureStatus.CLOSED, clock, auditLogger);
     } else {
       throw unexpectedProcedureStatus(procedure.getExternalId(), procedureStatus);
@@ -460,5 +463,9 @@ public class StiProtectionProcedureService {
 
   public StiProtectionProcedure findByExternalId(UUID procedureId) {
     return procedureFinder.findByExternalId(procedureId);
+  }
+
+  public void deleteProcedure(StiProtectionProcedure procedure) {
+    repository.delete(procedure);
   }
 }

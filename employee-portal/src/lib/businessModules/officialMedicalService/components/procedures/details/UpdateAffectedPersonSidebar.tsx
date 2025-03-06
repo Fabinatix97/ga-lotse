@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { mapOptional } from "@eshg/lib-employee-portal/api/models/utils";
+import { mapOptional } from "@eshg/lib-employee-portal";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import { ApiAffectedPerson } from "@eshg/official-medical-service-api";
 

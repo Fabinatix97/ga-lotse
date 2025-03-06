@@ -4,10 +4,7 @@
  */
 
 import { ApiAnnualInstitution, ApiInstitution } from "@eshg/dental-api";
-import {
-  BaseEntity,
-  mapBaseEntity,
-} from "@eshg/lib-employee-portal/api/models/BaseEntity";
+import { BaseEntity, mapBaseEntity } from "@eshg/lib-employee-portal";
 
 export interface Institution extends BaseEntity {
   readonly name: string;

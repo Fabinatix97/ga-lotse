@@ -16,7 +16,7 @@ public record IntegerValueFilterParameterDto(
     @NotNull Integer value,
     @NotNull NumericComparisonDto numericComparison,
     @NotNull boolean withNullValues)
-    implements TableColumnFilterParameter {
+    implements TableColumnFilterParameter, ValueFilterParameterDto<Integer> {
   static final String SCHEMA_NAME = "IntegerValueFilterParameter";
 
   @Override

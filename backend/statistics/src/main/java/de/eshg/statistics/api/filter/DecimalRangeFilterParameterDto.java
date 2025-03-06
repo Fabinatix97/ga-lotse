@@ -17,7 +17,7 @@ public record DecimalRangeFilterParameterDto(
     @NotNull BigDecimal minValueInclusive,
     @NotNull BigDecimal maxValueInclusive,
     @NotNull boolean withNullValues)
-    implements TableColumnFilterParameter {
+    implements TableColumnFilterParameter, RangeFilterParameterDto<BigDecimal> {
   static final String SCHEMA_NAME = "DecimalRangeFilterParameter";
 
   @Override

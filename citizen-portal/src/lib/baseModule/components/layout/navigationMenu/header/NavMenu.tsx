@@ -24,7 +24,7 @@ import {
 import { maxContentWidthDesktop } from "@/lib/baseModule/components/layout/sizes";
 import { NavigationItem } from "@/lib/baseModule/components/layout/types";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
-import { GradientIcon } from "@/lib/shared/components/icon/GradientIcon";
+import { GradientIcon } from "@/lib/shared/components/icons/GradientIcon";
 
 export function NavMenu({
   navigationItems,

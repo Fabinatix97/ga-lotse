@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import SearchIcon from "@mui/icons-material/Search";
 import { Dropdown, Input, Menu, MenuButton, MenuItem, Stack } from "@mui/joy";
 
@@ -15,11 +15,13 @@ interface RoomsPanelHeaderProps {
   setChatPanelView: (viewType: ChatPanelView) => void;
   searchQuery: string;
   setSearchQuery: (searchQuery: string) => void;
+  roomSearchDisabled: boolean;
 }
 export function RoomsPanelHeader({
   setChatPanelView,
   setSearchQuery,
   searchQuery,
+  roomSearchDisabled,
 }: Readonly<RoomsPanelHeaderProps>) {
   function handleClose() {
     setSearchQuery("");
@@ -29,7 +31,14 @@ export function RoomsPanelHeader({
     <ChatColumnHeaderWrapper>
       <Stack direction="row" spacing={2}>
         <Input
-          startDecorator={<SearchIcon size="sm" />}
+          startDecorator={
+            <SearchIcon
+              size="sm"
+              sx={{
+                color: roomSearchDisabled ? "neutral.300" : "neutral.700",
+              }}
+            />
+          }
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           endDecorator={
@@ -37,6 +46,8 @@ export function RoomsPanelHeader({
               <CloseIcon onClick={handleClose} size="sm" />
             )
           }
+          placeholder="Suche nach Konversation..."
+          disabled={roomSearchDisabled}
         />
         <Dropdown>
           <MenuButton
@@ -45,7 +56,7 @@ export function RoomsPanelHeader({
             color="primary"
             sx={{ p: "0.5rem" }}
           >
-            <OpenInNewIcon size="sm" />
+            <AddIcon size="sm" />
           </MenuButton>
           <Menu>
             <MenuItem

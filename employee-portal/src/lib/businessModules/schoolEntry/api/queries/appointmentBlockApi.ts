@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { mapPaginatedList } from "@eshg/lib-employee-portal/api/models/PaginatedList";
+import { mapPaginatedList } from "@eshg/lib-employee-portal";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import {
   ApiCreateDailyAppointmentBlockGroupRequest,

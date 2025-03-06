@@ -28,7 +28,7 @@ export function ResultInputField(props: ResultInputFieldProps) {
     field: props.field,
     toothContext: props.toothContext,
   };
-  const { elementRef, focusHandler } = useElementFocus(
+  const { elementRef, focusHandler, blurHandler } = useElementFocus(
     fieldContext,
     (input: HTMLInputElement) => {
       input.focus();
@@ -58,6 +58,7 @@ export function ResultInputField(props: ResultInputFieldProps) {
         );
       }}
       onFocus={focusHandler}
+      onBlur={blurHandler}
       onKeyDown={keyboardNavigationHandler}
     />
   );

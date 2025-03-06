@@ -13,10 +13,7 @@ import {
 } from "./ToggleExpandButton";
 
 export interface FilterButtonProps
-  extends Pick<
-    ToggleExpandButtonProps,
-    "disabled" | "onClick" | "aria-controls"
-  > {
+  extends Omit<ToggleExpandButtonProps, "expanded"> {
   isFilterVisible?: boolean;
   activeFilters?: number;
 }

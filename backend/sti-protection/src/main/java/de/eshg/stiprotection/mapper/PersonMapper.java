@@ -6,11 +6,11 @@
 package de.eshg.stiprotection.mapper;
 
 import de.eshg.lib.appointmentblock.MappingUtil;
-import de.eshg.stiprotection.api.AddPersonalDetailsResponse;
 import de.eshg.stiprotection.api.ConcernDto;
 import de.eshg.stiprotection.api.PersonDto;
 import de.eshg.stiprotection.api.PersonalDetails;
 import de.eshg.stiprotection.api.UpdatePersonDetailsRequest;
+import de.eshg.stiprotection.api.citizen.AddPersonalDetailsResponse;
 import de.eshg.stiprotection.persistence.data.PersonData;
 import de.eshg.stiprotection.persistence.db.Person;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;

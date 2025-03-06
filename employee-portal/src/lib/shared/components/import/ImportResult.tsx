@@ -3,12 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ImportStatistics } from "@eshg/lib-employee-portal/api/models/import/ImportStatistics";
-import {
-  formatDuplicatedCount,
-  formatFailedCount,
-  formatTotalCount,
-} from "@eshg/lib-employee-portal/helpers/import";
+import { ImportStatistics } from "@eshg/lib-employee-portal";
 import { Stack, Typography } from "@mui/joy";
 
 import { FileDownloadButton } from "@/lib/shared/components/buttons/FileDownloadButton";
@@ -88,4 +83,28 @@ export function ImportResult(props: ImportResultProps) {
       </Stack>
     </Stack>
   );
+}
+
+function formatDuplicatedCount(count: number) {
+  return formatCount(count, "doppelter Datensatz", "doppelte Datensätze");
+}
+
+function formatFailedCount(count: number) {
+  return formatCount(count, "fehlerhafter Datensatz", "fehlerhafte Datensätze");
+}
+
+function formatTotalCount(count: number) {
+  return formatCount(count, "Datensatz", "Datensätze");
+}
+
+function formatCount(
+  count: number,
+  singularLabel: string,
+  pluralLabel: string,
+) {
+  if (count === 1) {
+    return `${count} ${singularLabel}`;
+  }
+
+  return `${count} ${pluralLabel}`;
 }

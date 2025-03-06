@@ -38,10 +38,12 @@ export function useAddDiagram() {
 
   return async (
     param: UseAddDiagramParams,
-    options: { onSuccess?: () => void },
+    options: { onSuccess?: () => void; onError?: () => void },
   ) => {
-    await addDiagramMutation.mutateAsync(param, {
-      onSuccess: options.onSuccess,
-    });
+    await addDiagramMutation
+      .mutateAsync(param, {
+        onSuccess: options.onSuccess,
+      })
+      .catch(options.onError);
   };
 }

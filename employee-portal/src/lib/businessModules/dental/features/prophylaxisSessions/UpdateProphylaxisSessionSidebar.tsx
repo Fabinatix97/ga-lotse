@@ -5,8 +5,10 @@
 
 "use client";
 
-import { ProphylaxisSessionDetails } from "@eshg/dental/api/models/ProphylaxisSessionDetails";
-import { useUpdateProphylaxisSession } from "@eshg/dental/api/mutations/prophylaxisSessionApi";
+import {
+  ProphylaxisSessionDetails,
+  useUpdateProphylaxisSession,
+} from "@eshg/dental";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { toDateTimeString } from "@eshg/lib-portal/helpers/dateTime";
 import { parseOptionalValue } from "@eshg/lib-portal/helpers/form";

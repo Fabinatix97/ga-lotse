@@ -38,6 +38,7 @@ export function GroupChatMember({
         alignItems: "center",
         width: "100%",
       }}
+      data-testid={member.name}
     >
       <ChatAvatar
         name={member.name}
@@ -68,7 +69,11 @@ export function GroupChatMember({
         </ButtonLink>
       </Stack>
       {!isAdmin && (
-        <IconButton color="primary" onClick={handleKick}>
+        <IconButton
+          color="primary"
+          onClick={handleKick}
+          data-testid="remove-from-room"
+        >
           <CloseOutlinedIcon />
         </IconButton>
       )}

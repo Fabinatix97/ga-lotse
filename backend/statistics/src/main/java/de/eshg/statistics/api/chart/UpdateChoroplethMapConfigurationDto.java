@@ -1,0 +1,22 @@
+/*
+ * Copyright 2025 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+package de.eshg.statistics.api.chart;
+
+import static de.eshg.statistics.api.chart.UpdateChoroplethMapConfigurationDto.SCHEMA_NAME;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+
+@Schema(name = SCHEMA_NAME)
+public record UpdateChoroplethMapConfigurationDto(@NotBlank String colorScheme)
+    implements UpdateChartConfigurationDto {
+  public static final String SCHEMA_NAME = "UpdateChoroplethMapConfiguration";
+
+  @Override
+  public String type() {
+    return SCHEMA_NAME;
+  }
+}

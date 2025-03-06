@@ -7,13 +7,13 @@ package de.eshg.stiprotection.testhelper;
 
 import de.eshg.auditlog.AuditLogClientTestHelperApi;
 import de.eshg.lib.auditlog.AuditLogTestHelperService;
-import de.eshg.stiprotection.OverdueProceduresNotifier;
 import de.eshg.stiprotection.api.CreateProcedureResponse;
 import de.eshg.stiprotection.api.StiProtectionProcedurePopulationRequest;
 import de.eshg.stiprotection.api.StiProtectionProcedurePopulationResponse;
 import de.eshg.stiprotection.api.TextTemplatePopulationRequest;
 import de.eshg.stiprotection.api.TextTemplatePopulationResponse;
 import de.eshg.stiprotection.api.texttemplate.TextTemplateDto;
+import de.eshg.stiprotection.scheduling.OverdueProceduresNotifier;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.DefaultTestHelperService;
 import de.eshg.testhelper.TestHelperController;

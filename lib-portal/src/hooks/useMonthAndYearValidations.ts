@@ -11,8 +11,7 @@ import {
   validatePastMonthAndYear,
   validateRange,
 } from "../helpers/validators";
-import { OptionalFieldValue } from "../types/form";
-import { ValidationRules } from "../types/form";
+import { OptionalFieldValue, ValidationRules } from "../types/form";
 
 interface UseMonthAndYearValidationsRulesResult {
   month: ValidationRules<number | null>;

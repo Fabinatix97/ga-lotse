@@ -33,6 +33,14 @@ public class ScreeningExaminationResult extends ExaminationResult {
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private DentitionType dentitionType;
 
+  private boolean plaque;
+
+  private boolean calculus;
+
+  private boolean gingivitis;
+
+  private boolean parodontitis;
+
   @ElementCollection
   @MapKeyJdbcType(PostgreSQLEnumJdbcType.class)
   @MapKeyColumn(name = "tooth")
@@ -70,5 +78,37 @@ public class ScreeningExaminationResult extends ExaminationResult {
 
   public void setFluorideVarnishApplied(Boolean fluorideVarnishApplied) {
     this.fluorideVarnishApplied = fluorideVarnishApplied;
+  }
+
+  public boolean hasPlaque() {
+    return plaque;
+  }
+
+  public void setPlaque(boolean plaque) {
+    this.plaque = plaque;
+  }
+
+  public boolean hasCalculus() {
+    return calculus;
+  }
+
+  public void setCalculus(boolean calculus) {
+    this.calculus = calculus;
+  }
+
+  public boolean hasGingivitis() {
+    return gingivitis;
+  }
+
+  public void setGingivitis(boolean gingivitis) {
+    this.gingivitis = gingivitis;
+  }
+
+  public boolean hasParodontitis() {
+    return parodontitis;
+  }
+
+  public void setParodontitis(boolean parodontitis) {
+    this.parodontitis = parodontitis;
   }
 }

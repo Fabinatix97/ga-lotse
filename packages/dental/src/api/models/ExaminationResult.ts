@@ -32,6 +32,10 @@ export interface ScreeningExaminationResult {
   readonly dentitionType: ApiDentitionType;
   readonly oralHygieneStatus?: ApiOralHygieneStatus;
   readonly fluorideVarnishApplied?: boolean;
+  readonly plaque: boolean;
+  readonly calculus: boolean;
+  readonly gingivitis: boolean;
+  readonly parodontitis: boolean;
   readonly toothDiagnoses: ToothDiagnoses;
 }
 
@@ -72,6 +76,10 @@ function mapScreeningExaminationResult(
     dentitionType: response.dentitionType,
     oralHygieneStatus: response.oralHygieneStatus,
     fluorideVarnishApplied: response.fluorideVarnishApplied,
+    plaque: response.plaque,
+    calculus: response.calculus,
+    gingivitis: response.gingivitis,
+    parodontitis: response.parodontitis,
     toothDiagnoses: mapToObj(
       response.toothDiagnoses,
       (toothDiagnosisResponse) => [
@@ -110,6 +118,10 @@ const screeningResultEmptinessChecks: FieldFunctionMap<ScreeningExaminationResul
     toothDiagnoses: (value) => {
       return Object.keys(value).length === 0;
     },
+    plaque: isUndefined,
+    calculus: isUndefined,
+    gingivitis: isUndefined,
+    parodontitis: isUndefined,
   };
 
 const fluoridationResultEmptinessChecks: FieldFunctionMap<FluoridationExaminationResult> =

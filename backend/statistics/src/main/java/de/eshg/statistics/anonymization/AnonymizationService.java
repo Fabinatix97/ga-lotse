@@ -141,6 +141,9 @@ public class AnonymizationService {
       case BOOLEAN, DATE, TEXT, VALUE_WITH_OPTIONS -> configureTextColumn(tableColumn, data);
       case PROCEDURE_REFERENCE ->
           throw new IllegalStateException("Procedure reference should be insensitive");
+      case DECIMAL_INTERVAL, INTEGER_INTERVAL ->
+          throw new IllegalStateException(
+              "Intervals are already anonymized".formatted(tableColumn.getValueType()));
     }
 
     return minMaxInterval == null ? Optional.empty() : Optional.of(minMaxInterval);
@@ -215,15 +218,12 @@ public class AnonymizationService {
   }
 
   private String mapCellEntryValue(CellEntry cellEntry, Interval<Number> numberIntervalOfColumn) {
-    return switch (cellEntry.getTableColumn().getValueType()) {
-      case DECIMAL ->
-          getDecimalValueInInterval(
-              ((DecimalEntry) cellEntry).getBigDecimalValue(), numberIntervalOfColumn);
-      case INTEGER ->
-          getIntegerValueInInterval(
-              ((IntegerEntry) cellEntry).getIntegerValue(), numberIntervalOfColumn);
-      case BOOLEAN, DATE, PROCEDURE_REFERENCE, TEXT, VALUE_WITH_OPTIONS ->
-          cellEntry.getValue() == null ? "" : cellEntry.getValue().toString();
+    return switch (cellEntry) {
+      case DecimalEntry decimalEntry ->
+          getDecimalValueInInterval(decimalEntry.getBigDecimalValue(), numberIntervalOfColumn);
+      case IntegerEntry integerEntry ->
+          getIntegerValueInInterval(integerEntry.getIntegerValue(), numberIntervalOfColumn);
+      default -> cellEntry.getValue() == null ? "" : cellEntry.getValue().toString();
     };
   }
 

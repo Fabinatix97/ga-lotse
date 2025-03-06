@@ -5,8 +5,7 @@
 
 "use client";
 
-import { ChildExamination } from "@eshg/dental/api/models/ChildExamination";
-import { routes } from "@eshg/dental/shared/routes";
+import { ChildExamination, routes } from "@eshg/dental";
 import { MedicalServicesOutlined } from "@mui/icons-material";
 
 import { PersonToolbarHeader } from "@/lib/shared/components/layout/PersonToolbarHeader";

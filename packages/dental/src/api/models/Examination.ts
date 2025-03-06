@@ -10,13 +10,11 @@ import {
 } from "@eshg/dental-api";
 import {
   BaseEntity,
-  mapBaseEntity,
-} from "@eshg/lib-employee-portal/api/models/BaseEntity";
-import {
   Versioned,
+  mapBaseEntity,
+  mapOptional,
   mapVersioned,
-} from "@eshg/lib-employee-portal/api/models/Versioned";
-import { mapOptional } from "@eshg/lib-employee-portal/api/models/utils";
+} from "@eshg/lib-employee-portal";
 
 import { ExaminationResult, mapExaminationResult } from "./ExaminationResult";
 import { ExaminationStatus, mapToExaminationStatus } from "./ExaminationStatus";

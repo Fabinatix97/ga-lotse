@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ChildExamination } from "@eshg/dental/api/models/ChildExamination";
-import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
+import { ChildExamination } from "@eshg/dental";
+import { StickyToolbarLayout } from "@eshg/lib-employee-portal";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { isDefined } from "remeda";
@@ -14,6 +14,7 @@ import { ChildDetailsSection } from "@/lib/businessModules/dental/features/exami
 import { ExaminationFormLayout } from "@/lib/businessModules/dental/features/examinations/ExaminationFormLayout";
 import { NoteFormSection } from "@/lib/businessModules/dental/features/examinations/NoteFormSection";
 import { DentalExaminationFormSection } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/DentalExaminationFormSection";
+import { useDentalExaminationStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
 import { ParticipantExaminationBottomBar } from "@/lib/businessModules/dental/features/prophylaxisSessions/participantExamination/ParticipantExaminationBottomBar";
 import { ParticipantExaminationForm } from "@/lib/businessModules/dental/features/prophylaxisSessions/participantExamination/ParticipantExaminationForm";
 import { ParticipantExaminationToolbar } from "@/lib/businessModules/dental/features/prophylaxisSessions/participantExamination/ParticipantExaminationToolbar";
@@ -43,13 +44,18 @@ export function ParticipantExaminationPage(
   const setExamination = useProphylaxisSessionStore(
     (state) => state.setExamination,
   );
+  const isDentalExaminationDirty = useDentalExaminationStore(
+    (state) => state.dirty,
+  );
 
   const [nextRoute, setNextRoute] = useState<string>();
   const examinationForm = useParticipantExaminationForm({
     initialValues: participant,
     onSubmit: (values) => {
       try {
-        setExamination(participant.examinationId, values.result, values.note);
+        if (examinationForm.dirty || isDentalExaminationDirty) {
+          setExamination(participant.examinationId, values.result, values.note);
+        }
         if (isDefined(nextRoute)) {
           router.push(nextRoute);
         }

@@ -5,7 +5,7 @@
 
 "use client";
 
-import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
+import { MainContentLayout } from "@eshg/lib-employee-portal";
 
 import { useGetEvaluationDetailsPage } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationDetailsPage";
 import { EvaluationDetails } from "@/lib/businessModules/statistics/components/evaluations/details/EvaluationDetails";

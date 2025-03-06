@@ -8,7 +8,7 @@ import {
   AccessCheck,
   checkAccess,
   hasUserRole,
-} from "@eshg/lib-employee-portal/helpers/accessControl";
+} from "@eshg/lib-employee-portal";
 
 import { useGetSelfUserPermissions } from "@/lib/baseModule/api/queries/users";
 

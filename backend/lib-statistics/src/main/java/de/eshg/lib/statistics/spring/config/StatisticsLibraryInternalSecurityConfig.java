@@ -23,8 +23,7 @@ public class StatisticsLibraryInternalSecurityConfig {
       auth.requestMatchers(GET, BaseUrls.STATISTICS + "/**")
           .hasAnyRole(
               EmployeePermissionRole.STATISTICS_STATISTICS_READ.name(),
-              EmployeePermissionRole.STATISTICS_STATISTICS_WRITE.name(),
-              EmployeePermissionRole.STATISTICS_STATISTICS_TECHNICAL_USER.name());
+              EmployeePermissionRole.STATISTICS_STATISTICS_WRITE.name());
       auth.requestMatchers(POST, BaseUrls.STATISTICS + "/data-table-header/**")
           .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE.name());
       auth.requestMatchers(POST, BaseUrls.STATISTICS + "/specific-data/**")

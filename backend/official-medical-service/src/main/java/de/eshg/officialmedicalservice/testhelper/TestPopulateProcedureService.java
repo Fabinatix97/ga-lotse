@@ -25,6 +25,7 @@ import de.eshg.officialmedicalservice.procedure.api.PatchAcceptDraftProcedureReq
 import de.eshg.officialmedicalservice.procedure.api.PatchConcernRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchEmployeeOmsProcedureEmailNotificationsRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchEmployeeOmsProcedurePhysicianRequest;
+import de.eshg.officialmedicalservice.procedure.api.PatchMedicalOpinionStatusRequest;
 import de.eshg.officialmedicalservice.procedure.api.PostCitizenProcedureRequest;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedureRepository;
 import de.eshg.officialmedicalservice.testhelper.api.AppointmentPopulationDto;
@@ -228,7 +229,9 @@ public class TestPopulateProcedureService {
           // 9. update medical opinion status
           if (request.medicalOpinionStatus() != null) {
             employeeOmsProcedureService.updateMedicalOpinionStatus(
-                procedureId, request.medicalOpinionStatus());
+                procedureId,
+                new PatchMedicalOpinionStatusRequest(
+                    request.medicalOpinionStatus(), request.medicalOpinionResult()));
           }
 
           // 10. update waiting room

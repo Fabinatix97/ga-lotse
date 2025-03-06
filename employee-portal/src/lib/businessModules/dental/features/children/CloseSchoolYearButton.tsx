@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useCloseSchoolYear } from "@eshg/dental/api/mutations/childApi";
+import { useCloseSchoolYear } from "@eshg/dental";
 import { PublishedWithChanges } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 import { useState } from "react";

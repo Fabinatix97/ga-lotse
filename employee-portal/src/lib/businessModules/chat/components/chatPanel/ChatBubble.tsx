@@ -157,6 +157,7 @@ export function ChatBubble({
             <Typography
               textColor="text.secondary"
               sx={{ fontSize: "0.875rem" }}
+              data-testid="message-timestamp"
             >
               {formatChatDate(message.timestamp)}
             </Typography>

@@ -5,8 +5,7 @@
 
 "use client";
 
-import { getProphylaxisSessionQuery } from "@eshg/dental/api/queries/prophylaxisSessionApi";
-import { useDentalApi } from "@eshg/dental/shared/DentalProvider";
+import { getProphylaxisSessionQuery, useDentalApi } from "@eshg/dental";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { PropsWithChildren } from "react";
 

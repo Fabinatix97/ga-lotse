@@ -6,7 +6,7 @@
 "use client";
 
 import { ApiEditorBodyElementsInner } from "@eshg/inspection-api";
-import { BottomToolbar } from "@eshg/lib-employee-portal/components/toolbar/BottomToolbar";
+import { BottomToolbar } from "@eshg/lib-employee-portal";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { v4 as uuidv4 } from "uuid";
 

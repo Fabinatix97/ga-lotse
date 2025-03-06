@@ -4,11 +4,11 @@
  */
 
 import { ApiBusinessModule } from "@eshg/base-api";
-import { resolveSideNavigationItems as resolveDentalSideNavigationItems } from "@eshg/dental/shared/sideNavigationItem";
+import { resolveSideNavigationItems as resolveDentalSideNavigationItems } from "@eshg/dental";
 import {
   SideNavigationItem,
   SideNavigationItemsProps,
-} from "@eshg/lib-employee-portal/types/sideNavigation";
+} from "@eshg/lib-employee-portal";
 import { entries } from "remeda";
 
 import { useServerConfig } from "@/lib/baseModule/api/queries/config";

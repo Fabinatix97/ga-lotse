@@ -54,7 +54,7 @@ export function ReadonlyToothButton(props: ReadonlyToothButtonProps) {
     },
   };
 
-  const { elementRef, isFocused, focusHandler } = useElementFocus(
+  const { elementRef, isFocused, focusHandler, blurHandler } = useElementFocus(
     buttonContext,
     (button: HTMLButtonElement) => button.focus(),
   );
@@ -68,6 +68,7 @@ export function ReadonlyToothButton(props: ReadonlyToothButtonProps) {
       focused={isFocused}
       onClick={() => navigateTo(buttonContext.toothContext)}
       onFocus={focusHandler}
+      onBlur={blurHandler}
       onKeyDown={keyboardNavigationHandler}
     >
       <ToothNumber tooth={tooth} />

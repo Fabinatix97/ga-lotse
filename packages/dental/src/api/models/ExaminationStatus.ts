@@ -73,8 +73,10 @@ function allRequiredDiagnosesSet(
   return requiredSecondaryTeeth.values().every((secondaryTooth) => {
     const primaryTooth = RELATED_TEETH[secondaryTooth];
     return (
-      isDefined(diagnoses[secondaryTooth]) ||
-      (isDefined(primaryTooth) && isDefined(diagnoses[primaryTooth]))
+      (isDefined(diagnoses[secondaryTooth]) &&
+        isDefined(diagnoses[secondaryTooth].mainResult)) ||
+      (isDefined(primaryTooth) &&
+        isDefined(diagnoses[primaryTooth]?.mainResult))
     );
   });
 }

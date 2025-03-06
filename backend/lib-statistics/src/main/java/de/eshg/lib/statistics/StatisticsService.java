@@ -130,9 +130,6 @@ public class StatisticsService {
     @SuppressWarnings("unchecked")
     DataSource<AttributeInfo> dataSource =
         (DataSource<AttributeInfo>) getDataSource(getDataInformationRequest.dataSourceId());
-    if (getDataInformationRequest.anonymizationRequired() && !dataSource.isCanBeAnonymized()) {
-      throw new BadRequestException("Data cannot be anonymized");
-    }
 
     List<AttributeInfo> requestedAttributeInfos =
         getRequestedAttributeInfos(getDataInformationRequest.attributeCodes(), dataSource);
@@ -148,11 +145,8 @@ public class StatisticsService {
         getDataInformationRequest.timeRangeStart(),
         getDataInformationRequest.timeRangeEnd(),
         dataSource.getSensitivity(),
-        getDataInformationRequest.anonymizationRequired(),
         dataTableHeader,
-        getDataInformationRequest.anonymizationRequired()
-            ? dataSource.bulkAnonymizeDataRows(dataTableHeader, dataRowPage.dataRows())
-            : dataRowPage.dataRows(),
+        dataRowPage.dataRows(),
         dataRowPage.totalNumberOfElements());
   }
 

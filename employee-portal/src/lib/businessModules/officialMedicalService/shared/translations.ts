@@ -6,6 +6,7 @@
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
 import {
   ApiDocumentStatus,
+  ApiMedicalOpinionResult,
   ApiMedicalOpinionStatus,
   ApiWaitingStatus,
 } from "@eshg/official-medical-service-api";
@@ -21,6 +22,13 @@ export const STATUS_NAMES_MEDICAL_OPINION_STATUS: EnumMap<ApiMedicalOpinionStatu
   {
     [ApiMedicalOpinionStatus.InProgress]: "In Arbeit",
     [ApiMedicalOpinionStatus.Accomplished]: "Fertig",
+  };
+
+export const STATUS_NAMES_MEDICAL_OPINION_RESULT: EnumMap<ApiMedicalOpinionResult> =
+  {
+    [ApiMedicalOpinionResult.Positive]: "Positives Ergebnis",
+    [ApiMedicalOpinionResult.Negative]: "Negatives Ergebnis",
+    [ApiMedicalOpinionResult.NoValuation]: "Keine Bewertung",
   };
 
 export const WAITING_STATUS_VALUES: EnumMap<ApiWaitingStatus> = {

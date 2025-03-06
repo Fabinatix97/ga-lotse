@@ -4,17 +4,17 @@
  */
 
 import {
-  ApiExaminationResult,
-  ApiUpdateExaminationsInBulkRequest,
-} from "@eshg/dental-api";
-import { ChildExamination } from "@eshg/dental/api/models/ChildExamination";
-import {
   AbsenceExaminationResult,
+  ChildExamination,
   ExaminationResult,
   FluoridationExaminationResult,
   ScreeningExaminationResult,
-} from "@eshg/dental/api/models/ExaminationResult";
-import { useUpdateProphylaxisSessionExaminations } from "@eshg/dental/api/mutations/prophylaxisSessionApi";
+  useUpdateProphylaxisSessionExaminations,
+} from "@eshg/dental";
+import {
+  ApiExaminationResult,
+  ApiUpdateExaminationsInBulkRequest,
+} from "@eshg/dental-api";
 import { useEffect, useRef } from "react";
 
 import { useProphylaxisSessionStore } from "./ProphylaxisSessionStoreProvider";
@@ -95,6 +95,10 @@ function mapScreeningResult(
     dentitionType: screeningResult.dentitionType,
     fluorideVarnishApplied: screeningResult.fluorideVarnishApplied,
     oralHygieneStatus: screeningResult.oralHygieneStatus,
+    plaque: screeningResult.plaque,
+    calculus: screeningResult.calculus,
+    gingivitis: screeningResult.gingivitis,
+    parodontitis: screeningResult.parodontitis,
     toothDiagnoses: Object.values(screeningResult.toothDiagnoses),
   };
 }

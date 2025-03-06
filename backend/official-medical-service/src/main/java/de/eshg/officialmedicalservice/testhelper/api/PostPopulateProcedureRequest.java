@@ -6,6 +6,7 @@
 package de.eshg.officialmedicalservice.testhelper.api;
 
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
+import de.eshg.officialmedicalservice.procedure.api.MedicalOpinionResultDto;
 import de.eshg.officialmedicalservice.procedure.api.MedicalOpinionStatusDto;
 import de.eshg.officialmedicalservice.procedure.api.PostEmployeeOmsProcedureFacilityRequest;
 import de.eshg.officialmedicalservice.procedure.api.PostEmployeeOmsProcedureRequest;
@@ -25,6 +26,7 @@ public record PostPopulateProcedureRequest(
     List<String> closedAppointments,
     @Valid List<DocumentPopulationDto> documents,
     MedicalOpinionStatusDto medicalOpinionStatus,
+    MedicalOpinionResultDto medicalOpinionResult,
     ProcedureStatusDto targetState,
     Boolean sendEmailNotifications,
     @Valid WaitingRoomDto waitingRoom,

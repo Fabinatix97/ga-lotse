@@ -3,50 +3,66 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  MAX_TOOTH_INDEX,
-  MIN_TOOTH_INDEX,
-} from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/constants";
 import type { DentalExaminationState } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/dentalExaminationStore";
 import {
   DentalExaminationView,
+  Dentition,
   ElementContext,
-  QuadrantNumber,
-  ResultField,
+  Quadrant,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
 
+import { initField, initFocus } from "./focus";
+import {
+  firstToothWithDiagnosisIndex,
+  lastToothWithDiagnosisIndex,
+} from "./utils";
+
 export type NavigateDirection = "UP" | "DOWN" | "LEFT" | "RIGHT";
-export type NavigateState = Pick<
+
+export type NavigateInputState = Pick<
+  DentalExaminationState,
+  "currentView" | "currentFocus" | "dentition"
+>;
+
+export type NavigateOutputState = Pick<
   DentalExaminationState,
   "currentView" | "currentFocus"
 >;
 
 export function navigate(
   direction: NavigateDirection,
-  state: NavigateState,
-): NavigateState {
+  state: NavigateInputState,
+): NavigateOutputState {
+  const { currentView, currentFocus, dentition } = state;
+
+  if (currentFocus === undefined) {
+    return { currentView, currentFocus };
+  }
   switch (direction) {
     case "UP":
-      return navigateUp(state);
+      return navigateUp(currentView, currentFocus);
     case "DOWN":
-      return navigateDown(state);
+      return navigateDown(currentView, currentFocus);
     case "LEFT":
-      return navigateLeft(state);
+      return navigateLeft(currentView, currentFocus, dentition);
     case "RIGHT":
-      return navigateRight(state);
+      return navigateRight(currentView, currentFocus, dentition);
   }
 }
 
-function navigateUp(state: NavigateState): NavigateState {
-  const { currentView, currentFocus } = state;
-  const { field, toothContext } = currentFocus;
-
-  if (currentView === "FULL_DENTITION" || field === undefined) {
+function navigateUp(
+  currentView: DentalExaminationView,
+  currentFocus: ElementContext,
+): NavigateOutputState {
+  if (currentView === "FULL_DENTITION") {
     return { currentView, currentFocus };
   }
 
+  const { field, toothContext } = currentFocus;
+
   switch (field) {
     case "main":
+    case undefined:
       return { currentView, currentFocus };
     case "secondary1":
       return navigateToTooth(currentView, { field: "main", toothContext });
@@ -58,13 +74,15 @@ function navigateUp(state: NavigateState): NavigateState {
   }
 }
 
-function navigateDown(state: NavigateState): NavigateState {
-  const { currentView, currentFocus } = state;
-  const { field, toothContext } = currentFocus;
-
-  if (currentView === "FULL_DENTITION" || field === undefined) {
+function navigateDown(
+  currentView: DentalExaminationView,
+  currentFocus: ElementContext,
+): NavigateOutputState {
+  if (currentView === "FULL_DENTITION") {
     return { currentView, currentFocus };
   }
+
+  const { field, toothContext } = currentFocus;
 
   switch (field) {
     case "main":
@@ -78,17 +96,24 @@ function navigateDown(state: NavigateState): NavigateState {
         toothContext,
       });
     case "secondary2":
+    case undefined:
       return { currentView, currentFocus };
   }
 }
 
-function navigateLeft(state: NavigateState): NavigateState {
-  const { currentView, currentFocus } = state;
+function navigateLeft(
+  currentView: DentalExaminationView,
+  currentFocus: ElementContext,
+  dentition: Dentition,
+): NavigateOutputState {
   const { quadrantNumber, toothIndex } = currentFocus.toothContext;
 
-  if (toothIndex > MIN_TOOTH_INDEX) {
+  const minToothIndex = firstToothWithDiagnosisIndex(
+    dentition[quadrantNumber].teeth,
+  );
+  if (toothIndex > minToothIndex) {
     return navigateToTooth(currentView, {
-      field: defaultField(currentView),
+      field: initField(currentView),
       toothContext: {
         quadrantNumber,
         toothIndex: toothIndex - 1,
@@ -97,31 +122,37 @@ function navigateLeft(state: NavigateState): NavigateState {
   }
 
   if (quadrantNumber === "Q1" && currentView === "FULL_DENTITION") {
-    return navigateToFirstTooth("LOWER_JAW", "Q4");
+    return navigateToFirstTooth("LOWER_JAW", dentition.Q4);
   }
 
   if (quadrantNumber === "Q2") {
-    return navigateToLastTooth(currentView, "Q1");
+    return navigateToLastTooth(currentView, dentition.Q1);
   }
 
   if (quadrantNumber === "Q3") {
-    return navigateToLastTooth(currentView, "Q4");
+    return navigateToLastTooth(currentView, dentition.Q4);
   }
 
   if (quadrantNumber === "Q4" && currentView !== "FULL_DENTITION") {
-    return navigateToFirstTooth("FULL_DENTITION", "Q1");
+    return navigateToFirstTooth("FULL_DENTITION", dentition.Q1);
   }
 
   return { currentView, currentFocus };
 }
 
-function navigateRight(state: NavigateState): NavigateState {
-  const { currentView, currentFocus } = state;
+function navigateRight(
+  currentView: DentalExaminationView,
+  currentFocus: ElementContext,
+  dentition: Dentition,
+): NavigateOutputState {
   const { quadrantNumber, toothIndex } = currentFocus.toothContext;
 
-  if (toothIndex < MAX_TOOTH_INDEX) {
+  const maxToothIndex = lastToothWithDiagnosisIndex(
+    dentition[quadrantNumber].teeth,
+  );
+  if (toothIndex < maxToothIndex) {
     return navigateToTooth(currentView, {
-      field: defaultField(currentView),
+      field: initField(currentView),
       toothContext: {
         toothIndex: toothIndex + 1,
         quadrantNumber,
@@ -130,25 +161,25 @@ function navigateRight(state: NavigateState): NavigateState {
   }
 
   if (quadrantNumber === "Q1") {
-    return navigateToFirstTooth(currentView, "Q2");
+    return navigateToFirstTooth(currentView, dentition.Q2);
   }
 
   if (quadrantNumber === "Q2") {
     return navigateToLastTooth(
       currentView === "FULL_DENTITION" ? "FULL_DENTITION" : "LOWER_JAW",
-      "Q3",
+      dentition.Q3,
     );
   }
 
   if (quadrantNumber === "Q3") {
     return navigateToLastTooth(
       currentView === "FULL_DENTITION" ? "FULL_DENTITION" : "UPPER_JAW",
-      "Q2",
+      dentition.Q2,
     );
   }
 
   if (quadrantNumber === "Q4") {
-    return navigateToFirstTooth(currentView, "Q3");
+    return navigateToFirstTooth(currentView, dentition.Q3);
   }
 
   return { currentView, currentFocus };
@@ -157,7 +188,7 @@ function navigateRight(state: NavigateState): NavigateState {
 function navigateToTooth(
   view: DentalExaminationView,
   element: ElementContext,
-): NavigateState {
+): NavigateOutputState {
   return {
     currentView: view,
     currentFocus: element,
@@ -166,30 +197,14 @@ function navigateToTooth(
 
 function navigateToFirstTooth(
   view: DentalExaminationView,
-  quadrantNumber: QuadrantNumber,
-): NavigateState {
-  return navigateToTooth(view, {
-    field: defaultField(view),
-    toothContext: {
-      quadrantNumber,
-      toothIndex: MIN_TOOTH_INDEX,
-    },
-  });
+  quadrant: Quadrant,
+): NavigateOutputState {
+  return navigateToTooth(view, initFocus(view, quadrant, "FIRST_TOOTH"));
 }
 
 function navigateToLastTooth(
   view: DentalExaminationView,
-  quadrantNumber: QuadrantNumber,
-): NavigateState {
-  return navigateToTooth(view, {
-    field: defaultField(view),
-    toothContext: {
-      quadrantNumber,
-      toothIndex: MAX_TOOTH_INDEX,
-    },
-  });
-}
-
-function defaultField(view: DentalExaminationView): ResultField | undefined {
-  return view === "FULL_DENTITION" ? undefined : "main";
+  quadrant: Quadrant,
+): NavigateOutputState {
+  return navigateToTooth(view, initFocus(view, quadrant, "LAST_TOOTH"));
 }

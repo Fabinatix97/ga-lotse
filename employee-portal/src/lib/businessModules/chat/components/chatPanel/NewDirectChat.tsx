@@ -16,8 +16,7 @@ import { ChatPanelView } from "@/lib/businessModules/chat/shared/enums";
 import { useCreateNewChat } from "@/lib/businessModules/chat/shared/hooks/useCreateNewChat";
 import { useSendMessage } from "@/lib/businessModules/chat/shared/hooks/useSendMessage";
 import { ApiUser } from "@/lib/businessModules/chat/shared/types";
-import { delayed } from "@/lib/businessModules/chat/shared/utils";
-import { setDMRoom } from "@/lib/businessModules/chat/shared/utils";
+import { delayed, setDMRoom } from "@/lib/businessModules/chat/shared/utils";
 
 export interface DirectChatFormValues {
   invite: string | null;

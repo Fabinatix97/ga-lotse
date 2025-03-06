@@ -238,19 +238,19 @@ public class AnalysisMapper {
     return scatterChartConfiguration;
   }
 
-  private static Scaling mapToScaling(ScalingDto scaling) {
+  public static Scaling mapToScaling(ScalingDto scaling) {
     return Optional.ofNullable(scaling).map(s -> Scaling.valueOf(s.name())).orElse(null);
   }
 
-  private static GroupingType mapToGrouping(GroupingDto grouping) {
+  public static GroupingType mapToGrouping(GroupingDto grouping) {
     return Optional.ofNullable(grouping).map(g -> GroupingType.valueOf(g.name())).orElse(null);
   }
 
-  private static Orientation mapToOrientation(OrientationDto orientation) {
+  public static Orientation mapToOrientation(OrientationDto orientation) {
     return Orientation.valueOf(orientation.name());
   }
 
-  private static Range mapToRange(RangeDto range) {
+  public static Range mapToRange(RangeDto range) {
     return Range.valueOf(range.name());
   }
 

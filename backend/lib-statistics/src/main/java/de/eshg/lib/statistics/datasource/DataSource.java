@@ -6,7 +6,6 @@
 package de.eshg.lib.statistics.datasource;
 
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.lib.statistics.api.DataRow;
 import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.api.DataTableHeader;
 import de.eshg.lib.statistics.attributes.AttributeInfo;
@@ -14,7 +13,6 @@ import de.eshg.lib.statistics.persistence.ProcedureReferenceForStatistics;
 import de.eshg.lib.statistics.util.DataRowPage;
 import de.eshg.lib.statistics.util.TemporalRange;
 import de.eshg.lib.statistics.util.TimeRange;
-import de.eshg.rest.service.error.BadRequestException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Predicate;
@@ -30,19 +28,12 @@ public abstract class DataSource<A extends AttributeInfo> {
   private final String name;
   private final DataSourceSensitivity sensitivity;
   private final List<A> attributes;
-  private final boolean canBeAnonymized;
 
-  protected DataSource(
-      UUID id,
-      String name,
-      DataSourceSensitivity sensitivity,
-      A[] attributes,
-      boolean canBeAnonymized) {
+  protected DataSource(UUID id, String name, DataSourceSensitivity sensitivity, A[] attributes) {
     this.id = id;
     this.name = name;
     this.sensitivity = sensitivity;
     this.attributes = Arrays.asList(attributes);
-    this.canBeAnonymized = canBeAnonymized;
   }
 
   public UUID getId() {
@@ -61,10 +52,6 @@ public abstract class DataSource<A extends AttributeInfo> {
     return attributes;
   }
 
-  public boolean isCanBeAnonymized() {
-    return canBeAnonymized;
-  }
-
   public Optional<A> findAttribute(String attributeCode) {
     return getAttributes().stream()
         .filter(attribute -> attribute.getCode().equals(attributeCode))
@@ -78,11 +65,6 @@ public abstract class DataSource<A extends AttributeInfo> {
       int page,
       int pageSize,
       List<ProcedureReferenceForStatistics> procedureReferences);
-
-  public List<DataRow> bulkAnonymizeDataRows(
-      DataTableHeader dataTableHeader, List<DataRow> dataRows) {
-    throw new BadRequestException("Anonymization not implemented");
-  }
 
   protected <T extends Temporal & Comparable<? super T>> Predicate isInTimeRange(
       CriteriaBuilder criteriaBuilder, Expression<T> temporalPath, TemporalRange<T> range) {

@@ -20,6 +20,7 @@ public record EmployeeOmsProcedureDetailsDto(
     @NotNull UUID id,
     @NotNull ProcedureStatusDto status,
     @NotNull MedicalOpinionStatusDto medicalOpinionStatus,
+    MedicalOpinionResultDto medicalOpinionResult,
     @NotNull @Valid WaitingRoomDto waitingRoom,
     @NotNull @Valid AffectedPersonDto affectedPerson,
     @Valid FacilityDto facility,

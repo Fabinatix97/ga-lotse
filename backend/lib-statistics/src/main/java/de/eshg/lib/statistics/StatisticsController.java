@@ -38,7 +38,6 @@ public class StatisticsController implements StatisticsApi {
                         dataSource.getId(),
                         dataSource.getName(),
                         dataSource.getSensitivity(),
-                        dataSource.isCanBeAnonymized(),
                         statisticsService.getAttributes(dataSource)))
             .toList());
   }

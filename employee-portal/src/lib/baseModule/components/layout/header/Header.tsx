@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useLayoutConfig } from "@eshg/lib-employee-portal/contexts/layoutConfig";
+import { useLayoutConfig } from "@eshg/lib-employee-portal";
 import { EnvironmentIndicator } from "@eshg/lib-portal/components/EnvironmentIndicator";
 import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";

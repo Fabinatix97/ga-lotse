@@ -4,7 +4,11 @@
  */
 
 import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
-import { CitizenPublicApi, Configuration } from "@eshg/sti-protection-api";
+import {
+  CitizenApi,
+  CitizenPublicApi,
+  Configuration,
+} from "@eshg/sti-protection-api";
 
 function useConfiguration() {
   const configurationParameters = useApiConfiguration(
@@ -17,6 +21,11 @@ function useConfiguration() {
 //   const configuration = useConfiguration();
 //   return new CitizenPrivateApi(configuration);
 // }
+
+export function useCitizenApi() {
+  const configuration = useConfiguration();
+  return new CitizenApi(configuration);
+}
 
 export function useCitizenPublicApi() {
   const configuration = useConfiguration();

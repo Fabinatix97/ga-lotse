@@ -15,20 +15,43 @@ public record ScreeningExaminationResultDto(
     Boolean fluorideVarnishApplied,
     OralHygieneStatusDto oralHygieneStatus,
     @NotNull DentitionTypeDto dentitionType,
+    @NotNull boolean plaque,
+    @NotNull boolean calculus,
+    @NotNull boolean gingivitis,
+    @NotNull boolean parodontitis,
     @NotNull @Valid List<ToothDiagnosisDto> toothDiagnoses)
     implements ExaminationResultDto, IsFluorideVarnishApplicable {
 
   static final String SCHEMA_NAME = "ScreeningExaminationResult";
 
   public ScreeningExaminationResultDto(DentitionTypeDto dentitionType) {
-    this(null, null, dentitionType, List.of());
+    this(null, null, dentitionType, false, false, false, false, List.of());
   }
 
   public ScreeningExaminationResultDto(
       Boolean fluorideVarnishApplied,
       OralHygieneStatusDto oralHygieneStatus,
       DentitionTypeDto dentitionType) {
-    this(fluorideVarnishApplied, oralHygieneStatus, dentitionType, List.of());
+    this(fluorideVarnishApplied, oralHygieneStatus, dentitionType, false, false, false, false);
+  }
+
+  public ScreeningExaminationResultDto(
+      Boolean fluorideVarnishApplied,
+      OralHygieneStatusDto oralHygieneStatus,
+      DentitionTypeDto dentitionType,
+      boolean plaque,
+      boolean calculus,
+      boolean gingivitis,
+      boolean parodontitis) {
+    this(
+        fluorideVarnishApplied,
+        oralHygieneStatus,
+        dentitionType,
+        plaque,
+        calculus,
+        gingivitis,
+        parodontitis,
+        List.of());
   }
 
   @Override

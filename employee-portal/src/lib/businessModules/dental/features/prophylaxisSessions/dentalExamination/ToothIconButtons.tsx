@@ -3,15 +3,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Box, IconButton, IconButtonProps, SvgIcon, useTheme } from "@mui/joy";
-import { styled } from "@mui/joy";
+import {
+  Box,
+  IconButton,
+  IconButtonProps,
+  SvgIcon,
+  styled,
+  useTheme,
+} from "@mui/joy";
 import { ReactNode } from "react";
 
 import { ToothIcon } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/Teeth";
 import { TOOTH_SIZE } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/styles";
 import { useDentalExaminationStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
-import { QuadrantNumber } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
 import {
+  QuadrantNumber,
   Tooth,
   ToothContext,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";

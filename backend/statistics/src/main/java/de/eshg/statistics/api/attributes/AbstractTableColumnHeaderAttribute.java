@@ -22,7 +22,13 @@ import jakarta.validation.constraints.NotNull;
   @JsonSubTypes.Type(value = BaseModuleIdAttribute.class, name = BaseModuleIdAttribute.SCHEMA_NAME),
   @JsonSubTypes.Type(value = DateAttribute.class, name = DateAttribute.SCHEMA_NAME),
   @JsonSubTypes.Type(value = DecimalAttribute.class, name = DecimalAttribute.SCHEMA_NAME),
+  @JsonSubTypes.Type(
+      value = DecimalIntervalAttribute.class,
+      name = DecimalIntervalAttribute.SCHEMA_NAME),
   @JsonSubTypes.Type(value = IntegerAttribute.class, name = IntegerAttribute.SCHEMA_NAME),
+  @JsonSubTypes.Type(
+      value = IntegerIntervalAttribute.class,
+      name = IntegerIntervalAttribute.SCHEMA_NAME),
   @JsonSubTypes.Type(
       value = ProcedureReferenceAttribute.class,
       name = ProcedureReferenceAttribute.SCHEMA_NAME),
@@ -36,7 +42,9 @@ public sealed interface AbstractTableColumnHeaderAttribute
         BaseModuleIdAttribute,
         DateAttribute,
         DecimalAttribute,
+        DecimalIntervalAttribute,
         IntegerAttribute,
+        IntegerIntervalAttribute,
         ProcedureReferenceAttribute,
         TextAttribute,
         ValueWithOptionsAttribute {

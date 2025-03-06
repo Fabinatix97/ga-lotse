@@ -11,6 +11,7 @@ import {
 } from "next/navigation";
 import { SetStateAction, useCallback, useState } from "react";
 
+import { mapOptionalString } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { defaultDraftValueDateComparisonFilter } from "@/lib/shared/components/filterSettings/DateComparisonFilter";
 import { DateComparisonOperator } from "@/lib/shared/components/filterSettings/models/DateComparisonFilter";
 import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
@@ -59,6 +60,8 @@ function enumToCompSymbol(enumVal: NumberFilterNumericComparison) {
   }
 }
 
+const DATE_SPAN_SEP = "<>";
+
 export function activeValueToParamValues(activeValue: FilterValue): string[] {
   switch (activeValue.type) {
     case "Number":
@@ -91,9 +94,11 @@ export function activeValueToParamValues(activeValue: FilterValue): string[] {
     case "Enum":
       return activeValue.selectedValues;
     case "DateSpan":
-      return [activeValue.startDate, activeValue.endDate].filter(
-        (value) => value !== undefined,
-      );
+      return [
+        [activeValue.startDate ?? "", activeValue.endDate ?? ""].join(
+          DATE_SPAN_SEP,
+        ),
+      ];
     case "Text":
       return [activeValue.value];
   }
@@ -189,6 +194,16 @@ export function paramValuesToActiveValue(
             selectedValues: values,
           }
         : undefined;
+    case "DateSpan":
+      if (values.length > 0 && values[0]) {
+        const dates = values[0].split(DATE_SPAN_SEP);
+        return {
+          type: def.type,
+          key: def.key,
+          startDate: mapOptionalString(dates[0]),
+          endDate: mapOptionalString(dates[1]),
+        };
+      }
   }
 }
 

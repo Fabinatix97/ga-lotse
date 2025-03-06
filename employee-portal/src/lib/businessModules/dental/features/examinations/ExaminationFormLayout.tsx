@@ -5,8 +5,8 @@
 
 "use client";
 
+import { ExaminationResult } from "@eshg/dental";
 import { ApiDentitionType } from "@eshg/dental-api";
-import { ExaminationResult } from "@eshg/dental/api/models/ExaminationResult";
 import { parseOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { Grid } from "@mui/joy";
 import { ReactNode } from "react";
@@ -75,6 +75,10 @@ function mapExaminationResultFormValues(
       fluorideVarnishApplied: parseOptionalValue(
         examinationResult.fluorideVarnishApplied,
       ),
+      plaque: examinationResult.plaque,
+      calculus: examinationResult.calculus,
+      gingivitis: examinationResult.gingivitis,
+      parodontitis: examinationResult.parodontitis,
     };
   }
 
@@ -85,6 +89,10 @@ function mapExaminationResultFormValues(
       fluorideVarnishApplied: parseOptionalValue(
         examinationResult.fluorideVarnishApplied,
       ),
+      plaque: false,
+      calculus: false,
+      gingivitis: false,
+      parodontitis: false,
     };
   }
 
@@ -92,5 +100,9 @@ function mapExaminationResultFormValues(
     dentitionType: defaultDentitionType ?? "",
     oralHygieneStatus: "",
     fluorideVarnishApplied: "",
+    plaque: false,
+    calculus: false,
+    gingivitis: false,
+    parodontitis: false,
   };
 }

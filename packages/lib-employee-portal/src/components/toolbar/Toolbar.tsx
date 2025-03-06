@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-"use client";
-
 import { Row } from "@eshg/lib-portal/components/Row";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { ChevronLeft } from "@mui/icons-material";

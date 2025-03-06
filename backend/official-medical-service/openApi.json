@@ -1576,7 +1576,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/MedicalOpinionStatus"
+                "$ref" : "#/components/schemas/PatchMedicalOpinionStatusRequest"
               }
             }
           },
@@ -4821,6 +4821,9 @@
             "type" : "string",
             "format" : "uuid"
           },
+          "medicalOpinionResult" : {
+            "$ref" : "#/components/schemas/MedicalOpinionResult"
+          },
           "medicalOpinionStatus" : {
             "$ref" : "#/components/schemas/MedicalOpinionStatus"
           },
@@ -6533,6 +6536,10 @@
         "type" : "string",
         "enum" : [ "LETTER", "PHONE_CALL", "NOTE", "EMAIL", "IMAGE", "DOCUMENT" ]
       },
+      "MedicalOpinionResult" : {
+        "type" : "string",
+        "enum" : [ "POSITIVE", "NEGATIVE", "NO_VALUATION" ]
+      },
       "MedicalOpinionStatus" : {
         "type" : "string",
         "enum" : [ "IN_PROGRESS", "ACCOMPLISHED" ]
@@ -6737,6 +6744,18 @@
           "note" : {
             "type" : "string",
             "nullable" : true
+          }
+        }
+      },
+      "PatchMedicalOpinionStatusRequest" : {
+        "required" : [ "status" ],
+        "type" : "object",
+        "properties" : {
+          "result" : {
+            "$ref" : "#/components/schemas/MedicalOpinionResult"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/MedicalOpinionStatus"
           }
         }
       },
@@ -6954,6 +6973,9 @@
           },
           "facility" : {
             "$ref" : "#/components/schemas/PostEmployeeOmsProcedureFacilityRequest"
+          },
+          "medicalOpinionResult" : {
+            "$ref" : "#/components/schemas/MedicalOpinionResult"
           },
           "medicalOpinionStatus" : {
             "$ref" : "#/components/schemas/MedicalOpinionStatus"

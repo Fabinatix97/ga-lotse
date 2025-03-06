@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ProphylaxisSessionDetails } from "@eshg/dental/api/models/ProphylaxisSessionDetails";
+import { ProphylaxisSessionDetails } from "@eshg/dental";
 import { useEffect } from "react";
 import { StoreApi, useStore } from "zustand";
 

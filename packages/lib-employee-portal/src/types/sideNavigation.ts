@@ -5,7 +5,7 @@
 
 import { ReactNode } from "react";
 
-import { AccessCheck } from "@/helpers/accessControl";
+import { AccessCheck } from "@/features/auth/accessChecks";
 
 export interface SideNavigationLinkItem {
   type: "SideNavigationLinkItem";

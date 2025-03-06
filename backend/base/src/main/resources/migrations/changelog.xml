@@ -50,5 +50,7 @@
   <include file="migrations/0040_add_auditlog_entry.xml"/>
   <include file="migrations/0041_remove_gdpr_status_open.xml"/>
   <include file="migrations/0042_department_config.xml"/>
+  <include file="migrations/0043_department_info.xml"/>
+  <include file="migrations/0044_opening_hours.xml"/>
 
 </databaseChangeLog>

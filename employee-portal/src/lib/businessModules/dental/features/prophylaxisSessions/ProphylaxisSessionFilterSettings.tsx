@@ -5,11 +5,10 @@
 
 import { GetProphylaxisSessionsRequest } from "@eshg/dental-api";
 import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { FormControl, FormLabel, Select } from "@mui/joy";
-import { isDefined } from "remeda";
+import { FormControl, FormLabel } from "@mui/joy";
 
 import { PROPHYLAXIS_TYPE_OPTIONS } from "@/lib/businessModules/dental/features/prophylaxisSessions/options";
-import { ResetButton } from "@/lib/shared/components/ResetButton";
+import { ResettableSingleSelect } from "@/lib/shared/components/ResettableSingleSelect";
 import { ActiveFilter } from "@/lib/shared/components/filterSettings/ActiveFilter";
 import { FilterSettingsContent } from "@/lib/shared/components/filterSettings/FilterSettingsContent";
 import {
@@ -76,7 +75,7 @@ export function ProphylaxisSessionFilterSettings(
         </FormControl>
         <FormControl>
           <FormLabel>Typ</FormLabel>
-          <Select
+          <ResettableSingleSelect
             aria-label="Typ"
             value={props.filterFormValues.typeFilter ?? ""}
             onChange={(_, newValue) => {
@@ -85,18 +84,12 @@ export function ProphylaxisSessionFilterSettings(
               }
               props.setFilterFormValue("typeFilter", newValue);
             }}
-            endDecorator={
-              isDefined(props.filterFormValues.typeFilter) ? (
-                <ResetButton
-                  onReset={() => {
-                    props.setFilterFormValue("typeFilter", undefined);
-                  }}
-                />
-              ) : undefined
-            }
+            onResetSelect={() => {
+              props.setFilterFormValue("typeFilter", undefined);
+            }}
           >
             <SelectOptions options={PROPHYLAXIS_TYPE_OPTIONS} />
-          </Select>
+          </ResettableSingleSelect>
         </FormControl>
       </FilterSettingsContent>
     </FilterSettingsSheet>

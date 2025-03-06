@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { LayoutConfigProvider } from "@eshg/lib-employee-portal/contexts/layoutConfig";
+import { LayoutConfigProvider } from "@eshg/lib-employee-portal";
 import { ApiProvider } from "@eshg/lib-portal/api/ApiProvider";
 import { HiddenDownloadContainer } from "@eshg/lib-portal/api/files/HiddenDownloadContainer";
 import { EnvironmentTypeProvider } from "@eshg/lib-portal/components/EnvironmentTypeProvider";

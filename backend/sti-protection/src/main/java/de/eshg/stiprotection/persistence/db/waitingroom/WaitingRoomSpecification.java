@@ -20,7 +20,6 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.io.Serial;
 import java.time.Instant;
-import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -39,10 +38,11 @@ public class WaitingRoomSpecification implements Specification<StiProtectionProc
   @Override
   public Predicate toPredicate(
       Root<StiProtectionProcedure> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-    List<Predicate> conjunctions = defaultProcedureFilters(root, criteriaBuilder);
-
     query.orderBy(getSortOrder(root, criteriaBuilder), createdAt(root, criteriaBuilder));
-    return criteriaBuilder.and(conjunctions.toArray(Predicate[]::new));
+    Predicate isOpenProcedure = isOpenProcedure(root, criteriaBuilder);
+    Predicate hasWaitingRoomStatus = hasWaitingRoomStatus(root, criteriaBuilder);
+    Predicate isNotFinalStatus = isNotFinalStatus(root, criteriaBuilder);
+    return criteriaBuilder.and(isOpenProcedure, hasWaitingRoomStatus, isNotFinalStatus);
   }
 
   private Order createdAt(Root<StiProtectionProcedure> root, CriteriaBuilder criteriaBuilder) {
@@ -53,16 +53,24 @@ public class WaitingRoomSpecification implements Specification<StiProtectionProc
     };
   }
 
-  private List<Predicate> defaultProcedureFilters(
+  private static Predicate isNotFinalStatus(
       Root<StiProtectionProcedure> root, CriteriaBuilder criteriaBuilder) {
-    Path<WaitingStatus> waitingRoomStatus =
-        root.get(StiProtectionProcedure_.waitingRoom).get(WaitingRoom_.status);
-    Predicate isOpenProcedure =
-        criteriaBuilder.equal(root.get(Procedure_.procedureStatus), ProcedureStatus.OPEN);
-    Predicate hasWaitingRoomStatus = criteriaBuilder.isNotNull(waitingRoomStatus);
-    Predicate isNotFinalStatus =
-        criteriaBuilder.not(waitingRoomStatus.in(WaitingStatus.DONE, WaitingStatus.CANCELLED));
-    return List.of(isOpenProcedure, hasWaitingRoomStatus, isNotFinalStatus);
+    return criteriaBuilder.not(
+        waitingRoomStatus(root).in(WaitingStatus.DONE, WaitingStatus.CANCELLED));
+  }
+
+  private static Predicate hasWaitingRoomStatus(
+      Root<StiProtectionProcedure> root, CriteriaBuilder criteriaBuilder) {
+    return criteriaBuilder.isNotNull(waitingRoomStatus(root));
+  }
+
+  private static Predicate isOpenProcedure(
+      Root<StiProtectionProcedure> root, CriteriaBuilder criteriaBuilder) {
+    return criteriaBuilder.equal(root.get(Procedure_.procedureStatus), ProcedureStatus.OPEN);
+  }
+
+  private static Path<WaitingStatus> waitingRoomStatus(Root<StiProtectionProcedure> root) {
+    return root.get(StiProtectionProcedure_.waitingRoom).get(WaitingRoom_.status);
   }
 
   private Order getSortOrder(Root<StiProtectionProcedure> root, CriteriaBuilder criteriaBuilder) {

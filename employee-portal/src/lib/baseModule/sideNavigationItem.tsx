@@ -5,10 +5,10 @@
 
 import { ApiBaseFeature, ApiUserRole } from "@eshg/base-api";
 import {
+  SideNavigationItem,
   hasUserRole,
   noCheck,
-} from "@eshg/lib-employee-portal/helpers/accessControl";
-import { SideNavigationItem } from "@eshg/lib-employee-portal/types/sideNavigation";
+} from "@eshg/lib-employee-portal";
 import {
   CalendarTodayOutlined,
   ContactsOutlined,

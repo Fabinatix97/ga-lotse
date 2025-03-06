@@ -9,18 +9,27 @@ import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvid
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import {
   ApiEmployeeOmsProcedureDetails,
+  ApiMedicalOpinionResult,
   ApiMedicalOpinionStatus,
   ApiProcedureStatus,
 } from "@eshg/official-medical-service-api";
 import { Formik, FormikHelpers } from "formik";
 
 import { usePatchMedicalOpinionStatus } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
-import { STATUS_NAMES_MEDICAL_OPINION_STATUS } from "@/lib/businessModules/officialMedicalService/shared/translations";
+import {
+  STATUS_NAMES_MEDICAL_OPINION_RESULT,
+  STATUS_NAMES_MEDICAL_OPINION_STATUS,
+} from "@/lib/businessModules/officialMedicalService/shared/translations";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { FormStack } from "@/lib/shared/components/form/FormStack";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
+
+interface MedicalOpinionStatusFormType {
+  medicalOpinionStatus: ApiMedicalOpinionStatus;
+  medicalOpinionResult?: ApiMedicalOpinionResult;
+}
 
 export function MedicalOpinionStatusPanel({
   procedure,
@@ -42,15 +51,18 @@ export function MedicalOpinionStatusPanel({
   }
 
   function handleSubmit(
-    values: ApiEmployeeOmsProcedureDetails,
-    helpers: FormikHelpers<ApiEmployeeOmsProcedureDetails>,
+    values: MedicalOpinionStatusFormType,
+    helpers: FormikHelpers<MedicalOpinionStatusFormType>,
   ) {
     if (procedure.medicalOpinionStatus !== values.medicalOpinionStatus) {
       openConfirmationDialog({
         onConfirm: async () => {
           await patchMedicalOpinionStatus.mutateAsync({
             id: procedure.id,
-            body: values.medicalOpinionStatus,
+            apiPatchMedicalOpinionStatusRequest: {
+              status: values.medicalOpinionStatus,
+              result: values.medicalOpinionResult,
+            },
           });
         },
         onCancel: () => helpers.resetForm(),
@@ -65,6 +77,14 @@ export function MedicalOpinionStatusPanel({
     }
   }
 
+  const initialValues: MedicalOpinionStatusFormType = {
+    medicalOpinionStatus: procedure.medicalOpinionStatus,
+    medicalOpinionResult:
+      procedure.medicalOpinionResult !== ApiMedicalOpinionResult.NoValuation
+        ? procedure.medicalOpinionResult
+        : undefined,
+  };
+
   return (
     <InfoTile
       data-testid="medical-opinion-status"
@@ -73,11 +93,11 @@ export function MedicalOpinionStatusPanel({
     >
       {!isProcedureClosed() && !isMedicalOpinionAccomplished() ? (
         <Formik
-          initialValues={procedure}
+          initialValues={initialValues}
           onSubmit={(values, helpers) => handleSubmit(values, helpers)}
           enableReinitialize
         >
-          {({ isSubmitting, handleSubmit }) => {
+          {({ isSubmitting, handleSubmit, values }) => {
             return (
               <FormStack onSubmit={handleSubmit}>
                 <SelectField
@@ -87,6 +107,17 @@ export function MedicalOpinionStatusPanel({
                     STATUS_NAMES_MEDICAL_OPINION_STATUS,
                   )}
                 />
+                {values.medicalOpinionStatus ===
+                  ApiMedicalOpinionStatus.Accomplished && (
+                  <SelectField
+                    label="Ergebnis"
+                    name="medicalOpinionResult"
+                    options={buildEnumOptions(
+                      STATUS_NAMES_MEDICAL_OPINION_RESULT,
+                    )}
+                    required={"Bitte Ergebnis angeben."}
+                  />
+                )}
                 <ButtonBar
                   right={
                     <SubmitButton submitting={isSubmitting}>
@@ -99,12 +130,26 @@ export function MedicalOpinionStatusPanel({
           }}
         </Formik>
       ) : (
-        <DetailsItem
-          label="Status"
-          value={
-            STATUS_NAMES_MEDICAL_OPINION_STATUS[procedure.medicalOpinionStatus]
-          }
-        ></DetailsItem>
+        <>
+          <DetailsItem
+            label="Status"
+            value={
+              STATUS_NAMES_MEDICAL_OPINION_STATUS[
+                procedure.medicalOpinionStatus
+              ]
+            }
+          ></DetailsItem>
+          <DetailsItem
+            label="Ergebnis"
+            value={
+              procedure.medicalOpinionResult
+                ? STATUS_NAMES_MEDICAL_OPINION_RESULT[
+                    procedure.medicalOpinionResult
+                  ]
+                : undefined
+            }
+          ></DetailsItem>
+        </>
       )}
     </InfoTile>
   );

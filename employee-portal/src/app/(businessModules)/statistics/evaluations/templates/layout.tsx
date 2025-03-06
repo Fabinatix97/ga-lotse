@@ -6,9 +6,11 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
-import { MainContentLayout } from "@eshg/lib-employee-portal/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@eshg/lib-employee-portal/components/layout/StickyToolbarLayout";
-import { hasAnyUserRoles } from "@eshg/lib-employee-portal/helpers/accessControl";
+import {
+  MainContentLayout,
+  StickyToolbarLayout,
+  hasAnyUserRoles,
+} from "@eshg/lib-employee-portal";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import {
   BackupTableOutlined,

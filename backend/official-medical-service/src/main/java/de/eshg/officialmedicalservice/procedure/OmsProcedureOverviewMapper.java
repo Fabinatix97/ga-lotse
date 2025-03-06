@@ -19,6 +19,7 @@ import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import de.eshg.officialmedicalservice.concern.ConcernMapper;
 import de.eshg.officialmedicalservice.procedure.api.EmployeeOmsProcedureOverviewDto;
 import de.eshg.officialmedicalservice.procedure.api.MedicalOpinionStatusDto;
+import de.eshg.officialmedicalservice.procedure.persistence.entity.MedicalOpinionResult;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.MedicalOpinionStatus;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsTask;
@@ -48,6 +49,7 @@ public class OmsProcedureOverviewMapper {
     procedure.setProcedureType(ProcedureType.OFFICIAL_MEDICAL_SERVICE);
     procedure.updateProcedureStatus(ProcedureStatus.DRAFT, clock, auditLogger);
     procedure.setMedicalOpinionStatus(MedicalOpinionStatus.IN_PROGRESS);
+    procedure.setMedicalOpinionResult(MedicalOpinionResult.UNKNOWN);
     procedure.setWaitingRoom(new WaitingRoom());
 
     OmsTask omsTask = new OmsTask();

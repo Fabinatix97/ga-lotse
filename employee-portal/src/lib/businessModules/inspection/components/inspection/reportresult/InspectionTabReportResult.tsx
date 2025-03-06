@@ -5,7 +5,7 @@
 
 "use client";
 
-import { BottomToolbar } from "@eshg/lib-employee-portal/components/toolbar/BottomToolbar";
+import { BottomToolbar } from "@eshg/lib-employee-portal";
 import { Grid } from "@mui/joy";
 
 import { useConfiguration } from "@/lib/businessModules/inspection/api/clients";

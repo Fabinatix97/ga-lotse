@@ -22,3 +22,7 @@ export const departmentApiQueryKey = queryKeyFactory(
 export const userAccountApiQueryKey = queryKeyFactory(
   apiQueryKey(["userAccountApi"]),
 );
+
+export const selfUserChatAttributesApiQueryKey = queryKeyFactory(
+  apiQueryKey(["userApi"]),
+);

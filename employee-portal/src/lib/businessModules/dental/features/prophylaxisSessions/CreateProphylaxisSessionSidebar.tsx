@@ -5,8 +5,8 @@
 
 "use client";
 
+import { useCreateProphylaxisSession } from "@eshg/dental";
 import { ApiDentitionType } from "@eshg/dental-api";
-import { useCreateProphylaxisSession } from "@eshg/dental/api/mutations/prophylaxisSessionApi";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Formik } from "formik";
 

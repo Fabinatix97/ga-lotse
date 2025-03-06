@@ -12,7 +12,7 @@ import {
 
 export interface ToothDiagnosis {
   readonly tooth: ApiTooth;
-  readonly mainResult: ApiMainResult;
+  readonly mainResult?: ApiMainResult;
   readonly secondaryResult1?: ApiSecondaryResult;
   readonly secondaryResult2?: ApiSecondaryResult;
 }

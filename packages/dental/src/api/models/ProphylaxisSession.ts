@@ -8,10 +8,7 @@ import {
   ApiProphylaxisSession,
   ApiProphylaxisType,
 } from "@eshg/dental-api";
-import {
-  BaseEntity,
-  mapBaseEntity,
-} from "@eshg/lib-employee-portal/api/models/BaseEntity";
+import { BaseEntity, mapBaseEntity } from "@eshg/lib-employee-portal";
 
 import { Institution, mapInstitution } from "./Institution";
 

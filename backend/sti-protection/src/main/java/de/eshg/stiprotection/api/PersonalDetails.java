@@ -9,6 +9,7 @@ import de.eshg.base.GenderDto;
 import de.eshg.lib.common.CountryCode;
 import java.time.Year;
 
+@ValidGermanyResidenceYear
 public interface PersonalDetails {
 
   GenderDto gender();

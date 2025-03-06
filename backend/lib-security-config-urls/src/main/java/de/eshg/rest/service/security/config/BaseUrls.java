@@ -29,6 +29,7 @@ public final class BaseUrls {
     public static final String FEATURE_TOGGLES_API = "/feature-toggles";
 
     public static final String USER_SELF_URL = "/self";
+    public static final String USER_SELF_CHAT_ATTRIBUTES_URL = "/self/chat-attributes";
     public static final String CITIZEN_USER_API = "/citizen-users";
     public static final String CITIZEN_USER_SELF_URL = "/self";
     public static final String CITIZEN_ACCESS_CODE_USER_API = "/citizen-access-code-users";
