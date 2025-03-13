@@ -5,15 +5,16 @@
 
 "use client";
 
-import { StiProtectionProcedurePageParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(framedPageLayout)/layout";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+
+import { StiProtectionProcedureRouteParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(framedPageLayout)/layout";
 import { useStiProcedureQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
 import { ProcedureDetails } from "@/lib/businessModules/stiProtection/features/procedures/details/ProcedureDetails";
 
-export default function StiProtectionProcedureDetailsPage({
-  params: { id: procedureId },
-}: Readonly<{
-  params: StiProtectionProcedurePageParams;
-}>) {
+export default function StiProtectionProcedureDetailsPage(
+  props: DynamicPageProps<StiProtectionProcedureRouteParams>,
+) {
+  const { id: procedureId } = props.params;
   const procedure = useStiProcedureQuery(procedureId).data;
 
   return <ProcedureDetails procedure={procedure} />;

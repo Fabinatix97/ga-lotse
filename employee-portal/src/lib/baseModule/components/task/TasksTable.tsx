@@ -6,7 +6,7 @@
 "use client";
 
 import { ApiTaskStatus } from "@eshg/base-api";
-import { SearchParams } from "@eshg/lib-portal/helpers/searchParams";
+import { useGetSelfUser } from "@eshg/lib-employee-portal";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { useState } from "react";
 
@@ -17,8 +17,8 @@ import {
 import {
   useGetSelfGroupsQueryOptions,
   useGetSelfLeadersQueryOptions,
-  useGetSelfUser,
 } from "@/lib/baseModule/api/queries/users";
+import { FetchTaskForOverviewSearchParamsSchema } from "@/lib/baseModule/api/schemas/tasks";
 import {
   FILTER_KEYS,
   useTaskTableFilterSettings,
@@ -48,11 +48,11 @@ const initialState = {
   ] as EnumFilterValue[],
 };
 
-export function TasksTable(
-  props: Readonly<{
-    searchParams: SearchParams;
-  }>,
-) {
+interface TasksTableProps {
+  searchParams: FetchTaskForOverviewSearchParamsSchema;
+}
+
+export function TasksTable(props: TasksTableProps) {
   const tableControl = useTableControl({ serverSideSorting: true });
   const [filters, setFilters] = useState<AggregateTaskFilters>(
     initialState.initialFilters,

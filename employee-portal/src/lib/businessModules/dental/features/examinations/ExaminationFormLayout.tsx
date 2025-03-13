@@ -72,6 +72,11 @@ function mapExaminationResultFormValues(
       oralHygieneStatus: parseOptionalValue(
         examinationResult.oralHygieneStatus,
       ),
+      mihStatus: parseOptionalValue(examinationResult.mihStatus),
+      orthodonticFindings: examinationResult.orthodonticFindings ?? [],
+      orthodonticStatus: parseOptionalValue(
+        examinationResult.orthodonticStatus,
+      ),
       fluorideVarnishApplied: parseOptionalValue(
         examinationResult.fluorideVarnishApplied,
       ),
@@ -86,6 +91,9 @@ function mapExaminationResultFormValues(
     return {
       dentitionType: "",
       oralHygieneStatus: "",
+      mihStatus: "",
+      orthodonticFindings: [],
+      orthodonticStatus: "",
       fluorideVarnishApplied: parseOptionalValue(
         examinationResult.fluorideVarnishApplied,
       ),
@@ -99,6 +107,9 @@ function mapExaminationResultFormValues(
   return {
     dentitionType: defaultDentitionType ?? "",
     oralHygieneStatus: "",
+    mihStatus: "",
+    orthodonticFindings: [],
+    orthodonticStatus: "",
     fluorideVarnishApplied: "",
     plaque: false,
     calculus: false,

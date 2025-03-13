@@ -16,7 +16,7 @@ import {
 } from "@mui/icons-material";
 import { Button, styled } from "@mui/joy";
 import { Formik } from "formik";
-import { useId, useState, useTransition } from "react";
+import { useId, useState } from "react";
 import { isDefined } from "remeda";
 
 import {
@@ -70,16 +70,11 @@ interface PersonSearchFormProps {
 }
 
 export function PersonSearchForm(props: PersonSearchFormProps) {
-  const [isSubmitting, startSubmitTransition] = useTransition();
-  const [isResetting, startResetTransition] = useTransition();
-
   return (
     <Formik
       enableReinitialize
       initialValues={props.initialValues}
-      onSubmit={(formValues) =>
-        startSubmitTransition(() => props.onChange(formValues))
-      }
+      onSubmit={(formValues) => props.onChange(formValues)}
     >
       {({ resetForm }) => (
         <SearchFormSheet id={props.id} data-testid="personSearch">
@@ -106,7 +101,6 @@ export function PersonSearchForm(props: PersonSearchFormProps) {
             type="submit"
             color="primary"
             variant="solid"
-            loading={isSubmitting}
             startDecorator={<SearchOutlined />}
           >
             Suchen
@@ -114,11 +108,10 @@ export function PersonSearchForm(props: PersonSearchFormProps) {
           <Button
             color="primary"
             variant="plain"
-            loading={isResetting}
             startDecorator={<Close />}
             onClick={() => {
               resetForm();
-              startResetTransition(props.onReset);
+              props.onReset();
             }}
           >
             Suche zurücksetzen
@@ -153,7 +146,7 @@ export function TogglePersonSearchButton(props: TogglePersonSearchButtonProps) {
   );
 }
 
-interface PersonSearchParams {
+export interface PersonSearchParams {
   searchFirstName: string;
   searchLastName: string;
   searchDateOfBirth: Date;

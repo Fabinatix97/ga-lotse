@@ -5,18 +5,17 @@
 
 package de.eshg.schoolentry;
 
-import static de.eshg.rest.service.PrivacyDocumentHelper.privacyNoticeAttachmentResponse;
-import static de.eshg.rest.service.PrivacyDocumentHelper.privacyPolicyAttachmentResponse;
-
+import de.eshg.base.department.GetDepartmentInfoResponse;
+import de.eshg.departmentinfo.DepartmentInfoService;
+import de.eshg.departmentinfo.OpeningHoursService;
+import de.eshg.departmentinfo.PrivacyDocumentService;
+import de.eshg.departmentinfo.domain.OpeningHours;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.schoolentry.api.citizen.GetOpeningHoursResponse;
-import de.eshg.schoolentry.config.SchoolEntryProperties;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.net.MalformedURLException;
-import java.net.URI;
+import java.util.Collections;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,44 +27,46 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "SchoolEntryPublicCitizen")
 public class SchoolEntryPublicCitizenController {
 
-  private final Resource privacyNotice;
-  private final Resource privacyPolicy;
+  private final OpeningHoursService openingHoursService;
+  private final PrivacyDocumentService privacyDocumentService;
+  private final DepartmentInfoService departmentInfoService;
 
-  private final SchoolEntryProperties schoolEntryProperties;
-
-  public SchoolEntryPublicCitizenController(SchoolEntryProperties schoolEntryProperties) {
-    this.schoolEntryProperties = schoolEntryProperties;
-    this.privacyNotice = toResource(schoolEntryProperties.getPrivacyNoticeLocation());
-    this.privacyPolicy = toResource(schoolEntryProperties.getPrivacyPolicyLocation());
+  public SchoolEntryPublicCitizenController(
+      OpeningHoursService openingHoursService,
+      PrivacyDocumentService privacyDocumentService,
+      DepartmentInfoService departmentInfoService) {
+    this.openingHoursService = openingHoursService;
+    this.privacyDocumentService = privacyDocumentService;
+    this.departmentInfoService = departmentInfoService;
   }
 
-  private static Resource toResource(URI documentLocation) {
-    try {
-      return new UrlResource(documentLocation);
-    } catch (MalformedURLException e) {
-      throw new RuntimeException(e);
-    }
+  @GetMapping(path = "/department-info")
+  @Operation(summary = "Get department info.")
+  public GetDepartmentInfoResponse getDepartmentInfo() {
+    return departmentInfoService.getDepartmentInfo();
   }
 
   @GetMapping(path = "/opening-hours")
   @Operation(summary = "Get the official opening hours.")
   @Transactional(readOnly = true)
   public GetOpeningHoursResponse getOpeningHours() {
-    SchoolEntryProperties.OpeningHours openingHours = schoolEntryProperties.getOpeningHours();
-    return new GetOpeningHoursResponse(openingHours.de(), openingHours.en());
+    OpeningHours openingHours = openingHoursService.getConfig();
+    return new GetOpeningHoursResponse(
+        Collections.unmodifiableList(openingHours.getDe()),
+        Collections.unmodifiableList(openingHours.getEn()));
   }
 
   @GetMapping(path = "/documents/privacy-notice")
   @Operation(summary = "Get the privacy-notice document.")
   @Transactional(readOnly = true)
   public ResponseEntity<Resource> getPrivacyNotice() {
-    return privacyNoticeAttachmentResponse(privacyNotice);
+    return privacyDocumentService.getPrivacyNotice();
   }
 
   @GetMapping(path = "/documents/privacy-policy")
   @Operation(summary = "Get the privacy-policy document.")
   @Transactional(readOnly = true)
   public ResponseEntity<Resource> getPrivacyPolicy() {
-    return privacyPolicyAttachmentResponse(privacyPolicy);
+    return privacyDocumentService.getPrivacyPolicy();
   }
 }

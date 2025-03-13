@@ -5,11 +5,8 @@
 
 package de.eshg.measlesprotection;
 
-import static de.eshg.rest.service.PrivacyDocumentHelper.privacyNoticeAttachmentResponse;
-import static de.eshg.rest.service.PrivacyDocumentHelper.privacyPolicyAttachmentResponse;
-
+import de.eshg.departmentinfo.PrivacyDocumentService;
 import de.eshg.measlesprotection.api.citizenportal.ReportCaseRequest;
-import de.eshg.measlesprotection.config.MeaslesProtectionConfigService;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,13 +26,13 @@ public class OrganisationPortalController {
   public static final String BASE_URL = BaseUrls.MeaslesProtection.ORGANISATION_CONTROLLER;
 
   private final OrganisationPortalService publicMeaslesProtectionService;
-  private final MeaslesProtectionConfigService measlesProtectionConfigService;
+  private final PrivacyDocumentService privacyDocumentService;
 
   public OrganisationPortalController(
       OrganisationPortalService publicMeaslesProtectionService,
-      MeaslesProtectionConfigService measlesProtectionConfigService) {
+      PrivacyDocumentService privacyDocumentService) {
     this.publicMeaslesProtectionService = publicMeaslesProtectionService;
-    this.measlesProtectionConfigService = measlesProtectionConfigService;
+    this.privacyDocumentService = privacyDocumentService;
   }
 
   @PostMapping("/report")
@@ -49,14 +46,12 @@ public class OrganisationPortalController {
   @GetMapping(path = "/documents/privacy-notice")
   @Operation(summary = "Get the privacy-notice document.")
   public ResponseEntity<Resource> getPrivacyNotice() {
-    return privacyNoticeAttachmentResponse(
-        measlesProtectionConfigService.getConfig().getPrivacyNotice());
+    return privacyDocumentService.getPrivacyNotice();
   }
 
   @GetMapping(path = "/documents/privacy-policy")
   @Operation(summary = "Get the privacy-policy document.")
   public ResponseEntity<Resource> getPrivacyPolicy() {
-    return privacyPolicyAttachmentResponse(
-        measlesProtectionConfigService.getConfig().getPrivacyPolicy());
+    return privacyDocumentService.getPrivacyPolicy();
   }
 }

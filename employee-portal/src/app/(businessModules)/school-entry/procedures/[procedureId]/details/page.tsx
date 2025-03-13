@@ -5,26 +5,28 @@
 
 "use client";
 
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
-import { SchoolEntryProcedurePageProps } from "@/app/(businessModules)/school-entry/procedures/[procedureId]/layout";
 import {
   useConfigApi,
   useSchoolEntryApi,
 } from "@/lib/businessModules/schoolEntry/api/clients";
 import { getLocationSelectionModeQuery } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
 import { getProcedureQuery } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
+import { SchoolEntryProcedureRouteParamsSchema } from "@/lib/businessModules/schoolEntry/features/procedures/SchoolEntryProcedureRouteParamsSchema";
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/ProcedureDetails";
 
 export default function SchoolEntryProcedureDetailsPage(
-  props: SchoolEntryProcedurePageProps,
+  props: DynamicPageProps<SchoolEntryProcedureRouteParamsSchema>,
 ) {
+  const { procedureId } = props.params;
   const schoolEntryApi = useSchoolEntryApi();
   const configApi = useConfigApi();
   const [{ data: procedure }, { data: locationSelectionMode }] =
     useSuspenseQueries({
       queries: [
-        getProcedureQuery(schoolEntryApi, props.params.procedureId),
+        getProcedureQuery(schoolEntryApi, procedureId),
         getLocationSelectionModeQuery(configApi),
       ],
     });

@@ -7,6 +7,11 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import {
+  TabNavigationItem,
+  TabNavigationToolbar,
+  useHasUserRoleCheck,
+} from "@eshg/lib-employee-portal";
+import {
   FormatListBulletedOutlined,
   MedicalServicesOutlined,
   SubjectOutlined,
@@ -18,9 +23,6 @@ import { useIsFetching } from "@tanstack/react-query";
 
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { PersonDocumentConsultation } from "@/lib/shared/components/icons/PersonDocumentConsultation";
-import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
-import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 import { ProcedureTabHeader } from "./ProcedureTabHeader";
 

@@ -15,6 +15,7 @@ import {
   parseOptionalValue,
 } from "@eshg/lib-portal/helpers/form";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import {
   ApiOtherVaccination,
   ApiVaccinationStatus,
@@ -23,13 +24,13 @@ import {
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { isEmpty } from "remeda";
 
-import { SchoolEntryProcedurePageProps } from "@/app/(businessModules)/school-entry/procedures/[procedureId]/layout";
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { useUpdateVaccinationStatusOptions } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import {
   getProcedureQuery,
   getVaccinationStatusQuery,
 } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
+import { SchoolEntryProcedureRouteParamsSchema } from "@/lib/businessModules/schoolEntry/features/procedures/SchoolEntryProcedureRouteParamsSchema";
 import {
   OtherVaccinationValues,
   VaccinationForm,
@@ -40,9 +41,9 @@ import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel"
 import { ContentPanelTitle } from "@/lib/shared/components/contentPanel/ContentPanelTitle";
 
 export default function SchoolEntryVaccinationStatusPage(
-  props: SchoolEntryProcedurePageProps,
+  props: DynamicPageProps<SchoolEntryProcedureRouteParamsSchema>,
 ) {
-  const procedureId = props.params.procedureId;
+  const { procedureId } = props.params;
   const schoolEntryApi = useSchoolEntryApi();
   const [{ data: procedure }, { data: vaccinationStatus }] = useSuspenseQueries(
     {

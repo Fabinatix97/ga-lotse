@@ -11,10 +11,12 @@ import {
   ApiConcern,
 } from "@eshg/sti-protection-api";
 
-export enum OverviewAppointmentType {
-  UPCOMING = "upcoming",
-  PAST = "past",
-}
+export const OverviewAppointmentType = {
+  UPCOMING: "upcoming",
+  PAST: "past",
+} as const;
+export type OverviewAppointmentType =
+  (typeof OverviewAppointmentType)[keyof typeof OverviewAppointmentType];
 
 export interface ApiAppointmentSummary extends Omit<ApiAppointment, "end"> {
   appointmentType: ApiAppointmentType;

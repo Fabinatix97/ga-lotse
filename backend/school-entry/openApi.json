@@ -627,6 +627,25 @@
         "tags" : [ "SchoolEntryCitizen" ]
       }
     },
+    "/citizen/public/department-info" : {
+      "get" : {
+        "operationId" : "getDepartmentInfo",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetDepartmentInfoResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get department info.",
+        "tags" : [ "SchoolEntryPublicCitizen" ]
+      }
+    },
     "/citizen/public/documents/privacy-notice" : {
       "get" : {
         "operationId" : "getPrivacyNotice",
@@ -5969,6 +5988,9 @@
             "description" : "The last name of the Contact Person.",
             "example" : "Doe"
           },
+          "mainContact" : {
+            "type" : "boolean"
+          },
           "phoneNumber" : {
             "maxLength" : 23,
             "minLength" : 1,
@@ -6456,6 +6478,63 @@
           }
         },
         "description" : "Possible countries and their group. Expected keys: SchoolEntryCountryCode"
+      },
+      "GetDepartmentInfoResponse" : {
+        "required" : [ "city", "country", "email", "homepage", "houseNumber", "location", "name", "phoneNumber", "postalCode", "street" ],
+        "type" : "object",
+        "properties" : {
+          "abbreviation" : {
+            "type" : "string",
+            "description" : "The abbreviation of the name of the department",
+            "example" : "LTG"
+          },
+          "city" : {
+            "type" : "string",
+            "description" : "The name of the city where the department is located",
+            "example" : "Berlin"
+          },
+          "country" : {
+            "$ref" : "#/components/schemas/CountryCode"
+          },
+          "email" : {
+            "type" : "string",
+            "description" : "The email address of the department",
+            "example" : "mail@address.de"
+          },
+          "homepage" : {
+            "type" : "string",
+            "description" : "The domain of the department's official homepage, excluding protocols",
+            "example" : "department-homepage.de"
+          },
+          "houseNumber" : {
+            "type" : "string",
+            "description" : "The house number at the department's address, including any extensions or suffixes",
+            "example" : "1b"
+          },
+          "location" : {
+            "$ref" : "#/components/schemas/Location"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "The name of the department",
+            "example" : "Gesundheitsamt Landkreis Testgebiet"
+          },
+          "phoneNumber" : {
+            "type" : "string",
+            "description" : "The primary contact telephone number for the department",
+            "example" : "+491234567890"
+          },
+          "postalCode" : {
+            "type" : "string",
+            "description" : "The postal code for the department’s address",
+            "example" : "12345"
+          },
+          "street" : {
+            "type" : "string",
+            "description" : "The street name for the department’s address, not including the house number",
+            "example" : "Beispielweg"
+          }
+        }
       },
       "GetDetailedProcedureResponse" : {
         "required" : [ "facilities", "persons", "procedure", "tasks" ],
@@ -7636,6 +7715,25 @@
       "LanguageKnowledgeValue" : {
         "type" : "string",
         "enum" : [ "RUDIMENTARY", "FAULTY", "FAULTLESS", "UNKNOWN" ]
+      },
+      "Location" : {
+        "required" : [ "latitude", "longitude" ],
+        "type" : "object",
+        "properties" : {
+          "latitude" : {
+            "type" : "number",
+            "description" : "Geographic coordinate that specifies the north–south angular location of a point on the surface of the Earth.",
+            "format" : "double",
+            "example" : 52.51627
+          },
+          "longitude" : {
+            "type" : "number",
+            "description" : "Geographic coordinate that specifies the east–west angular position of a point on the surface of the Earth.",
+            "format" : "double",
+            "example" : 13.377703
+          }
+        },
+        "description" : "Location defined by latitude and longitude."
       },
       "LocationSelectionMode" : {
         "type" : "string",

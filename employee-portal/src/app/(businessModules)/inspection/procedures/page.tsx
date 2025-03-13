@@ -10,17 +10,14 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
-import { SearchParams } from "@eshg/lib-portal/helpers/searchParams";
+import { PageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { PendingFacilitiesOfflineTable } from "@/lib/businessModules/inspection/components/facility/pending/PendingFacilitiesOfflineTable";
 import { PendingFacilitiesTableWrapper } from "@/lib/businessModules/inspection/components/facility/pending/PendingFacilitiesTableWrapper";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
-export default function InspectionProceduresPage(
-  props: Readonly<{
-    searchParams: SearchParams;
-  }>,
-) {
+export default function InspectionProceduresPage(props: PageProps) {
+  const searchParams = props.searchParams;
   const isOffline = useIsOffline();
 
   const title = isOffline ? "Offline verfügbare Begehungen" : "Begehung";
@@ -31,7 +28,7 @@ export default function InspectionProceduresPage(
         {isOffline ? (
           <PendingFacilitiesOfflineTable />
         ) : (
-          <PendingFacilitiesTableWrapper filter={props.searchParams} />
+          <PendingFacilitiesTableWrapper filter={searchParams} />
         )}
       </MainContentLayout>
     </StickyToolbarLayout>

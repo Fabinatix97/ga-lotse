@@ -14,9 +14,14 @@ import {
 } from "@mui/icons-material";
 import { Box, Sheet, Stack, Typography } from "@mui/joy";
 import { formatDate } from "date-fns";
-import { Formik } from "formik";
-import { PropsWithChildren } from "react";
+import { Formik, useFormikContext } from "formik";
+import { PropsWithChildren, useCallback } from "react";
 
+import {
+  ConfirmLeaveDirtyFormEffect,
+  ConfirmLeaveDirtyFormEffectProps,
+} from "@/lib/baseModule/components/ConfirmLeaveDirtyFormEffect";
+import { useCancelAppointment } from "@/lib/businessModules/stiProtection/api/mutations/publicCitizensApi";
 import { useStepContext } from "@/lib/businessModules/stiProtection/components/shared/StepContext";
 import { useTranslation } from "@/lib/i18n/client";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
@@ -27,26 +32,29 @@ import {
   AppointmentFormData,
   FormDataWithoutConcern,
 } from "./AppointmentStepper";
-import { StepButtons } from "./StepButtons";
+import { StepButtons, StepButtonsProps } from "./StepButtons";
 
 type InitialValues<T extends FormDataWithoutConcern> = {
   readonly [K in keyof T]: T[K] | "" | null;
 };
 export type StepLayoutProps<T extends FormDataWithoutConcern> =
-  PropsWithChildren<{
-    initialValues: InitialValues<T>;
-    submit?: string | undefined;
-    onSubmit: (e: T) => Promise<FormDataWithoutConcern | void> | void;
-  }>;
+  PropsWithChildren<
+    {
+      initialValues: InitialValues<T>;
+      onSubmit: (e: T) => Promise<FormDataWithoutConcern | void> | void;
+    } & Omit<StepButtonsProps, "onCancel">
+  >;
 export function StepLayout<T extends FormDataWithoutConcern>({
   children,
   initialValues: givenInitialValues,
-  submit,
   onSubmit,
+  ...buttonProps
 }: StepLayoutProps<T>) {
   const [formData, updateFormData] = useFormData<T & AppointmentFormData>();
   const { goForward } = useStepContext();
 
+  const hasBookedAppointment = formData.procedureId != null;
+  const hasCreatedAccount = formData.accessCode != null;
   async function handleSubmit(values: T) {
     const newValues = await onSubmit(values);
     if (newValues) {
@@ -54,6 +62,14 @@ export function StepLayout<T extends FormDataWithoutConcern>({
       goForward();
     }
   }
+
+  const cancelAppointment = useCancelAppointment(formData.procedureId);
+  const handleConfirmCancel = useCallback(() => {
+    if (formData.procedureId == null) {
+      return;
+    }
+    cancelAppointment.mutate();
+  }, [formData.procedureId, cancelAppointment]);
 
   const initialValues = {
     ...givenInitialValues,
@@ -65,6 +81,11 @@ export function StepLayout<T extends FormDataWithoutConcern>({
       <BookAppointmentTitle />
       <Formik initialValues={initialValues} onSubmit={handleSubmit}>
         <FormPlus>
+          <DirtyCheck
+            hasBookedAppointment={hasBookedAppointment}
+            hasCreatedAccount={hasCreatedAccount}
+            handleConfirmCancel={handleConfirmCancel}
+          />
           <TwoColumnGrid
             content={
               <Sheet>
@@ -75,18 +96,43 @@ export function StepLayout<T extends FormDataWithoutConcern>({
                       [theme.breakpoints.up("md")]: { display: "none" },
                     })}
                   >
-                    <StepButtons submit={submit} />
+                    <StepButtons {...buttonProps} />
                   </Box>
                 </Stack>
               </Sheet>
             }
-            sidePanel={<AppointmentOverview submit={submit} />}
+            sidePanel={<AppointmentOverview {...buttonProps} />}
           />
         </FormPlus>
       </Formik>
     </>
   );
 }
+
+export function DirtyCheck({
+  handleConfirmCancel,
+  hasBookedAppointment,
+  hasCreatedAccount,
+}: {
+  handleConfirmCancel: ConfirmLeaveDirtyFormEffectProps["onConfirm"];
+  hasBookedAppointment: boolean;
+  hasCreatedAccount: boolean;
+}) {
+  const { t } = useTranslation("stiProtection/forms");
+  const { isValid, dirty } = useFormikContext();
+  const isAccountCreatedAndShared = dirty && isValid && hasCreatedAccount;
+  return (
+    <ConfirmLeaveDirtyFormEffect
+      title={t("cancel_booking.title")}
+      description={t("cancel_booking.message")}
+      cancelLabel={t("cancel_booking.cancel")}
+      confirmLabel={t("cancel_booking.confirm")}
+      isDirty={hasBookedAppointment && !isAccountCreatedAndShared}
+      onConfirm={handleConfirmCancel}
+    />
+  );
+}
+
 export function BookAppointmentTitle() {
   const { t } = useTranslation("stiProtection/forms");
   const { currentStepIndex, totalSteps } = useStepContext();
@@ -111,7 +157,7 @@ export function BookAppointmentTitle() {
   );
 }
 
-function AppointmentOverview({ submit }: { submit?: string | undefined }) {
+function AppointmentOverview(buttonProps: StepButtonsProps) {
   const { t } = useTranslation("stiProtection/forms");
   const [{ concern, ...data }] = useFormData<AppointmentFormData>();
   const concernLabel =
@@ -150,7 +196,7 @@ function AppointmentOverview({ submit }: { submit?: string | undefined }) {
             </Row>
           ) : null}
         </Stack>
-        <StepButtons submit={submit} />
+        <StepButtons {...buttonProps} />
       </Stack>
     </Sheet>
   );

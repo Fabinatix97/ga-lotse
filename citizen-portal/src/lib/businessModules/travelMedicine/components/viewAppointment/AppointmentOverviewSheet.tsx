@@ -6,13 +6,13 @@
 import { ApiAppointmentSummary } from "@eshg/travel-medicine-api";
 import { Stack } from "@mui/joy";
 
+import { OverviewAppointmentType } from "@/lib/businessModules/stiProtection/components/appointments/helpers";
 import { AppointmentOverviewSheetButton } from "@/lib/businessModules/travelMedicine/components/viewAppointment/AppointmentOverviewSheetButton";
 import { NoAppointments } from "@/lib/businessModules/travelMedicine/components/viewAppointment/NoAppointments";
-import { OverviewAppointmentTypes } from "@/lib/businessModules/travelMedicine/components/viewAppointment/TypeSwitchButtons";
 
 interface AppointmentOverviewSheetButtonsProps {
   procedureId: string;
-  overviewAppointmentType: OverviewAppointmentTypes;
+  overviewAppointmentType: OverviewAppointmentType;
   appointments: ApiAppointmentSummary[];
 }
 

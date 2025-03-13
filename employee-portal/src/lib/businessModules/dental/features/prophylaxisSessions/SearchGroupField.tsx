@@ -5,6 +5,7 @@
 
 import { useSearchInstitutionGroups } from "@eshg/dental";
 import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
+import { CircularProgress } from "@mui/joy";
 
 import { mapToSelectOption } from "@/lib/shared/helpers/selectOptionMapper";
 
@@ -28,7 +29,10 @@ export function SearchGroupField(props: SearchGroupFieldProps) {
       required="Bitte eine Gruppe angeben."
       options={options}
       placeholder="Gruppe suchen"
-      loading={searchGroups.isLoading}
+      loading={searchGroups.isFetching}
+      endDecorator={
+        searchGroups.isLoading ? <CircularProgress size="sm" /> : null
+      }
       freeSolo={props.freeSolo}
       disabled={props.disabled}
     />

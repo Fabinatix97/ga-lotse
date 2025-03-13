@@ -16,23 +16,36 @@ import { validateLength } from "@eshg/lib-portal/helpers/validators";
 import { Divider, Grid, Stack } from "@mui/joy";
 import { ReactNode } from "react";
 
+import { MainContactSwitchField } from "@/lib/shared/components/facilitySidebar/MainContactSwitchField";
 import { BaseFacilityContactPerson } from "@/lib/shared/components/facilitySidebar/types";
 
 interface ContactPersonFormProps {
   name: string;
   extraFieldsTop?: ReactNode;
   extraFieldsBottom?: ReactNode;
+  allowMainContactPerson?: boolean;
 }
 
 export function ContactPersonForm({
   name,
   extraFieldsTop,
   extraFieldsBottom,
+  allowMainContactPerson,
 }: ContactPersonFormProps) {
   const fieldName = createFieldNameMapper<BaseFacilityContactPerson>(name);
 
   return (
     <Stack gap={2} rowGap={2}>
+      {allowMainContactPerson && (
+        <Grid container columnSpacing={2}>
+          <Grid xs={12}>
+            <MainContactSwitchField
+              name={fieldName("mainContact")}
+              label="Haupt-Kontaktperson"
+            />
+          </Grid>
+        </Grid>
+      )}
       <Grid container columnSpacing={2}>
         <Grid xs={6}>
           <SelectField

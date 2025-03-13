@@ -7,24 +7,21 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
 } from "@eshg/lib-employee-portal";
-import { PropsWithChildren } from "react";
+import { DynamicLayoutProps } from "@eshg/lib-portal/types/pageParams";
+import * as v from "valibot";
 
 import { ProcedureToolbar } from "@/lib/businessModules/schoolEntry/features/procedures/ProcedureToolbar";
+import { SchoolEntryProcedureRouteParamsSchema } from "@/lib/businessModules/schoolEntry/features/procedures/SchoolEntryProcedureRouteParamsSchema";
 
-export type SchoolEntryProcedurePageProps = Readonly<{
-  params: SchoolEntryProcedurePageParams;
-}>;
+export default function SchoolEntryProcedureLayout(props: DynamicLayoutProps) {
+  const { procedureId } = v.parse(
+    SchoolEntryProcedureRouteParamsSchema,
+    props.params,
+  );
 
-export interface SchoolEntryProcedurePageParams {
-  procedureId: string;
-}
-
-export default function SchoolEntryProcedureLayout(
-  props: PropsWithChildren<SchoolEntryProcedurePageProps>,
-) {
   return (
     <StickyToolbarLayout
-      toolbar={<ProcedureToolbar procedureId={props.params.procedureId} />}
+      toolbar={<ProcedureToolbar procedureId={procedureId} />}
     >
       <MainContentLayout fullViewportHeight>{props.children}</MainContentLayout>
     </StickyToolbarLayout>

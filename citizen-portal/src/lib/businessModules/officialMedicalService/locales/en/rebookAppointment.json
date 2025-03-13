@@ -1,0 +1,49 @@
+{
+  "common": {
+    "title": "Book appointment",
+    "requiredTitle": "*Required",
+    "logout": "Leave my area"
+  },
+  "content": {
+    "title": "Available appointments",
+    "fields": {
+      "error": {
+        "title": "Error loading appointments",
+        "description": "Please reload the page.",
+        "reload": "Reload page"
+      }
+    },
+    "appointmentPicker": {
+      "noAppointmentForSelectedDate": "There are no free appointments for the selected day.",
+      "noAppointmentSelected": "Appointment has not been selected.",
+      "noAppointmentsAvailable": "There are currently no available appointments",
+      "tryLater": "We will make more appointments available soon. Please try again later."
+    },
+    "backToOverview": "Back",
+    "infoPanelTitle": "Reschedule Appointment",
+    "infoPanelText": "You may only reschedule an appointment twice."
+  },
+  "appointment_calendar": {
+    "required_appointment": "Please select an appointment",
+    "required_day": "Please select a day",
+    "month_selection": "Appointment calendar week",
+    "next_month": "next month",
+    "prev_month": "previous month",
+    "list_label": "Available times *",
+    "calendar_label": "Date *",
+    "available": "available"
+  },
+  "sidePanel": {
+    "title": "Overview",
+    "dateAndTime": "{{ appointmentStart }}",
+    "appointmentDuration": "(ca. {{ durationInMinutes }} Minutes)",
+    "bookAppointment_bookable": "Book appointment",
+    "bookAppointment_cancelled": "Rebook appointment",
+    "bookAppointment_booked": "Reschedule appointment",
+    "cancel": "Cancel"
+  },
+  "snackbar": {
+    "rebook_success": "Appointment rebooked successfully",
+    "book_success": "Appointment booked successfully"
+  }
+}

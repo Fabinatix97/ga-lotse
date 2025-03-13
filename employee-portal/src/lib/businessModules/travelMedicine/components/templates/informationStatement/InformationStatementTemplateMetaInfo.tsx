@@ -6,9 +6,13 @@
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { MultiAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/MultiAutocompleteField";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
 import { ApiDisease } from "@eshg/travel-medicine-api";
 import { Stack } from "@mui/joy";
+
+import {
+  validateInformationStatementTemplateDocumentTitle,
+  validateInformationStatementTemplateFileName,
+} from "@/lib/businessModules/travelMedicine/shared/templateEditor/templateFieldValidation";
 
 interface TemplateMetaInfoProps {
   allDiseases: ApiDisease[];
@@ -30,14 +34,12 @@ export function InformationStatementTemplateMetaInfo(
       <InputField
         name="name"
         label="Interner Dateiname"
-        required="Bitte einen Namen angeben."
-        validate={validateLength(0, 200)}
+        validate={validateInformationStatementTemplateFileName()}
       />
       <InputField
         name="title"
         label="Dokumententitel"
-        required="Bitte einen Titel angeben."
-        validate={validateLength(0, 200)}
+        validate={validateInformationStatementTemplateDocumentTitle()}
       />
       <MultiAutocompleteField
         name="diseaseIDs"

@@ -4,9 +4,10 @@
  */
 
 import { ApiUserRole } from "@eshg/base-api";
-
-import { useGetSelfUser } from "@/lib/baseModule/api/queries/users";
-import { useHasUserRolesCheck } from "@/lib/shared/hooks/useAccessControl";
+import {
+  useGetSelfUser,
+  useHasUserRolesCheck,
+} from "@eshg/lib-employee-portal";
 
 export function useStatisticsRoleChecks() {
   const [isAdmin, canWrite] = useHasUserRolesCheck([

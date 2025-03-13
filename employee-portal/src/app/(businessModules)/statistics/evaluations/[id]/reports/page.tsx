@@ -6,19 +6,21 @@
 "use client";
 
 import { MainContentLayout } from "@eshg/lib-employee-portal";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { useGetEvaluationReports } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationReports";
 import { EvaluationDetailsLayout } from "@/lib/businessModules/statistics/components/evaluations/details/EvaluationDetailsLayout";
 import { EvaluationReports } from "@/lib/businessModules/statistics/components/evaluations/details/reports/EvaluationReports";
 
 export default function EvaluationDetailsReportsPage(
-  props: Readonly<{ params: { id: string } }>,
+  props: DynamicPageProps<{ id: string }>,
 ) {
-  const { data, isFetching } = useGetEvaluationReports(props.params.id);
+  const { id } = props.params;
+  const { data, isFetching } = useGetEvaluationReports(id);
 
   return (
     <EvaluationDetailsLayout
-      evaluationId={props.params.id}
+      evaluationId={id}
       evaluationDetailsTabHeaderProps={{
         evaluationName: data.title,
       }}

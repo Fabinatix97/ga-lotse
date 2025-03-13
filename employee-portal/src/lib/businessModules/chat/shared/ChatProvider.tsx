@@ -7,11 +7,11 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import { ApiChatFeature } from "@eshg/chat-management-api";
+import { useGetSelfUser, useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { createContext, useContext, useEffect, useMemo } from "react";
 import { doNothing, isNullish, omit } from "remeda";
 
-import { useGetSelfUser } from "@/lib/baseModule/api/queries/users";
 import { useMessagesSidebar } from "@/lib/baseModule/components/layout/messagesSidebar/MessagesSidebar";
 import { useIsNewFeatureEnabledUnsuspended } from "@/lib/businessModules/chat/api/queries/featureTogglesApi";
 import { useGetUserSettings } from "@/lib/businessModules/chat/api/queries/userSettingsApi";
@@ -21,7 +21,6 @@ import { ChatClientProvider } from "@/lib/businessModules/chat/shared/ChatClient
 import { NotificationProvider } from "@/lib/businessModules/chat/shared/NotificationProvider";
 import { ChatConfiguration } from "@/lib/businessModules/chat/shared/config";
 import { ChatUserSettings } from "@/lib/businessModules/chat/shared/types";
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 export interface ChatProviderContextType {

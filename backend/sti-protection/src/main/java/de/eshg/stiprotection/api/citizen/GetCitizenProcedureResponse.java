@@ -19,4 +19,5 @@ public record GetCitizenProcedureResponse(
     @NotNull ConcernDto concern,
     @NotNull @Valid PersonDto person,
     @Valid AppointmentDto appointment,
-    @NotNull @Valid List<AppointmentHistoryEntryDto> appointmentHistory) {}
+    @NotNull @Valid List<AppointmentHistoryEntryDto> appointmentHistory,
+    @NotNull Boolean medicalHistorySubmitted) {}

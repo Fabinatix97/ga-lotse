@@ -8,15 +8,19 @@ import {
   DentalExaminationView,
   ElementContext,
   Quadrant,
-  ResultField,
+  Tooth,
+  ToothElement,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
 
 import {
   firstToothWithDiagnosisIndex,
   lastToothWithDiagnosisIndex,
+  resolveToothType,
 } from "./utils";
 
 type FocusOutputState = Pick<DentalExaminationState, "currentFocus">;
+
+export const DEFAULT_FOCUS_ELEMENT = "mainResultField" satisfies ToothElement;
 
 export function setFocus(
   newFocus: ElementContext | undefined,
@@ -38,18 +42,24 @@ export function initFocus(
     position === "LAST_TOOTH"
       ? lastToothWithDiagnosisIndex(teeth)
       : firstToothWithDiagnosisIndex(teeth);
+  const toothType = resolveToothType(toothIndex, teeth);
 
   return {
-    field: initField(view),
     toothContext: {
       quadrantNumber,
       toothIndex,
     },
+    element: initElement(view, toothType),
   };
 }
 
-export function initField(
+export function initElement(
   view: DentalExaminationView,
-): ResultField | undefined {
-  return view === "FULL_DENTITION" ? undefined : "main";
+  toothType: Tooth["type"],
+): ToothElement {
+  if (toothType === "AddableTooth" || view === "FULL_DENTITION") {
+    return "toothButton";
+  }
+
+  return DEFAULT_FOCUS_ELEMENT;
 }

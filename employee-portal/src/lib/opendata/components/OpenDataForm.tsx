@@ -83,6 +83,7 @@ export function OpenDataForm({ children, mode }: OpenDataFormContentProps) {
       />
       <SelectField
         multiple
+        aria-description="Mehrfachauswahl möglich"
         name={fieldNames.sources}
         label="Fachmodule"
         options={buildBusinessModuleOptions()}

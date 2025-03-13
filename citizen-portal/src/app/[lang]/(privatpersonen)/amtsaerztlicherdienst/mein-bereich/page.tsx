@@ -5,6 +5,9 @@
 
 "use client";
 
+import { useSuspenseQueries } from "@tanstack/react-query";
+
+import { useGetProcedureDetails } from "@/lib/businessModules/officialMedicalService/api/queries/citizenAuthApi";
 import { PersonalAreaContent } from "@/lib/businessModules/officialMedicalService/components/personalArea/PersonalAreaContent";
 import { PersonalAreaSidePanel } from "@/lib/businessModules/officialMedicalService/components/personalArea/PersonalAreaSidePanel";
 import { useTranslation } from "@/lib/i18n/client";
@@ -15,6 +18,9 @@ import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
 
 export default function CitizenOmsEntryPage() {
   const { t } = useTranslation(["officialMedicalService/personalArea"]);
+  const [{ data: procedure }] = useSuspenseQueries({
+    queries: [useGetProcedureDetails()],
+  });
 
   return (
     <PageLayout banner="private">
@@ -23,8 +29,8 @@ export default function CitizenOmsEntryPage() {
           {t("common.pageTitle")}
         </PageTitle>
         <TwoColumnGrid
-          content={<PersonalAreaContent />}
-          sidePanel={<PersonalAreaSidePanel />}
+          content={<PersonalAreaContent procedure={procedure} />}
+          sidePanel={<PersonalAreaSidePanel procedure={procedure} />}
         />
       </PageContent>
     </PageLayout>

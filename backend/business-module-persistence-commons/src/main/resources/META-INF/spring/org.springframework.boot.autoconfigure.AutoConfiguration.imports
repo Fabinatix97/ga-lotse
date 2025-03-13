@@ -3,3 +3,4 @@ de.eshg.persistence.EshgDefaultRevisionEntityAuditingConfiguration
 de.eshg.persistence.TransactionHelper
 de.eshg.jpaauditing.JpaAuditingAutoConfiguration
 de.eshg.persistence.EshgHibernateEventListenerConfiguration
+de.eshg.testhelper.EshgConfigurationServiceResetAction

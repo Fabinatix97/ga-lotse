@@ -6,6 +6,7 @@
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
 import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
+import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
 import { ApiAppointmentType } from "@eshg/sti-protection-api";
 import {
   ChevronRightOutlined,
@@ -32,7 +33,6 @@ import {
 } from "@/lib/shared/components/appointments/AppointmentOverviewSection";
 import { HivOutlined } from "@/lib/shared/components/icons/HivOutlined";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
-import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 import { ApiAppointmentSummary } from "./helpers";
 

@@ -59,5 +59,7 @@
   <include file="migrations/0049_oms_appointment_type_extensions.xml"/>
   <include file="migrations/0050_add_shedlock.xml"/>
   <include file="migrations/0051_add_config.xml"/>
+  <include file="migrations/0052_department_info.xml"/>
+  <include file="migrations/0053_drop_constraint_proof_request_letter.xml"/>
 
 </databaseChangeLog>

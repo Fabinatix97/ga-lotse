@@ -5,13 +5,12 @@
 
 package de.eshg.officialmedicalservice.citizenpublic;
 
-import static de.eshg.rest.service.PrivacyDocumentHelper.privacyNoticeAttachmentResponse;
-import static de.eshg.rest.service.PrivacyDocumentHelper.privacyPolicyAttachmentResponse;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import de.eshg.base.department.GetDepartmentInfoResponse;
 import de.eshg.departmentinfo.DepartmentInfoService;
 import de.eshg.departmentinfo.OpeningHoursService;
+import de.eshg.departmentinfo.PrivacyDocumentService;
 import de.eshg.departmentinfo.domain.OpeningHours;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
 import de.eshg.lib.appointmentblock.AppointmentTypeService;
@@ -34,7 +33,6 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -66,33 +64,30 @@ public class CitizenPublicController {
 
   private final OpeningHoursService openingHoursService;
   private final DepartmentInfoService departmentInfoService;
-  private final CitizenProcedureService citizenProcedureService;
+  private final CitizenPublicProcedureService citizenPublicProcedureService;
   private final AppointmentBlockService appointmentBlockService;
   private final Clock clock;
-  private final Resource privacyNotice;
-  private final Resource privacyPolicy;
   private final ConcernService concernService;
   private final AppointmentTypeService appointmentTypeService;
+  private final PrivacyDocumentService privacyDocumentService;
 
   public CitizenPublicController(
       OpeningHoursService openingHoursService,
       DepartmentInfoService departmentInfoService,
-      CitizenProcedureService citizenProcedureService,
+      CitizenPublicProcedureService citizenPublicProcedureService,
       AppointmentBlockService appointmentBlockService,
       Clock clock,
-      @Value("${de.eshg.official-medical-service.privacy-notice-location}") Resource privacyNotice,
-      @Value("${de.eshg.official-medical-service.privacy-policy-location}") Resource privacyPolicy,
       ConcernService concernService,
-      AppointmentTypeService appointmentTypeService) {
+      AppointmentTypeService appointmentTypeService,
+      PrivacyDocumentService privacyDocumentService) {
     this.openingHoursService = openingHoursService;
     this.departmentInfoService = departmentInfoService;
-    this.citizenProcedureService = citizenProcedureService;
+    this.citizenPublicProcedureService = citizenPublicProcedureService;
     this.appointmentBlockService = appointmentBlockService;
     this.clock = clock;
-    this.privacyNotice = privacyNotice;
-    this.privacyPolicy = privacyPolicy;
     this.concernService = concernService;
     this.appointmentTypeService = appointmentTypeService;
+    this.privacyDocumentService = privacyDocumentService;
   }
 
   @Operation(summary = "Get opening hours.")
@@ -116,7 +111,7 @@ public class CitizenPublicController {
   public UUID postCitizenProcedure(
       @RequestPart(name = "request") @Valid PostCitizenProcedureRequest request,
       @RequestPart(name = "files") List<MultipartFile> files) {
-    return citizenProcedureService.createCitizenProcedure(request, files);
+    return citizenPublicProcedureService.createCitizenProcedure(request, files);
   }
 
   @Operation(summary = "Get free appointments for an appointment type.")
@@ -141,13 +136,13 @@ public class CitizenPublicController {
   @Operation(summary = "Get the privacy-notice document.")
   @GetMapping(path = PRIVACY_NOTICE_URL)
   public ResponseEntity<Resource> getPrivacyNotice() {
-    return privacyNoticeAttachmentResponse(privacyNotice);
+    return privacyDocumentService.getPrivacyNotice();
   }
 
   @Operation(summary = "Get the privacy-policy document.")
   @GetMapping(path = PRIVACY_POLICY_URL)
   public ResponseEntity<Resource> getPrivacyPolicy() {
-    return privacyPolicyAttachmentResponse(privacyPolicy);
+    return privacyDocumentService.getPrivacyPolicy();
   }
 
   @Operation(summary = "Get all available concerns for the online portal.")

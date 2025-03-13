@@ -50,8 +50,11 @@ export function formatDateToFullReadableString(date: Date, locale = "de-DE") {
   }).format(date);
 }
 
-export function calculateAge(dateOfBirth: Date): number {
-  return differenceInYears(new Date(), dateOfBirth);
+export function calculateAge(
+  dateOfBirth: Date,
+  referenceDate: Date = new Date(),
+): number {
+  return differenceInYears(referenceDate, dateOfBirth);
 }
 
 export function isAdult(dateOfBirth: Date): boolean {

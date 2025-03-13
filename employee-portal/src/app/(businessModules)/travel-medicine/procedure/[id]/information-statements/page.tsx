@@ -5,10 +5,14 @@
 
 "use client";
 
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+
 import { InformationStatementsTable } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/informationStatements/InformationStatementsTable";
 
-export default function InformationStatementsPage({
-  params,
-}: Readonly<{ params: { id: string } }>) {
-  return <InformationStatementsTable procedureId={params.id} />;
+export default function InformationStatementsPage(
+  props: DynamicPageProps<{ id: string }>,
+) {
+  const { id } = props.params;
+
+  return <InformationStatementsTable procedureId={id} />;
 }

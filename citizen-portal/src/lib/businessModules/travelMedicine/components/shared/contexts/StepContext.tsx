@@ -4,6 +4,7 @@
  */
 
 import {
+  ReactElement,
   ReactNode,
   createContext,
   useCallback,
@@ -22,12 +23,12 @@ interface StepContextProps {
   isShowOverview: boolean;
   goForward: (numOfPages?: number) => void;
   goBack: (numOfPages?: number) => void;
-  currentNode?: JSX.Element;
+  currentNode?: ReactElement;
 }
 export const StepContext = createContext<StepContextProps | null>(null);
 
 interface StepContextProviderProps {
-  steps: JSX.Element[];
+  steps: ReactElement[];
   children: (values: StepContextProps) => ReactNode;
 }
 

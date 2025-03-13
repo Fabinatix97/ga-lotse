@@ -39,6 +39,7 @@ export function MultiAutocompleteField(props: MultiAutocompleteFieldProps) {
       <Autocomplete
         {...autocompleteProps}
         multiple={true}
+        aria-description="Mehrfachauswahl möglich"
         freeSolo={false}
         value={field.input.value}
         onChange={(_, newValue) => {

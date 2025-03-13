@@ -303,6 +303,7 @@ public class GdprProcedureController implements GdprProcedureApi {
   public void addDownloads(UUID id, AddGdprDownloadsRequest request) {
     baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR);
     validateStatusDownloadIdsChange(service.getGdprProcedureFromDb(id));
+    validateUniqueDownloadIds(request.downloadIds());
     service.addGdprDownloads(id, request.downloadIds());
   }
 
@@ -528,6 +529,12 @@ public class GdprProcedureController implements GdprProcedureApi {
   private static void validateMatterOfConcern(GdprProcedure procedure) {
     if (isInvalidMatterOfConcern(procedure)) {
       throw new BadRequestException("Cannot start procedure without valid matter of concern.");
+    }
+  }
+
+  private void validateUniqueDownloadIds(Set<UUID> ids) {
+    if (service.findFirstByDownloadIds(ids).isPresent()) {
+      throw new BadRequestException("Download Ids have to be unique.");
     }
   }
 

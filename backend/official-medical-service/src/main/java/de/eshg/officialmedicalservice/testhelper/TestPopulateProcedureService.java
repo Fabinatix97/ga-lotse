@@ -10,7 +10,7 @@ import static de.eshg.lib.procedure.model.ProcedureStatusDto.OPEN;
 
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
 import de.eshg.officialmedicalservice.appointment.OmsAppointmentService;
-import de.eshg.officialmedicalservice.citizenpublic.CitizenProcedureService;
+import de.eshg.officialmedicalservice.citizenpublic.CitizenPublicProcedureService;
 import de.eshg.officialmedicalservice.concern.ConcernMapper;
 import de.eshg.officialmedicalservice.concern.ConcernService;
 import de.eshg.officialmedicalservice.document.OmsDocumentService;
@@ -124,7 +124,7 @@ API Response
 public class TestPopulateProcedureService {
 
   private final EmployeeOmsProcedureService employeeOmsProcedureService;
-  private final CitizenProcedureService citizenProcedureService;
+  private final CitizenPublicProcedureService citizenPublicProcedureService;
   private final ConcernService concernService;
   private final OmsAppointmentService appointmentService;
   private final PopulateWithAccessTokenHelper populateWithAccessTokenHelper;
@@ -136,7 +136,7 @@ public class TestPopulateProcedureService {
 
   public TestPopulateProcedureService(
       EmployeeOmsProcedureService employeeOmsProcedureService,
-      CitizenProcedureService citizenProcedureService,
+      CitizenPublicProcedureService citizenPublicProcedureService,
       ConcernService concernService,
       OmsAppointmentService appointmentService,
       PopulateWithAccessTokenHelper populateWithAccessTokenHelper,
@@ -146,7 +146,7 @@ public class TestPopulateProcedureService {
       CitizenAccessCodeUserClient citizenAccessCodeUserClient,
       OmsProcedureRepository omsProcedureRepository) {
     this.employeeOmsProcedureService = employeeOmsProcedureService;
-    this.citizenProcedureService = citizenProcedureService;
+    this.citizenPublicProcedureService = citizenPublicProcedureService;
     this.concernService = concernService;
     this.appointmentService = appointmentService;
     this.populateWithAccessTokenHelper = populateWithAccessTokenHelper;
@@ -255,7 +255,7 @@ public class TestPopulateProcedureService {
             loadConcern(procedureDataCitizen.concern()),
             procedureDataCitizen.appointment().request(),
             procedureDataCitizen.affectedPerson());
-    return citizenProcedureService.createCitizenProcedure(
+    return citizenPublicProcedureService.createCitizenProcedure(
         request, loadFiles(procedureDataCitizen.files()));
   }
 

@@ -568,6 +568,58 @@
         "tags" : [ "CitizenAuth" ]
       }
     },
+    "/citizen-auth/procedure/appointment/{appointmentId}" : {
+      "put" : {
+        "operationId" : "putAppointmentCitizen",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "appointmentId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Appointment"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Book or rebook appointment",
+        "tags" : [ "CitizenAuth" ]
+      }
+    },
+    "/citizen-auth/procedure/appointment/{appointmentId}/cancel" : {
+      "patch" : {
+        "operationId" : "cancelAppointmentByCitizen",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "appointmentId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Cancel appointment",
+        "tags" : [ "CitizenAuth" ]
+      }
+    },
     "/citizen-public/appointment-types" : {
       "get" : {
         "operationId" : "getAppointmentTypesForCitizen",
@@ -4994,6 +5046,9 @@
             "description" : "The last name of the Contact Person.",
             "example" : "Doe"
           },
+          "mainContact" : {
+            "type" : "boolean"
+          },
           "phoneNumber" : {
             "maxLength" : 23,
             "minLength" : 1,
@@ -6576,7 +6631,7 @@
         }
       },
       "OmsAppointment" : {
-        "required" : [ "appointmentId", "appointmentState", "appointmentType", "bookingState" ],
+        "required" : [ "appointmentId", "appointmentState", "appointmentType", "bookingState", "bookingsRemaining" ],
         "type" : "object",
         "properties" : {
           "appointmentId" : {
@@ -6594,6 +6649,10 @@
           },
           "bookingType" : {
             "$ref" : "#/components/schemas/BookingType"
+          },
+          "bookingsRemaining" : {
+            "type" : "integer",
+            "format" : "int32"
           },
           "duration" : {
             "type" : "integer",

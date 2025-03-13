@@ -10,6 +10,7 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { Box, Grid, Typography } from "@mui/joy";
 
 import {
@@ -22,13 +23,14 @@ import { ContactHistory } from "@/lib/baseModule/components/contacts/history/Con
 import { routes } from "@/lib/baseModule/shared/routes";
 import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
 
-export default function ContactDetailsPage({
-  params,
-}: Readonly<{
-  params: { id: string };
-}>) {
-  const { data: contact } = useGetContactQuery(params.id);
-  const { data: history } = useGetContactHistoryQuery({ id: params.id });
+export default function ContactDetailsPage(
+  props: DynamicPageProps<{
+    id: string;
+  }>,
+) {
+  const { id } = props.params;
+  const { data: contact } = useGetContactQuery(id);
+  const { data: history } = useGetContactHistoryQuery({ id });
 
   return (
     <StickyToolbarLayout

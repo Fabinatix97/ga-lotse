@@ -8,6 +8,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "incremental": true,
-    "outDir": "${configDir}/build/dist"
+    "outDir": "${configDir}/build/dist",
+    "erasableSyntaxOnly": true
   }
 }

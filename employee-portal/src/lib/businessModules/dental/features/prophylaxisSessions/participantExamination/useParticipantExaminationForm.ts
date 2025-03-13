@@ -8,7 +8,6 @@ import {
   FluoridationExaminationResult,
   ScreeningExaminationResult,
   ToothDiagnosis,
-  isEmptyExaminationResult,
 } from "@eshg/dental";
 import { ApiDentitionType, ApiTooth } from "@eshg/dental-api";
 import {
@@ -81,12 +80,14 @@ function mapToExaminationResult(
   formValues: ExaminationFormValues,
   toothDiagnoses: Partial<Record<ApiTooth, ToothDiagnosis>>,
 ): ExaminationResult | undefined {
-  let result: FluoridationExaminationResult | ScreeningExaminationResult;
   if (screening) {
-    result = {
+    return {
       type: "screening",
       dentitionType: mapRequiredValue(formValues.dentitionType),
       oralHygieneStatus: mapOptionalValue(formValues.oralHygieneStatus),
+      mihStatus: mapOptionalValue(formValues.mihStatus),
+      orthodonticFindings: formValues.orthodonticFindings ?? [],
+      orthodonticStatus: mapOptionalValue(formValues.orthodonticStatus),
       fluorideVarnishApplied: mapOptionalValue(
         formValues.fluorideVarnishApplied,
       ),
@@ -95,19 +96,14 @@ function mapToExaminationResult(
       gingivitis: formValues.gingivitis,
       parodontitis: formValues.parodontitis,
       toothDiagnoses: toothDiagnoses,
-    };
+    } as ScreeningExaminationResult;
   } else {
     // TODO: Remove when fluoridation only examination is handled without form
-    result = {
+    return {
       type: "fluoridation",
       fluorideVarnishApplied: mapOptionalValue(
         formValues.fluorideVarnishApplied,
       ),
-    };
+    } as FluoridationExaminationResult;
   }
-
-  if (isEmptyExaminationResult(result)) {
-    return undefined;
-  }
-  return result;
 }

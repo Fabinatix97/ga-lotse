@@ -35,17 +35,19 @@
       "noAppointmentForSelectedDate": "Für den ausgewählten Tag stehen keine freien Termine zur Verfügung",
       "noAppointmentSelected": "Es wurde kein Termin ausgewählt.",
       "noAppointmentsAvailable": "Derzeit sind keine Termine verfügbar",
-      "tryLater": "Wir schalten in kürze weitere Termine frei. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut.",
-      "calendarTitle": "Datum",
-      "available": "verfügbar",
-      "requiredAppointment": "Bitte einen Termin auswählen",
-      "requiredDay": "Bitte einen Tag auswählen",
-      "monthSelection": "Termin Kalendermonat",
-      "nextMonth": "zum nächsten Monat",
-      "prevMonth": "zum vorherigen Monat",
-      "listLabel": "Verfügbare Uhrzeiten"
+      "tryLater": "Wir schalten in kürze weitere Termine frei. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut."
     },
     "backToOverview": "Zurück"
+  },
+  "appointment_calendar": {
+    "required_appointment": "Bitte einen Termin auswählen",
+    "required_day": "Bitte einen Tag auswählen",
+    "month_selection": "Termin Kalendermonat",
+    "next_month": "zum nächsten Monat",
+    "prev_month": "zum vorherigen Monat",
+    "list_label": "Verfügbare Uhrzeiten *",
+    "calendar_label": "Datum *",
+    "available": "verfügbar"
   },
   "documents": {
     "title": "Erforderliche Unterlagen",
@@ -73,6 +75,7 @@
       "firstName_required": "Pflichtfeld ausfüllen.",
       "lastName": "Nachname",
       "lastName_required": "Pflichtfeld ausfüllen.",
+      "nameAtBirth": "Geburtsname",
       "dateOfBirth": "Geburtsdatum",
       "dateOfBirth_required": "Pflichtfeld ausfüllen.",
       "contactAddress": {
@@ -100,6 +103,7 @@
     "cancel": "Abbrechen",
     "values": {
       "confirmOnlineServices": "Bestätigungsmail senden",
+      "dateAndTime": "{{ appointmentStart }} Uhr",
       "appointmentDuration": "(ca. {{ durationInMinutes }} Minuten)",
       "contactAddress": "{{ street }} <br> {{ city }} </br>"
     }

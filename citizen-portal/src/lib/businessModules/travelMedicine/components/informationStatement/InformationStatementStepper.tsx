@@ -8,6 +8,7 @@ import {
   MultiStepForm,
   StepFactory,
 } from "@eshg/lib-portal/components/form/MultiStepForm";
+import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
 import {
   ApiDocumentContent,
   ApiDocumentSection,
@@ -28,7 +29,6 @@ import {
   TwoColumnGrid,
 } from "@/lib/shared/components/layout/grid";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
-import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 export interface InformationStatementFormValues {
   informationStatement: ApiDocumentContent;

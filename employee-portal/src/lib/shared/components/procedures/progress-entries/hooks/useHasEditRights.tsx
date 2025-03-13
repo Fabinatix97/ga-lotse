@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useGetSelfUser } from "@eshg/lib-employee-portal";
 import { ApiManualProgressEntry } from "@eshg/lib-procedures-api";
-
-import { useGetSelfUser } from "@/lib/baseModule/api/queries/users";
 
 export function useHasEditRights(entry: ApiManualProgressEntry) {
   const { data: selfUser } = useGetSelfUser();

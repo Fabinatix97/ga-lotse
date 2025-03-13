@@ -7,7 +7,7 @@ import { BiotechOutlined } from "@mui/icons-material";
 import { Box, Stack } from "@mui/joy";
 import { ReactNode } from "react";
 
-import { StiProtectionProcedurePageParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(fullPageLayout)/layout";
+import { StiProtectionProcedureRouteParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(fullPageLayout)/layout";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { LaboratoryTestOutlined } from "@/lib/shared/components/icons/LaboratoryTestOutlined";
 import { SidePanel } from "@/lib/shared/components/sidePanel/SidePanel";
@@ -37,7 +37,7 @@ function buildNavItems(procedureId: string): NavItem[] {
 }
 
 export function ExaminationTabNavPanel(
-  params: StiProtectionProcedurePageParams,
+  params: StiProtectionProcedureRouteParams,
 ) {
   const navItems = buildNavItems(params.id);
 

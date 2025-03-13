@@ -201,6 +201,7 @@ public class FacilityService {
         applicant.getFirstName(),
         applicant.getTitle(),
         null,
-        applicant.getGender());
+        applicant.getGender(),
+        null);
   }
 }

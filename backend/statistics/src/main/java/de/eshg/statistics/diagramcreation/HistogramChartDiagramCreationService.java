@@ -155,7 +155,7 @@ public class HistogramChartDiagramCreationService
       secondaryKey = primaryKey;
     } else {
       secondaryKey =
-          getKeyForCellEntryBooleanIntegerTextOrValueOption(
+          getKeyForCellEntryBooleanIntegerTextDateOrValueOption(
               getCellEntry(tableRow, secondaryTableColumn));
     }
 

@@ -6,18 +6,18 @@
 "use client";
 
 import { ApiInspectionPhase } from "@eshg/inspection-api";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { useGetInspection } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { InspectionTabDisabled } from "@/lib/businessModules/inspection/components/inspection/common/InspectionTabDisabled";
 import { InspectionTabExecution } from "@/lib/businessModules/inspection/components/inspection/execution/InspectionTabExecution";
 import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared/enums";
 
-export default function InspectionTabExecutionPage({
-  params,
-}: Readonly<{
-  params: { id: string };
-}>) {
-  const { data: inspection } = useGetInspection(params.id);
+export default function InspectionTabExecutionPage(
+  props: DynamicPageProps<{ id: string }>,
+) {
+  const { id } = props.params;
+  const { data: inspection } = useGetInspection(id);
 
   const disabled = inspectionIsBeforePhase(
     inspection.phase,

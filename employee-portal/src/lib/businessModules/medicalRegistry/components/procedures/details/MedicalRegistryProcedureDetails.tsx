@@ -6,6 +6,7 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
+import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import { useControlledAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
 import {
   ApiGetProcedure200Response,
@@ -25,7 +26,6 @@ import { useFinalizeDraft } from "@/lib/businessModules/medicalRegistry/componen
 import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 import { PageGrid } from "@/lib/shared/components/page/PageGrid";
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface MedicalRegistryProcedureDetailsProps {

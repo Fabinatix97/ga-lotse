@@ -7,6 +7,7 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import { ApiChecklistDefinitionCentralRepoMetadata } from "@eshg/inspection-api";
+import { useHasUserRolesCheck } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
 import {
@@ -22,7 +23,6 @@ import {
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import { useHasUserRolesCheck } from "@/lib/shared/hooks/useAccessControl";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function ChecklistDefinitionRepoOverviewTable() {

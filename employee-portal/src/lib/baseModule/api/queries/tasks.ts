@@ -22,6 +22,7 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useTaskAggregationApi } from "@/lib/baseModule/api/clients";
 import { mapResponse } from "@/lib/baseModule/api/models/task";
 import { baseApiQueryKey } from "@/lib/baseModule/api/queries/apiQueryKey";
+import { FetchTaskForOverviewSearchParamsSchema } from "@/lib/baseModule/api/schemas/tasks";
 
 const taskApiQueryKey = queryKeyFactory(baseApiQueryKey(["task-api"]));
 
@@ -32,17 +33,10 @@ export interface AggregateTaskFilters {
   taskStatus?: Set<ApiTaskStatus>;
 }
 
-interface SearchParams {
-  sortField?: string;
-  sortDirection?: string;
-  pageSize?: number;
-  pageNumber?: number;
-}
-
 export function useFetchTasksForOverviewQueryOptions(
   selfUser: ApiUser,
   filter: AggregateTaskFilters,
-  searchParams: SearchParams,
+  searchParams: FetchTaskForOverviewSearchParamsSchema,
 ) {
   const taskApi = useTaskAggregationApi();
 

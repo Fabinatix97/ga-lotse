@@ -6,28 +6,41 @@
 "use client";
 
 import { formatFacilityName } from "@eshg/lib-portal/formatters/facility";
+import {
+  PositiveIntegerSchema,
+  UuidSchema,
+} from "@eshg/lib-portal/schemas/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { useRouter } from "next/navigation";
+import * as v from "valibot";
 
 import { useGetFacilityFileStateDiff } from "@/lib/baseModule/api/queries/facility";
 import { useSyncFacility } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
+import { OfficialMedicalServiceDetailsRouteParamsSchema } from "@/lib/businessModules/officialMedicalService/components/procedures/details/OfficialMedicalServiceDetailsRouteParamsSchema";
 import { CentralFileSyncForm } from "@/lib/shared/components/centralFile/sync/CentralFileSyncForm";
 import { BaseFacilityDiffForm } from "@/lib/shared/components/centralFile/sync/sections/BaseFacilityDiffForm";
 
-export default function SyncFacilityPage({
-  params,
-}: Readonly<{
-  params: { id: string; fileStateId: string; facilityVersion: number };
-}>) {
+const RouteParamsSchema = v.object({
+  ...OfficialMedicalServiceDetailsRouteParamsSchema.entries,
+  fileStateId: UuidSchema,
+  facilityVersion: PositiveIntegerSchema,
+});
+
+export default function SyncFacilityPage(props: DynamicPageProps) {
+  const { id, fileStateId, facilityVersion } = v.parse(
+    RouteParamsSchema,
+    props.params,
+  );
   const router = useRouter();
-  const { data } = useGetFacilityFileStateDiff(params.fileStateId);
-  const syncFacility = useSyncFacility(params.id);
+  const { data } = useGetFacilityFileStateDiff(fileStateId);
+  const syncFacility = useSyncFacility(id);
 
   async function handleSync() {
     await syncFacility.mutateAsync(
       {
         referenceVersion: data.referenceVersion,
-        facilityVersion: params.facilityVersion,
-        fileStateId: params.fileStateId,
+        facilityVersion,
+        fileStateId,
       },
       {
         onSuccess: () => router.back(),

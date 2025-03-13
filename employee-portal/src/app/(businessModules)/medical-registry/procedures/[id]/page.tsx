@@ -3,18 +3,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { redirect } from "next/navigation";
 
 import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";
 
-export interface MedicalRegistryProcedurePageParams {
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type MedicalRegistryProcedureRouteParams = {
   id: string;
-}
+};
 
-export default function MedicalRegistryProcedurePage({
-  params,
-}: Readonly<{
-  params: MedicalRegistryProcedurePageParams;
-}>) {
-  redirect(routes.procedures.byId(params.id).details);
+export default function MedicalRegistryProcedurePage(
+  props: DynamicPageProps<MedicalRegistryProcedureRouteParams>,
+) {
+  const { id } = props.params;
+
+  redirect(routes.procedures.byId(id).details);
 }

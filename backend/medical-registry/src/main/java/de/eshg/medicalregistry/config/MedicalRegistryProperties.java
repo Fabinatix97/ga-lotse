@@ -5,9 +5,7 @@
 
 package de.eshg.medicalregistry.config;
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import java.net.URI;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -27,9 +25,6 @@ public class MedicalRegistryProperties {
   @Positive private int maxNumberOfImportRows = 4_005;
 
   @Positive private int maxImageSideLength = 5_000;
-
-  @NotNull private URI privacyNoticeLocation;
-  @NotNull private URI privacyPolicyLocation;
 
   public Duration getRateLimitIntervalMinutes() {
     return rateLimitIntervalMinutes;
@@ -69,21 +64,5 @@ public class MedicalRegistryProperties {
 
   public void setMaxImageSideLength(int maxImageSideLength) {
     this.maxImageSideLength = maxImageSideLength;
-  }
-
-  public URI getPrivacyNoticeLocation() {
-    return privacyNoticeLocation;
-  }
-
-  public void setPrivacyNoticeLocation(URI privacyNoticeLocation) {
-    this.privacyNoticeLocation = privacyNoticeLocation;
-  }
-
-  public URI getPrivacyPolicyLocation() {
-    return privacyPolicyLocation;
-  }
-
-  public void setPrivacyPolicyLocation(URI privacyPolicyLocation) {
-    this.privacyPolicyLocation = privacyPolicyLocation;
   }
 }

@@ -94,13 +94,17 @@ function ActiveFilterList<TKey extends string = string>(
 function ActiveFilterChip<TKey extends string = string>(
   props: ActiveFilterChipProps<TKey>,
 ) {
+  const label = props.getFilterValueLable(props.filterValue);
   return (
     <Chip
       component={ListItem}
       variant={"soft"}
       color={"primary"}
       endDecorator={
-        <ChipDelete aria-label="Entfernen" onDelete={props.deleteFilterValue} />
+        <ChipDelete
+          aria-label={`${label} entfernen`}
+          onDelete={props.deleteFilterValue}
+        />
       }
       size="sm"
       sx={{
@@ -109,13 +113,9 @@ function ActiveFilterChip<TKey extends string = string>(
         "--ListItem-paddingX": 0,
         "--ListItem-paddingY": 0,
       }}
-      slotProps={{
-        label: {
-          sx: { maxWidth: "185px" },
-        },
-      }}
+      slotProps={{ label: { sx: { maxWidth: "185px" } } }}
     >
-      {props.getFilterValueLable(props.filterValue)}
+      {label}
     </Chip>
   );
 }

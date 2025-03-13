@@ -11,15 +11,14 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
-import { SearchParams } from "@eshg/lib-portal/helpers/searchParams";
+import { PageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { useGetTextBlocks } from "@/lib/businessModules/inspection/api/queries/textblocks";
 import { TextBlocksTable } from "@/lib/businessModules/inspection/components/textBlock/TextBlocksTable";
 
-export default function TextBlocksOverviewPage(props: {
-  searchParams: SearchParams;
-}) {
-  const request: GetTextBlocksRequest = props.searchParams;
+export default function TextBlocksOverviewPage(props: PageProps) {
+  const searchParams = props.searchParams;
+  const request: GetTextBlocksRequest = searchParams;
   const {
     data: { elements, totalNumberOfElements },
     isFetching,

@@ -191,8 +191,15 @@ public class ChildService {
             });
   }
 
-  private void closeChild(Child child) {
+  protected void closeChild(Child child) {
     child.updateProcedureStatus(ProcedureStatus.CLOSED, clock, auditLogger);
+  }
+
+  protected void reopenChild(Child child) {
+    Assert.isTrue(
+        child.getProcedureStatus() == ProcedureStatus.CLOSED,
+        () -> "%s is not closed".formatted(child));
+    child.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
   }
 
   private Optional<Child> findOpenChildWithSamePersonKeyAttributes(CreateChildRequest request) {

@@ -10,3 +10,7 @@ const apiQueryKey = queryKeyFactory(["openData"]);
 export const openDataApiQueryKey = queryKeyFactory(
   apiQueryKey(["openDataApi"]),
 );
+
+export const openDataFeatureTogglesApiQueryKey = queryKeyFactory(
+  openDataApiQueryKey(["featureTogglesApi"]),
+);

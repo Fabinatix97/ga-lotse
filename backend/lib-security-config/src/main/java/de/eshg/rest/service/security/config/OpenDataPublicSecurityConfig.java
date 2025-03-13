@@ -31,5 +31,7 @@ public final class OpenDataPublicSecurityConfig extends AbstractPublicSecurityCo
         .hasRole(EmployeePermissionRole.OPEN_DATA_ADMIN);
 
     requestMatchers(HttpMethod.GET, OpenData.PUBLIC_CITIZEN_CONTROLLER + "/**").permitAll();
+
+    requestMatchers(BaseUrls.OpenData.FEATURE_TOGGLES_CONTROLLER + "/**").permitAll();
   }
 }

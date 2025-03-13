@@ -5,11 +5,10 @@
 
 package de.eshg.travelmedicine.testhelper;
 
-import de.eshg.departmentinfo.DepartmentInfoService;
-import de.eshg.departmentinfo.OpeningHoursService;
 import de.eshg.lib.appointmentblock.persistence.CreateAppointmentTypeTask;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperServiceResetAction;
+import de.eshg.travelmedicine.notification.NotificationConfigService;
 import de.eshg.travelmedicine.template.medicalhistorytemplate.persistence.CreateMedicalHistoryTemplateTask;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -21,25 +20,21 @@ public class TravelMedicineTestHelperResetAction implements TestHelperServiceRes
 
   private final CreateAppointmentTypeTask createAppointmentTypeTask;
   private final CreateMedicalHistoryTemplateTask createMedicalHistoryTemplateTask;
-  private final DepartmentInfoService departmentInfoService;
-  private final OpeningHoursService openingHoursService;
+  private final NotificationConfigService notificationConfigService;
 
   public TravelMedicineTestHelperResetAction(
       CreateAppointmentTypeTask createAppointmentTypeTask,
       CreateMedicalHistoryTemplateTask createMedicalHistoryTemplateTask,
-      DepartmentInfoService departmentInfoService,
-      OpeningHoursService openingHoursService) {
+      NotificationConfigService notificationConfigService) {
     this.createAppointmentTypeTask = createAppointmentTypeTask;
     this.createMedicalHistoryTemplateTask = createMedicalHistoryTemplateTask;
-    this.departmentInfoService = departmentInfoService;
-    this.openingHoursService = openingHoursService;
+    this.notificationConfigService = notificationConfigService;
   }
 
   @Override
   public void reset() {
     createAppointmentTypeTask.createAppointmentTypes();
     createMedicalHistoryTemplateTask.createMedicalHistoryTemplate();
-    departmentInfoService.init();
-    openingHoursService.init();
+    notificationConfigService.init();
   }
 }

@@ -71,6 +71,7 @@ function ConfiguredFacilitySidebar(
     onSelect: (values) => handleSelectFacility(values.facility),
     formRef: props.formRef,
     onClose: props.onClose,
+    allowMainContactPerson: true,
   };
 
   return <FacilitySidebar {...facilitySidebarProps} />;

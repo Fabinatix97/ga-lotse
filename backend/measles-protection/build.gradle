@@ -8,7 +8,8 @@ dependencies {
     implementation project(':lib-procedures')
     implementation project(':lib-appointmentblock')
     implementation project(':lib-calendar')
-    implementation project(":lib-document-generator")
+    implementation project(':lib-document-generator')
+    implementation project(':lib-department-info')
     implementation project(':business-module-persistence-commons')
     implementation project(':file-commons')
 

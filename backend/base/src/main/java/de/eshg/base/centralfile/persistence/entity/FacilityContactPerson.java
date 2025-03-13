@@ -17,6 +17,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
@@ -56,6 +57,11 @@ public class FacilityContactPerson extends SequencedBaseEntityWithExternalId {
   @JdbcType(PostgreSQLEnumJdbcType.class)
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private Gender gender;
+
+  @Column(nullable = false)
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @ColumnDefault("false")
+  private boolean mainContact;
 
   public String getEmailAddress() {
     return emailAddress;
@@ -127,5 +133,30 @@ public class FacilityContactPerson extends SequencedBaseEntityWithExternalId {
 
   public void setFacility(Facility facility) {
     this.facility = facility;
+  }
+
+  public boolean isMainContact() {
+    return mainContact;
+  }
+
+  public void setMainContact(boolean mainContact) {
+    this.mainContact = mainContact;
+  }
+
+  public FacilityContactPerson cloneFromFileState() {
+    FacilityContactPerson clone = new FacilityContactPerson();
+    clone.setEmailAddress(getEmailAddress());
+    clone.setPhoneNumber(getPhoneNumber());
+    clone.setRole(getRole());
+    clone.setLastName(getLastName());
+    clone.setFirstName(getFirstName());
+    clone.setTitle(getTitle());
+    clone.setSalutation(getSalutation());
+    clone.setGender(getGender());
+
+    // We don't want main contacts to be saved in the reference facility
+    clone.setMainContact(false);
+
+    return clone;
   }
 }

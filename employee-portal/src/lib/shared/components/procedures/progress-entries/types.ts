@@ -7,7 +7,7 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import { QueryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
-import { SearchParams } from "@eshg/lib-portal/helpers/searchParams";
+import { SearchParams } from "@eshg/lib-portal/types/pageParams";
 import {
   ApiGetDetailedProcedureResponse,
   ApiGetProcedureApprovalRequestsResponse,
@@ -52,11 +52,6 @@ export interface ProgressEntriesConfig extends ProgressEntryClients {
   leaderRole: ApiUserRole;
   keyDocumentTypes: Record<string, string>;
   approvalRequestsResponse?: ApiGetProcedureApprovalRequestsResponse;
-}
-
-export interface ProgressEntriesUrlParams<TPageParams = unknown> {
-  params: Readonly<TPageParams>;
-  searchParams: SearchParams;
 }
 
 interface ProgressEntryClients {

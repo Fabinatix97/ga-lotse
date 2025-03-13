@@ -50,7 +50,7 @@ export function ToothForm(props: ToothFormProps) {
         result={tooth.mainResult}
         toothContext={toothContext}
         setResultAction={setMainResult}
-        field="main"
+        field="mainResultField"
         variant={isEmptyString(tooth.mainResult.value) ? "soft" : "outlined"}
         aria-label="Hauptbefund"
       />
@@ -58,14 +58,14 @@ export function ToothForm(props: ToothFormProps) {
         result={tooth.secondaryResult1}
         toothContext={toothContext}
         setResultAction={setSecondaryResult1}
-        field="secondary1"
+        field="secondaryResult1Field"
         aria-label="Nebenbefund 1"
       />
       <ResultInputField
         result={tooth.secondaryResult2}
         toothContext={toothContext}
         setResultAction={setSecondaryResult2}
-        field="secondary2"
+        field="secondaryResult2Field"
         aria-label="Nebenbefund 2"
       />
       {hasPreviousExaminationResult(tooth) && <PreviousResults tooth={tooth} />}

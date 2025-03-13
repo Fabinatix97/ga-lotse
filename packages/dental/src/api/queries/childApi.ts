@@ -18,7 +18,7 @@ import { mapChild } from "@/api/models/Child";
 import { mapChildDetails } from "@/api/models/ChildDetails";
 import { mapChildSearchResult } from "@/api/models/ChildSearchResult";
 import { mapExamination } from "@/api/models/Examination";
-import { useDentalApi } from "@/shared/DentalProvider";
+import { useDentalApi } from "@/contexts/dental";
 
 import { childApiQueryKey } from "./apiQueryKeys";
 

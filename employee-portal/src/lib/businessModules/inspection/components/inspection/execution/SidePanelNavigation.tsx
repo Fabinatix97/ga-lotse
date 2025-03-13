@@ -7,7 +7,6 @@ import { DeleteOutlined } from "@mui/icons-material";
 import { Button, IconButton, Stack } from "@mui/joy";
 import { ReactNode } from "react";
 
-import { InspectionExecutionTabType } from "@/lib/businessModules/inspection/components/inspection/execution/InspectionTabExecution";
 import {
   SidePanelNav,
   getSidePanelNavItemStyles,
@@ -18,10 +17,7 @@ export type SidePanelNavigationTab = {
   startDecorator: ReactNode;
   tabId: string;
   ariaLabel?: string;
-} & (
-  | { type: InspectionExecutionTabType.CHECKLIST; isCoreChecklist: boolean }
-  | { type: InspectionExecutionTabType.INCIDENTS }
-);
+} & ({ type: "CHECKLIST"; isCoreChecklist: boolean } | { type: "INCIDENTS" });
 
 export type SidePanelEvent = Pick<SidePanelNavigationTab, "type" | "tabId">;
 
@@ -41,8 +37,7 @@ export function SidePanelNavigation({
   readOnly,
 }: Readonly<SidePanelNavigationProps>) {
   const checklistIsDeletable =
-    tabs.filter((tab) => tab.type === InspectionExecutionTabType.CHECKLIST)
-      .length > 1;
+    tabs.filter((tab) => tab.type === "CHECKLIST").length > 1;
 
   return (
     <SidePanelNav>
@@ -62,7 +57,7 @@ export function SidePanelNavigation({
             {tab.label}
           </Button>
           {!readOnly &&
-            tab.type === InspectionExecutionTabType.CHECKLIST &&
+            tab.type === "CHECKLIST" &&
             !tab.isCoreChecklist &&
             checklistIsDeletable && (
               <IconButton

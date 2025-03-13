@@ -13,6 +13,7 @@ import de.eshg.officialmedicalservice.appointment.api.BookingInfoDto;
 import de.eshg.officialmedicalservice.appointment.api.PostOmsAppointmentRequest;
 import de.eshg.officialmedicalservice.appointment.persistence.entity.OmsAppointment;
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocument;
+import de.eshg.officialmedicalservice.procedure.persistence.entity.MedicalOpinionResult;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.MedicalOpinionStatus;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
 import java.time.Clock;
@@ -288,15 +289,23 @@ public class ProgressEntryService {
   }
 
   public void createProgressEntryForMedicalOpinionStatusChanged(
-      OmsProcedure procedure, MedicalOpinionStatus oldStatus, MedicalOpinionStatus newStatus) {
-    String changeDescription =
+      OmsProcedure procedure,
+      MedicalOpinionStatus oldStatus,
+      MedicalOpinionStatus newStatus,
+      MedicalOpinionResult result) {
+    StringBuilder sb =
         new StringBuilder()
             .append("Der Gutachtenstatus wurde von ")
-            .append(oldStatus)
+            .append(oldStatus.getGermanName())
             .append(" auf ")
-            .append(newStatus)
-            .append(" gesetzt.")
-            .toString();
+            .append(newStatus.getGermanName())
+            .append(" gesetzt.");
+
+    if (result != null && result != MedicalOpinionResult.UNKNOWN) {
+      sb.append(" Das Ergebnis ist: ").append(result.getGermanName());
+    }
+
+    String changeDescription = sb.toString();
 
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(

@@ -4,6 +4,7 @@
  */
 
 import { ApiUserRole } from "@eshg/base-api";
+import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import { type QueryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
 import { ApiGetProceduresSortOrder } from "@eshg/lib-procedures-api";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -18,7 +19,6 @@ import {
   ProgressEntriesFilters,
   ProgressEntryClient,
 } from "@/lib/shared/components/procedures/progress-entries/types";
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 export function useFetchProgressEntries(
   progressEntryApi: ProgressEntryClient,

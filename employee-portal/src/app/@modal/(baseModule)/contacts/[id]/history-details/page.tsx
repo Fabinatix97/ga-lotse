@@ -7,11 +7,11 @@ import {
   SearchParams,
   parseOptionalInt,
 } from "@eshg/lib-portal/helpers/searchParams";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { isDefined, isNullish } from "remeda";
 
 import { ContactAddressChangeSidebar } from "@/lib/baseModule/components/contacts/history/ContactAddressChangeSidebar";
 import { ContactChangeSidebar } from "@/lib/baseModule/components/contacts/history/ContactChangeSidebar";
-import { RequiresSearchParams } from "@/lib/types/react";
 
 interface HistorySearchParams {
   historyId: number | undefined;
@@ -25,16 +25,13 @@ function parseSearchParams(searchParams: SearchParams): HistorySearchParams {
   };
 }
 
-interface ContactHistoryModalPageProps extends RequiresSearchParams {
-  params: {
+export default function ContactHistoryModalPage(
+  props: DynamicPageProps<{
     id: string;
-  };
-}
-
-export default function ContactHistoryModalPage({
-  searchParams,
-  params,
-}: ContactHistoryModalPageProps) {
+  }>,
+) {
+  const { id } = props.params;
+  const searchParams = props.searchParams;
   const { historyId, addressId } = parseSearchParams(searchParams);
 
   if (isNullish(historyId)) {
@@ -44,12 +41,12 @@ export default function ContactHistoryModalPage({
   if (isDefined(addressId)) {
     return (
       <ContactAddressChangeSidebar
-        contactId={params.id}
+        contactId={id}
         addressId={addressId}
         historyId={historyId}
       />
     );
   } else {
-    return <ContactChangeSidebar contactId={params.id} historyId={historyId} />;
+    return <ContactChangeSidebar contactId={id} historyId={historyId} />;
   }
 }

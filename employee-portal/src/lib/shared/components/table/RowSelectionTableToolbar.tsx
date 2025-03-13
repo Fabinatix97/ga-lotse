@@ -30,6 +30,7 @@ export function RowSelectionTableToolbar(
   props: PropsWithChildren<RowSelectionTableToolbarProps>,
 ) {
   const rowIds = mapToRowIds(props.rowSelection);
+
   return (
     <StyledSheet variant="soft">
       <Stack direction="row" gap={2} alignItems={"center"}>
@@ -40,7 +41,12 @@ export function RowSelectionTableToolbar(
             rotate: "90deg",
           }}
         />
-        <Typography level="body-sm" data-testid="selectedIndicator">
+        <Typography
+          level="body-sm"
+          data-testid="selectedIndicator"
+          aria-live="polite"
+          aria-atomic="true"
+        >
           <Typography fontWeight="bold">{rowIds.length}</Typography>{" "}
           {rowIds.length === 1
             ? props.elementName.singular

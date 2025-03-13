@@ -26,15 +26,16 @@ import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/ro
 import { useTranslation } from "@/lib/i18n/client";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
 
-export enum StepKey {
-  AppointmentTypeStep = "AppointmentTypeStep",
-  AppointmentSlotStep = "AppointmentSlotStep",
-  TravelTypeStep = "TravelTypeStep",
-  TravelDataStep = "TravelDataStep",
-  PersonalDataStep = "PersonalDataStep",
-  VaccinationStep = "VaccinationStep",
-  AppointmentReviewStep = "AppointmentReviewStep",
-}
+export const StepKey = {
+  AppointmentTypeStep: "AppointmentTypeStep",
+  AppointmentSlotStep: "AppointmentSlotStep",
+  TravelTypeStep: "TravelTypeStep",
+  TravelDataStep: "TravelDataStep",
+  PersonalDataStep: "PersonalDataStep",
+  VaccinationStep: "VaccinationStep",
+  AppointmentReviewStep: "AppointmentReviewStep",
+} as const;
+export type StepKey = (typeof StepKey)[keyof typeof StepKey];
 
 const appointmentFormSteps = [
   <AppointmentTypeStep key={StepKey.AppointmentTypeStep} />,

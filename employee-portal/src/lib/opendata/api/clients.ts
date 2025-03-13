@@ -4,7 +4,11 @@
  */
 
 import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
-import { Configuration, OpenDataApi } from "@eshg/opendata-api";
+import {
+  Configuration,
+  OpenDataApi,
+  OpenDataFeatureTogglesApi,
+} from "@eshg/opendata-api";
 
 function useConfiguration() {
   const configurationParameters = useApiConfiguration(
@@ -15,4 +19,8 @@ function useConfiguration() {
 
 export function useOpenDataApi() {
   return new OpenDataApi(useConfiguration());
+}
+
+export function useOpenDataFeatureToggleApi() {
+  return new OpenDataFeatureTogglesApi(useConfiguration());
 }

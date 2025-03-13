@@ -7,6 +7,7 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import { ApiInspection } from "@eshg/inspection-api";
+import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
 import { Divider, Grid, Stack } from "@mui/joy";
@@ -38,7 +39,6 @@ import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSh
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 export function InspectionTypeCard({
   inspection,

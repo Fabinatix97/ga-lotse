@@ -16,3 +16,12 @@ export function getOpeningHoursQuery(
     queryFn: () => publicCitizenApi.getOpeningHours(),
   });
 }
+
+export function getDepartmentInfoQuery(
+  publicCitizenApi: SchoolEntryPublicCitizenApi,
+) {
+  return queryOptions({
+    queryKey: schoolEntryPublicCitizenApiQueryKey(["getDepartmentInfo"]),
+    queryFn: () => publicCitizenApi.getDepartmentInfo(),
+  });
+}

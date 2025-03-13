@@ -68,5 +68,7 @@
   <include file="migrations/0058_refactor_sti_procedure_indexes.xml"/>
   <include file="migrations/0059_opening_hours.xml"/>
   <include file="migrations/0060_opening_hours_sti_protection.xml"/>
+  <include file="migrations/0061_privacy_documents.xml"/>
+  <include file="migrations/0062_add_medical_history_submitted.xml"/>
 
 </databaseChangeLog>

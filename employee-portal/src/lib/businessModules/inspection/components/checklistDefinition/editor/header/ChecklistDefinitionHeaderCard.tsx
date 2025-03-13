@@ -5,6 +5,7 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import { ApiObjectType } from "@eshg/inspection-api";
+import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { Stack } from "@mui/joy";
@@ -16,7 +17,6 @@ import { FormChecklistDefinitionVersion } from "@/lib/businessModules/inspection
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 interface ChecklistDefinitionHeaderCardProps {
   version: number | undefined;

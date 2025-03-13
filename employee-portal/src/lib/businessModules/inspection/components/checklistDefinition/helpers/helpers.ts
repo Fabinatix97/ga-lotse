@@ -15,10 +15,9 @@ import {
   type ApiCLTextElementContext,
   ApiChecklistDefinitionVersion,
 } from "@eshg/inspection-api";
+import { useHasUserRolesCheck } from "@eshg/lib-employee-portal";
 import { ConfirmationDialogProps } from "@eshg/lib-portal/components/confirmationDialog/BaseConfirmationDialog";
 import { v4 as uuidv4 } from "uuid";
-
-import { useHasUserRolesCheck } from "@/lib/shared/hooks/useAccessControl";
 
 function getId(
   partial: Partial<ApiCLSectionContextElementsInner>,

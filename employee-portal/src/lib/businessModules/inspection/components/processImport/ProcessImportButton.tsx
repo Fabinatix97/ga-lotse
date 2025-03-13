@@ -4,12 +4,12 @@
  */
 
 import { ApiUserRole } from "@eshg/base-api";
+import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import { Button } from "@mui/joy";
 
 import { PotentialDuplicatesFilterProps } from "@/lib/businessModules/inspection/components/facility/pending/PotentialDuplicatesWarning";
 import { useProcessImportSidebar } from "@/lib/businessModules/inspection/components/processImport/ProcessImportSidebar";
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 export function ProcessImportButton({
   onFilterForDuplicates,

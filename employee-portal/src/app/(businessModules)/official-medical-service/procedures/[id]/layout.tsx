@@ -7,25 +7,18 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
 } from "@eshg/lib-employee-portal";
-import { PropsWithChildren } from "react";
+import { DynamicLayoutProps } from "@eshg/lib-portal/types/pageParams";
 
+import { OfficialMedicalServiceDetailsRouteParamsSchema } from "@/lib/businessModules/officialMedicalService/components/procedures/details/OfficialMedicalServiceDetailsRouteParamsSchema";
 import { ProcedureDetailsToolbar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/ProceduresDetailsToolbar";
 
-export type OfficialMedicalServiceDetailsPageProps = Readonly<{
-  params: OfficialMedicalServiceDetailsPageParams;
-}>;
-
-export interface OfficialMedicalServiceDetailsPageParams {
-  id: string;
-}
-
 export default function OfficialMedicalServiceDetailsLayout(
-  props: PropsWithChildren<OfficialMedicalServiceDetailsPageProps>,
+  props: DynamicLayoutProps<OfficialMedicalServiceDetailsRouteParamsSchema>,
 ) {
+  const { id } = props.params;
+
   return (
-    <StickyToolbarLayout
-      toolbar={<ProcedureDetailsToolbar id={props.params.id} />}
-    >
+    <StickyToolbarLayout toolbar={<ProcedureDetailsToolbar id={id} />}>
       <MainContentLayout fullViewportHeight>{props.children}</MainContentLayout>
     </StickyToolbarLayout>
   );

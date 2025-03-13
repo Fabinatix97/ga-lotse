@@ -9,7 +9,6 @@ import de.eshg.domain.model.BaseEntityWithExternalId;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.lib.procedure.domain.model.Pdf;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -59,7 +58,8 @@ public class ProofRequestLetter extends BaseEntityWithExternalId {
   private LocalDate deadline;
 
   @DataSensitivity(SensitivityLevel.SENSITIVE)
-  @OneToOne(optional = false, cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  @OneToOne
+  @JoinColumn(name = "pdf_id", referencedColumnName = "id")
   private Pdf pdf;
 
   public void setProcedure(MeaslesProtectionProcedure procedure) {

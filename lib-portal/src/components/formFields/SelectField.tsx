@@ -147,6 +147,9 @@ function InnerSelectField<
           }
         }}
         multiple={props.multiple}
+        aria-description={
+          props.multiple ? "Mehrfachauswahl möglich" : undefined
+        }
         placeholder={props.placeholder}
         disabled={disabled}
         renderValue={props.renderValue}

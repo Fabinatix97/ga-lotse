@@ -8,22 +8,19 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { VaccinationConsultationsOverviewTable } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/VaccinationConsultationsOverviewTable";
 
 export default function VaccinationConsultationsOverviewPage(
-  props: Readonly<{
-    searchParams?: {
-      date: string;
-    };
-  }>,
+  props: DynamicPageProps<never, { date: string }>,
 ) {
+  const searchParams = props.searchParams;
+
   return (
     <StickyToolbarLayout toolbar={<Toolbar title="Impfberatung" />}>
       <MainContentLayout>
-        <VaccinationConsultationsOverviewTable
-          date={props.searchParams?.date}
-        />
+        <VaccinationConsultationsOverviewTable date={searchParams.date} />
       </MainContentLayout>
     </StickyToolbarLayout>
   );

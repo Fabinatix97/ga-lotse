@@ -50,6 +50,7 @@ export function CountryFieldMulti(props: CountryFieldMultiProps) {
       error={field.error}
     >
       <Autocomplete
+        aria-description="Mehrfachauswahl möglich"
         multiple
         clearOnBlur
         selectOnFocus

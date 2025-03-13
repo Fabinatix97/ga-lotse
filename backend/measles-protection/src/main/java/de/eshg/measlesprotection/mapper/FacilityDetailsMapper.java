@@ -34,7 +34,8 @@ public class FacilityDetailsMapper {
                         contactPerson.firstName(),
                         contactPerson.title(),
                         contactPerson.salutation(),
-                        GenderDto.NOT_SPECIFIED))
+                        GenderDto.NOT_SPECIFIED,
+                        false))
             .toList(),
         source.contactAddress(),
         source.differentBillingAddress(),
@@ -59,7 +60,8 @@ public class FacilityDetailsMapper {
                         contactPerson.firstName(),
                         contactPerson.title(),
                         contactPerson.salutation(),
-                        GenderDto.NOT_SPECIFIED))
+                        GenderDto.NOT_SPECIFIED,
+                        false))
             .toList(),
         source.contactAddress(),
         source.differentBillingAddress());

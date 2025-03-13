@@ -102,7 +102,7 @@ public class FacilityService {
     if (referenceFacilityId != null) {
       return getReferenceFacility(referenceFacilityId);
     } else {
-      return findMatchingReferenceFacility(facilityFileState)
+      return findMatchingReferenceFacility(facilityFileState, false)
           .orElseGet(() -> addFacilityForFileState(facilityFileState));
     }
   }
@@ -280,17 +280,18 @@ public class FacilityService {
     return null;
   }
 
-  public Optional<Facility> findMatchingReferenceFacility(Facility facility) {
+  public Optional<Facility> findMatchingReferenceFacility(
+      Facility facility, boolean compareMainContact) {
     List<Facility> possibleMatches =
         facilityRepository.findReferenceFacilityByName(facility.getName());
     return possibleMatches.stream()
-        .filter(f -> FacilityMatcher.isFacilityMatch(f, facility))
+        .filter(f -> FacilityMatcher.isFacilityMatch(f, facility, compareMainContact))
         .collect(StreamUtil.toSingleOptionalElement());
   }
 
   public static boolean isFacilityFileStateOutdated(
       Facility facilityFileState, Facility referenceFacility) {
-    return !FacilityMatcher.isFacilityMatch(referenceFacility, facilityFileState);
+    return !FacilityMatcher.isFacilityMatch(referenceFacility, facilityFileState, false);
   }
 
   public Instant getFileStateDeletionTimestamp(UUID id) {
@@ -339,7 +340,7 @@ public class FacilityService {
   private Facility updateFileStateAndReferenceFacilityWhenLocked(
       Facility facilityFileState, Facility fileStateUpdate) {
     if (facilityFileState.getDataOrigin() != EXTERNAL
-        && FacilityMatcher.isFacilityMatch(fileStateUpdate, facilityFileState)) {
+        && FacilityMatcher.isFacilityMatch(fileStateUpdate, facilityFileState, true)) {
       log.debug(
           "Recognized no-op update. Returning original facility file state (id={})",
           facilityFileState.getId());
@@ -355,7 +356,7 @@ public class FacilityService {
       throw new BadRequestException(ErrorCode.CONFLICT, "Facility file state is outdated");
     }
 
-    if (findMatchingReferenceFacility(fileStateUpdate).isPresent()) {
+    if (findMatchingReferenceFacility(fileStateUpdate, true).isPresent()) {
       throw new AlreadyExistsException("Matching reference facility already exists");
     }
 
@@ -386,8 +387,37 @@ public class FacilityService {
     }
 
     Facility updatedFileState = referenceFacility.cloneFromReferenceFacility();
+    reapplyMainContactFlag(updatedFileState, facilityFileState);
     updatedFileState.setDataOrigin(DataOrigin.EDIT);
     return addFacilityFileState(updatedFileState, referenceFacility);
+  }
+
+  private void reapplyMainContactFlag(Facility updatedFileState, Facility originalFileState) {
+    Optional<FacilityContactPerson> optionalMainContactPerson =
+        originalFileState.getContactPersons().stream()
+            .filter(FacilityContactPerson::isMainContact)
+            .findFirst();
+
+    if (optionalMainContactPerson.isEmpty()) {
+      return;
+    }
+    FacilityContactPerson mainContactPerson = optionalMainContactPerson.get();
+
+    Optional<FacilityContactPerson> optionalFullMatch =
+        updatedFileState.getContactPersons().stream()
+            .filter(cp -> FacilityMatcher.isContactPersonMatch(mainContactPerson, cp, false))
+            .findFirst();
+
+    if (optionalFullMatch.isPresent()) {
+      optionalFullMatch.get().setMainContact(true);
+    } else {
+      Optional<FacilityContactPerson> optionalNameMatch =
+          updatedFileState.getContactPersons().stream()
+              .filter(cp -> FacilityMatcher.isContactPersonMatchNameMatch(mainContactPerson, cp))
+              .findFirst();
+      optionalNameMatch.ifPresent(
+          facilityContactPerson -> facilityContactPerson.setMainContact(true));
+    }
   }
 
   private void applyFacilityUpdate(Facility fileStateUpdate, Facility referenceFacility) {
@@ -431,9 +461,9 @@ public class FacilityService {
 
     boolean requiresUpdate =
         referenceFacility.getDataOrigin() == EXTERNAL
-            || !FacilityMatcher.isFacilityMatch(referenceFacility, referenceFacilityUpdate);
+            || !FacilityMatcher.isFacilityMatch(referenceFacility, referenceFacilityUpdate, false);
     if (requiresUpdate) {
-      if (findMatchingReferenceFacility(referenceFacilityUpdate).isPresent()) {
+      if (findMatchingReferenceFacility(referenceFacilityUpdate, false).isPresent()) {
         throw new AlreadyExistsException("Matching reference Facility already exists");
       }
 

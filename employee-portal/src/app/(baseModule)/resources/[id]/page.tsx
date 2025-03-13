@@ -10,6 +10,7 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { endOfMonth, startOfMonth } from "date-fns";
 import { startTransition, useState } from "react";
 
@@ -17,18 +18,17 @@ import { useGetResourceDetailsQuery } from "@/lib/baseModule/api/queries/resourc
 import { ResourceDetail } from "@/lib/baseModule/components/resources/ResourceDetail";
 import { routes } from "@/lib/baseModule/shared/routes";
 
-export default function ResourceDetailsPage({
-  params,
-}: Readonly<{
-  params: { id: string };
-}>) {
+export default function ResourceDetailsPage(
+  props: DynamicPageProps<{ id: string }>,
+) {
+  const { id } = props.params;
   const [currentCalendarDate, setCurrentCalendarDate] = useState(new Date());
 
   const timeRangeStart = startOfMonth(currentCalendarDate);
   const timeRangeEnd = endOfMonth(currentCalendarDate);
 
   const query = useGetResourceDetailsQuery({
-    id: params.id,
+    id,
     timeRangeStart,
     timeRangeEnd,
   });

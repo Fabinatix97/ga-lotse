@@ -17,15 +17,17 @@ export function ResettableSingleSelect({
   otherEndDecorator?: ReactNode;
 }) {
   const action: SelectStaticProps["action"] = useRef(null);
+  const hasValue = isNonNullish(props.value) && !isEmpty(props.value);
 
   return (
     <Select
       action={action}
       {...props}
+      value={hasValue ? props.value : null}
       endDecorator={
         <>
           {otherEndDecorator}
-          {isNonNullish(props.value) && !isEmpty(props.value) ? (
+          {hasValue ? (
             <ResetButton
               onReset={() => {
                 onResetSelect();

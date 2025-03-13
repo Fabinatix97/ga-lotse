@@ -58,10 +58,19 @@ public class SerializationService {
   }
 
   public byte[] toNestedZip(String entryNamePrefix, List<? extends EntityWithExternalId> entities) {
+    return toNestedZip(entryNamePrefix, entities, o -> {});
+  }
+
+  public byte[] toNestedZip(
+      String entryNamePrefix,
+      List<? extends EntityWithExternalId> entities,
+      ObjectMapperCustomizer objectMapperCustomizer) {
     ZipFileWrapper zipFileWrapper = new ZipFileWrapper();
     for (EntityWithExternalId entity : entities) {
       String entryBaseName = entryNamePrefix + entity.getExternalId().toString();
-      zipFileWrapper.addEntry(entryBaseName + ".zip", toZip(entryBaseName, entity));
+      zipFileWrapper.addEntry(
+          entryBaseName + ".zip",
+          toZip(entryBaseName, entity, (n, z) -> {}, objectMapperCustomizer));
     }
     return zipFileWrapper.asByteArray();
   }

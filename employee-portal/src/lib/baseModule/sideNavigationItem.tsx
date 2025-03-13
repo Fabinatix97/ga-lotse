@@ -9,6 +9,7 @@ import {
   hasUserRole,
   noCheck,
 } from "@eshg/lib-employee-portal";
+import { ApiOpenDataFeature } from "@eshg/opendata-api";
 import {
   CalendarTodayOutlined,
   ContactsOutlined,
@@ -24,7 +25,8 @@ import {
   WarehouseOutlined,
 } from "@mui/icons-material";
 
-import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
+import { useIsNewFeatureEnabled as useIsNewBaseFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
+import { useIsNewFeatureEnabled as useIsNewOpenDataFeatureEnabled } from "@/lib/opendata/queries/feature";
 
 import { routes } from "./shared/routes";
 
@@ -121,8 +123,10 @@ const sideNavigationItems: SideNavigationItem[] = [
 ];
 
 export function useSideNavigationItems(): SideNavigationItem[] {
-  const isGdprEnabled = useIsNewFeatureEnabled(ApiBaseFeature.Gdpr);
-  const isOpenDataEnabled = useIsNewFeatureEnabled(ApiBaseFeature.OpenData);
+  const isGdprEnabled = useIsNewBaseFeatureEnabled(ApiBaseFeature.Gdpr);
+  const isOpenDataEnabled = useIsNewOpenDataFeatureEnabled(
+    ApiOpenDataFeature.OpenData,
+  );
 
   let items = sideNavigationItems;
   if (!isGdprEnabled) {

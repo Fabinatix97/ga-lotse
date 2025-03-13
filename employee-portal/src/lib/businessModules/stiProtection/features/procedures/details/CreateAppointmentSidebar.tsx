@@ -51,7 +51,7 @@ export const EDIT_APPOINTMENT_SEARCH_PARAM = "edit-appointment";
 interface SidebarStep {
   title: string;
   subTitle: string;
-  fields: (props: AppointmentFieldSetProps) => ReactNode | JSX.Element;
+  fields: (props: AppointmentFieldSetProps) => ReactNode;
 }
 
 function getSteps({

@@ -8,6 +8,7 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
 import NotFound from "@/app/not-found";
 import { StaticTextDocumentPanel } from "@/lib/baseModule/components/StaticTextDocumentPanel";
@@ -24,12 +25,12 @@ const title = {
   "release-notes": "Release Notes",
 } as const satisfies Record<PageName, string>;
 
-export default function StaticDocumentPage({
-  params,
-}: Readonly<{
-  params: { documentType: string };
-}>) {
-  const documentType = params.documentType;
+export default function StaticDocumentPage(
+  props: DynamicPageProps<{
+    documentType: string;
+  }>,
+) {
+  const { documentType } = props.params;
   if (!isValidPageType(documentType)) {
     return <NotFound />;
   }

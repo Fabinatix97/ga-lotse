@@ -7,13 +7,13 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import { ApiObjectType } from "@eshg/inspection-api";
+import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 
 import { useGetObjectTypes } from "@/lib/businessModules/inspection/api/queries/objectTypes";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 import { useEditObjectTypeSidebar } from "./EditObjectTypeSidebar";
 

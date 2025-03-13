@@ -5,6 +5,7 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import { ApiChecklistDefinitionVersion } from "@eshg/inspection-api";
+import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { CopyAllOutlined, InfoOutlined } from "@mui/icons-material";
@@ -20,7 +21,6 @@ import { ExclusiveCorechecklistIcon } from "@/lib/businessModules/inspection/com
 import { isUnknownUser } from "@/lib/businessModules/inspection/shared/isUnknownUser";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { UserLink } from "@/lib/shared/components/users/UserLink";
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 export function CLDInfoCard({
   cldVersion,

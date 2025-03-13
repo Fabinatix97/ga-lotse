@@ -9,23 +9,36 @@ import static de.eshg.lib.appointmentblock.api.AppointmentTypeDto.OFFICIAL_MEDIC
 import static de.eshg.lib.appointmentblock.api.AppointmentTypeDto.OFFICIAL_MEDICAL_SERVICE_SHORT;
 
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
+import de.eshg.lib.appointmentblock.AppointmentTypeService;
+import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
+import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.officialmedicalservice.appointment.api.BookingInfoDto;
 import de.eshg.officialmedicalservice.appointment.api.BookingTypeDto;
 import de.eshg.officialmedicalservice.appointment.api.PostOmsAppointmentRequest;
 import de.eshg.officialmedicalservice.appointment.persistence.OmsAppointmentRepository;
 import de.eshg.officialmedicalservice.appointment.persistence.entity.AppointmentState;
 import de.eshg.officialmedicalservice.appointment.persistence.entity.BookingState;
+import de.eshg.officialmedicalservice.appointment.persistence.entity.BookingType;
 import de.eshg.officialmedicalservice.appointment.persistence.entity.OmsAppointment;
+import de.eshg.officialmedicalservice.notification.NotificationService;
+import de.eshg.officialmedicalservice.person.PersonClient;
+import de.eshg.officialmedicalservice.person.PersonMapper;
 import de.eshg.officialmedicalservice.procedure.ProgressEntryService;
+import de.eshg.officialmedicalservice.procedure.api.AffectedPersonDto;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedureRepository;
+import de.eshg.officialmedicalservice.procedure.persistence.entity.Person;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
+import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,22 +49,37 @@ public class OmsAppointmentService {
   private final OmsAppointmentRepository omsAppointmentRepository;
   private final OmsAppointmentMapper omsAppointmentMapper;
   private final AppointmentBlockSlotUtil appointmentBlockSlotUtil;
+  private final ProgressEntryService progressEntryService;
+  private final PersonClient personClient;
+  private final Clock clock;
+  private final NotificationService notificationService;
+  private final AppointmentTypeService appointmentTypeService;
 
   private static final List<AppointmentTypeDto> supportedAppointmentTypes =
       List.of(OFFICIAL_MEDICAL_SERVICE_SHORT, OFFICIAL_MEDICAL_SERVICE_LONG);
-  private final ProgressEntryService progressEntryService;
+  private static final DateTimeFormatter dateFormatter =
+      DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.GERMANY);
+  private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
   public OmsAppointmentService(
       OmsProcedureRepository omsProcedureRepository,
       OmsAppointmentRepository omsAppointmentRepository,
       OmsAppointmentMapper omsAppointmentMapper,
       AppointmentBlockSlotUtil appointmentBlockSlotUtil,
-      ProgressEntryService progressEntryService) {
+      ProgressEntryService progressEntryService,
+      PersonClient personClient,
+      Clock clock,
+      NotificationService notificationService,
+      AppointmentTypeService appointmentTypeService) {
     this.omsProcedureRepository = omsProcedureRepository;
     this.omsAppointmentRepository = omsAppointmentRepository;
     this.omsAppointmentMapper = omsAppointmentMapper;
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
     this.progressEntryService = progressEntryService;
+    this.personClient = personClient;
+    this.clock = clock;
+    this.notificationService = notificationService;
+    this.appointmentTypeService = appointmentTypeService;
   }
 
   @Transactional
@@ -85,10 +113,35 @@ public class OmsAppointmentService {
 
     omsAppointmentRepository.save(appointment);
 
+    Person person = procedure.findAffectedPerson();
+    AffectedPersonDto affectedPersonDto =
+        PersonMapper.mapToAffectedPersonDto(
+            personClient.getPersonFileState(person.getCentralFileStateId()), person.getVersion());
     if (bookingInfo != null) {
       progressEntryService.createProgressEntryForAddingAppointmentWithBooking(procedure, request);
+
+      if (procedure.getProcedureStatus() == ProcedureStatus.OPEN
+          && procedure.isSendEmailNotifications()) {
+        ZonedDateTime zonedDateTime = appointment.getStart().atZone(clock.getZone());
+        String appointmentDate = zonedDateTime.format(dateFormatter);
+        String appointmentTime = zonedDateTime.format(timeFormatter);
+        String appointmentDuration = appointment.getDuration() + " Minuten";
+        notificationService.notifyNewAppointmentWithBooking(
+            affectedPersonDto, appointmentDate, appointmentTime, appointmentDuration);
+      }
     } else {
       progressEntryService.createProgressEntryForAddingSelfBookingAppointment(procedure);
+      if (procedure.getProcedureStatus() == ProcedureStatus.OPEN
+          && procedure.isSendEmailNotifications()) {
+        long duration =
+            appointmentTypeService.getAppointmentTypes().appointmentTypeConfigDtos().stream()
+                .filter(type -> type.appointmentTypeDto() == request.appointmentType())
+                .findFirst()
+                .orElseThrow()
+                .standardDurationInMinutes();
+        notificationService.notifyNewAppointmentSelfBooking(
+            affectedPersonDto, duration + " Minuten");
+      }
     }
 
     return appointment.getExternalId();
@@ -115,9 +168,44 @@ public class OmsAppointmentService {
   }
 
   @Transactional
+  public void bookAppointmentCitizen(UUID appointmentId, AppointmentDto appointmentDto) {
+    OmsAppointment appointment = loadAppointment(appointmentId);
+
+    if (appointment.getAppointmentState() == AppointmentState.CLOSED) {
+      throw new BadRequestException("Appointment is already closed.");
+    }
+
+    Integer duration =
+        (int) Duration.between(appointmentDto.start(), appointmentDto.end()).toMinutes();
+    BookingInfoDto bookingInfo =
+        new BookingInfoDto(BookingTypeDto.APPOINTMENT_BLOCK, appointmentDto.start(), duration);
+
+    if (appointment.getBookingState() == BookingState.BOOKED) {
+      int remainingBookings = appointment.getBookingsRemaining();
+
+      if (remainingBookings == 0) {
+        throw new BadRequestException("Bookings remaining is zero");
+      }
+
+      appointment.setStart(appointmentDto.start());
+      appointment.setDuration(duration);
+      appointment.setBookingType(BookingType.APPOINTMENT_BLOCK);
+      appointment.setBookingsRemaining(remainingBookings - 1);
+    } else if (appointment.getBookingState() == BookingState.BOOKABLE) {
+      appointment.setStart(appointmentDto.start());
+      appointment.setDuration(duration);
+      appointment.setBookingType(BookingType.APPOINTMENT_BLOCK);
+      appointment.setBookingState(BookingState.BOOKED);
+    }
+
+    processBooking(bookingInfo, appointment);
+  }
+
+  @Transactional
   public void bookAppointmentEmployee(UUID appointmentId, BookingInfoDto request) {
     OmsAppointment appointment = loadAppointment(appointmentId);
-    if (appointment.getProcedure().isFinalized()) {
+    OmsProcedure procedure = appointment.getProcedure();
+    if (procedure.isFinalized()) {
       throw new BadRequestException("Procedure is already closed.");
     }
     if (AppointmentState.CLOSED == appointment.getAppointmentState()) {
@@ -127,12 +215,38 @@ public class OmsAppointmentService {
       throw new BadRequestException("Appointment is withdrawn");
     }
 
+    Person person = procedure.findAffectedPerson();
+    AffectedPersonDto affectedPersonDto =
+        PersonMapper.mapToAffectedPersonDto(
+            personClient.getPersonFileState(person.getCentralFileStateId()), person.getVersion());
+    ZonedDateTime newZonedDateTime = request.start().atZone(clock.getZone());
+    String newAppointmentDate = newZonedDateTime.format(dateFormatter);
+    String newAppointmentTime = newZonedDateTime.format(timeFormatter);
     if (BookingState.BOOKED == appointment.getBookingState()) {
       progressEntryService.createProgressEntryForRebookedAppointment(
-          appointment.getProcedure(), appointment, request);
+          procedure, appointment, request);
+
+      if (procedure.getProcedureStatus() == ProcedureStatus.OPEN
+          && procedure.isSendEmailNotifications()) {
+        ZonedDateTime oldZonedDateTime = appointment.getStart().atZone(clock.getZone());
+        String oldAppointmentDate = oldZonedDateTime.format(dateFormatter);
+        String oldAppointmentTime = oldZonedDateTime.format(timeFormatter);
+        notificationService.notifyRebookAppointment(
+            affectedPersonDto,
+            oldAppointmentDate,
+            oldAppointmentTime,
+            newAppointmentDate,
+            newAppointmentTime);
+      }
     } else {
-      progressEntryService.createProgressEntryForBookingAppointment(
-          appointment.getProcedure(), request);
+      progressEntryService.createProgressEntryForBookingAppointment(procedure, request);
+
+      if (procedure.getProcedureStatus() == ProcedureStatus.OPEN
+          && procedure.isSendEmailNotifications()) {
+        String appointmentDuration = request.duration() + " Minuten";
+        notificationService.notifyNewAppointmentWithBooking(
+            affectedPersonDto, newAppointmentDate, newAppointmentTime, appointmentDuration);
+      }
     }
 
     processBooking(request, appointment);
@@ -142,7 +256,8 @@ public class OmsAppointmentService {
   public void cancelAppointmentEmployee(UUID appointmentId) {
     OmsAppointment appointment = loadAppointment(appointmentId);
 
-    if (appointment.getProcedure().isFinalized()) {
+    OmsProcedure procedure = appointment.getProcedure();
+    if (procedure.isFinalized()) {
       throw new BadRequestException("Procedure is already closed.");
     }
     if (AppointmentState.CLOSED == appointment.getAppointmentState()) {
@@ -156,15 +271,43 @@ public class OmsAppointmentService {
     appointment.setBookingType(null);
     appointment.setDuration(null);
     appointment.setAppointment(null); // to unlock appointment block
-    progressEntryService.createProgressEntryForCancelingAppointment(
-        appointment.getProcedure(), appointment);
+    progressEntryService.createProgressEntryForCancelingAppointment(procedure, appointment);
+
+    if (procedure.getProcedureStatus() == ProcedureStatus.OPEN
+        && procedure.isSendEmailNotifications()) {
+      Person person = procedure.findAffectedPerson();
+      AffectedPersonDto affectedPersonDto =
+          PersonMapper.mapToAffectedPersonDto(
+              personClient.getPersonFileState(person.getCentralFileStateId()), person.getVersion());
+      ZonedDateTime zonedDateTime = appointment.getStart().atZone(clock.getZone());
+      String appointmentDate = zonedDateTime.format(dateFormatter);
+      String appointmentTime = zonedDateTime.format(timeFormatter);
+      notificationService.notifyCancelAppointment(
+          affectedPersonDto, appointmentDate, appointmentTime);
+    }
+  }
+
+  @Transactional
+  public void cancelAppointmentCitizen(UUID appointmentId) {
+    OmsAppointment appointment = loadAppointment(appointmentId);
+
+    if (AppointmentState.CLOSED == appointment.getAppointmentState()) {
+      throw new BadRequestException("Appointment is already closed.");
+    }
+    if (BookingState.BOOKED != appointment.getBookingState()) {
+      throw new BadRequestException("Appointment is not booked");
+    }
+
+    appointment.setBookingState(BookingState.CANCELLED);
+    appointment.setAppointment(null); // to unlock appointment block
   }
 
   @Transactional
   public void closeAppointmentEmployee(UUID appointmentId) {
     OmsAppointment appointment = loadAppointment(appointmentId);
+    OmsProcedure procedure = appointment.getProcedure();
 
-    if (appointment.getProcedure().isFinalized()) {
+    if (procedure.isFinalized()) {
       throw new BadRequestException("Procedure is already closed.");
     }
     if (AppointmentState.CLOSED == appointment.getAppointmentState()) {
@@ -174,11 +317,18 @@ public class OmsAppointmentService {
     if (BookingState.BOOKABLE == appointment.getBookingState()) {
       appointment.setBookingState(BookingState.WITHDRAWN);
 
-      progressEntryService.createProgressEntryForWithdrawingAppointmentOption(
-          appointment.getProcedure());
+      progressEntryService.createProgressEntryForWithdrawingAppointmentOption(procedure);
+      if (procedure.getProcedureStatus() == ProcedureStatus.OPEN
+          && procedure.isSendEmailNotifications()) {
+        Person person = procedure.findAffectedPerson();
+        AffectedPersonDto affectedPersonDto =
+            PersonMapper.mapToAffectedPersonDto(
+                personClient.getPersonFileState(person.getCentralFileStateId()),
+                person.getVersion());
+        notificationService.notifyCloseAppointment(affectedPersonDto);
+      }
     } else {
-      progressEntryService.createProgressEntryForClosingAppointment(
-          appointment.getProcedure(), appointment);
+      progressEntryService.createProgressEntryForClosingAppointment(procedure, appointment);
     }
 
     appointment.setAppointmentState(AppointmentState.CLOSED);

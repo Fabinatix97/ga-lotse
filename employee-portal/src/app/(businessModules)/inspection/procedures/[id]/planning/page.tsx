@@ -5,10 +5,14 @@
 
 "use client";
 
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+
 import { InspectionTabPlanning } from "@/lib/businessModules/inspection/components/inspection/planning/InspectionTabPlanning";
 
-export default function InspectionTabPlanningPage({
-  params,
-}: Readonly<{ params: { id: string } }>) {
-  return <InspectionTabPlanning inspectionId={params.id} />;
+export default function InspectionTabPlanningPage(
+  props: DynamicPageProps<{ id: string }>,
+) {
+  const { id } = props.params;
+
+  return <InspectionTabPlanning inspectionId={id} />;
 }

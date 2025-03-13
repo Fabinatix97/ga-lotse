@@ -178,7 +178,7 @@ export default function PlaygroundChartsPage() {
       component="label"
       endDecorator={
         <Select
-          value={characteristicParameter}
+          value={characteristicParameter ?? null}
           onChange={(_, value) =>
             value === null
               ? setCharacteristicParameter(undefined)

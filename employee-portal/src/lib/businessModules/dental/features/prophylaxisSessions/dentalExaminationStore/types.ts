@@ -79,11 +79,16 @@ export interface ToothContext {
   toothIndex: number;
 }
 
-export type ResultField = "main" | "secondary1" | "secondary2";
+export type ToothElement = "toothButton" | ToothFieldElement;
+
+export type ToothFieldElement =
+  | "mainResultField"
+  | "secondaryResult1Field"
+  | "secondaryResult2Field";
 
 export interface ElementContext {
   toothContext: ToothContext;
-  field?: ResultField;
+  element: ToothElement;
 }
 
 export function hasPreviousExaminationResult(
@@ -93,4 +98,10 @@ export function hasPreviousExaminationResult(
     tooth.previousResults.length > 0 &&
     tooth.previousResults[0] !== ApiMainResult.S
   );
+}
+
+export interface DmftValues {
+  decayed: number;
+  missing: number;
+  filled: number;
 }

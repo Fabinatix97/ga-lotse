@@ -26,7 +26,7 @@ export class SectionElementComponentFactory {
   public createSectionElementComponents() {
     return this.sectionProps.sectionElements.map((element, index) => {
       if (element.anamnesisQuestion) {
-        return this.createAnamnesisComponent(index, element);
+        return this.createAnamnesisQuestionComponent(index, element);
       } else if (element.textBlock) {
         return this.createTextBlockComponent(index);
       } else if (element.confirmation) {
@@ -76,7 +76,7 @@ export class SectionElementComponentFactory {
     return `${this.getFormikArrayPath(index)}.confirmation`;
   }
 
-  private createAnamnesisComponent(
+  private createAnamnesisQuestionComponent(
     index: number,
     sectionElement: ApiTemplateSectionElement,
   ) {

@@ -131,7 +131,7 @@ services:
       driver: "local"
 
   maildev:
-    image: maildev/maildev@sha256:f7429227b8f471b3fe761767d86a8794a2fc7488bccdcda46ea6d5ba5c2c7bf5
+    image: maildev/maildev:2.2.1@sha256:180ef51f65eefebb0e7122d8308813c1fd7bff164bc440ce5a3c2feee167a810
     restart: unless-stopped
     ports:
       - "1080:1080"
@@ -589,8 +589,6 @@ services:
       - de.eshg.department-info.phoneNumber=+49 123 12345678
       - de.eshg.department-info.homepage=www.oms.de
       - de.eshg.department-info.email=gutachten@oms.de
-      - de.eshg.official-medical-service.notification.fromAddress=tba@stadt-frankfurt.de
-      - de.eshg.official-medical-service.notification.greeting=Ihr TBA-Team der Stadt Frankfurt
       - de.eshg.official-medical-service.concerns.config=classpath:$${de.eshg.official-medical-service.concerns.templates.path}/concerns.test.yaml
     depends_on:
       official-medical-service-db:

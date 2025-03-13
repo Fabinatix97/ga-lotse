@@ -7,7 +7,7 @@ import { ApiImportStatistics, ImportXlsxRequest } from "@eshg/dental-api";
 import { parseImportResult } from "@eshg/lib-employee-portal";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 
-import { useDentalApi } from "@/shared/DentalProvider";
+import { useDentalApi } from "@/contexts/dental";
 
 export function useImportChildren() {
   const { childApi } = useDentalApi();

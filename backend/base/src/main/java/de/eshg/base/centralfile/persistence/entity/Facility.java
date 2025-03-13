@@ -235,6 +235,10 @@ public class Facility extends SequencedBaseEntityWithExternalId implements Centr
     return clone;
   }
 
+  public List<FacilityContactPerson> cloneContactPersonsFromFileState() {
+    return getContactPersons().stream().map(FacilityContactPerson::cloneFromFileState).toList();
+  }
+
   public void setEmailAddresses(List<FacilityEmailAddress> emailAddresses) {
     removeEmailAddresses(getEmailAddresses());
     ArrayList<FacilityEmailAddress> newEmailAddresses =

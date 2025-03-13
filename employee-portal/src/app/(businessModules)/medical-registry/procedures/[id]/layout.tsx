@@ -4,20 +4,21 @@
  */
 
 import { StickyToolbarLayout } from "@eshg/lib-employee-portal";
-import { PropsWithChildren } from "react";
+import { DynamicLayoutProps } from "@eshg/lib-portal/types/pageParams";
 
-import { MedicalRegistryProcedurePageParams } from "@/app/(businessModules)/medical-registry/procedures/[id]/page";
+import { MedicalRegistryProcedureRouteParams } from "@/app/(businessModules)/medical-registry/procedures/[id]/page";
 import { MedicalRegistryTabNavigationToolbar } from "@/lib/businessModules/medicalRegistry/components/procedures/MedicalRegistryTabNavigationToolbar";
 
-export default function MedicalRegistryProcedureLayout({
-  params,
-  children,
-}: PropsWithChildren<{ params: MedicalRegistryProcedurePageParams }>) {
+export default function MedicalRegistryProcedureLayout(
+  props: DynamicLayoutProps<MedicalRegistryProcedureRouteParams>,
+) {
+  const { id } = props.params;
+
   return (
     <StickyToolbarLayout
-      toolbar={<MedicalRegistryTabNavigationToolbar procedureId={params.id} />}
+      toolbar={<MedicalRegistryTabNavigationToolbar procedureId={id} />}
     >
-      {children}
+      {props.children}
     </StickyToolbarLayout>
   );
 }

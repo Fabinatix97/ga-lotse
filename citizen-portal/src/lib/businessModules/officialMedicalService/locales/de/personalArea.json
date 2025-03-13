@@ -19,6 +19,11 @@
         "BOOKED": "Gebucht",
         "CANCELLED": "Abgesagt",
         "WITHDRAWN": "Zurückgezogen"
+      },
+      "modal": {
+        "description_BOOKABLE": "Bitte buchen Sie einen Termin bei uns.",
+        "bookAppointment_BOOKABLE": "Termin buchen",
+        "cancel": "Abbrechen"
       }
     },
     "concernSection": {
@@ -63,14 +68,27 @@
   "sidePanel": {
     "booked": {
       "title": "Sie können den Termin nicht wahrnehmen?",
-      "rescheduleAppointment": "Termin verschieben",
+      "rescheduleAppointment": "Termin umbuchen",
       "cancelAppointment": "Termin absagen"
     },
     "cancelled": {
-      "rescheduleAppointment": "Neuen Termin buchen"
+      "title": "Bitte buchen Sie einen neuen Untersuchungstermin",
+      "rescheduleAppointment": "Termin neu buchen"
     },
     "bookable": {
+      "title": "Bitte buchen Sie einen Untersuchungstermin",
       "bookAppointment": "Termin buchen"
+    }
+  },
+  "cancelAppointment": {
+    "cancelModal": {
+      "title": "Termin absagen?",
+      "description": "Sind Sie sicher, dass Sie Ihren Termin absagen möchten? Sie können danach jederzeit einen neuen Termin vereinbaren.",
+      "confirmLabel": "Ja, absagen",
+      "cancelLabel": "Beibehalten"
+    },
+    "snackbar": {
+      "success": "Termin wurde erfolgreich abgesagt"
     }
   }
 }

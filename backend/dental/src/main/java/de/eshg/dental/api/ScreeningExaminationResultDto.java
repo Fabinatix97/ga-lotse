@@ -14,6 +14,9 @@ import java.util.List;
 public record ScreeningExaminationResultDto(
     Boolean fluorideVarnishApplied,
     OralHygieneStatusDto oralHygieneStatus,
+    MihStatusDto mihStatus,
+    @NotNull List<OrthodonticFindingDto> orthodonticFindings,
+    OrthodonticStatusDto orthodonticStatus,
     @NotNull DentitionTypeDto dentitionType,
     @NotNull boolean plaque,
     @NotNull boolean calculus,
@@ -25,19 +28,43 @@ public record ScreeningExaminationResultDto(
   static final String SCHEMA_NAME = "ScreeningExaminationResult";
 
   public ScreeningExaminationResultDto(DentitionTypeDto dentitionType) {
-    this(null, null, dentitionType, false, false, false, false, List.of());
+    this(null, null, null, List.of(), null, dentitionType, false, false, false, false, List.of());
   }
 
   public ScreeningExaminationResultDto(
       Boolean fluorideVarnishApplied,
       OralHygieneStatusDto oralHygieneStatus,
+      MihStatusDto mihStatus,
       DentitionTypeDto dentitionType) {
-    this(fluorideVarnishApplied, oralHygieneStatus, dentitionType, false, false, false, false);
+    this(fluorideVarnishApplied, oralHygieneStatus, mihStatus, List.of(), null, dentitionType);
   }
 
   public ScreeningExaminationResultDto(
       Boolean fluorideVarnishApplied,
       OralHygieneStatusDto oralHygieneStatus,
+      MihStatusDto mihStatus,
+      List<OrthodonticFindingDto> orthodonticFindings,
+      OrthodonticStatusDto orthodonticStatus,
+      DentitionTypeDto dentitionType) {
+    this(
+        fluorideVarnishApplied,
+        oralHygieneStatus,
+        mihStatus,
+        orthodonticFindings,
+        orthodonticStatus,
+        dentitionType,
+        false,
+        false,
+        false,
+        false);
+  }
+
+  public ScreeningExaminationResultDto(
+      Boolean fluorideVarnishApplied,
+      OralHygieneStatusDto oralHygieneStatus,
+      MihStatusDto mihStatus,
+      List<OrthodonticFindingDto> orthodonticFindings,
+      OrthodonticStatusDto orthodonticStatus,
       DentitionTypeDto dentitionType,
       boolean plaque,
       boolean calculus,
@@ -46,6 +73,9 @@ public record ScreeningExaminationResultDto(
     this(
         fluorideVarnishApplied,
         oralHygieneStatus,
+        mihStatus,
+        orthodonticFindings,
+        orthodonticStatus,
         dentitionType,
         plaque,
         calculus,

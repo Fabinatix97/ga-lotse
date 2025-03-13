@@ -8,8 +8,8 @@ package de.eshg.schoolentry.statistics.attributes;
 import de.eshg.lib.statistics.attributes.AttributeData;
 import de.eshg.lib.statistics.attributes.CentralFileIdPersonAttribute;
 import de.eshg.lib.statistics.attributes.ContactIdAttribute;
-import de.eshg.lib.statistics.attributes.DateAttribute;
 import de.eshg.lib.statistics.attributes.ProcedureAttribute;
+import de.eshg.lib.statistics.attributes.TextAttribute;
 import de.eshg.lib.statistics.attributes.ValueWithOptionsAttribute;
 
 public enum EsuChildAttributes implements EsuAttributes {
@@ -24,7 +24,7 @@ public enum EsuChildAttributes implements EsuAttributes {
   SCHULE(new ContactIdAttribute("Schule", "SCHULE", EsuChildAttributes.CATEGORY_CHILD, false)),
 
   WOHND(
-      new DateAttribute(
+      new TextAttribute(
           "bei Einreise: in Deutschland seit (Neue Variable ab S1_2023)",
           "WOHND",
           EsuChildAttributes.CATEGORY_CHILD,

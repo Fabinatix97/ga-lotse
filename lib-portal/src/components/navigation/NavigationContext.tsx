@@ -8,6 +8,7 @@
 import { useRouter } from "next/navigation";
 import {
   PropsWithChildren,
+  SetStateAction,
   createContext,
   useContext,
   useMemo,
@@ -18,8 +19,10 @@ import { MutationBundle } from "../../types/query";
 
 interface NavigationContextValue {
   tryNavigate: (href: string) => void;
-  setCanNavigate: (canNavigate: boolean) => void;
-  setOnSaveMutation: (onSaveMutation?: MutationBundle) => void;
+  setCanNavigate: (canNavigate: SetStateAction<boolean>) => void;
+  setOnSaveMutation: (
+    onSaveMutation?: SetStateAction<MutationBundle | undefined>,
+  ) => void;
 }
 
 const NavigationContext = createContext<NavigationContextValue>({

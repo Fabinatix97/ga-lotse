@@ -8,7 +8,6 @@
 import { Row } from "@eshg/lib-portal/components/Row";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import {
-  ApiMeaslesProtectionFeature,
   ApiMeaslesProtectionProcedure,
   ApiMonetaryFine,
   ApiProofRequestLetter,
@@ -23,7 +22,6 @@ import {
   useProofRequestLetterApi,
   useProtectionProcedureApi,
 } from "@/lib/businessModules/measlesProtection/api/clients";
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/measlesProtection/api/queries/featureTogglesApi";
 import { getProcedureQuery } from "@/lib/businessModules/measlesProtection/api/queries/procedures";
 import { getProofRequestLettersQuery } from "@/lib/businessModules/measlesProtection/api/queries/proofRequestLetters";
 import { submissionResultLabels } from "@/lib/businessModules/measlesProtection/components/procedures/constants";
@@ -77,9 +75,6 @@ export function ProofTab({ procedureId }: Readonly<{ procedureId: string }>) {
       getProofRequestLettersQuery(proofRequestLetterApi, procedureId),
     ],
   });
-  const isEditAccessRestrictionEnabled = useIsNewFeatureEnabled(
-    ApiMeaslesProtectionFeature.EditAccessRestriction,
-  );
 
   const procedureClosed = !procedure.isOpen;
 
@@ -144,9 +139,7 @@ export function ProofTab({ procedureId }: Readonly<{ procedureId: string }>) {
       <FineSidebar id={procedureId} />
       <AccessRestrictionSidebar id={procedureId} />
       <AccessRestrictionLetterSidebar id={procedureId} />
-      {isEditAccessRestrictionEnabled && (
-        <EditAccessRestrictionSidebar procedure={procedure} />
-      )}
+      <EditAccessRestrictionSidebar procedure={procedure} />
       <ProofRequestLetterSidebar id={procedureId} />
     </Grid>
   );

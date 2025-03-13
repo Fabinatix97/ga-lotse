@@ -87,7 +87,7 @@ public class PieChartDiagramCreationService
   private static void addTableRowToCollectedPieChartData(
       TableRow tableRow, Map<Object, Integer> collectedChartData, TableColumn tableColumn) {
     Object primaryKey =
-        getKeyForCellEntryBooleanIntegerTextOrValueOption(getCellEntry(tableRow, tableColumn));
+        getKeyForCellEntryBooleanIntegerTextDateOrValueOption(getCellEntry(tableRow, tableColumn));
     if (primaryKey != null) {
       collectedChartData.compute(primaryKey, (key, count) -> (count == null) ? 1 : count + 1);
     }

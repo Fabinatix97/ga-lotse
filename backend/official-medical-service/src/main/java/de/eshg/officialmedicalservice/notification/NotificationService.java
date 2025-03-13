@@ -6,9 +6,9 @@
 package de.eshg.officialmedicalservice.notification;
 
 import static de.eshg.base.mail.MailType.HTML;
-import static de.eshg.base.mail.MailType.PLAIN_TEXT;
 
 import de.eshg.base.mail.MailType;
+import de.eshg.departmentinfo.DepartmentInfoService;
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
 import de.eshg.officialmedicalservice.procedure.api.AffectedPersonDto;
 import java.util.List;
@@ -16,9 +16,6 @@ import java.util.function.IntSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -48,11 +45,9 @@ public class NotificationService {
 
   private final ModuleClientAuthenticator moduleClientAuthenticator;
   private final MailClient mailClient;
-  private final NotificationProperties notificationProperties;
   private final NotificationText notificationText;
   private final String citizenPortalUrl;
-  private final SecurityContextHolderStrategy securityContextHolderStrategy =
-      SecurityContextHolder.getContextHolderStrategy();
+  private final DepartmentInfoService departmentInfoService;
 
   @FunctionalInterface
   public interface MailEnabledProvider {
@@ -62,14 +57,14 @@ public class NotificationService {
   public NotificationService(
       ModuleClientAuthenticator moduleClientAuthenticator,
       MailClient mailClient,
-      NotificationProperties notificationProperties,
       NotificationText notificationText,
-      @Value("${eshg.citizen-portal.reverse-proxy.url}") String citizenPortalUrl) {
+      @Value("${eshg.citizen-portal.reverse-proxy.url}") String citizenPortalUrl,
+      DepartmentInfoService departmentInfoService) {
     this.moduleClientAuthenticator = moduleClientAuthenticator;
     this.mailClient = mailClient;
-    this.notificationProperties = notificationProperties;
     this.notificationText = notificationText;
     this.citizenPortalUrl = citizenPortalUrl;
+    this.departmentInfoService = departmentInfoService;
   }
 
   public NotificationSummary notifyNewCitizenUser(
@@ -78,18 +73,14 @@ public class NotificationService {
     String newCitizenUserSubject = notificationText.getNewCitizenUserSubject();
     String newCitizenUserBody =
         notificationText.assembleNewCitizenUserBody(
-            person.firstName(),
-            person.lastName(),
-            buildLoginUrl(accessCode),
-            accessCode,
-            notificationProperties.greeting());
+            person.firstName(), person.lastName(), buildLoginUrl(accessCode), accessCode);
     return doNotification(
         mailEnabledProvider,
         person,
         newCitizenUserSubject,
         () ->
             sendMailWithModuleClientAuthentication(
-                newCitizenUserSubject, newCitizenUserBody, person, PLAIN_TEXT));
+                newCitizenUserSubject, newCitizenUserBody, person, HTML));
   }
 
   public void notifyNewCitizenProcedure(AffectedPersonDto person) {
@@ -115,6 +106,77 @@ public class NotificationService {
         newCitizenProcedureSubject, newCitizenProcedureBody, person, HTML);
   }
 
+  public void notifyNewAppointmentWithBooking(
+      AffectedPersonDto person,
+      String appointmentDate,
+      String appointmentTime,
+      String appointmentDuration) {
+    String newAppointmentWithBookingSubject =
+        notificationText.getNewAppointmentWithBookingSubject();
+    String newAppointmentWithBookingBody =
+        notificationText.assembleNewAppointmentWithBookingBody(
+            person.firstName(),
+            person.lastName(),
+            appointmentDate,
+            appointmentTime,
+            appointmentDuration);
+
+    sendMailWithModuleClientAuthentication(
+        newAppointmentWithBookingSubject, newAppointmentWithBookingBody, person, HTML);
+  }
+
+  public void notifyNewAppointmentSelfBooking(
+      AffectedPersonDto person, String appointmentDuration) {
+    String newAppointmentWithBookingSubject =
+        notificationText.getNewAppointmentSelfBookingSubject();
+    String newAppointmentWithBookingBody =
+        notificationText.assembleNewAppointmentSelfBookingBody(
+            person.firstName(), person.lastName(), appointmentDuration);
+
+    sendMailWithModuleClientAuthentication(
+        newAppointmentWithBookingSubject, newAppointmentWithBookingBody, person, HTML);
+  }
+
+  public void notifyCancelAppointment(
+      AffectedPersonDto person, String appointmentDate, String appointmentTime) {
+    String cancelAppointmentSubject = notificationText.getCancelAppointmentSubject();
+    String cancelAppointmentBody =
+        notificationText.assembleCancelAppointmentBody(
+            person.firstName(), person.lastName(), appointmentDate, appointmentTime);
+
+    sendMailWithModuleClientAuthentication(
+        cancelAppointmentSubject, cancelAppointmentBody, person, HTML);
+  }
+
+  public void notifyRebookAppointment(
+      AffectedPersonDto person,
+      String oldAppointmentDate,
+      String oldAppointmentTime,
+      String newAppointmentDate,
+      String newAppointmentTime) {
+    String rebookAppointmentSubject = notificationText.getRebookAppointmentSubject();
+    String rebookAppointmentBody =
+        notificationText.assembleRebookAppointmentBody(
+            person.firstName(),
+            person.lastName(),
+            oldAppointmentDate,
+            oldAppointmentTime,
+            newAppointmentDate,
+            newAppointmentTime);
+
+    sendMailWithModuleClientAuthentication(
+        rebookAppointmentSubject, rebookAppointmentBody, person, HTML);
+  }
+
+  public void notifyCloseAppointment(AffectedPersonDto person) {
+    String closeAppointmentSubject = notificationText.getCloseAppointmentSubject();
+    String closeAppointmentBody =
+        notificationText.assembleCloseAppointmentBody(person.firstName(), person.lastName());
+
+    sendMailWithModuleClientAuthentication(
+        closeAppointmentSubject, closeAppointmentBody, person, HTML);
+  }
+
   private NotificationSummary doNotification(
       MailEnabledProvider procedure,
       AffectedPersonDto person,
@@ -135,23 +197,17 @@ public class NotificationService {
 
   private int sendMailWithModuleClientAuthentication(
       String subject, String body, AffectedPersonDto personDto, MailType mailType) {
-    SecurityContext previousContext = securityContextHolderStrategy.getContext();
-    try {
-      securityContextHolderStrategy.clearContext();
-      return moduleClientAuthenticator.doWithModuleClientAuthentication(
-          () -> doSendMail(subject, body, personDto, mailType));
-    } finally {
-      securityContextHolderStrategy.setContext(previousContext);
-    }
+    return moduleClientAuthenticator.doWithPotentiallyReplacedModuleClientAuthenticator(
+        () -> doSendMail(subject, body, personDto, mailType));
   }
 
   private int doSendMail(
       String subject, String body, AffectedPersonDto personDto, MailType mailType) {
     log.info("send mail(s): " + subject);
+    String fromAddress = departmentInfoService.getDepartmentInfo().email();
 
     for (String emailAddress : personDto.emailAddresses()) {
-      mailClient.sendMail(
-          emailAddress, notificationProperties.fromAddress(), subject, body, mailType);
+      mailClient.sendMail(emailAddress, fromAddress, subject, body, mailType);
     }
     return personDto.emailAddresses().size();
   }

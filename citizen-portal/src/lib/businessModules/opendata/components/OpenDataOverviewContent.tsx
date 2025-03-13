@@ -4,6 +4,7 @@
  */
 
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
+import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
 import { ApiVersion } from "@eshg/opendata-api";
 import { ChevronRightOutlined, RefreshOutlined } from "@mui/icons-material";
 import {
@@ -34,7 +35,6 @@ import {
 } from "@/lib/shared/components/layout/contentSheet";
 import { GridColumnStack } from "@/lib/shared/components/layout/grid";
 import { PageTitle } from "@/lib/shared/components/layout/page";
-import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 const PAGE_SIZE = 10;
 

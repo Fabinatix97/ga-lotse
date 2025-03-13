@@ -10,15 +10,17 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { useGetReportDetails } from "@/lib/businessModules/statistics/api/queries/useGetReportDetails";
 import { ReportDetails } from "@/lib/businessModules/statistics/components/reports/ReportDetails";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 
 export default function ReportDetailsPage(
-  props: Readonly<{ params: { id: string } }>,
+  props: DynamicPageProps<{ id: string }>,
 ) {
-  const reportDetails = useGetReportDetails(props.params.id);
+  const { id } = props.params;
+  const reportDetails = useGetReportDetails(id);
 
   return (
     <StickyToolbarLayout

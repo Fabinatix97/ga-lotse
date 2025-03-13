@@ -18,10 +18,23 @@ export function resolveTooth(
   const tooth = dentition[quadrantNumber].teeth[toothIndex];
 
   if (tooth === undefined) {
-    throw new Error(`Tooth not found: ${quadrantNumber}:${toothIndex}`);
+    throw new Error(`Missing tooth ${quadrantNumber}:${toothIndex}`);
   }
 
   return tooth;
+}
+
+export function resolveToothType(
+  toothIndex: number,
+  teeth: Tooth[],
+): Tooth["type"] {
+  const tooth = teeth[toothIndex];
+
+  if (tooth === undefined) {
+    throw new Error(`Missing tooth ${toothIndex}`);
+  }
+
+  return tooth.type;
 }
 
 export function firstToothWithDiagnosisIndex(teeth: Tooth[]): number {

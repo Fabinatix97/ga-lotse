@@ -21,7 +21,10 @@ import de.eshg.dental.api.ExaminationResultDto;
 import de.eshg.dental.api.FluoridationExaminationResultDto;
 import de.eshg.dental.api.FluoridationVarnishDto;
 import de.eshg.dental.api.MainResultDto;
+import de.eshg.dental.api.MihStatusDto;
 import de.eshg.dental.api.OralHygieneStatusDto;
+import de.eshg.dental.api.OrthodonticFindingDto;
+import de.eshg.dental.api.OrthodonticStatusDto;
 import de.eshg.dental.api.ProphylaxisTypeDto;
 import de.eshg.dental.api.ReasonForAbsenceDto;
 import de.eshg.dental.api.ScreeningExaminationResultDto;
@@ -50,6 +53,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.IntStream;
 import net.datafaker.Faker;
 
 @PopulatorComponent
@@ -206,6 +210,9 @@ public class ProphylaxisSessionsPopulator
           optional(
               faker, hasFluoridationVarnish && isFluoridationConsentGiven && faker.bool().bool()),
           optional(faker, randomElement(faker, OralHygieneStatusDto.values())),
+          optional(faker, randomElement(faker, MihStatusDto.values())),
+          randomOrthodonticFindings(faker),
+          optional(faker, randomElement(faker, OrthodonticStatusDto.values())),
           randomDentitionType(faker),
           faker.bool().bool(),
           faker.bool().bool(),
@@ -218,6 +225,13 @@ public class ProphylaxisSessionsPopulator
     } else {
       return null;
     }
+  }
+
+  private static List<OrthodonticFindingDto> randomOrthodonticFindings(Faker faker) {
+    int count = faker.random().nextInt(10);
+    return IntStream.range(0, count)
+        .mapToObj(value -> randomElement(faker, OrthodonticFindingDto.values()))
+        .toList();
   }
 
   private static List<ToothDiagnosisDto> randomToothDiagnoses(Faker faker) {

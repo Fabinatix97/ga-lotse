@@ -13,6 +13,8 @@ import de.eshg.base.centralfile.persistence.FacilityService;
 import de.eshg.base.centralfile.persistence.entity.Facility;
 import de.eshg.base.centralfile.persistence.repository.FacilityRepository;
 import de.eshg.base.feature.BaseFeatureToggle;
+import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.NotFoundException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.Clock;
@@ -52,6 +54,7 @@ public class FacilityController implements FacilityApi {
   @Override
   @Transactional
   public AddFacilityFileStateResponse addFacilityFileState(AddFacilityFileStateRequest request) {
+    validateNoMoreThanOneMainContactPerson(request.contactPersons());
     Facility savedFacilityFileState =
         facilityService.addFacilityFileState(
             FacilityMapper.mapFacilityToDm(request), request.referenceFacilityId());
@@ -152,6 +155,8 @@ public class FacilityController implements FacilityApi {
   @Override
   @Transactional
   public AddFacilityFileStatesResponse addFacilityFileStates(AddFacilityFileStatesRequest request) {
+    validateNoMoreThanOneMainContactPerson(request);
+
     List<Facility> facilitiesToAdd =
         request.facilities().stream().map(FacilityMapper::mapFacilityToDm).toList();
 
@@ -188,6 +193,8 @@ public class FacilityController implements FacilityApi {
   @Transactional
   public AddFacilityFileStateResponse updateFacilityFileStateAndReference(
       UUID id, PutFacilityRequest request) {
+    validateNoMoreThanOneMainContactPerson(request.updatedFacility().contactPersons());
+
     Facility fileState =
         facilityRepository
             .findFileStateByExternalId(id)
@@ -252,5 +259,23 @@ public class FacilityController implements FacilityApi {
         FacilityService.isFacilityFileStateOutdated(
             facilityFileState, facilityFileState.getReferenceFacility());
     return FacilityMapper.mapFacilityToGetFacilityFileStateResponse(facilityFileState, outdated);
+  }
+
+  private void validateNoMoreThanOneMainContactPerson(
+      List<FacilityContactPersonDto> contactPersons) {
+    if (contactPersons != null
+        && contactPersons.stream()
+                .filter(contactPerson -> Boolean.TRUE.equals(contactPerson.mainContact()))
+                .count()
+            > 1) {
+      throw new BadRequestException(
+          ErrorCode.BAD_REQUEST, "Only one contact person can be the main contact person.");
+    }
+  }
+
+  private void validateNoMoreThanOneMainContactPerson(AddFacilityFileStatesRequest request) {
+    for (AddFacilityFileStateRequest facility : request.facilities()) {
+      validateNoMoreThanOneMainContactPerson(facility.contactPersons());
+    }
   }
 }

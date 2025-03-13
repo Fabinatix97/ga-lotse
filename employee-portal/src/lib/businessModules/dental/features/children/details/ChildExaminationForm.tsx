@@ -102,6 +102,9 @@ function mapExaminationResultRequest(
       type: "ScreeningExaminationResult",
       dentitionType: mapRequiredValue(formValues.dentitionType),
       oralHygieneStatus: mapOptionalValue(formValues.oralHygieneStatus),
+      mihStatus: mapOptionalValue(formValues.mihStatus),
+      orthodonticFindings: formValues.orthodonticFindings ?? [],
+      orthodonticStatus: mapOptionalValue(formValues.orthodonticStatus),
       fluorideVarnishApplied:
         mapOptionalValue(formValues.fluorideVarnishApplied) ?? false,
       plaque: formValues.plaque,

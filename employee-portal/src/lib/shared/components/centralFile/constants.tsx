@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { TabNavigationItem } from "@eshg/lib-employee-portal";
 import WarningIcon from "@mui/icons-material/WarningAmberOutlined";
-
-import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
 
 export function updateAvailableNavItem(href: string): TabNavigationItem {
   return {

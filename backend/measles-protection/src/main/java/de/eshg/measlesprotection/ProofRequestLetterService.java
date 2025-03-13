@@ -225,11 +225,11 @@ public class ProofRequestLetterService {
         measlesProtectionService.findAndAugmentProcedureByExternalId(id);
     MeaslesProtectionProcedure procedure = procedureDetails.procedure();
     Pdf pdf = doCreateCoverLetter(request, procedureDetails);
-    saveCoverLetter(procedure, pdf);
-    saveProofRequestLetter(procedure, pdf, request);
+    addProgressEntry(procedure, pdf);
+    addProofRequestLetter(procedure, pdf, request);
   }
 
-  private static void saveProofRequestLetter(
+  private static void addProofRequestLetter(
       MeaslesProtectionProcedure procedure, Pdf pdf, SaveProofRequestLetterRequest request) {
     ProofRequestLetter letter = new ProofRequestLetter();
     letter.setLetterType(getLetterType(request.recipientId(), procedure));
@@ -239,7 +239,7 @@ public class ProofRequestLetterService {
     procedure.addProofRequestLetter(letter);
   }
 
-  private void saveCoverLetter(MeaslesProtectionProcedure procedure, Pdf pdf) {
+  private void addProgressEntry(MeaslesProtectionProcedure procedure, Pdf pdf) {
     ZonedDateTime createdDate = pdf.getMetaData().getCreatedDate().atZone(clock.getZone());
     String changeDescription =
         "Immunitätsnachweis im Sinne des Masernschutzgesetzes am %s angefordert."

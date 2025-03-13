@@ -154,7 +154,8 @@ public class FacilityMapper {
         facilityContactPerson.getFirstName(),
         facilityContactPerson.getTitle(),
         mapSalutationToApi(facilityContactPerson.getSalutation()),
-        mapGenderToApi(facilityContactPerson.getGender()));
+        mapGenderToApi(facilityContactPerson.getGender()),
+        facilityContactPerson.isMainContact());
   }
 
   public static Facility mapFacilityToDm(AddFacilityFileStateRequest request) {
@@ -243,6 +244,7 @@ public class FacilityMapper {
     facilityContactPerson.setPhoneNumber(contactPerson.phoneNumber());
     facilityContactPerson.setSalutation(mapSalutationToDm(contactPerson.salutation()));
     facilityContactPerson.setGender(mapGenderToDm(contactPerson.gender()));
+    facilityContactPerson.setMainContact(Boolean.TRUE.equals(contactPerson.mainContact()));
     return facilityContactPerson;
   }
 

@@ -5,6 +5,7 @@
 
 "use client";
 
+import { useHasUserRolesCheck } from "@eshg/lib-employee-portal";
 import AddIcon from "@mui/icons-material/Add";
 import LockIcon from "@mui/icons-material/LockOutlined";
 import { Button, Chip, Sheet, Stack } from "@mui/joy";
@@ -17,7 +18,6 @@ import { routes } from "@/lib/baseModule/shared/routes";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import { useHasUserRolesCheck } from "@/lib/shared/hooks/useAccessControl";
 
 export function UserTable() {
   const {

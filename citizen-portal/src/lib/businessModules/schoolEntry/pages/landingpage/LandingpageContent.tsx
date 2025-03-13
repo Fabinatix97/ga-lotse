@@ -6,12 +6,14 @@
 import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 import { CallOutlined, MailOutlineOutlined } from "@mui/icons-material";
 import { Typography } from "@mui/joy";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { useSchoolEntryPublicCitizenApi } from "@/lib/businessModules/schoolEntry/api/clients";
-import { getOpeningHoursQuery } from "@/lib/businessModules/schoolEntry/api/queries/publicCitizenApi";
+import {
+  getDepartmentInfoQuery,
+  getOpeningHoursQuery,
+} from "@/lib/businessModules/schoolEntry/api/queries/publicCitizenApi";
 import { useTranslation } from "@/lib/i18n/client";
-import { DepartmentInfo } from "@/lib/shared/api/models/DepartmentInfo";
 import { AddressSection } from "@/lib/shared/components/AddressSection";
 import { OpeningHoursSection } from "@/lib/shared/components/OpeningHoursSection";
 import {
@@ -27,15 +29,16 @@ import { GridColumnStack } from "@/lib/shared/components/layout/grid";
 import { formatStreetAndHouseNumber } from "@/lib/shared/formatters/address";
 import { DepartmentInfoProps } from "@/lib/shared/types";
 
-interface LandingpageContentProps {
-  departmentInfo: DepartmentInfo;
-}
-
-export function LandingpageContent(props: LandingpageContentProps) {
+export function LandingpageContent() {
   const { t } = useTranslation(["schoolEntry/overview"]);
   const publicCitizenApi = useSchoolEntryPublicCitizenApi();
-  const { data: openingHours } = useSuspenseQuery(
-    getOpeningHoursQuery(publicCitizenApi),
+  const [{ data: openingHours }, { data: departmentInfo }] = useSuspenseQueries(
+    {
+      queries: [
+        getOpeningHoursQuery(publicCitizenApi),
+        getDepartmentInfoQuery(publicCitizenApi),
+      ],
+    },
   );
 
   return (
@@ -46,7 +49,7 @@ export function LandingpageContent(props: LandingpageContentProps) {
         <Typography>{t("information.cancellation")}</Typography>
         <Typography>
           {t("information.location", {
-            address: formatStreetAndHouseNumber(props.departmentInfo),
+            address: formatStreetAndHouseNumber(departmentInfo),
           })}
         </Typography>
       </ContentSheet>
@@ -54,15 +57,15 @@ export function LandingpageContent(props: LandingpageContentProps) {
         <ContentSheetTitle>{t("place.title")}</ContentSheetTitle>
         <InfoSectionGrid>
           <AddressSection
-            department={props.departmentInfo}
+            department={departmentInfo}
             localePath="schoolEntry/overview"
           />
           <OpeningHoursSection
             openingHours={openingHours}
             localePath="schoolEntry/overview"
           />
-          <PhoneNumbersSection department={props.departmentInfo} />
-          <EmailSection department={props.departmentInfo} />
+          <PhoneNumbersSection department={departmentInfo} />
+          <EmailSection department={departmentInfo} />
         </InfoSectionGrid>
       </ContentSheet>
     </GridColumnStack>

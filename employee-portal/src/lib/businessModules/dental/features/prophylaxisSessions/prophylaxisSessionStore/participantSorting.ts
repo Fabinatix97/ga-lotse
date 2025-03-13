@@ -78,7 +78,7 @@ function compareBy(
   ): number {
     switch (sortKey) {
       case "dateOfBirth":
-        return b.dateOfBirth.getDate() - a.dateOfBirth.getDate();
+        return a.dateOfBirth.getTime() - b.dateOfBirth.getTime();
       case "currentFluoridationConsent":
         return compareFluoridation(a, b, sortDirection);
       case "gender":

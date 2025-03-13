@@ -11,8 +11,12 @@ import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.OrderBy;
+import jakarta.persistence.OrderColumn;
+import java.util.List;
 import java.util.Map;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.JdbcType;
@@ -29,6 +33,18 @@ public class ScreeningExaminationResult extends ExaminationResult {
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private OralHygieneStatus oralHygieneStatus;
 
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private MihStatus mihStatus;
+
+  @ElementCollection
+  @Enumerated(EnumType.STRING)
+  @OrderColumn
+  @BatchSize(size = 100)
+  private List<OrthodonticFinding> orthodonticFindings;
+
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private OrthodonticStatus orthodonticStatus;
+
   @Column(nullable = false)
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private DentitionType dentitionType;
@@ -40,6 +56,11 @@ public class ScreeningExaminationResult extends ExaminationResult {
   private boolean gingivitis;
 
   private boolean parodontitis;
+
+  private Boolean decayRisk;
+
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private DecayStatus decayStatus;
 
   @ElementCollection
   @MapKeyJdbcType(PostgreSQLEnumJdbcType.class)
@@ -110,5 +131,45 @@ public class ScreeningExaminationResult extends ExaminationResult {
 
   public void setParodontitis(boolean parodontitis) {
     this.parodontitis = parodontitis;
+  }
+
+  public MihStatus getMihStatus() {
+    return mihStatus;
+  }
+
+  public void setMihStatus(MihStatus mihStatus) {
+    this.mihStatus = mihStatus;
+  }
+
+  public List<OrthodonticFinding> getOrthodonticFindings() {
+    return orthodonticFindings;
+  }
+
+  public void setOrthodonticFindings(List<OrthodonticFinding> orthodonticFindings) {
+    this.orthodonticFindings = orthodonticFindings;
+  }
+
+  public OrthodonticStatus getOrthodonticStatus() {
+    return orthodonticStatus;
+  }
+
+  public void setOrthodonticStatus(OrthodonticStatus orthodonticStatus) {
+    this.orthodonticStatus = orthodonticStatus;
+  }
+
+  public Boolean getDecayRisk() {
+    return decayRisk;
+  }
+
+  public void setDecayRisk(Boolean decayRisk) {
+    this.decayRisk = decayRisk;
+  }
+
+  public DecayStatus getDecayStatus() {
+    return decayStatus;
+  }
+
+  public void setDecayStatus(DecayStatus decayStatus) {
+    this.decayStatus = decayStatus;
   }
 }

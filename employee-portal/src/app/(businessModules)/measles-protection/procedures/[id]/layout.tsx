@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { TabNavigationItem } from "@eshg/lib-employee-portal";
+import { DynamicLayoutProps } from "@eshg/lib-portal/types/pageParams";
 import {
   PlaylistAddCheckOutlined,
   TextSnippetOutlined,
   TimelineOutlined,
 } from "@mui/icons-material";
-import { ReactNode } from "react";
 
 import { MeaslesProtectionProcedureLayout } from "@/lib/businessModules/measlesProtection/layout/MeaslesProtectionProcedureLayout";
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
-import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
 
 function createTabItems(id: string): TabNavigationItem[] {
   return [
@@ -34,16 +34,12 @@ function createTabItems(id: string): TabNavigationItem[] {
   ];
 }
 
-export default function Layout({
-  tabs,
-  params: { id },
-}: {
-  params: { id: string };
-  tabs: ReactNode;
-}) {
+export default function Layout(props: DynamicLayoutProps<{ id: string }>) {
+  const { id } = props.params;
+
   return (
     <MeaslesProtectionProcedureLayout id={id} navItems={createTabItems(id)}>
-      {tabs}
+      {props.children}
     </MeaslesProtectionProcedureLayout>
   );
 }

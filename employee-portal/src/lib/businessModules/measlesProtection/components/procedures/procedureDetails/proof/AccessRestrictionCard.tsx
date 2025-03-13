@@ -6,13 +6,11 @@
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import {
   ApiAccessRestriction,
-  ApiMeaslesProtectionFeature,
   ApiMeaslesProtectionProcedure,
 } from "@eshg/measles-protection-api";
 import { Add, EditOutlined } from "@mui/icons-material";
 import { Button, IconButton, Sheet, Stack } from "@mui/joy";
 
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/measlesProtection/api/queries/featureTogglesApi";
 import { ACCESS_RESTRICTION_FIELDS } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/AccessRestrictionSidebar";
 import { EDIT_ACCESS_RESTRICTION_SEARCH_PARAM } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/EditAccessRestrictionSidebar";
 import {
@@ -47,16 +45,12 @@ export function AccessRestrictionCard({
     EDIT_ACCESS_RESTRICTION_SEARCH_PARAM,
     "boolean",
   );
-  const isEditAccessRestrictionEnabled = useIsNewFeatureEnabled(
-    ApiMeaslesProtectionFeature.EditAccessRestriction,
-  );
 
   return (
     <Sheet sx={{ height: "100%" }}>
       <DetailsSection
         title="Betretungsverbot"
-        {...(isEditAccessRestrictionEnabled &&
-          !procedureClosed &&
+        {...(!procedureClosed &&
           accessRestriction && {
             buttons: (
               <IconButton

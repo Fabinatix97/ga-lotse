@@ -13,7 +13,6 @@ import de.eshg.measlesprotection.api.AccessRestrictionLetterDto;
 import de.eshg.measlesprotection.api.CreateAccessRestrictionDto;
 import de.eshg.measlesprotection.api.CreateAccessRestrictionLetterDto;
 import de.eshg.measlesprotection.api.UpdateAccessRestrictionDto;
-import de.eshg.measlesprotection.config.MeaslesProtectionFeature;
 import de.eshg.measlesprotection.config.MeaslesProtectionFeatureToggle;
 import de.eshg.measlesprotection.mapper.AccessRestrictionLetterMapper;
 import de.eshg.measlesprotection.mapper.AccessRestrictionMapper;
@@ -41,13 +40,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class AccessRestrictionController {
 
   private final AccessRestrictionService accessRestrictionService;
-  private final MeaslesProtectionFeatureToggle featureToggle;
 
   public AccessRestrictionController(
       AccessRestrictionService accessRestrictionService,
       MeaslesProtectionFeatureToggle featureToggle) {
     this.accessRestrictionService = accessRestrictionService;
-    this.featureToggle = featureToggle;
   }
 
   @PostMapping("/{id}/access-restriction")
@@ -81,7 +78,6 @@ public class AccessRestrictionController {
   public AccessRestrictionDto updateAccessRestriction(
       @PathVariable("id") @ProtectedProcedure UUID id,
       @Valid @RequestBody UpdateAccessRestrictionDto request) {
-    featureToggle.assertNewFeatureIsEnabled(MeaslesProtectionFeature.EDIT_ACCESS_RESTRICTION);
     AccessRestriction accessRestriction =
         accessRestrictionService.updateAccessRestriction(id, request);
     return AccessRestrictionMapper.toInterfaceType(accessRestriction);

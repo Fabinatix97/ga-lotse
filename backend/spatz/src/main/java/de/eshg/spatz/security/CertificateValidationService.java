@@ -8,7 +8,6 @@ package de.eshg.spatz.security;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
 import de.eshg.lib.servicedirectory.api.ActorResponseDto;
-import de.eshg.lib.servicedirectory.api.ActorTypeDto;
 import de.eshg.lib.servicedirectory.api.CertificateDto;
 import de.eshg.servicedirectory.util.X509Utils;
 import java.security.KeyStore;
@@ -98,7 +97,7 @@ public class CertificateValidationService {
   public List<ActorResponseDto> keepOnlyValidActors(Collection<ActorResponseDto> allActors) {
     List<ActorResponseDto> result = new ArrayList<>();
     for (ActorResponseDto actor : allActors) {
-      if (ActorTypeDto.LSD == actor.type() || isValidActor(actor)) {
+      if (isValidActor(actor)) {
         result.add(actor);
       } else {
         log.info("Ignoring invalid actor {}", actor.commonName());
@@ -124,10 +123,30 @@ public class CertificateValidationService {
       return false;
     }
 
+    X509Certificate certificate;
+    try {
+      certificate = X509Utils.parsePem(cert.value());
+    } catch (Exception e) {
+      logInvalidActor(
+          "The {} certificate of the {} '{}' in orgUnit '{}' was not parsable: {}",
+          curOrPrev,
+          actor,
+          cert,
+          e);
+      return false;
+    }
+
+    if (X509Utils.isCaCertificate(certificate)) {
+      logInvalidActor(
+          "The {} certificate of the {} '{}' in orgUnit '{}' is a CA certificate: {}",
+          curOrPrev,
+          actor,
+          cert);
+      return false;
+    }
+
     if (isBlank(cert.signatory()) || isBlank(cert.signature())) {
-      boolean valid =
-          trustStore == null
-              || X509Utils.inTrustStoreOrWasSignedByOneInTrustStore(trustStore, cert.value());
+      boolean valid = trustStore == null || inTrustStoreOrWasSignedByOneInTrustStore(certificate);
       if (!valid) {
         logInvalidActor(
             "The {} certificate of the {} '{}' in orgUnit '{}' is untrusted: {}",
@@ -138,7 +157,28 @@ public class CertificateValidationService {
       return valid;
     }
 
-    String signatory = cert.signatory();
+    X509Certificate signatory;
+    try {
+      signatory = X509Utils.parsePem(cert.signatory());
+    } catch (Exception e) {
+      logInvalidActor(
+          "The {} certificate of the {} '{}' in orgUnit '{}' has no parsable signatory: {}",
+          curOrPrev,
+          actor,
+          cert,
+          e);
+      return false;
+    }
+
+    if (X509Utils.isCaCertificate(signatory)) {
+      logInvalidActor(
+          "The {} certificate of the {} '{}' in orgUnit '{}' is signed by a CA certificate: {}",
+          curOrPrev,
+          actor,
+          cert);
+      return false;
+    }
+
     if (trustStore != null && !inTrustStoreOrWasSignedByOneInTrustStore(signatory)) {
       logInvalidActor(SIGNATORY_INVALID_MSG, curOrPrev, actor, cert);
       return false;
@@ -158,7 +198,23 @@ public class CertificateValidationService {
         signatoryInvalidMsg, curOrPrev, actor.type(), actor.commonName(), actor.orgUnitId(), cert);
   }
 
-  private boolean inTrustStoreOrWasSignedByOneInTrustStore(String certificateAsPem) {
+  private void logInvalidActor(
+      String signatoryInvalidMsg,
+      String curOrPrev,
+      ActorResponseDto actor,
+      CertificateDto cert,
+      Exception e) {
+    log.error(
+        signatoryInvalidMsg,
+        curOrPrev,
+        actor.type(),
+        actor.commonName(),
+        actor.orgUnitId(),
+        cert,
+        e);
+  }
+
+  private boolean inTrustStoreOrWasSignedByOneInTrustStore(X509Certificate certificateAsPem) {
     return X509Utils.inTrustStoreOrWasSignedByOneInTrustStore(trustStore, certificateAsPem);
   }
 

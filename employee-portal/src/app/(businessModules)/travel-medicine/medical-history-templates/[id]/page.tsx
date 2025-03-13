@@ -10,13 +10,16 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { MedicalHistoryTemplateEditor } from "@/lib/businessModules/travelMedicine/components/templates/medicalHistory/MedicalHistoryTemplateEditor";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 
-export default function MedicalHistoryDetailsPage({
-  params,
-}: Readonly<{ params: { id: string } }>) {
+export default function MedicalHistoryDetailsPage(
+  props: DynamicPageProps<{ id: string }>,
+) {
+  const { id } = props.params;
+
   return (
     <StickyToolbarLayout
       toolbar={
@@ -27,7 +30,7 @@ export default function MedicalHistoryDetailsPage({
       }
     >
       <MainContentLayout sx={{ margin: 0, padding: 0 }} fullViewportHeight>
-        <MedicalHistoryTemplateEditor templateId={params.id} />
+        <MedicalHistoryTemplateEditor templateId={id} />
       </MainContentLayout>
     </StickyToolbarLayout>
   );

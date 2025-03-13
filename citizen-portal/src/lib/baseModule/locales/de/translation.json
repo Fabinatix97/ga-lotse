@@ -33,8 +33,8 @@
     "contact": "Kontakt",
     "different_billing_address": "Abweichende Rechnungsadresse",
     "contact_person": "Kontaktperson",
-    "affectedPerson_one": "Betroffene Person",
-    "affectedPerson_other": "Betroffene Personen",
+    "affected_person_one": "Betroffene Person",
+    "affected_person_other": "Betroffene Personen",
     "back": "Zurück",
     "cancel": "Abbrechen",
     "case_one": "Fall",
@@ -71,16 +71,18 @@
     "prof": "Prof.",
     "prof_dr": "Prof. Dr."
   },
-  "confirmationDialog": {
+  "confirmation_dialog": {
     "title": "Änderung speichern?",
     "description": "Möchten Sie die Änderung wirklich speichern?",
-    "confirmLabel": "Speichern",
-    "cancelLabel": "Abbrechen"
+    "description_unsaved": "Sie haben ungespeicherte Änderungen. Möchten Sie diese speichern?",
+    "confirm_label": "Speichern",
+    "cancel_label": "Abbrechen"
   },
-  "cancelDialog": {
+  "cancel_dialog": {
     "title": "Änderungen verwerfen?",
     "description": "Möchten Sie die Änderungen wirklich verwerfen?",
-    "confirmLabel": "Verwerfen"
+    "description_unsaved": "Sie haben ungespeicherte Änderungen. Möchten Sie diese verwerfen?",
+    "confirm_label": "Verwerfen"
   },
   "error": {
     "title": "Fehler beim Laden"

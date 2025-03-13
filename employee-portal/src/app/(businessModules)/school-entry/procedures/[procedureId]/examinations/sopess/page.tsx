@@ -11,13 +11,13 @@ import {
   mapOptionalValue,
   parseOptionalValue,
 } from "@eshg/lib-portal/helpers/form";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import {
   ApiScoredEvaluationExamination,
   UpdateSopessExaminationResultRequest,
 } from "@eshg/school-entry-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
-import { SchoolEntryProcedurePageProps } from "@/app/(businessModules)/school-entry/procedures/[procedureId]/layout";
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { SopessExaminationResult } from "@/lib/businessModules/schoolEntry/api/models/examinations/SopessExaminationResult";
 import { useUpdateSopessExaminationResultOptions } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
@@ -25,6 +25,7 @@ import {
   getProcedureQuery,
   getSopessExaminationResultQuery,
 } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
+import { SchoolEntryProcedureRouteParamsSchema } from "@/lib/businessModules/schoolEntry/features/procedures/SchoolEntryProcedureRouteParamsSchema";
 import {
   ArticulationValues,
   KnowledgeThinkingValues,
@@ -38,9 +39,9 @@ import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel"
 import { ContentPanelTitle } from "@/lib/shared/components/contentPanel/ContentPanelTitle";
 
 export default function SchoolEntrySopessExaminationPage(
-  props: SchoolEntryProcedurePageProps,
+  props: DynamicPageProps<SchoolEntryProcedureRouteParamsSchema>,
 ) {
-  const procedureId = props.params.procedureId;
+  const { procedureId } = props.params;
   const schoolEntryApi = useSchoolEntryApi();
   const [{ data: procedure }, { data: sopessExaminationResult }] =
     useSuspenseQueries({

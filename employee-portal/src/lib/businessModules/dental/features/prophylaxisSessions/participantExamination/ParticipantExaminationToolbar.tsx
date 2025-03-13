@@ -6,13 +6,12 @@
 "use client";
 
 import { ChildExamination, routes } from "@eshg/dental";
-import { MedicalServicesOutlined } from "@mui/icons-material";
-
-import { PersonToolbarHeader } from "@/lib/shared/components/layout/PersonToolbarHeader";
 import {
-  BackButton,
+  PersonToolbarHeader,
+  TabNavigationBackButton,
   TabNavigationToolbar,
-} from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
+} from "@eshg/lib-employee-portal";
+import { MedicalServicesOutlined } from "@mui/icons-material";
 
 interface ParticipantExaminationToolbarProps {
   prophylaxisSessionId: string;
@@ -27,7 +26,7 @@ export function ParticipantExaminationToolbar(
   return (
     <TabNavigationToolbar
       header={<PersonToolbarHeader person={props.participant} showAge />}
-      routeBack={<BackButton onClick={props.onBackClicked} />}
+      routeBack={<TabNavigationBackButton onClick={props.onBackClicked} />}
       items={[
         {
           tabButtonName: "Untersuchung",

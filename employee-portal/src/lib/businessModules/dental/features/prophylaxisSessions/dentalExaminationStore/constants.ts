@@ -5,11 +5,22 @@
 
 import { ApiDentitionType, ApiTooth } from "@eshg/dental-api";
 
-import { NavigateDirection } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/actions/navigate";
-
-import { QuadrantNumber, ToothType } from "./types";
+import { DentalExaminationView, QuadrantNumber, ToothType } from "./types";
 
 export const QUADRANT_NUMBERS: QuadrantNumber[] = ["Q1", "Q2", "Q3", "Q4"];
+
+export const JAW_VIEW_BY_QUADRANT: Record<
+  QuadrantNumber,
+  DentalExaminationView
+> = {
+  Q1: "UPPER_JAW",
+  Q2: "UPPER_JAW",
+  Q3: "LOWER_JAW",
+  Q4: "LOWER_JAW",
+};
+
+export const MIN_TOOTH_INDEX = 0;
+export const MAX_TOOTH_INDEX = 7;
 
 export const TOOTH_TYPES: Record<ApiTooth, ToothType> = {
   T11: "SECONDARY_TOOTH",
@@ -100,11 +111,4 @@ export const INITIALLY_TOGGLED_OPTIONAL_TEETH: Record<
   PRIMARY: new Set<ApiTooth>([]),
   MIXED: new Set<ApiTooth>(["T16", "T26", "T36", "T46"]),
   SECONDARY: OPTIONAL_TEETH,
-};
-
-export const NAVIGATE_DIRECTIONS: Record<string, NavigateDirection> = {
-  ArrowUp: "UP",
-  ArrowDown: "DOWN",
-  ArrowLeft: "LEFT",
-  ArrowRight: "RIGHT",
 };

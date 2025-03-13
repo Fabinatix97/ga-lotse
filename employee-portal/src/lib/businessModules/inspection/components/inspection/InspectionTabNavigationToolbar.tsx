@@ -7,6 +7,12 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import {
+  TabNavigationItem,
+  TabNavigationToolbar,
+  useHasUserRoleCheck,
+} from "@eshg/lib-employee-portal";
+import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
+import {
   History,
   OtherHousesOutlined,
   SubjectOutlined,
@@ -21,10 +27,6 @@ import { InspectionLockInfo } from "@/lib/businessModules/inspection/components/
 import { InspectionTabHeader } from "@/lib/businessModules/inspection/components/inspection/InspectionTabHeader";
 import { OfflineSwitch } from "@/lib/businessModules/inspection/components/inspection/OfflineSwitch";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
-import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
-import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 export function InspectionTabNavigationToolbar({
   inspectionId,

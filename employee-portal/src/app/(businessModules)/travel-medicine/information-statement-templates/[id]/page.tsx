@@ -10,15 +10,16 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { InformationStatementTemplateEditor } from "@/lib/businessModules/travelMedicine/components/templates/informationStatement/InformationStatementTemplateEditor";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 
-export default function InformationStatementDetailsPage({
-  params,
-}: Readonly<{
-  params: { id: string };
-}>) {
+export default function InformationStatementDetailsPage(
+  props: DynamicPageProps<{ id: string }>,
+) {
+  const { id } = props.params;
+
   return (
     <StickyToolbarLayout
       toolbar={
@@ -29,7 +30,7 @@ export default function InformationStatementDetailsPage({
       }
     >
       <MainContentLayout sx={{ margin: 0, padding: 0 }} fullViewportHeight>
-        <InformationStatementTemplateEditor templateId={params.id} />
+        <InformationStatementTemplateEditor templateId={id} />
       </MainContentLayout>
     </StickyToolbarLayout>
   );

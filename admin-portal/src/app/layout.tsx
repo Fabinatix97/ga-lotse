@@ -6,9 +6,9 @@
 import { EnvironmentTypeProvider } from "@eshg/lib-portal/components/EnvironmentTypeProvider";
 import { NonceProvider } from "@eshg/lib-portal/components/NonceProvider";
 import { getNonceFromHeader } from "@eshg/lib-portal/next/contentSecurityPolicyHeaderMiddleware";
+import { LayoutProps } from "@eshg/lib-portal/types/pageParams";
 import { Box } from "@mui/joy";
 import type { Metadata } from "next";
-import { ReactNode } from "react";
 
 import { env } from "@/env/server";
 import { ApiProvider } from "@/lib/components/layout/ApiProvider";
@@ -23,11 +23,7 @@ export const metadata: Metadata = {
   title: "Admin-Portal",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: ReactNode;
-}>) {
+export default function RootLayout(props: LayoutProps) {
   const nonce = getNonceFromHeader();
 
   return (
@@ -117,7 +113,9 @@ export default function RootLayout({
               <EnvironmentTypeProvider
                 environmentType={env.PUBLIC_ENVIRONMENT_TYPE}
               >
-                <MainLayoutWithProviders>{children}</MainLayoutWithProviders>
+                <MainLayoutWithProviders>
+                  {props.children}
+                </MainLayoutWithProviders>
               </EnvironmentTypeProvider>
             </ApiProvider>
           </Box>

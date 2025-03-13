@@ -5,11 +5,15 @@
 
 "use client";
 
-import { MedicalRegistryProcedurePageParams } from "@/app/(businessModules)/medical-registry/procedures/[id]/page";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+
+import { MedicalRegistryProcedureRouteParams } from "@/app/(businessModules)/medical-registry/procedures/[id]/page";
 import { MedicalRegistryProcedureDetails } from "@/lib/businessModules/medicalRegistry/components/procedures/details/MedicalRegistryProcedureDetails";
 
-export default function MedicalRegistryProcedureDetailsPage({
-  params,
-}: Readonly<{ params: MedicalRegistryProcedurePageParams }>) {
-  return <MedicalRegistryProcedureDetails procedureId={params.id} />;
+export default function MedicalRegistryProcedureDetailsPage(
+  props: DynamicPageProps<MedicalRegistryProcedureRouteParams>,
+) {
+  const { id } = props.params;
+
+  return <MedicalRegistryProcedureDetails procedureId={id} />;
 }

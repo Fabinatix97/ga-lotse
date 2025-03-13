@@ -4,6 +4,7 @@
  */
 
 import { ApiBaseFeature, ApiUserRole } from "@eshg/base-api";
+import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import {
   GENDER_VALUES,
   SALUTATION_VALUES,
@@ -36,7 +37,6 @@ import {
   emailHref,
   phoneHref,
 } from "@/lib/shared/components/detailsSection/ExternalLinkDetailsCell";
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 export function ContactDetails({ contact }: { contact: Contact }) {
   const showChatUsername = useIsNewFeatureEnabled(ApiBaseFeature.ChatUsername);

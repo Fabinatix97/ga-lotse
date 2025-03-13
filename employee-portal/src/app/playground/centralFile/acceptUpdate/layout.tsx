@@ -6,14 +6,14 @@
 import {
   MainContentLayout,
   StickyToolbarLayout,
+  TabNavigationItem,
+  TabNavigationToolbar,
 } from "@eshg/lib-employee-portal";
 import ProcedureIcon from "@mui/icons-material/TextSnippetOutlined";
 import { ReactNode } from "react";
 
 import { centralFilePlaygroundRoutes } from "@/app/playground/centralFile/centralFilePlaygroundRoutes";
 import { updateAvailableNavItem } from "@/lib/shared/components/centralFile/constants";
-import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
-import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
 
 const navItems: TabNavigationItem[] = [
   {

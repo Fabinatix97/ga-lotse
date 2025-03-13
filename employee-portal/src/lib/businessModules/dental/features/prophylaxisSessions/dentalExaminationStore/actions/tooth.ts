@@ -6,10 +6,7 @@
 import { RELATED_TEETH, ToothDiagnoses, ToothDiagnosis } from "@eshg/dental";
 import { ApiMainResult, ApiSecondaryResult, ApiTooth } from "@eshg/dental-api";
 
-import {
-  DentalExaminationState,
-  calculateDmftValues,
-} from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/dentalExaminationStore";
+import { DentalExaminationState } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/dentalExaminationStore";
 import {
   createToothWithDiagnosis,
   resolveToothDiagnosisResult,
@@ -23,7 +20,12 @@ import {
   isAddableTooth,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
 
-import { isValidMainResult, isValidSecondaryResult } from "./result";
+import { calculateDmftValuesByDentitionType } from "./dmftValues";
+import {
+  hasAnyResult,
+  isValidMainResult,
+  isValidSecondaryResult,
+} from "./result";
 
 type AddToothState = Pick<DentalExaminationState, "dentition" | "dirty">;
 
@@ -61,7 +63,7 @@ export function addTooth(
 
 type RemoveToothState = Pick<
   DentalExaminationState,
-  "dentition" | "dmftValues" | "dirty"
+  "dentition" | "dmftValues" | "dirty" | "hasResult"
 >;
 
 export function removeTooth(
@@ -101,8 +103,9 @@ export function removeTooth(
 
   return {
     dentition: newDentition,
-    dmftValues: calculateDmftValues(newDentition),
+    dmftValues: calculateDmftValuesByDentitionType(newDentition),
     dirty: true,
+    hasResult: hasAnyResult(newDentition),
   };
 }
 
@@ -151,7 +154,7 @@ export function toggleToothType(
   };
   return {
     dentition: newDentition,
-    dmftValues: calculateDmftValues(newDentition),
+    dmftValues: calculateDmftValuesByDentitionType(newDentition),
     dirty: true,
   };
 }

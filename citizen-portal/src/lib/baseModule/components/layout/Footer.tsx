@@ -6,10 +6,12 @@
 import { ApiBaseFeature } from "@eshg/base-api";
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { ApiOpenDataFeature } from "@eshg/opendata-api";
 import { Box, Stack, Typography, styled } from "@mui/joy";
 
-import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
+import { useIsNewFeatureEnabled as useIsNewBaseFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { useRoutes } from "@/lib/baseModule/shared/routes";
+import { useIsNewFeatureEnabled as useIsNewOpenDataFeatureEnabled } from "@/lib/businessModules/opendata/api/queries/featureTogglesApi";
 import { useTranslation } from "@/lib/i18n/client";
 import { MobileBreakpoint, byBreakpoint } from "@/lib/shared/breakpoints";
 import { responsiveContent } from "@/lib/shared/components/layout/PageContent";
@@ -48,10 +50,12 @@ function FooterLink({ children, href }: FooterLinkProps) {
 export function Footer(props: DepartmentInfoProps) {
   const { t } = useTranslation("footer");
   const routes = useRoutes();
-  const isGdprFeatureEnabled = useIsNewFeatureEnabled(
+  const isGdprFeatureEnabled = useIsNewBaseFeatureEnabled(
     ApiBaseFeature.GdprOnlinePortal,
   );
-  const isOpenDataEnabled = useIsNewFeatureEnabled(ApiBaseFeature.OpenData);
+  const isOpenDataEnabled = useIsNewOpenDataFeatureEnabled(
+    ApiOpenDataFeature.OpenData,
+  );
 
   return (
     <Box

@@ -6,8 +6,9 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
-import { EditInspectionPageParams } from "@/app/(businessModules)/inspection/procedures/[id]/layout";
+import { EditInspectionRouteParams } from "@/app/(businessModules)/inspection/procedures/[id]/layout";
 import {
   useApprovalRequestApi,
   useFileApi,
@@ -22,12 +23,12 @@ import { systemProgressEntryTypeTitles } from "@/lib/businessModules/inspection/
 import { moduleUserGroup } from "@/lib/businessModules/inspection/shared/moduleUserGroup";
 import { getHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/getHeadersForOfflineCaching";
 import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
-import { ProgressEntriesUrlParams } from "@/lib/shared/components/procedures/progress-entries/types";
 
 export default function InspectionProgressEntriesPage(
-  props: ProgressEntriesUrlParams<EditInspectionPageParams>,
+  props: DynamicPageProps<EditInspectionRouteParams>,
 ) {
-  const { params, searchParams } = props;
+  const { id } = props.params;
+  const searchParams = props.searchParams;
   const progressEntryApi = useProgressEntryApi();
   const procedureApi = useProcedureApi();
   const fileApi = useFileApi();
@@ -35,7 +36,7 @@ export default function InspectionProgressEntriesPage(
 
   return (
     <ProgressEntriesPage
-      procedureId={params.id}
+      procedureId={id}
       searchParams={searchParams}
       leaderRole={ApiUserRole.InspectionLeader}
       systemProgressEntryTypes={systemProgressEntryTypeTitles}

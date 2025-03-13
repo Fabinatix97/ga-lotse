@@ -16,7 +16,7 @@ import { MutationOptions, useQueryClient } from "@tanstack/react-query";
 
 import { ChildExamination } from "@/api/models/ChildExamination";
 import { getProphylaxisSessionQuery } from "@/api/queries/prophylaxisSessionApi";
-import { useDentalApi } from "@/shared/DentalProvider";
+import { useDentalApi } from "@/contexts/dental";
 
 export function useCreateProphylaxisSession() {
   const { prophylaxisSessionApi } = useDentalApi();

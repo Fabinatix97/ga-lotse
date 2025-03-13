@@ -4,14 +4,31 @@
  */
 
 import {
+  ApiWebSearchEntryStatus,
   GetPendingFacilitiesRequest,
-  SearchRequest,
 } from "@eshg/inspection-api";
+import {
+  BooleanSchema,
+  PositiveIntegerSchema,
+} from "@eshg/lib-portal/schemas/pageParams";
+import * as v from "valibot";
 
-export type FacilityWebSearchFilters = Partial<Omit<SearchRequest, "sort">> & {
-  sortField?: string;
-  sortDirection?: string;
-};
+export const FacilityWebSearchFiltersSchema = v.partial(
+  v.object({
+    pageNumber: PositiveIntegerSchema,
+    pageSize: PositiveIntegerSchema,
+    name: v.string(),
+    address: v.string(),
+    status: v.enum(ApiWebSearchEntryStatus),
+    keywords: v.string(),
+    ignored: BooleanSchema,
+    sortField: v.string(),
+    sortDirection: v.string(),
+  }),
+);
+export type FacilityWebSearchFiltersSchema = v.InferOutput<
+  typeof FacilityWebSearchFiltersSchema
+>;
 
 export type PendingFacilitiesFilters = Partial<
   Omit<GetPendingFacilitiesRequest, "sort" | "isBefore" | "isAfter">

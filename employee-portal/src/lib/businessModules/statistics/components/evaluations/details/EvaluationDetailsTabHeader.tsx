@@ -6,7 +6,7 @@
 import {
   TabNavigationHeader,
   TabNavigationHeaderTypography,
-} from "@/lib/shared/components/tabNavigationToolbar/TabNavigationHeader";
+} from "@eshg/lib-employee-portal";
 
 export interface EvaluationDetailsTabHeaderProps {
   evaluationName: string;

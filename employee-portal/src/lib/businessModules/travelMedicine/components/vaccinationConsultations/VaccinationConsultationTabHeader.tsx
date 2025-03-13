@@ -5,10 +5,10 @@
 
 "use client";
 
+import { PersonToolbarHeader } from "@eshg/lib-employee-portal";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { useGetVaccinationConsultationDetailsQuery } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
-import { PersonToolbarHeader } from "@/lib/shared/components/layout/PersonToolbarHeader";
 
 export function VaccinationConsultationTabHeader({
   id,

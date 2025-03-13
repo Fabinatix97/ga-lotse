@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Grid, GridProps, Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { Children, ReactNode } from "react";
 
 import { byBreakpoint } from "@/lib/shared/breakpoints";
-import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 interface AppointmentOverviewSectionGridProps extends RequiresChildren {
   columns?: GridProps["columns"];

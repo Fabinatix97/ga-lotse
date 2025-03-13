@@ -34,6 +34,7 @@ import de.eshg.base.pdf.gdpr.GdprRightToObjectLetterGenerator;
 import de.eshg.base.util.PaginationUtil;
 import de.eshg.domain.model.BaseEntity_;
 import de.eshg.domain.model.EntityWithExternalId;
+import de.eshg.domain.model.serialization.NormalizeSequenceIdCustomizer;
 import de.eshg.domain.model.serialization.SerializationService;
 import de.eshg.lib.aggregation.BusinessModuleAggregationHelper;
 import de.eshg.lib.aggregation.ClientResponse;
@@ -200,6 +201,10 @@ public class GdprProcedureService {
 
   public Optional<GdprProcedure> findByExternalId(UUID id) {
     return repository.findByExternalId(id);
+  }
+
+  public Optional<UUID> findFirstByDownloadIds(Set<UUID> id) {
+    return repository.findFirstByDownloadIds(id);
   }
 
   public Page<GdprProcedure> findAll(
@@ -561,7 +566,8 @@ public class GdprProcedureService {
     fileStates.addAll(personFileStates);
     fileStates.addAll(facilityFileStates);
 
-    return serializationService.toNestedZip("Sachstand-", fileStates);
+    return serializationService.toNestedZip(
+        "Sachstand-", fileStates, new NormalizeSequenceIdCustomizer());
   }
 
   public void writeAuditLog(String operationName, Map<String, String> attributes) {

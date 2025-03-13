@@ -1,0 +1,57 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1741097671491-1">
+    <createTable tableName="privacy_documents">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_privacy_documents"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="privacy_notice_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="privacy_policy_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1741097671491-2">
+    <addUniqueConstraint columnNames="privacy_notice_id"
+      constraintName="privacy_documents_privacy_notice_id_key" tableName="privacy_documents"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1741097671491-3">
+    <addUniqueConstraint columnNames="privacy_policy_id"
+      constraintName="privacy_documents_privacy_policy_id_key" tableName="privacy_documents"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1741097671491-4">
+    <createTable tableName="document">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_document"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="content" type="BYTEA"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1741097671491-5">
+    <addForeignKeyConstraint baseColumnNames="privacy_notice_id" baseTableName="privacy_documents"
+      constraintName="fk_privacy_notice" deferrable="false" initiallyDeferred="false"
+      onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="document" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1741097671491-6">
+    <addForeignKeyConstraint baseColumnNames="privacy_policy_id" baseTableName="privacy_documents"
+      constraintName="fk_privacy_policy" deferrable="false" initiallyDeferred="false"
+      onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="document" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,49 @@
+{
+  "common": {
+    "title": "Termin buchen",
+    "requiredTitle": "*Plichtfeld",
+    "logout": "Mein Bereich verlassen"
+  },
+  "content": {
+    "title": "Verfügbare Termine",
+    "fields": {
+      "error": {
+        "title": "Fehler beim Laden der Termine",
+        "description": "Bitte laden Sie die Seite neu.",
+        "reload": "Seite neu laden"
+      }
+    },
+    "appointmentPicker": {
+      "noAppointmentForSelectedDate": "Für den ausgewählten Tag stehen keine freien Termine zur Verfügung",
+      "noAppointmentSelected": "Es wurde kein Termin ausgewählt.",
+      "noAppointmentsAvailable": "Derzeit sind keine Termine verfügbar",
+      "tryLater": "Wir schalten in kürze weitere Termine frei. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut."
+    },
+    "backToOverview": "Zurück",
+    "infoPanelTitle": "Terminverschiebung",
+    "infoPanelText": "Sie können Ihren Termin maximal zwei Mal verschieben."
+  },
+  "appointment_calendar": {
+    "required_appointment": "Bitte einen Termin auswählen",
+    "required_day": "Bitte einen Tag auswählen",
+    "month_selection": "Termin Kalendermonat",
+    "next_month": "zum nächsten Monat",
+    "prev_month": "zum vorherigen Monat",
+    "list_label": "Verfügbare Uhrzeiten *",
+    "calendar_label": "Datum *",
+    "available": "verfügbar"
+  },
+  "sidePanel": {
+    "title": "Übersicht",
+    "dateAndTime": "{{ appointmentStart }} Uhr",
+    "appointmentDuration": "(ca. {{ durationInMinutes }} Minuten)",
+    "bookAppointment_bookable": "Termin buchen",
+    "bookAppointment_cancelled": "Termin neu buchen",
+    "bookAppointment_booked": "Termin umbuchen",
+    "cancel": "Abbrechen"
+  },
+  "snackbar": {
+    "rebook_success": "Termin wurde erfolgreich umgebucht",
+    "book_success": "Termin wurde erfolgreich gebucht"
+  }
+}

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useGetSelfUser } from "@eshg/lib-employee-portal";
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import ProfileIcon from "@mui/icons-material/AccountCircle";
@@ -12,7 +13,6 @@ import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 import { Button, Divider, Stack } from "@mui/joy";
 import { ReactNode } from "react";
 
-import { useGetSelfUser } from "@/lib/baseModule/api/queries/users";
 import { ChatSettingsButton } from "@/lib/baseModule/components/layout/ChatSettingsSidebar";
 import { UserSidebarHeader } from "@/lib/baseModule/components/users/userSidebar/UserSidebarHeader";
 import { routes } from "@/lib/baseModule/shared/routes";

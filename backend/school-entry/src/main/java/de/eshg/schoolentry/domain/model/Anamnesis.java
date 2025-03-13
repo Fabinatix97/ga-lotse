@@ -73,22 +73,22 @@ public class Anamnesis extends GenericEntity<Long> implements ValidatableEntity 
   private Boolean physiotherapy;
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
-  private CountryCode nationalityChild;
+  private SchoolEntryCountryCode nationalityChild;
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
-  private CountryCode countryOfBirthChild;
+  private SchoolEntryCountryCode countryOfBirthChild;
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
-  private CountryCode nationalityFirstParent;
+  private SchoolEntryCountryCode nationalityFirstParent;
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
-  private CountryCode countryOfBirthFirstParent;
+  private SchoolEntryCountryCode countryOfBirthFirstParent;
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
-  private CountryCode nationalitySecondParent;
+  private SchoolEntryCountryCode nationalitySecondParent;
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
-  private CountryCode countryOfBirthSecondParent;
+  private SchoolEntryCountryCode countryOfBirthSecondParent;
 
   private Boolean hasMigrationBackground;
   private LocalDate inGermanySince;
@@ -291,51 +291,51 @@ public class Anamnesis extends GenericEntity<Long> implements ValidatableEntity 
     this.physiotherapy = physiotherapy;
   }
 
-  public CountryCode getNationalityChild() {
+  public SchoolEntryCountryCode getNationalityChild() {
     return nationalityChild;
   }
 
-  public void setNationalityChild(CountryCode nationalityChild) {
+  public void setNationalityChild(SchoolEntryCountryCode nationalityChild) {
     this.nationalityChild = nationalityChild;
   }
 
-  public CountryCode getCountryOfBirthChild() {
+  public SchoolEntryCountryCode getCountryOfBirthChild() {
     return countryOfBirthChild;
   }
 
-  public void setCountryOfBirthChild(CountryCode countryOfBirthChild) {
+  public void setCountryOfBirthChild(SchoolEntryCountryCode countryOfBirthChild) {
     this.countryOfBirthChild = countryOfBirthChild;
   }
 
-  public CountryCode getNationalityFirstParent() {
+  public SchoolEntryCountryCode getNationalityFirstParent() {
     return nationalityFirstParent;
   }
 
-  public void setNationalityFirstParent(CountryCode nationalityFirstParent) {
+  public void setNationalityFirstParent(SchoolEntryCountryCode nationalityFirstParent) {
     this.nationalityFirstParent = nationalityFirstParent;
   }
 
-  public CountryCode getCountryOfBirthFirstParent() {
+  public SchoolEntryCountryCode getCountryOfBirthFirstParent() {
     return countryOfBirthFirstParent;
   }
 
-  public void setCountryOfBirthFirstParent(CountryCode countryOfBirthFirstParent) {
+  public void setCountryOfBirthFirstParent(SchoolEntryCountryCode countryOfBirthFirstParent) {
     this.countryOfBirthFirstParent = countryOfBirthFirstParent;
   }
 
-  public CountryCode getNationalitySecondParent() {
+  public SchoolEntryCountryCode getNationalitySecondParent() {
     return nationalitySecondParent;
   }
 
-  public void setNationalitySecondParent(CountryCode nationalitySecondParent) {
+  public void setNationalitySecondParent(SchoolEntryCountryCode nationalitySecondParent) {
     this.nationalitySecondParent = nationalitySecondParent;
   }
 
-  public CountryCode getCountryOfBirthSecondParent() {
+  public SchoolEntryCountryCode getCountryOfBirthSecondParent() {
     return countryOfBirthSecondParent;
   }
 
-  public void setCountryOfBirthSecondParent(CountryCode countryOfBirthSecondParent) {
+  public void setCountryOfBirthSecondParent(SchoolEntryCountryCode countryOfBirthSecondParent) {
     this.countryOfBirthSecondParent = countryOfBirthSecondParent;
   }
 

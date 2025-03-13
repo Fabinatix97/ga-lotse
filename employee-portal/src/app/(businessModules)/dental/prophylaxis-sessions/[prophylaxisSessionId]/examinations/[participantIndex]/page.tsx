@@ -5,31 +5,22 @@
 
 "use client";
 
+import { PositiveIntegerSchema } from "@eshg/lib-portal/schemas/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import * as v from "valibot";
 
 import { DentalExaminationStoreProvider } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
 import { ParticipantExaminationPage } from "@/lib/businessModules/dental/features/prophylaxisSessions/participantExamination/ParticipantExaminationPage";
 import { useFilteredParticipants } from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/ProphylaxisSessionStoreProvider";
 
-const PageParamsSchema = v.object({
-  participantIndex: v.pipe(
-    v.string(),
-    v.transform(Number),
-    v.number(),
-    v.integer(),
-    v.toMinValue(0),
-  ),
+const RouteParamsSchema = v.object({
+  participantIndex: PositiveIntegerSchema,
 });
-type PageParamsSchema = v.InferInput<typeof PageParamsSchema>;
-
-type ProphylaxisSessionExaminationPageProps = Readonly<{
-  params: PageParamsSchema;
-}>;
 
 export default function ProphylaxisSessionExaminationPage(
-  props: ProphylaxisSessionExaminationPageProps,
+  props: DynamicPageProps,
 ) {
-  const { participantIndex } = v.parse(PageParamsSchema, props.params);
+  const { participantIndex } = v.parse(RouteParamsSchema, props.params);
   const filteredParticipants = useFilteredParticipants();
   const participant = filteredParticipants.at(participantIndex);
   if (participant === undefined) {

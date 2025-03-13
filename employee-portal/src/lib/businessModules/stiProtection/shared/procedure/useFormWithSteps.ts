@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useReducer } from "react";
+import { ReactNode, useReducer } from "react";
 
 export interface Step<TProps, TForm> {
   title: string;
   subTitle: string;
-  fields: (props: TProps) => JSX.Element;
+  fields: (props: TProps) => ReactNode;
   validate?: (form: TForm) => Partial<Record<keyof TForm, string>> | undefined;
 }
 

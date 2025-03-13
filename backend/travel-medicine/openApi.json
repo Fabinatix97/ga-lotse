@@ -5818,6 +5818,9 @@
             "description" : "The last name of the Contact Person.",
             "example" : "Doe"
           },
+          "mainContact" : {
+            "type" : "boolean"
+          },
           "phoneNumber" : {
             "maxLength" : 23,
             "minLength" : 1,

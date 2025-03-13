@@ -3,15 +3,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { TabPanel, TabPanelProps } from "@mui/joy";
+import { TabPanel, TabPanelProps, TabProps } from "@mui/joy";
 import { PropsWithChildren } from "react";
 
-export function UnstyledTabPanel({
+export function UnstyledTabPanel<T extends TabProps["value"]>({
   children,
   ...props
-}: Readonly<PropsWithChildren<TabPanelProps>>) {
+}: Readonly<PropsWithChildren<Omit<TabPanelProps, "value"> & { value: T }>>) {
   return (
-    <TabPanel sx={{ flex: 0 }} {...props}>
+    <TabPanel
+      aria-labelledby={`${props.value}-Tab`}
+      sx={{ flex: 0 }}
+      {...props}
+    >
       {children}
     </TabPanel>
   );

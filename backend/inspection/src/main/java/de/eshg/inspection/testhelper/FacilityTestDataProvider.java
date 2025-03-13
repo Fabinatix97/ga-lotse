@@ -83,7 +83,8 @@ public class FacilityTestDataProvider {
               "Karim",
               "Prof. Dr.",
               SalutationDto.NEUTRAL,
-              GenderDto.DIVERSE),
+              GenderDto.DIVERSE,
+              false),
           new FacilityContactPersonDto(
               "Mailin.Beushausen@example.com",
               "06026 1765114",
@@ -92,7 +93,8 @@ public class FacilityTestDataProvider {
               "Mailin",
               "Prof. Dr.",
               SalutationDto.FEMALE,
-              GenderDto.FEMALE),
+              GenderDto.FEMALE,
+              false),
           new FacilityContactPersonDto(
               "tessa.schuermann@example.com",
               "04948 543267787",
@@ -101,7 +103,8 @@ public class FacilityTestDataProvider {
               "Tessa",
               "Prof. Dr.",
               SalutationDto.FEMALE,
-              GenderDto.FEMALE),
+              GenderDto.FEMALE,
+              false),
           new FacilityContactPersonDto(
               "konrad.swillims@example.com",
               "04952 06328",
@@ -110,7 +113,8 @@ public class FacilityTestDataProvider {
               "Konrad",
               "Prof. Dr.",
               SalutationDto.MALE,
-              GenderDto.MALE),
+              GenderDto.MALE,
+              false),
           new FacilityContactPersonDto(
               "xenia.rohrer@example.com",
               "030 996581826037",
@@ -119,7 +123,8 @@ public class FacilityTestDataProvider {
               "Xenia",
               "Prof. Dr.",
               SalutationDto.FEMALE,
-              GenderDto.FEMALE),
+              GenderDto.FEMALE,
+              false),
           new FacilityContactPersonDto(
               "tore.buettner@example.com",
               "04181 584172823",
@@ -128,7 +133,8 @@ public class FacilityTestDataProvider {
               "Tore",
               "Prof. Dr.",
               SalutationDto.MALE,
-              GenderDto.MALE),
+              GenderDto.MALE,
+              false),
           new FacilityContactPersonDto(
               "kkk@example.com",
               "069 481",
@@ -137,7 +143,8 @@ public class FacilityTestDataProvider {
               "Karl Konrad",
               null,
               SalutationDto.MALE,
-              GenderDto.MALE));
+              GenderDto.MALE,
+              false));
 
   private static final List<String> emailAddressList =
       List.of(

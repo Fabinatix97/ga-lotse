@@ -10,6 +10,7 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import {
@@ -21,11 +22,11 @@ import { getObjectTypesQuery } from "@/lib/businessModules/inspection/api/querie
 import { EditChecklistDefinition } from "@/lib/businessModules/inspection/components/checklistDefinition/editor/EditChecklistDefinition";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 
-export default function NewChecklistVersion({
-  params: { defId, versionId },
-}: Readonly<{
-  params: { defId: string; versionId: string };
-}>) {
+export default function NewChecklistVersion(
+  props: DynamicPageProps<{ defId: string; versionId: string }>,
+) {
+  const { defId, versionId } = props.params;
+
   const objectTypeApi = useObjectTypeApi();
   const checklistDefinitionApi = useChecklistDefinitionApi();
 

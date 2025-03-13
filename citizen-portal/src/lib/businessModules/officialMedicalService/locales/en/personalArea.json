@@ -19,6 +19,11 @@
         "BOOKED": "Booked",
         "CANCELLED": "Cancelled",
         "WITHDRAWN": "Withdrawn"
+      },
+      "modal": {
+        "description_BOOKABLE": "Please book an appointment",
+        "bookAppointment_BOOKABLE": "Book appointment",
+        "cancel": "Cancel"
       }
     },
     "concernSection": {
@@ -67,10 +72,23 @@
       "cancelAppointment": "Cancel appointment"
     },
     "cancelled": {
+      "title": "Please book a new appointment",
       "rescheduleAppointment": "Book new appointment"
     },
     "bookable": {
+      "title": "Please book an appointment",
       "bookAppointment": "Book appointment"
+    }
+  },
+  "cancelAppointment": {
+    "cancelModal": {
+      "title": "Cancel your appointment?",
+      "description": "Are you sure you want to cancel your appointment? You can always reschedule afterward.",
+      "confirmLabel": "Yes, cancel",
+      "cancelLabel": "Keep appointment"
+    },
+    "snackbar": {
+      "success": "Appointment cancelled succesfully"
     }
   }
 }

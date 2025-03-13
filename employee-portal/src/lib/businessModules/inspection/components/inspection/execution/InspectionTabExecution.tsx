@@ -45,15 +45,9 @@ import { ChecklistSelectSidebar } from "@/lib/businessModules/inspection/compone
 import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared/enums";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
-export enum InspectionExecutionTabType {
-  CHECKLIST,
-  INCIDENTS,
-}
+export type InspectionExecutionTabType = "CHECKLIST" | "INCIDENTS";
 
-type ActiveTabState = (
-  | { tab: InspectionExecutionTabType.CHECKLIST }
-  | { tab: InspectionExecutionTabType.INCIDENTS }
-) & {
+type ActiveTabState = ({ tab: "CHECKLIST" } | { tab: "INCIDENTS" }) & {
   tabId: string;
   fallbackTabId: string; // in case tabId can not be found when tabs change, try a fallback to this id
 };
@@ -61,12 +55,12 @@ type ActiveTabState = (
 type Tab = (
   | {
       checklist: ApiChecklist;
-      type: InspectionExecutionTabType.CHECKLIST;
-      SidePanelProps: { type: InspectionExecutionTabType.CHECKLIST };
+      type: "CHECKLIST";
+      SidePanelProps: { type: "CHECKLIST" };
     }
   | {
-      type: InspectionExecutionTabType.INCIDENTS;
-      SidePanelProps: { type: InspectionExecutionTabType.INCIDENTS };
+      type: "INCIDENTS";
+      SidePanelProps: { type: "INCIDENTS" };
     }
 ) & {
   fallbackTabId: string;
@@ -116,9 +110,7 @@ export function InspectionTabExecution({
     !inspectionIsBeforePhase(inspection.phase, ApiInspectionPhase.Executed);
 
   const [tabState, setTabState] = useState<ActiveTabState>(() => ({
-    tab: hasChecklists
-      ? InspectionExecutionTabType.CHECKLIST
-      : InspectionExecutionTabType.INCIDENTS,
+    tab: hasChecklists ? "CHECKLIST" : "INCIDENTS",
     tabId: tabsList[0]!.SidePanelProps.tabId,
     fallbackTabId: tabsList[0]!.fallbackTabId,
   }));
@@ -159,11 +151,11 @@ export function InspectionTabExecution({
   }
 
   function handleDeleteClick(tab: SidePanelEvent) {
-    if (tab.type === InspectionExecutionTabType.CHECKLIST) {
+    if (tab.type === "CHECKLIST") {
       openCancelDialog({
         onConfirm: async () => {
           const clTab = tabs[tab.tabId];
-          if (clTab && clTab.type === InspectionExecutionTabType.CHECKLIST) {
+          if (clTab && clTab.type === "CHECKLIST") {
             await handleChecklistDelete(clTab.checklist.context.id);
           }
         },
@@ -179,18 +171,18 @@ export function InspectionTabExecution({
       if (tab.tabId === tabState.tabId) {
         return;
       }
-      if (tab.type === InspectionExecutionTabType.CHECKLIST) {
+      if (tab.type === "CHECKLIST") {
         const clTab = tabs[tab.tabId];
-        if (clTab && clTab.type === InspectionExecutionTabType.CHECKLIST) {
+        if (clTab && clTab.type === "CHECKLIST") {
           setTabState({
-            tab: InspectionExecutionTabType.CHECKLIST,
+            tab: "CHECKLIST",
             tabId: clTab.checklist.id,
             fallbackTabId: clTab.checklist.context.id,
           });
         }
-      } else if (tab.type === InspectionExecutionTabType.INCIDENTS) {
+      } else if (tab.type === "INCIDENTS") {
         setTabState({
-          tab: InspectionExecutionTabType.INCIDENTS,
+          tab: "INCIDENTS",
           fallbackTabId: "incidents",
           tabId: tab.tabId,
         });
@@ -240,14 +232,14 @@ export function InspectionTabExecution({
             maxHeight: "100%",
           }}
         >
-          {tabState.tab === InspectionExecutionTabType.CHECKLIST && (
+          {tabState.tab === "CHECKLIST" && (
             <Checklist
               checklist={checklists.find((c) => c.id === tabState.tabId)}
               inspectionExternalId={inspectionId}
               readOnly={readOnly}
             />
           )}
-          {tabState.tab === InspectionExecutionTabType.INCIDENTS && (
+          {tabState.tab === "INCIDENTS" && (
             <IncidentsPanel
               procedureId={inspectionId}
               incidents={incidents}
@@ -287,7 +279,7 @@ function createTabs(checklists: ApiChecklist[]): {
   tabsList: TabsList;
 } {
   let tabsList: TabsList = checklists.map((checklist, index) => ({
-    type: InspectionExecutionTabType.CHECKLIST,
+    type: "CHECKLIST",
     checklist: checklist,
     fallbackTabId: checklist.context.id,
     SidePanelProps: {
@@ -295,16 +287,16 @@ function createTabs(checklists: ApiChecklist[]): {
       label: `${index + 1}. ${checklist.context.name}`,
       ariaLabel: `${checklist.context.name}`,
       startDecorator: <ChecklistIcon />,
-      type: InspectionExecutionTabType.CHECKLIST,
+      type: "CHECKLIST",
       isCoreChecklist: checklist.coreChecklist,
     },
   }));
   tabsList = tabsList.concat([
     {
       fallbackTabId: "incidents",
-      type: InspectionExecutionTabType.INCIDENTS,
+      type: "INCIDENTS",
       SidePanelProps: {
-        type: InspectionExecutionTabType.INCIDENTS,
+        type: "INCIDENTS",
         tabId: "incidents",
         label: "Vorkommnisse",
         startDecorator: <AutorenewOutlined />,

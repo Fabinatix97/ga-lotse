@@ -66,6 +66,7 @@ export function AppointmentStaffField(
     >
       <Autocomplete
         multiple
+        aria-description="Mehrfachauswahl möglich"
         autoHighlight
         clearOnBlur
         selectOnFocus

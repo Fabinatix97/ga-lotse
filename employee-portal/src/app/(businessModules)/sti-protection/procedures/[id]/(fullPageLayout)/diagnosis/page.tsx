@@ -7,19 +7,19 @@
 
 import { MainContentLayout } from "@eshg/lib-employee-portal";
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
-import { StiProtectionProcedurePageParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(fullPageLayout)/layout";
+import { StiProtectionProcedureRouteParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(fullPageLayout)/layout";
 import { useDiagnosisQueryOptions } from "@/lib/businessModules/stiProtection/api/queries/diagnosis";
 import { useStiProcedureQueryOptions } from "@/lib/businessModules/stiProtection/api/queries/procedures";
 import { DiagnosisForm } from "@/lib/businessModules/stiProtection/features/procedures/diagnosis/DiagnosisForm";
 import { isProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
 
-export default function StiProtectionProcedureDiagnosisPage({
-  params: { id: procedureId },
-}: Readonly<{
-  params: StiProtectionProcedurePageParams;
-}>) {
+export default function StiProtectionProcedureDiagnosisPage(
+  props: DynamicPageProps<StiProtectionProcedureRouteParams>,
+) {
+  const { id: procedureId } = props.params;
   const [{ data: procedure }, { data: diagnosis }] = useSuspenseQueries({
     queries: [
       useStiProcedureQueryOptions(procedureId),

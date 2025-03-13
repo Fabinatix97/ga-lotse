@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
+
 import { AppointmentFormButtonBar } from "@/lib/businessModules/travelMedicine/components/appointment/AppointmentFormButtonBar";
 import { PrivacyPolicyConfirmationSection } from "@/lib/businessModules/travelMedicine/components/appointment/steps/appointmentReviewFormStep/PrivacyPolicyConfirmationSection";
 import { AppointmentOverviewDetails } from "@/lib/businessModules/travelMedicine/components/appointment/steps/overview/AppointmentOverviewDetails";
@@ -12,7 +14,6 @@ import {
 } from "@/lib/businessModules/travelMedicine/components/shared/components/FormSheet";
 import { useStepContext } from "@/lib/businessModules/travelMedicine/components/shared/contexts/StepContext";
 import { useTranslation } from "@/lib/i18n/client";
-import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 export function AppointmentOverview() {
   const { t } = useTranslation(["travelMedicine/forms"]);

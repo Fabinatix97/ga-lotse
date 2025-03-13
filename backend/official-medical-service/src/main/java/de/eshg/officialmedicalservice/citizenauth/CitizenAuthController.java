@@ -5,16 +5,21 @@
 
 package de.eshg.officialmedicalservice.citizenauth;
 
+import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.officialmedicalservice.citizenauth.api.GetCitizenProcedureDetailsResponse;
-import de.eshg.officialmedicalservice.procedure.CitizenOmsProcedureService;
 import de.eshg.rest.service.security.config.BaseUrls.OfficialMedicalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.UUID;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,18 +29,39 @@ import org.springframework.web.bind.annotation.RestController;
 public class CitizenAuthController {
   public static final String BASE_URL = OfficialMedicalService.CITIZEN_AUTH_API;
   public static final String PROCEDURE_URL = "/procedure";
+  public static final String CANCEL_APPOINTMENT_URL = "/cancel";
+  public static final String APPOINTMENT_URL = "/appointment";
 
-  private final CitizenOmsProcedureService citizenOmsProcedureService;
+  private final CitizenAuthProcedureService citizenAuthProcedureService;
 
-  public CitizenAuthController(CitizenOmsProcedureService citizenOmsProcedureService) {
-    this.citizenOmsProcedureService = citizenOmsProcedureService;
+  public CitizenAuthController(CitizenAuthProcedureService citizenAuthProcedureService) {
+    this.citizenAuthProcedureService = citizenAuthProcedureService;
   }
 
   @GetMapping(path = PROCEDURE_URL)
   @Operation(summary = "Get procedure details")
   public GetCitizenProcedureDetailsResponse getProcedureDetails(
       @AuthenticationPrincipal Jwt principal) {
-    return citizenOmsProcedureService.getProcedureDetails(getCitizenUserId(principal));
+    return citizenAuthProcedureService.getProcedureDetails(getCitizenUserId(principal));
+  }
+
+  @PatchMapping(
+      path = PROCEDURE_URL + APPOINTMENT_URL + "/{appointmentId}" + CANCEL_APPOINTMENT_URL)
+  @Operation(summary = "Cancel appointment")
+  public void cancelAppointmentByCitizen(
+      @AuthenticationPrincipal Jwt principal, @PathVariable("appointmentId") UUID appointmentId) {
+    citizenAuthProcedureService.cancelAppointmentByCitizen(
+        getCitizenUserId(principal), appointmentId);
+  }
+
+  @PutMapping(path = PROCEDURE_URL + APPOINTMENT_URL + "/{appointmentId}")
+  @Operation(summary = "Book or rebook appointment")
+  public void putAppointmentCitizen(
+      @AuthenticationPrincipal Jwt principal,
+      @PathVariable("appointmentId") UUID appointmentId,
+      @RequestBody @Valid AppointmentDto appointmentDto) {
+    citizenAuthProcedureService.putAppointmentByCitizen(
+        getCitizenUserId(principal), appointmentId, appointmentDto);
   }
 
   private UUID getCitizenUserId(Jwt principal) {

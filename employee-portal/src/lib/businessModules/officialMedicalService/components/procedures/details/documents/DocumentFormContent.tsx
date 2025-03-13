@@ -118,6 +118,7 @@ export function DocumentFormContent(props: {
           <FilesSection
             name="files"
             canAdd={canAddFiles}
+            canRemoveLast={true}
             withInitialField={false}
             addLabel="Datei hinzufügen"
             files={props.document.files}

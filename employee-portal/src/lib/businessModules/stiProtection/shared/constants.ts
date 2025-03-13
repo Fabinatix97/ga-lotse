@@ -55,6 +55,7 @@ export const systemProgressEntryTypeTitles: Record<string, string> = {
   APPOINTMENT_CANCELLED: "Termin storniert",
   APPOINTMENT_FINALIZED: "Termin abgeschlossen",
   MEDICAL_HISTORY_UPDATED: "Anamnesebogen aktualisiert",
+  CITIZEN_MEDICAL_HISTORY_UPDATED: "Anamnesebogen aktualisiert",
   CONSULTATION_UPDATED: "Konsultation aktualisiert",
   DIAGNOSIS_UPDATED: "Diagnose aktualisiert",
   FOLLOW_UP_CREATED: "Folgevorgang erstellt",

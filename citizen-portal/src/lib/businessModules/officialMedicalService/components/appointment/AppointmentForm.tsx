@@ -40,6 +40,7 @@ export interface AppointmentFormValues {
     title: OptionalFieldValue<ApiTitle>;
     firstName: string;
     lastName: string;
+    nameAtBirth?: string;
     dateOfBirth: string;
     emailAddresses: string;
     phoneNumbers?: string;
@@ -88,6 +89,7 @@ const INITIAL_VALUES: AppointmentFormValues = {
     title: "",
     firstName: "",
     lastName: "",
+    nameAtBirth: "",
     dateOfBirth: "",
     emailAddresses: "",
     phoneNumbers: "",

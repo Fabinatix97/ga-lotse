@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useGetSelfUser } from "@/lib/baseModule/api/queries/users";
+import { useGetSelfUser } from "@eshg/lib-employee-portal";
+
 import {
   useCreateOrUpdateUserSettings,
   useUpdateConsentUserSettings,

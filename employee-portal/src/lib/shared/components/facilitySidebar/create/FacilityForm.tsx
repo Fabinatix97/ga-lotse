@@ -76,6 +76,8 @@ export interface FacilityFormProps {
   onSubmit: (values: DefaultFacilityFormValues) => Promise<void>;
   onCancel: () => void;
   onBack?: (values: DefaultFacilityFormValues) => void;
+
+  allowMainContactPerson?: boolean;
 }
 
 export function FacilityForm(props: FacilityFormProps) {
@@ -163,6 +165,7 @@ export function FacilityForm(props: FacilityFormProps) {
                 name={fieldName("contactPersons")}
                 values={values.contactPersons}
                 contactPersonRequired={props.requiresContactPerson === true}
+                allowMainContactPerson={props.allowMainContactPerson}
               />
             </Stack>
           </SidebarContent>

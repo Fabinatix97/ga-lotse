@@ -22,6 +22,7 @@ export function LabelAutocomplete(props: LabelAutocompleteProps) {
     <Autocomplete
       name={props.name}
       multiple
+      aria-description="Mehrfachauswahl möglich"
       placeholder="Kennung"
       options={labelsQuery.data}
       getOptionLabel={(option) => option.name}

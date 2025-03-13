@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  LOCALE_OPTION,
-  formatCurrency,
-} from "@eshg/lib-portal/formatters/numbers";
+import { formatCurrency } from "@eshg/lib-portal/formatters/numbers";
 import { List, ListItem, ListItemContent, Stack, Typography } from "@mui/joy";
 
 import { useGetAllDiseasesCitizen } from "@/lib/businessModules/travelMedicine/api/queries/citizenPublicApi";
@@ -36,7 +33,7 @@ export function VaccinationStep() {
                 </ListItemContent>
                 <Typography level="body-sm">
                   {formatCurrency(el.estimatedFee, {
-                    localOption: LOCALE_OPTION.auto,
+                    localeOption: "auto",
                   })}
                 </Typography>
               </ListItem>

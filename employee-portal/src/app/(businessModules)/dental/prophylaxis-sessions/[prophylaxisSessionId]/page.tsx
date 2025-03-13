@@ -4,14 +4,15 @@
  */
 
 import { routes } from "@eshg/dental";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { redirect } from "next/navigation";
 
-import { ProphylaxisSessionPageProps } from "@/app/(businessModules)/dental/prophylaxis-sessions/[prophylaxisSessionId]/layout";
+import { ProphylaxisSessionRouteParams } from "@/app/(businessModules)/dental/prophylaxis-sessions/[prophylaxisSessionId]/layout";
 
 export default function ProphylaxisSessionIndexPage(
-  props: ProphylaxisSessionPageProps,
+  props: DynamicPageProps<ProphylaxisSessionRouteParams>,
 ) {
-  redirect(
-    routes.prophylaxisSessions.byId(props.params.prophylaxisSessionId).details,
-  );
+  const { prophylaxisSessionId } = props.params;
+
+  redirect(routes.prophylaxisSessions.byId(prophylaxisSessionId).details);
 }

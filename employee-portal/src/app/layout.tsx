@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { LayoutConfigProvider } from "@eshg/lib-employee-portal";
+import { EmployeePortalProvider } from "@eshg/lib-employee-portal";
 import { ApiProvider } from "@eshg/lib-portal/api/ApiProvider";
 import { HiddenDownloadContainer } from "@eshg/lib-portal/api/files/HiddenDownloadContainer";
 import { EnvironmentTypeProvider } from "@eshg/lib-portal/components/EnvironmentTypeProvider";
@@ -74,7 +74,10 @@ export default function RootLayout({
             <EnvironmentTypeProvider
               environmentType={env.PUBLIC_ENVIRONMENT_TYPE}
             >
-              <LayoutConfigProvider config={LAYOUT_CONFIG}>
+              <EmployeePortalProvider
+                baseUrl={env.PUBLIC_BASE_BACKEND_URL}
+                layoutConfig={LAYOUT_CONFIG}
+              >
                 <SnackbarProvider snackbar={EmployeeSnackbar}>
                   <DrawerProvider>
                     <ApiProvider configuration={API_CONFIGURATION}>
@@ -97,7 +100,7 @@ export default function RootLayout({
                     </ApiProvider>
                   </DrawerProvider>
                 </SnackbarProvider>
-              </LayoutConfigProvider>
+              </EmployeePortalProvider>
             </EnvironmentTypeProvider>
 
             <HiddenDownloadContainer />

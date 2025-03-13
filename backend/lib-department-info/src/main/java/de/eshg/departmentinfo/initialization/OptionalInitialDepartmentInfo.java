@@ -5,8 +5,11 @@
 
 package de.eshg.departmentinfo.initialization;
 
+import de.eshg.departmentinfo.spring.DepartmentInfoPropertyBinding;
 import de.eshg.lib.common.CountryCode;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
+@ConfigurationProperties(prefix = DepartmentInfoPropertyBinding.DEFAULT_PROPERTY_PREFIX)
 public class OptionalInitialDepartmentInfo implements InitialDepartmentInfo {
 
   private boolean useDepartmentInfoFromBaseModule = true;

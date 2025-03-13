@@ -24,6 +24,7 @@ import {
   ProcedureApi,
   ProgressEntryApi,
 } from "@eshg/inspection-api";
+import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import { queryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
@@ -71,7 +72,6 @@ import { moduleUserGroup } from "@/lib/businessModules/inspection/shared/moduleU
 import { getHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/getHeadersForOfflineCaching";
 import { chunkArray } from "@/lib/businessModules/inspection/shared/offline/password/chunkArray";
 import { routes as inspectionRoutes } from "@/lib/businessModules/inspection/shared/routes";
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 /**
  * This hook fetches all pages and API calls needed for one inspection  in offline mode.

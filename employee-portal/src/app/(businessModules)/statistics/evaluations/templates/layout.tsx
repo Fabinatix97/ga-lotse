@@ -9,6 +9,10 @@ import { ApiUserRole } from "@eshg/base-api";
 import {
   MainContentLayout,
   StickyToolbarLayout,
+  TabNavigationHeader,
+  TabNavigationHeaderTypography,
+  TabNavigationItem,
+  TabNavigationToolbar,
   hasAnyUserRoles,
 } from "@eshg/lib-employee-portal";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
@@ -18,12 +22,6 @@ import {
 } from "@mui/icons-material";
 
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
-import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
-import {
-  TabNavigationHeader,
-  TabNavigationHeaderTypography,
-} from "@/lib/shared/components/tabNavigationToolbar/TabNavigationHeader";
-import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
 
 export default function EvaluationTemplatesLayout({
   children,

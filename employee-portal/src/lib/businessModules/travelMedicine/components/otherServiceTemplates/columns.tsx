@@ -4,12 +4,12 @@
  */
 
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatCurrency } from "@eshg/lib-portal/formatters/numbers";
 import { ApiOtherServiceTemplate } from "@eshg/travel-medicine-api";
 import { Delete, Edit } from "@mui/icons-material";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
-import { LOCALE_OPTION, formatCurrency } from "@/lib/shared/helpers/numbers";
 
 interface OtherServiceTemplatesColumnsProps {
   editEntry: (otherServiceTemplateId: ApiOtherServiceTemplate) => void;
@@ -28,7 +28,7 @@ export function otherServiceTemplatesColumns({
       header: "Preis",
       cell: (props) =>
         formatCurrency(props.getValue(), {
-          localOption: LOCALE_OPTION.manual,
+          localeOption: "manual",
           locale: "de-DE",
         }),
     }),

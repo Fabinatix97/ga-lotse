@@ -5,11 +5,15 @@
 
 "use client";
 
-import { OfficialMedicalServiceDetailsPageProps } from "@/app/(businessModules)/official-medical-service/procedures/[id]/layout";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+
+import { OfficialMedicalServiceDetailsRouteParamsSchema } from "@/lib/businessModules/officialMedicalService/components/procedures/details/OfficialMedicalServiceDetailsRouteParamsSchema";
 import { DocumentsTable } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/DocumentsTable";
 
 export default function OfficialMedicalServiceProcedureDetailsPage(
-  props: OfficialMedicalServiceDetailsPageProps,
+  props: DynamicPageProps<OfficialMedicalServiceDetailsRouteParamsSchema>,
 ) {
-  return <DocumentsTable procedureId={props.params.id} />;
+  const { id } = props.params;
+
+  return <DocumentsTable procedureId={id} />;
 }

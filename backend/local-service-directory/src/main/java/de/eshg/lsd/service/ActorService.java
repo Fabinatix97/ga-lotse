@@ -14,6 +14,7 @@ import de.eshg.lsd.register.api.ActorDto;
 import de.eshg.lsd.register.api.ActorTypeDto;
 import de.eshg.lsd.register.api.CertificateDto;
 import de.eshg.servicedirectory.util.X509Utils;
+import java.security.cert.X509Certificate;
 import java.util.*;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -111,8 +112,13 @@ public class ActorService {
   }
 
   public ActorDto updateActor(
-      ActorTypeDto type, String certificate, String userName, String readableName) {
-    String commonName = X509Utils.extractCommonName(X509Utils.parsePem(certificate));
+      ActorTypeDto type, String certPem, String userName, String readableName) {
+    X509Certificate cert = X509Utils.parsePem(certPem);
+    if (X509Utils.isCaCertificate(cert)) {
+      throw new InvalidCertificateException("CA certificate not allowed");
+    }
+
+    String commonName = X509Utils.extractCommonName(cert);
     UserResource userResource = getValidUserOrThrow(commonName, userName);
     UserRepresentation userRepresentation = userResource.toRepresentation();
 
@@ -122,15 +128,14 @@ public class ActorService {
       userRepresentation.setAttributes(attributes);
     }
 
-    String signature = signatureService.sign(certificate);
-    attributes.putAll(
-        LsdAttributeKey.mapOf(certificate, signature, type, readableName, commonName));
+    String signature = signatureService.sign(certPem);
+    attributes.putAll(LsdAttributeKey.mapOf(certPem, signature, type, readableName, commonName));
 
     userResource.update(userRepresentation);
 
     return new ActorDto(
         commonName,
-        new CertificateDto(certificate, signature, signatureService.getCertificate()),
+        new CertificateDto(certPem, signature, signatureService.getCertificate()),
         type,
         readableName);
   }

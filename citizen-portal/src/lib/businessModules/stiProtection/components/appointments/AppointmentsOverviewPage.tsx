@@ -36,9 +36,8 @@ export function AppointmentsOverviewPage() {
   const { data: procedure } = useGetProcedure();
   const { concern, appointmentHistory, appointment } = procedure;
 
-  const [selectedAppointmentType, setSelectedAppointmentType] = useState(
-    OverviewAppointmentType.UPCOMING,
-  );
+  const [selectedAppointmentType, setSelectedAppointmentType] =
+    useState<OverviewAppointmentType>(OverviewAppointmentType.UPCOMING);
   const upcomingAppointments: ApiAppointmentSummary[] = appointment
     ? [mapAppointmentToSummary(appointment, concern)]
     : [];

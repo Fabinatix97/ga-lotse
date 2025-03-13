@@ -76,6 +76,7 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -840,22 +841,47 @@ public class DataAggregationService {
   }
 
   public void determineMinMaxNullUnknownValues(AbstractAggregationResult aggregationResult) {
-    for (TableColumn tableColumn : aggregationResult.getTableColumns()) {
-      MinMaxNullUnknownValues minMaxNullUnknownValues =
-          switch (tableColumn.getValueType()) {
-            case BOOLEAN -> determineNullValuesBoolean(tableColumn);
-            case DATE -> determineNullUnknownValuesDate(tableColumn);
-            case DECIMAL -> determineNullUnknownValuesDecimal(tableColumn);
-            case INTEGER -> determineNullUnknownValuesInteger(tableColumn);
-            case TEXT, VALUE_WITH_OPTIONS -> determineNullUnknownValuesText(tableColumn);
-            case PROCEDURE_REFERENCE -> null;
-            case DECIMAL_INTERVAL, INTEGER_INTERVAL ->
-                throw new IllegalStateException(
-                    "Intervals not allowed during min/max determination");
-          };
-      tableColumn.setMinMaxNullUnknownValues(minMaxNullUnknownValues);
-    }
-    aggregationResult.setPendingState(AggregationResultPendingState.ANALYSIS_CONDUCTION);
+    aggregationResult.getTableColumns().stream()
+        .filter(
+            tableColumn ->
+                !tableColumn.getValueType().equals(TableColumnValueType.PROCEDURE_REFERENCE))
+        .forEach(
+            tableColumn ->
+                tableColumn.setMinMaxNullUnknownValues(
+                    determineMinMaxNullUnknownValues(tableColumn, true)));
+  }
+
+  public void redetermineNullUnknownValues(Stream<TableColumn> tableColumnStream) {
+    tableColumnStream.forEach(tableColumn -> determineMinMaxNullUnknownValues(tableColumn, false));
+  }
+
+  private MinMaxNullUnknownValues determineMinMaxNullUnknownValues(
+      TableColumn tableColumn, boolean withMinMaxDecimalAndInteger) {
+    return switch (tableColumn.getValueType()) {
+      case BOOLEAN -> determineNullValuesBoolean(tableColumn);
+      case DATE -> determineNullUnknownValuesDate(tableColumn);
+      case DECIMAL ->
+          determineMinMaxNullUnknownValuesDecimal(tableColumn, withMinMaxDecimalAndInteger);
+      case INTEGER ->
+          determineMinMaxNullUnknownValuesInteger(tableColumn, withMinMaxDecimalAndInteger);
+      case TEXT, VALUE_WITH_OPTIONS -> determineNullUnknownValuesText(tableColumn);
+      case PROCEDURE_REFERENCE ->
+          throw new IllegalArgumentException("No min/max/unknown/null for procedure references");
+      case DECIMAL_INTERVAL -> {
+        if (withMinMaxDecimalAndInteger) {
+          throw new IllegalArgumentException("Intervals not allowed for min/max determination");
+        } else {
+          yield determineMinMaxNullUnknownValuesDecimal(tableColumn, false);
+        }
+      }
+      case INTEGER_INTERVAL -> {
+        if (withMinMaxDecimalAndInteger) {
+          throw new IllegalArgumentException("Intervals not allowed for min/max determination");
+        } else {
+          yield determineMinMaxNullUnknownValuesInteger(tableColumn, false);
+        }
+      }
+    };
   }
 
   private MinMaxNullUnknownValues determineNullValuesBoolean(TableColumn tableColumn) {
@@ -898,15 +924,12 @@ public class DataAggregationService {
     }
   }
 
-  private MinMaxNullUnknownValues determineNullUnknownValuesDecimal(TableColumn tableColumn) {
+  @SuppressWarnings("java:S2637")
+  private MinMaxNullUnknownValues determineMinMaxNullUnknownValuesDecimal(
+      TableColumn tableColumn, boolean withMinMax) {
     BigDecimal unknownValue = getUnknownNumberValue(tableColumn, BigDecimal::new);
 
-    BigDecimal minValue = cellEntryRepository.findDecimalValueMin(tableColumn, unknownValue);
-    BigDecimal maxValue = cellEntryRepository.findDecimalValueMax(tableColumn, unknownValue);
-
     MinMaxNullUnknownValues minMaxNullUnknownValues = getOrCreateMinMax(tableColumn);
-    minMaxNullUnknownValues.setMinDecimal(minValue);
-    minMaxNullUnknownValues.setMaxDecimal(maxValue);
     minMaxNullUnknownValues.setNumberOfNullEntries(
         tableRowRepository.count(TableRowSpecifications.getNullSpecification(tableColumn)));
     minMaxNullUnknownValues.setNumberOfUnknownEntries(
@@ -919,18 +942,22 @@ public class DataAggregationService {
                         null, unknownValue, NumericComparisonDto.EQUAL, false))));
     minMaxNullUnknownValues.setUnknownValue(unknownValue == null ? null : unknownValue.toString());
 
+    if (withMinMax) {
+      minMaxNullUnknownValues.setMinDecimal(
+          cellEntryRepository.findDecimalValueMin(tableColumn, unknownValue));
+      minMaxNullUnknownValues.setMaxDecimal(
+          cellEntryRepository.findDecimalValueMax(tableColumn, unknownValue));
+    }
+
     return minMaxNullUnknownValues;
   }
 
-  private MinMaxNullUnknownValues determineNullUnknownValuesInteger(TableColumn tableColumn) {
+  @SuppressWarnings("java:S2637")
+  private MinMaxNullUnknownValues determineMinMaxNullUnknownValuesInteger(
+      TableColumn tableColumn, boolean withMinMax) {
     Integer unknownValue = getUnknownNumberValue(tableColumn, Integer::parseInt);
 
-    Integer minValue = cellEntryRepository.findIntegerValueMin(tableColumn, unknownValue);
-    Integer maxValue = cellEntryRepository.findIntegerValueMax(tableColumn, unknownValue);
-
     MinMaxNullUnknownValues minMaxNullUnknownValues = getOrCreateMinMax(tableColumn);
-    minMaxNullUnknownValues.setMinInteger(minValue);
-    minMaxNullUnknownValues.setMaxInteger(maxValue);
     minMaxNullUnknownValues.setNumberOfNullEntries(
         tableRowRepository.count(TableRowSpecifications.getNullSpecification(tableColumn)));
     minMaxNullUnknownValues.setNumberOfUnknownEntries(
@@ -942,6 +969,13 @@ public class DataAggregationService {
                     new IntegerValueFilterParameterDto(
                         null, unknownValue, NumericComparisonDto.EQUAL, false))));
     minMaxNullUnknownValues.setUnknownValue(unknownValue == null ? null : unknownValue.toString());
+
+    if (withMinMax) {
+      minMaxNullUnknownValues.setMinInteger(
+          cellEntryRepository.findIntegerValueMin(tableColumn, unknownValue));
+      minMaxNullUnknownValues.setMaxInteger(
+          cellEntryRepository.findIntegerValueMax(tableColumn, unknownValue));
+    }
 
     return minMaxNullUnknownValues;
   }

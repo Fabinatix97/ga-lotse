@@ -7,19 +7,19 @@
 
 import { MainContentLayout } from "@eshg/lib-employee-portal";
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
-import { StiProtectionProcedurePageParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(fullPageLayout)/layout";
+import { StiProtectionProcedureRouteParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(fullPageLayout)/layout";
 import { useGetRapidTestExaminationQueryOptions } from "@/lib/businessModules/stiProtection/api/queries/examination";
 import { useStiProcedureQueryOptions } from "@/lib/businessModules/stiProtection/api/queries/procedures";
 import { RapidTestExamination } from "@/lib/businessModules/stiProtection/features/procedures/examination/rapidTest/RapidTestExamination";
 import { isProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
 
-export default function StiProtectionProcedureRapidTestPage({
-  params: { id: procedureId },
-}: Readonly<{
-  params: StiProtectionProcedurePageParams;
-}>) {
+export default function StiProtectionProcedureRapidTestPage(
+  props: DynamicPageProps<StiProtectionProcedureRouteParams>,
+) {
+  const { id: procedureId } = props.params;
   const [{ data: procedure }, { data: rapidTestExamination }] =
     useSuspenseQueries({
       queries: [

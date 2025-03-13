@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
-
-import { useStiProcedureQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
 import {
   TabNavigationHeader,
   TabNavigationHeaderTypography,
-} from "@/lib/shared/components/tabNavigationToolbar/TabNavigationHeader";
+} from "@eshg/lib-employee-portal";
+import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
+
+import { useStiProcedureQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
 
 export function ProcedureTabHeader({
   procedureId,

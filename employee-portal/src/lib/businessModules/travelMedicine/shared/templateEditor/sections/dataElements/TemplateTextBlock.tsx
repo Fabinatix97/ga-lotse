@@ -8,7 +8,7 @@ import { IconButton, Stack } from "@mui/joy";
 
 import { DataElementBox } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/DataElementBox";
 import { DataElementHeading } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/DataElementHeading";
-import { notEmptyFieldValidation } from "@/lib/businessModules/travelMedicine/shared/templateEditor/templateFieldValidation";
+import { validateTextBlock } from "@/lib/businessModules/travelMedicine/shared/templateEditor/templateFieldValidation";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
 export interface TemplateTextBlockProps {
@@ -28,7 +28,7 @@ export function TemplateTextBlock(props: Readonly<TemplateTextBlockProps>) {
           name={`${props.sectionElementFormikPath}.textField`}
           placeholder="Text"
           sx={{ flex: 1 }}
-          validate={notEmptyFieldValidation}
+          validate={validateTextBlock()}
           data-testid="element-main-text"
         />
         <Stack alignItems="center" paddingTop={"6px"}>

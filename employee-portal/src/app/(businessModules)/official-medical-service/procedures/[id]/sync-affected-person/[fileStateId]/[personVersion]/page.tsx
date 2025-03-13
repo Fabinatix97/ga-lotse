@@ -6,32 +6,41 @@
 "use client";
 
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import {
+  PositiveIntegerSchema,
+  UuidSchema,
+} from "@eshg/lib-portal/schemas/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { useRouter } from "next/navigation";
+import * as v from "valibot";
 
-import { OfficialMedicalServiceDetailsPageParams } from "@/app/(businessModules)/official-medical-service/procedures/[id]/layout";
 import { useGetPersonFileStateDiff } from "@/lib/baseModule/api/queries/persons";
 import { useSyncAffectedPerson } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
+import { OfficialMedicalServiceDetailsRouteParamsSchema } from "@/lib/businessModules/officialMedicalService/components/procedures/details/OfficialMedicalServiceDetailsRouteParamsSchema";
 import { CentralFileSyncForm } from "@/lib/shared/components/centralFile/sync/CentralFileSyncForm";
 import { BasePersonDiffForm } from "@/lib/shared/components/centralFile/sync/sections/BasePersonDiffForm";
 
-export default function SyncAffectedPersonPage({
-  params,
-}: Readonly<{
-  params: OfficialMedicalServiceDetailsPageParams & {
-    fileStateId: string;
-    personVersion: number;
-  };
-}>) {
+const RouteParamsSchema = v.object({
+  ...OfficialMedicalServiceDetailsRouteParamsSchema.entries,
+  fileStateId: UuidSchema,
+  personVersion: PositiveIntegerSchema,
+});
+
+export default function SyncAffectedPersonPage(props: DynamicPageProps) {
+  const { id, personVersion, fileStateId } = v.parse(
+    RouteParamsSchema,
+    props.params,
+  );
   const router = useRouter();
-  const { data } = useGetPersonFileStateDiff(params.fileStateId);
-  const syncPerson = useSyncAffectedPerson(params.id);
+  const { data } = useGetPersonFileStateDiff(fileStateId);
+  const syncPerson = useSyncAffectedPerson(id);
 
   async function handleSync() {
     await syncPerson.mutateAsync(
       {
         referenceVersion: data.referenceVersion,
-        personVersion: params.personVersion,
-        fileStateId: params.fileStateId,
+        personVersion,
+        fileStateId,
       },
       {
         onSuccess: () => router.back(),

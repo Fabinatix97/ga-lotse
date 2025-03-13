@@ -10,18 +10,16 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { useGetWebSearchById } from "@/lib/businessModules/inspection/api/queries/webSearch";
 import { FacilityWebSearchForm } from "@/lib/businessModules/inspection/components/facility/search/FacilityWebSearchForm";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 
-type EditFacilityPageProps = Readonly<{
-  params: { id: string };
-}>;
-
-export default function EditFacilityWebSearchPage({
-  params: { id },
-}: EditFacilityPageProps) {
+export default function EditFacilityWebSearchPage(
+  props: DynamicPageProps<{ id: string }>,
+) {
+  const { id } = props.params;
   const { data: webSearch } = useGetWebSearchById(id);
 
   return (

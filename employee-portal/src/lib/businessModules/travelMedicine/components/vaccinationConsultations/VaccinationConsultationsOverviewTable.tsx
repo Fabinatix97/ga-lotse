@@ -47,12 +47,13 @@ export function VaccinationConsultationsOverviewTable(
   const [lastName, setLastName] = useState("");
   const [firstName, setFirstName] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
-  const [dayOfAppointmentFilter, setDayOfAppointmentFilter] = useState<Date>(
-    props.date ? new Date(props.date) : new Date(),
+  const [dayOfAppointmentFilter, setDayOfAppointmentFilter] = useState<string>(
+    props.date ?? toDateString(new Date()),
   );
+
   const [status, setStatus] = useState<ApiProcedureStatus[]>([]);
   const queryResult = useGetAllProcedureAppointmentSummaries(
-    dayOfAppointmentFilter,
+    new Date(dayOfAppointmentFilter),
   );
   const allAppointmentOverviewEntries = useMemo(() => {
     return queryResult.data ?? { appointmentOverviewEntries: [] };
@@ -76,15 +77,15 @@ export function VaccinationConsultationsOverviewTable(
 
   function setNextDay() {
     const newDate = new Date(dayOfAppointmentFilter);
-    newDate.setDate(dayOfAppointmentFilter.getDate() + 1);
-    setDayOfAppointmentFilter(newDate);
+    newDate.setDate(newDate.getDate() + 1);
+    setDayOfAppointmentFilter(toDateString(newDate));
     updateTimeRange(newDate);
   }
 
   function setPrevDay() {
     const newDate = new Date(dayOfAppointmentFilter);
-    newDate.setDate(dayOfAppointmentFilter.getDate() - 1);
-    setDayOfAppointmentFilter(newDate);
+    newDate.setDate(newDate.getDate() - 1);
+    setDayOfAppointmentFilter(toDateString(newDate));
     updateTimeRange(newDate);
   }
 
@@ -149,9 +150,14 @@ export function VaccinationConsultationsOverviewTable(
   return (
     <TablePage
       controls={
-        <Stack direction="row" justifyContent="space-between">
-          <Stack direction="row" gap={4} flexWrap="wrap">
-            <Stack direction="row" gap={1} alignItems="center" flexWrap="wrap">
+        <Stack
+          direction="row"
+          gap={1}
+          justifyContent="space-between"
+          flexWrap="wrap"
+        >
+          <Stack direction="row" gap={3} alignItems="center">
+            <Stack direction="row" gap={1}>
               <TextInputClientFilter
                 placeholder={"Vorname"}
                 type={"search"}
@@ -171,30 +177,29 @@ export function VaccinationConsultationsOverviewTable(
                 sx={{ height: "36px" }}
               />
             </Stack>
-            <Stack direction="row" gap={1} flexWrap="wrap">
-              <Select
-                multiple
-                value={status}
-                placeholder="Vorgangsstatus"
-                aria-label="Vorgangsstatus"
-                onChange={(_, value) => setStatus(value)}
-                sx={{
-                  width: "200px",
-                }}
-              >
-                <SelectOptions options={getStatusOptions()} />
-              </Select>
-            </Stack>
+            <Select
+              multiple
+              aria-description="Mehrfachauswahl möglich"
+              value={status}
+              placeholder="Vorgangsstatus"
+              aria-label="Vorgangsstatus"
+              onChange={(_, value) => setStatus(value)}
+              sx={{
+                width: "200px",
+              }}
+            >
+              <SelectOptions options={getStatusOptions()} />
+            </Select>
             <Stack direction="row" gap={1} flexWrap="wrap">
               <FormControl key="searchDate" size="md">
                 <Input
                   type="date"
-                  value={toDateString(dayOfAppointmentFilter) ?? ""}
+                  value={dayOfAppointmentFilter ?? ""}
                   onChange={(dayOfAppointment) => {
                     const value = dayOfAppointment.target.value;
                     if (isDateString(value)) {
                       const newDate = toUtcDate(value);
-                      setDayOfAppointmentFilter(newDate);
+                      setDayOfAppointmentFilter(toDateString(newDate));
                       updateTimeRange(newDate);
                     }
                   }}
@@ -208,7 +213,7 @@ export function VaccinationConsultationsOverviewTable(
                 sx={{ padding: "4px 16px" }}
                 onClick={() => {
                   const newDate = new Date();
-                  setDayOfAppointmentFilter(newDate);
+                  setDayOfAppointmentFilter(toDateString(newDate));
                   updateTimeRange(newDate);
                 }}
                 aria-label="Termine heute"
@@ -235,9 +240,7 @@ export function VaccinationConsultationsOverviewTable(
               </IconButton>
             </Stack>
           </Stack>
-          <Stack direction="row">
-            <NewPerson />
-          </Stack>
+          <NewPerson />
         </Stack>
       }
     >

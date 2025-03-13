@@ -14,6 +14,7 @@ import {
   parseOptionalEnum,
   parseReadonlyPageParams,
 } from "@eshg/lib-portal/helpers/searchParams";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import {
   ApiGdprValidationTaskSortKey,
   ApiSortDirection,
@@ -40,12 +41,12 @@ function parseSearchParams(
   };
 }
 
-export default function ValidationTaskOverviewPage({
-  params,
-}: Readonly<{
-  params: { businessModule: string };
-}>) {
-  const businessModule = params.businessModule;
+export default function ValidationTaskOverviewPage(
+  props: DynamicPageProps<{
+    businessModule: string;
+  }>,
+) {
+  const { businessModule } = props.params;
   if (!isBusinessModule(businessModule)) {
     throw new Error(
       `Tried to open validation task overview for unknown business module type '${businessModule}'`,

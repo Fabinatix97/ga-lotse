@@ -10,16 +10,17 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { useGetChecklistDefinitionVersion } from "@/lib/businessModules/inspection/api/queries/checklistDefinition";
 import { ReadOnlyCLDPage } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/ReadOnlyCLDPage";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 
-export default function ViewChecklistVersion({
-  params: { defId, versionId },
-}: Readonly<{
-  params: { defId: string; versionId: string };
-}>) {
+export default function ViewChecklistVersion(
+  props: DynamicPageProps<{ defId: string; versionId: string }>,
+) {
+  const { defId, versionId } = props.params;
+
   const { data: checklistVersion } =
     useGetChecklistDefinitionVersion(versionId);
 

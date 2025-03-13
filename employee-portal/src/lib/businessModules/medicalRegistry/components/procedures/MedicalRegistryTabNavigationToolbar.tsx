@@ -6,19 +6,19 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
+import {
+  TabNavigationHeader,
+  TabNavigationHeaderTypography,
+  TabNavigationItem,
+  TabNavigationToolbar,
+  useHasUserRoleCheck,
+} from "@eshg/lib-employee-portal";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { TextSnippetOutlined, TimelineOutlined } from "@mui/icons-material";
 
 import { useGetProcedure } from "@/lib/businessModules/medicalRegistry/api/queries/medicalRegistryEntries";
 import { MedicalRegistryProcedureChip } from "@/lib/businessModules/medicalRegistry/components/procedures/MedicalRegistryProcedureChip";
 import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";
-import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
-import {
-  TabNavigationHeader,
-  TabNavigationHeaderTypography,
-} from "@/lib/shared/components/tabNavigationToolbar/TabNavigationHeader";
-import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 export function MedicalRegistryTabNavigationToolbar({
   procedureId,

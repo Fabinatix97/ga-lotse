@@ -6,21 +6,15 @@
 import { Button, Sheet, ToggleButtonGroup } from "@mui/joy";
 import { Dispatch, SetStateAction } from "react";
 
+import { OverviewAppointmentType } from "@/lib/businessModules/stiProtection/components/appointments/helpers";
 import { useTranslation } from "@/lib/i18n/client";
-
-export enum OverviewAppointmentTypes {
-  UPCOMING,
-  PAST,
-}
 
 export function TypeSwitchButtons({
   overviewAppointmentType,
   setOverviewAppointmentType,
 }: Readonly<{
-  overviewAppointmentType: OverviewAppointmentTypes;
-  setOverviewAppointmentType: Dispatch<
-    SetStateAction<OverviewAppointmentTypes>
-  >;
+  overviewAppointmentType: OverviewAppointmentType;
+  setOverviewAppointmentType: Dispatch<SetStateAction<OverviewAppointmentType>>;
 }>) {
   const { t } = useTranslation(["travelMedicine/appointmentOverview"]);
 
@@ -33,12 +27,12 @@ export function TypeSwitchButtons({
       <ToggleButtonGroup data-testid={"type-switch-buttons"} color="neutral">
         <Button
           data-testid={
-            overviewAppointmentType === OverviewAppointmentTypes.UPCOMING
+            overviewAppointmentType === OverviewAppointmentType.UPCOMING
               ? "type-switch-button-active"
               : "type-switch-button"
           }
           variant={
-            overviewAppointmentType === OverviewAppointmentTypes.UPCOMING
+            overviewAppointmentType === OverviewAppointmentType.UPCOMING
               ? "solid"
               : "plain"
           }
@@ -50,19 +44,19 @@ export function TypeSwitchButtons({
             fontSize: "1rem",
           })}
           onClick={() =>
-            setOverviewAppointmentType(OverviewAppointmentTypes.UPCOMING)
+            setOverviewAppointmentType(OverviewAppointmentType.UPCOMING)
           }
         >
           {t("typeSwitchButtons.upcoming")}
         </Button>
         <Button
           data-testid={
-            overviewAppointmentType === OverviewAppointmentTypes.PAST
+            overviewAppointmentType === OverviewAppointmentType.PAST
               ? "type-switch-button-active"
               : "type-switch-button"
           }
           variant={
-            overviewAppointmentType === OverviewAppointmentTypes.PAST
+            overviewAppointmentType === OverviewAppointmentType.PAST
               ? "solid"
               : "plain"
           }
@@ -74,7 +68,7 @@ export function TypeSwitchButtons({
             fontSize: "1rem",
           })}
           onClick={() =>
-            setOverviewAppointmentType(OverviewAppointmentTypes.PAST)
+            setOverviewAppointmentType(OverviewAppointmentType.PAST)
           }
         >
           {t("typeSwitchButtons.past")}

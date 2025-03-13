@@ -3,13 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { initElement } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/actions/focus";
+import { JAW_VIEW_BY_QUADRANT } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/constants";
 import { DentalExaminationState } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/dentalExaminationStore";
 import {
-  DentalExaminationView,
-  Dentition,
-  ElementContext,
-  QuadrantNumber,
   ToothContext,
+  ToothElement,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
 
 import { resolveTooth } from "./utils";
@@ -25,31 +24,15 @@ export function navigateTo(
   toothContext: ToothContext,
   state: NavigateToInputState,
 ): NavigateToOutputState {
-  const targetElement = resolveTargetElement(toothContext, state.dentition);
+  const tooth = resolveTooth(toothContext, state.dentition);
+  const targetView = JAW_VIEW_BY_QUADRANT[toothContext.quadrantNumber];
+  const targetElement: ToothElement = initElement(targetView, tooth.type);
 
   return {
-    currentView: resolveViewByQuadrant(toothContext.quadrantNumber),
-    currentFocus: targetElement,
+    currentView: targetView,
+    currentFocus: {
+      toothContext,
+      element: targetElement,
+    },
   };
-}
-
-function resolveTargetElement(
-  toothContext: ToothContext,
-  dentition: Dentition,
-): ElementContext {
-  const tooth = resolveTooth(toothContext, dentition);
-
-  if (tooth.type === "AddableTooth") {
-    return { toothContext };
-  }
-
-  return { field: "main", toothContext };
-}
-
-function resolveViewByQuadrant(
-  quadrantNumber: QuadrantNumber,
-): DentalExaminationView {
-  return quadrantNumber === "Q1" || quadrantNumber === "Q2"
-    ? "UPPER_JAW"
-    : "LOWER_JAW";
 }

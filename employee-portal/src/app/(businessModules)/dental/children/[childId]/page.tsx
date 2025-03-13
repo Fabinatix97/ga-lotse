@@ -4,10 +4,15 @@
  */
 
 import { routes } from "@eshg/dental";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { redirect } from "next/navigation";
 
-import { DentalChildPageProps } from "@/app/(businessModules)/dental/children/[childId]/layout";
+import { DentalChildRouteParams } from "@/app/(businessModules)/dental/children/[childId]/layout";
 
-export default function DentalChildIndexPage(props: DentalChildPageProps) {
-  redirect(routes.children.byId(props.params.childId).details);
+export default function DentalChildIndexPage(
+  props: DynamicPageProps<DentalChildRouteParams>,
+) {
+  const { childId } = props.params;
+
+  redirect(routes.children.byId(childId).details);
 }

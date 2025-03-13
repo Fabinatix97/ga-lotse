@@ -14,7 +14,7 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { mapProphylaxisSession } from "@/api/models/ProphylaxisSession";
 import { mapProphylaxisSessionDetails } from "@/api/models/ProphylaxisSessionDetails";
-import { useDentalApi } from "@/shared/DentalProvider";
+import { useDentalApi } from "@/contexts/dental";
 
 import { prophylaxisSessionApiQueryKey } from "./apiQueryKeys";
 

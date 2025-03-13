@@ -45,7 +45,7 @@ public class SynapseAuthenticationService {
     if (accessToken == null) {
       accessToken = getNewAccessToken();
     } else if (accessTokenExpired(accessToken)) {
-      accessToken = refreshAccessToken(accessToken);
+      accessToken = tryRefreshAccessToken(accessToken);
     }
     return accessToken.getAccessToken();
   }
@@ -79,12 +79,12 @@ public class SynapseAuthenticationService {
           .tokenExpirationTime(Instant.now(clock).plusMillis(body.getExpiresInMs()));
 
     } catch (Exception ex) {
-      log.error("Failed to obtain token from Synapse server.", ex);
-      throw new BadRequestException("Failed to obtain token from Synapse server.", ex.getMessage());
+      throw new BadRequestException(
+          "Failed to obtain new AccessToken from Synapse server.", ex.getMessage());
     }
   }
 
-  private AccessToken refreshAccessToken(AccessToken accessToken) {
+  private AccessToken tryRefreshAccessToken(AccessToken accessToken) {
     try {
       ResponseEntity<RefreshTokenResponse> response =
           restTemplate.postForEntity(
@@ -97,11 +97,11 @@ public class SynapseAuthenticationService {
           .accessToken(body.getAccessToken())
           .refreshToken(body.getRefreshToken())
           .tokenExpirationTime(Instant.now(clock).plusMillis(body.getExpiresInMs()));
-
     } catch (Exception ex) {
-      log.error("Failed to refresh token from Synapse server.", ex);
-      throw new BadRequestException(
-          "Failed to refresh token from Synapse server.", ex.getMessage());
+      log.error(
+          "Failed to refresh AccessToken from Synapse server. Trying login for new AccessToken",
+          ex);
+      return getNewAccessToken();
     }
   }
 }

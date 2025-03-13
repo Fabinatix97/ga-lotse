@@ -12,7 +12,9 @@ import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.domain.model.ExaminationResult;
 import de.eshg.dental.domain.model.FluoridationExaminationResult;
 import de.eshg.dental.domain.model.MainResult;
+import de.eshg.dental.domain.model.MihStatus;
 import de.eshg.dental.domain.model.OralHygieneStatus;
+import de.eshg.dental.domain.model.OrthodonticStatus;
 import de.eshg.dental.domain.model.ProphylaxisSession;
 import de.eshg.dental.domain.model.ReasonForAbsence;
 import de.eshg.dental.domain.model.ScreeningExaminationResult;
@@ -61,6 +63,10 @@ public final class ExaminationMapper {
                   ? screeningExaminationResult.isFluorideVarnishApplied()
                   : Boolean.FALSE,
               mapToDto(screeningExaminationResult.getOralHygieneStatus()),
+              mapToDto(screeningExaminationResult.getMihStatus()),
+              OrthodonticFindingMapper.mapToDto(
+                  screeningExaminationResult.getOrthodonticFindings()),
+              mapToDto(screeningExaminationResult.getOrthodonticStatus()),
               DentitionTypeMapper.mapToDto(screeningExaminationResult.getDentitionType()),
               screeningExaminationResult.hasPlaque(),
               screeningExaminationResult.hasCalculus(),
@@ -88,6 +94,24 @@ public final class ExaminationMapper {
       case EXCELLENT -> OralHygieneStatus.EXCELLENT;
       case GOOD -> OralHygieneStatus.GOOD;
       case POOR -> OralHygieneStatus.POOR;
+    };
+  }
+
+  private static MihStatusDto mapToDto(MihStatus mihStatus) {
+    return switch (mihStatus) {
+      case null -> null;
+      case MILD -> MihStatusDto.MILD;
+      case MODERATE -> MihStatusDto.MODERATE;
+      case SERIOUS -> MihStatusDto.SERIOUS;
+    };
+  }
+
+  public static MihStatus mapToDomain(MihStatusDto mihStatus) {
+    return switch (mihStatus) {
+      case null -> null;
+      case MILD -> MihStatus.MILD;
+      case MODERATE -> MihStatus.MODERATE;
+      case SERIOUS -> MihStatus.SERIOUS;
     };
   }
 
@@ -343,6 +367,32 @@ public final class ExaminationMapper {
       case MOVED -> ReasonForAbsence.MOVED;
       case SHIFTED -> ReasonForAbsence.SHIFTED;
       case REFUSED -> ReasonForAbsence.REFUSED;
+    };
+  }
+
+  public static OrthodonticStatus mapToDomain(OrthodonticStatusDto dto) {
+    return switch (dto) {
+      case null -> null;
+      case WITHOUT_FINDINGS -> OrthodonticStatus.WITHOUT_FINDINGS;
+      case TREATMENT_STARTED -> OrthodonticStatus.TREATMENT_STARTED;
+      case TREATMENT_REQUIRED -> OrthodonticStatus.TREATMENT_REQUIRED;
+      case TREATMENT_PLANNED -> OrthodonticStatus.TREATMENT_PLANNED;
+      case TREATMENT_COMPLETED -> OrthodonticStatus.TREATMENT_COMPLETED;
+      case TREATMENT_CANCELED -> OrthodonticStatus.TREATMENT_CANCELED;
+      case UNDER_OBSERVATION -> OrthodonticStatus.UNDER_OBSERVATION;
+    };
+  }
+
+  public static OrthodonticStatusDto mapToDto(OrthodonticStatus orthodonticStatus) {
+    return switch (orthodonticStatus) {
+      case null -> null;
+      case WITHOUT_FINDINGS -> OrthodonticStatusDto.WITHOUT_FINDINGS;
+      case TREATMENT_STARTED -> OrthodonticStatusDto.TREATMENT_STARTED;
+      case TREATMENT_REQUIRED -> OrthodonticStatusDto.TREATMENT_REQUIRED;
+      case TREATMENT_PLANNED -> OrthodonticStatusDto.TREATMENT_PLANNED;
+      case TREATMENT_COMPLETED -> OrthodonticStatusDto.TREATMENT_COMPLETED;
+      case TREATMENT_CANCELED -> OrthodonticStatusDto.TREATMENT_CANCELED;
+      case UNDER_OBSERVATION -> OrthodonticStatusDto.UNDER_OBSERVATION;
     };
   }
 }

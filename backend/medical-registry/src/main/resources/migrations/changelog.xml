@@ -18,5 +18,6 @@
   <include file="migrations/0008_add_auditlog_entry.xml"/>
   <include file="migrations/0009_add_shedlock.xml"/>
   <include file="migrations/0010_rename_previous_file_state.xml"/>
+  <include file="migrations/0011_department_info.xml"/>
 
 </databaseChangeLog>

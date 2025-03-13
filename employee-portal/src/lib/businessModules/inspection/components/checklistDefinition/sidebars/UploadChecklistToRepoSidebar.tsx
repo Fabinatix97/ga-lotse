@@ -7,6 +7,7 @@ import {
   ApiChecklistDefinition,
   ApiChecklistDefinitionCentralRepoRequest,
 } from "@eshg/inspection-api";
+import { useGetSelfUser } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { Stack } from "@mui/joy";
@@ -14,7 +15,6 @@ import { Formik } from "formik";
 import { useRef } from "react";
 import { isNonNullish } from "remeda";
 
-import { useGetSelfUser } from "@/lib/baseModule/api/queries/users";
 import {
   useAddChecklistDefinitionToCentralRepo,
   useUpdateChecklistDefinitionToCentralRepo,

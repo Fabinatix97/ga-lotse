@@ -45,6 +45,7 @@ export function LabelField(props: LabelFieldProps) {
       <Autocomplete
         freeSolo
         multiple
+        aria-description="Mehrfachauswahl möglich"
         clearOnBlur
         selectOnFocus
         filterSelectedOptions

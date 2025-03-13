@@ -108,6 +108,10 @@ public class X509Utils {
     }
   }
 
+  public static boolean isCaCertificate(X509Certificate certificate) {
+    return certificate.getBasicConstraints() != -1;
+  }
+
   public static boolean isValidSignature(
       String dataThatWasSigned, String base64EncodedSignature, String signatoryAsPemCertificate) {
     return isValidSignature(
@@ -166,10 +170,6 @@ public class X509Utils {
     } catch (NoSuchAlgorithmException e) {
       throw new IllegalStateException("Algorithm " + signatureAlgorithm + " not found", e);
     }
-  }
-
-  public static boolean inTrustStoreOrWasSignedByOneInTrustStore(KeyStore trustStore, String pem) {
-    return inTrustStoreOrWasSignedByOneInTrustStore(trustStore, parsePem(pem));
   }
 
   public static boolean inTrustStoreOrWasSignedByOneInTrustStore(

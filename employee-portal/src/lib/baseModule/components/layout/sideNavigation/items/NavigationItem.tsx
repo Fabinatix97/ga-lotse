@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SideNavigationItem } from "@eshg/lib-employee-portal";
+import {
+  SideNavigationItem,
+  useAccessControl,
+} from "@eshg/lib-employee-portal";
 import { ReactNode, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
@@ -22,7 +25,6 @@ import {
 } from "@/lib/baseModule/components/layout/sideNavigation/items/ExpandedNavigationItem";
 import { useNavigationListContext } from "@/lib/baseModule/components/layout/sideNavigation/lists/NavigationListContext";
 import { useSideNavigationItemProps } from "@/lib/baseModule/components/layout/sideNavigation/useSideNavigationItemProps";
-import { useAccessControl } from "@/lib/shared/hooks/useAccessControl";
 
 function useNavigationItemComponents() {
   const collapsed = useNavigationListContext();

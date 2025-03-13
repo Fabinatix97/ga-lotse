@@ -152,7 +152,8 @@ public abstract class AbstractChartDiagramCreationService<D, C> {
         .map(filter -> TableRowSpecifications.createFilterSpecification(filter, aggregationResult));
   }
 
-  protected static Object getKeyForCellEntryBooleanIntegerTextOrValueOption(CellEntry cellEntry) {
+  protected static Object getKeyForCellEntryBooleanIntegerTextDateOrValueOption(
+      CellEntry cellEntry) {
     if (cellEntry.getValue() == null) {
       return null;
     }
@@ -162,7 +163,8 @@ public abstract class AbstractChartDiagramCreationService<D, C> {
     if (cellEntry.getTableColumn().getValueType().equals(TableColumnValueType.INTEGER)) {
       return cellEntry.getValue();
     }
-    if (cellEntry.getTableColumn().getValueType().equals(TableColumnValueType.TEXT)) {
+    if (cellEntry.getTableColumn().getValueType().equals(TableColumnValueType.TEXT)
+        || cellEntry.getTableColumn().getValueType().equals(TableColumnValueType.DATE)) {
       return cellEntry.getValue().toString();
     }
     String stringValue = cellEntry.getValue().toString();

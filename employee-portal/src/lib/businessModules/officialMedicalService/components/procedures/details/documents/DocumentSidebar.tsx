@@ -42,12 +42,11 @@ interface DocumentSidebarProps extends SidebarWithFormRefProps {
   isProcedureFinalized: boolean;
 }
 
-export enum DocumentSidebarMode {
-  default,
-  editInformation,
-  editNote,
-  reject,
-}
+export type DocumentSidebarMode =
+  | "default"
+  | "editInformation"
+  | "editNote"
+  | "reject";
 
 function DocumentSidebar({
   documentId,
@@ -65,9 +64,7 @@ function DocumentSidebar({
   });
   const document = allDocuments.find((doc) => doc.id === documentId)!;
 
-  const [mode, setMode] = useState<DocumentSidebarMode>(
-    DocumentSidebarMode.default,
-  );
+  const [mode, setMode] = useState<DocumentSidebarMode>("default");
 
   async function handleDocumentSubmit(values: DocumentFormValues) {
     const request: PatchCompleteDocumentFileUploadRequest = {
@@ -98,7 +95,7 @@ function DocumentSidebar({
 
     await patchDocumentInformation.mutateAsync(request, {
       onSuccess: () => {
-        setMode(DocumentSidebarMode.default);
+        setMode("default");
       },
     });
   }
@@ -113,7 +110,7 @@ function DocumentSidebar({
 
     await patchDocumentNote.mutateAsync(request, {
       onSuccess: () => {
-        setMode(DocumentSidebarMode.default);
+        setMode("default");
       },
     });
   }
@@ -143,15 +140,15 @@ function DocumentSidebar({
 
   return (
     <>
-      {mode === DocumentSidebarMode.default && (
+      {mode === "default" && (
         <DocumentForm
           title={document.documentTypeDe}
           onSubmit={handleDocumentSubmit}
           onCancel={handleCancel}
           onClose={props.onClose}
-          onEditInformation={() => setMode(DocumentSidebarMode.editInformation)}
-          onEditNote={() => setMode(DocumentSidebarMode.editNote)}
-          onReject={() => setMode(DocumentSidebarMode.reject)}
+          onEditInformation={() => setMode("editInformation")}
+          onEditNote={() => setMode("editNote")}
+          onReject={() => setMode("reject")}
           formRef={props.formRef}
           initialValues={INITIAL_VALUES}
           document={document}
@@ -159,31 +156,31 @@ function DocumentSidebar({
           isProcedureFinalized={isProcedureFinalized}
         />
       )}
-      {mode === DocumentSidebarMode.editInformation && (
+      {mode === "editInformation" && (
         <EditDocumentInformationForm
           title="Angaben bearbeiten"
           onSubmit={handleEditInformation}
           onCancel={() => {
-            setMode(DocumentSidebarMode.default);
+            setMode("default");
           }}
           formRef={props.formRef}
           initialValues={INITIAL_VALUES}
           submitLabel="Speichern"
         />
       )}
-      {mode === DocumentSidebarMode.editNote && (
+      {mode === "editNote" && (
         <EditDocumentNoteForm
           title="Stichwörter bearbeiten"
           onSubmit={handleEditNote}
           onCancel={() => {
-            setMode(DocumentSidebarMode.default);
+            setMode("default");
           }}
           formRef={props.formRef}
           initialValues={INITIAL_VALUES}
           submitLabel="Speichern"
         />
       )}
-      {mode === DocumentSidebarMode.reject && (
+      {mode === "reject" && (
         <RejectDocumentForm
           onClose={props.onClose}
           formRef={props.formRef}

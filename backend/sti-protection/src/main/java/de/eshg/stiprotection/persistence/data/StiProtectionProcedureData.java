@@ -74,4 +74,8 @@ public record StiProtectionProcedureData(StiProtectionProcedure procedure, Strin
   public StiProcedureOrigin createdBy() {
     return procedure.getStiProcedureOrigin();
   }
+
+  public Boolean medicalHistorySubmitted() {
+    return procedure.getMedicalHistorySubmitted();
+  }
 }

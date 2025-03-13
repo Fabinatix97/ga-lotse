@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useGetSelfUser } from "@eshg/lib-employee-portal";
 import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { useNavigation } from "@eshg/lib-portal/components/navigation/NavigationContext";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -14,10 +15,7 @@ import { useCallback, useContext, useState } from "react";
 import { isObjectType } from "remeda";
 
 import { useUpdateSelfUserChatUsername } from "@/lib/baseModule/api/mutations/users";
-import {
-  useGetSelfUser,
-  useGetUserProfile,
-} from "@/lib/baseModule/api/queries/users";
+import { useGetUserProfile } from "@/lib/baseModule/api/queries/users";
 import { routes } from "@/lib/baseModule/shared/routes";
 import { ChatUserId } from "@/lib/businessModules/chat/components/ChatUserId";
 import {

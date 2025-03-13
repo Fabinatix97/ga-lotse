@@ -173,6 +173,7 @@ function getLabels(value: unknown): string[] {
   if (isActorSelector(value)) {
     return [formatActorSelector(value)];
   }
+  // eslint-disable-next-line @typescript-eslint/no-base-to-string
   return [String(value)];
 }
 

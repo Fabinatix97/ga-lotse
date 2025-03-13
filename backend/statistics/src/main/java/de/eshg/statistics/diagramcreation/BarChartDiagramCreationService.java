@@ -160,7 +160,7 @@ public class BarChartDiagramCreationService
       TableColumn primaryTableColumn,
       TableColumn secondaryTableColumn) {
     Object primaryKey =
-        getKeyForCellEntryBooleanIntegerTextOrValueOption(
+        getKeyForCellEntryBooleanIntegerTextDateOrValueOption(
             getCellEntry(tableRow, primaryTableColumn));
 
     Object secondaryKey;
@@ -168,7 +168,7 @@ public class BarChartDiagramCreationService
       secondaryKey = primaryKey;
     } else {
       secondaryKey =
-          getKeyForCellEntryBooleanIntegerTextOrValueOption(
+          getKeyForCellEntryBooleanIntegerTextDateOrValueOption(
               getCellEntry(tableRow, secondaryTableColumn));
     }
 

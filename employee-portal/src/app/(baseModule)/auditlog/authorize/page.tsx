@@ -11,21 +11,19 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
-import { SearchParams } from "@eshg/lib-portal/helpers/searchParams";
+import { PageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { AuditLogAuthorizePage } from "@/lib/auditlog/components/authorize/AuditLogAuthorizePage";
 import { RestrictedPage } from "@/lib/shared/components/RestrictedPage";
 
-export default function AuditLogAuthorizeAccessPage(
-  props: Readonly<{
-    searchParams: SearchParams;
-  }>,
-) {
+export default function AuditLogAuthorizeAccessPage(props: PageProps) {
+  const searchParams = props.searchParams;
+
   return (
     <StickyToolbarLayout toolbar={<Toolbar title="Auditlog Freigabe" />}>
       <MainContentLayout fullViewportHeight>
         <RestrictedPage requiredUserRole={ApiUserRole.AuditlogAuthorizeAccess}>
-          <AuditLogAuthorizePage searchParams={props.searchParams} />
+          <AuditLogAuthorizePage searchParams={searchParams} />
         </RestrictedPage>
       </MainContentLayout>
     </StickyToolbarLayout>

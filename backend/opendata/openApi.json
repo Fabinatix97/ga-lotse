@@ -167,6 +167,24 @@
         "tags" : [ "OpenDataPublicCitizen" ]
       }
     },
+    "/feature-toggles" : {
+      "get" : {
+        "operationId" : "getFeatureToggles",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetOpenDataFeatureTogglesResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "OpenDataFeatureToggles" ]
+      }
+    },
     "/open-documents" : {
       "get" : {
         "description" : "Gets all open documents aka all resources including their versions.\nIt is possible to filter by `fileType`, `sources` and the year of\n`statisticsStartDate` and `statisticsEndDate`\n",
@@ -411,6 +429,44 @@
         "tags" : [ "OpenData" ]
       }
     },
+    "/test-helper/enabled-new-features/{featureToDisable}" : {
+      "delete" : {
+        "operationId" : "disableNewFeature",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "featureToDisable",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/OpenDataFeature"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/enabled-new-features/{featureToEnable}" : {
+      "post" : {
+        "operationId" : "enableNewFeature",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "featureToEnable",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/OpenDataFeature"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
     "/test-helper/population" : {
       "post" : {
         "operationId" : "populateDefaults",
@@ -630,6 +686,26 @@
           }
         }
       },
+      "GetOpenDataFeatureTogglesResponse" : {
+        "required" : [ "disabledOldFeatures", "enabledNewFeatures" ],
+        "type" : "object",
+        "properties" : {
+          "disabledOldFeatures" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/OpenDataFeature"
+            }
+          },
+          "enabledNewFeatures" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/OpenDataFeature"
+            }
+          }
+        }
+      },
       "GetOpenDocumentsResponse" : {
         "required" : [ "elements", "totalElements", "totalPages" ],
         "type" : "object",
@@ -671,6 +747,10 @@
       "InterceptionType" : {
         "type" : "string",
         "enum" : [ "BAD_REQUEST", "UNAUTHORIZED", "FORBIDDEN", "NOT_FOUND", "INTERNAL_SERVER_ERROR" ]
+      },
+      "OpenDataFeature" : {
+        "type" : "string",
+        "enum" : [ "OPEN_DATA" ]
       },
       "OpenDataFileType" : {
         "type" : "string",

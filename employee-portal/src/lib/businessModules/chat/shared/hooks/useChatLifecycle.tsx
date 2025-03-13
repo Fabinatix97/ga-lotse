@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useQueryClient } from "@tanstack/react-query";
 import {
   ClientEvent,
   MatrixClient,
@@ -19,9 +20,11 @@ import {
 } from "react";
 
 import { useUpdateSelfUserChatAttributes } from "@/lib/businessModules/chat/api/mutations/selfUserApi";
-import { useBindKeycloakId } from "@/lib/businessModules/chat/api/mutations/userAccountApi";
 import { useCreateOrUpdateUserSettings } from "@/lib/businessModules/chat/api/mutations/userSettingsApi";
-import { useGetSelfUserChatAttributes } from "@/lib/businessModules/chat/api/queries/selfUserApi";
+import {
+  getSelfUserChatAttributesQueryKey,
+  useGetSelfUserChatAttributes,
+} from "@/lib/businessModules/chat/api/queries/selfUserApi";
 import {
   createStorageKey,
   generateCryptoRandomUUID,
@@ -62,7 +65,6 @@ export function useChatLifecycle(
   const { data: selfUserChatAttributesData } = useGetSelfUserChatAttributes();
   const { configuration, userSettings } = useChat();
 
-  const { mutateAsync: bindKeycloakId } = useBindKeycloakId();
   const { mutateAsync: registerAccount } = useCreateOrUpdateUserSettings();
   const { mutateAsync: updateSelfUserChatAttributes } =
     useUpdateSelfUserChatAttributes();
@@ -74,6 +76,7 @@ export function useChatLifecycle(
   const wasExternalChatUsernameUpdated = useRef(false);
   const wasMatrixClientInitialized = useRef(false);
   const wasRustCryptoInitialized = useRef(false);
+  const queryClient = useQueryClient();
 
   function resetClientStateFlags() {
     wasRegisterFlowStarted.current = false;
@@ -133,16 +136,11 @@ export function useChatLifecycle(
           externalChatUsername: credentials.userId,
           chatCryptoStoreDeriveKeySecret: generateCryptoRandomUUID(),
         });
+        await queryClient.invalidateQueries({
+          queryKey: getSelfUserChatAttributesQueryKey(),
+        });
       } catch (err) {
         throw new Error("Error updating keycloak chatUser", {
-          cause: err,
-        });
-      }
-
-      try {
-        await bindKeycloakId({ matrixUserId: credentials.userId });
-      } catch (err) {
-        throw new Error("Error binding keycloak id to synapse user", {
           cause: err,
         });
       }
@@ -168,12 +166,12 @@ export function useChatLifecycle(
     clearSearchParams(chatSearchParamNames.loginToken);
   }, [
     baseUrl,
-    bindKeycloakId,
     registerAccount,
     selfUserChatAttributesData.userId,
     setClientState,
     updateSelfUserChatAttributes,
     userSettings.accountRegistered,
+    queryClient,
   ]);
 
   /**

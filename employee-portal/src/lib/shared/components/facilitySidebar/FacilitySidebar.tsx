@@ -55,6 +55,7 @@ export type FacilitySidebarProps<TSearchValues> = {
     searchInputs: FacilitySearchFormValues;
     facility: ApiGetReferenceFacilityResponse;
   }) => Promise<void>;
+  allowMainContactPerson?: boolean;
 } & SidebarWithFormRefProps &
   OptionalSearchFormComponent<TSearchValues>;
 
@@ -172,6 +173,7 @@ function EmbeddedFacilitySidebar<
             });
             return props.onClose(true);
           }}
+          allowMainContactPerson={props.allowMainContactPerson}
         />
       )}
       {state.stage === "display" && isDefined(state.selectedFacility) && (

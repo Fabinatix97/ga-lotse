@@ -16,6 +16,8 @@ import { ReactNode } from "react";
 import { ToothIcon } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/Teeth";
 import { TOOTH_SIZE } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/styles";
 import { useDentalExaminationStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
+import { useElementFocus } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/hooks/useElementFocus";
+import { useKeyboardNavigationHandler } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/hooks/useKeyboardNavigationHandler";
 import {
   QuadrantNumber,
   Tooth,
@@ -37,19 +39,29 @@ const IconSizedBox = styled(Box)({
 interface ToothIconButtonProps extends Omit<IconButtonProps, "children"> {
   icon: ReactNode;
   hoverIcon?: ReactNode;
+  toothContext: ToothContext;
 }
 
 function ToothIconButton(props: ToothIconButtonProps) {
+  const { elementRef, isFocused, focusHandler, blurHandler } =
+    useElementFocus<HTMLButtonElement>({
+      toothContext: props.toothContext,
+      element: "toothButton",
+    });
+  const keyboardNavigationHandler = useKeyboardNavigationHandler();
+
   return (
     <SizedIconButton
       variant="plain"
       {...props}
+      ref={elementRef}
       sx={{
+        "--Button-focused": isFocused ? "1" : "0",
         ".hover-icon": {
           display: "none",
         },
         ...(props.hoverIcon && {
-          "&:hover": {
+          "&:hover, &:focus-visible": {
             ".default-icon": {
               display: "none",
             },
@@ -59,6 +71,9 @@ function ToothIconButton(props: ToothIconButtonProps) {
           },
         }),
       }}
+      onFocus={focusHandler}
+      onBlur={blurHandler}
+      onKeyDown={keyboardNavigationHandler}
     >
       <IconSizedBox className="default-icon">{props.icon}</IconSizedBox>
       {props.hoverIcon && (
@@ -76,17 +91,19 @@ interface AddToothButtonProps {
 }
 
 export function AddToothButton(props: AddToothButtonProps) {
+  const toothContext: ToothContext = {
+    quadrantNumber: props.quadrantNumber,
+    toothIndex: props.index,
+  };
   const addTooth = useDentalExaminationStore((state) => state.addTooth);
 
   return (
     <ToothIconButton
       color="primary"
       aria-label="Zahn hinzufügen"
+      toothContext={toothContext}
       onClick={() => {
-        addTooth({
-          quadrantNumber: props.quadrantNumber,
-          toothIndex: props.index,
-        });
+        addTooth(toothContext);
       }}
       icon={<RoundedAddIcon />}
     />
@@ -104,6 +121,7 @@ export function RemoveToothButton(props: RemoveToothButtonProps) {
     <ToothIconButton
       color="danger"
       aria-label="Zahn entfernen"
+      toothContext={props.toothContext}
       onClick={() => removeTooth(props.toothContext)}
       icon={<ToothIcon tooth={props.tooth} toothContext={props.toothContext} />}
       hoverIcon={<RoundedDeleteIcon />}
@@ -124,6 +142,7 @@ export function ToggleToothTypeButton(props: ToggleToothTypeButtonProps) {
     <ToothIconButton
       color="primary"
       aria-label="Zahntyp wechseln"
+      toothContext={props.toothContext}
       onClick={() => toggleToothType(props.toothContext)}
       icon={<ToothIcon tooth={props.tooth} toothContext={props.toothContext} />}
       hoverIcon={<RoundedChangeIcon />}

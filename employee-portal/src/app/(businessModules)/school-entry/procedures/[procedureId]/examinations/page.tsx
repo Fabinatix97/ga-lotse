@@ -3,13 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { redirect } from "next/navigation";
 
-import { SchoolEntryProcedurePageProps } from "@/app/(businessModules)/school-entry/procedures/[procedureId]/layout";
+import { SchoolEntryProcedureRouteParamsSchema } from "@/lib/businessModules/schoolEntry/features/procedures/SchoolEntryProcedureRouteParamsSchema";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 
 export default function SchoolEntryExaminationsPage(
-  props: SchoolEntryProcedurePageProps,
+  props: DynamicPageProps<SchoolEntryProcedureRouteParamsSchema>,
 ) {
-  redirect(routes.procedures.byId(props.params.procedureId).examinations.eye);
+  const { procedureId } = props.params;
+
+  redirect(routes.procedures.byId(procedureId).examinations.eye);
 }

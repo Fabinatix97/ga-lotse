@@ -4,12 +4,12 @@
  */
 
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatCurrency } from "@eshg/lib-portal/formatters/numbers";
 import { ApiDisease } from "@eshg/travel-medicine-api";
 import { Delete, Edit } from "@mui/icons-material";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
-import { LOCALE_OPTION, formatCurrency } from "@/lib/shared/helpers/numbers";
 
 const columnHelper: ColumnHelper<ApiDisease> = createColumnHelper<ApiDisease>();
 
@@ -25,7 +25,7 @@ export function columns(
       header: "Bürgerportal Preisangabe",
       cell: (props) =>
         formatCurrency(props.getValue(), {
-          localOption: LOCALE_OPTION.manual,
+          localeOption: "manual",
           locale: "de-DE",
         }),
     }),

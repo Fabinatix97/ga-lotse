@@ -15,7 +15,7 @@ import {
   styled,
 } from "@mui/joy";
 
-import { notEmptyFieldValidation } from "@/lib/businessModules/travelMedicine/shared/templateEditor/templateFieldValidation";
+import { validateQuestionText } from "@/lib/businessModules/travelMedicine/shared/templateEditor/templateFieldValidation";
 
 export function MainQuestion(
   props: Readonly<{
@@ -37,7 +37,7 @@ export function MainQuestion(
         name={`${props.elementDataFormikPath}.questionText`}
         placeholder="Frage eingeben"
         sx={{ flex: 1 }}
-        validate={notEmptyFieldValidation}
+        validate={validateQuestionText()}
         data-testid="element-main-text"
       />
 

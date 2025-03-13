@@ -5,12 +5,10 @@
 
 package de.eshg.travelmedicine.citizenpublic;
 
-import static de.eshg.rest.service.PrivacyDocumentHelper.privacyNoticeAttachmentResponse;
-import static de.eshg.rest.service.PrivacyDocumentHelper.privacyPolicyAttachmentResponse;
-
 import de.eshg.base.department.GetDepartmentInfoResponse;
 import de.eshg.departmentinfo.DepartmentInfoService;
 import de.eshg.departmentinfo.OpeningHoursService;
+import de.eshg.departmentinfo.PrivacyDocumentService;
 import de.eshg.departmentinfo.domain.OpeningHours;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
 import de.eshg.lib.appointmentblock.AppointmentTypeService;
@@ -34,7 +32,6 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -60,9 +57,8 @@ public class CitizenPublicController {
   private final AppointmentTypeService appointmentTypeService;
   private final VaccinationConsultationService vaccinationConsultationService;
   private final DepartmentInfoService departmentInfoService;
-  private final Resource privacyNotice;
-  private final Resource privacyPolicy;
   private final OpeningHoursService openingHoursService;
+  private final PrivacyDocumentService privacyDocumentService;
   private final Clock clock;
 
   public CitizenPublicController(
@@ -71,18 +67,16 @@ public class CitizenPublicController {
       AppointmentTypeService appointmentTypeService,
       VaccinationConsultationService vaccinationConsultationService,
       DepartmentInfoService departmentInfoService,
-      @Value("${de.eshg.travel-medicine.privacy-notice-location}") Resource privacyNotice,
-      @Value("${de.eshg.travel-medicine.privacy-policy-location}") Resource privacyPolicy,
       OpeningHoursService openingHoursService,
+      PrivacyDocumentService privacyDocumentService,
       Clock clock) {
     this.diseaseService = diseaseService;
     this.appointmentBlockService = appointmentBlockService;
     this.appointmentTypeService = appointmentTypeService;
     this.vaccinationConsultationService = vaccinationConsultationService;
     this.departmentInfoService = departmentInfoService;
-    this.privacyNotice = privacyNotice;
-    this.privacyPolicy = privacyPolicy;
     this.openingHoursService = openingHoursService;
+    this.privacyDocumentService = privacyDocumentService;
     this.clock = clock;
   }
 
@@ -152,13 +146,13 @@ public class CitizenPublicController {
   @Operation(summary = "Get the privacy-notice document.")
   @Transactional(readOnly = true)
   public ResponseEntity<Resource> getPrivacyNotice() {
-    return privacyNoticeAttachmentResponse(privacyNotice);
+    return privacyDocumentService.getPrivacyNotice();
   }
 
   @GetMapping(path = "/documents/privacy-policy")
   @Operation(summary = "Get the privacy-policy document.")
   @Transactional(readOnly = true)
   public ResponseEntity<Resource> getPrivacyPolicy() {
-    return privacyPolicyAttachmentResponse(privacyPolicy);
+    return privacyDocumentService.getPrivacyPolicy();
   }
 }

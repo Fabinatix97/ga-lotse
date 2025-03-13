@@ -10,6 +10,7 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { formatIdentityName } from "@/lib/baseModule/components/gdpr/helpers";
@@ -19,12 +20,13 @@ import { useGdprValidationTaskApi } from "@/lib/shared/api/clients";
 import { getGdprValidationTaskDetailsQuery } from "@/lib/shared/api/queries/gdpr";
 import { isBusinessModule } from "@/lib/shared/helpers/guards";
 
-export default function GdprValidationTaskPage({
-  params,
-}: {
-  params: { gdprProcedureId: string; businessModule: string };
-}) {
-  const businessModule = params.businessModule;
+export default function GdprValidationTaskPage(
+  props: DynamicPageProps<{
+    gdprProcedureId: string;
+    businessModule: string;
+  }>,
+) {
+  const { gdprProcedureId, businessModule } = props.params;
   if (!isBusinessModule(businessModule)) {
     throw new Error(
       `Tried to open validation task for unknown business module type '${businessModule}'`,
@@ -36,7 +38,7 @@ export default function GdprValidationTaskPage({
     getGdprValidationTaskDetailsQuery(
       gdprValidationTaskApi,
       businessModule,
-      params.gdprProcedureId,
+      gdprProcedureId,
     ),
   );
 
@@ -57,7 +59,7 @@ export default function GdprValidationTaskPage({
       <MainContentLayout fullViewportHeight gap={2}>
         <ValidationTaskProceduresTable
           gdprValidationTaskApi={gdprValidationTaskApi}
-          gdprProcedureId={params.gdprProcedureId}
+          gdprProcedureId={gdprProcedureId}
           gdprProcedureType={validationTask.type}
           status={validationTask.status}
           procedures={proceduresWithStatus}

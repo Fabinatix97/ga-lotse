@@ -5,15 +5,16 @@
 
 "use client";
 
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { redirect } from "next/navigation";
 
-import { StiProtectionProcedurePageParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(fullPageLayout)/layout";
+import { StiProtectionProcedureRouteParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(fullPageLayout)/layout";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 
-export default function StiProtectionProcedureExaminationPage({
-  params: { id: procedureId },
-}: Readonly<{
-  params: StiProtectionProcedurePageParams;
-}>) {
+export default function StiProtectionProcedureExaminationPage(
+  props: DynamicPageProps<StiProtectionProcedureRouteParams>,
+) {
+  const { id: procedureId } = props.params;
+
   redirect(routes.procedures.byId(procedureId).examination.rapidTest);
 }

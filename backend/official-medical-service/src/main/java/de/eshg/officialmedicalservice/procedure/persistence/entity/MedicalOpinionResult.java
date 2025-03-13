@@ -6,8 +6,19 @@
 package de.eshg.officialmedicalservice.procedure.persistence.entity;
 
 public enum MedicalOpinionResult {
-  POSITIVE,
-  NEGATIVE,
-  NO_VALUATION,
-  UNKNOWN,
+  POSITIVE("Positives Ergebnis"),
+  NEGATIVE("Negatives Ergebnis"),
+  NO_VALUATION("Keine Bewertung"),
+  UNKNOWN("Unbekannt"),
+  ;
+
+  String germanName;
+
+  MedicalOpinionResult(String germanName) {
+    this.germanName = germanName;
+  }
+
+  public String getGermanName() {
+    return germanName;
+  }
 }

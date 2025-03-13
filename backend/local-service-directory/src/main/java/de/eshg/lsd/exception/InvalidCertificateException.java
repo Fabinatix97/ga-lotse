@@ -18,4 +18,8 @@ public class InvalidCertificateException extends IllegalArgumentException {
             + userIdFromCertificate
             + "'");
   }
+
+  public InvalidCertificateException(String message) {
+    super(message);
+  }
 }

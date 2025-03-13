@@ -17,6 +17,7 @@ export interface BaseFacilityContactPerson {
   title: string;
   salutation: OptionalFieldValue<ApiSalutation>;
   gender: OptionalFieldValue<ApiGender>;
+  mainContact: boolean;
 }
 
 export interface BaseFacility {

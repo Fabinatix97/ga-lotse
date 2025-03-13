@@ -6,26 +6,24 @@
 "use client";
 
 import { getProphylaxisSessionQuery, useDentalApi } from "@eshg/dental";
+import { DynamicLayoutProps } from "@eshg/lib-portal/types/pageParams";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { PropsWithChildren } from "react";
 
 import { ProphylaxisSessionStoreProvider } from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/ProphylaxisSessionStoreProvider";
 
-export type ProphylaxisSessionPageProps = Readonly<{
-  params: ProphylaxisSessionPageParams;
-}>;
-
-interface ProphylaxisSessionPageParams {
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type ProphylaxisSessionRouteParams = {
   prophylaxisSessionId: string;
-}
+};
 
 export default function ProphylaxisSessionPageLayout(
-  props: PropsWithChildren<ProphylaxisSessionPageProps>,
+  props: DynamicLayoutProps<ProphylaxisSessionRouteParams>,
 ) {
+  const { prophylaxisSessionId } = props.params;
   const { prophylaxisSessionApi } = useDentalApi();
   const { data: prophylaxisSession } = useSuspenseQuery(
     getProphylaxisSessionQuery(prophylaxisSessionApi, {
-      prophylaxisSessionId: props.params.prophylaxisSessionId,
+      prophylaxisSessionId,
     }),
   );
 

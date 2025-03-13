@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
+
 import { useGetProcedureStepAppointmentDetails } from "@/lib/businessModules/travelMedicine/api/queries/citizenAuthApi";
 import { useIdContext } from "@/lib/businessModules/travelMedicine/components/shared/contexts/IdContext";
 import { AppointmentDetails } from "@/lib/businessModules/travelMedicine/components/viewAppointment/AppointmentDetails";
@@ -11,7 +13,6 @@ import {
   OneColumnGrid,
   TwoColumnGrid,
 } from "@/lib/shared/components/layout/grid";
-import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 export function AppointmentPageContent() {
   const isMobile = useIsMobile();

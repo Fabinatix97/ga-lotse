@@ -5,7 +5,8 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["@eshg/lib-employee-portal/theme"]
+    "types": ["@eshg/lib-employee-portal/theme"],
+    "erasableSyntaxOnly": false
   },
   "include": [
     "staticSvgImage.d.ts",

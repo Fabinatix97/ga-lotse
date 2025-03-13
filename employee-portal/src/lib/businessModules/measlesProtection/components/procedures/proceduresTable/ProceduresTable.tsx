@@ -6,6 +6,7 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
+import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
@@ -34,7 +35,6 @@ import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 import {
   ProceduresTableFilters,

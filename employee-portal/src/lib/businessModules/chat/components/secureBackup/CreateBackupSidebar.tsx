@@ -12,6 +12,7 @@ import { AuthDict, IAuthData, UIAResponse } from "matrix-js-sdk";
 import { useCallback, useRef, useState } from "react";
 import { isObjectType } from "remeda";
 
+import { useBindKeycloakId } from "@/lib/businessModules/chat/api/mutations/userAccountApi";
 import { SecureBackupContent } from "@/lib/businessModules/chat/components/secureBackup/BackupSetupView";
 import { SSOAuthModal } from "@/lib/businessModules/chat/components/secureBackup/SSOAuthModal";
 import { setupNewSecretStorage } from "@/lib/businessModules/chat/matrix/secretStorage";
@@ -65,6 +66,7 @@ export function CreateBackupSidebar({
   const formRef = useRef<SidebarFormHandle>(null);
   const { matrixClient, setClientState } = useChatClientContext();
   const snackbar = useSnackbar();
+  const { mutateAsync: bindKeycloakId } = useBindKeycloakId();
 
   const [modalValues, setModalValues] = useState<SSOAuthModalValues>();
 
@@ -103,6 +105,19 @@ export function CreateBackupSidebar({
             throw new Error("Unable to receive session");
           }
 
+          try {
+            const mxid = matrixClient.getUserId();
+            if (!mxid) {
+              throw new Error("Unexpected error: Missing user MXID");
+            }
+
+            await bindKeycloakId({ matrixUserId: mxid });
+          } catch (err) {
+            throw new Error("Error binding keycloak id to synapse user", {
+              cause: err,
+            });
+          }
+
           const modalPromise = showSSOModal({ makeRequest, session });
           const { confirmed } = await modalPromise;
 
@@ -114,7 +129,7 @@ export function CreateBackupSidebar({
         }
       }
     },
-    [showSSOModal],
+    [showSSOModal, bindKeycloakId, matrixClient],
   );
 
   async function handleSubmit(values: InitialValues) {

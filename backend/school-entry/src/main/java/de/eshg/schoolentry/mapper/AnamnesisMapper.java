@@ -11,7 +11,7 @@ import de.eshg.schoolentry.api.citizen.CitizenAnamnesisDto;
 import de.eshg.schoolentry.api.citizen.CitizenMigrationBackgroundDto;
 import de.eshg.schoolentry.domain.model.Anamnesis;
 import de.eshg.schoolentry.domain.model.BooleanWithUnknown;
-import de.eshg.schoolentry.domain.model.CountryCode;
+import de.eshg.schoolentry.domain.model.SchoolEntryCountryCode;
 import jakarta.annotation.Nullable;
 
 public class AnamnesisMapper {
@@ -96,7 +96,7 @@ public class AnamnesisMapper {
         anamnesis.getPersonalConspicuities());
   }
 
-  private static CountryCodeDto mapToDto(CountryCode nationalityChild) {
+  private static CountryCodeDto mapToDto(SchoolEntryCountryCode nationalityChild) {
     if (nationalityChild == null) {
       return null;
     }
@@ -309,10 +309,10 @@ public class AnamnesisMapper {
         || migrationBackground.nationalitySecondParent() != CountryCodeDto.DEU;
   }
 
-  public static CountryCode mapToDomain(CountryCodeDto dto) {
+  public static SchoolEntryCountryCode mapToDomain(CountryCodeDto dto) {
     if (dto == null) {
       return null;
     }
-    return CountryCode.valueOf(dto.name());
+    return SchoolEntryCountryCode.valueOf(dto.name());
   }
 }

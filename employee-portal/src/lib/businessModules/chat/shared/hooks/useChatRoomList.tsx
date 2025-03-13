@@ -79,7 +79,6 @@ export function useChatRoomList() {
 
   useEffect(() => {
     void (async () => {
-      await matrixClient.syncLeftRooms();
       const rooms = matrixClient.getRooms();
       const joinedRooms = rooms.filter(
         (room) => room.getMyMembership() === KnownMembership.Join.toString(),

@@ -7,6 +7,11 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import {
+  TabNavigationItem,
+  TabNavigationToolbar,
+  useHasUserRoleCheck,
+} from "@eshg/lib-employee-portal";
+import {
   DescriptionOutlined,
   TextSnippetOutlined,
   TimelineOutlined,
@@ -18,9 +23,6 @@ import { useGetProcedureHeader } from "@/lib/businessModules/officialMedicalServ
 import { ProcedureDetailsTabHeader } from "@/lib/businessModules/officialMedicalService/components/procedures/details/ProcedureDetailsTabHeader";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { statusColors } from "@/lib/shared/components/procedures/constants";
-import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
-import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 interface ProcedureDetailsToolbarProps {
   id: string;

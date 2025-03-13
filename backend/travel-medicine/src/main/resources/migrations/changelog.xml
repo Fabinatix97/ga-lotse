@@ -71,5 +71,7 @@
   <include file="migrations/0061_add_shedlock.xml"/>
   <include file="migrations/0062_department_info.xml"/>
   <include file="migrations/0063_opening_hours.xml"/>
+  <include file="migrations/0064_privacy_documents.xml"/>
+  <include file="migrations/0065_notification_config.xml"/>
 
 </databaseChangeLog>

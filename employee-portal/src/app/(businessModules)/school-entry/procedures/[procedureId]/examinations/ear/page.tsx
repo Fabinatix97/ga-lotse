@@ -8,13 +8,13 @@
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { addMissingKeys, dropEmptyKeys } from "@eshg/lib-portal/helpers/form";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import {
   ApiHertzValue,
   UpdateHearingTestResultRequest,
 } from "@eshg/school-entry-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
-import { SchoolEntryProcedurePageProps } from "@/app/(businessModules)/school-entry/procedures/[procedureId]/layout";
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { HearingTestResult } from "@/lib/businessModules/schoolEntry/api/models/examinations/HearingTestResult";
 import { useUpdateHearingTestResultOptions } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
@@ -22,6 +22,7 @@ import {
   getHearingTestResultQuery,
   getProcedureQuery,
 } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
+import { SchoolEntryProcedureRouteParamsSchema } from "@/lib/businessModules/schoolEntry/features/procedures/SchoolEntryProcedureRouteParamsSchema";
 import { mapExaminationResultValues } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/ExaminationResultFields";
 import { mapToExaminationResultFormValues } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/examinationResultHelpers";
 import {
@@ -32,9 +33,9 @@ import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel"
 import { ContentPanelTitle } from "@/lib/shared/components/contentPanel/ContentPanelTitle";
 
 export default function SchoolEntryHearingTestPage(
-  props: SchoolEntryProcedurePageProps,
+  props: DynamicPageProps<SchoolEntryProcedureRouteParamsSchema>,
 ) {
-  const procedureId = props.params.procedureId;
+  const { procedureId } = props.params;
   const schoolEntryApi = useSchoolEntryApi();
   const [{ data: procedure }, { data: hearingTestResult }] = useSuspenseQueries(
     {

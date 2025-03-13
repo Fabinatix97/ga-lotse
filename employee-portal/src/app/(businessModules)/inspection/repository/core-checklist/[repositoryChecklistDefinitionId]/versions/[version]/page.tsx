@@ -10,19 +10,22 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { useGetChecklistDefinitionFromCentralRepo } from "@/lib/businessModules/inspection/api/queries/checklistDefinition";
 import { ReadOnlyCLDPage } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/ReadOnlyCLDPage";
 import { RepoCLDInfoCard } from "@/lib/businessModules/inspection/components/repository/RepoCLDInfoCard";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 
-export default function InspectionRepositoryPage({
-  params,
-}: Readonly<{
-  params: { repositoryChecklistDefinitionId: string; version: string };
-}>) {
-  const repoCldId = parseInt(params.repositoryChecklistDefinitionId);
-  const repoVersion = parseInt(params.version);
+export default function InspectionRepositoryPage(
+  props: DynamicPageProps<{
+    repositoryChecklistDefinitionId: string;
+    version: string;
+  }>,
+) {
+  const { repositoryChecklistDefinitionId, version } = props.params;
+  const repoCldId = parseInt(repositoryChecklistDefinitionId);
+  const repoVersion = parseInt(version);
 
   const {
     data: { checklistDefinition, ...metadata },

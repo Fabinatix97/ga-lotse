@@ -6,6 +6,7 @@
 "use client";
 
 import { ApiUserRole, GetGdprProceduresRequest } from "@eshg/base-api";
+import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/joy";
 
@@ -23,7 +24,6 @@ import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 export function GDPRTable({ params }: { params: GetGdprProceduresRequest }) {
   const hasWritePerms = useHasUserRoleCheck(ApiUserRole.BaseGdprProcedureWrite);

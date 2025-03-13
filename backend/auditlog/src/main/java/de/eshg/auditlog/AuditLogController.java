@@ -163,6 +163,9 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
     getRequestRemoteAddress().ifPresent(remoteAddress -> additionalData.put("IP", remoteAddress));
     auditLogger.log("Auditlog", "Auditlog lesen", additionalData);
 
+    validateAccessWasGranted(
+        readAuditLogFileRequest.source(), readAuditLogFileRequest.date(), selfUser);
+
     Path auditLogFilePath =
         getAuditLogFilePathOrThrow(
             readAuditLogFileRequest.source(), readAuditLogFileRequest.date());
@@ -170,9 +173,6 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
 
     Path ivFilePath = getIvFilePathOrThrow(readAuditLogFileRequest, auditLogFilePath);
     log.info("Using IV file {}", ivFilePath);
-
-    validateAccessWasGranted(
-        readAuditLogFileRequest.source(), readAuditLogFileRequest.date(), selfUser);
 
     Cipher cipher = createDecryptionCipher(key, ivFilePath);
     return ResponseEntity.ok()

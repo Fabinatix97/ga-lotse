@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useGetSelfUser } from "@eshg/lib-employee-portal";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 
-import { useGetSelfUser } from "@/lib/baseModule/api/queries/users";
 import { useUploadEvaluationTemplate } from "@/lib/businessModules/statistics/api/mutations/useUploadEvaluationTemplate";
 import { useGetEvaluationTemplateDetails } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplateDetails";
 import {

@@ -6,6 +6,7 @@
 package de.eshg.base.department;
 
 import de.eshg.base.config.BaseDepartmentInfoService;
+import de.eshg.base.config.BasePrivacyDocumentService;
 import de.eshg.base.config.DepartmentConfigurationService;
 import de.eshg.file.common.CustomMediaTypes;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,17 +21,30 @@ import org.springframework.web.bind.annotation.RestController;
 public class DepartmentController implements DepartmentApi {
   private final DepartmentConfigurationService departmentConfigurationService;
   private final BaseDepartmentInfoService baseDepartmentInfoService;
+  private final BasePrivacyDocumentService basePrivacyDocumentService;
 
   public DepartmentController(
       DepartmentConfigurationService departmentConfiguration,
-      BaseDepartmentInfoService departmentInfoService) {
+      BaseDepartmentInfoService departmentInfoService,
+      BasePrivacyDocumentService basePrivacyDocumentService) {
     this.departmentConfigurationService = departmentConfiguration;
     this.baseDepartmentInfoService = departmentInfoService;
+    this.basePrivacyDocumentService = basePrivacyDocumentService;
   }
 
   @Override
   public GetDepartmentInfoResponse getDepartmentInfo() {
     return baseDepartmentInfoService.getDepartmentInfo();
+  }
+
+  @Override
+  public ResponseEntity<Resource> getPrivacyNotice() {
+    return basePrivacyDocumentService.getPrivacyNotice();
+  }
+
+  @Override
+  public ResponseEntity<Resource> getPrivacyPolicy() {
+    return basePrivacyDocumentService.getPrivacyPolicy();
   }
 
   @Override

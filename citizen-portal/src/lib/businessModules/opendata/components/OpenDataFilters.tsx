@@ -166,6 +166,7 @@ export function OpenDataFilters({ isMobile }: OpenDataFilterProps) {
             </Typography>
             <Select
               multiple
+              aria-description="Mehrfachauswahl möglich"
               aria-label={t("filterSection.selectTopic")}
               placeholder={t("filterSection.selectTopic")}
               startDecorator={<TopicOutlined />}
@@ -224,7 +225,7 @@ export function OpenDataFilters({ isMobile }: OpenDataFilterProps) {
             aria-label={t("filterSection.fileType")}
             placeholder={t("filterSection.fileType")}
             startDecorator={<FileCopyOutlined />}
-            value={filterValues.fileType ?? ("" as string)}
+            value={filterValues.fileType ?? null}
             sx={{ height: "40px" }}
             onChange={(event, value) => {
               if (event !== null) {

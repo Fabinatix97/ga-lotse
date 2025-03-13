@@ -6,6 +6,7 @@
 "use client";
 
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Stack, Typography } from "@mui/joy";
 import { Formik, FormikHelpers, FormikValues } from "formik";
@@ -14,7 +15,6 @@ import { theme } from "@/lib/baseModule/theme/theme";
 import { useTranslation } from "@/lib/i18n/client";
 import { LogoutButton } from "@/lib/shared/components/buttons/LogoutButton";
 import { PageTitle } from "@/lib/shared/components/layout/page";
-import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 export interface MultiStepFormProps
   extends RequiresChildren,

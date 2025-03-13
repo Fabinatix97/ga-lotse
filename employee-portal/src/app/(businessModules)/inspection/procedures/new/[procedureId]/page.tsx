@@ -10,6 +10,7 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
@@ -26,11 +27,10 @@ import {
 import { AddInspectionTiles } from "@/lib/businessModules/inspection/components/inspection/new/AddInspectionTiles";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 
-export default function NewInspectionProcedurePage({
-  params,
-}: Readonly<{
-  params: { procedureId: string };
-}>) {
+export default function NewInspectionProcedurePage(
+  props: DynamicPageProps<{ procedureId: string }>,
+) {
+  const { procedureId } = props.params;
   const inspectionApi = useInspectionApi();
   const objectTypeApi = useObjectTypeApi();
   const userApi = useUserApi();
@@ -42,7 +42,7 @@ export default function NewInspectionProcedurePage({
     { data: allAssignableUsers },
   ] = useSuspenseQueries({
     queries: [
-      getInspectionQuery(inspectionApi, params.procedureId),
+      getInspectionQuery(inspectionApi, procedureId),
       getObjectTypesQuery(objectTypeApi),
       getSelfUserQuery(userApi),
       getAllAssignableUsersQuery(userApi),

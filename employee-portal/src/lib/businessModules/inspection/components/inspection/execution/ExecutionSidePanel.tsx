@@ -19,7 +19,6 @@ import { useState } from "react";
 import { AppointmentSidebar } from "@/lib/businessModules/inspection/components/inspection/common/appointment/AppointmentSidebar";
 import { getFormattedAppointmentParts } from "@/lib/businessModules/inspection/components/inspection/common/appointment/appointmentUtils";
 import { FinalizeInspectionModal } from "@/lib/businessModules/inspection/components/inspection/execution/FinalizeInspectionModal";
-import { InspectionExecutionTabType } from "@/lib/businessModules/inspection/components/inspection/execution/InspectionTabExecution";
 import {
   SidePanelEvent,
   SidePanelNavigation,
@@ -122,7 +121,7 @@ export function ExecutionSidePanel({
     if (firstInvalidChecklistId !== null) {
       // show the first invalid checklist tab
       onActiveTabChange({
-        type: InspectionExecutionTabType.CHECKLIST,
+        type: "CHECKLIST",
         tabId: firstInvalidChecklistId,
       });
       showInvalidFieldsDialog();

@@ -6,32 +6,41 @@
 "use client";
 
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import {
+  PositiveIntegerSchema,
+  UuidSchema,
+} from "@eshg/lib-portal/schemas/pageParams";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { useRouter } from "next/navigation";
+import * as v from "valibot";
 
-import { SchoolEntryProcedurePageParams } from "@/app/(businessModules)/school-entry/procedures/[procedureId]/layout";
 import { useGetPersonFileStateDiff } from "@/lib/baseModule/api/queries/persons";
 import { useSyncPerson } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
+import { SchoolEntryProcedureRouteParamsSchema } from "@/lib/businessModules/schoolEntry/features/procedures/SchoolEntryProcedureRouteParamsSchema";
 import { CentralFileSyncForm } from "@/lib/shared/components/centralFile/sync/CentralFileSyncForm";
 import { BasePersonDiffForm } from "@/lib/shared/components/centralFile/sync/sections/BasePersonDiffForm";
 
-export default function SyncPersonPage({
-  params,
-}: Readonly<{
-  params: SchoolEntryProcedurePageParams & {
-    fileStateId: string;
-    personVersion: number;
-  };
-}>) {
+const RouteParamsSchema = v.object({
+  ...SchoolEntryProcedureRouteParamsSchema.entries,
+  fileStateId: UuidSchema,
+  personVersion: PositiveIntegerSchema,
+});
+
+export default function SyncPersonPage(props: DynamicPageProps) {
+  const { procedureId, personVersion, fileStateId } = v.parse(
+    RouteParamsSchema,
+    props.params,
+  );
   const router = useRouter();
-  const { data } = useGetPersonFileStateDiff(params.fileStateId);
-  const syncPerson = useSyncPerson(params.procedureId);
+  const { data } = useGetPersonFileStateDiff(fileStateId);
+  const syncPerson = useSyncPerson(procedureId);
 
   async function handleSync() {
     await syncPerson.mutateAsync(
       {
         referenceVersion: data.referenceVersion,
-        personVersion: params.personVersion,
-        fileStateId: params.fileStateId,
+        personVersion,
+        fileStateId,
       },
       {
         onSuccess: () => router.back(),

@@ -5,11 +5,13 @@
 
 import {
   ApiBookingState,
+  ApiGetCitizenProcedureDetailsResponse,
   ApiOmsAppointment,
 } from "@eshg/official-medical-service-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { isDefined } from "remeda";
 
-import { useGetProcedureDetails } from "@/lib/businessModules/officialMedicalService/api/queries/citizenAuthApi";
 import { useGetDepartmentInfoQuery } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
 import { ProcedureDocumentForm } from "@/lib/businessModules/officialMedicalService/components/personalArea/ProcedureDocumentForm";
 import { AppointmentDateSection } from "@/lib/businessModules/officialMedicalService/components/personalArea/sections/AppointmentDateSection";
@@ -18,6 +20,7 @@ import { AppointmentTimeSection } from "@/lib/businessModules/officialMedicalSer
 import { BirthdateSection } from "@/lib/businessModules/officialMedicalService/components/personalArea/sections/BirthdateSection";
 import { ConcernSection } from "@/lib/businessModules/officialMedicalService/components/personalArea/sections/ConcernSection";
 import { NameSection } from "@/lib/businessModules/officialMedicalService/components/personalArea/sections/NameSection";
+import { useCitizenRoutes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 import { AddressSection } from "@/lib/shared/components/AddressSection";
 import { ContactSection } from "@/lib/shared/components/ContactSection";
@@ -27,13 +30,45 @@ import {
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
 import { GridColumnStack } from "@/lib/shared/components/layout/grid";
+import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
+import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
-export function PersonalAreaContent() {
+interface PersonalAreaContentProps {
+  procedure: ApiGetCitizenProcedureDetailsResponse;
+}
+
+export function PersonalAreaContent({ procedure }: PersonalAreaContentProps) {
   const { t } = useTranslation(["officialMedicalService/personalArea"]);
-  const [{ data: departmentInfo }, { data: procedureDetails }] =
-    useSuspenseQueries({
-      queries: [useGetDepartmentInfoQuery(), useGetProcedureDetails()],
-    });
+  const [{ data: departmentInfo }] = useSuspenseQueries({
+    queries: [useGetDepartmentInfoQuery()],
+  });
+  const { openConfirmationDialog } = useConfirmationDialog();
+
+  const router = useRouter();
+  const citizenRoutes = useCitizenRoutes();
+  const accessCode = useAccessCodeParam();
+
+  function handleConfirm() {
+    // TODO ApiBookingState.Cancelled
+    if (
+      procedure.appointment?.bookingState === ApiBookingState.Bookable &&
+      procedure.appointment?.bookingsRemaining > 0
+    ) {
+      openConfirmationDialog({
+        onConfirm: () =>
+          router.push(citizenRoutes.personalArea.rebook(accessCode)),
+        title: "",
+        description: t(
+          "information.appointment_status_section.modal.description",
+          { context: procedure.appointment?.bookingState },
+        ),
+        confirmLabel: t(
+          "information.appointment_status_section.modal.bookAppointment",
+          { context: procedure.appointment?.bookingState },
+        ),
+      });
+    }
+  }
 
   return (
     <GridColumnStack>
@@ -41,33 +76,33 @@ export function PersonalAreaContent() {
         <ContentSheetTitle>{t("information.title")}</ContentSheetTitle>
         <InfoSectionGrid>
           <NameSection
-            person={procedureDetails}
+            person={procedure}
             localePath="officialMedicalService/personalArea"
           />
           <BirthdateSection
-            birthdate={procedureDetails.dateOfBirth}
+            birthdate={procedure.dateOfBirth}
             localePath="officialMedicalService/personalArea"
           />
-          <AppointmentStatusSection
-            bookingState={
-              procedureDetails.appointment?.bookingState ??
-              ApiBookingState.Bookable
-            }
-            localePath={"officialMedicalService/personalArea"}
-          />
+          {isDefined(procedure.appointment?.bookingState) && (
+            <AppointmentStatusSection
+              bookingState={procedure.appointment?.bookingState}
+              localePath={"officialMedicalService/personalArea"}
+              onConfirm={handleConfirm}
+            />
+          )}
           <ConcernSection
-            concern={procedureDetails.concern}
+            concern={procedure.concern}
             localePath="officialMedicalService/personalArea"
           />
-          {appointmentHasDate(procedureDetails.appointment) && (
+          {appointmentHasDate(procedure.appointment) && (
             <AppointmentDateSection
-              appointment={procedureDetails.appointment}
+              appointment={procedure.appointment}
               localePath="officialMedicalService/personalArea"
             />
           )}
-          {appointmentHasDate(procedureDetails.appointment) && (
+          {appointmentHasDate(procedure.appointment) && (
             <AppointmentTimeSection
-              appointment={procedureDetails.appointment}
+              appointment={procedure.appointment}
               localePath="officialMedicalService/personalArea"
             />
           )}
@@ -81,7 +116,7 @@ export function PersonalAreaContent() {
           />
         </InfoSectionGrid>
       </ContentSheet>
-      <ProcedureDocumentForm documents={procedureDetails.documents} />
+      <ProcedureDocumentForm documents={procedure.documents} />
     </GridColumnStack>
   );
 }

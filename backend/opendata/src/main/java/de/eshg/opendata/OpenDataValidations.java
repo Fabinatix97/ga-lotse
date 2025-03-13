@@ -5,27 +5,24 @@
 
 package de.eshg.opendata;
 
-import de.eshg.base.feature.BaseFeature;
-import de.eshg.base.feature.BaseFeatureTogglesApi;
+import de.eshg.opendata.config.OpenDataFeature;
+import de.eshg.opendata.config.OpenDataFeatureToggle;
 import de.eshg.rest.service.error.BadRequestException;
 import org.springframework.stereotype.Component;
 
 @Component
 public class OpenDataValidations {
 
-  private final BaseFeatureTogglesApi baseFeatureTogglesApi;
+  private final OpenDataFeatureToggle openDataFeatureToggle;
 
-  public OpenDataValidations(BaseFeatureTogglesApi baseFeatureTogglesApi) {
-    this.baseFeatureTogglesApi = baseFeatureTogglesApi;
+  public OpenDataValidations(OpenDataFeatureToggle openDataFeatureToggle) {
+    this.openDataFeatureToggle = openDataFeatureToggle;
   }
 
   void validateOpenDataEnabled() {
-    if (!baseFeatureTogglesApi
-        .getFeatureToggles()
-        .enabledNewFeatures()
-        .contains(BaseFeature.OPEN_DATA)) {
+    if (!openDataFeatureToggle.isNewFeatureEnabled(OpenDataFeature.OPEN_DATA)) {
       throw new BadRequestException(
-          "New feature %s is not enabled".formatted(BaseFeature.OPEN_DATA));
+          "New feature %s is not enabled".formatted(OpenDataFeature.OPEN_DATA));
     }
   }
 }

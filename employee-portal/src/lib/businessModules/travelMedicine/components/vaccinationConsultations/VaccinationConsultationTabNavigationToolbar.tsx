@@ -7,6 +7,11 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import {
+  TabNavigationItem,
+  TabNavigationToolbar,
+  useHasUserRoleCheck,
+} from "@eshg/lib-employee-portal";
+import {
   DocumentScannerOutlined,
   FormatListBulletedOutlined,
   ReceiptOutlined,
@@ -22,9 +27,6 @@ import { useGetStatusQuery } from "@/lib/businessModules/travelMedicine/api/quer
 import { VaccinationConsultationTabHeader } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/VaccinationConsultationTabHeader";
 import { routes as businessRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { statusColors } from "@/lib/shared/components/procedures/constants";
-import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
-import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 export function VaccinationConsultationTabNavigationToolbar({
   id,

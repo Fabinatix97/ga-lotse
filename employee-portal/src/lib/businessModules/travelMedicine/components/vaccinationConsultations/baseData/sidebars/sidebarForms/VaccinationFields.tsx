@@ -6,6 +6,7 @@
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { formatCurrency } from "@eshg/lib-portal/formatters/numbers";
 import { ApiVaccinationType } from "@eshg/travel-medicine-api";
 import { Divider, Grid } from "@mui/joy";
 import { FormikErrors, useFormikContext } from "formik";
@@ -25,7 +26,6 @@ import {
 import { VACCINATION_TYPE } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/options";
 import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
-import { LOCALE_OPTION, formatCurrency } from "@/lib/shared/helpers/numbers";
 import { validatePositiveInteger } from "@/lib/shared/helpers/validators";
 
 interface VaccinationFieldsProps {
@@ -111,7 +111,7 @@ export function VaccinationFields({
       <DetailsItem
         label="Preis"
         value={formatCurrency(val.fee, {
-          localOption: LOCALE_OPTION.manual,
+          localeOption: "manual",
           locale: "de-DE",
         })}
       />

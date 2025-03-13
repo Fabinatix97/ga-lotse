@@ -6,11 +6,11 @@
 "use client";
 
 import { ApiUserRole, GetInventoryItemsRequest } from "@eshg/base-api";
+import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import AddIcon from "@mui/icons-material/Add";
 import { Button, Stack } from "@mui/joy";
 
 import { useGetInventoryOverviewPageQuery } from "@/lib/baseModule/api/queries/inventory";
-import { useGetSelfUserPermissions } from "@/lib/baseModule/api/queries/users";
 import { useInventoryFilterSettings } from "@/lib/baseModule/components/inventory/hooks/useInventoryFilterSettings";
 import { useAddInventorySidebar } from "@/lib/baseModule/components/inventory/modals/AddInventorySidebar";
 import { useInventoryCountCorrectionSidebar } from "@/lib/baseModule/components/inventory/modals/InventoryCountCorrectionSidebar";
@@ -34,7 +34,7 @@ interface InventoryTableProps {
 }
 
 export function InventoryTable({ params }: InventoryTableProps) {
-  const { data: selfUserPermissions } = useGetSelfUserPermissions();
+  const isAdmin = useHasUserRoleCheck(ApiUserRole.BaseInventoryAdministrate);
   const tableControl = useTableControl({
     serverSideSorting: true,
     sortFieldName: "sortKey",
@@ -49,10 +49,6 @@ export function InventoryTable({ params }: InventoryTableProps) {
     data: { elements, totalNumberOfElements, labels },
     isFetching,
   } = useGetInventoryOverviewPageQuery(params);
-
-  const isAdmin = selfUserPermissions.includes(
-    ApiUserRole.BaseInventoryAdministrate,
-  );
 
   const filterSettings = useInventoryFilterSettings({
     tableControl: tableControl,

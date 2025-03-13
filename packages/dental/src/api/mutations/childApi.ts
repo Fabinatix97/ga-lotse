@@ -17,7 +17,7 @@ import {
   getChildDetailsQuery,
   getExaminationQuery,
 } from "@/api/queries/childApi";
-import { useDentalApi } from "@/shared/DentalProvider";
+import { useDentalApi } from "@/contexts/dental";
 
 export function useCreateChild() {
   const { childApi } = useDentalApi();

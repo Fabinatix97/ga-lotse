@@ -108,6 +108,7 @@ public class EvaluationService extends AbstractAggregationResultService {
   private final StatisticsUserService userService;
   private final EvaluationTemplateService evaluationTemplateService;
   private final BusinessModuleConfig businessModuleConfig;
+  private final StatisticsFeatureToggle featureToggle;
 
   public EvaluationService(
       DataAggregationService dataAggregationService,
@@ -118,15 +119,11 @@ public class EvaluationService extends AbstractAggregationResultService {
       DataSourceValidator dataSourceValidator,
       StatisticsFeatureToggle statisticsFeatureToggle,
       StatisticsConfig statisticsConfig) {
-    super(
-        dataSourceValidator,
-        dataAggregationService,
-        tableRowRepository,
-        statisticsFeatureToggle,
-        statisticsConfig);
+    super(dataSourceValidator, dataAggregationService, tableRowRepository, statisticsConfig);
     this.evaluationRepository = evaluationRepository;
     this.userService = userService;
     this.evaluationTemplateService = evaluationTemplateService;
+    this.featureToggle = statisticsFeatureToggle;
     this.businessModuleConfig = statisticsConfig.businessModule();
   }
 

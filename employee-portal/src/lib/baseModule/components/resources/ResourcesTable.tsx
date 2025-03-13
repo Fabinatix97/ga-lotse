@@ -6,6 +6,7 @@
 "use client";
 
 import { ApiUserRole, GetResourcesRequest } from "@eshg/base-api";
+import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import AddIcon from "@mui/icons-material/Add";
 import { Button, Stack } from "@mui/joy";
 
@@ -22,7 +23,6 @@ import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { SearchFilter } from "@/lib/shared/components/tableFilters/SearchFilter";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 import { resourceTableColumns } from "./columns";
 

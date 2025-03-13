@@ -242,12 +242,18 @@ public class ServiceDirectoryService {
 
   private void upsertActor(ActorRequestDto actorRequestDto, UUID orgUnitId, String networkId) {
     if (actorRequestDto.certificate() == null) {
-      throw new ServiceDirectoryBadRequestException("Null for actor certificate not allowed");
+      throw new ServiceDirectoryBadRequestException(
+          "Null for actor certificate not allowed (" + actorRequestDto.hostName() + ")");
     }
     X509Certificate cert = X509Utils.parsePem(actorRequestDto.certificate().value());
     String commonName = X509Utils.extractCommonName(cert);
     if (isEmpty(commonName)) {
-      throw new ServiceDirectoryBadRequestException("Null for actor common name not allowed");
+      throw new ServiceDirectoryBadRequestException(
+          "Null for actor common name not allowed (" + actorRequestDto.hostName() + ")");
+    }
+    if (X509Utils.isCaCertificate(cert)) {
+      log.error("Ignoring actor {} with CA certificate", commonName);
+      return;
     }
     Optional<AuditedActor> actorData = getActor(commonName);
 
@@ -308,7 +314,12 @@ public class ServiceDirectoryService {
           ActorMapperApi.toPersistence(actorRequestDto.certificate()));
     }
     if (previousCertificate != null) {
-      updatedActor.setPreviousCertificate(previousCertificate);
+      if (X509Utils.isCaCertificate(X509Utils.parsePem(previousCertificate.value()))) {
+        log.info("Dropping previous certificate of {} because it is a CA certificate", commonName);
+        updatedActor.setPreviousCertificate(null);
+      } else {
+        updatedActor.setPreviousCertificate(previousCertificate);
+      }
     }
     ServiceDirectoryAdminService.validateCommonName(
         updatedActor.getCurrentCertificate(), updatedActor.getCommonName());
@@ -331,16 +342,19 @@ public class ServiceDirectoryService {
   private void createActor(
       ActorRequestDto actorRequestDto, String commonName, UUID orgUnitId, String networkId) {
     if (isEmpty(actorRequestDto.readableName())) {
-      throw new ServiceDirectoryBadRequestException("Null or empty readableName not allowed");
+      throw new ServiceDirectoryBadRequestException(
+          "Null or empty readableName not allowed (" + actorRequestDto.hostName() + ")");
     }
     if (actorRequestDto.type() == null) {
-      throw new ServiceDirectoryBadRequestException("Null type not allowed");
+      throw new ServiceDirectoryBadRequestException(
+          "Null type not allowed (" + actorRequestDto.hostName() + ")");
     }
     if (isEmpty(actorRequestDto.hostName())) {
       throw new ServiceDirectoryBadRequestException("Null or empty hostName not allowed");
     }
     if (isEmpty(commonName)) {
-      throw new ServiceDirectoryBadRequestException("Null or empty commonName not allowed");
+      throw new ServiceDirectoryBadRequestException(
+          "Null or empty commonName not allowed (" + actorRequestDto.hostName() + ")");
     }
     validateCommonName(actorRequestDto.certificate(), commonName);
     AuditedActor actor = ActorMapperApi.toAudited(actorRequestDto, commonName, networkId);

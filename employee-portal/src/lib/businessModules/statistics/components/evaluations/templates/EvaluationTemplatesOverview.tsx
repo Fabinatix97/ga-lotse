@@ -6,6 +6,7 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
+import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Add, CloudUpload, Delete, Edit } from "@mui/icons-material";
 import { Box } from "@mui/joy";
@@ -41,7 +42,6 @@ import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { UserLink } from "@/lib/shared/components/users/UserLink";
 import { usePagination } from "@/lib/shared/hooks/table/usePagination";
 import { useTableSorting } from "@/lib/shared/hooks/table/useTableSorting";
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 import { useUploadTemplateSidebar } from "./UploadTemplateSidebar/UploadTemplateSidebar";

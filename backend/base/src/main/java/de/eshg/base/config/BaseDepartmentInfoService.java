@@ -7,9 +7,9 @@ package de.eshg.base.config;
 
 import de.eshg.base.config.BaseDepartmentInfoService.MandatoryInitialDepartmentInfo;
 import de.eshg.departmentinfo.AbstractDepartmentInfoService;
-import de.eshg.departmentinfo.DepartmentInfoService;
 import de.eshg.departmentinfo.domain.DepartmentInfo;
 import de.eshg.departmentinfo.initialization.InitialDepartmentInfo;
+import de.eshg.departmentinfo.spring.DepartmentInfoPropertyBinding;
 import de.eshg.lib.common.CountryCode;
 import de.eshg.persistence.TransactionHelper;
 import jakarta.persistence.EntityManager;
@@ -55,7 +55,7 @@ public class BaseDepartmentInfoService extends AbstractDepartmentInfoService<Dep
   }
 
   @Validated
-  @ConfigurationProperties(prefix = DepartmentInfoService.DEFAULT_PROPERTY_PREFIX)
+  @ConfigurationProperties(prefix = DepartmentInfoPropertyBinding.DEFAULT_PROPERTY_PREFIX)
   record MandatoryInitialDepartmentInfo(
       @NotBlank String name,
       @NotBlank String abbreviation,

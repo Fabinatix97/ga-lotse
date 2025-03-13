@@ -12,7 +12,7 @@ import { ElementContext } from "@/lib/businessModules/dental/features/prophylaxi
 
 export function useElementFocus<TElement extends HTMLElement>(
   elementContext: ElementContext,
-  onFocus: (element: TElement) => void,
+  onFocus: (element: TElement) => void = (element) => element.focus(),
 ) {
   const elementRef = useRef<TElement>(null);
   const isFocused = useDentalExaminationStore(
@@ -52,6 +52,6 @@ function equalsElement(
       elementContext.toothContext.quadrantNumber &&
     currentFocus.toothContext.toothIndex ===
       elementContext.toothContext.toothIndex &&
-    currentFocus.field === elementContext.field
+    currentFocus.element === elementContext.element
   );
 }

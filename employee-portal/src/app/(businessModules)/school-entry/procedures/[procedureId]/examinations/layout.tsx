@@ -5,13 +5,14 @@
 
 "use client";
 
+import { DynamicLayoutProps } from "@eshg/lib-portal/types/pageParams";
 import { ApiRequiredProcedureArea } from "@eshg/school-entry-api";
 import { Button, Grid, Stack } from "@mui/joy";
-import { PropsWithChildren, useState } from "react";
+import { useState } from "react";
 
-import { SchoolEntryProcedurePageProps } from "@/app/(businessModules)/school-entry/procedures/[procedureId]/layout";
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { useGetProcedure } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
+import { SchoolEntryProcedureRouteParamsSchema } from "@/lib/businessModules/schoolEntry/features/procedures/SchoolEntryProcedureRouteParamsSchema";
 import { IncompleteProcedureAreasModal } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/IncompleteProcedureAreasModal";
 import { useMedicalReportSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/reports/MedicalReportSidebar";
 import { useSchoolInfoLetterSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/reports/SchoolInfoLetterSidebar";
@@ -50,9 +51,9 @@ function buildNavItems(procedureId: string): NavItem[] {
 }
 
 export default function SchoolEntryExaminationLayout(
-  props: PropsWithChildren<SchoolEntryProcedurePageProps>,
+  props: DynamicLayoutProps<SchoolEntryProcedureRouteParamsSchema>,
 ) {
-  const procedureId = props.params.procedureId;
+  const { procedureId } = props.params;
   const navItems = buildNavItems(procedureId);
   const procedureDetails = useGetProcedure(procedureId).data;
 

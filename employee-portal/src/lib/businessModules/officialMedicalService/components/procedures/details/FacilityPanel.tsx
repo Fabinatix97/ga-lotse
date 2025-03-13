@@ -93,6 +93,7 @@ export function FacilityPanel({
       ) : (
         <CentralFileFacilityDetails
           facility={{ ...procedure.facility! }}
+          showContactPersonChip={true}
           columnSx={COLUMN_STYLE}
         />
       )}

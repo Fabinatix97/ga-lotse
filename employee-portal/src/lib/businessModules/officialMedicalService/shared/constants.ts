@@ -32,6 +32,9 @@ export const systemProgressEntryTypeTitles: Record<string, string> = {
     "Dokument bearbeitet mit Änderung Dokumentenart und/oder Hilfstext",
   DOCUMENT_STATUS_CHANGE_ACCEPTED:
     "Dokument von “Fehlt”  nach “Akzeptiert” (Upload durch MA)",
+  FACILITY_ADDED: "Auftraggeber hinzugefügt",
+  MEDICAL_OPINION_STATUS_CHANGED: "Gutachtenstatus verändert",
+  CONCERN_CHANGED: "Anliegen gesetzt",
 };
 
 export const statusColorsDocumentStatus = {

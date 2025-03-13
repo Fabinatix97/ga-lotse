@@ -174,7 +174,8 @@ public class PointBasedChartDiagramCreationService
       chartDataHolder.get(EMPTY_KEY).add(new DataPointHolder(tableRow.getId(), xValue, yValue));
     } else {
       CellEntry secondaryCellEntry = getCellEntry(tableRow, secondaryTableColumn);
-      Object secondaryKey = getKeyForCellEntryBooleanIntegerTextOrValueOption(secondaryCellEntry);
+      Object secondaryKey =
+          getKeyForCellEntryBooleanIntegerTextDateOrValueOption(secondaryCellEntry);
       if (secondaryKey != null) {
         chartDataHolder
             .computeIfAbsent(secondaryKey, key -> new ArrayList<>())

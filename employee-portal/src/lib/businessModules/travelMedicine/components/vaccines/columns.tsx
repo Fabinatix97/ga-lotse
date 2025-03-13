@@ -4,6 +4,7 @@
  */
 
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatCurrency } from "@eshg/lib-portal/formatters/numbers";
 import { ApiVaccine } from "@eshg/travel-medicine-api";
 import { Delete, Edit } from "@mui/icons-material";
 import ListAltIcon from "@mui/icons-material/ListAlt";
@@ -12,7 +13,6 @@ import { isDefined } from "remeda";
 
 import { routes as baseRoutes } from "@/lib/baseModule/shared/routes";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
-import { LOCALE_OPTION, formatCurrency } from "@/lib/shared/helpers/numbers";
 
 const columnHelper: ColumnHelper<ApiVaccine> = createColumnHelper<ApiVaccine>();
 
@@ -37,7 +37,7 @@ export function columns({ deleteEntry, editEntry }: VaccineTableColumnsProps) {
       header: "Preis",
       cell: (props) =>
         formatCurrency(props.getValue(), {
-          localOption: LOCALE_OPTION.manual,
+          localeOption: "manual",
           locale: "de-DE",
         }),
     }),

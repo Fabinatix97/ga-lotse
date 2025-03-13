@@ -92,6 +92,8 @@ export function ParticipantExaminationPage(
           }
           onNextParticipantClicked={examinationNavigation.gotoNextParticipant}
           onOverviewClicked={examinationNavigation.gotoOverview}
+          examination={participant}
+          examinationFormValues={examinationForm.values}
         />
       }
     >
@@ -115,6 +117,8 @@ export function ParticipantExaminationPage(
                 participant.currentFluoridationConsent?.consented
               }
               status={participant.status}
+              participantDateOfBirth={participant.dateOfBirth}
+              dateOfExamination={dateOfExamination}
             />
           }
           dentalExamination={

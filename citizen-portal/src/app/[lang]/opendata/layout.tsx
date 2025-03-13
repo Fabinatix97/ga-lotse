@@ -5,18 +5,18 @@
 
 "use client";
 
-import { ApiBaseFeature } from "@eshg/base-api";
 import { Alert } from "@eshg/lib-portal/components/Alert";
-import { PropsWithChildren } from "react";
+import { LayoutProps } from "@eshg/lib-portal/types/pageParams";
+import { ApiOpenDataFeature } from "@eshg/opendata-api";
 
-import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
+import { useIsNewFeatureEnabled } from "@/lib/businessModules/opendata/api/queries/featureTogglesApi";
 import { useTranslation } from "@/lib/i18n/client";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
 import { PageLayout } from "@/lib/shared/components/layout/page";
 
-export default function OpenDataLayout(props: PropsWithChildren) {
+export default function OpenDataLayout(props: LayoutProps) {
   const { t } = useTranslation(["opendata/shared"]);
-  const isOpenDataEnabled = useIsNewFeatureEnabled(ApiBaseFeature.OpenData);
+  const isOpenDataEnabled = useIsNewFeatureEnabled(ApiOpenDataFeature.OpenData);
 
   return (
     <PageLayout>

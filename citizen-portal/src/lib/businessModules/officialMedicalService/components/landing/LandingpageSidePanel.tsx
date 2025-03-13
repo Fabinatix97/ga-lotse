@@ -29,7 +29,7 @@ export function LandingpageSidePanel() {
         </InternalLinkButton>
         <InternalLinkButton
           variant="outlined"
-          href={citizenRoutes.personalArea(accessCode)}
+          href={citizenRoutes.personalArea.index(accessCode)}
         >
           {t("personalArea.goToPersonalArea")}
         </InternalLinkButton>

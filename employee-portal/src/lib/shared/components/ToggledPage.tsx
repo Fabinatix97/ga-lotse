@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiBaseFeature } from "@eshg/base-api";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
+import { ApiOpenDataFeature } from "@eshg/opendata-api";
 
-import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
+import { useIsNewFeatureEnabled } from "@/lib/opendata/queries/feature";
 
 interface ToggledPageProps extends RequiresChildren {
-  feature: ApiBaseFeature;
+  feature: ApiOpenDataFeature;
 }
 
 export function ToggledPage(props: Readonly<ToggledPageProps>) {

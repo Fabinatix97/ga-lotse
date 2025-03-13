@@ -7,6 +7,8 @@ import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { IconButton, Stack } from "@mui/joy";
 
+import { validateSectionTitle } from "@/lib/businessModules/travelMedicine/shared/templateEditor/templateFieldValidation";
+
 export function SectionTitle({
   sectionDeleteHandler,
   sectionFormikPath,
@@ -23,6 +25,7 @@ export function SectionTitle({
         aria-label={label}
         name={`${sectionFormikPath}.sectionTitle`}
         placeholder="Sektionstitel eingeben"
+        validate={validateSectionTitle()}
         sx={{ flex: 1 }}
         data-testid="section-title"
       />

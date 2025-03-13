@@ -5,12 +5,14 @@
 
 "use client";
 
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+
 import { InspectionTabBasedata } from "@/lib/businessModules/inspection/components/inspection/basedata/InspectionTabBasedata";
 
-export default function InspectionTabBasedataPage({
-  params,
-}: Readonly<{
-  params: { id: string };
-}>) {
-  return <InspectionTabBasedata inspectionId={params.id} />;
+export default function InspectionTabBasedataPage(
+  props: DynamicPageProps<{ id: string }>,
+) {
+  const { id } = props.params;
+
+  return <InspectionTabBasedata inspectionId={id} />;
 }

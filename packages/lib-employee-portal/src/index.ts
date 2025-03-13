@@ -16,12 +16,19 @@ export { StickyToolbarLayout } from "./components/layout/StickyToolbarLayout";
 
 export { BottomToolbar } from "./components/toolbar/BottomToolbar";
 export { Toolbar, type ToolbarProps } from "./components/toolbar/Toolbar";
-
+export { type TabNavigationItem } from "./components/tabNavigationToolbar/TabNavigation";
 export {
-  LayoutConfigProvider,
-  useLayoutConfig,
-  type LayoutConfig,
-} from "./contexts/layoutConfig";
+  TabNavigationToolbar,
+  TabNavigationBackButton,
+} from "./components/tabNavigationToolbar/TabNavigationToolbar";
+export {
+  TabNavigationHeader,
+  TabNavigationHeaderTypography,
+} from "./components/tabNavigationToolbar/TabNavigationHeader";
+export { PersonToolbarHeader } from "./components/tabNavigationToolbar/PersonToolbarHeader";
+
+export { EmployeePortalProvider } from "./contexts/employeePortal";
+export { useLayoutConfig, type LayoutConfig } from "./contexts/layoutConfig";
 
 export {
   checkAccess,
@@ -34,6 +41,12 @@ export {
   type PermitCheck,
   type UserRoleCheck,
 } from "./features/auth/accessChecks";
+export { useGetSelfUser } from "./features/auth/queries";
+export {
+  useAccessControl,
+  useHasUserRoleCheck,
+  useHasUserRolesCheck,
+} from "./features/auth/useAccessControl";
 
 export {
   parseImportResult,

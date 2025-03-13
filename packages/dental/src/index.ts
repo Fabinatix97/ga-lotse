@@ -22,7 +22,6 @@ export {
   type ScreeningExaminationResult,
   type ToothDiagnoses,
   mapExaminationResult,
-  isEmptyExaminationResult,
 } from "./api/models/ExaminationResult";
 export {
   type ExaminationStatus,
@@ -85,9 +84,12 @@ export {
 export { routes } from "./config/routes";
 export { RELATED_TEETH } from "./config/teeth";
 
+export { DentalProvider, useDentalApi } from "./contexts/dental";
+
+export { ChildToolbar } from "./features/children/components/ChildToolbar";
+
 export { DentalIndexPage } from "./pages/DentalIndexPage";
 
-export { DentalProvider, useDentalApi } from "./shared/DentalProvider";
 export { moduleUserGroup } from "./shared/moduleUserGroup";
 export {
   keyDocumentTypes,

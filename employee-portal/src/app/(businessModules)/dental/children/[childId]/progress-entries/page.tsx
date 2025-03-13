@@ -14,21 +14,22 @@ import {
   systemProgressEntryTypeTitles,
   useDentalApi,
 } from "@eshg/dental";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
-import { DentalChildPageParams } from "@/app/(businessModules)/dental/children/[childId]/layout";
+import { DentalChildRouteParams } from "@/app/(businessModules)/dental/children/[childId]/layout";
 import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
-import { ProgressEntriesUrlParams } from "@/lib/shared/components/procedures/progress-entries/types";
 
 export default function DentalProgressEntriesPage(
-  props: ProgressEntriesUrlParams<DentalChildPageParams>,
+  props: DynamicPageProps<DentalChildRouteParams>,
 ) {
-  const { params, searchParams } = props;
+  const { childId } = props.params;
+  const searchParams = props.searchParams;
   const { progressEntryApi, procedureApi, fileApi, approvalRequestApi } =
     useDentalApi();
 
   return (
     <ProgressEntriesPage
-      procedureId={params.childId}
+      procedureId={childId}
       searchParams={searchParams}
       leaderRole={ApiUserRole.DentalLeader}
       systemProgressEntryTypes={systemProgressEntryTypeTitles}

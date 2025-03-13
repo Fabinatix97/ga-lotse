@@ -6,7 +6,7 @@
 import { DateRangeOutlined } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
 
-import { OverviewAppointmentTypes } from "@/lib/businessModules/travelMedicine/components/viewAppointment/TypeSwitchButtons";
+import { OverviewAppointmentType } from "@/lib/businessModules/stiProtection/components/appointments/helpers";
 import { useTranslation } from "@/lib/i18n/client";
 import {
   ContentSheet,
@@ -16,14 +16,14 @@ import {
 export function NoAppointments({
   overviewAppointmentType,
 }: Readonly<{
-  overviewAppointmentType: OverviewAppointmentTypes;
+  overviewAppointmentType: OverviewAppointmentType;
 }>) {
   const { t } = useTranslation(["travelMedicine/appointmentOverview"]);
 
   return (
     <ContentSheet>
       <ContentSheetTitle>
-        {overviewAppointmentType === OverviewAppointmentTypes.UPCOMING
+        {overviewAppointmentType === OverviewAppointmentType.UPCOMING
           ? t("noAppointments.upcomingAppointments")
           : t("noAppointments.pastAppointments")}
       </ContentSheetTitle>
@@ -37,7 +37,7 @@ export function NoAppointments({
       >
         <DateRangeOutlined sx={{ fontSize: 70, color: "#97C3F0" }} />
         <Typography sx={{ fontWeight: "bold" }}>
-          {overviewAppointmentType === OverviewAppointmentTypes.UPCOMING
+          {overviewAppointmentType === OverviewAppointmentType.UPCOMING
             ? t("noAppointments.noUpcomingAppointments")
             : t("noAppointments.noPastAppointments")}
         </Typography>

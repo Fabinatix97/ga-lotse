@@ -6,6 +6,7 @@
 package de.eshg.statistics.aggregation;
 
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
+import de.eshg.statistics.anonymization.AnonymizationExecution;
 import de.eshg.statistics.api.AddDiagramRequest;
 import de.eshg.statistics.api.AnalysisDto;
 import de.eshg.statistics.diagramcreation.DiagramCreationService;
@@ -27,14 +28,17 @@ public class ReportExecution {
 
   private final ModuleClientAuthenticator moduleClientAuthenticator;
   private final ReportService reportService;
+  private final AnonymizationExecution anonymizationExecution;
   private final DiagramCreationService diagramCreationService;
 
   public ReportExecution(
       ModuleClientAuthenticator moduleClientAuthenticator,
       ReportService reportService,
+      AnonymizationExecution anonymizationExecution,
       DiagramCreationService diagramCreationService) {
     this.moduleClientAuthenticator = moduleClientAuthenticator;
     this.reportService = reportService;
+    this.anonymizationExecution = anonymizationExecution;
     this.diagramCreationService = diagramCreationService;
   }
 
@@ -90,7 +94,7 @@ public class ReportExecution {
               switch (pendingState) {
                 case DATA_AGGREGATION -> reportService.aggregateData(reportId);
                 case MIN_MAX_DETERMINATION -> reportService.minMaxDetermination(reportId);
-                case ANONYMIZATION -> reportService.anonymization(reportId);
+                case ANONYMIZATION -> anonymizationExecution.anonymizeReport(reportId);
                 case ANALYSIS_CONDUCTION -> reportService.analysisConduction(reportId);
                 case DIAGRAM_CREATION -> {
                   Map<AnalysisDto, AddDiagramRequest> map =

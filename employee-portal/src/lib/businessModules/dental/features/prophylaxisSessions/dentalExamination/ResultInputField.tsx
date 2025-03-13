@@ -10,13 +10,13 @@ import { useElementFocus } from "@/lib/businessModules/dental/features/prophylax
 import { useKeyboardNavigationHandler } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/hooks/useKeyboardNavigationHandler";
 import {
   ElementContext,
-  ResultField,
   ToothContext,
+  ToothFieldElement,
   ToothResult,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
 
 interface ResultInputFieldProps extends InputProps {
-  field: ResultField;
+  field: ToothFieldElement;
   result: ToothResult;
   toothContext: ToothContext;
   variant?: VariantProp;
@@ -25,8 +25,8 @@ interface ResultInputFieldProps extends InputProps {
 
 export function ResultInputField(props: ResultInputFieldProps) {
   const fieldContext: ElementContext = {
-    field: props.field,
     toothContext: props.toothContext,
+    element: props.field,
   };
   const { elementRef, focusHandler, blurHandler } = useElementFocus(
     fieldContext,

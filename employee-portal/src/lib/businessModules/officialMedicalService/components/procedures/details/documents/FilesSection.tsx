@@ -28,6 +28,7 @@ import { useToggle } from "@/lib/shared/hooks/useToggle";
 interface FilesSectionProps {
   name: string;
   canAdd: boolean;
+  canRemoveLast: boolean;
   withInitialField: boolean;
   addLabel?: string;
   files?: ApiOmsFile[];
@@ -144,18 +145,21 @@ export function FilesSection(props: Readonly<FilesSectionProps>) {
             />
           )}
           {active ? (
-            <Button
-              color={"primary"}
-              variant={"plain"}
-              size={"sm"}
-              sx={{ justifyContent: "flex-start" }}
-              startDecorator={<RemoveIcon />}
-              onClick={() => {
-                toggleActive();
-              }}
-            >
-              Hinzufügen abbrechen
-            </Button>
+            (props.canRemoveLast ||
+              (isDefined(values.files) && values.files.length >= 1)) && (
+              <Button
+                color={"primary"}
+                variant={"plain"}
+                size={"sm"}
+                sx={{ justifyContent: "flex-start" }}
+                startDecorator={<RemoveIcon />}
+                onClick={() => {
+                  toggleActive();
+                }}
+              >
+                Hinzufügen abbrechen
+              </Button>
+            )
           ) : (
             <FormAddMoreButton
               onClick={() => {

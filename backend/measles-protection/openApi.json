@@ -6495,7 +6495,7 @@
       },
       "MeaslesProtectionFeature" : {
         "type" : "string",
-        "enum" : [ "EDIT_ACCESS_RESTRICTION" ]
+        "enum" : [ "NOOP" ]
       },
       "MeaslesProtectionProcedure" : {
         "required" : [ "affectedPerson", "caseStatus", "createdAt", "facility", "id", "isOpen", "procedureStatus", "reportData" ],

@@ -19,7 +19,8 @@ public class FacilityMatcher {
 
   private FacilityMatcher() {}
 
-  public static boolean isFacilityMatch(Facility referenceFacility, Facility facilityFileState) {
+  public static boolean isFacilityMatch(
+      Facility referenceFacility, Facility facilityFileState, boolean compareMainContact) {
     return isFacilityMatch(
         referenceFacility,
         facilityFileState.getName(),
@@ -27,7 +28,8 @@ public class FacilityMatcher {
         facilityFileState.getEmailAddresses(),
         facilityFileState.getContactPersons(),
         facilityFileState.getContactAddress(),
-        facilityFileState.getDifferentBillingAddress());
+        facilityFileState.getDifferentBillingAddress(),
+        compareMainContact);
   }
 
   public static boolean isFacilityMatch(
@@ -37,13 +39,14 @@ public class FacilityMatcher {
       List<FacilityEmailAddress> emailAddresses,
       List<FacilityContactPerson> contactPersons,
       FacilityAddress contactAddress,
-      FacilityAddress differentBillingAddress) {
+      FacilityAddress differentBillingAddress,
+      boolean compareMainContact) {
     return StringUtils.equals(referenceFacility.getName(), name)
         && isFacilityPhoneNumberListUnchanged(referenceFacility.getPhoneNumbers(), phoneNumbers)
         && isFacilityEmailAddressListUnchanged(
             referenceFacility.getEmailAddresses(), emailAddresses)
         && isFacilityContactPersonsListMatching(
-            referenceFacility.getContactPersons(), contactPersons)
+            referenceFacility.getContactPersons(), contactPersons, compareMainContact)
         && isAddressMatch(referenceFacility.getContactAddress(), contactAddress)
         && isAddressMatch(referenceFacility.getDifferentBillingAddress(), differentBillingAddress);
   }
@@ -74,14 +77,19 @@ public class FacilityMatcher {
 
   public static boolean isFacilityContactPersonsListMatching(
       List<FacilityContactPerson> referenceContactPersons,
-      List<FacilityContactPerson> fileStateContactPersons) {
+      List<FacilityContactPerson> fileStateContactPersons,
+      boolean compareMainContact) {
 
     return MatcherUtil.isListEqualUnordered(
-        referenceContactPersons, fileStateContactPersons, FacilityMatcher::isContactPersonMatch);
+        referenceContactPersons,
+        fileStateContactPersons,
+        (p1, p2) -> isContactPersonMatch(p1, p2, compareMainContact));
   }
 
   public static boolean isContactPersonMatch(
-      FacilityContactPerson referenceContactPerson, FacilityContactPerson fileStateContactPerson) {
+      FacilityContactPerson referenceContactPerson,
+      FacilityContactPerson fileStateContactPerson,
+      boolean compareMainContact) {
     return StringUtils.equals(referenceContactPerson.getRole(), fileStateContactPerson.getRole())
         && StringUtils.equals(
             referenceContactPerson.getFirstName(), fileStateContactPerson.getFirstName())
@@ -93,6 +101,16 @@ public class FacilityMatcher {
         && StringUtils.equals(
             referenceContactPerson.getPhoneNumber(), fileStateContactPerson.getPhoneNumber())
         && referenceContactPerson.getSalutation() == fileStateContactPerson.getSalutation()
-        && referenceContactPerson.getGender() == fileStateContactPerson.getGender();
+        && referenceContactPerson.getGender() == fileStateContactPerson.getGender()
+        && (!compareMainContact
+            || referenceContactPerson.isMainContact() == fileStateContactPerson.isMainContact());
+  }
+
+  public static boolean isContactPersonMatchNameMatch(
+      FacilityContactPerson referenceContactPerson, FacilityContactPerson fileStateContactPerson) {
+    return StringUtils.equals(
+            referenceContactPerson.getFirstName(), fileStateContactPerson.getFirstName())
+        && StringUtils.equals(
+            referenceContactPerson.getLastName(), fileStateContactPerson.getLastName());
   }
 }

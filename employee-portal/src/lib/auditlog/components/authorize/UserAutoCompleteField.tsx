@@ -38,6 +38,7 @@ export function UserAutoCompleteField({
       name="users"
       startDecorator={<Search />}
       color="primary"
+      aria-description="Mehrfachauswahl möglich"
       multiple
       options={options}
       value={values}

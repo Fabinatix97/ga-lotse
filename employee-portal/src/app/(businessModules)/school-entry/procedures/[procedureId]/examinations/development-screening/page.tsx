@@ -11,6 +11,7 @@ import {
   mapOptionalValue,
   parseOptionalValue,
 } from "@eshg/lib-portal/helpers/form";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import {
   type ApiExaminationWithDiagnosis,
   ApiHandicap,
@@ -23,7 +24,6 @@ import {
 } from "@eshg/school-entry-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
-import { SchoolEntryProcedurePageProps } from "@/app/(businessModules)/school-entry/procedures/[procedureId]/layout";
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { DevelopmentScreeningResult } from "@/lib/businessModules/schoolEntry/api/models/examinations/DevelopmentScreeningResult";
 import { useUpdateDevelopmentScreeningResultOptions } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
@@ -31,6 +31,7 @@ import {
   getDevelopmentScreeningResultQuery,
   getProcedureQuery,
 } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
+import { SchoolEntryProcedureRouteParamsSchema } from "@/lib/businessModules/schoolEntry/features/procedures/SchoolEntryProcedureRouteParamsSchema";
 import {
   DevelopmentScreeningForm,
   DevelopmentScreeningFormValues,
@@ -46,9 +47,9 @@ import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel"
 import { ContentPanelTitle } from "@/lib/shared/components/contentPanel/ContentPanelTitle";
 
 export default function SchoolEntryDevelopmentScreeningPage(
-  props: SchoolEntryProcedurePageProps,
+  props: DynamicPageProps<SchoolEntryProcedureRouteParamsSchema>,
 ) {
-  const procedureId = props.params.procedureId;
+  const { procedureId } = props.params;
   const schoolEntryApi = useSchoolEntryApi();
   const [{ data: procedure }, { data: developmentScreeningResult }] =
     useSuspenseQueries({

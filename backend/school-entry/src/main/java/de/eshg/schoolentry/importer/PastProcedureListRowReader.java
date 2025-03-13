@@ -148,7 +148,7 @@ class PastProcedureListRowReader extends RowReader<PastProcedureListRow, PastPro
     };
   }
 
-  private CountryCode readCountryGroupCode(
+  private SchoolEntryCountryCode readCountryGroupCode(
       ColumnAccessor<PastProcedureListColumn> col,
       PastProcedureListColumn column,
       ErrorHandler errorHandler) {

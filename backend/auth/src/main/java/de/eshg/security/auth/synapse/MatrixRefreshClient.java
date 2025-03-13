@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientResponseException;
 
 @Component
 @ConditionalOnSynapseUrl
@@ -36,7 +37,7 @@ public class MatrixRefreshClient {
     this.clock = clock;
   }
 
-  SynapseTokenData refresh(SynapseTokenData synapseTokenData) {
+  SynapseTokenData refresh(SynapseTokenData synapseTokenData) throws RestClientResponseException {
     log.debug("Refreshing Synapse AccessToken for deviceId={}", synapseTokenData.deviceId());
 
     RefreshRequest refreshRequest = new RefreshRequest();

@@ -5,16 +5,18 @@
 
 "use client";
 
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { useGetVaccinationConsultationDetailsQuery } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
 import { VaccinationConsultationDetails } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/VaccinationConsultationDetails";
 
-export default function VaccinationConsultationDetailsPage({
-  params,
-}: Readonly<{ params: { id: string } }>) {
+export default function VaccinationConsultationDetailsPage(
+  props: DynamicPageProps<{ id: string }>,
+) {
+  const { id } = props.params;
   const [{ data: detailsResponse }] = useSuspenseQueries({
-    queries: [useGetVaccinationConsultationDetailsQuery(params.id)],
+    queries: [useGetVaccinationConsultationDetailsQuery(id)],
   });
 
   return <VaccinationConsultationDetails procedure={detailsResponse} />;

@@ -3,9 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Stack } from "@mui/joy";
+import { ApiFacilityContactPerson } from "@eshg/base-api";
+import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import { isNonEmptyArray } from "@eshg/lib-portal/helpers/guards";
+import { Chip, Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { ReactNode } from "react";
+import { isDefined } from "remeda";
 
 import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
 import { BaseAddressDetails } from "@/lib/shared/components/address/BaseAddressDetails";
@@ -19,12 +23,14 @@ export interface CentralFileFacility {
   readonly contactAddress?: BaseAddress;
   readonly emailAddresses?: string[];
   readonly phoneNumbers?: string[];
+  readonly contactPersons?: ApiFacilityContactPerson[];
 }
 
 export interface CentralFileFacilityDetailsProps<T> {
   readonly facility: T;
   readonly columnSx?: SxProps;
   readonly children?: ReactNode;
+  readonly showContactPersonChip?: boolean;
 }
 
 export function CentralFileFacilityDetails<T extends CentralFileFacility>(
@@ -34,6 +40,11 @@ export function CentralFileFacilityDetails<T extends CentralFileFacility>(
 
   const emailAddresses = facility.emailAddresses ?? [];
   const phoneNumbers = facility.phoneNumbers ?? [];
+  const contactPersons = facility.contactPersons ?? [];
+  const mainContact = contactPersons.find(
+    (contact) => contact.mainContact === true,
+  );
+  const showContactPersonChip = props.showContactPersonChip ?? false;
 
   return (
     <Stack
@@ -52,25 +63,71 @@ export function CentralFileFacilityDetails<T extends CentralFileFacility>(
           address={facility.contactAddress}
         />
       )}
-      {emailAddresses.length + phoneNumbers.length > 0 && (
+      {isNonEmptyArray(contactPersons) && isDefined(mainContact) ? (
         <DetailsColumn sx={props.columnSx}>
-          {emailAddresses.map((email, index) => (
-            <ExternalLinkDetailsItem
-              key={`${email}.${index}`}
-              label="E-Mail-Adresse"
-              value={email}
-              href={(value) => `mailto:${value}`}
-            />
-          ))}
-          {phoneNumbers.map((phoneNumber, index) => (
-            <DetailsItem
-              key={`${phoneNumber}.${index}`}
-              label="Telefonnummer"
-              value={phoneNumber}
-            />
-          ))}
+          <MainContactDetails
+            contactPersons={contactPersons}
+            mainContact={mainContact}
+          />
         </DetailsColumn>
+      ) : (
+        emailAddresses.length + phoneNumbers.length > 0 && (
+          <DetailsColumn sx={props.columnSx}>
+            {emailAddresses.map((email, index) => (
+              <ExternalLinkDetailsItem
+                key={`${email}.${index}`}
+                label="E-Mail-Adresse"
+                value={email}
+                href={(value) => `mailto:${value}`}
+              />
+            ))}
+            {phoneNumbers.map((phoneNumber, index) => (
+              <DetailsItem
+                key={`${phoneNumber}.${index}`}
+                label="Telefonnummer"
+                value={phoneNumber}
+              />
+            ))}
+            {showContactPersonChip && contactPersons?.length >= 1 && (
+              <Chip
+                color="primary"
+                variant="solid"
+              >{`${contactPersons.length} ${contactPersons.length === 1 ? "Kontaktperson" : "Kontaktpersonen"}`}</Chip>
+            )}
+          </DetailsColumn>
+        )
       )}
     </Stack>
+  );
+}
+
+interface MainContactDetailsProps {
+  contactPersons: ApiFacilityContactPerson[];
+  mainContact: ApiFacilityContactPerson;
+}
+
+function MainContactDetails({
+  contactPersons,
+  mainContact,
+}: Readonly<MainContactDetailsProps>) {
+  return (
+    <>
+      <DetailsItem
+        label="Kontaktperson"
+        value={formatPersonName(mainContact)}
+      />
+      <ExternalLinkDetailsItem
+        label="E-Mail-Adresse"
+        value={mainContact.emailAddress}
+        href={(value) => `mailto:${value}`}
+      />
+      <DetailsItem label="Telefonnummer" value={mainContact.phoneNumber} />
+      {contactPersons.length > 1 && (
+        <Chip
+          color="primary"
+          variant="solid"
+        >{`+ ${contactPersons.length - 1} ${contactPersons.length - 1 === 1 ? "Kontaktperson" : "Kontaktpersonen"}`}</Chip>
+      )}
+    </>
   );
 }

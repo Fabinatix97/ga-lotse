@@ -3,10 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+
 import { CertificatesTable } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/certificates/CertificatesTable";
 
-export default function VaccinationConsultationCertificatesPage({
-  params,
-}: Readonly<{ params: { id: string } }>) {
-  return <CertificatesTable procedureId={params.id}></CertificatesTable>;
+export default function VaccinationConsultationCertificatesPage(
+  props: DynamicPageProps<{ id: string }>,
+) {
+  const { id } = props.params;
+
+  return <CertificatesTable procedureId={id}></CertificatesTable>;
 }

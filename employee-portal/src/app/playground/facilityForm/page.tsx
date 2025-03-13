@@ -20,21 +20,17 @@ import {
 } from "@/lib/shared/components/facilitySidebar/LegacyFacilitySidebar";
 import { BaseFacility } from "@/lib/shared/components/facilitySidebar/types";
 
-enum Sidebar {
-  none,
-  search,
-  edit,
-}
+type SidebarType = "none" | "search" | "edit";
 
 export default function PlaygroundFacilityFormPage() {
-  const [open, setOpen] = useState<Sidebar>(Sidebar.none);
+  const [open, setOpen] = useState<SidebarType>("none");
   const [editedData, setEditedData] = useState<BaseFacility | null>(null);
   const [saveResponse, setSaveResponse] = useState<unknown>(null);
   const [selectedFacility, setSelectedFacility] =
     useState<ApiGetReferenceFacilityResponse | null>(null);
 
   function handleClose() {
-    setOpen(Sidebar.none);
+    setOpen("none");
   }
 
   return (
@@ -43,15 +39,13 @@ export default function PlaygroundFacilityFormPage() {
     >
       <MainContentLayout>
         <Stack alignItems="flex-start" gap={3}>
-          <Button onClick={() => setOpen(Sidebar.search)}>
+          <Button onClick={() => setOpen("search")}>
             Search-Sidebar öffnen
           </Button>
-          <Button onClick={() => setOpen(Sidebar.edit)}>
-            Edit-Sidebar öffnen
-          </Button>
+          <Button onClick={() => setOpen("edit")}>Edit-Sidebar öffnen</Button>
 
           <LegacyFacilitySidebar
-            open={open === Sidebar.search}
+            open={open === "search"}
             onClose={handleClose}
             onSaveSuccess={(data, response) => {
               setEditedData(data);
@@ -63,7 +57,7 @@ export default function PlaygroundFacilityFormPage() {
           <LegacyFacilitySidebar
             mode={Mode.edit}
             facility={testFacility}
-            open={open === Sidebar.edit}
+            open={open === "edit"}
             onClose={handleClose}
             onSaveSuccess={(data, response) => {
               setEditedData(data);

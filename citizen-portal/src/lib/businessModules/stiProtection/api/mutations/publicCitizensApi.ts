@@ -8,6 +8,7 @@ import {
   ApiBookAppointmentRequest,
 } from "@eshg/sti-protection-api";
 import { useMutation } from "@tanstack/react-query";
+import assert from "assert";
 
 import { useCitizenPublicApi } from "@/lib/businessModules/stiProtection/api/clients";
 
@@ -30,5 +31,15 @@ export function useAddPersonalDetails(procedureId: string) {
   return useMutation({
     mutationFn: (details: ApiAddPersonalDetailsRequest) =>
       api.addPersonalDetails(procedureId, details),
+  });
+}
+
+export function useCancelAppointment(procedureId?: string) {
+  const api = useCitizenPublicApi();
+  return useMutation({
+    mutationFn: () => {
+      assert.ok(procedureId);
+      return api.cancelAppointment1(procedureId);
+    },
   });
 }

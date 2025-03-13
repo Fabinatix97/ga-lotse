@@ -5,12 +5,14 @@
 
 "use client";
 
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+
 import { InspectionTabHistory } from "@/lib/businessModules/inspection/components/inspection/history/InspectionTabHistory";
 
-export default function InspectionTabHistoryPage({
-  params,
-}: Readonly<{
-  params: { id: string };
-}>) {
-  return <InspectionTabHistory inspectionId={params.id} />;
+export default function InspectionTabHistoryPage(
+  props: DynamicPageProps<{ id: string }>,
+) {
+  const { id } = props.params;
+
+  return <InspectionTabHistory inspectionId={id} />;
 }

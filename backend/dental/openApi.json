@@ -2685,6 +2685,34 @@
         "tags" : [ "Task" ]
       }
     },
+    "/test-helper/calculation/decay" : {
+      "post" : {
+        "operationId" : "calculateDecayValues",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CalculateDecayValuesRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DecayValues"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
     "/test-helper/calculation/dmft" : {
       "post" : {
         "operationId" : "calculateDmftValues",
@@ -3269,6 +3297,22 @@
           }
         }
       },
+      "CalculateDecayValuesRequest" : {
+        "required" : [ "age", "toothDiagnoses" ],
+        "type" : "object",
+        "properties" : {
+          "age" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "toothDiagnoses" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/ToothDiagnosis"
+            }
+          }
+        }
+      },
       "CalculateDmftValuesRequest" : {
         "required" : [ "toothDiagnoses" ],
         "type" : "object",
@@ -3769,6 +3813,21 @@
         "description" : "A list of possible origins of Persons and Facility in the Central Files. EDIT will only be set automatically on changes. EXTERNAL is for entries that come, e.g., from the citizen portal. IMPORT is reserved for automatic imports. MANUAL shall be set for every creation or connection done by an employee.",
         "enum" : [ "MANUAL", "EXTERNAL", "IMPORT", "EDIT" ]
       },
+      "DecayStatus" : {
+        "type" : "string",
+        "enum" : [ "HEALTHY", "RESTORED", "TREATMENT_REQUIRED" ]
+      },
+      "DecayValues" : {
+        "type" : "object",
+        "properties" : {
+          "decayRisk" : {
+            "type" : "string"
+          },
+          "decayStatus" : {
+            "type" : "string"
+          }
+        }
+      },
       "Decision" : {
         "type" : "string",
         "enum" : [ "GRANTED", "DENIED" ]
@@ -4028,6 +4087,9 @@
             "type" : "string",
             "description" : "The last name of the Contact Person.",
             "example" : "Doe"
+          },
+          "mainContact" : {
+            "type" : "boolean"
           },
           "phoneNumber" : {
             "maxLength" : 23,
@@ -5438,6 +5500,10 @@
           "propertyName" : "@type"
         }
       },
+      "MihStatus" : {
+        "type" : "string",
+        "enum" : [ "MILD", "MODERATE", "SERIOUS" ]
+      },
       "NonExistingUser" : {
         "required" : [ "id" ],
         "type" : "object",
@@ -5452,6 +5518,14 @@
       "OralHygieneStatus" : {
         "type" : "string",
         "enum" : [ "EXCELLENT", "GOOD", "POOR" ]
+      },
+      "OrthodonticFinding" : {
+        "type" : "string",
+        "enum" : [ "ANGLE_CLASS_I", "ANGLE_CLASS_II", "ANGLE_CLASS_II_2", "ANGLE_CLASS_III", "ANGLE_CLASS", "APLASIA", "BUCAL_LINGUAL_OCCLUSION", "DIASTEMA", "ANTERIOR_CROWDING", "ANTERIOR_CROSSBITE", "APPLIANCE_THERAPY", "HABITS", "EDGE_TO_EDGE_BITE", "BILATERAL_LATERAL_CROSSBITE", "UNILATERAL_LATERAL_CROSSBITE", "CLEFT_LIP_AND_PALATE", "MIDLINE_DEVIATION", "FIXED_APPLIANCE", "NON_OCCLUSION", "OPEN_BITE", "ANTERIOR_OPEN_BITE", "LATERAL_OPEN_BITE", "CROWDING", "PROGENIC_FORCED_BITE", "PROGNATHISM", "PSEUDOPROGNATHISM", "NARROW_JAW", "OTHER", "SUPPORT_ZONE_COLLAPSE", "DEEP_BITE", "DEEP_BITE_WITH_GINGIVAL_CONTACT", "INCREASED_SAGITTAL_OVERJET", "DISPLACEMENT" ]
+      },
+      "OrthodonticStatus" : {
+        "type" : "string",
+        "enum" : [ "WITHOUT_FINDINGS", "TREATMENT_STARTED", "TREATMENT_REQUIRED", "TREATMENT_PLANNED", "TREATMENT_COMPLETED", "TREATMENT_CANCELED", "UNDER_OBSERVATION" ]
       },
       "PatchManualProgressEntryRequest" : {
         "type" : "object",
@@ -5997,7 +6071,7 @@
         "enum" : [ "NOT_SPECIFIED", "NEUTRAL", "FEMALE", "MALE" ]
       },
       "ScreeningExaminationResult" : {
-        "required" : [ "calculus", "dentitionType", "gingivitis", "parodontitis", "plaque", "toothDiagnoses" ],
+        "required" : [ "calculus", "dentitionType", "gingivitis", "orthodonticFindings", "parodontitis", "plaque", "toothDiagnoses" ],
         "type" : "object",
         "allOf" : [ {
           "$ref" : "#/components/schemas/DentalExaminationResult"
@@ -6016,8 +6090,20 @@
             "gingivitis" : {
               "type" : "boolean"
             },
+            "mihStatus" : {
+              "$ref" : "#/components/schemas/MihStatus"
+            },
             "oralHygieneStatus" : {
               "$ref" : "#/components/schemas/OralHygieneStatus"
+            },
+            "orthodonticFindings" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/OrthodonticFinding"
+              }
+            },
+            "orthodonticStatus" : {
+              "$ref" : "#/components/schemas/OrthodonticStatus"
             },
             "parodontitis" : {
               "type" : "boolean"

@@ -1278,6 +1278,46 @@
         "tags" : [ "Department" ]
       }
     },
+    "/department/privacy-notice" : {
+      "get" : {
+        "operationId" : "getPrivacyNotice",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the privacy-notice document.",
+        "tags" : [ "Department" ]
+      }
+    },
+    "/department/privacy-policy" : {
+      "get" : {
+        "operationId" : "getPrivacyPolicy",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get the privacy-policy document.",
+        "tags" : [ "Department" ]
+      }
+    },
     "/department/security-txt" : {
       "get" : {
         "operationId" : "getSecurityTxt",
@@ -6410,7 +6450,7 @@
       },
       "BaseFeature" : {
         "type" : "string",
-        "enum" : [ "CHAT_USERNAME", "SEARCH_PROCEDURES", "INBOX", "OPEN_DATA", "GDPR", "GDPR_ONLINE_PORTAL", "MUK_FACILITY_LINK", "BUNDID_PERSON_LINK" ]
+        "enum" : [ "CHAT_USERNAME", "SEARCH_PROCEDURES", "INBOX", "GDPR", "GDPR_ONLINE_PORTAL", "MUK_FACILITY_LINK", "BUNDID_PERSON_LINK" ]
       },
       "BlockingEventsOfCalendar" : {
         "required" : [ "calendarId", "events" ],
@@ -7359,6 +7399,9 @@
             "type" : "string",
             "description" : "The last name of the Contact Person.",
             "example" : "Doe"
+          },
+          "mainContact" : {
+            "type" : "boolean"
           },
           "phoneNumber" : {
             "maxLength" : 23,

@@ -7,6 +7,8 @@ package de.eshg.base.department;
 
 import static de.eshg.rest.service.security.config.BaseUrls.Base.DEPARTMENT_API_INFO;
 import static de.eshg.rest.service.security.config.BaseUrls.Base.DEPARTMENT_API_LOGO;
+import static de.eshg.rest.service.security.config.BaseUrls.Base.DEPARTMENT_API_PRIVACY_NOTICE;
+import static de.eshg.rest.service.security.config.BaseUrls.Base.DEPARTMENT_API_PRIVACY_POLICY;
 import static de.eshg.rest.service.security.config.BaseUrls.Base.DEPARTMENT_API_SECURITY_TXT;
 import static de.eshg.rest.service.security.config.BaseUrls.Base.DEPARTMENT_API_SECURITY_TXT_PGP_KEY;
 
@@ -26,6 +28,16 @@ public interface DepartmentApi {
   @ApiResponse(responseCode = "200")
   @Operation(summary = "Get detailed information about the department running this application.")
   GetDepartmentInfoResponse getDepartmentInfo();
+
+  @GetExchange(DEPARTMENT_API_PRIVACY_NOTICE)
+  @ApiResponse(responseCode = "200")
+  @Operation(summary = "Get the privacy-notice document.")
+  ResponseEntity<Resource> getPrivacyNotice();
+
+  @GetExchange(DEPARTMENT_API_PRIVACY_POLICY)
+  @ApiResponse(responseCode = "200")
+  @Operation(summary = "Get the privacy-policy document.")
+  ResponseEntity<Resource> getPrivacyPolicy();
 
   @GetExchange(DEPARTMENT_API_LOGO)
   @ApiResponse(responseCode = "200")

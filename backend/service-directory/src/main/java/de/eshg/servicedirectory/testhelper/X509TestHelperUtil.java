@@ -95,7 +95,7 @@ public class X509TestHelperUtil {
         new JcaX509v3CertificateBuilder(
             dnName, certSerialNumber, startDate, endDate, dnName, keyPair.getPublic());
 
-    certBuilder.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
+    certBuilder.addExtension(Extension.basicConstraints, true, new BasicConstraints(false));
     certBuilder.addExtension(Extension.keyUsage, true, getKeyUsage());
 
     ContentSigner contentSigner = getContentSigner(keyPair);

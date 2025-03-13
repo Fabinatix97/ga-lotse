@@ -56,7 +56,7 @@ public class FacilityDiffer extends AbstractDiffer {
       List<FacilityContactPerson> facilityContactPersonList) {
     Optional<FacilityContactPerson> matchingElement =
         facilityContactPersonList.stream()
-            .filter(a -> FacilityMatcher.isContactPersonMatch(a, facilityContactPerson))
+            .filter(a -> FacilityMatcher.isContactPersonMatch(a, facilityContactPerson, false))
             .findFirst();
 
     return matchingElement.map(facilityContactPersonList::remove).orElse(false);

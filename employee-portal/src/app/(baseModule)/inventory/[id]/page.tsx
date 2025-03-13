@@ -10,7 +10,9 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import AddIcon from "@mui/icons-material/Add";
 import { Button, Stack } from "@mui/joy";
 import { useState } from "react";
@@ -20,13 +22,13 @@ import { InventoryBooking } from "@/lib/baseModule/components/inventory/Inventor
 import { InventoryDetails } from "@/lib/baseModule/components/inventory/InventoryDetails";
 import { useInventoryRestockSidebar } from "@/lib/baseModule/components/inventory/modals/InventoryRestockSidebar";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
-export default function InventoryDetailsPage({
-  params,
-}: Readonly<{
-  params: { id: string };
-}>) {
+export default function InventoryDetailsPage(
+  props: DynamicPageProps<{
+    id: string;
+  }>,
+) {
+  const { id } = props.params;
   const hasWritePerms = useHasUserRoleCheck(
     ApiUserRole.BaseInventoryAdministrate,
   );
@@ -38,7 +40,7 @@ export default function InventoryDetailsPage({
       data: { item, labels },
     },
     { data: history },
-  ] = useGetInventoryItem(params.id, bookingHistoryPage);
+  ] = useGetInventoryItem(id, bookingHistoryPage);
 
   const inventoryRestockSidebar = useInventoryRestockSidebar();
 

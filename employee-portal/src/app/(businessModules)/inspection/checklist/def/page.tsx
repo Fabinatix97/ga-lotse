@@ -10,6 +10,7 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import AddIcon from "@mui/icons-material/Add";
@@ -18,7 +19,6 @@ import { Box } from "@mui/joy";
 import { useGetChecklistDefinitions } from "@/lib/businessModules/inspection/api/queries/checklistDefinition";
 import { ChecklistDefinitionOverviewTable } from "@/lib/businessModules/inspection/components/checklistDefinition/overview/ChecklistDefinitionOverviewTable";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 export default function ChecklistOverview() {
   const canWrite = useHasUserRoleCheck(

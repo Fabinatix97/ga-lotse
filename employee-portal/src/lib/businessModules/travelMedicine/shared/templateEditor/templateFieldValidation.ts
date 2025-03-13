@@ -3,22 +3,61 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export function notEmptyFieldValidation(
-  text: string,
-  errorText = "Das Fragefeld darf nicht leer sein",
-) {
-  if (!text) {
-    return errorText;
-  }
+import { OptionalFieldValue, Validator } from "@eshg/lib-portal/types/form";
+import { isEmpty, isNullish } from "remeda";
+
+export function validateAnamnesisTemplateTitle() {
+  return validateTemplateField("Der Anamnesename", true, 200);
 }
 
-export function validateTemplateTitle(title: string) {
-  return notEmptyFieldValidation(
-    title,
-    "Der Anamnesetitel darf nicht leer sein",
-  );
+export function validateInformationStatementTemplateFileName() {
+  return validateTemplateField("Der interne Dateiname", true, 200);
 }
 
-export function validateSelectField(title: string) {
-  return notEmptyFieldValidation(title, "Das Antwortfeld darf nicht leer sein");
+export function validateInformationStatementTemplateDocumentTitle() {
+  return validateTemplateField("Der Dokumententitel", true, 200);
+}
+
+export function validateSectionTitle() {
+  return validateTemplateField("Der Sektionstitel", true, 200);
+}
+
+export function validateQuestionText() {
+  return validateTemplateField("Das Fragefeld", true, 200);
+}
+
+export function validateLabelText() {
+  return validateTemplateField("Das Label", true, 200);
+}
+
+export function validateSubElementMultiselectOption() {
+  return validateTemplateField("Die Antwortmöglichkeit", true, 200);
+}
+
+export function validateTextBlock() {
+  return validateTemplateField("Der Textblock", true);
+}
+
+export function validateConfirmationField() {
+  return validateTemplateField("Das Bestätigungsfeld", true);
+}
+
+function validateTemplateField(
+  fieldDescriptionWithArticle: string,
+  mandatory: boolean,
+  maxSize?: number,
+): Validator<OptionalFieldValue<string>> {
+  return (value: OptionalFieldValue<string>) => {
+    if (isNullish(value) || isEmpty(value)) {
+      return mandatory
+        ? `${fieldDescriptionWithArticle} darf nicht leer sein.`
+        : undefined;
+    }
+
+    if (maxSize && value.trim().length > maxSize) {
+      return `${fieldDescriptionWithArticle} darf nicht länger als ${maxSize} Zeichen sein.`;
+    }
+
+    return undefined;
+  };
 }

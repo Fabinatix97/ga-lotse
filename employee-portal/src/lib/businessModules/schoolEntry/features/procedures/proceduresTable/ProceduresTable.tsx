@@ -9,10 +9,9 @@ import {
   formatDate,
   formatDateTime,
 } from "@eshg/lib-portal/formatters/dateTime";
-import { useToggleableState } from "@eshg/lib-portal/hooks/useToggleableState";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 import { ApiSchoolEntryProcedureSortKey } from "@eshg/school-entry-api";
-import { Chip, Stack, Tab } from "@mui/joy";
+import { Chip, Stack } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import {
   ColumnSort,
@@ -41,6 +40,7 @@ import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import {
   PersonSearchForm,
   PersonSearchFormValues,
+  PersonSearchParams,
   TogglePersonSearchButton,
   usePersonSearch,
 } from "@/lib/shared/components/personSearch/PersonSearchForm";
@@ -55,7 +55,10 @@ import { UnstyledTabList } from "@/lib/shared/components/unstyledTab/UnstyledTab
 import { UnstyledTabPanel } from "@/lib/shared/components/unstyledTab/UnstyledTabPanel";
 import { UnstyledTabs } from "@/lib/shared/components/unstyledTab/UnstyledTabs";
 import { formatSchoolYear } from "@/lib/shared/helpers/formatters";
-import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
+import {
+  UseTableControl,
+  useTableControl,
+} from "@/lib/shared/hooks/searchParams/useTableControl";
 import {
   useRowSelection,
   useSyncRowSelection,
@@ -73,21 +76,11 @@ interface ProceduresTableProps {
 const initialSorting: ColumnSort = { id: "child_dateOfBirth", desc: true };
 
 export function ProceduresTable(props: ProceduresTableProps) {
-  const [activePanel, toggleActivePanel] = useToggleableState<PanelName>();
-  const columns = useProcedureColumns();
   const tableControl = useTableControl({
     serverSideSorting: true,
     sortFieldName: "sortKey",
     sortDirectionName: "sortDirection",
     initialSorting: initialSorting,
-  });
-  const { rowSelection, rowSelectionProps } = useRowSelection<Procedure>({
-    toggleSelectProps: {
-      ariaLabelSelectRow: "Vorgang auswählen",
-      ariaLabelDeselectRow: "Vorgang abwählen",
-      ariaLabelSelectAllRows: "Alle Vorgänge auswählen",
-      ariaLabelDeselectAllRows: "Alle Vorgänge abwählen",
-    },
   });
   const personSearch = usePersonSearch();
   const {
@@ -106,6 +99,105 @@ export function ProceduresTable(props: ProceduresTableProps) {
     },
   });
 
+  function handleChangePersonSearch(formValues: PersonSearchFormValues) {
+    tableControl.paginationProps.onPageChange(0);
+    clearFilterValues();
+    personSearch.setValues(formValues);
+  }
+
+  return (
+    <UnstyledTabs<PanelName> initialValue={null}>
+      {({ currentValue, internalTabListFunction }) => (
+        <TablePage
+          fullHeight
+          controls={
+            <ButtonBar
+              left={
+                <UnstyledTabList<PanelName>
+                  tabListItems={[
+                    {
+                      component: (
+                        <FilterButton
+                          {...filterButtonProps}
+                          isFilterVisible={currentValue === "filters"}
+                        />
+                      ),
+                      value: "filters",
+                    },
+                    {
+                      component: (
+                        <TogglePersonSearchButton
+                          {...personSearch.buttonProps}
+                          expanded={currentValue === "personSearch"}
+                        />
+                      ),
+                      value: "personSearch",
+                    },
+                  ]}
+                  internalTabListFunction={internalTabListFunction}
+                />
+              }
+              right={props.buttons}
+              alignItems="flex-end"
+              invertDomOrder={true}
+            />
+          }
+          search={
+            currentValue === "personSearch" && (
+              <UnstyledTabPanel<PanelName> value={"personSearch"}>
+                <PersonSearchForm
+                  {...personSearch.formProps}
+                  onChange={handleChangePersonSearch}
+                />
+              </UnstyledTabPanel>
+            )
+          }
+          filterSettings={
+            currentValue === "filters" && (
+              <UnstyledTabPanel<PanelName> value={"filters"}>
+                <ProcedureFilterSettings
+                  filterFormValues={filterFormValues}
+                  setFilterFormValue={setFilterFormValue}
+                  deleteFilterValue={deleteFilterValue}
+                  clearFilterValues={clearFilterValues}
+                  filterSettingsSheetProps={filterSettingsSheetProps}
+                  activeFilters={activeFilters}
+                />
+              </UnstyledTabPanel>
+            )
+          }
+          data-testid="procedureTable"
+        >
+          <ProcedureTableSheet
+            tableControl={tableControl}
+            searchParams={personSearch.searchParams}
+            filterValues={filterValues}
+          />
+        </TablePage>
+      )}
+    </UnstyledTabs>
+  );
+}
+
+function ProcedureTableSheet({
+  tableControl,
+  searchParams,
+  filterValues,
+}: {
+  tableControl: UseTableControl;
+  searchParams: PersonSearchParams | undefined;
+  filterValues: ProcedureFilters;
+}) {
+  const columns = useProcedureColumns();
+  const { rowSelection, rowSelectionProps } = useRowSelection<Procedure>({
+    toggleSelectProps: {
+      ariaLabelSelectRow: "Vorgang auswählen",
+      ariaLabelDeselectRow: "Vorgang abwählen",
+      ariaLabelSelectAllRows: "Alle Vorgänge auswählen",
+      ariaLabelDeselectAllRows: "Alle Vorgänge abwählen",
+    },
+  });
+
   const schoolEntryApi = useSchoolEntryApi();
   const gdprBannerQuery = useGetGdprValidationBannerQuery(
     ApiBusinessModule.SchoolEntry,
@@ -115,14 +207,13 @@ export function ProceduresTable(props: ProceduresTableProps) {
     pageSize: tableControl.paginationProps.pageSize,
     ...filterValues,
     labelsFilter: filterValues.labelsFilter?.map((label) => label.id),
-    ...personSearch.searchParams,
+    ...searchParams,
     sortKey: getSortKeyWithSpecificMapping(
       tableControl.tableSorting,
       SORT_KEY_MAPPING,
     ),
     sortDirection: getSortDirection(tableControl.tableSorting),
   });
-
   const [procedures, gdprBanner] = useSuspenseQueries({
     queries: [proceduresQuery, gdprBannerQuery],
   });
@@ -134,113 +225,35 @@ export function ProceduresTable(props: ProceduresTableProps) {
 
   useSyncRowSelection(rowSelectionProps, procedures.data.elements);
 
-  function handleChangePersonSearch(formValues: PersonSearchFormValues) {
-    tableControl.paginationProps.onPageChange(0);
-    clearFilterValues();
-    personSearch.setValues(formValues);
-  }
-
   return (
-    <UnstyledTabs
-      onChange={(_e, value) => {
-        toggleActivePanel(
-          value === 0 ? "filters" : value === 1 ? "personSearch" : undefined,
-        );
-      }}
-      value={
-        activePanel === "filters"
-          ? 0
-          : activePanel === "personSearch"
-            ? 1
-            : null
+    <TableSheet
+      loading={procedures.isFetching}
+      title={
+        <ProceduresTableTitle
+          procedures={procedures.data.elements}
+          rowSelection={rowSelection}
+        />
+      }
+      footer={
+        <Pagination
+          totalCount={procedures.data.totalNumberOfElements}
+          {...tableControl.paginationProps}
+        />
       }
     >
-      <TablePage
-        fullHeight
-        controls={
-          <ButtonBar
-            left={
-              <UnstyledTabList>
-                <FilterButton
-                  {...filterButtonProps}
-                  component={Tab}
-                  key="filterButton"
-                  isFilterVisible={activePanel === "filters"}
-                  id="Filter-TabPanel"
-                />
-                <TogglePersonSearchButton
-                  {...personSearch.buttonProps}
-                  component={Tab}
-                  key="personSearchButton"
-                  expanded={activePanel === "personSearch"}
-                  id="Personensuche-TabPanel"
-                />
-              </UnstyledTabList>
-            }
-            right={props.buttons}
-            alignItems="flex-end"
-            invertDomOrder={true}
-          />
-        }
-        search={
-          activePanel === "personSearch" && (
-            <UnstyledTabPanel
-              aria-labelledby="Personensuche-TabPanel"
-              value={1}
-            >
-              <PersonSearchForm
-                {...personSearch.formProps}
-                onChange={handleChangePersonSearch}
-              />
-            </UnstyledTabPanel>
-          )
-        }
-        filterSettings={
-          activePanel === "filters" && (
-            <UnstyledTabPanel aria-labelledby="Filter-TabPanel" value={0}>
-              <ProcedureFilterSettings
-                filterFormValues={filterFormValues}
-                setFilterFormValue={setFilterFormValue}
-                deleteFilterValue={deleteFilterValue}
-                clearFilterValues={clearFilterValues}
-                filterSettingsSheetProps={filterSettingsSheetProps}
-                activeFilters={activeFilters}
-              />
-            </UnstyledTabPanel>
-          )
-        }
-        data-testid="procedureTable"
-      >
-        <TableSheet
-          loading={procedures.isFetching}
-          title={
-            <ProceduresTableTitle
-              procedures={procedures.data.elements}
-              rowSelection={rowSelection}
-            />
-          }
-          footer={
-            <Pagination
-              totalCount={procedures.data.totalNumberOfElements}
-              {...tableControl.paginationProps}
-            />
-          }
-        >
-          <DataTable
-            data={procedures.data.elements}
-            columns={columns}
-            sorting={tableControl.tableSorting}
-            enableSortingRemoval={false}
-            rowSelectionProps={rowSelectionProps}
-            rowNavigation={{
-              route: (row) => routes.procedures.byId(row.original.id).details,
-              focusColumnAccessorKey: "child.lastName",
-            }}
-            minWidth={1600}
-          />
-        </TableSheet>
-      </TablePage>
-    </UnstyledTabs>
+      <DataTable
+        data={procedures.data.elements}
+        columns={columns}
+        sorting={tableControl.tableSorting}
+        enableSortingRemoval={false}
+        rowSelectionProps={rowSelectionProps}
+        rowNavigation={{
+          route: (row) => routes.procedures.byId(row.original.id).details,
+          focusColumnAccessorKey: "child.lastName",
+        }}
+        minWidth={1600}
+      />
+    </TableSheet>
   );
 }
 

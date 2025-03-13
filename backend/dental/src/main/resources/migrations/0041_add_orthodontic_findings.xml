@@ -1,0 +1,32 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1741292073974-1">
+    <createTable tableName="screening_examination_result_orthodontic_findings">
+      <column name="screening_examination_result_id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+                     primaryKeyName="pk_screening_examination_result_orthodontic_findings"/>
+      </column>
+      <column name="orthodontic_findings" type="TEXT"/>
+      <column name="orthodontic_findings_order" type="INTEGER">
+        <constraints nullable="false" primaryKey="true"
+                     primaryKeyName="pk_screening_examination_result_orthodontic_findings"/>
+      </column>
+    </createTable>
+
+    <addForeignKeyConstraint baseColumnNames="screening_examination_result_id"
+                             baseTableName="screening_examination_result_orthodontic_findings"
+                             constraintName="fk_screening_examination_result_orthodontic_findings_screening_examination_result"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="screening_examination_result"
+                             validate="true"/>
+  </changeSet>
+</databaseChangeLog>

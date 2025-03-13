@@ -52,12 +52,11 @@ export function ReadonlyToothButton(props: ReadonlyToothButtonProps) {
       quadrantNumber,
       toothIndex: index,
     },
+    element: "toothButton",
   };
 
-  const { elementRef, isFocused, focusHandler, blurHandler } = useElementFocus(
-    buttonContext,
-    (button: HTMLButtonElement) => button.focus(),
-  );
+  const { elementRef, isFocused, focusHandler, blurHandler } =
+    useElementFocus<HTMLButtonElement>(buttonContext);
   const navigateTo = useDentalExaminationStore((state) => state.navigateTo);
   const keyboardNavigationHandler = useKeyboardNavigationHandler();
 

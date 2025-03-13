@@ -4,13 +4,13 @@
  */
 
 import { type ApiInspection } from "@eshg/inspection-api";
-
-import { InspectionLockInfo } from "@/lib/businessModules/inspection/components/inspection/InspectionLockInfo";
-import { InspectionPhaseSelect } from "@/lib/businessModules/inspection/components/inspection/InspectionPhaseSelect";
 import {
   TabNavigationHeader,
   TabNavigationHeaderTypography,
-} from "@/lib/shared/components/tabNavigationToolbar/TabNavigationHeader";
+} from "@eshg/lib-employee-portal";
+
+import { InspectionLockInfo } from "@/lib/businessModules/inspection/components/inspection/InspectionLockInfo";
+import { InspectionPhaseSelect } from "@/lib/businessModules/inspection/components/inspection/InspectionPhaseSelect";
 
 export function InspectionTabHeader({
   inspection,

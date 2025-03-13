@@ -9,7 +9,7 @@ import de.eshg.lib.common.BusinessModule;
 import de.eshg.rest.service.security.config.TravelMedicinePublicSecurityConfig;
 import de.eshg.travelmedicine.document.informationstatement.InformationStatementProperties;
 import de.eshg.travelmedicine.featuretoggle.TravelMedicineFeatureToggle;
-import de.eshg.travelmedicine.notification.NotificationProperties;
+import de.eshg.travelmedicine.notification.InitialNotificationConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Import;
 @Import(TravelMedicinePublicSecurityConfig.class)
 @EnableConfigurationProperties({
   TravelMedicineFeatureToggle.class,
-  NotificationProperties.class,
+  InitialNotificationConfig.class,
   InformationStatementProperties.class
 })
 public class TravelMedicineApplication {

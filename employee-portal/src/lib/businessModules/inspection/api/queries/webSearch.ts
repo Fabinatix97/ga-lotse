@@ -9,7 +9,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useWebSearchApi } from "@/lib/businessModules/inspection/api/clients";
 import { webSearchApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
-import { FacilityWebSearchFilters } from "@/lib/businessModules/inspection/shared/types";
+import { FacilityWebSearchFiltersSchema } from "@/lib/businessModules/inspection/shared/types";
 
 export function useGetWebSearchOverview() {
   const webSearchApi = useWebSearchApi();
@@ -30,7 +30,7 @@ export function useGetWebSearchById(id: string) {
 
 export function useSearchInWebSearch(
   id: string,
-  filters: FacilityWebSearchFilters = {},
+  filters: FacilityWebSearchFiltersSchema = {},
 ) {
   const webSearchApi = useWebSearchApi();
 

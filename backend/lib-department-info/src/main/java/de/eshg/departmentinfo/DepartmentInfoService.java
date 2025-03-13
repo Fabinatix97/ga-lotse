@@ -11,37 +11,28 @@ import de.eshg.departmentinfo.initialization.OptionalInitialDepartmentInfo;
 import de.eshg.persistence.TransactionHelper;
 import jakarta.persistence.EntityManager;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.context.properties.bind.Binder;
-import org.springframework.core.env.Environment;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 
 @Service
 @ConditionalOnMissingBean(
     value = AbstractDepartmentInfoService.class,
     ignored = DepartmentInfoService.class)
+@EnableConfigurationProperties(OptionalInitialDepartmentInfo.class)
 public class DepartmentInfoService
     extends AbstractDepartmentInfoWithBaseModuleFallbackService<DepartmentInfo> {
-
-  public static final String DEFAULT_PROPERTY_PREFIX = "de.eshg.department-info";
 
   public DepartmentInfoService(
       EntityManager entityManager,
       TransactionHelper transactionHelper,
       DepartmentApi departmentApi,
-      Environment environment) {
+      OptionalInitialDepartmentInfo optionalInitialDepartmentInfo) {
     super(
         entityManager,
         transactionHelper,
         departmentApi,
-        getInitialPropertiesGracefully(environment),
+        optionalInitialDepartmentInfo,
         DepartmentInfo.class);
-  }
-
-  private static OptionalInitialDepartmentInfo getInitialPropertiesGracefully(
-      Environment environment) {
-    return Binder.get(environment)
-        .bind(DEFAULT_PROPERTY_PREFIX, OptionalInitialDepartmentInfo.class)
-        .orElseGet(OptionalInitialDepartmentInfo::new);
   }
 
   @Override

@@ -5,6 +5,7 @@
 
 import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
 import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
+import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
 import {
   ApiAppointmentBookingType,
   ApiAppointmentSummary,
@@ -34,7 +35,6 @@ import {
   AppointmentOverviewSectionTitle,
 } from "@/lib/shared/components/appointments/AppointmentOverviewSection";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
-import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 interface AppointmentOverviewSheetButtonProps {
   index: number;

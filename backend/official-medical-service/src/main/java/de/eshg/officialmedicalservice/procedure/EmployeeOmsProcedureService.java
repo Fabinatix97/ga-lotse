@@ -817,7 +817,10 @@ public class EmployeeOmsProcedureService {
     procedure.setMedicalOpinionStatus(MedicalOpinionStatus.valueOf(request.status().name()));
 
     progressEntryService.createProgressEntryForMedicalOpinionStatusChanged(
-        procedure, oldStatus, procedure.getMedicalOpinionStatus());
+        procedure,
+        oldStatus,
+        procedure.getMedicalOpinionStatus(),
+        procedure.getMedicalOpinionResult());
   }
 
   @Transactional

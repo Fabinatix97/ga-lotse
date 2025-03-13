@@ -147,7 +147,8 @@ public class ProtectionProcedurePopulator extends BasePopulator<OpenProcedureRes
             fcFirstName,
             facilityContact.title(),
             SalutationDto.NOT_SPECIFIED,
-            GenderDto.NOT_SPECIFIED);
+            GenderDto.NOT_SPECIFIED,
+            false);
 
     AddFacilityFileStateRequest facilityFileState =
         new AddFacilityFileStateRequest(

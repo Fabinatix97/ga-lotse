@@ -3,13 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { ApiEmployeeOmsProcedureHeader } from "@eshg/official-medical-service-api";
-
 import {
   TabNavigationHeader,
   TabNavigationHeaderTypography,
-} from "@/lib/shared/components/tabNavigationToolbar/TabNavigationHeader";
+} from "@eshg/lib-employee-portal";
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { ApiEmployeeOmsProcedureHeader } from "@eshg/official-medical-service-api";
 
 export function ProcedureDetailsTabHeader({
   procedureHeader,

@@ -11,9 +11,6 @@ import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -25,23 +22,21 @@ public class NotificationService {
 
   private final MailClient mailClient;
   private final ModuleClientAuthenticator moduleClientAuthenticator;
-  private final NotificationProperties notificationProperties;
   private final String citizenPortalUrl;
   private final NotificationText notificationText;
-  private final SecurityContextHolderStrategy securityContextHolderStrategy =
-      SecurityContextHolder.getContextHolderStrategy();
+  private final NotificationConfigService notificationConfigService;
 
   public NotificationService(
       MailClient mailClient,
       ModuleClientAuthenticator moduleClientAuthenticator,
-      NotificationProperties notificationProperties,
       @Value("${eshg.citizen-portal.reverse-proxy.url}") String citizenPortalUrl,
-      NotificationText notificationText) {
+      NotificationText notificationText,
+      NotificationConfigService notificationConfigService) {
     this.mailClient = mailClient;
     this.moduleClientAuthenticator = moduleClientAuthenticator;
-    this.notificationProperties = notificationProperties;
     this.citizenPortalUrl = citizenPortalUrl;
     this.notificationText = notificationText;
+    this.notificationConfigService = notificationConfigService;
   }
 
   public void notifyNewCitizenProcedure(
@@ -54,7 +49,7 @@ public class NotificationService {
             firstAppointment,
             buildLoginUrl(accessCode),
             accessCode,
-            notificationProperties.greeting()),
+            notificationConfigService.getConfig().getGreeting()),
         patientDto);
   }
 
@@ -65,7 +60,7 @@ public class NotificationService {
             patientDto.firstName(),
             patientDto.lastName(),
             appointment,
-            notificationProperties.greeting()),
+            notificationConfigService.getConfig().getGreeting()),
         patientDto);
   }
 
@@ -76,7 +71,7 @@ public class NotificationService {
             patientDto.firstName(),
             patientDto.lastName(),
             appointment,
-            notificationProperties.greeting()),
+            notificationConfigService.getConfig().getGreeting()),
         patientDto);
   }
 
@@ -87,7 +82,7 @@ public class NotificationService {
             patientDto.firstName(),
             patientDto.lastName(),
             cancelledAppointment,
-            notificationProperties.greeting()),
+            notificationConfigService.getConfig().getGreeting()),
         patientDto);
   }
 
@@ -98,7 +93,7 @@ public class NotificationService {
             patientDto.firstName(),
             patientDto.lastName(),
             cancelledAppointment,
-            notificationProperties.greeting()),
+            notificationConfigService.getConfig().getGreeting()),
         patientDto);
   }
 
@@ -111,7 +106,7 @@ public class NotificationService {
             patientDto.lastName(),
             previousAppointment,
             newAppointment,
-            notificationProperties.greeting()),
+            notificationConfigService.getConfig().getGreeting()),
         patientDto);
   }
 
@@ -124,7 +119,7 @@ public class NotificationService {
             patientDto.lastName(),
             previousAppointment,
             newAppointment,
-            notificationProperties.greeting()),
+            notificationConfigService.getConfig().getGreeting()),
         patientDto);
   }
 
@@ -132,7 +127,9 @@ public class NotificationService {
     sendMailWithModuleClientAuthentication(
         notificationText.getNewInformationStatementSubject(),
         notificationText.getNewInformationStatementBody(
-            patientDto.firstName(), patientDto.lastName(), notificationProperties.greeting()),
+            patientDto.firstName(),
+            patientDto.lastName(),
+            notificationConfigService.getConfig().getGreeting()),
         patientDto);
   }
 
@@ -140,7 +137,9 @@ public class NotificationService {
     sendMailWithModuleClientAuthentication(
         notificationText.getNewFollowUpAppointmentSubject(),
         notificationText.getNewFollowUpAppointmentBody(
-            patientDto.firstName(), patientDto.lastName(), notificationProperties.greeting()),
+            patientDto.firstName(),
+            patientDto.lastName(),
+            notificationConfigService.getConfig().getGreeting()),
         patientDto);
   }
 
@@ -154,20 +153,15 @@ public class NotificationService {
 
   private void sendMailWithModuleClientAuthentication(
       String subject, String body, PatientDto patientDto) {
-    SecurityContext previousContext = securityContextHolderStrategy.getContext();
-    try {
-      securityContextHolderStrategy.clearContext();
-      moduleClientAuthenticator.doWithModuleClientAuthentication(
-          () -> doSendMail(subject, body, patientDto));
-    } finally {
-      securityContextHolderStrategy.setContext(previousContext);
-    }
+    moduleClientAuthenticator.doWithPotentiallyReplacedModuleClientAuthenticator(
+        () -> doSendMail(subject, body, patientDto));
   }
 
   private void doSendMail(String subject, String body, PatientDto patientDto) {
     log.info("send mail(s): " + subject);
     for (String emailAddress : patientDto.emailAddresses()) {
-      mailClient.sendMail(emailAddress, notificationProperties.fromAddress(), subject, body);
+      mailClient.sendMail(
+          emailAddress, notificationConfigService.getConfig().getFromAddress(), subject, body);
     }
   }
 }

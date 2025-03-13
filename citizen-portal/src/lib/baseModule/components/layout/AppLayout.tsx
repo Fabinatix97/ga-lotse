@@ -14,6 +14,7 @@ import { Box } from "@mui/joy";
 import { PropsWithChildren } from "react";
 
 import { env } from "@/env/server";
+import { ConfirmNavigationProvider } from "@/lib/baseModule/components/ConfirmNavigationProvider";
 import { MainLayout } from "@/lib/baseModule/components/layout/MainLayout";
 import { ThemeProvider } from "@/lib/baseModule/theme/ThemeProvider";
 import { I18nProvider } from "@/lib/i18n/I18nProvider";
@@ -21,7 +22,6 @@ import { API_CONFIGURATION } from "@/lib/shared/api/config";
 import { CitizenSnackbar } from "@/lib/shared/components/CitizenSnackbar";
 import { CitizenPortalErrorModal } from "@/lib/shared/components/boundaries/CitizenPortalErrorModal";
 import { CitizenPortalConfirmationDialog } from "@/lib/shared/components/confirmationDialog/CitizenPortalConfirmationDialog";
-import { NavigationProvider } from "@/lib/shared/components/navigationProvider/NavigationProvider";
 
 export function AppLayout({
   lang,
@@ -51,18 +51,18 @@ export function AppLayout({
               environmentType={env.PUBLIC_ENVIRONMENT_TYPE}
             >
               <SnackbarProvider snackbar={CitizenSnackbar}>
-                <NavigationProvider>
-                  <ApiProvider configuration={API_CONFIGURATION}>
-                    <ConfirmationDialogProvider
-                      component={CitizenPortalConfirmationDialog}
-                      errorModal={CitizenPortalErrorModal}
-                    >
+                <ApiProvider configuration={API_CONFIGURATION}>
+                  <ConfirmationDialogProvider
+                    component={CitizenPortalConfirmationDialog}
+                    errorModal={CitizenPortalErrorModal}
+                  >
+                    <ConfirmNavigationProvider>
                       <QueryBoundary>
                         <MainLayout>{children}</MainLayout>
                       </QueryBoundary>
-                    </ConfirmationDialogProvider>
-                  </ApiProvider>
-                </NavigationProvider>
+                    </ConfirmNavigationProvider>
+                  </ConfirmationDialogProvider>
+                </ApiProvider>
               </SnackbarProvider>
             </EnvironmentTypeProvider>
 

@@ -51,7 +51,7 @@ export function AnamnesisQuestion({
       <Box sx={{ paddingLeft: 4, mt: 2 }}>
         <FieldArray
           name={multiSelectElementsFormikPath}
-          validateOnChange={false}
+          validateOnChange={true}
         >
           {({ push, remove }) => (
             <>

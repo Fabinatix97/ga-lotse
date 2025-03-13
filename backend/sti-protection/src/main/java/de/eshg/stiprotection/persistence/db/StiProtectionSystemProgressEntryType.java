@@ -14,6 +14,7 @@ public enum StiProtectionSystemProgressEntryType {
   APPOINTMENT_CANCELLED("Ein Termin wurde storniert."),
   APPOINTMENT_FINALIZED("Ein Termin wurde als abgeschlossen markiert."),
   MEDICAL_HISTORY_UPDATED("Der Anamnesebogen wurde aktualisiert."),
+  CITIZEN_MEDICAL_HISTORY_UPDATED("Der Anamnesebogen wurde von Bürger:in ausgefüllt."),
   CONSULTATION_UPDATED("Die Konsultation wurde aktualisiert."),
   DIAGNOSIS_UPDATED("Die Diagnose wurde aktualisiert."),
   FOLLOW_UP_CREATED("Dieser Folgevorgang wurde aus einem vorherigem Vorgang erstellt.");

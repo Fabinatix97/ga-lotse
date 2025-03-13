@@ -85,6 +85,7 @@ export function AddDocumentForm(props: Readonly<AddDocumentFormProps>) {
       initialValues={props.initialValues}
       onSubmit={props.onSubmit}
       enableReinitialize
+      validateOnBlur={false}
     >
       {({ isSubmitting, values, setFieldValue, setFieldTouched }) => (
         <SidebarForm ref={props.formRef}>
@@ -192,6 +193,7 @@ export function AddDocumentForm(props: Readonly<AddDocumentFormProps>) {
                     <FilesSection
                       name="files"
                       canAdd={true}
+                      canRemoveLast={false}
                       withInitialField={true}
                       addLabel="Weitere Datei hochladen"
                     />

@@ -4,6 +4,7 @@
  */
 
 import { ApiContactType, ApiUserRole } from "@eshg/base-api";
+import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import AddIcon from "@mui/icons-material/Add";
@@ -45,7 +46,6 @@ import {
   mapToRowIds,
   useRowSelection,
 } from "@/lib/shared/hooks/table/useRowSelection";
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 import { contactTableColumns } from "./columns";
 import { contactSearchParamNames } from "./constants";

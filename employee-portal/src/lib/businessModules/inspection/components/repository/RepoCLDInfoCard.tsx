@@ -5,6 +5,7 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import { ApiChecklistDefinitionVersion } from "@eshg/inspection-api";
+import { useHasUserRolesCheck } from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
@@ -19,7 +20,6 @@ import {
   isNewVersion,
   isUpdateableVersion,
 } from "@/lib/businessModules/inspection/components/repository/utils";
-import { useHasUserRolesCheck } from "@/lib/shared/hooks/useAccessControl";
 
 interface RepoCLDInfoCardProps {
   cldVersion: ApiChecklistDefinitionVersion;

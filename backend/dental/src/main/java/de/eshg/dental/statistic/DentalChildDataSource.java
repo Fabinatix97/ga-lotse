@@ -5,14 +5,16 @@
 
 package de.eshg.dental.statistic;
 
-import static de.eshg.dental.statistic.DmftCalculationHelper.calculateDmftValue;
+import static de.eshg.dental.statistic.StatisticsCalculationHelper.calculateDmftValue;
 
 import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.domain.model.ScreeningExaminationResult;
 import de.eshg.dental.domain.model.Tooth;
 import de.eshg.dental.domain.repository.ChildRepository;
+import de.eshg.dental.statistic.model.DecayStatus;
 import de.eshg.dental.statistic.model.Group;
+import de.eshg.dental.statistic.model.MihStatus;
 import de.eshg.dental.statistic.model.OralHygieneStatus;
 import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.datasource.ProcedureDataSource;
@@ -52,10 +54,22 @@ public class DentalChildDataSource extends ProcedureDataSource<Child, DentalChil
       case GRUPPE -> getGroup(child.getGroupName());
       case ANZAHL_PROPHYLAXEN -> child.getExaminations().size();
       case MUNDHYGIENE_STATUS -> getOralHygieneStatus(child.getExaminations(), child.getYear());
+      case MIH_STATUS -> getMihStatus(child.getExaminations(), child.getYear());
       case DMFT_MILCH -> calculateDmftPrimaryTeethValue(child.getExaminations(), child.getYear());
       case DMFT_BLEIBEND ->
           calculateDmftSecondaryTeethValue(child.getExaminations(), child.getYear());
+      case KARIES_RISIKO -> getDecayRisk(child.getExaminations(), child.getYear());
+      case KARIES_STATUS -> getDecayStatus(child.getExaminations(), child.getYear());
     };
+  }
+
+  private Object getMihStatus(List<Examination> examinations, Year year) {
+    ScreeningExaminationResult latestScreeningExamination =
+        getLatestScreeningExaminationResultOrNull(examinations, year);
+    if (latestScreeningExamination == null) {
+      return null;
+    }
+    return MihStatus.convertMihStatusToValue(latestScreeningExamination.getMihStatus());
   }
 
   private String getOralHygieneStatus(List<Examination> examinations, Year year) {
@@ -99,6 +113,24 @@ public class DentalChildDataSource extends ProcedureDataSource<Child, DentalChil
     }
 
     return calculateDmftValue(expectedToothType, latestScreeningExamination.getToothDiagnoses());
+  }
+
+  private Boolean getDecayRisk(List<Examination> examinations, Year year) {
+    ScreeningExaminationResult latestScreeningExamination =
+        getLatestScreeningExaminationResultOrNull(examinations, year);
+    if (latestScreeningExamination == null) {
+      return null;
+    }
+    return latestScreeningExamination.getDecayRisk();
+  }
+
+  private String getDecayStatus(List<Examination> examinations, Year year) {
+    ScreeningExaminationResult latestScreeningExamination =
+        getLatestScreeningExaminationResultOrNull(examinations, year);
+    if (latestScreeningExamination == null) {
+      return null;
+    }
+    return DecayStatus.convertDecayStatusToValue(latestScreeningExamination.getDecayStatus());
   }
 
   private String getGroup(String groupName) {

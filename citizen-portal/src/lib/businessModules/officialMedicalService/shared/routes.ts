@@ -16,8 +16,12 @@ export function citizenRoutes(locale: SupportedLanguage | undefined) {
     (officialMedicalServicePath) => ({
       overview: officialMedicalServicePath("/"),
       appointment: officialMedicalServicePath("/termin"),
-      personalArea: accessCodeRoute(
+      personalArea: defineRoutes(
         officialMedicalServicePath("/mein-bereich"),
+        (appointmentPath) => ({
+          index: accessCodeRoute(appointmentPath("/")),
+          rebook: accessCodeRoute(appointmentPath("/buchen")),
+        }),
       ),
     }),
   );

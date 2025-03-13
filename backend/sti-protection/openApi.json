@@ -549,7 +549,29 @@
         "tags" : [ "Archiving" ]
       }
     },
-    "/citizen/auth" : {
+    "/citizen/auth/medicalHistory" : {
+      "put" : {
+        "operationId" : "updateMedicalHistory_1",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateMedicalHistoryRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update or insert medical history once for citizen user.",
+        "tags" : [ "Citizen" ]
+      }
+    },
+    "/citizen/auth/procedure" : {
       "get" : {
         "operationId" : "getCitizenProcedure",
         "responses" : {
@@ -4339,7 +4361,7 @@
         }
       },
       "CitizenProcedure" : {
-        "required" : [ "appointmentHistory", "concern", "person" ],
+        "required" : [ "appointmentHistory", "concern", "medicalHistorySubmitted", "person" ],
         "type" : "object",
         "properties" : {
           "appointment" : {
@@ -4353,6 +4375,9 @@
           },
           "concern" : {
             "$ref" : "#/components/schemas/Concern"
+          },
+          "medicalHistorySubmitted" : {
+            "type" : "boolean"
           },
           "person" : {
             "$ref" : "#/components/schemas/Person"
@@ -5153,6 +5178,9 @@
             "type" : "string",
             "description" : "The last name of the Contact Person.",
             "example" : "Doe"
+          },
+          "mainContact" : {
+            "type" : "boolean"
           },
           "phoneNumber" : {
             "maxLength" : 23,

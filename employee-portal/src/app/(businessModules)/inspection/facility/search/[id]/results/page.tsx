@@ -10,7 +10,8 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
-import { SearchParams } from "@eshg/lib-portal/helpers/searchParams";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import * as v from "valibot";
 
 import {
   useGetWebSearchById,
@@ -18,23 +19,17 @@ import {
 } from "@/lib/businessModules/inspection/api/queries/webSearch";
 import { FacilityWebSearchResultsTable } from "@/lib/businessModules/inspection/components/facility/search/results/FacilityWebSearchResultsTable";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { FacilityWebSearchFilters } from "@/lib/businessModules/inspection/shared/types";
-
-type EditFacilityPageProps = Readonly<{
-  params: { id: string };
-  searchParams: SearchParams;
-}>;
+import { FacilityWebSearchFiltersSchema } from "@/lib/businessModules/inspection/shared/types";
 
 export default function FacilityWebSearchResultsPage(
-  props: EditFacilityPageProps,
+  props: DynamicPageProps<{ id: string }>,
 ) {
-  const filters: FacilityWebSearchFilters = props.searchParams;
+  const { id } = props.params;
+  const searchParams = props.searchParams;
+  const filters = v.parse(FacilityWebSearchFiltersSchema, searchParams);
 
-  const { data: searchResult, isFetching } = useSearchInWebSearch(
-    props.params.id,
-    filters,
-  );
-  const { data: webSearch } = useGetWebSearchById(props.params.id);
+  const { data: searchResult, isFetching } = useSearchInWebSearch(id, filters);
+  const { data: webSearch } = useGetWebSearchById(id);
 
   return (
     <StickyToolbarLayout

@@ -27,7 +27,7 @@ import {
   ignoredNames,
   webSearchStatusNames,
 } from "@/lib/businessModules/inspection/shared/enums";
-import { FacilityWebSearchFilters } from "@/lib/businessModules/inspection/shared/types";
+import { FacilityWebSearchFiltersSchema } from "@/lib/businessModules/inspection/shared/types";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
@@ -48,7 +48,7 @@ import {
 export function FacilityWebSearchResultsTable(
   props: Readonly<{
     webSearch: ApiWebSearch;
-    filters: FacilityWebSearchFilters;
+    filters: FacilityWebSearchFiltersSchema;
     data: ApiWebSearchEntriesResponse;
     loading: boolean;
   }>,
@@ -126,7 +126,7 @@ function TableControls({
 }: {
   tableControl: UseTableControl;
   webSearchId: string;
-  filters: FacilityWebSearchFilters;
+  filters: FacilityWebSearchFiltersSchema;
   savedQueries: ApiWebSearchQuery[];
 }) {
   const snackbar = useSnackbar();

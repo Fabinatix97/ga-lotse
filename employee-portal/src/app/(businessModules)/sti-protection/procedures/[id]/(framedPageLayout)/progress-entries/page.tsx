@@ -6,8 +6,9 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
-import { StiProtectionProcedurePageParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(framedPageLayout)/layout";
+import { StiProtectionProcedureRouteParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(framedPageLayout)/layout";
 import {
   useApprovalRequestApi,
   useFileApi,
@@ -21,12 +22,12 @@ import {
 import { systemProgressEntryTypeTitles } from "@/lib/businessModules/stiProtection/shared/constants";
 import { moduleUserGroup } from "@/lib/businessModules/stiProtection/shared/moduleUserGroup";
 import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
-import { ProgressEntriesUrlParams } from "@/lib/shared/components/procedures/progress-entries/types";
 
 export default function StiProtectionProcedureProgressEntriesTab(
-  props: Readonly<ProgressEntriesUrlParams<StiProtectionProcedurePageParams>>,
+  props: DynamicPageProps<StiProtectionProcedureRouteParams>,
 ) {
-  const { params, searchParams } = props;
+  const { id } = props.params;
+  const searchParams = props.searchParams;
   const progressEntryApi = useProgressEntryApi();
   const procedureApi = useProcedureApi();
   const fileApi = useFileApi();
@@ -34,7 +35,7 @@ export default function StiProtectionProcedureProgressEntriesTab(
 
   return (
     <ProgressEntriesPage
-      procedureId={params.id}
+      procedureId={id}
       searchParams={searchParams}
       leaderRole={ApiUserRole.StiProtectionLeader}
       systemProgressEntryTypes={systemProgressEntryTypeTitles}

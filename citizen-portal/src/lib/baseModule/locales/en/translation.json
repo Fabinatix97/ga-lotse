@@ -33,8 +33,8 @@
     "contact": "Contact",
     "different_billing_address": "Different Billing Address",
     "contact_person": "Contact Person",
-    "affectedPerson_one": "Affected Person",
-    "affectedPerson_other": "Affected Persons",
+    "affected_person_one": "Affected Person",
+    "affected_person_other": "Affected Persons",
     "back": "Back",
     "cancel": "Cancel",
     "case_one": "Case",
@@ -71,16 +71,18 @@
     "prof": "Prof.",
     "prof_dr": "Prof. Dr."
   },
-  "confirmationDialog": {
+  "confirmation_dialog": {
     "title": "Save changes?",
     "description": "Are you sure you want to save all changes?",
-    "confirmLabel": "Save",
-    "cancelLabel": "Cancel"
+    "description_unsaved": "You have unsaved changes. Would you like to save them?",
+    "confirm_label": "Save",
+    "cancel_label": "Cancel"
   },
-  "cancelDialog": {
+  "cancel_dialog": {
     "title": "Discard changes?",
     "description": "Are you sure you want to discard all changes?",
-    "confirmLabel": "Discard"
+    "description_unsaved": "You have unsaved changes. Would you like to discard them?",
+    "confirm_label": "Discard"
   },
   "error": {
     "title": "Error loading"

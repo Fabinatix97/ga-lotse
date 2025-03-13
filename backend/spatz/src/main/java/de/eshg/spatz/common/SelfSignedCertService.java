@@ -106,7 +106,7 @@ public class SelfSignedCertService {
                     .orElse(Collections.emptyList()))
             .maxAge(config.getMaxAge())
             .keyParameters(config.getKeyParameters())
-            .certificateAuthority(true)
+            .certificateAuthority(false)
             .build();
 
     logger.info(
@@ -116,6 +116,7 @@ public class SelfSignedCertService {
         config.getSubjectAlternativeNames(),
         certificateBuild.certificate().getNotBefore(),
         certificateBuild.certificate().getNotAfter());
+    logger.debug("Certificate PEM: {}", certificateBuild.pemCrt());
     return certificateBuild;
   }
 

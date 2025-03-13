@@ -45,6 +45,9 @@ export function mapToPostCitizenProcedureRequest(
         title: mapOptionalValue(values.affectedPerson.title),
         firstName: values.affectedPerson.firstName,
         lastName: values.affectedPerson.lastName,
+        nameAtBirth: mapEmptyStringToUndefined(
+          values.affectedPerson.nameAtBirth?.trim(),
+        ),
         dateOfBirth: new Date(values.affectedPerson.dateOfBirth),
         contactAddress: {
           type: "DomesticAddress",
@@ -90,4 +93,13 @@ export function mapToPostCitizenProcedureRequest(
       },
     },
   };
+}
+
+// For some reason a falsy check alone doesn't necessarily work
+function mapEmptyStringToUndefined(s: string | undefined): string | undefined {
+  if (!s) {
+    return undefined;
+  }
+  if (s.length === 0) return undefined;
+  return s;
 }

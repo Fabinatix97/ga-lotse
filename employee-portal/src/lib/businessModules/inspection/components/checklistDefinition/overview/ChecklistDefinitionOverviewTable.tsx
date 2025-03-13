@@ -7,6 +7,7 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import { ApiChecklistDefinition } from "@eshg/inspection-api";
+import { useHasUserRolesCheck } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Row } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
@@ -23,7 +24,6 @@ import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import { useHasUserRolesCheck } from "@/lib/shared/hooks/useAccessControl";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 type UserActivityState =

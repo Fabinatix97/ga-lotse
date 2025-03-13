@@ -5,6 +5,8 @@
 
 "use client";
 
+import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
+
 import { AppointmentSection } from "@/lib/businessModules/travelMedicine/components/landing/AppointmentSection";
 import { LandingpageContent } from "@/lib/businessModules/travelMedicine/components/landing/LandingpageContent";
 import { LandingpageSidePanel } from "@/lib/businessModules/travelMedicine/components/landing/LandingpageSidePanel";
@@ -16,7 +18,6 @@ import {
   TwoColumnGrid,
 } from "@/lib/shared/components/layout/grid";
 import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
-import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 export default function CitizenTravelMedicineEntryPage() {
   const { t } = useTranslation(["travelMedicine/landing"]);

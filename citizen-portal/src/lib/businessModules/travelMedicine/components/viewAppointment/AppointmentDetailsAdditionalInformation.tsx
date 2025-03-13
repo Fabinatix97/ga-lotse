@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
 import {
   ApiAppointmentBookingType,
   ApiGetAppointmentDetailsResponse,
@@ -21,7 +22,6 @@ import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
-import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 const StyledList = styled("ul")({
   margin: 0,

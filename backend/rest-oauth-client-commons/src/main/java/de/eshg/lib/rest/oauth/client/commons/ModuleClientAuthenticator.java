@@ -63,7 +63,7 @@ public class ModuleClientAuthenticator {
 
   public <T> T doWithModuleClientAuthentication(Supplier<T> supplier) {
     validateCurrentContextIsUnauthenticated();
-    return executeWithModuleClientAuthentication(supplier);
+    return doWithPotentiallyReplacedModuleClientAuthenticator(supplier);
   }
 
   public void doWithReplacedModuleClientAuthentication(Action action) {
@@ -72,10 +72,14 @@ public class ModuleClientAuthenticator {
 
   public <T> T doWithReplacedModuleClientAuthentication(Supplier<T> supplier) {
     validateCurrentContextIsAuthenticated();
-    return executeWithModuleClientAuthentication(supplier);
+    return doWithPotentiallyReplacedModuleClientAuthenticator(supplier);
   }
 
-  private <T> T executeWithModuleClientAuthentication(Supplier<T> supplier) {
+  public void doWithPotentiallyReplacedModuleClientAuthenticator(Action action) {
+    doWithPotentiallyReplacedModuleClientAuthenticator(action.toSupplier());
+  }
+
+  public <T> T doWithPotentiallyReplacedModuleClientAuthenticator(Supplier<T> supplier) {
     ModuleClientAuthentication moduleClientAuthentication = authenticate();
     try {
       ModuleClientAuthenticationHolder.setModuleClientAuthentication(moduleClientAuthentication);

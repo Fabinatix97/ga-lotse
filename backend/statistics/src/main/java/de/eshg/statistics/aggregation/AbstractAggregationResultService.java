@@ -6,10 +6,7 @@
 package de.eshg.statistics.aggregation;
 
 import de.eshg.domain.model.SequencedBaseEntity_;
-import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.statistics.config.StatisticsConfig;
-import de.eshg.statistics.config.StatisticsFeature;
-import de.eshg.statistics.config.StatisticsFeatureToggle;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
@@ -34,19 +31,16 @@ public abstract class AbstractAggregationResultService {
   protected final DataSourceValidator dataSourceValidator;
   protected final DataAggregationService dataAggregationService;
   protected final TableRowRepository tableRowRepository;
-  protected final StatisticsFeatureToggle featureToggle;
   private final int tableRowPageSize;
 
   protected AbstractAggregationResultService(
       DataSourceValidator dataSourceValidator,
       DataAggregationService dataAggregationService,
       TableRowRepository tableRowRepository,
-      StatisticsFeatureToggle featureToggle,
       StatisticsConfig statisticsConfig) {
     this.dataSourceValidator = dataSourceValidator;
     this.dataAggregationService = dataAggregationService;
     this.tableRowRepository = tableRowRepository;
-    this.featureToggle = featureToggle;
     this.tableRowPageSize = statisticsConfig.tableRows().pageSize();
   }
 
@@ -106,16 +100,6 @@ public abstract class AbstractAggregationResultService {
             aggregationResult.getLastDataSensitivityFromBusinessModule())) {
       aggregationResult.setPendingState(AggregationResultPendingState.ANONYMIZATION);
     } else {
-      aggregationResult.setPendingState(AggregationResultPendingState.ANALYSIS_CONDUCTION);
-    }
-  }
-
-  @Transactional
-  public void anonymization(UUID id) {
-    if (!featureToggle.isNewFeatureEnabled(StatisticsFeature.ANONYMIZATION)) {
-      throw new BadRequestException("Data anonymization is required but feature is not enabled");
-    } else {
-      AbstractAggregationResult aggregationResult = getAbstractAggregationResultInternal(id);
       aggregationResult.setPendingState(AggregationResultPendingState.ANALYSIS_CONDUCTION);
     }
   }

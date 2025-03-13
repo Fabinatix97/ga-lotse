@@ -10,6 +10,7 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { Stack } from "@mui/joy";
 
 import { useGetUserProfile } from "@/lib/baseModule/api/queries/users";
@@ -18,12 +19,11 @@ import { UserProfileDetails } from "@/lib/baseModule/components/users/UserProfil
 import { routes } from "@/lib/baseModule/shared/routes";
 import { fullName } from "@/lib/shared/components/users/userFormatter";
 
-export default function UserProfilePage({
-  params,
-}: Readonly<{
-  params: { id: string };
-}>) {
-  const query = useGetUserProfile(params.id);
+export default function UserProfilePage(
+  props: DynamicPageProps<{ id: string }>,
+) {
+  const { id } = props.params;
+  const query = useGetUserProfile(id);
   const { user, groups, title, salutation, isSelf, calendarEvents } =
     query.data;
 

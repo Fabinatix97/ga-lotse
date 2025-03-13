@@ -3,16 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export enum LOCALE_OPTION {
-  auto,
-  manual,
-}
+export type LOCALE_OPTION = "auto" | "manual";
 
 interface AutoLocale {
-  localOption: LOCALE_OPTION.auto;
+  localeOption: "auto";
 }
 interface ManualLocale {
-  localOption: LOCALE_OPTION.manual;
+  localeOption: "manual";
   locale: string;
 }
 
@@ -23,7 +20,7 @@ export function formatCurrency(
   if (!fee) {
     return;
   }
-  if (option.localOption === LOCALE_OPTION.manual) {
+  if (option.localeOption === "manual") {
     return Intl.NumberFormat(option.locale, {
       style: "currency",
       currency: "EUR",

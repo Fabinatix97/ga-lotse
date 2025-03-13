@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
 import { addMinutes, isAfter, isEqual } from "date-fns";
 import { Formik, FormikErrors } from "formik";
 import { useRouter } from "next/navigation";
@@ -25,7 +26,6 @@ import {
   TwoColumnGrid,
 } from "@/lib/shared/components/layout/grid";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
-import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 export interface RebookAppointmentFormValues {
   selectedAppointment: string;

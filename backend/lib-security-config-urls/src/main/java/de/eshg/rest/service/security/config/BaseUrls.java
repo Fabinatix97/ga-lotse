@@ -60,6 +60,8 @@ public final class BaseUrls {
     public static final String DEPARTMENT_API = "/department";
     public static final String DEPARTMENT_API_INFO = "/info";
     public static final String DEPARTMENT_API_LOGO = "/logo";
+    public static final String DEPARTMENT_API_PRIVACY_POLICY = "/privacy-policy";
+    public static final String DEPARTMENT_API_PRIVACY_NOTICE = "/privacy-notice";
     public static final String DEPARTMENT_API_SECURITY_TXT = "/security-txt";
     public static final String DEPARTMENT_API_SECURITY_TXT_PGP_KEY = "/security-txt-public-key";
     public static final String CONTACT_PARSE_VCARD_URL = "/parse-vcard";
@@ -273,6 +275,7 @@ public final class BaseUrls {
   public static final class OpenData {
     public static final String OPEN_DATA_CONTROLLER = "/open-documents";
     public static final String PUBLIC_CITIZEN_CONTROLLER = "/citizen/public";
+    public static final String FEATURE_TOGGLES_CONTROLLER = "/feature-toggles";
 
     private OpenData() {}
   }

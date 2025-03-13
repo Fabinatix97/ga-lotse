@@ -38,6 +38,7 @@ export function UsersAutocomplete({
     <Box>
       <Autocomplete
         name="invite"
+        aria-description={multiple ? "Mehrfachauswahl möglich" : undefined}
         multiple={multiple}
         value={field.value}
         size="lg"

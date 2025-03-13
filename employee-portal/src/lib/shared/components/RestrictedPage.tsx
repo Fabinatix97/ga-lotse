@@ -6,10 +6,9 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
+import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 export function RestrictedPage(
   props: Readonly<{ requiredUserRole: ApiUserRole } & RequiresChildren>,

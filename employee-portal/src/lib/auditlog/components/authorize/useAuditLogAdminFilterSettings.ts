@@ -8,7 +8,7 @@ import {
   ApiAuditLogSourceFromJSON,
 } from "@eshg/auditlog-api";
 import { ensureArray } from "@eshg/lib-portal/helpers/guards";
-import { SearchParams } from "@eshg/lib-portal/helpers/searchParams";
+import { SearchParams } from "@eshg/lib-portal/types/pageParams";
 import { isString } from "remeda";
 
 import { SearchParamsKeys } from "@/lib/auditlog/queries/auditlog";

@@ -86,6 +86,10 @@ public class StiProtectionProcedure
       fetch = FetchType.LAZY)
   private MedicalHistory medicalHistory;
 
+  @DataSensitivity(SensitivityLevel.UNDEFINED)
+  @Column(nullable = false)
+  private Boolean medicalHistorySubmitted = false;
+
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   @OneToOne(
       mappedBy = RapidTestExamination_.PROCEDURE,
@@ -391,5 +395,13 @@ public class StiProtectionProcedure
 
   public void setStiProcedureOrigin(StiProcedureOrigin stiProcedureOrigin) {
     this.stiProcedureOrigin = stiProcedureOrigin;
+  }
+
+  public Boolean getMedicalHistorySubmitted() {
+    return medicalHistorySubmitted;
+  }
+
+  public void setMedicalHistorySubmitted(Boolean medicalHistorySubmitted) {
+    this.medicalHistorySubmitted = medicalHistorySubmitted;
   }
 }

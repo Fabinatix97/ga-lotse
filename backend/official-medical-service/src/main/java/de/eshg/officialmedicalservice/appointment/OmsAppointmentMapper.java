@@ -45,7 +45,8 @@ public class OmsAppointmentMapper {
         toInterfaceType(omsAppointment.getBookingState()),
         toInterfaceType(omsAppointment.getBookingType()),
         omsAppointment.getStart(),
-        omsAppointment.getDuration());
+        omsAppointment.getDuration(),
+        omsAppointment.getBookingsRemaining());
   }
 
   public AppointmentTypeDto toInterfaceType(AppointmentType appointmentType) {

@@ -6,6 +6,7 @@
 "use client";
 
 import { MainContentLayout } from "@eshg/lib-employee-portal";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { ApiSortDirection } from "@eshg/statistics-api";
 import { startTransition, useEffect, useState } from "react";
 import { isDefined } from "remeda";
@@ -28,10 +29,9 @@ import { usePagination } from "@/lib/shared/hooks/table/usePagination";
 import { useTableSorting } from "@/lib/shared/hooks/table/useTableSorting";
 
 export default function EvaluationDetailsTablePage(
-  props: Readonly<{
-    params: { id: string };
-  }>,
+  props: DynamicPageProps<{ id: string }>,
 ) {
+  const { id } = props.params;
   const { resetPageNumber, page, pageSize, getPaginationProps } =
     usePagination();
 
@@ -42,7 +42,7 @@ export default function EvaluationDetailsTablePage(
 
   const { evaluation, filterTemplates } = useGetEvaluationDetailsTablePage(
     {
-      evaluationId: props.params.id,
+      evaluationId: id,
       apiGetEvaluationRequest: {
         page,
         pageSize,
@@ -54,7 +54,7 @@ export default function EvaluationDetailsTablePage(
         filters,
       },
     },
-    props.params.id,
+    id,
   );
 
   const {
@@ -96,7 +96,7 @@ export default function EvaluationDetailsTablePage(
 
   return (
     <EvaluationDetailsLayout
-      evaluationId={props.params.id}
+      evaluationId={id}
       evaluationDetailsTabHeaderProps={{
         evaluationName: evaluation.evaluationName,
       }}

@@ -57,6 +57,8 @@ public class OmsAppointment extends GloballyUniqueEntityBase implements EntityWi
 
   @Column private Integer duration;
 
+  @NotNull @Column private int bookingsRemaining = 2;
+
   @NotNull @Column @CreatedDate private Instant createdAt;
 
   @NotNull @Column @LastModifiedDate private Instant modifiedAt;
@@ -148,5 +150,13 @@ public class OmsAppointment extends GloballyUniqueEntityBase implements EntityWi
 
   public void setAppointment(Appointment appointment) {
     this.appointment = appointment;
+  }
+
+  public int getBookingsRemaining() {
+    return bookingsRemaining;
+  }
+
+  public void setBookingsRemaining(int bookingsRemaining) {
+    this.bookingsRemaining = bookingsRemaining;
   }
 }

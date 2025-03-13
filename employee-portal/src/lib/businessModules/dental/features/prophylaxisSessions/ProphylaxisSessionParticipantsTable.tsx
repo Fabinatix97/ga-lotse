@@ -8,6 +8,7 @@ import {
   routes,
   useDeleteProphylaxisSessionParticipantOptions,
 } from "@eshg/dental";
+import { ApiReasonForAbsence } from "@eshg/dental-api";
 import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
@@ -84,16 +85,17 @@ export function ProphylaxisSessionParticipantsTable() {
     (state) => state.setParticipantSorting,
   );
   const { openConfirmationDialog } = useConfirmationDialog();
+  const setExamination = useProphylaxisSessionStore(
+    (state) => state.setExamination,
+  );
 
   const deleteOptions = useDeleteProphylaxisSessionParticipantOptions(
     prophylaxisSessionId,
     prophylaxisSessionVersion,
     allParticipants,
   );
-  const [
-    openReasonForAbsenceModalOfParticipant,
-    setOpenReasonForAbsenceModalOfParticipant,
-  ] = useState<ChildExamination>();
+  const [examinationForAbsence, setExaminationForAbsence] =
+    useState<ChildExamination>();
 
   function handleRemoveParticipant(childExternalId: string) {
     openConfirmationDialog({
@@ -110,11 +112,22 @@ export function ProphylaxisSessionParticipantsTable() {
   }
 
   function handleAbsentParticipant(examination: ChildExamination) {
-    setOpenReasonForAbsenceModalOfParticipant(examination);
+    setExaminationForAbsence(examination);
   }
 
   function closeAbsenceModal() {
-    setOpenReasonForAbsenceModalOfParticipant(undefined);
+    setExaminationForAbsence(undefined);
+  }
+
+  function onSubmitAbsenceModal(examination: ChildExamination) {
+    return function (reasonForAbsence: ApiReasonForAbsence) {
+      setExamination(
+        examination.examinationId,
+        { type: "absence", reasonForAbsence },
+        undefined,
+      );
+      setExaminationForAbsence(undefined);
+    };
   }
 
   function routeToExamination(participantIndex: number) {
@@ -218,11 +231,13 @@ export function ProphylaxisSessionParticipantsTable() {
         enableSortingRemoval={false}
         minWidth={1200}
       />
-      {isDefined(openReasonForAbsenceModalOfParticipant) && (
+      {isDefined(examinationForAbsence) && (
         <OverlayBoundary>
           <ChangeReasonForAbsenceModal
-            onClose={closeAbsenceModal}
-            examination={openReasonForAbsenceModalOfParticipant}
+            open={true}
+            onCancel={closeAbsenceModal}
+            onSubmit={onSubmitAbsenceModal(examinationForAbsence)}
+            examination={examinationForAbsence}
           />
         </OverlayBoundary>
       )}

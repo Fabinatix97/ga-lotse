@@ -16,12 +16,14 @@ import { createEmptyContactPerson } from "@/lib/shared/helpers/facilityUtils";
 interface FacilityContactPersonArrayFormProps extends NestedFormProps {
   values: BaseFacilityContactPerson[];
   contactPersonRequired?: boolean;
+  allowMainContactPerson?: boolean;
 }
 
 export function FacilityContactPersonArrayForm({
   name,
   values,
   contactPersonRequired,
+  allowMainContactPerson,
 }: FacilityContactPersonArrayFormProps) {
   return (
     <FieldArray name={name} validateOnChange={false}>
@@ -49,7 +51,10 @@ export function FacilityContactPersonArrayForm({
                     </IconButton>
                   )}
                 </Stack>
-                <ContactPersonForm name={`contactPersons.${index}`} />
+                <ContactPersonForm
+                  name={`contactPersons.${index}`}
+                  allowMainContactPerson={allowMainContactPerson}
+                />
               </Stack>
             );
           })}

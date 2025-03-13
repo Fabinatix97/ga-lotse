@@ -70,7 +70,7 @@ public class SynapseAuthController {
       storeSynapseTokenData(synapseTokenData);
     } else {
       if (tokenRefreshRequired(synapseTokenData)) {
-        synapseTokenData = matrixRefreshClient.refresh(synapseTokenData);
+        synapseTokenData = tryRefreshToken(synapseTokenData, accessToken);
         storeSynapseTokenData(synapseTokenData);
       }
     }
@@ -98,5 +98,17 @@ public class SynapseAuthController {
     Instant instantOfRequiredRefresh =
         synapseTokenData.expiresAt().minus(authProperties.synapse().refreshClockSkew());
     return Instant.now(clock).isAfter(instantOfRequiredRefresh);
+  }
+
+  private SynapseTokenData tryRefreshToken(
+      SynapseTokenData synapseTokenData, OAuth2AccessToken accessToken) {
+    try {
+      return matrixRefreshClient.refresh(synapseTokenData);
+    } catch (Exception ex) {
+      log.error(
+          "Failed to refresh AccessToken from Synapse server. Trying login for new AccessToken",
+          ex);
+      return matrixLoginClient.login(accessToken, synapseTokenData.deviceId());
+    }
   }
 }

@@ -26,6 +26,7 @@ import { isDefined } from "remeda";
 
 import { AppointmentFormValues } from "@/lib/businessModules/officialMedicalService/components/appointment/AppointmentForm";
 import { useDepartmentContext } from "@/lib/businessModules/officialMedicalService/shared/contexts/DepartmentContext";
+import { useManualTranslation } from "@/lib/businessModules/officialMedicalService/shared/useManualTranslation";
 import { DetailsField } from "@/lib/businessModules/travelMedicine/components/shared/components/DetailsField";
 import { useTranslation } from "@/lib/i18n/client";
 import { ContentSheetTitle } from "@/lib/shared/components/layout/contentSheet";
@@ -45,13 +46,18 @@ export function OverviewSection({ buttonBar }: Readonly<OverviewSectionProps>) {
   const { values } = useFormikContext<AppointmentFormValues>();
   const { currentStep } = useMultiStepForm();
 
+  const concernName = useManualTranslation({
+    de: values.concern.nameDe,
+    en: values.concern.nameEn,
+  });
+
   return (
     <Stack gap={2} data-testid={"overview"}>
       <ContentSheetTitle>{t("overview.title")}</ContentSheetTitle>
       <Stack gap={1} data-testid={"appointment-overview-summary"}>
         {currentStep > 1 && (
           <DetailsField
-            value={`${values.concern.nameDe} ${t("overview.values.appointmentDuration", { durationInMinutes: values.concern.standardDurationInMinutes })}`}
+            value={`${concernName} ${t("overview.values.appointmentDuration", { durationInMinutes: values.concern.standardDurationInMinutes })}`}
             icon={<MedicalServicesOutlined />}
           />
         )}
@@ -71,7 +77,9 @@ export function OverviewSection({ buttonBar }: Readonly<OverviewSectionProps>) {
             )}
             {values.appointment && (
               <DetailsField
-                value={formatTime(values.appointment.start)}
+                value={t("overview.values.dateAndTime", {
+                  appointmentStart: formatTime(values.appointment?.start),
+                })}
                 icon={<AccessTimeOutlined />}
               />
             )}

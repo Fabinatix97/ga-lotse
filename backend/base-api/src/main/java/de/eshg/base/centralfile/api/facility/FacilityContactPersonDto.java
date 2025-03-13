@@ -35,4 +35,5 @@ public record FacilityContactPersonDto(
         @Size(min = 1, max = 119)
         String title,
     SalutationDto salutation,
-    GenderDto gender) {}
+    GenderDto gender,
+    Boolean mainContact) {}

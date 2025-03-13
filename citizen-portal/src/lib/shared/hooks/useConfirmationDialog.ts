@@ -38,9 +38,9 @@ export function useConfirmationDialog() {
 
     function openCancelDialog(options: ConfirmationDialogOptions) {
       openConfirmationDialog({
-        title: t("cancelDialog.title"),
-        description: t("cancelDialog.description"),
-        confirmLabel: t("cancelDialog.confirmLabel"),
+        title: t("cancel_dialog.title"),
+        description: t("cancel_dialog.description"),
+        confirmLabel: t("cancel_dialog.confirm_label"),
         color: "danger",
         ...options,
       });

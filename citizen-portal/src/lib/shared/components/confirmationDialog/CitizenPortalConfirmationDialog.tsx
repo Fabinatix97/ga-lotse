@@ -21,16 +21,16 @@ export function CitizenPortalConfirmationDialog(
 
   const title = isDefined(props.title)
     ? props.title
-    : t("confirmationDialog.title");
+    : t("confirmation_dialog.title");
   const description = isDefined(props.description)
     ? props.description
-    : t("confirmationDialog.description");
+    : t("confirmation_dialog.description");
   const confirmLabel = isDefined(props.confirmLabel)
     ? props.confirmLabel
-    : t("confirmationDialog.confirmLabel");
+    : t("confirmation_dialog.confirm_label");
   const cancelLabel = isDefined(props.cancelLabel)
     ? props.cancelLabel
-    : t("confirmationDialog.cancelLabel");
+    : t("confirmation_dialog.cancel_label");
 
   return (
     <BaseConfirmationDialog

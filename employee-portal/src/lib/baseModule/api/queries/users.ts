@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiSelfUser, GetSelfEventsRequest } from "@eshg/base-api";
+import { GetSelfEventsRequest } from "@eshg/base-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
 import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
@@ -53,24 +53,6 @@ export function useGetUserOverviewPageQuery() {
         .sort(sortUsersByName),
     }),
   });
-}
-
-function useGetSelfUserAndAccess<T>(select: (selfUser: ApiSelfUser) => T) {
-  const userApi = useUserApi();
-  return useSuspenseQuery({
-    queryKey: userApiQueryKey(["getSelfUserAndAccess"]),
-    queryFn: () => userApi.getSelfUserAndAccess(),
-    staleTime: 60_000,
-    select,
-  });
-}
-
-export function useGetSelfUser() {
-  return useGetSelfUserAndAccess((selfUser) => selfUser.user);
-}
-
-export function useGetSelfUserPermissions() {
-  return useGetSelfUserAndAccess((selfUser) => selfUser.roles);
 }
 
 export function useGetSelfGroupsQueryOptions() {

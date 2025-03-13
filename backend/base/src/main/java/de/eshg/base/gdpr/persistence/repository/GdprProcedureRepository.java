@@ -8,6 +8,7 @@ package de.eshg.base.gdpr.persistence.repository;
 import de.eshg.base.gdpr.persistence.GdprProcedure;
 import jakarta.persistence.LockModeType;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -47,4 +48,14 @@ public interface GdprProcedureRepository
   @Query(
       "select p from GdprProcedure p where p.identificationData.dataTransmitterPseudonymId = :dataTransmitterPseudonymId")
   List<GdprProcedure> findByAssociatedDataTransmitterPseudonymId(String dataTransmitterPseudonymId);
+
+  @Query(
+      """
+    SELECT procedure.id FROM GdprProcedure procedure
+    WHERE EXISTS (SELECT 1 FROM procedure.downloads download
+        WHERE download.downloadId IN :downloadIds)
+    ORDER BY procedure.id ASC
+    LIMIT 1
+    """)
+  Optional<UUID> findFirstByDownloadIds(@Param("downloadIds") Collection<UUID> downloadIds);
 }

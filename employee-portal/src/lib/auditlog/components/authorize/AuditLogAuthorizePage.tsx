@@ -5,7 +5,7 @@
 
 "use client";
 
-import { SearchParams } from "@eshg/lib-portal/helpers/searchParams";
+import { PageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { useAuditLogAuthorizeSidebar } from "@/lib/auditlog/components/authorize/AuditLogAuthorizeSidebar";
 import { auditLogAuthorizeColumns } from "@/lib/auditlog/components/authorize/auditLogAuthorizeColumns";
@@ -21,19 +21,16 @@ import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
-export function AuditLogAuthorizePage(
-  props: Readonly<{
-    searchParams: SearchParams;
-  }>,
-) {
+export function AuditLogAuthorizePage(props: PageProps) {
+  const searchParams = props.searchParams;
   const tableControl = useTableControl();
   const authorizeSidebar = useAuditLogAuthorizeSidebar();
 
-  const { data: response } = useGetAvailableAuditLogs(props.searchParams);
+  const { data: response } = useGetAvailableAuditLogs(searchParams);
 
   const filterSettings = useAuditLogAdminFilterSettings({
     tableControl: tableControl,
-    searchParams: props.searchParams,
+    searchParams,
   });
 
   return (

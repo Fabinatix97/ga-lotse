@@ -6,5 +6,5 @@
 package de.eshg.measlesprotection.config;
 
 public enum MeaslesProtectionFeature {
-  EDIT_ACCESS_RESTRICTION
+  NOOP
 }

@@ -5,23 +5,20 @@
 
 "use client";
 
-import { EditInspectionPageParams } from "@/app/(businessModules)/inspection/procedures/[id]/layout";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+
+import { EditInspectionRouteParams } from "@/app/(businessModules)/inspection/procedures/[id]/layout";
 import { InspectionReportEditor } from "@/lib/businessModules/inspection/components/inspection/reportresult/editor/InspectionReportEditor";
 
-interface InspectionReportEditorPageParams extends EditInspectionPageParams {
+type InspectionReportEditorRouteParams = EditInspectionRouteParams & {
   reportId: string;
   id: string;
-}
+};
 
-export default function InspectionReportEditorPage({
-  params,
-}: Readonly<{
-  params: InspectionReportEditorPageParams;
-}>) {
-  return (
-    <InspectionReportEditor
-      reportId={params.reportId}
-      inspectionId={params.id}
-    />
-  );
+export default function InspectionReportEditorPage(
+  props: DynamicPageProps<InspectionReportEditorRouteParams>,
+) {
+  const { id, reportId } = props.params;
+
+  return <InspectionReportEditor reportId={reportId} inspectionId={id} />;
 }

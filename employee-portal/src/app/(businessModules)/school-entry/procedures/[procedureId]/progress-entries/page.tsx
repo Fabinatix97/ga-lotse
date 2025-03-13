@@ -6,8 +6,8 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
-import { SchoolEntryProcedurePageParams } from "@/app/(businessModules)/school-entry/procedures/[procedureId]/layout";
 import {
   useApprovalRequestApi,
   useFileApi,
@@ -18,18 +18,19 @@ import {
   fileApiQueryKey,
   progressEntryApiQueryKey,
 } from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";
+import { SchoolEntryProcedureRouteParamsSchema } from "@/lib/businessModules/schoolEntry/features/procedures/SchoolEntryProcedureRouteParamsSchema";
 import {
   keyDocumentTypes,
   systemProgressEntryTypeTitles,
 } from "@/lib/businessModules/schoolEntry/shared/constants";
 import { moduleUserGroup } from "@/lib/businessModules/schoolEntry/shared/moduleUserGroup";
 import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
-import { ProgressEntriesUrlParams } from "@/lib/shared/components/procedures/progress-entries/types";
 
 export default function SchoolEntryProgressEntriesPage(
-  props: ProgressEntriesUrlParams<SchoolEntryProcedurePageParams>,
+  props: DynamicPageProps<SchoolEntryProcedureRouteParamsSchema>,
 ) {
-  const { params, searchParams } = props;
+  const { procedureId } = props.params;
+  const searchParams = props.searchParams;
   const progressEntryApi = useProgressEntryApi();
   const procedureApi = useProcedureApi();
   const fileApi = useFileApi();
@@ -37,7 +38,7 @@ export default function SchoolEntryProgressEntriesPage(
 
   return (
     <ProgressEntriesPage
-      procedureId={params.procedureId}
+      procedureId={procedureId}
       searchParams={searchParams}
       leaderRole={ApiUserRole.SchoolEntryLeader}
       systemProgressEntryTypes={systemProgressEntryTypeTitles}

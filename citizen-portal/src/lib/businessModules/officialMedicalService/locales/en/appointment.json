@@ -1,6 +1,6 @@
 {
   "common": {
-    "title": "Amtsärztlicher Dienst",
+    "title": "Official Medical Service",
     "requiredTitle": "*Required",
     "stepTitle": "Step {{currentStepIndex}} of {{totalSteps}}",
     "snackbar": {
@@ -35,17 +35,19 @@
       "noAppointmentForSelectedDate": "There are no free appointments for the selected day.",
       "noAppointmentSelected": "Appointment has not been selected.",
       "noAppointmentsAvailable": "There are currently no available appointments",
-      "tryLater": "We will make more appointments available soon. Please try again later.",
-      "calendarTitle": "Date",
-      "available": "available",
-      "requiredAppointment": "Please select an appointment",
-      "requiredDay": "Please select a day",
-      "monthSelection": "Appointment calendar week",
-      "nextMonth": "next month",
-      "prevMonth": "previous month",
-      "listLabel": "Available times"
+      "tryLater": "We will make more appointments available soon. Please try again later."
     },
     "backToOverview": "Back"
+  },
+  "appointment_calendar": {
+    "required_appointment": "Please select an appointment",
+    "required_day": "Please select a day",
+    "month_selection": "Appointment calendar week",
+    "next_month": "next month",
+    "prev_month": "previous month",
+    "list_label": "Available times *",
+    "calendar_label": "Date *",
+    "available": "available"
   },
   "documents": {
     "title": "Required documents",
@@ -73,6 +75,7 @@
       "firstName_required": "Required",
       "lastName": "Last name",
       "lastName_required": "Required",
+      "nameAtBirth": "Name at birth",
       "dateOfBirth": "Date of birth",
       "dateOfBirth_required": "Required",
       "contactAddress": {
@@ -100,6 +103,7 @@
     "cancel": "Cancel",
     "values": {
       "confirmOnlineServices": "Send confirmation email",
+      "dateAndTime": "{{ appointmentStart }}",
       "appointmentDuration": "(ca. {{ durationInMinutes }} Minutes)",
       "contactAddress": "{{ street }} <br> {{ city }} </br>"
     }

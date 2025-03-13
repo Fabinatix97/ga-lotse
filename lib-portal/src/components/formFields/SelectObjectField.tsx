@@ -87,6 +87,9 @@ export function SelectObjectField<
         filterOptions={props.disableFiltering ? identity() : undefined}
         onBlur={field.input.onBlur}
         multiple={props.multiple}
+        aria-description={
+          props.multiple ? "Mehrfachauswahl möglich" : undefined
+        }
         placeholder={props.placeholder}
         disabled={disabled || props.disabled}
         onInputChange={props.onInputChange}

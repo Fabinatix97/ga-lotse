@@ -6,13 +6,16 @@
 package de.eshg.dental;
 
 import de.cronn.reflection.util.ClassUtils;
+import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.dental.api.AbsenceExaminationResultDto;
 import de.eshg.dental.api.ExaminationResultDto;
 import de.eshg.dental.api.FluoridationExaminationResultDto;
 import de.eshg.dental.api.IsFluorideVarnishApplicable;
 import de.eshg.dental.api.ScreeningExaminationResultDto;
 import de.eshg.dental.api.UpdateExaminationRequest;
+import de.eshg.dental.client.PersonClient;
 import de.eshg.dental.domain.model.AbsenceExaminationResult;
+import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.domain.model.ExaminationResult;
 import de.eshg.dental.domain.model.FluoridationExaminationResult;
@@ -21,12 +24,19 @@ import de.eshg.dental.domain.model.ScreeningExaminationResult;
 import de.eshg.dental.domain.repository.ExaminationRepository;
 import de.eshg.dental.mapper.DentitionTypeMapper;
 import de.eshg.dental.mapper.ExaminationMapper;
+import de.eshg.dental.mapper.OrthodonticFindingMapper;
+import de.eshg.dental.statistic.StatisticsCalculationHelper;
 import de.eshg.dental.util.ChildSystemProgressEntryType;
 import de.eshg.dental.util.ExceptionUtil;
 import de.eshg.dental.util.ProgressEntryUtil;
+import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.validation.ValidationUtil;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 import org.springframework.stereotype.Component;
@@ -36,11 +46,18 @@ public class ExaminationService {
 
   private final ExaminationRepository examinationRepository;
   private final ProgressEntryUtil progressEntryUtil;
+  private final PersonClient personClient;
+  private final ChildService childService;
 
   public ExaminationService(
-      ExaminationRepository examinationRepository, ProgressEntryUtil progressEntryUtil) {
+      ExaminationRepository examinationRepository,
+      ProgressEntryUtil progressEntryUtil,
+      PersonClient personClient,
+      ChildService childService) {
     this.examinationRepository = examinationRepository;
     this.progressEntryUtil = progressEntryUtil;
+    this.personClient = personClient;
+    this.childService = childService;
   }
 
   Examination findExamination(UUID examinationId) {
@@ -64,8 +81,23 @@ public class ExaminationService {
     ValidationUtil.validateVersion(request.version(), examination);
     examination.setNote(request.note());
     updateResult(examination, request.result());
+    Child child = examination.getChild();
+
+    addModifiedSystemProgressEntry(child);
+  }
+
+  private void addModifiedSystemProgressEntry(Child child) {
+    boolean hasBeenClosed = child.getProcedureStatus() == ProcedureStatus.CLOSED;
+    if (hasBeenClosed) {
+      childService.reopenChild(child);
+    }
+
     progressEntryUtil.addSystemProgressEntry(
-        examination.getChild(), ChildSystemProgressEntryType.EXAMINATION_MODIFIED);
+        child, ChildSystemProgressEntryType.EXAMINATION_MODIFIED);
+
+    if (hasBeenClosed) {
+      childService.closeChild(child);
+    }
   }
 
   private void updateResult(Examination examination, ExaminationResultDto newResult) {
@@ -150,15 +182,42 @@ public class ExaminationService {
           existingResult.setFluorideVarnishApplied(newResult.fluorideVarnishApplied());
           existingResult.setOralHygieneStatus(
               ExaminationMapper.mapToDomain(newResult.oralHygieneStatus()));
+          existingResult.setMihStatus(ExaminationMapper.mapToDomain(newResult.mihStatus()));
+          existingResult.setOrthodonticFindings(
+              OrthodonticFindingMapper.mapToDomain(newResult.orthodonticFindings()));
+          existingResult.setOrthodonticStatus(
+              ExaminationMapper.mapToDomain(newResult.orthodonticStatus()));
           existingResult.setDentitionType(
               DentitionTypeMapper.mapToDomain(newResult.dentitionType()));
           existingResult.setPlaque(newResult.plaque());
           existingResult.setCalculus(newResult.calculus());
           existingResult.setGingivitis(newResult.gingivitis());
           existingResult.setParodontitis(newResult.parodontitis());
+          existingResult.setDecayRisk(
+              StatisticsCalculationHelper.calculateDecayRisk(
+                      ExaminationMapper.mapToDomain(newResult.toothDiagnoses()),
+                      getAgeOfChildAtExamination(examination))
+                  .orElse(null));
+          existingResult.setDecayStatus(
+              StatisticsCalculationHelper.calculateDecayStatus(
+                  ExaminationMapper.mapToDomain(newResult.toothDiagnoses())));
           existingResult.setToothDiagnoses(
               ExaminationMapper.mapToDomain(newResult.toothDiagnoses()));
         });
+  }
+
+  private int getAgeOfChildAtExamination(Examination examination) {
+    List<GetPersonFileStateResponse> personFileStateResponses =
+        personClient.fetchPersonDataInBulk(List.of(examination.getChild()));
+    if (personFileStateResponses.isEmpty()) {
+      throw new IllegalStateException("No person found for examination.");
+    }
+    GetPersonFileStateResponse fileStateResponse = personFileStateResponses.getFirst();
+    LocalDate dateOfBirth = fileStateResponse.dateOfBirth();
+    LocalDate dateOfExamination =
+        examination.getDateAndTime().atZone(ZoneId.systemDefault()).toLocalDate();
+
+    return (int) ChronoUnit.YEARS.between(dateOfBirth, dateOfExamination);
   }
 
   private void mapResult(Examination examination, AbsenceExaminationResultDto newResult) {

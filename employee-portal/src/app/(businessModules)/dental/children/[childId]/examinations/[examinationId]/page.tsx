@@ -10,9 +10,10 @@ import {
   getExaminationQuery,
   useDentalApi,
 } from "@eshg/dental";
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
-import { DentalChildPageProps } from "@/app/(businessModules)/dental/children/[childId]/layout";
+import { DentalChildRouteParams } from "@/app/(businessModules)/dental/children/[childId]/layout";
 import { ChildExaminationForm } from "@/lib/businessModules/dental/features/children/details/ChildExaminationForm";
 import { AdditionalInformationFormSection } from "@/lib/businessModules/dental/features/examinations/AdditionalInformationFormSection";
 import { ChildDetailsSection } from "@/lib/businessModules/dental/features/examinations/ChildDetailsSection";
@@ -21,10 +22,11 @@ import { NoteFormSection } from "@/lib/businessModules/dental/features/examinati
 import { DentalExaminationFormSection } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/DentalExaminationFormSection";
 import { DentalExaminationStoreProvider } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
 
-export default function ExaminationDetailsPage(props: DentalChildPageProps) {
+export default function ExaminationDetailsPage(
+  props: DynamicPageProps<DentalChildRouteParams>,
+) {
+  const { childId, examinationId } = props.params;
   const { childApi } = useDentalApi();
-  const examinationId = props.params.examinationId;
-  const childId = props.params.childId;
   const [{ data: examination }, { data: child }] = useSuspenseQueries({
     queries: [
       getExaminationQuery(childApi, examinationId),
@@ -58,6 +60,8 @@ export default function ExaminationDetailsPage(props: DentalChildPageProps) {
               fluoridation={examination.fluoridation}
               fluoridationConsentGiven={examination.fluoridationConsentGiven}
               status={examination.status}
+              dateOfExamination={examination.dateAndTime}
+              participantDateOfBirth={child.dateOfBirth}
             />
           }
           dentalExamination={

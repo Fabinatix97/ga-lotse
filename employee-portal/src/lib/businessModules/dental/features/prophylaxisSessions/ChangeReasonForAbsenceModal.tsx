@@ -3,11 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ChildExamination, useUpdateExamination } from "@eshg/dental";
-import {
-  ApiReasonForAbsence,
-  UpdateExaminationRequest,
-} from "@eshg/dental-api";
+import { ChildExamination } from "@eshg/dental";
+import { ApiReasonForAbsence } from "@eshg/dental-api";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
   buildEnumOptions,
@@ -32,37 +29,29 @@ interface ReasonForAbsenceFormValues {
 }
 
 interface ChangeReasonForAbsenceModalProps {
-  onClose: () => void;
+  open?: boolean;
+  onSubmit: (reasonForAbsence: ApiReasonForAbsence) => void;
+  onCancel: () => void;
   examination: ChildExamination;
 }
 
 export function ChangeReasonForAbsenceModal(
   props: ChangeReasonForAbsenceModalProps,
 ) {
-  const updateExamination = useUpdateExamination(
-    props.examination.examinationId,
-  );
-
-  async function onSubmit(values: ReasonForAbsenceFormValues) {
-    await updateExamination.mutateAsync(
-      mapToRequest(
-        props.examination.examinationId,
-        values,
-        props.examination.examinationVersion,
-      ),
-      { onSuccess: props.onClose },
-    );
-  }
   const examinationResult = props.examination.result;
   const initialReasonForAbsence =
     isDefined(examinationResult) && examinationResult.type === "absence"
       ? examinationResult.reasonForAbsence
       : "";
 
+  function onSubmit(values: ReasonForAbsenceFormValues) {
+    props.onSubmit(mapRequiredValue(values.reasonForAbsence));
+  }
+
   return (
     <FormDialog<ReasonForAbsenceFormValues>
-      open
-      onClose={props.onClose}
+      open={props.open ?? false}
+      onClose={props.onCancel}
       onSubmit={onSubmit}
       initialValues={{ reasonForAbsence: initialReasonForAbsence }}
       title="Abwesenheit vermerken"
@@ -80,21 +69,4 @@ export function ChangeReasonForAbsenceModal(
       />
     </FormDialog>
   );
-}
-
-function mapToRequest(
-  examinationId: string,
-  values: ReasonForAbsenceFormValues,
-  version: number,
-): UpdateExaminationRequest {
-  return {
-    examinationId,
-    apiUpdateExaminationRequest: {
-      version,
-      result: {
-        type: "AbsenceExaminationResult",
-        reasonForAbsence: mapRequiredValue(values.reasonForAbsence),
-      },
-    },
-  };
 }

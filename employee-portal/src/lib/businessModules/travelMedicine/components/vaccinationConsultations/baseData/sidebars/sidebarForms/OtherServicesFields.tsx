@@ -4,6 +4,7 @@
  */
 
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { formatCurrency } from "@eshg/lib-portal/formatters/numbers";
 import { FormikErrors, useFormikContext } from "formik";
 
 import { OtherServicesTemplates } from "@/lib/businessModules/travelMedicine/api/models/OtherServicesTemplates";
@@ -13,7 +14,6 @@ import {
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/sidebarForms/AddServicePlanForm";
 import { createOtherServicesTemplateOptions } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/helpers";
 import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
-import { LOCALE_OPTION, formatCurrency } from "@/lib/shared/helpers/numbers";
 
 interface OtherServicesFieldsProps {
   val: ServicesRequest;
@@ -85,7 +85,7 @@ export function OtherServicesFields({
       <DetailsItem
         label="Preis"
         value={formatCurrency(val.fee, {
-          localOption: LOCALE_OPTION.manual,
+          localeOption: "manual",
           locale: "de-DE",
         })}
       />

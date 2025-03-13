@@ -109,6 +109,7 @@ export function createEmptyContactPerson(): BaseFacilityContactPerson {
     title: "",
     gender: "",
     salutation: "",
+    mainContact: false,
   };
 }
 
@@ -124,6 +125,7 @@ export function mapApiContactPersonToForm(
     title: contactPerson.title ?? "",
     salutation: contactPerson.salutation ?? "",
     gender: contactPerson.gender ?? "",
+    mainContact: contactPerson.mainContact ?? false,
   };
 }
 
@@ -139,5 +141,6 @@ export function mapContactPersonToApi(
     title: mapOptionalValue(contactPerson.title)?.trim(),
     salutation: mapOptionalValue(contactPerson.salutation),
     gender: mapOptionalValue(contactPerson.gender),
+    mainContact: contactPerson.mainContact,
   };
 }

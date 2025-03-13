@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
 import { Grid } from "@mui/joy";
 
 import { InformationCard } from "@/lib/businessModules/officialMedicalService/components/appointment/steps/InformationCard";
 import { OverviewSection } from "@/lib/businessModules/officialMedicalService/components/appointment/steps/OverviewSection";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
-import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 export function SummaryStep() {
   const isMobile = useIsMobile();

@@ -3,16 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { redirect } from "next/navigation";
 
-import { EditInspectionPageParams } from "@/app/(businessModules)/inspection/procedures/[id]/layout";
+import { EditInspectionRouteParams } from "@/app/(businessModules)/inspection/procedures/[id]/layout";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 
-export default function EditInspectionPage({
-  params,
-}: Readonly<{
-  params: EditInspectionPageParams;
-}>) {
+export default function EditInspectionPage(
+  props: DynamicPageProps<EditInspectionRouteParams>,
+) {
+  const { id } = props.params;
+
   // if no tab name is given in the URL redirect to the "basedata" tab page
-  redirect(routes.procedures.basedata(params.id));
+  redirect(routes.procedures.basedata(id));
 }

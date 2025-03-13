@@ -46,7 +46,8 @@ public class StiProtectionProcedureMapper {
         PersonMapper.toInterfaceType(procedureData.person(), procedureData.accessCode()),
         AppointmentMapper.toInterfaceType(
             procedureData.appointment(), procedureData.userDefinedAppointment()),
-        AppointmentHistoryMapper.toInterfaceType(procedureData.appointmentHistory()));
+        AppointmentHistoryMapper.toInterfaceType(procedureData.appointmentHistory()),
+        procedureData.medicalHistorySubmitted());
   }
 
   public static StiProtectionProcedureOverviewDto toOverviewType(

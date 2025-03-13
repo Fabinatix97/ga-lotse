@@ -12,6 +12,7 @@ import {
   ApiInspectionType,
   ApiObjectType,
 } from "@eshg/inspection-api";
+import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
@@ -32,7 +33,6 @@ import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { fullName } from "@/lib/shared/components/users/userFormatter";
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 interface FormData {
   objectTypeId: string;

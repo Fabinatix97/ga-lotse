@@ -7,6 +7,12 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import {
+  PersonToolbarHeader,
+  TabNavigationItem,
+  TabNavigationToolbar,
+  useHasUserRoleCheck,
+} from "@eshg/lib-employee-portal";
+import {
   FormatListBulletedOutlined,
   MedicalServicesOutlined,
   TextSnippetOutlined,
@@ -16,10 +22,6 @@ import {
 
 import { useGetProcedure } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
-import { PersonToolbarHeader } from "@/lib/shared/components/layout/PersonToolbarHeader";
-import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
-import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 interface ProcedureToolbarProps {
   procedureId: string;

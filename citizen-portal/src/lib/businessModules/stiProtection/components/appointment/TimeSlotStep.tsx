@@ -13,7 +13,10 @@ import assert from "assert";
 import { differenceInMinutes, startOfMonth } from "date-fns";
 import { prop, sortBy } from "remeda";
 
-import { useBookAppointment } from "@/lib/businessModules/stiProtection/api/mutations/publicCitizensApi";
+import {
+  useBookAppointment,
+  useCancelAppointment,
+} from "@/lib/businessModules/stiProtection/api/mutations/publicCitizensApi";
 import { useFreeAppointments } from "@/lib/businessModules/stiProtection/api/queries/publicCitizenApi";
 import { useCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
@@ -48,6 +51,7 @@ export function TimeSlotStep() {
       : (appointments ?? []);
   const sortedAppointments = sortBy(appointmentsWithBooked, prop("start"));
 
+  const cancelAppointment = useCancelAppointment(formData.procedureId);
   const bookAppointment = useBookAppointment();
   if ((appointments?.length ?? 0) === 0) {
     return <NoAppointmentAvailable concern={formData.concern} />;
@@ -55,12 +59,17 @@ export function TimeSlotStep() {
 
   async function onSubmit(timeSlotData: TimeSlotData) {
     assert.ok(timeSlotData.appointment);
-    if (
-      formData.bookedAppointment != null &&
-      isSameAppointment(formData.bookedAppointment, timeSlotData.appointment)
-    ) {
-      return {};
+    if (formData.bookedAppointment != null) {
+      // If it's the same appointment do nothing
+      if (
+        isSameAppointment(formData.bookedAppointment, timeSlotData.appointment)
+      ) {
+        return {};
+      }
+      // Cancel previous
+      await cancelAppointment.mutateAsync();
     }
+
     const { procedureId } = await bookAppointment.mutateAsync({
       appointmentStart: timeSlotData.appointment.start,
       concern: formData.concern,

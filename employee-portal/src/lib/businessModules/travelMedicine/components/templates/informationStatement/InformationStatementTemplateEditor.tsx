@@ -106,7 +106,7 @@ export function InformationStatementTemplateEditor(
   async function handleSubmit(values: TemplateValues) {
     if (hasEmptySectionElements(values)) {
       snackbar.error(
-        "Der Aufklärungsbogen muss mindestens eine ausgefüllte Sektion beinhalten.",
+        "Alle Sektionen des Aufklärungsbogens müssen ausgefüllt sein.",
       );
     } else {
       await handleBackendCall(values);

@@ -5,6 +5,7 @@
 
 "use client";
 
+import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { useGetDepartmentInfoQuery } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
@@ -17,7 +18,6 @@ import {
   TwoColumnGrid,
 } from "@/lib/shared/components/layout/grid";
 import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
-import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 export default function CitizenOmsEntryPage() {
   const { t } = useTranslation(["officialMedicalService/landing"]);

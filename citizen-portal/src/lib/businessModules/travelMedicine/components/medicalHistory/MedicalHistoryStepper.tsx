@@ -4,6 +4,7 @@
  */
 
 import { Alert } from "@eshg/lib-portal/components/Alert";
+import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
 import { ApiDocumentContent } from "@eshg/travel-medicine-api";
 import { FormikValues } from "formik";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -25,7 +26,6 @@ import {
   TwoColumnGrid,
 } from "@/lib/shared/components/layout/grid";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
-import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 export function MedicalHistoryStepper() {
   const { t } = useTranslation(["travelMedicine/medicalHistories"]);

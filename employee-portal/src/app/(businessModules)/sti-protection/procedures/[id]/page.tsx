@@ -3,15 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { redirect } from "next/navigation";
 
-import { StiProtectionProcedurePageParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(framedPageLayout)/layout";
+import { StiProtectionProcedureRouteParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(framedPageLayout)/layout";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 
-export default function StiProtectionProcedurePage({
-  params,
-}: Readonly<{
-  params: StiProtectionProcedurePageParams;
-}>) {
-  redirect(routes.procedures.byId(params.id).details);
+export default function StiProtectionProcedurePage(
+  props: DynamicPageProps<StiProtectionProcedureRouteParams>,
+) {
+  const { id } = props.params;
+
+  redirect(routes.procedures.byId(id).details);
 }

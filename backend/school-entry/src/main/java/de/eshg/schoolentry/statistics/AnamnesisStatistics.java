@@ -7,7 +7,7 @@ package de.eshg.schoolentry.statistics;
 
 import de.eshg.schoolentry.api.CountryCodeDto;
 import de.eshg.schoolentry.domain.model.Anamnesis;
-import de.eshg.schoolentry.domain.model.CountryCode;
+import de.eshg.schoolentry.domain.model.SchoolEntryCountryCode;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.statistics.attributes.EsuAnamnesisAttributes;
 import de.eshg.schoolentry.statistics.options.BooleanWithUnknown;
@@ -96,7 +96,7 @@ public class AnamnesisStatistics {
   }
 
   private static String getCountryName(
-      SchoolEntryProcedure procedure, Function<Anamnesis, CountryCode> anamnesisGetter) {
+      SchoolEntryProcedure procedure, Function<Anamnesis, SchoolEntryCountryCode> anamnesisGetter) {
     Anamnesis anamnesis = procedure.getAnamnesis();
     if (anamnesis == null || anamnesisGetter.apply(anamnesis) == null) {
       return null;
@@ -105,7 +105,7 @@ public class AnamnesisStatistics {
   }
 
   private static String getCountryCode(
-      SchoolEntryProcedure procedure, Function<Anamnesis, CountryCode> anamnesisGetter) {
+      SchoolEntryProcedure procedure, Function<Anamnesis, SchoolEntryCountryCode> anamnesisGetter) {
     Anamnesis anamnesis = procedure.getAnamnesis();
     if (anamnesis == null || anamnesisGetter.apply(anamnesis) == null) {
       return null;
@@ -113,8 +113,8 @@ public class AnamnesisStatistics {
     Map<String, Integer> countryCodes =
         Arrays.stream(CountryCodeDto.values())
             .collect(Collectors.toMap(Enum::name, CountryCodeDto::getCountryGroupCode));
-    CountryCode countryCode = anamnesisGetter.apply(anamnesis);
-    return Country.convertCountryCodeToValue(countryCodes.get(countryCode.name()));
+    SchoolEntryCountryCode schoolEntryCountryCode = anamnesisGetter.apply(anamnesis);
+    return Country.convertCountryCodeToValue(countryCodes.get(schoolEntryCountryCode.name()));
   }
 
   String getDaycareValue(SchoolEntryProcedure procedure) {

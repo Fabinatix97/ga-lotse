@@ -8,22 +8,20 @@ import {
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
-import { SearchParams } from "@eshg/lib-portal/helpers/searchParams";
+import { PageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { CreateProcedure } from "@/lib/businessModules/officialMedicalService/components/procedures/overview/CreateProcedure";
 import { ProceduresOverviewTable } from "@/lib/businessModules/officialMedicalService/components/procedures/overview/ProceduresOverviewTable";
 
-export default function OfficialMedicalServiceProceduresPage(
-  props: Readonly<{
-    searchParams: SearchParams;
-  }>,
-) {
+export default function OfficialMedicalServiceProceduresPage(props: PageProps) {
+  const searchParams = props.searchParams;
+
   return (
     <StickyToolbarLayout toolbar={<Toolbar title="Amtsärztlicher Dienst" />}>
       <MainContentLayout fullViewportHeight>
         <ProceduresOverviewTable
           buttons={[<CreateProcedure key="createProcedure" />]}
-          filter={props.searchParams}
+          filter={searchParams}
         />
       </MainContentLayout>
     </StickyToolbarLayout>

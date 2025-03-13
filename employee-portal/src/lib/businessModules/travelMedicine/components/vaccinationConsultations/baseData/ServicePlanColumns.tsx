@@ -4,6 +4,7 @@
  */
 
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatCurrency } from "@eshg/lib-portal/formatters/numbers";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import {
   ApiAppointmentBookingType,
@@ -44,7 +45,6 @@ import {
   ActionsMenu,
 } from "@/lib/shared/components/buttons/ActionsMenu";
 import { formatDateTimeShortenedWeekday } from "@/lib/shared/helpers/dateTime";
-import { LOCALE_OPTION, formatCurrency } from "@/lib/shared/helpers/numbers";
 
 function getMedicalHistoryAnswerStatus(
   medicalHistoryCompleted: boolean,
@@ -330,7 +330,7 @@ export function servicePlanColumns({
       header: "Preis",
       cell: (props) =>
         formatCurrency(props.getValue(), {
-          localOption: LOCALE_OPTION.manual,
+          localeOption: "manual",
           locale: "de-DE",
         }),
       meta: { width: 80 },

@@ -66,6 +66,12 @@ export function AffectedPersonForm(props: { name: string }) {
           />
         </Grid>
         <Grid {...byBreakpoint({ mobile: 12, desktop: 12 })}>
+          <InputField
+            name={fieldName("nameAtBirth")}
+            label={t("affectedPerson.fields.nameAtBirth")}
+          />
+        </Grid>
+        <Grid {...byBreakpoint({ mobile: 12, desktop: 12 })}>
           <DateField
             name={fieldName("dateOfBirth")}
             label={t("affectedPerson.fields.dateOfBirth")}

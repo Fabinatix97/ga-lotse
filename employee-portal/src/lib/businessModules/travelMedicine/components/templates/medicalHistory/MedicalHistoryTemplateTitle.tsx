@@ -5,7 +5,7 @@
 
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 
-import { validateTemplateTitle } from "@/lib/businessModules/travelMedicine/shared/templateEditor/templateFieldValidation";
+import { validateAnamnesisTemplateTitle } from "@/lib/businessModules/travelMedicine/shared/templateEditor/templateFieldValidation";
 
 export function MedicalHistoryTemplateTitle() {
   const label = "Titel";
@@ -15,7 +15,7 @@ export function MedicalHistoryTemplateTitle() {
       aria-label={label}
       name="title"
       placeholder="Name der Anamnese"
-      validate={validateTemplateTitle}
+      validate={validateAnamnesisTemplateTitle()}
       data-testid="medicalHistoryTemplateTitle"
     />
   );

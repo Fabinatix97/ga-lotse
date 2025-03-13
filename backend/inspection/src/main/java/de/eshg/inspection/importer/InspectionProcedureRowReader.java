@@ -142,7 +142,15 @@ class InspectionProcedureRowReader extends RowReader<InspectionImporterRow, Insp
     }
 
     return new FacilityContactPersonDto(
-        email, phonenumber, role, lastName, firstName, title, salutation, GenderDto.NOT_SPECIFIED);
+        email,
+        phonenumber,
+        role,
+        lastName,
+        firstName,
+        title,
+        salutation,
+        GenderDto.NOT_SPECIFIED,
+        false);
   }
 
   private ImportInspection readInspectionData(

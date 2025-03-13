@@ -52,6 +52,7 @@ export function UpdateFacilitySidebar({
       initialValues={mapApiFacilityToDefaultFacilityFormValues(facility)}
       mode="edit"
       submitLabel="Speichern"
+      allowMainContactPerson={true}
     />
   );
 }

@@ -5,9 +5,9 @@
 
 import { NonceProvider } from "@eshg/lib-portal/components/NonceProvider";
 import { getNonceFromHeader } from "@eshg/lib-portal/next/contentSecurityPolicyHeaderMiddleware";
+import { LayoutProps } from "@eshg/lib-portal/types/pageParams";
 import type { Metadata, ResolvingMetadata } from "next";
 import { headers } from "next/headers";
-import { ReactNode } from "react";
 
 import { baseTranslations } from "@/lib/baseModule/locales";
 
@@ -15,15 +15,9 @@ import { baseTranslations } from "@/lib/baseModule/locales";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export default function Layout({
-  params: _params,
-  children,
-}: Readonly<{
-  params: unknown;
-  children: ReactNode;
-}>) {
+export default function Layout(props: LayoutProps) {
   const nonce = getNonceFromHeader();
-  return <NonceProvider initialNonce={nonce}>{children}</NonceProvider>;
+  return <NonceProvider initialNonce={nonce}>{props.children}</NonceProvider>;
 }
 
 export function generateMetadata(

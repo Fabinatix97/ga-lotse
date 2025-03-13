@@ -8,7 +8,10 @@ import {
   ApiDentitionType,
   ApiExaminationResult,
   ApiFluoridationExaminationResult,
+  ApiMihStatus,
   ApiOralHygieneStatus,
+  ApiOrthodonticFinding,
+  ApiOrthodonticStatus,
   ApiReasonForAbsence,
   ApiScreeningExaminationResult,
   ApiTooth,
@@ -31,6 +34,9 @@ export interface ScreeningExaminationResult {
   readonly type: "screening";
   readonly dentitionType: ApiDentitionType;
   readonly oralHygieneStatus?: ApiOralHygieneStatus;
+  readonly mihStatus?: ApiMihStatus;
+  readonly orthodonticFindings: ApiOrthodonticFinding[];
+  readonly orthodonticStatus?: ApiOrthodonticStatus;
   readonly fluorideVarnishApplied?: boolean;
   readonly plaque: boolean;
   readonly calculus: boolean;
@@ -75,6 +81,9 @@ function mapScreeningExaminationResult(
     type: "screening",
     dentitionType: response.dentitionType,
     oralHygieneStatus: response.oralHygieneStatus,
+    mihStatus: response.mihStatus,
+    orthodonticFindings: response.orthodonticFindings,
+    orthodonticStatus: response.orthodonticStatus,
     fluorideVarnishApplied: response.fluorideVarnishApplied,
     plaque: response.plaque,
     calculus: response.calculus,
@@ -97,71 +106,4 @@ function mapAbsenceExaminationResult(
     type: "absence",
     reasonForAbsence: response.reasonForAbsence,
   };
-}
-
-type FieldFunctionMap<T> = {
-  [K in keyof T]-?: (value: T[K]) => boolean;
-};
-
-function isUndefined<T>(data: T | undefined) {
-  return data === undefined;
-}
-
-const screeningResultEmptinessChecks: FieldFunctionMap<ScreeningExaminationResult> =
-  {
-    type: (value) => {
-      return value === "screening";
-    },
-    oralHygieneStatus: isUndefined,
-    fluorideVarnishApplied: isUndefined,
-    dentitionType: () => true,
-    toothDiagnoses: (value) => {
-      return Object.keys(value).length === 0;
-    },
-    plaque: isUndefined,
-    calculus: isUndefined,
-    gingivitis: isUndefined,
-    parodontitis: isUndefined,
-  };
-
-const fluoridationResultEmptinessChecks: FieldFunctionMap<FluoridationExaminationResult> =
-  {
-    type: (value) => {
-      return value === "fluoridation";
-    },
-    fluorideVarnishApplied: isUndefined,
-  };
-
-function isEmptyResult<T extends ExaminationResult>(
-  examinationResult: T,
-  emptinessChecks: { [K in keyof T]: (val: T[K]) => boolean },
-): boolean {
-  const keys = Object.keys(examinationResult) as (keyof T)[];
-  return keys.every((key) => {
-    const isEmpty = emptinessChecks[key];
-    const value = examinationResult[key];
-    return isEmpty(value);
-  });
-}
-
-function isEmptyScreeningExaminationResult(
-  result: ScreeningExaminationResult,
-): boolean {
-  return isEmptyResult(result, screeningResultEmptinessChecks);
-}
-
-function isEmptyFluoridationExaminationResult(
-  result: FluoridationExaminationResult,
-): boolean {
-  return isEmptyResult(result, fluoridationResultEmptinessChecks);
-}
-
-export function isEmptyExaminationResult(
-  result: ScreeningExaminationResult | FluoridationExaminationResult,
-): boolean {
-  if (result.type === "screening") {
-    return isEmptyScreeningExaminationResult(result);
-  } else {
-    return isEmptyFluoridationExaminationResult(result);
-  }
 }

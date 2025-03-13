@@ -7,7 +7,7 @@ import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { Box, IconButton, Stack } from "@mui/joy";
 
-import { validateSelectField } from "@/lib/businessModules/travelMedicine/shared/templateEditor/templateFieldValidation";
+import { validateSubElementMultiselectOption } from "@/lib/businessModules/travelMedicine/shared/templateEditor/templateFieldValidation";
 
 export function SubMultiSelectElement({
   multiSelectElementFormikPath,
@@ -30,7 +30,7 @@ export function SubMultiSelectElement({
         name={`${multiSelectElementFormikPath}.questionText`}
         placeholder="Antwortmöglichkeit eingeben"
         sx={{ flex: 1 }}
-        validate={validateSelectField}
+        validate={validateSubElementMultiselectOption()}
         data-testid={`element-multi-select-${subElementIndex}`}
       />
       <Stack alignItems="center" paddingTop={"6px"}>

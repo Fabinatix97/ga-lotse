@@ -8,7 +8,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { Card, Grid, IconButton, Stack, styled } from "@mui/joy";
 import { useId } from "react";
 
-import { notEmptyFieldValidation } from "@/lib/businessModules/travelMedicine/shared/templateEditor/templateFieldValidation";
+import { validateLabelText } from "@/lib/businessModules/travelMedicine/shared/templateEditor/templateFieldValidation";
 
 export function SubQuestion({
   subElementTextFormikPath,
@@ -42,7 +42,7 @@ export function SubQuestion({
             name={`${subElementTextFormikPath}.questionText`}
             placeholder="Label"
             sx={{ flex: 1 }}
-            validate={notEmptyFieldValidation}
+            validate={validateLabelText()}
             data-testid="element-subelement-text"
           />
           <Stack alignItems="center" paddingTop={"6px"}>

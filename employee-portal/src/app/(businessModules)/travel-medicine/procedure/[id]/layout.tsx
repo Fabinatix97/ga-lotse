@@ -7,22 +7,21 @@ import {
   MainContentLayout,
   StickyToolbarLayout,
 } from "@eshg/lib-employee-portal";
-import { PropsWithChildren } from "react";
+import { DynamicLayoutProps } from "@eshg/lib-portal/types/pageParams";
 
-import { EditInspectionPageParams } from "@/app/(businessModules)/inspection/procedures/[id]/layout";
+import { EditInspectionRouteParams } from "@/app/(businessModules)/inspection/procedures/[id]/layout";
 import { VaccinationConsultationTabNavigationToolbar } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/VaccinationConsultationTabNavigationToolbar";
 
-export default function VaccinationConsultationDetailsLayout({
-  params,
-  children,
-}: PropsWithChildren<{
-  params: EditInspectionPageParams;
-}>) {
+export default function VaccinationConsultationDetailsLayout(
+  props: DynamicLayoutProps<EditInspectionRouteParams>,
+) {
+  const { id } = props.params;
+
   return (
     <StickyToolbarLayout
-      toolbar={<VaccinationConsultationTabNavigationToolbar id={params.id} />}
+      toolbar={<VaccinationConsultationTabNavigationToolbar id={id} />}
     >
-      <MainContentLayout fullViewportHeight>{children}</MainContentLayout>
+      <MainContentLayout fullViewportHeight>{props.children}</MainContentLayout>
     </StickyToolbarLayout>
   );
 }

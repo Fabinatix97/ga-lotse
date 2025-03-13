@@ -4,9 +4,8 @@
  */
 
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
 import { LogoutOutlined } from "@mui/icons-material";
-
-import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 export function LogoutButton(props: { text: string }) {
   const isMobile = useIsMobile();

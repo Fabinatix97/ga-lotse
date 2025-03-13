@@ -44,6 +44,7 @@ interface FacilityFormProps {
   sidebarFormRef?: RefObject<SidebarFormHandle>;
   title: string;
   contactPersonRequired?: boolean;
+  allowMainContactPerson?: boolean;
 }
 
 export function FacilityForm({
@@ -55,6 +56,7 @@ export function FacilityForm({
   sidebarFormRef,
   title,
   contactPersonRequired,
+  allowMainContactPerson,
 }: FacilityFormProps) {
   const fieldName = createFieldNameMapper<BaseFacility>();
   return (
@@ -111,6 +113,7 @@ export function FacilityForm({
               <ContactPersonsFieldArray
                 values={values}
                 contactPersonRequired={contactPersonRequired}
+                allowMainContactPerson={allowMainContactPerson}
               />
 
               {extraFieldsBottom && (
@@ -138,10 +141,12 @@ export function FacilityForm({
 interface ContactPersonFieldArrayProps {
   values: BaseFacility;
   contactPersonRequired?: boolean;
+  allowMainContactPerson?: boolean;
 }
 function ContactPersonsFieldArray({
   values,
   contactPersonRequired,
+  allowMainContactPerson,
 }: ContactPersonFieldArrayProps) {
   return (
     <FieldArray name="contactPersons" validateOnChange={false}>
@@ -175,7 +180,10 @@ function ContactPersonsFieldArray({
                     </IconButton>
                   )}
                 </Row>
-                <ContactPersonForm name={`contactPersons.${index}`} />
+                <ContactPersonForm
+                  name={`contactPersons.${index}`}
+                  allowMainContactPerson={allowMainContactPerson}
+                />
               </section>
             );
           })}
