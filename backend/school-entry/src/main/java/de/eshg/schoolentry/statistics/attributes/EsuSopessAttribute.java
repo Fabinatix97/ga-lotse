@@ -16,398 +16,398 @@ import java.util.List;
 
 public enum EsuSopessAttribute implements EsuAttributes {
   KOORD(
-      new IntegerAttribute(
+      IntegerAttribute.create(
           "Körperkoordination (Sprungzahl)",
           "KOORD",
-          EsuAttributeUtil.createUnknownOption("99"),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          EsuAttributeUtil.createUnknownOption("99"))),
 
   KOORD1(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Körperkoordniation Bewertung",
           "KOORD1",
-          convertToValueOptions(EvaluationResult.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(EvaluationResult.values()))),
 
   GROMO(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Ergebnis Grobmotorik",
           "GROMO",
-          convertToValueOptions(ExaminationResultFiveOptions.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(ExaminationResultFiveOptions.values()))),
 
   KW_RM_GROMO(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Rückmeldung Arztbrief Grobmotorik",
           "KW_RM_GROMO",
-          convertToValueOptions(DoctorLetterValue.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          false)),
+          false,
+          convertToValueOptions(DoctorLetterValue.values()))),
 
   VISMOT(
-      new IntegerAttribute(
+      IntegerAttribute.create(
           "Visuomotorik",
           "VISMOT",
-          EsuAttributeUtil.createUnknownOption("99"),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          EsuAttributeUtil.createUnknownOption("99"))),
 
   VISMOT1(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Visuomotorik Bewertung",
           "VISMOT1",
-          convertToValueOptions(EvaluationResult.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(EvaluationResult.values()))),
 
   FEIMO(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Ergebnis Feinmotorik",
           "FEIMO",
-          convertToValueOptions(ExaminationResultFiveOptions.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(ExaminationResultFiveOptions.values()))),
 
   KW_RM_FEIMO(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Rückmeldung Arztbrief Feinmotorik",
           "KW_RM_FEIMO",
-          convertToValueOptions(DoctorLetterValue.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          false)),
+          false,
+          convertToValueOptions(DoctorLetterValue.values()))),
 
   HAND(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Händigkeit",
           "HAND",
-          convertToValueOptions(Hand.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          false)),
+          false,
+          convertToValueOptions(Hand.values()))),
 
   VISPER(
-      new IntegerAttribute(
+      IntegerAttribute.create(
           "Visuelle Perzeption",
           "VISPER",
-          EsuAttributeUtil.createUnknownOption("99"),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          EsuAttributeUtil.createUnknownOption("99"))),
 
   VISPER1(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Visuelle Perzeption Bewertung",
           "VISPER1",
-          convertToValueOptions(EvaluationResult.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(EvaluationResult.values()))),
 
   VISWA(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Ergebnis Visuelle Wahrnehmung",
           "VISWA",
-          convertToValueOptions(ExaminationResultFiveOptions.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(ExaminationResultFiveOptions.values()))),
 
   KW_RM_VISWA(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Rückmeldung Arztbrief Visuelle Wahrnehmung",
           "KW_RM_VISWA",
-          convertToValueOptions(DoctorLetterValue.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          false)),
+          false,
+          convertToValueOptions(DoctorLetterValue.values()))),
 
   ESPR(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Erstsprache Kind",
           "ESPR",
-          convertToValueOptions(FirstLanguage.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(FirstLanguage.values()))),
 
   FAMSPR(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Familiensprache",
           "FAMSPR",
-          convertToValueOptions(Language.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(Language.values()))),
 
   SPRBP(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Sprachkenntnisse Hauptbezugsperson",
           "SPRBP",
-          convertToValueOptions(GuardianLanguageKnowledge.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(GuardianLanguageKnowledge.values()))),
 
   SPRDEU(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Sprachkenntnisse Kind",
           "SPRDEU",
-          convertToValueOptions(ChildLanguageKnowledge.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(ChildLanguageKnowledge.values()))),
 
   DYS_S_Z(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Artikulation/ Dyslalie Buchstaben S + Z",
           "DYS_S_Z",
-          convertToValueOptions(Articulation.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(Articulation.values()))),
 
   DYS_SCH(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Artikulation/ Dyslalie Lautbildung SCH",
           "DYS_SCH",
-          convertToValueOptions(Articulation.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(Articulation.values()))),
 
   DYS_T_D(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Artikulation/ Dyslalie Buchstaben T + D",
           "DYS_T_D",
-          convertToValueOptions(Articulation.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(Articulation.values()))),
 
   DYS_CH(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Artikulation/ Dyslalie Lautbildung CH",
           "DYS_CH",
-          convertToValueOptions(Articulation.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(Articulation.values()))),
 
   DYS_G_K(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Artikulation/ Dyslalie Buchstaben G + K",
           "DYS_G_K",
-          convertToValueOptions(Articulation.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(Articulation.values()))),
 
   DYS_L_N(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Artikulation/ Dyslalie Buchstaben L + N",
           "DYS_L_N",
-          convertToValueOptions(Articulation.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(Articulation.values()))),
 
   DYS_R(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Artikulation/ Dyslalie Buchstabe R",
           "DYS_R",
-          convertToValueOptions(Articulation.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(Articulation.values()))),
 
   DYS_F_PF(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Artikulation/ Dyslalie Buchstabe F, Lautbildung PF",
           "DYS_F_PF",
-          convertToValueOptions(Articulation.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(Articulation.values()))),
 
   DYS_B(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Artikulation/ Dyslalie Buchstabe B",
           "DYS_B",
-          convertToValueOptions(Articulation.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(Articulation.values()))),
 
   DYS_TR_DR_KR_GR(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Artikulation/ Dyslalie Lautbildung tr, dr, kr + gr",
           "DYS_tr_dr_kr_gr",
-          convertToValueOptions(Articulation.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(Articulation.values()))),
 
   DYS(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Ergebnis (Summe - Punkte) Artikulation, Dyslalie",
           "DYS",
-          EsuAttributeUtil.createDyslaliaOptions(),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          EsuAttributeUtil.createDyslaliaOptions())),
 
   DYS1(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Artikulation, Dyslalie Bewertung",
           "DYS1",
+          EsuSopessAttribute.CATEGORY_S1_SOPESS,
+          true,
           List.of(
               new ValueOptionInternal("A", "auffällig", false),
-              new ValueOptionInternal("U", "unauffällig", false)),
-          EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+              new ValueOptionInternal("U", "unauffällig", false)))),
 
   SPR(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Ergebnis Sprache",
           "SPR",
-          convertToValueOptions(ExaminationResultFiveOptions.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(ExaminationResultFiveOptions.values()))),
 
   KW_RM_SPR(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Rückmeldung Arztbrief Sprache",
           "KW_RM_SPR",
-          convertToValueOptions(DoctorLetterValue.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          false)),
+          false,
+          convertToValueOptions(DoctorLetterValue.values()))),
 
   PSWOE(
-      new IntegerAttribute(
+      IntegerAttribute.create(
           "Pseudowörter",
           "PSWOE",
-          EsuAttributeUtil.createUnknownOption("9"),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          EsuAttributeUtil.createUnknownOption("9"))),
 
   PSWOE1(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Pseudowörter Bewertung",
           "PSWOE1",
-          convertToValueOptions(EvaluationResult.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(EvaluationResult.values()))),
 
   PRAEP(
-      new IntegerAttribute(
+      IntegerAttribute.create(
           "Präpositionen",
           "PRAEP",
-          EsuAttributeUtil.createUnknownOption("9"),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          EsuAttributeUtil.createUnknownOption("9"))),
 
   PRAEP1(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Präpositionen Bewertung",
           "PRAEP1",
-          convertToValueOptions(EvaluationResult.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(EvaluationResult.values()))),
 
   PLUR(
-      new IntegerAttribute(
+      IntegerAttribute.create(
           "Plurale",
           "PLUR",
-          EsuAttributeUtil.createUnknownOption("9"),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          EsuAttributeUtil.createUnknownOption("9"))),
 
   PLUR1(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Plurale Bewertung",
           "PLUR1",
-          convertToValueOptions(EvaluationResult.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(EvaluationResult.values()))),
 
   AUDWA(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Ergebnis Auditive Infoverarbeitung",
           "AUDWA",
-          convertToValueOptions(ExaminationResultFiveOptions.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(ExaminationResultFiveOptions.values()))),
 
   KW_RM_AUSWA(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Rückmeldung Arztbrief Auditive Infoverarbeitung",
           "KW_RM_AUSWA",
-          convertToValueOptions(DoctorLetterValue.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          false)),
+          false,
+          convertToValueOptions(DoctorLetterValue.values()))),
 
   ZAEHL(
-      new IntegerAttribute(
+      IntegerAttribute.create(
           "Zählen",
           "ZAEHL",
-          EsuAttributeUtil.createUnknownOption("99"),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          EsuAttributeUtil.createUnknownOption("99"))),
 
   ZAEHL1(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Zählen Bewertung",
           "ZAEHL1",
-          convertToValueOptions(EvaluationResult.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(EvaluationResult.values()))),
 
   MENG(
-      new IntegerAttribute(
+      IntegerAttribute.create(
           "Mengenvorwissen",
           "MENG",
-          EsuAttributeUtil.createUnknownOption("99"),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          EsuAttributeUtil.createUnknownOption("99"))),
 
   MENG1(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Mengenvorwissen Bewertung",
           "MENG1",
-          convertToValueOptions(EvaluationResult.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(EvaluationResult.values()))),
 
   WISSDE(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Ergebnis Wissen/ Denken",
           "WISSDE",
-          convertToValueOptions(ExaminationResultFiveOptions.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(ExaminationResultFiveOptions.values()))),
 
   KW_RM_WISSDE(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Rückmeldung Arztbrief Wissen/ Denken",
           "KW_RM_WISSDE",
-          convertToValueOptions(DoctorLetterValue.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          false)),
+          false,
+          convertToValueOptions(DoctorLetterValue.values()))),
 
   SELAUFM(
-      new IntegerAttribute(
+      IntegerAttribute.create(
           "Selektive Aufmerksamkeit",
           "SELAUFM",
-          EsuAttributeUtil.createUnknownOption("99"),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          EsuAttributeUtil.createUnknownOption("99"))),
 
   SELAUFM1(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Selektive Aufmerksamkeit Bewertung",
           "SELAUFM1",
-          convertToValueOptions(EvaluationResult.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(EvaluationResult.values()))),
 
   PSYVER(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Ergebnis psychisches Verhalten",
           "PSYVER",
-          convertToValueOptions(ExaminationResultFiveOptions.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          true)),
+          true,
+          convertToValueOptions(ExaminationResultFiveOptions.values()))),
 
   KW_RM_PSYVER(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Rückmeldung Arztbrief psychisches Verhalten",
           "KW_RM_PSYVER",
-          convertToValueOptions(DoctorLetterValue.values()),
           EsuSopessAttribute.CATEGORY_S1_SOPESS,
-          false)),
+          false,
+          convertToValueOptions(DoctorLetterValue.values()))),
   ;
 
   private static final String CATEGORY_S1_SOPESS = "S1-Sopess";

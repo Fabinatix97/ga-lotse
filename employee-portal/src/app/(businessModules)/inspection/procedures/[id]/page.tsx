@@ -9,10 +9,10 @@ import { redirect } from "next/navigation";
 import { EditInspectionRouteParams } from "@/app/(businessModules)/inspection/procedures/[id]/layout";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 
-export default function EditInspectionPage(
+export default async function EditInspectionPage(
   props: DynamicPageProps<EditInspectionRouteParams>,
 ) {
-  const { id } = props.params;
+  const { id } = await props.params;
 
   // if no tab name is given in the URL redirect to the "basedata" tab page
   redirect(routes.procedures.basedata(id));

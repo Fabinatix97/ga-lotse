@@ -6,22 +6,22 @@
 import { RequiresChildren } from "./react";
 
 export interface PageProps<TSearchParams extends PageParams = PageParams> {
-  readonly searchParams: SearchParams<TSearchParams>;
+  readonly searchParams: Promise<SearchParams<TSearchParams>>;
 }
 
 export interface DynamicPageProps<
   TRouteParams extends PageParams = PageParams,
   TSearchParams extends PageParams = PageParams,
 > {
-  readonly params: RouteParams<TRouteParams>;
-  readonly searchParams: SearchParams<TSearchParams>;
+  readonly params: Promise<RouteParams<TRouteParams>>;
+  readonly searchParams: Promise<SearchParams<TSearchParams>>;
 }
 
 export type LayoutProps = RequiresChildren;
 
 export interface DynamicLayoutProps<TRouteParams extends PageParams = never>
   extends LayoutProps {
-  readonly params: RouteParams<TRouteParams>;
+  readonly params: Promise<RouteParams<TRouteParams>>;
 }
 
 export type RouteParams<TParams extends PageParams = PageParams> =

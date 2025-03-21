@@ -21,6 +21,7 @@ import {
   GetAllGdprValidationTasksRequest,
 } from "@eshg/lib-procedures-api";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
+import { use } from "react";
 
 import { ValidationTasksTable } from "@/lib/baseModule/components/gdpr/validationTasks/ValidationTasksTable";
 import { isBusinessModule } from "@/lib/shared/helpers/guards";
@@ -46,7 +47,7 @@ export default function ValidationTaskOverviewPage(
     businessModule: string;
   }>,
 ) {
-  const { businessModule } = props.params;
+  const { businessModule } = use(props.params);
   if (!isBusinessModule(businessModule)) {
     throw new Error(
       `Tried to open validation task overview for unknown business module type '${businessModule}'`,

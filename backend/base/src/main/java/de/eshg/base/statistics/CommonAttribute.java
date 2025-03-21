@@ -7,6 +7,7 @@ package de.eshg.base.statistics;
 
 import de.eshg.lib.statistics.api.ValueOptionInternal;
 import de.eshg.lib.statistics.api.ValueType;
+import de.eshg.lib.statistics.api.interval.IntervalConfiguration;
 import java.util.List;
 
 public interface CommonAttribute {
@@ -20,4 +21,6 @@ public interface CommonAttribute {
   List<ValueOptionInternal> getValueOptions();
 
   boolean isMandatory();
+
+  IntervalConfiguration getIntervalConfiguration();
 }

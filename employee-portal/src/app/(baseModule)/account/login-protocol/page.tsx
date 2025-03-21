@@ -7,29 +7,20 @@
 
 import { ApiUserEvent, ApiUserEventType } from "@eshg/base-api";
 import {
+  DataTable,
   MainContentLayout,
+  OffsetPagination,
   StickyToolbarLayout,
+  TablePage,
+  TableSheet,
   Toolbar,
 } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import ChevronLeft from "@mui/icons-material/ChevronLeft";
-import ChevronRight from "@mui/icons-material/ChevronRight";
-import SkipPrevious from "@mui/icons-material/SkipPrevious";
-import { Chip, Stack, Typography } from "@mui/joy";
+import { Chip } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useState } from "react";
-import { isNonNullish } from "remeda";
 
 import { useGetSelfUserEvents } from "@/lib/baseModule/api/queries/users";
-import { IconButton } from "@/lib/shared/components/pagination/IconButton";
-import { RowsPerPageSelect } from "@/lib/shared/components/pagination/RowsPerPageSelect";
-import {
-  defaultPageSizeOptions,
-  getPageSizeOptions,
-} from "@/lib/shared/components/pagination/paginationHelper";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 
 const columnHelper = createColumnHelper<ApiUserEvent>();
 const columns = [
@@ -104,7 +95,6 @@ export default function UserLoginProtocolPage() {
                 numberOfElements={elements.length}
                 onOffsetChange={onOffsetChange}
                 onPageSizeChange={onPageSizeChange}
-                pageSizeOptions={defaultPageSizeOptions}
               />
             }
           >
@@ -113,92 +103,5 @@ export default function UserLoginProtocolPage() {
         </TablePage>
       </MainContentLayout>
     </StickyToolbarLayout>
-  );
-}
-
-interface OffsetPaginationProps {
-  hasNextPage: boolean;
-  offset: number;
-  pageSize: number;
-  numberOfElements: number;
-  onOffsetChange: (newPageNumber: number) => void;
-  onPageSizeChange: (newPageSize: number) => void;
-  pageSizeOptions: number[];
-}
-
-function OffsetPagination(props: OffsetPaginationProps) {
-  const isFirstPage = props.offset < 1;
-  const isLastPage = !props.hasNextPage;
-
-  function goToFirstPage() {
-    props.onOffsetChange(0);
-  }
-
-  function goToPreviousPage() {
-    props.onOffsetChange(Math.max(0, props.offset - props.pageSize));
-  }
-
-  function goToNextPage() {
-    props.onOffsetChange(props.offset + props.pageSize);
-  }
-
-  return (
-    <>
-      <Stack mt={3} direction="row" gap={2} justifyContent={"space-between"}>
-        <RowsPerPageSelect
-          value={`${props.pageSize}`}
-          onChange={(_event, newValue) => {
-            if (isNonNullish(newValue))
-              props.onPageSizeChange(Number(newValue));
-          }}
-          options={getPageSizeOptions(
-            props.pageSizeOptions,
-            " Zeilen pro Seite",
-          )}
-          sx={{
-            width: "13rem",
-            display: {
-              xxs: "none",
-              md: "flex",
-            },
-          }}
-        />
-
-        <Stack
-          direction={"row"}
-          gap={{ xxs: 1, md: 3 }}
-          justifyContent={{ xxs: "space-between", md: "flex-end" }}
-          alignItems={"center"}
-          flex={1}
-        >
-          <Stack direction={"row"} gap={1}>
-            <IconButton
-              label={"Zur ersten Seite"}
-              disabled={isFirstPage}
-              onClick={goToFirstPage}
-            >
-              <SkipPrevious />
-            </IconButton>
-            <IconButton
-              label={"Zur vorherigen Seite"}
-              disabled={isFirstPage}
-              onClick={goToPreviousPage}
-            >
-              <ChevronLeft />
-            </IconButton>
-          </Stack>
-          <Typography level={"body-sm"} textColor={"text.secondary"}>
-            {props.offset + 1} - {props.offset + props.numberOfElements}
-          </Typography>
-          <IconButton
-            label={"Zur nächsten Seite"}
-            disabled={isLastPage}
-            onClick={goToNextPage}
-          >
-            <ChevronRight />
-          </IconButton>
-        </Stack>
-      </Stack>
-    </>
   );
 }

@@ -7,6 +7,7 @@
 
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { use } from "react";
 
 import { StiProtectionProcedureRouteParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(fullPageLayout)/layout";
 import { useMedicalHistoryQuery } from "@/lib/businessModules/stiProtection/api/queries/medicalHistory";
@@ -17,7 +18,7 @@ import { isProcedureOpen } from "@/lib/businessModules/stiProtection/shared/help
 export default function StiProtectionProcedureAnamnesisPage(
   props: DynamicPageProps<StiProtectionProcedureRouteParams>,
 ) {
-  const { id: procedureId } = props.params;
+  const { id: procedureId } = use(props.params);
   const { data: procedure } = useStiProcedureQuery(procedureId);
   const isOpen = isProcedureOpen(procedure);
   const { data: medicalHistory } = useMedicalHistoryQuery(procedureId);

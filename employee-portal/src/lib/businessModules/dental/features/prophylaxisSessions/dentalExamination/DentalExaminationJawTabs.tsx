@@ -8,7 +8,13 @@ import { ReactNode, SyntheticEvent } from "react";
 
 import { useDentalExaminationStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
 import {
+  firstToothWithDiagnosisIndex,
+  lastToothWithDiagnosisIndex,
+} from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/actions/utils";
+import {
   DentalExaminationView,
+  Dentition,
+  ElementContext,
   isDentalExaminationView,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
 
@@ -25,6 +31,8 @@ export function DentalExaminationJawTabs({
 }: DentalExaminationJawTabsProps) {
   const currentView = useDentalExaminationStore((state) => state.currentView);
   const setView = useDentalExaminationStore((state) => state.setView);
+  const setFocus = useDentalExaminationStore((state) => state.setFocus);
+  const dentition = useDentalExaminationStore((state) => state.dentition);
 
   function handleChange(
     _: SyntheticEvent | null,
@@ -32,6 +40,7 @@ export function DentalExaminationJawTabs({
   ) {
     if (isDentalExaminationView(newValue)) {
       setView(newValue);
+      setFocus(getInitialFocusContextForView(newValue, dentition));
     }
   }
 
@@ -87,6 +96,38 @@ export function DentalExaminationJawTabs({
       </JawTabs>
     </Stack>
   );
+}
+
+function getInitialFocusContextForView(
+  view: DentalExaminationView,
+  dentition: Dentition,
+): ElementContext {
+  switch (view) {
+    case "UPPER_JAW":
+      return {
+        toothContext: {
+          toothIndex: firstToothWithDiagnosisIndex(dentition.Q1.teeth),
+          quadrantNumber: "Q1",
+        },
+        element: "mainResultField",
+      };
+    case "LOWER_JAW":
+      return {
+        toothContext: {
+          toothIndex: lastToothWithDiagnosisIndex(dentition.Q3.teeth),
+          quadrantNumber: "Q3",
+        },
+        element: "mainResultField",
+      };
+    case "FULL_DENTITION":
+      return {
+        toothContext: {
+          quadrantNumber: "Q1",
+          toothIndex: firstToothWithDiagnosisIndex(dentition.Q1.teeth),
+        },
+        element: "toothButton",
+      };
+  }
 }
 
 const JawTabs = styled(Tabs)(({ theme }) => ({

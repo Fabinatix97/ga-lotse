@@ -481,7 +481,22 @@ export async function leaveRoom(matrixClient: MatrixClient, roomId?: string) {
   if (!roomId) return;
   try {
     await matrixClient.leave(roomId);
-  } catch {}
+  } catch (error) {
+    logger.error("Failed to leaveAndForgetRoom", error);
+  }
+}
+
+export async function leaveAndForgetRoom(
+  matrixClient: MatrixClient,
+  roomId?: string,
+) {
+  if (!roomId) return;
+  try {
+    await matrixClient.leave(roomId);
+    await matrixClient.forget(roomId);
+  } catch (error) {
+    logger.error("Failed to leaveAndForgetRoom", error);
+  }
 }
 
 export function allMessagesRead(

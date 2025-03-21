@@ -11,13 +11,14 @@ import {
   Toolbar,
 } from "@eshg/lib-employee-portal";
 import { PageProps } from "@eshg/lib-portal/types/pageParams";
+import { use } from "react";
 
 import { PendingFacilitiesOfflineTable } from "@/lib/businessModules/inspection/components/facility/pending/PendingFacilitiesOfflineTable";
 import { PendingFacilitiesTableWrapper } from "@/lib/businessModules/inspection/components/facility/pending/PendingFacilitiesTableWrapper";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 export default function InspectionProceduresPage(props: PageProps) {
-  const searchParams = props.searchParams;
+  const searchParams = use(props.searchParams);
   const isOffline = useIsOffline();
 
   const title = isOffline ? "Offline verfügbare Begehungen" : "Begehung";

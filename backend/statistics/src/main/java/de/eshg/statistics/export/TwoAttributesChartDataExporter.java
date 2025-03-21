@@ -9,7 +9,6 @@ import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.chart.TwoAttributesChartConfiguration;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Sheet;
 
 public class TwoAttributesChartDataExporter {
@@ -17,20 +16,20 @@ public class TwoAttributesChartDataExporter {
 
   public static void addAttributesInformation(
       Sheet sheet,
-      CellStyle cellStyle,
+      CellStyleHolder cellStyleHolder,
       AtomicInteger rowCounter,
       TwoAttributesChartConfiguration chartConfiguration,
       AbstractAggregationResult aggregationResult) {
     DataExportUtil.addMetadataRow(
         sheet,
-        cellStyle,
+        cellStyleHolder,
         rowCounter.getAndIncrement(),
         "Zeilen",
         DiagramExportService.getAttributeName(
             chartConfiguration.getPrimaryAttributeSelection(), aggregationResult));
     DiagramExportService.addLegend(
         sheet,
-        cellStyle,
+        cellStyleHolder,
         rowCounter,
         aggregationResult,
         chartConfiguration.getPrimaryAttributeSelection());
@@ -39,12 +38,12 @@ public class TwoAttributesChartDataExporter {
             secondaryAttribute -> {
               DataExportUtil.addMetadataRow(
                   sheet,
-                  cellStyle,
+                  cellStyleHolder,
                   rowCounter.getAndIncrement(),
                   "Spalten",
                   DiagramExportService.getAttributeName(secondaryAttribute, aggregationResult));
               DiagramExportService.addLegend(
-                  sheet, cellStyle, rowCounter, aggregationResult, secondaryAttribute);
+                  sheet, cellStyleHolder, rowCounter, aggregationResult, secondaryAttribute);
             });
   }
 }

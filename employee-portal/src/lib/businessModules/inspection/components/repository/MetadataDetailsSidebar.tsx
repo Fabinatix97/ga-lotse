@@ -4,11 +4,11 @@
  */
 
 import { ApiChecklistDefinitionCentralRepoMetadata } from "@eshg/inspection-api";
+import { DetailsItem } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { Grid } from "@mui/joy";
 import { isNonNullish } from "remeda";
 
-import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
 import { useSidebar } from "@/lib/shared/components/drawer/useSidebar";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";

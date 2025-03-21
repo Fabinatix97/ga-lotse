@@ -5,6 +5,13 @@
 
 "use client";
 
+import {
+  DataTable,
+  Pagination,
+  TablePage,
+  TableSheet,
+  usePagination,
+} from "@eshg/lib-employee-portal";
 import { professionalTitleNames } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
@@ -26,11 +33,6 @@ import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
-import { Pagination } from "@/lib/shared/components/pagination/Pagination";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import { usePagination } from "@/lib/shared/hooks/table/usePagination";
 
 import { MedicalRegistryEntryOverviewControls } from "./MedicalRegistryEntryOverviewControls";
 

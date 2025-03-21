@@ -12,6 +12,7 @@ import {
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { useSuspenseQueries } from "@tanstack/react-query";
+import { use } from "react";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
 import {
@@ -30,7 +31,7 @@ import { routes } from "@/lib/businessModules/inspection/shared/routes";
 export default function NewInspectionProcedurePage(
   props: DynamicPageProps<{ procedureId: string }>,
 ) {
-  const { procedureId } = props.params;
+  const { procedureId } = use(props.params);
   const inspectionApi = useInspectionApi();
   const objectTypeApi = useObjectTypeApi();
   const userApi = useUserApi();

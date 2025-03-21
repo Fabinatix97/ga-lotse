@@ -16,7 +16,6 @@ import de.eshg.lib.servicedirectory.util.CertificateSignatureUtil;
 import de.eshg.servicedirectory.actor.exception.ActorNotActiveException;
 import de.eshg.servicedirectory.actor.exception.ActorNotFoundException;
 import de.eshg.servicedirectory.actor.mapper.ActorMapperApi;
-import de.eshg.servicedirectory.actor.persistence.entity.Actor.Certificate;
 import de.eshg.servicedirectory.actor.persistence.entity.ActorMetadata;
 import de.eshg.servicedirectory.actor.persistence.entity.ActorType;
 import de.eshg.servicedirectory.actor.persistence.entity.AuditedActor;
@@ -27,13 +26,13 @@ import de.eshg.servicedirectory.orgunit.exception.OrgUnitNotFoundException;
 import de.eshg.servicedirectory.orgunit.persistence.entity.AuditedOrgUnit;
 import de.eshg.servicedirectory.orgunit.persistence.entity.OrgUnitType;
 import de.eshg.servicedirectory.orgunit.persistence.repository.AuditedOrgUnitRepository;
+import de.eshg.servicedirectory.properties.SdProperties;
 import de.eshg.servicedirectory.rule.persistence.entity.ActorSelector;
 import de.eshg.servicedirectory.rule.persistence.entity.AuditedRule;
 import de.eshg.servicedirectory.rule.persistence.repository.AuditedRuleRepository;
 import de.eshg.servicedirectory.util.X509Utils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import java.security.cert.X509Certificate;
 import java.time.Clock;
 import java.util.List;
 import java.util.Objects;
@@ -55,6 +54,8 @@ public class ServiceDirectoryService {
 
   private final AuditedRuleRepository auditedRuleRepository;
 
+  private final SdProperties config;
+
   private static final Logger log = LoggerFactory.getLogger(ServiceDirectoryService.class);
 
   private final Clock clock;
@@ -65,10 +66,12 @@ public class ServiceDirectoryService {
       AuditedActorRepository auditedActorRepository,
       AuditedOrgUnitRepository auditedOrgUnitRepository,
       AuditedRuleRepository auditedRuleRepository,
+      SdProperties config,
       Clock clock) {
     this.auditedActorRepository = auditedActorRepository;
     this.auditedOrgUnitRepository = auditedOrgUnitRepository;
     this.auditedRuleRepository = auditedRuleRepository;
+    this.config = config;
     this.clock = clock;
   }
 
@@ -96,11 +99,29 @@ public class ServiceDirectoryService {
           };
       actor.setOrgUnit(orgUnit);
     }
-    return new ActiveActorsWithRevision(
-        auditedActorRepository.findAll(Example.of(actor)).stream()
-            .map(ActorMapperApi::mapActorToApi)
-            .toList(),
-        getCurrentRevisionId());
+    ActiveActorsWithRevision activeActors =
+        new ActiveActorsWithRevision(
+            auditedActorRepository.findAll(Example.of(actor)).stream()
+                .map(ActorMapperApi::mapActorToApi)
+                .toList(),
+            getCurrentRevisionId());
+
+    if (log.isTraceEnabled()) {
+      log.trace(
+          "Active actors of type {} from org-unit {} of type {}: {}",
+          type,
+          orgUnitId,
+          orgUnitTypeDto,
+          activeActors.actors().stream().map(ServiceDirectoryService::getActorInfo).toList());
+    }
+
+    return activeActors;
+  }
+
+  private static String getActorInfo(ActorResponseDto actor) {
+    return X509Utils.getCertificateInfo(
+        actor.readableName(),
+        Optional.ofNullable(actor.certificate()).map(CertificateDto::value).orElse(null));
   }
 
   public GetTrustedActorsResponse getTrustedActorsForActor(AuditedActor actor) {
@@ -191,15 +212,24 @@ public class ServiceDirectoryService {
   }
 
   @Transactional
-  public void updateTopology(String lsdCommonName, List<ActorRequestDto> actorRequestDtos) {
+  public void updateTopology(String lsdCommonName, List<ActorRequestDto> actors) {
     AuditedActor auditedLSD = getValidLSD(lsdCommonName);
     AuditedOrgUnit orgUnit = getValidOrgUnit(auditedLSD);
 
-    for (ActorRequestDto actorRequestDto : actorRequestDtos) {
-      if (CertificateSignatureUtil.validateSignature(actorRequestDto)) {
-        upsertActor(actorRequestDto, orgUnit.getId(), auditedLSD.getNetworkId());
+    log.info(
+        "Received topology for orgUnit {}'s actors: {}",
+        orgUnit.getReadableName(),
+        actors.stream().map(ServiceDirectoryService::getActorInfo).toList());
+
+    for (ActorRequestDto actor : actors) {
+      if (CertificateSignatureUtil.validateSignature(actor)) {
+        upsertActor(actor, orgUnit.getId(), auditedLSD.getNetworkId());
       }
     }
+  }
+
+  private static String getActorInfo(ActorRequestDto actor) {
+    return X509Utils.getCertificateInfo(actor.readableName(), actor.certificate().value());
   }
 
   private AuditedActor getValidLSD(String lsdCommonName) {
@@ -241,23 +271,24 @@ public class ServiceDirectoryService {
   }
 
   private void upsertActor(ActorRequestDto actorRequestDto, UUID orgUnitId, String networkId) {
-    if (actorRequestDto.certificate() == null) {
-      throw new ServiceDirectoryBadRequestException(
-          "Null for actor certificate not allowed (" + actorRequestDto.hostName() + ")");
-    }
-    X509Certificate cert = X509Utils.parsePem(actorRequestDto.certificate().value());
-    String commonName = X509Utils.extractCommonName(cert);
-    if (isEmpty(commonName)) {
-      throw new ServiceDirectoryBadRequestException(
-          "Null for actor common name not allowed (" + actorRequestDto.hostName() + ")");
-    }
-    if (X509Utils.isCaCertificate(cert)) {
-      log.error("Ignoring actor {} with CA certificate", commonName);
+    CertsInfo certsInfo = extractCertificatesInfo(actorRequestDto);
+
+    if (isEmpty(certsInfo.commonName)) {
+      log.error("Null for actor common name not allowed ({})", actorRequestDto.readableName());
       return;
     }
-    Optional<AuditedActor> actorData = getActor(commonName);
+    if (certsInfo.count > config.maxCertificatesPerActor()) {
+      log.error(
+          "Actor {} has too many certificates: {}. ({} allowed)",
+          actorRequestDto.readableName(),
+          certsInfo.count,
+          config.maxCertificatesPerActor());
+      return;
+    }
 
-    if (actorData.isEmpty() && actorRequestDto.readableName() != null) {
+    Optional<AuditedActor> actorData = getActor(certsInfo.commonName);
+
+    if (actorData.isEmpty()) {
       getActor(orgUnitId, actorRequestDto.readableName())
           .ifPresent(
               otherActor -> {
@@ -266,65 +297,39 @@ public class ServiceDirectoryService {
                         .formatted(
                             ActorMapperApi.calculateNaturalId(otherActor),
                             otherActor.getCommonName(),
-                            commonName));
+                            certsInfo.commonName));
               });
     }
 
     actorData.ifPresentOrElse(
-        actor -> {
-          boolean certificateUpdate =
-              !actorRequestDto
-                  .certificate()
-                  .value()
-                  .equals(
-                      Optional.ofNullable(actor.getCurrentCertificate())
-                          .map(Certificate::value)
-                          .orElse(null));
-          Certificate previousCertificate =
-              certificateUpdate ? actor.getCurrentCertificate() : actor.getPreviousCertificate();
-          updateActor(actor, actorRequestDto, commonName, previousCertificate, orgUnitId);
-        },
-        () -> createActor(actorRequestDto, commonName, orgUnitId, networkId));
+        actor -> updateActor(actor, actorRequestDto, certsInfo.commonName, orgUnitId),
+        () -> createActor(actorRequestDto, certsInfo.commonName, orgUnitId, networkId));
   }
 
   private void updateActor(
       AuditedActor updatedActor,
       ActorRequestDto actorRequestDto,
       String commonName,
-      Certificate previousCertificate,
       UUID orgUnitId) {
     if (updatedActor.isManualCertificate()) {
       throw new ServiceDirectoryBadRequestException(
           "Cannot update certificate for actor %s (%s): manual_certificate"
               .formatted(ActorMapperApi.calculateNaturalId(updatedActor), updatedActor.getId()));
     }
-    if (!isEmpty(actorRequestDto.readableName())
-        && !actorRequestDto.readableName().equals(updatedActor.getReadableName())) {
+    if (!actorRequestDto.readableName().equals(updatedActor.getReadableName())) {
       logChangeAttempt("readableName");
     }
-    if (actorRequestDto.type() != null
-        && !actorRequestDto.type().name().equals(updatedActor.getType().name())) {
+    if (!actorRequestDto.type().name().equals(updatedActor.getType().name())) {
       logChangeAttempt("type");
     }
-    if (!isEmpty(commonName) && !commonName.equals(updatedActor.getCommonName())) {
+    if (!commonName.equals(updatedActor.getCommonName())) {
       logChangeAttempt("commonName");
     }
     if (actorRequestDto.certificate() != null) {
-      updatedActor.setCurrentCertificate(
-          ActorMapperApi.toPersistence(actorRequestDto.certificate()));
-    }
-    if (previousCertificate != null) {
-      if (X509Utils.isCaCertificate(X509Utils.parsePem(previousCertificate.value()))) {
-        log.info("Dropping previous certificate of {} because it is a CA certificate", commonName);
-        updatedActor.setPreviousCertificate(null);
-      } else {
-        updatedActor.setPreviousCertificate(previousCertificate);
-      }
+      updatedActor.setCertificate(ActorMapperApi.toPersistence(actorRequestDto.certificate()));
     }
     ServiceDirectoryAdminService.validateCommonName(
-        updatedActor.getCurrentCertificate(), updatedActor.getCommonName());
-    ServiceDirectoryAdminService.validateCommonName(
-        updatedActor.getPreviousCertificate(), updatedActor.getCommonName());
+        updatedActor.getCertificate(), updatedActor.getCommonName());
 
     if (!updatedActor.getOrgUnit().getId().equals(orgUnitId)) {
       throw new ServiceDirectoryBadRequestException(
@@ -341,21 +346,6 @@ public class ServiceDirectoryService {
 
   private void createActor(
       ActorRequestDto actorRequestDto, String commonName, UUID orgUnitId, String networkId) {
-    if (isEmpty(actorRequestDto.readableName())) {
-      throw new ServiceDirectoryBadRequestException(
-          "Null or empty readableName not allowed (" + actorRequestDto.hostName() + ")");
-    }
-    if (actorRequestDto.type() == null) {
-      throw new ServiceDirectoryBadRequestException(
-          "Null type not allowed (" + actorRequestDto.hostName() + ")");
-    }
-    if (isEmpty(actorRequestDto.hostName())) {
-      throw new ServiceDirectoryBadRequestException("Null or empty hostName not allowed");
-    }
-    if (isEmpty(commonName)) {
-      throw new ServiceDirectoryBadRequestException(
-          "Null or empty commonName not allowed (" + actorRequestDto.hostName() + ")");
-    }
     validateCommonName(actorRequestDto.certificate(), commonName);
     AuditedActor actor = ActorMapperApi.toAudited(actorRequestDto, commonName, networkId);
 
@@ -435,5 +425,38 @@ public class ServiceDirectoryService {
     } catch (JacksonException e) {
       throw new ServiceDirectoryBadRequestException("Json content is not valid");
     }
+  }
+
+  private static CertsInfo extractCertificatesInfo(ActorRequestDto actorRequestDto) {
+    CertsInfo certsInfo = new CertsInfo();
+    X509Utils.parseMultiPem(actorRequestDto.certificate().value())
+        .filter(
+            cert -> {
+              if (X509Utils.isCaCertificate(cert)) {
+                log.error("Ignoring CA certificate for actor {}", actorRequestDto.readableName());
+                return false;
+              }
+              return true;
+            })
+        .map(X509Utils::extractCommonName)
+        .forEach(
+            s -> {
+              ++certsInfo.count;
+              if (certsInfo.commonName == null) {
+                certsInfo.commonName = s;
+                return;
+              }
+              if (!certsInfo.commonName.equals(s)) {
+                throw new ServiceDirectoryBadRequestException(
+                    "Multiple CNs found in certificates: %s and %s"
+                        .formatted(certsInfo.commonName, s));
+              }
+            });
+    return certsInfo;
+  }
+
+  private static final class CertsInfo {
+    private String commonName = null;
+    private int count = 0;
   }
 }

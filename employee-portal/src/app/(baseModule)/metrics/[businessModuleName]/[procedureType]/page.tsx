@@ -12,6 +12,7 @@ import {
   Toolbar,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { use } from "react";
 
 import { TaskMetricsDisplay } from "@/lib/baseModule/components/procedureMetrics/taskMetrics/TaskMetricsDisplay";
 import { routes } from "@/lib/baseModule/shared/routes";
@@ -23,7 +24,7 @@ export default function TaskMetricsPage(
     procedureType: ApiProcedureType;
   }>,
 ) {
-  const { businessModuleName, procedureType } = props.params;
+  const { businessModuleName, procedureType } = use(props.params);
 
   return (
     <StickyToolbarLayout

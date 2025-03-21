@@ -6,7 +6,14 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
-import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
+import {
+  DataTable,
+  Pagination,
+  TablePage,
+  TableSheet,
+  useHasUserRoleCheck,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
@@ -26,15 +33,10 @@ import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
 import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
-import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import {
   procedureStatusNames,
   statusColors,
 } from "@/lib/shared/components/procedures/constants";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
 import {
   ProceduresTableFilters,

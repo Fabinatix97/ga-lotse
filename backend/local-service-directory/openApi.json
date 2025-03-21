@@ -25,13 +25,6 @@
         },
         "responses" : {
           "200" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Actor"
-                }
-              }
-            },
             "description" : "Returns the announced actor"
           }
         },
@@ -39,23 +32,24 @@
         "tags" : [ "LsdActor" ]
       }
     },
-    "/orgUnit/actors" : {
-      "get" : {
-        "operationId" : "getActors",
+    "/actor/heartbeat" : {
+      "post" : {
+        "operationId" : "heartbeat",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "location",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
         "responses" : {
           "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/GetActorsResponse"
-                }
-              }
-            },
-            "description" : "Returns all actors associated with the orgUnit"
+            "description" : "Returns the announced actor"
           }
         },
-        "summary" : "Get all actors of the orgUnit",
-        "tags" : [ "LsdOrgUnit" ]
+        "summary" : "Inform LSD that actor is still alive",
+        "tags" : [ "LsdActor" ]
       }
     },
     "/orgUnit/name" : {
@@ -80,29 +74,12 @@
   },
   "components" : {
     "schemas" : {
-      "Actor" : {
-        "required" : [ "commonName" ],
-        "type" : "object",
-        "properties" : {
-          "certificate" : {
-            "$ref" : "#/components/schemas/Certificate"
-          },
-          "commonName" : {
-            "type" : "string"
-          },
-          "readableName" : {
-            "type" : "string"
-          },
-          "type" : {
-            "$ref" : "#/components/schemas/ActorType"
-          }
-        }
-      },
       "ActorType" : {
         "type" : "string",
         "enum" : [ "EXT", "GM", "FM", "LSD", "MISC", "WEB", "ZA", "ZR" ]
       },
       "AnnounceRequest" : {
+        "required" : [ "certificate", "readableName", "type" ],
         "type" : "object",
         "properties" : {
           "certificate" : {
@@ -113,33 +90,6 @@
           },
           "type" : {
             "$ref" : "#/components/schemas/ActorType"
-          }
-        }
-      },
-      "Certificate" : {
-        "required" : [ "signatory", "signature", "value" ],
-        "type" : "object",
-        "properties" : {
-          "signatory" : {
-            "type" : "string"
-          },
-          "signature" : {
-            "type" : "string"
-          },
-          "value" : {
-            "type" : "string"
-          }
-        }
-      },
-      "GetActorsResponse" : {
-        "required" : [ "actors" ],
-        "type" : "object",
-        "properties" : {
-          "actors" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Actor"
-            }
           }
         }
       }

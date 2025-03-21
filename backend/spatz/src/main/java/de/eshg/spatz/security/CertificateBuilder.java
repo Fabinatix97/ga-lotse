@@ -49,6 +49,7 @@ public class CertificateBuilder {
 
   private final String subject;
   private final Set<String> subjectAlternativeNames = new HashSet<>();
+  private String subjectLocation;
   private Duration maxAge = Duration.of(30, ChronoUnit.DAYS);
   private Date notBefore = new Date(System.currentTimeMillis());
   private String keyAlgorithm = DefaultKeyParameters.RSA.keyAlgorithm;
@@ -77,6 +78,11 @@ public class CertificateBuilder {
 
   public CertificateBuilder withAltName(Collection<String> altNames) {
     subjectAlternativeNames.addAll(altNames);
+    return this;
+  }
+
+  public CertificateBuilder withLocation(String location) {
+    subjectLocation = location;
     return this;
   }
 
@@ -118,7 +124,7 @@ public class CertificateBuilder {
       BouncyCastleProvider provider = new BouncyCastleProvider();
       Security.addProvider(provider);
 
-      X500Principal principal = new X500Principal(subject);
+      X500Principal principal = new X500Principal(getSubject());
       KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(keyAlgorithm);
       keyPairGenerator.initialize(keySize, new SecureRandom());
       KeyPair keyPair = keyPairGenerator.generateKeyPair();
@@ -170,12 +176,20 @@ public class CertificateBuilder {
     }
   }
 
+  private String getSubject() {
+    if (subjectLocation == null || subjectLocation.isBlank()) {
+      return subject;
+    } else {
+      return String.format("%s,L=%s", subject, subjectLocation);
+    }
+  }
+
   CertificateBuild buildSelfSigned() {
     try {
       BouncyCastleProvider provider = new BouncyCastleProvider();
       Security.addProvider(provider);
 
-      X500Principal principal = new X500Principal(subject);
+      X500Principal principal = new X500Principal(getSubject());
       KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(keyAlgorithm);
       keyPairGenerator.initialize(keySize, new SecureRandom());
       KeyPair keyPair = keyPairGenerator.generateKeyPair();

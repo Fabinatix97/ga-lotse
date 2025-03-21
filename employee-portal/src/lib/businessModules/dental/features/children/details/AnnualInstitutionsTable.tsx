@@ -6,11 +6,9 @@
 "use client";
 
 import { AnnualInstitution } from "@eshg/dental";
+import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
 import { createColumnHelper } from "@tanstack/react-table";
 
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { formatSchoolYear } from "@/lib/shared/helpers/formatters";
 
 interface AnnualInstitutionsTableProps {

@@ -16,19 +16,20 @@ import java.util.ArrayList;
 
 public enum FacilityAttributes implements AttributeInfo {
   CENTRAL_FILE_ID(
-      new CentralFileIdFacilityAttribute(
+      CentralFileIdFacilityAttribute.create(
           "Einrichtung", "CENTRAL_FILE_ID", ATTRIBUTE_CATEGORY_FACILITY, true)),
 
   OBJECT_TYPE(
-      new ValueWithOptionsAttribute(
-          "Objekttyp", "OBJECT_TYPE", new ArrayList<>(), ATTRIBUTE_CATEGORY_FACILITY, false)),
+      ValueWithOptionsAttribute.create(
+          "Objekttyp", "OBJECT_TYPE", ATTRIBUTE_CATEGORY_FACILITY, false, new ArrayList<>())),
 
   COMPLAINED_ABOUT(
-      new BooleanAttribute("Beanstandet", "COMPLAINED_ABOUT", ATTRIBUTE_CATEGORY_FACILITY, true)),
+      BooleanAttribute.create(
+          "Beanstandet", "COMPLAINED_ABOUT", ATTRIBUTE_CATEGORY_FACILITY, true)),
 
-  BANNED(new BooleanAttribute("Untersagt", "BANNED", ATTRIBUTE_CATEGORY_FACILITY, true)),
+  BANNED(BooleanAttribute.create("Untersagt", "BANNED", ATTRIBUTE_CATEGORY_FACILITY, true)),
 
-  INSPECTED(new BooleanAttribute("Begangen", "INSPECTED", ATTRIBUTE_CATEGORY_FACILITY, true)),
+  INSPECTED(BooleanAttribute.create("Begangen", "INSPECTED", ATTRIBUTE_CATEGORY_FACILITY, true)),
   ;
 
   private final AttributeData attribute;

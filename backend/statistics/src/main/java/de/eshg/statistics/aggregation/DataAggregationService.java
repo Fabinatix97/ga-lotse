@@ -28,6 +28,7 @@ import de.eshg.lib.statistics.api.GetDataTableHeaderResponse;
 import de.eshg.lib.statistics.api.GetSpecificDataRequest;
 import de.eshg.lib.statistics.api.GetSpecificDataResponse;
 import de.eshg.lib.statistics.api.ValueType;
+import de.eshg.lib.statistics.api.interval.IntervalConfiguration;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorResponseWithLocation;
 import de.eshg.statistics.api.datasource.BusinessDataAttribute;
@@ -36,6 +37,7 @@ import de.eshg.statistics.api.filter.DecimalValueFilterParameterDto;
 import de.eshg.statistics.api.filter.IntegerValueFilterParameterDto;
 import de.eshg.statistics.api.filter.NumericComparisonDto;
 import de.eshg.statistics.config.StatisticsConfig;
+import de.eshg.statistics.mapper.AnonymizationConfigurationMapper;
 import de.eshg.statistics.mapper.AttributeSelectionMapper;
 import de.eshg.statistics.mapper.EvaluationMapper;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
@@ -47,7 +49,6 @@ import de.eshg.statistics.persistence.entity.Evaluation;
 import de.eshg.statistics.persistence.entity.MinMaxNullUnknownValues;
 import de.eshg.statistics.persistence.entity.StatisticsDataSensitivity;
 import de.eshg.statistics.persistence.entity.TableColumn;
-import de.eshg.statistics.persistence.entity.TableColumnDataPrivacyCategory;
 import de.eshg.statistics.persistence.entity.TableColumnValueType;
 import de.eshg.statistics.persistence.entity.TableRow;
 import de.eshg.statistics.persistence.entity.ValueToMeaning;
@@ -331,6 +332,9 @@ public class DataAggregationService {
     tableColumn.setDataSourceId(dataSourceId);
 
     DataPrivacyCategory dataPrivacyCategory;
+    Integer lDiversity;
+    Double tCloseness;
+    IntervalConfiguration intervalConfiguration;
     if (baseModuleAttribute == null) {
       tableColumn.setValueType(mapToTableColumnValueType(businessModuleAttribute.valueType()));
       tableColumn.setUnit(businessModuleAttribute.unit());
@@ -339,6 +343,9 @@ public class DataAggregationService {
       tableColumn.setMandatory(businessModuleAttribute.mandatory());
 
       dataPrivacyCategory = businessModuleAttribute.dataPrivacyCategory();
+      lDiversity = businessModuleAttribute.lDiversity();
+      tCloseness = businessModuleAttribute.tCloseness();
+      intervalConfiguration = businessModuleAttribute.intervalConfiguration();
     } else {
       tableColumn.setBaseModuleAttributeCode(baseModuleAttribute.code());
       tableColumn.setBaseModuleAttributeName(baseModuleAttribute.name());
@@ -349,14 +356,14 @@ public class DataAggregationService {
       tableColumn.setMandatory(baseModuleAttribute.mandatory());
 
       dataPrivacyCategory = baseModuleAttribute.dataPrivacyCategory();
+      lDiversity = null;
+      tCloseness = null;
+      intervalConfiguration = baseModuleAttribute.intervalConfiguration();
     }
 
-    if (dataPrivacyCategory != null) {
-      AnonymizationConfiguration anonymizationConfiguration = new AnonymizationConfiguration();
-      anonymizationConfiguration.setDataPrivacyCategory(
-          TableColumnDataPrivacyCategory.valueOf(dataPrivacyCategory.name()));
-      tableColumn.setAnonymizationConfiguration(anonymizationConfiguration);
-    }
+    tableColumn.setAnonymizationConfiguration(
+        AnonymizationConfigurationMapper.mapToPersistence(
+            dataPrivacyCategory, lDiversity, tCloseness, intervalConfiguration));
 
     tableColumn.setSearchKey(
         AttributeSelectionMapper.buildSearchKey(
@@ -420,6 +427,7 @@ public class DataAggregationService {
         getDataFromBusinessModule(request, firstTableColumn.getBusinessModuleName());
 
     validateAndUpdateSensitivity(dataFromBusinessModule, aggregationResult);
+    aggregationResult.setKAnonymity(dataFromBusinessModule.kAnonymity());
 
     Map<Integer, Attribute> indexToBaseReferenceAttribute =
         findBaseModuleIdColumns(dataFromBusinessModule.dataTableHeader());

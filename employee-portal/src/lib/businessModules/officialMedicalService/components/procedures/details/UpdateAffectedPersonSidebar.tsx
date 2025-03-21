@@ -3,19 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { mapOptional } from "@eshg/lib-employee-portal";
+import {
+  DefaultPersonFormValues,
+  mapApiAddressToForm,
+  mapOptional,
+  normalizeListInputs,
+} from "@eshg/lib-employee-portal";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import { ApiAffectedPerson } from "@eshg/official-medical-service-api";
 
 import { usePatchAffectedPerson } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
 import { mapToPatchAffectedPersonRequest } from "@/lib/businessModules/officialMedicalService/shared/helpers";
-import { mapApiAddressToForm } from "@/lib/shared/components/form/address/helpers";
-import {
-  DefaultPersonForm,
-  DefaultPersonFormValues,
-} from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
+import { DefaultPersonForm } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
 import { PersonSidebarForm } from "@/lib/shared/components/personSidebar/form/PersonSidebarForm";
-import { normalizeListInputs } from "@/lib/shared/components/personSidebar/helpers";
 import {
   SidebarWithFormRefProps,
   useSidebarWithFormRef,

@@ -15,7 +15,7 @@ import {
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import AddIcon from "@mui/icons-material/Add";
 import { Button, Stack } from "@mui/joy";
-import { useState } from "react";
+import { use, useState } from "react";
 
 import { useGetInventoryItem } from "@/lib/baseModule/api/queries/inventory";
 import { InventoryBooking } from "@/lib/baseModule/components/inventory/InventoryBooking";
@@ -28,7 +28,7 @@ export default function InventoryDetailsPage(
     id: string;
   }>,
 ) {
-  const { id } = props.params;
+  const { id } = use(props.params);
   const hasWritePerms = useHasUserRoleCheck(
     ApiUserRole.BaseInventoryAdministrate,
   );

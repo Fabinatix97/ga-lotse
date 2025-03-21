@@ -3,13 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DetailsItem, DetailsItemProps } from "@eshg/lib-employee-portal";
 import { Stack } from "@mui/joy";
 import { ReactNode } from "react";
-
-import {
-  DetailsItem,
-  DetailsItemProps,
-} from "@/lib/shared/components/detailsSection/items/DetailsItem";
 
 interface DetailsItemInlineEditProps<TLabelProps, TValueProps>
   extends DetailsItemProps<TLabelProps, TValueProps> {

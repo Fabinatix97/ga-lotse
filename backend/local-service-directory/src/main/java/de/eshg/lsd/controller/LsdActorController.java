@@ -5,7 +5,6 @@
 
 package de.eshg.lsd.controller;
 
-import de.eshg.lsd.register.api.ActorDto;
 import de.eshg.lsd.register.api.AnnounceRequest;
 import de.eshg.lsd.register.api.LsdActorApi;
 import de.eshg.lsd.service.ActorService;
@@ -24,13 +23,18 @@ public class LsdActorController implements LsdActorApi {
   }
 
   @Override
-  public ActorDto announceActor(AnnounceRequest request) {
+  public void announceActor(AnnounceRequest request) {
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 
-    var response =
-        actorService.updateActor(
-            request.type(), request.certificate(), userName, request.readableName());
+    actorService.updateActor(
+        request.type(), request.certificate(), userName, request.readableName());
     actorService.updateTopology();
-    return response;
+  }
+
+  @Override
+  public void heartbeat(String location) {
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+
+    actorService.heartbeat(userName, location);
   }
 }

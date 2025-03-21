@@ -38,8 +38,7 @@ public class ActorMapperApi {
         actor.isActive(),
         actor.isManualCertificate(),
         actor.getCommonName(),
-        toApi(actor.getCurrentCertificate()),
-        toApi(actor.getPreviousCertificate()),
+        toApi(actor.getCertificate()),
         toApi(actor.getActorMetadata()),
         actor.getNetworkId(),
         actor.getOrgUnit() == null ? null : actor.getOrgUnit().getId());
@@ -61,9 +60,6 @@ public class ActorMapperApi {
   }
 
   public static Certificate toPersistence(CertificateDto certificate) {
-    if (certificate == null) {
-      return null;
-    }
     return new Certificate(certificate.value(), certificate.signature(), certificate.signatory());
   }
 
@@ -91,8 +87,7 @@ public class ActorMapperApi {
     actor.setCommonName(auditedActor.getCommonName());
     actor.setReadableName(auditedActor.getReadableName());
     actor.setNetworkId(auditedActor.getNetworkId());
-    actor.setCurrentCertificate(auditedActor.getCurrentCertificate());
-    actor.setPreviousCertificate(auditedActor.getPreviousCertificate());
+    actor.setCertificate(auditedActor.getCertificate());
     actor.setActive(auditedActor.isActive());
     actor.setManualCertificate(auditedActor.isManualCertificate());
     actor.setType(auditedActor.getType());
@@ -107,7 +102,7 @@ public class ActorMapperApi {
       ActorRequestDto actorRequestDto, String commonName, String networkId) {
     var actor = new AuditedActor();
     actor.setReadableName(actorRequestDto.readableName());
-    actor.setCurrentCertificate(toPersistence(actorRequestDto.certificate()));
+    actor.setCertificate(toPersistence(actorRequestDto.certificate()));
     actor.setType(ActorType.convert(actorRequestDto.type(), ActorType.class));
     actor.setCommonName(commonName);
     actor.setNetworkId(networkId);
@@ -121,8 +116,7 @@ public class ActorMapperApi {
     auditedActor.setReadableName(actor.getReadableName());
     auditedActor.setManualCertificate(actor.isManualCertificate());
     if (auditedActor.isManualCertificate()) {
-      auditedActor.setCurrentCertificate(actor.getCurrentCertificate());
-      auditedActor.setPreviousCertificate(actor.getPreviousCertificate());
+      auditedActor.setCertificate(actor.getCertificate());
     }
     auditedActor.setNetworkId(actor.getNetworkId());
     auditedActor.setType(actor.getType());

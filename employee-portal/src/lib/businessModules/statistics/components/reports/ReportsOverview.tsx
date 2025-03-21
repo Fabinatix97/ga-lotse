@@ -5,6 +5,13 @@
 
 "use client";
 
+import {
+  DataTable,
+  Pagination,
+  TablePage,
+  TableSheet,
+  usePagination,
+} from "@eshg/lib-employee-portal";
 import { Box } from "@mui/joy";
 import { startTransition, useState } from "react";
 
@@ -24,11 +31,6 @@ import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSet
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 import { useFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
-import { Pagination } from "@/lib/shared/components/pagination/Pagination";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import { usePagination } from "@/lib/shared/hooks/table/usePagination";
 import { useCopy } from "@/lib/shared/hooks/useCopy";
 
 import { getReportsOverviewColumns } from "./columns";

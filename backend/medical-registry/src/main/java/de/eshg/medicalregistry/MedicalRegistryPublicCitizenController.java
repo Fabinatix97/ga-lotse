@@ -35,13 +35,13 @@ public class MedicalRegistryPublicCitizenController {
   @Operation(summary = "Get the privacy-notice document.")
   @Transactional(readOnly = true)
   public ResponseEntity<Resource> getPrivacyNotice() {
-    return privacyDocumentService.getPrivacyNotice();
+    return privacyDocumentService.getPrivacyNoticeDe();
   }
 
   @GetMapping(path = DOCUMENTS_PRIVACY_POLICY)
   @Operation(summary = "Get the privacy-policy document.")
   @Transactional(readOnly = true)
   public ResponseEntity<Resource> getPrivacyPolicy() {
-    return privacyDocumentService.getPrivacyPolicy();
+    return privacyDocumentService.getPrivacyPolicyDe();
   }
 }

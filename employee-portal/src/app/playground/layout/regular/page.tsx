@@ -6,8 +6,11 @@
 "use client";
 
 import {
+  DataTable,
   MainContentLayout,
   StickyToolbarLayout,
+  TablePage,
+  TableSheet,
   Toolbar,
 } from "@eshg/lib-employee-portal";
 import { Sheet, Slider, Switch, Typography } from "@mui/joy";
@@ -17,9 +20,6 @@ import { doNothing } from "remeda";
 
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 
 interface TestData {
   name: string;

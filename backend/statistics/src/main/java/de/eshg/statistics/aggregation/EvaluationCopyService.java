@@ -180,6 +180,8 @@ public class EvaluationCopyService {
       AnonymizationConfiguration currentConfiguration,
       AnonymizationConfiguration newConfiguration) {
     currentConfiguration.setDataPrivacyCategory(newConfiguration.getDataPrivacyCategory());
+    currentConfiguration.setLDiversity(newConfiguration.getLDiversity());
+    currentConfiguration.setTCloseness(newConfiguration.getTCloseness());
     currentConfiguration.setIntervalCount(newConfiguration.getIntervalCount());
     currentConfiguration.setMinDecimalInclusive(newConfiguration.getMinDecimalInclusive());
     currentConfiguration.setMaxDecimalInclusive(newConfiguration.getMaxDecimalInclusive());

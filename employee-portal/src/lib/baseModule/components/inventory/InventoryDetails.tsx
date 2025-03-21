@@ -4,6 +4,7 @@
  */
 
 import { ApiInventoryItem, ApiLabel } from "@eshg/base-api";
+import { DetailsRow } from "@eshg/lib-employee-portal";
 import { Sheet, Stack, Typography } from "@mui/joy";
 
 import { LowCountWarning } from "@/lib/baseModule/components/inventory/LowCountWarning";
@@ -12,7 +13,6 @@ import { useInventoryUpdateSidebar } from "@/lib/baseModule/components/inventory
 import { LabelList } from "@/lib/baseModule/components/labels/LabelList";
 import { EditButton } from "@/lib/shared/components/buttons/EditButton";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
 
 export function InventoryDetails({
   inventory,

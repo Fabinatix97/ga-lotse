@@ -4,17 +4,26 @@
  */
 
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { WithRequired } from "@eshg/lib-portal/types/utility";
 import {
   ApiBookingState,
   ApiGetCitizenProcedureDetailsResponse,
 } from "@eshg/official-medical-service-api";
+import {
+  CakeOutlined,
+  MedicalServicesOutlined,
+  PersonOutlined,
+} from "@mui/icons-material";
 import { Button, Stack } from "@mui/joy";
 import { isDefined } from "remeda";
 
 import { useCancelAppointmentByCitizen } from "@/lib/businessModules/officialMedicalService/api/mutations/citizenAuthApi";
 import { useCitizenRoutes } from "@/lib/businessModules/officialMedicalService/shared/routes";
+import { useManualTranslation } from "@/lib/businessModules/officialMedicalService/shared/useManualTranslation";
 import { useTranslation } from "@/lib/i18n/client";
+import { DetailsItem } from "@/lib/shared/components/DetailsItem";
 import {
   ContentSheet,
   ContentSheetTitle,
@@ -29,33 +38,45 @@ interface PersonalAreaSidePanelProps {
 export function PersonalAreaSidePanel({
   procedure,
 }: PersonalAreaSidePanelProps) {
-  const isVisible =
-    procedure.appointment &&
-    ((procedure.appointment.bookingState !== ApiBookingState.Booked &&
-      procedure.appointment.bookingsRemaining > 0) ||
-      procedure.appointment.bookingState === ApiBookingState.Booked);
+  const { t } = useTranslation(["officialMedicalService/personalArea"]);
 
-  if (!isVisible) {
-    return;
-  }
+  const concernName = useManualTranslation({
+    de: procedure.concern.nameDe,
+    en: procedure.concern.nameEn,
+  });
 
   return (
-    <ContentSheet>
-      {renderContent(
-        procedure as WithRequired<
-          ApiGetCitizenProcedureDetailsResponse,
-          "appointment"
-        >,
-      )}
+    <ContentSheet data-testid={"appointment-panel"}>
+      <ContentSheetTitle>{t("overview.title")}</ContentSheetTitle>
+      <Stack direction="column" gap={2}>
+        <DetailsItem
+          label={t("overview.name_section.title")}
+          value={formatPersonName(procedure)}
+          icon={<PersonOutlined />}
+        />
+        <DetailsItem
+          label={t("overview.birthdate_section.title")}
+          value={formatDate(procedure.dateOfBirth)}
+          icon={<CakeOutlined />}
+        />
+        <DetailsItem
+          label={t("overview.concern_section.title")}
+          value={concernName}
+          icon={<MedicalServicesOutlined />}
+        />
+        {isDefined(procedure.appointment) &&
+          renderActions(
+            procedure as WithRequired<
+              ApiGetCitizenProcedureDetailsResponse,
+              "appointment"
+            >,
+          )}
+      </Stack>
     </ContentSheet>
   );
 }
 
-interface ContentProps {
-  procedure: ApiGetCitizenProcedureDetailsResponse;
-}
-
-function renderContent(
+function renderActions(
   procedureDetails: WithRequired<
     ApiGetCitizenProcedureDetailsResponse,
     "appointment"
@@ -73,7 +94,7 @@ function renderContent(
   }[procedureDetails.appointment.bookingState];
 }
 
-function BookedContent({ procedure }: ContentProps) {
+function BookedContent({ procedure }: PersonalAreaSidePanelProps) {
   const { t } = useTranslation(["officialMedicalService/personalArea"]);
   const { openConfirmationDialog } = useConfirmationDialog();
   const cancelAppointment = useCancelAppointmentByCitizen();
@@ -97,65 +118,60 @@ function BookedContent({ procedure }: ContentProps) {
 
   return (
     <>
-      <ContentSheetTitle>{t("side_panel.booked.title")}</ContentSheetTitle>
-      <Stack direction="column" gap={2} data-testId="appointment-panel">
-        {isDefined(procedure.appointment?.bookingsRemaining) &&
-          procedure.appointment?.bookingsRemaining > 0 && (
-            <InternalLinkButton
-              variant="solid"
-              href={citizenRoutes.personalArea.rebook(accessCode)}
-            >
-              {t("side_panel.booked.reschedule_appointment")}
-            </InternalLinkButton>
-          )}
-        <Button
-          variant="outlined"
-          color="danger"
-          onClick={handleCancelAppointment}
-        >
-          {t("side_panel.booked.cancel_appointment")}
-        </Button>
-      </Stack>
-    </>
-  );
-}
-
-function CancelledContent({ procedure }: ContentProps) {
-  const { t } = useTranslation(["officialMedicalService/personalArea"]);
-  const citizenRoutes = useCitizenRoutes();
-  const accessCode = useAccessCodeParam();
-
-  return (
-    <>
-      <ContentSheetTitle>{t("side_panel.cancelled.title")}</ContentSheetTitle>
       {isDefined(procedure.appointment?.bookingsRemaining) &&
         procedure.appointment?.bookingsRemaining > 0 && (
           <InternalLinkButton
             variant="solid"
             href={citizenRoutes.personalArea.rebook(accessCode)}
           >
-            {t("side_panel.cancelled.reschedule_appointment")}
+            {t("overview.actions.booked.reschedule_appointment")}
+          </InternalLinkButton>
+        )}
+      <Button
+        variant="outlined"
+        color="danger"
+        onClick={handleCancelAppointment}
+      >
+        {t("overview.actions.booked.cancel_appointment")}
+      </Button>
+    </>
+  );
+}
+
+function CancelledContent({ procedure }: PersonalAreaSidePanelProps) {
+  const { t } = useTranslation(["officialMedicalService/personalArea"]);
+  const citizenRoutes = useCitizenRoutes();
+  const accessCode = useAccessCodeParam();
+
+  return (
+    <>
+      {isDefined(procedure.appointment?.bookingsRemaining) &&
+        procedure.appointment?.bookingsRemaining > 0 && (
+          <InternalLinkButton
+            variant="solid"
+            href={citizenRoutes.personalArea.rebook(accessCode)}
+          >
+            {t("overview.actions.cancelled.reschedule_appointment")}
           </InternalLinkButton>
         )}
     </>
   );
 }
 
-function BookableContent({ procedure }: ContentProps) {
+function BookableContent({ procedure }: PersonalAreaSidePanelProps) {
   const { t } = useTranslation(["officialMedicalService/personalArea"]);
   const citizenRoutes = useCitizenRoutes();
   const accessCode = useAccessCodeParam();
 
   return (
     <>
-      <ContentSheetTitle>{t("side_panel.bookable.title")}</ContentSheetTitle>
       {isDefined(procedure.appointment?.bookingsRemaining) &&
         procedure.appointment?.bookingsRemaining > 0 && (
           <InternalLinkButton
             variant="solid"
             href={citizenRoutes.personalArea.rebook(accessCode)}
           >
-            {t("side_panel.bookable.book_appointment")}
+            {t("overview.actions.bookable.book_appointment")}
           </InternalLinkButton>
         )}
     </>

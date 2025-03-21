@@ -6,7 +6,7 @@
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
-import { toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
+import { isDateString, toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
 import { validateDateOfBirth } from "@eshg/lib-portal/helpers/validators";
 import {
   Close,
@@ -16,7 +16,7 @@ import {
 } from "@mui/icons-material";
 import { Button, styled } from "@mui/joy";
 import { Formik } from "formik";
-import { useId, useState } from "react";
+import { ReactNode, useId, useState } from "react";
 import { isDefined } from "remeda";
 
 import {
@@ -67,6 +67,8 @@ interface PersonSearchFormProps {
   initialValues: PersonSearchFormValues;
   onChange: (searchParams: PersonSearchFormValues) => void;
   onReset: () => void;
+  allowPartialSearch?: boolean;
+  children?: ReactNode;
 }
 
 export function PersonSearchForm(props: PersonSearchFormProps) {
@@ -77,46 +79,61 @@ export function PersonSearchForm(props: PersonSearchFormProps) {
       onSubmit={(formValues) => props.onChange(formValues)}
     >
       {({ resetForm }) => (
-        <SearchFormSheet id={props.id} data-testid="personSearch">
-          <InputField
-            label="Vorname"
-            name="firstName"
-            required="Bitte Vornamen eingeben"
-          />
-          <InsertLinkOutlined />
-          <InputField
-            name="lastName"
-            label="Nachname"
-            required="Bitte Nachnamen eingeben"
-          />
-          <InsertLinkOutlined />
-          <DateField
-            name="dateOfBirth"
-            label="Geburtsdatum"
-            required="Bitte Geburtsdatum eingeben"
-            validate={validateDateOfBirth}
-          />
+        <>
+          <SearchFormSheet id={props.id} data-testid="personSearch">
+            <InputField
+              label="Vorname"
+              name="firstName"
+              required={
+                !props.allowPartialSearch
+                  ? "Bitte Vornamen eingeben"
+                  : undefined
+              }
+            />
+            <InsertLinkOutlined />
+            <InputField
+              name="lastName"
+              label="Nachname"
+              required={
+                !props.allowPartialSearch
+                  ? "Bitte Nachnamen eingeben"
+                  : undefined
+              }
+            />
+            {!props.allowPartialSearch && <InsertLinkOutlined />}
+            <DateField
+              name="dateOfBirth"
+              label="Geburtsdatum"
+              required={
+                !props.allowPartialSearch
+                  ? "Bitte Geburtsdatum eingeben"
+                  : undefined
+              }
+              validate={validateDateOfBirth}
+            />
 
-          <Button
-            type="submit"
-            color="primary"
-            variant="solid"
-            startDecorator={<SearchOutlined />}
-          >
-            Suchen
-          </Button>
-          <Button
-            color="primary"
-            variant="plain"
-            startDecorator={<Close />}
-            onClick={() => {
-              resetForm();
-              props.onReset();
-            }}
-          >
-            Suche zurücksetzen
-          </Button>
-        </SearchFormSheet>
+            <Button
+              type="submit"
+              color="primary"
+              variant="solid"
+              startDecorator={<SearchOutlined />}
+            >
+              Suchen
+            </Button>
+            <Button
+              color="primary"
+              variant="plain"
+              startDecorator={<Close />}
+              onClick={() => {
+                resetForm();
+                props.onReset();
+              }}
+            >
+              Suche zurücksetzen
+            </Button>
+          </SearchFormSheet>
+          {props.children}
+        </>
       )}
     </Formik>
   );
@@ -149,7 +166,7 @@ export function TogglePersonSearchButton(props: TogglePersonSearchButtonProps) {
 export interface PersonSearchParams {
   searchFirstName: string;
   searchLastName: string;
-  searchDateOfBirth: Date;
+  searchDateOfBirth?: Date;
 }
 
 export interface PersonSearchFormValues {
@@ -177,7 +194,9 @@ export function usePersonSearch() {
     setSearchParams({
       searchFirstName: newFormValues.firstName,
       searchLastName: newFormValues.lastName,
-      searchDateOfBirth: toUtcDate(newFormValues.dateOfBirth),
+      searchDateOfBirth: isDateString(newFormValues.dateOfBirth)
+        ? toUtcDate(newFormValues.dateOfBirth)
+        : undefined,
     });
   }
 

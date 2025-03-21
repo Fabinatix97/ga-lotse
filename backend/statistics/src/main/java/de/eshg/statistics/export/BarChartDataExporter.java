@@ -12,7 +12,6 @@ import de.eshg.statistics.persistence.entity.diagramdata.KeyToCount;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
@@ -21,6 +20,7 @@ public class BarChartDataExporter {
 
   static void addData(
       Sheet sheet,
+      CellStyleHolder cellStyleHolder,
       AtomicInteger rowCounter,
       BarChartData barChartData,
       BarChartConfiguration barChartConfiguration) {
@@ -31,27 +31,29 @@ public class BarChartDataExporter {
       } else {
         keyToCountsSample = barChartData.getBarGroupDatas().getFirst().getKeyToCounts();
       }
-      addDataHeader(sheet, rowCounter.getAndIncrement(), keyToCountsSample);
+      addDataHeader(sheet, cellStyleHolder, rowCounter.getAndIncrement(), keyToCountsSample);
     }
     for (BarGroupData barGroupData : barChartData.getBarGroupDatas()) {
-      addDataRow(sheet, rowCounter.getAndIncrement(), barGroupData);
+      addDataRow(sheet, cellStyleHolder, rowCounter.getAndIncrement(), barGroupData);
     }
   }
 
-  private static void addDataHeader(Sheet sheet, int rowNumber, List<KeyToCount> keyToCounts) {
+  private static void addDataHeader(
+      Sheet sheet, CellStyleHolder cellStyleHolder, int rowNumber, List<KeyToCount> keyToCounts) {
     Row row = sheet.createRow(rowNumber);
     int columnIndex = 1;
     for (KeyToCount keyToCount : keyToCounts) {
-      row.createCell(columnIndex++, CellType.STRING).setCellValue(keyToCount.getKey());
+      DataExportUtil.createStringCell(row, cellStyleHolder, columnIndex++, keyToCount.getKey());
     }
   }
 
-  private static void addDataRow(Sheet sheet, int rowNumber, BarGroupData barGroupData) {
+  private static void addDataRow(
+      Sheet sheet, CellStyleHolder cellStyleHolder, int rowNumber, BarGroupData barGroupData) {
     Row row = sheet.createRow(rowNumber);
-    row.createCell(0, CellType.STRING).setCellValue(barGroupData.getKey());
+    DataExportUtil.createStringCell(row, cellStyleHolder, 0, barGroupData.getKey());
     int columnIndex = 1;
     for (KeyToCount keyToCount : barGroupData.getKeyToCounts()) {
-      row.createCell(columnIndex++, CellType.NUMERIC).setCellValue(keyToCount.getCount());
+      DataExportUtil.createNumericCell(row, columnIndex++, keyToCount.getCount());
     }
   }
 }

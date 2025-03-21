@@ -5,6 +5,7 @@
 
 package de.eshg.dental.mapper;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.user.api.UserDto;
@@ -26,7 +27,6 @@ import de.eshg.dental.domain.model.ProphylaxisType;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -110,8 +110,13 @@ public final class ProphylaxisSessionMapper {
                   prophylaxisSessionAugmented
                       .previousExaminationsByChildFileStateId()
                       .getOrDefault(examination.getChild().getChildIdFromCentralFile(), List.of());
+              List<FluoridationConsent> allFluoridationConsents =
+                  prophylaxisSessionAugmented
+                      .allFluoridationConsentsByChildFileStateId()
+                      .getOrDefault(examination.getChild().getChildIdFromCentralFile(), List.of());
 
-              return mapToChildExamination(examination, fileStateResponse, previousExaminations);
+              return mapToChildExamination(
+                  examination, fileStateResponse, previousExaminations, allFluoridationConsents);
             })
         .toList();
   }
@@ -119,7 +124,8 @@ public final class ProphylaxisSessionMapper {
   private static ProphylaxisSessionChildExaminationDto mapToChildExamination(
       Examination examination,
       GetPersonFileStateResponse fileStateResponse,
-      List<Examination> previousExaminations) {
+      List<Examination> previousExaminations,
+      List<FluoridationConsent> allFluoridationConsents) {
     return new ProphylaxisSessionChildExaminationDto(
         examination.getVersion(),
         examination.getExternalId(),
@@ -132,15 +138,19 @@ public final class ProphylaxisSessionMapper {
         examination.getNote(),
         DentitionTypeMapper.mapToDto(examination.getProphylaxisSession().getDentitionType()),
         ChildMapper.mapFluoridationToDto(
-            examination.getChild().getFluoridationConsents().stream()
-                .sorted(Comparator.comparing(FluoridationConsent::getModifiedAt).reversed())
+            allFluoridationConsents.stream()
+                .sorted(
+                    Comparator.comparing(FluoridationConsent::getDateOfConsent)
+                        .thenComparing(FluoridationConsent::getModifiedAt)
+                        .reversed())
                 .toList()),
         ExaminationMapper.mapToDto(examination.getResult()),
         previousExaminations.stream()
-            .map(Examination::getResult)
-            .filter(Objects::nonNull)
-            .map(ExaminationMapper::mapToDto)
-            .toList());
+            .filter(e -> e.getResult() != null)
+            .sorted(Comparator.comparing(Examination::getDateAndTime).reversed())
+            .collect(
+                StreamUtil.toLinkedHashMap(
+                    Examination::getDateAndTime, e -> ExaminationMapper.mapToDto(e.getResult()))));
   }
 
   private static List<? extends PerformingPersonDto> mapPersons(

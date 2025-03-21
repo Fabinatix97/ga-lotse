@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DetailsItem } from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -21,7 +22,6 @@ import {
   STATUS_NAMES_MEDICAL_OPINION_STATUS,
 } from "@/lib/businessModules/officialMedicalService/shared/translations";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { FormStack } from "@/lib/shared/components/form/FormStack";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";

@@ -1,21 +1,19 @@
 {
   "extends": "../config/tsconfig.next.json",
   "compilerOptions": {
-    "target": "es6",
     "outDir": "./build/dist",
     "paths": {
       "@/*": ["./src/*"]
     }
   },
   "include": [
-    "next.config.js",
+    "next.config.ts",
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "vitest.config.ts",
     "eslint.config.js",
     "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/env/*.js"
+    "src/**/*.tsx"
   ],
   "exclude": ["node_modules"]
 }

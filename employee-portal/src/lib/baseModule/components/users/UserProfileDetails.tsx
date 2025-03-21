@@ -11,6 +11,11 @@ import {
   ApiUser,
   ApiUserGroup,
 } from "@eshg/base-api";
+import {
+  DetailsColumn,
+  DetailsRow,
+  ResponsiveDivider,
+} from "@eshg/lib-employee-portal";
 import { SALUTATION_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
@@ -22,11 +27,8 @@ import { GroupList } from "@/lib/baseModule/components/users/GroupList";
 import { useUserProfileEditSidebar } from "@/lib/baseModule/components/users/userSidebar/UserProfileEditSidebar";
 import { ChatUserId } from "@/lib/businessModules/chat/components/ChatUserId";
 import { routes } from "@/lib/businessModules/chat/shared/routes";
-import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
 import { EditButton } from "@/lib/shared/components/buttons/EditButton";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
-import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
 import {
   ExternalLinkDetailsCell,
   emailHref,

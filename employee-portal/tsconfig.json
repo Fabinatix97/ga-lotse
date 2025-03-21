@@ -10,15 +10,14 @@
   },
   "include": [
     "staticSvgImage.d.ts",
-    "next.config.js",
+    "next.config.ts",
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "vitest.config.ts",
     "vitest-setup.ts",
     "eslint.config.js",
     "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/env/*.js"
+    "src/**/*.tsx"
   ],
   "exclude": ["node_modules", "src/serviceWorker/sw"]
 }

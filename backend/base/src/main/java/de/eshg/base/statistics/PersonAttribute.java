@@ -8,13 +8,22 @@ package de.eshg.base.statistics;
 import de.eshg.base.statistics.options.GenderOptions;
 import de.eshg.lib.statistics.api.ValueOptionInternal;
 import de.eshg.lib.statistics.api.ValueType;
+import de.eshg.lib.statistics.api.interval.IntegerMinMaxCountIntervalConfiguration;
+import de.eshg.lib.statistics.api.interval.IntervalConfiguration;
 import java.util.List;
 import java.util.stream.IntStream;
 
 public enum PersonAttribute implements CommonAttribute {
   MONTH_OF_BIRTH("Geburtsmonat", "Geburtsmonat", createMonthOptions(), true),
 
-  YEAR_OF_BIRTH("Geburtsjahr", "Geburtsjahr", ValueType.INTEGER, true),
+  // interval in 5 year steps
+  YEAR_OF_BIRTH(
+      "Geburtsjahr",
+      "Geburtsjahr",
+      ValueType.INTEGER,
+      null,
+      true,
+      new IntegerMinMaxCountIntervalConfiguration(1945, 2100, 31)),
 
   PLACE_OF_BIRTH("Geburtsort", "Geburtsort", ValueType.TEXT, true),
 
@@ -32,26 +41,30 @@ public enum PersonAttribute implements CommonAttribute {
 
   private final boolean mandatory;
 
+  private final IntervalConfiguration intervalConfiguration;
+
   PersonAttribute(
       String name,
       String code,
       ValueType type,
       List<ValueOptionInternal> valueOptions,
-      boolean mandatory) {
+      boolean mandatory,
+      IntervalConfiguration intervalConfiguration) {
     this.name = name;
     this.code = code;
     this.type = type;
     this.valueOptions = valueOptions;
     this.mandatory = mandatory;
+    this.intervalConfiguration = intervalConfiguration;
   }
 
   PersonAttribute(String name, String code, ValueType type, boolean mandatory) {
-    this(name, code, type, null, mandatory);
+    this(name, code, type, null, mandatory, null);
   }
 
   PersonAttribute(
       String name, String code, List<ValueOptionInternal> valueOptions, boolean mandatory) {
-    this(name, code, ValueType.VALUE_WITH_OPTIONS, valueOptions, mandatory);
+    this(name, code, ValueType.VALUE_WITH_OPTIONS, valueOptions, mandatory, null);
   }
 
   @Override
@@ -77,6 +90,11 @@ public enum PersonAttribute implements CommonAttribute {
   @Override
   public boolean isMandatory() {
     return mandatory;
+  }
+
+  @Override
+  public IntervalConfiguration getIntervalConfiguration() {
+    return intervalConfiguration;
   }
 
   private static List<ValueOptionInternal> createMonthOptions() {

@@ -4,35 +4,47 @@
  */
 
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { RadioGroupFieldProps } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import {
   AppointmentPickerField,
   FIELD_LABELS_DE,
 } from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentPickerField";
+import { isNonEmptyArray } from "@eshg/lib-portal/helpers/guards";
 import {
   ApiAppointmentBookingType,
   ApiAppointmentType,
 } from "@eshg/travel-medicine-api";
-import { Stack, Typography } from "@mui/joy";
+import { FormHelperText, Stack } from "@mui/joy";
+import { isAfter, isEqual } from "date-fns";
 import { useField } from "formik";
-import { useState } from "react";
+import { ReactNode, useMemo, useState } from "react";
 
+import { theme } from "@/lib/baseModule/theme/theme";
 import { Appointment } from "@/lib/businessModules/travelMedicine/api/models/Appointment";
-import { SelectableCard } from "@/lib/shared/components/cards/SelectableCard";
+import {
+  RadioSheet,
+  RadioSheetOption,
+} from "@/lib/businessModules/travelMedicine/shared/RadioSheet";
 import { DateTimeField } from "@/lib/shared/components/formFields/DateTimeField";
+import {
+  validateNonNegativeInteger,
+  validateTodayOrFutureDate,
+} from "@/lib/shared/helpers/validators";
 
-interface AppointmentRadioGroupProps {
+interface AppointmentRadioGroupProps extends RadioGroupFieldProps {
   type?: ApiAppointmentType;
-  appointmentBlockDateOption?: SelectOption;
-  required?: boolean;
   isCitizenFollowUp?: boolean;
   freeConsultationBlockAppointments: Appointment[];
   freeVaccinationBlockAppointments: Appointment[];
+  appointmentInfo?: ReactNode;
+}
+
+export function isDateCurrentDateOrGreater(date: Date) {
+  const now = new Date();
+  return isEqual(date, now) || isAfter(date, now); //filter out dates before now
 }
 
 export function AppointmentRadioGroup({
-  required = true,
   isCitizenFollowUp = false,
   freeConsultationBlockAppointments,
   freeVaccinationBlockAppointments,
@@ -41,75 +53,87 @@ export function AppointmentRadioGroup({
   const [bookingTypeFieldProps] = useField("bookingType");
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
+  const freeAppointments =
+    props.type == ApiAppointmentType.Consultation
+      ? freeConsultationBlockAppointments
+      : freeVaccinationBlockAppointments;
+
+  const filteredAppointments = useMemo(
+    () =>
+      freeAppointments.filter((appointment) =>
+        isDateCurrentDateOrGreater(appointment.start),
+      ),
+    [freeAppointments],
+  );
+
   return (
     <Stack gap={2}>
-      <RadioGroupField
-        name="bookingType"
-        required={required ? "Bitte einen Termintyp auswählen" : undefined}
+      <RadioSheet
+        label={props.label}
+        name={props.name}
+        required="Bitte einen Termintyp auswählen"
       >
-        <SelectableCard
-          key={ApiAppointmentBookingType.AppointmentBlock}
+        {props.appointmentInfo}
+        <RadioSheetOption
+          name={props.name}
           value={ApiAppointmentBookingType.AppointmentBlock}
-          sx={{ mb: 2 }}
-          radioProps={{ overlay: false }}
-          allowDeselection={!required}
-          changeBackgroundColor={false}
-          forGroupName="bookingType"
+          label="Aus Terminblock"
+          disabled={!isNonEmptyArray(filteredAppointments)}
         >
-          <Stack gap={2}>
-            <Typography level={"body-sm"} sx={{ fontWeight: "500" }}>
-              Aus Terminblock
-            </Typography>
+          {!isNonEmptyArray(filteredAppointments) ? (
+            <FormHelperText
+              component="p"
+              sx={{ m: 0, fontSize: theme.typography["body-sm"] }}
+              aria-live="polite"
+            >
+              Keine freien Terminblöcke verfügbar
+            </FormHelperText>
+          ) : (
             <AppointmentPickerField
-              name={"appointmentBlockDate"}
+              name="appointmentBlockDate"
               currentMonth={currentMonth}
               setCurrentMonth={setCurrentMonth}
-              monthAppointments={
-                props.type == ApiAppointmentType.Consultation
-                  ? freeConsultationBlockAppointments
-                  : freeVaccinationBlockAppointments
+              monthAppointments={filteredAppointments}
+              required={
+                bookingTypeFieldProps.value ===
+                ApiAppointmentBookingType.AppointmentBlock
               }
-              required={bookingTypeFieldProps.value === "AppointmentBlock"}
               labels={FIELD_LABELS_DE}
             />
-          </Stack>
-        </SelectableCard>
-        <SelectableCard
-          key={ApiAppointmentBookingType.UserDefined}
+          )}
+        </RadioSheetOption>
+        <RadioSheetOption
+          label="Individueller Termin"
+          name={props.name}
           value={ApiAppointmentBookingType.UserDefined}
-          sx={{ mb: 2 }}
-          radioProps={{ overlay: false }}
-          allowDeselection={!required}
-          changeBackgroundColor={false}
-          forGroupName={"bookingType"}
         >
-          <Stack gap={2} sx={{ flexGrow: 1 }}>
+          <Stack
+            gap={1}
+            sx={{ flexGrow: 1, m: 0, p: 0, border: 0 }}
+            component="fieldset"
+            aria-label="Individueller Termin Terminangaben"
+          >
             <DateTimeField
-              label={"Individueller Termin"}
+              label="Datum und Uhrzeit"
               name={"userDefinedAppointmentDate"}
+              validate={validateTodayOrFutureDate}
             />
             <NumberField
-              label={"Termin Dauer in Min."}
+              label="Termindauer in Minuten"
               name={"appointmentTypeStandardDuration"}
+              min={0}
+              validate={validateNonNegativeInteger}
             ></NumberField>
           </Stack>
-        </SelectableCard>
+        </RadioSheetOption>
         {isCitizenFollowUp && (
-          <SelectableCard
-            key={ApiAppointmentBookingType.SelfBooking}
+          <RadioSheetOption
+            label="Selbstbucher"
+            name={props.name}
             value={ApiAppointmentBookingType.SelfBooking}
-            sx={{ mb: 2 }}
-            radioProps={{ overlay: false }}
-            allowDeselection={!required}
-            changeBackgroundColor={false}
-            forGroupName={"bookingType"}
-          >
-            <Stack gap={2} sx={{ flexGrow: 1 }}>
-              <Typography>Selbstbucher</Typography>
-            </Stack>
-          </SelectableCard>
+          />
         )}
-      </RadioGroupField>
+      </RadioSheet>
     </Stack>
   );
 }

@@ -5,6 +5,7 @@
 
 "use client";
 
+import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
 import { ApiDisease } from "@eshg/travel-medicine-api";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/joy";
@@ -15,9 +16,6 @@ import { useGetAllDiseasesQuery } from "@/lib/businessModules/travelMedicine/api
 import { useDiseaseSidebar } from "@/lib/businessModules/travelMedicine/components/diseases/DiseaseSidebar";
 import { columns } from "@/lib/businessModules/travelMedicine/components/diseases/columns";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function DiseasesTable() {

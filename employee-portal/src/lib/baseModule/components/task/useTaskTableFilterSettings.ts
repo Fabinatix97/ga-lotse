@@ -11,6 +11,7 @@ import {
   ApiUser,
   ApiUserGroup,
 } from "@eshg/base-api";
+import { UseTableControlResult } from "@eshg/lib-employee-portal";
 import { Dispatch, SetStateAction, startTransition } from "react";
 import { isDefined } from "remeda";
 
@@ -37,7 +38,6 @@ import {
   buildOptionsFromTaskTypes,
   getSelectedFilterValues,
 } from "@/lib/shared/components/procedures/helper";
-import { UseTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
 export const FILTER_KEYS = {
   businessModule: "businessModule",
@@ -54,7 +54,7 @@ interface TaskTableFilterSettingsProps {
   groups: ApiUserGroup[];
   leaders: ApiUser[];
   initialFilterValues: EnumFilterValue[];
-  tableControl: UseTableControl;
+  tableControl: UseTableControlResult;
   onFilterApply: Dispatch<SetStateAction<AggregateTaskFilters>>;
 }
 

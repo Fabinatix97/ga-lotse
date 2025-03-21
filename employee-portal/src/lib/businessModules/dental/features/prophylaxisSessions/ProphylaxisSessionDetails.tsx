@@ -4,6 +4,13 @@
  */
 
 import { ApiExistingUser, ApiPerformingPerson } from "@eshg/dental-api";
+import {
+  ContentPanel,
+  DetailsColumn,
+  DetailsItem,
+  DetailsRow,
+  DetailsSection,
+} from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { Stack, Typography } from "@mui/joy";
@@ -16,11 +23,6 @@ import {
   PROPHYLAXIS_TYPES,
   fluoridationDescription,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/translations";
-import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
-import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
-import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
-import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
-import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { displayBoolean } from "@/lib/shared/helpers/booleans";
 
 export function ProphylaxisSessionDetails() {

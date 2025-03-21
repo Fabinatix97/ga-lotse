@@ -5,13 +5,18 @@
 
 import {
   ApiDentitionType,
+  ApiExaminationResult,
   ApiFluoridationConsent,
   ApiGender,
   ApiProphylaxisSessionChildExamination,
 } from "@eshg/dental-api";
 import { mapOptional } from "@eshg/lib-employee-portal";
 
-import { ExaminationResult, mapExaminationResult } from "./ExaminationResult";
+import {
+  ExaminationResult,
+  ExaminationResultWithDate,
+  mapExaminationResult,
+} from "./ExaminationResult";
 import { ExaminationStatus, mapToExaminationStatus } from "./ExaminationStatus";
 
 export interface ChildExamination {
@@ -29,7 +34,7 @@ export interface ChildExamination {
   readonly result?: ExaminationResult;
   readonly note?: string;
   readonly prophylaxisDentitionType?: ApiDentitionType;
-  readonly previousExaminationResults: ExaminationResult[];
+  readonly previousExaminations: ExaminationResultWithDate[];
 }
 
 export function mapChildExamination(
@@ -51,7 +56,17 @@ export function mapChildExamination(
     status: mapToExaminationStatus(result),
     note: response.note,
     prophylaxisDentitionType: response.prophylaxisDentitionType,
-    previousExaminationResults:
-      response.previousExaminationResults.map(mapExaminationResult),
+    previousExaminations: mapPreviousExaminations(
+      response.previousExaminationResults,
+    ),
   };
+}
+
+function mapPreviousExaminations(
+  response: Record<string, ApiExaminationResult>,
+): ExaminationResultWithDate[] {
+  return Object.entries(response).map(([k, v]) => ({
+    result: mapExaminationResult(v),
+    dateAndTime: new Date(k),
+  }));
 }

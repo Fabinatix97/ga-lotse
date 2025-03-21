@@ -7,9 +7,19 @@
 
 import { Child, routes, useGetChildrenQuery } from "@eshg/dental";
 import { ApiChildSortKey } from "@eshg/dental-api";
+import {
+  DataTable,
+  Pagination,
+  TablePage,
+  TableSheet,
+  getSortDirection,
+  getSortKey,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { useToggleableState } from "@eshg/lib-portal/hooks/useToggleableState";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
+import { Typography } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 import { ReactNode } from "react";
@@ -17,25 +27,15 @@ import { ReactNode } from "react";
 import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { ChipWithTooltip } from "@/lib/shared/components/chip/ChipWithTooltip";
 import { useFilterDictionary } from "@/lib/shared/components/filterSettings/useFilterDictionary";
 import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
-import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import {
   PersonSearchForm,
   PersonSearchFormValues,
   TogglePersonSearchButton,
   usePersonSearch,
 } from "@/lib/shared/components/personSearch/PersonSearchForm";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import {
-  getSortDirection,
-  getSortKeyWithSpecificMapping,
-} from "@/lib/shared/components/table/sorting";
 import { formatSchoolYear } from "@/lib/shared/helpers/formatters";
-import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
 import {
   ChildrenFilterSettings,
@@ -82,10 +82,7 @@ export function ChildrenTable(props: ChildrenTableProps) {
   const childrenQuery = useGetChildrenQuery({
     pageNumber: tableControl.paginationProps.pageNumber,
     pageSize: tableControl.paginationProps.pageSize,
-    sortKey: getSortKeyWithSpecificMapping(
-      tableControl.tableSorting,
-      SORT_KEY_MAPPING,
-    ),
+    sortKey: getSortKey(tableControl.tableSorting, SORT_KEY_MAPPING),
     sortDirection: getSortDirection(tableControl.tableSorting),
     ...filterValues,
     ...personSearch.searchParams,
@@ -210,7 +207,7 @@ const COLUMNS = [
     cell: (props) => formatDate(props.getValue()),
     enableSorting: true,
     meta: {
-      width: 120,
+      width: 150,
       canNavigate: {
         parentRow: true,
       },
@@ -219,16 +216,16 @@ const COLUMNS = [
   columnHelper.accessor("institution", {
     header: "Einrichtung",
     cell: (props) => (
-      <ChipWithTooltip
-        key={props.getValue().id}
-        name={props.getValue().name}
-        hexColor={props.getValue().hexColor}
-        modalTitle="Institution"
-      />
+      <Typography sx={{ fontWeight: "bold" }}>
+        {props.getValue().name}
+      </Typography>
     ),
     enableSorting: false,
     meta: {
       width: 180,
+      canNavigate: {
+        parentRow: true,
+      },
     },
   }),
   columnHelper.accessor("groupName", {
@@ -236,7 +233,7 @@ const COLUMNS = [
     cell: (props) => props.getValue(),
     enableSorting: true,
     meta: {
-      width: 50,
+      width: 100,
       canNavigate: {
         parentRow: true,
       },

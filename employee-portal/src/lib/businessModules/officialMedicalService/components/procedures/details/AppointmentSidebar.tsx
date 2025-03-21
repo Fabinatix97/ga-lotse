@@ -3,12 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DetailsItem } from "@eshg/lib-employee-portal";
+import { Alert } from "@eshg/lib-portal/components/Alert";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import {
-  AppointmentListForDate,
-  AppointmentListProps,
-} from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentListForDate";
 import {
   AppointmentPickerField,
   FIELD_LABELS_DE,
@@ -27,7 +25,7 @@ import {
 } from "@eshg/official-medical-service-api";
 import { Sheet, Stack, Typography } from "@mui/joy";
 import { addMinutes, isEqual } from "date-fns";
-import { Formik, FormikHelpers, useFormikContext } from "formik";
+import { Formik, FormikHelpers } from "formik";
 import {
   Dispatch,
   ReactNode,
@@ -43,7 +41,6 @@ import { useBookAppointment } from "@/lib/businessModules/officialMedicalService
 import { usePostAppointment } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
 import { useGetFreeAppointmentsQuery } from "@/lib/businessModules/officialMedicalService/api/queries/appointmentBlocksApi";
 import { APPOINTMENT_TYPE_OPTIONS } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/options";
-import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { DateTimeField } from "@/lib/shared/components/formFields/DateTimeField";
@@ -300,13 +297,12 @@ function AppointmentSidebarActions({
   changeToStep: (newStep: number) => void;
   lastStepIndex: number;
 }) {
-  const { dirty } = useFormikContext<AppointmentFormValues>();
   const isOnFirstStep = stepIndex === 0;
   const isOnLastStep = stepIndex === lastStepIndex;
 
   let submitLabel;
   if (isOnLastStep) {
-    submitLabel = dirty ? "Buchen" : "Schließen";
+    submitLabel = "Buchen";
   } else {
     submitLabel = "Weiter";
   }
@@ -330,7 +326,13 @@ function BookingForm({
   initialValues,
 }: Readonly<FieldsProps>) {
   return (
-    <>
+    <Stack gap={2}>
+      {appointments.length === 0 && (
+        <Alert
+          color="warning"
+          message="Es sind keine freien Terminblöcke verfügbar."
+        />
+      )}
       <AssignedPhysician physician={physician} />
       <RadioAccordionGroupField
         name="bookingType"
@@ -339,6 +341,7 @@ function BookingForm({
         <RadioAccordionItem
           value={ApiBookingType.AppointmentBlock}
           label="Aus Terminblock"
+          disabled={appointments.length === 0}
         >
           {(isExpanded) => (
             <AppointmentBlockForm
@@ -364,7 +367,7 @@ function BookingForm({
           />
         )}
       </RadioAccordionGroupField>
-    </>
+    </Stack>
   );
 }
 
@@ -378,6 +381,10 @@ function useAppointments(
 } {
   const { data } = useGetFreeAppointmentsQuery(appointmentType, physicianId);
 
+  const appointmentsAvailable = data.appointments.length > 0;
+  const initialBookingType = appointmentsAvailable
+    ? ApiBookingType.AppointmentBlock
+    : ApiBookingType.UserDefined;
   const [appointments, setAppointments] = useState(data.appointments);
 
   useEffect(() => {
@@ -418,14 +425,13 @@ function useAppointments(
       appointments,
       initialValues: {
         appointmentType: appointmentType,
-        bookingType:
-          appointment?.bookingType ?? ApiBookingType.AppointmentBlock,
+        bookingType: appointment?.bookingType ?? initialBookingType,
         appointment: blockAppointment,
         start: start ? toDateTimeString(start) : "",
         duration: duration ?? 30,
       },
     };
-  }, [appointments, appointment, appointmentType]);
+  }, [appointments, appointment, appointmentType, initialBookingType]);
 }
 
 function AppointmentBlockForm({
@@ -445,20 +451,16 @@ function AppointmentBlockForm({
         <Typography>Keine freien Terminblöcke verfügbar ☹</Typography>
       ) : (
         <AppointmentPickerField
-          sx={{
-            // just for aligning the separator line
-            width: "min-content",
-          }}
           name="appointment"
           currentMonth={month}
           setCurrentMonth={setMonth}
           monthAppointments={appointments}
           required={isExpanded}
           labels={FIELD_LABELS_DE}
+          slotProps={{ list: { trimLeadingZero: true } }}
           isAppointmentEqual={(apt1: ApiAppointment, apt2: ApiAppointment) =>
             isEqual(apt1.start, apt2.start) && isEqual(apt1.end, apt2.end)
           }
-          appointmentList={StyledAppointmentListForDate}
         />
       )}
     </Sheet>
@@ -499,30 +501,5 @@ function AppointmentUserDefinedForm({
         required={isExpanded ? "Termindauer ist erforderlich" : undefined}
       />
     </Stack>
-  );
-}
-
-// AppointmentListForDate but with equal width chips and time labels with no leading zeros
-export function StyledAppointmentListForDate<T extends Appointment>(
-  props: AppointmentListProps<T>,
-) {
-  return (
-    <AppointmentListForDate
-      {...props}
-      slotProps={{
-        chip: {
-          sx: {
-            minWidth: "4rem",
-            paddingX: 0,
-          },
-        },
-      }}
-      getLabel={(apt) =>
-        apt.start.toLocaleTimeString("de-DE", {
-          hour: "numeric",
-          minute: "2-digit",
-        })
-      }
-    />
   );
 }

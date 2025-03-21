@@ -201,15 +201,28 @@ public class EmployeeOmsProcedureService {
 
     omsProcedureRepository.save(procedure);
 
-    OmsDocument document = new OmsDocument();
-    document.setDocumentStatus(OmsDocumentStatus.MISSING);
-    document.setDocumentTypeDe("Auftragsschreiben");
-    document.setUploadInCitizenPortal(false);
-    document.setMandatoryDocument(true);
-    document.setOmsProcedure(procedure);
-    omsDocumentRepository.save(document);
+    OmsDocument letterOfAssignmentDocument =
+        createInitialDocument("Auftragsschreiben", "Letter of assignment", procedure);
+    omsDocumentRepository.save(letterOfAssignmentDocument);
+
+    OmsDocument releaseFromConfidentialityDocument =
+        createInitialDocument(
+            "Schweigepflichtsentbindung", "Release from confidentiality", procedure);
+    omsDocumentRepository.save(releaseFromConfidentialityDocument);
 
     return procedure.getExternalId();
+  }
+
+  public static OmsDocument createInitialDocument(
+      String documentTypeDe, String documentTypeEn, OmsProcedure procedure) {
+    OmsDocument newDocument = new OmsDocument();
+    newDocument.setDocumentStatus(OmsDocumentStatus.MISSING);
+    newDocument.setDocumentTypeDe(documentTypeDe);
+    newDocument.setDocumentTypeEn(documentTypeEn);
+    newDocument.setUploadInCitizenPortal(false);
+    newDocument.setMandatoryDocument(true);
+    newDocument.setOmsProcedure(procedure);
+    return newDocument;
   }
 
   @Transactional(readOnly = true)
@@ -828,7 +841,31 @@ public class EmployeeOmsProcedureService {
       UUID externalId, PatchEmployeeOmsProcedureEmailNotificationsRequest request) {
     OmsProcedure procedure = loadOmsProcedureForUpdate(externalId);
 
+    if (procedure.isFinalized()) {
+      throw new BadRequestException(
+          "E-Mail notification can not be edited when the procedure is finalized.");
+    }
+
     procedure.setSendEmailNotifications(request.sendEmailNotifications());
+
+    NotificationService.NotificationSummary notificationSummary = null;
+    if (request.sendEmailNotifications()
+        && List.of(ProcedureStatus.OPEN, ProcedureStatus.IN_PROGRESS)
+            .contains(procedure.getProcedureStatus())) {
+      UUID citizenUserId = procedure.getCitizenUserId();
+      String accessCode =
+          citizenAccessCodeUserClient.getCitizenAccessCode(citizenUserId).accessCode();
+
+      Person person = procedure.findAffectedPerson();
+      AffectedPersonDto affectedPersonDto =
+          PersonMapper.mapToAffectedPersonDto(
+              personClient.getPersonFileState(person.getCentralFileStateId()), person.getVersion());
+
+      notificationSummary =
+          notificationService.notifyNewCitizenUser(
+              procedure::isSendEmailNotifications, affectedPersonDto, accessCode);
+    }
+    progressEntryService.createProgressEntryForMailNotification(procedure, notificationSummary);
   }
 
   private OmsProcedure loadOmsProcedure(UUID externalId) {

@@ -86,7 +86,8 @@ public record SpatzConfigurationProperties(
 
     private boolean enabled = true;
     private List<String> subjectAlternativeNames;
-    private Duration maxAge = Duration.ofDays(30);
+    private String subjectLocation;
+    private Duration maxAge = Duration.ofDays(7);
     private DefaultKeyParameters keyParameters = DefaultKeyParameters.ECDSA;
 
     public boolean isEnabled() {
@@ -119,6 +120,14 @@ public record SpatzConfigurationProperties(
 
     public void setSubjectAlternativeNames(List<String> subjectAlternativeNames) {
       this.subjectAlternativeNames = subjectAlternativeNames;
+    }
+
+    public String getSubjectLocation() {
+      return subjectLocation;
+    }
+
+    public void setSubjectLocation(String subjectLocation) {
+      this.subjectLocation = subjectLocation;
     }
   }
 

@@ -45,9 +45,11 @@ import de.eshg.stiprotection.api.StiProcedureOriginDto;
 import de.eshg.stiprotection.mapper.PersonMapper;
 import de.eshg.stiprotection.pdf.identification.AnonymousIdentificationDocument;
 import de.eshg.stiprotection.pdf.identification.AnonymousIdentificationDocumentService;
+import de.eshg.stiprotection.pdf.identification.AppointmentUrls;
 import de.eshg.stiprotection.pdf.identification.ConsultationAppointment;
 import de.eshg.stiprotection.pdf.identification.Department;
 import de.eshg.stiprotection.pdf.identification.DocumentSender;
+import de.eshg.stiprotection.pdf.identification.QrCodes;
 import de.eshg.stiprotection.persistence.data.PersonData;
 import de.eshg.stiprotection.persistence.data.ResultPage;
 import de.eshg.stiprotection.persistence.data.StiProtectionProcedureData;
@@ -77,6 +79,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -95,6 +98,7 @@ public class StiProtectionProcedureService {
   private final CitizenAccessCodeUserApi citizenAccessCodeUserApi;
   private final StiProtectionProcedureFinder procedureFinder;
   private final ProgressEntryUtil progressEntryUtil;
+  private final String citizenPortalUrl;
 
   public StiProtectionProcedureService(
       StiProtectionProcedureRepository procedures,
@@ -104,7 +108,8 @@ public class StiProtectionProcedureService {
       DepartmentClient departmentClient,
       CitizenAccessCodeUserApi citizenAccessCodeUserApi,
       StiProtectionProcedureFinder procedureFinder,
-      ProgressEntryUtil progressEntryUtil) {
+      ProgressEntryUtil progressEntryUtil,
+      @Value("${eshg.citizen-portal.reverse-proxy.url}") String citizenPortalUrl) {
     this.repository = procedures;
     this.clock = clock;
     this.auditLogger = auditLogger;
@@ -113,6 +118,7 @@ public class StiProtectionProcedureService {
     this.citizenAccessCodeUserApi = citizenAccessCodeUserApi;
     this.procedureFinder = procedureFinder;
     this.progressEntryUtil = progressEntryUtil;
+    this.citizenPortalUrl = citizenPortalUrl;
   }
 
   public StiProtectionProcedure createProcedure(
@@ -406,8 +412,10 @@ public class StiProtectionProcedureService {
     String documentDate = toDocumentDate(clock.instant());
     DepartmentLogo departmentLogo = departmentClient.getDepartmentLogo();
     String accessCode = getAccessCode(procedure);
+    String appointmentUrl = AppointmentUrls.url(citizenPortalUrl, procedure.concern());
+    String qrCode = QrCodes.qrCode(citizenPortalUrl, procedure.concern(), accessCode);
     ConsultationAppointment appointment =
-        toConsultationAppointment(department, timeRange, accessCode);
+        toConsultationAppointment(department, timeRange, appointmentUrl, accessCode, qrCode);
     DocumentSender sender = new DocumentSender(department, documentDate, departmentLogo);
     return documentService.createPdf(new AnonymousIdentificationDocument(sender, appointment));
   }

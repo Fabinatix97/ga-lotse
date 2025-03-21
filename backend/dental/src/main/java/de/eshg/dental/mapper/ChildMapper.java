@@ -5,12 +5,14 @@
 
 package de.eshg.dental.mapper;
 
+import de.eshg.base.centralfile.api.person.PersonDetailsDto;
 import de.eshg.dental.api.AnnualInstitutionDto;
 import de.eshg.dental.api.ChildDetailsDto;
 import de.eshg.dental.api.ChildDto;
 import de.eshg.dental.api.CreateChildRequest;
 import de.eshg.dental.api.ExaminationDto;
 import de.eshg.dental.api.FluoridationConsentDto;
+import de.eshg.dental.api.UpdatePersonRequest;
 import de.eshg.dental.business.model.ChildWithAugmentedData;
 import de.eshg.dental.business.model.ImportChildData;
 import de.eshg.dental.domain.model.Child;
@@ -31,35 +33,36 @@ public final class ChildMapper {
   }
 
   public static ChildDetailsDto mapToChildDetailsDto(
-      ChildWithAugmentedData child,
+      ChildWithAugmentedData augmentedChild,
       List<Examination> examinations,
       List<FluoridationConsent> fluoridationConsents,
       List<AnnualInstitutionDto> institutions) {
-    if (child == null) {
+    if (augmentedChild == null) {
       return null;
     }
 
     return new ChildDetailsDto(
-        child.child().getExternalId(),
-        child.child().getVersion(),
-        ProcedureMapper.toInterfaceType(child.child().getProcedureStatus()),
-        child.personData().id(),
-        child.personData().outdated(),
-        child.personData().title(),
-        child.personData().salutation(),
-        child.personData().gender(),
-        child.personData().firstName(),
-        child.personData().lastName(),
-        child.personData().dateOfBirth(),
-        child.personData().nameAtBirth(),
-        child.personData().placeOfBirth(),
-        child.personData().countryOfBirth(),
-        child.personData().emailAddresses(),
-        child.personData().phoneNumbers(),
-        child.personData().contactAddress(),
-        child.personData().differentBillingAddress(),
-        child.child().getYear().getValue(),
-        child.child().getGroupName(),
+        augmentedChild.child().getExternalId(),
+        augmentedChild.child().getVersion(),
+        augmentedChild.child().getChild().getVersion(),
+        ProcedureMapper.toInterfaceType(augmentedChild.child().getProcedureStatus()),
+        augmentedChild.personData().id(),
+        augmentedChild.personData().outdated(),
+        augmentedChild.personData().title(),
+        augmentedChild.personData().salutation(),
+        augmentedChild.personData().gender(),
+        augmentedChild.personData().firstName(),
+        augmentedChild.personData().lastName(),
+        augmentedChild.personData().dateOfBirth(),
+        augmentedChild.personData().nameAtBirth(),
+        augmentedChild.personData().placeOfBirth(),
+        augmentedChild.personData().countryOfBirth(),
+        augmentedChild.personData().emailAddresses(),
+        augmentedChild.personData().phoneNumbers(),
+        augmentedChild.personData().contactAddress(),
+        augmentedChild.personData().differentBillingAddress(),
+        augmentedChild.child().getYear().getValue(),
+        augmentedChild.child().getGroupName(),
         mapExaminationsToDto(examinations),
         institutions == null ? List.of() : institutions,
         mapFluoridationToDto(fluoridationConsents));
@@ -117,5 +120,22 @@ public final class ChildMapper {
         year,
         importChildData.groupName(),
         institutionId);
+  }
+
+  public static PersonDetailsDto mapToPersonDetailsDto(UpdatePersonRequest child) {
+    return new PersonDetailsDto(
+        child.title(),
+        child.salutation(),
+        child.gender(),
+        child.firstName(),
+        child.lastName(),
+        child.dateOfBirth(),
+        child.nameAtBirth(),
+        child.placeOfBirth(),
+        child.countryOfBirth(),
+        child.emailAddresses(),
+        child.phoneNumbers(),
+        child.contactAddress(),
+        child.differentBillingAddress());
   }
 }

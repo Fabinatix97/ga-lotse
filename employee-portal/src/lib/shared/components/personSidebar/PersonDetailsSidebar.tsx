@@ -5,6 +5,10 @@
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
+  BaseAddressDetailsColumn,
+  DetailsRow,
+} from "@eshg/lib-employee-portal";
+import {
   GENDER_VALUES,
   SALUTATION_VALUES,
   getOptionalTitle,
@@ -16,9 +20,7 @@ import { Divider, Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { isDefined } from "remeda";
 
-import { BaseAddressDetails } from "@/lib/shared/components/address/BaseAddressDetails";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
@@ -115,11 +117,11 @@ export function PersonDetailsSidebar(props: PersonDetailsSidebarProps) {
               {isDefined(person.contactAddress) && (
                 <>
                   <Divider />
-                  <BaseAddressDetails address={person.contactAddress} />
+                  <BaseAddressDetailsColumn address={person.contactAddress} />
                   {isDefined(person.differentBillingAddress) && (
                     <>
                       <Divider />
-                      <BaseAddressDetails
+                      <BaseAddressDetailsColumn
                         address={person.differentBillingAddress}
                       />
                     </>

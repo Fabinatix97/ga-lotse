@@ -5,6 +5,11 @@
 
 "use client";
 
+import {
+  BaseAddressFormInputs,
+  BaseAddressType,
+  createEmptyAddress,
+} from "@eshg/lib-employee-portal";
 import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
@@ -22,13 +27,9 @@ import { useFormikContext } from "formik";
 import { useId } from "react";
 import { isNonNullish } from "remeda";
 
-import {
-  BaseAddressFormInputs,
-  createEmptyAddress,
-} from "@/lib/shared/components/form/address/helpers";
 import { CountryField } from "@/lib/shared/components/formFields/CountryField";
 import { StreetField } from "@/lib/shared/components/formFields/StreetField";
-import { BaseAddressType } from "@/lib/shared/helpers/address";
+import { StreetListeningField } from "@/lib/shared/components/formFields/StreetListeningField";
 import { validateZipCode } from "@/lib/shared/helpers/validators";
 
 interface AddressFormProps extends Partial<NestedFormProps> {
@@ -253,7 +254,7 @@ function CommonAddressFields({
         </Grid>
       )}
       <Grid xxs={12} xs={4}>
-        <InputField
+        <StreetListeningField
           name={fieldName("postalCode")}
           label="Postleitzahl"
           required="Bitte PLZ angeben"
@@ -261,14 +262,16 @@ function CommonAddressFields({
             validateZipCode(getValue("country")),
             validateLength(1, 20),
           )}
+          property={"postCode"}
         />
       </Grid>
       <Grid xxs={12} xs={8}>
-        <InputField
+        <StreetListeningField
           name={fieldName("city")}
           label="Ort"
           required="Bitte einen Ort angeben"
           validate={validateLength(1, 50)}
+          property={"city"}
         />
       </Grid>
       <Grid xxs={12}>

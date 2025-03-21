@@ -10,12 +10,16 @@ import {
   AppointmentPickerFieldProps,
   AppointmentPickerLayoutProps,
 } from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentPickerField";
-import { isSameAppointment } from "@eshg/lib-portal/components/formFields/appointmentPicker/helpers";
+import {
+  formatTime,
+  isSameAppointment,
+} from "@eshg/lib-portal/components/formFields/appointmentPicker/helpers";
 import { Box, Button, ListItem, Stack, Typography, styled } from "@mui/joy";
 import { useMemo, useState } from "react";
 
 import { Row } from "@/lib/businessModules/measlesProtection/shared/components/Row";
 import { TranslateFn } from "@/lib/i18n/client";
+import { useLocale } from "@/lib/i18n/useLocale";
 
 interface AppointmentPickerSectionProps<T extends Appointment> {
   name: string;
@@ -39,6 +43,7 @@ export function AppointmentPickerSection<T extends Appointment>({
       .map((t) => t.start)
       .sort((a, b) => a.getTime() - b.getTime())[0] ?? new Date();
   const [month, setMonth] = useState<Date>(startMonth);
+  const { code } = useLocale();
   const labels = useMemo(
     () => ({
       requiredAppointment: t(`${translationPrefix}.required_appointment`),
@@ -69,6 +74,7 @@ export function AppointmentPickerSection<T extends Appointment>({
       padDays={false}
       appointmentList={TimeSlotList}
       slotProps={AppointmentPickerCitizenSlotProps}
+      locale={code}
     />
   );
 }
@@ -134,6 +140,7 @@ function TimeSlotList<T extends Appointment>({
   appointments,
   onAppointmentSelected,
   label,
+  locale,
 }: AppointmentListProps<T>) {
   const hasAppointments = appointments.length > 0;
   if (!hasAppointments || !date) {
@@ -148,7 +155,7 @@ function TimeSlotList<T extends Appointment>({
   }
 
   return (
-    <Stack gap={2}>
+    <Stack gap={2} data-testId={"time-slot-list"}>
       <Typography level="title-md">{label}</Typography>
       <ListGrid>
         {appointments.map((apt: T) => {
@@ -178,10 +185,7 @@ function TimeSlotList<T extends Appointment>({
                     width: "100%",
                   })}
                 >
-                  {apt.start.toLocaleTimeString(undefined, {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
+                  {formatTime(apt.start, locale)}
                 </Button>
               </Box>
             </ListItem>

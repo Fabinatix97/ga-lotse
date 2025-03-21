@@ -12,7 +12,7 @@ import {
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { endOfMonth, startOfMonth } from "date-fns";
-import { startTransition, useState } from "react";
+import { startTransition, use, useState } from "react";
 
 import { useGetResourceDetailsQuery } from "@/lib/baseModule/api/queries/resources";
 import { ResourceDetail } from "@/lib/baseModule/components/resources/ResourceDetail";
@@ -21,7 +21,7 @@ import { routes } from "@/lib/baseModule/shared/routes";
 export default function ResourceDetailsPage(
   props: DynamicPageProps<{ id: string }>,
 ) {
-  const { id } = props.params;
+  const { id } = use(props.params);
   const [currentCalendarDate, setCurrentCalendarDate] = useState(new Date());
 
   const timeRangeStart = startOfMonth(currentCalendarDate);

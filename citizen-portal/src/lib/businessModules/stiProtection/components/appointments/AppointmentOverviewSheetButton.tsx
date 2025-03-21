@@ -7,7 +7,10 @@ import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/Inter
 import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
 import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
 import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
-import { ApiAppointmentType } from "@eshg/sti-protection-api";
+import {
+  ApiAppointmentStatus,
+  ApiAppointmentType,
+} from "@eshg/sti-protection-api";
 import {
   ChevronRightOutlined,
   DateRangeOutlined,
@@ -50,13 +53,9 @@ export function AppointmentOverviewSheetButton({
   const isMobile = useIsMobile();
   const { t } = useTranslation(["stiProtection/appointmentOverview"]);
 
-  function isCancelled() {
-    return appointment.appointmentStatus === "CANCELLED";
-  }
-
-  function isBooked() {
-    return appointment.appointmentStatus === "OPEN";
-  }
+  const { statusTextKey, statusIcon } = getStatusAndIcon(
+    appointment.appointmentStatus,
+  );
 
   return (
     <InternalLinkButton
@@ -120,22 +119,10 @@ export function AppointmentOverviewSheetButton({
             icon={<PeopleAltOutlined />}
             text={t("appointment_card.appointment_type.consultation")}
           />
-          {isCancelled() ? (
-            <AppointmentOverviewButtonElement
-              icon={<EventBusyOutlined />}
-              text={t("appointment_status.cancelled")}
-            />
-          ) : isBooked() ? (
-            <AppointmentOverviewButtonElement
-              icon={<EventAvailableOutlined />}
-              text={t("appointment_status.booked")}
-            />
-          ) : (
-            <AppointmentOverviewButtonElement
-              icon={<EventOutlined />}
-              text={t("appointment_status.non_booked")}
-            />
-          )}
+          <AppointmentOverviewButtonElement
+            icon={statusIcon}
+            text={t(statusTextKey)}
+          />
         </AppointmentOverviewSectionGrid>
         <ChevronRightOutlined
           color={"primary"}
@@ -147,4 +134,29 @@ export function AppointmentOverviewSheetButton({
       </Sheet>
     </InternalLinkButton>
   );
+}
+
+function getStatusAndIcon(status: ApiAppointmentStatus | undefined) {
+  switch (status) {
+    case undefined:
+      return {
+        statusIcon: <EventOutlined />,
+        statusTextKey: "appointment_status.non_booked",
+      };
+    case ApiAppointmentStatus.Open:
+      return {
+        statusIcon: <EventAvailableOutlined />,
+        statusTextKey: "appointment_status.booked",
+      };
+    case ApiAppointmentStatus.Closed:
+      return {
+        statusIcon: <EventAvailableOutlined />,
+        statusTextKey: "appointment_status.closed",
+      };
+    case ApiAppointmentStatus.Cancelled:
+      return {
+        statusIcon: <EventBusyOutlined />,
+        statusTextKey: "appointment_status.cancelled",
+      };
+  }
 }

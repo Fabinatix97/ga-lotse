@@ -4,10 +4,10 @@
  */
 
 import { ApiUpdateReferenceFacilityRequest } from "@eshg/base-api";
+import { mapBaseAddressToApi } from "@eshg/lib-employee-portal";
 import { dropBlankStrings } from "@eshg/lib-portal/helpers/form";
 
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
-import { mapBaseAddressToApi } from "@/lib/shared/components/form/address/helpers";
 import { mapContactPersonToApi } from "@/lib/shared/helpers/facilityUtils";
 
 export function mapBaseFacilityToUpdate(

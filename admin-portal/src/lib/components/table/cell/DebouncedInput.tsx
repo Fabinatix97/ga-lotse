@@ -20,7 +20,7 @@ export function DebouncedInput(
   const { onChange, timeoutMs, label, value, defaultValue, ...rest } = props;
   const [stateValue, setStateValue] = useState(value ?? defaultValue);
 
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
     if (!timerRef.current) setStateValue(value);

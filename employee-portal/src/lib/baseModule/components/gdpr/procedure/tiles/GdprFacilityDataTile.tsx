@@ -4,16 +4,18 @@
  */
 
 import { ApiGdprFacility } from "@eshg/base-api";
+import {
+  BaseAddressDetailsColumn,
+  DetailsColumn,
+  DetailsItem,
+  ExternalLinkDetailsItem,
+  ResponsiveDivider,
+} from "@eshg/lib-employee-portal";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import VerifiedIcon from "@mui/icons-material/VerifiedOutlined";
 import { Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
-import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
-import { BaseAddressDetails } from "@/lib/shared/components/address/BaseAddressDetails";
-import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
-import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
-import { ExternalLinkDetailsItem } from "@/lib/shared/components/detailsSection/items/ExternalLinkDetailsItem";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 
 export function GdprFacilityDataTile({
@@ -46,7 +48,7 @@ export function GdprFacilityDataTile({
           )}
         </DetailsColumn>
 
-        <BaseAddressDetails address={identity.address} sx={columnSx} />
+        <BaseAddressDetailsColumn address={identity.address} sx={columnSx} />
 
         {(isNonEmptyString(identity.emailAddress) ||
           isNonEmptyString(identity.phoneNumber)) && (

@@ -21,7 +21,7 @@ export function BookAppointment({
   const { t } = useTranslation(["officialMedicalService/rebookAppointment"]);
 
   return (
-    <ContentSheet>
+    <ContentSheet data-testid="appointment-slot-form">
       <FormSheetTitle requiredTitle={t("common.requiredTitle")}>
         {t("content.title")}
       </FormSheetTitle>

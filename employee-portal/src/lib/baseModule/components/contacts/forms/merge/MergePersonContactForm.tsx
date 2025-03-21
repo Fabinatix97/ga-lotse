@@ -4,6 +4,7 @@
  */
 
 import { ApiGender, ApiPersonContact, ApiSalutation } from "@eshg/base-api";
+import { BaseAddressFormInputs } from "@eshg/lib-employee-portal";
 import {
   InputArrayField,
   getIndexLabel,
@@ -38,7 +39,6 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@/lib/shared/components/form/SidebarForm";
-import { BaseAddressFormInputs } from "@/lib/shared/components/form/address/helpers";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 

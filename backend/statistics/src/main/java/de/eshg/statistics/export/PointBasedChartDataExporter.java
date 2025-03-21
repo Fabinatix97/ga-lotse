@@ -13,8 +13,6 @@ import de.eshg.statistics.persistence.entity.diagramdata.LineOrScatterChartData;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
@@ -23,12 +21,14 @@ public class PointBasedChartDataExporter {
 
   static void addData(
       Sheet sheet,
+      CellStyleHolder cellStyleHolder,
       AtomicInteger rowCounter,
       LineOrScatterChartData lineOrScatterChartData,
       PointBasedChartConfiguration pointBasedChartConfiguration) {
     if (pointBasedChartConfiguration.getSecondaryAttributeSelection() != null) {
       addDataHeader(
           sheet,
+          cellStyleHolder,
           rowCounter.getAndIncrement(),
           rowCounter.getAndIncrement(),
           lineOrScatterChartData.getDataPointGroups());
@@ -42,7 +42,7 @@ public class PointBasedChartDataExporter {
             sheet, rowCounter.getAndIncrement(), lineOrScatterChartData.getDataPointGroups(), i);
       }
     } else {
-      addXYCells(sheet.createRow(rowCounter.getAndIncrement()), 0);
+      addXYCells(sheet.createRow(rowCounter.getAndIncrement()), cellStyleHolder, 0);
       for (DataPoint dataPoint :
           lineOrScatterChartData.getDataPointGroups().getFirst().getDataPoints()) {
         addDataPointToRow(sheet.createRow(rowCounter.getAndIncrement()), 0, dataPoint);
@@ -51,20 +51,25 @@ public class PointBasedChartDataExporter {
   }
 
   private static void addDataHeader(
-      Sheet sheet, int firstRowNumber, int secondRowNumber, List<DataPointGroup> dataPointGroups) {
+      Sheet sheet,
+      CellStyleHolder cellStyleHolder,
+      int firstRowNumber,
+      int secondRowNumber,
+      List<DataPointGroup> dataPointGroups) {
     Row firstRow = sheet.createRow(firstRowNumber);
     Row secondRow = sheet.createRow(secondRowNumber);
     int columnIndex = 0;
     for (DataPointGroup dataPointGroup : dataPointGroups) {
-      firstRow.createCell(columnIndex, CellType.STRING).setCellValue(dataPointGroup.getKey());
-      addXYCells(secondRow, columnIndex);
+      DataExportUtil.createStringCell(
+          firstRow, cellStyleHolder, columnIndex, dataPointGroup.getKey());
+      addXYCells(secondRow, cellStyleHolder, columnIndex);
       columnIndex += 3;
     }
   }
 
-  private static void addXYCells(Row row, int xColumnIndex) {
-    row.createCell(xColumnIndex, CellType.STRING).setCellValue("x");
-    row.createCell(xColumnIndex + 1, CellType.STRING).setCellValue("y");
+  private static void addXYCells(Row row, CellStyleHolder cellStyleHolder, int xColumnIndex) {
+    DataExportUtil.createStringCell(row, cellStyleHolder, xColumnIndex, "x");
+    DataExportUtil.createStringCell(row, cellStyleHolder, xColumnIndex + 1, "y");
   }
 
   private static void addDataRow(
@@ -80,41 +85,40 @@ public class PointBasedChartDataExporter {
   }
 
   private static void addDataPointToRow(Row row, int xColumnIndex, DataPoint dataPoint) {
-    row.createCell(xColumnIndex, CellType.NUMERIC)
-        .setCellValue(dataPoint.getXCoordinate().doubleValue());
-    row.createCell(xColumnIndex + 1, CellType.NUMERIC)
-        .setCellValue(dataPoint.getYCoordinate().doubleValue());
+    DataExportUtil.createNumericCell(row, xColumnIndex, dataPoint.getXCoordinate().doubleValue());
+    DataExportUtil.createNumericCell(
+        row, xColumnIndex + 1, dataPoint.getYCoordinate().doubleValue());
   }
 
   static void addAttributesInformation(
       Sheet sheet,
-      CellStyle cellStyle,
+      CellStyleHolder cellStyleHolder,
       AtomicInteger rowCounter,
       PointBasedChartConfiguration pointBasedChartConfiguration,
       AbstractAggregationResult aggregationResult) {
     DataExportUtil.addMetadataRow(
         sheet,
-        cellStyle,
+        cellStyleHolder,
         rowCounter.getAndIncrement(),
         "x-Achse",
         DiagramExportService.getAttributeName(
             pointBasedChartConfiguration.getXAttributeSelection(), aggregationResult));
     DiagramExportService.addLegend(
         sheet,
-        cellStyle,
+        cellStyleHolder,
         rowCounter,
         aggregationResult,
         pointBasedChartConfiguration.getXAttributeSelection());
     DataExportUtil.addMetadataRow(
         sheet,
-        cellStyle,
+        cellStyleHolder,
         rowCounter.getAndIncrement(),
         "y-Achse",
         DiagramExportService.getAttributeName(
             pointBasedChartConfiguration.getYAttributeSelection(), aggregationResult));
     DiagramExportService.addLegend(
         sheet,
-        cellStyle,
+        cellStyleHolder,
         rowCounter,
         aggregationResult,
         pointBasedChartConfiguration.getYAttributeSelection());
@@ -123,12 +127,12 @@ public class PointBasedChartDataExporter {
             secondaryAttribute -> {
               DataExportUtil.addMetadataRow(
                   sheet,
-                  cellStyle,
+                  cellStyleHolder,
                   rowCounter.getAndIncrement(),
                   "Sekundäres Attribut",
                   DiagramExportService.getAttributeName(secondaryAttribute, aggregationResult));
               DiagramExportService.addLegend(
-                  sheet, cellStyle, rowCounter, aggregationResult, secondaryAttribute);
+                  sheet, cellStyleHolder, rowCounter, aggregationResult, secondaryAttribute);
             });
   }
 }

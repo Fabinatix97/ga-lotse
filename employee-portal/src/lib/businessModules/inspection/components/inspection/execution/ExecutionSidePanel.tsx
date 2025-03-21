@@ -10,6 +10,7 @@ import {
   ApiInspection,
   ApiInspectionPhase,
 } from "@eshg/inspection-api";
+import { DetailsItem } from "@eshg/lib-employee-portal";
 import { scrollToFirstFormError } from "@eshg/lib-portal/components/form/FormPlus";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/EditOutlined";
@@ -25,7 +26,6 @@ import {
   SidePanelNavigationTab,
 } from "@/lib/businessModules/inspection/components/inspection/execution/SidePanelNavigation";
 import { useChecklistValidateContext } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/ChecklistValidateContext";
-import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { SidePanel } from "@/lib/shared/components/sidePanel/SidePanel";
 import { SidePanelTitle } from "@/lib/shared/components/sidePanel/SidePanelTitle";
 import { UserLink } from "@/lib/shared/components/users/UserLink";

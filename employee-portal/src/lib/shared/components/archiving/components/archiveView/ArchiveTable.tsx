@@ -3,6 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import {
+  DataTable,
+  Pagination,
+  TablePage,
+  TableSheet,
+  getSortDirection,
+  getSortKey,
+  useRowSelection,
+  useSyncRowSelection,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiGetArchivableProceduresSortBy } from "@eshg/lib-procedures-api";
@@ -21,19 +32,6 @@ import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
-import { Pagination } from "@/lib/shared/components/pagination/Pagination";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import {
-  getSortDirection,
-  getSortKey,
-} from "@/lib/shared/components/table/sorting";
-import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
-import {
-  useRowSelection,
-  useSyncRowSelection,
-} from "@/lib/shared/hooks/table/useRowSelection";
 
 export type ArchiveTableProps = Omit<ArchiveViewProps, "title">;
 

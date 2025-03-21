@@ -8,10 +8,10 @@ import { redirect } from "next/navigation";
 
 import { routes as businessRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
 
-export default function VaccinationConsultationPage(
+export default async function VaccinationConsultationPage(
   props: DynamicPageProps<{ id: string }>,
 ) {
-  const { id } = props.params;
+  const { id } = await props.params;
 
   // if no tab name is given in the URL redirect to the "basedata" tab page
   redirect(businessRoutes.procedures.baseData(id));

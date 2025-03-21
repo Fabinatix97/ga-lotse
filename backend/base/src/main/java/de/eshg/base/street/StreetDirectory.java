@@ -11,6 +11,8 @@ public interface StreetDirectory {
   Set<AdministrativeData> getAdministrativeDataBy(
       String streetName, HouseNumber houseNumber, String postalCode);
 
+  Set<AdministrativeData> getAdministrativeDataByStreetName(String streetName);
+
   Set<String> getFullStreetNamesForPrefix(String streetName);
 
   record AdministrativeData(

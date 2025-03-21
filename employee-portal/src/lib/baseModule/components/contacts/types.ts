@@ -10,13 +10,13 @@ import {
   ApiPersonContact,
   ApiSalutation,
 } from "@eshg/base-api";
+import { BaseAddressFormInputs } from "@eshg/lib-employee-portal";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 
 import {
   OptionalMergeValue,
   RequiredMergeValue,
 } from "@/lib/baseModule/components/contacts/forms/helpers";
-import { BaseAddressFormInputs } from "@/lib/shared/components/form/address/helpers";
 
 type TaggedPersonContact = ApiPersonContact & { type: "PersonContact" };
 type TaggedInstitutionContact = ApiInstitutionContact & {

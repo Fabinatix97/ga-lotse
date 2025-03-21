@@ -5,6 +5,7 @@
 
 "use client";
 
+import { TablePage } from "@eshg/lib-employee-portal";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { Add } from "@mui/icons-material";
 
@@ -14,7 +15,6 @@ import { FacilityWebSearchTable } from "@/lib/businessModules/inspection/compone
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { RefreshButton } from "@/lib/shared/components/buttons/RefreshButton";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
 
 export function FacilitiesWebSearchPageContent() {
   const { data, isFetching } = useGetWebSearchOverview();

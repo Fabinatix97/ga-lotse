@@ -36,6 +36,7 @@ public class DentalProphylaxisSessionDataSource
         DATA_SOURCE_ID,
         DATA_SOURCE_NAME,
         DataSourceSensitivity.SENSITIVE,
+        null,
         DentalProphylaxisSessionAttributes.values());
     this.prophylaxisSessionRepository = prophylaxisSessionRepository;
     this.clock = clock;

@@ -26,8 +26,8 @@ export function useGetEvaluationDetailsTablePage(
   const evaluationApi = useEvaluationApi();
   const filterTemplateApi = useFilterTemplateApi();
 
-  const defaultSortAttributeRef = useRef<ApiAttributeSelection>();
-  const defaultSortDirectionRef = useRef<ApiSortDirection>();
+  const defaultSortAttributeRef = useRef<ApiAttributeSelection>(undefined);
+  const defaultSortDirectionRef = useRef<ApiSortDirection>(undefined);
 
   const [{ data: evaluation }, { data: filterTemplates }] = useSuspenseQueries({
     queries: [

@@ -92,7 +92,8 @@ public class StatisticsController implements BaseStatisticsApi {
         null,
         commonAttribute.getValueOptions(),
         commonAttribute.isMandatory(),
-        DataPrivacyCategory.QUASI_IDENTIFYING);
+        DataPrivacyCategory.QUASI_IDENTIFYING,
+        commonAttribute.getIntervalConfiguration());
   }
 
   @Override
@@ -184,7 +185,8 @@ public class StatisticsController implements BaseStatisticsApi {
             null,
             null,
             true,
-            DataPrivacyCategory.QUASI_IDENTIFYING));
+            DataPrivacyCategory.QUASI_IDENTIFYING,
+            null));
     baseAttributes.forEach(baseAttribute -> attributes.add(mapToAttribute(baseAttribute)));
     return attributes;
   }

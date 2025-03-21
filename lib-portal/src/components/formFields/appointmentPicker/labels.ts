@@ -5,12 +5,14 @@
 
 import { AppointmentPickerFieldLabels } from "./AppointmentPickerField";
 
-const dateFormatter = Intl.DateTimeFormat(undefined, {
-  weekday: "short",
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-});
+function dateFormatter(locale: string) {
+  return Intl.DateTimeFormat(locale, {
+    weekday: "short",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
 
 export const FIELD_LABELS_DE = {
   requiredAppointment: "Bitte einen Termin auswählen",
@@ -18,6 +20,6 @@ export const FIELD_LABELS_DE = {
   monthSelection: "Termin Kalendermonat",
   nextMonth: "zum nächsten Monat",
   prevMonth: "zum vorherigen Monat",
-  listLabel: (date: Date) =>
-    `Verfügbare Termine: ${dateFormatter.format(date)}`,
+  listLabel: (date: Date, locale: string) =>
+    `Verfügbare Termine: ${dateFormatter(locale).format(date)}`,
 } as const satisfies AppointmentPickerFieldLabels;

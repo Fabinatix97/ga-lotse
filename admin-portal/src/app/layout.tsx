@@ -23,8 +23,8 @@ export const metadata: Metadata = {
   title: "Admin-Portal",
 };
 
-export default function RootLayout(props: LayoutProps) {
-  const nonce = getNonceFromHeader();
+export default async function RootLayout(props: LayoutProps) {
+  const nonce = await getNonceFromHeader();
 
   return (
     <html>

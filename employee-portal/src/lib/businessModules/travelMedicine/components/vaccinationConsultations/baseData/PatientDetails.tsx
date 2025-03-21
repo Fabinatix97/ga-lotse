@@ -5,6 +5,12 @@
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
+  BaseAddress,
+  BaseAddressDetailsColumn,
+  DetailsItem,
+  DetailsRow,
+} from "@eshg/lib-employee-portal";
+import {
   GENDER_VALUES,
   SALUTATION_VALUES,
   getOptionalTitle,
@@ -21,14 +27,10 @@ import { Formik } from "formik";
 import { isDefined } from "remeda";
 
 import { instanceOfApiGetReferencePersonResponse } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/AcceptProcedureSidebar";
-import { BaseAddressDetails } from "@/lib/shared/components/address/BaseAddressDetails";
-import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
-import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import { BaseAddress } from "@/lib/shared/helpers/address";
 
 export interface PatientDetailsProps {
   title: string;
@@ -136,7 +138,7 @@ export function PatientDetails(props: Readonly<PatientDetailsProps>) {
               {isDefined(person.contactAddress) && (
                 <>
                   <Divider />
-                  <BaseAddressDetails address={person.contactAddress} />
+                  <BaseAddressDetailsColumn address={person.contactAddress} />
                 </>
               )}
 

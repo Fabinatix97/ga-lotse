@@ -35,6 +35,11 @@ public class StreetController implements StreetApi {
     return new AutocompleteStreetResponse(streets.stream().limit(100).toList(), streets.size());
   }
 
+  @Override
+  public PostCodeAndCity getPostCodeAndCityForStreet(String streetNamePrefix) {
+    return streetService.getPostCodeAndCityForStreet(streetNamePrefix);
+  }
+
   static class StreetMapper {
 
     private StreetMapper() {

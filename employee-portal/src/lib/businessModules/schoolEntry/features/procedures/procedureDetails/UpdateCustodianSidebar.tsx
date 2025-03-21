@@ -4,6 +4,11 @@
  */
 
 import {
+  DefaultPersonFormValues,
+  mapToPersonUpdateRequest,
+} from "@eshg/lib-employee-portal";
+
+import {
   PersonDetails,
   mapPersonDetailsToForm,
 } from "@/lib/businessModules/schoolEntry/api/models/Person";
@@ -11,12 +16,8 @@ import {
   useRemoveCustodian,
   useUpdateCustodian,
 } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
-import {
-  DefaultPersonForm,
-  DefaultPersonFormValues,
-} from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
+import { DefaultPersonForm } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
 import { PersonSidebarForm } from "@/lib/shared/components/personSidebar/form/PersonSidebarForm";
-import { mapToPersonUpdateRequest } from "@/lib/shared/components/personSidebar/helpers";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 import { SidebarWithFormRefProps } from "@/lib/shared/hooks/useSidebarWithFormRef";
 

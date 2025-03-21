@@ -8,14 +8,12 @@ import { BaseEntity, mapBaseEntity } from "@eshg/lib-employee-portal";
 
 export interface Institution extends BaseEntity {
   readonly name: string;
-  readonly hexColor: string;
 }
 
 export function mapInstitution(response: ApiInstitution): Institution {
   return {
     ...mapBaseEntity(response),
     name: response.name,
-    hexColor: response.hexColor,
   };
 }
 

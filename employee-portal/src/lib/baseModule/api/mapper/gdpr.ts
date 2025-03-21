@@ -7,6 +7,7 @@ import {
   ApiAddCentralFileIdToGdprProcedureRequest,
   ApiAddGdprProcedureRequest,
 } from "@eshg/base-api";
+import { mapBaseAddressToApi } from "@eshg/lib-employee-portal";
 import { toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
 import {
   mapOptionalValue,
@@ -14,7 +15,6 @@ import {
 } from "@eshg/lib-portal/helpers/form";
 
 import { GDPRProcedureFormInputs } from "@/lib/baseModule/components/gdpr/overview/CreateGDPRProcedureSidebar";
-import { mapBaseAddressToApi } from "@/lib/shared/components/form/address/helpers";
 
 export function mapAddGdprProcedureRequest(
   values: GDPRProcedureFormInputs,

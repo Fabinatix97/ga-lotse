@@ -213,7 +213,10 @@ public class ExaminationService {
       throw new IllegalStateException("No person found for examination.");
     }
     GetPersonFileStateResponse fileStateResponse = personFileStateResponses.getFirst();
-    LocalDate dateOfBirth = fileStateResponse.dateOfBirth();
+    return calculateAgeOfChild(examination, fileStateResponse.dateOfBirth());
+  }
+
+  public static int calculateAgeOfChild(Examination examination, LocalDate dateOfBirth) {
     LocalDate dateOfExamination =
         examination.getDateAndTime().atZone(ZoneId.systemDefault()).toLocalDate();
 

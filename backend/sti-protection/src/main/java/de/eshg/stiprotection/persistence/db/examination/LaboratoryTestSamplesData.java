@@ -68,4 +68,10 @@ public class LaboratoryTestSamplesData {
   public void setAnalSampleData(LaboratoryTestData analSampleData) {
     this.analSampleData = analSampleData;
   }
+
+  public boolean hasResult() {
+    return analSampleData != null && analSampleData.getResult() != null
+        || urethralSampleData != null && urethralSampleData.getResult() != null
+        || oralSampleData != null && oralSampleData.getResult() != null;
+  }
 }

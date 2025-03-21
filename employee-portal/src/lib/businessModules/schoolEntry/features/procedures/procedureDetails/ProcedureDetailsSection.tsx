@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ContentPanel, DetailsSection } from "@eshg/lib-employee-portal";
 import {
   formatDate,
   formatDateTime,
@@ -17,9 +18,7 @@ import { InvitationDetails } from "@/lib/businessModules/schoolEntry/features/pr
 import { useUpdateProcedureSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/UpdateProcedureSidebar";
 import { PROCEDURE_TYPES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import { ChipWithTooltip } from "@/lib/shared/components/chip/ChipWithTooltip";
-import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { formatSchoolYear } from "@/lib/shared/helpers/formatters";
 
 interface ProcedureDetailsProps {

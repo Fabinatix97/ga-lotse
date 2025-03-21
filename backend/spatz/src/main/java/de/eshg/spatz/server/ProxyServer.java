@@ -30,7 +30,7 @@ import reactor.netty.http.server.HttpServer;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 
-public abstract class ProxyServer implements HealthIndicator {
+public abstract class ProxyServer implements SpatzHttpServer, HealthIndicator {
 
   protected static final Logger logger = LoggerFactory.getLogger(ProxyServer.class);
   public static final String ALLOWED_PROTOCOL = "TLSv1.3";
@@ -134,10 +134,12 @@ public abstract class ProxyServer implements HealthIndicator {
    */
   protected abstract Publisher<Void> handlerFunction(HttpServerRequest in, HttpServerResponse out);
 
+  @Override
   public Integer getListeningPort() {
     return listeningPort;
   }
 
+  @Override
   public void start() {
     logger.info("Starting server, binding to {}:{}", listeningHost, listeningPort);
 
@@ -170,6 +172,7 @@ public abstract class ProxyServer implements HealthIndicator {
 
   public abstract HttpServer setupSsl(HttpServer server, SslContext sslContext);
 
+  @Override
   public void stop() {
     logger.info("Stopping server");
 

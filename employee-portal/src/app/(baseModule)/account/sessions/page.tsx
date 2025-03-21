@@ -7,8 +7,10 @@
 
 import { ApiActiveUserSession } from "@eshg/base-api";
 import {
+  DataTable,
   MainContentLayout,
   StickyToolbarLayout,
+  TableSheet,
   Toolbar,
 } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
@@ -21,8 +23,6 @@ import { ReactNode, useMemo } from "react";
 
 import { useInvalidateUserSessions } from "@/lib/baseModule/api/mutations/users";
 import { useGetSelfActiveSessions } from "@/lib/baseModule/api/queries/users";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { join } from "@/lib/shared/helpers/strings";
 
 function DeviceIndicator({ label, icon }: { label: string; icon: ReactNode }) {

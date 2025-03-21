@@ -5,13 +5,12 @@
 
 "use client";
 
+import { usePagination, useTableSorting } from "@eshg/lib-employee-portal";
 import { startTransition, useState } from "react";
 
 import { useGetEvaluationsOverview } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationsOverview";
 import { useCreateEvaluationSidebar } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/CreateEvaluationSidebar";
 import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
-import { usePagination } from "@/lib/shared/hooks/table/usePagination";
-import { useTableSorting } from "@/lib/shared/hooks/table/useTableSorting";
 
 import { EvaluationsTable } from "./EvaluationsTable";
 

@@ -74,3 +74,9 @@ export function useFilteredParticipants(): ChildExamination[] {
     ),
   );
 }
+
+export function useFilteredPresentParticipants(): ChildExamination[] {
+  return useFilteredParticipants().filter(
+    (participant) => participant.status !== "NOT_PRESENT",
+  );
+}

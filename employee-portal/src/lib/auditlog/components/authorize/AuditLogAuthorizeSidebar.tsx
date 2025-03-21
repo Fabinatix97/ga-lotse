@@ -8,6 +8,7 @@ import {
   ApiGetAuditLogGrantedAccessesResponse,
 } from "@eshg/auditlog-api";
 import { ApiUser } from "@eshg/base-api";
+import { DetailsColumn } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { List, ListItem, Sheet, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
@@ -25,7 +26,6 @@ import {
   useGetAuditLogGranteesCandidates,
 } from "@/lib/auditlog/queries/auditlog";
 import { auditLogSourceNames } from "@/lib/shared/components/auditlog/constants";
-import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";

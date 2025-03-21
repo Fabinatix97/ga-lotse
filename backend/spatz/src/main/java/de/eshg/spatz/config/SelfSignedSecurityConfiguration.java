@@ -36,10 +36,12 @@ import org.springframework.boot.ssl.SslBundleRegistry;
 import org.springframework.boot.ssl.SslOptions;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 
 @AutoConfiguration(before = SslAutoConfiguration.class, after = LsdActorApiConfiguration.class)
 @EnableConfigurationProperties({SpatzConfigurationProperties.class})
+@EnableScheduling
 public class SelfSignedSecurityConfiguration {
 
   private static final Logger logger =

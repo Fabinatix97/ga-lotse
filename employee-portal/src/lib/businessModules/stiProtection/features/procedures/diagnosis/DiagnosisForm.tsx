@@ -5,6 +5,7 @@
 
 "use client";
 
+import { Alert } from "@eshg/lib-portal/components/Alert";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
@@ -33,8 +34,8 @@ import {
 import { SectionGrid } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/SectionGrid";
 import { TextareaFieldWithTextTemplates } from "@/lib/businessModules/stiProtection/components/textTemplates/TextareaFieldWithTextTemplates";
 import {
+  SidecarContainer,
   SidecarFormLayout,
-  SidecarSheet,
 } from "@/lib/businessModules/stiProtection/features/procedures/SidecarFormLayout";
 import { TabStickyBottomButtonBar } from "@/lib/businessModules/stiProtection/features/procedures/TabStickyBottomButtonBar";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
@@ -105,24 +106,10 @@ export function DiagnosisForm({
                 <TypesOfTestsSection />
               </Stack>
             </Sheet>
-
-            <SidecarSheet>
-              <Typography level="h3" mb={3}>
-                Zusatzinfos
-              </Typography>
-              <Stack rowGap={5}>
-                <TextareaFieldWithTextTemplates
-                  name="notes"
-                  label="Allgemeine Bemerkungen"
-                  minRows={5}
-                  context={ApiTextTemplateContext.DiagnosisRemark}
-                />
-                <CheckboxField
-                  name="resultsShared"
-                  label="Ergebnis mitgeteilt"
-                />
-              </Stack>
-            </SidecarSheet>
+            <SidecarContainer>
+              <AdditionalInfosSidecar />
+              <ResultsCommunicatedSidecar />
+            </SidecarContainer>
           </SidecarFormLayout>
           <TabStickyBottomButtonBar />
         </FormPlus>
@@ -184,6 +171,44 @@ function FindingsSection() {
         </Button>
       </HiddenIfDisabled>
     </SectionGrid>
+  );
+}
+
+function ResultsCommunicatedSidecar() {
+  return (
+    <Sheet>
+      <Typography level="h3" mb={3}>
+        Ergebnis mitgeteilt
+      </Typography>
+      <Stack rowGap={3}>
+        <Alert
+          color="primary"
+          message="Ändert den Laborstatus auf “Ergebnis mitgeteilt”"
+        />
+        <CheckboxField
+          name="resultsShared"
+          label="Ich habe dem Bürger/der Bürgerin alle Testergebnisse mitgeteilt."
+        />
+      </Stack>
+    </Sheet>
+  );
+}
+
+function AdditionalInfosSidecar() {
+  return (
+    <Sheet>
+      <Typography level="h3" mb={3}>
+        Zusatzinfos
+      </Typography>
+      <Stack rowGap={5}>
+        <TextareaFieldWithTextTemplates
+          name="notes"
+          label="Allgemeine Bemerkungen"
+          minRows={5}
+          context={ApiTextTemplateContext.DiagnosisRemark}
+        />
+      </Stack>
+    </Sheet>
   );
 }
 

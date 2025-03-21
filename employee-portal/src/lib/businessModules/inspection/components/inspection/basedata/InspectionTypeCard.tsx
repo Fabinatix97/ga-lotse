@@ -7,7 +7,12 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import { ApiInspection } from "@eshg/inspection-api";
-import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
+import {
+  DetailsItem,
+  DetailsSection,
+  SimplifiedModalProps,
+  useHasUserRoleCheck,
+} from "@eshg/lib-employee-portal";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
 import { Divider, Grid, Stack } from "@mui/joy";
@@ -24,11 +29,6 @@ import {
 import { InspectionAssigneeSelection } from "@/lib/businessModules/inspection/components/inspection/assignee/InspectionAssigneeSelection";
 import { translateInspectionType } from "@/lib/businessModules/inspection/shared/enums";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import {
-  DetailsSection,
-  SimplifiedModalProps,
-} from "@/lib/shared/components/detailsSection/DetailsSection";
-import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import {
   SidebarForm,

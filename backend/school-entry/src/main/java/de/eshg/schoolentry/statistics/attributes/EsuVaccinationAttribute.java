@@ -14,136 +14,136 @@ import de.eshg.schoolentry.statistics.options.*;
 
 public enum EsuVaccinationAttribute implements EsuAttributes {
   IMPFBUCH(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Impfbuch vorgelegt", "ImpfBuch", EsuVaccinationAttribute.CATEGORY_VACCINATION, true)),
 
   IMPFSCHEMA(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Impfschema \"2+1\" und \"3+1\" ",
           "Impfschema",
-          convertToValueOptions(VaccinationScheme.values()),
           EsuVaccinationAttribute.CATEGORY_VACCINATION,
-          true)),
+          true,
+          convertToValueOptions(VaccinationScheme.values()))),
 
   DIP(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Impfung Diphtherie Summe",
           "Dip",
-          EsuAttributeUtil.createVaccinationCountOptions(),
           EsuVaccinationAttribute.CATEGORY_VACCINATION,
-          true)),
+          true,
+          EsuAttributeUtil.createVaccinationCountOptions())),
 
   TET(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Impfungen Tetanus Summe",
           "Tet",
-          EsuAttributeUtil.createVaccinationCountOptions(),
           EsuVaccinationAttribute.CATEGORY_VACCINATION,
-          true)),
+          true,
+          EsuAttributeUtil.createVaccinationCountOptions())),
 
   PER(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Impfungen Pertussis Summe",
           "Per",
-          EsuAttributeUtil.createVaccinationCountOptions(),
           EsuVaccinationAttribute.CATEGORY_VACCINATION,
-          true)),
+          true,
+          EsuAttributeUtil.createVaccinationCountOptions())),
 
   HIB(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Impfungen HIB Summe",
           "HIB",
-          EsuAttributeUtil.createVaccinationCountOptions(),
           EsuVaccinationAttribute.CATEGORY_VACCINATION,
-          true)),
+          true,
+          EsuAttributeUtil.createVaccinationCountOptions())),
 
   POL(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Impfungen Polio Summe",
           "Pol",
-          EsuAttributeUtil.createVaccinationCountOptions(),
           EsuVaccinationAttribute.CATEGORY_VACCINATION,
-          true)),
+          true,
+          EsuAttributeUtil.createVaccinationCountOptions())),
 
   PERKOMBIHBV(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "PerkombiHBV",
           "PerkombiHBV",
-          convertToValueOptions(BooleanWithUnknown.values()),
           EsuVaccinationAttribute.CATEGORY_VACCINATION,
-          true)),
+          true,
+          convertToValueOptions(BooleanWithUnknown.values()))),
 
   HBV(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Impfungen Hepatitis B Summe",
           "HBV",
-          EsuAttributeUtil.createVaccinationCountOptions(),
           EsuVaccinationAttribute.CATEGORY_VACCINATION,
-          true)),
+          true,
+          EsuAttributeUtil.createVaccinationCountOptions())),
 
   PNEUMO(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Impfungen Pneumokokken Summe",
           "Pneumo",
-          EsuAttributeUtil.createVaccinationCountOptions(),
           EsuVaccinationAttribute.CATEGORY_VACCINATION,
-          true)),
+          true,
+          EsuAttributeUtil.createVaccinationCountOptions())),
 
   MMR(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Impfungen Maser, Mumps, Röteln Summe",
           "MMR",
-          EsuAttributeUtil.createVaccinationCountOptions(),
           EsuVaccinationAttribute.CATEGORY_VACCINATION,
-          true)),
+          true,
+          EsuAttributeUtil.createVaccinationCountOptions())),
 
   VARI(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Impfungen Varizellen Summe",
           "Vari",
-          EsuAttributeUtil.createVaccinationCountOptions(),
           EsuVaccinationAttribute.CATEGORY_VACCINATION,
-          true)),
+          true,
+          EsuAttributeUtil.createVaccinationCountOptions())),
 
   MENB(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Impfungen Meningokokken B Summe",
           "MenB",
-          EsuAttributeUtil.createVaccinationCountOptions(),
           EsuVaccinationAttribute.CATEGORY_VACCINATION,
-          true)),
+          true,
+          EsuAttributeUtil.createVaccinationCountOptions())),
 
   MENC(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Impfungen Meningokokken C Summe",
           "MenC",
-          EsuAttributeUtil.createVaccinationCountOptions(),
           EsuVaccinationAttribute.CATEGORY_VACCINATION,
-          true)),
+          true,
+          EsuAttributeUtil.createVaccinationCountOptions())),
 
   ROTA(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Impfungen Rota Summe",
           "Rota",
-          EsuAttributeUtil.createVaccinationCountOptions(),
           EsuVaccinationAttribute.CATEGORY_VACCINATION,
-          true)),
+          true,
+          EsuAttributeUtil.createVaccinationCountOptions())),
 
   FSME(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Impfungen FSME Summe",
           "FSME",
-          EsuAttributeUtil.createVaccinationCountOptions(),
           EsuVaccinationAttribute.CATEGORY_VACCINATION,
-          true)),
+          true,
+          EsuAttributeUtil.createVaccinationCountOptions())),
 
   HAV(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Impfungen Hepatitis A Summe",
           "HAV",
-          EsuAttributeUtil.createVaccinationCountOptions(),
           EsuVaccinationAttribute.CATEGORY_VACCINATION,
-          true));
+          true,
+          EsuAttributeUtil.createVaccinationCountOptions()));
 
   private static final String CATEGORY_VACCINATION = "Impfungen";
 

@@ -11,6 +11,14 @@ import {
   ApiWebSearchEntry,
   ApiWebSearchQuery,
 } from "@eshg/inspection-api";
+import {
+  DataTable,
+  Pagination,
+  TablePage,
+  TableSheet,
+  UseTableControlResult,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import AddIcon from "@mui/icons-material/Add";
@@ -28,17 +36,9 @@ import {
   webSearchStatusNames,
 } from "@/lib/businessModules/inspection/shared/enums";
 import { FacilityWebSearchFiltersSchema } from "@/lib/businessModules/inspection/shared/types";
-import { Pagination } from "@/lib/shared/components/pagination/Pagination";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { SingleSelectFilter } from "@/lib/shared/components/tableFilters/SingleSelectFilter";
 import { TextInputFilter } from "@/lib/shared/components/tableFilters/TextInputFilter";
 import { join } from "@/lib/shared/helpers/strings";
-import {
-  UseTableControl,
-  useTableControl,
-} from "@/lib/shared/hooks/searchParams/useTableControl";
 
 import {
   createFacilitySearchResultColumns,
@@ -124,7 +124,7 @@ function TableControls({
   filters,
   savedQueries,
 }: {
-  tableControl: UseTableControl;
+  tableControl: UseTableControlResult;
   webSearchId: string;
   filters: FacilityWebSearchFiltersSchema;
   savedQueries: ApiWebSearchQuery[];

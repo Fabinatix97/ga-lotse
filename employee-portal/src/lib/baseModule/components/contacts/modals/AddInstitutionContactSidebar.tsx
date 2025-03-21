@@ -4,6 +4,7 @@
  */
 
 import { ApiInstitutionContact } from "@eshg/base-api";
+import { createEmptyAddress } from "@eshg/lib-employee-portal";
 import { useState } from "react";
 
 import { ContactEntityForm } from "@/lib/baseModule/components/contacts/forms/ContactEntityForm";
@@ -14,7 +15,6 @@ import {
   AddContactSidebarState,
   InstitutionContactFormValues,
 } from "@/lib/baseModule/components/contacts/types";
-import { createEmptyAddress } from "@/lib/shared/components/form/address/helpers";
 import { useResetAlertContextOnChange } from "@/lib/shared/hooks/useResetAlertContextOnChange";
 import {
   SidebarWithFormRefProps,

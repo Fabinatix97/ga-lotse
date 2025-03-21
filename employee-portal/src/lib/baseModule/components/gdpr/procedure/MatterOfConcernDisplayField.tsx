@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DetailsItem } from "@eshg/lib-employee-portal";
 import InfoIcon from "@mui/icons-material/InfoOutlined";
 import { isString } from "remeda";
 
 import { multiLineEllipsis } from "@/lib/baseModule/theme/theme";
-import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 
 export function MatterOfConcernDisplayField({
   value,

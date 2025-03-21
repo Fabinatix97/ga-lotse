@@ -58,4 +58,5 @@
     <include file="migrations/0048_anonymization_configuration.xml"/>
     <include file="migrations/0049_add_last_sensitivity_and_pending_state.xml"/>
     <include file="migrations/0050_anonymization_cell_entry_intervals_and_dates_as_text.xml"/>
+    <include file="migrations/0051_add_anonymization_parameters.xml"/>
 </databaseChangeLog>

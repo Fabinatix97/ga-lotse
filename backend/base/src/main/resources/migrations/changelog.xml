@@ -54,5 +54,7 @@
   <include file="migrations/0044_opening_hours.xml"/>
   <include file="migrations/0045_facility_main_contact.xml"/>
   <include file="migrations/0046_privacy_documents.xml"/>
+  <include file="migrations/0047_add_department_info_config.xml"/>
+  <include file="migrations/0048_privacy_documents_base_config.xml"/>
 
 </databaseChangeLog>

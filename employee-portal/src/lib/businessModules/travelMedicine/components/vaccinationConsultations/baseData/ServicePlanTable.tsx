@@ -5,6 +5,7 @@
 
 "use client";
 
+import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
 import {
   ApiAppointmentBookingType,
   ApiAppointmentType,
@@ -37,9 +38,6 @@ import { useEditServiceAppointmentSidebar } from "@/lib/businessModules/travelMe
 import { useOtherServiceAppliedSidebar } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/OtherServiceAppliedSidebar";
 import { useServiceAppliedSidebar } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/ServiceAppliedSidebar";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 import { useSessionStorage } from "@/lib/shared/hooks/useSessionStorage";
 

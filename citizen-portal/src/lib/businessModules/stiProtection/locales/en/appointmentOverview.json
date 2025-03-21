@@ -18,6 +18,7 @@
   },
   "appointment_status": {
     "booked": "Appointment booked",
+    "closed": "Appointment closed",
     "non_booked": "Appointment not yet booked",
     "cancelled": "Appointment canceled"
   },

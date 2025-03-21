@@ -4,6 +4,7 @@
  */
 
 import { ApiProcedureStatus } from "@eshg/base-api";
+import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
 import {
   ApiConcern,
@@ -15,7 +16,6 @@ import { useMemo } from "react";
 
 import {
   CONCERN_VALUES,
-  GENDER_VALUES,
   LAB_STATUS_VALUES,
   PROCEDURE_ORIGIN_VALUES,
 } from "@/lib/businessModules/stiProtection/shared/constants";

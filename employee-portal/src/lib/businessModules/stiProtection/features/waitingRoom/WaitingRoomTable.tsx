@@ -5,6 +5,16 @@
 
 "use client";
 
+import {
+  DataTable,
+  Pagination,
+  TablePage,
+  TableSheet,
+  TableSortingProps,
+  getSortDirection,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
+import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
 import {
   ApiWaitingRoomProcedure,
@@ -15,17 +25,7 @@ import { differenceInMinutes } from "date-fns";
 
 import { useGetWaitingRoomProcedures } from "@/lib/businessModules/stiProtection/api/queries/waitingRoomApi";
 import { DisplayAccessCode } from "@/lib/businessModules/stiProtection/features/procedures/DisplayAccessCode";
-import { GENDER_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
-import { Pagination } from "@/lib/shared/components/pagination/Pagination";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import { getSortDirection } from "@/lib/shared/components/table/sorting";
-import {
-  CustomSortingProps,
-  useTableControl,
-} from "@/lib/shared/hooks/searchParams/useTableControl";
 
 import { StatusChip } from "./StatusChip";
 
@@ -157,7 +157,7 @@ const SORT_KEY_MAPPING: Record<string, ApiWaitingRoomSortKey> = {
 };
 
 function getSortKey(
-  sortingProps: CustomSortingProps,
+  sortingProps: TableSortingProps,
 ): ApiWaitingRoomSortKey | undefined {
   const sorting = sortingProps.manualSorting
     ? sortingProps.sortingState

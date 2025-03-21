@@ -11,6 +11,7 @@ import {
   Toolbar,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { use } from "react";
 
 import { useGetWebSearchById } from "@/lib/businessModules/inspection/api/queries/webSearch";
 import { FacilityWebSearchForm } from "@/lib/businessModules/inspection/components/facility/search/FacilityWebSearchForm";
@@ -19,7 +20,7 @@ import { routes } from "@/lib/businessModules/inspection/shared/routes";
 export default function EditFacilityWebSearchPage(
   props: DynamicPageProps<{ id: string }>,
 ) {
-  const { id } = props.params;
+  const { id } = use(props.params);
   const { data: webSearch } = useGetWebSearchById(id);
 
   return (

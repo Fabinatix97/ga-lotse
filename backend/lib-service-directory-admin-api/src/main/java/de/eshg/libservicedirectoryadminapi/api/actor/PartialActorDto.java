@@ -18,8 +18,7 @@ public record PartialActorDto(
     Boolean active,
     Boolean manualCertificate,
     String commonName,
-    @Valid CertificateDto currentCertificate,
-    @Valid CertificateDto previousCertificate,
+    @Valid CertificateDto certificate,
     String networkId,
     UUID orgUnitId,
     StagingStatusDto stagingStatus) {}

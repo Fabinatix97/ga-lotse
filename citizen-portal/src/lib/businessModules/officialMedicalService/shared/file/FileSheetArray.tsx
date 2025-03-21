@@ -160,7 +160,7 @@ export function FileSheetArray({
   );
 }
 
-function HeaderGrid({ children }: Readonly<PropsWithChildren>) {
+export function HeaderGrid({ children }: Readonly<PropsWithChildren>) {
   return (
     <Box
       sx={{
@@ -182,7 +182,7 @@ function HeaderGrid({ children }: Readonly<PropsWithChildren>) {
   );
 }
 
-function IndicatorIcon({
+export function IndicatorIcon({
   success,
   sx,
 }: Readonly<{
@@ -213,7 +213,7 @@ const HiddenInput = styled("input")({ display: "none" });
 
 interface FileInputProps {
   fileInputId: string;
-  fileInputRef: RefObject<HTMLInputElement>;
+  fileInputRef: RefObject<HTMLInputElement | null>;
   onChange: (files: File[]) => void;
   accept: FileType[];
   name?: string;

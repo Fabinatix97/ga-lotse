@@ -4,6 +4,7 @@
  */
 
 import { ApiInspection, ApiInspectionPhase } from "@eshg/inspection-api";
+import { DetailsItem } from "@eshg/lib-employee-portal";
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import ChevronRight from "@mui/icons-material/ChevronRight";
@@ -19,7 +20,6 @@ import {
   translateInspectionResult,
 } from "@/lib/businessModules/inspection/shared/enums";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 

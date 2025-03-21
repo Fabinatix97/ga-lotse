@@ -500,4 +500,40 @@ public class LaboratoryTestExamination extends GenericEntity<Long> {
   public void setOtherTestData(LaboratoryTestData otherTestData) {
     this.otherTestData = otherTestData;
   }
+
+  public boolean isAnyTestRequested() {
+    return Boolean.TRUE.equals(hivRequested)
+        || Boolean.TRUE.equals(syphilisRequested)
+        || Boolean.TRUE.equals(hepARequested)
+        || Boolean.TRUE.equals(hepBRequested)
+        || Boolean.TRUE.equals(hepCRequested)
+        || Boolean.TRUE.equals(chlamydiaRequested)
+        || Boolean.TRUE.equals(gonorrheaRequested)
+        || Boolean.TRUE.equals(mycoplasmaRequested)
+        || Boolean.TRUE.equals(cancerScreeningRequested)
+        || Boolean.TRUE.equals(hpvRequested)
+        || Boolean.TRUE.equals(mpoxRequested)
+        || Boolean.TRUE.equals(otherTestRequested);
+  }
+
+  public boolean hasResultsForAllRequestedTests() {
+    return (Boolean.TRUE.equals(hivRequested) && hivData != null && hivData.getResult() != null)
+        && (Boolean.TRUE.equals(syphilisRequested)
+            && syphilisData != null
+            && syphilisData.getResult() != null)
+        && (Boolean.TRUE.equals(hepARequested) && hepAData != null && hepAData.getResult() != null)
+        && (Boolean.TRUE.equals(hepBRequested) && hepBData != null && hepBData.getResult() != null)
+        && (Boolean.TRUE.equals(hepCRequested) && hepCData != null && hepCData.getResult() != null)
+        && (Boolean.TRUE.equals(chlamydiaRequested) && chlamydiaTestSamples.hasResult())
+        && (Boolean.TRUE.equals(gonorrheaRequested) && gonorrheaTestSamples.hasResult())
+        && (Boolean.TRUE.equals(mycoplasmaRequested) && mycoplasmaTestSamples.hasResult())
+        && (Boolean.TRUE.equals(cancerScreeningRequested)
+            && cancerScreeningData != null
+            && cancerScreeningData.getResult() != null)
+        && (Boolean.TRUE.equals(hpvRequested) && hpvData != null && hpvData.getResult() != null)
+        && (Boolean.TRUE.equals(mpoxRequested) && mpoxData != null && mpoxData.getResult() != null)
+        && (Boolean.TRUE.equals(otherTestRequested)
+            && otherTestData != null
+            && otherTestData.getResult() != null);
+  }
 }

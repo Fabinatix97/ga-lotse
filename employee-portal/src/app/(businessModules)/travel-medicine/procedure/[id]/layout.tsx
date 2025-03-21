@@ -12,10 +12,10 @@ import { DynamicLayoutProps } from "@eshg/lib-portal/types/pageParams";
 import { EditInspectionRouteParams } from "@/app/(businessModules)/inspection/procedures/[id]/layout";
 import { VaccinationConsultationTabNavigationToolbar } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/VaccinationConsultationTabNavigationToolbar";
 
-export default function VaccinationConsultationDetailsLayout(
+export default async function VaccinationConsultationDetailsLayout(
   props: DynamicLayoutProps<EditInspectionRouteParams>,
 ) {
-  const { id } = props.params;
+  const { id } = await props.params;
 
   return (
     <StickyToolbarLayout

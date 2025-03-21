@@ -18,8 +18,8 @@ const RouteParamsSchema = v.object({
   lang: v.picklist(supportedLanguages),
 });
 
-export default function Layout(props: DynamicLayoutProps) {
-  const { lang } = parseRouteParams(props.params);
+export default async function Layout(props: DynamicLayoutProps) {
+  const { lang } = await parseRouteParams(props.params);
 
   return <AppLayout lang={lang}>{props.children}</AppLayout>;
 }
@@ -29,11 +29,11 @@ export function generateStaticParams() {
   return options.supportedLngs.map((lang) => ({ lang }));
 }
 
-export function generateMetadata(
+export async function generateMetadata(
   props: DynamicLayoutProps,
   _parentMeta: ResolvingMetadata,
-): Metadata {
-  const { lang } = parseRouteParams(props.params);
+): Promise<Metadata> {
+  const { lang } = await parseRouteParams(props.params);
 
   const translations: BaseTranslation = baseTranslations[lang];
   return {
@@ -43,6 +43,6 @@ export function generateMetadata(
   };
 }
 
-function parseRouteParams(routeParams: RouteParams) {
-  return v.parse(RouteParamsSchema, routeParams);
+async function parseRouteParams(routeParams: Promise<RouteParams>) {
+  return v.parse(RouteParamsSchema, await routeParams);
 }

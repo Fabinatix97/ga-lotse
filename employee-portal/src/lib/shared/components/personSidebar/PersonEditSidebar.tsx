@@ -3,16 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useUpdateReferencePerson } from "@/lib/baseModule/api/mutations/person";
 import {
-  DefaultPersonForm,
   DefaultPersonFormValues,
-} from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
+  mapToPersonUpdateRequest,
+} from "@eshg/lib-employee-portal";
+
+import { useUpdateReferencePerson } from "@/lib/baseModule/api/mutations/person";
+import { DefaultPersonForm } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
 import {
   PersonSidebarForm,
   PersonSidebarFormProps,
 } from "@/lib/shared/components/personSidebar/form/PersonSidebarForm";
-import { mapToPersonUpdateRequest } from "@/lib/shared/components/personSidebar/helpers";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import {
   SidebarWithFormRefProps,

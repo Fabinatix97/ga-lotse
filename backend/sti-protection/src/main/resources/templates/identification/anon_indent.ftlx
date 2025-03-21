@@ -62,7 +62,7 @@
             <tr>
               <td style="width: 75px;">
                 <div>QR-Code</div>
-                <div class="qr-code"></div>
+                <img src="data:image/svg+xml;base64,${appointment.qrCode()}" alt="" class="qr-code"/>
               </td>
               <td style="width: 200px;">
                 <div>URL</div>

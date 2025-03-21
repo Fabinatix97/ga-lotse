@@ -136,7 +136,7 @@ public class OrgUnitPopulator extends BasePopulator<OrgUnitDto> {
             .findAny();
 
     Optional<CertKeyPair> lsdCert =
-        lsd.map(ActorDto::currentCertificate).map(CertificateDto::value).map(lsdCertificates::get);
+        lsd.map(ActorDto::certificate).map(CertificateDto::value).map(lsdCertificates::get);
     if (lsdCert.isEmpty()) {
       return;
     }
@@ -149,7 +149,6 @@ public class OrgUnitPopulator extends BasePopulator<OrgUnitDto> {
                     new ActorRequestDto(
                         a.readableName(),
                         de.eshg.lib.servicedirectory.api.ActorTypeDto.valueOf(a.type().name()),
-                        a.commonName(),
                         createCertificate(lsdCert.get(), a.commonName())))
             .toList();
     serviceDirectoryService.updateTopology(lsd.get().commonName(), actors);
@@ -398,7 +397,6 @@ public class OrgUnitPopulator extends BasePopulator<OrgUnitDto> {
             type == ActorTypeDto.LSD,
             commonName,
             certificate,
-            null,
             "network-0",
             orgUnit.id(),
             StagingStatusDto.READY_FOR_REVIEW));

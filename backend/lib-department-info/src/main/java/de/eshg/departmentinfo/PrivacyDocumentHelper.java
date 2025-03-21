@@ -15,8 +15,10 @@ import org.springframework.http.ResponseEntity;
 
 public final class PrivacyDocumentHelper {
 
-  private static final String PRIVACY_POLICY_PDF_FILENAME = "Datenschutzerklaerung.pdf";
-  private static final String PRIVACY_NOTICE_PDF_FILENAME = "Datenschutz-Information.pdf";
+  public static final String PRIVACY_POLICY_DE_PDF_FILENAME = "Datenschutzerklaerung.pdf";
+  public static final String PRIVACY_POLICY_EN_PDF_FILENAME = "privacy-policy.pdf";
+  public static final String PRIVACY_NOTICE_DE_PDF_FILENAME = "Datenschutz-Information.pdf";
+  public static final String PRIVACY_NOTICE_EN_PDF_FILENAME = "privacy-notice.pdf";
 
   private PrivacyDocumentHelper() {}
 
@@ -25,7 +27,7 @@ public final class PrivacyDocumentHelper {
   }
 
   public static ResponseEntity<Resource> privacyNoticeAttachmentResponse(Resource privacyNotice) {
-    return pdfAttachmentResponse(privacyNotice, PRIVACY_NOTICE_PDF_FILENAME);
+    return pdfAttachmentResponse(privacyNotice, PRIVACY_NOTICE_DE_PDF_FILENAME);
   }
 
   public static ResponseEntity<Resource> privacyPolicyAttachmentResponse(byte[] privacyPolicy) {
@@ -33,7 +35,7 @@ public final class PrivacyDocumentHelper {
   }
 
   public static ResponseEntity<Resource> privacyPolicyAttachmentResponse(Resource privacyPolicy) {
-    return pdfAttachmentResponse(privacyPolicy, PRIVACY_POLICY_PDF_FILENAME);
+    return pdfAttachmentResponse(privacyPolicy, PRIVACY_POLICY_DE_PDF_FILENAME);
   }
 
   private static ResponseEntity<Resource> pdfAttachmentResponse(

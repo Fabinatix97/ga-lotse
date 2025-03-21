@@ -7,23 +7,25 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import {
+  DentalChildRouteParams,
   fileApiQueryKey,
   keyDocumentTypes,
   moduleUserGroup,
   progressEntryApiQueryKey,
   systemProgressEntryTypeTitles,
+  useChildRouteParams,
   useDentalApi,
 } from "@eshg/dental";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { use } from "react";
 
-import { DentalChildRouteParams } from "@/app/(businessModules)/dental/children/[childId]/layout";
 import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
 
 export default function DentalProgressEntriesPage(
   props: DynamicPageProps<DentalChildRouteParams>,
 ) {
-  const { childId } = props.params;
-  const searchParams = props.searchParams;
+  const { childId } = useChildRouteParams(props.params);
+  const searchParams = use(props.searchParams);
   const { progressEntryApi, procedureApi, fileApi, approvalRequestApi } =
     useDentalApi();
 

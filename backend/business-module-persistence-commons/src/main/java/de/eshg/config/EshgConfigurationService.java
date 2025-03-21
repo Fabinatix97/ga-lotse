@@ -14,7 +14,6 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 public abstract class EshgConfigurationService<T extends BaseEntity> {
@@ -34,14 +33,17 @@ public abstract class EshgConfigurationService<T extends BaseEntity> {
 
   protected abstract T getInitialConfiguration() throws Exception;
 
-  @Transactional(readOnly = true)
-  public T getConfig() {
-    List<T> configEntries = getConfigEntries();
-    Assert.isTrue(
-        configEntries.size() == 1,
-        "Expected exactly one config entries in the database, but found " + configEntries.size());
+  protected T getConfig() {
+    return transactionHelper.executeInTransaction(
+        () -> {
+          List<T> configEntries = getConfigEntries();
+          Assert.isTrue(
+              configEntries.size() == 1,
+              "Expected exactly one config entries in the database, but found "
+                  + configEntries.size());
 
-    return configEntries.getFirst();
+          return configEntries.getFirst();
+        });
   }
 
   @PostConstruct

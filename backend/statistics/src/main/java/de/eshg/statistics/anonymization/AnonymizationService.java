@@ -5,19 +5,14 @@
 
 package de.eshg.statistics.anonymization;
 
+import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.statistics.aggregation.DataAggregationService;
 import de.eshg.statistics.aggregation.EvaluationService;
 import de.eshg.statistics.aggregation.ReportService;
-import de.eshg.statistics.anonymization.interval.DecimalIntervalConfiguration;
-import de.eshg.statistics.anonymization.interval.DecimalIntervalUtil;
-import de.eshg.statistics.anonymization.interval.IntegerIntervalConfiguration;
-import de.eshg.statistics.anonymization.interval.IntegerIntervalUtil;
-import de.eshg.statistics.anonymization.interval.Interval;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AnonymizationConfiguration;
 import de.eshg.statistics.persistence.entity.CellEntry;
-import de.eshg.statistics.persistence.entity.MinMaxNullUnknownValues;
 import de.eshg.statistics.persistence.entity.TableColumn;
 import de.eshg.statistics.persistence.entity.TableColumnDataPrivacyCategory;
 import de.eshg.statistics.persistence.entity.TableColumnValueType;
@@ -70,10 +65,10 @@ public class AnonymizationService {
 
   @Transactional(readOnly = true)
   public DataHolderBeforeAnonymization prepareAnonymization(
-      UUID aggregationResultId, boolean isReport, int kAnonymizationLevel) {
+      UUID aggregationResultId, boolean isReport) {
     AbstractAggregationResult aggregationResult =
         getAggregationResult(aggregationResultId, isReport);
-    return prepareAnonymization(aggregationResult, kAnonymizationLevel);
+    return prepareAnonymization(aggregationResult);
   }
 
   private AbstractAggregationResult getAggregationResult(UUID id, boolean isReport) {
@@ -85,14 +80,17 @@ public class AnonymizationService {
   }
 
   private DataHolderBeforeAnonymization prepareAnonymization(
-      AbstractAggregationResult aggregationResult, int kAnonymizationLevel) {
+      AbstractAggregationResult aggregationResult) {
     if (getQuasiIdentifyingColumnStream(aggregationResult).findAny().isEmpty()) {
       return null;
     }
+    if (aggregationResult.getKAnonymity() == null) {
+      throw new BadRequestException(
+          "No kAnonymity defined for %s".formatted(aggregationResult.getExternalId()));
+    }
 
     ARXConfiguration config = ARXConfiguration.create();
-    // todo kAnonymizationLevel should be stored in evaluation/report from business module
-    config.addPrivacyModel(new KAnonymity(kAnonymizationLevel));
+    config.addPrivacyModel(new KAnonymity(aggregationResult.getKAnonymity()));
 
     Data.DefaultData data = Data.create();
 
@@ -106,15 +104,23 @@ public class AnonymizationService {
     data.getDefinition().setAttributeType(ROW_ID_COLUMN, AttributeType.INSENSITIVE_ATTRIBUTE);
     data.getDefinition().setDataType(ROW_ID_COLUMN, DataType.INTEGER);
 
-    // Todo DistinctLDiversity should be configured on the column?
+    // todo tcloseness optional needs to be configured?
     relevantTableColumns.stream()
         .filter(
             tableColumn ->
                 TableColumnDataPrivacyCategory.SENSITIVE.equals(
                     getTableColumnDataPrivacyCategory(tableColumn)))
         .forEach(
-            tableColumn ->
-                config.addPrivacyModel(new DistinctLDiversity(tableColumn.getSearchKey(), 2)));
+            tableColumn -> {
+              Integer lDiversity = tableColumn.getAnonymizationConfiguration().getLDiversity();
+              if (lDiversity == null) {
+                throw new BadRequestException(
+                    "LDiversity not defined for column %s".formatted(tableColumn.getSearchKey()));
+              } else {
+                config.addPrivacyModel(
+                    new DistinctLDiversity(tableColumn.getSearchKey(), lDiversity));
+              }
+            });
 
     Map<String, Interval<Number>> tableColumnSearchKeyToMinMaxInterval = new HashMap<>();
     relevantTableColumns.forEach(
@@ -184,36 +190,19 @@ public class AnonymizationService {
 
   private static Optional<Interval<Number>> configureQuasiIdentifyingColumn(
       TableColumn tableColumn, Data.DefaultData data) {
-    MinMaxNullUnknownValues minMaxNullUnknownValues = tableColumn.getMinMaxNullUnknownValues();
     AnonymizationConfiguration anonymizationConfiguration =
         tableColumn.getAnonymizationConfiguration();
 
     Interval<Number> minMaxInterval = null;
     switch (tableColumn.getValueType()) {
-      case DECIMAL -> {
-        DecimalIntervalConfiguration intervalConfiguration =
-            DecimalIntervalUtil.createIntervalConfiguration(anonymizationConfiguration);
-        if (intervalConfiguration != null) {
+      case DECIMAL ->
           minMaxInterval =
-              configureDecimalColumn(
-                  tableColumn, data, minMaxNullUnknownValues, intervalConfiguration);
-        } else {
-          throw new IllegalStateException(
-              "Interval not configured for decimal %s".formatted(tableColumn.getSearchKey()));
-        }
-      }
-      case INTEGER -> {
-        IntegerIntervalConfiguration intervalConfiguration =
-            IntegerIntervalUtil.createIntervalConfiguration(anonymizationConfiguration);
-        if (intervalConfiguration != null) {
+              DecimalIntervalUtil.configureColumn(
+                  data, tableColumn.getSearchKey(), anonymizationConfiguration);
+      case INTEGER ->
           minMaxInterval =
-              configureIntegerColumn(
-                  tableColumn, data, minMaxNullUnknownValues, intervalConfiguration);
-        } else {
-          throw new IllegalStateException(
-              "Interval not configured for integer %s".formatted(tableColumn.getSearchKey()));
-        }
-      }
+              IntegerIntervalUtil.configureColumn(
+                  data, tableColumn.getSearchKey(), anonymizationConfiguration);
       case BOOLEAN, DATE, TEXT, VALUE_WITH_OPTIONS -> configureTextColumn(tableColumn, data);
       case PROCEDURE_REFERENCE ->
           throw new IllegalStateException("Procedure reference should be insensitive");
@@ -223,36 +212,6 @@ public class AnonymizationService {
     }
 
     return minMaxInterval == null ? Optional.empty() : Optional.of(minMaxInterval);
-  }
-
-  private static Interval<Number> configureDecimalColumn(
-      TableColumn tableColumn,
-      Data.DefaultData data,
-      MinMaxNullUnknownValues minMaxNullUnknownValues,
-      DecimalIntervalConfiguration intervalConfiguration) {
-    Optional<Interval<Number>> minMaxIntervalOptional =
-        DecimalIntervalUtil.configureColumn(
-            data,
-            tableColumn.getSearchKey(),
-            minMaxNullUnknownValues.getMinDecimal(),
-            minMaxNullUnknownValues.getMaxDecimal(),
-            intervalConfiguration);
-    return minMaxIntervalOptional.orElse(null);
-  }
-
-  private static Interval<Number> configureIntegerColumn(
-      TableColumn tableColumn,
-      Data.DefaultData data,
-      MinMaxNullUnknownValues minMaxNullUnknownValues,
-      IntegerIntervalConfiguration intervalConfiguration) {
-    Optional<Interval<Number>> minMaxIntervalOptional =
-        IntegerIntervalUtil.configureColumn(
-            data,
-            tableColumn.getSearchKey(),
-            minMaxNullUnknownValues.getMinInteger(),
-            minMaxNullUnknownValues.getMaxInteger(),
-            intervalConfiguration);
-    return minMaxIntervalOptional.orElse(null);
   }
 
   private static void configureTextColumn(TableColumn tableColumn, Data.DefaultData data) {

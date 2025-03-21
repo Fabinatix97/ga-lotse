@@ -22,67 +22,67 @@ import de.eshg.lib.statistics.attributes.ValueWithOptionsAttribute;
 
 public enum DentalChildAttributes implements AttributeInfo {
   PROCEDURE_ID(
-      new ProcedureAttribute(
+      ProcedureAttribute.create(
           "Vorgangsreferenz", DentalChildAttributes.CATEGORY_PROCEDURE_REFERENCE, true)),
 
   CHILD_CENTRAL_FILE_ID(
-      new CentralFileIdPersonAttribute(
+      CentralFileIdPersonAttribute.create(
           "Kind", "CHILD_CENTRAL_FILE_ID", DentalChildAttributes.CATEGORY_CHILD, true)),
 
   EINRICHTUNG(
-      new ContactIdAttribute(
+      ContactIdAttribute.create(
           "Einrichtung", "EINRICHTUNG", DentalChildAttributes.CATEGORY_CHILD, true)),
 
   GRUPPE(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Gruppe",
           "GRUPPE",
-          convertToValueOptions(Group.values()),
           DentalChildAttributes.CATEGORY_CHILD,
-          true)),
+          true,
+          convertToValueOptions(Group.values()))),
 
   ANZAHL_PROPHYLAXEN(
-      new IntegerAttribute(
+      IntegerAttribute.create(
           "Anzahl Prophylaxeimpulse",
           "ANZAHL_PROPHYLAXEN",
           DentalChildAttributes.CATEGORY_PROPHYLAXIS,
           true)),
 
   MUNDHYGIENE_STATUS(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Mundhygienestatus",
           "MUNDHYGIENE_STATUS",
-          convertToValueOptions(OralHygieneStatus.values()),
           DentalChildAttributes.CATEGORY_PROPHYLAXIS,
-          true)),
+          true,
+          convertToValueOptions(OralHygieneStatus.values()))),
 
   MIH_STATUS(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "MIH-Status",
           "MIH_STATUS",
-          convertToValueOptions(MihStatus.values()),
           DentalChildAttributes.CATEGORY_PROPHYLAXIS,
-          true)),
+          true,
+          convertToValueOptions(MihStatus.values()))),
 
   DMFT_MILCH(
-      new IntegerAttribute(
+      IntegerAttribute.create(
           "dmft-t", "DMFT_MILCH", DentalChildAttributes.CATEGORY_PROPHYLAXIS, true)),
 
   DMFT_BLEIBEND(
-      new IntegerAttribute(
+      IntegerAttribute.create(
           "DMF-T", "DMFT_BLEIBEND", DentalChildAttributes.CATEGORY_PROPHYLAXIS, true)),
 
   KARIES_RISIKO(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Kariesrisiko", "KARIES_RISIKO", DentalChildAttributes.CATEGORY_PROPHYLAXIS, false)),
 
   KARIES_STATUS(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Kariesstatus",
           "KARIES_STATUS",
-          convertToValueOptions(DecayStatus.values()),
           DentalChildAttributes.CATEGORY_PROPHYLAXIS,
-          true)),
+          true,
+          convertToValueOptions(DecayStatus.values()))),
   ;
 
   static final String CATEGORY_CHILD = "Kind";

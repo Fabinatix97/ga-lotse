@@ -6,11 +6,10 @@
 "use client";
 
 import { ApiFluoridationConsent } from "@eshg/dental-api";
+import { DataTable, TableSheet } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { createColumnHelper } from "@tanstack/react-table";
 
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { displayBoolean } from "@/lib/shared/helpers/booleans";
 
 interface FluoridationConsentTableProps {

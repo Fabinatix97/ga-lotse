@@ -34,8 +34,10 @@ function createTabItems(id: string): TabNavigationItem[] {
   ];
 }
 
-export default function Layout(props: DynamicLayoutProps<{ id: string }>) {
-  const { id } = props.params;
+export default async function Layout(
+  props: DynamicLayoutProps<{ id: string }>,
+) {
+  const { id } = await props.params;
 
   return (
     <MeaslesProtectionProcedureLayout id={id} navItems={createTabItems(id)}>

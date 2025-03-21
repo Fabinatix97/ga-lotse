@@ -13,8 +13,10 @@ import {
   MedicalServicesOutlined,
 } from "@mui/icons-material";
 import { Button, Stack } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { useFormikContext } from "formik";
 
+import { useGetAllAppointmentTypesQuery } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
 import { BookAppointmentFormValues } from "@/lib/businessModules/officialMedicalService/components/personalArea/bookAppointment/BookAppointmentWrapper";
 import { useCitizenRoutes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { useManualTranslation } from "@/lib/businessModules/officialMedicalService/shared/useManualTranslation";
@@ -42,12 +44,21 @@ export function BookAppointmentSidePanel({
     en: procedure.concern.nameEn,
   });
 
+  const [{ data: appointmentTypes }] = useSuspenseQueries({
+    queries: [useGetAllAppointmentTypesQuery()],
+  });
+
+  const appointmentTypeConfig = appointmentTypes.find(
+    (type) =>
+      type.appointmentTypeDto === procedure.appointment?.appointmentType,
+  );
+
   return (
-    <ContentSheet>
+    <ContentSheet data-testid="overview">
       <ContentSheetTitle>{t("sidePanel.title")}</ContentSheetTitle>
-      <Stack gap={1}>
+      <Stack gap={1} data-testId="appointment-summary">
         <DetailsField
-          value={`${concernName} ${t("sidePanel.appointmentDuration", { durationInMinutes: procedure.appointment?.duration })}`}
+          value={`${concernName} ${t("sidePanel.appointmentDuration", { durationInMinutes: appointmentTypeConfig?.standardDurationInMinutes })}`}
           icon={<MedicalServicesOutlined />}
         />
         {values.appointment?.start && (

@@ -10,7 +10,7 @@ import de.eshg.lib.statistics.attributes.TextAttribute;
 
 public enum EsuProcedureAttribute implements EsuAttributes {
   UNTERSDAT(
-      new TextAttribute(
+      TextAttribute.create(
           "Untersuchungsdatum", "UntersDat", EsuProcedureAttribute.CATEGORY_PROCEDURE_INFOS, true));
 
   private static final String CATEGORY_PROCEDURE_INFOS = "Vorgang";

@@ -12,10 +12,10 @@ import { DynamicLayoutProps } from "@eshg/lib-portal/types/pageParams";
 import { OfficialMedicalServiceDetailsRouteParamsSchema } from "@/lib/businessModules/officialMedicalService/components/procedures/details/OfficialMedicalServiceDetailsRouteParamsSchema";
 import { ProcedureDetailsToolbar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/ProceduresDetailsToolbar";
 
-export default function OfficialMedicalServiceDetailsLayout(
+export default async function OfficialMedicalServiceDetailsLayout(
   props: DynamicLayoutProps<OfficialMedicalServiceDetailsRouteParamsSchema>,
 ) {
-  const { id } = props.params;
+  const { id } = await props.params;
 
   return (
     <StickyToolbarLayout toolbar={<ProcedureDetailsToolbar id={id} />}>

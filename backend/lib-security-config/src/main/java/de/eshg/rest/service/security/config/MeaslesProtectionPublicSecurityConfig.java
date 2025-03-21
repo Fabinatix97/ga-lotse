@@ -22,6 +22,7 @@ public final class MeaslesProtectionPublicSecurityConfig
     grantAccessToLibProceduresUrls(
         EmployeePermissionRole.MEASLES_PROTECTION_ADMIN,
         ModuleLeaderRole.MEASLES_PROTECTION_LEADER);
+    grantAccessToLibDepartmentInfoUrls();
 
     requestMatchers(BaseUrls.MeaslesProtection.FEATURE_TOGGLES_CONTROLLER + "/**")
         .hasRole(EmployeePermissionRole.STANDARD_EMPLOYEE);

@@ -13,10 +13,10 @@ export type MedicalRegistryProcedureRouteParams = {
   id: string;
 };
 
-export default function MedicalRegistryProcedurePage(
+export default async function MedicalRegistryProcedurePage(
   props: DynamicPageProps<MedicalRegistryProcedureRouteParams>,
 ) {
-  const { id } = props.params;
+  const { id } = await props.params;
 
   redirect(routes.procedures.byId(id).details);
 }

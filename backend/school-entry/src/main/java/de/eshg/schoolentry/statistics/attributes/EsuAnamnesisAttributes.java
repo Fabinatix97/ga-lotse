@@ -16,251 +16,255 @@ import de.eshg.schoolentry.statistics.options.*;
 
 public enum EsuAnamnesisAttributes implements EsuAttributes {
   KT(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Krippe + KT-Besuch  nach Monaten gruppiert",
           "KT",
-          convertToValueOptions(Daycare.values()),
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
-          true)),
+          true,
+          convertToValueOptions(Daycare.values()))),
 
-  KISS(new BooleanAttribute("Kiss", "KISS", EsuAnamnesisAttributes.CATEGORY_ANAMNESIS, true)),
+  KISS(BooleanAttribute.create("Kiss", "KISS", EsuAnamnesisAttributes.CATEGORY_ANAMNESIS, true)),
 
-  VLK(new BooleanAttribute("Vorlaufkurs", "VLK", EsuAnamnesisAttributes.CATEGORY_ANAMNESIS, true)),
+  VLK(
+      BooleanAttribute.create(
+          "Vorlaufkurs", "VLK", EsuAnamnesisAttributes.CATEGORY_ANAMNESIS, true)),
 
   GG(
-      new IntegerAttribute(
+      IntegerAttribute.create(
           "Geburtsgewicht",
           "GG",
-          EsuAttributeUtil.createUnknownOption("9999"),
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
-          true)),
+          true,
+          EsuAttributeUtil.createUnknownOption("9999"))),
 
   SSW_DAUER(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Schwangerschaftsdauer regelrecht",
           "SSW_DAUER",
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
           false)),
 
   U2E(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "U2",
           "U2E",
-          convertToValueOptions(BooleanWithUnknown.values()),
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
-          true)),
+          true,
+          convertToValueOptions(BooleanWithUnknown.values()))),
 
   U3E(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "U3",
           "U3E",
-          convertToValueOptions(BooleanWithUnknown.values()),
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
-          true)),
+          true,
+          convertToValueOptions(BooleanWithUnknown.values()))),
 
   U4E(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "U4",
           "U4E",
-          convertToValueOptions(BooleanWithUnknown.values()),
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
-          true)),
+          true,
+          convertToValueOptions(BooleanWithUnknown.values()))),
 
   U5E(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "U5",
           "U5E",
-          convertToValueOptions(BooleanWithUnknown.values()),
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
-          true)),
+          true,
+          convertToValueOptions(BooleanWithUnknown.values()))),
 
   U6E(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "U6",
           "U6E",
-          convertToValueOptions(BooleanWithUnknown.values()),
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
-          true)),
+          true,
+          convertToValueOptions(BooleanWithUnknown.values()))),
 
   U7E(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "U7",
           "U7E",
-          convertToValueOptions(BooleanWithUnknown.values()),
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
-          true)),
+          true,
+          convertToValueOptions(BooleanWithUnknown.values()))),
 
   U7A(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "U7a",
           "U7A",
-          convertToValueOptions(BooleanWithUnknown.values()),
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
-          true)),
+          true,
+          convertToValueOptions(BooleanWithUnknown.values()))),
 
   U8E(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "U8",
           "U8E",
-          convertToValueOptions(BooleanWithUnknown.values()),
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
-          true)),
+          true,
+          convertToValueOptions(BooleanWithUnknown.values()))),
 
   U9E(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "U9",
           "U9E",
-          convertToValueOptions(BooleanWithUnknown.values()),
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
-          true)),
+          true,
+          convertToValueOptions(BooleanWithUnknown.values()))),
 
-  FF(new BooleanAttribute("Frühförderung", "FF", EsuAnamnesisAttributes.CATEGORY_ANAMNESIS, true)),
+  FF(
+      BooleanAttribute.create(
+          "Frühförderung", "FF", EsuAnamnesisAttributes.CATEGORY_ANAMNESIS, true)),
 
   IP(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Integrationsplatz", "IP", EsuAnamnesisAttributes.CATEGORY_ANAMNESIS, true)),
 
   ERGO(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Ergotherapie", "ERGO", EsuAnamnesisAttributes.CATEGORY_ANAMNESIS, true)),
 
   LOGO(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Logopädie - Sprachtherapie", "LOGO", EsuAnamnesisAttributes.CATEGORY_ANAMNESIS, true)),
 
   KG(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Krankengymnastik", "KG", EsuAnamnesisAttributes.CATEGORY_ANAMNESIS, true)),
 
   MIG(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Migrationshintergrund", "MIG", EsuAnamnesisAttributes.CATEGORY_ANAMNESIS, true)),
 
   GEBKI_TEXT(
-      new TextAttribute(
+      TextAttribute.create(
           "Geburtsland Kind", "GEBKI_Text", EsuAnamnesisAttributes.CATEGORY_ANAMNESIS, true)),
 
   GEBKI_LKZ(
-      new TextAttribute(
+      TextAttribute.create(
           "Geburtsland Kind LKZ", "GEBKI_LKZ", EsuAnamnesisAttributes.CATEGORY_ANAMNESIS, true)),
 
   GEBKI(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Geburtsland Kind gruppiert",
           "GEBKI",
-          convertToValueOptions(Country.values()),
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
-          true)),
+          true,
+          convertToValueOptions(Country.values()))),
 
   STAKI_TEXT(
-      new TextAttribute(
+      TextAttribute.create(
           "Staatsangehörigkeit bei Geburt Kind",
           "STAKI_Text",
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
           true)),
 
   STAKI_FFM(
-      new TextAttribute(
+      TextAttribute.create(
           "Staatsangehörigkeit bei Geburt Kind LKZ",
           "STAKI_FFM",
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
           true)),
 
   STAKI(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Staatsangehörigkeit Kind gruppiert",
           "STAKI",
-          convertToValueOptions(Country.values()),
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
-          true)),
+          true,
+          convertToValueOptions(Country.values()))),
 
   GEBET1_TEXT(
-      new TextAttribute(
+      TextAttribute.create(
           "Geburtsland des Elternteil 1",
           "GEBET1_Text",
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
           true)),
 
   GEBET1_FFM(
-      new TextAttribute(
+      TextAttribute.create(
           "Geburtsland des Elternteil 1 LKZ",
           "GEBET1_FFM",
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
           true)),
 
   GEBET1(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Geburtsland des Elternteil 1 gruppiert",
           "GEBET1",
-          convertToValueOptions(Country.values()),
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
-          true)),
+          true,
+          convertToValueOptions(Country.values()))),
 
   STAET1_TEXT(
-      new TextAttribute(
+      TextAttribute.create(
           "Staatsangehörigkeit bei Geburt Elternteil 1",
           "STAET1_Text",
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
           true)),
 
   STAET1_FFM(
-      new TextAttribute(
+      TextAttribute.create(
           "Staatsangehörigkeit bei Geburt Elternteil 1 LKZ",
           "STAET1_FFM",
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
           true)),
 
   STAET1(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Staatsangehörigkeit Elternteil 1 gruppiert",
           "STAET1",
-          convertToValueOptions(Country.values()),
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
-          true)),
+          true,
+          convertToValueOptions(Country.values()))),
 
   GEBET2_TEXT(
-      new TextAttribute(
+      TextAttribute.create(
           "Geburtsland des Elternteil 2",
           "GEBET2_Text",
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
           true)),
 
   GEBET2_FFM(
-      new TextAttribute(
+      TextAttribute.create(
           "Geburtsland des Elternteil 2 LKZ",
           "GEBET2_FFM",
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
           true)),
 
   GEBET2(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Geburtsland des Elternteil 2 gruppiert",
           "GEBET2",
-          convertToValueOptions(Country.values()),
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
-          true)),
+          true,
+          convertToValueOptions(Country.values()))),
 
   STAET2_TEXT(
-      new TextAttribute(
+      TextAttribute.create(
           "Staatsangehörigkeit bei Geburt Elternteil 2",
           "STAET2_Text",
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
           true)),
 
   STAET2_FFM(
-      new TextAttribute(
+      TextAttribute.create(
           "Staatsangehörigkeit bei Geburt Elternteil 2 LKZ",
           "STAET2_FFM",
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
           true)),
 
   STAET2(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Staatsangehörigkeit Elternteil 2 gruppiert",
           "STAET2",
-          convertToValueOptions(Country.values()),
           EsuAnamnesisAttributes.CATEGORY_ANAMNESIS,
-          true));
+          true,
+          convertToValueOptions(Country.values())));
 
   private static final String CATEGORY_ANAMNESIS = "Anamnese";
 

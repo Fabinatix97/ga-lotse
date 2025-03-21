@@ -240,6 +240,9 @@ public class ProphylaxisSessionsPopulator
     List<ToothDto> teeth = milkTeeth ? ToothDto.allMilkTeeth() : ToothDto.allPermanentTeeth();
     for (ToothDto tooth : teeth) {
       MainResultDto mainResult = randomElement(faker, MainResultDto.values());
+      if (mainResult == MainResultDto.U && ToothDto.isMolar(tooth)) {
+        mainResult = MainResultDto.D;
+      }
       SecondaryResultDto secondaryResult1 =
           optional(faker, randomElement(faker, SecondaryResultDto.values()));
       SecondaryResultDto secondaryResult2 =

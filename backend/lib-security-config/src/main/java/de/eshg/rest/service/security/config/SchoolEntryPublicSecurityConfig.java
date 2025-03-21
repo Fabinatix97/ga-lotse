@@ -21,6 +21,7 @@ public final class SchoolEntryPublicSecurityConfig extends AbstractPublicSecurit
     grantAccessToStatistics(EmployeePermissionRole.SCHOOL_ENTRY_ADMIN);
     grantAccessToLibProceduresUrls(
         EmployeePermissionRole.SCHOOL_ENTRY_ADMIN, ModuleLeaderRole.SCHOOL_ENTRY_LEADER);
+    grantAccessToLibDepartmentInfoUrls();
 
     requestMatchers(GET, BaseUrls.SchoolEntry.PUBLIC_CITIZEN_CONTROLLER + "/**").permitAll();
 

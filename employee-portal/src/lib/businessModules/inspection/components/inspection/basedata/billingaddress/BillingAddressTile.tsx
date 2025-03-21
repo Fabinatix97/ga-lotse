@@ -4,10 +4,10 @@
  */
 
 import { ApiAddFacilityFileStateRequestContactAddress } from "@eshg/base-api";
+import { BaseAddressDetailsColumn } from "@eshg/lib-employee-portal";
 import { Grid } from "@mui/joy";
 import { isDefined, isNonNullish } from "remeda";
 
-import { BaseAddressDetails } from "@/lib/shared/components/address/BaseAddressDetails";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
 
@@ -33,7 +33,7 @@ export function BillingAddressTile({
           <InfoTileAddButton onClick={onEdit}>Hinzufügen</InfoTileAddButton>
         )}
         {isDefined(billingAddress) && (
-          <BaseAddressDetails address={billingAddress} />
+          <BaseAddressDetailsColumn address={billingAddress} />
         )}
       </Grid>
     </InfoTile>

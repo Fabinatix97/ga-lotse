@@ -43,6 +43,13 @@ public class StreetDirectoryService implements StreetDirectory {
     this.directory = convertToDirectoryMap(new ArrayList<>(csvEntries));
   }
 
+  public Set<AdministrativeData> getAdministrativeDataByStreetName(String streetName) {
+    return directory.prefixMap(normalizeStreetNameForAutocomplete(streetName)).values().stream()
+        .flatMap(enty -> enty.sequences.stream())
+        .map(StreetSequence::administrativeData)
+        .collect(StreamUtil.toLinkedHashSet());
+  }
+
   private String normalizeStreetNameForAutocomplete(String streetName) {
     return streetName.toLowerCase(Locale.GERMAN);
   }

@@ -22,10 +22,9 @@ interface ActorDiff {
   revisionType: RevisionType;
   active: { old?: boolean; new?: boolean };
   commonName: { old?: string; new?: string };
-  currentCertificate: { old?: ApiAdminCertificate; new?: ApiAdminCertificate };
+  certificate: { old?: ApiAdminCertificate; new?: ApiAdminCertificate };
   networkId: { old?: string; new?: string };
   _orgUnit: { old?: string; new?: string };
-  previousCertificate: { old?: ApiAdminCertificate; new?: ApiAdminCertificate };
   readableName: { old?: string; new?: string };
   type: { old?: ApiAdminActorType; new?: ApiAdminActorType };
 }
@@ -67,11 +66,7 @@ const columns = [
     cell: AuditCell,
     enableGlobalFilter: false,
   }),
-  accessor("currentCertificate", {
-    cell: AuditCell,
-    enableGlobalFilter: false,
-  }),
-  accessor("previousCertificate", {
+  accessor("certificate", {
     cell: AuditCell,
     enableGlobalFilter: false,
   }),
@@ -91,16 +86,12 @@ export function AuditActorTable({
     revisionType: a.oldEntity ? getRevisionType(a) : RevisionType.ADD,
     active: { old: a.oldEntity?.active, new: a.newEntity?.active },
     commonName: { old: a.oldEntity?.commonName, new: a.newEntity?.commonName },
-    currentCertificate: {
-      old: a.oldEntity?.currentCertificate,
-      new: a.newEntity?.currentCertificate,
+    certificate: {
+      old: a.oldEntity?.certificate,
+      new: a.newEntity?.certificate,
     },
     networkId: { old: a.oldEntity?.networkId, new: a.newEntity?.networkId },
     _orgUnit: { old: a.oldEntity?.orgUnitId, new: a.newEntity?.orgUnitId },
-    previousCertificate: {
-      old: a.oldEntity?.previousCertificate,
-      new: a.newEntity?.previousCertificate,
-    },
     readableName: {
       old: a.oldEntity?.readableName,
       new: a.newEntity?.readableName,

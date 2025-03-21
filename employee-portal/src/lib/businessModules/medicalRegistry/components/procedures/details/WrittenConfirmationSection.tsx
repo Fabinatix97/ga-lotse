@@ -3,11 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ContentPanel, DetailsSection } from "@eshg/lib-employee-portal";
 import { ApiGetProcedure200Response } from "@eshg/medical-registry-api";
 import { SvgIcon, Typography } from "@mui/joy";
-
-import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
-import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 
 export function WrittenConfirmationSection({
   procedure,

@@ -5,8 +5,6 @@
 
 package de.eshg.stiprotection.persistence.db;
 
-import static java.lang.Boolean.TRUE;
-
 import de.eshg.lib.appointmentblock.EntityWithAppointment;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.auditlog.AuditLogger;
@@ -45,7 +43,6 @@ import java.time.Clock;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
@@ -157,7 +154,7 @@ public class StiProtectionProcedure
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @JdbcType(PostgreSQLEnumJdbcType.class)
   @Column(nullable = false)
-  private LabStatus labStatus;
+  private LabStatus labStatus = LabStatus.OPEN;
 
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private String sampleBarCode;
@@ -351,13 +348,23 @@ public class StiProtectionProcedure
   }
 
   private void computeLabStatus() {
-    labStatus = LabStatus.OPEN;
-    if (laboratoryTestExamination != null
-        && Objects.nonNull(laboratoryTestExamination.getTestsConductedDate())) {
-      labStatus = LabStatus.IN_PROGRESS;
+    if (laboratoryTestExamination != null) {
+      updateLabStatus(LabStatus.TESTS_REQUESTED, laboratoryTestExamination.isAnyTestRequested());
+      updateLabStatus(
+          LabStatus.TESTS_CONDUCTED, laboratoryTestExamination.getTestsConductedDate() != null);
+      updateLabStatus(
+          LabStatus.RESULTS_RECORDED, laboratoryTestExamination.hasResultsForAllRequestedTests());
     }
-    if (diagnosis != null && TRUE.equals(diagnosis.getResultsCommunicated())) {
-      labStatus = LabStatus.CLOSED;
+
+    if (diagnosis != null) {
+      updateLabStatus(
+          LabStatus.RESULTS_COMMUNICATED, Boolean.TRUE.equals(diagnosis.getResultsCommunicated()));
+    }
+  }
+
+  private void updateLabStatus(LabStatus newLabStatus, boolean condition) {
+    if (newLabStatus.compareTo(labStatus) > 0 && condition) {
+      labStatus = newLabStatus;
     }
   }
 

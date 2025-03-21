@@ -6,6 +6,7 @@
 "use client";
 
 import { ApiInspectionAnnouncement } from "@eshg/inspection-api";
+import { DetailsItem } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Typography } from "@mui/joy";
 import { useState } from "react";
@@ -13,7 +14,6 @@ import { isNonNullish, isNullish } from "remeda";
 
 import { AnnouncementSidebar } from "@/lib/businessModules/inspection/components/inspection/planning/announcement/AnnouncementSidebar";
 import { translateInspectionAnnouncement } from "@/lib/businessModules/inspection/shared/enums";
-import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
 

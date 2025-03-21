@@ -15,16 +15,17 @@ import { baseTranslations } from "@/lib/baseModule/locales";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export default function Layout(props: LayoutProps) {
-  const nonce = getNonceFromHeader();
+export default async function Layout(props: LayoutProps) {
+  const nonce = await getNonceFromHeader();
   return <NonceProvider initialNonce={nonce}>{props.children}</NonceProvider>;
 }
 
-export function generateMetadata(
+export async function generateMetadata(
   _args: { params: unknown },
   _parent: ResolvingMetadata,
-): Metadata {
-  const canonicalURL = headers().get("x-canonical-url");
+): Promise<Metadata> {
+  const headersStore = await headers();
+  const canonicalURL = headersStore.get("x-canonical-url");
   if (!canonicalURL) {
     return {};
   }

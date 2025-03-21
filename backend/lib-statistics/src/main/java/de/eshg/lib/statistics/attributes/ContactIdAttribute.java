@@ -5,8 +5,14 @@
 
 package de.eshg.lib.statistics.attributes;
 
-public final class ContactIdAttribute extends AttributeData {
-  public ContactIdAttribute(String name, String code, String category, boolean mandatory) {
-    super(name, code, category, mandatory);
+import de.eshg.lib.statistics.api.ValueType;
+
+public final class ContactIdAttribute {
+  private ContactIdAttribute() {}
+
+  public static AttributeData create(String name, String code, String category, boolean mandatory) {
+    AttributeData attribute = AttributeData.createAttribute(name, code, category, mandatory, null);
+    attribute.setValueType(ValueType.CONTACT_ID);
+    return attribute;
   }
 }

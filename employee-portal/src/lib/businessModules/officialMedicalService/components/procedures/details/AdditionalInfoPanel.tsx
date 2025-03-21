@@ -106,7 +106,7 @@ export function AdditionalInfoPanel({
           label="E-Mail-Benachrichtigungen"
           value={procedure.sendEmailNotifications ? "Aktiviert" : "Deaktiviert"}
           renderEditButton={
-            procedure.status === ApiProcedureStatus.Draft && (
+            !isProcedureFinalized(procedure) && (
               <EditButton
                 aria-label="E-Mail-Benachrichtigungen bearbeiten"
                 onClick={() => emailNotificationSidebar.open({ procedure })}

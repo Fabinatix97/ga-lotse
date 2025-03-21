@@ -7,6 +7,7 @@ package de.eshg.spatz.common;
 
 import static de.eshg.servicedirectory.util.X509Utils.ESHGACTOR_BUNDLE_NAME;
 
+import de.eshg.spatz.config.SpatzConfigurationProperties;
 import de.eshg.spatz.config.SpatzConfigurationProperties.ActorConfiguration;
 import de.eshg.spatz.config.SpatzConfigurationProperties.SelfSignedConfiguration;
 import de.eshg.spatz.security.CertificateBuild;
@@ -17,9 +18,13 @@ import java.util.Collections;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.actuate.health.AbstractHealthIndicator;
+import org.springframework.boot.actuate.health.Health.Builder;
 import org.springframework.boot.ssl.SslBundle;
 import org.springframework.boot.ssl.SslBundleRegistry;
 import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 /**
@@ -104,16 +109,18 @@ public class SelfSignedCertService {
             .withAltName(
                 Optional.ofNullable(config.getSubjectAlternativeNames())
                     .orElse(Collections.emptyList()))
+            .withLocation(config.getSubjectLocation())
             .maxAge(config.getMaxAge())
             .keyParameters(config.getKeyParameters())
             .certificateAuthority(false)
             .build();
 
     logger.info(
-        "created self-signed {} certificate for {} (and {}); valid from {} to {}",
+        "created self-signed {} certificate for {} (and {}, location {}); valid from {} to {}",
         config.getKeyParameters(),
         actorConfiguration.hostname(),
         config.getSubjectAlternativeNames(),
+        config.getSubjectLocation(),
         certificateBuild.certificate().getNotBefore(),
         certificateBuild.certificate().getNotAfter());
     logger.debug("Certificate PEM: {}", certificateBuild.pemCrt());
@@ -128,6 +135,14 @@ public class SelfSignedCertService {
     sslBundleRegistry.updateBundle(ESHGACTOR_BUNDLE_NAME, newSslBundle);
     logger.info("updated SSL Truststore with new key");
     logger.debug("server certificate used: {}", certificate.certificate());
+  }
+
+  @Scheduled(fixedDelayString = "${eshg.spatz.self-signed.heartbeat:9000}")
+  public void heartbeat() {
+    if (certificate != null) {
+      logger.debug("Sending heartbeat to LSD");
+      selfSignedCertificatePublisher.heartBeat(config.getSubjectLocation());
+    }
   }
 
   private static Instant getNotBefore(CertificateBuild certificate) {
@@ -150,6 +165,38 @@ public class SelfSignedCertService {
 
     private Instant cert(CertificateBuild certificate) {
       return from(getNotBefore(certificate), getNotAfter(certificate));
+    }
+  }
+
+  @Component("certificateDistributedHealthIndicator")
+  public static class CertificatePublishedHealthIndicator extends AbstractHealthIndicator {
+    private final SelfSignedConfiguration config;
+    private final ServiceDirectoryTopologyService serviceDirectoryTopologyService;
+
+    public CertificatePublishedHealthIndicator(
+        SpatzConfigurationProperties config,
+        ServiceDirectoryTopologyService serviceDirectoryTopologyService) {
+      this.config = config.selfSigned();
+      this.serviceDirectoryTopologyService = serviceDirectoryTopologyService;
+    }
+
+    @Override
+    protected void doHealthCheck(Builder builder) {
+      builder.withDetail("certificate-type", config.isEnabled() ? "self-signed" : "ca-signed");
+
+      if (!config.isEnabled()) {
+        builder.up();
+        return;
+      }
+
+      Instant certificateDistributedTime =
+          serviceDirectoryTopologyService.getCertificateDistributedTime();
+      if (certificateDistributedTime != null
+          && certificateDistributedTime.isBefore(Instant.now())) {
+        builder.up();
+      } else {
+        builder.down();
+      }
     }
   }
 }

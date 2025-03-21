@@ -49,5 +49,6 @@
   <include file="migrations/0039_add_decay_risk_and_decay_status.xml"/>
   <include file="migrations/0040_add_orthodontic_status.xml"/>
   <include file="migrations/0041_add_orthodontic_findings.xml"/>
+  <include file="migrations/0042_extend_main_result_values.xml"/>
 
 </databaseChangeLog>

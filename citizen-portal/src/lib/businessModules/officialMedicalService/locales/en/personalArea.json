@@ -4,43 +4,42 @@
     "requiredTitle": "*Required",
     "logoutButton": "Leave my area"
   },
-  "information": {
-    "title": "Information",
-    "nameSection": {
-      "title": "Name"
+  "appointment": {
+    "title": "Examination appointment",
+    "alert": {
+      "title_BOOKABLE": "Appointment booking necessary",
+      "message_BOOKABLE": "The appointment must still be booked via the calendar."
     },
-    "birthdateSection": {
-      "title": "Birthdate"
-    },
-    "appointmentStatusSection": {
-      "title": "Appointment status",
-      "bookingState": {
+    "bookingState": {
+      "label": "Appointment status",
+      "value": {
         "BOOKABLE": "Not yet booked",
         "BOOKED": "Booked",
         "CANCELLED": "Cancelled",
         "WITHDRAWN": "Withdrawn"
-      },
-      "modal": {
-        "description_BOOKABLE": "Please book an appointment",
-        "bookAppointment_BOOKABLE": "Book appointment",
-        "cancel": "Cancel"
       }
     },
-    "concernSection": {
-      "title": "Concern"
-    },
-    "appointmentDateSection": {
-      "title": "Appointment date"
-    },
-    "appointmentTimeSection": {
-      "title": "Time",
+    "date_label": "Date",
+    "appointmentTime": {
+      "label": "Time",
       "time": "{{ time }}",
       "duration": "Duration: {{ duration }} minutes"
     }
   },
+  "anamnesis": {
+    "title": "Anamnesis",
+    "file": {
+      "title": "Medical history form",
+      "helperText_MISSING": "not yet submitted",
+      "helperText_SUMBITTED": "successfully submitted",
+      "placeholder": "Jetzt ausfüllen"
+    }
+  },
   "contact": {
+    "title": "Contacts",
     "addressSection": {
-      "title": "Address"
+      "title": "Address",
+      "value": "{{ departmentName }} <br> {{ departmentStreetAndHouseNumber }} </br> <br> {{ departmentPostalCodeAndCity }} </br>"
     },
     "contactSection": {
       "title": "Contact",
@@ -50,6 +49,11 @@
   },
   "documents": {
     "title": "Documents for the process",
+    "alert": {
+      "message_MISSING": "Upload the required documents.",
+      "title_REJECTED": "There are rejected documents",
+      "message_REJECTED": "Please check the reason for rejection and upload new files accordingly."
+    },
     "files": {
       "title": "Document",
       "required": "Please upload document",
@@ -65,19 +69,28 @@
       "error": "File could not be uploaded. Please try again"
     }
   },
-  "sidePanel": {
-    "booked": {
-      "title": "Can't make the appointment?",
-      "rescheduleAppointment": "Reschedule appointment",
-      "cancelAppointment": "Cancel appointment"
+  "overview": {
+    "title": "Overview",
+    "nameSection": {
+      "title": "Name"
     },
-    "cancelled": {
-      "title": "Please book a new appointment",
-      "rescheduleAppointment": "Book new appointment"
+    "birthdateSection": {
+      "title": "Birthdate"
     },
-    "bookable": {
-      "title": "Please book an appointment",
-      "bookAppointment": "Book appointment"
+    "concernSection": {
+      "title": "Concern"
+    },
+    "actions": {
+      "booked": {
+        "rescheduleAppointment": "Reschedule appointment",
+        "cancelAppointment": "Cancel appointment"
+      },
+      "cancelled": {
+        "rescheduleAppointment": "Book new appointment"
+      },
+      "bookable": {
+        "bookAppointment": "Book appointment"
+      }
     }
   },
   "cancelAppointment": {

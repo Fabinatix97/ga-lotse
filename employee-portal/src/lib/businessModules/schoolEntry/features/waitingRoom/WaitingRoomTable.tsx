@@ -6,6 +6,15 @@
 "use client";
 
 import {
+  DataTable,
+  Pagination,
+  TablePage,
+  TableSheet,
+  TableSortingProps,
+  getSortDirection,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
+import {
   formatDate,
   formatDateTime,
 } from "@eshg/lib-portal/formatters/dateTime";
@@ -17,15 +26,6 @@ import { WaitingRoomProcedure } from "@/lib/businessModules/schoolEntry/api/mode
 import { useGetWaitingRoomProcedures } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
 import { WAITING_STATUS_VALUES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
-import { Pagination } from "@/lib/shared/components/pagination/Pagination";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import { getSortDirection } from "@/lib/shared/components/table/sorting";
-import {
-  CustomSortingProps,
-  useTableControl,
-} from "@/lib/shared/hooks/searchParams/useTableControl";
 
 const initialSorting: ColumnSort = {
   id: "modifiedAt",
@@ -159,7 +159,7 @@ const SORT_KEY_MAPPING: Record<string, ApiWaitingRoomSortKey> = {
 };
 
 function getSortKey(
-  sortingProps: CustomSortingProps,
+  sortingProps: TableSortingProps,
 ): ApiWaitingRoomSortKey | undefined {
   const sorting = sortingProps.manualSorting
     ? sortingProps.sortingState

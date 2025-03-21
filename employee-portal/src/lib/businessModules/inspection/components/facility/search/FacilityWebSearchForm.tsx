@@ -5,6 +5,7 @@
 
 "use client";
 
+import { ContentPanel } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { Button, Grid, Typography } from "@mui/joy";
@@ -16,7 +17,6 @@ import {
   useUpdateWebSearch,
 } from "@/lib/businessModules/inspection/api/mutations/webSearch";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
 
 export interface WebSearch {
   name: string;

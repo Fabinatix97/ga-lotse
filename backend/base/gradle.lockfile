@@ -35,6 +35,7 @@ com.google.guava:failureaccess:1.0.2=compileClasspath,productionRuntimeClasspath
 com.google.guava:guava:33.3.1-jre=compileClasspath,productionRuntimeClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava=compileClasspath,productionRuntimeClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 com.google.j2objc:j2objc-annotations:3.0.0=compileClasspath,productionRuntimeClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
+com.google.zxing:core:3.5.3=productionRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
 com.googlecode.ez-vcard:ez-vcard:0.12.1=compileClasspath,productionRuntimeClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 com.googlecode.java-diff-utils:diffutils:1.3.0=testCompileClasspath,testRuntimeClasspath
 com.googlecode.libphonenumber:libphonenumber:8.13.50=compileClasspath,productionRuntimeClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath

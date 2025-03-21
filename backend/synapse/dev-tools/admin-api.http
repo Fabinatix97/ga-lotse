@@ -17,3 +17,16 @@ POST http://localhost:8008/_synapse/admin/v1/users/@testuser1:synapse.local.dev/
 Accept: application/json
 Content-Type: application/json
 Authorization: Bearer [SYNAPSE_ACCESS_TOKEN]
+
+
+### Delete room
+DELETE http://localhost:8008/_synapse/admin/v1/rooms/%21nUdhTpOnqvcglhLhGG%3Asynapse.local.dev
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer [SYNAPSE_ACCESS_TOKEN]
+
+{
+  "purge": true,
+  "force_purge": true,
+  "block": true
+}

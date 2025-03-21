@@ -21,19 +21,23 @@ import { ifDefined } from "../../../helpers/ifDefined";
 import { useBaseField } from "../BaseField";
 
 import { Appointment } from "./AppointmentPickerField";
-import { timeForm } from "./helpers";
+import { formatTime } from "./helpers";
 
-export type AppointmentListLabelType = ((date: Date) => string) | string;
+export type AppointmentListLabelType =
+  | ((date: Date, locale: string) => string)
+  | string;
 
 export interface UseAppointmentListProps<T extends Appointment> {
   selectedDay: Date | undefined;
   monthAppointments: T[];
   listLabel: AppointmentListLabelType;
+  locale: string;
 }
 export function useAppointmentList<T extends Appointment>({
   selectedDay,
   monthAppointments,
   listLabel,
+  locale,
 }: UseAppointmentListProps<T>): { appointments: T[]; label: string } {
   const currentDayInterval = selectedDay
     ? {
@@ -50,7 +54,7 @@ export function useAppointmentList<T extends Appointment>({
 
   const stringListLabel =
     typeof listLabel === "function"
-      ? (ifDefined(selectedDay, listLabel) ?? "")
+      ? (ifDefined(selectedDay, (d) => listLabel(d, locale)) ?? "")
       : listLabel;
 
   return {
@@ -66,6 +70,7 @@ export interface AppointmentListProps<T extends Appointment> {
   onAppointmentSelected?: (d: T) => unknown;
   isAppointmentEqual?: (apt1: T, apt2: T) => boolean;
   label: string;
+  locale: string;
 }
 export function AppointmentListForDate<T extends Appointment>({
   date,
@@ -75,12 +80,13 @@ export function AppointmentListForDate<T extends Appointment>({
   isAppointmentEqual = (apt1, apt2) => apt1 === apt2,
   label,
   slotProps,
-  getLabel = (apt) => timeForm.format(apt.start),
+  locale,
+  optionLabel = (apt, locale) => formatTime(apt.start, locale),
 }: AppointmentListProps<T> & {
   slotProps?: {
     chip?: Omit<ChipProps, "variant" | "color">;
   };
-  getLabel?: (appointment: T) => string;
+  optionLabel?: (appointment: T, locale: string) => string;
 }) {
   const theme = useTheme();
   const labelId = useId();
@@ -111,7 +117,11 @@ export function AppointmentListForDate<T extends Appointment>({
         orientation="horizontal"
         wrap
         size="sm"
-        sx={{ marginBottom: "16px", gap: "8px", padding: 0 }}
+        sx={{
+          marginBottom: theme.spacing(2),
+          gap: theme.spacing(1),
+          padding: 0,
+        }}
       >
         {appointments.map((apt) => {
           const isSelected =
@@ -123,11 +133,13 @@ export function AppointmentListForDate<T extends Appointment>({
             >
               <Chip
                 variant={isSelected ? "solid" : "soft"}
-                color={isSelected ? "primary" : "neutral"}
+                color={"primary"}
                 sx={{
-                  minWidth: "56px",
+                  minWidth: "4.7rem",
                   textAlign: "center",
-                  paddingX: 2,
+                  paddingX: theme.spacing(2),
+                  paddingY: theme.spacing(0.25),
+                  gap: theme.spacing(1),
                   ...chipSx,
                 }}
                 {...otherChipProps}
@@ -135,6 +147,7 @@ export function AppointmentListForDate<T extends Appointment>({
                 <Radio
                   disableIcon
                   overlay
+                  variant={isSelected ? "solid" : "soft"}
                   slotProps={{
                     action: {
                       sx: { border: "none" },
@@ -150,15 +163,14 @@ export function AppointmentListForDate<T extends Appointment>({
                       dateTime={apt.start.toTimeString().slice(0, 5)}
                       level="title-md"
                       sx={{
-                        color: isSelected ? "white" : undefined,
-                        ".MuiListItem-root:hover &": {
-                          color: isSelected ? "black" : undefined,
-                        },
+                        color: isSelected
+                          ? "white"
+                          : theme.palette.primary.solidBg,
                         fontSize: theme.fontSize.md,
                         fontWeight: theme.fontWeight.md,
                       }}
                     >
-                      {getLabel(apt)}
+                      {optionLabel(apt, locale)}
                     </Typography>
                   }
                 />

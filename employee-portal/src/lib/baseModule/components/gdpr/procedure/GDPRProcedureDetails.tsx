@@ -13,7 +13,11 @@ import {
   ApiGetReferencePersonResponse,
   ApiUserRole,
 } from "@eshg/base-api";
-import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
+import {
+  CentralFilePersonDetails,
+  mapReferencePersonToForm,
+  useHasUserRoleCheck,
+} from "@eshg/lib-employee-portal";
 import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 import { Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
@@ -37,11 +41,9 @@ import {
 } from "@/lib/baseModule/components/gdpr/procedure/tiles/SectionTile";
 import { SheetQueryBoundary } from "@/lib/shared/components/boundaries/SheetQueryBoundary";
 import { CentralFileFacilityDetails } from "@/lib/shared/components/centralFile/display/CentralFileFacilityDetails";
-import { CentralFilePersonDetails } from "@/lib/shared/components/centralFile/display/CentralFilePersonDetails";
 import { useSidebar } from "@/lib/shared/components/drawer/useSidebar";
 import { useEditReferenceFacilitySidebar } from "@/lib/shared/components/facilitySidebar/EditReferenceFacilitySidebar";
 import { useEditReferencePersonSidebar } from "@/lib/shared/components/personSidebar/PersonEditSidebar";
-import { mapReferencePersonToForm } from "@/lib/shared/components/personSidebar/helpers";
 
 import { GdprFacilityDataTile } from "./tiles/GdprFacilityDataTile";
 

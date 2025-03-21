@@ -9,6 +9,12 @@ import {
   useDeleteProphylaxisSessionParticipantOptions,
 } from "@eshg/dental";
 import { ApiReasonForAbsence } from "@eshg/dental-api";
+import {
+  DataTable,
+  TablePage,
+  TableSortingProps,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
 import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
@@ -27,6 +33,7 @@ import { useAddChildToProphylaxisSessionSidebar } from "@/lib/businessModules/de
 import { ChangeReasonForAbsenceModal } from "@/lib/businessModules/dental/features/prophylaxisSessions/ChangeReasonForAbsenceModal";
 import {
   useFilteredParticipants,
+  useFilteredPresentParticipants,
   useProphylaxisSessionStore,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/ProphylaxisSessionStoreProvider";
 import {
@@ -40,13 +47,7 @@ import {
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { displayBoolean } from "@/lib/shared/helpers/booleans";
-import {
-  CustomSortingProps,
-  useTableControl,
-} from "@/lib/shared/hooks/searchParams/useTableControl";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 import { ParticipantFilter, ParticipantFilterDef } from "./ParticipantFilter";
@@ -130,10 +131,10 @@ export function ProphylaxisSessionParticipantsTable() {
     };
   }
 
-  function routeToExamination(participantIndex: number) {
+  function routeToExamination(examinationId: string) {
     return routes.prophylaxisSessions
       .byId(prophylaxisSessionId)
-      .examinations.byIndex(participantIndex);
+      .examinations.byExaminationId(examinationId);
   }
 
   const tableControl = useTableControl({
@@ -160,6 +161,9 @@ export function ProphylaxisSessionParticipantsTable() {
     (participant) => participant.status !== "OPEN",
   ).length;
 
+  const presentParticipants = useFilteredPresentParticipants();
+  const firstParticipant = presentParticipants[0];
+
   return (
     <TablePage
       controls={
@@ -172,9 +176,9 @@ export function ProphylaxisSessionParticipantsTable() {
           right={
             <>
               <AddChildButton />
-              {isExamination && filteredParticipants.length > 0 && (
+              {isExamination && firstParticipant !== undefined && (
                 <InternalLinkButton
-                  href={routeToExamination(0)}
+                  href={routeToExamination(firstParticipant.examinationId)}
                   endDecorator={<StartIcon />}
                 >
                   Prophylaxe starten
@@ -223,7 +227,7 @@ export function ProphylaxisSessionParticipantsTable() {
           isExamination
             ? {
                 focusColumnAccessorKey: "lastName",
-                route: (row) => routeToExamination(row.index),
+                route: (row) => routeToExamination(row.original.examinationId),
               }
             : undefined
         }
@@ -365,7 +369,7 @@ function columnDefs(
 }
 
 function resolveTableSorting(
-  tableSorting: CustomSortingProps,
+  tableSorting: TableSortingProps,
 ): ParticipantSorting {
   if (!tableSorting.manualSorting) {
     throw new Error("Table does not use server side sorting");

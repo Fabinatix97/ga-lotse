@@ -108,7 +108,7 @@ export function procedureOverviewTableColumns() {
       ),
       enableSorting: true,
       meta: {
-        width: 100,
+        width: 130,
         canNavigate: {
           parentRow: true,
         },
@@ -126,7 +126,7 @@ export function procedureOverviewTableColumns() {
       ),
       enableSorting: true,
       meta: {
-        width: 120,
+        width: 140,
         canNavigate: {
           parentRow: true,
         },

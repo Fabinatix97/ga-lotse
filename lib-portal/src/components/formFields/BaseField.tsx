@@ -9,7 +9,7 @@ import {
   FormHelperText,
   FormLabel,
 } from "@mui/joy";
-import { FieldHookConfig, useField } from "formik";
+import { useField } from "formik";
 import { ReactNode } from "react";
 import { isDefined, isNullish } from "remeda";
 
@@ -74,9 +74,9 @@ export interface FieldComponentProps {
   fieldDecorator?: ReactNode;
 }
 
-interface UseBaseFieldProps<TValue>
-  extends Pick<FieldHookConfig<TValue>, "name" | "type">,
-    ValidationRules<TValue> {
+interface UseBaseFieldProps<TValue> extends ValidationRules<TValue> {
+  name: string;
+  type?: string;
   hint?: string;
 }
 

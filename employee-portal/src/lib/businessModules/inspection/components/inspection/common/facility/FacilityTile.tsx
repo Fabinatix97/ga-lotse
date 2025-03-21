@@ -4,9 +4,9 @@
  */
 
 import { ApiInspFacility } from "@eshg/inspection-api";
+import { DetailsItem } from "@eshg/lib-employee-portal";
 
 import { CentralFileFacilityDetails } from "@/lib/shared/components/centralFile/display/CentralFileFacilityDetails";
-import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 
 interface FacilityTileProps {

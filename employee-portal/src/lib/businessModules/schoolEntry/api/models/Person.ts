@@ -3,19 +3,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { mapOptional } from "@eshg/lib-employee-portal";
+import {
+  BaseAddress,
+  DefaultPersonFormValues,
+  mapApiAddressToForm,
+  mapOptional,
+  normalizeListInputs,
+} from "@eshg/lib-employee-portal";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
+import { parseOptionalValue } from "@eshg/lib-portal/helpers/form";
 import {
   ApiCountryCode,
   ApiGender,
   ApiPersonDetails,
   ApiSalutation,
 } from "@eshg/school-entry-api";
-
-import { mapApiAddressToForm } from "@/lib/shared/components/form/address/helpers";
-import { DefaultPersonFormValues } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
-import { normalizeListInputs } from "@/lib/shared/components/personSidebar/helpers";
-import { BaseAddress } from "@/lib/shared/helpers/address";
 
 interface PersonProps {
   firstName: string;
@@ -66,15 +68,11 @@ export function mapPersonDetails(response: ApiPersonDetails): PersonDetails {
     nameAtBirth: response.nameAtBirth,
     placeOfBirth: response.placeOfBirth,
     countryOfBirth: response.countryOfBirth,
-    emailAddresses: mapOptional(response.emailAddresses, mapListIfNonEmpty),
-    phoneNumbers: mapOptional(response.phoneNumbers, mapListIfNonEmpty),
+    emailAddresses: response.emailAddresses,
+    phoneNumbers: response.phoneNumbers,
     contactAddress: response.contactAddress,
     differentBillingAddress: response.differentBillingAddress,
   };
-}
-
-function mapListIfNonEmpty(list: string[]) {
-  return list.length === 0 ? undefined : list;
 }
 
 export function mapPersonDetailsToForm(
@@ -82,14 +80,14 @@ export function mapPersonDetailsToForm(
 ): DefaultPersonFormValues {
   return {
     salutation: child.salutation,
-    title: child.title ?? "",
+    title: parseOptionalValue(child.title),
     firstName: child.firstName,
     lastName: child.lastName,
     dateOfBirth: toDateString(child.dateOfBirth),
     gender: child.gender,
-    countryOfBirth: child.countryOfBirth ?? "",
-    nameAtBirth: child.nameAtBirth ?? "",
-    placeOfBirth: child.placeOfBirth ?? "",
+    countryOfBirth: parseOptionalValue(child.countryOfBirth),
+    nameAtBirth: parseOptionalValue(child.nameAtBirth),
+    placeOfBirth: parseOptionalValue(child.placeOfBirth),
     emailAddresses: normalizeListInputs(child.emailAddresses),
     phoneNumbers: normalizeListInputs(child.phoneNumbers),
     contactAddress: mapOptional(child.contactAddress, mapApiAddressToForm),

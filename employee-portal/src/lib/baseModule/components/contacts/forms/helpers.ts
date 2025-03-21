@@ -4,14 +4,13 @@
  */
 
 import { ApiVCardAddress } from "@eshg/base-api";
-import { isDeepEqual, isDefined } from "remeda";
-
 import {
+  BaseAddress,
   BaseAddressFormInputs,
   createEmptyAddress,
   mapApiAddressToForm,
-} from "@/lib/shared/components/form/address/helpers";
-import { BaseAddress } from "@/lib/shared/helpers/address";
+} from "@eshg/lib-employee-portal";
+import { isDeepEqual, isDefined } from "remeda";
 
 export const UnselectedValue = Symbol("Unselected merge value");
 export type RequiredMergeValue<T> = T | typeof UnselectedValue;

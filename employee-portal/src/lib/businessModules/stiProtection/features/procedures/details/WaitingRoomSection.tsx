@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DetailsSection } from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import {
@@ -29,7 +30,6 @@ import {
   createOnlyIfProcedureOpen,
   isProcedureOpen,
 } from "@/lib/businessModules/stiProtection/shared/helpers";
-import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 
 const ADDITIONAL_INFO_MAX_LENGTH = 60;
 

@@ -34,7 +34,7 @@ const FocusableButton = styled(Button, {
   justifyContent: "flex-start",
   gap: theme.spacing(2),
   backgroundColor: "none",
-  "&:focus-visible": {
+  "&:focus-visible, &:focus": {
     outlineOffset: "-2px",
   },
 }));
@@ -62,6 +62,7 @@ export function ReadonlyToothButton(props: ReadonlyToothButtonProps) {
 
   return (
     <FocusableButton
+      className={isFocused ? "Mui-focusVisible" : undefined}
       ref={elementRef}
       variant="plain"
       focused={isFocused}

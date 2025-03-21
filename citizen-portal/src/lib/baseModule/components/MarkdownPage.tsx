@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+/* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment */
 import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 import { evaluate } from "@mdx-js/mdx";
 import { List, ListItem, Typography } from "@mui/joy";

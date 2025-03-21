@@ -8,6 +8,7 @@
 import { getProphylaxisSessionQuery, useDentalApi } from "@eshg/dental";
 import { DynamicLayoutProps } from "@eshg/lib-portal/types/pageParams";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { use } from "react";
 
 import { ProphylaxisSessionStoreProvider } from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/ProphylaxisSessionStoreProvider";
 
@@ -19,7 +20,7 @@ export type ProphylaxisSessionRouteParams = {
 export default function ProphylaxisSessionPageLayout(
   props: DynamicLayoutProps<ProphylaxisSessionRouteParams>,
 ) {
-  const { prophylaxisSessionId } = props.params;
+  const { prophylaxisSessionId } = use(props.params);
   const { prophylaxisSessionApi } = useDentalApi();
   const { data: prophylaxisSession } = useSuspenseQuery(
     getProphylaxisSessionQuery(prophylaxisSessionApi, {

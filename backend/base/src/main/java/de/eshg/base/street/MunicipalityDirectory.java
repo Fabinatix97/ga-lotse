@@ -48,9 +48,11 @@ public class MunicipalityDirectory {
     return entries.stream()
         .filter(directoryEntry -> directoryEntry.range.contains(postalCode))
         .findFirst()
-        .map(directoryEntry -> new AdministrativeData(directoryEntry.key))
-        .orElse(new AdministrativeData(null));
+        .map(
+            directoryEntry ->
+                new AdministrativeData(directoryEntry.key, directoryEntry.municipality))
+        .orElse(new AdministrativeData(null, null));
   }
 
-  public record AdministrativeData(String municipalityKey) {}
+  public record AdministrativeData(String municipalityKey, String municipality) {}
 }

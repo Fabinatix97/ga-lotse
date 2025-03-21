@@ -239,8 +239,7 @@ public class ServiceDirectoryCommitService {
       throw new ServiceDirectoryBadRequestException(
           "(" + actor.getId() + ") (actor.commonName)=(null or empty) not allowed");
     }
-    validateCommonName(auditedActor.getCurrentCertificate(), auditedActor.getCommonName());
-    validateCommonName(auditedActor.getPreviousCertificate(), auditedActor.getCommonName());
+    validateCommonName(auditedActor.getCertificate(), auditedActor.getCommonName());
     if (auditedActor.isActive() == null) {
       throw new ServiceDirectoryBadRequestException(
           "(" + actor.getId() + ") (actor.active)=(null) not allowed");

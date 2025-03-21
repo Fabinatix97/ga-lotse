@@ -6,6 +6,13 @@
 "use client";
 
 import { ApiTextBlock } from "@eshg/inspection-api";
+import {
+  DataTable,
+  Pagination,
+  TablePage,
+  TableSheet,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
 import { Add, DeleteOutlined, Edit } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
@@ -15,12 +22,7 @@ import { useDeleteTextBlock } from "@/lib/businessModules/inspection/api/mutatio
 import { EditTextBlockSidebar } from "@/lib/businessModules/inspection/components/textBlock/EditTextBlockSidebar";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { Pagination } from "@/lib/shared/components/pagination/Pagination";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { SearchFilter } from "@/lib/shared/components/tableFilters/SearchFilter";
-import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 const columnHelper = createColumnHelper<ApiTextBlock>();

@@ -12,6 +12,7 @@ public record ConsultationAppointment(
     String durationMinutes,
     String url,
     String accessCode,
+    String qrCode,
     String location) {
   public ConsultationAppointment(
       Department department,
@@ -19,7 +20,8 @@ public record ConsultationAppointment(
       String time,
       String durationMinutes,
       String url,
-      String accessCode) {
-    this(department, date, time, durationMinutes, url, accessCode, null);
+      String accessCode,
+      String qrCode) {
+    this(department, date, time, durationMinutes, url, accessCode, qrCode, null);
   }
 }

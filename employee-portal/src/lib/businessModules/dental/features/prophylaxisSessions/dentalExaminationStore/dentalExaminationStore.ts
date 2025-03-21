@@ -5,6 +5,8 @@
 
 import {
   ExaminationResult,
+  ExaminationResultWithDate,
+  ScreeningExaminationResult,
   ToothDiagnoses,
   ToothDiagnosis,
 } from "@eshg/dental";
@@ -85,14 +87,16 @@ export interface DmftValuesByDentitionType {
 export function initDentalExaminationStore(
   examinationResult: ExaminationResult | undefined,
   defaultDentitionType: ApiDentitionType = ApiDentitionType.Mixed,
-  previousExaminationResult: ExaminationResult | undefined,
+  previousExaminationResult: ExaminationResultWithDate | undefined,
 ): DentalExaminationState {
   const isScreening = examinationResult?.type === "screening";
-  const previousWasScreening = previousExaminationResult?.type === "screening";
+  const previousWasScreening =
+    previousExaminationResult?.result?.type === "screening";
 
   const toothDiagnoses = isScreening ? examinationResult.toothDiagnoses : {};
   const previousToothDiagnoses = previousWasScreening
-    ? previousExaminationResult.toothDiagnoses
+    ? (previousExaminationResult.result as ScreeningExaminationResult)
+        .toothDiagnoses
     : {};
 
   const dentitionType =

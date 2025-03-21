@@ -12,6 +12,7 @@ import {
 } from "@eshg/lib-portal/schemas/pageParams";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { useRouter } from "next/navigation";
+import { use } from "react";
 import * as v from "valibot";
 
 import { useGetPersonFileStateDiff } from "@/lib/baseModule/api/queries/persons";
@@ -27,10 +28,8 @@ const RouteParamsSchema = v.object({
 });
 
 export default function SyncAffectedPersonPage(props: DynamicPageProps) {
-  const { id, personVersion, fileStateId } = v.parse(
-    RouteParamsSchema,
-    props.params,
-  );
+  const params = use(props.params);
+  const { id, personVersion, fileStateId } = v.parse(RouteParamsSchema, params);
   const router = useRouter();
   const { data } = useGetPersonFileStateDiff(fileStateId);
   const syncPerson = useSyncAffectedPerson(id);

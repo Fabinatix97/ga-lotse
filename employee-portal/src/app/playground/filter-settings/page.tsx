@@ -5,7 +5,12 @@
 
 "use client";
 
-import { MainContentLayout } from "@eshg/lib-employee-portal";
+import {
+  DataTable,
+  MainContentLayout,
+  TablePage,
+  TableSheet,
+} from "@eshg/lib-employee-portal";
 import { Button, Switch, Typography } from "@mui/joy";
 import { useState } from "react";
 
@@ -23,9 +28,6 @@ import {
 import { useFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 
 const filterDefinitions: FilterDefinition[] = [
   {

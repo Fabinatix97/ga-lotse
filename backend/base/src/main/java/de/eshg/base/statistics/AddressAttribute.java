@@ -7,6 +7,7 @@ package de.eshg.base.statistics;
 
 import de.eshg.lib.statistics.api.ValueOptionInternal;
 import de.eshg.lib.statistics.api.ValueType;
+import de.eshg.lib.statistics.api.interval.IntervalConfiguration;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -62,5 +63,10 @@ public enum AddressAttribute implements CommonAttribute {
   @Override
   public boolean isMandatory() {
     return mandatory;
+  }
+
+  @Override
+  public IntervalConfiguration getIntervalConfiguration() {
+    return null;
   }
 }

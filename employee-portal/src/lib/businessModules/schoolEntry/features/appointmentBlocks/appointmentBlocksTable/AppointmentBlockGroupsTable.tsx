@@ -5,6 +5,15 @@
 
 "use client";
 
+import {
+  DataTable,
+  Pagination,
+  TablePage,
+  TableSheet,
+  getSortDirection,
+  getSortKey,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import {
   ApiAppointmentBlockSortKey,
@@ -32,16 +41,7 @@ import {
 import { getAppointmentBlockGroupsQuery } from "@/lib/businessModules/schoolEntry/api/queries/appointmentBlockApi";
 import { getLocationSelectionModeQuery } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
 import { APPOINTMENT_TYPES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
-import { Pagination } from "@/lib/shared/components/pagination/Pagination";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import {
-  getSortDirection,
-  getSortKey,
-} from "@/lib/shared/components/table/sorting";
 import { formatCalendarWeek } from "@/lib/shared/helpers/dateTime";
-import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
 const columnHelper = createColumnHelper<AppointmentBlockRow>();
 

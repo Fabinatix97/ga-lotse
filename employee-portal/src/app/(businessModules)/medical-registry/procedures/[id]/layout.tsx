@@ -9,10 +9,10 @@ import { DynamicLayoutProps } from "@eshg/lib-portal/types/pageParams";
 import { MedicalRegistryProcedureRouteParams } from "@/app/(businessModules)/medical-registry/procedures/[id]/page";
 import { MedicalRegistryTabNavigationToolbar } from "@/lib/businessModules/medicalRegistry/components/procedures/MedicalRegistryTabNavigationToolbar";
 
-export default function MedicalRegistryProcedureLayout(
+export default async function MedicalRegistryProcedureLayout(
   props: DynamicLayoutProps<MedicalRegistryProcedureRouteParams>,
 ) {
-  const { id } = props.params;
+  const { id } = await props.params;
 
   return (
     <StickyToolbarLayout

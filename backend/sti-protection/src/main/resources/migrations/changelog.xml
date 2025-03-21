@@ -70,5 +70,8 @@
   <include file="migrations/0060_opening_hours_sti_protection.xml"/>
   <include file="migrations/0061_privacy_documents.xml"/>
   <include file="migrations/0062_add_medical_history_submitted.xml"/>
+  <include file="migrations/0063_add_department_info_config.xml"/>
+  <include file="migrations/0064_update_LabStatus.xml"/>
+  <include file="migrations/0065_privacy_documents_config.xml"/>
 
 </databaseChangeLog>

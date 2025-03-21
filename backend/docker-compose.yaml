@@ -137,8 +137,6 @@ services:
       - "1080:1080"
       - "1025:1025"
     environment:
-      # Hotfix for https://github.com/maildev/maildev/issues/484 to enable healthcheck via IPv6
-      MAILDEV_IP: "::"
       MAILDEV_INCOMING_USER: testuser
       MAILDEV_INCOMING_PASS: testpassword
 

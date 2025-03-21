@@ -35,7 +35,7 @@ const StyledFieldSet = styled("fieldset")({
 });
 
 const StyledLegend = styled("legend")({
-  fontWeight: theme.fontWeight.xl,
+  fontWeight: theme.fontWeight.lg,
   fontSize: theme.fontSize.md,
   size: "md",
   color: theme.palette.text.primary,

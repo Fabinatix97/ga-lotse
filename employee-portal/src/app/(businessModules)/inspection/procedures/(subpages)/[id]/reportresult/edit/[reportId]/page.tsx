@@ -6,6 +6,7 @@
 "use client";
 
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { use } from "react";
 
 import { EditInspectionRouteParams } from "@/app/(businessModules)/inspection/procedures/[id]/layout";
 import { InspectionReportEditor } from "@/lib/businessModules/inspection/components/inspection/reportresult/editor/InspectionReportEditor";
@@ -18,7 +19,7 @@ type InspectionReportEditorRouteParams = EditInspectionRouteParams & {
 export default function InspectionReportEditorPage(
   props: DynamicPageProps<InspectionReportEditorRouteParams>,
 ) {
-  const { id, reportId } = props.params;
+  const { id, reportId } = use(props.params);
 
   return <InspectionReportEditor reportId={reportId} inspectionId={id} />;
 }

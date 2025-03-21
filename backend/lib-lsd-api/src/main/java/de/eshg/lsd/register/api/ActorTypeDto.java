@@ -26,12 +26,4 @@ public enum ActorTypeDto {
     this.descriptionEn = descriptionEn;
     this.descriptionDe = descriptionDe;
   }
-
-  public static ActorTypeDto from(Enum<?> e) {
-    return e == null ? null : valueOf(e.name());
-  }
-
-  public static <E extends Enum<E>, R extends Enum<R>> R convert(E e, Class<R> toBeConverted) {
-    return Enum.valueOf(toBeConverted, e.name());
-  }
 }

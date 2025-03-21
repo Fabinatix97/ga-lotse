@@ -23,7 +23,7 @@ import {
 
 export interface ValidationErrors {
   elementId: string;
-  element: RefObject<HTMLDivElement>;
+  element: RefObject<HTMLDivElement | null>;
   errors: FormikErrors<CLFormElement> | null;
 }
 

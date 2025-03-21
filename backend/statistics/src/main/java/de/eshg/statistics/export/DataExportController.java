@@ -21,9 +21,7 @@ import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.core.io.ByteArrayResource;
@@ -102,23 +100,22 @@ public class DataExportController {
 
     try (SXSSFWorkbook workbook = new SXSSFWorkbook(100);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-      CellStyle cellStyle = workbook.createCellStyle();
-      cellStyle.setAlignment(HorizontalAlignment.LEFT);
+      CellStyleHolder cellStyleHolder = DataExportUtil.createCellStyles(workbook);
 
       aggregationResultExportService.addAggregationResultInformation(
-          id, service, workbook.createSheet("Information"), cellStyle);
+          id, service, workbook.createSheet("Information"), cellStyleHolder);
 
       Sheet sheet = workbook.createSheet("Daten");
       Map<Integer, CellType> cellTypeMap =
           aggregationResultExportService.addAggregationResultDataHeaderAndReturnCellTypes(
-              id, service, sheet, cellStyle);
+              id, service, sheet, cellStyleHolder);
       long exportedRows = 0;
       int currentPage = 0;
       AtomicInteger rowCounter = new AtomicInteger(1);
       while (exportedRows < totalElements) {
         exportedRows +=
             aggregationResultExportService.addAggregationResultRows(
-                id, currentPage, service, cellTypeMap, sheet, rowCounter, cellStyle);
+                id, currentPage, service, cellTypeMap, sheet, rowCounter, cellStyleHolder);
         currentPage++;
       }
 

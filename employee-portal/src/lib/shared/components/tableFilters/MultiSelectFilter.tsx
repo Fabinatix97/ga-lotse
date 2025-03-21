@@ -3,19 +3,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { UseTableControlResult } from "@eshg/lib-employee-portal";
 import {
   SelectOption,
   SelectOptions,
 } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { Select } from "@mui/joy";
 
-import { UseTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
-
 export function MultiSelectFilter(props: {
   searchParamName: string;
   options: readonly SelectOption[];
   placeholder: string;
-  tableControl: UseTableControl;
+  tableControl: UseTableControlResult;
 }) {
   const selectProps = props.tableControl.getMultiSelectProps(
     props.searchParamName,

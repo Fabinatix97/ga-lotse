@@ -5,14 +5,12 @@
 
 "use client";
 
+import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { useGetAllAppointmentTypesQuery } from "@/lib/businessModules/travelMedicine/api/queries/appointmentTypes";
 import { useAppointmentTypeSidebar } from "@/lib/businessModules/travelMedicine/components/appointmentTypes/AppointmentTypeSidebar";
 import { columns } from "@/lib/businessModules/travelMedicine/components/appointmentTypes/columns";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 
 export function AppointmentTypesTable() {
   const [{ data: getAllAppointmentTypes }] = useSuspenseQueries({

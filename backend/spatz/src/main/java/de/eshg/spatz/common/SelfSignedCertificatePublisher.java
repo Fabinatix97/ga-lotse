@@ -57,4 +57,8 @@ public class SelfSignedCertificatePublisher {
               return null;
             });
   }
+
+  public void heartBeat(String subjectLocation) {
+    lsdApi.heartbeat(subjectLocation);
+  }
 }

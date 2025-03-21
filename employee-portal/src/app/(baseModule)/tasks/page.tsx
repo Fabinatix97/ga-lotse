@@ -16,10 +16,10 @@ import { FetchTaskForOverviewSearchParamsSchema } from "@/lib/baseModule/api/sch
 import { TasksTable } from "@/lib/baseModule/components/task/TasksTable";
 import { RestrictedPage } from "@/lib/shared/components/RestrictedPage";
 
-export default function TasksPage(props: PageProps) {
+export default async function TasksPage(props: PageProps) {
   const searchParams = v.parse(
     FetchTaskForOverviewSearchParamsSchema,
-    props.searchParams,
+    await props.searchParams,
   );
 
   return (

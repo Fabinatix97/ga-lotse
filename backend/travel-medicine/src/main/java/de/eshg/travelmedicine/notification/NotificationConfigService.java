@@ -24,6 +24,11 @@ public class NotificationConfigService extends EshgConfigurationService<Notifica
   }
 
   @Override
+  public NotificationConfig getConfig() {
+    return super.getConfig();
+  }
+
+  @Override
   protected NotificationConfig getInitialConfiguration() {
     NotificationConfig notificationConfig = new NotificationConfig();
     notificationConfig.setFromAddress(initialNotificationConfig.fromAddress());

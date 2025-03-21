@@ -6,6 +6,7 @@
 package de.eshg.spatz.common;
 
 import static de.eshg.servicedirectory.util.X509Utils.ESHGACTOR_BUNDLE_NAME;
+import static de.eshg.servicedirectory.util.X509Utils.getCertificateInfo;
 
 import de.eshg.lib.servicedirectory.ServiceDirectoryApiConfiguration.GetTrustedActorsCacheEntry;
 import de.eshg.lib.servicedirectory.ServiceDirectoryApiConfiguration.TrustedActorsSupplier;
@@ -23,9 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
@@ -51,10 +52,12 @@ public class ServiceDirectoryTopologyService {
   private final List<TopologyChangedListener> topologyChangedListeners;
   private final CertificateValidationService certificateValidationService;
   private final SelfSignedCertificateLatch latch;
+  private final Duration serviceDirectoryPollInterval;
   private final Duration pollRetryGracePeriod;
 
   private String lastEtag = null;
   private Instant lastSuccessfulPollTime = Instant.now();
+  private volatile Instant firstSuccessfulPollTime = null;
   private TrustedActors trustedActors = new TrustedActors(List.of(), List.of());
 
   public ServiceDirectoryTopologyService(
@@ -62,12 +65,15 @@ public class ServiceDirectoryTopologyService {
       ObjectProvider<TopologyChangedListener> topologyChangedListeners,
       CertificateValidationService certificateValidationService,
       SelfSignedCertificateLatch latch,
+      @Value("${eshg.servicedirectory.topology.pollInterval:15000}")
+          Duration serviceDirectoryPollInterval,
       @Value("${eshg.servicedirectory.topology.pollRetryGracePeriod:75000}")
           long pollRetryGracePeriod) {
     this.trustedActorsSupplier = trustedActorsSupplier;
     this.topologyChangedListeners = topologyChangedListeners.stream().toList();
     this.certificateValidationService = certificateValidationService;
     this.latch = latch;
+    this.serviceDirectoryPollInterval = serviceDirectoryPollInterval;
     this.pollRetryGracePeriod =
         pollRetryGracePeriod < 0
             ? ChronoUnit.FOREVER.getDuration() // about 292,271,023,045 years
@@ -77,6 +83,16 @@ public class ServiceDirectoryTopologyService {
         "registered {} topologyChangedListeners: {}",
         this.topologyChangedListeners.size(),
         this.topologyChangedListeners);
+  }
+
+  public Instant getCertificateDistributedTime() {
+    // If we were able to poll from the SD, the SD's Spatz already fetched our certificate.
+    // Wait one more serviceDirectoryPollInterval so all other Spatzs had time to fetch our
+    // certificate, too.
+    if (firstSuccessfulPollTime == null) {
+      return null;
+    }
+    return firstSuccessfulPollTime.plus(serviceDirectoryPollInterval);
   }
 
   @Scheduled(fixedDelayString = "${eshg.servicedirectory.topology.pollInterval:15000}")
@@ -99,6 +115,9 @@ public class ServiceDirectoryTopologyService {
       }
 
       lastSuccessfulPollTime = Instant.now();
+      if (firstSuccessfulPollTime == null) {
+        firstSuccessfulPollTime = lastSuccessfulPollTime;
+      }
     } catch (RuntimeException e) {
       handlePollingFailure(e);
     }
@@ -118,16 +137,18 @@ public class ServiceDirectoryTopologyService {
         Duration.between(lastSuccessfulPollTime, Instant.now());
 
     if (durationSinceLastSuccessfulPoll.compareTo(pollRetryGracePeriod) > 0) {
-      trustedActors = new TrustedActors(List.of(), List.of());
-      lastEtag = null;
       logger.warn(
-          "could not poll trusted actors since {}: {} - pollRetryGracePeriod expired -> "
+          "could not poll trusted actors since {} - pollRetryGracePeriod expired -> "
               + "trusting nobody until next successful polling",
           lastSuccessfulPollTime,
-          e.getMessage());
-      notifyListeners(trustedActors);
+          e);
+      lastEtag = null;
+      if (!trustedActors.isEmpty()) {
+        trustedActors = new TrustedActors(List.of(), List.of());
+        notifyListeners(trustedActors);
+      }
     } else {
-      logger.info("could not poll trusted actors: {} -> will try again later", e.getMessage());
+      logger.info("could not poll trusted actors -> will try again later", e);
     }
   }
 
@@ -158,16 +179,31 @@ public class ServiceDirectoryTopologyService {
   }
 
   private void logTrustedActors(Level level) {
+    if (!logger.isEnabledForLevel(level)) {
+      return;
+    }
     logger
         .atLevel(level)
         .log(
             "valid active inbound actors: {}",
-            trustedActors.inbound.stream().map(ActorResponseDto::commonName).sorted().toList());
+            trustedActors.inbound.stream()
+                .map(ServiceDirectoryTopologyService::getActorInfo)
+                .sorted()
+                .toList());
     logger
         .atLevel(level)
         .log(
             "valid active outbound actors: {}",
-            trustedActors.outbound.stream().map(ActorResponseDto::commonName).sorted().toList());
+            trustedActors.outbound.stream()
+                .map(ServiceDirectoryTopologyService::getActorInfo)
+                .sorted()
+                .toList());
+  }
+
+  private static String getActorInfo(ActorResponseDto actor) {
+    return getCertificateInfo(
+        actor.commonName(),
+        Optional.ofNullable(actor.certificate()).map(CertificateDto::value).orElse(null));
   }
 
   public interface TopologyChangedListener {
@@ -183,6 +219,10 @@ public class ServiceDirectoryTopologyService {
     public Map<String, ActorResponseDto> outboundByHostname() {
       return outbound().stream()
           .collect(Collectors.toUnmodifiableMap(ActorResponseDto::commonName, Function.identity()));
+    }
+
+    public boolean isEmpty() {
+      return inbound().isEmpty() && outbound().isEmpty();
     }
   }
 
@@ -226,10 +266,10 @@ public class ServiceDirectoryTopologyService {
 
       List<X509Certificate> dynamicCertificates =
           allTrustedActors.values().stream()
-              .flatMap(a -> Stream.of(a.currentCertificate(), a.previousCertificate()))
+              .map(ActorResponseDto::certificate)
               .filter(Objects::nonNull)
               .map(CertificateDto::value)
-              .map(X509Utils::parsePem)
+              .flatMap(X509Utils::parseMultiPem)
               .toList();
 
       SslBundle newSslBundle =

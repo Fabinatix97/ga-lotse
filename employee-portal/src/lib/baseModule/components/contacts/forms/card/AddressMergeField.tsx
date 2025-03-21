@@ -4,6 +4,11 @@
  */
 
 import { ApiCountryCode } from "@eshg/base-api";
+import {
+  BaseAddressDetailsColumn,
+  BaseAddressFormInputs,
+  DetailsRow,
+} from "@eshg/lib-employee-portal";
 import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { FieldProps } from "@eshg/lib-portal/types/form";
@@ -21,10 +26,7 @@ import {
 import { ChangeEvent, useState } from "react";
 import { isDefined } from "remeda";
 
-import { BaseAddressDetails } from "@/lib/shared/components/address/BaseAddressDetails";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
-import { BaseAddressFormInputs } from "@/lib/shared/components/form/address/helpers";
 import { join } from "@/lib/shared/helpers/strings";
 
 interface AddressSelectOption {
@@ -108,7 +110,7 @@ export function AddressMergeField({
           <Typography component={"h2"} level={"title-md"} id={titleId}>
             {fieldProps.label}
           </Typography>
-          <BaseAddressDetails address={value} />
+          <BaseAddressDetailsColumn address={value} />
         </Stack>
       )
     );

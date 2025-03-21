@@ -6,6 +6,7 @@
 package de.eshg.officialmedicalservice.citizenpublic;
 
 import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
+import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.officialmedicalservice.appointment.OmsAppointmentService;
 import de.eshg.officialmedicalservice.concern.ConcernMapper;
 import de.eshg.officialmedicalservice.document.OmsDocumentService;
@@ -68,8 +69,12 @@ public class CitizenPublicProcedureService {
     procedure.setConcern(ConcernMapper.mapToEntity(request.concern()));
 
     omsDocumentService.addLetterOfAssignmentCitizen(procedure, files);
+    omsDocumentService.addInitialReleaseFromConfidentiality(procedure);
 
     notificationService.notifyNewCitizenProcedure(request.affectedPerson());
+
+    progressEntryService.createProgressEntryForBookingAppointmentByCitizen(
+        procedure, request.appointment().bookingInfo().start(), TriggerType.SYSTEM_AUTOMATIC);
 
     progressEntryService.createProgressEntryForConcernChanged(
         procedure, request.concern().nameDe());

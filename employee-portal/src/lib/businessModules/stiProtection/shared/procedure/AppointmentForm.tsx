@@ -82,10 +82,10 @@ function ConnectedAppointmentPicker<TForm extends CreateAppointmentForm>({
         padding: 2,
         marginTop: 1,
         borderRadius: theme.radius.md,
+        maxWidth: theme.spacing(46),
       })}
     >
       <AppointmentPickerField
-        sx={{ width: "min-content" }}
         name={name}
         currentMonth={currentMonth}
         setCurrentMonth={setCurrentMonth}

@@ -4,16 +4,17 @@
  */
 
 import {
+  DefaultPersonFormValues,
+  mapToPersonUpdateRequest,
+} from "@eshg/lib-employee-portal";
+
+import {
   PersonDetails,
   mapPersonDetailsToForm,
 } from "@/lib/businessModules/schoolEntry/api/models/Person";
 import { useUpdateChild } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
-import {
-  DefaultPersonForm,
-  DefaultPersonFormValues,
-} from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
+import { DefaultPersonForm } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
 import { PersonSidebarForm } from "@/lib/shared/components/personSidebar/form/PersonSidebarForm";
-import { mapToPersonUpdateRequest } from "@/lib/shared/components/personSidebar/helpers";
 import {
   SidebarWithFormRefProps,
   useSidebarWithFormRef,

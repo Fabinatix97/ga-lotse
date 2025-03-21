@@ -5,6 +5,10 @@
 
 "use client";
 
+import {
+  DefaultPersonFormValues,
+  mapToPersonAddRequest,
+} from "@eshg/lib-employee-portal";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
@@ -29,8 +33,6 @@ import {
   PersonSidebar,
   PersonSidebarProps,
 } from "@/lib/shared/components/personSidebar/PersonSidebar";
-import { DefaultPersonFormValues } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
-import { mapToPersonAddRequest } from "@/lib/shared/components/personSidebar/helpers";
 import {
   DefaultSearchPersonForm,
   defaultSearchPersonValues,

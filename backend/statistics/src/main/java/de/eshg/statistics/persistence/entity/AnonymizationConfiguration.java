@@ -27,6 +27,11 @@ public class AnonymizationConfiguration extends BaseEntity {
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private TableColumnDataPrivacyCategory dataPrivacyCategory;
 
+  @Column private Integer lDiversity;
+
+  @Column(precision = 10, scale = 4)
+  private BigDecimal tCloseness;
+
   @Column private Integer intervalCount;
 
   @Column(precision = 10, scale = 4)
@@ -55,6 +60,22 @@ public class AnonymizationConfiguration extends BaseEntity {
 
   public void setDataPrivacyCategory(TableColumnDataPrivacyCategory dataPrivacyCategory) {
     this.dataPrivacyCategory = dataPrivacyCategory;
+  }
+
+  public Integer getLDiversity() {
+    return lDiversity;
+  }
+
+  public void setLDiversity(Integer lDiversity) {
+    this.lDiversity = lDiversity;
+  }
+
+  public BigDecimal getTCloseness() {
+    return tCloseness;
+  }
+
+  public void setTCloseness(BigDecimal tCloseness) {
+    this.tCloseness = tCloseness;
   }
 
   public Integer getIntervalCount() {

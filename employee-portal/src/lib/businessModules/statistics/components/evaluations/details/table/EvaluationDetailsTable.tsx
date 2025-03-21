@@ -5,6 +5,14 @@
 
 "use client";
 
+import {
+  DataTable,
+  ManualTableSortingProps,
+  Pagination,
+  PaginationProps,
+  TablePage,
+  TableSheet,
+} from "@eshg/lib-employee-portal";
 import { useMemo } from "react";
 import { isDefined } from "remeda";
 
@@ -25,22 +33,12 @@ import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/Filt
 import { FilterTemplate } from "@/lib/shared/components/filterSettings/FilterTemplates";
 import { useFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { useFilterTemplate } from "@/lib/shared/components/filterSettings/useFilterTemplate";
-import {
-  Pagination,
-  PaginationProps,
-} from "@/lib/shared/components/pagination/Pagination";
-import {
-  DataTable,
-  ManualSortingProps,
-} from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 
 export interface EvaluationDetailsTableProps {
   attributes: FlatAttribute[];
   tableData: EvaluationDetailsTableData;
   onFiltersSubmit: (filters: EvaluationFilter[]) => void;
-  manualSortingProps: ManualSortingProps;
+  manualSortingProps: ManualTableSortingProps;
   paginationProps: PaginationProps;
   filterTemplates: FilterTemplate[];
   resolveProcedureId?: (

@@ -25,12 +25,12 @@ const title = {
   "release-notes": "Release Notes",
 } as const satisfies Record<PageName, string>;
 
-export default function StaticDocumentPage(
+export default async function StaticDocumentPage(
   props: DynamicPageProps<{
     documentType: string;
   }>,
 ) {
-  const { documentType } = props.params;
+  const { documentType } = await props.params;
   if (!isValidPageType(documentType)) {
     return <NotFound />;
   }

@@ -9,6 +9,12 @@
         "./build/types/src/index.d.ts"
       ],
       "import": "./build/lib/index.js"
+    },
+    "./redirects": {
+      "types": [
+        "./build/types/src/redirects.d.ts"
+      ],
+      "node": "./build/lib/redirects.js"
     }
   },
   "dependencies": {

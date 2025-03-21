@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { RowSelectionTableToolbarButton } from "@eshg/lib-employee-portal";
 import { InsertDriveFileOutlined } from "@mui/icons-material";
 
 import { Procedure } from "@/lib/businessModules/schoolEntry/api/models/Procedure";
 import { useBulkDownloadInvitations } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/bulkDownloadInvitations/useBulkDownloadInvitations";
-import { RowSelectionTableToolbarButton } from "@/lib/shared/components/table/RowSelectionTableToolbarButton";
 
 import { DownloadNotPossibleDialog } from "./DownloadNotPossibleDialog";
 import { PartialDownloadDialog } from "./PartialDownloadDialog";

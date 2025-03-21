@@ -31,8 +31,7 @@ public class ActorMapperAdminApi {
         actor.isActive(),
         actor.isManualCertificate(),
         actor.getCommonName(),
-        toApi(actor.getCurrentCertificate()),
-        toApi(actor.getPreviousCertificate()),
+        toApi(actor.getCertificate()),
         actor.getNetworkId(),
         actor.getOrgUnitId(),
         StagingStatus.convert(actor.getStagingStatus(), StagingStatusDto.class));
@@ -91,8 +90,7 @@ public class ActorMapperAdminApi {
     actor.setType(ActorType.convert(partialActorDto.type(), ActorType.class));
     actor.setNetworkId(partialActorDto.networkId());
     actor.setCommonName(partialActorDto.commonName());
-    actor.setCurrentCertificate(toPersistence(partialActorDto.currentCertificate()));
-    actor.setPreviousCertificate(toPersistence(partialActorDto.previousCertificate()));
+    actor.setCertificate(toPersistence(partialActorDto.certificate()));
     actor.setActive(partialActorDto.active());
     actor.setManualCertificate(partialActorDto.manualCertificate());
     actor.setStagingStatus(StagingStatus.from(partialActorDto.stagingStatus()));
@@ -104,8 +102,7 @@ public class ActorMapperAdminApi {
   }
 
   public static ActorDto toApi(AuditedActor auditedActor, boolean withCertificates) {
-    Certificate currentCertificate = auditedActor.getCurrentCertificate();
-    Certificate previousCertificate = auditedActor.getPreviousCertificate();
+    Certificate certificate = auditedActor.getCertificate();
 
     return new ActorDto(
         auditedActor.getId(),
@@ -115,17 +112,9 @@ public class ActorMapperAdminApi {
         auditedActor.isActive(),
         auditedActor.isManualCertificate(),
         auditedActor.getCommonName(),
-        withCertificates && currentCertificate != null
+        withCertificates && certificate != null
             ? new CertificateDto(
-                currentCertificate.value(),
-                currentCertificate.signature(),
-                currentCertificate.signatory())
-            : null,
-        withCertificates && previousCertificate != null
-            ? new CertificateDto(
-                previousCertificate.value(),
-                previousCertificate.signature(),
-                previousCertificate.signatory())
+                certificate.value(), certificate.signature(), certificate.signatory())
             : null,
         auditedActor.getNetworkId(),
         toApi(auditedActor.getActorMetadata()));

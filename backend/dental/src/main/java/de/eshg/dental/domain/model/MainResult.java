@@ -35,5 +35,7 @@ public enum MainResult {
   /** Platzhalter */
   P,
   /** Krone */
-  K
+  K,
+  /** Zahn fehlt */
+  U
 }

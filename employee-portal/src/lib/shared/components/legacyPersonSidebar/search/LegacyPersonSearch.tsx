@@ -25,7 +25,7 @@ interface LegacyPersonSearchProps {
   title: string;
   personSearchFormAdditionalFields?: () => ReactNode;
   personSearchFormInitialValues?: LegacyMinimalPerson;
-  sidebarFormRef?: RefObject<SidebarFormHandle>;
+  sidebarFormRef?: RefObject<SidebarFormHandle | null>;
 }
 
 interface SearchMode {

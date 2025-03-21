@@ -29,7 +29,6 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -79,24 +78,29 @@ public class AggregationResultExportService {
 
   @Transactional(readOnly = true)
   public void addAggregationResultInformation(
-      UUID id, AbstractAggregationResultService service, Sheet sheet, CellStyle cellStyle) {
+      UUID id,
+      AbstractAggregationResultService service,
+      Sheet sheet,
+      CellStyleHolder cellStyleHolder) {
     AbstractAggregationResult aggregationResult = service.getAbstractAggregationResultInternal(id);
     String name = getAggregationResultName(aggregationResult);
     String description = getAggregationResultDescription(aggregationResult);
     AtomicInteger rowCounter = new AtomicInteger(0);
     DataExportUtil.addMetadataBlock(
-        sheet, cellStyle, rowCounter, aggregationResult, name, description, null);
+        sheet, cellStyleHolder, rowCounter, aggregationResult, name, description, null);
     rowCounter.getAndIncrement();
     Row legendRow = sheet.createRow(rowCounter.getAndIncrement());
-    DataExportUtil.createMetadataCell(legendRow, cellStyle, 1, "Legende:");
-    DataExportUtil.createMetadataCell(legendRow, cellStyle, 3, "Wert");
-    DataExportUtil.createMetadataCell(legendRow, cellStyle, 4, "Bedeutung");
-    DataExportUtil.createMetadataCell(legendRow, cellStyle, 5, "Info");
+    DataExportUtil.createStringCell(legendRow, cellStyleHolder, 1, "Legende:");
+    DataExportUtil.createStringCell(legendRow, cellStyleHolder, 3, "Wert");
+    DataExportUtil.createStringCell(legendRow, cellStyleHolder, 4, "Bedeutung");
+    DataExportUtil.createStringCell(legendRow, cellStyleHolder, 5, "Info");
     aggregationResult.getTableColumns().stream()
         .filter(
             tableColumn ->
                 isRelevantTableColumn(tableColumn) && !tableColumn.getValueToMeanings().isEmpty())
-        .forEach(tableColumn -> addLegendForTableColumn(tableColumn, rowCounter, sheet, cellStyle));
+        .forEach(
+            tableColumn ->
+                addLegendForTableColumn(tableColumn, rowCounter, sheet, cellStyleHolder));
   }
 
   private static String getAggregationResultName(AbstractAggregationResult aggregationResult) {
@@ -123,10 +127,13 @@ public class AggregationResultExportService {
   }
 
   private static void addLegendForTableColumn(
-      TableColumn tableColumn, AtomicInteger rowCounter, Sheet sheet, CellStyle cellStyle) {
-    DataExportUtil.createMetadataCell(
+      TableColumn tableColumn,
+      AtomicInteger rowCounter,
+      Sheet sheet,
+      CellStyleHolder cellStyleHolder) {
+    DataExportUtil.createStringCell(
         sheet.createRow(rowCounter.getAndIncrement()),
-        cellStyle,
+        cellStyleHolder,
         2,
         DataExportUtil.getAttributeName(tableColumn, true));
     tableColumn
@@ -134,17 +141,20 @@ public class AggregationResultExportService {
         .forEach(
             valueToMeaning -> {
               Row row = sheet.createRow(rowCounter.getAndIncrement());
-              DataExportUtil.createMetadataCell(row, cellStyle, 3, valueToMeaning.getValue());
-              DataExportUtil.createMetadataCell(row, cellStyle, 4, valueToMeaning.getMeaning());
+              DataExportUtil.createStringCell(row, cellStyleHolder, 3, valueToMeaning.getValue());
+              DataExportUtil.createStringCell(row, cellStyleHolder, 4, valueToMeaning.getMeaning());
               if (valueToMeaning.isUnknownValue()) {
-                DataExportUtil.createMetadataCell(row, cellStyle, 5, "unbekannter Wert");
+                DataExportUtil.createStringCell(row, cellStyleHolder, 5, "unbekannter Wert");
               }
             });
   }
 
   @Transactional(readOnly = true)
   public Map<Integer, CellType> addAggregationResultDataHeaderAndReturnCellTypes(
-      UUID id, AbstractAggregationResultService service, Sheet sheet, CellStyle cellStyle) {
+      UUID id,
+      AbstractAggregationResultService service,
+      Sheet sheet,
+      CellStyleHolder cellStyleHolder) {
     Map<Integer, CellType> cellTypeMap = new HashMap<>();
 
     AbstractAggregationResult aggregationResult = service.getAbstractAggregationResultInternal(id);
@@ -159,9 +169,11 @@ public class AggregationResultExportService {
             index -> {
               TableColumn tableColumn = tableColumns.get(index);
               cellTypeMap.put(index, getCellType(tableColumn.getValueType()));
-              Cell cell = headerRow.createCell(cellCounter.getAndIncrement(), CellType.STRING);
-              cell.setCellValue(DataExportUtil.getAttributeName(tableColumn, true));
-              cell.setCellStyle(cellStyle);
+              DataExportUtil.createStringCell(
+                  headerRow,
+                  cellStyleHolder,
+                  cellCounter.getAndIncrement(),
+                  DataExportUtil.getAttributeName(tableColumn, true));
             });
     return cellTypeMap;
   }
@@ -183,7 +195,7 @@ public class AggregationResultExportService {
       Map<Integer, CellType> columnToCellTypes,
       Sheet sheet,
       AtomicInteger rowCounter,
-      CellStyle cellStyle) {
+      CellStyleHolder cellStyleHolder) {
     AbstractAggregationResult aggregationResult = service.getAbstractAggregationResultInternal(id);
     Page<TableRow> tableRowPage = service.getTableRowPage(aggregationResult, page);
 
@@ -203,10 +215,13 @@ public class AggregationResultExportService {
                   .filter(index -> columnToCellTypes.get(index) != null)
                   .forEach(
                       index -> {
-                        Cell cell =
-                            row.createCell(
-                                cellCounter.getAndIncrement(), columnToCellTypes.get(index));
-                        cell.setCellStyle(cellStyle);
+                        CellType cellType = columnToCellTypes.get(index);
+                        Cell cell = row.createCell(cellCounter.getAndIncrement(), cellType);
+                        if (cellType.equals(CellType.STRING)) {
+                          cell.setCellStyle(cellStyleHolder.cellStyleString());
+                        } else {
+                          cell.setCellStyle(cellStyleHolder.cellStyleNumeric());
+                        }
                         Object value = tableRow.getCellEntries().get(index).getValue();
                         switch (value) {
                           case null -> {

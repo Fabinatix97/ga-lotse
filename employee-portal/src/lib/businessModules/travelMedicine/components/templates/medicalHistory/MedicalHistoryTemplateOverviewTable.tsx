@@ -5,6 +5,7 @@
 
 "use client";
 
+import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { Button } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
@@ -20,9 +21,6 @@ import { useGetAllMedicalHistoryTemplatesQuery } from "@/lib/businessModules/tra
 import { medicalHistoryColumns } from "@/lib/businessModules/travelMedicine/components/templates/medicalHistory/columns";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 
 export function MedicalHistoryTemplateOverviewTable() {
   const router = useRouter();

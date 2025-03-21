@@ -9,10 +9,10 @@ import { redirect } from "next/navigation";
 import { OfficialMedicalServiceDetailsRouteParamsSchema } from "@/lib/businessModules/officialMedicalService/components/procedures/details/OfficialMedicalServiceDetailsRouteParamsSchema";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 
-export default function OfficialMedicalServiceProcedureIndexPage(
+export default async function OfficialMedicalServiceProcedureIndexPage(
   props: DynamicPageProps<OfficialMedicalServiceDetailsRouteParamsSchema>,
 ) {
-  const { id } = props.params;
+  const { id } = await props.params;
 
   redirect(routes.procedures.byId(id).details);
 }

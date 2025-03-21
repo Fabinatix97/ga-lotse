@@ -4,7 +4,13 @@
  */
 
 export { type Child, mapChild } from "./api/models/Child";
-export { type ChildDetails, mapChildDetails } from "./api/models/ChildDetails";
+export {
+  type ChildDetails,
+  mapChildDetails,
+  mapPersonDetails,
+  mapPersonDetailsToForm,
+  type PersonDetails,
+} from "./api/models/ChildDetails";
 export {
   type ChildExamination,
   mapChildExamination,
@@ -18,6 +24,7 @@ export { type Examination, mapExamination } from "./api/models/Examination";
 export {
   type AbsenceExaminationResult,
   type ExaminationResult,
+  type ExaminationResultWithDate,
   type FluoridationExaminationResult,
   type ScreeningExaminationResult,
   type ToothDiagnoses,
@@ -50,6 +57,8 @@ export {
   useCloseSchoolYear,
   useCreateChild,
   useUpdateAnnualChild,
+  useUpdateAnnualChildPerson,
+  useSyncPerson,
   useUpdateExamination,
 } from "./api/mutations/childApi";
 export { useImportChildren } from "./api/mutations/importApi";
@@ -86,9 +95,10 @@ export { RELATED_TEETH } from "./config/teeth";
 
 export { DentalProvider, useDentalApi } from "./contexts/dental";
 
-export { ChildToolbar } from "./features/children/components/ChildToolbar";
-
-export { DentalIndexPage } from "./pages/DentalIndexPage";
+export { DentalChildLayout } from "./features/children/layouts/DentalChildLayout";
+export { useChildRouteParams } from "./features/children/hooks/useChildRouteParams";
+export { DentalChildExaminationRouteParams } from "./features/children/schemas/DentalChildExaminationRouteParams";
+export { DentalChildRouteParams } from "./features/children/schemas/DentalChildRouteParams";
 
 export { moduleUserGroup } from "./shared/moduleUserGroup";
 export {

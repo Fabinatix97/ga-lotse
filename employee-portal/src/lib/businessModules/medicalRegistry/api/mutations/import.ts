@@ -15,7 +15,7 @@ import { useMedicalRegistryImportApi } from "@/lib/businessModules/medicalRegist
 
 export function useImportData() {
   const medicalRegistryImportApi = useMedicalRegistryImportApi();
-  const abortControllerRef = useRef<AbortController>();
+  const abortControllerRef = useRef<AbortController>(null);
   const abort = useCallback(() => {
     abortControllerRef.current?.abort();
     abortControllerRef.current = new AbortController();

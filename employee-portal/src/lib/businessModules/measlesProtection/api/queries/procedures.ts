@@ -5,6 +5,7 @@
 
 "use client";
 
+import { PaginationProps, TableSortingProps } from "@eshg/lib-employee-portal";
 import {
   ApiGetMeaslesProtectionProceduresSortBy,
   ApiGetMeaslesProtectionProceduresSortOrder,
@@ -16,11 +17,6 @@ import { DeepKeys } from "@tanstack/react-table";
 
 import { useProtectionProcedureApi } from "@/lib/businessModules/measlesProtection/api/clients";
 import { ProcedureFilters } from "@/lib/businessModules/measlesProtection/components/procedures/proceduresTable/ProceduresTableFilters";
-import { PaginationProps } from "@/lib/shared/components/pagination/Pagination";
-import {
-  AutomaticSortingProps,
-  ManualSortingProps,
-} from "@/lib/shared/components/table/DataTable";
 
 import { measlesProtectionApiQueryKey } from "./apiQueryKeys";
 
@@ -28,7 +24,6 @@ type PageRequest = Pick<
   PaginationProps,
   "pageSize" | "pageNumber" | "pageSizeOptions"
 >;
-type SortingRequest = ManualSortingProps | AutomaticSortingProps;
 
 type DotToUnderscore<T> = T extends `${infer A}.${infer B}`
   ? DotToUnderscore<`${A}_${B}`>
@@ -95,7 +90,7 @@ function mapSortOrder(
 
 export function useGetProceduresQuery(
   page: PageRequest,
-  sorting: SortingRequest,
+  sorting: TableSortingProps,
   filters: ProcedureFilters,
 ) {
   const sortState = sorting.manualSorting

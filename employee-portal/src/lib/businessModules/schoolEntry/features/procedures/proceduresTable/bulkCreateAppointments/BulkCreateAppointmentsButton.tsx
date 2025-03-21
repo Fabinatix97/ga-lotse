@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { RowSelectionTableToolbarButton } from "@eshg/lib-employee-portal";
 import { CalendarMonthOutlined } from "@mui/icons-material";
 
 import { useBulkCreateAppointment } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/bulkCreateAppointments/useBulkCreateAppointment";
-import { RowSelectionTableToolbarButton } from "@/lib/shared/components/table/RowSelectionTableToolbarButton";
 
 interface BulkCreateAppointmentsButtonProps {
   selectedProcedureIds: string[];

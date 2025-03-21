@@ -19,362 +19,362 @@ import de.eshg.schoolentry.statistics.options.*;
 
 public enum EsuDevelopmentScreeningAttribute implements EsuAttributes {
   KIND(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Status Kind",
           "KIND",
-          convertToValueOptions(Child.values()),
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
-          true)),
+          true,
+          convertToValueOptions(Child.values()))),
 
   GROE(
-      new DecimalAttribute(
+      DecimalAttribute.create(
           "Größe",
           "GROE",
-          "m",
-          EsuAttributeUtil.createUnknownOption(Integer.toString(UNKNOWN_INTEGER_999)),
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
-          true)),
+          true,
+          "m",
+          EsuAttributeUtil.createUnknownOption(Integer.toString(UNKNOWN_INTEGER_999)))),
 
   GROE_PERZ(
-      new DecimalAttribute(
+      DecimalAttribute.create(
           "Größe_Perzentile",
           "GROE_PERZ",
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
           true)),
 
   GEWI(
-      new DecimalAttribute(
+      DecimalAttribute.create(
           "Gewicht",
           "GEWI",
-          "kg",
-          EsuAttributeUtil.createUnknownOption(Double.toString(UNKNOWN_DECIMAL_99_9)),
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
-          true)),
+          true,
+          "kg",
+          EsuAttributeUtil.createUnknownOption(Double.toString(UNKNOWN_DECIMAL_99_9)))),
 
   GEWI_PERZ(
-      new DecimalAttribute(
+      DecimalAttribute.create(
           "Gewicht_Perzentile",
           "GEWI_PERZ",
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
           true)),
 
   BMI(
-      new DecimalAttribute(
+      DecimalAttribute.create(
           "BMI", "BMI", EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT, true)),
 
   BMI_PERZ(
-      new DecimalAttribute(
+      DecimalAttribute.create(
           "BMI_Perzentile", "BMI_PERZ", EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT, true)),
 
   RRSYS(
-      new IntegerAttribute(
+      IntegerAttribute.create(
           "RR_systolisch",
           "RRSYS",
-          "mmHG",
-          EsuAttributeUtil.createUnknownOption("999"),
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
-          true)),
+          true,
+          "mmHG",
+          EsuAttributeUtil.createUnknownOption("999"))),
 
   RRDIA(
-      new IntegerAttribute(
+      IntegerAttribute.create(
           "RR_diastolisch",
           "RRDIA",
-          "mmHG",
-          EsuAttributeUtil.createUnknownOption("999"),
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
-          true)),
+          true,
+          "mmHG",
+          EsuAttributeUtil.createUnknownOption("999"))),
 
   KOERPERCHECK(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Ergebnis körperliche Untersuchung",
           "KOERPERCHECK",
-          convertToValueOptions(PhysicalExaminationResult.values()),
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
-          true)),
+          true,
+          convertToValueOptions(PhysicalExaminationResult.values()))),
 
   EZ(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Ernährungszustand",
           "EZ",
-          convertToValueOptions(ExaminationResultFourOptions.values()),
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
-          true)),
+          true,
+          convertToValueOptions(ExaminationResultFourOptions.values()))),
 
   RM_ERNAEHRUNGSZUSTAND(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Rückmeldung Arztbrief Ernährungszustand",
           "RM Ernährungszustand",
-          convertToValueOptions(DoctorLetterValue.values()),
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
-          false)),
+          false,
+          convertToValueOptions(DoctorLetterValue.values()))),
 
   NEU(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Neuro",
           "NEU",
-          convertToValueOptions(ExaminationResultFourOptions.values()),
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
-          true)),
+          true,
+          convertToValueOptions(ExaminationResultFourOptions.values()))),
 
   RM_NEUROLOGIE(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Rückmeldung Arztbrief Neurologie",
           "RM Neurologie",
-          convertToValueOptions(DoctorLetterValue.values()),
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
-          false)),
+          false,
+          convertToValueOptions(DoctorLetterValue.values()))),
 
   AHK(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Atmung-Herz-Kreislauf",
           "AHK",
-          convertToValueOptions(ExaminationResultFourOptions.values()),
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
-          true)),
+          true,
+          convertToValueOptions(ExaminationResultFourOptions.values()))),
 
   RM_ATMUNG_HERZ_KREISLAUF(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Rückmeldung Arztbrief Atmung-Herz-Kreislauf",
           "RM Atmung-Herz-Kreislauf",
-          convertToValueOptions(DoctorLetterValue.values()),
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
-          false)),
+          false,
+          convertToValueOptions(DoctorLetterValue.values()))),
 
   DERM(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Hautzustand",
           "DERM",
-          convertToValueOptions(ExaminationResultFourOptions.values()),
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
-          true)),
+          true,
+          convertToValueOptions(ExaminationResultFourOptions.values()))),
 
   RM_HAUT(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Rückmeldung Arztbrief Haut",
           "RM Haut",
-          convertToValueOptions(DoctorLetterValue.values()),
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
-          false)),
+          false,
+          convertToValueOptions(DoctorLetterValue.values()))),
 
   MUSK(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Muskulatur",
           "MUSK",
-          convertToValueOptions(ExaminationResultFourOptions.values()),
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
-          true)),
+          true,
+          convertToValueOptions(ExaminationResultFourOptions.values()))),
 
   RM_MUSKULATUR_SKELETT(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Rückmeldung Arztbrief Muskulatur,Skelett",
           "RM Muskulatur,Skelett",
-          convertToValueOptions(DoctorLetterValue.values()),
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
-          false)),
+          false,
+          convertToValueOptions(DoctorLetterValue.values()))),
 
   ENDO(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Endo/Stoffwechsel",
           "ENDO",
-          convertToValueOptions(ExaminationResultFourOptions.values()),
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
-          true)),
+          true,
+          convertToValueOptions(ExaminationResultFourOptions.values()))),
 
   RM_ENDO_STOFFW(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Rückmeldung Arztbrief Endo/Stoffwechsel",
           "RM Endo/Stoffw.",
-          convertToValueOptions(DoctorLetterValue.values()),
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
-          false)),
+          false,
+          convertToValueOptions(DoctorLetterValue.values()))),
 
   ABD(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Abdomen",
           "ABD",
-          convertToValueOptions(ExaminationResultFourOptions.values()),
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
-          true)),
+          true,
+          convertToValueOptions(ExaminationResultFourOptions.values()))),
 
   RM_ABDOMEN(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Rückmeldung Arztbrief Abdomen",
           "RM Abdomen",
-          convertToValueOptions(DoctorLetterValue.values()),
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
-          false)),
+          false,
+          convertToValueOptions(DoctorLetterValue.values()))),
 
   HNO(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Hals-Nasen-Ohren",
           "HNO",
-          convertToValueOptions(ExaminationResultFourOptions.values()),
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
-          true)),
+          true,
+          convertToValueOptions(ExaminationResultFourOptions.values()))),
 
   RM_HNO(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Rückmeldung Arztbrief HNO",
           "RM HNO",
-          convertToValueOptions(DoctorLetterValue.values()),
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
-          false)),
+          false,
+          convertToValueOptions(DoctorLetterValue.values()))),
 
   HANDCAP(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Handicap", "HANDCAP", EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT, true)),
 
   CHKR(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "chronische Krankheit",
           "CHKR",
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
           true)),
 
   DIAGCH1(
-      new TextAttribute(
+      TextAttribute.create(
           "Diagnose 1, chron. Krankheit",
           "DIAGCH1",
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
           false)),
 
   DIAGCH2(
-      new TextAttribute(
+      TextAttribute.create(
           "Diagnose 2, chron. Krankheit",
           "DIAGCH2",
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
           false)),
 
   DIAGCH3(
-      new TextAttribute(
+      TextAttribute.create(
           "Diagnose 3, chron. Krankheit",
           "DIAGCH3",
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
           false)),
 
   BEHI(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Behinderung", "BEHI", EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT, true)),
 
   BEHIART(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Art der Behinderung",
           "BEHIART",
-          convertToValueOptions(Disability.values()),
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
-          false)),
+          false,
+          convertToValueOptions(Disability.values()))),
 
   DIAGB1(
-      new TextAttribute(
+      TextAttribute.create(
           "Diagnose 1, Behinderung",
           "DIAGB1",
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
           false)),
 
   DIAGB2(
-      new TextAttribute(
+      TextAttribute.create(
           "Diagnose 2, Behinderung",
           "DIAGB2",
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
           false)),
 
   DIAGB3(
-      new TextAttribute(
+      TextAttribute.create(
           "Diagnose 3, Behinderung",
           "DIAGB3",
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
           false)),
 
   PSYSOZRISK(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Psychosoziales Risiko",
           "PSYSOZRISK",
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
           true)),
 
   FAMILIE(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Familie", "Familie", EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT, true)),
 
   NONCOMP(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Non-Compliance", "NonComp", EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT, true)),
 
   SOZIAL(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Sozial", "Sozial", EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT, true)),
 
   MIGRATION(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Migration", "Migration", EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT, true)),
 
   SONSTIGES_RISIKO(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Sonstiges Risiko",
           "Sonstiges Risiko",
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
           true)),
 
   MASSN(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "sozialpädiatrische Leistung",
           "MASSN",
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
           true)),
 
   WSPR(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Wiedervorstellung in Sprechstunde",
           "WSPR",
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
           true)),
 
   SCHB(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Schulberatung", "SCHB", EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT, true)),
 
   MOTO(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Motorikförderung", "MOTO", EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT, true)),
 
   ERZB(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Erziehungsberatung", "ERZB", EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT, true)),
 
   SPRF(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Sprachförderung", "SPRF", EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT, true)),
 
   ERNB(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Ernährungsberatung", "ERNB", EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT, true)),
 
   IMPF(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Impfberatung", "IMPF", EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT, true)),
 
   SOZD(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Sozialdienst", "SOZD", EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT, true)),
 
   SOHI(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "sonstige Hilfen", "SOHI", EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT, true)),
 
   INFO(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Infobrief", "INFO", EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT, true)),
 
   SCHULEMPF(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Schulempfehlung",
           "SCHULEMPF",
-          convertToValueOptions(SchoolRecommendation.values()),
           EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT,
-          true)),
+          true,
+          convertToValueOptions(SchoolRecommendation.values()))),
 
   MEHR(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Mehraufwand", "MEHR", EsuDevelopmentScreeningAttribute.CATEGORY_S1_RESULT, true)),
   ;
 

@@ -5,7 +5,15 @@
 
 "use client";
 
+import {
+  DataTable,
+  Pagination,
+  TablePage,
+  TableSheet,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
+import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import {
   formatDate,
   formatDateTime,
@@ -26,7 +34,6 @@ import {
 } from "@/lib/businessModules/stiProtection/features/procedures/details/CloseAndReopenDialogs";
 import {
   CONCERN_VALUES,
-  GENDER_VALUES,
   LAB_STATUS_COLORS,
   LAB_STATUS_VALUES,
   PROCEDURE_ORIGIN_VALUES,
@@ -38,11 +45,6 @@ import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
-import { Pagination } from "@/lib/shared/components/pagination/Pagination";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
 import {
   StiProtectionProceduresTableFilters,

@@ -22,16 +22,16 @@ public final class GracefulShutdown {
 
   private static final Logger log = LoggerFactory.getLogger(GracefulShutdown.class);
 
-  private final Supplier<ProxyServer> disposableServer;
+  private final Supplier<SpatzHttpServer> disposableServer;
 
   private volatile Thread shutdownThread;
 
-  GracefulShutdown(Supplier<ProxyServer> disposableServer) {
+  public GracefulShutdown(Supplier<SpatzHttpServer> disposableServer) {
     this.disposableServer = disposableServer;
   }
 
-  void shutDownGracefully(GracefulShutdownCallback callback) {
-    ProxyServer server = this.disposableServer.get();
+  public void shutDownGracefully(GracefulShutdownCallback callback) {
+    SpatzHttpServer server = this.disposableServer.get();
     if (server == null) {
       return;
     }
@@ -44,7 +44,7 @@ public final class GracefulShutdown {
     this.shutdownThread.start();
   }
 
-  private void doShutdown(GracefulShutdownCallback callback, ProxyServer server) {
+  private void doShutdown(GracefulShutdownCallback callback, SpatzHttpServer server) {
     try {
       server.stop();
       log.info("Graceful shutdown complete for port {}", server.getListeningPort());

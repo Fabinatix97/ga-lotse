@@ -20,6 +20,7 @@ public final class TravelMedicinePublicSecurityConfig extends AbstractPublicSecu
     grantAccessToLibAppointmentBlockUrls(EmployeePermissionRole.TRAVEL_MEDICINE_ADMIN, true);
     grantAccessToLibProceduresUrls(
         EmployeePermissionRole.TRAVEL_MEDICINE_ADMIN, ModuleLeaderRole.TRAVEL_MEDICINE_LEADER);
+    grantAccessToLibDepartmentInfoUrls();
 
     requestMatchers(
             BaseUrls.TravelMedicine.CITIZEN_PUBLIC_CONTROLLER + "/**",

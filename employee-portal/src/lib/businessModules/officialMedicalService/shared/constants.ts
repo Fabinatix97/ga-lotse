@@ -35,6 +35,7 @@ export const systemProgressEntryTypeTitles: Record<string, string> = {
   FACILITY_ADDED: "Auftraggeber hinzugefügt",
   MEDICAL_OPINION_STATUS_CHANGED: "Gutachtenstatus verändert",
   CONCERN_CHANGED: "Anliegen gesetzt",
+  E_MAIL_NOTIFICATION: "E-Mail-Benachrichtigungen",
 };
 
 export const statusColorsDocumentStatus = {

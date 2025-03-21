@@ -5,6 +5,7 @@
 
 "use client";
 
+import { ContentPanel, ContentPanelTitle } from "@eshg/lib-employee-portal";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import {
@@ -17,6 +18,7 @@ import {
   UpdateSopessExaminationResultRequest,
 } from "@eshg/school-entry-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
+import { use } from "react";
 
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { SopessExaminationResult } from "@/lib/businessModules/schoolEntry/api/models/examinations/SopessExaminationResult";
@@ -35,13 +37,11 @@ import {
   SopessExaminationFormValues,
   SpeechValues,
 } from "@/lib/businessModules/schoolEntry/features/procedures/sopessExamination/SopessExaminationForm";
-import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
-import { ContentPanelTitle } from "@/lib/shared/components/contentPanel/ContentPanelTitle";
 
 export default function SchoolEntrySopessExaminationPage(
   props: DynamicPageProps<SchoolEntryProcedureRouteParamsSchema>,
 ) {
-  const { procedureId } = props.params;
+  const { procedureId } = use(props.params);
   const schoolEntryApi = useSchoolEntryApi();
   const [{ data: procedure }, { data: sopessExaminationResult }] =
     useSuspenseQueries({

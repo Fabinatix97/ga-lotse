@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DetailsItem } from "@eshg/lib-employee-portal";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
@@ -24,7 +25,6 @@ import {
   createVaccinesOptions,
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/helpers";
 import { VACCINATION_TYPE } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/options";
-import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { validatePositiveInteger } from "@/lib/shared/helpers/validators";
 

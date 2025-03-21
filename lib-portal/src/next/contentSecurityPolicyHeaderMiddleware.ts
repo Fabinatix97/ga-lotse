@@ -149,6 +149,7 @@ export function contentSecurityPolicyHeaderMiddleware(
   };
 }
 
-export function getNonceFromHeader() {
-  return headers().get("x-nonce") ?? undefined;
+export async function getNonceFromHeader() {
+  const headersStore = await headers();
+  return headersStore.get("x-nonce") ?? undefined;
 }

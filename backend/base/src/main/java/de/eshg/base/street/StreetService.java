@@ -9,6 +9,7 @@ import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.common.CountryCode;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,6 +39,27 @@ public class StreetService {
     return streetDirectoryData.stream()
         .map(newAdministrativeData(municipalityDirectoryData))
         .collect(StreamUtil.toLinkedHashSet());
+  }
+
+  public PostCodeAndCity getPostCodeAndCityForStreet(String streetName) {
+    Set<StreetDirectory.AdministrativeData> administrativeData =
+        streetDirectory.getAdministrativeDataByStreetName(streetName);
+
+    Set<PostCodeAndCity> result =
+        administrativeData.stream()
+            .map(
+                ad -> {
+                  MunicipalityDirectory.AdministrativeData x =
+                      municipalityDirectory.getAdministrativeDataBy(ad.postalCode());
+                  return new PostCodeAndCity(ad.postalCode(), x.municipality());
+                })
+            .collect(Collectors.toSet());
+
+    if (result.size() == 1) {
+      return result.stream().findFirst().orElseThrow();
+    } else {
+      return new PostCodeAndCity(null, null);
+    }
   }
 
   private static Function<StreetDirectory.AdministrativeData, AdministrativeData>

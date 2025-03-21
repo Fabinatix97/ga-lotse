@@ -15,8 +15,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 public class DataExportUtil {
@@ -31,21 +33,39 @@ public class DataExportUtil {
 
   private DataExportUtil() {}
 
+  static CellStyleHolder createCellStyles(Workbook workbook) {
+    return new CellStyleHolder(getCellStyleString(workbook), getCellStyleNumeric(workbook));
+  }
+
+  private static CellStyle getCellStyleString(Workbook workbook) {
+    CellStyle cellStyleString = workbook.createCellStyle();
+    cellStyleString.setAlignment(HorizontalAlignment.LEFT);
+    cellStyleString.setQuotePrefixed(true);
+    return cellStyleString;
+  }
+
+  private static CellStyle getCellStyleNumeric(Workbook workbook) {
+    CellStyle cellStyleNumeric = workbook.createCellStyle();
+    cellStyleNumeric.setAlignment(HorizontalAlignment.LEFT);
+    return cellStyleNumeric;
+  }
+
   static void addMetadataBlock(
       Sheet sheet,
-      CellStyle cellStyle,
+      CellStyleHolder cellStyleHolder,
       AtomicInteger rowCounter,
       AbstractAggregationResult aggregationResult,
       String name,
       String description,
       Integer evaluatedDataAmount) {
-    addMetadataRow(sheet, cellStyle, rowCounter.getAndIncrement(), "Name", name);
+    addMetadataRow(sheet, cellStyleHolder, rowCounter.getAndIncrement(), "Name", name);
     if (description != null) {
-      addMetadataRow(sheet, cellStyle, rowCounter.getAndIncrement(), "Beschreibung", description);
+      addMetadataRow(
+          sheet, cellStyleHolder, rowCounter.getAndIncrement(), "Beschreibung", description);
     }
     addMetadataRow(
         sheet,
-        cellStyle,
+        cellStyleHolder,
         rowCounter.getAndIncrement(),
         "Zeitraum",
         "%s - %s"
@@ -54,58 +74,64 @@ public class DataExportUtil {
                 DATE_TIME_FORMATTER.format(aggregationResult.getTimeRangeEnd())));
     addMetadataRow(
         sheet,
-        cellStyle,
+        cellStyleHolder,
         rowCounter.getAndIncrement(),
         "Erstellt am",
         DATE_TIME_FORMATTER.format(aggregationResult.getCreatedAt()));
     addMetadataRow(
         sheet,
-        cellStyle,
+        cellStyleHolder,
         rowCounter.getAndIncrement(),
         "Datensätze gesamt",
         aggregationResult.getNumberOfTableRows());
     if (evaluatedDataAmount != null) {
       addMetadataRow(
           sheet,
-          cellStyle,
+          cellStyleHolder,
           rowCounter.getAndIncrement(),
           "Datensätze ausgewertet",
           evaluatedDataAmount);
     }
     addMetadataRow(
         sheet,
-        cellStyle,
+        cellStyleHolder,
         rowCounter.getAndIncrement(),
         "Verwendung",
         getDisclaimer(aggregationResult.getDataSensitivity()));
   }
 
   static void addMetadataRow(
-      Sheet sheet, CellStyle cellStyle, int rowNumber, String label, String value) {
+      Sheet sheet, CellStyleHolder cellStyleHolder, int rowNumber, String label, String value) {
     Row row = sheet.createRow(rowNumber);
-    createMetadataCell(row, cellStyle, 0, label);
-    createMetadataCell(row, cellStyle, 2, value);
+    createStringCell(row, cellStyleHolder, 0, label);
+    createStringCell(row, cellStyleHolder, 2, value);
     addMergedRegion(sheet, rowNumber);
   }
 
   static void addMetadataRow(
-      Sheet sheet, CellStyle cellStyle, int rowNumber, String label, double value) {
+      Sheet sheet, CellStyleHolder cellStyleHolder, int rowNumber, String label, double value) {
     Row row = sheet.createRow(rowNumber);
-    createMetadataCell(row, cellStyle, 0, label);
-    createMetadataCell(row, cellStyle, value);
+    createStringCell(row, cellStyleHolder, 0, label);
+    createNumericCell(row, cellStyleHolder, value);
     addMergedRegion(sheet, rowNumber);
   }
 
-  static void createMetadataCell(Row row, CellStyle cellStyle, int columnIndex, String value) {
+  static void createStringCell(
+      Row row, CellStyleHolder cellStyleHolder, int columnIndex, String value) {
     Cell cell = row.createCell(columnIndex, CellType.STRING);
     cell.setCellValue(value);
-    cell.setCellStyle(cellStyle);
+    cell.setCellStyle(cellStyleHolder.cellStyleString());
   }
 
-  private static void createMetadataCell(Row row, CellStyle cellStyle, double value) {
+  private static void createNumericCell(Row row, CellStyleHolder cellStyleHolder, double value) {
     Cell cell = row.createCell(2, CellType.NUMERIC);
     cell.setCellValue(value);
-    cell.setCellStyle(cellStyle);
+    cell.setCellStyle(cellStyleHolder.cellStyleNumeric());
+  }
+
+  static void createNumericCell(Row row, int columnIndex, double value) {
+    Cell cell = row.createCell(columnIndex, CellType.NUMERIC);
+    cell.setCellValue(value);
   }
 
   private static void addMergedRegion(Sheet sheet, int rowNumber) {

@@ -9,6 +9,7 @@ dependencies {
     implementation project(':lib-service-directory-admin-api')
 
     implementation 'org.springframework.retry:spring-retry'
+    implementation 'com.google.guava:guava'
 
     implementation libs.keycloak.client.admin.client
     implementation 'io.github.java-diff-utils:java-diff-utils:latest.release'

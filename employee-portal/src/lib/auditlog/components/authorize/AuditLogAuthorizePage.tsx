@@ -5,7 +5,15 @@
 
 "use client";
 
+import {
+  DataTable,
+  Pagination,
+  TablePage,
+  TableSheet,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
 import { PageProps } from "@eshg/lib-portal/types/pageParams";
+import { use } from "react";
 
 import { useAuditLogAuthorizeSidebar } from "@/lib/auditlog/components/authorize/AuditLogAuthorizeSidebar";
 import { auditLogAuthorizeColumns } from "@/lib/auditlog/components/authorize/auditLogAuthorizeColumns";
@@ -15,14 +23,9 @@ import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
-import { Pagination } from "@/lib/shared/components/pagination/Pagination";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
 export function AuditLogAuthorizePage(props: PageProps) {
-  const searchParams = props.searchParams;
+  const searchParams = use(props.searchParams);
   const tableControl = useTableControl();
   const authorizeSidebar = useAuditLogAuthorizeSidebar();
 

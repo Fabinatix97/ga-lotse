@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  DetailsColumn,
+  DetailsRow,
+  DetailsSection,
+  ResponsiveDivider,
+} from "@eshg/lib-employee-portal";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import {
   ApiGetProcedure200Response,
@@ -13,14 +19,10 @@ import { SxProps } from "@mui/joy/styles/types";
 import { isDefined } from "remeda";
 
 import { ContactData } from "@/lib/businessModules/medicalRegistry/components/procedures/details/ContactData";
-import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
 import {
   DetailsCell,
   DetailsCellWrapped,
 } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
-import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
-import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 import { streetAndHouseNumber } from "@/lib/shared/helpers/facilityUtils";
 

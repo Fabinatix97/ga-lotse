@@ -8,10 +8,10 @@ import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { MeaslesProtectionProcedureData } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/MeaslesProtectionProcedureData";
 import { ProceduresProvider } from "@/lib/businessModules/measlesProtection/shared/ProceduresContext";
 
-export default function MeaslesProtectionProcedureDataPage(
+export default async function MeaslesProtectionProcedureDataPage(
   props: DynamicPageProps<{ id: string }>,
 ) {
-  const { id } = props.params;
+  const { id } = await props.params;
 
   return (
     <ProceduresProvider>

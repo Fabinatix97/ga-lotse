@@ -20,6 +20,7 @@ public final class StiProtectionPublicSecurityConfig extends AbstractPublicSecur
     grantAccessToLibAppointmentBlockUrls(EmployeePermissionRole.STI_PROTECTION_USER, true);
     grantAccessToLibProceduresUrls(
         EmployeePermissionRole.STI_PROTECTION_USER, ModuleLeaderRole.STI_PROTECTION_LEADER);
+    grantAccessToLibDepartmentInfoUrls();
 
     requestMatchers(BaseUrls.StiProtection.CITIZEN_PUBLIC_CONTROLLER + "/**").permitAll();
 

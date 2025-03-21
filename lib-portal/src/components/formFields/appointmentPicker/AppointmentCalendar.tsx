@@ -35,6 +35,7 @@ export interface AppointmentCalendarProps
   slotProps?: {
     monthSelection?: MonthSelectionProps["slotProps"];
   };
+  locale: string;
 }
 export function AppointmentCalendar({
   selectedDay,
@@ -49,6 +50,7 @@ export function AppointmentCalendar({
   padDays,
   slotProps,
   errorMessageId,
+  locale,
 }: AppointmentCalendarProps) {
   return (
     <Box>
@@ -60,6 +62,7 @@ export function AppointmentCalendar({
           nextMonthLabel={nextMonthLabel}
           prevMonthLabel={prevMonthLabel}
           slotProps={slotProps?.monthSelection}
+          locale={locale}
         />
         <MonthGrid
           errorMessageId={errorMessageId}
@@ -69,6 +72,7 @@ export function AppointmentCalendar({
           appointments={appointments}
           padDays={padDays}
           showWeekdays={showWeekdays}
+          locale={locale}
         />
       </Row>
     </Box>
@@ -83,6 +87,7 @@ export function MonthGrid({
   showWeekdays,
   padDays,
   errorMessageId,
+  locale,
 }: Pick<
   AppointmentCalendarProps,
   | "selectedDay"
@@ -92,6 +97,7 @@ export function MonthGrid({
   | "showWeekdays"
   | "padDays"
   | "errorMessageId"
+  | "locale"
 >) {
   const currentInterval = getMonthInterval(currentMonth);
   const days = getDaysInAndAroundMonth(currentInterval, {
@@ -103,10 +109,10 @@ export function MonthGrid({
       role="grid"
       columns={showWeekdays?.length}
       padDays={padDays}
-      aria-label={monthLabel(currentMonth)}
+      aria-label={monthLabel(currentMonth, locale)}
       aria-describedby={errorMessageId}
     >
-      <WeekdayHeaders showWeekdays={showWeekdays} />
+      <WeekdayHeaders showWeekdays={showWeekdays} locale={locale} />
       {days.map((t, index) => (
         <Day
           key={index}
@@ -115,6 +121,7 @@ export function MonthGrid({
           selectedDay={selectedDay}
           onDateSelected={onDateSelected}
           currentInterval={currentInterval}
+          locale={locale}
         />
       ))}
     </DaysGrid>

@@ -23,6 +23,7 @@ export interface DayProps
     AppointmentCalendarProps,
     "monthSelectionLabel" | keyof MonthSelectionProps
   > {
+  locale: string;
   date: Date | null;
   currentInterval: Interval;
 }
@@ -48,6 +49,7 @@ export function Day({
   selectedDay: selectedDate,
   onDateSelected,
   appointments: monthAppointments,
+  locale,
 }: DayProps) {
   const theme = useTheme();
   if (date == null) {
@@ -79,7 +81,7 @@ export function Day({
     >
       <Button
         aria-selected={isSelected || undefined}
-        aria-label={dateInMonthForm.format(date)}
+        aria-label={dateInMonthForm(locale).format(date)}
         disabled={!hasAppointments}
         color={isSelected ? "primary" : "neutral"}
         variant={isSelected ? "solid" : "plain"}

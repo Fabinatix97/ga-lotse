@@ -22,6 +22,7 @@ public class OfficialMedicalServicePublicSecurityConfig
         EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_ADMIN,
         ModuleLeaderRole.OFFICIAL_MEDICAL_SERVICE_LEADER);
     grantAccessToStatistics(EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_ADMIN);
+    grantAccessToLibDepartmentInfoUrls();
 
     requestMatchers(BaseUrls.OfficialMedicalService.CITIZEN_PUBLIC_API + "/**").permitAll();
 

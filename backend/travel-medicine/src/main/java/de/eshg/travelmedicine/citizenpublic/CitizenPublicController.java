@@ -6,7 +6,7 @@
 package de.eshg.travelmedicine.citizenpublic;
 
 import de.eshg.base.department.GetDepartmentInfoResponse;
-import de.eshg.departmentinfo.DepartmentInfoService;
+import de.eshg.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.departmentinfo.OpeningHoursService;
 import de.eshg.departmentinfo.PrivacyDocumentService;
 import de.eshg.departmentinfo.domain.OpeningHours;
@@ -56,7 +56,7 @@ public class CitizenPublicController {
   private final AppointmentBlockService appointmentBlockService;
   private final AppointmentTypeService appointmentTypeService;
   private final VaccinationConsultationService vaccinationConsultationService;
-  private final DepartmentInfoService departmentInfoService;
+  private final DepartmentInfoConfigService departmentInfoService;
   private final OpeningHoursService openingHoursService;
   private final PrivacyDocumentService privacyDocumentService;
   private final Clock clock;
@@ -66,7 +66,7 @@ public class CitizenPublicController {
       AppointmentBlockService appointmentBlockService,
       AppointmentTypeService appointmentTypeService,
       VaccinationConsultationService vaccinationConsultationService,
-      DepartmentInfoService departmentInfoService,
+      DepartmentInfoConfigService departmentInfoService,
       OpeningHoursService openingHoursService,
       PrivacyDocumentService privacyDocumentService,
       Clock clock) {
@@ -146,13 +146,13 @@ public class CitizenPublicController {
   @Operation(summary = "Get the privacy-notice document.")
   @Transactional(readOnly = true)
   public ResponseEntity<Resource> getPrivacyNotice() {
-    return privacyDocumentService.getPrivacyNotice();
+    return privacyDocumentService.getPrivacyNoticeDe();
   }
 
   @GetMapping(path = "/documents/privacy-policy")
   @Operation(summary = "Get the privacy-policy document.")
   @Transactional(readOnly = true)
   public ResponseEntity<Resource> getPrivacyPolicy() {
-    return privacyDocumentService.getPrivacyPolicy();
+    return privacyDocumentService.getPrivacyPolicyDe();
   }
 }

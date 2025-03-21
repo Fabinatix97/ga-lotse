@@ -18,9 +18,6 @@ dependencies {
 
     implementation 'org.apache.commons:commons-math3:latest.release'
     implementation 'de.cronn:reflection-util:latest.release'
-    implementation 'com.google.zxing:core:latest.release'
-    implementation 'org.apache.xmlgraphics:batik-svggen:latest.release'
-    implementation 'org.apache.xmlgraphics:batik-dom:latest.release'
 
     implementation 'com.google.guava:guava'
     implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
@@ -33,6 +30,7 @@ dependencies {
     testImplementation testFixtures(project(':business-module-persistence-commons'))
     testImplementation testFixtures(project(':lib-procedures'))
     testImplementation testFixtures(project(':lib-contact'))
+    testImplementation 'com.google.zxing:core:latest.release'
     testImplementation 'com.google.zxing:javase:latest.release'
     testImplementation testFixtures(project(':lib-document-generator'))
     testImplementation testFixtures(project(':lib-xlsx-import'))

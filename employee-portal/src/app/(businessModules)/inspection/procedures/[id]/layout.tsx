@@ -14,10 +14,10 @@ export type EditInspectionRouteParams = {
   id: string;
 };
 
-export default function EditInspectionLayout(
+export default async function EditInspectionLayout(
   props: DynamicLayoutProps<EditInspectionRouteParams>,
 ) {
-  const { id } = props.params;
+  const { id } = await props.params;
 
   return (
     <StickyToolbarLayout

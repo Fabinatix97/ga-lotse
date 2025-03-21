@@ -11,6 +11,7 @@ import {
   Toolbar,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { use } from "react";
 import * as v from "valibot";
 
 import {
@@ -24,8 +25,8 @@ import { FacilityWebSearchFiltersSchema } from "@/lib/businessModules/inspection
 export default function FacilityWebSearchResultsPage(
   props: DynamicPageProps<{ id: string }>,
 ) {
-  const { id } = props.params;
-  const searchParams = props.searchParams;
+  const { id } = use(props.params);
+  const searchParams = use(props.searchParams);
   const filters = v.parse(FacilityWebSearchFiltersSchema, searchParams);
 
   const { data: searchResult, isFetching } = useSearchInWebSearch(id, filters);

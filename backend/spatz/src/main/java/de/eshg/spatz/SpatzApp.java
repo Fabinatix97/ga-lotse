@@ -5,11 +5,13 @@
 
 package de.eshg.spatz;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.eshg.lib.servicedirectory.ServiceDirectoryApi;
 import de.eshg.spatz.config.SpatzConfigurationProperties;
 import de.eshg.spatz.relay.SpatzRelayConnection;
-import de.eshg.spatz.server.ProxyServer;
+import de.eshg.spatz.server.SpatzHttpServer;
 import de.eshg.spatz.server.inbound.InboundServer;
+import de.eshg.spatz.server.management.ManagementServer;
 import de.eshg.spatz.server.outbound.OutboundServer;
 import de.eshg.spatz.server.outbound.OutboundServer.RelayAddressMapper;
 import java.time.Duration;
@@ -17,6 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.autoconfigure.web.server.ManagementServerProperties;
+import org.springframework.boot.actuate.health.HealthEndpoint;
+import org.springframework.boot.actuate.health.HttpCodeStatusMapper;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.ssl.SslBundles;
@@ -107,7 +112,27 @@ public class SpatzApp {
     return outboundServer;
   }
 
-  private void startServerAwaitThread(ProxyServer server) {
+  @Bean
+  ManagementServer managementServer(
+      HttpServer baseServer,
+      ManagementServerProperties managementServerProperties,
+      HealthEndpoint healthEndpoint,
+      HttpCodeStatusMapper httpCodeStatusMapper,
+      ObjectMapper objectMapper) {
+    ManagementServer managementServer =
+        new ManagementServer(
+            baseServer,
+            healthEndpoint,
+            httpCodeStatusMapper,
+            objectMapper,
+            managementServerProperties);
+    logger.info("SPATZ created management server on port {}", managementServer.getListeningPort());
+
+    startServerAwaitThread(managementServer);
+    return managementServer;
+  }
+
+  private void startServerAwaitThread(SpatzHttpServer server) {
     Thread awaitThread =
         new Thread("start_server_" + server.getListeningPort()) {
           @Override

@@ -6,6 +6,13 @@
 "use client";
 
 import {
+  DataTable,
+  Pagination,
+  TablePage,
+  TableSheet,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
+import {
   parseOptionalString,
   parseReadonlyPageParams,
 } from "@eshg/lib-portal/helpers/searchParams";
@@ -27,12 +34,7 @@ import { useGetOpenDocuments } from "@/lib/opendata/queries/opendata";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
-import { Pagination } from "@/lib/shared/components/pagination/Pagination";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { SearchFilter } from "@/lib/shared/components/tableFilters/SearchFilter";
-import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function OpenDataTable() {

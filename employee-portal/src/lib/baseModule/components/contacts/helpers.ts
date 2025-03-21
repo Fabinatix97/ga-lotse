@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { BaseAddress, isDomesticAddress } from "@eshg/lib-employee-portal";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 
 import { Contact } from "@/lib/baseModule/components/contacts/types";
-import { BaseAddress, isDomesticAddress } from "@/lib/shared/helpers/address";
 import { join } from "@/lib/shared/helpers/strings";
 
 export function fullContactName(contact: Contact) {

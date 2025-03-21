@@ -3,6 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  DataTable,
+  ManualTableSortingProps,
+  Pagination,
+  PaginationProps,
+  TablePage,
+  TableSheet,
+} from "@eshg/lib-employee-portal";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import {
@@ -53,16 +61,6 @@ import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSet
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 import { useFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
-import {
-  Pagination,
-  PaginationProps,
-} from "@/lib/shared/components/pagination/Pagination";
-import {
-  DataTable,
-  ManualSortingProps,
-} from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { UserLink } from "@/lib/shared/components/users/UserLink";
 import { useCopy } from "@/lib/shared/hooks/useCopy";
 
@@ -259,7 +257,7 @@ export interface EvaluationsTableProps {
   loading: boolean;
   onCreateEvaluationClick: () => void;
   onFilterValuesChanged: (filterValues: FilterValue[]) => void;
-  manualSortingProps: ManualSortingProps;
+  manualSortingProps: ManualTableSortingProps;
   paginationProps: PaginationProps;
 }
 

@@ -4,7 +4,17 @@
  */
 
 import { ApiContactType, ApiUserRole } from "@eshg/base-api";
-import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
+import {
+  DataTable,
+  Pagination,
+  TablePage,
+  TableSheet,
+  UseTableControlResult,
+  mapRowSelectionToRowIds,
+  useHasUserRoleCheck,
+  useRowSelection,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import AddIcon from "@mui/icons-material/Add";
@@ -32,20 +42,8 @@ import { useUpdateContactSidebar } from "@/lib/baseModule/components/contacts/mo
 import { Contact } from "@/lib/baseModule/components/contacts/types";
 import { routes } from "@/lib/baseModule/shared/routes";
 import { contactCategoryNames } from "@/lib/baseModule/shared/translations";
-import { Pagination } from "@/lib/shared/components/pagination/Pagination";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { SearchFilter } from "@/lib/shared/components/tableFilters/SearchFilter";
 import { SingleSelectFilter } from "@/lib/shared/components/tableFilters/SingleSelectFilter";
-import {
-  UseTableControl,
-  useTableControl,
-} from "@/lib/shared/hooks/searchParams/useTableControl";
-import {
-  mapToRowIds,
-  useRowSelection,
-} from "@/lib/shared/hooks/table/useRowSelection";
 
 import { contactTableColumns } from "./columns";
 import { contactSearchParamNames } from "./constants";
@@ -73,7 +71,7 @@ function usePersistentSelectionCache({ elements }: { elements: Contact[] }) {
 
   useEffect(() => {
     setSelectedContacts((previous) => {
-      const contactIds = mapToRowIds(rowSelection);
+      const contactIds = mapRowSelectionToRowIds(rowSelection);
       const newSelected = new Map();
 
       for (const contactId of contactIds) {
@@ -286,7 +284,7 @@ function ImportContactButton(props: Pick<ContactsTableProps, "onImport">) {
   );
 }
 
-function ContactTypeFilter(props: { tableControl: UseTableControl }) {
+function ContactTypeFilter(props: { tableControl: UseTableControlResult }) {
   const params = useSearchParams();
   const value = params.get(contactSearchParamNames.type);
 

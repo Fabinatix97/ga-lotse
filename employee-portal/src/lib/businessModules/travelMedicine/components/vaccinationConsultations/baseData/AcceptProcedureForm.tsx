@@ -4,17 +4,17 @@
  */
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
+import {
+  DefaultPersonFormValues,
+  PersonFormValues,
+} from "@eshg/lib-employee-portal";
 import { ApiPatient } from "@eshg/travel-medicine-api";
 import { ComponentType, Ref, useState } from "react";
 import { isDefined } from "remeda";
 
 import { PatientDetails } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/PatientDetails";
 import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
-import {
-  DefaultPersonFormValues,
-  defaultPersonFormValues,
-} from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
-import { PersonFormValues } from "@/lib/shared/components/personSidebar/form/PersonSidebarForm";
+import { defaultPersonFormValues } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
 import { PersonSearchResults } from "@/lib/shared/components/personSidebar/search/PersonSearchResults";
 import {
   SearchPersonFormProps,

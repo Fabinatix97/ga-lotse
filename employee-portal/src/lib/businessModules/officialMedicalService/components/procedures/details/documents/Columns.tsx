@@ -38,13 +38,13 @@ export function Columns({
       header: "Dokumentenart",
       cell: (props) => props.getValue(),
       enableSorting: true,
-      meta: { canNavigate: { parentRow: true } },
+      meta: { width: 250, canNavigate: { parentRow: true } },
     }),
     columnHelper.accessor("helpTextDe", {
       header: "Hilfstext",
       cell: (props) => props.getValue(),
       enableSorting: true,
-      meta: { canNavigate: { parentRow: true } },
+      meta: { width: 250, canNavigate: { parentRow: true } },
     }),
     columnHelper.accessor("documentStatus", {
       header: "Status",
@@ -57,7 +57,7 @@ export function Columns({
         );
       },
       enableSorting: true,
-      meta: { canNavigate: { parentRow: true } },
+      meta: { width: 120, canNavigate: { parentRow: true } },
     }),
     // ToDo: missing in R4D,
     // columnHelper.accessor("uploadInCitizenPortal", {
@@ -86,7 +86,7 @@ export function Columns({
         );
       },
       enableSorting: true,
-      meta: { canNavigate: { parentRow: true } },
+      meta: { width: 160, canNavigate: { parentRow: true } },
     }),
     columnHelper.accessor("mandatoryDocument", {
       header: "Pflicht",
@@ -98,25 +98,25 @@ export function Columns({
         );
       },
       enableSorting: true,
-      meta: { canNavigate: { parentRow: true } },
+      meta: { width: 100, canNavigate: { parentRow: true } },
     }),
     columnHelper.accessor("lastDocumentUpload", {
       header: "Letzte Aktualisierung",
       cell: (props) => formatDateTime(props.getValue()),
       enableSorting: true,
-      meta: { canNavigate: { parentRow: true } },
+      meta: { width: 180, canNavigate: { parentRow: true } },
     }),
     columnHelper.accessor("files", {
       header: "Dateien",
       cell: (props) => props.getValue()?.length,
       enableSorting: true,
-      meta: { canNavigate: { parentRow: true } },
+      meta: { width: 90, canNavigate: { parentRow: true } },
     }),
     columnHelper.accessor("note", {
       header: "Stichwörter",
       cell: (props) => props.getValue(),
       enableSorting: true,
-      meta: { canNavigate: { parentRow: true } },
+      meta: { width: 200, canNavigate: { parentRow: true } },
     }),
     columnHelper.display({
       header: "Aktionen",

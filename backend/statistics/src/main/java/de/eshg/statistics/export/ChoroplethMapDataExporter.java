@@ -10,7 +10,6 @@ import de.eshg.statistics.persistence.entity.chart.ChoroplethMapConfiguration;
 import de.eshg.statistics.persistence.entity.diagramdata.ChoroplethMapData;
 import de.eshg.statistics.persistence.entity.diagramdata.KeyToValue;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
@@ -19,17 +18,19 @@ public class ChoroplethMapDataExporter {
 
   static void addData(
       Sheet sheet,
+      CellStyleHolder cellStyleHolder,
       AtomicInteger rowCounter,
       ChoroplethMapData choroplethMapData,
       ChoroplethMapConfiguration choroplethMapConfiguration) {
 
     addDataHeader(
         sheet,
+        cellStyleHolder,
         rowCounter.getAndIncrement(),
         mapToString(choroplethMapConfiguration.getCalculation()));
 
     for (KeyToValue keyToValue : choroplethMapData.getKeyToValues()) {
-      addDataRow(sheet, rowCounter.getAndIncrement(), keyToValue);
+      addDataRow(sheet, cellStyleHolder, rowCounter.getAndIncrement(), keyToValue);
     }
   }
 
@@ -41,16 +42,18 @@ public class ChoroplethMapDataExporter {
     };
   }
 
-  private static void addDataHeader(Sheet sheet, int rowNumber, String columnTitle) {
+  private static void addDataHeader(
+      Sheet sheet, CellStyleHolder cellStyleHolder, int rowNumber, String columnTitle) {
     Row row = sheet.createRow(rowNumber);
-    row.createCell(1, CellType.STRING).setCellValue(columnTitle);
+    DataExportUtil.createStringCell(row, cellStyleHolder, 1, columnTitle);
   }
 
-  private static void addDataRow(Sheet sheet, int rowNumber, KeyToValue keyToValue) {
+  private static void addDataRow(
+      Sheet sheet, CellStyleHolder cellStyleHolder, int rowNumber, KeyToValue keyToValue) {
     Row row = sheet.createRow(rowNumber);
-    row.createCell(0, CellType.STRING).setCellValue(keyToValue.getKey());
+    DataExportUtil.createStringCell(row, cellStyleHolder, 0, keyToValue.getKey());
     if (keyToValue.getValue() != null) {
-      row.createCell(1, CellType.NUMERIC).setCellValue(keyToValue.getValue().doubleValue());
+      DataExportUtil.createNumericCell(row, 1, keyToValue.getValue().doubleValue());
     }
   }
 }

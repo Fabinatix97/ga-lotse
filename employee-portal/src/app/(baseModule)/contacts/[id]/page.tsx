@@ -6,12 +6,14 @@
 "use client";
 
 import {
+  ContentPanel,
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { Box, Grid, Typography } from "@mui/joy";
+import { use } from "react";
 
 import {
   useGetContactHistoryQuery,
@@ -21,14 +23,13 @@ import { ContactDetails } from "@/lib/baseModule/components/contacts/ContactDeta
 import { fullContactName } from "@/lib/baseModule/components/contacts/helpers";
 import { ContactHistory } from "@/lib/baseModule/components/contacts/history/ContactHistory";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
 
 export default function ContactDetailsPage(
   props: DynamicPageProps<{
     id: string;
   }>,
 ) {
-  const { id } = props.params;
+  const { id } = use(props.params);
   const { data: contact } = useGetContactQuery(id);
   const { data: history } = useGetContactHistoryQuery({ id });
 

@@ -12,6 +12,7 @@ import {
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { Stack } from "@mui/joy";
+import { use } from "react";
 
 import { useGetUserProfile } from "@/lib/baseModule/api/queries/users";
 import { UserAbsence } from "@/lib/baseModule/components/users/UserAbsence";
@@ -22,7 +23,7 @@ import { fullName } from "@/lib/shared/components/users/userFormatter";
 export default function UserProfilePage(
   props: DynamicPageProps<{ id: string }>,
 ) {
-  const { id } = props.params;
+  const { id } = use(props.params);
   const query = useGetUserProfile(id);
   const { user, groups, title, salutation, isSelf, calendarEvents } =
     query.data;

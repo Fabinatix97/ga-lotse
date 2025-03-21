@@ -38,10 +38,6 @@ function removeImportPluginDefinition(config) {
   return { ...config, plugins: pluginsWithoutImport };
 }
 
-const nextCoreWebVitalsConfig = fixupConfigRules(
-  compat.extends("next/core-web-vitals"),
-).map(removeImportPluginDefinition);
-
 /**
  * Importing mui icons does not work correctly via default imports in lib-portal.
  * Default imports work when used directly in portal Next.js projects.
@@ -104,8 +100,12 @@ function noRestrictedImportsRuleOptions(packageType) {
   };
 }
 
+const nextPlugin = compat.config({
+  extends: ["next/core-web-vitals", "next/typescript"],
+});
+
 const nextBaseConfig = tseslint.config(
-  ...nextCoreWebVitalsConfig,
+  ...nextPlugin,
   ...pluginQuery.configs["flat/recommended"],
   ...eslintBaseConfig,
   {
@@ -192,7 +192,7 @@ export const eslintNextConfigs = {
     },
     {
       files: [
-        "**/next.config.js",
+        "**/next.config.ts",
         "src/middleware.ts",
         "src/app/**/{layout,page,loading,not-found,error,global-error,route,template,default}.tsx",
         "src/app/loading.template.tsx",
@@ -203,10 +203,22 @@ export const eslintNextConfigs = {
       },
     },
   ),
-  lib: tseslint.config(...nextBaseConfig, {
-    rules: {
-      "no-restricted-imports": ["warn", noRestrictedImportsRuleOptions("lib")],
-      "@next/next/no-html-link-for-pages": "off", // libs contain no pages
+  lib: tseslint.config(
+    ...nextBaseConfig,
+    {
+      rules: {
+        "no-restricted-imports": [
+          "warn",
+          noRestrictedImportsRuleOptions("lib"),
+        ],
+        "@next/next/no-html-link-for-pages": "off", // libs contain no pages
+      },
     },
-  }),
+    {
+      files: ["src/redirects.ts"],
+      rules: {
+        "import/no-default-export": "off",
+      },
+    },
+  ),
 };

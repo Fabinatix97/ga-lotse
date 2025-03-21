@@ -5,6 +5,7 @@
 
 "use client";
 
+import { mapApiAddressToForm } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { ApiFacility } from "@eshg/measles-protection-api";
 
@@ -16,7 +17,6 @@ import {
   LegacyFacilitySidebar,
   Mode,
 } from "@/lib/shared/components/facilitySidebar/LegacyFacilitySidebar";
-import { mapApiAddressToForm } from "@/lib/shared/components/form/address/helpers";
 import { mapApiContactPersonToForm } from "@/lib/shared/helpers/facilityUtils";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 

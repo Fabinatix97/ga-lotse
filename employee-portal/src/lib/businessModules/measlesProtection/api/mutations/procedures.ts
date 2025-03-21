@@ -6,6 +6,7 @@
 "use client";
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
+import { mapBaseAddressToApi } from "@eshg/lib-employee-portal";
 import { getFilenameFromHeader } from "@eshg/lib-portal/api/files/download";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
@@ -51,7 +52,6 @@ import {
 import { measlesProtectionApiQueryKey } from "@/lib/businessModules/measlesProtection/api/queries/apiQueryKeys";
 import { ValidUpdateProcedureForm } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/helpers";
 import { BaseFacility } from "@/lib/shared/components/facilitySidebar/types";
-import { mapBaseAddressToApi } from "@/lib/shared/components/form/address/helpers";
 
 interface UpdateProcedureParams {
   id: string;

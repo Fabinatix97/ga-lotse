@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiCountryCode, ApiGender, ApiSalutation } from "@eshg/base-api";
+import {
+  DefaultPersonFormValues,
+  createEmptyAddress,
+} from "@eshg/lib-employee-portal";
 import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
@@ -24,38 +27,17 @@ import {
   validateDateOfBirth,
   validateLength,
 } from "@eshg/lib-portal/helpers/validators";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { Box, Divider, Grid, IconButton, Stack, Typography } from "@mui/joy";
 import { isNonNullish } from "remeda";
 
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { ContactAddressForm } from "@/lib/shared/components/form/address/BaseAddressForm";
-import {
-  BaseAddressFormInputs,
-  createEmptyAddress,
-} from "@/lib/shared/components/form/address/helpers";
 import { CountryField } from "@/lib/shared/components/formFields/CountryField";
-import {
-  PersonFormProps,
-  PersonFormValues,
-} from "@/lib/shared/components/personSidebar/form/PersonSidebarForm";
+import { PersonFormProps } from "@/lib/shared/components/personSidebar/form/PersonSidebarForm";
 import { SearchPersonFormValues } from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-
-export interface DefaultPersonFormValues extends PersonFormValues {
-  gender: OptionalFieldValue<ApiGender>;
-  salutation: OptionalFieldValue<ApiSalutation>;
-  title: string;
-  nameAtBirth: string;
-  placeOfBirth: string;
-  countryOfBirth: OptionalFieldValue<ApiCountryCode>;
-  emailAddresses: string[];
-  phoneNumbers: string[];
-  contactAddress?: BaseAddressFormInputs;
-  differentBillingAddress?: BaseAddressFormInputs;
-}
 
 export function defaultPersonFormValues({
   inputs,

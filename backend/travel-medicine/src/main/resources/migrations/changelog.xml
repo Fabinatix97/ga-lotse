@@ -73,5 +73,7 @@
   <include file="migrations/0063_opening_hours.xml"/>
   <include file="migrations/0064_privacy_documents.xml"/>
   <include file="migrations/0065_notification_config.xml"/>
+  <include file="migrations/0066_add_department_info_config.xml"/>
+  <include file="migrations/0067_privacy_documents_config.xml"/>
 
 </databaseChangeLog>

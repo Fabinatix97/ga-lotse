@@ -75,6 +75,24 @@ public class NotificationText {
   @Value("${de.eshg.official-medical-service.notification.template.close_appointment.body}")
   private Resource closeAppointmentTemplate;
 
+  @Value("${de.eshg.official-medical-service.notification.template.book_appointment_cp.subject}")
+  private String bookAppointmentCpSubject;
+
+  @Value("${de.eshg.official-medical-service.notification.template.book_appointment_cp.body}")
+  private Resource bookAppointmentCpTemplate;
+
+  @Value("${de.eshg.official-medical-service.notification.template.rebook_appointment_cp.subject}")
+  private String rebookAppointmentCpSubject;
+
+  @Value("${de.eshg.official-medical-service.notification.template.rebook_appointment_cp.body}")
+  private Resource rebookAppointmentCpTemplate;
+
+  @Value("${de.eshg.official-medical-service.notification.template.cancel_appointment_cp.subject}")
+  private String cancelAppointmentCpSubject;
+
+  @Value("${de.eshg.official-medical-service.notification.template.cancel_appointment_cp.body}")
+  private Resource cancelAppointmentCpTemplate;
+
   public String getNewCitizenUserSubject() {
     return newCitizenUserSubject;
   }
@@ -170,6 +188,48 @@ public class NotificationText {
   public String assembleCloseAppointmentBody(String firstName, String lastName) {
     String templateBody = readTemplateBody(closeAppointmentTemplate);
     return String.format(templateBody, firstName, lastName);
+  }
+
+  public String getBookAppointmentCpSubject() {
+    return bookAppointmentCpSubject;
+  }
+
+  public String assembleBookAppointmentCpBody(
+      String firstName, String lastName, String appointmentDate, String appointmentTime) {
+    String templateBody = readTemplateBody(bookAppointmentCpTemplate);
+    return String.format(templateBody, firstName, lastName, appointmentDate, appointmentTime);
+  }
+
+  public String getRebookAppointmentCpSubject() {
+    return rebookAppointmentCpSubject;
+  }
+
+  public String assembleRebookAppointmentCpBody(
+      String firstName,
+      String lastName,
+      String oldAppointmentDate,
+      String oldAppointmentTime,
+      String newAppointmentDate,
+      String newAppointmentTime) {
+    String templateBody = readTemplateBody(rebookAppointmentCpTemplate);
+    return String.format(
+        templateBody,
+        firstName,
+        lastName,
+        oldAppointmentDate,
+        oldAppointmentTime,
+        newAppointmentDate,
+        newAppointmentTime);
+  }
+
+  public String getCancelAppointmentCpSubject() {
+    return cancelAppointmentCpSubject;
+  }
+
+  public String assembleCancelAppointmentCpBody(
+      String firstName, String lastName, String appointmentDate, String appointmentTime) {
+    String templateBody = readTemplateBody(cancelAppointmentCpTemplate);
+    return String.format(templateBody, firstName, lastName, appointmentDate, appointmentTime);
   }
 
   private static String readTemplateBody(Resource bodyTemplateResource) {

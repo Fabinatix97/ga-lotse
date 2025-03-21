@@ -7,6 +7,7 @@ package de.eshg.base.street;
 
 import de.eshg.lib.common.CountryCode;
 import de.eshg.rest.service.security.config.BaseUrls;
+import de.eshg.rest.service.security.config.BaseUrls.Base;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,6 +21,7 @@ import org.springframework.web.service.annotation.HttpExchange;
 public interface StreetApi {
   String BASE_URL = BaseUrls.Base.STREET_API;
   String AUTOCOMPLETE = BaseUrls.Base.STREET_AUTOCOMPLETE_URL;
+  String POST_CODE_AND_CITY = Base.POST_CODE_AND_CITY_URL;
   String HOUSE_NUMBER_REGEXP = "^(\\d+)([a-zA-Z]*)$|";
 
   @GetExchange
@@ -55,6 +57,16 @@ public interface StreetApi {
   AutocompleteStreetResponse autocompleteStreet(
       @Parameter(
               description = "The case-insensitive street name prefix to autocomplete",
+              example = "Breite ga")
+          @RequestParam(name = "streetNamePrefix")
+          String streetNamePrefix);
+
+  @GetExchange(POST_CODE_AND_CITY)
+  @ApiResponse(responseCode = "200")
+  @Operation(summary = "Returns post code and city for a given street name, if it is unambiguous")
+  PostCodeAndCity getPostCodeAndCityForStreet(
+      @Parameter(
+              description = "The case-insensitive street name prefix of the street",
               example = "Breite ga")
           @RequestParam(name = "streetNamePrefix")
           String streetNamePrefix);

@@ -7,7 +7,8 @@ package de.eshg.departmentinfo;
 
 import de.eshg.base.department.DepartmentApi;
 import de.eshg.departmentinfo.domain.Document;
-import de.eshg.departmentinfo.domain.PrivacyDocuments;
+import de.eshg.departmentinfo.domain.PrivacyDocument;
+import de.eshg.departmentinfo.domain.PrivacyDocumentsConfig;
 import de.eshg.departmentinfo.initialization.InitialPrivacyDocuments;
 import de.eshg.departmentinfo.initialization.OptionalInitialPrivacyDocuments;
 import de.eshg.persistence.TransactionHelper;
@@ -20,14 +21,16 @@ import java.util.function.Supplier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @ConditionalOnMissingBean(
     value = AbstractPrivacyDocumentService.class,
     ignored = PrivacyDocumentService.class)
 @EnableConfigurationProperties(OptionalInitialPrivacyDocuments.class)
-public class PrivacyDocumentService extends AbstractPrivacyDocumentService {
+public class PrivacyDocumentService extends AbstractPrivacyDocumentService<PrivacyDocumentsConfig> {
 
   private final DepartmentApi departmentApi;
   private final OptionalInitialPrivacyDocuments optionalInitialPrivacyDocuments;
@@ -37,55 +40,85 @@ public class PrivacyDocumentService extends AbstractPrivacyDocumentService {
       TransactionHelper transactionHelper,
       DepartmentApi departmentApi,
       OptionalInitialPrivacyDocuments optionalInitialPrivacyDocuments) {
-    super(entityManager, transactionHelper);
+    super(entityManager, transactionHelper, PrivacyDocumentsConfig.class);
     this.departmentApi = departmentApi;
     this.optionalInitialPrivacyDocuments = optionalInitialPrivacyDocuments;
   }
 
   @Override
-  public PrivacyDocuments getConfig() {
-    if (optionalInitialPrivacyDocuments.usePrivacyDocumentsFromBaseModule()) {
-      return getInitialConfiguration();
-    }
+  protected PrivacyDocumentsConfig getConfig() {
     return super.getConfig();
   }
 
   @Override
-  public void init() {
-    if (!optionalInitialPrivacyDocuments.usePrivacyDocumentsFromBaseModule()) {
-      super.init();
-    }
+  @Transactional(readOnly = true)
+  public ResponseEntity<Resource> getPrivacyNoticeDe() {
+    return PrivacyDocumentHelper.privacyNoticeAttachmentResponse(
+        Optional.ofNullable(getConfig().getPrivacyNotice())
+            .map(PrivacyDocument::getDe)
+            .map(Document::getContent)
+            .orElseGet(() -> getContentAsByteArray(departmentApi.getPrivacyNotice().getBody())));
   }
 
   @Override
-  protected PrivacyDocuments getInitialConfiguration() {
-    PrivacyDocuments privacyDocuments = new PrivacyDocuments();
+  @Transactional(readOnly = true)
+  public ResponseEntity<Resource> getPrivacyPolicyDe() {
+    return PrivacyDocumentHelper.privacyPolicyAttachmentResponse(
+        Optional.ofNullable(getConfig().getPrivacyPolicy())
+            .map(PrivacyDocument::getDe)
+            .map(Document::getContent)
+            .orElseGet(() -> getContentAsByteArray(departmentApi.getPrivacyPolicy().getBody())));
+  }
 
-    privacyDocuments.setPrivacyNotice(
-        documentFromInitialConfigOrBase(
-            InitialPrivacyDocuments::privacyNotice,
-            () -> getContentAsByteArray(departmentApi.getPrivacyNotice().getBody())));
+  @Override
+  protected PrivacyDocumentsConfig getInitialConfiguration() {
+    PrivacyDocumentsConfig privacyDocumentsConfig = new PrivacyDocumentsConfig();
+    privacyDocumentsConfig.setPrivacyNotice(createInitialPrivacyNotice());
+    privacyDocumentsConfig.setPrivacyPolicy(createInitialPrivacyPolicy());
+    return privacyDocumentsConfig;
+  }
 
-    privacyDocuments.setPrivacyPolicy(
-        documentFromInitialConfigOrBase(
+  @Override
+  protected PrivacyDocument updatePrivacyDocument(
+      PrivacyDocument persistedDocument, PrivacyDocument documentUpdate) {
+    if (documentUpdate == null || persistedDocument == null) {
+      return documentUpdate;
+    }
+    return super.updatePrivacyDocument(persistedDocument, documentUpdate);
+  }
+
+  private PrivacyDocument createInitialPrivacyPolicy() {
+    if (optionalInitialPrivacyDocuments.usePrivacyDocumentsFromBaseModule()) {
+      return null;
+    }
+
+    PrivacyDocument privacyDocuments = new PrivacyDocument();
+    privacyDocuments.updateDe(
+        contentFromInitialConfigOrBase(
             InitialPrivacyDocuments::privacyPolicy,
             () -> getContentAsByteArray(departmentApi.getPrivacyPolicy().getBody())));
-
     return privacyDocuments;
   }
 
-  private Document documentFromInitialConfigOrBase(
+  private PrivacyDocument createInitialPrivacyNotice() {
+    if (optionalInitialPrivacyDocuments.usePrivacyDocumentsFromBaseModule()) {
+      return null;
+    }
+
+    PrivacyDocument privacyDocuments = new PrivacyDocument();
+    privacyDocuments.updateDe(
+        contentFromInitialConfigOrBase(
+            InitialPrivacyDocuments::privacyNotice,
+            () -> getContentAsByteArray(departmentApi.getPrivacyNotice().getBody())));
+    return privacyDocuments;
+  }
+
+  private byte[] contentFromInitialConfigOrBase(
       Function<InitialPrivacyDocuments, Resource> fn, Supplier<byte[]> fallback) {
-    byte[] bytes =
-        Optional.ofNullable(optionalInitialPrivacyDocuments)
-            .map(fn)
-            .map(this::getContentAsByteArray)
-            .orElseGet(fallback);
-
-    Document document = new Document();
-    document.setContent(bytes);
-
-    return document;
+    return Optional.ofNullable(optionalInitialPrivacyDocuments)
+        .map(fn)
+        .map(this::getContentAsByteArray)
+        .orElseGet(fallback);
   }
 
   private byte[] getContentAsByteArray(Resource resource) {

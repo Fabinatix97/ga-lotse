@@ -5,10 +5,14 @@
 
 "use client";
 
-import { MainContentLayout } from "@eshg/lib-employee-portal";
+import {
+  MainContentLayout,
+  usePagination,
+  useTableSorting,
+} from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { ApiSortDirection } from "@eshg/statistics-api";
-import { startTransition, useEffect, useState } from "react";
+import { startTransition, use, useEffect, useState } from "react";
 import { isDefined } from "remeda";
 
 import {
@@ -25,13 +29,11 @@ import {
   EvaluationDetailsTable,
   EvaluationDetailsTableProps,
 } from "@/lib/businessModules/statistics/components/evaluations/details/table/EvaluationDetailsTable";
-import { usePagination } from "@/lib/shared/hooks/table/usePagination";
-import { useTableSorting } from "@/lib/shared/hooks/table/useTableSorting";
 
 export default function EvaluationDetailsTablePage(
   props: DynamicPageProps<{ id: string }>,
 ) {
-  const { id } = props.params;
+  const { id } = use(props.params);
   const { resetPageNumber, page, pageSize, getPaginationProps } =
     usePagination();
 

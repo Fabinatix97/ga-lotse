@@ -7,6 +7,7 @@
 
 import { MainContentLayout } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { use } from "react";
 
 import { useGetCompletenessInformation } from "@/lib/businessModules/statistics/api/queries/useGetCompletenessInformation";
 import { EvaluationDetailsLayout } from "@/lib/businessModules/statistics/components/evaluations/details/EvaluationDetailsLayout";
@@ -15,7 +16,7 @@ import { EvaluationDataQuality } from "@/lib/businessModules/statistics/componen
 export default function EvaluationDetailsDataQualityPage(
   props: DynamicPageProps<{ id: string }>,
 ) {
-  const { id } = props.params;
+  const { id } = use(props.params);
   const completenessInformation = useGetCompletenessInformation(id);
 
   return (

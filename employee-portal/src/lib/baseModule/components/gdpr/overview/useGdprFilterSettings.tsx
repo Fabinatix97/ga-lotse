@@ -4,6 +4,7 @@
  */
 
 import { ApiGdprProcedureType } from "@eshg/base-api";
+import { UseTableControlResult } from "@eshg/lib-employee-portal";
 import { Stack, ToggleButtonGroup, Typography } from "@mui/joy";
 import { useState } from "react";
 import { isDefined } from "remeda";
@@ -13,11 +14,10 @@ import { FilterButtonProps } from "@/lib/shared/components/buttons/FilterButton"
 import { ToggleButton } from "@/lib/shared/components/buttons/ToggleButton";
 import { ActiveFilter } from "@/lib/shared/components/filterSettings/ActiveFilter";
 import { FilterSettingsContentProps } from "@/lib/shared/components/filterSettings/FilterSettingsContent";
-import { UseTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
 interface GdprProcedureFilterSettingsProps {
   typeFilter: ApiGdprProcedureType | undefined;
-  tableControl: UseTableControl;
+  tableControl: UseTableControlResult;
 }
 
 interface FilterDefinition {

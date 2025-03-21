@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import {
+  BaseAddressFormInputs,
+  createEmptyAddress,
+} from "@eshg/lib-employee-portal";
 import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import {
   InputArrayField,
@@ -29,10 +33,6 @@ import {
   OptionalBillingAddressForm,
   OptionalContactAddressForm,
 } from "@/lib/shared/components/form/address/BaseAddressForm";
-import {
-  BaseAddressFormInputs,
-  createEmptyAddress,
-} from "@/lib/shared/components/form/address/helpers";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { createEmptyContactPerson } from "@/lib/shared/helpers/facilityUtils";

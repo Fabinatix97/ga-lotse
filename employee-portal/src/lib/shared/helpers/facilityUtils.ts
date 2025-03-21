@@ -9,6 +9,10 @@ import {
   ApiFacilityContactPerson,
 } from "@eshg/base-api";
 import { ApiDataOrigin } from "@eshg/inspection-api";
+import {
+  mapApiAddressToForm,
+  mapBaseAddressToApi,
+} from "@eshg/lib-employee-portal";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { isNullish } from "remeda";
 
@@ -17,10 +21,6 @@ import {
   BaseFacility,
   BaseFacilityContactPerson,
 } from "@/lib/shared/components/facilitySidebar/types";
-import {
-  mapApiAddressToForm,
-  mapBaseAddressToApi,
-} from "@/lib/shared/components/form/address/helpers";
 import { join } from "@/lib/shared/helpers/strings";
 
 export function streetAndHouseNumber(address?: {

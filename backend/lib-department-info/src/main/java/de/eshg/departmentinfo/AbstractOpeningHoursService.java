@@ -25,6 +25,11 @@ public abstract class AbstractOpeningHoursService<O extends AbstractOpeningHours
   }
 
   @Override
+  public O getConfig() {
+    return super.getConfig();
+  }
+
+  @Override
   protected O getInitialConfiguration() {
     O openingHours = createEmptyOpeningHoursEntity();
     openingHours.setDe(initialOpeningHours.de());

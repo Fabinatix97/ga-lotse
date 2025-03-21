@@ -25,6 +25,11 @@ public class DepartmentConfigurationService
   }
 
   @Override
+  public DepartmentConfiguration getConfig() {
+    return super.getConfig();
+  }
+
+  @Override
   protected DepartmentConfiguration getInitialConfiguration() throws Exception {
     DepartmentConfiguration departmentConfiguration = new DepartmentConfiguration();
     departmentConfiguration.setLogo(initialDepartmentConfiguration.logo().getContentAsByteArray());

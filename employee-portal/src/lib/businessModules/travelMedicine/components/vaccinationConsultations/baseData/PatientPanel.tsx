@@ -5,6 +5,10 @@
 
 "use client";
 
+import {
+  CentralFilePersonDetails,
+  DetailsSection,
+} from "@eshg/lib-employee-portal";
 import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import {
   ApiPatient,
@@ -26,12 +30,10 @@ import {
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { EditButton } from "@/lib/shared/components/buttons/EditButton";
-import { CentralFilePersonDetails } from "@/lib/shared/components/centralFile/display/CentralFilePersonDetails";
 import {
   SyncBarrier,
   useSyncBarrier,
 } from "@/lib/shared/components/centralFile/sync/SyncBarrier";
-import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 import { LegacyPerson } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyPersonForm";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";

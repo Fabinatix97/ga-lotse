@@ -9,8 +9,10 @@ import de.eshg.base.GenderDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Schema(name = "ProphylaxisSessionChildExamination")
@@ -27,4 +29,4 @@ public record ProphylaxisSessionChildExaminationDto(
     DentitionTypeDto prophylaxisDentitionType,
     @Valid @NotNull List<FluoridationConsentDto> allFluoridationConsents,
     @Valid ExaminationResultDto result,
-    @Valid @NotNull List<ExaminationResultDto> previousExaminationResults) {}
+    @Valid @NotNull Map<Instant, ExaminationResultDto> previousExaminationResults) {}

@@ -32,6 +32,10 @@ export function useCreateProphylaxisSession() {
 
 export function useUpdateProphylaxisSession(prophylaxisSessionId: string) {
   const { prophylaxisSessionApi } = useDentalApi();
+  const queryClient = useQueryClient();
+  const { queryKey } = getProphylaxisSessionQuery(prophylaxisSessionApi, {
+    prophylaxisSessionId,
+  });
   const snackbar = useSnackbar();
   return useHandledMutation({
     mutationFn: (request: ApiUpdateProphylaxisSessionRequest) =>
@@ -39,7 +43,8 @@ export function useUpdateProphylaxisSession(prophylaxisSessionId: string) {
         prophylaxisSessionId,
         request,
       ),
-    onSuccess: () => {
+    onSuccess: (response) => {
+      queryClient.setQueryData(queryKey, response);
       snackbar.confirmation("Prophylaxe erfolgreich gespeichert.");
     },
   });

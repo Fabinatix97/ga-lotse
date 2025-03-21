@@ -5,6 +5,12 @@
 
 "use client";
 
+import {
+  DataTable,
+  TablePage,
+  TableSheet,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
@@ -18,10 +24,6 @@ import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { useFilterDictionary } from "@/lib/shared/components/filterSettings/useFilterDictionary";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 import { useToggle } from "@/lib/shared/hooks/useToggle";
 
 export function VaccinationConsultationsSearchTable() {

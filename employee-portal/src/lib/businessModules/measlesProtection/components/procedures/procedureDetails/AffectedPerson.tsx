@@ -6,14 +6,15 @@
 "use client";
 
 import {
+  CentralFilePersonDetails,
+  DetailsSection,
+} from "@eshg/lib-employee-portal";
+import {
   ApiDraftMeaslesProcedure,
   ApiMeaslesProtectionProcedure,
 } from "@eshg/measles-protection-api";
 import { Sheet } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
-
-import { CentralFilePersonDetails } from "@/lib/shared/components/centralFile/display/CentralFilePersonDetails";
-import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 
 const COLUMN_STYLE: SxProps = {
   flexGrow: 1,

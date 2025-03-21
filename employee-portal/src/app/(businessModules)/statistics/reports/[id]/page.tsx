@@ -11,6 +11,7 @@ import {
   Toolbar,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { use } from "react";
 
 import { useGetReportDetails } from "@/lib/businessModules/statistics/api/queries/useGetReportDetails";
 import { ReportDetails } from "@/lib/businessModules/statistics/components/reports/ReportDetails";
@@ -19,7 +20,7 @@ import { routes } from "@/lib/businessModules/statistics/shared/routes";
 export default function ReportDetailsPage(
   props: DynamicPageProps<{ id: string }>,
 ) {
-  const { id } = props.params;
+  const { id } = use(props.params);
   const reportDetails = useGetReportDetails(id);
 
   return (

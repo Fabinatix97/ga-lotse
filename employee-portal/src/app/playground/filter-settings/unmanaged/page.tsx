@@ -5,7 +5,12 @@
 
 "use client";
 
-import { MainContentLayout } from "@eshg/lib-employee-portal";
+import {
+  DataTable,
+  MainContentLayout,
+  TablePage,
+  TableSheet,
+} from "@eshg/lib-employee-portal";
 import { isDateString } from "@eshg/lib-portal/helpers/dateTime";
 import {
   Button,
@@ -22,9 +27,6 @@ import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { ActiveFilter } from "@/lib/shared/components/filterSettings/ActiveFilter";
 import { FilterSettingsContent } from "@/lib/shared/components/filterSettings/FilterSettingsContent";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 
 interface PlaygroundFilter {
   key: string;

@@ -5,6 +5,15 @@
 
 "use client";
 
+import {
+  DataTable,
+  Pagination,
+  TablePage,
+  TableSheet,
+  getSortDirection,
+  getSortKey,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { useToggleableState } from "@eshg/lib-portal/hooks/useToggleableState";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
@@ -35,21 +44,13 @@ import {
 } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { useSearchParamStateProvider } from "@/lib/shared/components/filterSettings/useSearchParamStateProvider";
 import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
-import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import {
   PersonSearchForm,
   PersonSearchFormValues,
   TogglePersonSearchButton,
   usePersonSearch,
 } from "@/lib/shared/components/personSearch/PersonSearchForm";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import {
-  getSortDirection,
-  getSortKey,
-} from "@/lib/shared/components/table/sorting";
-import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
+import { usePartialPersonSearchHelpers } from "@/lib/shared/components/personSearch/usePartialPersonSearchHelpers";
 
 type PanelName = "filters" | "personSearch";
 
@@ -103,6 +104,14 @@ export function ProceduresOverviewTable(
     initialSorting: initialSorting,
   });
 
+  const {
+    hasAtLeastOneValue,
+    isInvalidPartialSearch,
+    isFullSearch,
+    setAlertMessage,
+    renderAlert,
+  } = usePartialPersonSearchHelpers();
+
   const personSearch = usePersonSearch();
   const proceduresQuery = useGetAllProceduresQuery({
     ...props.filter,
@@ -148,9 +157,28 @@ export function ProceduresOverviewTable(
   });
 
   function handleChangePersonSearch(formValues: PersonSearchFormValues) {
-    tableControl.paginationProps.onPageChange(0);
-    resetFilters();
-    personSearch.setValues(formValues);
+    if (!hasAtLeastOneValue(formValues)) return;
+    if (hasAtLeastOneValue(formValues) && isInvalidPartialSearch(formValues)) {
+      setAlertMessage(
+        "Die Suche ausschließlich nach Vor- oder Nachname ist nicht erlaubt.",
+      );
+    } else {
+      if (!isFullSearch(formValues)) {
+        setAlertMessage(
+          "Es werden aus Datenschutzgründen nur offene Vorgänge angezeigt. Geben Sie alle 3 Such-Faktoren an, um auch geschlossene Vorgänge anzuzeigen.",
+        );
+      } else {
+        setAlertMessage(undefined);
+      }
+      tableControl.paginationProps.onPageChange(0);
+      resetFilters();
+      personSearch.setValues(formValues);
+    }
+  }
+
+  function handleReset() {
+    setAlertMessage(undefined);
+    personSearch.reset();
   }
 
   return (
@@ -183,7 +211,11 @@ export function ProceduresOverviewTable(
           <PersonSearchForm
             {...personSearch.formProps}
             onChange={handleChangePersonSearch}
-          />
+            onReset={handleReset}
+            allowPartialSearch
+          >
+            {renderAlert()}
+          </PersonSearchForm>
         )
       }
       filterSettings={

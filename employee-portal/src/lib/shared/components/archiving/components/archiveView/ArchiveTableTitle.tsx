@@ -3,15 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import {
+  RowSelectionTableToolbar,
+  RowSelectionTableToolbarButton,
+  mapRowSelectionToRowIds,
+} from "@eshg/lib-employee-portal";
 import { ApiArchivingRelevance } from "@eshg/lib-procedures-api";
 import { DeleteOutlined, Inventory2Outlined } from "@mui/icons-material";
 import { Divider, Typography } from "@mui/joy";
 import { RowSelectionState } from "@tanstack/react-table";
 
 import { ArchiveTableProps } from "@/lib/shared/components/archiving/components/archiveView/ArchiveTable";
-import { RowSelectionTableToolbar } from "@/lib/shared/components/table/RowSelectionTableToolbar";
-import { RowSelectionTableToolbarButton } from "@/lib/shared/components/table/RowSelectionTableToolbarButton";
-import { mapToRowIds } from "@/lib/shared/hooks/table/useRowSelection";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface ArchiveTableTitleProps extends ArchiveTableProps {
@@ -20,7 +22,7 @@ interface ArchiveTableTitleProps extends ArchiveTableProps {
 
 export function ArchiveTableTitle(props: ArchiveTableTitleProps) {
   const { openConfirmationDialog } = useConfirmationDialog();
-  const selectedProcedureIds = mapToRowIds(props.rowSelection);
+  const selectedProcedureIds = mapRowSelectionToRowIds(props.rowSelection);
 
   const bulkUpdateProceduresArchivingRelevance =
     props.useBulkUpdateProceduresArchivingRelevance();

@@ -20,18 +20,20 @@ import { ParticipantExaminationForm } from "@/lib/businessModules/dental/feature
 import { ParticipantExaminationToolbar } from "@/lib/businessModules/dental/features/prophylaxisSessions/participantExamination/ParticipantExaminationToolbar";
 import { useParticipantExaminationForm } from "@/lib/businessModules/dental/features/prophylaxisSessions/participantExamination/useParticipantExaminationForm";
 import { useParticipantNavigation } from "@/lib/businessModules/dental/features/prophylaxisSessions/participantExamination/useParticipantNavigation";
-import { useProphylaxisSessionStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/ProphylaxisSessionStoreProvider";
+import {
+  useFilteredPresentParticipants,
+  useProphylaxisSessionStore,
+} from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/ProphylaxisSessionStoreProvider";
 
 interface ParticipantExaminationPageProps {
   participant: ChildExamination;
-  participantIndex: number;
   participantsLength: number;
 }
 
 export function ParticipantExaminationPage(
   props: ParticipantExaminationPageProps,
 ) {
-  const { participant, participantIndex, participantsLength } = props;
+  const { participant } = props;
   const router = useRouter();
   const prophylaxisSessionId = useProphylaxisSessionStore((state) => state.id);
   const dateOfExamination = useProphylaxisSessionStore(
@@ -66,14 +68,19 @@ export function ParticipantExaminationPage(
       }
     },
   });
+
+  const presentFilteredParticipants = useFilteredPresentParticipants();
+
   const examinationNavigation = useParticipantNavigation({
-    participantIndex,
-    participantsLength,
+    participants: presentFilteredParticipants,
+    examinationId: participant.examinationId,
     onNavigate: (nextRoute) => {
       setNextRoute(nextRoute);
       void examinationForm.submitForm();
     },
   });
+
+  const isPresent = participant.status !== "NOT_PRESENT";
 
   return (
     <StickyToolbarLayout
@@ -81,16 +88,19 @@ export function ParticipantExaminationPage(
         <ParticipantExaminationToolbar
           prophylaxisSessionId={prophylaxisSessionId}
           participant={participant}
-          participantIndex={participantIndex}
           onBackClicked={examinationNavigation.gotoOverview}
         />
       }
       bottomToolbar={
         <ParticipantExaminationBottomBar
           onPreviousParticipantClicked={
-            examinationNavigation.gotoPreviousParticipant
+            isPresent
+              ? examinationNavigation.gotoPreviousParticipant
+              : undefined
           }
-          onNextParticipantClicked={examinationNavigation.gotoNextParticipant}
+          onNextParticipantClicked={
+            isPresent ? examinationNavigation.gotoNextParticipant : undefined
+          }
           onOverviewClicked={examinationNavigation.gotoOverview}
           examination={participant}
           examinationFormValues={examinationForm.values}
@@ -119,6 +129,7 @@ export function ParticipantExaminationPage(
               status={participant.status}
               participantDateOfBirth={participant.dateOfBirth}
               dateOfExamination={dateOfExamination}
+              previousExaminations={participant.previousExaminations}
             />
           }
           dentalExamination={

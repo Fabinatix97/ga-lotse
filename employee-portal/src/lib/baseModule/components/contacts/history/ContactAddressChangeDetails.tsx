@@ -3,9 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  BaseAddress,
+  BaseAddressDetailsColumn,
+} from "@eshg/lib-employee-portal";
+
 import { HistoryDetailsSheet } from "@/lib/baseModule/components/contacts/history/HistoryDetailsSheet";
-import { BaseAddressDetails } from "@/lib/shared/components/address/BaseAddressDetails";
-import { BaseAddress } from "@/lib/shared/helpers/address";
 
 export function ContactAddressChangeDetails({
   address,
@@ -14,7 +17,7 @@ export function ContactAddressChangeDetails({
 }) {
   return (
     <HistoryDetailsSheet>
-      <BaseAddressDetails address={address} />
+      <BaseAddressDetailsColumn address={address} />
     </HistoryDetailsSheet>
   );
 }

@@ -5,10 +5,14 @@
 
 package de.eshg.lib.statistics.attributes;
 
-public final class CentralFileIdPersonAttribute extends AttributeData {
+import de.eshg.lib.statistics.api.ValueType;
 
-  public CentralFileIdPersonAttribute(
-      String name, String code, String category, boolean mandatory) {
-    super(name, code, category, mandatory);
+public final class CentralFileIdPersonAttribute {
+  private CentralFileIdPersonAttribute() {}
+
+  public static AttributeData create(String name, String code, String category, boolean mandatory) {
+    AttributeData attribute = AttributeData.createAttribute(name, code, category, mandatory, null);
+    attribute.setValueType(ValueType.CENTRAL_FILE_ID_PERSON);
+    return attribute;
   }
 }

@@ -9,6 +9,7 @@ import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.dental.domain.model.Examination;
+import de.eshg.dental.domain.model.FluoridationConsent;
 import de.eshg.dental.domain.model.ProphylaxisSession;
 import java.util.List;
 import java.util.Map;
@@ -19,4 +20,5 @@ public record ProphylaxisSessionWithAugmentedData(
     ContactDto institution,
     Map<Examination, GetPersonFileStateResponse> participants,
     Map<UUID, UserDto> users,
-    Map<UUID, List<Examination>> previousExaminationsByChildFileStateId) {}
+    Map<UUID, List<Examination>> previousExaminationsByChildFileStateId,
+    Map<UUID, List<FluoridationConsent>> allFluoridationConsentsByChildFileStateId) {}

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { isDefined, isNullish } from "remeda";
+import { isDefined, isEmpty, isNullish } from "remeda";
 
 import { Nullable } from "../types/utility";
 
@@ -20,11 +20,17 @@ export function formatPersonName(person: Nullable<Partial<Person>>) {
     return "";
   }
 
-  if (isDefined(person.firstName) && !isDefined(person.lastName)) {
+  if (
+    isDefined(person.firstName) &&
+    (!isDefined(person.lastName) || isEmpty(person.lastName))
+  ) {
     return person.firstName;
   }
 
-  if (!isDefined(person.firstName) && isDefined(person.lastName)) {
+  if (
+    (!isDefined(person.firstName) || isEmpty(person.firstName)) &&
+    isDefined(person.lastName)
+  ) {
     return person.lastName;
   }
 

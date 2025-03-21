@@ -8,12 +8,14 @@ package de.eshg.departmentinfo.domain;
 import de.eshg.domain.model.BaseEntity;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 
 @Entity
 public class Document extends BaseEntity {
 
   @DataSensitivity(SensitivityLevel.SENSITIVE)
+  @Column(nullable = false)
   private byte[] content;
 
   public byte[] getContent() {

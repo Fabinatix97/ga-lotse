@@ -37,12 +37,9 @@ public non-sealed class StagedActor extends GloballyUniqueEntityBase
   @Column private String commonName;
 
   @Column private String networkId;
-  @Column private String currentCertificateValue;
-  @Column private String currentCertificateSignature;
-  @Column private String currentCertificateSignatory;
-  @Column private String previousCertificateValue;
-  @Column private String previousCertificateSignature;
-  @Column private String previousCertificateSignatory;
+  @Column private String certificateValue;
+  @Column private String certificateSignature;
+  @Column private String certificateSignatory;
 
   @Column private Boolean active;
   @Column private Boolean manualCertificate;
@@ -84,42 +81,19 @@ public non-sealed class StagedActor extends GloballyUniqueEntityBase
   }
 
   @Override
-  public Certificate getCurrentCertificate() {
-    if (currentCertificateValue == null) {
+  public Certificate getCertificate() {
+    if (certificateValue == null) {
       return null;
     }
-    return new Certificate(
-        currentCertificateValue, currentCertificateSignature, currentCertificateSignatory);
+    return new Certificate(certificateValue, certificateSignature, certificateSignatory);
   }
 
   @Override
-  public void setCurrentCertificate(Certificate currentCertificate) {
-    if (currentCertificate != null) {
-      currentCertificateValue = currentCertificate.value();
-      currentCertificateSignature = currentCertificate.signature();
-      currentCertificateSignatory = currentCertificate.signatory();
-    }
-  }
-
-  @Override
-  public Certificate getPreviousCertificate() {
-    if (previousCertificateValue == null) {
-      return null;
-    }
-    return new Certificate(
-        previousCertificateValue, previousCertificateSignature, previousCertificateSignatory);
-  }
-
-  @Override
-  public void setPreviousCertificate(Certificate previousCertificate) {
-    if (previousCertificate != null) {
-      previousCertificateValue = previousCertificate.value();
-      previousCertificateSignature = previousCertificate.signature();
-      previousCertificateSignatory = previousCertificate.signatory();
-    } else {
-      previousCertificateValue = null;
-      previousCertificateSignature = null;
-      previousCertificateSignatory = null;
+  public void setCertificate(Certificate certificate) {
+    if (certificate != null) {
+      certificateValue = certificate.value();
+      certificateSignature = certificate.signature();
+      certificateSignatory = certificate.signatory();
     }
   }
 

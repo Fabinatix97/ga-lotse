@@ -9,8 +9,8 @@ import de.eshg.domain.model.GenericEntity;
 import de.eshg.lib.statistics.api.DataRow;
 import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.api.DataTableHeader;
+import de.eshg.lib.statistics.api.ValueType;
 import de.eshg.lib.statistics.attributes.AttributeInfo;
-import de.eshg.lib.statistics.attributes.ProcedureAttribute;
 import de.eshg.lib.statistics.persistence.ProcedureReferenceForStatistics;
 import de.eshg.lib.statistics.util.DataRowPage;
 import de.eshg.lib.statistics.util.TimeRange;
@@ -21,8 +21,8 @@ import org.springframework.data.domain.Page;
 public abstract class EntityDataSource<E extends GenericEntity<?>, A extends AttributeInfo>
     extends DataSource<A> {
   protected EntityDataSource(
-      UUID id, String name, DataSourceSensitivity sensitivity, A[] attributes) {
-    super(id, name, sensitivity, attributes);
+      UUID id, String name, DataSourceSensitivity sensitivity, Integer kAnonymity, A[] attributes) {
+    super(id, name, sensitivity, kAnonymity, attributes);
   }
 
   @Override
@@ -52,7 +52,10 @@ public abstract class EntityDataSource<E extends GenericEntity<?>, A extends Att
             .map(
                 attribute -> {
                   Object value = mapSpecificValue(entity, attribute, timeRange);
-                  if (attribute.getAttributeData() instanceof ProcedureAttribute) {
+                  if (attribute
+                      .getAttributeData()
+                      .getValueType()
+                      .equals(ValueType.PROCEDURE_REFERENCE)) {
                     return createProcedureReference(value, procedureReferences);
                   } else {
                     return value;

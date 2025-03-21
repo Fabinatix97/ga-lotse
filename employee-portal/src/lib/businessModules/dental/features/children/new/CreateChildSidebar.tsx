@@ -13,6 +13,10 @@ import {
   useDentalApi,
 } from "@eshg/dental";
 import { ApiChild, ApiCreateChildRequest } from "@eshg/dental-api";
+import {
+  DefaultPersonFormValues,
+  mapToPersonAddRequest,
+} from "@eshg/lib-employee-portal";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { ApiCreatePerson } from "@eshg/school-entry-api";
@@ -30,8 +34,6 @@ import {
   PersonSidebar,
   PersonSidebarProps,
 } from "@/lib/shared/components/personSidebar/PersonSidebar";
-import { DefaultPersonFormValues } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
-import { mapToPersonAddRequest } from "@/lib/shared/components/personSidebar/helpers";
 import {
   DefaultSearchPersonForm,
   defaultSearchPersonValues,

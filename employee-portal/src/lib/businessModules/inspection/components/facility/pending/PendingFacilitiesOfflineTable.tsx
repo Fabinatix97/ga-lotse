@@ -5,15 +5,17 @@
 
 "use client";
 
+import {
+  DataTable,
+  TablePage,
+  TableSheet,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
 import { Typography } from "@mui/joy";
 import { useState } from "react";
 
 import { useGetPendingFacilities } from "@/lib/businessModules/inspection/api/queries/facility";
 import { PendingFacilitiesIncidentsSidebar } from "@/lib/businessModules/inspection/components/facility/pending/PendingFacilitiesIncidentsSidebar";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
 import {
   createPendingFacilitiesColumns,

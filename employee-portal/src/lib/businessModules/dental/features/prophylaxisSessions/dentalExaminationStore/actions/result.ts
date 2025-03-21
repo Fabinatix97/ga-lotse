@@ -18,9 +18,13 @@ import {
   DmftValuesState,
   HasResultState,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/dentalExaminationStore";
-import { createToothResult } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/factories";
+import {
+  createAddableTooth,
+  createToothResult,
+} from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/factories";
 import {
   Dentition,
+  Tooth,
   ToothContext,
   ToothResult,
   ToothWithDiagnosis,
@@ -175,11 +179,18 @@ function updateToothWithDiagnosis(
     throw new Error("Tooth must be of type ToothWithDiagnosis");
   }
 
+  let updatedTooth: Tooth;
+  if (tooth.isRemovable && newTooth.mainResult?.value === "U") {
+    updatedTooth = createAddableTooth(tooth.toothNumber);
+  } else {
+    updatedTooth = { ...tooth, ...newTooth };
+  }
+
   return {
     ...dentition,
     [quadrantNumber]: {
       ...targetQuadrant,
-      teeth: targetQuadrant.teeth.with(toothIndex, { ...tooth, ...newTooth }),
+      teeth: targetQuadrant.teeth.with(toothIndex, updatedTooth),
     },
   };
 }

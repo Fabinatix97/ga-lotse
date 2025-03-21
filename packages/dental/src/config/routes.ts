@@ -6,6 +6,7 @@
 import { defineRoutes } from "@eshg/lib-portal/helpers/routes";
 
 export const routes = defineRoutes("/dental", (dentalPath) => ({
+  index: dentalPath("/"),
   prophylaxisSessions: defineRoutes(
     dentalPath("/prophylaxis-sessions"),
     (prophylaxisSessionPath) => ({
@@ -14,12 +15,14 @@ export const routes = defineRoutes("/dental", (dentalPath) => ({
         defineRoutes(
           prophylaxisSessionPath(`/${prophylaxisSessionId}`),
           (prophylaxisSessionPath) => ({
+            index: prophylaxisSessionPath("/"),
             details: prophylaxisSessionPath("/details"),
             examinations: defineRoutes(
               prophylaxisSessionPath("/examinations"),
               (prophylaxisSessionExaminationsPath) => ({
-                byIndex: (participantIndex: number) =>
-                  prophylaxisSessionExaminationsPath(`/${participantIndex}`),
+                index: prophylaxisSessionExaminationsPath("/"),
+                byExaminationId: (examinationId: string) =>
+                  prophylaxisSessionExaminationsPath(`/${examinationId}`),
               }),
             ),
           }),
@@ -30,7 +33,10 @@ export const routes = defineRoutes("/dental", (dentalPath) => ({
     overview: childrenPath("/"),
     byId: (childId: string) =>
       defineRoutes(childrenPath(`/${childId}`), (childPath) => ({
+        index: childPath("/"),
         details: childPath("/details"),
+        syncPerson: (fileStateId: string, personVersion: number) =>
+          childPath(`/sync-person/${fileStateId}/${personVersion}`),
         examinations: defineRoutes(
           childPath("/examinations"),
           (examinationsPath) => ({

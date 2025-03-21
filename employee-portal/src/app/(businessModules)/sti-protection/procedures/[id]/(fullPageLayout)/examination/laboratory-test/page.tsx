@@ -8,6 +8,7 @@
 import { MainContentLayout } from "@eshg/lib-employee-portal";
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { use } from "react";
 
 import { StiProtectionProcedureRouteParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(fullPageLayout)/layout";
 import { useGetLaboratoryTestExaminationQuery } from "@/lib/businessModules/stiProtection/api/queries/examination";
@@ -18,7 +19,7 @@ import { isProcedureOpen } from "@/lib/businessModules/stiProtection/shared/help
 export default function StiProtectionProcedureLaboratoryTestPage(
   props: DynamicPageProps<StiProtectionProcedureRouteParams>,
 ) {
-  const { id: procedureId } = props.params;
+  const { id: procedureId } = use(props.params);
   const { data: procedure } = useStiProcedureQuery(procedureId);
   const isOpen = isProcedureOpen(procedure);
   const { data: laboratoryTestExamination } =

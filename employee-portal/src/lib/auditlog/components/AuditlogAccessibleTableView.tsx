@@ -5,6 +5,7 @@
 
 "use client";
 
+import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
 import { format } from "date-fns";
 import { useParams, useRouter } from "next/navigation";
 
@@ -14,9 +15,6 @@ import { routes } from "@/lib/baseModule/shared/routes";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 
 import { AuditLogDecryptSidebar } from "./AuditLogDecryptSidebar";
 import { auditLogAccessibleColumns } from "./auditLogAccessibleColumns";

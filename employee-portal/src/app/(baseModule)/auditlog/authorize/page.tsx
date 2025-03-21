@@ -17,13 +17,11 @@ import { AuditLogAuthorizePage } from "@/lib/auditlog/components/authorize/Audit
 import { RestrictedPage } from "@/lib/shared/components/RestrictedPage";
 
 export default function AuditLogAuthorizeAccessPage(props: PageProps) {
-  const searchParams = props.searchParams;
-
   return (
     <StickyToolbarLayout toolbar={<Toolbar title="Auditlog Freigabe" />}>
       <MainContentLayout fullViewportHeight>
         <RestrictedPage requiredUserRole={ApiUserRole.AuditlogAuthorizeAccess}>
-          <AuditLogAuthorizePage searchParams={searchParams} />
+          <AuditLogAuthorizePage searchParams={props.searchParams} />
         </RestrictedPage>
       </MainContentLayout>
     </StickyToolbarLayout>

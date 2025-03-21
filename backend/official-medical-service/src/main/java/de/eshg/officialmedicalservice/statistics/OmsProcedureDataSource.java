@@ -29,6 +29,7 @@ public class OmsProcedureDataSource
         DATA_SOURCE_ID,
         DATA_SOURCE_NAME,
         DataSourceSensitivity.INTERNAL_USAGE,
+        null,
         omsProcedureRepository,
         OmsProcedureAttributes.values());
   }

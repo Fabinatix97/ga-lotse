@@ -4,6 +4,7 @@
  */
 
 import { ApiContactType } from "@eshg/base-api";
+import { createEmptyAddress } from "@eshg/lib-employee-portal";
 import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
 import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import {
@@ -38,7 +39,6 @@ import {
   ContactAddressForm,
   OptionalBillingAddressForm,
 } from "@/lib/shared/components/form/address/BaseAddressForm";
-import { createEmptyAddress } from "@/lib/shared/components/form/address/helpers";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 

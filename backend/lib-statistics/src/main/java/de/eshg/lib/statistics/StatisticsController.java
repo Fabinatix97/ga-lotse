@@ -5,13 +5,13 @@
 
 package de.eshg.lib.statistics;
 
-import de.eshg.lib.statistics.api.DataSourceInfo;
 import de.eshg.lib.statistics.api.GetDataSourcesResponse;
 import de.eshg.lib.statistics.api.GetDataTableHeaderRequest;
 import de.eshg.lib.statistics.api.GetDataTableHeaderResponse;
 import de.eshg.lib.statistics.api.GetSpecificDataRequest;
 import de.eshg.lib.statistics.api.GetSpecificDataResponse;
 import de.eshg.lib.statistics.datasource.DataSource;
+import de.eshg.lib.statistics.datasource.DataSourceMapper;
 import io.swagger.v3.oas.annotations.Hidden;
 import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,15 +31,7 @@ public class StatisticsController implements StatisticsApi {
   public GetDataSourcesResponse getAvailableDataSources() {
     List<DataSource<?>> dataSources = statisticsService.getDataSources();
     return new GetDataSourcesResponse(
-        dataSources.stream()
-            .map(
-                dataSource ->
-                    new DataSourceInfo(
-                        dataSource.getId(),
-                        dataSource.getName(),
-                        dataSource.getSensitivity(),
-                        statisticsService.getAttributes(dataSource)))
-            .toList());
+        dataSources.stream().map(DataSourceMapper::mapToDataSourceInfo).toList());
   }
 
   @Override

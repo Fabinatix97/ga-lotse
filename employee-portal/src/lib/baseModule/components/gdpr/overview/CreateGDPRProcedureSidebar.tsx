@@ -4,6 +4,10 @@
  */
 
 import { ApiGdprProcedureType, ApiSalutation } from "@eshg/base-api";
+import {
+  BaseAddressFormInputs,
+  createEmptyAddress,
+} from "@eshg/lib-employee-portal";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
@@ -26,10 +30,6 @@ import { routes } from "@/lib/baseModule/shared/routes";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { ContactAddressForm } from "@/lib/shared/components/form/address/BaseAddressForm";
-import {
-  BaseAddressFormInputs,
-  createEmptyAddress,
-} from "@/lib/shared/components/form/address/helpers";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import {

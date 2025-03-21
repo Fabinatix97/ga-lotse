@@ -5,6 +5,7 @@
 
 package de.eshg.lib.statistics.api;
 
+import de.eshg.lib.statistics.api.interval.IntervalConfiguration;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,4 +20,7 @@ public record Attribute(
     @Size(min = 1) @Valid List<ValueOptionInternal> valueOptions,
     @NotBlank String category,
     @NotNull boolean mandatory,
-    DataPrivacyCategory dataPrivacyCategory) {}
+    DataPrivacyCategory dataPrivacyCategory,
+    @Valid IntervalConfiguration intervalConfiguration,
+    Integer lDiversity,
+    Double tCloseness) {}

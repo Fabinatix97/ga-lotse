@@ -4,6 +4,7 @@
  */
 
 import { ApiAddContactRequest, ApiUpdateContactRequest } from "@eshg/base-api";
+import { mapBaseAddressToApi } from "@eshg/lib-employee-portal";
 import {
   dropBlankStrings,
   mapOptionalValue,
@@ -19,7 +20,6 @@ import {
   MergeInstitutionContactFormValues,
   MergePersonContactFormValues,
 } from "@/lib/baseModule/components/contacts/types";
-import { mapBaseAddressToApi } from "@/lib/shared/components/form/address/helpers";
 
 export function mapAddContactRequest(
   values: ContactFormValues,

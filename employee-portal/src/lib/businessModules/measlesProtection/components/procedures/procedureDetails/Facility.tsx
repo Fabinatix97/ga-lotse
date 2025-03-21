@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DetailsSection } from "@eshg/lib-employee-portal";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import {
   ApiDraftMeaslesProcedure,
@@ -14,7 +15,6 @@ import { SxProps } from "@mui/joy/styles/types";
 import { facilityTypeNames } from "@/lib/businessModules/measlesProtection/components/procedures/constants";
 import { CentralFileFacilityDetails } from "@/lib/shared/components/centralFile/display/CentralFileFacilityDetails";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 
 import { FacilityContacts } from "./FacilityContact";
 

@@ -4,6 +4,7 @@
  */
 
 import { ApiInspectionInventory } from "@eshg/inspection-api";
+import { DataTable } from "@eshg/lib-employee-portal";
 import { DeleteOutlined } from "@mui/icons-material";
 import { Chip, IconButton } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
@@ -11,7 +12,6 @@ import { isDefined } from "remeda";
 
 import { inventoryItemTypeNames } from "@/lib/baseModule/components/inventory/constants";
 import { useModifyInventory } from "@/lib/businessModules/inspection/api/mutations/inventory";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface InventoryTableProps {

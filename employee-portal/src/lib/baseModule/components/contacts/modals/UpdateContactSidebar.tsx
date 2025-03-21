@@ -4,6 +4,10 @@
  */
 
 import { ApiInstitutionContact, ApiPersonContact } from "@eshg/base-api";
+import {
+  createEmptyAddress,
+  mapApiAddressToForm,
+} from "@eshg/lib-employee-portal";
 import { isDefined } from "remeda";
 
 import { contactDiscriminatorToEnum } from "@/lib/baseModule/components/contacts/constants";
@@ -14,10 +18,6 @@ import {
   PersonContactFormValues,
   isPersonContact,
 } from "@/lib/baseModule/components/contacts/types";
-import {
-  createEmptyAddress,
-  mapApiAddressToForm,
-} from "@/lib/shared/components/form/address/helpers";
 import {
   SidebarWithFormRefProps,
   useSidebarWithFormRef,

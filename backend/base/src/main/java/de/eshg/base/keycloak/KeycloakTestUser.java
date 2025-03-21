@@ -17,11 +17,35 @@ public record KeycloakTestUser(
     String externalChatUsername,
     String firstName,
     String lastName,
+    String email,
     String password,
     List<KeycloakRole> roles,
     List<KeycloakGroup> groups,
     Map<String, String> additionalAttributes)
     implements KeycloakUser {
+
+  public KeycloakTestUser(
+      String username,
+      String phoneNumber,
+      String externalChatUsername,
+      String firstName,
+      String lastName,
+      String password,
+      List<KeycloakRole> roles,
+      List<KeycloakGroup> groups,
+      Map<String, String> additionalAttributes) {
+    this(
+        username,
+        phoneNumber,
+        externalChatUsername,
+        firstName,
+        lastName,
+        username + TEST_USER_EMAIL_POSTFIX,
+        password,
+        roles,
+        groups,
+        additionalAttributes);
+  }
 
   public KeycloakTestUser(
       String username,
@@ -37,14 +61,10 @@ public record KeycloakTestUser(
         externalChatUsername,
         firstName,
         lastName,
+        username + TEST_USER_EMAIL_POSTFIX,
         password,
         List.of(role),
         List.of(),
         Map.of());
-  }
-
-  @Override
-  public String email() {
-    return username + TEST_USER_EMAIL_POSTFIX;
   }
 }

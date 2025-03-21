@@ -8,6 +8,7 @@ import {
   ApiAuditLogSourceFromJSON,
   AuditLogApi,
 } from "@eshg/auditlog-api";
+import { DetailsColumn } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { encodeReservedHtmlCharacters } from "@eshg/lib-portal/helpers/htmlStringEncoder";
@@ -23,7 +24,6 @@ import {
   unwrapPrivateKey,
 } from "@/lib/auditlog/components/crypto";
 import { auditLogSourceNames } from "@/lib/shared/components/auditlog/constants";
-import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import {
   SidebarForm,
@@ -57,7 +57,7 @@ export function AuditLogDecryptSidebar({
 
   const fieldName = createFieldNameMapper<AuditLogDecryptSidebar>();
   const formRef = useRef<SidebarFormHandle>(null);
-  const decryptedPrivateKey = useRef<CryptoKey>();
+  const decryptedPrivateKey = useRef<CryptoKey>(null);
 
   function handleCloseSidebar() {
     onClose();

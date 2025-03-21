@@ -11,6 +11,7 @@ import {
   Toolbar,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { use } from "react";
 
 import { InformationStatementTemplateEditor } from "@/lib/businessModules/travelMedicine/components/templates/informationStatement/InformationStatementTemplateEditor";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
@@ -18,7 +19,7 @@ import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 export default function InformationStatementDetailsPage(
   props: DynamicPageProps<{ id: string }>,
 ) {
-  const { id } = props.params;
+  const { id } = use(props.params);
 
   return (
     <StickyToolbarLayout

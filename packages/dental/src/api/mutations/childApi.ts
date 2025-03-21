@@ -5,6 +5,8 @@
 
 import {
   ApiCreateChildRequest,
+  ApiSyncPersonRequest,
+  UpdateChildPersonRequest,
   UpdateChildRequest,
   UpdateExaminationRequest,
 } from "@eshg/dental-api";
@@ -28,6 +30,36 @@ export function useCreateChild() {
     onSuccess: () => {
       snackbar.confirmation("Kind erfolgreich angelegt.");
     },
+  });
+}
+
+export function useUpdateAnnualChildPerson(childId: string) {
+  const { childApi } = useDentalApi();
+  const queryClient = useQueryClient();
+  const { queryKey } = getChildDetailsQuery(childApi, childId);
+  const snackbar = useSnackbar();
+
+  return useHandledMutation({
+    meta: { updatesQuery: queryKey },
+    mutationFn: (request: UpdateChildPersonRequest) =>
+      childApi.updateChildPersonRaw(request).then(unwrapRawResponse),
+    onSuccess: (response) => {
+      queryClient.setQueryData(queryKey, response);
+      snackbar.confirmation(
+        "Die Änderungen zum Kind wurden erfolgreich gespeichert.",
+      );
+    },
+  });
+}
+
+export function useSyncPerson(childId: string) {
+  const { childApi } = useDentalApi();
+  const snackbar = useSnackbar();
+  return useHandledMutation({
+    mutationFn: (request: ApiSyncPersonRequest) =>
+      childApi.syncPersonData(childId, request),
+    onSuccess: () =>
+      snackbar.confirmation("Die Änderungen wurden erfolgreich übernommen."),
   });
 }
 

@@ -13,10 +13,13 @@ import * as v from "valibot";
 import { ProcedureToolbar } from "@/lib/businessModules/schoolEntry/features/procedures/ProcedureToolbar";
 import { SchoolEntryProcedureRouteParamsSchema } from "@/lib/businessModules/schoolEntry/features/procedures/SchoolEntryProcedureRouteParamsSchema";
 
-export default function SchoolEntryProcedureLayout(props: DynamicLayoutProps) {
+export default async function SchoolEntryProcedureLayout(
+  props: DynamicLayoutProps,
+) {
+  const params = await props.params;
   const { procedureId } = v.parse(
     SchoolEntryProcedureRouteParamsSchema,
-    props.params,
+    params,
   );
 
   return (

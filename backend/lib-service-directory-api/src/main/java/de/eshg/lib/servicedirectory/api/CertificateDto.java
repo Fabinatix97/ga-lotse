@@ -6,10 +6,10 @@
 package de.eshg.lib.servicedirectory.api;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
 @Schema(name = "Certificate")
-public record CertificateDto(@NotNull String value, String signature, String signatory) {
+public record CertificateDto(@NotBlank String value, String signature, String signatory) {
 
   @Override
   public String toString() {

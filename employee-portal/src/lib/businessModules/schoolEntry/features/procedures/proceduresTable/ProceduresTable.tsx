@@ -6,11 +6,26 @@
 "use client";
 
 import {
+  DataTable,
+  Pagination,
+  TablePage,
+  TableSheet,
+  UseTableControlResult,
+  getSortDirection,
+  getSortKey,
+  useRowSelection,
+  useSyncRowSelection,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
+import {
   formatDate,
   formatDateTime,
 } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
-import { ApiSchoolEntryProcedureSortKey } from "@eshg/school-entry-api";
+import {
+  ApiSchoolEntryProcedureSortKey,
+  GetProceduresRequest,
+} from "@eshg/school-entry-api";
 import { Chip, Stack } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import {
@@ -19,7 +34,7 @@ import {
   createColumnHelper,
 } from "@tanstack/react-table";
 import { ReactNode } from "react";
-import { isNullish } from "remeda";
+import { isDefined, isNullish } from "remeda";
 
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { Procedure } from "@/lib/businessModules/schoolEntry/api/models/Procedure";
@@ -36,7 +51,6 @@ import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { ChipWithTooltip } from "@/lib/shared/components/chip/ChipWithTooltip";
 import { useFilterDictionary } from "@/lib/shared/components/filterSettings/useFilterDictionary";
 import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
-import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import {
   PersonSearchForm,
   PersonSearchFormValues,
@@ -44,25 +58,10 @@ import {
   TogglePersonSearchButton,
   usePersonSearch,
 } from "@/lib/shared/components/personSearch/PersonSearchForm";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import {
-  getSortDirection,
-  getSortKeyWithSpecificMapping,
-} from "@/lib/shared/components/table/sorting";
 import { UnstyledTabList } from "@/lib/shared/components/unstyledTab/UnstyledTabList";
 import { UnstyledTabPanel } from "@/lib/shared/components/unstyledTab/UnstyledTabPanel";
 import { UnstyledTabs } from "@/lib/shared/components/unstyledTab/UnstyledTabs";
 import { formatSchoolYear } from "@/lib/shared/helpers/formatters";
-import {
-  UseTableControl,
-  useTableControl,
-} from "@/lib/shared/hooks/searchParams/useTableControl";
-import {
-  useRowSelection,
-  useSyncRowSelection,
-} from "@/lib/shared/hooks/table/useRowSelection";
 
 import {
   ProcedureFilterSettings,
@@ -184,7 +183,7 @@ function ProcedureTableSheet({
   searchParams,
   filterValues,
 }: {
-  tableControl: UseTableControl;
+  tableControl: UseTableControlResult;
   searchParams: PersonSearchParams | undefined;
   filterValues: ProcedureFilters;
 }) {
@@ -202,18 +201,11 @@ function ProcedureTableSheet({
   const gdprBannerQuery = useGetGdprValidationBannerQuery(
     ApiBusinessModule.SchoolEntry,
   );
-  const proceduresQuery = getProceduresQuery(schoolEntryApi, {
-    pageNumber: tableControl.paginationProps.pageNumber,
-    pageSize: tableControl.paginationProps.pageSize,
-    ...filterValues,
-    labelsFilter: filterValues.labelsFilter?.map((label) => label.id),
-    ...searchParams,
-    sortKey: getSortKeyWithSpecificMapping(
-      tableControl.tableSorting,
-      SORT_KEY_MAPPING,
-    ),
-    sortDirection: getSortDirection(tableControl.tableSorting),
-  });
+  const paginationParams = mapPaginationQueryParams(tableControl);
+  const proceduresQuery = getProceduresQuery(
+    schoolEntryApi,
+    mapProceduresQueryParams(searchParams, filterValues, paginationParams),
+  );
   const [procedures, gdprBanner] = useSuspenseQueries({
     queries: [proceduresQuery, gdprBannerQuery],
   });
@@ -345,3 +337,35 @@ const SORT_KEY_MAPPING: Record<string, ApiSchoolEntryProcedureSortKey> = {
   appointmentStart: ApiSchoolEntryProcedureSortKey.AppointmentStart,
   schoolYear: ApiSchoolEntryProcedureSortKey.SchoolYear,
 };
+
+type PaginationQueryParams = Pick<
+  GetProceduresRequest,
+  "pageNumber" | "pageSize" | "sortKey" | "sortDirection"
+>;
+
+function mapProceduresQueryParams(
+  searchParams: PersonSearchParams | undefined,
+  filterValues: ProcedureFilters,
+  paginationParams: PaginationQueryParams,
+): GetProceduresRequest {
+  if (isDefined(searchParams)) {
+    return { ...searchParams, ...paginationParams };
+  }
+
+  return {
+    ...filterValues,
+    labelsFilter: filterValues.labelsFilter?.map((label) => label.id),
+    ...paginationParams,
+  };
+}
+
+function mapPaginationQueryParams(
+  tableControl: UseTableControlResult,
+): PaginationQueryParams {
+  return {
+    pageNumber: tableControl.paginationProps.pageNumber,
+    pageSize: tableControl.paginationProps.pageSize,
+    sortKey: getSortKey(tableControl.tableSorting, SORT_KEY_MAPPING),
+    sortDirection: getSortDirection(tableControl.tableSorting),
+  };
+}

@@ -71,8 +71,8 @@ tasks.register('assemble', PnpmTask) {
   finalizedBy 'copyPublicBuildAssets'
   inputs.file "${rootDir}/config/tsconfig.base.json"
   inputs.file "${projectDir}/tsconfig.json"
-  inputs.file "${rootDir}/config/next.base.js"
-  inputs.file "${projectDir}/next.config.js"
+  inputs.file "${rootDir}/config/next.base.ts"
+  inputs.file "${projectDir}/next.config.ts"
   inputs.files fileTree(srcDir)
 
   outputs.file "${projectDir}/next-env.d.ts"

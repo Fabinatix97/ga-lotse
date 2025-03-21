@@ -24,6 +24,7 @@ import {
 import { useCancelAppointment } from "@/lib/businessModules/stiProtection/api/mutations/publicCitizensApi";
 import { useStepContext } from "@/lib/businessModules/stiProtection/components/shared/StepContext";
 import { useTranslation } from "@/lib/i18n/client";
+import { useLocale } from "@/lib/i18n/useLocale";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
 import { PageTitle } from "@/lib/shared/components/layout/page";
 
@@ -160,6 +161,8 @@ export function BookAppointmentTitle() {
 function AppointmentOverview(buttonProps: StepButtonsProps) {
   const { t } = useTranslation("stiProtection/forms");
   const [{ concern, ...data }] = useFormData<AppointmentFormData>();
+  const locale = useLocale();
+
   const concernLabel =
     concern === ApiConcern.SexWork
       ? t("common.sex_work")
@@ -178,16 +181,14 @@ function AppointmentOverview(buttonProps: StepButtonsProps) {
           </Row>
           {data.date != null ? (
             <Row sx={{ flexWrap: "nowrap" }}>
-              <DateRange /> {formatDate(data.date, "EEEE, d. MMMM y")}
+              <DateRange />
+              {formatDate(data.date, "EEEE, d. MMMM y", { locale })}
             </Row>
           ) : null}
           {data.appointment != null ? (
             <Row sx={{ flexWrap: "nowrap" }}>
-              <AccessTimeOutlined />{" "}
-              {data.appointment.start.toLocaleTimeString(undefined, {
-                hour: "numeric",
-                minute: "2-digit",
-              })}
+              <AccessTimeOutlined />
+              {formatDate(data.appointment.start, "HH:mm", { locale })}
             </Row>
           ) : null}
           {data.birthYear ? (

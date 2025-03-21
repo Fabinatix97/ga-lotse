@@ -12,10 +12,10 @@ import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { VaccinationConsultationsOverviewTable } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/VaccinationConsultationsOverviewTable";
 
-export default function VaccinationConsultationsOverviewPage(
+export default async function VaccinationConsultationsOverviewPage(
   props: DynamicPageProps<never, { date: string }>,
 ) {
-  const searchParams = props.searchParams;
+  const searchParams = await props.searchParams;
 
   return (
     <StickyToolbarLayout toolbar={<Toolbar title="Impfberatung" />}>

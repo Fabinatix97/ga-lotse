@@ -7,6 +7,8 @@ package de.eshg.stiprotection.persistence.db;
 
 public enum LabStatus {
   OPEN,
-  IN_PROGRESS,
-  CLOSED
+  TESTS_REQUESTED,
+  TESTS_CONDUCTED,
+  RESULTS_RECORDED,
+  RESULTS_COMMUNICATED
 }

@@ -109,6 +109,10 @@ public abstract class AbstractAggregationResult extends BaseEntityWithExternalId
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private StatisticsDataSensitivity lastDataSensitivityFromBusinessModule;
 
+  @DataSensitivity(PUBLIC)
+  @Column
+  private Integer kAnonymity;
+
   public Instant getCreatedAt() {
     return createdAt;
   }
@@ -211,5 +215,13 @@ public abstract class AbstractAggregationResult extends BaseEntityWithExternalId
   public void setLastDataSensitivityFromBusinessModule(
       StatisticsDataSensitivity lastDataSensitivityFromBusinessModule) {
     this.lastDataSensitivityFromBusinessModule = lastDataSensitivityFromBusinessModule;
+  }
+
+  public Integer getKAnonymity() {
+    return kAnonymity;
+  }
+
+  public void setKAnonymity(Integer kAnonymity) {
+    this.kAnonymity = kAnonymity;
   }
 }

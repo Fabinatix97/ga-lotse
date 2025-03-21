@@ -6,6 +6,13 @@
 "use client";
 
 import { ApiObjectType } from "@eshg/inspection-api";
+import {
+  DataTable,
+  Pagination,
+  TablePage,
+  TableSheet,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
@@ -45,12 +52,7 @@ import {
 } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { useSearchParamStateProvider } from "@/lib/shared/components/filterSettings/useSearchParamStateProvider";
 import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
-import { Pagination } from "@/lib/shared/components/pagination/Pagination";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { TextInputFilter } from "@/lib/shared/components/tableFilters/TextInputFilter";
-import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
 import {
   createPendingFacilitiesColumns,

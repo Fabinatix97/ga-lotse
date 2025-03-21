@@ -4,6 +4,10 @@
  */
 
 import { type ApiGetReferenceFacilityResponse } from "@eshg/base-api";
+import {
+  createEmptyAddress,
+  mapApiAddressToForm,
+} from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { ReactNode, useEffect, useRef, useState } from "react";
@@ -15,10 +19,6 @@ import { FacilityForm } from "@/lib/shared/components/facilitySidebar/FacilityFo
 import { FacilitySearch } from "@/lib/shared/components/facilitySidebar/search/FacilitySearch";
 import { BaseFacility } from "@/lib/shared/components/facilitySidebar/types";
 import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
-import {
-  createEmptyAddress,
-  mapApiAddressToForm,
-} from "@/lib/shared/components/form/address/helpers";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import {
   createEmptyContactPerson,

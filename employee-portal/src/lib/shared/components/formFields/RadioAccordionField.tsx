@@ -53,11 +53,13 @@ export function RadioAccordionGroupField({
 export function RadioAccordionItem({
   value,
   label,
+  disabled,
   sx,
   children,
 }: Readonly<{
   value: unknown;
   label: string;
+  disabled?: boolean;
   sx?: SxProps;
   // The expanded state passed to the children can be used to deactivate form fields.
   children?: ((isExpanded: boolean) => ReactNode) | ReactNode;
@@ -116,6 +118,10 @@ export function RadioAccordionItem({
           backgroundColor: "primary.100",
           borderColor: "primary.300",
         },
+        [`:has([data-accordion-radio].${radioClasses.disabled})`]: {
+          backgroundColor: "whitesmoke",
+          opacity: 0.75,
+        },
         [`& [data-accordion-radio].${radioClasses.checked}`]: {
           [`& [data-accordion-radio].${radioClasses.radio}`]: {
             "--variant-outlinedBorder": "primary.400",
@@ -150,6 +156,7 @@ export function RadioAccordionItem({
                   "aria-expanded": isExpanded,
                 },
               }}
+              disabled={disabled}
             />
           </Box>
           <AccordionDetails

@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "LabStatus")
 public enum LabStatusDto {
   OPEN,
-  IN_PROGRESS,
-  CLOSED
+  TESTS_REQUESTED,
+  TESTS_CONDUCTED,
+  RESULTS_RECORDED,
+  RESULTS_COMMUNICATED
 }

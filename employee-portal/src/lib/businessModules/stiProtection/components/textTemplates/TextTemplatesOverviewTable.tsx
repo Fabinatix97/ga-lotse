@@ -5,6 +5,7 @@
 
 "use client";
 
+import { DataTable, TableSheet } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   ApiCreateTextTemplateRequest,
@@ -21,8 +22,6 @@ import {
 } from "@/lib/businessModules/stiProtection/api/mutations/textTemplates";
 import { useTextTemplates } from "@/lib/businessModules/stiProtection/api/queries/textTemplates";
 import { EmployeePortalConfirmationDialog } from "@/lib/shared/components/confirmationDialog/EmployeePortalConfirmationDialog";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 import { TextTemplateEditSidebar } from "./TextTemplateEditSidebar";

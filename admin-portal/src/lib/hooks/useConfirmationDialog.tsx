@@ -59,7 +59,8 @@ function ConfirmationDialog({
 
 export function useConfirmationDialog(content: string) {
   const [open, setOpen] = useState(false);
-  const resolveRef = useRef<(value: boolean | PromiseLike<boolean>) => void>();
+  const resolveRef =
+    useRef<(value: boolean | PromiseLike<boolean>) => void>(null);
 
   const getConfirmation = useCallback(async (): Promise<boolean> => {
     setOpen(true);

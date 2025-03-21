@@ -4,6 +4,10 @@
  */
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
+import {
+  DefaultPersonFormValues,
+  PersonFormValues,
+} from "@eshg/lib-employee-portal";
 import { DefaultError, UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { ComponentType, ReactNode, useEffect, useState } from "react";
 import { isDefined } from "remeda";
@@ -11,12 +15,10 @@ import { isDefined } from "remeda";
 import { useSearchReferencePersonsQuery } from "@/lib/baseModule/api/queries/persons";
 import {
   DefaultPersonForm,
-  DefaultPersonFormValues,
   defaultPersonFormValues,
 } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
 import {
   PersonFormProps,
-  PersonFormValues,
   PersonSidebarForm,
 } from "@/lib/shared/components/personSidebar/form/PersonSidebarForm";
 import {

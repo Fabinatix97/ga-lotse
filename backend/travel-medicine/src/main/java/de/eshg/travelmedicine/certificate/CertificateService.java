@@ -7,7 +7,7 @@ package de.eshg.travelmedicine.certificate;
 
 import static de.eshg.travelmedicine.util.TravelMedicineProgressEntryType.CERTIFICATE_FOR_HEALTH_INSURANCE;
 
-import de.eshg.departmentinfo.DepartmentInfoService;
+import de.eshg.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
@@ -62,7 +62,7 @@ public class CertificateService {
   private final ProgressEntryRepository progressEntryRepository;
   private final Clock clock;
   private final ProcedureAccessor procedureAccessor;
-  private final DepartmentInfoService departmentInfoService;
+  private final DepartmentInfoConfigService departmentInfoService;
   private final DepartmentClient departmentClient;
 
   public CertificateService(
@@ -75,7 +75,7 @@ public class CertificateService {
       ProgressEntryRepository progressEntryRepository,
       Clock clock,
       ProcedureAccessor procedureAccessor,
-      DepartmentInfoService departmentInfoService,
+      DepartmentInfoConfigService departmentInfoService,
       DepartmentClient departmentClient) {
     Assert.isTrue(
         certificateTemplateResource.exists(), certificateTemplateResource + " does not exist");

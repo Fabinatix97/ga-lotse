@@ -7,7 +7,11 @@ package de.eshg.lib.servicedirectory.api;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Schema(name = "ActorRequest")
 public record ActorRequestDto(
-    String readableName, ActorTypeDto type, String hostName, @Valid CertificateDto certificate) {}
+    @NotBlank String readableName,
+    @NotNull ActorTypeDto type,
+    @NotNull @Valid CertificateDto certificate) {}

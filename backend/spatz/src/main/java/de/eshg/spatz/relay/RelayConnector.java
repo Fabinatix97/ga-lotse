@@ -5,6 +5,7 @@
 
 package de.eshg.spatz.relay;
 
+import static de.eshg.lib.relay.MessageHeader.writeHeader;
 import static de.eshg.servicedirectory.util.X509Utils.extractCommonName;
 import static java.nio.channels.SelectionKey.OP_READ;
 
@@ -282,13 +283,12 @@ public class RelayConnector extends WebSocketClient {
     if (socketMeta.getTargetSni() != null) {
       ByteBuffer writeBuffer = threadLocalBuffers.get();
       writeBuffer.clear();
-      UUIDParser.write(socketMeta.getConnectionId(), writeBuffer);
-      writeBuffer.put((byte) 0);
-      writeBuffer.put(ownSni.getBytes(StandardCharsets.UTF_8));
-      writeBuffer.put((byte) 0);
-      writeBuffer.put(socketMeta.getTargetSni().getBytes(StandardCharsets.UTF_8));
-      writeBuffer.put((byte) 0);
-      writeBuffer.put(MessageType.DATA.getByte());
+      writeHeader(
+          writeBuffer,
+          socketMeta.getConnectionId(),
+          ownSni,
+          socketMeta.getTargetSni(),
+          MessageType.DATA);
 
       socketMeta.getReadBuffer().flip();
       if (writeBuffer.remaining() < socketMeta.getReadBuffer().limit()) {
@@ -310,13 +310,7 @@ public class RelayConnector extends WebSocketClient {
       return;
     }
     ByteBuffer buffer = ByteBuffer.allocate(1024);
-    UUIDParser.write(connectionId, buffer);
-    buffer.put((byte) 0);
-    buffer.put(ownSni.getBytes(StandardCharsets.UTF_8));
-    buffer.put((byte) 0);
-    buffer.put(targetSni.getBytes(StandardCharsets.UTF_8));
-    buffer.put((byte) 0);
-    buffer.put(MessageType.CONNECTION_CLOSED.getByte());
+    writeHeader(buffer, connectionId, ownSni, targetSni, MessageType.CONNECTION_CLOSED);
 
     buffer.flip();
     send(buffer);

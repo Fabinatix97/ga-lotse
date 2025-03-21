@@ -5,6 +5,7 @@
 
 "use client";
 
+import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
 import { ApiProcedureStatus } from "@eshg/travel-medicine-api";
 import { AddOutlined, DocumentScannerOutlined } from "@mui/icons-material";
 import { Button, Stack, Typography } from "@mui/joy";
@@ -21,9 +22,6 @@ import {
 } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
 import { useInformationStatementSidebar } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/informationStatements/InformationStatementSidebar";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 import { informationStatementsColumns } from "./InformationStatementsColumns";

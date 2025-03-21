@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DetailsItem } from "@eshg/lib-employee-portal";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { formatCurrency } from "@eshg/lib-portal/formatters/numbers";
 import { FormikErrors, useFormikContext } from "formik";
@@ -13,7 +14,6 @@ import {
   ServicesRequest,
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/sidebarForms/AddServicePlanForm";
 import { createOtherServicesTemplateOptions } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/helpers";
-import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 
 interface OtherServicesFieldsProps {
   val: ServicesRequest;

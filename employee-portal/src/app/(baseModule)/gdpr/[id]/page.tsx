@@ -11,6 +11,7 @@ import {
   Toolbar,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { use } from "react";
 
 import { useGetGdprProcedureDetailsPageQuery } from "@/lib/baseModule/api/queries/gdpr";
 import { GDPRProcedureDetails } from "@/lib/baseModule/components/gdpr/procedure/GDPRProcedureDetails";
@@ -21,7 +22,7 @@ export default function GDPRProcedurePage(
     id: string;
   }>,
 ) {
-  const { id } = props.params;
+  const { id } = use(props.params);
   const { data } = useGetGdprProcedureDetailsPageQuery(id);
   return (
     <StickyToolbarLayout

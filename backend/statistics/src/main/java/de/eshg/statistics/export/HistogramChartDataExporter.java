@@ -18,8 +18,6 @@ import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
@@ -28,6 +26,7 @@ public class HistogramChartDataExporter {
 
   static void addData(
       Sheet sheet,
+      CellStyleHolder cellStyleHolder,
       AtomicInteger rowCounter,
       HistogramChartData histogramChartData,
       HistogramChartConfiguration histogramChartConfiguration) {
@@ -39,51 +38,52 @@ public class HistogramChartDataExporter {
     } else {
       keyToCountsSample = histogramChartData.getHistogramGroupDatas().getFirst().getKeyToCounts();
     }
-    addDataHeader(sheet, rowCounter.getAndIncrement(), keyToCountsSample);
+    addDataHeader(sheet, cellStyleHolder, rowCounter.getAndIncrement(), keyToCountsSample);
     for (HistogramGroupData histogramGroupData : histogramChartData.getHistogramGroupDatas()) {
       addDataRow(sheet, rowCounter.getAndIncrement(), histogramGroupData);
     }
   }
 
-  private static void addDataHeader(Sheet sheet, int rowNumber, List<KeyToCount> keyToCounts) {
+  private static void addDataHeader(
+      Sheet sheet, CellStyleHolder cellStyleHolder, int rowNumber, List<KeyToCount> keyToCounts) {
     Row row = sheet.createRow(rowNumber);
-    row.createCell(0, CellType.STRING).setCellValue("Bin Untergrenze");
-    row.createCell(1, CellType.STRING).setCellValue("Bin Obergrenze");
+    DataExportUtil.createStringCell(row, cellStyleHolder, 0, "Bin Untergrenze");
+    DataExportUtil.createStringCell(row, cellStyleHolder, 1, "Bin Obergrenze");
     int columnIndex = 2;
     for (KeyToCount keyToCount : keyToCounts) {
-      row.createCell(columnIndex++, CellType.STRING).setCellValue(keyToCount.getKey());
+      DataExportUtil.createStringCell(row, cellStyleHolder, columnIndex++, keyToCount.getKey());
     }
   }
 
   private static void addDataRow(
       Sheet sheet, int rowNumber, HistogramGroupData histogramGroupData) {
     Row row = sheet.createRow(rowNumber);
-    row.createCell(0, CellType.NUMERIC)
-        .setCellValue(histogramGroupData.getHistogramBin().getLowerBound().doubleValue());
-    row.createCell(1, CellType.NUMERIC)
-        .setCellValue(histogramGroupData.getHistogramBin().getUpperBound().doubleValue());
+    DataExportUtil.createNumericCell(
+        row, 0, histogramGroupData.getHistogramBin().getLowerBound().doubleValue());
+    DataExportUtil.createNumericCell(
+        row, 1, histogramGroupData.getHistogramBin().getUpperBound().doubleValue());
     int columnIndex = 2;
     if (histogramGroupData.getCount() == null) {
       for (KeyToCount keyToCount : histogramGroupData.getKeyToCounts()) {
-        row.createCell(columnIndex++, CellType.NUMERIC).setCellValue(keyToCount.getCount());
+        DataExportUtil.createNumericCell(row, columnIndex++, keyToCount.getCount());
       }
     } else {
-      row.createCell(2, CellType.NUMERIC).setCellValue(histogramGroupData.getCount());
+      DataExportUtil.createNumericCell(row, 2, histogramGroupData.getCount());
     }
   }
 
   static void addHistogramAttributesInformation(
       Sheet sheet,
-      CellStyle cellStyle,
+      CellStyleHolder cellStyleHolder,
       AtomicInteger rowCounter,
       HistogramChartConfiguration histogramChartConfiguration,
       AbstractAggregationResult aggregationResult) {
     List<HistogramBin> bins = histogramChartConfiguration.getBins();
     if (bins.isEmpty()) {
       DataExportUtil.addMetadataRow(
-          sheet, cellStyle, rowCounter.getAndIncrement(), "Anzahl der Bins", 0);
+          sheet, cellStyleHolder, rowCounter.getAndIncrement(), "Anzahl der Bins", 0);
       DataExportUtil.addMetadataRow(
-          sheet, cellStyle, rowCounter.getAndIncrement(), "Breite der Bins", "");
+          sheet, cellStyleHolder, rowCounter.getAndIncrement(), "Breite der Bins", "");
     } else {
       BigDecimal averageBinWidth =
           bins.stream()
@@ -92,16 +92,16 @@ public class HistogramChartDataExporter {
               .divide(BigDecimal.valueOf(bins.size()), 4, RoundingMode.HALF_UP);
 
       DataExportUtil.addMetadataRow(
-          sheet, cellStyle, rowCounter.getAndIncrement(), "Anzahl der Bins", bins.size());
+          sheet, cellStyleHolder, rowCounter.getAndIncrement(), "Anzahl der Bins", bins.size());
       DataExportUtil.addMetadataRow(
           sheet,
-          cellStyle,
+          cellStyleHolder,
           rowCounter.getAndIncrement(),
           "Breite der Bins",
           averageBinWidth.doubleValue());
     }
 
     TwoAttributesChartDataExporter.addAttributesInformation(
-        sheet, cellStyle, rowCounter, histogramChartConfiguration, aggregationResult);
+        sheet, cellStyleHolder, rowCounter, histogramChartConfiguration, aggregationResult);
   }
 }

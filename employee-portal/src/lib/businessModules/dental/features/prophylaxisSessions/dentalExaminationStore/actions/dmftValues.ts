@@ -14,6 +14,7 @@ import {
   AddableTooth,
   Dentition,
   DmftValues,
+  Tooth,
   ToothType,
   ToothWithDiagnosis,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
@@ -37,9 +38,14 @@ export function calculateDmftValues(
   dentition: Dentition,
   type: ToothType,
 ): DmftValues {
-  return QUADRANT_NUMBERS.flatMap(
+  const teeth = QUADRANT_NUMBERS.flatMap(
     (quadrant) => dentition[quadrant].teeth,
-  ).reduce(
+  );
+  return calculateDmftValuesForTeeth(teeth, type);
+}
+
+export function calculateDmftValuesForTeeth(teeth: Tooth[], type: ToothType) {
+  return teeth.reduce(
     (acc: DmftValues, curr) => ({
       decayed: incrementIf(
         acc.decayed,

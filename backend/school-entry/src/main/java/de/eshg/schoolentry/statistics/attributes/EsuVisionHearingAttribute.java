@@ -13,124 +13,124 @@ import de.eshg.schoolentry.statistics.options.*;
 
 public enum EsuVisionHearingAttribute implements EsuAttributes {
   VISCH(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Ergebnis Sehscreening",
           "VISCH",
-          convertToValueOptions(ExaminationResultFourOptions.values()),
           EsuVisionHearingAttribute.CATEGORY_VISION_HEARING,
-          true)),
+          true,
+          convertToValueOptions(ExaminationResultFourOptions.values()))),
 
   KW_RM_VISUS(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Rückmeldung Arztbrief Sehscreening",
           "KW_RM_VISUS",
-          convertToValueOptions(DoctorLetterValue.values()),
           EsuVisionHearingAttribute.CATEGORY_VISION_HEARING,
-          false)),
+          false,
+          convertToValueOptions(DoctorLetterValue.values()))),
 
   KW_AMBLYOPIE(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Diagnose Rückmeldung Amblyopie",
           "KW_AMBLYOPIE",
-          convertToValueOptions(Diagnosis.values()),
           EsuVisionHearingAttribute.CATEGORY_VISION_HEARING,
-          true)),
+          true,
+          convertToValueOptions(Diagnosis.values()))),
 
   KW_ASTIGMATISMUS(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Diagnose Rückmeldung Astigmatismus",
           "KW_ASTIGMATISMUS",
-          convertToValueOptions(Diagnosis.values()),
           EsuVisionHearingAttribute.CATEGORY_VISION_HEARING,
-          false)),
+          false,
+          convertToValueOptions(Diagnosis.values()))),
 
   KW_STOER_FARBS(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Diagnose Rückmeldung Farbsinnstörung",
           "KW_STOER_FARBS",
-          convertToValueOptions(Diagnosis.values()),
           EsuVisionHearingAttribute.CATEGORY_VISION_HEARING,
-          false)),
+          false,
+          convertToValueOptions(Diagnosis.values()))),
 
   KW_HYPEROPIE(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Diagnose Rückmeldung Hyperopie",
           "KW_HYPEROPIE",
-          convertToValueOptions(Diagnosis.values()),
           EsuVisionHearingAttribute.CATEGORY_VISION_HEARING,
-          false)),
+          false,
+          convertToValueOptions(Diagnosis.values()))),
 
   KW_MYOPIE(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Diagnose Rückmeldung Myopie",
           "KW_MYOPIE",
-          convertToValueOptions(Diagnosis.values()),
           EsuVisionHearingAttribute.CATEGORY_VISION_HEARING,
-          false)),
+          false,
+          convertToValueOptions(Diagnosis.values()))),
 
   KW_STRABISM(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Diagnose Rückmeldung Strabismus",
           "KW_STRABISM",
-          convertToValueOptions(Diagnosis.values()),
           EsuVisionHearingAttribute.CATEGORY_VISION_HEARING,
-          false)),
+          false,
+          convertToValueOptions(Diagnosis.values()))),
 
   KW_AND_DIAGN(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Diagnose Rückmeldung andere Diagnose",
           "KW_AND_DIAGN",
-          convertToValueOptions(Diagnosis.values()),
           EsuVisionHearingAttribute.CATEGORY_VISION_HEARING,
-          false)),
+          false,
+          convertToValueOptions(Diagnosis.values()))),
 
   VISTR(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Ergebnis Stereosehen, Langtest",
           "VISTR",
-          convertToValueOptions(ExaminationResultFourOptions.values()),
           EsuVisionHearingAttribute.CATEGORY_VISION_HEARING,
-          true)),
+          true,
+          convertToValueOptions(ExaminationResultFourOptions.values()))),
 
   KW_RM_VISTR(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Rückmeldung Arztbrief Stereosehen",
           "KW_RM_VISTR",
-          convertToValueOptions(DoctorLetterValue.values()),
           EsuVisionHearingAttribute.CATEGORY_VISION_HEARING,
-          false)),
+          false,
+          convertToValueOptions(DoctorLetterValue.values()))),
 
   FARB(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Ergebnis Ishiharatest Farbsinn",
           "FARB",
-          convertToValueOptions(ExaminationResultFourOptions.values()),
           EsuVisionHearingAttribute.CATEGORY_VISION_HEARING,
-          true)),
+          true,
+          convertToValueOptions(ExaminationResultFourOptions.values()))),
 
   KW_RM_FARB(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Rückmeldung Arztbrief Farbsinn",
           "KW_RM_FARB",
-          convertToValueOptions(DoctorLetterValue.values()),
           EsuVisionHearingAttribute.CATEGORY_VISION_HEARING,
-          false)),
+          false,
+          convertToValueOptions(DoctorLetterValue.values()))),
 
   AUDIO(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Ergebnis Hörscreening",
           "AUDIO",
-          convertToValueOptions(ExaminationResultFourOptions.values()),
           EsuVisionHearingAttribute.CATEGORY_VISION_HEARING,
-          true)),
+          true,
+          convertToValueOptions(ExaminationResultFourOptions.values()))),
 
   KW_RM_AUDIO(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Rückmeldung Arztbrief Hörscreening",
           "KW_RM_AUDIO",
-          convertToValueOptions(DoctorLetterValue.values()),
           EsuVisionHearingAttribute.CATEGORY_VISION_HEARING,
-          false)),
+          false,
+          convertToValueOptions(DoctorLetterValue.values()))),
   ;
 
   private static final String CATEGORY_VISION_HEARING = "Seh- und Hörscreening";

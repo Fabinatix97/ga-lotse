@@ -41,7 +41,7 @@ interface FacilityFormProps {
   onCancel: () => void;
   extraFieldsTop?: ReactNode;
   extraFieldsBottom?: ReactNode;
-  sidebarFormRef?: RefObject<SidebarFormHandle>;
+  sidebarFormRef?: RefObject<SidebarFormHandle | null>;
   title: string;
   contactPersonRequired?: boolean;
   allowMainContactPerson?: boolean;

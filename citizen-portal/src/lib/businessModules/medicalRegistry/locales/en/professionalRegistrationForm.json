@@ -200,5 +200,10 @@
   "validations": {
     "requiredField": "Mandatory!",
     "confirmation": "Please accept terms to continue."
+  },
+  "leave_form": {
+    "message": "If you leave the form, your unsaved changes will not be saved. Would you still like to discard them?",
+    "cancel": "Back to the form",
+    "confirm": "Yes, discard"
   }
 }

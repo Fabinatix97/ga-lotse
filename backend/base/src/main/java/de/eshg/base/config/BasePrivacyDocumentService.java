@@ -8,15 +8,14 @@ package de.eshg.base.config;
 import static de.eshg.util.ResourceUtils.assertIsReadable;
 
 import de.eshg.base.config.BasePrivacyDocumentService.MandatoryInitialPrivacyDocuments;
+import de.eshg.base.config.persistence.entity.BasePrivacyDocumentsConfig;
 import de.eshg.departmentinfo.AbstractPrivacyDocumentService;
-import de.eshg.departmentinfo.domain.Document;
-import de.eshg.departmentinfo.domain.PrivacyDocuments;
+import de.eshg.departmentinfo.domain.PrivacyDocument;
 import de.eshg.departmentinfo.initialization.InitialPrivacyDocuments;
 import de.eshg.departmentinfo.spring.DepartmentInfoPropertyBinding;
 import de.eshg.persistence.TransactionHelper;
 import jakarta.persistence.EntityManager;
 import jakarta.validation.constraints.NotNull;
-import java.io.IOException;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.io.Resource;
@@ -24,30 +23,37 @@ import org.springframework.stereotype.Component;
 
 @Component
 @EnableConfigurationProperties(MandatoryInitialPrivacyDocuments.class)
-public class BasePrivacyDocumentService extends AbstractPrivacyDocumentService {
+public class BasePrivacyDocumentService
+    extends AbstractPrivacyDocumentService<BasePrivacyDocumentsConfig> {
 
   private final MandatoryInitialPrivacyDocuments initialPrivacyDocuments;
 
-  public BasePrivacyDocumentService(
+  BasePrivacyDocumentService(
       EntityManager entityManager,
       TransactionHelper transactionHelper,
       MandatoryInitialPrivacyDocuments initialPrivacyDocuments) {
-    super(entityManager, transactionHelper);
+    super(entityManager, transactionHelper, BasePrivacyDocumentsConfig.class);
     this.initialPrivacyDocuments = initialPrivacyDocuments;
   }
 
   @Override
-  protected PrivacyDocuments getInitialConfiguration() throws Exception {
-    PrivacyDocuments privacyDocuments = new PrivacyDocuments();
-    privacyDocuments.setPrivacyNotice(createDocument(initialPrivacyDocuments.privacyNotice()));
-    privacyDocuments.setPrivacyPolicy(createDocument(initialPrivacyDocuments.privacyPolicy()));
-    return privacyDocuments;
+  protected BasePrivacyDocumentsConfig getConfig() {
+    return super.getConfig();
   }
 
-  private Document createDocument(Resource resource) throws IOException {
-    Document document = new Document();
-    document.setContent(resource.getContentAsByteArray());
-    return document;
+  @Override
+  protected BasePrivacyDocumentsConfig getInitialConfiguration() throws Exception {
+    BasePrivacyDocumentsConfig basePrivacyDocumentsConfig = new BasePrivacyDocumentsConfig();
+
+    PrivacyDocument privacyNotice = new PrivacyDocument();
+    privacyNotice.updateDe(initialPrivacyDocuments.privacyNotice().getContentAsByteArray());
+    basePrivacyDocumentsConfig.setPrivacyNotice(privacyNotice);
+
+    PrivacyDocument privacyPolicy = new PrivacyDocument();
+    privacyPolicy.updateDe(initialPrivacyDocuments.privacyPolicy().getContentAsByteArray());
+    basePrivacyDocumentsConfig.setPrivacyPolicy(privacyPolicy);
+
+    return basePrivacyDocumentsConfig;
   }
 
   @ConfigurationProperties(DepartmentInfoPropertyBinding.DEFAULT_PROPERTY_PREFIX)

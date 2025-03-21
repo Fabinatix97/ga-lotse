@@ -5,12 +5,12 @@
 
 "use client";
 
+import { NoEntriesMessage } from "@eshg/lib-employee-portal";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { Sheet, Stack, Typography } from "@mui/joy";
 
 import { useFetchTasksForDashboardQuery } from "@/lib/baseModule/api/queries/tasks";
-import { NoEntries } from "@/lib/baseModule/components/NoEntries";
 import { TaskBox } from "@/lib/baseModule/components/task/TaskBox";
 import { routes } from "@/lib/baseModule/shared/routes";
 
@@ -49,7 +49,7 @@ export function DashboardTaskList() {
           {tasks.map((task) => (
             <TaskBox key={task.taskId} task={task} />
           ))}
-          {tasks.length === 0 && <NoEntries />}
+          {tasks.length === 0 && <NoEntriesMessage />}
         </Stack>
       </Stack>
     </Sheet>

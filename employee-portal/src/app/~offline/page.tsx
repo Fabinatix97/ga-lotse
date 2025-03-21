@@ -4,6 +4,7 @@
  */
 
 import {
+  ContentPanel,
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
@@ -11,7 +12,6 @@ import {
 import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 
 import { routes as inspectionRoutes } from "@/lib/businessModules/inspection/shared/routes";
-import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
 
 export default function Offline() {
   return (

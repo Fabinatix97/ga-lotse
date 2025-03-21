@@ -6,6 +6,7 @@
 "use client";
 
 import {
+  DefaultPersonFormValues,
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
@@ -21,7 +22,6 @@ import {
   PersonSidebar,
   PersonSidebarProps,
 } from "@/lib/shared/components/personSidebar/PersonSidebar";
-import { DefaultPersonFormValues } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
 import {
   DefaultSearchPersonForm,
   defaultSearchPersonValues,

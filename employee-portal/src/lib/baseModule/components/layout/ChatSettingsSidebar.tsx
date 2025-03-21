@@ -11,11 +11,12 @@ import { OpenInNew } from "@mui/icons-material";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import { Box, Button, Divider, Stack, Switch, Typography } from "@mui/joy";
 import { AuthDict, IAuthData, UIAResponse } from "matrix-js-sdk";
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useMemo, useState } from "react";
 import { isObjectType } from "remeda";
 
 import { useUpdateSelfUserChatUsername } from "@/lib/baseModule/api/mutations/users";
 import { useGetUserProfile } from "@/lib/baseModule/api/queries/users";
+import { ChatDeviceId } from "@/lib/baseModule/components/layout/sideNavigation/ChatDeviceId";
 import { routes } from "@/lib/baseModule/shared/routes";
 import { ChatUserId } from "@/lib/businessModules/chat/components/ChatUserId";
 import {
@@ -29,6 +30,7 @@ import {
 import { ChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
+import { useBackupInfo } from "@/lib/businessModules/chat/shared/hooks/useBackupInfo";
 import { useUserSettings } from "@/lib/businessModules/chat/shared/hooks/useUserSettings";
 import { termsOfUseText } from "@/lib/businessModules/chat/shared/termsOfUseText";
 import {
@@ -76,6 +78,16 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
   const { data: selfUser } = useGetSelfUser();
   const { data: userData } = useGetUserProfile(selfUser.userId);
   const { deactivateAccount } = useUserSettings();
+  const { backupStatus } = useBackupInfo();
+
+  const isEncryptionReady = useMemo(() => {
+    return (
+      backupStatus?.backupInfo &&
+      backupStatus.backupKeyStored &&
+      backupStatus.backupKeyCached &&
+      backupStatus.secretStorageReady
+    );
+  }, [backupStatus]);
 
   const handlePresenceStatusChange = useCallback(async () => {
     togglePresenceStatus(sharePresence);
@@ -158,6 +170,8 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
     }
   }, [deactivateAccount, matrixClient, showSSOModal, snackbar]);
 
+  const deviceId = useMemo(() => matrixClient?.getDeviceId(), [matrixClient]);
+
   return (
     <>
       <SidebarContent
@@ -165,6 +179,12 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
         header={
           <Stack spacing={2} sx={{ paddingRight: sidebarPadding }}>
             <ChatUserId userId={chatUserId} />
+            {deviceId && typeof deviceId === "string" && (
+              <ChatDeviceId
+                device={deviceId}
+                isEncryptionReady={!!isEncryptionReady}
+              />
+            )}
             <Divider orientation="horizontal" sx={{ mt: 2 }} />
           </Stack>
         }

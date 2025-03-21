@@ -4,6 +4,7 @@
  */
 
 import { ApiFluoridationConsent } from "@eshg/dental-api";
+import { DetailsItem } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import {
@@ -16,7 +17,6 @@ import {
 import { differenceInYears } from "date-fns";
 
 import { FluoridationConsentInformationSection } from "@/lib/businessModules/dental/shared/FluoridationConsentInformationSection";
-import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 
 interface ChildDetailsSectionProps {

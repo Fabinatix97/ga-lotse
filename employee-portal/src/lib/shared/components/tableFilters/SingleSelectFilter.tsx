@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { UseTableControlResult } from "@eshg/lib-employee-portal";
 import {
   SelectOption,
   SelectOptions,
@@ -11,13 +12,12 @@ import { SxProps } from "@mui/joy/styles/types";
 import { isNonNullish } from "remeda";
 
 import { ResettableSingleSelect } from "@/lib/shared/components/ResettableSingleSelect";
-import { UseTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
 export function SingleSelectFilter(props: {
   searchParamName: string;
   placeholder: string;
   options: readonly SelectOption[];
-  tableControl: UseTableControl;
+  tableControl: UseTableControlResult;
   sx?: SxProps;
 }) {
   const selectProps = props.tableControl.getSingleSelectProps(

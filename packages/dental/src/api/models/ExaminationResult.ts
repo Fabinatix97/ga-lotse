@@ -25,6 +25,11 @@ export type ExaminationResult =
   | ScreeningExaminationResult
   | AbsenceExaminationResult;
 
+export interface ExaminationResultWithDate {
+  result: ExaminationResult | undefined;
+  dateAndTime: Date;
+}
+
 export interface FluoridationExaminationResult {
   readonly type: "fluoridation";
   readonly fluorideVarnishApplied?: boolean;

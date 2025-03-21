@@ -4,6 +4,10 @@
  */
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
+import {
+  DefaultPersonFormValues,
+  mapApiAddressToForm,
+} from "@eshg/lib-employee-portal";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import {
@@ -19,8 +23,6 @@ import {
 import { useAcceptDraftProcedure } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
 import { StartProcedureForm } from "@/lib/businessModules/officialMedicalService/components/procedures/details/StartProcedureForm";
 import { mapPerson } from "@/lib/businessModules/officialMedicalService/shared/helpers";
-import { mapApiAddressToForm } from "@/lib/shared/components/form/address/helpers";
-import { DefaultPersonFormValues } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
 import { SearchPersonFormValues } from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 import {

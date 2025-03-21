@@ -6,6 +6,7 @@
 package de.eshg.lsd.spring.config;
 
 import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -48,6 +49,9 @@ public class LsdSecurityConfig {
             auth -> {
               authorizationCustomizer.forEach(c -> c.customize(auth));
               auth.requestMatchers(PUT, LsdActorApi.BASE_URL + "/**")
+                  .hasRole(PermissionRole.LSD_WRITE_TECH_USER.getKeycloakName());
+
+              auth.requestMatchers(POST, LsdActorApi.BASE_URL + "/**")
                   .hasRole(PermissionRole.LSD_WRITE_TECH_USER.getKeycloakName());
 
               auth.requestMatchers(GET, LsdOrgUnitApi.BASE_URL + "/**")

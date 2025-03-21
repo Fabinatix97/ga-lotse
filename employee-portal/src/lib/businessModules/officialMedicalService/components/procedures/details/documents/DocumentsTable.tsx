@@ -5,6 +5,7 @@
 
 "use client";
 
+import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
 import { ApiDocument } from "@eshg/official-medical-service-api";
 import { AddOutlined, DescriptionOutlined } from "@mui/icons-material";
 import { Button, Stack, Typography } from "@mui/joy";
@@ -21,9 +22,6 @@ import { useDocumentSidebar } from "@/lib/businessModules/officialMedicalService
 import { isProcedureFinalized } from "@/lib/businessModules/officialMedicalService/shared/helpers";
 import { TableTitle } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/TableTitle";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 
 interface DocumentsTableProps {
   procedureId: string;
@@ -95,6 +93,7 @@ export function DocumentsTable({ procedureId }: Readonly<DocumentsTableProps>) {
               isProcedureFinalized={isProcedureFinalized(procedureDetails)}
             />
           )}
+          minWidth={1200}
         />
       </TableSheet>
     </TablePage>

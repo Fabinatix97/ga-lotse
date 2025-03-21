@@ -7,6 +7,7 @@
 
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { useSuspenseQueries } from "@tanstack/react-query";
+import { use } from "react";
 
 import { useGetVaccinationConsultationDetailsQuery } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
 import { VaccinationConsultationDetails } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/VaccinationConsultationDetails";
@@ -14,7 +15,7 @@ import { VaccinationConsultationDetails } from "@/lib/businessModules/travelMedi
 export default function VaccinationConsultationDetailsPage(
   props: DynamicPageProps<{ id: string }>,
 ) {
-  const { id } = props.params;
+  const { id } = use(props.params);
   const [{ data: detailsResponse }] = useSuspenseQueries({
     queries: [useGetVaccinationConsultationDetailsQuery(id)],
   });

@@ -31,8 +31,7 @@ export function SidebarContent<TData extends UniqueEntity & EditableEntity>({
                 "networkId",
                 "metadata",
                 "manualCertificate",
-                "currentCertificate",
-                "previousCertificate",
+                "certificate",
                 "_matchingClientRules",
                 "_matchingServerRules",
               ]}

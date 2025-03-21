@@ -4,6 +4,7 @@
  */
 
 import { ApiLabel, ApiResourceType } from "@eshg/base-api";
+import { UseTableControlResult } from "@eshg/lib-employee-portal";
 import { Stack } from "@mui/joy";
 import { useState } from "react";
 import { isDefined } from "remeda";
@@ -16,12 +17,11 @@ import { FilterButtonProps } from "@/lib/shared/components/buttons/FilterButton"
 import { ActiveFilter } from "@/lib/shared/components/filterSettings/ActiveFilter";
 import { FilterSettingsContentProps } from "@/lib/shared/components/filterSettings/FilterSettingsContent";
 import { SingleSelectFilter } from "@/lib/shared/components/tableFilters/SingleSelectFilter";
-import { UseTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
 interface ResourcesFilterSettingsProps {
   typeFilter: ApiResourceType | undefined;
   labelFilter: string | undefined;
-  tableControl: UseTableControl;
+  tableControl: UseTableControlResult;
   labels: ApiLabel[];
 }
 

@@ -13,10 +13,12 @@ import de.eshg.officialmedicalservice.appointment.api.BookingInfoDto;
 import de.eshg.officialmedicalservice.appointment.api.PostOmsAppointmentRequest;
 import de.eshg.officialmedicalservice.appointment.persistence.entity.OmsAppointment;
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocument;
+import de.eshg.officialmedicalservice.notification.NotificationService.NotificationSummary;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.MedicalOpinionResult;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.MedicalOpinionStatus;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
 import java.time.Clock;
+import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
@@ -124,6 +126,25 @@ public class ProgressEntryService {
     procedure.addProgressEntry(progressEntry);
   }
 
+  public void createProgressEntryForRebookedAppointmentByCitizen(
+      OmsProcedure procedure, Instant oldAppointmentStart, Instant newAppointmentStart) {
+    String note =
+        "Der Termin vom "
+            + dateFormatter.format(oldAppointmentStart.atZone(clock.getZone()))
+            + " um "
+            + timeFormatter.format(oldAppointmentStart.atZone(clock.getZone()))
+            + " Uhr wurde auf den "
+            + dateFormatter.format(newAppointmentStart.atZone(clock.getZone()))
+            + " um "
+            + timeFormatter.format(newAppointmentStart.atZone(clock.getZone()))
+            + " Uhr durch Bürger:In umgebucht.";
+    SystemProgressEntry progressEntry =
+        SystemProgressEntryFactory.createSystemProgressEntry(
+            OmsProgressEntryType.APPOINTMENT_REBOOKED.name(), note, TriggerType.CITIZEN);
+    progressEntry.setProcedureId(procedure.getId());
+    procedure.addProgressEntry(progressEntry);
+  }
+
   public void createProgressEntryForBookingAppointment(
       OmsProcedure procedure, BookingInfoDto bookingInfo) {
     String note =
@@ -139,6 +160,21 @@ public class ProgressEntryService {
     procedure.addProgressEntry(progressEntry);
   }
 
+  public void createProgressEntryForBookingAppointmentByCitizen(
+      OmsProcedure procedure, Instant appointmentStart, TriggerType triggerType) {
+    String note =
+        "Ein Termin wurde für den "
+            + dateFormatter.format(appointmentStart.atZone(clock.getZone()))
+            + " um "
+            + timeFormatter.format(appointmentStart.atZone(clock.getZone()))
+            + " Uhr durch Bürger:In gebucht.";
+    SystemProgressEntry progressEntry =
+        SystemProgressEntryFactory.createSystemProgressEntry(
+            OmsProgressEntryType.APPOINTMENT_BOOKED.name(), note, triggerType);
+    progressEntry.setProcedureId(procedure.getId());
+    procedure.addProgressEntry(progressEntry);
+  }
+
   public void createProgressEntryForCancelingAppointment(
       OmsProcedure procedure, OmsAppointment appointment) {
     String note =
@@ -150,6 +186,21 @@ public class ProgressEntryService {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             OmsProgressEntryType.APPOINTMENT_CANCELED.name(), note, TriggerType.EMPLOYEE);
+    progressEntry.setProcedureId(procedure.getId());
+    procedure.addProgressEntry(progressEntry);
+  }
+
+  public void createProgressEntryForCancelingAppointmentByCitizen(
+      OmsProcedure procedure, Instant appointmentStart) {
+    String note =
+        "Der Termin vom "
+            + dateFormatter.format(appointmentStart.atZone(clock.getZone()))
+            + " um "
+            + timeFormatter.format(appointmentStart.atZone(clock.getZone()))
+            + " Uhr wurde durch Bürger:In abgesagt.";
+    SystemProgressEntry progressEntry =
+        SystemProgressEntryFactory.createSystemProgressEntry(
+            OmsProgressEntryType.APPOINTMENT_CANCELED.name(), note, TriggerType.CITIZEN);
     progressEntry.setProcedureId(procedure.getId());
     procedure.addProgressEntry(progressEntry);
   }
@@ -329,6 +380,21 @@ public class ProgressEntryService {
             OmsProgressEntryType.CONCERN_CHANGED.name(),
             changeDescription,
             TriggerType.SYSTEM_AUTOMATIC);
+    progressEntry.setProcedureId(procedure.getId());
+    procedure.addProgressEntry(progressEntry);
+  }
+
+  public void createProgressEntryForMailNotification(
+      OmsProcedure procedure, NotificationSummary notificationSummary) {
+    String note =
+        "Die E-Mail-Benachrichtigungen wurden "
+            + (procedure.isSendEmailNotifications() ? "aktiviert." : "deaktiviert.");
+    if (notificationSummary != null) {
+      note += " " + notificationSummary;
+    }
+    SystemProgressEntry progressEntry =
+        SystemProgressEntryFactory.createSystemProgressEntry(
+            OmsProgressEntryType.E_MAIL_NOTIFICATION.name(), note, TriggerType.EMPLOYEE);
     progressEntry.setProcedureId(procedure.getId());
     procedure.addProgressEntry(progressEntry);
   }

@@ -15,6 +15,7 @@ import { ApiTypeOfChange } from "@eshg/medical-registry-api";
 import { Typography } from "@mui/joy";
 import { FormikProps, useFormikContext } from "formik";
 
+import { ConfirmLeaveDirtyFormEffect } from "@/lib/baseModule/components/ConfirmLeaveDirtyFormEffect";
 import { theme } from "@/lib/baseModule/theme/theme";
 import { ProfessionalRegistrationSidePanel } from "@/lib/businessModules/medicalRegistry/pages/professionalRegistrationForm/ProfessionalRegistrationSidePanel";
 import { ProfessionalRegistrationFormStepFour } from "@/lib/businessModules/medicalRegistry/pages/professionalRegistrationForm/steps/ProfessionalRegistrationFormStepFour";
@@ -47,6 +48,11 @@ export function ProfessionalRegistrationStepper(
     >
       {({ Outlet, currentStep, totalSteps }) => (
         <>
+          <ConfirmLeaveDirtyFormEffect
+            description={t("leave_form.message")}
+            cancelLabel={t("leave_form.cancel")}
+            confirmLabel={t("leave_form.confirm")}
+          />
           <PageTitle
             toolbar={
               <StepIndicator

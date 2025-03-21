@@ -3,6 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import {
+  DataTable,
+  Pagination,
+  TablePage,
+  TableSheet,
+  getSortDirection,
+  getSortKey,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import { formatFileSize } from "@eshg/lib-portal/helpers/file";
 import {
@@ -23,15 +32,6 @@ import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
-import { Pagination } from "@/lib/shared/components/pagination/Pagination";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import {
-  getSortDirection,
-  getSortKey,
-} from "@/lib/shared/components/table/sorting";
-import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export type ArchiveAdminTableProps = Omit<ArchiveAdminViewProps, "title">;

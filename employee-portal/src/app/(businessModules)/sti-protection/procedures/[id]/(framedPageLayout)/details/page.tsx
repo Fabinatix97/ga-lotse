@@ -6,6 +6,7 @@
 "use client";
 
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { use } from "react";
 
 import { StiProtectionProcedureRouteParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(framedPageLayout)/layout";
 import { useStiProcedureQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
@@ -14,7 +15,7 @@ import { ProcedureDetails } from "@/lib/businessModules/stiProtection/features/p
 export default function StiProtectionProcedureDetailsPage(
   props: DynamicPageProps<StiProtectionProcedureRouteParams>,
 ) {
-  const { id: procedureId } = props.params;
+  const { id: procedureId } = use(props.params);
   const procedure = useStiProcedureQuery(procedureId).data;
 
   return <ProcedureDetails procedure={procedure} />;

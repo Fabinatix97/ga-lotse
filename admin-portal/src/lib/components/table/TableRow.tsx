@@ -98,6 +98,6 @@ export function TableRow<TData>({
 }
 
 function CellContainer({ children }: Readonly<PropsWithChildren>) {
-  const ref = useRef<HTMLSpanElement>();
+  const ref = useRef<HTMLSpanElement>(null);
   return <SBox ref={ref}>{children}</SBox>;
 }

@@ -7,13 +7,15 @@ import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/Inter
 import { DateRangeOutlined } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
 
-import { useCitizenRoutes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 
-export function NoAppointmentCard() {
+interface NoAppointmentCardProps {
+  href: string;
+}
+
+export function NoAppointmentCard({ href }: NoAppointmentCardProps) {
   const { t } = useTranslation(["officialMedicalService/appointment"]);
-  const citizenRoutes = useCitizenRoutes();
 
   return (
     <ContentSheet data-testid={"no-appointment-form"}>
@@ -30,7 +32,7 @@ export function NoAppointmentCard() {
           {t("appointment.appointmentPicker.noAppointmentsAvailable")}
         </Typography>
         <Typography>{t("appointment.appointmentPicker.tryLater")}</Typography>
-        <InternalLinkButton variant="solid" href={citizenRoutes.overview}>
+        <InternalLinkButton variant="solid" href={href}>
           {t("appointment.backToOverview")}
         </InternalLinkButton>
       </Stack>

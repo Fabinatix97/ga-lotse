@@ -141,12 +141,9 @@ class RevisionAccumulator {
               ACTIVE,
               "manual_certificate",
               "common_name",
-              "current_certificate_value",
-              "current_certificate_signature",
-              "current_certificate_signatory",
-              "previous_certificate_value",
-              "previous_certificate_signature",
-              "previous_certificate_signatory",
+              "certificate_value",
+              "certificate_signature",
+              "certificate_signatory",
               "network_id",
               "org_unit_id"),
           (table, revision, revisionRecord) ->
@@ -162,9 +159,8 @@ class RevisionAccumulator {
         Boolean.TRUE.equals(revisionRecord[offset + 4]),
         (String) revisionRecord[offset + 5],
         mapCertificate(revisionRecord, offset + 6),
-        mapCertificate(revisionRecord, offset + 9),
-        (String) revisionRecord[offset + 12],
-        (UUID) revisionRecord[offset + 13],
+        (String) revisionRecord[offset + 9],
+        (UUID) revisionRecord[offset + 10],
         null);
   }
 

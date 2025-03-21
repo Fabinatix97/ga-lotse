@@ -6,7 +6,7 @@
 import {
   TaggedDomesticAddress,
   TaggedPostboxAddress,
-} from "@/lib/shared/helpers/address";
+} from "@eshg/lib-employee-portal";
 
 export const BASE_ADDRESS_FIELD_NAME = {
   type: "Art",

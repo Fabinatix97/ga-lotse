@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  RowSelectionTableToolbar,
+  RowSelectionTableToolbarButton,
+  mapRowSelectionToRowIds,
+} from "@eshg/lib-employee-portal";
 import MergeIcon from "@mui/icons-material/SchemaOutlined";
 import { RowSelectionState } from "@tanstack/react-table";
-
-import { RowSelectionTableToolbar } from "@/lib/shared/components/table/RowSelectionTableToolbar";
-import { RowSelectionTableToolbarButton } from "@/lib/shared/components/table/RowSelectionTableToolbarButton";
-import { mapToRowIds } from "@/lib/shared/hooks/table/useRowSelection";
 
 interface ContactsTableTitleProps {
   rowSelection: RowSelectionState;
@@ -16,7 +17,7 @@ interface ContactsTableTitleProps {
 }
 
 export function ContactsTableTitle(props: ContactsTableTitleProps) {
-  const rowIds = mapToRowIds(props.rowSelection);
+  const rowIds = mapRowSelectionToRowIds(props.rowSelection);
   return (
     <RowSelectionTableToolbar
       rowSelection={props.rowSelection}

@@ -57,7 +57,7 @@ public class UdpServer {
     this.eventLoop.shutdownGracefully(0, 5, TimeUnit.SECONDS).sync();
   }
 
-  @Component
+  @Component("dnsHealthIndicator")
   public static class DnsHealthIndicator extends AbstractHealthIndicator {
 
     private final UdpServer dnsServer;

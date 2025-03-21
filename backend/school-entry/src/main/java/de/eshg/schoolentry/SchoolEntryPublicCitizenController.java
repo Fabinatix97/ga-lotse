@@ -6,7 +6,7 @@
 package de.eshg.schoolentry;
 
 import de.eshg.base.department.GetDepartmentInfoResponse;
-import de.eshg.departmentinfo.DepartmentInfoService;
+import de.eshg.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.departmentinfo.OpeningHoursService;
 import de.eshg.departmentinfo.PrivacyDocumentService;
 import de.eshg.departmentinfo.domain.OpeningHours;
@@ -29,12 +29,12 @@ public class SchoolEntryPublicCitizenController {
 
   private final OpeningHoursService openingHoursService;
   private final PrivacyDocumentService privacyDocumentService;
-  private final DepartmentInfoService departmentInfoService;
+  private final DepartmentInfoConfigService departmentInfoService;
 
   public SchoolEntryPublicCitizenController(
       OpeningHoursService openingHoursService,
       PrivacyDocumentService privacyDocumentService,
-      DepartmentInfoService departmentInfoService) {
+      DepartmentInfoConfigService departmentInfoService) {
     this.openingHoursService = openingHoursService;
     this.privacyDocumentService = privacyDocumentService;
     this.departmentInfoService = departmentInfoService;
@@ -60,13 +60,13 @@ public class SchoolEntryPublicCitizenController {
   @Operation(summary = "Get the privacy-notice document.")
   @Transactional(readOnly = true)
   public ResponseEntity<Resource> getPrivacyNotice() {
-    return privacyDocumentService.getPrivacyNotice();
+    return privacyDocumentService.getPrivacyNoticeDe();
   }
 
   @GetMapping(path = "/documents/privacy-policy")
   @Operation(summary = "Get the privacy-policy document.")
   @Transactional(readOnly = true)
   public ResponseEntity<Resource> getPrivacyPolicy() {
-    return privacyDocumentService.getPrivacyPolicy();
+    return privacyDocumentService.getPrivacyPolicyDe();
   }
 }

@@ -180,6 +180,10 @@ public enum EmployeePermissionRole implements PermissionRole {
       "Niederschwellige Zugriffe verifizieren",
       "Kann Geheminisse zu Zugängen mit niederschwelligem Zugriff (Zugangscode für z.B. Terminverschiebung in einem einzelnen Vorgang) mit Keycloak verifizieren",
       Module.BASE),
+  CONFIGURATION(
+      "Konfiguration verwalten",
+      "Kann die Konfiguration einsehen und ändern",
+      Module.CONFIGURATION),
 
   STATISTICS_STATISTICS_READ(
       READ_PERMISSION_TEMPLATE.formatted("Statistiken"),
@@ -398,7 +402,8 @@ public enum EmployeePermissionRole implements PermissionRole {
     MEDICAL_REGISTRY("Medizinalaufsicht"),
     DENTAL("Zahnärztlicher Dienst"),
     OPEN_DATA("Open Data"),
-    OFFICIAL_MEDICAL_SERVICE("Amtsärztlicher Dienst");
+    OFFICIAL_MEDICAL_SERVICE("Amtsärztlicher Dienst"),
+    CONFIGURATION("Konfigurator");
 
     private final String displayName;
 

@@ -7,7 +7,7 @@ package de.eshg.travelmedicine.document.informationstatement;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.eshg.departmentinfo.DepartmentInfoService;
+import de.eshg.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.file.common.FileValidator;
 import de.eshg.file.common.ImageRewriter;
 import de.eshg.lib.document.generator.DocumentGenerator;
@@ -76,7 +76,7 @@ public class InformationStatementService {
   private final ClassPathResource informationStatementResource;
   private final PersonClient personClient;
   private final Clock clock;
-  private final DepartmentInfoService departmentInfoService;
+  private final DepartmentInfoConfigService departmentInfoService;
   private final DepartmentClient departmentClient;
   private final DocumentGenerator documentGenerator;
   private final SignatureRepository signatureRepository;
@@ -93,7 +93,7 @@ public class InformationStatementService {
       VaccinationConsultationService vaccinationConsultationService,
       PersonClient personClient,
       Clock clock,
-      DepartmentInfoService departmentInfoService,
+      DepartmentInfoConfigService departmentInfoService,
       DepartmentClient departmentClient,
       DocumentGenerator documentGenerator,
       SignatureRepository signatureRepository,

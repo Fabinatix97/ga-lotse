@@ -723,6 +723,135 @@
         "tags" : [ "SchoolEntryConfig" ]
       }
     },
+    "/configuration/department-info" : {
+      "get" : {
+        "operationId" : "getInternalConfigDepartmentInfo",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetInternalConfigDepartmentInfoResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "DepartmentInfoConfig" ]
+      },
+      "put" : {
+        "operationId" : "updateInternalConfigDepartmentInfo",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateInternalConfigDepartmentInfoRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "DepartmentInfoConfig" ]
+      }
+    },
+    "/configuration/privacy-documents/privacy-notice" : {
+      "get" : {
+        "operationId" : "getPrivacyNoticeConfig",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetPrivacyDocumentConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      },
+      "put" : {
+        "operationId" : "updatePrivacyNoticeConfig",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "de" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "en" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      }
+    },
+    "/configuration/privacy-documents/privacy-policy" : {
+      "get" : {
+        "operationId" : "getPrivacyPolicyConfig",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetPrivacyDocumentConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      },
+      "put" : {
+        "operationId" : "updatePrivacyPolicyConfig",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "de" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  },
+                  "en" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "PrivacyDocument" ]
+      }
+    },
     "/country-codes" : {
       "get" : {
         "operationId" : "getCountryCodes",
@@ -5636,6 +5765,50 @@
           }
         }
       },
+      "DepartmentInfo" : {
+        "required" : [ "abbreviation", "city", "country", "email", "homepage", "houseNumber", "latitude", "longitude", "name", "phoneNumber", "postalCode", "street" ],
+        "type" : "object",
+        "properties" : {
+          "abbreviation" : {
+            "type" : "string"
+          },
+          "city" : {
+            "type" : "string"
+          },
+          "country" : {
+            "$ref" : "#/components/schemas/CountryCode"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "homepage" : {
+            "type" : "string"
+          },
+          "houseNumber" : {
+            "type" : "string"
+          },
+          "latitude" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "longitude" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "phoneNumber" : {
+            "type" : "string"
+          },
+          "postalCode" : {
+            "type" : "string"
+          },
+          "street" : {
+            "type" : "string"
+          }
+        }
+      },
       "DetailedFacility" : {
         "required" : [ "facilityFileState", "facilityType" ],
         "type" : "object",
@@ -5737,6 +5910,19 @@
         "description" : "The child's family doctor comments on the findings of the health department regarding the examination. Only relevant if examinationResultValue == DOCTOR_LETTER.",
         "example" : "CONFIRMED",
         "enum" : [ "NO_REPLY", "CONFIRMED", "PARTIALLY_CONFIRMED", "NOT_CONFIRMED" ]
+      },
+      "Document" : {
+        "required" : [ "fileName", "fileSizeBytes" ],
+        "type" : "object",
+        "properties" : {
+          "fileName" : {
+            "type" : "string"
+          },
+          "fileSizeBytes" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
       },
       "DomesticAddress" : {
         "required" : [ "city", "country", "postalCode", "street" ],
@@ -6786,6 +6972,14 @@
         "default" : "ASC",
         "enum" : [ "ASC", "DESC" ]
       },
+      "GetInternalConfigDepartmentInfoResponse" : {
+        "type" : "object",
+        "properties" : {
+          "departmentInfo" : {
+            "$ref" : "#/components/schemas/DepartmentInfo"
+          }
+        }
+      },
       "GetManualProgressEntryHistoryResponse" : {
         "type" : "object",
         "properties" : {
@@ -6937,6 +7131,14 @@
             "type" : "string",
             "description" : "The academic title of a Person.",
             "example" : "Prof. Dr."
+          }
+        }
+      },
+      "GetPrivacyDocumentConfigResponse" : {
+        "type" : "object",
+        "properties" : {
+          "overwrittenPrivacyDocument" : {
+            "$ref" : "#/components/schemas/PrivacyDocument"
           }
         }
       },
@@ -8271,6 +8473,18 @@
         "type" : "string",
         "enum" : [ "GERMAN", "OTHER", "UNKNOWN" ]
       },
+      "PrivacyDocument" : {
+        "required" : [ "de" ],
+        "type" : "object",
+        "properties" : {
+          "de" : {
+            "$ref" : "#/components/schemas/Document"
+          },
+          "en" : {
+            "$ref" : "#/components/schemas/Document"
+          }
+        }
+      },
       "Procedure" : {
         "required" : [ "archivingRelevanceSettings", "businessModule", "createdAt", "modifiedAt", "procedureId", "procedureStatus", "procedureType", "summary" ],
         "type" : "object",
@@ -9266,6 +9480,14 @@
           }
         },
         "description" : "Citizen appointment update."
+      },
+      "UpdateInternalConfigDepartmentInfoRequest" : {
+        "type" : "object",
+        "properties" : {
+          "departmentInfo" : {
+            "$ref" : "#/components/schemas/DepartmentInfo"
+          }
+        }
       },
       "UpdateLabelRequest" : {
         "required" : [ "name", "version" ],

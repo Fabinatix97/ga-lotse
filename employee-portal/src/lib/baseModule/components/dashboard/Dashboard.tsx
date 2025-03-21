@@ -6,7 +6,7 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
-import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
+import { PageGrid, useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { Grid } from "@mui/joy";
 import { Suspense } from "react";
@@ -14,7 +14,6 @@ import { Suspense } from "react";
 import { DashboardProceduresTable } from "@/lib/baseModule/components/dashboard/DashboardProceduresTable";
 import { DashboardTaskList } from "@/lib/baseModule/components/dashboard/DashboardTaskList";
 import { LoadingSheet } from "@/lib/shared/components/LoadingSheet";
-import { PageGrid } from "@/lib/shared/components/page/PageGrid";
 
 export function Dashboard() {
   const showTasks = useHasUserRoleCheck(ApiUserRole.BaseTasksRead);

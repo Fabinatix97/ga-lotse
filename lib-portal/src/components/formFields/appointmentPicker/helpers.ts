@@ -14,10 +14,12 @@ import {
 
 import { Appointment } from "./AppointmentPickerField";
 
-export const dateInMonthForm = Intl.DateTimeFormat(undefined, {
-  day: "numeric",
-  weekday: "long",
-});
+export function dateInMonthForm(locale: string) {
+  return Intl.DateTimeFormat(locale, {
+    day: "numeric",
+    weekday: "long",
+  });
+}
 
 export function getMonthInterval(date: Date) {
   const start = startOfMonth(date);
@@ -73,13 +75,17 @@ export function getDaysInAndAroundMonth(
   return days;
 }
 
-export const monthNameForm = Intl.DateTimeFormat(undefined, { month: "long" });
-
-export function monthLabel(currentMonth: Date) {
-  return `${monthNameForm.format(currentMonth)} ${currentMonth.getFullYear()}`;
+export function monthNameForm(locale: string) {
+  return Intl.DateTimeFormat(locale, { month: "long" });
 }
 
-const weekdaySortCodeForm = Intl.DateTimeFormat([], { weekday: "short" });
+export function monthLabel(currentMonth: Date, locale: string) {
+  return `${monthNameForm(locale).format(currentMonth)} ${currentMonth.getFullYear()}`;
+}
+
+function weekdaySortCodeForm(locale: string) {
+  return Intl.DateTimeFormat(locale, { weekday: "short" });
+}
 const startMonday = new Date("2024-09-30");
 export type Weekday =
   | "monday"
@@ -105,21 +111,38 @@ function getWeekdayValues(givenDays: Weekday[] = allWeekdays) {
   return givenDays.map((t) => weekdayValueMap[t]);
 }
 
-export function getWeekdayShortCodes(showWeekdays?: Weekday[]) {
+export function getWeekdayShortCodes(locale: string, showWeekdays?: Weekday[]) {
   const showWeekdayValues = new Set(getWeekdayValues(showWeekdays));
 
   return weekdays
     .filter((d) => (showWeekdayValues as Set<number>).has(d.getDay()))
-    .map((d) => weekdaySortCodeForm.format(d));
+    .map((d) => weekdaySortCodeForm(locale).format(d));
 }
 
-export const timeForm = Intl.DateTimeFormat(undefined, { timeStyle: "short" });
-export const dateFullForm = Intl.DateTimeFormat(undefined, {
-  month: "long",
-  day: "numeric",
-  weekday: "long",
-  year: "numeric",
-});
+// Trim leading zero if there is another number following it
+export function trimLeadingZero(chars: string) {
+  if (chars.startsWith("0") && !isNaN(Number(chars[1]))) {
+    return chars.slice(1);
+  }
+  return chars;
+}
+
+export function formatTime(date: Date, locale: string, trimLeading?: boolean) {
+  const formatted = date.toLocaleTimeString(locale, { timeStyle: "short" });
+  if (trimLeading && ["de", "en"].some((l) => locale.startsWith(l))) {
+    return trimLeadingZero(formatted);
+  }
+  return formatted;
+}
+
+export function dateFullForm(locale: string) {
+  return Intl.DateTimeFormat(locale, {
+    month: "long",
+    day: "numeric",
+    weekday: "long",
+    year: "numeric",
+  });
+}
 
 export function isSameAppointment(
   apt1: Appointment | null,

@@ -6,9 +6,11 @@
 "use client";
 
 import {
+  BaseAddressFormInputs,
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
+  createEmptyAddress,
 } from "@eshg/lib-employee-portal";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Button, Grid, Stack } from "@mui/joy";
@@ -22,10 +24,6 @@ import {
   ContactAddressForm,
   OptionalBillingAddressForm,
 } from "@/lib/shared/components/form/address/BaseAddressForm";
-import {
-  BaseAddressFormInputs,
-  createEmptyAddress,
-} from "@/lib/shared/components/form/address/helpers";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";

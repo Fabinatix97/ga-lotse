@@ -8,4 +8,5 @@ package de.eshg.base.mail;
 public enum MailType {
   PLAIN_TEXT,
   HTML,
+  HTML_AND_PLAIN_TEXT,
 }

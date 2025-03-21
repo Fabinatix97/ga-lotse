@@ -4,17 +4,19 @@
  */
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
+import {
+  ContentPanel,
+  DefaultPersonFormValues,
+  DetailsSection,
+  mapToPersonAddRequest,
+} from "@eshg/lib-employee-portal";
 import { ApiAddCustodianRequest } from "@eshg/school-entry-api";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/joy";
 
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
 import { useAddPersonAsCustodian } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
-import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
-import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { PersonSidebar } from "@/lib/shared/components/personSidebar/PersonSidebar";
-import { DefaultPersonFormValues } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
-import { mapToPersonAddRequest } from "@/lib/shared/components/personSidebar/helpers";
 import {
   SidebarWithFormRefProps,
   useSidebarWithFormRef,

@@ -12,6 +12,7 @@ import {
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { use } from "react";
 
 import { formatIdentityName } from "@/lib/baseModule/components/gdpr/helpers";
 import { ValidationTaskProceduresTable } from "@/lib/baseModule/components/gdpr/validationTasks/ValidationTaskProceduresTable";
@@ -26,7 +27,7 @@ export default function GdprValidationTaskPage(
     businessModule: string;
   }>,
 ) {
-  const { gdprProcedureId, businessModule } = props.params;
+  const { gdprProcedureId, businessModule } = use(props.params);
   if (!isBusinessModule(businessModule)) {
     throw new Error(
       `Tried to open validation task for unknown business module type '${businessModule}'`,

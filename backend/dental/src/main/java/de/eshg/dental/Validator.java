@@ -16,6 +16,7 @@ import de.eshg.base.user.api.UserDto;
 import de.eshg.dental.api.ChildFilterParameters;
 import de.eshg.dental.api.DentitionTypeDto;
 import de.eshg.dental.api.FluoridationConsentDto;
+import de.eshg.dental.api.MainResultDto;
 import de.eshg.dental.api.ToothDiagnosisDto;
 import de.eshg.dental.api.ToothDto;
 import de.eshg.dental.domain.model.Examination;
@@ -123,6 +124,18 @@ public class Validator {
     validateUniqueTeeth(teeth);
     validateMilkOrPermanentTooth(teeth);
     validateDiagnoses(toothDiagnoses);
+    validateMainResultU(toothDiagnoses);
+  }
+
+  private static void validateMainResultU(List<ToothDiagnosisDto> toothDiagnoses) {
+    if (toothDiagnoses.stream()
+        .anyMatch(
+            toothDiagnosis ->
+                toothDiagnosis.mainResult() == MainResultDto.U
+                    && ToothDto.isMolar(toothDiagnosis.tooth()))) {
+      throw new BadRequestException(
+          "Invalid diagnosis. The main result U cannot be set to a molar tooth.");
+    }
   }
 
   private static void validateDiagnoses(List<ToothDiagnosisDto> toothDiagnoses) {

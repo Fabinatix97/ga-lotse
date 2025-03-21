@@ -196,10 +196,10 @@ public final class OutboundServer extends ProxyServer {
 
       String hostName = ((InetSocketAddress) remoteAddress).getHostName();
       if (isRelayDestination(hostName)) {
-        logger.debug("{} is a relay target. mapping to {}", hostName, relayTargetAddress);
+        logger.debug("{} is a relay target. mapping to {}", remoteAddress, relayTargetAddress);
         return relayTargetAddress;
       } else {
-        logger.debug("{} is a NOT a relay target", hostName);
+        logger.debug("{} is NOT a relay target", remoteAddress);
         return remoteAddress;
       }
     }

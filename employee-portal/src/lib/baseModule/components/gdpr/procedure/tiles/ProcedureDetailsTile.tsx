@@ -8,6 +8,7 @@ import {
   ApiGdprProcedureType,
   ApiGetGdprProcedureResponse,
 } from "@eshg/base-api";
+import { DetailsItem } from "@eshg/lib-employee-portal";
 import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
@@ -43,7 +44,6 @@ import {
   SectionTitle,
 } from "@/lib/baseModule/components/gdpr/procedure/tiles/SectionTile";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 

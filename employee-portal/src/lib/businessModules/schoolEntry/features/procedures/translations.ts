@@ -15,7 +15,6 @@ import {
   ApiExaminationResultValue,
   ApiEyeExaminationType,
   ApiFamilyLanguageValue,
-  ApiGender,
   ApiGermanKnowledgeValue,
   ApiHandednessValue,
   ApiLanguageKnowledgeValue,
@@ -47,13 +46,6 @@ export const PROCEDURE_STATUS: EnumMap<ApiSchoolEntryStatusType> = {
   [ApiSchoolEntryStatusType.InProgress]: "In Arbeit",
   [ApiSchoolEntryStatusType.Closed]: "Geschlossen",
   [ApiSchoolEntryStatusType.Aborted]: "Beendet",
-};
-
-export const GENDER_VALUES = {
-  [ApiGender.NotSpecified]: "Keine Angabe",
-  [ApiGender.Male]: "Männlich",
-  [ApiGender.Female]: "Weiblich",
-  [ApiGender.Diverse]: "Divers",
 };
 
 export const EXAMINATION_RESULT_VALUES: EnumMap<ApiExaminationResultValue> = {

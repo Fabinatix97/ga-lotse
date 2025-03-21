@@ -6,6 +6,13 @@
 "use client";
 
 import {
+  DataTable,
+  Pagination,
+  TablePage,
+  TableSheet,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
+import {
   ApiBusinessModule,
   ApiGdprValidationTask,
   ApiGdprValidationTaskStatus,
@@ -20,12 +27,7 @@ import { typeTranslation } from "@/lib/baseModule/components/gdpr/i18n";
 import { routes } from "@/lib/baseModule/shared/routes";
 import { useGdprValidationTaskApi } from "@/lib/shared/api/clients";
 import { getGdprValidationTasksQuery } from "@/lib/shared/api/queries/gdpr";
-import { Pagination } from "@/lib/shared/components/pagination/Pagination";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { formatDurationFromNowUntil } from "@/lib/shared/helpers/dateTime";
-import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
 export function ValidationTasksTable({
   request,

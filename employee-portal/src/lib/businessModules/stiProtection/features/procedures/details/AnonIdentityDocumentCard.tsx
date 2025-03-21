@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DetailsColumn, DetailsSection } from "@eshg/lib-employee-portal";
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { ApiStiProtectionProcedure } from "@eshg/sti-protection-api";
 import { Sheet, Stack } from "@mui/joy";
@@ -11,8 +12,6 @@ import { isDefined } from "remeda";
 import { useAnonymousIdentificationDocumentQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
 import { DisplayAccessCode } from "@/lib/businessModules/stiProtection/features/procedures/DisplayAccessCode";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
-import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 
 export function AnonIdentityDocumentCard({
   procedure,

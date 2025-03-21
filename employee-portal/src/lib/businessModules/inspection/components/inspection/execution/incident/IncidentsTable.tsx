@@ -4,13 +4,13 @@
  */
 
 import { ApiInspectionIncident } from "@eshg/inspection-api";
+import { DataTable } from "@eshg/lib-employee-portal";
 import { DeleteOutlined, Edit } from "@mui/icons-material";
 import { ColorPaletteProp } from "@mui/joy";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 
 import { useDeleteIncident } from "@/lib/businessModules/inspection/api/mutations/incidents";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface IncidentsTableProps {

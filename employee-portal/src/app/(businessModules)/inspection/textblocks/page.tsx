@@ -12,12 +12,13 @@ import {
   Toolbar,
 } from "@eshg/lib-employee-portal";
 import { PageProps } from "@eshg/lib-portal/types/pageParams";
+import { use } from "react";
 
 import { useGetTextBlocks } from "@/lib/businessModules/inspection/api/queries/textblocks";
 import { TextBlocksTable } from "@/lib/businessModules/inspection/components/textBlock/TextBlocksTable";
 
 export default function TextBlocksOverviewPage(props: PageProps) {
-  const searchParams = props.searchParams;
+  const searchParams = use(props.searchParams);
   const request: GetTextBlocksRequest = searchParams;
   const {
     data: { elements, totalNumberOfElements },

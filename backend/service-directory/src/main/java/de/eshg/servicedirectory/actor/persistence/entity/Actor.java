@@ -20,13 +20,9 @@ public sealed interface Actor permits StagedActor, AuditedActor {
 
   void setCommonName(String commonName);
 
-  Certificate getCurrentCertificate();
+  Certificate getCertificate();
 
-  void setCurrentCertificate(Certificate currentCertificate);
-
-  Certificate getPreviousCertificate();
-
-  void setPreviousCertificate(Certificate previousCertificate);
+  void setCertificate(Certificate certificate);
 
   ActorType getType();
 

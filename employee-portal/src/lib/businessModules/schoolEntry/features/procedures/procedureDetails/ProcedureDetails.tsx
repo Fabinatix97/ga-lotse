@@ -5,6 +5,7 @@
 
 "use client";
 
+import { PageGrid } from "@eshg/lib-employee-portal";
 import { useControlledAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
 import { Grid, Stack } from "@mui/joy";
@@ -15,7 +16,6 @@ import { AddCustodianPanel } from "@/lib/businessModules/schoolEntry/features/pr
 import { ProcedureActionsPanel } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/ProcedureActionsPanel";
 import { ProcedureDetailsSection } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/ProcedureDetailsSection";
 import { WaitingRoomPanel } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/WaitingRoomPanel";
-import { PageGrid } from "@/lib/shared/components/page/PageGrid";
 
 import { PersonDetailsPanel } from "./PersonDetailsPanel";
 

@@ -8,6 +8,10 @@ import {
   ApiGetReferenceFacilityResponse,
 } from "@eshg/base-api";
 import {
+  BaseAddressDetailsColumn,
+  DetailsRow,
+} from "@eshg/lib-employee-portal";
+import {
   SALUTATION_VALUES,
   getOptionalTitle,
 } from "@eshg/lib-portal/components/formFields/constants";
@@ -27,9 +31,7 @@ import {
 import { Formik } from "formik";
 import { isDefined } from "remeda";
 
-import { BaseAddressDetails } from "@/lib/shared/components/address/BaseAddressDetails";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
@@ -72,11 +74,11 @@ export function FacilityDetailsSidebar(props: FacilityDetailsSidebarProps) {
               {isDefined(facility.contactAddress) && (
                 <>
                   <Divider />
-                  <BaseAddressDetails address={facility.contactAddress} />
+                  <BaseAddressDetailsColumn address={facility.contactAddress} />
                   {isDefined(facility.differentBillingAddress) && (
                     <>
                       <Divider />
-                      <BaseAddressDetails
+                      <BaseAddressDetailsColumn
                         address={facility.differentBillingAddress}
                       />
                     </>

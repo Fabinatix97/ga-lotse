@@ -15,10 +15,16 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.PKIXParameters;
 import java.security.cert.TrustAnchor;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Base64.Decoder;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TreeMap;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 
@@ -34,6 +40,14 @@ public class X509Utils {
   private static final Decoder b64Decoder = Base64.getDecoder();
 
   private X509Utils() {}
+
+  public static Stream<X509Certificate> parseMultiPem(String pem) {
+    return Arrays.stream(pem.split(END_CERT))
+        .filter(Predicate.not(String::isBlank))
+        .map(s -> s + END_CERT)
+        .map(String::trim)
+        .map(X509Utils::parsePem);
+  }
 
   public static X509Certificate parsePem(String pem) {
     CertificateFactory cf = getCertificateFactory();
@@ -61,13 +75,31 @@ public class X509Utils {
     return extractCommonName(cert.getSubjectX500Principal().getName());
   }
 
+  public static String extractLocation(X509Certificate cert) {
+    return extractLocation(cert.getSubjectX500Principal().getName());
+  }
+
   public static String extractCommonName(String s) {
+    return extractSubjectComponent(s, "cn").orElseThrow();
+  }
+
+  public static String extractLocation(String s) {
+    return extractSubjectComponent(s, "l").orElse(null);
+  }
+
+  private static Optional<String> extractSubjectComponent(String s, String component) {
     LdapName name = parseRfc2253(s);
     return name.getRdns().stream()
-        .filter(rdn -> rdn.getType().equalsIgnoreCase("cn"))
+        .filter(rdn -> rdn.getType().equalsIgnoreCase(component))
         .map(rdn -> rdn.getValue().toString())
-        .findFirst()
-        .orElseThrow();
+        .findFirst();
+  }
+
+  public static Map<String, String> parseSubject(String s) {
+    LdapName name = parseRfc2253(s);
+    TreeMap<String, String> result = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    name.getRdns().forEach(rdn -> result.put(rdn.getType(), rdn.getValue().toString()));
+    return result;
   }
 
   public static String normalizePem(String input) {
@@ -82,6 +114,20 @@ public class X509Utils {
         + insertNewlineAfter66Characters(b64)
         + LINE_SEPARATOR
         + END_CERT;
+  }
+
+  public static String getCertificateInfo(String name, String certificate) {
+    String info = "";
+    if (name != null) {
+      info += name;
+    }
+    if (certificate != null) {
+      info +=
+          X509Utils.parseMultiPem(certificate)
+              .map(x -> x.getSubjectX500Principal().getName())
+              .toList();
+    }
+    return info;
   }
 
   private static String insertNewlineAfter66Characters(String input) {

@@ -130,13 +130,13 @@ footer {
   border: 1px solid black;
   font-weight: 600;
   letter-spacing: 1px;
-  width: 120px;
+  width: 126px;
 }
 
 .qr-code {
-  background: black;
-  width: 70px;
-  height: 70px;
+  background: transparent;
+  width: 75px;
+  height: 75px;
 }
 
 ol {

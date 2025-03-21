@@ -5,6 +5,7 @@
 
 "use client";
 
+import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
@@ -18,9 +19,6 @@ import {
 import { useVaccineSidebar } from "@/lib/businessModules/travelMedicine/components/vaccines/VaccineSidebar";
 import { columns } from "@/lib/businessModules/travelMedicine/components/vaccines/columns";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function VaccinesTable() {

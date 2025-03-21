@@ -42,6 +42,7 @@ public class InspectionDataSource extends ProcedureDataSource<Inspection, Inspec
         DATA_SOURCE_ID,
         DATA_SOURCE_NAME,
         DataSourceSensitivity.INTERNAL_USAGE,
+        null,
         inspectionRepository,
         InspectionAttributes.values());
     this.clock = clock;

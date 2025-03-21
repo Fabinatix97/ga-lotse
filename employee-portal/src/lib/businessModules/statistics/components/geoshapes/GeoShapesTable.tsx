@@ -3,6 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  DataTable,
+  Pagination,
+  TablePage,
+  TableSheet,
+  usePagination,
+  useTableSorting,
+} from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import { Box, Button } from "@mui/joy";
@@ -17,12 +25,6 @@ import { useDeleteGeoShape } from "@/lib/businessModules/statistics/api/mutation
 import { useGetGeoShapes } from "@/lib/businessModules/statistics/api/queries/useGetGeoShapes";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { Pagination } from "@/lib/shared/components/pagination/Pagination";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import { usePagination } from "@/lib/shared/hooks/table/usePagination";
-import { useTableSorting } from "@/lib/shared/hooks/table/useTableSorting";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 import { geoShapeTableColumns } from "./columns";

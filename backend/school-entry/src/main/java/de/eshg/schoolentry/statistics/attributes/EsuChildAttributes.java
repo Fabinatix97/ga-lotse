@@ -14,29 +14,29 @@ import de.eshg.lib.statistics.attributes.ValueWithOptionsAttribute;
 
 public enum EsuChildAttributes implements EsuAttributes {
   PROCEDURE_ID(
-      new ProcedureAttribute(
+      ProcedureAttribute.create(
           "Vorgangsreferenz", EsuChildAttributes.CATEGORY_PROCEDURE_REFERENCE, true)),
 
   CHILD_CENTRAL_FILE_ID(
-      new CentralFileIdPersonAttribute(
+      CentralFileIdPersonAttribute.create(
           "Kind", "CHILD_CENTRAL_FILE_ID", EsuChildAttributes.CATEGORY_CHILD, true)),
 
-  SCHULE(new ContactIdAttribute("Schule", "SCHULE", EsuChildAttributes.CATEGORY_CHILD, false)),
+  SCHULE(ContactIdAttribute.create("Schule", "SCHULE", EsuChildAttributes.CATEGORY_CHILD, false)),
 
   WOHND(
-      new TextAttribute(
+      TextAttribute.create(
           "bei Einreise: in Deutschland seit (Neue Variable ab S1_2023)",
           "WOHND",
           EsuChildAttributes.CATEGORY_CHILD,
           true)),
 
   KIH(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Anzahl der im Haushalt lebenden Kinder",
           "KIH",
-          EsuAttributeUtil.createSiblingValueOptions(),
           EsuChildAttributes.CATEGORY_CHILD,
-          true));
+          true,
+          EsuAttributeUtil.createSiblingValueOptions()));
 
   private static final String CATEGORY_CHILD = "Kind";
   private static final String CATEGORY_PROCEDURE_REFERENCE = "Vorgangsreferenz";

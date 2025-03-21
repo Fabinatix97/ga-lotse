@@ -42,8 +42,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -85,8 +83,10 @@ public class DiagramExportService {
           Hibernate.unproxy(
               diagram.getAnalysis().getChartConfiguration(), ChartConfiguration.class);
 
-      addDetails(workbook, aggregationResult, diagram, chartConfiguration);
-      addDiagramData(workbook, diagram, chartConfiguration);
+      CellStyleHolder cellStyleHolder = DataExportUtil.createCellStyles(workbook);
+
+      addDetails(workbook, cellStyleHolder, aggregationResult, diagram, chartConfiguration);
+      addDiagramData(workbook, cellStyleHolder, diagram, chartConfiguration);
 
       workbook.write(outputStream);
       auditLogDataExport(chartConfiguration, diagram);
@@ -98,48 +98,48 @@ public class DiagramExportService {
 
   private void addDetails(
       XSSFWorkbook workbook,
+      CellStyleHolder cellStyleHolder,
       AbstractAggregationResult aggregationResult,
       Diagram diagram,
       ChartConfiguration chartConfiguration) {
     Sheet detailsSheet = workbook.createSheet("Analysedetails");
     detailsSheet.setColumnWidth(0, FIRST_COLUMN_WIDTH);
-    CellStyle cellStyle = workbook.createCellStyle();
-    cellStyle.setAlignment(HorizontalAlignment.LEFT);
+
     AtomicInteger rowCounter = new AtomicInteger(0);
     DataExportUtil.addMetadataBlock(
         detailsSheet,
-        cellStyle,
+        cellStyleHolder,
         rowCounter,
         aggregationResult,
         diagram.getTitle(),
         diagram.getDescription(),
         diagram.getDiagramData().getEvaluatedDataAmount());
     addAttributesInformation(
-        detailsSheet, cellStyle, rowCounter, chartConfiguration, aggregationResult);
+        detailsSheet, cellStyleHolder, rowCounter, chartConfiguration, aggregationResult);
   }
 
   private void addAttributesInformation(
       Sheet sheet,
-      CellStyle cellStyle,
+      CellStyleHolder cellStyleHolder,
       AtomicInteger rowCounter,
       ChartConfiguration chartConfiguration,
       AbstractAggregationResult aggregationResult) {
     switch (chartConfiguration) {
       case BarChartConfiguration barChartConfiguration ->
           TwoAttributesChartDataExporter.addAttributesInformation(
-              sheet, cellStyle, rowCounter, barChartConfiguration, aggregationResult);
+              sheet, cellStyleHolder, rowCounter, barChartConfiguration, aggregationResult);
       case ChoroplethMapConfiguration choroplethMapConfiguration ->
           TwoAttributesChartDataExporter.addAttributesInformation(
-              sheet, cellStyle, rowCounter, choroplethMapConfiguration, aggregationResult);
+              sheet, cellStyleHolder, rowCounter, choroplethMapConfiguration, aggregationResult);
       case HistogramChartConfiguration histogramChartConfiguration ->
           HistogramChartDataExporter.addHistogramAttributesInformation(
-              sheet, cellStyle, rowCounter, histogramChartConfiguration, aggregationResult);
+              sheet, cellStyleHolder, rowCounter, histogramChartConfiguration, aggregationResult);
       case PointBasedChartConfiguration pointBasedChartConfiguration ->
           PointBasedChartDataExporter.addAttributesInformation(
-              sheet, cellStyle, rowCounter, pointBasedChartConfiguration, aggregationResult);
+              sheet, cellStyleHolder, rowCounter, pointBasedChartConfiguration, aggregationResult);
       case PieChartConfiguration pieChartConfiguration ->
           PieChartDataExporter.addAttributesInformation(
-              sheet, cellStyle, rowCounter, pieChartConfiguration, aggregationResult);
+              sheet, cellStyleHolder, rowCounter, pieChartConfiguration, aggregationResult);
       default -> throw new IllegalStateException(UNEXPECTED_VALUE.formatted(chartConfiguration));
     }
     rowCounter.incrementAndGet();
@@ -160,41 +160,51 @@ public class DiagramExportService {
   }
 
   private void addDiagramData(
-      XSSFWorkbook workbook, Diagram diagram, ChartConfiguration chartConfiguration) {
+      XSSFWorkbook workbook,
+      CellStyleHolder cellStyleHolder,
+      Diagram diagram,
+      ChartConfiguration chartConfiguration) {
     Sheet dataSheet = workbook.createSheet("Daten");
     AtomicInteger rowCounter = new AtomicInteger(0);
     DiagramData diagramData = Hibernate.unproxy(diagram.getDiagramData(), DiagramData.class);
     switch (diagramData) {
       case BarChartData barChartData ->
           BarChartDataExporter.addData(
-              dataSheet, rowCounter, barChartData, (BarChartConfiguration) chartConfiguration);
+              dataSheet,
+              cellStyleHolder,
+              rowCounter,
+              barChartData,
+              (BarChartConfiguration) chartConfiguration);
       case ChoroplethMapData choroplethMapData ->
           ChoroplethMapDataExporter.addData(
               dataSheet,
+              cellStyleHolder,
               rowCounter,
               choroplethMapData,
               (ChoroplethMapConfiguration) chartConfiguration);
       case HistogramChartData histogramChartData ->
           HistogramChartDataExporter.addData(
               dataSheet,
+              cellStyleHolder,
               rowCounter,
               histogramChartData,
               (HistogramChartConfiguration) chartConfiguration);
       case LineOrScatterChartData lineOrScatterChartData ->
           PointBasedChartDataExporter.addData(
               dataSheet,
+              cellStyleHolder,
               rowCounter,
               lineOrScatterChartData,
               (PointBasedChartConfiguration) chartConfiguration);
       case PieChartData pieChartData ->
-          PieChartDataExporter.addData(dataSheet, rowCounter, pieChartData);
+          PieChartDataExporter.addData(dataSheet, cellStyleHolder, rowCounter, pieChartData);
       default -> throw new IllegalStateException(UNEXPECTED_VALUE.formatted(diagramData));
     }
   }
 
   public static void addLegend(
       Sheet sheet,
-      CellStyle cellStyle,
+      CellStyleHolder cellStyleHolder,
       AtomicInteger rowCounter,
       AbstractAggregationResult aggregationResult,
       AttributeSelection attribute) {
@@ -204,13 +214,13 @@ public class DiagramExportService {
     if (CollectionUtils.isEmpty(valueToMeanings)) {
       return;
     }
-    DataExportUtil.createMetadataCell(
-        sheet.createRow(rowCounter.getAndIncrement()), cellStyle, 2, "Legende:");
+    DataExportUtil.createStringCell(
+        sheet.createRow(rowCounter.getAndIncrement()), cellStyleHolder, 2, "Legende:");
     valueToMeanings.forEach(
         valueToMeaning -> {
           Row row = sheet.createRow(rowCounter.getAndIncrement());
-          DataExportUtil.createMetadataCell(row, cellStyle, 2, valueToMeaning.getValue());
-          DataExportUtil.createMetadataCell(row, cellStyle, 3, valueToMeaning.getMeaning());
+          DataExportUtil.createStringCell(row, cellStyleHolder, 2, valueToMeaning.getValue());
+          DataExportUtil.createStringCell(row, cellStyleHolder, 3, valueToMeaning.getMeaning());
         });
   }
 

@@ -8,7 +8,7 @@ package de.eshg.officialmedicalservice.citizenpublic;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import de.eshg.base.department.GetDepartmentInfoResponse;
-import de.eshg.departmentinfo.DepartmentInfoService;
+import de.eshg.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.departmentinfo.OpeningHoursService;
 import de.eshg.departmentinfo.PrivacyDocumentService;
 import de.eshg.departmentinfo.domain.OpeningHours;
@@ -63,7 +63,7 @@ public class CitizenPublicController {
   public static final String APPOINTMENT_TYPES_URL = "/appointment-types";
 
   private final OpeningHoursService openingHoursService;
-  private final DepartmentInfoService departmentInfoService;
+  private final DepartmentInfoConfigService departmentInfoService;
   private final CitizenPublicProcedureService citizenPublicProcedureService;
   private final AppointmentBlockService appointmentBlockService;
   private final Clock clock;
@@ -73,7 +73,7 @@ public class CitizenPublicController {
 
   public CitizenPublicController(
       OpeningHoursService openingHoursService,
-      DepartmentInfoService departmentInfoService,
+      DepartmentInfoConfigService departmentInfoService,
       CitizenPublicProcedureService citizenPublicProcedureService,
       AppointmentBlockService appointmentBlockService,
       Clock clock,
@@ -136,13 +136,13 @@ public class CitizenPublicController {
   @Operation(summary = "Get the privacy-notice document.")
   @GetMapping(path = PRIVACY_NOTICE_URL)
   public ResponseEntity<Resource> getPrivacyNotice() {
-    return privacyDocumentService.getPrivacyNotice();
+    return privacyDocumentService.getPrivacyNoticeDe();
   }
 
   @Operation(summary = "Get the privacy-policy document.")
   @GetMapping(path = PRIVACY_POLICY_URL)
   public ResponseEntity<Resource> getPrivacyPolicy() {
-    return privacyDocumentService.getPrivacyPolicy();
+    return privacyDocumentService.getPrivacyPolicyDe();
   }
 
   @Operation(summary = "Get all available concerns for the online portal.")

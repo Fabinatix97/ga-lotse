@@ -92,7 +92,7 @@ export function waitingRoomColumns() {
       cell: (props) => props.getValue(),
       enableSorting: true,
       meta: {
-        width: 200,
+        width: 400,
         canNavigate: {
           parentRow: true,
         },
@@ -103,7 +103,7 @@ export function waitingRoomColumns() {
       cell: (props) => formatDateTimeRangeToNow(props.getValue()),
       enableSorting: true,
       meta: {
-        width: 120,
+        width: 180,
         canNavigate: {
           parentRow: true,
         },

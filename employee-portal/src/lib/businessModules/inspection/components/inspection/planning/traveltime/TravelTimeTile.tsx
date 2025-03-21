@@ -11,6 +11,7 @@ import type {
   ApiInspection,
   ApiInspectionTravelTime,
 } from "@eshg/inspection-api";
+import { DetailsItem } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
@@ -24,7 +25,6 @@ import { useInspectionGeoApi } from "@/lib/businessModules/inspection/api/client
 import { useGetDepartment } from "@/lib/businessModules/inspection/api/queries/department";
 import { getReverseGeoCode } from "@/lib/businessModules/inspection/api/queries/geo";
 import { TravelTimeSidebar } from "@/lib/businessModules/inspection/components/inspection/planning/traveltime/TravelTimeSidebar";
-import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { useCopy } from "@/lib/shared/hooks/useCopy";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";

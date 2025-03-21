@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import {
   ApiBusinessProcedureInclusionStatus,
@@ -30,9 +31,6 @@ import {
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { procedureTypeNames } from "@/lib/shared/components/procedures/constants";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface ValidationTaskProceduresTableProps {

@@ -6,6 +6,12 @@
 "use client";
 
 import { ApiInspPendingFacility } from "@eshg/inspection-api";
+import {
+  DataTable,
+  TablePage,
+  TableSheet,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
 import { Row } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 
@@ -13,10 +19,6 @@ import { useGetFacilityHistory } from "@/lib/businessModules/inspection/api/quer
 import { useGetInspection } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { useIsOfflineFeatureEnabled } from "@/lib/businessModules/inspection/shared/offline/useIsOfflineFeatureEnabled";
 import { PendingFacilitiesFilters } from "@/lib/businessModules/inspection/shared/types";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 import { precachedInspectionIds } from "@/serviceWorker/common/precachedInspectionIds";
 

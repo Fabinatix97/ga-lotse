@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ContentPanel, ContentPanelTitle } from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
@@ -23,8 +24,6 @@ import { WaitingRoom } from "@/lib/businessModules/schoolEntry/api/models/Waitin
 import { useUpdateWaitingRoomDetails } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import { WAITING_STATUS_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
-import { ContentPanelTitle } from "@/lib/shared/components/contentPanel/ContentPanelTitle";
 import { FormStack } from "@/lib/shared/components/form/FormStack";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 

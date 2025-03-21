@@ -86,8 +86,7 @@ public class ServiceDirectoryAdminService {
 
   @Transactional
   public PartialActorDto createActor(PartialActorDto partialActorDto) {
-    validateCommonName(partialActorDto.currentCertificate(), partialActorDto.commonName());
-    validateCommonName(partialActorDto.previousCertificate(), partialActorDto.commonName());
+    validateCommonName(partialActorDto.certificate(), partialActorDto.commonName());
 
     StagedActor actor = ActorMapperAdminApi.toStaged(partialActorDto);
 
@@ -123,14 +122,10 @@ public class ServiceDirectoryAdminService {
     if (partialActorDto.commonName() != null) {
       updatedActor.setCommonName(partialActorDto.commonName());
     }
-    if (partialActorDto.currentCertificate() != null) {
-      updatedActor.setCurrentCertificate(toPersistence(partialActorDto.currentCertificate()));
+    if (partialActorDto.certificate() != null) {
+      updatedActor.setCertificate(toPersistence(partialActorDto.certificate()));
     }
-    validateCommonName(updatedActor.getCurrentCertificate(), updatedActor.getCommonName());
-    if (partialActorDto.previousCertificate() != null) {
-      updatedActor.setPreviousCertificate(toPersistence(partialActorDto.previousCertificate()));
-    }
-    validateCommonName(updatedActor.getPreviousCertificate(), updatedActor.getCommonName());
+    validateCommonName(updatedActor.getCertificate(), updatedActor.getCommonName());
     if (partialActorDto.stagingStatus() != null) {
       updatedActor.setStagingStatus(StagingStatus.from(partialActorDto.stagingStatus()));
     }
@@ -156,20 +151,23 @@ public class ServiceDirectoryAdminService {
 
   static void validateCommonName(String pem, String commonName) {
     try {
-      X509Certificate cert = X509Utils.parsePem(pem);
-      String certCommonName = X509Utils.extractCommonName(cert);
-      if (!certCommonName.equals(commonName)) {
-        throw new ServiceDirectoryBadRequestException(
-            "certificate CN '"
-                + certCommonName
-                + "' does not match actor commonName '"
-                + commonName
-                + "'");
-      }
+      X509Utils.parseMultiPem(pem).forEach(cert -> validateCommonName(cert, commonName));
     } catch (NoSuchElementException e) {
       throw new ServiceDirectoryBadRequestException("certificate without CN:" + e.getMessage());
     } catch (IllegalArgumentException e) {
       throw new ServiceDirectoryBadRequestException("certificate not parseable: " + e.getMessage());
+    }
+  }
+
+  private static void validateCommonName(X509Certificate cert, String commonName) {
+    String certCommonName = X509Utils.extractCommonName(cert);
+    if (!certCommonName.equals(commonName)) {
+      throw new ServiceDirectoryBadRequestException(
+          "certificate CN '"
+              + certCommonName
+              + "' does not match actor commonName '"
+              + commonName
+              + "'");
     }
   }
 
@@ -391,13 +389,9 @@ public class ServiceDirectoryAdminService {
     actorData.setNetworkId(importActor.networkId());
     actorData.setActive(importActor.active());
     actorData.setManualCertificate(importActor.manualCertificate());
-    if (importActor.currentCertificate() != null) {
-      validateCommonName(importActor.currentCertificate().value(), importActor.commonName());
-      actorData.setCurrentCertificate(toPersistence(importActor.currentCertificate()));
-    }
-    if (importActor.previousCertificate() != null) {
-      validateCommonName(importActor.previousCertificate().value(), importActor.commonName());
-      actorData.setPreviousCertificate(toPersistence(importActor.previousCertificate()));
+    if (importActor.certificate() != null) {
+      validateCommonName(importActor.certificate().value(), importActor.commonName());
+      actorData.setCertificate(toPersistence(importActor.certificate()));
     }
     if (importActor.metadata() != null) {
       actorData.setActorMetadata(toPersistence(importActor.metadata()));

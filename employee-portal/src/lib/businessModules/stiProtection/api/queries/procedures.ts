@@ -5,6 +5,7 @@
 
 "use client";
 
+import { PaginationProps, TableSortingProps } from "@eshg/lib-employee-portal";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import {
   ApiGetStiProtectionProceduresSortBy,
@@ -15,11 +16,6 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useStiProtectionProcedureApi } from "@/lib/businessModules/stiProtection/api/clients";
 import { ProcedureFilters } from "@/lib/businessModules/stiProtection/components/procedures/proceduresTable/StiProtectionProceduresTableFilters";
-import { PaginationProps } from "@/lib/shared/components/pagination/Pagination";
-import {
-  AutomaticSortingProps,
-  ManualSortingProps,
-} from "@/lib/shared/components/table/DataTable";
 
 import { proceduresQueryKey } from "./apiQueryKeys";
 
@@ -27,7 +23,6 @@ type PageRequest = Pick<
   PaginationProps,
   "pageSize" | "pageNumber" | "pageSizeOptions"
 >;
-type SortingRequest = ManualSortingProps | AutomaticSortingProps;
 
 export function useStiProcedureQuery(procedureId?: string) {
   const options = useStiProcedureQueryOptions(procedureId);
@@ -50,7 +45,7 @@ export function useStiProcedureQueryOptions(procedureId?: string) {
 
 export function useStiProceduresQuery(
   page: PageRequest,
-  sorting: SortingRequest,
+  sorting: TableSortingProps,
   filters: ProcedureFilters,
 ) {
   const stiProtectionApi = useStiProtectionProcedureApi();

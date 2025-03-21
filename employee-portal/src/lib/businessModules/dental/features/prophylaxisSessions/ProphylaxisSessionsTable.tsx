@@ -11,8 +11,18 @@ import {
   useGetProphylaxisSessions,
 } from "@eshg/dental";
 import { ApiProphylaxisSessionSortKey } from "@eshg/dental-api";
+import {
+  DataTable,
+  Pagination,
+  TablePage,
+  TableSheet,
+  getSortDirection,
+  getSortKey,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { useToggleableState } from "@eshg/lib-portal/hooks/useToggleableState";
+import { Typography } from "@mui/joy";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 import { ReactNode } from "react";
 
@@ -23,18 +33,8 @@ import {
 import { fluoridationDescription } from "@/lib/businessModules/dental/features/prophylaxisSessions/translations";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { ChipWithTooltip } from "@/lib/shared/components/chip/ChipWithTooltip";
 import { useFilterDictionary } from "@/lib/shared/components/filterSettings/useFilterDictionary";
-import { Pagination } from "@/lib/shared/components/pagination/Pagination";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import {
-  getSortDirection,
-  getSortKeyWithSpecificMapping,
-} from "@/lib/shared/components/table/sorting";
 import { displayBoolean } from "@/lib/shared/helpers/booleans";
-import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
 const initialSorting: ColumnSort = {
   id: "id",
@@ -77,10 +77,7 @@ export function ProphylaxisSessionsTable(props: ProphylaxisSessionsTableProps) {
     pageNumber: tableControl.paginationProps.pageNumber,
     pageSize: tableControl.paginationProps.pageSize,
     ...filterValues,
-    sortKey: getSortKeyWithSpecificMapping(
-      tableControl.tableSorting,
-      SORT_KEY_MAPPING,
-    ),
+    sortKey: getSortKey(tableControl.tableSorting, SORT_KEY_MAPPING),
     sortDirection: getSortDirection(tableControl.tableSorting),
   });
 
@@ -149,23 +146,23 @@ const COLUMNS = [
     cell: (props) => formatDateTime(props.getValue()),
     enableSorting: true,
     meta: {
-      width: 120,
+      width: 180,
       canNavigate: { parentRow: true },
     },
   }),
   columnHelper.accessor("institution", {
     header: "Einrichtung",
     cell: (props) => (
-      <ChipWithTooltip
-        key={props.getValue().id}
-        name={props.getValue().name}
-        hexColor={props.getValue().hexColor}
-        modalTitle="Institution"
-      />
+      <Typography sx={{ fontWeight: "bold" }}>
+        {props.getValue().name}
+      </Typography>
     ),
     enableSorting: false,
     meta: {
       width: 180,
+      canNavigate: {
+        parentRow: true,
+      },
     },
   }),
   columnHelper.accessor("groupName", {
@@ -173,7 +170,7 @@ const COLUMNS = [
     cell: (props) => props.getValue(),
     enableSorting: true,
     meta: {
-      width: 120,
+      width: 100,
       canNavigate: { parentRow: true },
     },
   }),
@@ -191,7 +188,7 @@ const COLUMNS = [
     cell: (props) => displayBoolean(props.getValue()),
     enableSorting: true,
     meta: {
-      width: 130,
+      width: 180,
       canNavigate: { parentRow: true },
     },
   }),

@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  DataTable,
+  DetailsSection,
+  TablePage,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
@@ -27,12 +33,8 @@ import {
   ActionsItem,
   ActionsMenu,
 } from "@/lib/shared/components/buttons/ActionsMenu";
-import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { CalendarAddDay } from "@/lib/shared/components/icons/CalendarAddDay";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
-import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 import { formatAppointmentTime } from "./AdditionalDataSection";

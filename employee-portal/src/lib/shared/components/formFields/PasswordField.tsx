@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { IconButton } from "@eshg/lib-employee-portal";
 import {
   InputField,
   InputFieldProps,
@@ -11,7 +12,6 @@ import { VisibilityOffOutlined, VisibilityOutlined } from "@mui/icons-material";
 import { useState } from "react";
 
 import { theme } from "@/lib/baseModule/theme/theme";
-import { IconButton } from "@/lib/shared/components/pagination/IconButton";
 
 type PasswordInputProps = Omit<InputFieldProps, "type" | "untrimmedInput"> & {
   visibilityLabel?: string;

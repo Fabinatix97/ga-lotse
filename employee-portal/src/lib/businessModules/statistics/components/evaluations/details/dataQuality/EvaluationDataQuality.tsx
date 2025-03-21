@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
 import {
   ApiGetCompletenessDataResponse,
   ApiGetCompletenessDataResponseCompletenessOfAttributesInner,
@@ -18,9 +19,6 @@ import { Stack } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
 
 import { FlashCard } from "@/lib/shared/components/cards/FlashCard";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 
 const columnHelper =
   createColumnHelper<ApiGetCompletenessDataResponseCompletenessOfAttributesInner>();

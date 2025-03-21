@@ -4,6 +4,7 @@
  */
 
 import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
+import { mapApiAddressToForm } from "@eshg/lib-employee-portal";
 import { isDefined } from "remeda";
 
 import { useUpdateReferenceFacility } from "@/lib/baseModule/api/mutations/facility";
@@ -11,7 +12,6 @@ import {
   DefaultFacilityFormValues,
   FacilityForm,
 } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
-import { mapApiAddressToForm } from "@/lib/shared/components/form/address/helpers";
 import { mapApiContactPersonToForm } from "@/lib/shared/helpers/facilityUtils";
 import {
   SidebarWithFormRefProps,

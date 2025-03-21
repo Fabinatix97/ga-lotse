@@ -5,6 +5,7 @@
 
 "use client";
 
+import { CentralFilePersonDetails } from "@eshg/lib-employee-portal";
 import {
   ApiEmployeeOmsProcedureDetails,
   ApiProcedureStatus,
@@ -15,7 +16,6 @@ import { useUpdateAffectedPersonSidebar } from "@/lib/businessModules/officialMe
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { PersonDetails } from "@/lib/businessModules/schoolEntry/api/models/Person";
 import { EditButton } from "@/lib/shared/components/buttons/EditButton";
-import { CentralFilePersonDetails } from "@/lib/shared/components/centralFile/display/CentralFilePersonDetails";
 import {
   SyncBarrier,
   useSyncBarrier,

@@ -25,6 +25,7 @@ import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedInstitution;
 import de.eshg.dental.client.PersonClient;
 import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
+import de.eshg.dental.domain.model.FluoridationConsent;
 import de.eshg.dental.domain.model.Person;
 import de.eshg.dental.domain.model.ProphylaxisSession;
 import de.eshg.dental.domain.repository.ChildRepository;
@@ -69,6 +70,7 @@ public class ProphylaxisSessionService {
   private final UserApi userApi;
   private final ExaminationService examinationService;
   private final ExaminationRepository examinationRepository;
+  private final ChildService childService;
 
   public ProphylaxisSessionService(
       ProphylaxisSessionRepository prophylaxisSessionRepository,
@@ -79,7 +81,8 @@ public class ProphylaxisSessionService {
       Validator validator,
       UserApi userApi,
       ExaminationService examinationService,
-      ExaminationRepository examinationRepository) {
+      ExaminationRepository examinationRepository,
+      ChildService childService) {
     this.prophylaxisSessionRepository = prophylaxisSessionRepository;
     this.contactClient = contactClient;
     this.childRepository = childRepository;
@@ -89,6 +92,7 @@ public class ProphylaxisSessionService {
     this.userApi = userApi;
     this.examinationService = examinationService;
     this.examinationRepository = examinationRepository;
+    this.childService = childService;
   }
 
   public ProphylaxisSession createProphylaxisSession(CreateProphylaxisSessionRequest request) {
@@ -217,12 +221,22 @@ public class ProphylaxisSessionService {
                         examinationsByFileStateId,
                         associatedFileStateIdsByFileStateIdInSession)));
 
+    Map<UUID, List<FluoridationConsent>> allFluoridationConsentsByChildFileStateId =
+        examinations.stream()
+            .collect(
+                StreamUtil.toLinkedHashMap(
+                    (Examination ex) -> ex.getChild().getChildIdFromCentralFile(),
+                    (Examination ex) ->
+                        childService.getAllFluoridationConsents(
+                            childService.getChildAndAllPreviousChildren(ex.getChild()))));
+
     return new ProphylaxisSessionWithAugmentedData(
         prophylaxisSession,
         contact,
         examinationMap,
         usersMap,
-        previousExaminationsBySessionChildFileStateId);
+        previousExaminationsBySessionChildFileStateId,
+        allFluoridationConsentsByChildFileStateId);
   }
 
   private static Function<UUID, List<Examination>> getPreviousExaminations(

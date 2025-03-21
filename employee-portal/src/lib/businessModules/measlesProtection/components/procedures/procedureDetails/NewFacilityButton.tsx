@@ -5,10 +5,10 @@
 
 "use client";
 
+import { DetailsSection } from "@eshg/lib-employee-portal";
 import { Add } from "@mui/icons-material";
 import { Button, Sheet } from "@mui/joy";
 
-import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 export function NewFacilityButton() {

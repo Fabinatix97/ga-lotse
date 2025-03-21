@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useReplaceSearchParams } from "@eshg/lib-employee-portal";
 import { useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 
 import { chatSearchParamNames } from "@/lib/businessModules/chat/shared/constants";
-import { useReplaceSearchParams } from "@/lib/shared/hooks/searchParams/useReplaceSearchParams";
 
 export function useChatSearchParams() {
   const searchParams = useSearchParams();

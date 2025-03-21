@@ -9,7 +9,7 @@ import static de.eshg.travelmedicine.document.DocumentDtoHelper.isDocumentConten
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.eshg.departmentinfo.DepartmentInfoService;
+import de.eshg.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.procedure.domain.model.Pdf;
@@ -54,7 +54,7 @@ public class MedicalHistoryService {
   private final ClassPathResource medicalHistoryResource;
   private final PersonClient personClient;
   private final Clock clock;
-  private final DepartmentInfoService departmentInfoService;
+  private final DepartmentInfoConfigService departmentInfoService;
   private final DepartmentClient departmentClient;
   private final DocumentGenerator documentGenerator;
   private final ProgressEntryService progressEntryService;
@@ -64,7 +64,7 @@ public class MedicalHistoryService {
       @Value(MEDICAL_HISTORY_PDF_TEMPLATE) ClassPathResource medicalHistoryResource,
       PersonClient personClient,
       Clock clock,
-      DepartmentInfoService departmentInfoService,
+      DepartmentInfoConfigService departmentInfoService,
       DepartmentClient departmentClient,
       DocumentGenerator documentGenerator,
       ProgressEntryService progressEntryService) {

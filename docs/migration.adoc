@@ -2,13 +2,15 @@
 GA-Lotse
 :toc:
 
-This document provides migration notes for all version changes, starting with v1.6.4.
+This document provides notes for **manual actions necessary before or during the deployment**, starting with v1.6.4.
+Versions that do not require any manual action are omitted for brevity.
 
 == Version History
 
-=== v1.6.5
+=== v1.6.9
 
-- No changes that made a migration necessary
+- Manual action is required **before the deployment** for all environments that already completed the bootstrapping process.
+The process is described in https://gitlab.com/ga-ffm/ga-lotse/ga-lotse-code/blob/main/k8s/docs/README.md#manual-migration-for-instances-with-completed-bootstrapping.
 
 === v1.6.4
 

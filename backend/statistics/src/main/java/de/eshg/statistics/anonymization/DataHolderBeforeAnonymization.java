@@ -5,7 +5,6 @@
 
 package de.eshg.statistics.anonymization;
 
-import de.eshg.statistics.anonymization.interval.Interval;
 import java.util.Map;
 import java.util.UUID;
 import org.deidentifier.arx.ARXConfiguration;

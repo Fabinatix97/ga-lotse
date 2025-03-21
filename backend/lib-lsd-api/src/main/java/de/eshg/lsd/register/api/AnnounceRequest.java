@@ -5,4 +5,8 @@
 
 package de.eshg.lsd.register.api;
 
-public record AnnounceRequest(ActorTypeDto type, String certificate, String readableName) {}
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public record AnnounceRequest(
+    @NotNull ActorTypeDto type, @NotBlank String certificate, @NotBlank String readableName) {}

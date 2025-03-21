@@ -1318,13 +1318,11 @@
         }
       },
       "ActorRequest" : {
+        "required" : [ "certificate", "readableName", "type" ],
         "type" : "object",
         "properties" : {
           "certificate" : {
             "$ref" : "#/components/schemas/Certificate"
-          },
-          "hostName" : {
-            "type" : "string"
           },
           "readableName" : {
             "type" : "string"
@@ -1344,11 +1342,11 @@
           "actorMetadata" : {
             "$ref" : "#/components/schemas/ActorMetadata"
           },
+          "certificate" : {
+            "$ref" : "#/components/schemas/Certificate"
+          },
           "commonName" : {
             "type" : "string"
-          },
-          "currentCertificate" : {
-            "$ref" : "#/components/schemas/Certificate"
           },
           "id" : {
             "type" : "string",
@@ -1366,9 +1364,6 @@
           "orgUnitId" : {
             "type" : "string",
             "format" : "uuid"
-          },
-          "previousCertificate" : {
-            "$ref" : "#/components/schemas/Certificate"
           },
           "readableName" : {
             "type" : "string"
@@ -1400,11 +1395,11 @@
           "active" : {
             "type" : "boolean"
           },
+          "certificate" : {
+            "$ref" : "#/components/schemas/AdminCertificate"
+          },
           "commonName" : {
             "type" : "string"
-          },
-          "currentCertificate" : {
-            "$ref" : "#/components/schemas/AdminCertificate"
           },
           "id" : {
             "type" : "string",
@@ -1421,9 +1416,6 @@
           },
           "networkId" : {
             "type" : "string"
-          },
-          "previousCertificate" : {
-            "$ref" : "#/components/schemas/AdminCertificate"
           },
           "readableName" : {
             "type" : "string"
@@ -1571,11 +1563,11 @@
           "active" : {
             "type" : "boolean"
           },
+          "certificate" : {
+            "$ref" : "#/components/schemas/AdminCertificate"
+          },
           "commonName" : {
             "type" : "string"
-          },
-          "currentCertificate" : {
-            "$ref" : "#/components/schemas/AdminCertificate"
           },
           "id" : {
             "type" : "string",
@@ -1590,9 +1582,6 @@
           "orgUnitId" : {
             "type" : "string",
             "format" : "uuid"
-          },
-          "previousCertificate" : {
-            "$ref" : "#/components/schemas/AdminCertificate"
           },
           "readableName" : {
             "type" : "string"

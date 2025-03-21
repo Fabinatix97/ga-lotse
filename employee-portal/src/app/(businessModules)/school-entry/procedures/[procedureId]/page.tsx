@@ -9,10 +9,10 @@ import { redirect } from "next/navigation";
 import { SchoolEntryProcedureRouteParamsSchema } from "@/lib/businessModules/schoolEntry/features/procedures/SchoolEntryProcedureRouteParamsSchema";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 
-export default function SchoolEntryProcedurePage(
+export default async function SchoolEntryProcedurePage(
   props: DynamicPageProps<SchoolEntryProcedureRouteParamsSchema>,
 ) {
-  const { procedureId } = props.params;
+  const { procedureId } = await props.params;
 
   redirect(routes.procedures.byId(procedureId).details);
 }

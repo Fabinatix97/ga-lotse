@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DataTable } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
 import {
@@ -35,7 +36,6 @@ import {
   ActionsMenu,
 } from "@/lib/shared/components/buttons/ActionsMenu";
 import { CalendarAddDay } from "@/lib/shared/components/icons/CalendarAddDay";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 const columnHelper = createColumnHelper<ApiOmsAppointment>();

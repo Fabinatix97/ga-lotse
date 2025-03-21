@@ -8,6 +8,14 @@ import {
   ApiGetReferenceFacilityResponse,
   ApiGetReferencePersonResponse,
 } from "@eshg/base-api";
+import {
+  BaseAddressFormInputs,
+  DefaultPersonFormValues,
+  mapApiAddressToForm,
+  mapBaseAddressToApi,
+  mapToPersonAddRequest,
+  mapToPersonUpdateRequest,
+} from "@eshg/lib-employee-portal";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import {
   ApiAffectedPerson,
@@ -21,16 +29,6 @@ import {
 } from "@eshg/official-medical-service-api";
 
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
-import {
-  BaseAddressFormInputs,
-  mapApiAddressToForm,
-  mapBaseAddressToApi,
-} from "@/lib/shared/components/form/address/helpers";
-import { DefaultPersonFormValues } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
-import {
-  mapToPersonAddRequest,
-  mapToPersonUpdateRequest,
-} from "@/lib/shared/components/personSidebar/helpers";
 import {
   mapApiContactPersonToForm,
   mapContactPersonToApi,

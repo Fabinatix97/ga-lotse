@@ -72,7 +72,7 @@ public class KeycloakProvisioning {
       LsdKeycloakClient keycloakClient,
       LsdInternalKeycloakProperties lsdInternalKeycloakProperties,
       @Value("${eshg.lsd-keycloak.importfile:#{null}}") Optional<String> importFile,
-      @Value("${eshg.lsd-keycloak.certificate-attribute-max-characters:10000}")
+      @Value("${eshg.lsd-keycloak.certificate-attribute-max-characters:#{null}}")
           Integer certificateAttributeMaxCharacters) {
     this.keycloakClient = keycloakClient;
     this.lsdInternalKeycloakProperties = lsdInternalKeycloakProperties;
@@ -253,26 +253,25 @@ public class KeycloakProvisioning {
   private UPAttribute getAttributeConfig(LsdAttributeKey attribute, UPGroup group) {
     UPAttribute attributeConfig = new UPAttribute(attribute.getKey());
 
-    if (LsdAttributeKey.CERTIFICATE_VALUE.equals(attribute)
-        || LsdAttributeKey.CERTIFICATE_SIGNATURE.equals(attribute)) {
-      attributeConfig.setValidations(getCertificateValidatorConfig());
+    if (attribute.getMaxLength() != null) {
+      attributeConfig.setValidations(getCertificateValidatorConfig(attribute.getMaxLength()));
     }
 
-    attributeConfig.setMultivalued(false);
+    attributeConfig.setMultivalued(attribute == LsdAttributeKey.CERTIFICATE);
     attributeConfig.setGroup(group.getName());
     attributeConfig.setPermissions(
         new UPAttributePermissions(Set.of("user", "admin"), Set.of("user", "admin")));
     return attributeConfig;
   }
 
-  private Map<String, Map<String, Object>> getCertificateValidatorConfig() {
+  private Map<String, Map<String, Object>> getCertificateValidatorConfig(int maxLength) {
     Map<String, Object> config =
         Map.of(
             "min",
             "0",
             // we want to increase the limit as certificates are too long
             "max",
-            certificateAttributeMaxCharacters,
+            Optional.ofNullable(certificateAttributeMaxCharacters).orElse(maxLength),
             // we don't want values be trimmed before checking the length
             "trim-disabled",
             true);

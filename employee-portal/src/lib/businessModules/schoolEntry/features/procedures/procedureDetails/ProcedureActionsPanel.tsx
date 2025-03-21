@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ContentPanel } from "@eshg/lib-employee-portal";
 import { ReactNode } from "react";
 
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
@@ -10,7 +11,6 @@ import { CloseProcedureModal } from "@/lib/businessModules/schoolEntry/features/
 import { DeleteProcedureModal } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/DeleteProcedureModal";
 import { ReopenProcedureModal } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/ReopenProcedureModal";
 import { OpenModalButton } from "@/lib/shared/components/buttons/OpenModalButton";
-import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
 
 export function ProcedureActionsPanel(props: { procedure: ProcedureDetails }) {
   const buttons: ReactNode[] = [];

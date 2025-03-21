@@ -712,6 +712,80 @@
         "tags" : [ "Child" ]
       }
     },
+    "/children/{childId}/person" : {
+      "put" : {
+        "operationId" : "updateChildPerson",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "childId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdatePersonRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ChildDetails"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "Child" ]
+      }
+    },
+    "/children/{childId}/sync-person" : {
+      "put" : {
+        "operationId" : "syncPersonData",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "childId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SyncPersonRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ChildDetails"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "Child" ]
+      }
+    },
     "/files/{fileId}" : {
       "delete" : {
         "operationId" : "deleteFile",
@@ -3390,7 +3464,7 @@
         }
       },
       "ChildDetails" : {
-        "required" : [ "dateOfBirth", "emailAddresses", "examinations", "fileStateId", "fileStateOutdated", "firstName", "fluoridationConsents", "gender", "groupName", "id", "institutions", "lastName", "phoneNumbers", "salutation", "status", "version", "year" ],
+        "required" : [ "dateOfBirth", "emailAddresses", "examinations", "fileStateId", "fileStateOutdated", "firstName", "fluoridationConsents", "gender", "groupName", "id", "institutions", "lastName", "personVersion", "phoneNumbers", "salutation", "status", "version", "year" ],
         "type" : "object",
         "properties" : {
           "contactAddress" : {
@@ -3471,6 +3545,10 @@
             "maxLength" : 40,
             "minLength" : 1,
             "type" : "string"
+          },
+          "personVersion" : {
+            "type" : "integer",
+            "format" : "int64"
           },
           "phoneNumbers" : {
             "type" : "array",
@@ -5308,14 +5386,9 @@
         }
       },
       "Institution" : {
-        "required" : [ "hexColor", "id", "name" ],
+        "required" : [ "id", "name" ],
         "type" : "object",
         "properties" : {
-          "hexColor" : {
-            "pattern" : "^#[0-9a-zA-Z]{6}$",
-            "type" : "string",
-            "description" : "Background color of the box surrounding the institution"
-          },
           "id" : {
             "type" : "string",
             "format" : "uuid"
@@ -5415,7 +5488,7 @@
       },
       "MainResult" : {
         "type" : "string",
-        "enum" : [ "S", "I", "D", "F", "E", "Y", "X", "Z", "T", "H", "O", "V", "N", "P", "K" ]
+        "enum" : [ "S", "I", "D", "F", "E", "Y", "X", "Z", "T", "H", "O", "V", "N", "P", "K", "U" ]
       },
       "ManualProgressEntry" : {
         "required" : [ "createdAt", "createdBy", "locked", "manualProgressEntryType", "modifiedAt", "progressEntryId" ],
@@ -5950,8 +6023,8 @@
             "type" : "string"
           },
           "previousExaminationResults" : {
-            "type" : "array",
-            "items" : {
+            "type" : "object",
+            "additionalProperties" : {
               "oneOf" : [ {
                 "$ref" : "#/components/schemas/AbsenceExaminationResult"
               }, {
@@ -6153,6 +6226,24 @@
       "SortDirection" : {
         "type" : "string",
         "enum" : [ "ASC", "DESC" ]
+      },
+      "SyncPersonRequest" : {
+        "required" : [ "fileStateId", "personVersion", "referenceVersion" ],
+        "type" : "object",
+        "properties" : {
+          "fileStateId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "personVersion" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "referenceVersion" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
       },
       "SystemProgressEntry" : {
         "required" : [ "createdAt", "modifiedAt", "progressEntryId", "systemProgressEntryType", "triggerType" ],
@@ -6467,6 +6558,84 @@
             }, {
               "$ref" : "#/components/schemas/ScreeningExaminationResult"
             } ]
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "UpdatePersonRequest" : {
+        "required" : [ "dateOfBirth", "firstName", "lastName", "version" ],
+        "type" : "object",
+        "properties" : {
+          "contactAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
+          "countryOfBirth" : {
+            "$ref" : "#/components/schemas/CountryCode"
+          },
+          "dateOfBirth" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "differentBillingAddress" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DomesticAddress"
+            }, {
+              "$ref" : "#/components/schemas/PostboxAddress"
+            } ]
+          },
+          "emailAddresses" : {
+            "type" : "array",
+            "items" : {
+              "maxLength" : 254,
+              "minLength" : 6,
+              "type" : "string"
+            }
+          },
+          "firstName" : {
+            "maxLength" : 80,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "gender" : {
+            "$ref" : "#/components/schemas/Gender"
+          },
+          "lastName" : {
+            "maxLength" : 120,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "nameAtBirth" : {
+            "maxLength" : 40,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "phoneNumbers" : {
+            "type" : "array",
+            "items" : {
+              "maxLength" : 23,
+              "minLength" : 1,
+              "type" : "string"
+            }
+          },
+          "placeOfBirth" : {
+            "maxLength" : 50,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "salutation" : {
+            "$ref" : "#/components/schemas/Salutation"
+          },
+          "title" : {
+            "maxLength" : 119,
+            "minLength" : 1,
+            "type" : "string"
           },
           "version" : {
             "type" : "integer",

@@ -4,6 +4,10 @@
  */
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
+import {
+  DefaultPersonFormValues,
+  PersonFormValues,
+} from "@eshg/lib-employee-portal";
 import { ApiAffectedPerson } from "@eshg/official-medical-service-api";
 import { ComponentType, Ref, useState } from "react";
 import { isDefined } from "remeda";
@@ -12,12 +16,10 @@ import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
 import { PersonDetailsSidebar } from "@/lib/shared/components/personSidebar/PersonDetailsSidebar";
 import {
   DefaultPersonForm,
-  DefaultPersonFormValues,
   defaultPersonFormValues,
 } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
 import {
   PersonFormProps,
-  PersonFormValues,
   PersonSidebarForm,
 } from "@/lib/shared/components/personSidebar/form/PersonSidebarForm";
 import { PersonSearchResults } from "@/lib/shared/components/personSidebar/search/PersonSearchResults";

@@ -20,46 +20,46 @@ import java.util.List;
 
 public enum DentalProphylaxisSessionAttributes implements AttributeInfo {
   EINRICHTUNG(
-      new ContactIdAttribute(
+      ContactIdAttribute.create(
           "Einrichtung", "EINRICHTUNG", DentalProphylaxisSessionAttributes.CATEGORY, true)),
 
   SCHULJAHR(
-      new IntegerAttribute(
+      IntegerAttribute.create(
           "Schuljahr der Prophylaxe",
           "SCHULJAHR",
           DentalProphylaxisSessionAttributes.CATEGORY,
           true)),
 
   GRUPPE(
-      new TextAttribute(
+      TextAttribute.create(
           "Name der Gruppe", "GRUPPE", DentalProphylaxisSessionAttributes.CATEGORY, true)),
 
   TYP(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Typ der Prophylaxe",
           "TYP",
-          getTypeValueOptions(),
           DentalProphylaxisSessionAttributes.CATEGORY,
-          true)),
+          true,
+          getTypeValueOptions())),
 
   ANZAHL_KINDER(
-      new IntegerAttribute(
+      IntegerAttribute.create(
           "Anzahl Kinder", "ANZAHL_KINDER", DentalProphylaxisSessionAttributes.CATEGORY, true)),
 
   REIHENUNTERSUCHUNG(
-      new BooleanAttribute(
+      BooleanAttribute.create(
           "Reihenuntersuchung",
           "REIHENUNTERSUCHUNG",
           DentalProphylaxisSessionAttributes.CATEGORY,
           true)),
 
   FLUORIDIERUNGSLACK(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Fluoridierungslack",
           "FLUORIDIERUNGSLACK",
-          getFluoridationVarnishValueOptions(),
           DentalProphylaxisSessionAttributes.CATEGORY,
-          false));
+          false,
+          getFluoridationVarnishValueOptions()));
 
   static final String CATEGORY = "Prophylaxe";
 

@@ -21,7 +21,7 @@ export function DateFilter(
   const searchParams = useSearchParams();
   const replaceSearchParams = useReplaceSearchParams();
 
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const handleChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
     (event) => {

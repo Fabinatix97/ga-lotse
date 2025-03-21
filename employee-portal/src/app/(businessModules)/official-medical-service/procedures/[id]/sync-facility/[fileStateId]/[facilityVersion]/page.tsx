@@ -12,6 +12,7 @@ import {
 } from "@eshg/lib-portal/schemas/pageParams";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { useRouter } from "next/navigation";
+import { use } from "react";
 import * as v from "valibot";
 
 import { useGetFacilityFileStateDiff } from "@/lib/baseModule/api/queries/facility";
@@ -27,9 +28,10 @@ const RouteParamsSchema = v.object({
 });
 
 export default function SyncFacilityPage(props: DynamicPageProps) {
+  const params = use(props.params);
   const { id, fileStateId, facilityVersion } = v.parse(
     RouteParamsSchema,
-    props.params,
+    params,
   );
   const router = useRouter();
   const { data } = useGetFacilityFileStateDiff(fileStateId);

@@ -32,7 +32,7 @@ import { useBackupInfo } from "@/lib/businessModules/chat/shared/hooks/useBackup
 import { useChatRoomList } from "@/lib/businessModules/chat/shared/hooks/useChatRoomList";
 import { useCrossSigningInfo } from "@/lib/businessModules/chat/shared/hooks/useCrossSigningInfo";
 import { RoomData } from "@/lib/businessModules/chat/shared/types";
-import { leaveRoom } from "@/lib/businessModules/chat/shared/utils";
+import { leaveAndForgetRoom } from "@/lib/businessModules/chat/shared/utils";
 
 export function ChatPlaygroundContent() {
   const { matrixClient } = useChatClientContext();
@@ -62,7 +62,7 @@ export function ChatPlaygroundContent() {
       await Promise.all(
         roomList.map(
           async (roomData: RoomData) =>
-            await leaveRoom(matrixClient, roomData.room.roomId),
+            await leaveAndForgetRoom(matrixClient, roomData.room.roomId),
         ),
       );
       snackbar.confirmation("Successfully left all chat rooms.");

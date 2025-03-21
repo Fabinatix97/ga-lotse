@@ -21,6 +21,7 @@ export interface MonthSelectionProps {
   slotProps?: {
     arrows?: IconButtonProps;
   };
+  locale: string;
 }
 export function MonthSelection({
   currentMonth,
@@ -29,6 +30,7 @@ export function MonthSelection({
   nextMonthLabel,
   prevMonthLabel,
   slotProps,
+  locale,
 }: MonthSelectionProps) {
   const monthYearId = useId();
   const previousMonth = addMonths(currentMonth, -1);
@@ -37,7 +39,7 @@ export function MonthSelection({
   return (
     <Row justifyContent="space-between" width="100%" alignItems="center">
       <Typography level="title-md" id={monthYearId} aria-label={label}>
-        {monthLabel(currentMonth)}
+        {monthLabel(currentMonth, locale)}
       </Typography>
       <Row gap={2}>
         <IconButton

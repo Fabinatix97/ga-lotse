@@ -7,6 +7,7 @@
 
 import { MainContentLayout } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { use } from "react";
 
 import { useGetEvaluationReports } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationReports";
 import { EvaluationDetailsLayout } from "@/lib/businessModules/statistics/components/evaluations/details/EvaluationDetailsLayout";
@@ -15,7 +16,7 @@ import { EvaluationReports } from "@/lib/businessModules/statistics/components/e
 export default function EvaluationDetailsReportsPage(
   props: DynamicPageProps<{ id: string }>,
 ) {
-  const { id } = props.params;
+  const { id } = use(props.params);
   const { data, isFetching } = useGetEvaluationReports(id);
 
   return (

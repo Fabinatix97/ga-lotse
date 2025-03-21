@@ -7,6 +7,7 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { use } from "react";
 
 import {
   useApprovalRequestApi,
@@ -26,8 +27,8 @@ import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress
 export default function OfficialMedicalServiceProgressEntries(
   props: DynamicPageProps<OfficialMedicalServiceDetailsRouteParamsSchema>,
 ) {
-  const { id } = props.params;
-  const searchParams = props.searchParams;
+  const { id } = use(props.params);
+  const searchParams = use(props.searchParams);
   const progressEntryApi = useProgressEntryApi();
   const procedureApi = useProcedureApi();
   const fileApi = useFileApi();

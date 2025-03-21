@@ -30,7 +30,7 @@ export function InfoSectionGrid(props: InfoSectionGridProps) {
   );
 }
 
-const SectionStack = styled(Stack)({
+export const SectionStack = styled(Stack)({
   ".MuiSvgIcon-root": {
     height: "24px",
     width: "24px",

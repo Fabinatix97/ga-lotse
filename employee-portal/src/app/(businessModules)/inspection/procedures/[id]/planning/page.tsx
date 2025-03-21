@@ -3,16 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-"use client";
-
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { InspectionTabPlanning } from "@/lib/businessModules/inspection/components/inspection/planning/InspectionTabPlanning";
 
-export default function InspectionTabPlanningPage(
+export default async function InspectionTabPlanningPage(
   props: DynamicPageProps<{ id: string }>,
 ) {
-  const { id } = props.params;
+  const { id } = await props.params;
 
   return <InspectionTabPlanning inspectionId={id} />;
 }

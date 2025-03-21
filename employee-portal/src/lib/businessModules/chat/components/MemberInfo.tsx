@@ -22,7 +22,12 @@ export function MemberInfo({ userId, departmentName }: MemberInfoProps) {
         borderColor: "neutral.outlinedBorder",
       }}
     >
-      <Typography sx={{ textWrap: "pretty" }}>{departmentName}</Typography>
+      <Typography
+        sx={{ textWrap: "pretty" }}
+        data-testid="chat-user-department"
+      >
+        {departmentName}
+      </Typography>
       <ChatUserId userId={userId} />
     </Stack>
   );

@@ -26,14 +26,14 @@ public record SendEmailRequest(
         String subject,
     @Schema(
             description =
-                "The content of the email. If the type is HTML, this should be an HTML fragment; otherwise, it should be plain text.",
+                "The content of the email. If the type is HTML or HTML_AND_PLAIN_TEXT, this should be an HTML fragment; otherwise, it should be plain text.",
             example =
-                "PLAIN_TEXT: 'Dear John Doe,\nthis a test.\nBest regards,\nJane Doe' HTML: 'Dear John Doe,<br>this a test.<br>Best regards,<br>Jane Doe'")
+                "PLAIN_TEXT: 'Dear John Doe,\nthis a test.\nBest regards,\nJane Doe' HTML|HTML_AND_PLAIN_TEXT: 'Dear John Doe,<br>this a test.<br>Best regards,<br>Jane Doe'")
         @NotBlank
         String text,
     @Schema(
             description =
-                "The content type of the email. PLAIN_TEXT mails will be sent verbatim. for HTML mails the text will be embedded in a template with a GA specific header and footer.",
+                "The content type of the email. PLAIN_TEXT mails will be sent verbatim. for HTML mails the text will be embedded in a template with a GA specific header and footer. HTML_AND_PLAIN_TEXT will send both; the GA specific header and footer is not included in the plain-text part of the mail.",
             example = "PLAIN_TEXT")
         @NotNull
         MailType type) {}

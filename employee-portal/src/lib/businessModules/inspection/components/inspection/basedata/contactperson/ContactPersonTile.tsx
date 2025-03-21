@@ -6,6 +6,7 @@
 "use client";
 
 import { ApiFacilityContactPerson } from "@eshg/base-api";
+import { DetailsItem } from "@eshg/lib-employee-portal";
 import { SALUTATION_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { Grid } from "@mui/joy";
 import { isNonNullish } from "remeda";
@@ -13,7 +14,6 @@ import { isNonNullish } from "remeda";
 import { EmailSection } from "@/lib/businessModules/inspection/components/inspection/common/EmailSection";
 import { PhoneNumberSection } from "@/lib/businessModules/inspection/components/inspection/common/PhoneNumberSection";
 import { TileDivider } from "@/lib/businessModules/inspection/components/inspection/common/TileDivider";
-import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
 

@@ -5,6 +5,7 @@
 
 "use client";
 
+import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { ApiPostPutOtherServiceTemplateRequest } from "@eshg/travel-medicine-api";
 import AddIcon from "@mui/icons-material/Add";
@@ -20,9 +21,6 @@ import { useGetAllOtherServiceTemplatesQuery } from "@/lib/businessModules/trave
 import { useOtherServiceSidebar } from "@/lib/businessModules/travelMedicine/components/otherServiceTemplates/OtherServiceSidebar";
 import { otherServiceTemplatesColumns } from "@/lib/businessModules/travelMedicine/components/otherServiceTemplates/columns";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function OtherServiceTable() {

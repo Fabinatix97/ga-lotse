@@ -5,4 +5,7 @@
 
 import { defineLibConfig } from "../../config/tsup.base";
 
-export default defineLibConfig({ entry: ["src"], isNextJsLib: true });
+export default defineLibConfig({
+  entry: ["src/index.ts", "src/redirects.ts"],
+  isNextJsLib: true,
+});

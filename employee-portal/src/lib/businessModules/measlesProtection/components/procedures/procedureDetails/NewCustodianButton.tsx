@@ -5,6 +5,7 @@
 
 "use client";
 
+import { DetailsSection } from "@eshg/lib-employee-portal";
 import {
   ApiAddCustodianRequest,
   ApiCustodianDetails,
@@ -13,7 +14,6 @@ import { Add } from "@mui/icons-material";
 import { Button, Sheet } from "@mui/joy";
 
 import { mapToApiPersonAddress } from "@/lib/businessModules/measlesProtection/shared/helpers";
-import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import {
   LegacyPerson,
   LegacyPersonFormConfig,

@@ -4,6 +4,11 @@
  */
 
 import { ApiDiffAddress } from "@eshg/base-api";
+import {
+  BaseAddress,
+  isDomesticAddress,
+  isPostboxAddress,
+} from "@eshg/lib-employee-portal";
 import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { Stack } from "@mui/joy";
 import { isDefined } from "remeda";
@@ -15,11 +20,6 @@ import {
   SyncFormBlock,
   SyncFormSection,
 } from "@/lib/shared/components/centralFile/sync/SyncFormGrid";
-import {
-  BaseAddress,
-  isDomesticAddress,
-  isPostboxAddress,
-} from "@/lib/shared/helpers/address";
 import { join } from "@/lib/shared/helpers/strings";
 
 export function SyncBaseAddressSection({

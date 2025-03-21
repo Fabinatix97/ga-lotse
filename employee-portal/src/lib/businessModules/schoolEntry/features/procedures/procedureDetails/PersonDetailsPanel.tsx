@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  CentralFilePersonDetails,
+  ContentPanel,
+  DetailsSection,
+} from "@eshg/lib-employee-portal";
 import { SxProps } from "@mui/joy/styles/types";
 
 import { PersonDetails } from "@/lib/businessModules/schoolEntry/api/models/Person";
@@ -18,13 +23,10 @@ import {
   ActionsMenu,
 } from "@/lib/shared/components/buttons/ActionsMenu";
 import { EditButton } from "@/lib/shared/components/buttons/EditButton";
-import { CentralFilePersonDetails } from "@/lib/shared/components/centralFile/display/CentralFilePersonDetails";
 import {
   SyncBarrier,
   useSyncBarrier,
 } from "@/lib/shared/components/centralFile/sync/SyncBarrier";
-import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
-import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { useSidebarWithFormRef } from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 interface PersonDetailsPanelProps {

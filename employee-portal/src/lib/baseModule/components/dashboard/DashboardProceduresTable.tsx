@@ -5,6 +5,7 @@
 
 "use client";
 
+import { DataTable, TableSheet } from "@eshg/lib-employee-portal";
 import { Stack, Typography } from "@mui/joy";
 import { VisibilityState } from "@tanstack/react-table";
 
@@ -14,8 +15,6 @@ import {
   proceduresColumns,
 } from "@/lib/baseModule/components/procedures/columns";
 import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 
 export const hiddenProceduresColumns: VisibilityState = {
   createdAt: false,

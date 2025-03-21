@@ -5,6 +5,13 @@
 
 "use client";
 
+import {
+  DataTable,
+  NoEntriesMessage,
+  TablePage,
+  TableSheet,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
 import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import {
   isDateString,
@@ -21,7 +28,6 @@ import { FormControl, IconButton, Input, Select, Stack } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 
-import { NoEntries } from "@/lib/baseModule/components/NoEntries";
 import { useGetAllProcedureAppointmentSummaries } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
 import { NewPerson } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/new/NewPerson";
 import {
@@ -32,11 +38,7 @@ import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
 import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
 import { procedureStatusNames } from "@/lib/shared/components/procedures/constants";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { TextInputClientFilter } from "@/lib/shared/components/tableFilters/TextInputClientFilter";
-import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
 export function VaccinationConsultationsOverviewTable(
   props: Readonly<{
@@ -259,7 +261,9 @@ export function VaccinationConsultationsOverviewTable(
           }}
           minWidth={1600}
           noDataComponent={
-            queryResult.isFetching ? () => undefined : () => <NoEntries />
+            queryResult.isFetching
+              ? () => undefined
+              : () => <NoEntriesMessage />
           }
         />
       </TableSheet>

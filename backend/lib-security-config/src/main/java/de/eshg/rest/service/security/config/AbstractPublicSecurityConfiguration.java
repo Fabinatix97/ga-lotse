@@ -6,6 +6,7 @@
 package de.eshg.rest.service.security.config;
 
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_GDPR_VALIDATION_TASK_CLEANUP;
+import static de.eshg.lib.keycloak.EmployeePermissionRole.CONFIGURATION;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
@@ -16,6 +17,7 @@ import de.eshg.lib.keycloak.CitizenPermissionRole;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.lib.keycloak.ModuleLeaderRole;
 import de.eshg.lib.keycloak.PermissionRole;
+import de.eshg.rest.service.security.config.BaseUrls.DepartmentInfoLibrary;
 import de.eshg.rest.service.security.config.BaseUrls.FourEyesLibrary;
 import de.eshg.rest.service.security.config.BaseUrls.ProcedureLibrary;
 import de.eshg.rest.service.security.config.BaseUrls.ProcedureLibrary.Gdpr;
@@ -210,6 +212,15 @@ public abstract class AbstractPublicSecurityConfiguration {
 
   protected void grantAccessToStatistics(PermissionRole procedureAccessRole) {
     requestMatchers(POST, BaseUrls.STATISTICS + "/procedure-ids/**").hasRole(procedureAccessRole);
+  }
+
+  protected void grantAccessToLibDepartmentInfoUrls() {
+    requestMatchers(GET, DepartmentInfoLibrary.DEPARTMENT_INFO_API + "/**").hasRole(CONFIGURATION);
+    requestMatchers(PUT, DepartmentInfoLibrary.DEPARTMENT_INFO_API + "/**").hasRole(CONFIGURATION);
+    requestMatchers(GET, DepartmentInfoLibrary.PRIVACY_DOCUMENTS_API + "/**")
+        .hasRole(CONFIGURATION);
+    requestMatchers(PUT, DepartmentInfoLibrary.PRIVACY_DOCUMENTS_API + "/**")
+        .hasRole(CONFIGURATION);
   }
 
   @CheckReturnValue

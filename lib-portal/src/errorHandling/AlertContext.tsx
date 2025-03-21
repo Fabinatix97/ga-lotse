@@ -217,7 +217,7 @@ export function useResetAlertContext(): () => void {
 }
 
 interface AlertSlotProps extends Pick<AlertProps, "sx"> {
-  container?: (props: RequiresChildren) => ReactNode;
+  container?: (props: RequiresChildren) => ReactNode | Promise<ReactNode>;
 }
 
 export function AlertSlot(props: AlertSlotProps) {

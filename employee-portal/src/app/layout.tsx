@@ -39,14 +39,14 @@ export const metadata = {
   manifest: "/manifest.json",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
   modal,
 }: {
   children: ReactNode;
   modal: ReactNode;
 }) {
-  const nonce = getNonceFromHeader();
+  const nonce = await getNonceFromHeader();
 
   return (
     <html lang="de">

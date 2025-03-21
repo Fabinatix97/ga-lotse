@@ -27,12 +27,15 @@ public abstract class DataSource<A extends AttributeInfo> {
   private final UUID id;
   private final String name;
   private final DataSourceSensitivity sensitivity;
+  private final Integer kAnonymity;
   private final List<A> attributes;
 
-  protected DataSource(UUID id, String name, DataSourceSensitivity sensitivity, A[] attributes) {
+  protected DataSource(
+      UUID id, String name, DataSourceSensitivity sensitivity, Integer kAnonymity, A[] attributes) {
     this.id = id;
     this.name = name;
     this.sensitivity = sensitivity;
+    this.kAnonymity = kAnonymity;
     this.attributes = Arrays.asList(attributes);
   }
 
@@ -46,6 +49,10 @@ public abstract class DataSource<A extends AttributeInfo> {
 
   public DataSourceSensitivity getSensitivity() {
     return sensitivity;
+  }
+
+  public Integer getKAnonymity() {
+    return kAnonymity;
   }
 
   public List<A> getAttributes() {

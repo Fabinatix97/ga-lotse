@@ -4,18 +4,20 @@
  */
 
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import {
   ApiAppointmentBookingType,
   ApiAppointmentType,
 } from "@eshg/travel-medicine-api";
 import { RefObject } from "@fullcalendar/core/preact.js";
-import { Sheet, Stack } from "@mui/joy";
+import { Sheet, Stack, Typography } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { Formik, FormikErrors } from "formik";
 import { useState } from "react";
 
-import { LegacyAppointmentRadioGroup } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/LegacyAppointmentRadioGroup";
+import { theme } from "@/lib/baseModule/theme/theme";
+import { useGetFreeAppointmentsQuery } from "@/lib/businessModules/travelMedicine/api/queries/appointmentBlocks";
+import { AppointmentRadioGroup } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/AppointmentRadioGroup";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import {
   SidebarForm,
@@ -37,7 +39,6 @@ export interface InitialAppointmentFormValuesProps {
   initialStepAppointmentType: ApiAppointmentType;
   bookingType?: ApiAppointmentBookingType;
   appointmentBlockDate?: { start: Date; end: Date };
-  appointmentBlockDateOption?: SelectOption;
   userDefinedAppointmentDate?: string;
   appointmentTypeStandardDuration: number;
   isEditInitialAppointmentMode?: boolean;
@@ -52,6 +53,16 @@ export function InitialAppointmentForm({
   const [type, setType] = useState<ApiAppointmentType>(
     initialValues.initialStepAppointmentType ?? ApiAppointmentType.Consultation,
   );
+
+  const [
+    { data: freeConsultationBlockAppointments },
+    { data: freeVaccinationBlockAppointments },
+  ] = useSuspenseQueries({
+    queries: [
+      useGetFreeAppointmentsQuery(ApiAppointmentType.Consultation),
+      useGetFreeAppointmentsQuery(ApiAppointmentType.Vaccination),
+    ],
+  });
 
   function updateSelectOptions(type: string) {
     if (type == ApiAppointmentType.Consultation) {
@@ -116,10 +127,22 @@ export function InitialAppointmentForm({
                   sx={{ flexGrow: 1 }}
                 />
               </Sheet>
-              <LegacyAppointmentRadioGroup
+              <AppointmentRadioGroup
+                label={
+                  <Typography
+                    level="body-md"
+                    sx={{ fontWeight: theme.fontWeight.lg }}
+                  >
+                    Termin
+                  </Typography>
+                }
+                name="bookingType"
                 type={type}
-                appointmentBlockDateOption={
-                  initialValues.appointmentBlockDateOption
+                freeConsultationBlockAppointments={
+                  freeConsultationBlockAppointments
+                }
+                freeVaccinationBlockAppointments={
+                  freeVaccinationBlockAppointments
                 }
               />
             </Stack>

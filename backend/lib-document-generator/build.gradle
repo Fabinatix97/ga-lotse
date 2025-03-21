@@ -13,6 +13,9 @@ dependencies {
     implementation 'io.github.openhtmltopdf:openhtmltopdf-pdfbox:latest.release'
     implementation 'io.github.openhtmltopdf:openhtmltopdf-svg-support:latest.release'
     implementation 'io.github.openhtmltopdf:openhtmltopdf-slf4j:latest.release'
+    implementation 'com.google.zxing:core:latest.release'
+    implementation 'org.apache.xmlgraphics:batik-svggen:latest.release'
+    implementation 'org.apache.xmlgraphics:batik-dom:latest.release'
 
     testFixturesApi 'org.apache.pdfbox:pdfbox:latest.release'
     testFixturesImplementation project(':util-commons')
@@ -20,4 +23,8 @@ dependencies {
     testFixturesImplementation 'org.springframework:spring-context'
     testFixturesImplementation 'org.springframework.boot:spring-boot-autoconfigure'
     testFixturesImplementation 'org.verapdf:validation-model-jakarta:latest.release'
+    testImplementation 'com.google.zxing:javase:latest.release'
+    testImplementation project(':test-commons')
+    testFixturesApi 'de.cronn:validation-file-assertions:latest.release'
+    testFixturesApi 'de.cronn:test-utils:latest.release'
 }

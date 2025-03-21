@@ -24,6 +24,11 @@ public class OpenDataConfigService extends EshgConfigurationService<OpenDataConf
   }
 
   @Override
+  public OpenDataConfiguration getConfig() {
+    return super.getConfig();
+  }
+
+  @Override
   protected OpenDataConfiguration getInitialConfiguration() throws Exception {
     OpenDataConfiguration openDataConfiguration = new OpenDataConfiguration();
     openDataConfiguration.setAuthor(initialOpenDataConfiguration.author());

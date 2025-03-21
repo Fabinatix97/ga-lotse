@@ -14,6 +14,7 @@ import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
+import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.officialmedicalservice.appointment.api.BookingInfoDto;
 import de.eshg.officialmedicalservice.appointment.api.BookingTypeDto;
 import de.eshg.officialmedicalservice.appointment.api.PostOmsAppointmentRequest;
@@ -180,6 +181,10 @@ public class OmsAppointmentService {
     BookingInfoDto bookingInfo =
         new BookingInfoDto(BookingTypeDto.APPOINTMENT_BLOCK, appointmentDto.start(), duration);
 
+    Person person = appointment.getProcedure().findAffectedPerson();
+    AffectedPersonDto affectedPersonDto =
+        PersonMapper.mapToAffectedPersonDto(
+            personClient.getPersonFileState(person.getCentralFileStateId()), person.getVersion());
     if (appointment.getBookingState() == BookingState.BOOKED) {
       int remainingBookings = appointment.getBookingsRemaining();
 
@@ -187,15 +192,42 @@ public class OmsAppointmentService {
         throw new BadRequestException("Bookings remaining is zero");
       }
 
+      Instant oldAppointmentStart = appointment.getStart();
+      ZonedDateTime oldZonedDateTime = oldAppointmentStart.atZone(clock.getZone());
+      String oldAppointmentDate = oldZonedDateTime.format(dateFormatter);
+      String oldAppointmentTime = oldZonedDateTime.format(timeFormatter);
       appointment.setStart(appointmentDto.start());
       appointment.setDuration(duration);
       appointment.setBookingType(BookingType.APPOINTMENT_BLOCK);
       appointment.setBookingsRemaining(remainingBookings - 1);
-    } else if (appointment.getBookingState() == BookingState.BOOKABLE) {
+
+      ZonedDateTime newZonedDateTime = appointmentDto.start().atZone(clock.getZone());
+      String newAppointmentDate = newZonedDateTime.format(dateFormatter);
+      String newAppointmentTime = newZonedDateTime.format(timeFormatter);
+      notificationService.notifyRebookAppointmentCp(
+          affectedPersonDto,
+          oldAppointmentDate,
+          oldAppointmentTime,
+          newAppointmentDate,
+          newAppointmentTime);
+
+      progressEntryService.createProgressEntryForRebookedAppointmentByCitizen(
+          appointment.getProcedure(), oldAppointmentStart, appointmentDto.start());
+    } else if (List.of(BookingState.BOOKABLE, BookingState.CANCELLED)
+        .contains(appointment.getBookingState())) {
       appointment.setStart(appointmentDto.start());
       appointment.setDuration(duration);
       appointment.setBookingType(BookingType.APPOINTMENT_BLOCK);
       appointment.setBookingState(BookingState.BOOKED);
+
+      ZonedDateTime zonedDateTime = appointment.getStart().atZone(clock.getZone());
+      String appointmentDate = zonedDateTime.format(dateFormatter);
+      String appointmentTime = zonedDateTime.format(timeFormatter);
+      notificationService.notifyBookAppointmentCp(
+          affectedPersonDto, appointmentDate, appointmentTime);
+
+      progressEntryService.createProgressEntryForBookingAppointmentByCitizen(
+          appointment.getProcedure(), appointmentDto.start(), TriggerType.CITIZEN);
     }
 
     processBooking(bookingInfo, appointment);
@@ -298,8 +330,22 @@ public class OmsAppointmentService {
       throw new BadRequestException("Appointment is not booked");
     }
 
+    ZonedDateTime zonedDateTime = appointment.getStart().atZone(clock.getZone());
+    String appointmentDate = zonedDateTime.format(dateFormatter);
+    String appointmentTime = zonedDateTime.format(timeFormatter);
+
     appointment.setBookingState(BookingState.CANCELLED);
     appointment.setAppointment(null); // to unlock appointment block
+
+    Person person = appointment.getProcedure().findAffectedPerson();
+    AffectedPersonDto affectedPersonDto =
+        PersonMapper.mapToAffectedPersonDto(
+            personClient.getPersonFileState(person.getCentralFileStateId()), person.getVersion());
+    notificationService.notifyCancelAppointmentCp(
+        affectedPersonDto, appointmentDate, appointmentTime);
+
+    progressEntryService.createProgressEntryForCancelingAppointmentByCitizen(
+        appointment.getProcedure(), appointment.getStart());
   }
 
   @Transactional

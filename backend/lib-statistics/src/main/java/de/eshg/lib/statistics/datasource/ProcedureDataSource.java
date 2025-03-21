@@ -27,9 +27,10 @@ public abstract class ProcedureDataSource<P extends Procedure<P, ?, ?, ?>, A ext
       UUID id,
       String name,
       DataSourceSensitivity sensitivity,
+      Integer kAnonymity,
       ProcedureRepository<P> procedureRepository,
       A[] attributes) {
-    super(id, name, sensitivity, attributes);
+    super(id, name, sensitivity, kAnonymity, attributes);
     this.procedureRepository = procedureRepository;
   }
 

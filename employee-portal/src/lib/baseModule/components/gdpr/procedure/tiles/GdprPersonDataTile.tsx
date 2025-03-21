@@ -5,6 +5,14 @@
 
 import { ApiGdprPerson, ApiSalutation } from "@eshg/base-api";
 import {
+  BaseAddressDetailsColumn,
+  DetailsColumn,
+  DetailsItem,
+  DetailsRow,
+  ExternalLinkDetailsItem,
+  ResponsiveDivider,
+} from "@eshg/lib-employee-portal";
+import {
   PERSON_FIELD_NAME,
   SALUTATION_VALUES,
 } from "@eshg/lib-portal/components/formFields/constants";
@@ -18,12 +26,6 @@ import {
   SectionTile,
   SectionTitle,
 } from "@/lib/baseModule/components/gdpr/procedure/tiles/SectionTile";
-import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
-import { BaseAddressDetails } from "@/lib/shared/components/address/BaseAddressDetails";
-import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
-import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
-import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
-import { ExternalLinkDetailsItem } from "@/lib/shared/components/detailsSection/items/ExternalLinkDetailsItem";
 
 export function GdprPersonDataTile({
   identity,
@@ -83,7 +85,7 @@ export function GdprPersonDataTile({
           )}
         </DetailsColumn>
 
-        <BaseAddressDetails address={identity.address} sx={columnSx} />
+        <BaseAddressDetailsColumn address={identity.address} sx={columnSx} />
 
         {(isNonEmptyString(identity.emailAddress) ||
           isNonEmptyString(identity.phoneNumber)) && (

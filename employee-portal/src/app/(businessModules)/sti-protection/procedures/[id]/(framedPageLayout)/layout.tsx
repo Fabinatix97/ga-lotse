@@ -16,10 +16,10 @@ export type StiProtectionProcedureRouteParams = {
   id: string;
 };
 
-export default function StiProtectionProcedureLayout(
+export default async function StiProtectionProcedureLayout(
   props: DynamicLayoutProps<StiProtectionProcedureRouteParams>,
 ) {
-  const { id } = props.params;
+  const { id } = await props.params;
 
   return (
     <StickyToolbarLayout toolbar={<ProcedureToolbar procedureId={id} />}>

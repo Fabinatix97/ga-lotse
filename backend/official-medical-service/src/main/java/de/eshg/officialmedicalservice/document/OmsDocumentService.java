@@ -142,6 +142,7 @@ public class OmsDocumentService {
 
     OmsDocument document = new OmsDocument();
     document.setDocumentTypeDe("Auftragsschreiben");
+    document.setDocumentTypeEn("Letter of assignment");
     document.setDocumentStatus(OmsDocumentStatus.SUBMITTED);
     document.setLastDocumentUpload(Instant.now(clock));
     document.setMandatoryDocument(true);
@@ -152,6 +153,19 @@ public class OmsDocumentService {
     omsDocumentRepository.save(document);
 
     saveFiles(document, parsedFiles);
+  }
+
+  @Transactional
+  public void addInitialReleaseFromConfidentiality(OmsProcedure procedure) {
+    OmsDocument document = new OmsDocument();
+    document.setDocumentTypeDe("Schweigepflichtsentbindung");
+    document.setDocumentTypeEn("Release from confidentiality");
+    document.setDocumentStatus(OmsDocumentStatus.MISSING);
+    document.setUploadInCitizenPortal(false);
+    document.setMandatoryDocument(true);
+    document.setOmsProcedure(procedure);
+
+    omsDocumentRepository.save(document);
   }
 
   @Transactional

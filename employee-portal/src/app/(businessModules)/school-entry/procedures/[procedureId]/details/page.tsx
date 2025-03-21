@@ -7,6 +7,7 @@
 
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { useSuspenseQueries } from "@tanstack/react-query";
+import { use } from "react";
 
 import {
   useConfigApi,
@@ -20,7 +21,7 @@ import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/features/pro
 export default function SchoolEntryProcedureDetailsPage(
   props: DynamicPageProps<SchoolEntryProcedureRouteParamsSchema>,
 ) {
-  const { procedureId } = props.params;
+  const { procedureId } = use(props.params);
   const schoolEntryApi = useSchoolEntryApi();
   const configApi = useConfigApi();
   const [{ data: procedure }, { data: locationSelectionMode }] =

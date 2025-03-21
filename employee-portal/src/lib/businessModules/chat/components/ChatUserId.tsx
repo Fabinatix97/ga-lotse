@@ -31,7 +31,12 @@ export function ChatUserId({
           Chat-ID
         </Typography>
       )}
-      <Stack spacing={2} direction="row" sx={{ alignItems: "center" }}>
+      <Stack
+        spacing={2}
+        direction="row"
+        sx={{ alignItems: "center" }}
+        data-testid="matrix-user-id"
+      >
         <Typography
           component={isParagraph ? "p" : "span"}
           level="title-md"

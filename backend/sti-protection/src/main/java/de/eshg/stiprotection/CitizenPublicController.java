@@ -24,9 +24,9 @@ import de.eshg.stiprotection.api.citizen.BookAppointmentResponse;
 import de.eshg.stiprotection.api.citizen.CreateAnonymousUserRequest;
 import de.eshg.stiprotection.api.citizen.CreateAnonymousUserResponse;
 import de.eshg.stiprotection.api.citizen.GetOpeningHoursResponse;
-import de.eshg.stiprotection.department.SexWorkDepartmentInfoService;
+import de.eshg.stiprotection.department.SexWorkDepartmentInfoConfigService;
 import de.eshg.stiprotection.department.SexWorkOpeningHoursService;
-import de.eshg.stiprotection.department.StiConsultationDepartmentInfoService;
+import de.eshg.stiprotection.department.StiConsultationDepartmentInfoConfigService;
 import de.eshg.stiprotection.department.StiConsultationOpeningHoursService;
 import de.eshg.stiprotection.mapper.AppointmentMapper;
 import de.eshg.stiprotection.mapper.ConcernMapper;
@@ -72,8 +72,8 @@ public class CitizenPublicController {
   private final AppointmentService appointmentService;
   private final CitizenAppointmentService citizenAppointmentService;
   private final Clock clock;
-  private final StiConsultationDepartmentInfoService stiConsultationDepartmentInfoService;
-  private final SexWorkDepartmentInfoService sexWorkDepartmentInfoService;
+  private final StiConsultationDepartmentInfoConfigService stiConsultationDepartmentInfoService;
+  private final SexWorkDepartmentInfoConfigService sexWorkDepartmentInfoService;
   private final DepartmentClient departmentClient;
   private final StiConsultationOpeningHoursService stiConsultationOpeningHoursService;
   private final SexWorkOpeningHoursService sexWorkOpeningHoursService;
@@ -83,8 +83,8 @@ public class CitizenPublicController {
       AppointmentService appointmentService,
       CitizenAppointmentService citizenAppointmentService,
       Clock clock,
-      StiConsultationDepartmentInfoService stiConsultationDepartmentInfoService,
-      SexWorkDepartmentInfoService sexWorkDepartmentInfoService,
+      StiConsultationDepartmentInfoConfigService stiConsultationDepartmentInfoService,
+      SexWorkDepartmentInfoConfigService sexWorkDepartmentInfoService,
       DepartmentClient departmentClient,
       StiConsultationOpeningHoursService stiConsultationOpeningHoursService,
       SexWorkOpeningHoursService sexWorkOpeningHoursService) {

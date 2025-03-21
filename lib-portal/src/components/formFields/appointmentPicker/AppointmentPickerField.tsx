@@ -24,7 +24,7 @@ import {
   AppointmentListProps,
   useAppointmentList,
 } from "./AppointmentListForDate";
-import { Weekday } from "./helpers";
+import { Weekday, formatTime } from "./helpers";
 
 export { FIELD_LABELS_DE } from "./labels";
 
@@ -40,6 +40,7 @@ export interface AppointmentPickerLayoutProps {
   sx?: SxProps;
   className?: string;
   labels: AppointmentPickerFieldLabels;
+  locale: string;
 }
 
 export interface AppointmentPickerFieldLabels {
@@ -54,7 +55,7 @@ export interface AppointmentPickerFieldLabels {
 }
 
 export interface AppointmentPickerFieldProps<T extends Appointment>
-  extends MonthSelectionPassThroughProps {
+  extends Omit<MonthSelectionPassThroughProps, "locale"> {
   name: string;
   sx?: SxProps;
   required?: boolean;
@@ -72,7 +73,11 @@ export interface AppointmentPickerFieldProps<T extends Appointment>
   autoSelectFirst?: true;
   slotProps?: {
     calendar?: AppointmentCalendarProps["slotProps"];
+    list?: {
+      trimLeadingZero?: boolean | undefined;
+    };
   };
+  locale?: string | undefined;
 }
 
 export function AppointmentPickerField<T extends Appointment>({
@@ -93,6 +98,7 @@ export function AppointmentPickerField<T extends Appointment>({
   padDays,
   onDateSelected,
   autoSelectFirst,
+  locale = "de-DE",
   ...props
 }: AppointmentPickerFieldProps<T>) {
   const {
@@ -119,6 +125,7 @@ export function AppointmentPickerField<T extends Appointment>({
     selectedDay,
     monthAppointments,
     listLabel,
+    locale,
   });
 
   function setSelectedDay(d: Date) {
@@ -129,7 +136,7 @@ export function AppointmentPickerField<T extends Appointment>({
     onDateSelected?.(d);
   }
 
-  // When auto select first is on
+  // When "auto-select first" is on
   // auto-select the first appointment in the list
   useEffect(() => {
     const appt = monthAppointments[0];
@@ -185,8 +192,10 @@ export function AppointmentPickerField<T extends Appointment>({
           slotProps={slotProps?.calendar}
           padDays={padDays}
           errorMessageId={hasCalendarError ? calendarErrorId : undefined}
+          locale={locale}
         />
       }
+      locale={locale}
       calendarError={calendarError}
       appointmentList={
         <FormControl
@@ -200,6 +209,10 @@ export function AppointmentPickerField<T extends Appointment>({
             date={active ? selectedDay : undefined}
             onAppointmentSelected={onAppointmentSelected}
             isAppointmentEqual={isAppointmentEqual}
+            optionLabel={(a, l) =>
+              formatTime(a.start, l, slotProps?.list?.trimLeadingZero)
+            }
+            locale={locale}
           />
           {field.helperText != null && (
             <FormHelperText component="p" sx={{ my: 1 }} aria-live="polite">

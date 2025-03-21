@@ -7,6 +7,7 @@
 
 import { ApiInspectionPhase } from "@eshg/inspection-api";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { use } from "react";
 
 import { useGetInspection } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { InspectionTabDisabled } from "@/lib/businessModules/inspection/components/inspection/common/InspectionTabDisabled";
@@ -16,7 +17,7 @@ import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared
 export default function InspectionTabReportResultPage(
   props: DynamicPageProps<{ id: string }>,
 ) {
-  const { id } = props.params;
+  const { id } = use(props.params);
   const { data: inspection } = useGetInspection(id);
 
   const disabled = inspectionIsBeforePhase(

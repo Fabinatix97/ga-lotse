@@ -8,7 +8,7 @@ import { ApiAdminCertificate } from "@eshg/service-directory-api";
 import { Add, AddModerator } from "@mui/icons-material";
 import { IconButton, styled } from "@mui/joy";
 import { CellContext } from "@tanstack/react-table";
-import { ChangeEvent, ReactNode, useCallback, useMemo, useRef } from "react";
+import { ChangeEvent, ReactNode, useCallback, useRef } from "react";
 
 import { Actor } from "@/lib/components/view/actors/ActorTable";
 import { getCommonName } from "@/lib/helpers/crypto";
@@ -23,21 +23,6 @@ export function EditableCertificateCell(
 
   const { error } = useSnackbar();
   const { t } = useTranslation();
-
-  const otherCommonName = useMemo(() => {
-    const otherCertificate =
-      props.column.id === "currentCertificate"
-        ? props.row.original.previousCertificate
-        : props.row.original.currentCertificate;
-    if (!otherCertificate) {
-      return undefined;
-    }
-    return getCommonName(otherCertificate.value);
-  }, [
-    props.column.id,
-    props.row.original.currentCertificate,
-    props.row.original.previousCertificate,
-  ]);
 
   const handleChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -55,7 +40,7 @@ export function EditableCertificateCell(
           fileInputRef.current!.value = "";
           return;
         }
-        if (!commonName || (otherCommonName && commonName != otherCommonName)) {
+        if (!commonName) {
           error(t("commonNameMismatch"));
           fileInputRef.current!.value = "";
           return;
@@ -74,7 +59,6 @@ export function EditableCertificateCell(
     },
     [
       error,
-      otherCommonName,
       props.column.id,
       props.row.original,
       props.table.options.meta?.api,
@@ -87,7 +71,7 @@ export function EditableCertificateCell(
       <IconButton
         sx={{ display: "inline", minHeight: "24px", minWidth: "24px" }}
         size="sm"
-        aria-label={t("currentCertificate")}
+        aria-label={t("certificate")}
         onClick={() => fileInputRef.current?.click()}
       >
         {props.getValue() ? <AddModerator size="sm" /> : <Add size="sm" />}

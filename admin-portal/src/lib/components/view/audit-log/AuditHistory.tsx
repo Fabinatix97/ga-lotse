@@ -43,11 +43,7 @@ interface Diff {
     old?: ApiAdminOrgUnitType | ApiAdminActorType;
     new?: ApiAdminOrgUnitType | ApiAdminActorType;
   };
-  currentCertificate?: { old?: ApiAdminCertificate; new?: ApiAdminCertificate };
-  previousCertificate?: {
-    old?: ApiAdminCertificate;
-    new?: ApiAdminCertificate;
-  };
+  certificate?: { old?: ApiAdminCertificate; new?: ApiAdminCertificate };
   commonName?: { old?: string; new?: string };
   networkId?: { old?: string; new?: string };
   orgUnitId?: { old?: string; new?: string };
@@ -205,13 +201,9 @@ function getDiffs(
         old: oldEntity?.type,
         new: newEntity?.type,
       },
-      currentCertificate: {
-        old: oldEntity?.currentCertificate,
-        new: newEntity?.currentCertificate,
-      },
-      previousCertificate: {
-        old: oldEntity?.previousCertificate,
-        new: newEntity?.previousCertificate,
+      certificate: {
+        old: oldEntity?.certificate,
+        new: newEntity?.certificate,
       },
       networkId: {
         old: oldEntity?.networkId,

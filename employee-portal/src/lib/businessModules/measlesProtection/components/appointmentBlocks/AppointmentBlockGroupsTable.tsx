@@ -5,6 +5,15 @@
 
 "use client";
 
+import {
+  DataTable,
+  Pagination,
+  TablePage,
+  TableSheet,
+  getSortDirection,
+  getSortKey,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import {
   ApiAppointmentBlockSortKey,
@@ -27,19 +36,10 @@ import {
   getWeekdayFromDate,
 } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
 import { NoAppointmentBlocksAvailable } from "@/lib/shared/components/appointmentBlocks/NoAppointmentBlocksAvailable";
-import { Pagination } from "@/lib/shared/components/pagination/Pagination";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import {
-  getSortDirection,
-  getSortKey,
-} from "@/lib/shared/components/table/sorting";
 import {
   formatCalendarWeek,
   formatCalendarWeekRange,
 } from "@/lib/shared/helpers/dateTime";
-import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
 function toggleRowExpanded({
   getIsExpanded,

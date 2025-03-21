@@ -5,21 +5,21 @@
 
 "use client";
 
+import {
+  DataTable,
+  Pagination,
+  TablePage,
+  TableSheet,
+  TableSortingProps,
+  getSortDirection,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
 import { ApiWaitingRoomSortKey } from "@eshg/official-medical-service-api";
 import { ColumnSort } from "@tanstack/react-table";
 
 import { useGetWaitingRoomProcedures } from "@/lib/businessModules/officialMedicalService/api/queries/waitingRoomApi";
 import { waitingRoomColumns } from "@/lib/businessModules/officialMedicalService/components/waitingRoom/waitingRoomColumns";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
-import { Pagination } from "@/lib/shared/components/pagination/Pagination";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import { getSortDirection } from "@/lib/shared/components/table/sorting";
-import {
-  CustomSortingProps,
-  useTableControl,
-} from "@/lib/shared/hooks/searchParams/useTableControl";
 
 const initialSorting: ColumnSort = {
   id: "modifiedAt",
@@ -80,7 +80,7 @@ const SORT_KEY_MAPPING: Record<string, ApiWaitingRoomSortKey> = {
 };
 
 function getSortKey(
-  sortingProps: CustomSortingProps,
+  sortingProps: TableSortingProps,
 ): ApiWaitingRoomSortKey | undefined {
   const sorting = sortingProps.manualSorting
     ? sortingProps.sortingState

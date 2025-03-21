@@ -12,10 +12,7 @@ import { Actor } from "@/lib/components/view/actors/ActorTable";
 export function EditableCommonNameCell(
   props: CellContext<Actor, string>,
 ): ReactNode {
-  if (
-    !!props.row.original.currentCertificate ||
-    props.row.original.previousCertificate
-  ) {
+  if (!!props.row.original.certificate) {
     return props.getValue();
   }
 

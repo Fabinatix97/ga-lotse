@@ -90,5 +90,7 @@
   <include file="migrations/0080_oms_appointment_type_extensions.xml"/>
   <include file="migrations/0081_rename_countrycode.xml"/>
   <include file="migrations/0082_department_info.xml"/>
+  <include file="migrations/0083_add_department_info_config.xml"/>
+  <include file="migrations/0084_privacy_documents_config.xml"/>
 
 </databaseChangeLog>

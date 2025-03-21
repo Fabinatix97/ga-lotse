@@ -5,6 +5,10 @@
 
 import { ApiInstitutionContact } from "@eshg/base-api";
 import {
+  BaseAddressFormInputs,
+  createEmptyAddress,
+} from "@eshg/lib-employee-portal";
+import {
   InputArrayField,
   getIndexLabel,
 } from "@eshg/lib-portal/components/formFields/InputArrayField";
@@ -33,10 +37,6 @@ import {
   SidebarForm,
   SidebarFormHandle,
 } from "@/lib/shared/components/form/SidebarForm";
-import {
-  BaseAddressFormInputs,
-  createEmptyAddress,
-} from "@/lib/shared/components/form/address/helpers";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 

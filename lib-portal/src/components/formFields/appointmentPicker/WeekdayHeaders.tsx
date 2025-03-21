@@ -8,8 +8,14 @@ import { PropsWithChildren } from "react";
 
 import { Weekday, getWeekdayShortCodes } from "./helpers";
 
-export function WeekdayHeaders({ showWeekdays }: { showWeekdays?: Weekday[] }) {
-  const weekdayShortCodes = getWeekdayShortCodes(showWeekdays);
+export function WeekdayHeaders({
+  showWeekdays,
+  locale,
+}: {
+  showWeekdays?: Weekday[];
+  locale: string;
+}) {
+  const weekdayShortCodes = getWeekdayShortCodes(locale, showWeekdays);
   return (
     <>
       {weekdayShortCodes.map((w) => (

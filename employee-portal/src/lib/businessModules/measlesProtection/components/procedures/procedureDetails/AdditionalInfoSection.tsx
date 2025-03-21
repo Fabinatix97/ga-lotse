@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DetailsSection } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import {
@@ -22,7 +23,6 @@ import { ReopenProcedureModal } from "@/lib/businessModules/measlesProtection/co
 import { useProceduresContext } from "@/lib/businessModules/measlesProtection/shared/ProceduresContext";
 import { EmployeePortalConfirmationDialog } from "@/lib/shared/components/confirmationDialog/EmployeePortalConfirmationDialog";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 import { AdditionalInfoUpdateSidebar } from "./AdditionalInfoUpdateSidebar";

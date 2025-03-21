@@ -27,3 +27,27 @@ export function useAutocompleteStreetQuery(
     staleTime: 60000,
   });
 }
+
+export function useGetPostCodeAndCityForStreet(
+  { street }: { street?: string },
+  { enabled }: { enabled: boolean },
+) {
+  const streetApi = useStreetApi();
+
+  return useQuery({
+    queryFn: async ({ signal }) => {
+      if (street) {
+        return await streetApi.getPostCodeAndCityForStreet(street, { signal });
+      } else {
+        return {
+          city: null,
+          postCode: null,
+        };
+      }
+    },
+    queryKey: streetApiQueryKey(["getPostCodeAndCityForStreet", street]),
+    enabled,
+    gcTime: 60000, // 1 minute cache
+    staleTime: 60000,
+  });
+}

@@ -4,43 +4,42 @@
     "requiredTitle": "*Pflichtfeld",
     "logoutButton": "Mein Bereich verlassen"
   },
-  "information": {
-    "title": "Informationen",
-    "nameSection": {
-      "title": "Name"
+  "appointment": {
+    "title": "Untersuchungstermin",
+    "alert": {
+      "title_BOOKABLE": "Terminbuchung erforderlich",
+      "message_BOOKABLE": "Der Termin muss noch über den Kalender gebucht werden."
     },
-    "birthdateSection": {
-      "title": "Geburtsdatum"
-    },
-    "appointmentStatusSection": {
-      "title": "Terminstatus",
-      "bookingState": {
+    "bookingState": {
+      "label": "Terminstatus",
+      "value": {
         "BOOKABLE": "Noch nicht gebucht",
         "BOOKED": "Gebucht",
         "CANCELLED": "Abgesagt",
         "WITHDRAWN": "Zurückgezogen"
-      },
-      "modal": {
-        "description_BOOKABLE": "Bitte buchen Sie einen Termin bei uns.",
-        "bookAppointment_BOOKABLE": "Termin buchen",
-        "cancel": "Abbrechen"
       }
     },
-    "concernSection": {
-      "title": "Anliegen"
-    },
-    "appointmentDateSection": {
-      "title": "Termin Datum"
-    },
-    "appointmentTimeSection": {
-      "title": "Zeit",
+    "date_label": "Datum",
+    "appointmentTime": {
+      "label": "Zeit",
       "time": "{{ time }} Uhr",
       "duration": "Dauer: {{ duration }} Minuten"
     }
   },
+  "anamnesis": {
+    "title": "Anamnese",
+    "file": {
+      "title": "Anamnesebogen",
+      "helperText_MISSING": "noch nicht vorgelegt",
+      "helperText_SUMBITTED": "erfolgreich übermittelt",
+      "placeholder": "Jetzt ausfüllen"
+    }
+  },
   "contact": {
+    "title": "Kontakt",
     "addressSection": {
-      "title": "Ort"
+      "title": "Ort",
+      "value": "{{ departmentName }} <br> {{ departmentStreetAndHouseNumber }} </br> <br> {{ departmentPostalCodeAndCity }} </br>"
     },
     "contactSection": {
       "title": "Kontakt",
@@ -50,6 +49,11 @@
   },
   "documents": {
     "title": "Unterlagen zum Vorgang",
+    "alert": {
+      "message_MISSING": "Laden Sie die erforderlichen Dokumente hoch.",
+      "title_REJECTED": "Es gibt abgelehnte Dokumente",
+      "message_REJECTED": "Bitte prüfen Sie den Ablehnungsgrund und laden Sie entsprechend neue Dateien hoch."
+    },
     "files": {
       "title": "Dokument",
       "required": "Bitte Dokument hochladen",
@@ -65,19 +69,28 @@
       "error": "Die Datei konnte nicht hochgeladen werden. Bitte versuchen Sie es erneut."
     }
   },
-  "sidePanel": {
-    "booked": {
-      "title": "Sie können den Termin nicht wahrnehmen?",
-      "rescheduleAppointment": "Termin umbuchen",
-      "cancelAppointment": "Termin absagen"
+  "overview": {
+    "title": "Übersicht",
+    "nameSection": {
+      "title": "Name"
     },
-    "cancelled": {
-      "title": "Bitte buchen Sie einen neuen Untersuchungstermin",
-      "rescheduleAppointment": "Termin neu buchen"
+    "birthdateSection": {
+      "title": "Geburtsdatum"
     },
-    "bookable": {
-      "title": "Bitte buchen Sie einen Untersuchungstermin",
-      "bookAppointment": "Termin buchen"
+    "concernSection": {
+      "title": "Anliegen"
+    },
+    "actions": {
+      "booked": {
+        "rescheduleAppointment": "Termin umbuchen",
+        "cancelAppointment": "Termin absagen"
+      },
+      "cancelled": {
+        "rescheduleAppointment": "Termin neu buchen"
+      },
+      "bookable": {
+        "bookAppointment": "Termin buchen"
+      }
     }
   },
   "cancelAppointment": {

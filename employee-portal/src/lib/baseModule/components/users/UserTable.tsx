@@ -5,7 +5,12 @@
 
 "use client";
 
-import { useHasUserRolesCheck } from "@eshg/lib-employee-portal";
+import {
+  DataTable,
+  TablePage,
+  TableSheet,
+  useHasUserRolesCheck,
+} from "@eshg/lib-employee-portal";
 import AddIcon from "@mui/icons-material/Add";
 import LockIcon from "@mui/icons-material/LockOutlined";
 import { Button, Chip, Sheet, Stack } from "@mui/joy";
@@ -15,9 +20,6 @@ import { useSuggestNewUserSidebar } from "@/lib/baseModule/components/users/Sugg
 import { useUserTableColumns } from "@/lib/baseModule/components/users/columns";
 import { businessModuleLeaderRoles } from "@/lib/baseModule/moduleRegister/moduleUserGroupResolver";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 
 export function UserTable() {
   const {

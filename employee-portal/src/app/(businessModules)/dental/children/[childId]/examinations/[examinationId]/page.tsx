@@ -6,14 +6,17 @@
 "use client";
 
 import {
+  DentalChildExaminationRouteParams,
+  Examination,
+  ExaminationResultWithDate,
   getChildDetailsQuery,
   getExaminationQuery,
   useDentalApi,
 } from "@eshg/dental";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { useSuspenseQueries } from "@tanstack/react-query";
+import { use } from "react";
 
-import { DentalChildRouteParams } from "@/app/(businessModules)/dental/children/[childId]/layout";
 import { ChildExaminationForm } from "@/lib/businessModules/dental/features/children/details/ChildExaminationForm";
 import { AdditionalInformationFormSection } from "@/lib/businessModules/dental/features/examinations/AdditionalInformationFormSection";
 import { ChildDetailsSection } from "@/lib/businessModules/dental/features/examinations/ChildDetailsSection";
@@ -23,9 +26,9 @@ import { DentalExaminationFormSection } from "@/lib/businessModules/dental/featu
 import { DentalExaminationStoreProvider } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
 
 export default function ExaminationDetailsPage(
-  props: DynamicPageProps<DentalChildRouteParams>,
+  props: DynamicPageProps<DentalChildExaminationRouteParams>,
 ) {
-  const { childId, examinationId } = props.params;
+  const { childId, examinationId } = use(props.params);
   const { childApi } = useDentalApi();
   const [{ data: examination }, { data: child }] = useSuspenseQueries({
     queries: [
@@ -62,6 +65,7 @@ export default function ExaminationDetailsPage(
               status={examination.status}
               dateOfExamination={examination.dateAndTime}
               participantDateOfBirth={child.dateOfBirth}
+              previousExaminations={mapPreviousExaminations(child.examinations)}
             />
           }
           dentalExamination={
@@ -72,4 +76,13 @@ export default function ExaminationDetailsPage(
       </ChildExaminationForm>
     </DentalExaminationStoreProvider>
   );
+}
+
+function mapPreviousExaminations(
+  response: Examination[],
+): ExaminationResultWithDate[] {
+  return response.map((examination) => ({
+    result: examination.result,
+    dateAndTime: examination.dateAndTime,
+  }));
 }

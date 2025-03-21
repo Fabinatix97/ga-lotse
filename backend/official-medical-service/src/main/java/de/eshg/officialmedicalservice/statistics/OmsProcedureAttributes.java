@@ -21,80 +21,81 @@ import java.util.Arrays;
 
 public enum OmsProcedureAttributes implements AttributeInfo {
   PROCEDURE_ID(
-      new ProcedureAttribute(
+      ProcedureAttribute.create(
           "Vorgangsreferenz", ATTRIBUTE_CATEGORY_OFFICIAL_MEDICAL_SERVICE, true)),
 
   STATUS(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Vorgangsstatus",
           "STATUS",
+          ATTRIBUTE_CATEGORY_OFFICIAL_MEDICAL_SERVICE,
+          false,
           Arrays.stream(ProcedureStatus.values())
               .map(entry -> new ValueOptionInternal(entry.name(), entry.name(), false))
-              .toList(),
-          ATTRIBUTE_CATEGORY_OFFICIAL_MEDICAL_SERVICE,
-          false)),
+              .toList())),
 
   CONCERN(
-      new TextAttribute("Anliegen", "CONCERN", ATTRIBUTE_CATEGORY_OFFICIAL_MEDICAL_SERVICE, false)),
+      TextAttribute.create(
+          "Anliegen", "CONCERN", ATTRIBUTE_CATEGORY_OFFICIAL_MEDICAL_SERVICE, false)),
 
   CONCERN_CATEGORY(
-      new TextAttribute(
+      TextAttribute.create(
           "Kategorie (Anliegen)",
           "CONCERN_CATEGORY",
           ATTRIBUTE_CATEGORY_OFFICIAL_MEDICAL_SERVICE,
           false)),
 
   DURATION(
-      new IntegerAttribute(
+      IntegerAttribute.create(
           "Dauer bis Vorgangsabschluss",
           "DURATION",
           ATTRIBUTE_CATEGORY_OFFICIAL_MEDICAL_SERVICE,
           false)),
 
   PERSON_CENTRAL_FILE_ID(
-      new CentralFileIdPersonAttribute(
+      CentralFileIdPersonAttribute.create(
           "Person", "PERSON_CENTRAL_FILE_ID", ATTRIBUTE_CATEGORY_OFFICIAL_MEDICAL_SERVICE, true)),
 
   NUMBER_OF_DOCUMENTS(
-      new IntegerAttribute(
+      IntegerAttribute.create(
           "Anzahl der Dokumente",
           "NUMBER_OF_DOCUMENTS",
           ATTRIBUTE_CATEGORY_OFFICIAL_MEDICAL_SERVICE,
           true)),
 
   NUMBER_OF_APPOINTMENTS(
-      new IntegerAttribute(
+      IntegerAttribute.create(
           "Anzahl der Termine",
           "NUMBER_OF_APPOINTMENTS",
           ATTRIBUTE_CATEGORY_OFFICIAL_MEDICAL_SERVICE,
           true)),
 
   NUMBER_OF_BOOKED_APPOINTMENTS(
-      new IntegerAttribute(
+      IntegerAttribute.create(
           "Anzahl der gebuchten Termine",
           "NUMBER_OF_BOOKED_APPOINTMENTS",
           ATTRIBUTE_CATEGORY_OFFICIAL_MEDICAL_SERVICE,
           true)),
 
   NUMBER_OF_CANCELLED_APPOINTMENTS(
-      new IntegerAttribute(
+      IntegerAttribute.create(
           "Anzahl der abgesagten Termine",
           "NUMBER_OF_CANCELLED_APPOINTMENTS",
           ATTRIBUTE_CATEGORY_OFFICIAL_MEDICAL_SERVICE,
           true)),
 
   MEDICAL_OPINION_RESULT(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Gutachtenergebnis",
           "MEDICAL_OPINION_RESULT",
+          ATTRIBUTE_CATEGORY_OFFICIAL_MEDICAL_SERVICE,
+          true,
           Arrays.stream(MedicalOpinionResult.values())
               .map(
                   entry ->
                       new ValueOptionInternal(
                           entry.name(), entry.name(), entry == MedicalOpinionResult.UNKNOWN))
-              .toList(),
-          ATTRIBUTE_CATEGORY_OFFICIAL_MEDICAL_SERVICE,
-          true)),
+              .toList())),
   ;
 
   private final AttributeData attribute;

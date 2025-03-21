@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { routes } from "@eshg/dental";
+import { ChildExamination, routes } from "@eshg/dental";
 
 import { useProphylaxisSessionStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/ProphylaxisSessionStoreProvider";
 
@@ -14,33 +14,47 @@ interface UseParticipantNavigationResult {
 }
 
 interface UseParticipantNavigationParams {
-  participantIndex: number;
-  participantsLength: number;
+  participants: ChildExamination[];
   onNavigate: (route: string) => void;
+  examinationId: string;
 }
 
 export function useParticipantNavigation(
   params: UseParticipantNavigationParams,
 ): UseParticipantNavigationResult {
-  const { participantIndex, participantsLength, onNavigate } = params;
+  const { examinationId, participants, onNavigate } = params;
+  const participantsLength = participants.length;
+  const participantIndex = participants.findIndex(
+    (e) => e.examinationId === examinationId,
+  );
 
   const prophylaxisSessionId = useProphylaxisSessionStore((state) => state.id);
 
-  function examinationRoute(participantIndex: number) {
+  function examinationRoute(examinationId: string) {
     return routes.prophylaxisSessions
       .byId(prophylaxisSessionId)
-      .examinations.byIndex(participantIndex);
+      .examinations.byExaminationId(examinationId);
   }
 
   const gotoPreviousParticipant =
     participantIndex > 0
-      ? () => onNavigate(examinationRoute(participantIndex - 1))
+      ? () => {
+          const previousParticipant = participants[participantIndex - 1];
+          if (previousParticipant !== undefined) {
+            onNavigate(examinationRoute(previousParticipant.examinationId));
+          }
+        }
       : undefined;
 
   const nextParticipantIndex = participantIndex + 1;
   const gotoNextParticipant =
     nextParticipantIndex < participantsLength
-      ? () => onNavigate(examinationRoute(nextParticipantIndex))
+      ? () => {
+          const nextParticipant = participants[nextParticipantIndex];
+          if (nextParticipant !== undefined) {
+            onNavigate(examinationRoute(nextParticipant.examinationId));
+          }
+        }
       : undefined;
 
   function gotoOverview() {

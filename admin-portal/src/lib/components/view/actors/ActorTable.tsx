@@ -148,11 +148,7 @@ const columns = [
       stringToValue: (v) => v === "true",
     },
   }),
-  accessor("currentCertificate", {
-    enableColumnFilter: true,
-    cell: CertificateCell,
-  }),
-  accessor("previousCertificate", {
+  accessor("certificate", {
     enableColumnFilter: true,
     cell: CertificateCell,
   }),
@@ -201,8 +197,7 @@ function ActorTableContent({
           _matchingClientRules: false,
           commonName: false,
           manualCertificate: false,
-          currentCertificate: false,
-          previousCertificate: false,
+          certificate: false,
         }}
       />
     )

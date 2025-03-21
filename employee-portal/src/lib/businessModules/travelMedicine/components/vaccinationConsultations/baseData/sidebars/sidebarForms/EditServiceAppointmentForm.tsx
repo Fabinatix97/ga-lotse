@@ -15,8 +15,9 @@ import {
 } from "@eshg/travel-medicine-api";
 import { Chip, List, ListItem, Sheet, Stack, Typography } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
-import { Ref } from "react";
+import { Ref, useId } from "react";
 
+import { theme } from "@/lib/baseModule/theme/theme";
 import { Appointment } from "@/lib/businessModules/travelMedicine/api/models/Appointment";
 import { AppointmentRadioGroup } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/AppointmentRadioGroup";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
@@ -132,6 +133,8 @@ export function EditServiceAppointmentForm(
     return errors;
   }
 
+  const vaccinationLabelId = useId();
+
   return (
     <Formik
       initialValues={props.initialValues}
@@ -144,13 +147,24 @@ export function EditServiceAppointmentForm(
           <SidebarContent title={props.title}>
             <Stack spacing={2}>
               <Stack gap={2}>
-                <Typography level="body-md" sx={{ fontWeight: "bold", mt: 2 }}>
+                <Typography
+                  id={vaccinationLabelId}
+                  level="body-md"
+                  component="label"
+                  sx={(theme) => ({
+                    fontWeight: theme.fontWeight.md,
+                    mt: 2,
+                  })}
+                >
                   Impfungen
                 </Typography>
                 {props.procedureStepServices && (
-                  <List sx={{ padding: 0 }}>
-                    {props.procedureStepServices.map((service, index) => (
-                      <ListItem key={index} sx={{ padding: 0 }}>
+                  <List
+                    sx={{ padding: 0 }}
+                    aria-labelledby={vaccinationLabelId}
+                  >
+                    {props.procedureStepServices.map((service) => (
+                      <ListItem key={service.serviceId} sx={{ padding: 0 }}>
                         {`${service.serviceDescription}${service.vaccinationNumber ? ` - Nr. ${service.vaccinationNumber}` : ""}`}
                       </ListItem>
                     ))}
@@ -180,15 +194,21 @@ export function EditServiceAppointmentForm(
                   />
                 </Sheet>
               )}
-              <Typography level="body-md" sx={{ fontWeight: "bold", mt: 2 }}>
-                Termin
-              </Typography>
-              {formatAppointmentInfo(
-                props.initialValues.earliestDate,
-                props.initialValues.appointmentDate!,
-                props.initialValues.bookingType,
-              )}
               <AppointmentRadioGroup
+                label={
+                  <Typography
+                    level="body-md"
+                    sx={{ fontWeight: theme.fontWeight.lg }}
+                  >
+                    Termin
+                  </Typography>
+                }
+                appointmentInfo={formatAppointmentInfo(
+                  props.initialValues.earliestDate,
+                  props.initialValues.appointmentDate!,
+                  props.initialValues.bookingType,
+                )}
+                name="bookingType"
                 type={values.appointmentType}
                 freeConsultationBlockAppointments={
                   props.freeConsultationBlockAppointments

@@ -16,7 +16,6 @@ import { MedicalServicesOutlined } from "@mui/icons-material";
 interface ParticipantExaminationToolbarProps {
   prophylaxisSessionId: string;
   participant: ChildExamination;
-  participantIndex: number;
   onBackClicked: () => void;
 }
 
@@ -32,7 +31,7 @@ export function ParticipantExaminationToolbar(
           tabButtonName: "Untersuchung",
           href: routes.prophylaxisSessions
             .byId(props.prophylaxisSessionId)
-            .examinations.byIndex(props.participantIndex),
+            .examinations.byExaminationId(props.participant.examinationId),
           decorator: <MedicalServicesOutlined />,
         },
       ]}

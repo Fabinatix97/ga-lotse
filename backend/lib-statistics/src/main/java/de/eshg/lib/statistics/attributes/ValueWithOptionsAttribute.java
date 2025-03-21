@@ -5,16 +5,60 @@
 
 package de.eshg.lib.statistics.attributes;
 
+import de.eshg.lib.statistics.api.DataPrivacyCategory;
 import de.eshg.lib.statistics.api.ValueOptionInternal;
+import de.eshg.lib.statistics.api.ValueType;
 import java.util.List;
 
-public final class ValueWithOptionsAttribute extends AttributeData {
-  public ValueWithOptionsAttribute(
+public final class ValueWithOptionsAttribute {
+  private ValueWithOptionsAttribute() {}
+
+  public static AttributeData create(
       String name,
       String code,
-      List<ValueOptionInternal> valueOptions,
       String category,
-      boolean mandatory) {
-    super(name, code, null, valueOptions, category, mandatory, null);
+      boolean mandatory,
+      List<ValueOptionInternal> valueOptions) {
+    return createValueOptionsAttribute(name, code, category, mandatory, valueOptions, null);
+  }
+
+  public static AttributeData create(
+      String name,
+      String code,
+      String category,
+      boolean mandatory,
+      List<ValueOptionInternal> valueOptions,
+      DataPrivacyCategory dataPrivacyCategory) {
+    return createValueOptionsAttribute(
+        name, code, category, mandatory, valueOptions, dataPrivacyCategory);
+  }
+
+  public static AttributeData createSensitive(
+      String name,
+      String code,
+      String category,
+      boolean mandatory,
+      List<ValueOptionInternal> valueOptions,
+      SensitiveParameters sensitiveParameters) {
+    AttributeData attribute =
+        createValueOptionsAttribute(
+            name, code, category, mandatory, valueOptions, DataPrivacyCategory.SENSITIVE);
+    attribute.setLDiversity(sensitiveParameters.lDiversity());
+    attribute.setTCloseness(sensitiveParameters.tCloseness());
+    return attribute;
+  }
+
+  private static AttributeData createValueOptionsAttribute(
+      String name,
+      String code,
+      String category,
+      boolean mandatory,
+      List<ValueOptionInternal> valueOptions,
+      DataPrivacyCategory dataPrivacyCategory) {
+    AttributeData attribute =
+        AttributeData.createAttribute(
+            name, code, category, mandatory, valueOptions, dataPrivacyCategory);
+    attribute.setValueType(ValueType.VALUE_WITH_OPTIONS);
+    return attribute;
   }
 }

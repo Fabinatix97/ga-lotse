@@ -24,6 +24,7 @@ public interface KeycloakUserAttribute {
   ValidationRule[] DEFAULT_EMAIL_VALIDATIONS =
       new ValidationRule[] {
         new ValidationRule.Default("email", Map.of()),
+        new ValidationRule.Pattern("\\p{ASCII}+"),
         new ValidationRule.Default("length", Map.of("max", 255))
       };
 

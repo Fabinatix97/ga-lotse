@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 
@@ -23,7 +24,8 @@ public final class CsvMapper {
 
   public static <T> List<T> csvToBeans(byte[] resource, Class<T> clazz) {
     try (BufferedReader reader =
-        new BufferedReader(new InputStreamReader(new ByteArrayInputStream(resource)))) {
+        new BufferedReader(
+            new InputStreamReader(new ByteArrayInputStream(resource), StandardCharsets.UTF_8))) {
       return csvToBeans(reader, clazz);
     } catch (IOException e) {
       throw new UncheckedIOException(e);

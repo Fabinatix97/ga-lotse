@@ -11,6 +11,7 @@ import {
   ApiProcedureType,
   ApiProcedureWithDuration,
 } from "@eshg/base-api";
+import { DataTable, TableSheet } from "@eshg/lib-employee-portal";
 import {
   CheckOutlined,
   HourglassEmptyOutlined,
@@ -29,8 +30,6 @@ import { resolveProcedureDefinitionDiagram } from "@/lib/baseModule/moduleRegist
 import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";
 import { FlashCard } from "@/lib/shared/components/cards/FlashCard";
 import { procedureTypeNames } from "@/lib/shared/components/procedures/constants";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 
 import { formatOptionalDuration } from "./formatOptionalDuration";
 import { slowestAndFastestTasksColumns } from "./slowestAndFastestColumns";

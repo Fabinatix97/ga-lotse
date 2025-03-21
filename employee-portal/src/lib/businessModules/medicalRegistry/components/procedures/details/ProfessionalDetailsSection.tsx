@@ -4,11 +4,20 @@
  */
 
 import {
+  DetailsColumn,
+  DetailsRow,
+  DetailsSection,
+  ResponsiveDivider,
+} from "@eshg/lib-employee-portal";
+import {
   employmentStatusNames,
   employmentTypeNames,
   professionalTitleNames,
 } from "@eshg/lib-portal/businessModules/medicalRegistry/constants";
-import { PERSON_FIELD_NAME } from "@eshg/lib-portal/components/formFields/constants";
+import {
+  GENDER_VALUES,
+  PERSON_FIELD_NAME,
+} from "@eshg/lib-portal/components/formFields/constants";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { ApiGetProcedure200Response } from "@eshg/medical-registry-api";
@@ -16,15 +25,10 @@ import { Stack } from "@mui/joy";
 import { isDefined } from "remeda";
 
 import { ContactData } from "@/lib/businessModules/medicalRegistry/components/procedures/details/ContactData";
-import { GENDER_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";
-import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
 import {
   DetailsCell,
   DetailsCellWrapped,
 } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
-import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
-import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 import { streetAndHouseNumber } from "@/lib/shared/helpers/facilityUtils";
 

@@ -211,7 +211,13 @@ public class TestPopulateProcedureService {
             if (request.procedureDataCitizen() != null) {
               citizenUserId = getCitizenUserId(procedureId);
               citizenPortalCredentials =
-                  createCredentials(citizenUserId, request.procedureDataCitizen());
+                  createCredentials(
+                      citizenUserId, request.procedureDataCitizen().affectedPerson().dateOfBirth());
+            } else {
+              citizenUserId = getCitizenUserId(procedureId);
+              citizenPortalCredentials =
+                  createCredentials(
+                      citizenUserId, request.procedureData().affectedPerson().dateOfBirth());
             }
           }
 
@@ -263,9 +269,7 @@ public class TestPopulateProcedureService {
     return omsProcedureRepository.findByExternalId(procedureId).orElseThrow().getCitizenUserId();
   }
 
-  private CitizenPortalCredentialsDto createCredentials(
-      UUID citizenUserId, PostPopulateCitizenProcedureRequest citizenProcedureRequest) {
-    LocalDate dateOfBirth = citizenProcedureRequest.affectedPerson().dateOfBirth();
+  private CitizenPortalCredentialsDto createCredentials(UUID citizenUserId, LocalDate dateOfBirth) {
 
     CitizenAccessCodeUserDto citizenAccessCode =
         citizenAccessCodeUserClient.getCitizenAccessCode(citizenUserId);

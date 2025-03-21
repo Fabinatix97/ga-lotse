@@ -4,13 +4,14 @@
  */
 
 import { ApiFluoridationConsent } from "@eshg/dental-api";
+import { DetailsItem } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Button, Stack, Typography } from "@mui/joy";
 import { isDefined } from "remeda";
 
 import { FluoridationConsentTable } from "@/lib/businessModules/dental/shared/FluoridationConsentTable";
+import { OpenHistorySidebarButton } from "@/lib/businessModules/dental/shared/OpenHistorySidebarButton";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
 import { useSidebar } from "@/lib/shared/components/drawer/useSidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
@@ -43,24 +44,12 @@ export function FluoridationConsentInformationSection(
   }
   return (
     <>
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        flexWrap="wrap"
-      >
+      <Stack direction="row" alignItems="center" gap={2} flexWrap="wrap">
         <Typography fontWeight={600}>Fluoridierung</Typography>
-        <Button onClick={fluoridationOverviewSidebar.open} variant="plain">
-          <Typography component="span" color="primary">
-            (
-          </Typography>
-          <Typography component="u" color="primary">
-            Übersicht
-          </Typography>
-          <Typography component="span" color="primary">
-            )
-          </Typography>
-        </Button>
+        <OpenHistorySidebarButton
+          onClick={fluoridationOverviewSidebar.open}
+          name="Übersicht"
+        />
       </Stack>
       <Stack direction="row" gap={3} flexWrap="wrap">
         <DetailsItem

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ExaminationStatus } from "@eshg/dental";
+import { ExaminationResultWithDate, ExaminationStatus } from "@eshg/dental";
 import {
   ApiDentitionType,
   ApiMihStatus,
@@ -11,23 +11,26 @@ import {
   ApiOrthodonticFinding,
   ApiOrthodonticStatus,
 } from "@eshg/dental-api";
+import { DetailsItem, DetailsSection } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { SoftRequiredBooleanSelectField } from "@eshg/lib-portal/components/form/fieldVariants";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { calculateAge } from "@eshg/lib-portal/helpers/dateTime";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
-import { Chip, Divider, Grid, Stack, Typography } from "@mui/joy";
+import { Divider, Grid, Stack, Typography } from "@mui/joy";
 import { useShallow } from "zustand/react/shallow";
 
+import { DecayHistorySidebar } from "@/lib/businessModules/dental/features/examinations/DecayHistorySidebar";
 import { ExaminationStatusChip } from "@/lib/businessModules/dental/features/examinations/ExaminationStatusChip";
+import { OrthodonticFindingsField } from "@/lib/businessModules/dental/features/examinations/OrthodonticFindingsField";
 import { useDentalExaminationStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
 import { selectDecayRiskValue } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/selectors/decayRisk";
 import { selectDecayStatus } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/selectors/decayStatus";
 import { selectDmftValues } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/selectors/dmftValues";
 import { DENTITION_TYPE_OPTIONS } from "@/lib/businessModules/dental/features/prophylaxisSessions/options";
-import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
-import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
+import { OpenHistorySidebarButton } from "@/lib/businessModules/dental/shared/OpenHistorySidebarButton";
+import { useSidebar } from "@/lib/shared/components/drawer/useSidebar";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 
@@ -73,6 +76,7 @@ interface AdditionalInformationFormSectionProps {
   status: ExaminationStatus;
   participantDateOfBirth: Date;
   dateOfExamination: Date;
+  previousExaminations: ExaminationResultWithDate[];
 }
 
 export function AdditionalInformationFormSection(
@@ -93,6 +97,7 @@ export function AdditionalInformationFormSection(
           <ScreeningFields
             participantDateOfBirth={props.participantDateOfBirth}
             dateOfExamination={props.dateOfExamination}
+            previousExaminations={props.previousExaminations}
           />
         )}
       </DetailsSection>
@@ -103,6 +108,7 @@ export function AdditionalInformationFormSection(
 function ScreeningFields(props: {
   participantDateOfBirth: Date;
   dateOfExamination: Date;
+  previousExaminations: ExaminationResultWithDate[];
 }) {
   const dmftValues = useDentalExaminationStore(useShallow(selectDmftValues));
   const decayRisk = useDentalExaminationStore(
@@ -115,9 +121,23 @@ function ScreeningFields(props: {
   const decayStatus = useDentalExaminationStore(useShallow(selectDecayStatus));
   const hasResult = useDentalExaminationStore((store) => store.hasResult);
 
+  const getToothDiagnoses = useDentalExaminationStore(
+    (store) => store.getToothDiagnoses,
+  );
   const toggleDentition = useDentalExaminationStore(
     (state) => state.toggleDentition,
   );
+  const decayHistorySidebar = useSidebar({
+    component: (drawerProps) => (
+      <DecayHistorySidebar
+        currentDiagnoses={getToothDiagnoses()}
+        dateOfExamination={props.dateOfExamination}
+        dateOfBirth={props.participantDateOfBirth}
+        previousExaminationResults={props.previousExaminations}
+        onClose={drawerProps.onClose}
+      />
+    ),
+  });
 
   return (
     <>
@@ -147,23 +167,7 @@ function ScreeningFields(props: {
           />
         </Grid>
         <Grid xxs={12} xxl={6}>
-          <SelectField
-            name="orthodonticFindings"
-            label="KFO-Anomalien"
-            options={ORTHODONTIC_FINDINGS_OPTIONS}
-            multiple={true}
-            renderValue={(findings) =>
-              findings.map((finding) => (
-                <Chip
-                  key={finding.value}
-                  color="primary"
-                  sx={{ marginRight: 0.5 }}
-                >
-                  {ORTHODONTIC_FINDINGS[finding.value as ApiOrthodonticFinding]}
-                </Chip>
-              ))
-            }
-          />
+          <OrthodonticFindingsField />
         </Grid>
         <Grid xxs={12} xxl={6}>
           <SelectField
@@ -179,10 +183,16 @@ function ScreeningFields(props: {
       </Typography>
       <ParodontalCheckboxes />
       <Divider orientation="horizontal" />
-      <Typography component="h3" fontWeight={600}>
-        Automatisierte Werte
-      </Typography>
-      <Stack direction="row" gap={3} sx={{ flexWrap: "wrap" }}>
+      <Stack direction="row" alignItems="center" gap={2} flexWrap="wrap">
+        <Typography component="h3" fontWeight={600}>
+          Automatisierte Werte
+        </Typography>
+        <OpenHistorySidebarButton
+          onClick={decayHistorySidebar.open}
+          name="Historie"
+        />
+      </Stack>
+      <Stack direction="row" gap={3} flexWrap="wrap">
         <DetailsItem
           label="Kariesrisiko"
           value={decayRisk === undefined ? "-" : decayRisk ? "Ja" : "Nein"}

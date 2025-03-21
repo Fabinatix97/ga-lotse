@@ -5,10 +5,16 @@
 
 package de.eshg.relayserver.ws;
 
+import static de.eshg.lib.relay.MessageHeader.writeHeader;
+
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.RemovalNotification;
 import de.eshg.lib.common.EshgHttpHeaders;
 import de.eshg.lib.relay.MessageType;
 import de.eshg.lib.relay.SNIParser;
 import de.eshg.lib.relay.UUIDParser;
+import de.eshg.servicedirectory.util.X509Utils;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.CloseReason.CloseCodes;
 import jakarta.websocket.EndpointConfig;
@@ -22,9 +28,15 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.util.Collection;
+import java.util.Deque;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 import org.slf4j.Logger;
@@ -33,22 +45,29 @@ import org.slf4j.LoggerFactory;
 public class WebsocketEndpoint {
 
   private static final Logger logger = LoggerFactory.getLogger(WebsocketEndpoint.class);
-  private static final Map<String, WebsocketEndpoint> chatEndpoints = new ConcurrentHashMap<>();
+
+  private static final Map<String, WebsocketEndpointDeque> endpoints = new ConcurrentHashMap<>();
+  private static final Cache<UUID, ActiveConnection> activeConnections =
+      CacheBuilder.newBuilder()
+          .expireAfterAccess(Duration.ofDays(1))
+          .removalListener(WebsocketEndpoint::onActiveConnectionRemoval)
+          .build();
+
   private static boolean shutDown = false;
   private static final ReentrantLock lock = new ReentrantLock();
 
   private Session session;
   private String sni;
+  private String location;
 
   private final AtomicReference<String> outstandingPingPayload = new AtomicReference<>();
 
   @OnOpen
   public void onOpen(Session session, EndpointConfig epc) throws IOException {
     this.session = session;
-    this.sni =
-        getPreAuthenticatedPrincipal(
-            (String) epc.getUserProperties().get(EshgHttpHeaders.X_ESHG_CERT_SUBJECT.headerName));
-    if (this.sni == null) {
+    Map<String, String> subject = getSubject(epc.getUserProperties());
+    sni = subject.get("CN");
+    if (sni == null) {
       session.close(
           new CloseReason(
               CloseCodes.CANNOT_ACCEPT,
@@ -57,28 +76,30 @@ public class WebsocketEndpoint {
                   + " header is missing/invalid"));
       return;
     }
-    WebsocketEndpoint existing;
+    location = subject.get("L");
+    if (location == null || location.isBlank()) {
+      logger.warn("Connection without distinguishing location: {}", sni);
+    }
+    boolean existing;
     lock.lock();
     try {
       if (shutDown) {
         session.close(new CloseReason(CloseCodes.GOING_AWAY, "RelayServer shutdown"));
         return;
       }
-      existing = chatEndpoints.putIfAbsent(this.sni, this);
+      existing =
+          !endpoints.computeIfAbsent(sni, unused -> new WebsocketEndpointDeque()).addEndpoint(this);
     } finally {
       lock.unlock();
     }
-    if (existing != null) {
+    if (existing) {
       logger.warn(
-          "connection not opened for '{}' (peer already connected) - total connections: {}",
-          this.sni,
-          chatEndpoints.size());
+          "connection not opened for {} (peer already connected) - {}", this, connectionStats());
       session.close(
           new CloseReason(
-              CloseReason.CloseCodes.CANNOT_ACCEPT, "peer '" + this.sni + "' already connected"));
+              CloseReason.CloseCodes.CANNOT_ACCEPT, "peer '" + sni + "' already connected"));
     } else {
-      logger.info(
-          "connection opened for '{}' - total connections: {}", this.sni, chatEndpoints.size());
+      logger.info("connection opened for {} - {}", this, connectionStats());
     }
   }
 
@@ -103,11 +124,42 @@ public class WebsocketEndpoint {
     buffer.get();
     String sourceSni = checkSniMatch(SNIParser.readSNI(buffer));
     String targetSni = SNIParser.readSNI(buffer);
-    logger.trace("received message from {} to {} ({} byte)", sourceSni, targetSni, messageSize);
+    MessageType messageType = MessageType.ofByte(buffer.get());
+    logger.trace(
+        "received {} message from {} to {} ({} byte)", messageType, this, targetSni, messageSize);
     buffer.position(0);
-    WebsocketEndpoint server = chatEndpoints.get(targetSni);
-    if (server != null) {
-      server.session.getBasicRemote().sendBinary(buffer);
+    ActiveConnection activeConnection = activeConnections.getIfPresent(connectionId);
+    if (messageType == MessageType.CONNECTION_CLOSED) {
+      activeConnections.invalidate(connectionId);
+    }
+    if (activeConnection != null) {
+      logger.trace(
+          "message is {}-part of existing connection",
+          activeConnection.client() == this ? "request" : "response");
+      WebsocketEndpoint endpoint = activeConnection.getOther(this);
+      if (endpoint != null) {
+        endpoint.session.getBasicRemote().sendBinary(buffer);
+        return;
+      }
+    }
+    WebsocketEndpoint endpoint =
+        Optional.ofNullable(endpoints.get(targetSni))
+            .map(WebsocketEndpointDeque::rotateAndGet)
+            .orElse(null);
+    if (endpoint != null) {
+      if (messageType == MessageType.CONNECTION_CLOSED) {
+        logger.warn(
+            "new connection with connection closed message to {} - {} total active connections",
+            endpoint,
+            activeConnections.size());
+      } else {
+        logger.trace(
+            "starting new connection to {} - {} total active connections",
+            endpoint,
+            activeConnections.size());
+        activeConnections.put(connectionId, new ActiveConnection(this, endpoint));
+      }
+      endpoint.session.getBasicRemote().sendBinary(buffer);
     } else {
       logger.error(
           "cannot deliver message on connection {} from {} to {}: {} not connected",
@@ -130,13 +182,7 @@ public class WebsocketEndpoint {
   private void sendHostNotOnline(UUID connectionId, String sourceSni, String targetSni)
       throws IOException {
     ByteBuffer buffer = ByteBuffer.allocate(1024);
-    UUIDParser.write(connectionId, buffer);
-    buffer.put((byte) 0);
-    buffer.put(targetSni.getBytes(StandardCharsets.UTF_8));
-    buffer.put((byte) 0);
-    buffer.put(sourceSni.getBytes(StandardCharsets.UTF_8));
-    buffer.put((byte) 0);
-    buffer.put(MessageType.HOST_NOT_ONLINE.getByte());
+    writeHeader(buffer, connectionId, targetSni, sourceSni, MessageType.HOST_NOT_ONLINE);
 
     buffer.flip();
     session.getBasicRemote().sendBinary(buffer);
@@ -144,21 +190,35 @@ public class WebsocketEndpoint {
 
   @OnClose
   public void onClose(CloseReason closeReason) {
-    String peer = (this.sni == null ? "unkown peer" : this.sni);
+    String peer = (this.sni == null ? "unknown peer" : sni);
 
-    if (chatEndpoints.remove(peer, this)) {
-      logger.info(
-          "connection closed for {} due to {} - {} total connections",
-          peer,
-          closeReason,
-          chatEndpoints.size());
-    } else {
-      logger.warn(
-          "unknown connection closed for {} due to {} - {} total connections",
-          peer,
-          closeReason,
-          chatEndpoints.size());
+    boolean elementWasRemoved;
+    lock.lock();
+    try {
+      Deque<WebsocketEndpoint> actorEndpoints = endpoints.get(peer);
+      if (actorEndpoints == null) {
+        locConnectionClosure(closeReason, "unknown connection");
+        return;
+      }
+      synchronized (actorEndpoints) {
+        activeConnections.asMap().values().removeIf(c -> c.has(this));
+        elementWasRemoved = actorEndpoints.remove(this);
+      }
+      if (actorEndpoints.isEmpty()) {
+        endpoints.remove(peer, actorEndpoints);
+        locConnectionClosure(closeReason, "last connection");
+        return;
+      }
+    } finally {
+      lock.unlock();
     }
+    locConnectionClosure(
+        closeReason, elementWasRemoved ? "connection" : "unknown connection instance");
+  }
+
+  private void locConnectionClosure(CloseReason closeReason, String connectionName) {
+    logger.info(
+        "{} closed for {} due to {} - {}", connectionName, this, closeReason, connectionStats());
   }
 
   @OnError
@@ -176,18 +236,22 @@ public class WebsocketEndpoint {
     }
   }
 
-  public int getClientCount() {
-    return chatEndpoints.size();
+  public static int getClientCount() {
+    return endpoints.values().stream().mapToInt(Deque::size).sum();
   }
 
-  private String getPreAuthenticatedPrincipal(String subject) {
-    if (subject == null || subject.isBlank()) {
-      return null;
+  private static Map<String, String> getSubject(Map<String, Object> userProperties) {
+    String subjectString =
+        (String) userProperties.get(EshgHttpHeaders.X_ESHG_CERT_SUBJECT.headerName);
+    if (subjectString == null) {
+      logger.error("Missing {} header", EshgHttpHeaders.X_ESHG_CERT_SUBJECT.headerName);
+      return Map.of();
     }
-    if (subject.startsWith("CN=")) {
-      return subject.substring(3);
-    } else {
-      return null;
+    try {
+      return X509Utils.parseSubject(subjectString);
+    } catch (IllegalArgumentException e) {
+      logger.error("Failed to parse subject: {}", subjectString, e);
+      return Map.of();
     }
   }
 
@@ -224,17 +288,59 @@ public class WebsocketEndpoint {
   }
 
   public static void sendPingsToAll() {
-    chatEndpoints.values().forEach(WebsocketEndpoint::ping);
+    endpoints.values().stream().flatMap(Collection::stream).forEach(WebsocketEndpoint::ping);
   }
 
   public static void closeAllConnections() {
     lock.lock();
     try {
-      logger.info("Closing {} open WebSocket connections.", chatEndpoints.size());
+      logger.info("Closing {} open WebSocket connections.", getClientCount());
       shutDown = true;
-      chatEndpoints.values().forEach(WebsocketEndpoint::close);
+      endpoints.values().stream().flatMap(Collection::stream).forEach(WebsocketEndpoint::close);
     } finally {
       lock.unlock();
+    }
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof WebsocketEndpoint that)) {
+      return false;
+    }
+    return Objects.equals(sni, that.sni) && Objects.equals(location, that.location);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(sni, location);
+  }
+
+  @Override
+  public String toString() {
+    return "WebsocketEndpoint{" + "sni='" + sni + '\'' + ", location=" + location + '}';
+  }
+
+  private String connectionStats() {
+    return "%d total connections; connections for actor: %d"
+        .formatted(
+            endpoints.size(),
+            Optional.ofNullable(endpoints.get(sni)).map(ConcurrentLinkedDeque::size).orElse(0));
+  }
+
+  private static void onActiveConnectionRemoval(
+      RemovalNotification<UUID, ActiveConnection> removalNotification) {
+    if (!removalNotification.wasEvicted()) {
+      return;
+    }
+    ActiveConnection activeConnection = removalNotification.getValue();
+    if (activeConnection != null) {
+      logger.warn(
+          "Stale connection {} from {} to {} removed",
+          removalNotification.getKey(),
+          removalNotification.getValue().client(),
+          removalNotification.getValue().server());
+    } else {
+      logger.warn("Stale connection {} removed", removalNotification.getKey());
     }
   }
 }

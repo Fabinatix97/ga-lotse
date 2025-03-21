@@ -9,10 +9,10 @@ import { redirect } from "next/navigation";
 import { StiProtectionProcedureRouteParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(framedPageLayout)/layout";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 
-export default function StiProtectionProcedurePage(
+export default async function StiProtectionProcedurePage(
   props: DynamicPageProps<StiProtectionProcedureRouteParams>,
 ) {
-  const { id } = props.params;
+  const { id } = await props.params;
 
   redirect(routes.procedures.byId(id).details);
 }

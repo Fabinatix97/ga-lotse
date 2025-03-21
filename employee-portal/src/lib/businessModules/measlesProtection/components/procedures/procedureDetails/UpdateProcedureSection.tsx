@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DetailsSection } from "@eshg/lib-employee-portal";
 import { Alert as SharedAlert } from "@eshg/lib-portal/components/Alert";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
@@ -16,7 +17,6 @@ import { Formik, useFormikContext } from "formik";
 import { PropsWithChildren, useCallback } from "react";
 
 import { WrappedSelectField } from "@/lib/businessModules/measlesProtection/shared/WrappedSelectField";
-import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 
 import {
   OtherComment,

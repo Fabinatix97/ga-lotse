@@ -5,6 +5,13 @@
 
 "use client";
 
+import {
+  DataTable,
+  Pagination,
+  TablePage,
+  TableSheet,
+  useTableControl,
+} from "@eshg/lib-employee-portal";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { ApiProcedureType } from "@eshg/lib-procedures-api";
 import { Stack } from "@mui/joy";
@@ -14,16 +21,11 @@ import {
   UseFetchInboxProcedures,
 } from "@/lib/shared/api/queries/inboxProcedures";
 import { useSidebar } from "@/lib/shared/components/drawer/useSidebar";
-import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { buildOptionsFromProcedureTypes } from "@/lib/shared/components/procedures/helper";
 import { InboxProcedureDetailsSidebar } from "@/lib/shared/components/procedures/inbox/InboxProcedureDetailsSidebar";
 import { UseCreateInboxProcedure } from "@/lib/shared/components/procedures/inbox/hooks/useCreateInboxProcedureStatusTemplate";
 import { UseCloseInboxProcedure } from "@/lib/shared/components/procedures/inbox/mutations/useCloseInboxProcedureStatusTemplate";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { MultiSelectFilter } from "@/lib/shared/components/tableFilters/MultiSelectFilter";
-import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
 import { inboxProcedureColumns } from "./columns";
 import { statusNames } from "./constants";

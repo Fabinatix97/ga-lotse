@@ -67,6 +67,7 @@ function BadgeAvatar({
 
   return (
     <Badge
+      data-testid="chat-user-avatar"
       anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       badgeInset="14%"
       invisible={invisiblePresence}

@@ -7,10 +7,10 @@ import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 
 import { MedicalHistoriesContent } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/medicalHistory/MedicalHistoryContent";
 
-export default function MedicalHistories(
+export default async function MedicalHistories(
   props: DynamicPageProps<{ id: string }>,
 ) {
-  const { id } = props.params;
+  const { id } = await props.params;
 
   return <MedicalHistoriesContent procedureId={id}></MedicalHistoriesContent>;
 }

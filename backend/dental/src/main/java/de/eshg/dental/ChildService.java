@@ -25,7 +25,9 @@ import de.eshg.dental.api.ChildPaginationAndSortParameters;
 import de.eshg.dental.api.ChildSearchResult;
 import de.eshg.dental.api.ChildSortKey;
 import de.eshg.dental.api.CreateChildRequest;
+import de.eshg.dental.api.SyncPersonRequest;
 import de.eshg.dental.api.UpdateChildRequest;
+import de.eshg.dental.api.UpdatePersonRequest;
 import de.eshg.dental.business.model.ChildWithAugmentedData;
 import de.eshg.dental.business.model.PagedChildren;
 import de.eshg.dental.client.PersonClient;
@@ -34,12 +36,14 @@ import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.domain.model.FluoridationConsent;
 import de.eshg.dental.domain.model.Person;
+import de.eshg.dental.domain.model.ScreeningExaminationResult;
 import de.eshg.dental.domain.repository.ChildRepository;
 import de.eshg.dental.importer.ChildColumn;
 import de.eshg.dental.importer.ChildImporter;
 import de.eshg.dental.importer.ChildRowReader;
 import de.eshg.dental.mapper.ChildMapper;
 import de.eshg.dental.mapper.InstitutionMapper;
+import de.eshg.dental.statistic.StatisticsCalculationHelper;
 import de.eshg.dental.util.ChildPageSpec;
 import de.eshg.dental.util.ChildSystemProgressEntryType;
 import de.eshg.dental.util.ExceptionUtil;
@@ -61,9 +65,9 @@ import de.eshg.validation.ValidationUtil;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.Year;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -212,20 +216,13 @@ public class ChildService {
 
   private Optional<ChildWithAugmentedData> findLatestChildWithSearchParameters(
       ProcedureSearchParameters searchParameters) {
-    PersonKeyAttributes personKeyAttributes =
-        new PersonKeyAttributes(
-            searchParameters.searchFirstName(),
-            searchParameters.searchLastName(),
-            searchParameters.searchDateOfBirth());
 
     List<Child> children =
-        procedureSearchService
-            .searchProceduresByPersons(
-                Set.of(personKeyAttributes),
-                Person.PERSON_TYPE_USED_FOR_CHILDREN,
-                null,
-                Person.class)
-            .getOrDefault(personKeyAttributes, Collections.emptyList());
+        procedureSearchService.searchProceduresByPerson(
+            searchParameters.searchFirstName(),
+            searchParameters.searchLastName(),
+            searchParameters.searchDateOfBirth(),
+            Person.PERSON_TYPE_USED_FOR_CHILDREN);
 
     Optional<Child> latestChild = children.stream().max(Comparator.comparing(Child::getId));
     return latestChild.map(this::augmentWithDetails);
@@ -267,7 +264,9 @@ public class ChildService {
         .map(ChildWithAugmentedData::child)
         .map(Child::getFluoridationConsents)
         .flatMap(Collection::stream)
-        .sorted(Comparator.comparing(FluoridationConsent::getModifiedAt).reversed())
+        .sorted(
+            Comparator.comparing(FluoridationConsent::getDateOfConsent, Comparator.reverseOrder())
+                .thenComparing(FluoridationConsent::getModifiedAt, Comparator.reverseOrder()))
         .toList();
   }
 
@@ -469,7 +468,7 @@ public class ChildService {
     return childRepository.findDistinctInstitutionGroups(institutionId);
   }
 
-  public void update(Child child, UpdateChildRequest request) {
+  public void updateChildData(Child child, UpdateChildRequest request) {
     ValidationUtil.validateVersion(request.version(), child);
 
     boolean updateGroup = !Objects.equals(request.groupName(), child.getGroupName());
@@ -551,6 +550,77 @@ public class ChildService {
     for (Child child : childrenToClose) {
       closeChild(child);
     }
+  }
+
+  void updateChildPerson(Child child, UpdatePersonRequest request) {
+    ValidationUtil.validateVersion(request.version(), child);
+
+    UUID currentFileStateId = child.getChildIdFromCentralFile();
+    UUID updatedFileStateId =
+        personClient.updateChildInCentralFile(
+            currentFileStateId, ChildMapper.mapToPersonDetailsDto(request));
+
+    if (!currentFileStateId.equals(updatedFileStateId)) {
+      child.getChild().setCentralFileStateId(updatedFileStateId);
+      progressEntryUtil.addProgressEntryWithPreviousPersonFileStateId(child, currentFileStateId);
+      childRepository.flush();
+    }
+  }
+
+  public Child syncPersonData(UUID childId, SyncPersonRequest request) {
+    Person person = findPersonForUpdate(childId, request.fileStateId(), request.personVersion());
+    Child child = person.getProcedure();
+    UUID updatedFileStateId =
+        personClient.syncPerson(person.getCentralFileStateId(), request.referenceVersion());
+    person.setCentralFileStateId(updatedFileStateId);
+
+    addSyncSystemProgressEntry(child);
+    childRepository.flush();
+    return child;
+  }
+
+  private Person findPersonForUpdate(UUID childId, UUID centralFileStateId, long version) {
+    Person person =
+        childRepository.findByProcedureExternalIdAndFileStateIdForUpdate(
+            childId, centralFileStateId);
+    if (person == null) {
+      throw new NotFoundException("Person with given fileStateId for given child not found");
+    }
+    ValidationUtil.validateVersion(version, person);
+    return person;
+  }
+
+  private void addSyncSystemProgressEntry(Child child) {
+    boolean hasBeenClosed = child.getProcedureStatus() == ProcedureStatus.CLOSED;
+    if (hasBeenClosed) {
+      reopenChild(child);
+    }
+
+    progressEntryUtil.addSystemProgressEntry(
+        child, ChildSystemProgressEntryType.CHILD_SYNCED_WITH_CENTRAL_FILE);
+
+    if (hasBeenClosed) {
+      closeChild(child);
+    }
+  }
+
+  void updateDecayRisk(LocalDate dateOfBirth, List<Examination> examinations) {
+    for (Examination examination : examinations) {
+      if (examination.getResult()
+          instanceof ScreeningExaminationResult screeningExaminationResult) {
+        screeningExaminationResult.setDecayRisk(
+            calculateDecayRisk(dateOfBirth, screeningExaminationResult));
+      }
+    }
+  }
+
+  private static Boolean calculateDecayRisk(
+      LocalDate dateOfBirth, ScreeningExaminationResult screeningExamination) {
+    return StatisticsCalculationHelper.calculateDecayRisk(
+            screeningExamination.getToothDiagnoses(),
+            ExaminationService.calculateAgeOfChild(
+                screeningExamination.getExamination(), dateOfBirth))
+        .orElse(null);
   }
 
   record ChildWithScore(GetPersonFileStateResponse fileState, Child child, int score) {

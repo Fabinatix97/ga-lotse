@@ -20,8 +20,10 @@ import de.eshg.dental.api.GetChildrenResponse;
 import de.eshg.dental.api.GetChildrenWithDetailsResponse;
 import de.eshg.dental.api.GetInstitutionGroupsResponse;
 import de.eshg.dental.api.SearchChildrenResponse;
+import de.eshg.dental.api.SyncPersonRequest;
 import de.eshg.dental.api.UpdateChildRequest;
 import de.eshg.dental.api.UpdateExaminationRequest;
+import de.eshg.dental.api.UpdatePersonRequest;
 import de.eshg.dental.business.model.ChildWithAugmentedData;
 import de.eshg.dental.business.model.PagedChildren;
 import de.eshg.dental.domain.model.Child;
@@ -123,6 +125,32 @@ public class ChildController {
     return getChildDetails(child);
   }
 
+  @PutMapping("/{childId}/person")
+  @Transactional
+  public ChildDetailsDto updateChildPerson(
+      @PathVariable("childId") UUID childId, @Valid @RequestBody UpdatePersonRequest request) {
+    Child child = childService.findByExternalIdForUpdate(childId);
+    ChildDetailsDto childDetails = getChildDetails(child);
+    ProcedureValidator.validateProcedureStatusNotClosed(child);
+    childService.updateChildPerson(child, request);
+    if (!childDetails.dateOfBirth().equals(request.dateOfBirth())) {
+      childService.updateDecayRisk(request.dateOfBirth(), child.getExaminations());
+    }
+    return getChildDetails(child);
+  }
+
+  @PutMapping("/{childId}/sync-person")
+  @Transactional
+  public ChildDetailsDto syncPersonData(
+      @PathVariable("childId") UUID childId, @Valid @RequestBody SyncPersonRequest request) {
+    Child updatedChild = childService.syncPersonData(childId, request);
+
+    ChildDetailsDto childDetails = getChildDetails(updatedChild);
+    childService.updateDecayRisk(childDetails.dateOfBirth(), updatedChild.getExaminations());
+
+    return childDetails;
+  }
+
   @PutMapping("/{childId}")
   @Transactional
   public ChildDetailsDto updateChild(
@@ -132,7 +160,7 @@ public class ChildController {
     ProcedureValidator.validateProcedureStatusNotClosed(child);
     validator.validateInstitution(request.institutionId());
     validator.validateFluoridationConsent(request.fluoridationConsent());
-    childService.update(child, request);
+    childService.updateChildData(child, request);
     return getChildDetails(child);
   }
 

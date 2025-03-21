@@ -10,6 +10,7 @@ import {
   StickyToolbarLayout,
 } from "@eshg/lib-employee-portal";
 import { DynamicLayoutProps } from "@eshg/lib-portal/types/pageParams";
+import { use } from "react";
 
 import { EditInspectionRouteParams } from "@/app/(businessModules)/inspection/procedures/[id]/layout";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
@@ -18,7 +19,7 @@ import { SubPageHeader } from "@/lib/shared/components/page/SubPageHeader";
 export default function InspectionReportEditorPageLayout(
   props: DynamicLayoutProps<EditInspectionRouteParams>,
 ) {
-  const { id } = props.params;
+  const { id } = use(props.params);
 
   // the MainContentLayout needs zero padding/margin because of the bottom
   // toolbar that's contained therein. The padding/margin is added to some

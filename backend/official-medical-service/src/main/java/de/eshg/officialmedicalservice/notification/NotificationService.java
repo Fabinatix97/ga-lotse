@@ -5,10 +5,10 @@
 
 package de.eshg.officialmedicalservice.notification;
 
-import static de.eshg.base.mail.MailType.HTML;
+import static de.eshg.base.mail.MailType.HTML_AND_PLAIN_TEXT;
 
 import de.eshg.base.mail.MailType;
-import de.eshg.departmentinfo.DepartmentInfoService;
+import de.eshg.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
 import de.eshg.officialmedicalservice.procedure.api.AffectedPersonDto;
 import java.util.List;
@@ -47,7 +47,7 @@ public class NotificationService {
   private final MailClient mailClient;
   private final NotificationText notificationText;
   private final String citizenPortalUrl;
-  private final DepartmentInfoService departmentInfoService;
+  private final DepartmentInfoConfigService departmentInfoService;
 
   @FunctionalInterface
   public interface MailEnabledProvider {
@@ -59,7 +59,7 @@ public class NotificationService {
       MailClient mailClient,
       NotificationText notificationText,
       @Value("${eshg.citizen-portal.reverse-proxy.url}") String citizenPortalUrl,
-      DepartmentInfoService departmentInfoService) {
+      DepartmentInfoConfigService departmentInfoService) {
     this.moduleClientAuthenticator = moduleClientAuthenticator;
     this.mailClient = mailClient;
     this.notificationText = notificationText;
@@ -80,7 +80,7 @@ public class NotificationService {
         newCitizenUserSubject,
         () ->
             sendMailWithModuleClientAuthentication(
-                newCitizenUserSubject, newCitizenUserBody, person, HTML));
+                newCitizenUserSubject, newCitizenUserBody, person, HTML_AND_PLAIN_TEXT));
   }
 
   public void notifyNewCitizenProcedure(AffectedPersonDto person) {
@@ -89,7 +89,7 @@ public class NotificationService {
         notificationText.assembleNewCitizenProcedureBody(person.firstName(), person.lastName());
 
     sendMailWithModuleClientAuthentication(
-        newCitizenProcedureSubject, newCitizenProcedureBody, person, HTML);
+        newCitizenProcedureSubject, newCitizenProcedureBody, person, HTML_AND_PLAIN_TEXT);
   }
 
   public void notifyNewDocument(
@@ -103,7 +103,7 @@ public class NotificationService {
             person.firstName(), person.lastName(), documentTypeDe, helpTextDe);
 
     sendMailWithModuleClientAuthentication(
-        newCitizenProcedureSubject, newCitizenProcedureBody, person, HTML);
+        newCitizenProcedureSubject, newCitizenProcedureBody, person, HTML_AND_PLAIN_TEXT);
   }
 
   public void notifyNewAppointmentWithBooking(
@@ -122,7 +122,10 @@ public class NotificationService {
             appointmentDuration);
 
     sendMailWithModuleClientAuthentication(
-        newAppointmentWithBookingSubject, newAppointmentWithBookingBody, person, HTML);
+        newAppointmentWithBookingSubject,
+        newAppointmentWithBookingBody,
+        person,
+        HTML_AND_PLAIN_TEXT);
   }
 
   public void notifyNewAppointmentSelfBooking(
@@ -134,7 +137,10 @@ public class NotificationService {
             person.firstName(), person.lastName(), appointmentDuration);
 
     sendMailWithModuleClientAuthentication(
-        newAppointmentWithBookingSubject, newAppointmentWithBookingBody, person, HTML);
+        newAppointmentWithBookingSubject,
+        newAppointmentWithBookingBody,
+        person,
+        HTML_AND_PLAIN_TEXT);
   }
 
   public void notifyCancelAppointment(
@@ -145,7 +151,7 @@ public class NotificationService {
             person.firstName(), person.lastName(), appointmentDate, appointmentTime);
 
     sendMailWithModuleClientAuthentication(
-        cancelAppointmentSubject, cancelAppointmentBody, person, HTML);
+        cancelAppointmentSubject, cancelAppointmentBody, person, HTML_AND_PLAIN_TEXT);
   }
 
   public void notifyRebookAppointment(
@@ -165,7 +171,7 @@ public class NotificationService {
             newAppointmentTime);
 
     sendMailWithModuleClientAuthentication(
-        rebookAppointmentSubject, rebookAppointmentBody, person, HTML);
+        rebookAppointmentSubject, rebookAppointmentBody, person, HTML_AND_PLAIN_TEXT);
   }
 
   public void notifyCloseAppointment(AffectedPersonDto person) {
@@ -174,7 +180,49 @@ public class NotificationService {
         notificationText.assembleCloseAppointmentBody(person.firstName(), person.lastName());
 
     sendMailWithModuleClientAuthentication(
-        closeAppointmentSubject, closeAppointmentBody, person, HTML);
+        closeAppointmentSubject, closeAppointmentBody, person, HTML_AND_PLAIN_TEXT);
+  }
+
+  public void notifyBookAppointmentCp(
+      AffectedPersonDto person, String appointmentDate, String appointmentTime) {
+    String bookAppointmentCpSubject = notificationText.getBookAppointmentCpSubject();
+    String bookAppointmentCpBody =
+        notificationText.assembleBookAppointmentCpBody(
+            person.firstName(), person.lastName(), appointmentDate, appointmentTime);
+
+    sendMailWithModuleClientAuthentication(
+        bookAppointmentCpSubject, bookAppointmentCpBody, person, HTML_AND_PLAIN_TEXT);
+  }
+
+  public void notifyRebookAppointmentCp(
+      AffectedPersonDto person,
+      String oldAppointmentDate,
+      String oldAppointmentTime,
+      String newAppointmentDate,
+      String newAppointmentTime) {
+    String rebookAppointmentCpSubject = notificationText.getRebookAppointmentCpSubject();
+    String rebookAppointmentCpBody =
+        notificationText.assembleRebookAppointmentCpBody(
+            person.firstName(),
+            person.lastName(),
+            oldAppointmentDate,
+            oldAppointmentTime,
+            newAppointmentDate,
+            newAppointmentTime);
+
+    sendMailWithModuleClientAuthentication(
+        rebookAppointmentCpSubject, rebookAppointmentCpBody, person, HTML_AND_PLAIN_TEXT);
+  }
+
+  public void notifyCancelAppointmentCp(
+      AffectedPersonDto person, String appointmentDate, String appointmentTime) {
+    String cancelAppointmentCpSubject = notificationText.getCancelAppointmentCpSubject();
+    String cancelAppointmentCpBody =
+        notificationText.assembleCancelAppointmentCpBody(
+            person.firstName(), person.lastName(), appointmentDate, appointmentTime);
+
+    sendMailWithModuleClientAuthentication(
+        cancelAppointmentCpSubject, cancelAppointmentCpBody, person, HTML_AND_PLAIN_TEXT);
   }
 
   private NotificationSummary doNotification(

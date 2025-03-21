@@ -5,6 +5,7 @@
 
 "use client";
 
+import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
 import { ApiBusinessModule, ApiTask, ApiUser } from "@eshg/lib-procedures-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { differenceInDays } from "date-fns";
@@ -20,9 +21,6 @@ import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 export interface TaskCounts {

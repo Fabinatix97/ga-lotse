@@ -5,19 +5,49 @@
 
 package de.eshg.lib.statistics.attributes;
 
+import de.eshg.lib.statistics.api.DataPrivacyCategory;
 import de.eshg.lib.statistics.api.ValueOptionInternal;
+import de.eshg.lib.statistics.api.ValueType;
 
-public final class DateAttribute extends AttributeData {
-  public DateAttribute(String name, String code, String category, boolean mandatory) {
-    this(name, code, null, category, mandatory);
-  }
+public final class DateAttribute {
+  private DateAttribute() {}
 
-  public DateAttribute(
+  public static AttributeData create(
       String name,
       String code,
-      ValueOptionInternal valueOption,
       String category,
-      boolean mandatory) {
-    super(name, code, valueOption, category, mandatory);
+      boolean mandatory,
+      ValueOptionInternal valueOption,
+      DataPrivacyCategory dataPrivacyCategory) {
+    return createDateAttribute(name, code, category, mandatory, valueOption, dataPrivacyCategory);
+  }
+
+  public static AttributeData createSensitive(
+      String name,
+      String code,
+      String category,
+      boolean mandatory,
+      ValueOptionInternal valueOption,
+      SensitiveParameters sensitiveParameters) {
+    AttributeData attribute =
+        createDateAttribute(
+            name, code, category, mandatory, valueOption, DataPrivacyCategory.SENSITIVE);
+    attribute.setLDiversity(sensitiveParameters.lDiversity());
+    attribute.setTCloseness(sensitiveParameters.tCloseness());
+    return attribute;
+  }
+
+  private static AttributeData createDateAttribute(
+      String name,
+      String code,
+      String category,
+      boolean mandatory,
+      ValueOptionInternal valueOption,
+      DataPrivacyCategory dataPrivacyCategory) {
+    AttributeData attribute =
+        AttributeData.createAttribute(name, code, category, mandatory, dataPrivacyCategory);
+    attribute.setValueType(ValueType.DATE);
+    attribute.setValueOption(valueOption);
+    return attribute;
   }
 }

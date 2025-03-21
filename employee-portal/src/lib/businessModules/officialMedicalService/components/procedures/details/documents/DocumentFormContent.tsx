@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DetailsItem } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import {
   ApiDocument,
@@ -26,7 +27,6 @@ import { FilesSection } from "@/lib/businessModules/officialMedicalService/compo
 import { statusColorsDocumentStatus } from "@/lib/businessModules/officialMedicalService/shared/constants";
 import { STATUS_NAMES_DOCUMENT_STATUS } from "@/lib/businessModules/officialMedicalService/shared/translations";
 import { EditButton } from "@/lib/shared/components/buttons/EditButton";
-import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export function DocumentFormContent(props: {

@@ -15,7 +15,9 @@ import { isDateCurrentDateOrGreater } from "@/lib/businessModules/officialMedica
 import { NoAppointmentCard } from "@/lib/businessModules/officialMedicalService/components/appointment/NoAppointmentCard";
 import { BookAppointment } from "@/lib/businessModules/officialMedicalService/components/personalArea/bookAppointment/BookAppointment";
 import { BookAppointmentSidePanel } from "@/lib/businessModules/officialMedicalService/components/personalArea/bookAppointment/BookAppointmentSidePanel";
+import { useCitizenRoutes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
+import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 export interface BookAppointmentFormValues {
   appointment?: ApiAppointment;
@@ -28,6 +30,9 @@ interface BookAppointmentWrapperProps {
 export function BookAppointmentWrapper({
   procedure,
 }: BookAppointmentWrapperProps) {
+  const citizenRoutes = useCitizenRoutes();
+  const accessCode = useAccessCodeParam();
+
   const [{ data: freeAppointments }] = useSuspenseQueries({
     queries: [
       useGetFreeAppointmentsForCitizen(procedure.appointment!.appointmentType),
@@ -48,6 +53,6 @@ export function BookAppointmentWrapper({
       sidePanel={<BookAppointmentSidePanel procedure={procedure} />}
     />
   ) : (
-    <NoAppointmentCard />
+    <NoAppointmentCard href={citizenRoutes.personalArea.index(accessCode)} />
   );
 }

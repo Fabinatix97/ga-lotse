@@ -5,6 +5,7 @@
 
 "use client";
 
+import { PageGrid } from "@eshg/lib-employee-portal";
 import { DeleteOutlined } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import { Button, Divider, Grid, Sheet, Stack, Typography } from "@mui/joy";
@@ -17,7 +18,6 @@ import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
-import { PageGrid } from "@/lib/shared/components/page/PageGrid";
 import { keyDocumentTypes } from "@/lib/shared/components/procedures/progress-entries/constants";
 import { useDeletionProps } from "@/lib/shared/components/procedures/progress-entries/hooks/useDeletionProps";
 import { useProgressEntriesFilterSettings } from "@/lib/shared/components/procedures/progress-entries/hooks/useProgressEntriesFilterSettings";

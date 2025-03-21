@@ -4,9 +4,8 @@
  */
 
 import { ApiGender, ApiSalutation } from "@eshg/base-api";
+import { BaseAddressFormInputs } from "@eshg/lib-employee-portal";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
-
-import { BaseAddressFormInputs } from "@/lib/shared/components/form/address/helpers";
 
 export interface BaseFacilityContactPerson {
   emailAddress: string;

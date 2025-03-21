@@ -4,6 +4,7 @@
  */
 
 import { ApiWebSearchEntry } from "@eshg/inspection-api";
+import { SubRowColumns } from "@eshg/lib-employee-portal";
 import { Add } from "@mui/icons-material";
 import { Checkbox, Chip, CircularProgress, Stack } from "@mui/joy";
 import { Cell, ColumnHelper, createColumnHelper } from "@tanstack/react-table";
@@ -12,7 +13,6 @@ import { isDefined } from "remeda";
 
 import { translateWebSearchStatus } from "@/lib/businessModules/inspection/shared/enums";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
-import { SubRowColumns } from "@/lib/shared/components/table/DataTable";
 
 const columnHelper: ColumnHelper<ApiWebSearchEntry> =
   createColumnHelper<ApiWebSearchEntry>();

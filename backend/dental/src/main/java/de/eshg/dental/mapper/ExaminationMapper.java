@@ -178,6 +178,7 @@ public final class ExaminationMapper {
       case N -> MainResultDto.N;
       case P -> MainResultDto.P;
       case K -> MainResultDto.K;
+      case U -> MainResultDto.U;
     };
   }
 
@@ -215,6 +216,7 @@ public final class ExaminationMapper {
       case N -> MainResult.N;
       case P -> MainResult.P;
       case K -> MainResult.K;
+      case U -> MainResult.U;
     };
   }
 

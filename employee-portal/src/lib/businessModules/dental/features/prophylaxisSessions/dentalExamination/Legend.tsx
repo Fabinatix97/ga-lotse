@@ -134,6 +134,7 @@ const POSSIBLE_DIAGNOSES = {
   V: "Versiegelt",
   N: "Nicht beurteilbar",
   P: "Platzhalter",
+  U: "BZ nicht da",
   DA: "Doppelte Anlage",
   FA: "Formanomalie",
   FIS: "Fistel",

@@ -25,13 +25,13 @@ function parseSearchParams(searchParams: SearchParams): HistorySearchParams {
   };
 }
 
-export default function ContactHistoryModalPage(
+export default async function ContactHistoryModalPage(
   props: DynamicPageProps<{
     id: string;
   }>,
 ) {
-  const { id } = props.params;
-  const searchParams = props.searchParams;
+  const { id } = await props.params;
+  const searchParams = await props.searchParams;
   const { historyId, addressId } = parseSearchParams(searchParams);
 
   if (isNullish(historyId)) {

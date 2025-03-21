@@ -1,0 +1,72 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1741345411487-1">
+    <delete tableName="department_info"/>
+    <createTable tableName="department_info_config">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_department_info_config"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="department_info_id" type="BIGINT"/>
+    </createTable>
+    <createTable tableName="sex_work_department_info_config">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_sex_work_department_info_config"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="department_info_id" type="BIGINT"/>
+    </createTable>
+    <createTable tableName="sti_consultation_department_info_config">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_sti_consultation_department_info_config"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="department_info_id" type="BIGINT"/>
+    </createTable>
+    <addUniqueConstraint columnNames="department_info_id"
+      constraintName="department_info_config_department_info_id_key"
+      tableName="department_info_config"/>
+    <addUniqueConstraint columnNames="department_info_id"
+      constraintName="sex_work_department_info_config_department_info_id_key"
+      tableName="sex_work_department_info_config"/>
+    <addUniqueConstraint columnNames="department_info_id"
+      constraintName="sti_consultation_department_info_config_department_info_id_key"
+      tableName="sti_consultation_department_info_config"/>
+    <addForeignKeyConstraint baseColumnNames="department_info_id"
+      baseTableName="department_info_config"
+      constraintName="fk_department_info_config_department_info"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="department_info" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="department_info_id"
+      baseTableName="sex_work_department_info_config"
+      constraintName="fk_sex_work_department_info_config_department_info"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="department_info" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="department_info_id"
+      baseTableName="sti_consultation_department_info_config"
+      constraintName="fk_sti_consultation_department_info_config_department_info"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="department_info" validate="true"/>
+    <dropTable tableName="sex_work_department_info"/>
+    <dropTable tableName="sti_consultation_department_info"/>
+  </changeSet>
+</databaseChangeLog>

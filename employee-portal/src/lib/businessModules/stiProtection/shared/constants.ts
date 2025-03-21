@@ -66,13 +66,6 @@ export const CONCERN_VALUES: EnumMap<ApiConcern> = {
   [ApiConcern.SexWork]: "Sexarbeit",
 };
 
-export const GENDER_VALUES: EnumMap<ApiGender> = {
-  [ApiGender.Diverse]: "Divers",
-  [ApiGender.Female]: "Weiblich",
-  [ApiGender.Male]: "Männlich",
-  [ApiGender.NotSpecified]: "Keine Angabe",
-};
-
 export const APPOINTMENT_TYPES: EnumMap<ApiAppointmentType> = {
   [ApiAppointmentType.CanChild]: "Kann-Kinder",
   [ApiAppointmentType.Consultation]: "Beratung",
@@ -132,14 +125,18 @@ export const examinableIllnessNames = {
 
 export const LAB_STATUS_VALUES: EnumMap<ApiLabStatus> = {
   [ApiLabStatus.Open]: "Offen",
-  [ApiLabStatus.InProgress]: "In Bearbeitung",
-  [ApiLabStatus.Closed]: "Geschlossen",
+  [ApiLabStatus.TestsRequested]: "Tests angefordert",
+  [ApiLabStatus.TestsConducted]: "Tests durchgeführt",
+  [ApiLabStatus.ResultsRecorded]: "Ergebnisse eingetragen",
+  [ApiLabStatus.ResultsCommunicated]: "Ergebnisse mitgeteilt",
 };
 
 export const LAB_STATUS_COLORS: EnumMap<ApiLabStatus, ChipProps["color"]> = {
   [ApiLabStatus.Open]: "neutral",
-  [ApiLabStatus.InProgress]: "primary",
-  [ApiLabStatus.Closed]: "success",
+  [ApiLabStatus.TestsRequested]: "primary",
+  [ApiLabStatus.TestsConducted]: "primary",
+  [ApiLabStatus.ResultsRecorded]: "primary",
+  [ApiLabStatus.ResultsCommunicated]: "success",
 };
 
 export const PROCEDURE_ORIGIN_VALUES: EnumMap<ApiStiProcedureOrigin> = {

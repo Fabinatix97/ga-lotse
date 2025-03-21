@@ -32,7 +32,7 @@ export function NavMenu({
   navigationItems: NavigationItem[];
 }) {
   const [anchorEl, setAnchorEl] = useState(undefined);
-  const boxRef = useRef();
+  const boxRef = useRef(undefined);
 
   function handleClick() {
     setAnchorEl(boxRef.current);

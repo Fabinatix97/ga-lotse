@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { BaseAddress } from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import {
@@ -12,7 +13,6 @@ import {
 import { Stack } from "@mui/joy";
 
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { BaseAddress } from "@/lib/shared/helpers/address";
 
 interface AddressDetailsProps {
   address?: BaseAddress;

@@ -4,7 +4,14 @@
  */
 
 import { ApiBaseFeature, ApiUserRole } from "@eshg/base-api";
-import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
+import {
+  BaseAddressDetailsColumn,
+  ContentPanel,
+  DetailsColumn,
+  DetailsRow,
+  ResponsiveDivider,
+  useHasUserRoleCheck,
+} from "@eshg/lib-employee-portal";
 import {
   GENDER_VALUES,
   SALUTATION_VALUES,
@@ -25,13 +32,8 @@ import {
 import { contactCategoryNames } from "@/lib/baseModule/shared/translations";
 import { ChatUserId } from "@/lib/businessModules/chat/components/ChatUserId";
 import { routes } from "@/lib/businessModules/chat/shared/routes";
-import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
-import { BaseAddressDetails } from "@/lib/shared/components/address/BaseAddressDetails";
 import { EditButton } from "@/lib/shared/components/buttons/EditButton";
-import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
-import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
 import {
   ExternalLinkDetailsCell,
   emailHref,
@@ -148,7 +150,7 @@ export function ContactDetails({ contact }: { contact: Contact }) {
 
         {isDefined(contact.contactAddress) && (
           <DetailsColumn>
-            <BaseAddressDetails
+            <BaseAddressDetailsColumn
               address={contact.contactAddress}
               sx={{ flex: 1 }}
             />
@@ -156,7 +158,9 @@ export function ContactDetails({ contact }: { contact: Contact }) {
               <>
                 <Divider />
                 <Typography level={"title-md"}>Rechnungsadresse</Typography>
-                <BaseAddressDetails address={contact.differentBillingAddress} />
+                <BaseAddressDetailsColumn
+                  address={contact.differentBillingAddress}
+                />
               </>
             )}
           </DetailsColumn>

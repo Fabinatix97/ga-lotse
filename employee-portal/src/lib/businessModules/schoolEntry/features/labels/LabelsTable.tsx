@@ -5,6 +5,7 @@
 
 "use client";
 
+import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
 import { Add } from "@mui/icons-material";
 import EditIcon from "@mui/icons-material/EditOutlined";
 import { Button } from "@mui/joy";
@@ -15,9 +16,6 @@ import { useCreateLabelSidebar } from "@/lib/businessModules/schoolEntry/feature
 import { useUpdateLabelSidebar } from "@/lib/businessModules/schoolEntry/features/labels/UpdateLabelSidebar";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { ChipWithTooltip } from "@/lib/shared/components/chip/ChipWithTooltip";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 
 const columnHelper = createColumnHelper<Label>();
 

@@ -24,6 +24,7 @@ def typesDir = layout.buildDirectory.dir('types')
 def configDir = rootProject.layout.projectDirectory.dir('config')
 
 tasks.register('resolveTsPaths', PnpmTask) {
+  mustRunAfter 'format', 'lintFix'
   group = 'package'
   inputs.dir typesDir
   outputs.dir typesDir

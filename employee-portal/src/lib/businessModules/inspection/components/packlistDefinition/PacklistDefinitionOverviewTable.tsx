@@ -9,6 +9,7 @@ import {
   ApiPacklistDefinition,
   ApiPacklistDefinitionRevision,
 } from "@eshg/inspection-api";
+import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { Add, Edit, History } from "@mui/icons-material";
 import { Button, Stack } from "@mui/joy";
@@ -21,9 +22,6 @@ import { EditPacklistDefinitionSidebar } from "@/lib/businessModules/inspection/
 import { PacklistRevisionsSidebar } from "@/lib/businessModules/inspection/components/packlistDefinition/sidebars/PacklistRevisionsSidebar";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 
 const columnHelper = createColumnHelper<ApiPacklistDefinition>();
 

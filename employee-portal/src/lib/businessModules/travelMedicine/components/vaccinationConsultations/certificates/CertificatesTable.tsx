@@ -5,6 +5,7 @@
 
 "use client";
 
+import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   ApiProcedureStatus,
@@ -24,9 +25,6 @@ import {
 import { useCertificateSidebar } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/certificates/CertificateSidebar";
 import { columns } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/certificates/columns";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TablePage } from "@/lib/shared/components/table/TablePage";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 
 export function CertificatesTable({
   procedureId,

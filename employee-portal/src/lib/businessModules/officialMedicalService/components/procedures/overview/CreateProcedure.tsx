@@ -6,6 +6,7 @@
 "use client";
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
+import { DefaultPersonFormValues } from "@eshg/lib-employee-portal";
 import { ApiPostEmployeeOmsProcedureRequest } from "@eshg/official-medical-service-api";
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
@@ -21,7 +22,6 @@ import {
   PersonSidebar,
   PersonSidebarProps,
 } from "@/lib/shared/components/personSidebar/PersonSidebar";
-import { DefaultPersonFormValues } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
 import {
   SidebarWithFormRefProps,
   useSidebarWithFormRef,

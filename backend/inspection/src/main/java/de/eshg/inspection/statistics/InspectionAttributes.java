@@ -16,34 +16,34 @@ import de.eshg.lib.statistics.attributes.ValueWithOptionsAttribute;
 import java.util.ArrayList;
 
 public enum InspectionAttributes implements AttributeInfo {
-  PROCEDURE_ID(new ProcedureAttribute("Vorgangsreferenz", ATTRIBUTE_CATEGORY_INSPECTION, true)),
+  PROCEDURE_ID(ProcedureAttribute.create("Vorgangsreferenz", ATTRIBUTE_CATEGORY_INSPECTION, true)),
 
   FACILITY_CENTRAL_FILE_ID(
-      new CentralFileIdFacilityAttribute(
+      CentralFileIdFacilityAttribute.create(
           "Einrichtung", "FACILITY_CENTRAL_FILE_ID", ATTRIBUTE_CATEGORY_INSPECTION, true)),
 
   YEAR_OF_INSPECTION(
-      new IntegerAttribute(
+      IntegerAttribute.create(
           "Begehungsjahr", "YEAR_OF_INSPECTION", ATTRIBUTE_CATEGORY_INSPECTION, false)),
 
   OBJECT_TYPE(
-      new ValueWithOptionsAttribute(
-          "Objekttyp", "OBJECT_TYPE", new ArrayList<>(), ATTRIBUTE_CATEGORY_INSPECTION, false)),
+      ValueWithOptionsAttribute.create(
+          "Objekttyp", "OBJECT_TYPE", ATTRIBUTE_CATEGORY_INSPECTION, false, new ArrayList<>())),
 
   RESULT(
-      new ValueWithOptionsAttribute(
+      ValueWithOptionsAttribute.create(
           "Ergebnis",
           "RESULT",
-          AttributeUtil.createResultOptions(),
           ATTRIBUTE_CATEGORY_INSPECTION,
-          true)),
+          true,
+          AttributeUtil.createResultOptions())),
 
   DURATION(
-      new IntegerAttribute(
+      IntegerAttribute.create(
           "Zeit vor Ort (Minuten)", "DURATION", ATTRIBUTE_CATEGORY_INSPECTION, false)),
 
   NUMBER_OF_INCIDENTS(
-      new IntegerAttribute(
+      IntegerAttribute.create(
           "Anzahl Vorkommnisse", "NUMBER_OF_INCIDENTS", ATTRIBUTE_CATEGORY_INSPECTION, true)),
   ;
 

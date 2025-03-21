@@ -23,5 +23,6 @@ public enum MainResultDto {
   V,
   N,
   P,
-  K
+  K,
+  U
 }

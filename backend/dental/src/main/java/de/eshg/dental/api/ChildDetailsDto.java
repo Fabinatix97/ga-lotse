@@ -25,6 +25,7 @@ import java.util.UUID;
 public record ChildDetailsDto(
     @NotNull UUID id,
     @NotNull long version,
+    @NotNull long personVersion,
     @NotNull ProcedureStatusDto status,
     @NotNull UUID fileStateId,
     @NotNull boolean fileStateOutdated,

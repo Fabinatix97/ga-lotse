@@ -13,8 +13,10 @@ import { PageProps } from "@eshg/lib-portal/types/pageParams";
 import { CreateProcedure } from "@/lib/businessModules/officialMedicalService/components/procedures/overview/CreateProcedure";
 import { ProceduresOverviewTable } from "@/lib/businessModules/officialMedicalService/components/procedures/overview/ProceduresOverviewTable";
 
-export default function OfficialMedicalServiceProceduresPage(props: PageProps) {
-  const searchParams = props.searchParams;
+export default async function OfficialMedicalServiceProceduresPage(
+  props: PageProps,
+) {
+  const searchParams = await props.searchParams;
 
   return (
     <StickyToolbarLayout toolbar={<Toolbar title="Amtsärztlicher Dienst" />}>

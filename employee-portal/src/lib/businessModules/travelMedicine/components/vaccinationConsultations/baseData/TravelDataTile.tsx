@@ -5,6 +5,11 @@
 
 "use client";
 
+import {
+  DetailsItem,
+  DetailsRow,
+  DetailsSection,
+} from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
 import { ApiTravelType } from "@eshg/travel-medicine-api";
@@ -17,9 +22,6 @@ import {
   TRAVEL_TIME_UNITS,
   TRAVEL_TYPES,
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/translations";
-import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
-import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
-import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
 
 interface TravelDataTileProps {
   initialValues: CreateProcedureValues;

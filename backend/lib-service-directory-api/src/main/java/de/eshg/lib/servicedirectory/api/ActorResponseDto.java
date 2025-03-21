@@ -19,8 +19,7 @@ public record ActorResponseDto(
     @NotNull boolean active,
     @NotNull boolean manualCertificate,
     String commonName,
-    @Valid CertificateDto currentCertificate,
-    @Valid CertificateDto previousCertificate,
+    @Valid CertificateDto certificate,
     @Valid ActorMetadataDto actorMetadata,
     String networkId,
     UUID orgUnitId) {}

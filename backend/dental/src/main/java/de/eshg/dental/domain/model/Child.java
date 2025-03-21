@@ -112,7 +112,9 @@ public class Child extends Procedure<Child, ChildTask, Person, Facility> {
 
   public FluoridationConsent getCurrentFluoridationConsent() {
     return fluoridationConsents.stream()
-        .max(Comparator.comparing(FluoridationConsent::getModifiedAt))
+        .max(
+            Comparator.comparing(FluoridationConsent::getDateOfConsent)
+                .thenComparing(FluoridationConsent::getModifiedAt))
         .orElse(null);
   }
 

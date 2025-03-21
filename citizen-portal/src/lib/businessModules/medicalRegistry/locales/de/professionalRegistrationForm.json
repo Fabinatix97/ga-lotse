@@ -201,5 +201,10 @@
   "validations": {
     "requiredField": "Pflichtfeld!",
     "confirmation": "Bitte Zustimmung erteilen um fortzufahren."
+  },
+  "leave_form": {
+    "message": "Wenn Sie das Formular verlassen, werden Ihre ungespeicherten Änderungen nicht übernommen. Möchten Sie sie trotzdem verwerfen?",
+    "cancel": "Zurück zum Formular",
+    "confirm": "Ja, verwerfen"
   }
 }

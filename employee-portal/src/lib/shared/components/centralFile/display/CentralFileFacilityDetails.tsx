@@ -4,19 +4,20 @@
  */
 
 import { ApiFacilityContactPerson } from "@eshg/base-api";
+import {
+  BaseAddress,
+  BaseAddressDetailsColumn,
+  DetailsColumn,
+  DetailsItem,
+  ExternalLinkDetailsItem,
+  ResponsiveDivider,
+} from "@eshg/lib-employee-portal";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { isNonEmptyArray } from "@eshg/lib-portal/helpers/guards";
 import { Chip, Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { ReactNode } from "react";
 import { isDefined } from "remeda";
-
-import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
-import { BaseAddressDetails } from "@/lib/shared/components/address/BaseAddressDetails";
-import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
-import { DetailsItem } from "@/lib/shared/components/detailsSection/items/DetailsItem";
-import { ExternalLinkDetailsItem } from "@/lib/shared/components/detailsSection/items/ExternalLinkDetailsItem";
-import { BaseAddress } from "@/lib/shared/helpers/address";
 
 export interface CentralFileFacility {
   readonly name: string;
@@ -58,7 +59,7 @@ export function CentralFileFacilityDetails<T extends CentralFileFacility>(
         {props.children}
       </DetailsColumn>
       {facility.contactAddress && (
-        <BaseAddressDetails
+        <BaseAddressDetailsColumn
           sx={props.columnSx}
           address={facility.contactAddress}
         />

@@ -11,6 +11,7 @@ import {
   Toolbar,
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
+import { use } from "react";
 
 import { useGetChecklistDefinitionFromCentralRepo } from "@/lib/businessModules/inspection/api/queries/checklistDefinition";
 import { ReadOnlyCLDPage } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/ReadOnlyCLDPage";
@@ -23,7 +24,7 @@ export default function InspectionRepositoryPage(
     version: string;
   }>,
 ) {
-  const { repositoryChecklistDefinitionId, version } = props.params;
+  const { repositoryChecklistDefinitionId, version } = use(props.params);
   const repoCldId = parseInt(repositoryChecklistDefinitionId);
   const repoVersion = parseInt(version);
 

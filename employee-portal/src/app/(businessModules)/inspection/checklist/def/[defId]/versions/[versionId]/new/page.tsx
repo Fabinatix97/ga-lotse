@@ -12,6 +12,7 @@ import {
 } from "@eshg/lib-employee-portal";
 import { DynamicPageProps } from "@eshg/lib-portal/types/pageParams";
 import { useSuspenseQueries } from "@tanstack/react-query";
+import { use } from "react";
 
 import {
   useChecklistDefinitionApi,
@@ -25,7 +26,7 @@ import { routes } from "@/lib/businessModules/inspection/shared/routes";
 export default function NewChecklistVersion(
   props: DynamicPageProps<{ defId: string; versionId: string }>,
 ) {
-  const { defId, versionId } = props.params;
+  const { defId, versionId } = use(props.params);
 
   const objectTypeApi = useObjectTypeApi();
   const checklistDefinitionApi = useChecklistDefinitionApi();

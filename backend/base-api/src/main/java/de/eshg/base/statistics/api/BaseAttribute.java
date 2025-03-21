@@ -8,6 +8,7 @@ package de.eshg.base.statistics.api;
 import de.eshg.lib.statistics.api.DataPrivacyCategory;
 import de.eshg.lib.statistics.api.ValueOptionInternal;
 import de.eshg.lib.statistics.api.ValueType;
+import de.eshg.lib.statistics.api.interval.IntervalConfiguration;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,4 +22,5 @@ public record BaseAttribute(
     String unit,
     @Size(min = 1) @Valid List<ValueOptionInternal> valueOptions,
     @NotNull boolean mandatory,
-    @NotNull DataPrivacyCategory dataPrivacyCategory) {}
+    @NotNull DataPrivacyCategory dataPrivacyCategory,
+    @Valid IntervalConfiguration intervalConfiguration) {}

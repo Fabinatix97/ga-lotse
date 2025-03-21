@@ -31,10 +31,10 @@ import org.springframework.stereotype.Service;
 public class CertificateValidationService {
 
   private static final String INVALID_CERTIFICATE_MSG =
-      "The {} certificate of the {} '{}' in orgUnit '{}' was invalid: {}";
+      "Certificate of the {} '{}' in orgUnit '{}' was invalid: {}";
 
   private static final String SIGNATORY_INVALID_MSG =
-      "The {} certificate of the {} '{}' in orgUnit '{}' has an untrusted signatory: {}";
+      "Certificate of the {} '{}' in orgUnit '{}' has an untrusted signatory: {}";
 
   private static final Logger log = LoggerFactory.getLogger(CertificateValidationService.class);
 
@@ -108,114 +108,102 @@ public class CertificateValidationService {
   }
 
   private boolean isValidActor(ActorResponseDto actor) {
-    return actor.currentCertificate() != null
-        && isSignatoryValidAndSignatureFromSignatory(actor, "current")
-        && (actor.previousCertificate() == null // may not have a previous yet
-            || isSignatoryValidAndSignatureFromSignatory(actor, "previous"));
+    return actor.certificate() != null && isSignatoryValidAndSignatureFromSignatory(actor);
   }
 
-  private boolean isSignatoryValidAndSignatureFromSignatory(
-      ActorResponseDto actor, String curOrPrev) {
-    CertificateDto cert =
-        "current".equals(curOrPrev) ? actor.currentCertificate() : actor.previousCertificate();
-
-    if (isBlank(cert.value())) {
-      return false;
-    }
-
-    X509Certificate certificate;
-    try {
-      certificate = X509Utils.parsePem(cert.value());
-    } catch (Exception e) {
-      logInvalidActor(
-          "The {} certificate of the {} '{}' in orgUnit '{}' was not parsable: {}",
-          curOrPrev,
-          actor,
-          cert,
-          e);
-      return false;
-    }
-
-    if (X509Utils.isCaCertificate(certificate)) {
-      logInvalidActor(
-          "The {} certificate of the {} '{}' in orgUnit '{}' is a CA certificate: {}",
-          curOrPrev,
-          actor,
-          cert);
-      return false;
-    }
-
-    if (isBlank(cert.signatory()) || isBlank(cert.signature())) {
-      boolean valid = trustStore == null || inTrustStoreOrWasSignedByOneInTrustStore(certificate);
-      if (!valid) {
-        logInvalidActor(
-            "The {} certificate of the {} '{}' in orgUnit '{}' is untrusted: {}",
-            curOrPrev,
-            actor,
-            cert);
-      }
-      return valid;
-    }
+  private boolean isSignatoryValidAndSignatureFromSignatory(ActorResponseDto actor) {
+    CertificateDto cert = actor.certificate();
 
     X509Certificate signatory;
-    try {
-      signatory = X509Utils.parsePem(cert.signatory());
-    } catch (Exception e) {
-      logInvalidActor(
-          "The {} certificate of the {} '{}' in orgUnit '{}' has no parsable signatory: {}",
-          curOrPrev,
-          actor,
-          cert,
-          e);
+    if (!isBlank(cert.signatory()) && !isBlank(cert.signature())) {
+      try {
+        signatory = X509Utils.parsePem(cert.signatory());
+      } catch (Exception e) {
+        logInvalidActor(
+            "Certificate of the {} '{}' in orgUnit '{}' has no parsable signatory: {}",
+            actor,
+            cert,
+            e);
+        return false;
+      }
+
+      if (X509Utils.isCaCertificate(signatory)) {
+        logInvalidActor(
+            "Certificate of the {} '{}' in orgUnit '{}' is signed by a CA certificate: {}",
+            actor,
+            cert);
+        return false;
+      }
+
+      if (trustStore != null && neitherInTrustStoreNorSignedByOneInTrustStore(signatory)) {
+        logInvalidActor(SIGNATORY_INVALID_MSG, actor, cert);
+        return false;
+      }
+    } else {
+      signatory = null;
+    }
+
+    boolean allCertsValid =
+        X509Utils.parseMultiPem(cert.value())
+            .allMatch(
+                certificate -> {
+                  try {
+                    certificate = X509Utils.parsePem(cert.value());
+                  } catch (Exception e) {
+                    logInvalidActor(
+                        "Certificate of the {} '{}' in orgUnit '{}' was not parsable: {}",
+                        actor,
+                        cert,
+                        e);
+                    return false;
+                  }
+
+                  if (X509Utils.isCaCertificate(certificate)) {
+                    logInvalidActor(
+                        "Certificate of the {} '{}' in orgUnit '{}' is a CA certificate: {}",
+                        actor,
+                        cert);
+                    return false;
+                  }
+
+                  if (signatory != null) {
+                    return true;
+                  }
+
+                  if (trustStore != null
+                      && neitherInTrustStoreNorSignedByOneInTrustStore(certificate)) {
+                    logInvalidActor(
+                        "Certificate of the {} '{}' in orgUnit '{}' is untrusted: {}", actor, cert);
+                    return false;
+                  }
+                  return true;
+                });
+    if (!allCertsValid) {
       return false;
     }
 
-    if (X509Utils.isCaCertificate(signatory)) {
-      logInvalidActor(
-          "The {} certificate of the {} '{}' in orgUnit '{}' is signed by a CA certificate: {}",
-          curOrPrev,
-          actor,
-          cert);
-      return false;
-    }
-
-    if (trustStore != null && !inTrustStoreOrWasSignedByOneInTrustStore(signatory)) {
-      logInvalidActor(SIGNATORY_INVALID_MSG, curOrPrev, actor, cert);
-      return false;
-    }
-
-    if (!isSignatureFromSignatory(cert)) {
-      logInvalidActor(INVALID_CERTIFICATE_MSG, curOrPrev, actor, cert);
-      return false;
+    if (signatory != null) {
+      if (!isSignatureFromSignatory(cert)) {
+        logInvalidActor(INVALID_CERTIFICATE_MSG, actor, cert);
+        return false;
+      }
     }
 
     return true;
   }
 
   private void logInvalidActor(
-      String signatoryInvalidMsg, String curOrPrev, ActorResponseDto actor, CertificateDto cert) {
-    log.error(
-        signatoryInvalidMsg, curOrPrev, actor.type(), actor.commonName(), actor.orgUnitId(), cert);
+      String signatoryInvalidMsg, ActorResponseDto actor, CertificateDto cert) {
+    log.error(signatoryInvalidMsg, actor.type(), actor.commonName(), actor.orgUnitId(), cert);
   }
 
   private void logInvalidActor(
-      String signatoryInvalidMsg,
-      String curOrPrev,
-      ActorResponseDto actor,
-      CertificateDto cert,
-      Exception e) {
-    log.error(
-        signatoryInvalidMsg,
-        curOrPrev,
-        actor.type(),
-        actor.commonName(),
-        actor.orgUnitId(),
-        cert,
-        e);
+      String signatoryInvalidMsg, ActorResponseDto actor, CertificateDto cert, Exception e) {
+    log.error(signatoryInvalidMsg, actor.type(), actor.commonName(), actor.orgUnitId(), cert, e);
   }
 
-  private boolean inTrustStoreOrWasSignedByOneInTrustStore(X509Certificate certificateAsPem) {
-    return X509Utils.inTrustStoreOrWasSignedByOneInTrustStore(trustStore, certificateAsPem);
+  private boolean neitherInTrustStoreNorSignedByOneInTrustStore(X509Certificate certificateAsPem) {
+    return !X509Utils.inTrustStoreOrWasSignedByOneInTrustStore(trustStore, certificateAsPem);
   }
 
   private boolean isSignatureFromSignatory(CertificateDto certificateDTO) {

@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ExaminationResult } from "@eshg/dental";
+import { ExaminationResult, ExaminationResultWithDate } from "@eshg/dental";
 import { ApiDentitionType } from "@eshg/dental-api";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { createContext, useContext, useState } from "react";
@@ -27,7 +27,7 @@ const DentalExaminationStoreContext =
 interface DentalExaminationStoreProviderProps extends RequiresChildren {
   examinationResult?: ExaminationResult;
   defaultDentitionType?: ApiDentitionType;
-  previousExaminationResult?: ExaminationResult;
+  previousExaminationResult?: ExaminationResultWithDate;
 }
 
 export function DentalExaminationStoreProvider({

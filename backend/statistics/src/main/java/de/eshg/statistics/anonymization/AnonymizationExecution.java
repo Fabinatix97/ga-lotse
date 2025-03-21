@@ -44,7 +44,7 @@ public class AnonymizationExecution {
       throw new BadRequestException("Data anonymization is required but feature is not enabled");
     } else {
       DataHolderBeforeAnonymization dataHolderBeforeAnonymization =
-          anonymizationService.prepareAnonymization(id, isReport, 2);
+          anonymizationService.prepareAnonymization(id, isReport);
 
       if (dataHolderBeforeAnonymization == null) {
         anonymizationService.finishAnonymization(id, isReport, false);

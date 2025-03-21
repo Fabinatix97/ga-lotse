@@ -9,6 +9,7 @@ import {
   ApiInventoryItemBookingHistory,
   ApiUser,
 } from "@eshg/base-api";
+import { DetailsSectionHeader } from "@eshg/lib-employee-portal";
 import {
   formatDate,
   formatDateTime,
@@ -30,7 +31,6 @@ import {
 import { createElement, useTransition } from "react";
 import { isDefined } from "remeda";
 
-import { SectionHeader } from "@/lib/shared/components/detailsSection/SectionHeader";
 import { Timeline } from "@/lib/shared/components/timeline/Timeline";
 import { TimelineEntry } from "@/lib/shared/components/timeline/TimelineEntry";
 import { TimelineEntryIndicator } from "@/lib/shared/components/timeline/TimelineEntryIndicator";
@@ -86,7 +86,7 @@ export function InventoryBooking({
         justifyContent={"space-between"}
       >
         <Stack width={"100%"} gap={2}>
-          <SectionHeader id={headerId} title={title} />
+          <DetailsSectionHeader id={headerId} title={title} />
           <Stack direction={"row"} gap={1}>
             <Stack flex={1}>
               <Timeline>

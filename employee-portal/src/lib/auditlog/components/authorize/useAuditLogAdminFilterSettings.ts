@@ -7,6 +7,7 @@ import {
   ApiAuditLogSource,
   ApiAuditLogSourceFromJSON,
 } from "@eshg/auditlog-api";
+import { UseTableControlResult } from "@eshg/lib-employee-portal";
 import { ensureArray } from "@eshg/lib-portal/helpers/guards";
 import { SearchParams } from "@eshg/lib-portal/types/pageParams";
 import { isString } from "remeda";
@@ -20,7 +21,6 @@ import {
   useFilterSettings,
 } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { getSelectedFilterValues } from "@/lib/shared/components/procedures/helper";
-import { UseTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
 const FILTER_DEFINITION_KEYS = {
   source: "source",
@@ -28,7 +28,7 @@ const FILTER_DEFINITION_KEYS = {
 };
 
 interface TaskTableFilterSettingsProps {
-  tableControl: UseTableControl;
+  tableControl: UseTableControlResult;
   searchParams: SearchParams;
 }
 

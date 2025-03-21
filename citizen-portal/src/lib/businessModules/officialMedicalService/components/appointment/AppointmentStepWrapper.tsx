@@ -13,6 +13,7 @@ import { useGetFreeAppointmentsForCitizen } from "@/lib/businessModules/official
 import { AppointmentFormValues } from "@/lib/businessModules/officialMedicalService/components/appointment/AppointmentForm";
 import { NoAppointmentCard } from "@/lib/businessModules/officialMedicalService/components/appointment/NoAppointmentCard";
 import { AppointmentStep } from "@/lib/businessModules/officialMedicalService/components/appointment/steps/AppointmentStep";
+import { useCitizenRoutes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
 
 import { AppointmentFormSidePanel } from "./AppointmentFormSidePanel";
@@ -23,6 +24,7 @@ export function isDateCurrentDateOrGreater(date: Date) {
 }
 
 export function AppointmentStepWrapper() {
+  const citizenRoutes = useCitizenRoutes();
   const { values } = useFormikContext<AppointmentFormValues>();
   const [{ data: freeAppointments }] = useSuspenseQueries({
     queries: [
@@ -46,6 +48,6 @@ export function AppointmentStepWrapper() {
       sidePanel={<AppointmentFormSidePanel />}
     />
   ) : (
-    <NoAppointmentCard />
+    <NoAppointmentCard href={citizenRoutes.overview} />
   );
 }

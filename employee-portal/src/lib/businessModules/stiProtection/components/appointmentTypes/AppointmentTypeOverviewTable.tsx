@@ -5,6 +5,7 @@
 
 "use client";
 
+import { DataTable, TableSheet } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { ApiAppointmentTypeConfig } from "@eshg/sti-protection-api";
 import { FormikProps } from "formik";
@@ -18,8 +19,6 @@ import {
 } from "@/lib/businessModules/stiProtection/components/appointmentTypes/AppointmentTypeEditForm";
 import { appointmentTypesColumns } from "@/lib/businessModules/stiProtection/components/appointmentTypes/columns";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { DataTable } from "@/lib/shared/components/table/DataTable";
-import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 export function AppointmentTypeOverviewTable() {

@@ -148,13 +148,16 @@ export function AddServiceAppointmentForm(
                   }
                 />
               </Stack>
-              <Typography
-                level="body-md"
-                sx={{ fontWeight: theme.fontWeight.xl, mt: 2 }}
-              >
-                Termin
-              </Typography>
               <AppointmentRadioGroup
+                label={
+                  <Typography
+                    level="body-md"
+                    sx={{ fontWeight: theme.fontWeight.lg }}
+                  >
+                    Termin
+                  </Typography>
+                }
+                name="bookingType"
                 type={props.initialValues.appointmentType}
                 isCitizenFollowUp={props.isCitizenFollowUp}
                 freeConsultationBlockAppointments={

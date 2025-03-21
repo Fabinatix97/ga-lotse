@@ -5,6 +5,7 @@
 
 "use client";
 
+import { DetailsSection } from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import {
@@ -37,7 +38,6 @@ import {
   getPersonByIdFromProcedure,
 } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/helpers";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 import { AccessRestrictionSidebar } from "./AccessRestrictionSidebar";
