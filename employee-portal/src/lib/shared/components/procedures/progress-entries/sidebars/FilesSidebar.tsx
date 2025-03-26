@@ -5,14 +5,16 @@
 
 "use client";
 
+import {
+  ButtonBar,
+  Sidebar,
+  SidebarActions,
+  SidebarContent,
+} from "@eshg/lib-employee-portal";
 import { Button, Stack } from "@mui/joy";
 
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FileCardWithActions } from "@/lib/shared/components/procedures/progress-entries/FileCardWithActions";
 import { useProgressEntriesConfig } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 interface FilesSidebarProps {
   open: boolean;

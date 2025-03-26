@@ -4,14 +4,16 @@
  */
 
 import { ApiHistoryEntryType, ApiUser } from "@eshg/base-api";
+import {
+  Sidebar,
+  SidebarActions,
+  SidebarContent,
+} from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { Button, Stack, Typography } from "@mui/joy";
 import { useRouter } from "next/navigation";
 import { ReactNode } from "react";
 
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { UserLink } from "@/lib/shared/components/users/UserLink";
 
 export interface ContactHistoryModalProps {

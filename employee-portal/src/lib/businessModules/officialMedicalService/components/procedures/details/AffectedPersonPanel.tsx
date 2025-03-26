@@ -5,7 +5,12 @@
 
 "use client";
 
-import { CentralFilePersonDetails } from "@eshg/lib-employee-portal";
+import {
+  CentralFilePersonDetails,
+  EditButton,
+  SyncBarrier,
+  useSyncBarrier,
+} from "@eshg/lib-employee-portal";
 import {
   ApiEmployeeOmsProcedureDetails,
   ApiProcedureStatus,
@@ -15,11 +20,6 @@ import { SxProps } from "@mui/joy/styles/types";
 import { useUpdateAffectedPersonSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/UpdateAffectedPersonSidebar";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { PersonDetails } from "@/lib/businessModules/schoolEntry/api/models/Person";
-import { EditButton } from "@/lib/shared/components/buttons/EditButton";
-import {
-  SyncBarrier,
-  useSyncBarrier,
-} from "@/lib/shared/components/centralFile/sync/SyncBarrier";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 
 const COLUMN_STYLE: SxProps = {

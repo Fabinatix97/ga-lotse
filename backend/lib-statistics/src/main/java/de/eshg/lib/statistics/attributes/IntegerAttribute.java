@@ -79,8 +79,8 @@ public final class IntegerAttribute {
     AttributeData attribute =
         createIntegerAttribute(
             name, code, category, mandatory, unit, valueOption, DataPrivacyCategory.SENSITIVE);
-    attribute.setLDiversity(sensitiveParameters.lDiversity());
-    attribute.setTCloseness(sensitiveParameters.tCloseness());
+    attribute.setLDiversity(sensitiveParameters.getLDiversity());
+    attribute.setTCloseness(sensitiveParameters.getTCloseness());
     return attribute;
   }
 

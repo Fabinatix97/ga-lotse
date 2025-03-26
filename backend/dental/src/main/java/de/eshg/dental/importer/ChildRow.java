@@ -24,7 +24,10 @@ public class ChildRow extends RowData<ChildRow> {
 
   @Override
   public boolean isDuplicateRow(ChildRow other) {
-    return Objects.equals(child, other.getChild());
+    return Objects.equals(child, other.getChild())
+        || Objects.equals(getChildKeyAttributes(), other.getChildKeyAttributes())
+            && ((child.address() == null || other.child.address() == null)
+                || Objects.equals(child.address(), other.child.address()));
   }
 
   public PersonKeyAttributes getChildKeyAttributes() {

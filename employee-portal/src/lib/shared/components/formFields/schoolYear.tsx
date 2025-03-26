@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { formatSchoolYear } from "@eshg/lib-employee-portal";
 import {
   BaseField,
   useBaseField,
@@ -11,8 +12,6 @@ import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { FieldProps, OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Autocomplete, AutocompleteProps } from "@mui/joy";
 import { isNullish } from "remeda";
-
-import { formatSchoolYear } from "@/lib/shared/helpers/formatters";
 
 interface SchoolYearAutocompleteProps
   extends Omit<

@@ -9,6 +9,7 @@ import {
   ContentPanel,
   DetailsColumn,
   DetailsRow,
+  EditButton,
   ResponsiveDivider,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
@@ -32,7 +33,6 @@ import {
 import { contactCategoryNames } from "@/lib/baseModule/shared/translations";
 import { ChatUserId } from "@/lib/businessModules/chat/components/ChatUserId";
 import { routes } from "@/lib/businessModules/chat/shared/routes";
-import { EditButton } from "@/lib/shared/components/buttons/EditButton";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import {
   ExternalLinkDetailsCell,

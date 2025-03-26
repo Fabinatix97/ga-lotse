@@ -9,6 +9,7 @@ import {
   ApiChecklistDefinitionVersion,
   ApiObjectType,
 } from "@eshg/inspection-api";
+import { ButtonBar } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { InfoOutlined } from "@mui/icons-material";
@@ -32,7 +33,6 @@ import {
 import { ChecklistDefinitionSectionsList } from "@/lib/businessModules/inspection/components/checklistDefinition/editor/sections/ChecklistDefinitionSectionsList";
 import { useUserCanSaveChecklistDefinition } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/helpers";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 
 interface EditChecklistDefinitionProps {

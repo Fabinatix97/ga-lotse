@@ -12,8 +12,8 @@ import de.eshg.lib.appointmentblock.MappingUtil;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
-import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.procedure.domain.model.Pdf;
+import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.config.BaseUrls.StiProtection;
 import de.eshg.stiprotection.api.ConcernDto;
 import de.eshg.stiprotection.api.ResponseEntities;
@@ -31,7 +31,6 @@ import de.eshg.stiprotection.department.StiConsultationOpeningHoursService;
 import de.eshg.stiprotection.mapper.AppointmentMapper;
 import de.eshg.stiprotection.mapper.ConcernMapper;
 import de.eshg.stiprotection.mapper.PersonMapper;
-import de.eshg.stiprotection.persistence.data.PersonData;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -49,6 +48,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -74,7 +74,6 @@ public class CitizenPublicController {
   private final Clock clock;
   private final StiConsultationDepartmentInfoConfigService stiConsultationDepartmentInfoService;
   private final SexWorkDepartmentInfoConfigService sexWorkDepartmentInfoService;
-  private final DepartmentClient departmentClient;
   private final StiConsultationOpeningHoursService stiConsultationOpeningHoursService;
   private final SexWorkOpeningHoursService sexWorkOpeningHoursService;
 
@@ -85,7 +84,6 @@ public class CitizenPublicController {
       Clock clock,
       StiConsultationDepartmentInfoConfigService stiConsultationDepartmentInfoService,
       SexWorkDepartmentInfoConfigService sexWorkDepartmentInfoService,
-      DepartmentClient departmentClient,
       StiConsultationOpeningHoursService stiConsultationOpeningHoursService,
       SexWorkOpeningHoursService sexWorkOpeningHoursService) {
     this.appointmentBlockService = appointmentBlockService;
@@ -94,7 +92,6 @@ public class CitizenPublicController {
     this.clock = clock;
     this.stiConsultationDepartmentInfoService = stiConsultationDepartmentInfoService;
     this.sexWorkDepartmentInfoService = sexWorkDepartmentInfoService;
-    this.departmentClient = departmentClient;
     this.stiConsultationOpeningHoursService = stiConsultationOpeningHoursService;
     this.sexWorkOpeningHoursService = sexWorkOpeningHoursService;
   }
@@ -103,9 +100,8 @@ public class CitizenPublicController {
   @Operation(summary = "Get department info")
   @Transactional(readOnly = true)
   public GetDepartmentInfoResponse getDepartmentInfo(
-      @RequestParam(name = "concern", required = false) ConcernDto concern) {
+      @RequestParam(name = "concern") ConcernDto concern) {
     return switch (concern) {
-      case null -> departmentClient.getDepartmentInfo();
       case HIV_STI_CONSULTATION -> stiConsultationDepartmentInfoService.getDepartmentInfo();
       case SEX_WORK -> sexWorkDepartmentInfoService.getDepartmentInfo();
     };
@@ -150,11 +146,17 @@ public class CitizenPublicController {
   @Transactional
   public BookAppointmentResponse bookAppointment(
       @Valid @RequestBody BookAppointmentRequest request) {
+    StiProtectionProcedure procedure = doBookAppointment(request);
+    return new BookAppointmentResponse(procedure.getExternalId());
+  }
+
+  private StiProtectionProcedure doBookAppointment(BookAppointmentRequest request) {
+    Assert.notNull(request, "BookAppointmentRequest must not be null");
     StiProtectionProcedure procedure =
         citizenAppointmentService.createProcedureWithExpiryDate(
             ConcernMapper.toDatabaseType(request.concern()));
     appointmentService.bookPublicAppointment(procedure, AppointmentMapper.toDataType(request));
-    return new BookAppointmentResponse(procedure.getExternalId());
+    return procedure;
   }
 
   @PostMapping("/appointments/{id}/anonymous-user")
@@ -163,10 +165,18 @@ public class CitizenPublicController {
   public CreateAnonymousUserResponse createAnonymousUser(
       @PathVariable("id") UUID procedureId,
       @Valid @RequestBody CreateAnonymousUserRequest request) {
+    StiProtectionProcedure procedure;
+    try {
+      procedure = citizenAppointmentService.findByExternalId(procedureId);
+    } catch (NotFoundException e) {
+      log.debug("{}: procedure not found, creating personal details", procedureId, e);
+      procedure = doAddPersonalDetails(procedureId, request.personalDetails());
+    }
+    UUID procedureExternalId = procedure.getExternalId();
     CitizenAccessCodeUserDto user =
-        citizenAppointmentService.createAnonymousUser(procedureId, request.pin());
-    citizenAppointmentService.confirmAppointment(procedureId);
-    return new CreateAnonymousUserResponse(user.userId(), user.accessCode());
+        citizenAppointmentService.createAnonymousUser(procedureExternalId, request.pin());
+    citizenAppointmentService.confirmAppointment(procedureExternalId);
+    return new CreateAnonymousUserResponse(user.userId(), user.accessCode(), procedureExternalId);
   }
 
   @PutMapping("/appointments/{id}/personal-details")
@@ -174,10 +184,21 @@ public class CitizenPublicController {
   @Transactional
   public AddPersonalDetailsResponse addPersonalDetails(
       @PathVariable("id") UUID procedureId, @Valid @RequestBody AddPersonalDetailsRequest request) {
-    PersonData personData = PersonMapper.toDataType(request);
-    StiProtectionProcedure procedure =
-        citizenAppointmentService.setPersonalDetails(procedureId, personData);
-    return PersonMapper.toInterfaceType(procedure);
+    return PersonMapper.toInterfaceType(doAddPersonalDetails(procedureId, request));
+  }
+
+  private StiProtectionProcedure doAddPersonalDetails(
+      UUID procedureId, AddPersonalDetailsRequest request) {
+    Assert.notNull(request, "AddPersonalDetailsRequest must not be null");
+    StiProtectionProcedure procedure;
+    try {
+      procedure = citizenAppointmentService.findByExternalId(procedureId);
+    } catch (NotFoundException e) {
+      log.debug("{}: procedure not found, booking appointment", procedureId, e);
+      procedure = doBookAppointment(request.appointmentBooking());
+    }
+    return citizenAppointmentService.setPersonalDetails(
+        procedure.getExternalId(), PersonMapper.toDataType(request));
   }
 
   @GetMapping(path = "/appointments/{id}/anon-ident-document")
@@ -197,7 +218,7 @@ public class CitizenPublicController {
 
   @DeleteMapping("/appointments/{id}")
   @Transactional
-  public void cancelAppointment(@PathVariable("id") UUID procedureId) {
-    citizenAppointmentService.cancelAppointment(procedureId);
+  public void cancelPendingAppointment(@PathVariable("id") UUID procedureId) {
+    citizenAppointmentService.cancelPendingAppointment(procedureId);
   }
 }

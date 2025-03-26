@@ -7,10 +7,12 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import {
+  ButtonBar,
   DataTable,
   Pagination,
   TablePage,
   TableSheet,
+  useConfirmationDialog,
   useHasUserRoleCheck,
   usePagination,
   useTableSorting,
@@ -37,14 +39,12 @@ import {
   ActionsItem,
   ActionsMenu,
 } from "@/lib/shared/components/buttons/ActionsMenu";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 import { useFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { UserLink } from "@/lib/shared/components/users/UserLink";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 import { useUploadTemplateSidebar } from "./UploadTemplateSidebar/UploadTemplateSidebar";
 

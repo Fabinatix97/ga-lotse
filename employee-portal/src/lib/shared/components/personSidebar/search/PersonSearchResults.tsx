@@ -4,6 +4,12 @@
  */
 
 import type { ApiGetReferencePersonResponse } from "@eshg/base-api";
+import {
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+} from "@eshg/lib-employee-portal";
 import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
@@ -17,13 +23,7 @@ import { PersonCardContent } from "@/lib/baseModule/components/person/PersonCard
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { SelectableCard } from "@/lib/shared/components/cards/SelectableCard";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
 import { SearchPersonFormValues } from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 interface PersonSearchResultsProps {
   title: string;

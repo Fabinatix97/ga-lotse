@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ExaminationStatus } from "@eshg/dental";
 import {
   ApiDecayStatus,
   ApiMihStatus,
@@ -11,12 +10,6 @@ import {
   ApiOrthodonticFinding,
   ApiOrthodonticStatus,
 } from "@eshg/dental-api";
-
-export const EXAMINATION_STATUS: Record<ExaminationStatus, string> = {
-  OPEN: "offen",
-  CLOSED: "abgeschlossen",
-  NOT_PRESENT: "Nicht anwesend",
-};
 
 export const ORAL_HYGIENE_STATUS: Record<ApiOralHygieneStatus, string> = {
   [ApiOralHygieneStatus.Excellent]: "Sehr gut",

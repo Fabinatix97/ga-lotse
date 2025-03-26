@@ -1,0 +1,48 @@
+{
+  "elements": [
+    {
+      "elementHeader": {
+        "de": "Bitte kommen Sie am Untersuchungstag nüchtern zu uns: \nAmtsärztlicher Dienst, Wanderluststraße 202, 12345 Wandern Stadt",
+        "en": "Please come sober on the day of your appointment: \nAmtsärztlicher Dienst, Wanderluststraße 202, 12345 Wandern Stadt"
+      }
+    },
+    {
+      "elementHeader": {
+        "de": "Bringen Sie folgende Unterlagen zur amtsärztlichen Untersuchung mit:",
+        "en": "Bring the following documents with you to your medical examination:"
+      },
+      "elementList": {
+        "de": [
+          "Personalausweis / Reisepass",
+          "Ausgefüllter Anamnesebogen (siehe Downloadbox)",
+          "Auftragsschreiben (Schreiben des Dienstherrn mit Angabe des Untersuchungsgrundes) in Kopie",
+          "ärztliche Unterlagen in Kopie (z.B. Krankenhausentlassungsberichte, Atteste, Bescheinigungen etc.)",
+          "einen Nachweis der zurzeit verordneten Medikamente (falls vorhanden)"
+        ],
+        "en": [
+          "ID Card / Passport",
+          "Completed medical history form (see download box)",
+          "Letter of assignment (letter from the employer stating the reason for the examination) with a copy",
+          "Copies of medical documents (e.g. hospital discharge reports, certificates, etc.)",
+          "Proof of currently prescribed medications (when applicable)"
+        ]
+      }
+    },
+    {
+      "elementHeader": {
+        "de": "Für Atteste zur Prüfungsfähigkeit ist Folgendes zu beachten und mitzubringen",
+        "en": "For certificates of exam eligibility, please bring the following with you"
+      },
+      "elementList": {
+        "de": [
+          "Wir sind nur für in Frankfurt Studierende zuständig",
+          "Kommen Sie bitte bei Prüfungen spätestens am Prüfungstag (auch ohne Termin) zu uns oder bei Abgabe einer wissenschaftlichen Arbeit nach vorheriger telefonischer Terminvereinbarung"
+        ],
+        "en": [
+          "We are only responsible for students in Frankfurt",
+          "Please arrive for exams no later than the day of the exam (even without an appointment) or when submitting an academic paper after making an appointment by telephone."
+        ]
+      }
+    }
+  ]
+}

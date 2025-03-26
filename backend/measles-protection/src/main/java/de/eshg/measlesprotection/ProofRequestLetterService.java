@@ -19,6 +19,7 @@ import static de.eshg.measlesprotection.persistence.support.MeaslesProtectionSys
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
+import de.eshg.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
 import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
@@ -58,16 +59,19 @@ public class ProofRequestLetterService {
   private final CoverLetterService coverLetterService;
   private final MeaslesProtectionService measlesProtectionService;
   private final DepartmentClient departmentClient;
+  private final DepartmentInfoConfigService departmentInfoConfigService;
   private final Clock clock;
 
   public ProofRequestLetterService(
       CoverLetterService coverLetterService,
       MeaslesProtectionService measlesProtectionService,
       DepartmentClient departmentClient,
+      DepartmentInfoConfigService departmentInfoConfigService,
       Clock clock) {
     this.coverLetterService = coverLetterService;
     this.measlesProtectionService = measlesProtectionService;
     this.departmentClient = departmentClient;
+    this.departmentInfoConfigService = departmentInfoConfigService;
     this.clock = clock;
   }
 
@@ -88,7 +92,8 @@ public class ProofRequestLetterService {
     CoverLetterPerson affectedPerson = createAffectedPerson(person);
     CoverLetterBody body = createLetterBody(request, previousLetterDate);
     DepartmentLogo departmentLogo = departmentClient.getDepartmentLogo();
-    DepartmentInfo departmentInfo = toDepartmentInfo(departmentClient.getDepartmentInfo());
+    DepartmentInfo departmentInfo =
+        toDepartmentInfo(departmentInfoConfigService.getDepartmentInfo());
     CoverLetterData data =
         new CoverLetterData(
             letterType, addressee, affectedPerson, body, departmentLogo, departmentInfo);

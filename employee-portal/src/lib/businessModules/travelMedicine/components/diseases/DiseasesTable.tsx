@@ -5,7 +5,13 @@
 
 "use client";
 
-import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
+import {
+  ButtonBar,
+  DataTable,
+  TablePage,
+  TableSheet,
+  useConfirmationDialog,
+} from "@eshg/lib-employee-portal";
 import { ApiDisease } from "@eshg/travel-medicine-api";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/joy";
@@ -15,8 +21,6 @@ import { useDeleteDisease } from "@/lib/businessModules/travelMedicine/api/mutat
 import { useGetAllDiseasesQuery } from "@/lib/businessModules/travelMedicine/api/queries/diseaseApi";
 import { useDiseaseSidebar } from "@/lib/businessModules/travelMedicine/components/diseases/DiseaseSidebar";
 import { columns } from "@/lib/businessModules/travelMedicine/components/diseases/columns";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function DiseasesTable() {
   const [{ data: allDiseases }] = useSuspenseQueries({

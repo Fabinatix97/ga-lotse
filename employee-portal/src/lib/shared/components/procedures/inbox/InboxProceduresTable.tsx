@@ -10,6 +10,7 @@ import {
   Pagination,
   TablePage,
   TableSheet,
+  useSidebar,
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
@@ -20,7 +21,6 @@ import {
   UseFetchInboxProcedure,
   UseFetchInboxProcedures,
 } from "@/lib/shared/api/queries/inboxProcedures";
-import { useSidebar } from "@/lib/shared/components/drawer/useSidebar";
 import { buildOptionsFromProcedureTypes } from "@/lib/shared/components/procedures/helper";
 import { InboxProcedureDetailsSidebar } from "@/lib/shared/components/procedures/inbox/InboxProcedureDetailsSidebar";
 import { UseCreateInboxProcedure } from "@/lib/shared/components/procedures/inbox/hooks/useCreateInboxProcedureStatusTemplate";

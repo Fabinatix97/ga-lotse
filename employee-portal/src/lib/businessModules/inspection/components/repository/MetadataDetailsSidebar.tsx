@@ -4,14 +4,15 @@
  */
 
 import { ApiChecklistDefinitionCentralRepoMetadata } from "@eshg/inspection-api";
-import { DetailsItem } from "@eshg/lib-employee-portal";
+import {
+  DetailsItem,
+  DrawerProps,
+  SidebarContent,
+  useSidebar,
+} from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { Grid } from "@mui/joy";
 import { isNonNullish } from "remeda";
-
-import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
-import { useSidebar } from "@/lib/shared/components/drawer/useSidebar";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 interface CreateChecklistVersionsSidebarProps extends DrawerProps {
   metadata?: ApiChecklistDefinitionCentralRepoMetadata;

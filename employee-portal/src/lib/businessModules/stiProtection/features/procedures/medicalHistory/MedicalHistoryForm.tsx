@@ -5,6 +5,7 @@
 
 "use client";
 
+import { TextareaField } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
 import {
@@ -31,7 +32,6 @@ import { SectionGrid } from "@/lib/businessModules/stiProtection/components/proc
 import { TabStickyBottomButtonBar } from "@/lib/businessModules/stiProtection/features/procedures/TabStickyBottomButtonBar";
 import { CONCERN_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
 import {
   MedicalHistoryFormData,

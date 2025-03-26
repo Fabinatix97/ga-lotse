@@ -4,6 +4,11 @@
  */
 
 import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
+import {
   ApiPostServicesRequest,
   ApiVaccinationType,
   PostServicesRequest,
@@ -21,11 +26,6 @@ import {
   AddServicePlanFormValues,
   ServicesRequest,
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/sidebarForms/AddServicePlanForm";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useAddServicePlanSidebar(): UseSidebarWithFormRefResult<AddServicePlanSidebarProps> {
   return useSidebarWithFormRef({

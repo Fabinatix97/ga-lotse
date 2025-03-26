@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { SidebarContent } from "@eshg/lib-employee-portal";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiGetProcedureDraftResponse } from "@eshg/medical-registry-api";
@@ -15,7 +16,6 @@ import {
 } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/FinalizeDraftSidebar";
 import { SelectCard } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/SelectCard";
 import { mapToOptionalPhoneNumbers } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/helper";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { fullAddress } from "@/lib/shared/helpers/facilityUtils";
 import { join } from "@/lib/shared/helpers/strings";
 

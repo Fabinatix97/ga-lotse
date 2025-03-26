@@ -5,23 +5,17 @@
 
 "use client";
 
-import {
-  MainContentLayout,
-  StickyToolbarLayout,
-  Toolbar,
-} from "@eshg/lib-employee-portal";
+import { ProcedureLabelsPage } from "@eshg/lib-employee-portal";
 
-import { useGetLabels } from "@/lib/businessModules/schoolEntry/api/queries/labelApi";
-import { LabelsTable } from "@/lib/businessModules/schoolEntry/features/labels/LabelsTable";
+import { useLabelApi } from "@/lib/businessModules/schoolEntry/api/clients";
+import { schoolEntryApiQueryKey } from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";
 
 export default function LabelsOverviewPage() {
-  const getLabels = useGetLabels();
-
+  const labelApi = useLabelApi();
   return (
-    <StickyToolbarLayout toolbar={<Toolbar title="Kennungen" />}>
-      <MainContentLayout fullViewportHeight>
-        <LabelsTable labels={getLabels.data} loading={getLabels.isFetching} />
-      </MainContentLayout>
-    </StickyToolbarLayout>
+    <ProcedureLabelsPage
+      procedureLabelApi={labelApi}
+      procedureLabelApiQueryKey={schoolEntryApiQueryKey}
+    />
   );
 }

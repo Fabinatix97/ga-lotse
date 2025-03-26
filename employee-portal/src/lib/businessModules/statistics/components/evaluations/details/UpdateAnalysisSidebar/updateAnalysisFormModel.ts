@@ -3,6 +3,28 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SaveAnalysisStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/SaveAnalysisStep/saveAnalysisStepFormModel";
+import { DiagramType } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
+import {
+  BarChartMetaFormModel,
+  ChoroplethChartMetaFormModel,
+  HistogramChartMetaFormModel,
+  LineChartMetaFormModel,
+  ScatterChartMetaFormModel,
+} from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/createAnalysisFormModel";
 
-export type UpdateAnalysisFormModel = [SaveAnalysisStepFormModel];
+import { UpdateNameStepFormModel } from "./UpdateNameStep";
+
+export type ChartMetaFormModel =
+  | (Partial<BarChartMetaFormModel> & { type: DiagramType.BAR_CHART })
+  | (Partial<HistogramChartMetaFormModel> & {
+      type: DiagramType.HISTOGRAM_CHART;
+    })
+  | (ScatterChartMetaFormModel & { type: DiagramType.SCATTER_CHART })
+  | (LineChartMetaFormModel & { type: DiagramType.LINE_CHART })
+  | (ChoroplethChartMetaFormModel & { type: DiagramType.CHOROPLETH_CHART })
+  | { type: DiagramType.PIE_CHART };
+
+export type UpdateAnalysisFormModelStep = ChartMetaFormModel &
+  UpdateNameStepFormModel;
+
+export type UpdateAnalysisFormModel = [UpdateAnalysisFormModelStep];

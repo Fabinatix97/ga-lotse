@@ -7,7 +7,6 @@ package de.eshg.stiprotection;
 
 import de.eshg.base.SortDirection;
 import de.eshg.base.citizenuser.CitizenAccessCodeUserApi;
-import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
 import de.eshg.stiprotection.api.waitingroom.WaitingRoomProcedurePaginationAndSortParameters;
 import de.eshg.stiprotection.api.waitingroom.WaitingRoomSortKey;
 import de.eshg.stiprotection.mapper.waitingroom.WaitingRoomMapper;
@@ -17,7 +16,6 @@ import de.eshg.stiprotection.persistence.db.waitingroom.WaitingRoom;
 import de.eshg.stiprotection.persistence.db.waitingroom.WaitingRoomSpecification;
 import jakarta.validation.Valid;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -50,13 +48,6 @@ public class WaitingRoomService {
     PageRequest pageable =
         PageRequest.of(parameters.pageNumberOrFallback(0), parameters.pageSizeOrFallback(25));
     return stiProtectionProcedureRepository.findAll(specification, pageable);
-  }
-
-  public String getAccessCode(StiProtectionProcedure procedure) {
-    return Optional.ofNullable(procedure.getAnonymousUserId())
-        .map(citizenAccessCodeUserApi::getCitizenAccessCodeUser)
-        .map(CitizenAccessCodeUserDto::accessCode)
-        .orElse(null);
   }
 
   public WaitingRoom getOrCreateWaitingRoom(UUID procedureId) {

@@ -3,6 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  FormButtonBar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import {
@@ -17,14 +25,6 @@ import { Formik, useFormikContext } from "formik";
 
 import { useUpdateOmsProcedureConcern } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
 import { useGetAllConcerns } from "@/lib/businessModules/officialMedicalService/api/queries/concerns";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export interface ConcernSidebarProps extends SidebarWithFormRefProps {
   procedure: ApiEmployeeOmsProcedureDetails;

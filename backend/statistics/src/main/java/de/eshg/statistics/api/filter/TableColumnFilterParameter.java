@@ -29,6 +29,9 @@ import jakarta.validation.constraints.NotNull;
       value = TextFilterParameterDto.class,
       name = TextFilterParameterDto.SCHEMA_NAME),
   @JsonSubTypes.Type(
+      value = DateFilterParameterDto.class,
+      name = DateFilterParameterDto.SCHEMA_NAME),
+  @JsonSubTypes.Type(
       value = DecimalRangeFilterParameterDto.class,
       name = DecimalRangeFilterParameterDto.SCHEMA_NAME),
   @JsonSubTypes.Type(
@@ -46,6 +49,7 @@ import jakarta.validation.constraints.NotNull;
 })
 public sealed interface TableColumnFilterParameter
     permits BooleanFilterParameterDto,
+        DateFilterParameterDto,
         DecimalRangeFilterParameterDto,
         DecimalValueFilterParameterDto,
         IntegerRangeFilterParameterDto,

@@ -14,7 +14,8 @@ public enum ModuleLeaderGroup implements KeycloakGroup {
       "Begehung",
       List.of(ModuleMemberGroup.INSPECTION, ModuleMemberGroup.INSPECTION_CHECKLISTS),
       EmployeePermissionRole.INSPECTION_PROCEDURE_ASSIGN,
-      EmployeePermissionRole.INSPECTION_LEADER),
+      EmployeePermissionRole.INSPECTION_LEADER,
+      EmployeePermissionRole.INSPECTION_IMPORT),
   INSPECTION_LANDESAMT(
       "Begehung Landesamt",
       ModuleMemberGroup.INSPECTION_LANDESAMT,

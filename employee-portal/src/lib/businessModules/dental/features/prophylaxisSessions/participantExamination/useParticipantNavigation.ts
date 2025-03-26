@@ -3,20 +3,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ChildExamination, routes } from "@eshg/dental";
+import { ProphylaxisSessionExamination, routes } from "@eshg/dental";
 
 import { useProphylaxisSessionStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/ProphylaxisSessionStoreProvider";
 
 interface UseParticipantNavigationResult {
-  gotoPreviousParticipant?: () => void;
-  gotoNextParticipant?: () => void;
-  gotoOverview: () => void;
+  gotoPreviousParticipant?: (submit?: boolean) => void;
+  gotoNextParticipant?: (submit?: boolean) => void;
+  gotoOverview: (submit?: boolean) => void;
 }
 
 interface UseParticipantNavigationParams {
-  participants: ChildExamination[];
+  participants: ProphylaxisSessionExamination[];
   onNavigate: (route: string) => void;
   examinationId: string;
+  onSubmit: () => Promise<void>;
 }
 
 export function useParticipantNavigation(
@@ -38,10 +39,13 @@ export function useParticipantNavigation(
 
   const gotoPreviousParticipant =
     participantIndex > 0
-      ? () => {
+      ? (submit = true) => {
           const previousParticipant = participants[participantIndex - 1];
           if (previousParticipant !== undefined) {
             onNavigate(examinationRoute(previousParticipant.examinationId));
+          }
+          if (submit) {
+            void params.onSubmit();
           }
         }
       : undefined;
@@ -49,16 +53,22 @@ export function useParticipantNavigation(
   const nextParticipantIndex = participantIndex + 1;
   const gotoNextParticipant =
     nextParticipantIndex < participantsLength
-      ? () => {
+      ? (submit = true) => {
           const nextParticipant = participants[nextParticipantIndex];
           if (nextParticipant !== undefined) {
             onNavigate(examinationRoute(nextParticipant.examinationId));
           }
+          if (submit) {
+            void params.onSubmit();
+          }
         }
       : undefined;
 
-  function gotoOverview() {
+  function gotoOverview(submit = true) {
     onNavigate(routes.prophylaxisSessions.byId(prophylaxisSessionId).details);
+    if (submit) {
+      void params.onSubmit();
+    }
   }
 
   return {

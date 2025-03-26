@@ -3,19 +3,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import {
   ApiDocument,
   ApiDocumentStatus,
 } from "@eshg/official-medical-service-api";
-import { Delete, ModeEditOutlineOutlined } from "@mui/icons-material";
-import { Chip } from "@mui/joy";
+import {
+  Delete,
+  ModeEditOutlineOutlined,
+  WarningAmberOutlined,
+} from "@mui/icons-material";
+import { Chip, Tooltip } from "@mui/joy";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 
 import { statusColorsDocumentStatus } from "@/lib/businessModules/officialMedicalService/shared/constants";
 import { STATUS_NAMES_DOCUMENT_STATUS } from "@/lib/businessModules/officialMedicalService/shared/translations";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 const columnHelper: ColumnHelper<ApiDocument> =
   createColumnHelper<ApiDocument>();
@@ -34,6 +38,27 @@ export function Columns({
   const { openConfirmationDialog } = useConfirmationDialog();
 
   return [
+    columnHelper.display({
+      id: "mandatoryDocumentsStatus",
+      header: "",
+      cell: (ctx) =>
+        ctx.row.original.mandatoryDocument &&
+        ctx.row.original.documentStatus !== ApiDocumentStatus.Accepted && (
+          <Tooltip
+            title={"Pflichtdokument noch nicht akzeptiert"}
+            arrow
+            placement="top"
+            sx={{ marginBottom: -0.5 }}
+          >
+            <WarningAmberOutlined color="danger" />
+          </Tooltip>
+        ),
+      meta: {
+        width: 24,
+        cellStyle: "icon",
+        headerLabel: "Status Pflichtdokument",
+      },
+    }),
     columnHelper.accessor("documentTypeDe", {
       header: "Dokumentenart",
       cell: (props) => props.getValue(),

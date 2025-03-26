@@ -3,7 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
+import {
+  ButtonBar,
+  DataTable,
+  TablePage,
+  TableSheet,
+  useConfirmationDialog,
+} from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import {
   ApiBusinessProcedureInclusionStatus,
@@ -29,9 +35,7 @@ import {
   useDeleteBusinessProcedure,
 } from "@/lib/shared/api/mutations/gdpr";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { procedureTypeNames } from "@/lib/shared/components/procedures/constants";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface ValidationTaskProceduresTableProps {
   gdprValidationTaskApi: GdprValidationTaskApiInterface;

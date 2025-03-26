@@ -187,7 +187,6 @@ public class LsdKeycloakClient {
     userRepresentation.setUsername(username);
     userRepresentation.setFirstName(firstName);
     userRepresentation.setLastName(lastName);
-    userRepresentation.setEmail(username + "@eshg.de");
     userRepresentation.setEnabled(true);
 
     CredentialRepresentation passwordCredentials = new CredentialRepresentation();

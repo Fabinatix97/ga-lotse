@@ -517,23 +517,33 @@ public class LaboratoryTestExamination extends GenericEntity<Long> {
   }
 
   public boolean hasResultsForAllRequestedTests() {
-    return (Boolean.TRUE.equals(hivRequested) && hivData != null && hivData.getResult() != null)
-        && (Boolean.TRUE.equals(syphilisRequested)
-            && syphilisData != null
-            && syphilisData.getResult() != null)
-        && (Boolean.TRUE.equals(hepARequested) && hepAData != null && hepAData.getResult() != null)
-        && (Boolean.TRUE.equals(hepBRequested) && hepBData != null && hepBData.getResult() != null)
-        && (Boolean.TRUE.equals(hepCRequested) && hepCData != null && hepCData.getResult() != null)
-        && (Boolean.TRUE.equals(chlamydiaRequested) && chlamydiaTestSamples.hasResult())
-        && (Boolean.TRUE.equals(gonorrheaRequested) && gonorrheaTestSamples.hasResult())
-        && (Boolean.TRUE.equals(mycoplasmaRequested) && mycoplasmaTestSamples.hasResult())
-        && (Boolean.TRUE.equals(cancerScreeningRequested)
-            && cancerScreeningData != null
-            && cancerScreeningData.getResult() != null)
-        && (Boolean.TRUE.equals(hpvRequested) && hpvData != null && hpvData.getResult() != null)
-        && (Boolean.TRUE.equals(mpoxRequested) && mpoxData != null && mpoxData.getResult() != null)
-        && (Boolean.TRUE.equals(otherTestRequested)
-            && otherTestData != null
-            && otherTestData.getResult() != null);
+    if (!isAnyTestRequested()) {
+      return false;
+    }
+
+    return checkTestResults(hivRequested, hivData)
+        && checkTestResults(syphilisRequested, syphilisData)
+        && checkTestResults(hepARequested, hepAData)
+        && checkTestResults(hepBRequested, hepBData)
+        && checkTestResults(hepCRequested, hepCData)
+        && checkTestSamples(chlamydiaRequested, chlamydiaTestSamples)
+        && checkTestSamples(gonorrheaRequested, gonorrheaTestSamples)
+        && checkTestSamples(mycoplasmaRequested, mycoplasmaTestSamples)
+        && checkTestResults(cancerScreeningRequested, cancerScreeningData)
+        && checkTestResults(hpvRequested, hpvData)
+        && checkTestResults(mpoxRequested, mpoxData)
+        && checkTestResults(otherTestRequested, otherTestData);
+  }
+
+  private boolean checkTestResults(Boolean requested, LaboratoryTestData testData) {
+    return !Boolean.TRUE.equals(requested) || (testData != null && testData.getResult() != null);
+  }
+
+  private boolean checkTestResults(Boolean requested, HepatitisLaboratoryTestData testData) {
+    return !Boolean.TRUE.equals(requested) || (testData != null && testData.getResult() != null);
+  }
+
+  private boolean checkTestSamples(Boolean requested, LaboratoryTestSamplesData testSamples) {
+    return !Boolean.TRUE.equals(requested) || (testSamples != null && testSamples.hasResult());
   }
 }

@@ -5,11 +5,10 @@
 
 "use client";
 
+import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { NavigationContextProvider } from "@eshg/lib-portal/components/navigation/NavigationContext";
 import { MutationBundle } from "@eshg/lib-portal/types/query";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 const LABELS = {
   cancel: "Abbrechen",

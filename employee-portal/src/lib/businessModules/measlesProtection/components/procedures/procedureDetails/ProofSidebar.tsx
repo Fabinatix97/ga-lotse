@@ -5,6 +5,13 @@
 
 "use client";
 
+import {
+  FormButtonBar,
+  Sidebar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+} from "@eshg/lib-employee-portal";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -21,12 +28,7 @@ import { useAddProofMutation } from "@/lib/businessModules/measlesProtection/api
 import { submissionResultOptions } from "@/lib/businessModules/measlesProtection/components/procedures/constants";
 import { DateAndButtonRow } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/DateAndButtonRow";
 import { WrappedSelectField } from "@/lib/businessModules/measlesProtection/shared/WrappedSelectField";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 interface InitialProofSubmissionValues {

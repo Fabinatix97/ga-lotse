@@ -17,6 +17,7 @@ import jakarta.validation.constraints.NotNull;
     include = JsonTypeInfo.As.EXISTING_PROPERTY)
 @JsonSubTypes({
   @JsonSubTypes.Type(value = RepoBooleanFilter.class, name = RepoBooleanFilter.SCHEMA_NAME),
+  @JsonSubTypes.Type(value = RepoDateFilter.class, name = RepoDateFilter.SCHEMA_NAME),
   @JsonSubTypes.Type(
       value = RepoDecimalRangeFilter.class,
       name = RepoDecimalRangeFilter.SCHEMA_NAME),
@@ -35,6 +36,7 @@ import jakarta.validation.constraints.NotNull;
 })
 public sealed interface RepoFilter
     permits RepoBooleanFilter,
+        RepoDateFilter,
         RepoDecimalRangeFilter,
         RepoDecimalValueFilter,
         RepoIntegerRangeFilter,

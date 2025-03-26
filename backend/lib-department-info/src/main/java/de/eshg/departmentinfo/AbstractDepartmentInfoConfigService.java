@@ -23,8 +23,8 @@ public abstract class AbstractDepartmentInfoConfigService<T extends AbstractDepa
     super(entityManager, transactionHelper, configClass);
   }
 
-  public T getInternalConfig() {
-    return super.getConfig();
+  T getInternalConfig() {
+    return getConfig();
   }
 
   @Transactional(readOnly = true)
@@ -38,6 +38,10 @@ public abstract class AbstractDepartmentInfoConfigService<T extends AbstractDepa
   @Transactional
   public void update(DepartmentInfo departmentInfoUpdate) {
     T config = getConfig();
+    updateDepartmentInfo(config, departmentInfoUpdate);
+  }
+
+  protected void updateDepartmentInfo(T config, DepartmentInfo departmentInfoUpdate) {
     config.setDepartmentInfo(
         updateDepartmentInfo(config.getDepartmentInfo(), departmentInfoUpdate));
   }

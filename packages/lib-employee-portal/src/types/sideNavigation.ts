@@ -5,7 +5,7 @@
 
 import { ReactNode } from "react";
 
-import { AccessCheck } from "@/features/auth/accessChecks";
+import { AccessCheck } from "@/features/auth/utils/accessChecks";
 
 export interface SideNavigationLinkItem {
   type: "SideNavigationLinkItem";
@@ -35,6 +35,7 @@ export interface SideNavigationSubItem {
   name: string;
   href: string;
   accessCheck: AccessCheck;
+  endDecorator?: ReactNode;
 }
 
 export type SideNavigationItem =

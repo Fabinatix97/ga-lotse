@@ -265,6 +265,7 @@ public class EmployeeOmsProcedureService {
             omsProcedureAndAffectedPerson.omsProcedure.getMedicalOpinionStatus().name()),
         MedicalOpinionResultDto.fromDomainType(
             omsProcedureAndAffectedPerson.omsProcedure.getMedicalOpinionResult()),
+        omsProcedureAndAffectedPerson.omsProcedure.getMedicalOpinionComment(),
         WaitingRoomMapper.mapToDto(omsProcedureAndAffectedPerson.omsProcedure.getWaitingRoom()),
         omsProcedureAndAffectedPerson.affectedPerson,
         facility,
@@ -324,7 +325,10 @@ public class EmployeeOmsProcedureService {
 
       candidates =
           findOmsProcedures(
-              physicianId, filters.status(), isBefore, isAfter, filters.highPriority());
+                  physicianId, filters.status(), isBefore, isAfter, filters.highPriority())
+              .stream()
+              .filter(procedure -> procedure.procedure().getProcedureStatus().isOpen())
+              .toList();
     }
 
     List<OmsProcedure> candidateProcedures =
@@ -707,9 +711,6 @@ public class EmployeeOmsProcedureService {
     if (procedure.isFinalized()) {
       throw new BadRequestException("Facility can not be edited when the procedure is finalized.");
     }
-    if (procedure.getProcedureStatus() != ProcedureStatus.DRAFT) {
-      throw new BadRequestException("Facility can only be synced in DRAFT status");
-    }
 
     Optional<Facility> optionalFacility = procedure.getFacility();
     if (optionalFacility.isEmpty()) {
@@ -742,9 +743,6 @@ public class EmployeeOmsProcedureService {
 
     if (procedure.isFinalized()) {
       throw new BadRequestException("Facility can not be synced when the procedure is finalized.");
-    }
-    if (procedure.getProcedureStatus() != ProcedureStatus.DRAFT) {
-      throw new BadRequestException("Facility can only be synced in DRAFT status");
     }
 
     Optional<Facility> optionalFacility = procedure.getFacility();
@@ -822,6 +820,7 @@ public class EmployeeOmsProcedureService {
             "A result must be given when setting the status to ACCOMPLISHED");
       } else {
         procedure.setMedicalOpinionResult(MedicalOpinionResult.valueOf(request.result().name()));
+        procedure.setMedicalOpinionComment(request.comment());
       }
     }
 

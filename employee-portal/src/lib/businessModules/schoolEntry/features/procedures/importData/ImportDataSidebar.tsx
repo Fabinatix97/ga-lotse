@@ -6,6 +6,10 @@
 "use client";
 
 import { ApiAddContact200Response } from "@eshg/base-api";
+import {
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
 import type { OptionalFieldValue } from "@eshg/lib-portal/types/form";
@@ -19,10 +23,6 @@ import {
 import { ImportDataFields } from "@/lib/businessModules/schoolEntry/features/procedures/importData/ImportDataFields";
 import { ImportListType } from "@/lib/businessModules/schoolEntry/features/procedures/importData/importTypes";
 import { ImportDataForm } from "@/lib/shared/components/import/ImportDataForm";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useImportDataSidebar() {
   return useSidebarWithFormRef({

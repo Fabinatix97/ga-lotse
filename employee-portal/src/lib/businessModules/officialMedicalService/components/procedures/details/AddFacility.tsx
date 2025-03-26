@@ -4,6 +4,10 @@
  */
 
 import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
+import {
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { InfoOutlined } from "@mui/icons-material";
 import { Alert, Stack } from "@mui/joy";
 
@@ -16,10 +20,6 @@ import {
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchForm";
 import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function AddFacility({ id }: Readonly<{ id: string }>) {
   const facilitySidebar = useSidebarWithFormRef({

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { TextareaField } from "@eshg/lib-employee-portal";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import {
   NestedFormProps,
@@ -22,7 +23,6 @@ import {
 import { ClickIcd10CodeHandler } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/Icd10CodeField";
 import { SetAllExaminationResultsSelect } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/SetAllSelect";
 import { FIXED_WIDTH_STYLE } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/examinationResultHelpers";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
 interface PhysicalExaminationFieldsProps extends NestedFormProps {
   values: PhysicalExaminationFieldsValues;

@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import {
   ApiServicePlanEntry,
@@ -22,11 +27,6 @@ import {
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/sidebarForms/OtherServiceAppliedForm";
 import { determineInitialUser } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/helpers";
 import { CurrentUsers } from "@/lib/businessModules/travelMedicine/shared/currentUsers";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useOtherServiceAppliedSidebar(): UseSidebarWithFormRefResult<OtherServiceAppliedSidebarProps> {
   return useSidebarWithFormRef({

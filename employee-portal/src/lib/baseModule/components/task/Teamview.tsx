@@ -5,7 +5,12 @@
 
 "use client";
 
-import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
+import {
+  ButtonBar,
+  DataTable,
+  TablePage,
+  TableSheet,
+} from "@eshg/lib-employee-portal";
 import { ApiBusinessModule, ApiTask, ApiUser } from "@eshg/lib-procedures-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { differenceInDays } from "date-fns";
@@ -17,7 +22,6 @@ import { useTeamviewFilterSettings } from "@/lib/baseModule/components/task/useT
 import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";
 import { useFetchTasksForTeamViewOptions } from "@/lib/businessModules/inspection/api/queries/useFetchTasksForTeamViewOptions";
 import { TeamviewFilters } from "@/lib/shared/api/queries/tasks";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";

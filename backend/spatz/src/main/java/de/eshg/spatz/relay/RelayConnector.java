@@ -15,8 +15,6 @@ import de.eshg.lib.relay.UUIDParser;
 import de.eshg.spatz.common.SslBundleFactory;
 import de.eshg.spatz.config.SelfSignedCertificateLatch;
 import de.eshg.spatz.config.SpatzConfigurationProperties;
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
 import java.io.IOException;
 import java.net.SocketAddress;
 import java.net.URI;
@@ -29,6 +27,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.KeyStoreException;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.UUID;
@@ -44,12 +44,7 @@ import org.java_websocket.framing.PingFrame;
 import org.java_websocket.handshake.ServerHandshake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
 
-@Component
-@Lazy
 public class RelayConnector extends WebSocketClient {
 
   private static final Logger logger = LoggerFactory.getLogger(RelayConnector.class);
@@ -68,24 +63,22 @@ public class RelayConnector extends WebSocketClient {
   private ConnectionHandler connectionHandler;
   private Selector selector;
   private ServerSocketChannel serverSocketChannel;
+  private Instant lastConnectionAttempt;
 
   public RelayConnector(
-      @Value("${eshg.spatz.relay.url}") URI relayServerUri,
       SelfSignedCertificateLatch latch,
       SpatzConfigurationProperties spatzConfigurationProperties,
       SslBundleFactory sslBundleFactory)
       throws KeyStoreException {
-    super(relayServerUri);
+    super(
+        Objects.requireNonNull(
+            spatzConfigurationProperties.relay().url(),
+            "relay-url must not be null if relay enabled"));
     this.latch = latch;
     this.ownSni = getOwnCommonName(spatzConfigurationProperties, sslBundleFactory);
-    this.relayServerUri = relayServerUri;
+    this.relayServerUri = spatzConfigurationProperties.relay().url();
     executorService = Executors.newScheduledThreadPool(4);
     logger.info("started RelayConnector, connecting as SNI {} to {}", ownSni, relayServerUri);
-  }
-
-  @PostConstruct
-  public void init() {
-    this.setConnectionLostTimeout(0);
   }
 
   public void configureIncomingConnections(SocketAddress tcpListenerAddress) throws IOException {
@@ -121,10 +114,10 @@ public class RelayConnector extends WebSocketClient {
     }
   }
 
-  @PreDestroy
-  public void stop() throws InterruptedException, IOException {
+  public void stop(Duration shutdownTimeout) throws InterruptedException, IOException {
+    logger.info("stopping RelayConnector");
     executorService.shutdown();
-    executorService.awaitTermination(5, TimeUnit.SECONDS);
+    executorService.awaitTermination(shutdownTimeout.toMillis(), TimeUnit.MILLISECONDS);
 
     if (serverSocketChannel != null) {
       serverSocketChannel.close();
@@ -135,16 +128,20 @@ public class RelayConnector extends WebSocketClient {
     close(CloseFrame.GOING_AWAY, "RelayConnector shutdown");
   }
 
-  @PostConstruct
-  public void start() throws IOException, InterruptedException {
+  public void start() throws IOException {
     selector = Selector.open();
     connectionHandler = new ConnectionHandler(selector);
+    lastConnectionAttempt = Instant.now();
     super.connect();
 
     schedulePing();
     scheduleReconnect();
     scheduleNioLoop();
     logger.info("started and connecting to {}", relayServerUri);
+  }
+
+  public boolean isRunning() {
+    return selector != null && selector.isOpen();
   }
 
   private void scheduleNioLoop() {
@@ -187,18 +184,10 @@ public class RelayConnector extends WebSocketClient {
   private void scheduleReconnect() {
     executorService.scheduleWithFixedDelay(
         () -> {
-          if (isClosed()) {
-            try {
-              latch.await();
-              logger.info(
-                  "WS connection from {} to {} is not open - trying to reconnect",
-                  this.ownSni,
-                  this.relayServerUri);
-              outstandingPingPayload.set(null);
-              reconnect();
-            } catch (InterruptedException e) {
-              Thread.currentThread().interrupt();
-            }
+          try {
+            doReconnect();
+          } catch (Exception ex) {
+            logger.error("unexpected error during reconnect attempt", ex);
           }
         },
         0,
@@ -206,14 +195,48 @@ public class RelayConnector extends WebSocketClient {
         TimeUnit.SECONDS);
   }
 
+  private void doReconnect() {
+    if (!isClosed()) {
+      logger.trace("Not reconnecting because connection is {}.", getReadyState());
+      if (lastConnectionAttempt.isBefore(Instant.now().minus(Duration.ofHours(1)))) {
+        logger.info(
+            "Not reconnected since {}. Connection is {}", lastConnectionAttempt, getReadyState());
+      }
+      return;
+    }
+    try {
+      latch.await();
+    } catch (InterruptedException e) {
+      logger.warn("Reconnection attempt interrupted", e);
+      Thread.currentThread().interrupt();
+    }
+    logger.info(
+        "WS connection from {} to {} is not open - trying to reconnect",
+        this.ownSni,
+        this.relayServerUri);
+    outstandingPingPayload.set(null);
+    lastConnectionAttempt = Instant.now();
+    super.reconnect();
+  }
+
   private void schedulePing() {
     // Schedule a ping every 20 seconds; assert that pong was received before next ping is sent
-    executorService.scheduleAtFixedRate(this::ping, 0, 20, TimeUnit.SECONDS);
+    executorService.scheduleAtFixedRate(
+        () -> {
+          try {
+            ping();
+          } catch (Exception ex) {
+            logger.error("unexpected error while sending ping", ex);
+          }
+        },
+        0,
+        20,
+        TimeUnit.SECONDS);
   }
 
   private void ping() {
     if (!isOpen()) {
-      logger.trace("Not sending ping because connection is closed.");
+      logger.trace("Not sending ping because connection is not open.");
       return;
     }
     if (outstandingPingPayload.get() != null) {
@@ -408,7 +431,11 @@ public class RelayConnector extends WebSocketClient {
   @Override
   public void onError(Exception ex) {
     logger.error("Error: {}", ex.toString()); // NOSONAR
-    close(CloseFrame.UNEXPECTED_CONDITION, ex.getMessage());
+    try {
+      close(CloseFrame.UNEXPECTED_CONDITION, ex.getMessage());
+    } catch (Exception e) {
+      logger.error("Error closing connection", e);
+    }
   }
 
   private String checkSniMatch(String expected, String sni) throws IOException {

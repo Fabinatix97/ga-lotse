@@ -7,12 +7,10 @@ package de.eshg.statistics.aggregation;
 
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
 import de.eshg.statistics.anonymization.AnonymizationExecution;
-import de.eshg.statistics.api.AddDiagramRequest;
-import de.eshg.statistics.api.AnalysisDto;
 import de.eshg.statistics.diagramcreation.DiagramCreationService;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
-import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import net.javacrumbs.shedlock.core.LockAssert;
@@ -97,13 +95,9 @@ public class ReportExecution {
                 case ANONYMIZATION -> anonymizationExecution.anonymizeReport(reportId);
                 case ANALYSIS_CONDUCTION -> reportService.analysisConduction(reportId);
                 case DIAGRAM_CREATION -> {
-                  Map<AnalysisDto, AddDiagramRequest> map =
-                      reportService.findMissingDiagramOrCompleteAutoReport(reportId);
-                  if (!map.isEmpty()) {
-                    Map.Entry<AnalysisDto, AddDiagramRequest> entry =
-                        map.entrySet().iterator().next();
-                    diagramCreationService.createDiagram(entry.getKey(), entry.getValue());
-                  }
+                  Optional<UUID> diagramIdOptional =
+                      reportService.findDiagramWithEmptyDataOrCompleteReport(reportId);
+                  diagramIdOptional.ifPresent(diagramCreationService::fillDiagramData);
                 }
                 default ->
                     throw new IllegalStateException(

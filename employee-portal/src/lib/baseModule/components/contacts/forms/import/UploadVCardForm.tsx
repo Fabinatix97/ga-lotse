@@ -3,18 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+} from "@eshg/lib-employee-portal";
 import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 import { Formik } from "formik";
 import { Ref } from "react";
 
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 interface UploadForm {
   file: File | null;

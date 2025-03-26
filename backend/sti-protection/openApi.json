@@ -549,6 +549,17 @@
         "tags" : [ "Archiving" ]
       }
     },
+    "/citizen/auth/appointment" : {
+      "delete" : {
+        "operationId" : "cancelBookedAppointment",
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "Citizen" ]
+      }
+    },
     "/citizen/auth/medicalHistory" : {
       "put" : {
         "operationId" : "updateMedicalHistory_1",
@@ -621,7 +632,7 @@
     },
     "/citizen/public/appointments/{id}" : {
       "delete" : {
-        "operationId" : "cancelAppointment_1",
+        "operationId" : "cancelPendingAppointment",
         "parameters" : [ {
           "in" : "path",
           "name" : "id",
@@ -750,7 +761,7 @@
         "parameters" : [ {
           "in" : "query",
           "name" : "concern",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "$ref" : "#/components/schemas/Concern"
           }
@@ -905,6 +916,80 @@
           }
         },
         "tags" : [ "StiConsultationDepartmentInfoConfig" ]
+      }
+    },
+    "/configuration/opening-hours/sex-work" : {
+      "get" : {
+        "operationId" : "getConfigOpeningHours_1",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetOpeningHoursConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "SexWorkOpeningHours" ]
+      },
+      "put" : {
+        "operationId" : "updateConfigOpeningHours_1",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpeningHours"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "SexWorkOpeningHours" ]
+      }
+    },
+    "/configuration/opening-hours/sti-consultation" : {
+      "get" : {
+        "operationId" : "getConfigOpeningHours",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetOpeningHoursConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "StiConsultationOpeningHours" ]
+      },
+      "put" : {
+        "operationId" : "updateConfigOpeningHours",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpeningHours"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "StiConsultationOpeningHours" ]
       }
     },
     "/configuration/privacy-documents/privacy-notice" : {
@@ -2718,6 +2803,33 @@
         "tags" : [ "MedicalHistoryDocument" ]
       }
     },
+    "/sti-procedures/search" : {
+      "get" : {
+        "operationId" : "findProcedures",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "text",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetProceduresOverviewResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Find STI procedures by access code or lab sample barcode.",
+        "tags" : [ "StiProtectionProcedure" ]
+      }
+    },
     "/sti-procedures/text-templates" : {
       "get" : {
         "operationId" : "getTextTemplates",
@@ -3793,6 +3905,17 @@
         "tags" : [ "TestHelper" ]
       }
     },
+    "/test-helper/notify/expired-unconfirmed-appointments" : {
+      "post" : {
+        "operationId" : "notifyOfExpiredUnconfirmedAppointments",
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
     "/test-helper/notify/overdue-procedures" : {
       "post" : {
         "operationId" : "notifyOfOverdueProcedures",
@@ -4170,6 +4293,9 @@
         "required" : [ "gender", "yearOfBirth" ],
         "type" : "object",
         "properties" : {
+          "appointmentBooking" : {
+            "$ref" : "#/components/schemas/BookAppointmentRequest"
+          },
           "countryOfBirth" : {
             "$ref" : "#/components/schemas/CountryCode"
           },
@@ -4189,7 +4315,7 @@
         }
       },
       "AddPersonalDetailsResponse" : {
-        "required" : [ "appointmentStart", "concern", "yearOfBirth" ],
+        "required" : [ "appointmentStart", "concern", "procedureId", "yearOfBirth" ],
         "type" : "object",
         "properties" : {
           "appointmentStart" : {
@@ -4198,6 +4324,10 @@
           },
           "concern" : {
             "$ref" : "#/components/schemas/Concern"
+          },
+          "procedureId" : {
+            "type" : "string",
+            "format" : "uuid"
           },
           "yearOfBirth" : {
             "type" : "integer",
@@ -4422,7 +4552,8 @@
             "type" : "integer",
             "format" : "int32"
           }
-        }
+        },
+        "description" : "Optional appointment booking information for resubmission on failure"
       },
       "BookAppointmentResponse" : {
         "required" : [ "procedureId" ],
@@ -4733,6 +4864,9 @@
         "required" : [ "pin" ],
         "type" : "object",
         "properties" : {
+          "personalDetails" : {
+            "$ref" : "#/components/schemas/AddPersonalDetailsRequest"
+          },
           "pin" : {
             "pattern" : "\\d{6}",
             "type" : "string",
@@ -4742,7 +4876,7 @@
         }
       },
       "CreateAnonymousUserResponse" : {
-        "required" : [ "accessCode", "userId" ],
+        "required" : [ "accessCode", "procedureId", "userId" ],
         "type" : "object",
         "properties" : {
           "accessCode" : {
@@ -4751,6 +4885,10 @@
             "type" : "string",
             "description" : "The access code for the anonymous citizen user",
             "example" : "Wzhu89yP4F728jVTT"
+          },
+          "procedureId" : {
+            "type" : "string",
+            "format" : "uuid"
           },
           "userId" : {
             "type" : "string",
@@ -6107,6 +6245,14 @@
           }
         }
       },
+      "GetOpeningHoursConfigResponse" : {
+        "type" : "object",
+        "properties" : {
+          "openingHoursDto" : {
+            "$ref" : "#/components/schemas/OpeningHours"
+          }
+        }
+      },
       "GetOpeningHoursResponse" : {
         "required" : [ "de", "en" ],
         "type" : "object",
@@ -7164,6 +7310,24 @@
         },
         "discriminator" : {
           "propertyName" : "@type"
+        }
+      },
+      "OpeningHours" : {
+        "required" : [ "de", "en" ],
+        "type" : "object",
+        "properties" : {
+          "de" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "en" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
         }
       },
       "Operation" : {

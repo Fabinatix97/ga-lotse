@@ -9,6 +9,7 @@ import { isEmptyArray } from "formik";
 
 import { ExaminationFormValues } from "@/lib/businessModules/dental/features/examinations/ExaminationFormLayout";
 import { DentalExaminationState } from "@/lib/businessModules/dental/features/prophylaxisSessions//dentalExaminationStore/dentalExaminationStore";
+import { EmptinessRules } from "@/lib/businessModules/dental/features/prophylaxisSessions/canBeMarkedAbsent";
 import { QuadrantNumber } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
 
 export function selectCanBeMarkedAbsent(
@@ -37,10 +38,6 @@ export function selectCanBeMarkedAbsent(
       );
   };
 }
-
-type EmptinessRules<T> = {
-  [K in keyof T]-?: (value: T[K]) => boolean;
-};
 
 const examinationFormValuesEmptinessRules: EmptinessRules<ExaminationFormValues> =
   {

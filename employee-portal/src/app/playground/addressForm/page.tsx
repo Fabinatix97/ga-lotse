@@ -7,7 +7,12 @@
 
 import {
   BaseAddressFormInputs,
+  FormButtonBar,
   MainContentLayout,
+  Sidebar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
   StickyToolbarLayout,
   Toolbar,
   createEmptyAddress,
@@ -17,16 +22,11 @@ import { Button, Grid, Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { useState } from "react";
 
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import {
   BillingAddressForm,
   ContactAddressForm,
   OptionalBillingAddressForm,
 } from "@/lib/shared/components/form/address/BaseAddressForm";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 type SidebarState = "contact_only" | "billing_only" | "optional_billing";
 

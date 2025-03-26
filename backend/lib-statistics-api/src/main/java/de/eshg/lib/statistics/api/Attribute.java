@@ -23,4 +23,5 @@ public record Attribute(
     DataPrivacyCategory dataPrivacyCategory,
     @Valid IntervalConfiguration intervalConfiguration,
     Integer lDiversity,
-    Double tCloseness) {}
+    Double tCloseness,
+    @Valid List<TClosenessHierarchyEntryDto> tClosenessHierarchyEntries) {}

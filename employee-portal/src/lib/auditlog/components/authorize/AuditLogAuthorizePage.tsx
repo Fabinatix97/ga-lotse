@@ -6,6 +6,7 @@
 "use client";
 
 import {
+  ButtonBar,
   DataTable,
   Pagination,
   TablePage,
@@ -19,7 +20,6 @@ import { useAuditLogAuthorizeSidebar } from "@/lib/auditlog/components/authorize
 import { auditLogAuthorizeColumns } from "@/lib/auditlog/components/authorize/auditLogAuthorizeColumns";
 import { useAuditLogAdminFilterSettings } from "@/lib/auditlog/components/authorize/useAuditLogAdminFilterSettings";
 import { useGetAvailableAuditLogs } from "@/lib/auditlog/queries/auditlog";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";

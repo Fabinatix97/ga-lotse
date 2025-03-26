@@ -5,7 +5,9 @@
     "current_step": "Step {{currentStep}} of {{totalSteps}}",
     "hiv_sti_consultation": "HIV / STI Consultation",
     "sex_work": "Sex work",
-    "overview_title": "Appointment overview"
+    "overview_title": "Appointment overview",
+    "timeslot_taken": "Unfortunately, this appointment is no longer available. Please choose another appointment.",
+    "select_new_appointment": "New appointment"
   },
   "cancel_booking": {
     "title": "Cancel the appointment?",

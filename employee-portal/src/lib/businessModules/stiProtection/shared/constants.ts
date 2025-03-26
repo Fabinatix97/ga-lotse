@@ -129,7 +129,7 @@ export const LAB_STATUS_VALUES: EnumMap<ApiLabStatus> = {
   [ApiLabStatus.TestsConducted]: "Tests durchgeführt",
   [ApiLabStatus.ResultsRecorded]: "Ergebnisse eingetragen",
   [ApiLabStatus.ResultsCommunicated]: "Ergebnisse mitgeteilt",
-};
+}; // satisfies Record<ApiLabStatus, string>;
 
 export const LAB_STATUS_COLORS: EnumMap<ApiLabStatus, ChipProps["color"]> = {
   [ApiLabStatus.Open]: "neutral",

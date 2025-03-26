@@ -3,7 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { IconButton } from "@eshg/lib-employee-portal";
+import {
+  FormButtonBar,
+  IconButton,
+  Sidebar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+} from "@eshg/lib-employee-portal";
 import { AlertProps } from "@eshg/lib-portal/components/Alert";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
@@ -23,12 +30,7 @@ import {
 import { useProcedureQuery } from "@/lib/businessModules/measlesProtection/api/queries/procedures";
 import { DateAndButtonRow } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/DateAndButtonRow";
 import { LetterRecipientField } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/LetterRecipientField";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 interface ProofRequestLetterValues {

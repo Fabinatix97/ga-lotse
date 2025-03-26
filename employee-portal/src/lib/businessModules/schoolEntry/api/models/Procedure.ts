@@ -5,8 +5,10 @@
 
 import {
   BaseEntity,
+  ProcedureLabel,
   mapBaseEntity,
   mapOptional,
+  mapProcedureLabels,
 } from "@eshg/lib-employee-portal";
 import {
   ApiSchoolEntryProcedure,
@@ -14,7 +16,6 @@ import {
   ApiSchoolEntryStatusType,
 } from "@eshg/school-entry-api";
 
-import { Label, mapLabels } from "./Label";
 import { Location, mapLocation } from "./Location";
 import { Person, mapPerson } from "./Person";
 
@@ -22,7 +23,7 @@ export interface Procedure extends BaseEntity {
   readonly type: ApiSchoolEntryProcedureType;
   readonly child: Person;
   readonly school?: Location;
-  readonly labels: Label[];
+  readonly labels: ProcedureLabel[];
   readonly status: ApiSchoolEntryStatusType;
   readonly appointmentStart?: Date;
   readonly createdAt: Date;
@@ -37,7 +38,7 @@ export function mapProcedure(response: ApiSchoolEntryProcedure): Procedure {
     type: response.type,
     child: mapPerson(response.child),
     school: mapOptional(response.school, mapLocation),
-    labels: mapLabels(response.labels),
+    labels: mapProcedureLabels(response.labels),
     status: response.status,
     appointmentStart: response.appointmentStart,
     createdAt: response.createdAt,

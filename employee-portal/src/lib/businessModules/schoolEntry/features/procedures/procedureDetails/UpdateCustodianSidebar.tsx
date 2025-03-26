@@ -5,7 +5,9 @@
 
 import {
   DefaultPersonFormValues,
+  SidebarWithFormRefProps,
   mapToPersonUpdateRequest,
+  useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
 
 import {
@@ -18,8 +20,6 @@ import {
 } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import { DefaultPersonForm } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
 import { PersonSidebarForm } from "@/lib/shared/components/personSidebar/form/PersonSidebarForm";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
-import { SidebarWithFormRefProps } from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useDeleteCustodianWithConfirmation(
   procedureId: string,

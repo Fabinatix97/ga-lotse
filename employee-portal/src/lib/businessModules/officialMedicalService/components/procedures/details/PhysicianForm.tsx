@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+} from "@eshg/lib-employee-portal";
 import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
 import { ApiUser } from "@eshg/official-medical-service-api";
 import { Stack } from "@mui/joy";
@@ -11,12 +17,6 @@ import { Ref } from "react";
 
 import { createPhysicianOptions } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/helpers";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export interface PhysicianFormValues {
   physician?: string;

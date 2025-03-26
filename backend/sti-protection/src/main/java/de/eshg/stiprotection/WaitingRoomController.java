@@ -51,12 +51,7 @@ public class WaitingRoomController {
     Page<StiProtectionProcedure> procedures =
         waitingRoomService.getWaitingRoomProcedures(paginationAndSortParameters);
     List<WaitingRoomProcedureDto> waitingRoomData =
-        procedures.stream()
-            .map(
-                procedure ->
-                    WaitingRoomProcedureMapper.toInterface(
-                        procedure, waitingRoomService.getAccessCode(procedure)))
-            .toList();
+        procedures.stream().map(WaitingRoomProcedureMapper::toInterface).toList();
     return new GetWaitingRoomProceduresResponse(waitingRoomData, procedures.getNumberOfElements());
   }
 

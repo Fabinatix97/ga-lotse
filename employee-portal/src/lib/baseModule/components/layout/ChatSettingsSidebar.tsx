@@ -3,7 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useGetSelfUser } from "@eshg/lib-employee-portal";
+import {
+  DrawerProps,
+  SIDEBAR_PADDING,
+  SidebarActions,
+  SidebarContent,
+  UseSidebarResult,
+  useGetSelfUser,
+  useSidebar,
+} from "@eshg/lib-employee-portal";
 import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { useNavigation } from "@eshg/lib-portal/components/navigation/NavigationContext";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -37,14 +45,6 @@ import {
   setPresenceOffline,
   setPresenceOnline,
 } from "@/lib/businessModules/chat/shared/utils";
-import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
-import {
-  UseSidebarResult,
-  useSidebar,
-} from "@/lib/shared/components/drawer/useSidebar";
-import { sidebarPadding } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export function useChatUserSidebar(): UseSidebarResult {
   return useSidebar({
@@ -177,7 +177,7 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
       <SidebarContent
         title="Chat Einstellungen"
         header={
-          <Stack spacing={2} sx={{ paddingRight: sidebarPadding }}>
+          <Stack spacing={2} sx={{ paddingRight: SIDEBAR_PADDING }}>
             <ChatUserId userId={chatUserId} />
             {deviceId && typeof deviceId === "string" && (
               <ChatDeviceId

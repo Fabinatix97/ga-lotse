@@ -6,6 +6,7 @@
 "use client";
 
 import {
+  ButtonBar,
   DataTable,
   Pagination,
   TablePage,
@@ -32,7 +33,6 @@ import {
 } from "@/lib/businessModules/officialMedicalService/shared/enums";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";

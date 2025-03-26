@@ -70,8 +70,8 @@ public final class DecimalAttribute {
     AttributeData attribute =
         createDecimalAttribute(
             name, code, category, mandatory, unit, valueOption, DataPrivacyCategory.SENSITIVE);
-    attribute.setLDiversity(sensitiveParameters.lDiversity());
-    attribute.setTCloseness(sensitiveParameters.tCloseness());
+    attribute.setLDiversity(sensitiveParameters.getLDiversity());
+    attribute.setTCloseness(sensitiveParameters.getTCloseness());
     return attribute;
   }
 

@@ -8,14 +8,12 @@ import {
   ApiEditorElementQA,
   ApiUpdateEditorRequest,
 } from "@eshg/lib-editor-api";
+import { FormButtonBar, TextareaField } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import CheckBox from "@mui/icons-material/CheckBox";
 import CheckBoxOutlineBlank from "@mui/icons-material/CheckBoxOutlineBlank";
 import { Divider, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
-
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
 interface ContentElementQAEditorProps {
   element: ApiEditorElementQA;

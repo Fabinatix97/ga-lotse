@@ -6,14 +6,17 @@
 package de.eshg.statistics.mapper;
 
 import de.eshg.lib.statistics.api.DataPrivacyCategory;
+import de.eshg.lib.statistics.api.TClosenessHierarchyEntryDto;
 import de.eshg.lib.statistics.api.interval.DecimalIntervalBordersConfiguration;
 import de.eshg.lib.statistics.api.interval.DecimalMinMaxCountIntervalConfiguration;
 import de.eshg.lib.statistics.api.interval.IntegerIntervalBordersConfiguration;
 import de.eshg.lib.statistics.api.interval.IntegerMinMaxCountIntervalConfiguration;
 import de.eshg.lib.statistics.api.interval.IntervalConfiguration;
 import de.eshg.statistics.persistence.entity.AnonymizationConfiguration;
+import de.eshg.statistics.persistence.entity.TClosenessHierarchyEntry;
 import de.eshg.statistics.persistence.entity.TableColumnDataPrivacyCategory;
 import java.math.BigDecimal;
+import java.util.List;
 
 public class AnonymizationConfigurationMapper {
   private AnonymizationConfigurationMapper() {}
@@ -22,6 +25,7 @@ public class AnonymizationConfigurationMapper {
       DataPrivacyCategory dataPrivacyCategory,
       Integer lDiversity,
       Double tCloseness,
+      List<TClosenessHierarchyEntryDto> tClosenessHierarchyEntryDtos,
       IntervalConfiguration intervalConfiguration) {
     if (dataPrivacyCategory == null) {
       return null;
@@ -33,11 +37,25 @@ public class AnonymizationConfigurationMapper {
     anonymizationConfiguration.setTCloseness(
         tCloseness == null ? null : BigDecimal.valueOf(tCloseness));
 
+    if (tClosenessHierarchyEntryDtos != null) {
+      anonymizationConfiguration.setTClosenessHierarchyEntries(
+          tClosenessHierarchyEntryDtos.stream()
+              .map(AnonymizationConfigurationMapper::mapToPersistence)
+              .toList());
+    }
+
     if (intervalConfiguration != null) {
       mapIntervalConfiguration(intervalConfiguration, anonymizationConfiguration);
     }
 
     return anonymizationConfiguration;
+  }
+
+  private static TClosenessHierarchyEntry mapToPersistence(
+      TClosenessHierarchyEntryDto tClosenessHierarchyEntryDto) {
+    TClosenessHierarchyEntry entry = new TClosenessHierarchyEntry();
+    entry.setHierarchySteps(tClosenessHierarchyEntryDto.hierarchySteps());
+    return entry;
   }
 
   private static void mapIntervalConfiguration(

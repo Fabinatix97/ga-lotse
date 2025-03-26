@@ -8,6 +8,7 @@ import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   CancelAppointmentByCitizenRequest,
+  PostDocumentCitizenRequest,
   PutAppointmentCitizenRequest,
 } from "@eshg/official-medical-service-api";
 
@@ -43,6 +44,23 @@ export function usePutAppointmentCitizen(successMsg: string) {
     },
     onSuccess: () => {
       snackbar.confirmation(successMsg);
+    },
+  });
+}
+
+export function usePostDocumentCitizen() {
+  const citizenAuthApi = useCitizenAuthApi();
+  const snackbar = useSnackbar();
+  const { t } = useTranslation(["officialMedicalService/personalArea"]);
+
+  return useHandledMutation({
+    mutationFn: (request: PostDocumentCitizenRequest) => {
+      return citizenAuthApi
+        .postDocumentCitizenRaw(request)
+        .then(unwrapRawResponse);
+    },
+    onSuccess: () => {
+      snackbar.confirmation(t("documents.snackbar.success"));
     },
   });
 }

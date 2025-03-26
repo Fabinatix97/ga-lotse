@@ -5,6 +5,13 @@
 
 "use client";
 
+import {
+  DrawerProps,
+  SidebarActions,
+  SidebarContent,
+  UseSidebarResult,
+  useSidebar,
+} from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
 import { useSubmitCalendarEvent } from "@/lib/baseModule/api/mutations/calendar";
@@ -15,13 +22,6 @@ import {
   EventFormValues,
 } from "@/lib/baseModule/components/calendar/EventForm";
 import { mapFormToRequestValues } from "@/lib/baseModule/components/calendar/calendarMapper";
-import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
-import {
-  UseSidebarResult,
-  useSidebar,
-} from "@/lib/shared/components/drawer/useSidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export function useAddAbsenceSidebar(): UseSidebarResult<AddAbsenceSidebarProps> {
   return useSidebar({

@@ -4,16 +4,16 @@
  */
 
 import { ApiGetFacilityFileStateResponse } from "@eshg/inspection-api";
+import {
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 
 import {
   DefaultFacilityFormValues,
   FacilityForm,
 } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { mapApiFacilityStateToFacilityFormValues } from "@/lib/shared/helpers/facilityUtils";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useEditFacilitySidebar() {
   return useSidebarWithFormRef({

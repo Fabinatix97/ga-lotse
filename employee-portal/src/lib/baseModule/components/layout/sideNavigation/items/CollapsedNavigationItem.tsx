@@ -284,7 +284,11 @@ export function CollapsedNavigationParentItem({
                 width: "100%",
               }}
             >
-              <Typography noWrap component="span">
+              <Typography
+                noWrap
+                component="span"
+                endDecorator={subItem.endDecorator}
+              >
                 {subItem.name}
               </Typography>
             </ListItemContent>

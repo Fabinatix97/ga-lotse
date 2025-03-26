@@ -19,9 +19,9 @@ import {
 } from "@mui/icons-material";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { getChildDetailsQuery } from "@/api/queries/childApi";
 import { routes } from "@/config/routes";
 import { useDentalApi } from "@/contexts/dental";
+import { getChildDetailsQuery } from "@/features/children/api/queries/details";
 
 interface ChildToolbarProps {
   childId: string;

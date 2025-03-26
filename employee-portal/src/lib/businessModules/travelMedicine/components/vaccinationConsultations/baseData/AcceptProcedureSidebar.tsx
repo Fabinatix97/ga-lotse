@@ -4,6 +4,11 @@
  */
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import {
@@ -18,11 +23,6 @@ import {
 import { useAcceptDraftVaccinationConsultation } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
 import { AcceptProcedureForm } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/AcceptProcedureForm";
 import { SearchPersonFormValues } from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useAcceptProcedureSidebar(): UseSidebarWithFormRefResult<AcceptProcedureSidebarProps> {
   return useSidebarWithFormRef({

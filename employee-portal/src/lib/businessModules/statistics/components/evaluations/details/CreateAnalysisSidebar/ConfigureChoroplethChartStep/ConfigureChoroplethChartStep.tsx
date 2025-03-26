@@ -23,7 +23,6 @@ import { mapAttributeToAutocompleteSelectionOption } from "@/lib/businessModules
 import { ChoroplethMap } from "@/lib/businessModules/statistics/components/shared/charts/ChoroplethMap";
 import {
   choroplethAggregationMethodValueNames,
-  colorSchemeNames,
   isBoolean,
   isNumeric,
   isText,
@@ -32,6 +31,8 @@ import {
 import { AutocompleteSelectOption } from "@/lib/shared/components/AutocompleteSelectOptions";
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import { ToggleButtonGroupField } from "@/lib/shared/components/formFields/ToggleButtonGroupField";
+
+import { ConfigureChoroplethChartMetaOptions } from "./ConfigureChoroplethChartMetaOptions";
 
 export interface ConfigureChoroplethChartStepProps
   extends SidebarStepContentProps<ConfigureChartFormModel> {
@@ -64,7 +65,6 @@ export function ConfigureChoroplethChartStep({
   const aggregationMethods = buildEnumOptions(
     choroplethAggregationMethodValueNames,
   );
-  const colorSchemes = buildEnumOptions(colorSchemeNames);
 
   const districtOptions = choroplethMaps.map((it) => ({
     label: it.title,
@@ -97,12 +97,9 @@ export function ConfigureChoroplethChartStep({
             label="Darstellung"
           />
         )}
-        <SingleAutocompleteField
-          options={colorSchemes}
-          name={fieldName("colorScheme")}
-          placeholder="Bitte wählen"
-          label="Farbschema"
-          required="Bitte wählen Sie ein Farbschema aus."
+        <ConfigureChoroplethChartMetaOptions
+          fieldName={fieldName}
+          values={values}
         />
         <SingleAutocompleteField
           options={districtOptions}

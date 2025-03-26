@@ -7,6 +7,9 @@
 
 import {
   MainContentLayout,
+  Sidebar,
+  SidebarContent,
+  SidebarProps,
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
@@ -19,8 +22,6 @@ import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBound
 import { Button, Stack } from "@mui/joy";
 
 import { OpenModalButton } from "@/lib/shared/components/buttons/OpenModalButton";
-import { Sidebar, SidebarProps } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export default function MutationErrorsPage() {
   return (

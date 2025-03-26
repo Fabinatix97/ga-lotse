@@ -274,6 +274,7 @@ export function ExpandedNavigationParentItem({
                       }}
                       level={textStyle(selectedChild)}
                       textColor={textColor(selectedChild)}
+                      endDecorator={subItem.endDecorator}
                     >
                       {subItem.name}
                     </Typography>

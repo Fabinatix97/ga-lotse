@@ -5,8 +5,8 @@
 -->
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
   <include file="migrations/0001_initial.xml"/>
   <include file="migrations/0002_invert_inbox_procedure_relationships.xml"/>
@@ -21,5 +21,6 @@
   <include file="migrations/0011_department_info.xml"/>
   <include file="migrations/0012_add_department_info_config.xml"/>
   <include file="migrations/0013_privacy_documents_config.xml"/>
+  <include file="migrations/0014_add_opening_hours_initialized.xml"/>
 
 </databaseChangeLog>

@@ -7,6 +7,10 @@ import {
   CentralFilePersonDetails,
   ContentPanel,
   DetailsSection,
+  EditButton,
+  SyncBarrier,
+  useSidebarWithFormRef,
+  useSyncBarrier,
 } from "@eshg/lib-employee-portal";
 import { SxProps } from "@mui/joy/styles/types";
 
@@ -22,12 +26,6 @@ import {
   ActionsItem,
   ActionsMenu,
 } from "@/lib/shared/components/buttons/ActionsMenu";
-import { EditButton } from "@/lib/shared/components/buttons/EditButton";
-import {
-  SyncBarrier,
-  useSyncBarrier,
-} from "@/lib/shared/components/centralFile/sync/SyncBarrier";
-import { useSidebarWithFormRef } from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 interface PersonDetailsPanelProps {
   title: string;

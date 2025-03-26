@@ -5,8 +5,12 @@
 
 import { type ApiGetReferenceFacilityResponse } from "@eshg/base-api";
 import {
+  OverlayBoundary,
+  Sidebar,
+  SidebarFormHandle,
   createEmptyAddress,
   mapApiAddressToForm,
+  useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
@@ -14,17 +18,13 @@ import { ReactNode, useEffect, useRef, useState } from "react";
 import { isNullish } from "remeda";
 
 import { useAddFacility } from "@/lib/baseModule/api/mutations/facility";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { FacilityForm } from "@/lib/shared/components/facilitySidebar/FacilityForm";
 import { FacilitySearch } from "@/lib/shared/components/facilitySidebar/search/FacilitySearch";
 import { BaseFacility } from "@/lib/shared/components/facilitySidebar/types";
-import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import {
   createEmptyContactPerson,
   mapApiContactPersonToForm,
 } from "@/lib/shared/helpers/facilityUtils";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export enum Mode {
   search,

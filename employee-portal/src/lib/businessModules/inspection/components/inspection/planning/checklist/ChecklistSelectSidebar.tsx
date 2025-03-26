@@ -4,14 +4,16 @@
  */
 
 import { ApiInspectionCLDVersion } from "@eshg/inspection-api";
+import {
+  OverlayBoundary,
+  Sidebar,
+  SidebarContent,
+} from "@eshg/lib-employee-portal";
 import { InfoOutlined } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
 
 import { useGetAvailableCLDVs } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { ChecklistSelectSidebarForm } from "@/lib/businessModules/inspection/components/inspection/planning/checklist/ChecklistSelectSidebarForm";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export interface ChecklistSidebarProps {
   open: boolean;

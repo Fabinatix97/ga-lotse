@@ -10,11 +10,19 @@ import {
   ApiInspection,
   ApiInspectionPhase,
 } from "@eshg/inspection-api";
-import { DetailsItem } from "@eshg/lib-employee-portal";
+import { DetailsItem, useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { scrollToFirstFormError } from "@eshg/lib-portal/components/form/FormPlus";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/EditOutlined";
-import { Button, Divider, Grid, IconButton, Stack, Typography } from "@mui/joy";
+import {
+  Button,
+  Divider,
+  Grid,
+  IconButton,
+  Sheet,
+  Stack,
+  Typography,
+} from "@mui/joy";
 import { useState } from "react";
 
 import { AppointmentSidebar } from "@/lib/businessModules/inspection/components/inspection/common/appointment/AppointmentSidebar";
@@ -26,10 +34,8 @@ import {
   SidePanelNavigationTab,
 } from "@/lib/businessModules/inspection/components/inspection/execution/SidePanelNavigation";
 import { useChecklistValidateContext } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/ChecklistValidateContext";
-import { SidePanel } from "@/lib/shared/components/sidePanel/SidePanel";
 import { SidePanelTitle } from "@/lib/shared/components/sidePanel/SidePanelTitle";
 import { UserLink } from "@/lib/shared/components/users/UserLink";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 interface ExecutionSidePanelProps {
@@ -133,7 +139,7 @@ export function ExecutionSidePanel({
   }
 
   return (
-    <SidePanel>
+    <Sheet data-testid="sidePanel" sx={{ overflow: "auto" }}>
       <Stack direction="row" alignItems="center" justifyContent="space-between">
         <SidePanelTitle component="h2">Aufgaben</SidePanelTitle>
         {!readOnly && !isOffline && (
@@ -242,6 +248,6 @@ export function ExecutionSidePanel({
           inspectionId={inspection.externalId}
         />
       )}
-    </SidePanel>
+    </Sheet>
   );
 }

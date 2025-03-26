@@ -12,7 +12,7 @@ import {
   ApiInspectionType,
   ApiObjectType,
 } from "@eshg/inspection-api";
-import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
+import { TextareaField, useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
@@ -30,7 +30,6 @@ import { useStartInspection } from "@/lib/businessModules/inspection/api/mutatio
 import { InspectionAssigneeSelection } from "@/lib/businessModules/inspection/components/inspection/assignee/InspectionAssigneeSelection";
 import { inspectionTypeNames } from "@/lib/businessModules/inspection/shared/enums";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { fullName } from "@/lib/shared/components/users/userFormatter";
 

@@ -25,15 +25,10 @@ public final class BooleanAttribute {
   }
 
   public static AttributeData createSensitive(
-      String name,
-      String code,
-      String category,
-      boolean mandatory,
-      SensitiveParameters sensitiveParameters) {
+      String name, String code, String category, boolean mandatory, double tCloseness) {
     AttributeData attribute =
         createBooleanAttribute(name, code, category, mandatory, DataPrivacyCategory.SENSITIVE);
-    attribute.setLDiversity(sensitiveParameters.lDiversity());
-    attribute.setTCloseness(sensitiveParameters.tCloseness());
+    attribute.setTCloseness(tCloseness);
     return attribute;
   }
 

@@ -6,7 +6,7 @@
 "use client";
 
 import {
-  Examination,
+  ChildExamination,
   ToothDiagnoses,
   useUpdateExamination,
 } from "@eshg/dental";
@@ -30,7 +30,7 @@ import { FormFooter } from "@/lib/businessModules/schoolEntry/features/procedure
 import { FormStack } from "@/lib/shared/components/form/FormStack";
 
 interface ChildExaminationFormProps extends RequiresChildren {
-  examination: Examination;
+  examination: ChildExamination;
 }
 
 export function ChildExaminationForm(props: ChildExaminationFormProps) {
@@ -74,7 +74,7 @@ export function ChildExaminationForm(props: ChildExaminationFormProps) {
 }
 
 function mapToRequest(
-  examination: Examination,
+  examination: ChildExamination,
   formValues: ExaminationFormValues,
   toothDiagnoses: ToothDiagnoses,
 ): UpdateExaminationRequest {
@@ -93,7 +93,7 @@ function mapToRequest(
 }
 
 function mapExaminationResultRequest(
-  examination: Examination,
+  examination: ChildExamination,
   formValues: ExaminationFormValues,
   toothDiagnoses: ToothDiagnoses,
 ): ApiExaminationResult | undefined {

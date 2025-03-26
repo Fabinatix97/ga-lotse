@@ -8,6 +8,7 @@ import {
   ApiInstitutionContact,
   ApiVCardInstitutionContact,
 } from "@eshg/base-api";
+import { SidebarFormHandle } from "@eshg/lib-employee-portal";
 import { Ref, useState } from "react";
 import { isDefined } from "remeda";
 
@@ -17,7 +18,6 @@ import { mapVCardAddressToForm } from "@/lib/baseModule/components/contacts/form
 import { ImportResultForm } from "@/lib/baseModule/components/contacts/forms/import/ImportResultForm";
 import { UploadVCardForm } from "@/lib/baseModule/components/contacts/forms/import/UploadVCardForm";
 import { InstitutionContactFormValues } from "@/lib/baseModule/components/contacts/types";
-import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
 
 interface ContactImportFormProps {
   onClose: () => void;

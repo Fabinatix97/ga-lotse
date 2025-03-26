@@ -27,6 +27,7 @@ import de.eshg.lib.statistics.api.GetDataTableHeaderRequest;
 import de.eshg.lib.statistics.api.GetDataTableHeaderResponse;
 import de.eshg.lib.statistics.api.GetSpecificDataRequest;
 import de.eshg.lib.statistics.api.GetSpecificDataResponse;
+import de.eshg.lib.statistics.api.TClosenessHierarchyEntryDto;
 import de.eshg.lib.statistics.api.ValueType;
 import de.eshg.lib.statistics.api.interval.IntervalConfiguration;
 import de.eshg.rest.service.error.BadRequestException;
@@ -334,6 +335,7 @@ public class DataAggregationService {
     DataPrivacyCategory dataPrivacyCategory;
     Integer lDiversity;
     Double tCloseness;
+    List<TClosenessHierarchyEntryDto> tClosenessHierarchyEntries;
     IntervalConfiguration intervalConfiguration;
     if (baseModuleAttribute == null) {
       tableColumn.setValueType(mapToTableColumnValueType(businessModuleAttribute.valueType()));
@@ -345,6 +347,7 @@ public class DataAggregationService {
       dataPrivacyCategory = businessModuleAttribute.dataPrivacyCategory();
       lDiversity = businessModuleAttribute.lDiversity();
       tCloseness = businessModuleAttribute.tCloseness();
+      tClosenessHierarchyEntries = businessModuleAttribute.tClosenessHierarchyEntries();
       intervalConfiguration = businessModuleAttribute.intervalConfiguration();
     } else {
       tableColumn.setBaseModuleAttributeCode(baseModuleAttribute.code());
@@ -358,12 +361,17 @@ public class DataAggregationService {
       dataPrivacyCategory = baseModuleAttribute.dataPrivacyCategory();
       lDiversity = null;
       tCloseness = null;
+      tClosenessHierarchyEntries = null;
       intervalConfiguration = baseModuleAttribute.intervalConfiguration();
     }
 
     tableColumn.setAnonymizationConfiguration(
         AnonymizationConfigurationMapper.mapToPersistence(
-            dataPrivacyCategory, lDiversity, tCloseness, intervalConfiguration));
+            dataPrivacyCategory,
+            lDiversity,
+            tCloseness,
+            tClosenessHierarchyEntries,
+            intervalConfiguration));
 
     tableColumn.setSearchKey(
         AttributeSelectionMapper.buildSearchKey(

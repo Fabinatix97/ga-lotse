@@ -3,17 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
+
 import { useAddGeoShape } from "@/lib/businessModules/statistics/api/mutations/useAddGeoShape";
 import { ImportGeoShapeStep } from "@/lib/businessModules/statistics/components/geoshapes/ImportGeoShapeSidebar/ImportGeoShapeStep";
 import {
   SidebarStepper,
   createStepContent,
 } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export interface AddGeoShapeValues {
   file: File | null;

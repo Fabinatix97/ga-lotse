@@ -8,11 +8,10 @@ package de.eshg.statistics.diagramcreation;
 import de.eshg.statistics.aggregation.AggregationResultUtil;
 import de.eshg.statistics.aggregation.AnalysisService;
 import de.eshg.statistics.aggregation.TableRowSpecifications;
-import de.eshg.statistics.api.AddDiagramRequest;
-import de.eshg.statistics.api.chart.BarChartConfigurationDto;
 import de.eshg.statistics.api.filter.TableColumnFilterParameter;
 import de.eshg.statistics.config.StatisticsConfig;
 import de.eshg.statistics.mapper.AnalysisMapper;
+import de.eshg.statistics.mapper.FilterParameterMapper;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.Analysis;
 import de.eshg.statistics.persistence.entity.Diagram;
@@ -20,10 +19,10 @@ import de.eshg.statistics.persistence.entity.MinMaxNullUnknownValues;
 import de.eshg.statistics.persistence.entity.TableColumn;
 import de.eshg.statistics.persistence.entity.TableColumnValueType;
 import de.eshg.statistics.persistence.entity.TableRow;
+import de.eshg.statistics.persistence.entity.chart.BarChartConfiguration;
 import de.eshg.statistics.persistence.entity.diagramdata.BarChartData;
 import de.eshg.statistics.persistence.entity.diagramdata.BarGroupData;
 import de.eshg.statistics.persistence.entity.diagramdata.KeyToCount;
-import de.eshg.statistics.persistence.repository.AnalysisRepository;
 import de.eshg.statistics.persistence.repository.TableRowRepository;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,33 +39,27 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class BarChartDiagramCreationService
-    extends AbstractChartDiagramCreationService<
-        Map<Object, Map<Object, Integer>>, BarChartConfigurationDto> {
+    extends AbstractChartDiagramCreationService<Map<Object, Map<Object, Integer>>> {
   public BarChartDiagramCreationService(
       AnalysisService analysisService,
-      AnalysisRepository analysisRepository,
       TableRowRepository tableRowRepository,
       StatisticsConfig statisticsConfig) {
-    super(analysisService, analysisRepository, tableRowRepository, statisticsConfig);
+    super(analysisService, tableRowRepository, statisticsConfig);
   }
 
   @Override
   @Transactional(readOnly = true)
-  public Map<Object, Map<Object, Integer>> initializeChartDataHolder(
-      UUID analysisId,
-      BarChartConfigurationDto barChartConfigurationDto,
-      List<TableColumnFilterParameter> filters) {
-    Analysis analysis = analysisService.getAnalysisInternal(analysisId);
+  public Map<Object, Map<Object, Integer>> initializeChartDataHolder(UUID diagramId) {
+    Analysis analysis = analysisService.getDiagramInternal(diagramId).getAnalysis();
     AbstractAggregationResult aggregationResult = analysis.getAggregationResult();
-
-    AggregationResultUtil.validateColumnFilters(filters, aggregationResult);
+    BarChartConfiguration barChartConfiguration = getBarChartConfiguration(analysis);
 
     TableColumn primaryTableColumn =
         AggregationResultUtil.getTableColumn(
-            barChartConfigurationDto.primaryAttribute(), aggregationResult);
+            barChartConfiguration.getPrimaryAttributeSelection(), aggregationResult);
     TableColumn secondaryTableColumn =
         AggregationResultUtil.getTableColumn(
-            barChartConfigurationDto.secondaryAttribute(), aggregationResult);
+            barChartConfiguration.getSecondaryAttributeSelection(), aggregationResult);
 
     Map<Object, Map<Object, Integer>> chartDataHolder =
         createChartDataHolderMap(primaryTableColumn.getValueType());
@@ -76,6 +69,10 @@ public class BarChartDiagramCreationService
         secondaryTableColumn);
 
     return chartDataHolder;
+  }
+
+  private static BarChartConfiguration getBarChartConfiguration(Analysis analysis) {
+    return (BarChartConfiguration) AnalysisMapper.getChartConfiguration(analysis);
   }
 
   private static Map<Object, Map<Object, Integer>> createChartDataHolderMap(
@@ -118,20 +115,17 @@ public class BarChartDiagramCreationService
   @Override
   @Transactional(readOnly = true)
   public int collectChartData(
-      UUID analysisId,
-      BarChartConfigurationDto barChartConfigurationDto,
-      List<TableColumnFilterParameter> filters,
-      int page,
-      Map<Object, Map<Object, Integer>> chartDataHolder) {
-    Analysis analysis = analysisService.getAnalysisInternal(analysisId);
-    AbstractAggregationResult aggregationResult = analysis.getAggregationResult();
+      UUID diagramId, int page, Map<Object, Map<Object, Integer>> chartDataHolder) {
+    Diagram diagram = analysisService.getDiagramInternal(diagramId);
+    AbstractAggregationResult aggregationResult = diagram.getAnalysis().getAggregationResult();
+    BarChartConfiguration barChartConfiguration = getBarChartConfiguration(diagram.getAnalysis());
 
     TableColumn primaryTableColumn =
         AggregationResultUtil.getTableColumn(
-            barChartConfigurationDto.primaryAttribute(), aggregationResult);
+            barChartConfiguration.getPrimaryAttributeSelection(), aggregationResult);
     TableColumn secondaryTableColumn =
         AggregationResultUtil.getTableColumn(
-            barChartConfigurationDto.secondaryAttribute(), aggregationResult);
+            barChartConfiguration.getSecondaryAttributeSelection(), aggregationResult);
 
     Stream<Specification<TableRow>> notNullSpecifications;
     if (secondaryTableColumn == null) {
@@ -144,6 +138,7 @@ public class BarChartDiagramCreationService
               TableRowSpecifications.getNotNullSpecification(secondaryTableColumn));
     }
 
+    List<TableColumnFilterParameter> filters = FilterParameterMapper.mapToApi(diagram.getFilters());
     return collectDataForTablePageAndReturnMaxPage(
         page,
         notNullSpecifications,
@@ -177,14 +172,11 @@ public class BarChartDiagramCreationService
 
   @Override
   @Transactional
-  public UUID addDiagram(
-      UUID analysisId,
-      BarChartConfigurationDto barChartConfigurationDto,
-      AddDiagramRequest addDiagramRequest,
-      Map<Object, Map<Object, Integer>> chartDataHolder) {
-    Analysis analysis = analysisService.getAnalysisInternal(analysisId);
+  public void fillDiagramData(UUID diagramId, Map<Object, Map<Object, Integer>> chartDataHolder) {
+    Diagram diagram = analysisService.getDiagramInternal(diagramId);
+    BarChartConfiguration chartConfiguration = getBarChartConfiguration(diagram.getAnalysis());
     fillChartDataHolderWithMissingValues(
-        chartDataHolder, barChartConfigurationDto.secondaryAttribute() == null);
+        chartDataHolder, chartConfiguration.getSecondaryAttributeSelection() == null);
 
     List<BarGroupData> groupDataList = getBarGroupDataList(chartDataHolder);
 
@@ -195,14 +187,10 @@ public class BarChartDiagramCreationService
             .mapToInt(KeyToCount::getCount)
             .sum();
 
-    BarChartData barChartData = new BarChartData();
+    BarChartData barChartData = (BarChartData) diagram.getDiagramData();
     barChartData.setEvaluatedDataAmount(evaluatedEntries);
     barChartData.addBarGroupDatas(groupDataList);
-
-    Diagram diagram = AnalysisMapper.mapToPersistence(addDiagramRequest, barChartData, analysis);
-
-    analysisRepository.flush();
-    return diagram.getExternalId();
+    diagram.setDiagramDataEmpty(false);
   }
 
   private static List<BarGroupData> getBarGroupDataList(

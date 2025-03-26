@@ -3,6 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  FormButtonBar,
+  Sidebar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+} from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { isDateString } from "@eshg/lib-portal/helpers/dateTime";
@@ -18,11 +25,6 @@ import { useCallback } from "react";
 import { useUpdateAccessRestrictionMutation } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
 import { DateAndButtonRow } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/DateAndButtonRow";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 import {

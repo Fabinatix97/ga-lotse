@@ -14,8 +14,19 @@ import {
   formatTime,
   isSameAppointment,
 } from "@eshg/lib-portal/components/formFields/appointmentPicker/helpers";
-import { Box, Button, ListItem, Stack, Typography, styled } from "@mui/joy";
-import { useMemo, useState } from "react";
+import {
+  Box,
+  ListItem,
+  Radio,
+  RadioGroup,
+  Stack,
+  Theme,
+  Typography,
+  styled,
+  useTheme,
+} from "@mui/joy";
+import assert from "assert";
+import { ChangeEvent, useCallback, useMemo, useState } from "react";
 
 import { Row } from "@/lib/businessModules/measlesProtection/shared/components/Row";
 import { TranslateFn } from "@/lib/i18n/client";
@@ -142,57 +153,129 @@ function TimeSlotList<T extends Appointment>({
   label,
   locale,
 }: AppointmentListProps<T>) {
+  const onSelected = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      const date = appointments[parseInt(value)];
+      assert.ok(date);
+      onAppointmentSelected?.(date);
+      return field.helpers.setValue(date);
+    },
+    [field.helpers, appointments, onAppointmentSelected],
+  );
+
   const hasAppointments = appointments.length > 0;
   if (!hasAppointments || !date) {
     return null;
   }
 
-  function createOnSelected(d: T) {
-    return () => {
-      onAppointmentSelected?.(d);
-      return field.helpers.setValue(d);
-    };
-  }
-
   return (
     <Stack gap={2} data-testId={"time-slot-list"}>
       <Typography level="title-md">{label}</Typography>
-      <ListGrid>
-        {appointments.map((apt: T) => {
-          const isSelected = isSameAppointment(field.input.value, apt);
-          return (
-            <ListItem
-              sx={{ padding: 0, minHeight: 0 }}
-              key={apt.start.getTime()}
-            >
-              <Box
-                component="time"
-                sx={{ width: "100%" }}
-                dateTime={apt.start.toTimeString().slice(0, 5)}
-              >
-                <Button
-                  onClick={createOnSelected(apt)}
-                  aria-selected={isSelected}
-                  variant={isSelected ? "solid" : "plain"}
-                  sx={(theme) => ({
-                    display: "flex",
-                    justifyContent: "center",
-                    gap: 1,
-                    minWidth: theme.spacing(12),
-                    backgroundColor: isSelected
-                      ? undefined
-                      : theme.palette.background.level1,
-                    width: "100%",
-                  })}
-                >
-                  {formatTime(apt.start, locale)}
-                </Button>
-              </Box>
-            </ListItem>
-          );
-        })}
-      </ListGrid>
+      <RadioGroup onChange={onSelected}>
+        <ListGrid>
+          {appointments.map((apt: T, index: number) => (
+            <TimeSlot
+              key={index}
+              index={index}
+              appointment={apt}
+              value={field.meta.value}
+              locale={locale}
+            />
+          ))}
+        </ListGrid>
+      </RadioGroup>
     </Stack>
+  );
+}
+
+function TimeSlot<T extends Appointment>({
+  value,
+  appointment,
+  index,
+  locale,
+}: {
+  value: T | null;
+  appointment: T;
+  index: number;
+  locale: string;
+}) {
+  const theme = useTheme();
+  const isSelected = isSameAppointment(value, appointment);
+  const label = formatTime(appointment.start, locale);
+  const radioButtonSlotProps = useRadioButtonSlotProps(theme, isSelected);
+  const labelFontStyles = useLabelFontStyles(theme, isSelected);
+  return (
+    <ListItem sx={{ padding: 0, minHeight: 0 }}>
+      <Box
+        component="time"
+        sx={{ width: "100%" }}
+        dateTime={appointment.start.toTimeString().slice(0, 5)}
+      >
+        <Radio
+          disableIcon
+          overlay
+          slotProps={radioButtonSlotProps}
+          color="primary"
+          checked={isSelected}
+          value={index}
+          label={
+            <Typography level="title-md" sx={labelFontStyles}>
+              {label}
+            </Typography>
+          }
+        />
+      </Box>
+    </ListItem>
+  );
+}
+
+function useLabelFontStyles(theme: Theme, isSelected: boolean) {
+  return useMemo(
+    () => ({
+      color: isSelected ? "white" : theme.palette.primary.plainColor,
+      ".MuiListItem-root:hover &": {
+        color: isSelected ? "white" : theme.palette.primary.plainColor,
+      },
+      fontSize: theme.fontSize.md,
+      fontWeight: 600,
+    }),
+    [theme, isSelected],
+  );
+}
+
+function useRadioButtonSlotProps(theme: Theme, isSelected: boolean) {
+  return useMemo(
+    () => ({
+      action: {
+        sx: {
+          border: "none",
+          backgroundColor: isSelected
+            ? theme.palette.primary.solidBg
+            : theme.palette.neutral.softBg,
+          "&:hover": {
+            backgroundColor: isSelected
+              ? theme.palette.primary.solidHoverBg
+              : theme.palette.neutral.softHoverBg,
+          },
+          borderRadius: theme.radius.md,
+          display: "flex",
+          justifyContent: "center",
+        },
+      },
+      label: {
+        sx: {
+          padding: theme.spacing(1),
+          textAlign: "center",
+        },
+      },
+      root: {
+        sx: {
+          width: "100%",
+        },
+      },
+    }),
+    [theme, isSelected],
   );
 }
 

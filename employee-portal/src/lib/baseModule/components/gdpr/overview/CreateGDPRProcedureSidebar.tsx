@@ -6,7 +6,12 @@
 import { ApiGdprProcedureType, ApiSalutation } from "@eshg/base-api";
 import {
   BaseAddressFormInputs,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarWithFormRefProps,
   createEmptyAddress,
+  useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
@@ -28,14 +33,7 @@ import { useAddGdprProcedure } from "@/lib/baseModule/api/mutations/gdpr";
 import { TYPE_OPTIONS } from "@/lib/baseModule/components/gdpr/i18n";
 import { routes } from "@/lib/baseModule/shared/routes";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { ContactAddressForm } from "@/lib/shared/components/form/address/BaseAddressForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export interface GDPRProcedureFormInputs {
   type: OptionalFieldValue<ApiGdprProcedureType>;

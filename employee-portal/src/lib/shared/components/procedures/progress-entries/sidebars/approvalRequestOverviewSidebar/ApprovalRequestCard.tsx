@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ButtonBar } from "@eshg/lib-employee-portal";
 import { ApiAbstractFile, ApiApprovalRequest } from "@eshg/lib-procedures-api";
 import {
   Box,
@@ -17,7 +18,6 @@ import {
 import { useContext } from "react";
 import { isDefined } from "remeda";
 
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { ProgressEntriesContext } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import { useDecideApprovalRequest } from "@/lib/shared/components/procedures/progress-entries/mutations/approvalRequestApi";
 import { FileAsApprovalRequestEntity } from "@/lib/shared/components/procedures/progress-entries/sidebars/approvalRequestOverviewSidebar/FileAsApprovalRequestEntity";

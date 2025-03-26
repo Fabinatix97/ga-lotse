@@ -9,13 +9,14 @@ import static de.eshg.departmentinfo.mapper.DepartmentInfoMapper.mapToDepartment
 
 import de.eshg.departmentinfo.api.GetInternalConfigDepartmentInfoResponse;
 import de.eshg.departmentinfo.domain.AbstractDepartmentInfoConfig;
+import de.eshg.departmentinfo.domain.DepartmentInfo;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 
 public abstract class AbstractDepartmentInfoConfigController<
     T extends AbstractDepartmentInfoConfig> {
 
-  protected final AbstractDepartmentInfoConfigService<T> configService;
+  final AbstractDepartmentInfoConfigService<T> configService;
 
   protected AbstractDepartmentInfoConfigController(
       AbstractDepartmentInfoConfigService<T> configService) {
@@ -25,7 +26,7 @@ public abstract class AbstractDepartmentInfoConfigController<
   @GetMapping
   @Transactional(readOnly = true)
   public GetInternalConfigDepartmentInfoResponse getInternalConfigDepartmentInfo() {
-    return new GetInternalConfigDepartmentInfoResponse(
-        mapToDepartmentInfoDto(configService.getInternalConfig().getDepartmentInfo()));
+    DepartmentInfo departmentInfo = configService.getInternalConfig().getDepartmentInfo();
+    return new GetInternalConfigDepartmentInfoResponse(mapToDepartmentInfoDto(departmentInfo));
   }
 }

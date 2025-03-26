@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+} from "@eshg/lib-employee-portal";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { MultiAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/MultiAutocompleteField";
 import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
@@ -21,12 +27,6 @@ import {
   createInformationStatementTemplateOptions,
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/helpers";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export interface InformationStatementFormValues {
   procedureId: string;

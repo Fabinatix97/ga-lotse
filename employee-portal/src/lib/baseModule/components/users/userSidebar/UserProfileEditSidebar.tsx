@@ -9,6 +9,13 @@ import {
   ApiUser,
   ApiUserGroup,
 } from "@eshg/base-api";
+import {
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { PhoneNumberField } from "@eshg/lib-portal/components/formFields/PhoneNumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
@@ -32,13 +39,6 @@ import { phoneNumberValidator } from "@/lib/baseModule/components/users/validati
 import { ChatUserId } from "@/lib/businessModules/chat/components/ChatUserId";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 interface UserEditFormInputs {
   email: string;

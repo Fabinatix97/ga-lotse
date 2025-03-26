@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FormButtonBar } from "@eshg/lib-employee-portal";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import {
   ApiAppointmentType,
@@ -23,7 +24,6 @@ import { StaffUser } from "@/lib/shared/components/appointmentBlocks/Appointment
 import { AppointmentStaffSelection } from "@/lib/shared/components/appointmentBlocks/AppointmentStaffSelection";
 import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { FormSheet } from "@/lib/shared/components/form/FormSheet";
 import { validateFieldArray } from "@/lib/shared/helpers/validators";
 

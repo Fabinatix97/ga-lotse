@@ -7,6 +7,7 @@ import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
   DefaultPersonFormValues,
   PersonFormValues,
+  SidebarWithFormRefProps,
 } from "@eshg/lib-employee-portal";
 import { DefaultError, UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { ComponentType, ReactNode, useEffect, useState } from "react";
@@ -32,7 +33,6 @@ import {
   SearchPersonSidebar,
 } from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
 import { useResetAlertContextOnChange } from "@/lib/shared/hooks/useResetAlertContextOnChange";
-import { SidebarWithFormRefProps } from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 import { PersonDetailsSidebar } from "./PersonDetailsSidebar";
 import { AssociatedProceduresSearchResult } from "./search/AssociatedProceduresSearchResult";

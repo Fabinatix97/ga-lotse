@@ -4,6 +4,11 @@
  */
 
 import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
+import {
   ApiDisease,
   ApiInventoryVaccineWithoutRmbiVaccine,
   ApiPostPutVaccineRequest,
@@ -18,11 +23,6 @@ import {
   VaccineForm,
   VaccineFormValues,
 } from "@/lib/businessModules/travelMedicine/components/vaccines/VaccineForm";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useVaccineSidebar(): UseSidebarWithFormRefResult<VaccineSidebarProps> {
   return useSidebarWithFormRef({

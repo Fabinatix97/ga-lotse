@@ -53,7 +53,6 @@ export const eslintBaseConfig = tseslint.config(
           patterns: [restrictRelativeImportsPattern],
         },
       ],
-      "no-duplicate-imports": ["warn"],
 
       "@typescript-eslint/unbound-method": "off",
       "@typescript-eslint/no-misused-promises": [
@@ -78,6 +77,7 @@ export const eslintBaseConfig = tseslint.config(
       ],
 
       "import/no-default-export": "error",
+      "import/no-duplicates": "error",
 
       // TODO: These rules are activated by default through the recommended rules of eslint-plugin-promise.
       // However, there are some errors in the code caused by these rules that cannot be fixed trivially.

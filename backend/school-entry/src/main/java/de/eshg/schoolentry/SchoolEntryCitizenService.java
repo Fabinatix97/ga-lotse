@@ -12,13 +12,13 @@ import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.department.GetDepartmentInfoResponse;
+import de.eshg.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.model.AppointmentBlockSlot;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.contact.ContactClient;
-import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.procedure.domain.model.TaskType;
 import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.rest.service.error.BadRequestException;
@@ -54,7 +54,7 @@ public class SchoolEntryCitizenService {
   private final SchoolEntryService schoolEntryService;
   private final AppointmentBlockSlotUtil appointmentBlockSlotUtil;
   private final ProgressEntryUtil progressEntryUtil;
-  private final DepartmentClient departmentClient;
+  private final DepartmentInfoConfigService departmentInfoConfigService;
   private final ContactClient contactClient;
 
   public SchoolEntryCitizenService(
@@ -64,7 +64,7 @@ public class SchoolEntryCitizenService {
       SchoolEntryService schoolEntryService,
       AppointmentBlockSlotUtil appointmentBlockSlotUtil,
       ProgressEntryUtil progressEntryUtil,
-      DepartmentClient departmentClient,
+      DepartmentInfoConfigService departmentInfoConfigService,
       ContactClient contactClient) {
     this.clock = clock;
     this.citizensProperties = schoolEntryProperties.getCitizens();
@@ -72,7 +72,7 @@ public class SchoolEntryCitizenService {
     this.schoolEntryService = schoolEntryService;
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
     this.progressEntryUtil = progressEntryUtil;
-    this.departmentClient = departmentClient;
+    this.departmentInfoConfigService = departmentInfoConfigService;
     this.contactClient = contactClient;
   }
 
@@ -167,20 +167,19 @@ public class SchoolEntryCitizenService {
   public AppointmentAddressDto getAppointmentAddress(SchoolEntryProcedure procedure) {
     return Optional.ofNullable(schoolEntryService.getAppointmentLocation(procedure))
         .map(contactId -> mapToAppointmentAddress(contactClient.getContact(contactId)))
-        .orElse(mapToAppointmentAddress(departmentClient.getDepartmentInfo()));
+        .orElse(mapToAppointmentAddress(departmentInfoConfigService.getDepartmentInfo()));
   }
 
-  private AppointmentAddressDto mapToAppointmentAddress(
-      GetDepartmentInfoResponse departmentInfoResponse) {
+  private AppointmentAddressDto mapToAppointmentAddress(GetDepartmentInfoResponse departmentInfo) {
     return new AppointmentAddressDto(
-        departmentInfoResponse.name(),
+        departmentInfo.name(),
         new DomesticAddressDto(
-            departmentInfoResponse.country(),
-            departmentInfoResponse.city(),
-            departmentInfoResponse.postalCode(),
+            departmentInfo.country(),
+            departmentInfo.city(),
+            departmentInfo.postalCode(),
             null,
-            departmentInfoResponse.street(),
-            departmentInfoResponse.houseNumber(),
+            departmentInfo.street(),
+            departmentInfo.houseNumber(),
             null));
   }
 

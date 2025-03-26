@@ -12,6 +12,7 @@ import {
 } from "@eshg/dental";
 import { ApiProphylaxisSessionSortKey } from "@eshg/dental-api";
 import {
+  ButtonBar,
   DataTable,
   Pagination,
   TablePage,
@@ -31,7 +32,6 @@ import {
   ProphylaxisSessionFilters,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/ProphylaxisSessionFilterSettings";
 import { fluoridationDescription } from "@/lib/businessModules/dental/features/prophylaxisSessions/translations";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { useFilterDictionary } from "@/lib/shared/components/filterSettings/useFilterDictionary";
 import { displayBoolean } from "@/lib/shared/helpers/booleans";

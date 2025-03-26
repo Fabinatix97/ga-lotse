@@ -5,6 +5,7 @@
 
 package de.eshg.schoolentry.mapper;
 
+import de.eshg.lib.xlsximport.util.AddressMapper;
 import de.eshg.schoolentry.api.*;
 import de.eshg.schoolentry.business.model.*;
 import java.util.List;

@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { EmployeePortalProvider } from "@eshg/lib-employee-portal";
+import {
+  DrawerProvider,
+  EmployeePortalErrorModal,
+  EmployeePortalProvider,
+} from "@eshg/lib-employee-portal";
 import { ApiProvider } from "@eshg/lib-portal/api/ApiProvider";
 import { HiddenDownloadContainer } from "@eshg/lib-portal/api/files/HiddenDownloadContainer";
 import { EnvironmentTypeProvider } from "@eshg/lib-portal/components/EnvironmentTypeProvider";
@@ -25,10 +29,8 @@ import { ServiceWorkerProvider } from "@/lib/businessModules/inspection/shared/o
 import { OfflinePasswordPrompt } from "@/lib/businessModules/inspection/shared/offline/password/OfflinePasswordPrompt";
 import { API_CONFIGURATION } from "@/lib/shared/api/config";
 import { EmployeeSnackbar } from "@/lib/shared/components/EmployeeSnackbar";
-import { EmployeePortalErrorModal } from "@/lib/shared/components/boundaries/EmployeePortalErrorModal";
 import { ConfirmNavigationProvider } from "@/lib/shared/components/confirmationDialog/ConfirmNavigationProvider";
 import { EmployeePortalConfirmationDialog } from "@/lib/shared/components/confirmationDialog/EmployeePortalConfirmationDialog";
-import { DrawerProvider } from "@/lib/shared/components/drawer/drawerContext";
 
 // Opt out of the Data Cache and Full Route Cache. All routes are dynamically rendered.
 export const dynamic = "force-dynamic";

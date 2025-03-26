@@ -4,7 +4,13 @@
  */
 
 import { ApiContactType } from "@eshg/base-api";
-import { createEmptyAddress } from "@eshg/lib-employee-portal";
+import {
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+  createEmptyAddress,
+} from "@eshg/lib-employee-portal";
 import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
 import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import {
@@ -32,15 +38,9 @@ import { ContactFormValues } from "@/lib/baseModule/components/contacts/types";
 import { routes } from "@/lib/baseModule/shared/routes";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
-import {
   ContactAddressForm,
   OptionalBillingAddressForm,
 } from "@/lib/shared/components/form/address/BaseAddressForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 interface ContactEntityFormProps {
   contactId?: string;

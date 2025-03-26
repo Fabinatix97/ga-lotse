@@ -5,6 +5,12 @@
 
 "use client";
 
+import {
+  ButtonBar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+} from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
@@ -12,11 +18,7 @@ import { Button, List, ListItem, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 
 import { DownloadTemplateLink } from "@/lib/businessModules/medicalRegistry/components/procedures/import/DownloadTemplateLink";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 interface ImportDataFormSidebarProps {
   onClose: () => void;

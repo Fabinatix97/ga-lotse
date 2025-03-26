@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ChildExamination } from "@eshg/dental";
+import { ProphylaxisSessionExamination } from "@eshg/dental";
 import { StickyToolbarLayout } from "@eshg/lib-employee-portal";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { isDefined } from "remeda";
 
 import { AdditionalInformationFormSection } from "@/lib/businessModules/dental/features/examinations/AdditionalInformationFormSection";
@@ -26,7 +25,7 @@ import {
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/ProphylaxisSessionStoreProvider";
 
 interface ParticipantExaminationPageProps {
-  participant: ChildExamination;
+  participant: ProphylaxisSessionExamination;
   participantsLength: number;
 }
 
@@ -50,7 +49,6 @@ export function ParticipantExaminationPage(
     (state) => state.dirty,
   );
 
-  const [nextRoute, setNextRoute] = useState<string>();
   const examinationForm = useParticipantExaminationForm({
     initialValues: participant,
     onSubmit: (values) => {
@@ -58,13 +56,8 @@ export function ParticipantExaminationPage(
         if (examinationForm.dirty || isDentalExaminationDirty) {
           setExamination(participant.examinationId, values.result, values.note);
         }
-        if (isDefined(nextRoute)) {
-          router.push(nextRoute);
-        }
       } catch {
         // TODO handle invalid tooth diagnoses
-      } finally {
-        setNextRoute(undefined);
       }
     },
   });
@@ -74,10 +67,8 @@ export function ParticipantExaminationPage(
   const examinationNavigation = useParticipantNavigation({
     participants: presentFilteredParticipants,
     examinationId: participant.examinationId,
-    onNavigate: (nextRoute) => {
-      setNextRoute(nextRoute);
-      void examinationForm.submitForm();
-    },
+    onNavigate: (nextRoute) => router.push(nextRoute),
+    onSubmit: examinationForm.submitForm,
   });
 
   const isPresent = participant.status !== "NOT_PRESENT";

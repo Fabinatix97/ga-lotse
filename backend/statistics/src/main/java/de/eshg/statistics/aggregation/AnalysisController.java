@@ -94,8 +94,9 @@ public class AnalysisController {
       @PathVariable(name = "analysisId") UUID analysisId,
       @RequestBody @Valid AddDiagramRequest addDiagramRequest) {
     analysisService.checkPermissionForAnalysis(analysisId);
-    AnalysisDto analysis = analysisService.getAnalysisDto(analysisId);
-    return diagramCreationService.createDiagram(analysis, addDiagramRequest);
+    UUID diagramId = analysisService.addDiagramWithoutData(analysisId, addDiagramRequest);
+    diagramCreationService.fillDiagramData(diagramId);
+    return diagramId;
   }
 
   @PatchExchange(

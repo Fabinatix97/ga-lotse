@@ -6,11 +6,14 @@
 "use client";
 
 import {
+  ButtonBar,
+  ChipWithTooltip,
   DataTable,
   Pagination,
   TablePage,
   TableSheet,
   UseTableControlResult,
+  formatSchoolYear,
   getSortDirection,
   getSortKey,
   useRowSelection,
@@ -46,9 +49,7 @@ import {
 } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { ChipWithTooltip } from "@/lib/shared/components/chip/ChipWithTooltip";
 import { useFilterDictionary } from "@/lib/shared/components/filterSettings/useFilterDictionary";
 import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
 import {
@@ -61,7 +62,6 @@ import {
 import { UnstyledTabList } from "@/lib/shared/components/unstyledTab/UnstyledTabList";
 import { UnstyledTabPanel } from "@/lib/shared/components/unstyledTab/UnstyledTabPanel";
 import { UnstyledTabs } from "@/lib/shared/components/unstyledTab/UnstyledTabs";
-import { formatSchoolYear } from "@/lib/shared/helpers/formatters";
 
 import {
   ProcedureFilterSettings,

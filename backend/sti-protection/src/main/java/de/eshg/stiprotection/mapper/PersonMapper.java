@@ -68,6 +68,7 @@ public class PersonMapper {
     ConcernDto concern = MappingUtil.mapEnum(ConcernDto.class, procedure.getConcern());
     Instant appointmentStart = procedure.getAppointmentStart();
     Year yearOfBirth = procedure.getPerson().getYearOfBirth();
-    return new AddPersonalDetailsResponse(concern, appointmentStart, yearOfBirth);
+    return new AddPersonalDetailsResponse(
+        concern, appointmentStart, yearOfBirth, procedure.getExternalId());
   }
 }

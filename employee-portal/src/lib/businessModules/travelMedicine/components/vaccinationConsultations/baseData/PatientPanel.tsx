@@ -8,6 +8,10 @@
 import {
   CentralFilePersonDetails,
   DetailsSection,
+  EditButton,
+  OverlayBoundary,
+  SyncBarrier,
+  useSyncBarrier,
 } from "@eshg/lib-employee-portal";
 import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import {
@@ -28,12 +32,6 @@ import {
   mapToPersonFormData,
 } from "@/lib/businessModules/travelMedicine/components/personSidebar/personSidebarHelper";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { EditButton } from "@/lib/shared/components/buttons/EditButton";
-import {
-  SyncBarrier,
-  useSyncBarrier,
-} from "@/lib/shared/components/centralFile/sync/SyncBarrier";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 import { LegacyPerson } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyPersonForm";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";

@@ -4,6 +4,12 @@
  */
 
 import { ApiVCardAddress } from "@eshg/base-api";
+import {
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+} from "@eshg/lib-employee-portal";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { Sheet, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
@@ -12,12 +18,6 @@ import { isDefined } from "remeda";
 
 import { SelectableCard } from "@/lib/shared/components/cards/SelectableCard";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { join } from "@/lib/shared/helpers/strings";
 
 interface ImportResponse<TMatch> {

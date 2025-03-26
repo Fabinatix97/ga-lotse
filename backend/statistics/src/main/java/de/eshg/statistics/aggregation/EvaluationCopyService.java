@@ -5,7 +5,9 @@
 
 package de.eshg.statistics.aggregation;
 
+import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.statistics.api.evaluation.CloneEvaluationRequest;
+import de.eshg.statistics.mapper.AnalysisMapper;
 import de.eshg.statistics.persistence.entity.AbstractFilterParameter;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
@@ -47,6 +49,7 @@ import de.eshg.statistics.persistence.entity.entry.IntegerEntry;
 import de.eshg.statistics.persistence.entity.entry.TextEntry;
 import de.eshg.statistics.persistence.entity.entry.UuidEntry;
 import de.eshg.statistics.persistence.entity.filter.BooleanFilterParameter;
+import de.eshg.statistics.persistence.entity.filter.DateFilterParameter;
 import de.eshg.statistics.persistence.entity.filter.DecimalRangeFilterParameter;
 import de.eshg.statistics.persistence.entity.filter.DecimalValueFilterParameter;
 import de.eshg.statistics.persistence.entity.filter.IntegerRangeFilterParameter;
@@ -55,12 +58,9 @@ import de.eshg.statistics.persistence.entity.filter.NullFilterParameter;
 import de.eshg.statistics.persistence.entity.filter.TextFilterParameter;
 import de.eshg.statistics.persistence.entity.filter.ValueOptionFilterParameter;
 import de.eshg.statistics.persistence.repository.EvaluationRepository;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
-import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -185,22 +185,12 @@ public class EvaluationCopyService {
     currentConfiguration.setIntervalCount(newConfiguration.getIntervalCount());
     currentConfiguration.setMinDecimalInclusive(newConfiguration.getMinDecimalInclusive());
     currentConfiguration.setMaxDecimalInclusive(newConfiguration.getMaxDecimalInclusive());
+    currentConfiguration.setDecimalBorders(newConfiguration.getDecimalBorders());
     currentConfiguration.setMinIntegerInclusive(newConfiguration.getMinIntegerInclusive());
     currentConfiguration.setMaxIntegerInclusive(newConfiguration.getMaxIntegerInclusive());
-
-    Set<BigDecimal> currentDecimalBorders = currentConfiguration.getDecimalBorders();
-    Set<BigDecimal> newDecimalBorders = newConfiguration.getDecimalBorders();
-    if (currentDecimalBorders.size() != newDecimalBorders.size()
-        || !currentDecimalBorders.containsAll(newDecimalBorders)) {
-      currentConfiguration.setDecimalBorders(newDecimalBorders);
-    }
-
-    Set<Integer> currentIntegerBorders = currentConfiguration.getIntegerBorders();
-    Set<Integer> integerBorders = newConfiguration.getIntegerBorders();
-    if (currentIntegerBorders.size() != integerBorders.size()
-        || !currentIntegerBorders.containsAll(integerBorders)) {
-      currentConfiguration.setIntegerBorders(integerBorders);
-    }
+    currentConfiguration.setIntegerBorders(newConfiguration.getIntegerBorders());
+    currentConfiguration.setTClosenessHierarchyEntries(
+        newConfiguration.getTClosenessHierarchyEntries());
   }
 
   private List<Analysis> copyAnalyses(List<Analysis> analyses) {
@@ -210,19 +200,19 @@ public class EvaluationCopyService {
               Analysis copy = new Analysis();
               copy.setName(originalAnalysis.getName());
               ChartConfiguration originalChartConfiguration =
-                  Hibernate.unproxy(
-                      originalAnalysis.getChartConfiguration(), ChartConfiguration.class);
+                  AnalysisMapper.getChartConfiguration(originalAnalysis);
               ChartConfiguration chartConfigurationCopy =
                   copyChartConfiguration(originalChartConfiguration, true);
               copy.setChartConfiguration(chartConfigurationCopy);
               copy.addDiagrams(
-                  copyDiagrams(originalAnalysis.getDiagrams(), chartConfigurationCopy));
+                  copyDiagramsWithEmptyData(
+                      originalAnalysis.getDiagrams(), chartConfigurationCopy));
               return copy;
             })
         .toList();
   }
 
-  private List<Diagram> copyDiagrams(
+  public static List<Diagram> copyDiagramsWithEmptyData(
       List<Diagram> diagrams, ChartConfiguration chartConfiguration) {
     return diagrams.stream()
         .map(
@@ -231,22 +221,24 @@ public class EvaluationCopyService {
               copy.setTitle(originalDiagram.getTitle());
               copy.setDescription(originalDiagram.getDescription());
               copy.addFilters(copyFilterParameters(originalDiagram.getFilters()));
-              copy.setDiagramData(
-                  copyDiagramData(originalDiagram.getDiagramData(), chartConfiguration));
+              copy.setDiagramData(AnalysisService.getEmptyDiagramData(chartConfiguration));
+              copy.setDiagramDataEmpty(true);
+              copy.setOriginalDiagramId(originalDiagram.getId());
               return copy;
             })
         .toList();
   }
 
-  private List<AbstractFilterParameter> copyFilterParameters(
+  private static List<AbstractFilterParameter> copyFilterParameters(
       List<AbstractFilterParameter> filterParameters) {
-    return filterParameters.stream().map(this::copyFilterParameter).toList();
+    return filterParameters.stream().map(EvaluationCopyService::copyFilterParameter).toList();
   }
 
-  private AbstractFilterParameter copyFilterParameter(AbstractFilterParameter original) {
+  private static AbstractFilterParameter copyFilterParameter(AbstractFilterParameter original) {
     return switch (original) {
       case BooleanFilterParameter booleanFilterParameter ->
           copyBooleanFilterParameter(booleanFilterParameter);
+      case DateFilterParameter dateFilterParameter -> copyDateFilterParameter(dateFilterParameter);
       case DecimalRangeFilterParameter decimalRangeFilterParameter ->
           copyDecimalRangeFilterParameter(decimalRangeFilterParameter);
       case DecimalValueFilterParameter decimalValueFilterParameter ->
@@ -263,7 +255,8 @@ public class EvaluationCopyService {
     };
   }
 
-  private BooleanFilterParameter copyBooleanFilterParameter(BooleanFilterParameter original) {
+  private static BooleanFilterParameter copyBooleanFilterParameter(
+      BooleanFilterParameter original) {
     BooleanFilterParameter copy = new BooleanFilterParameter();
     copy.setSearchForTrue(original.isSearchForTrue());
     copy.setSearchForFalse(original.isSearchForFalse());
@@ -272,7 +265,14 @@ public class EvaluationCopyService {
     return copy;
   }
 
-  private DecimalRangeFilterParameter copyDecimalRangeFilterParameter(
+  private static DateFilterParameter copyDateFilterParameter(DateFilterParameter original) {
+    DateFilterParameter copy = new DateFilterParameter();
+    copy.setValue(original.getValue());
+    copy.setAttributeSelection(copyAttributeSelection(original.getAttributeSelection()));
+    return copy;
+  }
+
+  private static DecimalRangeFilterParameter copyDecimalRangeFilterParameter(
       DecimalRangeFilterParameter original) {
     DecimalRangeFilterParameter copy = new DecimalRangeFilterParameter();
     copy.setMinValueInclusive(original.getMinValueInclusive());
@@ -282,7 +282,7 @@ public class EvaluationCopyService {
     return copy;
   }
 
-  private DecimalValueFilterParameter copyDecimalValueFilterParameter(
+  private static DecimalValueFilterParameter copyDecimalValueFilterParameter(
       DecimalValueFilterParameter original) {
     DecimalValueFilterParameter copy = new DecimalValueFilterParameter();
     copy.setValue(original.getValue());
@@ -292,7 +292,7 @@ public class EvaluationCopyService {
     return copy;
   }
 
-  private IntegerRangeFilterParameter copyIntegerRangeFilterParameter(
+  private static IntegerRangeFilterParameter copyIntegerRangeFilterParameter(
       IntegerRangeFilterParameter original) {
     IntegerRangeFilterParameter copy = new IntegerRangeFilterParameter();
     copy.setMinValueInclusive(original.getMinValueInclusive());
@@ -302,7 +302,7 @@ public class EvaluationCopyService {
     return copy;
   }
 
-  private IntegerValueFilterParameter copyIntegerValueFilterParameter(
+  private static IntegerValueFilterParameter copyIntegerValueFilterParameter(
       IntegerValueFilterParameter original) {
     IntegerValueFilterParameter copy = new IntegerValueFilterParameter();
     copy.setValue(original.getValue());
@@ -312,153 +312,26 @@ public class EvaluationCopyService {
     return copy;
   }
 
-  private NullFilterParameter copyNullFilterParameter(NullFilterParameter original) {
+  private static NullFilterParameter copyNullFilterParameter(NullFilterParameter original) {
     NullFilterParameter copy = new NullFilterParameter();
     copy.setAttributeSelection(copyAttributeSelection(original.getAttributeSelection()));
     return copy;
   }
 
-  private TextFilterParameter copyTextFilterParameter(TextFilterParameter original) {
+  private static TextFilterParameter copyTextFilterParameter(TextFilterParameter original) {
     TextFilterParameter copy = new TextFilterParameter();
     copy.setValue(original.getValue());
     copy.setAttributeSelection(copyAttributeSelection(original.getAttributeSelection()));
     return copy;
   }
 
-  private ValueOptionFilterParameter copyValueOptionFilterParameter(
+  private static ValueOptionFilterParameter copyValueOptionFilterParameter(
       ValueOptionFilterParameter original) {
     ValueOptionFilterParameter copy = new ValueOptionFilterParameter();
     copy.addSearchValues(original.getSearchValues());
     copy.setSearchForNull(original.isSearchForNull());
     copy.setAttributeSelection(copyAttributeSelection(original.getAttributeSelection()));
     return copy;
-  }
-
-  private DiagramData copyDiagramData(
-      DiagramData diagramData, ChartConfiguration chartConfiguration) {
-    DiagramData copy =
-        switch (diagramData) {
-          case BarChartData barChartData -> {
-            BarChartData barChartDataCopy = new BarChartData();
-            barChartDataCopy.setEvaluatedDataAmount(barChartData.getEvaluatedDataAmount());
-            barChartDataCopy.addBarGroupDatas(copyBarGroupDatas(barChartData.getBarGroupDatas()));
-            yield barChartDataCopy;
-          }
-
-          case ChoroplethMapData choroplethMapData -> {
-            ChoroplethMapData choroplethMapDataCopy = new ChoroplethMapData();
-            choroplethMapDataCopy.setEvaluatedDataAmount(
-                choroplethMapData.getEvaluatedDataAmount());
-            choroplethMapDataCopy.addKeyToValues(
-                copyKeyToValues(choroplethMapData.getKeyToValues()));
-            yield choroplethMapDataCopy;
-          }
-
-          case HistogramChartData histogramChartData -> {
-            if (!(chartConfiguration
-                instanceof HistogramChartConfiguration histogramChartConfiguration)) {
-              throw new IllegalArgumentException(
-                  "ChartConfiguration not of type %s"
-                      .formatted(HistogramChartConfiguration.class.getName()));
-            }
-            HistogramChartData histogramChartDataCopy = new HistogramChartData();
-            for (int i = 0; i < histogramChartData.getHistogramGroupDatas().size(); i++) {
-              histogramChartDataCopy.addHistogramGroupData(
-                  copyHistogramGroupData(
-                      histogramChartData.getHistogramGroupDatas().get(i),
-                      histogramChartConfiguration.getBins().get(i)));
-            }
-            yield histogramChartDataCopy;
-          }
-
-          case LineOrScatterChartData lineOrScatterChartData -> {
-            LineOrScatterChartData lineOrScatterChartDataCopy = new LineOrScatterChartData();
-            lineOrScatterChartDataCopy.addDataPointGroups(
-                copyDataPointGroups(lineOrScatterChartData.getDataPointGroups()));
-            yield lineOrScatterChartDataCopy;
-          }
-          case PieChartData pieChartData -> {
-            PieChartData pieChartDataCopy = new PieChartData();
-            pieChartDataCopy.addKeyToCounts(copyKeyToCounts(pieChartData.getKeyToCounts()));
-            yield pieChartDataCopy;
-          }
-          default -> throw new IllegalStateException(UNEXPECTED_VALUE + diagramData);
-        };
-    copy.setEvaluatedDataAmount(diagramData.getEvaluatedDataAmount());
-
-    return copy;
-  }
-
-  private List<BarGroupData> copyBarGroupDatas(List<BarGroupData> barGroupDatas) {
-    return barGroupDatas.stream()
-        .map(
-            original -> {
-              BarGroupData copy = new BarGroupData();
-              copy.setKey(original.getKey());
-              copy.addKeyToCounts(copyKeyToCounts(original.getKeyToCounts()));
-              return copy;
-            })
-        .toList();
-  }
-
-  private List<KeyToValue> copyKeyToValues(List<KeyToValue> keyToValues) {
-    return keyToValues.stream()
-        .map(
-            original -> {
-              KeyToValue copy = new KeyToValue();
-              copy.setKey(original.getKey());
-              copy.setValue(original.getValue());
-              return copy;
-            })
-        .toList();
-  }
-
-  private List<KeyToCount> copyKeyToCounts(List<KeyToCount> keyToCounts) {
-    return keyToCounts.stream()
-        .map(
-            original -> {
-              KeyToCount copy = new KeyToCount();
-              copy.setKey(original.getKey());
-              copy.setCount(original.getCount());
-              return copy;
-            })
-        .toList();
-  }
-
-  private HistogramGroupData copyHistogramGroupData(
-      HistogramGroupData histogramGroupData, HistogramBin histogramBin) {
-    HistogramGroupData copy = new HistogramGroupData();
-    copy.setHistogramBin(histogramBin);
-    copy.setCount(histogramGroupData.getCount());
-    copy.addKeyToCounts(copyKeyToCounts(histogramGroupData.getKeyToCounts()));
-    return copy;
-  }
-
-  private List<DataPointGroup> copyDataPointGroups(List<DataPointGroup> dataPointGroups) {
-    return dataPointGroups.stream()
-        .map(
-            original -> {
-              DataPointGroup copy = new DataPointGroup();
-              copy.setKey(original.getKey());
-              copy.addDataPoints(copyDataPoints(original.getDataPoints()));
-              Optional.ofNullable(original.getTrendLine())
-                  .map(this::copyTrendLine)
-                  .ifPresent(copy::setTrendLine);
-              return copy;
-            })
-        .toList();
-  }
-
-  private List<DataPoint> copyDataPoints(List<DataPoint> dataPoints) {
-    return dataPoints.stream()
-        .map(
-            original -> {
-              DataPoint copy = new DataPoint();
-              copy.setXCoordinate(original.getXCoordinate());
-              copy.setYCoordinate(original.getYCoordinate());
-              return copy;
-            })
-        .toList();
   }
 
   private TrendLine copyTrendLine(TrendLine original) {
@@ -597,12 +470,136 @@ public class EvaluationCopyService {
     }
 
     try {
+      Optional<Diagram> diagramNeedsDataCopiedOptional =
+          AnalysisService.findDiagram(copy, Diagram::isDiagramDataEmpty).stream().findFirst();
+      if (diagramNeedsDataCopiedOptional.isPresent()) {
+        copyDiagramData(diagramNeedsDataCopiedOptional.get(), original);
+        return;
+      }
       copyTableRows(copy, original);
     } catch (Exception exception) {
       copy.setState(AggregationResultState.FAILED);
       copy.setPendingState(null);
       original.setState(AggregationResultState.COMPLETED);
     }
+  }
+
+  private void copyDiagramData(Diagram diagramCopy, Evaluation original) {
+    Optional<Diagram> diagramOriginalOptional =
+        AnalysisService.findDiagram(
+                original, diagram -> diagram.getId().equals(diagramCopy.getOriginalDiagramId()))
+            .stream()
+            .findFirst();
+    if (diagramOriginalOptional.isPresent()) {
+      copyDiagramData(diagramCopy.getDiagramData(), diagramOriginalOptional.get().getDiagramData());
+    } else {
+      throw new BadRequestException(
+          "Diagram %s not found".formatted(diagramCopy.getOriginalDiagramId()));
+    }
+  }
+
+  private void copyDiagramData(DiagramData copy, DiagramData original) {
+    switch (copy) {
+      case BarChartData barChartData ->
+          barChartData.addBarGroupDatas(
+              copyBarGroupDatas(((BarChartData) original).getBarGroupDatas()));
+      case ChoroplethMapData choroplethMapData ->
+          choroplethMapData.addKeyToValues(
+              copyKeyToValues(((ChoroplethMapData) original).getKeyToValues()));
+      case HistogramChartData histogramChartData -> {
+        HistogramChartConfiguration chartConfiguration =
+            (HistogramChartConfiguration)
+                AnalysisMapper.getChartConfiguration(histogramChartData.getDiagram().getAnalysis());
+        HistogramChartData originalHistogramChartData = (HistogramChartData) original;
+        for (int i = 0; i < originalHistogramChartData.getHistogramGroupDatas().size(); i++) {
+          histogramChartData.addHistogramGroupData(
+              copyHistogramGroupData(
+                  originalHistogramChartData.getHistogramGroupDatas().get(i),
+                  chartConfiguration.getBins().get(i)));
+        }
+      }
+      case LineOrScatterChartData lineOrScatterChartData ->
+          lineOrScatterChartData.addDataPointGroups(
+              copyDataPointGroups(((LineOrScatterChartData) original).getDataPointGroups()));
+      case PieChartData pieChartData ->
+          pieChartData.addKeyToCounts(copyKeyToCounts(((PieChartData) original).getKeyToCounts()));
+      default -> throw new IllegalStateException(UNEXPECTED_VALUE + copy);
+    }
+
+    copy.setEvaluatedDataAmount(original.getEvaluatedDataAmount());
+    copy.getDiagram().setDiagramDataEmpty(false);
+  }
+
+  private List<BarGroupData> copyBarGroupDatas(List<BarGroupData> barGroupDatas) {
+    return barGroupDatas.stream()
+        .map(
+            original -> {
+              BarGroupData copy = new BarGroupData();
+              copy.setKey(original.getKey());
+              copy.addKeyToCounts(copyKeyToCounts(original.getKeyToCounts()));
+              return copy;
+            })
+        .toList();
+  }
+
+  private List<KeyToValue> copyKeyToValues(List<KeyToValue> keyToValues) {
+    return keyToValues.stream()
+        .map(
+            original -> {
+              KeyToValue copy = new KeyToValue();
+              copy.setKey(original.getKey());
+              copy.setValue(original.getValue());
+              return copy;
+            })
+        .toList();
+  }
+
+  private List<DataPointGroup> copyDataPointGroups(List<DataPointGroup> dataPointGroups) {
+    return dataPointGroups.stream()
+        .map(
+            original -> {
+              DataPointGroup copy = new DataPointGroup();
+              copy.setKey(original.getKey());
+              copy.addDataPoints(copyDataPoints(original.getDataPoints()));
+              Optional.ofNullable(original.getTrendLine())
+                  .map(this::copyTrendLine)
+                  .ifPresent(copy::setTrendLine);
+              return copy;
+            })
+        .toList();
+  }
+
+  private List<DataPoint> copyDataPoints(List<DataPoint> dataPoints) {
+    return dataPoints.stream()
+        .map(
+            original -> {
+              DataPoint copy = new DataPoint();
+              copy.setXCoordinate(original.getXCoordinate());
+              copy.setYCoordinate(original.getYCoordinate());
+              return copy;
+            })
+        .toList();
+  }
+
+  private HistogramGroupData copyHistogramGroupData(
+      HistogramGroupData histogramGroupData, HistogramBin histogramBin) {
+    HistogramGroupData copy = new HistogramGroupData();
+    copy.setHistogramBin(histogramBin);
+    copy.setCount(histogramGroupData.getCount());
+    copy.addKeyToCounts(copyKeyToCounts(histogramGroupData.getKeyToCounts()));
+    return copy;
+  }
+
+  private List<KeyToCount> copyKeyToCounts(List<KeyToCount> keyToCounts) {
+    return keyToCounts.stream()
+        .map(
+            original -> {
+              KeyToCount copy = new KeyToCount();
+              copy.setKey(original.getKey());
+              copy.setCount(original.getCount());
+              return copy;
+            })
+        .toList();
   }
 
   void copyTableRows(Evaluation copy, Evaluation original) {

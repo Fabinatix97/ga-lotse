@@ -7,6 +7,7 @@ import { Alert } from "@eshg/lib-portal/components/Alert";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import {
+  ApiLabStatus,
   ApiLaboratoryTestExamination,
   ApiTextTemplateContext,
 } from "@eshg/sti-protection-api";
@@ -28,6 +29,7 @@ import { SectionGrid } from "@/lib/businessModules/stiProtection/features/proced
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 
+import { LabStatusIndicator } from "./LabStatusIndicator";
 import {
   HepatitisLaboratoryTest,
   LaboratoryTestSamples,
@@ -43,12 +45,17 @@ import {
 interface LaboratoryTestExaminationProps {
   procedureId: string;
   laboratoryTestExamination: ApiLaboratoryTestExamination;
+  labStatus: ApiLabStatus;
 }
 
 export function LaboratoryTestExamination(
   props: LaboratoryTestExaminationProps,
 ) {
-  const { procedureId, laboratoryTestExamination: laboratoryTests } = props;
+  const {
+    procedureId,
+    laboratoryTestExamination: laboratoryTests,
+    labStatus,
+  } = props;
   const upsertLaboratoryTestOptions = useUpsertLaboratoryTestOptions({
     procedureId,
   });
@@ -173,6 +180,7 @@ export function LaboratoryTestExamination(
             <SidecarContainer>
               <ExaminationTabNavPanel id={procedureId} />
               <ExaminationTabInfo />
+              <LabStatusIndicator labStatus={labStatus} />
             </SidecarContainer>
           </SidecarFormLayout>
           <TabStickyBottomButtonBar />

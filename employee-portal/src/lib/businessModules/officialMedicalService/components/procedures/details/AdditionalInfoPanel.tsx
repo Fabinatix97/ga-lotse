@@ -5,6 +5,7 @@
 
 "use client";
 
+import { EditButton } from "@eshg/lib-employee-portal";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import {
   ApiEmployeeOmsProcedureDetails,
@@ -19,7 +20,6 @@ import { useEmailNotificationSidebar } from "@/lib/businessModules/officialMedic
 import { usePhysicianSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/PhysicianSidebar";
 import { DetailsItemInlineEdit } from "@/lib/businessModules/officialMedicalService/shared/DetailsItemInlineEdit";
 import { isProcedureFinalized } from "@/lib/businessModules/officialMedicalService/shared/helpers";
-import { EditButton } from "@/lib/shared/components/buttons/EditButton";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
 

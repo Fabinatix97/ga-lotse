@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { TextareaField } from "@eshg/lib-employee-portal";
 import { SoftRequiredSelectField } from "@eshg/lib-portal/components/form/fieldVariants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import {
@@ -23,7 +24,6 @@ import { ClickIcd10CodeHandler } from "@/lib/businessModules/schoolEntry/feature
 import { SetAllBooleanSelect } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/SetAllSelect";
 import { DISABILITY_TYPE_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 import { BOOLEAN_SELECT_STYLE } from "@/lib/businessModules/schoolEntry/features/procedures/styles";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
 const DISABILITY_TYPE_STYLE: SxProps = {
   ".MuiSelect-root": { width: "314px" },

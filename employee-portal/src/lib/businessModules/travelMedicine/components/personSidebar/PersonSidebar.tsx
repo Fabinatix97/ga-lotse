@@ -4,6 +4,12 @@
  */
 
 import { type ApiGetReferencePersonResponse } from "@eshg/base-api";
+import {
+  OverlayBoundary,
+  Sidebar,
+  SidebarFormHandle,
+  useConfirmationDialog,
+} from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   ApiAppointmentBookingType,
@@ -20,8 +26,6 @@ import {
 } from "@/lib/businessModules/travelMedicine/components/personSidebar/appointment/InitialAppointmentForm";
 import { PersonForm } from "@/lib/businessModules/travelMedicine/components/personSidebar/person/PersonForm";
 import { PersonSidebarMode } from "@/lib/businessModules/travelMedicine/components/personSidebar/personSidebarHelper";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
 import { LegacyMinimalPerson } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyBasePersonForm";
 import {
   LegacyPerson,
@@ -32,8 +36,6 @@ import {
   mapApiPersonData,
 } from "@/lib/shared/components/legacyPersonSidebar/personSidebarHelper";
 import { LegacyPersonSearch } from "@/lib/shared/components/legacyPersonSidebar/search/LegacyPersonSearch";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface PersonSidebarProps {
   open: boolean;

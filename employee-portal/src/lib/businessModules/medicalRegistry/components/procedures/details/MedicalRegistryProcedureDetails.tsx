@@ -6,7 +6,11 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/base-api";
-import { PageGrid, useHasUserRoleCheck } from "@eshg/lib-employee-portal";
+import {
+  PageGrid,
+  useConfirmationDialog,
+  useHasUserRoleCheck,
+} from "@eshg/lib-employee-portal";
 import { useControlledAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
 import {
   ApiGetProcedure200Response,
@@ -25,7 +29,6 @@ import { WrittenConfirmationSection } from "@/lib/businessModules/medicalRegistr
 import { useFinalizeDraft } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/FinalizeDraftSidebar";
 import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface MedicalRegistryProcedureDetailsProps {
   procedureId: string;

@@ -3,7 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DetailsItem } from "@eshg/lib-employee-portal";
+import {
+  ButtonBar,
+  DetailsItem,
+  TextareaField,
+  useConfirmationDialog,
+} from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -21,14 +26,13 @@ import {
   STATUS_NAMES_MEDICAL_OPINION_RESULT,
   STATUS_NAMES_MEDICAL_OPINION_STATUS,
 } from "@/lib/businessModules/officialMedicalService/shared/translations";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FormStack } from "@/lib/shared/components/form/FormStack";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface MedicalOpinionStatusFormType {
   medicalOpinionStatus: ApiMedicalOpinionStatus;
   medicalOpinionResult?: ApiMedicalOpinionResult;
+  medicalOpinionComment?: string;
 }
 
 export function MedicalOpinionStatusPanel({
@@ -62,6 +66,7 @@ export function MedicalOpinionStatusPanel({
             apiPatchMedicalOpinionStatusRequest: {
               status: values.medicalOpinionStatus,
               result: values.medicalOpinionResult,
+              comment: values.medicalOpinionComment,
             },
           });
         },
@@ -83,6 +88,7 @@ export function MedicalOpinionStatusPanel({
       procedure.medicalOpinionResult !== ApiMedicalOpinionResult.NoValuation
         ? procedure.medicalOpinionResult
         : undefined,
+    medicalOpinionComment: undefined,
   };
 
   return (
@@ -109,14 +115,20 @@ export function MedicalOpinionStatusPanel({
                 />
                 {values.medicalOpinionStatus ===
                   ApiMedicalOpinionStatus.Accomplished && (
-                  <SelectField
-                    label="Ergebnis"
-                    name="medicalOpinionResult"
-                    options={buildEnumOptions(
-                      STATUS_NAMES_MEDICAL_OPINION_RESULT,
-                    )}
-                    required={"Bitte Ergebnis angeben."}
-                  />
+                  <>
+                    <SelectField
+                      label="Ergebnis"
+                      name="medicalOpinionResult"
+                      options={buildEnumOptions(
+                        STATUS_NAMES_MEDICAL_OPINION_RESULT,
+                      )}
+                      required={"Bitte Ergebnis angeben."}
+                    />
+                    <TextareaField
+                      label="Abschließende Bemerkung"
+                      name="medicalOpinionComment"
+                    />
+                  </>
                 )}
                 <ButtonBar
                   right={
@@ -148,6 +160,10 @@ export function MedicalOpinionStatusPanel({
                   ]
                 : undefined
             }
+          ></DetailsItem>
+          <DetailsItem
+            label="Abschließende Bemerkung"
+            value={procedure.medicalOpinionComment ?? "-"}
           ></DetailsItem>
         </>
       )}

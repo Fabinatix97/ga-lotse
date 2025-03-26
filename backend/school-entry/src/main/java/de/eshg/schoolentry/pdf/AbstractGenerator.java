@@ -10,23 +10,24 @@ import de.eshg.base.address.PostboxAddressDto;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.contact.api.InstitutionContactDto;
 import de.eshg.base.department.GetDepartmentInfoResponse;
+import de.eshg.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.contact.ContactClient;
-import de.eshg.lib.document.generator.department.DepartmentClient;
 import java.util.UUID;
 import org.springframework.util.Assert;
 
 public abstract class AbstractGenerator {
 
-  protected final DepartmentClient departmentClient;
-  protected final ContactClient contactClient;
+  private final ContactClient contactClient;
+  private final DepartmentInfoConfigService departmentInfoConfigService;
 
-  protected AbstractGenerator(DepartmentClient departmentClient, ContactClient contactClient) {
-    this.departmentClient = departmentClient;
+  protected AbstractGenerator(
+      DepartmentInfoConfigService departmentInfoConfigService, ContactClient contactClient) {
+    this.departmentInfoConfigService = departmentInfoConfigService;
     this.contactClient = contactClient;
   }
 
-  public Address getDepartmentAddress() {
-    GetDepartmentInfoResponse departmentInfo = departmentClient.getDepartmentInfo();
+  protected Address getDepartmentAddress() {
+    GetDepartmentInfoResponse departmentInfo = departmentInfoConfigService.getDepartmentInfo();
     return new Address(
         departmentInfo.name(),
         departmentInfo.street() + " " + departmentInfo.houseNumber(),
@@ -38,7 +39,7 @@ public abstract class AbstractGenerator {
         departmentInfo.email());
   }
 
-  public Address getAddressOfInstitution(UUID institutionLocationId) {
+  protected Address getAddressOfInstitution(UUID institutionLocationId) {
     ContactDto institution = contactClient.getContact(institutionLocationId);
 
     Assert.notNull(institution, () -> "Institution contact must not be null");

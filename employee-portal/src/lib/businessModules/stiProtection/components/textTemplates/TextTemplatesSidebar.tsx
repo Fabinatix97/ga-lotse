@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { SidebarActions, SidebarContent } from "@eshg/lib-employee-portal";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { ApiTextTemplateContext } from "@eshg/sti-protection-api";
 import { OpenInNew } from "@mui/icons-material";
@@ -25,8 +26,6 @@ import {
 
 import { useTextTemplates } from "@/lib/businessModules/stiProtection/api/queries/textTemplates";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 import { TextTemplateAccordion } from "./TextTemplateAccordion";
 import { TextTemplateContextOptions } from "./constants";

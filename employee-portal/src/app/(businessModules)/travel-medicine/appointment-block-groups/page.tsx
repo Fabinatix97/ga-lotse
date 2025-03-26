@@ -4,6 +4,7 @@
  */
 
 import {
+  ButtonBar,
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
@@ -13,7 +14,6 @@ import { Schedule } from "@mui/icons-material";
 
 import { AppointmentBlockGroupsTable } from "@/lib/businessModules/travelMedicine/components/appointmentBlocks/appointmentBlocksTable/AppointmentBlockGroupsTable";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 
 export default function AppointmentBlockGroupsPage() {
   return (

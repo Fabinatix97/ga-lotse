@@ -5,13 +5,12 @@
 
 "use client";
 
+import { ButtonBar, OverlayBoundary } from "@eshg/lib-employee-portal";
 import { CancelOutlined, KeyOutlined } from "@mui/icons-material";
 import { Button, Sheet, Stack, Typography } from "@mui/joy";
 import { Dispatch, SetStateAction, useState } from "react";
 
 import { AuditlogCreatePasswordSidebar } from "@/lib/auditlog/components/AuditlogCreatePasswordSidebar";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 
 export function AuditlogCreatePasswordView() {

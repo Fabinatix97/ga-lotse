@@ -4,8 +4,10 @@
  */
 
 import {
+  ButtonBar,
   DataTable,
   ManualTableSortingProps,
+  OverlayBoundary,
   Pagination,
   PaginationProps,
   TablePage,
@@ -52,9 +54,7 @@ import { useDataExportGuard } from "@/lib/businessModules/statistics/components/
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { RefreshButton } from "@/lib/shared/components/buttons/RefreshButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";

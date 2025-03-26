@@ -3,15 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import {
+  FormButtonBar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+} from "@eshg/lib-employee-portal";
 import { RefObject } from "@fullcalendar/core/preact.js";
 import { Divider, Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
 import {
   LegacyAddressForm,
   LegacyBaseAddress,
@@ -26,8 +28,6 @@ import {
 } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyBasePersonForm";
 import { LegacyEmailAddressesForm } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyEmailAddressesForm";
 import { LegacyPhoneNumbersForm } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyPhoneNumbersForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export interface LegacyPersonFormConfig {
   hiddenFields?: (keyof LegacyPerson)[];

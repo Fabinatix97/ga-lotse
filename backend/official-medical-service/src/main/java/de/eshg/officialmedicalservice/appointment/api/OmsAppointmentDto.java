@@ -20,4 +20,5 @@ public record OmsAppointmentDto(
     BookingTypeDto bookingType,
     Instant start,
     Integer duration,
-    @NotNull int bookingsRemaining) {}
+    @NotNull int bookingsRemaining,
+    String reasonForRejection) {}

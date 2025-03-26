@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { TextareaField } from "@eshg/lib-employee-portal";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
@@ -13,7 +14,6 @@ import { SectionGrid } from "@/lib/businessModules/stiProtection/components/proc
 import { YesOrNoWithFollowUp } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
 import { MedicalHistoryFormData } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/MedicalHistoryForm.config";
 import { relationshipModelOptions } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/options";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 import { validatePositiveInteger } from "@/lib/shared/helpers/validators";
 
 export function General({ isForSexWork }: { isForSexWork: boolean }) {

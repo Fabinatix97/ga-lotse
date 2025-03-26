@@ -4,6 +4,14 @@
  */
 
 import { ApiSalutation } from "@eshg/base-api";
+import {
+  FormButtonBar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { PhoneNumberField } from "@eshg/lib-portal/components/formFields/PhoneNumberField";
@@ -22,15 +30,7 @@ import { Formik } from "formik";
 
 import { useSuggestUser } from "@/lib/baseModule/api/mutations/users";
 import { phoneNumberValidator } from "@/lib/baseModule/components/users/validation";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { translateUserGroup } from "@/lib/shared/helpers/users";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 function initialInputs() {
   return {

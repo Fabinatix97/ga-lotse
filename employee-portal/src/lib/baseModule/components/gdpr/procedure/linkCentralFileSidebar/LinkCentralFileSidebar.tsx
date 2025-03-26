@@ -7,6 +7,12 @@ import {
   ApiGetReferenceFacilityResponse,
   ApiGetReferencePersonResponse,
 } from "@eshg/base-api";
+import {
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  useConfirmationDialog,
+} from "@eshg/lib-employee-portal";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { Stack } from "@mui/joy";
 import { Formik } from "formik";
@@ -20,12 +26,8 @@ import { PersonCardContent } from "@/lib/baseModule/components/person/PersonCard
 import { SelectableCard } from "@/lib/shared/components/cards/SelectableCard";
 import { FacilityDetailsSidebar } from "@/lib/shared/components/facilitySidebar/FacilityDetailsSidebar";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { PersonDetailsSidebar } from "@/lib/shared/components/personSidebar/PersonDetailsSidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { fullAddress } from "@/lib/shared/helpers/facilityUtils";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 import { useResetAlertContextOnChange } from "@/lib/shared/hooks/useResetAlertContextOnChange";
 
 type CentralFileData =

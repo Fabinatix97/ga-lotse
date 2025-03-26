@@ -6,6 +6,7 @@
 "use client";
 
 import {
+  ButtonBar,
   DataTable,
   TablePage,
   TableSheet,
@@ -21,7 +22,6 @@ import {
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultationSearch/VaccinationConsultationsSearchFilterSettings";
 import { searchColumns } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultationSearch/searchColumns";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { useFilterDictionary } from "@/lib/shared/components/filterSettings/useFilterDictionary";
 import { useToggle } from "@/lib/shared/hooks/useToggle";

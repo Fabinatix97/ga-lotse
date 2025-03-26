@@ -33,6 +33,7 @@ import de.eshg.statistics.api.evaluationtemplate.EvaluationTemplateDetailsFromRe
 import de.eshg.statistics.api.evaluationtemplate.EvaluationTemplateFromRepository;
 import de.eshg.statistics.api.evaluationtemplate.GetEvaluationTemplatesFromRepositoryResponse;
 import de.eshg.statistics.api.filter.BooleanFilterParameterDto;
+import de.eshg.statistics.api.filter.DateFilterParameterDto;
 import de.eshg.statistics.api.filter.DecimalRangeFilterParameterDto;
 import de.eshg.statistics.api.filter.DecimalValueFilterParameterDto;
 import de.eshg.statistics.api.filter.IntegerRangeFilterParameterDto;
@@ -57,6 +58,7 @@ import de.eshg.statistics.centralrepository.dto.evaluationtemplate.RepoDataSourc
 import de.eshg.statistics.centralrepository.dto.evaluationtemplate.RepoDiagramTemplate;
 import de.eshg.statistics.centralrepository.dto.evaluationtemplate.RepoEvaluationTemplate;
 import de.eshg.statistics.centralrepository.dto.filter.RepoBooleanFilter;
+import de.eshg.statistics.centralrepository.dto.filter.RepoDateFilter;
 import de.eshg.statistics.centralrepository.dto.filter.RepoDecimalRangeFilter;
 import de.eshg.statistics.centralrepository.dto.filter.RepoDecimalValueFilter;
 import de.eshg.statistics.centralrepository.dto.filter.RepoFilter;
@@ -85,6 +87,7 @@ import de.eshg.statistics.persistence.entity.evaluationtemplate.DataSource;
 import de.eshg.statistics.persistence.entity.evaluationtemplate.DiagramTemplate;
 import de.eshg.statistics.persistence.entity.evaluationtemplate.EvaluationTemplate;
 import de.eshg.statistics.persistence.entity.filter.BooleanFilterParameter;
+import de.eshg.statistics.persistence.entity.filter.DateFilterParameter;
 import de.eshg.statistics.persistence.entity.filter.DecimalRangeFilterParameter;
 import de.eshg.statistics.persistence.entity.filter.DecimalValueFilterParameter;
 import de.eshg.statistics.persistence.entity.filter.IntegerRangeFilterParameter;
@@ -263,6 +266,8 @@ public class RepoMapper {
               filterParameter.isSearchForTrue(),
               filterParameter.isSearchForFalse(),
               filterParameter.isSearchForNull());
+      case DateFilterParameter filterParameter ->
+          new RepoDateFilter(attribute, filterParameter.getValue());
       case DecimalRangeFilterParameter filterParameter ->
           new RepoDecimalRangeFilter(
               attribute,
@@ -526,6 +531,7 @@ public class RepoMapper {
   private static TableColumnFilterParameter mapToTableColumnFilter(RepoFilter filter) {
     return switch (filter) {
       case RepoBooleanFilter repoBooleanFilter -> mapToBooleanFilterParameter(repoBooleanFilter);
+      case RepoDateFilter repoDateFilter -> mapToDateFilterParameter(repoDateFilter);
       case RepoDecimalRangeFilter repoDecimalRangeFilter ->
           mapToDecimalRangeFilterParameter(repoDecimalRangeFilter);
       case RepoDecimalValueFilter repoDecimalValueFilter ->
@@ -548,6 +554,11 @@ public class RepoMapper {
         repoBooleanFilter.searchForTrue(),
         repoBooleanFilter.searchForFalse(),
         repoBooleanFilter.searchForNull());
+  }
+
+  private static DateFilterParameterDto mapToDateFilterParameter(RepoDateFilter repoDateFilter) {
+    return new DateFilterParameterDto(
+        mapToAttributeSelection(repoDateFilter.attribute(), true), repoDateFilter.date());
   }
 
   private static DecimalRangeFilterParameterDto mapToDecimalRangeFilterParameter(

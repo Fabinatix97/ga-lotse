@@ -7,9 +7,11 @@
 
 import {
   MainContentLayout,
+  SidebarWithFormRefProps,
   StickyToolbarLayout,
   Toolbar,
   createEmptyAddress,
+  useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
@@ -23,10 +25,6 @@ import {
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { DefaultFacilitySearchForm } from "@/lib/shared/components/facilitySidebar/search/DefaultFacilitySearchForm";
 import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchForm";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export default function FacilitySidebarPlaygroundPage() {
   const facilitySidebar = useSidebarWithFormRef({

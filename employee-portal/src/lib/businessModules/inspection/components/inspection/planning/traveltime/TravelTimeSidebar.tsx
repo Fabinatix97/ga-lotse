@@ -8,6 +8,15 @@ import type {
   ApiInspectionTravelTime,
   ApiObjectType,
 } from "@eshg/inspection-api";
+import {
+  FormButtonBar,
+  OverlayBoundary,
+  Sidebar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+} from "@eshg/lib-employee-portal";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { toDateTimeString } from "@eshg/lib-portal/helpers/dateTime";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
@@ -19,16 +28,7 @@ import { isEmpty } from "remeda";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { Appointment } from "@/lib/businessModules/schoolEntry/api/models/Appointment";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
 import { DateTimeField } from "@/lib/shared/components/formFields/DateTimeField";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { durationBetweenDatesInMinutes } from "@/lib/shared/helpers/dateTime";
 import { validateNonNegativeInteger } from "@/lib/shared/helpers/validators";
 

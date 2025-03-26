@@ -5,7 +5,7 @@
 
 "use client";
 
-import { TablePage } from "@eshg/lib-employee-portal";
+import { ButtonBar, TablePage } from "@eshg/lib-employee-portal";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { Add } from "@mui/icons-material";
 
@@ -13,7 +13,6 @@ import { webSearchApiQueryKey } from "@/lib/businessModules/inspection/api/queri
 import { useGetWebSearchOverview } from "@/lib/businessModules/inspection/api/queries/webSearch";
 import { FacilityWebSearchTable } from "@/lib/businessModules/inspection/components/facility/search/FacilityWebSearchTable";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { RefreshButton } from "@/lib/shared/components/buttons/RefreshButton";
 
 export function FacilitiesWebSearchPageContent() {

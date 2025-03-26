@@ -4,6 +4,7 @@
  */
 
 import {
+  ButtonBar,
   DataTable,
   Pagination,
   TablePage,
@@ -28,7 +29,6 @@ import {
   getArchivableProceduresFilters,
   useArchiveFilterSettings,
 } from "@/lib/shared/components/archiving/hooks/useArchiveFilterSettings";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";

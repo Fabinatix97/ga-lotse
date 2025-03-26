@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { Add, Delete } from "@mui/icons-material";
 import { Option, Select, Stack } from "@mui/joy";
@@ -10,7 +11,6 @@ import { useState } from "react";
 
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { FormDialog } from "@/lib/shared/components/formDialog/FormDialog";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface TemplateNameFormModel {
   templateName: string;

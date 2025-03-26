@@ -7,12 +7,7 @@ import { ApiCountryCode } from "@eshg/base-api";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
-import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
-import { validateRange } from "@eshg/lib-portal/helpers/validators";
-import {
-  ApiAddPersonalDetailsRequest,
-  ApiGender,
-} from "@eshg/sti-protection-api";
+import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
 import { styled } from "@mui/joy";
 import assert from "assert";
 import { useFormikContext } from "formik";
@@ -26,13 +21,12 @@ import { useFormData } from "./AppointmentDataContext";
 import { AppointmentFormData } from "./AppointmentStepper";
 import { StepLayout } from "./StepLayout";
 import { StepSubTitle } from "./StepSubTitle";
-
-interface PersonalData {
-  gender: ApiGender;
-  birthYear: number;
-  countryOfBirth: ApiCountryCode | null;
-  inGermanySince: number | "";
-}
+import {
+  InvalidYearRangeMessage,
+  PersonalData,
+  mapToAddPersonalDetails,
+  validateYearWithinRange,
+} from "./helpers";
 
 const initialValues = {
   gender: null,
@@ -44,14 +38,21 @@ const initialValues = {
 export function PersonalDataStep() {
   const { t } = useTranslation("stiProtection/forms");
   const thisYear = new Date().getFullYear();
-  const [{ procedureId }] = useFormData<AppointmentFormData>();
+  const [formData] = useFormData<AppointmentFormData>();
+  const procedureId = formData.procedureId;
   assert.ok(procedureId);
 
   const addPersonalDetails = useAddPersonalDetails(procedureId);
   async function onSubmit(values: PersonalData) {
-    const mappedValues = mapToAddPersonalDetails(values);
-    await addPersonalDetails.mutateAsync(mappedValues);
-    return values;
+    const mappedValues = mapToAddPersonalDetails({
+      ...formData,
+      ...values,
+    });
+    const results = await addPersonalDetails.mutateAsync(mappedValues);
+    if (results === PortalErrorCode.Conflict) {
+      return PortalErrorCode.Conflict;
+    }
+    return { ...values, procedureId: results.procedureId };
   }
 
   function invalidYearRangeMessage(
@@ -148,30 +149,3 @@ const PersonalDataGrid = styled("div")(({ theme }) => ({
     gridTemplateColumns: "minmax(0, 1fr)",
   },
 }));
-
-type InvalidYearRangeMessage = (minYear: number, maxYear: number) => string;
-function validateYearWithinRange(
-  minYear: number,
-  maxYear: number,
-  message: InvalidYearRangeMessage,
-) {
-  return (year: number | "") => {
-    if (!year || isNaN(year)) {
-      return;
-    }
-    if (validateRange(minYear, maxYear)(year)) {
-      return message(minYear, maxYear);
-    }
-  };
-}
-
-function mapToAddPersonalDetails(
-  data: PersonalData,
-): ApiAddPersonalDetailsRequest {
-  return {
-    gender: data.gender,
-    yearOfBirth: data.birthYear,
-    countryOfBirth: data.countryOfBirth ?? undefined,
-    inGermanySince: mapOptionalValue(data.inGermanySince),
-  };
-}

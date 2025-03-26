@@ -4,7 +4,11 @@
  */
 
 import { ApiPersonContact } from "@eshg/base-api";
-import { createEmptyAddress } from "@eshg/lib-employee-portal";
+import {
+  SidebarWithFormRefProps,
+  createEmptyAddress,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { useState } from "react";
 
 import { ContactEntityForm } from "@/lib/baseModule/components/contacts/forms/ContactEntityForm";
@@ -16,10 +20,6 @@ import {
   PersonContactFormValues,
 } from "@/lib/baseModule/components/contacts/types";
 import { useResetAlertContextOnChange } from "@/lib/shared/hooks/useResetAlertContextOnChange";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 type AddPersonContactSidebarState = AddContactSidebarState<
   PersonContactFormValues,

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { DrawerProps, useSidebar } from "@eshg/lib-employee-portal";
+
 import { useImportProcess } from "@/lib/businessModules/inspection/api/mutations/processImport";
 import { PotentialDuplicatesFilterProps } from "@/lib/businessModules/inspection/components/facility/pending/PotentialDuplicatesWarning";
 import {
@@ -11,8 +13,6 @@ import {
 } from "@/lib/businessModules/inspection/components/processImport/ProcessImportForm";
 import { ProcessImportPending } from "@/lib/businessModules/inspection/components/processImport/ProcessImportPending";
 import { ProcessImportResult } from "@/lib/businessModules/inspection/components/processImport/ProcessImportResult";
-import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
-import { useSidebar } from "@/lib/shared/components/drawer/useSidebar";
 
 export function useProcessImportSidebar({
   onFilterForDuplicates,

@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  Sidebar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+} from "@eshg/lib-employee-portal";
 import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { countryOptions } from "@eshg/lib-portal/helpers/countryOption";
@@ -24,10 +30,6 @@ import {
   optionalInt,
 } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
 

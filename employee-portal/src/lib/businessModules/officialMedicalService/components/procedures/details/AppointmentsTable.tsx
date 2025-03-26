@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DataTable } from "@eshg/lib-employee-portal";
+import { DataTable, useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
 import {
@@ -24,19 +24,18 @@ import { DefaultColorPalette } from "@mui/joy/styles/types";
 import { createColumnHelper } from "@tanstack/react-table";
 
 import {
-  useCancelAppointment,
   useCloseAppointment,
   useWithdrawAppointment,
 } from "@/lib/businessModules/officialMedicalService/api/mutations/appointmentApi";
 import { APPOINTMENT_TYPES } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/constants";
 import { useAppointmentSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/AppointmentSidebar";
+import { useCancelAppointmentSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/CancelAppointmentSidebar";
 import { isProcedureFinalized } from "@/lib/businessModules/officialMedicalService/shared/helpers";
 import {
   ActionsItem,
   ActionsMenu,
 } from "@/lib/shared/components/buttons/ActionsMenu";
 import { CalendarAddDay } from "@/lib/shared/components/icons/CalendarAddDay";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 const columnHelper = createColumnHelper<ApiOmsAppointment>();
 
@@ -69,12 +68,12 @@ const APPOINTMENT_STATE_COLORS: EnumMap<
 
 function createAppointmentColumns({
   openBookingSidebar,
-  openCancelAppointmentDialog,
+  openCancelAppointmentSidebar,
   openCloseAppointmentDialog,
   openWithdrawAppointmentDialog,
 }: {
   openBookingSidebar?: (appointment: ApiOmsAppointment) => void;
-  openCancelAppointmentDialog?: (appointment: ApiOmsAppointment) => void;
+  openCancelAppointmentSidebar?: (appointment: ApiOmsAppointment) => void;
   openCloseAppointmentDialog?: (appointment: ApiOmsAppointment) => void;
   openWithdrawAppointmentDialog?: (appointment: ApiOmsAppointment) => void;
 }) {
@@ -157,7 +156,7 @@ function createAppointmentColumns({
           bookingState === ApiBookingState.Booked &&
           appointmentState === ApiAppointmentState.Open &&
           openBookingSidebar &&
-          openCancelAppointmentDialog
+          openCancelAppointmentSidebar
         ) {
           items.push({
             label: "Terminbuchung bearbeiten",
@@ -169,7 +168,7 @@ function createAppointmentColumns({
             label: "Terminbuchung absagen",
             startDecorator: <EventBusyOutlined />,
             color: "danger",
-            onClick: () => openCancelAppointmentDialog(ctx.row.original),
+            onClick: () => openCancelAppointmentSidebar(ctx.row.original),
           });
         }
 
@@ -222,24 +221,13 @@ export function AppointmentsTable({
       ApiAppointmentType.OfficialMedicalServiceShort,
     procedure.physician,
   );
+  const { open: openCancelSidebar } = useCancelAppointmentSidebar();
   const { openConfirmationDialog } = useConfirmationDialog();
-  const { mutateAsync: cancelAppointment } = useCancelAppointment();
   const { mutateAsync: closeAppointment } = useCloseAppointment();
   const { mutateAsync: withdrawAppointment } = useWithdrawAppointment();
 
   if (procedure.appointments.length === 0) {
     return;
-  }
-
-  function openCancelAppointmentDialog(appointment: ApiOmsAppointment) {
-    openConfirmationDialog({
-      title: "Termin absagen?",
-      description:
-        "Ein neuer Termin kann gebucht werden. Der/die Bürger:in wird per E-Mail informiert.",
-      color: "danger",
-      confirmLabel: "Absagen",
-      onConfirm: () => cancelAppointment(appointment),
-    });
   }
 
   function openCloseAppointmentDialog(appointment: ApiOmsAppointment) {
@@ -267,8 +255,8 @@ export function AppointmentsTable({
     : createAppointmentColumns({
         openBookingSidebar: (appointment) =>
           openBookingSidebar({ appointment }),
-        openCancelAppointmentDialog: (appointment) =>
-          openCancelAppointmentDialog(appointment),
+        openCancelAppointmentSidebar: (appointment) =>
+          openCancelSidebar({ appointment }),
         openCloseAppointmentDialog,
         openWithdrawAppointmentDialog,
       });

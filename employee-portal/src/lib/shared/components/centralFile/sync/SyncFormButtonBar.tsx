@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { Button, Stack } from "@mui/joy";
 import { isString } from "remeda";
-
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export interface SyncFormButtonBarProps {
   onCancel: string | (() => void);

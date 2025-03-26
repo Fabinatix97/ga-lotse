@@ -3,12 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { SidebarActions, SidebarContent } from "@eshg/lib-employee-portal";
 import { Button, Stack, Typography } from "@mui/joy";
 
 import { ProcedureCard } from "@/lib/shared/components/cards/ProcedureCard";
 import { ProcedureLiteItem } from "@/lib/shared/components/legacyPersonSidebar/LegacyPersonSidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 interface PersonSearchResultsProps {
   procedures: ProcedureLiteItem[];

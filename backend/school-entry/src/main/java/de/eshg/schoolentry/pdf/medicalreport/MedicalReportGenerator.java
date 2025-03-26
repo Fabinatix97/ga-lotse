@@ -5,6 +5,7 @@
 
 package de.eshg.schoolentry.pdf.medicalreport;
 
+import de.eshg.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.document.generator.department.DepartmentClient;
@@ -34,14 +35,17 @@ public class MedicalReportGenerator extends AbstractGenerator {
   private final ClassPathResource medicalReportTemplate;
   private final DocumentGenerator documentGenerator;
   private final Clock clock;
+  private final DepartmentClient departmentClient;
 
   public MedicalReportGenerator(
       @Value(MEDICAL_REPORT_TEMPLATE) ClassPathResource medicalReportTemplate,
       DepartmentClient departmentClient,
+      DepartmentInfoConfigService departmentInfoConfigService,
       DocumentGenerator documentGenerator,
       Clock clock,
       ContactClient contactClient) {
-    super(departmentClient, contactClient);
+    super(departmentInfoConfigService, contactClient);
+    this.departmentClient = departmentClient;
     Assert.isTrue(medicalReportTemplate.exists(), () -> medicalReportTemplate + " does not exist");
     this.medicalReportTemplate = medicalReportTemplate;
     this.documentGenerator = documentGenerator;

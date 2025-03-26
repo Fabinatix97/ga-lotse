@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { TextareaField } from "@eshg/lib-employee-portal";
 import { ApiTextTemplateContext } from "@eshg/sti-protection-api";
 import { Typography, useTheme } from "@mui/joy";
 
@@ -13,7 +14,6 @@ import {
 } from "@/lib/businessModules/stiProtection/components/procedures/procedureDetails/YesOrNoWithFollowUp";
 import { TextareaFieldWithTextTemplates } from "@/lib/businessModules/stiProtection/components/textTemplates/TextareaFieldWithTextTemplates";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
 export interface GeneralSectionData {
   mainReason: string;

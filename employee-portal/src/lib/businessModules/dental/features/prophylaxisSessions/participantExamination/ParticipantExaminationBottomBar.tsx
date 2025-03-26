@@ -3,9 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ChildExamination } from "@eshg/dental";
+import { ProphylaxisSessionExamination } from "@eshg/dental";
 import { ApiReasonForAbsence } from "@eshg/dental-api";
-import { BottomToolbar } from "@eshg/lib-employee-portal";
+import {
+  BottomToolbar,
+  ButtonBar,
+  OverlayBoundary,
+} from "@eshg/lib-employee-portal";
 import {
   KeyboardArrowLeftOutlined,
   KeyboardArrowRightOutlined,
@@ -21,14 +25,12 @@ import { ChangeReasonForAbsenceModal } from "@/lib/businessModules/dental/featur
 import { useDentalExaminationStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
 import { selectCanBeMarkedAbsent } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/selectors/canBeMarkedAbsent";
 import { useProphylaxisSessionStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/ProphylaxisSessionStoreProvider";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 
 interface ParticipantExaminationBottomBarProps {
-  onPreviousParticipantClicked?: () => void;
-  onNextParticipantClicked?: () => void;
-  onOverviewClicked: () => void;
-  examination: ChildExamination;
+  onPreviousParticipantClicked?: (submit?: boolean) => void;
+  onNextParticipantClicked?: (submit?: boolean) => void;
+  onOverviewClicked: (submit?: boolean) => void;
+  examination: ProphylaxisSessionExamination;
   examinationFormValues: ExaminationFormValues;
 }
 
@@ -60,10 +62,11 @@ export function ParticipantExaminationBottomBar(
       { type: "absence", reasonForAbsence },
       undefined,
     );
+    setDialogOpen(false);
     if (isDefined(onNextParticipantClicked)) {
-      onNextParticipantClicked();
+      onNextParticipantClicked(false);
     } else {
-      onOverviewClicked();
+      onOverviewClicked(false);
     }
   }
 
@@ -76,12 +79,12 @@ export function ParticipantExaminationBottomBar(
               <Button
                 startDecorator={<KeyboardArrowLeftOutlined />}
                 variant="outlined"
-                onClick={props.onPreviousParticipantClicked}
+                onClick={() => onPreviousParticipantClicked?.()}
               >
                 Vorheriges Kind
               </Button>
             )}
-            <Button variant="plain" onClick={props.onOverviewClicked}>
+            <Button variant="plain" onClick={() => onOverviewClicked?.()}>
               Zur Übersicht
             </Button>
           </>
@@ -101,14 +104,14 @@ export function ParticipantExaminationBottomBar(
             {isDefined(onNextParticipantClicked) ? (
               <Button
                 endDecorator={<KeyboardArrowRightOutlined />}
-                onClick={onNextParticipantClicked}
+                onClick={() => onNextParticipantClicked?.()}
               >
                 Fertig & nächstes Kind
               </Button>
             ) : (
               <Button
                 endDecorator={<KeyboardArrowRightOutlined />}
-                onClick={onOverviewClicked}
+                onClick={() => onOverviewClicked()}
               >
                 Fertig & zur Übersicht
               </Button>

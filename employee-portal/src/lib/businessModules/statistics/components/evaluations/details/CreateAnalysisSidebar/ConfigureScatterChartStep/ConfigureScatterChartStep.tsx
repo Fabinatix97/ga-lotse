@@ -4,7 +4,6 @@
  */
 
 import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { Stack } from "@mui/joy";
 import { isNonNullish } from "remeda";
 
@@ -19,13 +18,12 @@ import { ConfigureChartFormModel } from "@/lib/businessModules/statistics/compon
 import { mapAttributeToAutocompleteSelectionOption } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/mapAttribute";
 import { ScatterChart } from "@/lib/businessModules/statistics/components/shared/charts/ScatterChart";
 import {
-  axisRangeValueNames,
   isCategorical,
   isNumeric,
 } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
-import { SwitchField } from "@/lib/shared/components/formFields/SwitchField";
-import { ToggleButtonGroupField } from "@/lib/shared/components/formFields/ToggleButtonGroupField";
+
+import { ConfigureScatterChartMetaOptions } from "./ConfigureScatterChartMetaOptions";
 
 export interface ConfigureScatterChartStepProps
   extends SidebarStepContentProps<ConfigureChartFormModel> {
@@ -47,7 +45,6 @@ export function ConfigureScatterChartStep({
       isCategorical(attribute.type),
     ),
   );
-  const axisRange = buildEnumOptions(axisRangeValueNames);
 
   const showGroupedConfigurations =
     isNonNullish(values.secondaryAttribute) &&
@@ -78,14 +75,10 @@ export function ConfigureScatterChartStep({
             label="Sekundäres Attribut"
           />
         </Stack>
-        <Stack gap={1}>
-          <ToggleButtonGroupField
-            options={axisRange}
-            name={fieldName("axisRange")}
-            label="Achsenskalierung"
-          />
-          <SwitchField name={fieldName("trendline")} label="Trendlinie" />
-        </Stack>
+        <ConfigureScatterChartMetaOptions
+          fieldName={fieldName}
+          values={values}
+        />
       </Stack>
       <ChartsSamplePreview
         chart={

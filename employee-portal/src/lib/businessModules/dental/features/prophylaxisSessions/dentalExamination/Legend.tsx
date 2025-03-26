@@ -3,17 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  ButtonBar,
+  DrawerProps,
+  SidebarActions,
+  SidebarContent,
+  useSidebar,
+} from "@eshg/lib-employee-portal";
 import CircleIcon from "@mui/icons-material/Circle";
 import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
 import ErrorIcon from "@mui/icons-material/Error";
 import { Button, List, ListItem, Stack, Typography } from "@mui/joy";
 import { ReactNode } from "react";
-
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
-import { useSidebar } from "@/lib/shared/components/drawer/useSidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export function Legend() {
   const findingsOverviewSidebar = useSidebar({

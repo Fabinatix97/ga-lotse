@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { PROPHYLAXIS_TYPES } from "@eshg/dental";
 import { ApiExistingUser, ApiPerformingPerson } from "@eshg/dental-api";
 import {
   ContentPanel,
@@ -20,7 +21,6 @@ import { useUpdateProphylaxisSessionSidebar } from "@/lib/businessModules/dental
 import { useProphylaxisSessionStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/ProphylaxisSessionStoreProvider";
 import {
   DENTITION_TYPES,
-  PROPHYLAXIS_TYPES,
   fluoridationDescription,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/translations";
 import { displayBoolean } from "@/lib/shared/helpers/booleans";

@@ -3,16 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  ButtonBar,
+  DrawerProps,
+  SidebarActions,
+  SidebarContent,
+  useSidebar,
+} from "@eshg/lib-employee-portal";
 import { ApiGetProcedureDraftResponse } from "@eshg/medical-registry-api";
 import { Button, Card, Stack, Typography } from "@mui/joy";
 import { useId } from "react";
 
 import { ContactData } from "@/lib/businessModules/medicalRegistry/components/procedures/details/ContactData";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
-import { useSidebar } from "@/lib/shared/components/drawer/useSidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 interface PartialEntryErrorSidebarProps extends DrawerProps {
   procedure: ApiGetProcedureDraftResponse;

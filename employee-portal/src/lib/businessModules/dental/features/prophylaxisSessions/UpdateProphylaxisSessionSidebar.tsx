@@ -9,6 +9,15 @@ import {
   ProphylaxisSessionDetails,
   useUpdateProphylaxisSession,
 } from "@eshg/dental";
+import {
+  FormButtonBar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { toDateTimeString } from "@eshg/lib-portal/helpers/dateTime";
 import { parseOptionalValue } from "@eshg/lib-portal/helpers/form";
@@ -19,15 +28,6 @@ import {
   ProphylaxisSessionValues,
   mapValues,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/ProphylaxisSessionForm";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 import { useGetStaff } from "./staff";
 

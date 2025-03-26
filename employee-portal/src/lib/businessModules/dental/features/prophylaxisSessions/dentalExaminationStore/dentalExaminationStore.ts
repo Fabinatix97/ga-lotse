@@ -78,6 +78,10 @@ export type DentalExaminationStore = DentalExaminationState &
 export type DmftValuesState = Pick<DentalExaminationState, "dmftValues">;
 export type DirtyState = Pick<DentalExaminationState, "dirty">;
 export type HasResultState = Pick<DentalExaminationState, "hasResult">;
+export type PreviousDiagnosesState = Pick<
+  DentalExaminationState,
+  "previousToothDiagnoses"
+>;
 
 export interface DmftValuesByDentitionType {
   primaryTeeth: DmftValues;

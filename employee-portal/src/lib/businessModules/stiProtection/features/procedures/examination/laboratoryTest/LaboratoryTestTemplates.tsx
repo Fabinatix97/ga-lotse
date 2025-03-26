@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { TextareaField } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { Divider, Grid, Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
@@ -15,7 +16,6 @@ import {
   SubRow,
 } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/SectionGrid";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
 import { LaboratoryTestExaminationData } from "./helpers";
 

@@ -11,7 +11,7 @@ import de.eshg.stiprotection.api.GetProcedureResponse;
 import de.eshg.stiprotection.api.StiProtectionProcedureOverviewDto;
 import de.eshg.stiprotection.api.citizen.GetCitizenProcedureResponse;
 import de.eshg.stiprotection.mapper.waitingroom.WaitingRoomMapper;
-import de.eshg.stiprotection.persistence.data.StiProtectionProcedureData;
+import de.eshg.stiprotection.persistence.db.Person;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 
 public class StiProtectionProcedureMapper {
@@ -23,49 +23,49 @@ public class StiProtectionProcedureMapper {
     return new CreateProcedureResponse(procedure.getExternalId(), pin);
   }
 
-  public static GetProcedureResponse toInterfaceType(StiProtectionProcedureData procedureData) {
+  public static GetProcedureResponse toInterfaceType(StiProtectionProcedure procedure) {
     return new GetProcedureResponse(
-        procedureData.id(),
-        procedureData.createdAt(),
-        ProcedureMapper.toInterfaceType(procedureData.status()),
-        ConcernMapper.toInterfaceType(procedureData.concern()),
-        procedureData.isFollowUp(),
-        PersonMapper.toInterfaceType(procedureData.person(), procedureData.accessCode()),
+        procedure.getExternalId(),
+        procedure.getCreatedAt(),
+        ProcedureMapper.toInterfaceType(procedure.getProcedureStatus()),
+        ConcernMapper.toInterfaceType(procedure.getConcern()),
+        procedure.isFollowUp(),
+        PersonMapper.toInterfaceType(procedure.getPerson(), procedure.getAccessCode()),
         AppointmentMapper.toInterfaceType(
-            procedureData.appointment(), procedureData.userDefinedAppointment()),
-        AppointmentHistoryMapper.toInterfaceType(procedureData.appointmentHistory()),
-        WaitingRoomMapper.toInterfaceType(procedureData.waitingRoom()),
-        LabStatusMapper.toInterfaceData(procedureData.procedure().getLabStatus()),
-        procedureData.sampleBarCode());
+            procedure.getAppointment(), procedure.getUserDefinedAppointment()),
+        AppointmentHistoryMapper.toInterfaceType(procedure.getAppointmentHistory()),
+        WaitingRoomMapper.toInterfaceType(procedure.getWaitingRoom()),
+        LabStatusMapper.toInterfaceData(procedure.getLabStatus()),
+        procedure.getSampleBarCode());
   }
 
   public static GetCitizenProcedureResponse toCitizenInterfaceType(
-      StiProtectionProcedureData procedureData) {
+      StiProtectionProcedure procedure) {
     return new GetCitizenProcedureResponse(
-        ConcernMapper.toInterfaceType(procedureData.concern()),
-        PersonMapper.toInterfaceType(procedureData.person(), procedureData.accessCode()),
+        ConcernMapper.toInterfaceType(procedure.getConcern()),
+        PersonMapper.toInterfaceType(procedure.getPerson(), procedure.getAccessCode()),
         AppointmentMapper.toInterfaceType(
-            procedureData.appointment(), procedureData.userDefinedAppointment()),
-        AppointmentHistoryMapper.toInterfaceType(procedureData.appointmentHistory()),
-        procedureData.medicalHistorySubmitted());
+            procedure.getAppointment(), procedure.getUserDefinedAppointment()),
+        AppointmentHistoryMapper.toInterfaceType(procedure.getAppointmentHistory()),
+        procedure.getMedicalHistorySubmitted());
   }
 
-  public static StiProtectionProcedureOverviewDto toOverviewType(
-      StiProtectionProcedureData procedureData) {
+  public static StiProtectionProcedureOverviewDto toOverviewType(StiProtectionProcedure procedure) {
+    Person person = procedure.getPerson();
     return new StiProtectionProcedureOverviewDto(
-        procedureData.id(),
-        procedureData.createdAt(),
-        ProcedureMapper.toInterfaceType(procedureData.status()),
-        ConcernMapper.toInterfaceType(procedureData.concern()),
-        procedureData.person().getYearOfBirth(),
-        procedureData.person().getCountryOfBirth(),
-        GenderMapper.toInterfaceType(procedureData.person().getGender()),
+        procedure.getExternalId(),
+        procedure.getCreatedAt(),
+        ProcedureMapper.toInterfaceType(procedure.getProcedureStatus()),
+        ConcernMapper.toInterfaceType(procedure.getConcern()),
+        person.getYearOfBirth(),
+        person.getCountryOfBirth(),
+        GenderMapper.toInterfaceType(person.getGender()),
         AppointmentMapper.toInterfaceType(
-            procedureData.appointment(), procedureData.userDefinedAppointment()),
-        procedureData.accessCode(),
-        LabStatusMapper.toInterfaceData(procedureData.procedure().getLabStatus()),
-        procedureData.sampleBarCode(),
-        procedureData.appointmentStart(),
-        StiProcedureOriginMapper.toInterfaceData(procedureData.createdBy()));
+            procedure.getAppointment(), procedure.getUserDefinedAppointment()),
+        procedure.getAccessCode(),
+        LabStatusMapper.toInterfaceData(procedure.getLabStatus()),
+        procedure.getSampleBarCode(),
+        procedure.getAppointmentStart(),
+        StiProcedureOriginMapper.toInterfaceData(procedure.getStiProcedureOrigin()));
   }
 }

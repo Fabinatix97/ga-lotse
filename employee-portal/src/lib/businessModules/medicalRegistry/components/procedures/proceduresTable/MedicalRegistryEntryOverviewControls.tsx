@@ -5,6 +5,7 @@
 
 "use client";
 
+import { ButtonBar } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
@@ -15,7 +16,6 @@ import { Formik } from "formik";
 
 import { MedicalRegistryImportButton } from "@/lib/businessModules/medicalRegistry/components/procedures/import/MedicalRegistryImportButton";
 import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { UseFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 

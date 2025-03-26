@@ -6,15 +6,17 @@
 "use client";
 
 import {
+  ButtonBar,
   DataTable,
   MainContentLayout,
+  Sidebar,
+  SidebarContent,
   TablePage,
   TableSheet,
 } from "@eshg/lib-employee-portal";
 import { Button, Switch, Typography } from "@mui/joy";
 import { useState } from "react";
 
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
@@ -26,8 +28,6 @@ import {
   NumberFilterNumericComparison,
 } from "@/lib/shared/components/filterSettings/models/NumberFilter";
 import { useFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 const filterDefinitions: FilterDefinition[] = [
   {

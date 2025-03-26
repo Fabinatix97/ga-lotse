@@ -5,9 +5,8 @@
 
 "use client";
 
+import { SidebarContent } from "@eshg/lib-employee-portal";
 import { CircularProgress, Stack, Typography } from "@mui/joy";
-
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export function ImportDataPendingSidebar() {
   return (

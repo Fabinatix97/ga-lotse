@@ -8,6 +8,7 @@ package de.eshg.statistics.aggregation;
 import de.eshg.base.SortDirection;
 import de.eshg.domain.model.BaseEntity_;
 import de.eshg.statistics.api.filter.BooleanFilterParameterDto;
+import de.eshg.statistics.api.filter.DateFilterParameterDto;
 import de.eshg.statistics.api.filter.DecimalRangeFilterParameterDto;
 import de.eshg.statistics.api.filter.DecimalValueFilterParameterDto;
 import de.eshg.statistics.api.filter.IntegerRangeFilterParameterDto;
@@ -89,7 +90,7 @@ public class TableRowSpecifications {
   public static Specification<TableRow> createFilterSpecification(
       TableColumnFilterParameter filter, AbstractAggregationResult aggregationResult) {
     TableColumn tableColumn =
-        AggregationResultUtil.getTableColumn(filter.attribute(), aggregationResult);
+        AggregationResultUtil.getTableColumnWithDto(filter.attribute(), aggregationResult);
 
     return switch (filter) {
       case BooleanFilterParameterDto booleanFilterParameter ->
@@ -98,6 +99,8 @@ public class TableRowSpecifications {
               booleanFilterParameter.searchForTrue(),
               booleanFilterParameter.searchForFalse(),
               booleanFilterParameter.searchForNull());
+      case DateFilterParameterDto dateFilterParameter ->
+          getTextSpecificationSearch(tableColumn, dateFilterParameter.date());
       case DecimalRangeFilterParameterDto decimalRangeFilterParameter ->
           getDecimalRangeFilterSpecification(tableColumn, decimalRangeFilterParameter);
       case DecimalValueFilterParameterDto decimalValueFilterParameter ->
@@ -108,7 +111,7 @@ public class TableRowSpecifications {
           getIntegerValueFilterSpecification(tableColumn, integerValueFilterParameter);
       case NullFilterParameterDto ignored -> getNullSpecification(tableColumn);
       case TextFilterParameterDto textFilterParameter ->
-          getTextFilterSpecificationSearch(tableColumn, textFilterParameter.text());
+          getTextSpecificationSearch(tableColumn, textFilterParameter.text());
       case ValueOptionFilterParameterDto valueOptionFilterParameter ->
           getValueOptionFilterSpecification(
               tableColumn,
@@ -377,7 +380,7 @@ public class TableRowSpecifications {
     };
   }
 
-  public static Specification<TableRow> getTextFilterSpecificationSearch(
+  public static Specification<TableRow> getTextSpecificationSearch(
       TableColumn tableColumn, String text) {
     return (root, query, criteriaBuilder) -> {
       Join<Object, Object> join = root.join(TableRow_.CELL_ENTRIES);

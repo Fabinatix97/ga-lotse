@@ -40,9 +40,6 @@ export function setExamination(
     if (participant.examinationId !== examinationId) {
       return participant;
     }
-    if (participant.result?.type === "absence") {
-      return participant;
-    }
 
     const status = mapToExaminationStatus(result);
 

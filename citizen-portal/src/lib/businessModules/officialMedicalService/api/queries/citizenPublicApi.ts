@@ -61,3 +61,12 @@ export function useGetConcerns() {
       data.categories.flatMap((category) => mapToConcernApiList(category)),
   });
 }
+
+export function useGetLandingContent() {
+  const citizenPublicApi = useCitizenPublicApi();
+
+  return queryOptions({
+    queryKey: citizenPublicApiQueryKey(["getLandingContent"]),
+    queryFn: () => citizenPublicApi.getLandingContent(),
+  });
+}

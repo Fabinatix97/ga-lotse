@@ -10,6 +10,7 @@ import {
   Pagination,
   TablePage,
   TableSheet,
+  useConfirmationDialog,
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import {
@@ -35,7 +36,6 @@ import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 import { SearchFilter } from "@/lib/shared/components/tableFilters/SearchFilter";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function OpenDataTable() {
   const tableControl = useTableControl({ serverSideSorting: true });

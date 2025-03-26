@@ -37,4 +37,9 @@ public class LineOrScatterChartData extends DiagramData {
     dataPointGroups.forEach(dataPointGroup -> dataPointGroup.setLineOrScatterChartData(this));
     this.dataPointGroups.addAll(dataPointGroups);
   }
+
+  public void removeDataPointGroups() {
+    dataPointGroups.forEach(dataPointGroup -> dataPointGroup.setLineOrScatterChartData(null));
+    dataPointGroups.clear();
+  }
 }

@@ -3,4 +3,4 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import "@eshg/lib-vitest/extend-expect";
+import "@cronn/vitest-file-snapshots/extend-expect";

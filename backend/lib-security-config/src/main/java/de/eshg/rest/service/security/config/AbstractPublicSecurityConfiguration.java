@@ -214,13 +214,9 @@ public abstract class AbstractPublicSecurityConfiguration {
     requestMatchers(POST, BaseUrls.STATISTICS + "/procedure-ids/**").hasRole(procedureAccessRole);
   }
 
-  protected void grantAccessToLibDepartmentInfoUrls() {
-    requestMatchers(GET, DepartmentInfoLibrary.DEPARTMENT_INFO_API + "/**").hasRole(CONFIGURATION);
-    requestMatchers(PUT, DepartmentInfoLibrary.DEPARTMENT_INFO_API + "/**").hasRole(CONFIGURATION);
-    requestMatchers(GET, DepartmentInfoLibrary.PRIVACY_DOCUMENTS_API + "/**")
-        .hasRole(CONFIGURATION);
-    requestMatchers(PUT, DepartmentInfoLibrary.PRIVACY_DOCUMENTS_API + "/**")
-        .hasRole(CONFIGURATION);
+  protected void grantAccessToConfiguration() {
+    requestMatchers(GET, DepartmentInfoLibrary.CONFIGURATION_API + "/**").hasRole(CONFIGURATION);
+    requestMatchers(PUT, DepartmentInfoLibrary.CONFIGURATION_API + "/**").hasRole(CONFIGURATION);
   }
 
   @CheckReturnValue

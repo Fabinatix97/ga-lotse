@@ -5,7 +5,9 @@
     "current_step": "Schritt {{currentStep}} von {{totalSteps}}",
     "hiv_sti_consultation": "HIV-STI-Beratung",
     "sex_work": "Sexarbeit",
-    "overview_title": "Terminübersicht"
+    "overview_title": "Terminübersicht",
+    "timeslot_taken": "Leider ist dieser Termin nicht mehr verfügbar. Bitte wählen Sie einen anderen Termin aus.",
+    "select_new_appointment": "Neuen Termin auswählen"
   },
   "cancel_booking": {
     "title": "Termin absagen?",

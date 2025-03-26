@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { TextareaField } from "@eshg/lib-employee-portal";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
@@ -18,7 +19,6 @@ import { initServicesValues } from "@/lib/businessModules/travelMedicine/compone
 import { AddServicePlanFormValues } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/sidebarForms/AddServicePlanForm";
 import { OtherServicesFields } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/sidebarForms/OtherServicesFields";
 import { VaccinationFields } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/sidebarForms/VaccinationFields";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 import { validateNonNegativeNumberWithAtMostTwoDecimalDigits } from "@/lib/shared/helpers/validators";
 
 interface ServicesSheetProps {

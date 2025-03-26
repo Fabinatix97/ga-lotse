@@ -5,7 +5,9 @@
 
 import {
   DefaultPersonFormValues,
+  SidebarWithFormRefProps,
   mapToPersonUpdateRequest,
+  useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 
 import {
@@ -15,10 +17,6 @@ import {
 import { useUpdateChild } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import { DefaultPersonForm } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
 import { PersonSidebarForm } from "@/lib/shared/components/personSidebar/form/PersonSidebarForm";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useUpdateChildSidebar() {
   return useSidebarWithFormRef({

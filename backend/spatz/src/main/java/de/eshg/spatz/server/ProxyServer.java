@@ -7,9 +7,13 @@ package de.eshg.spatz.server;
 
 import static de.eshg.servicedirectory.util.X509Utils.ESHGACTOR_BUNDLE_NAME;
 
+import de.eshg.spatz.LifecyclePhases;
+import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.ssl.SslContext;
-import jakarta.annotation.PreDestroy;
+import io.netty.util.concurrent.GlobalEventExecutor;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
@@ -20,23 +24,30 @@ import nl.altindag.ssl.util.SSLFactoryUtils;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.boot.autoconfigure.context.LifecycleProperties;
 import org.springframework.boot.ssl.SslBundle;
 import org.springframework.boot.ssl.SslBundles;
-import org.springframework.boot.web.server.GracefulShutdownResult;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.SmartLifecycle;
+import reactor.core.publisher.Mono;
 import reactor.netty.DisposableChannel;
 import reactor.netty.http.server.HttpServer;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 
-public abstract class ProxyServer implements SpatzHttpServer, HealthIndicator {
+public abstract class ProxyServer implements HealthIndicator, SmartLifecycle {
 
-  protected static final Logger logger = LoggerFactory.getLogger(ProxyServer.class);
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
+
   public static final String ALLOWED_PROTOCOL = "TLSv1.3";
   public static final String[] ALLOWED_CIPHERS = {
     "TLS_AES_256_GCM_SHA384", "TLS_AES_128_GCM_SHA256"
   };
+
+  private final ApplicationContext applicationContext;
 
   /** Netty HttpServer */
   protected final HttpServer baseServer;
@@ -52,26 +63,32 @@ public abstract class ProxyServer implements SpatzHttpServer, HealthIndicator {
   private final boolean clientAuth;
   private final List<String> clientCnAllowList;
   private final SslBundles sslBundles;
+  private final Duration shutdownTimeout;
   private final SSLFactory dynamicSSLFactory;
 
   private final SslContext serverContext;
   private final SslContext clientContext;
 
   private final AtomicReference<Status> status = new AtomicReference<>(Status.CREATED);
+  private DefaultChannelGroup channelGroup;
 
   protected ProxyServer(
+      ApplicationContext applicationContext,
       HttpServer baseServer,
       String listeningHost,
       Integer listeningPort,
       boolean clientAuth,
       List<String> clientCnAllowList,
-      SslBundles sslBundles) {
+      SslBundles sslBundles,
+      LifecycleProperties lifecycleProperties) {
+    this.applicationContext = applicationContext;
     this.baseServer = baseServer;
     this.listeningHost = Objects.requireNonNull(listeningHost);
     this.listeningPort = Objects.requireNonNull(listeningPort);
     this.clientAuth = clientAuth;
     this.clientCnAllowList = clientCnAllowList;
     this.sslBundles = sslBundles;
+    shutdownTimeout = LifecyclePhases.getShutdownTimeout(lifecycleProperties);
     dynamicSSLFactory =
         SSLFactory.builder()
             .withNeedClientAuthentication(clientAuth)
@@ -135,17 +152,13 @@ public abstract class ProxyServer implements SpatzHttpServer, HealthIndicator {
   protected abstract Publisher<Void> handlerFunction(HttpServerRequest in, HttpServerResponse out);
 
   @Override
-  public Integer getListeningPort() {
-    return listeningPort;
-  }
-
-  @Override
   public void start() {
-    logger.info("Starting server, binding to {}:{}", listeningHost, listeningPort);
+    logger.info("Starting, binding to {}:{}", listeningHost, listeningPort);
 
     onSslBundleUpdate(sslBundles.getBundle(ESHGACTOR_BUNDLE_NAME));
     sslBundles.addBundleUpdateHandler(ESHGACTOR_BUNDLE_NAME, this::onSslBundleUpdate);
 
+    channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
     HttpServer bindServer =
         this.baseServer
             // Listen to events
@@ -154,15 +167,24 @@ public abstract class ProxyServer implements SpatzHttpServer, HealthIndicator {
                 c -> {
                   logger.info("bound");
                   status.set(Status.STARTED);
-                });
+                })
+            .channelGroup(channelGroup);
     server =
         setupSsl(bindServer.host(listeningHost).port(listeningPort), serverContext)
             .handle(this::handlerFunction)
             .bindNow()
-            .onDispose(() -> logger.info("stopped server"));
-    logger.info("started server");
+            .onDispose(
+                () -> logger.info("disposing, bound to {}:{}", listeningHost, listeningPort));
+    logger.info("started, bound to {}:{}", listeningHost, listeningPort);
 
-    server.onDispose().block();
+    server
+        .onDispose()
+        .doOnError(
+            throwable -> {
+              logger.error("terminated unexpectedly", throwable);
+              SpringApplication.exit(applicationContext, () -> 1);
+            })
+        .subscribe();
   }
 
   protected boolean isWebsocketRequested(HttpHeaders requestHeaders) {
@@ -174,17 +196,47 @@ public abstract class ProxyServer implements SpatzHttpServer, HealthIndicator {
 
   @Override
   public void stop() {
-    logger.info("Stopping server");
+    Instant deadline = Instant.now().plus(shutdownTimeout);
+    logger.info("Stopping, bound to {}:{}", listeningHost, listeningPort);
+    status.set(Status.STOPPING);
 
-    server.disposeNow();
+    new Thread(
+            () -> {
+              server.disposeNow(shutdownTimeout);
+              logger.info(
+                  "Stopped, bound to {}:{} with {} channels",
+                  listeningHost,
+                  listeningPort,
+                  getChannelCount());
+            })
+        .start();
+
+    waitForChannelsToClose(deadline);
     status.set(Status.STOPPED);
-    logger.info("Stopped server");
   }
 
-  @PreDestroy
-  public void shutdownGracefully() {
-    new GracefulShutdown(() -> this)
-        .shutDownGracefully((GracefulShutdownResult gsr) -> logger.info(gsr.toString()));
+  private int getChannelCount() {
+    return channelGroup == null ? -1 : channelGroup.size();
+  }
+
+  private void waitForChannelsToClose(Instant deadline) {
+    while (!channelGroup.isEmpty() || !server.isDisposed()) {
+      if (Instant.now().isAfter(deadline)) {
+        logger.warn(
+            "Timeout waiting for active connections to close. {} connections remain.",
+            getChannelCount());
+        return;
+      }
+      Mono.delay(Duration.ofMillis(100)).block();
+    }
+    logger.info("All channels have closed successfully.");
+  }
+
+  @Override
+  public boolean isRunning() {
+    var running = status.get() == Status.STARTED || status.get() == Status.STOPPING;
+    logger.info("isRunning: {} {}", status.get(), running);
+    return running;
   }
 
   @Override
@@ -204,6 +256,7 @@ public abstract class ProxyServer implements SpatzHttpServer, HealthIndicator {
   private enum Status {
     CREATED,
     STARTED,
+    STOPPING,
     STOPPED
   }
 }

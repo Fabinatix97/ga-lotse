@@ -9,11 +9,12 @@ import de.eshg.lib.common.EshgHttpHeaders;
 import de.eshg.lib.servicedirectory.ServiceDirectoryApi;
 import de.eshg.lib.servicedirectory.api.ActorResponseDto;
 import de.eshg.servicedirectory.util.X509Utils;
+import de.eshg.spatz.LifecyclePhases;
 import de.eshg.spatz.client.HttpProxyClient;
 import de.eshg.spatz.common.CustomHeaders;
 import de.eshg.spatz.common.ServiceDirectoryTopologyService.TopologyChangedListener;
 import de.eshg.spatz.common.ServiceDirectoryTopologyService.TrustedActors;
-import de.eshg.spatz.config.SpatzConfigurationProperties.InboundConfiguration;
+import de.eshg.spatz.config.SpatzConfigurationProperties;
 import de.eshg.spatz.server.ProxyServer;
 import de.eshg.spatz.server.WebsocketProxyHandler;
 import io.netty.handler.codec.http.HttpHeaders;
@@ -29,7 +30,10 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import org.reactivestreams.Publisher;
+import org.springframework.boot.autoconfigure.context.LifecycleProperties;
 import org.springframework.boot.ssl.SslBundles;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 import reactor.netty.ByteBufFlux;
 import reactor.netty.http.client.HttpClientResponse;
 import reactor.netty.http.server.HttpServer;
@@ -41,6 +45,7 @@ import reactor.netty.http.server.HttpServerResponse;
  * same pod (localhost). The secure tunnel between the calling SPATZ and this server will be
  * terminated and the content passed on to the module at localhost on inboundTargetPort.
  */
+@Component
 public class InboundServer extends ProxyServer implements TopologyChangedListener {
 
   public static final String INBOUND_RESPONSE_HANDLED = "success";
@@ -53,26 +58,26 @@ public class InboundServer extends ProxyServer implements TopologyChangedListene
   private ActorResponseDto self;
 
   public InboundServer(
+      ApplicationContext applicationContext,
       HttpServer baseServer,
-      InboundConfiguration inboundConfiguration,
+      SpatzConfigurationProperties properties,
       SslBundles sslBundles,
-      ServiceDirectoryApi serviceDirectoryApi) {
+      ServiceDirectoryApi serviceDirectoryApi,
+      LifecycleProperties lifecycleProperties) {
     super(
+        applicationContext,
         baseServer,
-        inboundConfiguration.listeningHost(),
-        inboundConfiguration.handlerPort(),
-        inboundConfiguration.forceClientAuth(),
-        Optional.ofNullable(inboundConfiguration.clientCnAllowList()).orElse(List.of()),
-        sslBundles);
-    this.inboundTargetPort = inboundConfiguration.targetPort();
+        properties.inbound().listeningHost(),
+        properties.inbound().handlerPort(),
+        properties.inbound().forceClientAuth(),
+        Optional.ofNullable(properties.inbound().clientCnAllowList()).orElse(List.of()),
+        sslBundles,
+        lifecycleProperties);
+    this.inboundTargetPort = properties.inbound().targetPort();
     this.inboundTargetHost =
-        inboundConfiguration.targetHost() != null ? inboundConfiguration.targetHost() : "localhost";
+        properties.inbound().targetHost() != null ? properties.inbound().targetHost() : "localhost";
     this.serviceDirectoryApi = serviceDirectoryApi;
     httpProxyClient = new HttpProxyClient(inboundTargetHost, inboundTargetPort);
-  }
-
-  public int getInboundTargetPort() {
-    return inboundTargetPort;
   }
 
   @Override
@@ -237,5 +242,10 @@ public class InboundServer extends ProxyServer implements TopologyChangedListene
       logger.info("could not get own actor information: {}", e.getMessage());
       self = null;
     }
+  }
+
+  @Override
+  public int getPhase() {
+    return LifecyclePhases.INBOUND_SERVER.phase;
   }
 }

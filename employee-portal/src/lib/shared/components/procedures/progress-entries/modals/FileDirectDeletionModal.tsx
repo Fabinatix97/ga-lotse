@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { OverlayBoundary } from "@eshg/lib-employee-portal";
 import { useContext } from "react";
 
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { EmployeePortalConfirmationDialog } from "@/lib/shared/components/confirmationDialog/EmployeePortalConfirmationDialog";
 import { ProgressEntriesContext } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import { useDeleteFile } from "@/lib/shared/components/procedures/progress-entries/mutations/fileApi";

@@ -19,6 +19,7 @@ import de.eshg.base.address.PostboxAddressDto;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.department.GetDepartmentInfoResponse;
 import de.eshg.base.user.api.UserDto;
+import de.eshg.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.inspection.client.UserClient;
 import de.eshg.inspection.facility.FacilityClient;
 import de.eshg.inspection.inspection.persistence.Inspection;
@@ -62,13 +63,16 @@ public class InspectionReportBuilder {
   private final UserClient userClient;
   private final DepartmentClient departmentClient;
   private final FacilityClient facilityClient;
+  private final DepartmentInfoConfigService departmentInfoConfigService;
 
   public InspectionReportBuilder(
       @Value(REPORT_TEMPLATE) ClassPathResource reportTemplate,
       DocumentGenerator documentGenerator,
       UserClient userClient,
       DepartmentClient departmentClient,
+      DepartmentInfoConfigService departmentInfoConfigService,
       FacilityClient facilityClient) {
+    this.departmentInfoConfigService = departmentInfoConfigService;
     Assert.isTrue(reportTemplate.exists(), reportTemplate + " does not exist");
     this.reportTemplate = reportTemplate;
     this.documentGenerator = documentGenerator;
@@ -107,7 +111,7 @@ public class InspectionReportBuilder {
   }
 
   public RepAddress getOfficeAddress() {
-    GetDepartmentInfoResponse departmentInfo = departmentClient.getDepartmentInfo();
+    GetDepartmentInfoResponse departmentInfo = departmentInfoConfigService.getDepartmentInfo();
     return new RepAddress(
         departmentInfo.name(),
         departmentInfo.street() + " " + departmentInfo.houseNumber(),

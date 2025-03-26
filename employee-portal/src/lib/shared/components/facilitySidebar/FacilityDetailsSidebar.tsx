@@ -10,6 +10,9 @@ import {
 import {
   BaseAddressDetailsColumn,
   DetailsRow,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
 } from "@eshg/lib-employee-portal";
 import {
   SALUTATION_VALUES,
@@ -33,9 +36,6 @@ import { isDefined } from "remeda";
 
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { join } from "@/lib/shared/helpers/strings";
 
 export interface FacilityDetailsSidebarProps {

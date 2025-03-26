@@ -17,6 +17,7 @@ import {
   CentralFilePersonDetails,
   mapReferencePersonToForm,
   useHasUserRoleCheck,
+  useSidebar,
 } from "@eshg/lib-employee-portal";
 import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 import { Stack } from "@mui/joy";
@@ -41,7 +42,6 @@ import {
 } from "@/lib/baseModule/components/gdpr/procedure/tiles/SectionTile";
 import { SheetQueryBoundary } from "@/lib/shared/components/boundaries/SheetQueryBoundary";
 import { CentralFileFacilityDetails } from "@/lib/shared/components/centralFile/display/CentralFileFacilityDetails";
-import { useSidebar } from "@/lib/shared/components/drawer/useSidebar";
 import { useEditReferenceFacilitySidebar } from "@/lib/shared/components/facilitySidebar/EditReferenceFacilitySidebar";
 import { useEditReferencePersonSidebar } from "@/lib/shared/components/personSidebar/PersonEditSidebar";
 

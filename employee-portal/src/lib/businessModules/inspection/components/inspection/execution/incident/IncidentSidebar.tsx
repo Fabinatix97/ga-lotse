@@ -7,7 +7,16 @@ import {
   ApiCreateInspectionIncidentRequest,
   ApiInspectionIncident,
 } from "@eshg/inspection-api";
-import { DetailsItem } from "@eshg/lib-employee-portal";
+import {
+  DetailsItem,
+  FormButtonBar,
+  OverlayBoundary,
+  Sidebar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  TextareaField,
+} from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { Grid, Typography } from "@mui/joy";
 import { Formik } from "formik";
@@ -18,13 +27,6 @@ import {
   useCreateIncident,
   useUpdateIncident,
 } from "@/lib/businessModules/inspection/api/mutations/incidents";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export interface IncidentSidebarProps {
   open: boolean;

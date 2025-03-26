@@ -5,6 +5,7 @@
 
 "use client";
 
+import { TextareaField } from "@eshg/lib-employee-portal";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { ApiReportingReason } from "@eshg/measles-protection-api";
 import { Grid, Stack } from "@mui/joy";
@@ -18,7 +19,6 @@ import {
   roleStatusNames,
 } from "@/lib/businessModules/measlesProtection/components/procedures/constants";
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
 import { AdditionalInfoSection } from "./AdditionalInfoSection";
 import { AffectedPerson } from "./AffectedPerson";

@@ -13,6 +13,7 @@ import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AnonymizationConfiguration;
 import de.eshg.statistics.persistence.entity.CellEntry;
+import de.eshg.statistics.persistence.entity.TClosenessHierarchyEntry;
 import de.eshg.statistics.persistence.entity.TableColumn;
 import de.eshg.statistics.persistence.entity.TableColumnDataPrivacyCategory;
 import de.eshg.statistics.persistence.entity.TableColumnValueType;
@@ -41,7 +42,10 @@ import org.deidentifier.arx.DataHandle;
 import org.deidentifier.arx.DataType;
 import org.deidentifier.arx.aggregates.HierarchyBuilderRedactionBased;
 import org.deidentifier.arx.criteria.DistinctLDiversity;
+import org.deidentifier.arx.criteria.EqualDistanceTCloseness;
+import org.deidentifier.arx.criteria.HierarchicalDistanceTCloseness;
 import org.deidentifier.arx.criteria.KAnonymity;
+import org.deidentifier.arx.criteria.OrderedDistanceTCloseness;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -104,28 +108,17 @@ public class AnonymizationService {
     data.getDefinition().setAttributeType(ROW_ID_COLUMN, AttributeType.INSENSITIVE_ATTRIBUTE);
     data.getDefinition().setDataType(ROW_ID_COLUMN, DataType.INTEGER);
 
-    // todo tcloseness optional needs to be configured?
     relevantTableColumns.stream()
         .filter(
             tableColumn ->
                 TableColumnDataPrivacyCategory.SENSITIVE.equals(
                     getTableColumnDataPrivacyCategory(tableColumn)))
-        .forEach(
-            tableColumn -> {
-              Integer lDiversity = tableColumn.getAnonymizationConfiguration().getLDiversity();
-              if (lDiversity == null) {
-                throw new BadRequestException(
-                    "LDiversity not defined for column %s".formatted(tableColumn.getSearchKey()));
-              } else {
-                config.addPrivacyModel(
-                    new DistinctLDiversity(tableColumn.getSearchKey(), lDiversity));
-              }
-            });
+        .forEach(tableColumn -> configureSensitiveColumnConfig(tableColumn, config));
 
     Map<String, Interval<Number>> tableColumnSearchKeyToMinMaxInterval = new HashMap<>();
     relevantTableColumns.forEach(
         tableColumn ->
-            configureColumn(tableColumn, data)
+            configureColumnData(tableColumn, data)
                 .ifPresent(
                     minMaxInterval ->
                         tableColumnSearchKeyToMinMaxInterval.put(
@@ -171,7 +164,53 @@ public class AnonymizationService {
         : tableColumn.getAnonymizationConfiguration().getDataPrivacyCategory();
   }
 
-  private static Optional<Interval<Number>> configureColumn(
+  private static void configureSensitiveColumnConfig(
+      TableColumn tableColumn, ARXConfiguration config) {
+    AnonymizationConfiguration anonymizationConfiguration =
+        tableColumn.getAnonymizationConfiguration();
+    Integer lDiversity = anonymizationConfiguration.getLDiversity();
+    BigDecimal tCloseness = anonymizationConfiguration.getTCloseness();
+    if (lDiversity == null && tCloseness == null) {
+      throw new BadRequestException(
+          "LDiversity and TCloseness not defined for column %s"
+              .formatted(tableColumn.getSearchKey()));
+    }
+
+    if (lDiversity != null) {
+      config.addPrivacyModel(new DistinctLDiversity(tableColumn.getSearchKey(), lDiversity));
+    }
+
+    if (tCloseness != null) {
+      if (tableColumn.getValueType().equals(TableColumnValueType.DECIMAL)
+          || tableColumn.getValueType().equals(TableColumnValueType.INTEGER)) {
+        config.addPrivacyModel(
+            new OrderedDistanceTCloseness(tableColumn.getSearchKey(), tCloseness.doubleValue()));
+      } else {
+        List<TClosenessHierarchyEntry> tClosenessHierarchyEntries =
+            anonymizationConfiguration.getTClosenessHierarchyEntries();
+        if (tClosenessHierarchyEntries.isEmpty()) {
+          config.addPrivacyModel(
+              new EqualDistanceTCloseness(tableColumn.getSearchKey(), tCloseness.doubleValue()));
+        } else {
+          config.addPrivacyModel(
+              new HierarchicalDistanceTCloseness(
+                  tableColumn.getSearchKey(),
+                  tCloseness.doubleValue(),
+                  mapToHierarchy(tClosenessHierarchyEntries)));
+        }
+      }
+    }
+  }
+
+  private static AttributeType.Hierarchy mapToHierarchy(
+      List<TClosenessHierarchyEntry> tClosenessHierarchyEntries) {
+    AttributeType.Hierarchy.DefaultHierarchy hierarchy = AttributeType.Hierarchy.create();
+    tClosenessHierarchyEntries.forEach(
+        entry -> hierarchy.add(entry.getHierarchySteps().toArray(String[]::new)));
+    return hierarchy;
+  }
+
+  private static Optional<Interval<Number>> configureColumnData(
       TableColumn tableColumn, Data.DefaultData data) {
     Optional<Interval<Number>> minMaxIntervalOptional = Optional.empty();
     TableColumnDataPrivacyCategory category = getTableColumnDataPrivacyCategory(tableColumn);

@@ -14,6 +14,7 @@ import {
 import {
   DetailsColumn,
   DetailsRow,
+  EditButton,
   ResponsiveDivider,
 } from "@eshg/lib-employee-portal";
 import { SALUTATION_VALUES } from "@eshg/lib-portal/components/formFields/constants";
@@ -27,7 +28,6 @@ import { GroupList } from "@/lib/baseModule/components/users/GroupList";
 import { useUserProfileEditSidebar } from "@/lib/baseModule/components/users/userSidebar/UserProfileEditSidebar";
 import { ChatUserId } from "@/lib/businessModules/chat/components/ChatUserId";
 import { routes } from "@/lib/businessModules/chat/shared/routes";
-import { EditButton } from "@/lib/shared/components/buttons/EditButton";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import {
   ExternalLinkDetailsCell,

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { SidebarContent, SidebarForm } from "@eshg/lib-employee-portal";
 import { LoadingIndicator } from "@eshg/lib-portal/components/LoadingIndicator";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
@@ -14,8 +15,6 @@ import { useDebounce } from "use-debounce";
 import { useSearchContactsQuery } from "@/lib/baseModule/api/queries/contacts";
 import { PersonContactCard } from "@/lib/baseModule/components/contacts/forms/card/PersonContactCard";
 import { ContactSearchFormResults } from "@/lib/baseModule/components/contacts/forms/search/ContactSearchFormResults";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export function PersonContactSearchForm({
   onCreate,

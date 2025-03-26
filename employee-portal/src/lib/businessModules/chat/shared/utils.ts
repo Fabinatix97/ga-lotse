@@ -364,14 +364,14 @@ export async function fetchBackupInfoWithRetry(matrixClient: MatrixClient) {
 }
 
 export async function retryOperation<T>(
-  operation: () => T, // The async function to retry
+  operation: () => T, // The function to retry
   stopCondition: (result: T) => boolean, // A condition to stop retrying
-  retries: number, // Maximum number of retries
-  delay: number, // Delay in ms between retries
-  failOnLastRetry = false, // Throw an error if retry reached its limit
+  maxRetries: number,
+  retryAfterMillis: number,
+  errorAfterLastRetry = false,
 ): Promise<T | undefined> {
   let result: T | undefined = undefined;
-  for (let attempt = 0; attempt < retries; attempt++) {
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
       result = operation();
       if (stopCondition(result)) {
@@ -379,18 +379,18 @@ export async function retryOperation<T>(
       }
       logger.info("Retrying operation... ");
     } catch (error) {
-      if (attempt === retries - 1) {
+      if (attempt === maxRetries - 1) {
         throw error; // If it's the last retry, throw the error
       }
       logger.error("Retrying on operation error", error);
     }
 
     // Wait before the next retry
-    await new Promise((resolve) => setTimeout(resolve, delay));
+    await new Promise((resolve) => setTimeout(resolve, retryAfterMillis));
   }
 
-  if (failOnLastRetry) {
-    throw new Error(`Operation failed after ${retries} retries`);
+  if (errorAfterLastRetry) {
+    throw new Error(`Operation failed after ${maxRetries} retries`);
   } else {
     return result;
   }
@@ -399,12 +399,12 @@ export async function retryOperation<T>(
 export async function retryAsyncOperation<T>(
   operation: () => Promise<T>, // The async function to retry
   stopCondition: (result: T) => boolean, // A condition to stop retrying
-  retries: number, // Maximum number of retries
-  delay: number, // Delay in ms between retries
-  failOnLastRetry = false, // Throw an error if retry reached its limit
+  maxRetries: number,
+  retryAfterMillis: number,
+  errorAfterLastRetry = false,
 ): Promise<T | undefined> {
   let result: T | undefined = undefined;
-  for (let attempt = 0; attempt < retries; attempt++) {
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
       result = await operation();
       if (stopCondition(result)) {
@@ -412,18 +412,18 @@ export async function retryAsyncOperation<T>(
       }
       logger.info("Retrying operation... ");
     } catch (error) {
-      if (attempt === retries - 1) {
+      if (attempt === maxRetries - 1) {
         throw error; // If it's the last retry, throw the error
       }
       logger.error("Retrying on operation error", error);
     }
 
     // Wait before the next retry
-    await new Promise((resolve) => setTimeout(resolve, delay));
+    await new Promise((resolve) => setTimeout(resolve, retryAfterMillis));
   }
 
-  if (failOnLastRetry) {
-    throw new Error(`Operation failed after ${retries} retries`);
+  if (errorAfterLastRetry) {
+    throw new Error(`Operation failed after ${maxRetries} retries`);
   } else {
     return result;
   }

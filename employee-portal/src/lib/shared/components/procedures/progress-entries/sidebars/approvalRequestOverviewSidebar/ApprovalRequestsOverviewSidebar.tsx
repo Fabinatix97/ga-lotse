@@ -5,16 +5,18 @@
 
 "use client";
 
+import {
+  ButtonBar,
+  Sidebar,
+  SidebarActions,
+  SidebarContent,
+} from "@eshg/lib-employee-portal";
 import { Button, Stack } from "@mui/joy";
 import { useContext } from "react";
 
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { ProgressEntriesContext } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import { useGrantDeletionForAllRequests } from "@/lib/shared/components/procedures/progress-entries/mutations/approvalRequestApi";
 import { ApprovalRequestCard } from "@/lib/shared/components/procedures/progress-entries/sidebars/approvalRequestOverviewSidebar/ApprovalRequestCard";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 interface ApprovalRequestOverviewProps {
   open: boolean;

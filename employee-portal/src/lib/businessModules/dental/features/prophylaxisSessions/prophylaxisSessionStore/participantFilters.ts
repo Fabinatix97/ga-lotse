@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ChildExamination } from "@eshg/dental";
+import { ProphylaxisSessionExamination } from "@eshg/dental";
 
 export interface ParticipantFilters {
   gender: GenderFilter;
@@ -15,8 +15,8 @@ export type FluoridationConsentFilter = "YES" | "NO" | "ANY";
 
 export function filterParticipants(
   filters: ParticipantFilters,
-  participants: ChildExamination[],
-): ChildExamination[] {
+  participants: ProphylaxisSessionExamination[],
+): ProphylaxisSessionExamination[] {
   return participants.filter(
     (participant) =>
       matchesGender(participant, filters.gender) &&
@@ -25,7 +25,7 @@ export function filterParticipants(
 }
 
 function matchesGender(
-  participant: ChildExamination,
+  participant: ProphylaxisSessionExamination,
   filter: GenderFilter,
 ): boolean {
   if (filter === "ANY") {
@@ -36,7 +36,7 @@ function matchesGender(
 }
 
 function matchesFluoridationConsent(
-  participant: ChildExamination,
+  participant: ProphylaxisSessionExamination,
   filter: FluoridationConsentFilter,
 ): boolean {
   if (filter === "ANY") {

@@ -4,6 +4,12 @@
  */
 
 import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useConfirmationDialog,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
+import {
   PatchCompleteDocumentFileUploadRequest,
   PatchDocumentInformationRequest,
   PatchDocumentNoteRequest,
@@ -23,12 +29,6 @@ import {
 } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/DocumentForm";
 import { EditDocumentInformationForm } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/EditDocumentInformationForm";
 import { EditDocumentNoteForm } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/EditDocumentNoteForm";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 import { RejectDocumentForm } from "./RejectDocumentForm";
 

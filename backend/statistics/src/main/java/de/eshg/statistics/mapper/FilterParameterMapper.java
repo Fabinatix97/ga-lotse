@@ -7,6 +7,7 @@ package de.eshg.statistics.mapper;
 
 import de.eshg.statistics.api.AttributeSelectionDto;
 import de.eshg.statistics.api.filter.BooleanFilterParameterDto;
+import de.eshg.statistics.api.filter.DateFilterParameterDto;
 import de.eshg.statistics.api.filter.DecimalRangeFilterParameterDto;
 import de.eshg.statistics.api.filter.DecimalValueFilterParameterDto;
 import de.eshg.statistics.api.filter.IntegerRangeFilterParameterDto;
@@ -18,6 +19,7 @@ import de.eshg.statistics.api.filter.TextFilterParameterDto;
 import de.eshg.statistics.api.filter.ValueOptionFilterParameterDto;
 import de.eshg.statistics.persistence.entity.AbstractFilterParameter;
 import de.eshg.statistics.persistence.entity.filter.BooleanFilterParameter;
+import de.eshg.statistics.persistence.entity.filter.DateFilterParameter;
 import de.eshg.statistics.persistence.entity.filter.DecimalRangeFilterParameter;
 import de.eshg.statistics.persistence.entity.filter.DecimalValueFilterParameter;
 import de.eshg.statistics.persistence.entity.filter.IntegerRangeFilterParameter;
@@ -41,6 +43,13 @@ public class FilterParameterMapper {
         filterPersistence.setSearchForTrue(filterParameterDto.searchForTrue());
         filterPersistence.setSearchForFalse(filterParameterDto.searchForFalse());
         filterPersistence.setSearchForNull(filterParameterDto.searchForNull());
+        yield filterPersistence;
+      }
+      case DateFilterParameterDto filterParameterDto -> {
+        DateFilterParameter filterPersistence = new DateFilterParameter();
+        filterPersistence.setAttributeSelection(
+            AttributeSelectionMapper.mapToPersistence(filterParameterDto.attribute()));
+        filterPersistence.setValue(filterParameterDto.date());
         yield filterPersistence;
       }
       case DecimalRangeFilterParameterDto filterParameterDto -> {
@@ -124,6 +133,8 @@ public class FilterParameterMapper {
               filterParameter.isSearchForTrue(),
               filterParameter.isSearchForFalse(),
               filterParameter.isSearchForNull());
+      case DateFilterParameter filterParameter ->
+          new DateFilterParameterDto(attribute, filterParameter.getValue());
       case DecimalRangeFilterParameter filterParameter ->
           new DecimalRangeFilterParameterDto(
               attribute,

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { OverlayBoundary } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
@@ -18,7 +19,6 @@ import {
 } from "@/lib/businessModules/statistics/components/evaluations/SidebarSummary";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 
 export interface EvaluationTemplateStepAutocompleteEntry {
   id: string;

@@ -11,12 +11,11 @@ import {
   ApiResource,
   ApiUserRole,
 } from "@eshg/base-api";
-import { useHasUserRoleCheck } from "@eshg/lib-employee-portal";
+import { EditButton, useHasUserRoleCheck } from "@eshg/lib-employee-portal";
 import { Add } from "@mui/icons-material";
 import { Button, Stack, Typography } from "@mui/joy";
 
 import { LabelList } from "@/lib/baseModule/components/labels/LabelList";
-import { EditButton } from "@/lib/shared/components/buttons/EditButton";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 

@@ -6,7 +6,7 @@
 "use client";
 
 import { ApiEditorBodyElementsInner } from "@eshg/inspection-api";
-import { BottomToolbar } from "@eshg/lib-employee-portal";
+import { BottomToolbar, ButtonBar } from "@eshg/lib-employee-portal";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { v4 as uuidv4 } from "uuid";
 
@@ -20,7 +20,6 @@ import {
   loadEditorQuery,
 } from "@/lib/businessModules/inspection/api/queries/inspectionReport";
 import { ReportDownloadButtons } from "@/lib/businessModules/inspection/components/inspection/reportresult/ReportDownloadButtons";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { ContentEditor } from "@/lib/shared/components/contentEditor/ContentEditor";
 import {
   PaletteItem,

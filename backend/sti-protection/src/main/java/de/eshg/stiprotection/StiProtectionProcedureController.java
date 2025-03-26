@@ -11,7 +11,6 @@ import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.persistence.IntentionalWritingTransaction;
-import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.stiprotection.api.CreateAppointmentRequest;
@@ -25,6 +24,7 @@ import de.eshg.stiprotection.api.GetStiProtectionProceduresFilterOptions;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresPaginationOptions;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresSortOptions;
 import de.eshg.stiprotection.api.ResponseEntities;
+import de.eshg.stiprotection.api.StiProtectionProcedureOverviewDto;
 import de.eshg.stiprotection.api.UpdateAppointmentRequest;
 import de.eshg.stiprotection.api.UpdatePersonDetailsRequest;
 import de.eshg.stiprotection.api.VerifyAnonymousUserPinRequest;
@@ -33,9 +33,9 @@ import de.eshg.stiprotection.mapper.AppointmentMapper;
 import de.eshg.stiprotection.mapper.ConcernMapper;
 import de.eshg.stiprotection.mapper.PersonMapper;
 import de.eshg.stiprotection.mapper.StiProtectionProcedureMapper;
+import de.eshg.stiprotection.persistence.Appointments;
 import de.eshg.stiprotection.persistence.data.AppointmentData;
 import de.eshg.stiprotection.persistence.data.ResultPage;
-import de.eshg.stiprotection.persistence.data.StiProtectionProcedureData;
 import de.eshg.stiprotection.persistence.db.AppointmentHistoryEntry;
 import de.eshg.stiprotection.persistence.db.StiProcedureOrigin;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
@@ -47,6 +47,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
@@ -59,6 +60,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -119,7 +121,7 @@ public class StiProtectionProcedureController {
             "durch Benutzer",
             CurrentUserHelper.getCurrentUserId().toString()));
     return StiProtectionProcedureMapper.toInterfaceType(
-        stiProtectionService.getProcedure(procedureId));
+        stiProtectionService.findByExternalId(procedureId));
   }
 
   @GetMapping
@@ -134,13 +136,25 @@ public class StiProtectionProcedureController {
       @Valid @ParameterObject @InlineParameterObject
           GetStiProtectionProceduresFilterOptions filterOptions) {
 
-    ResultPage<StiProtectionProcedureData> procedures =
+    ResultPage<StiProtectionProcedure> procedures =
         stiProtectionService.getProcedures(sortOptions, paginationOptions, filterOptions);
 
     return new GetProceduresOverviewResponse(
         procedures.totalPages(),
         procedures.totalElements(),
         procedures.elements().stream().map(StiProtectionProcedureMapper::toOverviewType).toList());
+  }
+
+  @GetMapping("/search")
+  @Transactional(readOnly = true)
+  @Operation(summary = "Find STI procedures by access code or lab sample barcode.")
+  public GetProceduresOverviewResponse findProcedures(@RequestParam(value = "text") String text) {
+    List<StiProtectionProcedureOverviewDto> procedures =
+        stiProtectionService.findProcedures(text).stream()
+            .map(StiProtectionProcedureMapper::toOverviewType)
+            .toList();
+    int totalPages = procedures.isEmpty() ? 0 : 1;
+    return new GetProceduresOverviewResponse(totalPages, procedures.size(), procedures);
   }
 
   @PutMapping("/{id}/person")
@@ -184,11 +198,8 @@ public class StiProtectionProcedureController {
   @Transactional
   public void cancelAppointment(@PathVariable("id") UUID procedureId) {
     StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
-    if (procedure.getAppointment() == null && procedure.getUserDefinedAppointment() == null) {
-      throw new BadRequestException(
-          "Procedure %s has no outstanding appointment".formatted(procedure.getExternalId()));
-    }
-    appointmentService.cancelAppointment(procedure);
+    Appointments.assertHasAppointment(procedure);
+    appointmentService.cancelAppointmentDeleteCalendarEvent(procedure);
     progressEntryUtil.addProgressEntry(
         procedureId, StiProtectionSystemProgressEntryType.APPOINTMENT_CANCELLED);
   }
@@ -198,10 +209,7 @@ public class StiProtectionProcedureController {
   @Transactional
   public void finalizeAppointment(@PathVariable("id") UUID procedureId) {
     StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
-    if (procedure.getAppointment() == null && procedure.getUserDefinedAppointment() == null) {
-      throw new BadRequestException(
-          "Procedure %s has no outstanding appointment".formatted(procedure.getExternalId()));
-    }
+    Appointments.assertHasAppointment(procedure);
     appointmentService.finalizeAppointment(procedure);
     progressEntryUtil.addProgressEntry(
         procedureId, StiProtectionSystemProgressEntryType.APPOINTMENT_FINALIZED);
@@ -214,7 +222,7 @@ public class StiProtectionProcedureController {
   public void closeProcedure(@PathVariable("id") UUID procedureId) {
     StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
     if (procedure.getAppointment() != null || procedure.getUserDefinedAppointment() != null) {
-      appointmentService.cancelAppointment(procedure);
+      appointmentService.cancelAppointmentDeleteCalendarEvent(procedure);
     }
     stiProtectionService.closeProcedure(procedure);
   }
@@ -264,7 +272,7 @@ public class StiProtectionProcedureController {
       stiProtectionService.deleteAnonymousUser(procedure);
       stiProtectionService.closeProcedure(procedure);
       if (procedure.getAppointment() != null || procedure.getUserDefinedAppointment() != null) {
-        appointmentService.cancelAppointment(procedure);
+        appointmentService.cancelAppointmentDeleteCalendarEvent(procedure);
       }
     }
 

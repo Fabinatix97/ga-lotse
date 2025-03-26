@@ -6,6 +6,7 @@
 "use client";
 
 import {
+  ButtonBar,
   DataTable,
   MainContentLayout,
   TablePage,
@@ -22,7 +23,6 @@ import {
 import { useId, useState } from "react";
 import { isNonNullish } from "remeda";
 
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { ActiveFilter } from "@/lib/shared/components/filterSettings/ActiveFilter";
 import { FilterSettingsContent } from "@/lib/shared/components/filterSettings/FilterSettingsContent";

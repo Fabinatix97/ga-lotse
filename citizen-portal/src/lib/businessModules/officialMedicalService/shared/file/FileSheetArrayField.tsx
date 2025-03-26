@@ -23,7 +23,9 @@ import { useTranslation } from "@/lib/i18n/client";
 
 export interface FileSheetArrayFieldProps
   extends Omit<FieldProps<File[] | null>, "label" | "validate">,
-    Pick<FileSheetArrayProps, "accept" | "labels"> {}
+    Pick<FileSheetArrayProps, "accept" | "labels" | "mode"> {
+  handleFileUpload?: (files: File[]) => void;
+}
 
 export function FileSheetArrayField({
   accept: acceptProp,
@@ -86,6 +88,8 @@ export function FileSheetArrayField({
         required={field.required}
         helperText={field.helperText}
         labels={labels}
+        mode={props.mode}
+        onFileUpload={() => props.handleFileUpload?.(field.input.value ?? [])}
       />
     </FormControl>
   );

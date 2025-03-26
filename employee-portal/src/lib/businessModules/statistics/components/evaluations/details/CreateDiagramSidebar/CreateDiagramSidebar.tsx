@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
+
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 import { useAddDiagram } from "@/lib/businessModules/statistics/api/mutations/useAddDiagram";
 import { useAddFilterTemplate } from "@/lib/businessModules/statistics/api/mutations/useAddFilterTemplate";
@@ -17,11 +23,6 @@ import {
 } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
 import { UseFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { UseFilterTemplateProps } from "@/lib/shared/components/filterSettings/useFilterTemplate";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 import { CreateDiagramFormModel } from "./createDiagramFormModel";
 

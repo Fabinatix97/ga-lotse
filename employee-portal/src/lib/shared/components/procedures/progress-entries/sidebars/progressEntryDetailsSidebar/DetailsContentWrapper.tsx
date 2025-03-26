@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { SidebarContent } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import {
   ApiGetFile200Response,
@@ -31,7 +32,6 @@ import { isDefined } from "remeda";
 import { FileCardWithActions } from "@/lib/shared/components/procedures/progress-entries/FileCardWithActions";
 import { DeletionNote } from "@/lib/shared/components/procedures/progress-entries/FileOrDeletionNote";
 import { LabelValueDisplay } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/LabelValueDisplay";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 type OneOrMoreNodes = ReactNode | ReactNode[];
 

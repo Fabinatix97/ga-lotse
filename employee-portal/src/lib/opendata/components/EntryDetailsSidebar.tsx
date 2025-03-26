@@ -3,6 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  ButtonBar,
+  SidebarActions,
+  SidebarContent,
+  SidebarWithFormRefProps,
+  useConfirmationDialog,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiVersion } from "@eshg/opendata-api";
 import { Button, Chip, Divider, Stack, Typography } from "@mui/joy";
@@ -14,19 +22,11 @@ import { VersionFileCard } from "@/lib/opendata/components/VersionFileCard";
 import { deleteVersionDialogOptions } from "@/lib/opendata/helper";
 import { useDeleteVersion } from "@/lib/opendata/mutations/opendata";
 import { useGetVersion } from "@/lib/opendata/queries/opendata";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import {
   DetailsCell,
   DetailsCellProps,
 } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useEntryDetailsSidebar() {
   return useSidebarWithFormRef({

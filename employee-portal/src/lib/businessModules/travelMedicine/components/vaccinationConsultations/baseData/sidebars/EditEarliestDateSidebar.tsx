@@ -4,6 +4,11 @@
  */
 
 import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
+import {
   ApiServicePlanGroup,
   PatchEarliestDateRequest,
 } from "@eshg/travel-medicine-api";
@@ -16,11 +21,6 @@ import {
   EditEarliestDateForm,
   EditEarliestDateFormValues,
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/sidebarForms/EditEarliestDateForm";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useEditEarliestDateSidebar(): UseSidebarWithFormRefResult<EditEarliestDateSidebarProps> {
   return useSidebarWithFormRef({

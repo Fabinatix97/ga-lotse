@@ -7,6 +7,7 @@ package de.eshg.base.config;
 
 import de.eshg.base.config.persistence.BaseDepartmentInfoConfig;
 import de.eshg.departmentinfo.AbstractDepartmentInfoConfigController;
+import de.eshg.departmentinfo.api.GetInternalConfigDepartmentInfoResponse;
 import de.eshg.departmentinfo.mapper.DepartmentInfoMapper;
 import de.eshg.rest.service.security.config.BaseUrls.DepartmentInfoLibrary;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,14 +24,28 @@ import org.springframework.web.bind.annotation.RestController;
 public class BaseDepartmentInfoConfigController
     extends AbstractDepartmentInfoConfigController<BaseDepartmentInfoConfig> {
 
-  protected BaseDepartmentInfoConfigController(BaseDepartmentInfoConfigService configService) {
-    super(configService);
+  private final BaseDepartmentInfoConfigService baseDepartmentInfoConfigService;
+
+  protected BaseDepartmentInfoConfigController(
+      BaseDepartmentInfoConfigService baseDepartmentInfoConfigService) {
+    super(baseDepartmentInfoConfigService);
+    this.baseDepartmentInfoConfigService = baseDepartmentInfoConfigService;
+  }
+
+  @Override
+  public GetInternalConfigDepartmentInfoResponse getInternalConfigDepartmentInfo() {
+    if (baseDepartmentInfoConfigService.isInitialized()) {
+      return super.getInternalConfigDepartmentInfo();
+    }
+
+    return new GetInternalConfigDepartmentInfoResponse(null);
   }
 
   @PutMapping
   @Transactional
   public void updateInternalConfigDepartmentInfo(
       @Valid @RequestBody UpdateMandatoryInternalConfigDepartmentInfoRequest request) {
-    configService.update(DepartmentInfoMapper.mapToDomain(request.departmentInfo()));
+    baseDepartmentInfoConfigService.update(
+        DepartmentInfoMapper.mapToDomain(request.departmentInfo()));
   }
 }

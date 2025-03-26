@@ -21,6 +21,7 @@ import de.eshg.lib.appointmentblock.api.GetAppointmentTypesResponse;
 import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.officialmedicalservice.citizenpublic.api.GetOpeningHoursResponse;
+import de.eshg.officialmedicalservice.citizenpublic.api.LandingContentDto;
 import de.eshg.officialmedicalservice.concern.ConcernService;
 import de.eshg.officialmedicalservice.procedure.api.GetConcernsResponse;
 import de.eshg.officialmedicalservice.procedure.api.PostCitizenProcedureRequest;
@@ -61,6 +62,7 @@ public class CitizenPublicController {
   public static final String PRIVACY_POLICY_URL = "/privacy-policy";
   public static final String CONCERNS_URL = "/concerns";
   public static final String APPOINTMENT_TYPES_URL = "/appointment-types";
+  public static final String LANDING_URL = "/landing";
 
   private final OpeningHoursService openingHoursService;
   private final DepartmentInfoConfigService departmentInfoService;
@@ -104,6 +106,12 @@ public class CitizenPublicController {
   @GetMapping(path = DEPARTMENT_INFO_URL)
   public GetDepartmentInfoResponse getDepartmentInfo() {
     return departmentInfoService.getDepartmentInfo();
+  }
+
+  @Operation(summary = "Get landing content")
+  @GetMapping(path = LANDING_URL)
+  public LandingContentDto getLandingContent() {
+    return citizenPublicProcedureService.getLandingContent();
   }
 
   @Operation(summary = "Save a new citizen oms procedure.")

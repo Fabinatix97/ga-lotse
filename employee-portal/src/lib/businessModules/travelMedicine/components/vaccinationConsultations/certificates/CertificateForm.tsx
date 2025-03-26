@@ -5,6 +5,12 @@
 
 "use client";
 
+import {
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+} from "@eshg/lib-employee-portal";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
@@ -23,12 +29,6 @@ import {
   Mode,
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/CheckboxGroup";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export interface CertificateFormValues {
   certificateType: ApiCertificateType;

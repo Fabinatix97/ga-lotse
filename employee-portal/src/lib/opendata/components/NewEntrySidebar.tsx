@@ -3,6 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  ButtonBar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { Button } from "@mui/joy";
 import { Formik, FormikHelpers } from "formik";
@@ -15,14 +23,6 @@ import {
 } from "@/lib/opendata/components/OpenDataForm";
 import { usePostOpenDocument } from "@/lib/opendata/mutations/opendata";
 import { useGetFallbackLicenseUrl } from "@/lib/opendata/queries/opendata";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useNewEntrySidebar() {
   return useSidebarWithFormRef({

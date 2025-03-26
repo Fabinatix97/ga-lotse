@@ -10,6 +10,10 @@ import {
   type ApiInspAddFacilityResponse,
   ApiProcedureStatus,
 } from "@eshg/inspection-api";
+import {
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
@@ -25,10 +29,6 @@ import {
   FacilitySidebarProps,
 } from "@/lib/shared/components/facilitySidebar/FacilitySidebar";
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function NewFacilityButton() {
   const facilitySidebar = useSidebarWithFormRef({

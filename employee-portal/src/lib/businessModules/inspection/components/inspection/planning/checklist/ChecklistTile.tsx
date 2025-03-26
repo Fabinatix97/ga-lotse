@@ -11,6 +11,7 @@ import {
   ApiInspectionAvailableCLDVersionsResponse,
   ApiInspectionCLDVersion,
 } from "@eshg/inspection-api";
+import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { DeleteOutlined } from "@mui/icons-material";
 import { Chip, IconButton, Stack, Typography } from "@mui/joy";
@@ -22,7 +23,6 @@ import { inspectionGettersQueryKey } from "@/lib/businessModules/inspection/api/
 import { ChecklistSelectSidebar } from "@/lib/businessModules/inspection/components/inspection/planning/checklist/ChecklistSelectSidebar";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export interface ChecklistTileProps {
   readonly?: boolean;

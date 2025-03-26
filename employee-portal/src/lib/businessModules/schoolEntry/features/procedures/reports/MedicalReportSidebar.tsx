@@ -3,6 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  ButtonBar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarWithFormRefProps,
+  TextareaField,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { BooleanSelectField } from "@eshg/lib-portal/components/formFields/BooleanSelectField";
@@ -11,16 +21,6 @@ import { Button, Stack } from "@mui/joy";
 import { Formik } from "formik";
 
 import { useCreateMedicalReport } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useMedicalReportSidebar(): UseSidebarWithFormRefResult<MedicalReportSidebarProps> {
   return useSidebarWithFormRef({

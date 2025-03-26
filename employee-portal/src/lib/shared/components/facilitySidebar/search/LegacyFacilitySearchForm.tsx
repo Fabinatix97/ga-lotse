@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { SidebarActions, SidebarContent } from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
@@ -10,9 +11,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import { Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { ReactNode } from "react";
-
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export interface LegacyFacilitySearchFormType {
   search: string;

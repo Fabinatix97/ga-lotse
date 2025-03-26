@@ -87,8 +87,7 @@ public class WebsocketEndpoint {
         session.close(new CloseReason(CloseCodes.GOING_AWAY, "RelayServer shutdown"));
         return;
       }
-      existing =
-          !endpoints.computeIfAbsent(sni, unused -> new WebsocketEndpointDeque()).addEndpoint(this);
+      existing = !endpoints.computeIfAbsent(sni, WebsocketEndpointDeque::new).addEndpoint(this);
     } finally {
       lock.unlock();
     }

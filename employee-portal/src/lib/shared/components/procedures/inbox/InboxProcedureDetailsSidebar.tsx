@@ -3,6 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import {
+  ButtonBar,
+  DrawerProps,
+  OverlayBoundary,
+  SidebarActions,
+  SidebarContent,
+} from "@eshg/lib-employee-portal";
 import { SALUTATION_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import {
@@ -15,16 +22,11 @@ import { ReactElement, useState } from "react";
 
 import { UseFetchInboxProcedure } from "@/lib/shared/api/queries/inboxProcedures";
 import { FileCard } from "@/lib/shared/components/FileCard";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { EmployeePortalConfirmationDialog } from "@/lib/shared/components/confirmationDialog/EmployeePortalConfirmationDialog";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
 import { procedureTypeNames } from "@/lib/shared/components/procedures/constants";
 import { InboxProcedureStatusChip } from "@/lib/shared/components/procedures/inbox/InboxProcedureStatusChip";
 import { UseCloseInboxProcedure } from "@/lib/shared/components/procedures/inbox/mutations/useCloseInboxProcedureStatusTemplate";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { fullName } from "@/lib/shared/components/users/userFormatter";
 import {
   postalCodeAndCity,

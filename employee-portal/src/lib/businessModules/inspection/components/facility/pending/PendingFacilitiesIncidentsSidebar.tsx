@@ -6,12 +6,14 @@
 "use client";
 
 import { ApiInspectionIncident } from "@eshg/inspection-api";
+import {
+  OverlayBoundary,
+  Sidebar,
+  SidebarContent,
+} from "@eshg/lib-employee-portal";
 import { Sheet, Stack, Typography } from "@mui/joy";
 
 import { useGetIncidents } from "@/lib/businessModules/inspection/api/queries/incidents";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export interface PendingFacilitiesIncidentsSidebarProps {
   open: boolean;

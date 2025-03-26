@@ -449,6 +449,8 @@ public abstract class RowReader<R extends RowData<R>, C extends XlsxColumn> {
       AddressColumns<C> addressColumns,
       ErrorHandler errorHandler,
       boolean mandatoryAddress) {
+    convertToTextCell(col, addressColumns.houseNumber, errorHandler);
+    convertToTextCell(col, addressColumns.postalCode, errorHandler);
 
     if (anyValueInRange(col, addressColumns, errorHandler) || mandatoryAddress) {
       String street = cellAsString(col, addressColumns.street(), false, false, errorHandler);

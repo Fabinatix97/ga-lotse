@@ -3,6 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  ButtonBar,
+  Sidebar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+} from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import {
   ApiCreateTextTemplateRequest,
@@ -12,12 +19,6 @@ import {
 import { Button } from "@mui/joy";
 import { Formik } from "formik";
 import { ReactNode } from "react";
-
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 import { TextTemplateFields } from "./TextTemplateFields";
 

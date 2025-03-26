@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { OverlayBoundary } from "@eshg/lib-employee-portal";
 import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { InfoOutlined } from "@mui/icons-material";
 import {
@@ -13,8 +14,6 @@ import {
 } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { PropsWithChildren, ReactNode, forwardRef, useState } from "react";
-
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 
 export function InfoIconTooltipButton({
   infoText,

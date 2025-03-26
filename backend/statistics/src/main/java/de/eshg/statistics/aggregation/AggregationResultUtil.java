@@ -13,6 +13,7 @@ import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.statistics.api.AttributeSelectionDto;
 import de.eshg.statistics.api.datasource.AvailableDataSource;
 import de.eshg.statistics.api.filter.BooleanFilterParameterDto;
+import de.eshg.statistics.api.filter.DateFilterParameterDto;
 import de.eshg.statistics.api.filter.DecimalRangeFilterParameterDto;
 import de.eshg.statistics.api.filter.DecimalValueFilterParameterDto;
 import de.eshg.statistics.api.filter.IntegerRangeFilterParameterDto;
@@ -23,6 +24,7 @@ import de.eshg.statistics.api.filter.TextFilterParameterDto;
 import de.eshg.statistics.api.filter.ValueOptionFilterParameterDto;
 import de.eshg.statistics.mapper.AttributeSelectionMapper;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
+import de.eshg.statistics.persistence.entity.AttributeSelection;
 import de.eshg.statistics.persistence.entity.StatisticsDataSensitivity;
 import de.eshg.statistics.persistence.entity.TableColumn;
 import java.time.Instant;
@@ -93,7 +95,7 @@ public class AggregationResultUtil {
         && tableColumn.getBusinessModuleName().equals(availableDataSource.businessModuleName());
   }
 
-  public static TableColumn getTableColumn(
+  public static TableColumn getTableColumnWithDto(
       AttributeSelectionDto attributeSelection, AbstractAggregationResult aggregationResult) {
     if (attributeSelection == null) {
       return null;
@@ -108,10 +110,15 @@ public class AggregationResultUtil {
   }
 
   public static TableColumn getTableColumn(
-      String searchKey, AbstractAggregationResult aggregationResult) {
-    if (searchKey == null) {
+      AttributeSelection attributeSelection, AbstractAggregationResult aggregationResult) {
+    if (attributeSelection == null) {
       return null;
     }
+    return getTableColumn(attributeSelection.getSearchKey(), aggregationResult);
+  }
+
+  private static TableColumn getTableColumn(
+      String searchKey, AbstractAggregationResult aggregationResult) {
     return aggregationResult.getTableColumns().stream()
         .filter(tableColumn -> tableColumn.getSearchKey().equals(searchKey))
         .findFirst()
@@ -141,7 +148,7 @@ public class AggregationResultUtil {
     validateValueOptionFilter(filter);
 
     TableColumn filterTableColumn =
-        Objects.requireNonNull(getTableColumn(filter.attribute(), aggregationResult));
+        Objects.requireNonNull(getTableColumnWithDto(filter.attribute(), aggregationResult));
 
     boolean invalidFilter = filterDoesNotMatchColumn(filter, filterTableColumn);
 
@@ -198,13 +205,14 @@ public class AggregationResultUtil {
 
     return switch (filterTableColumn.getValueType()) {
       case BOOLEAN -> !(filter instanceof BooleanFilterParameterDto);
-      case DATE, PROCEDURE_REFERENCE -> true;
+      case DATE -> !(filter instanceof DateFilterParameterDto);
       case DECIMAL, DECIMAL_INTERVAL ->
           !(filter instanceof DecimalRangeFilterParameterDto)
               && !(filter instanceof DecimalValueFilterParameterDto);
       case INTEGER, INTEGER_INTERVAL ->
           !(filter instanceof IntegerRangeFilterParameterDto)
               && !(filter instanceof IntegerValueFilterParameterDto);
+      case PROCEDURE_REFERENCE -> true;
       case TEXT -> !(filter instanceof TextFilterParameterDto);
       case VALUE_WITH_OPTIONS -> !(filter instanceof ValueOptionFilterParameterDto);
     };

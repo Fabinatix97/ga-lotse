@@ -8,6 +8,13 @@ import {
   ApiInspectionFollowupInfo,
   ApiInspectionResult,
 } from "@eshg/inspection-api";
+import {
+  FormButtonBar,
+  Sidebar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+} from "@eshg/lib-employee-portal";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
@@ -21,11 +28,6 @@ import {
   followupTypeNames,
   inspectionResultNames,
 } from "@/lib/businessModules/inspection/shared/enums";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { validateTodayOrFutureDate } from "@/lib/shared/helpers/validators";
 
 const FOLLOWUP_INSPECTION_INTERVAL_IN_DAYS = 14;

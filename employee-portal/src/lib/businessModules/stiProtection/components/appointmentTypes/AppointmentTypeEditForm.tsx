@@ -5,6 +5,11 @@
 
 "use client";
 
+import {
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+} from "@eshg/lib-employee-portal";
 import { BaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
 import { ApiAppointmentType } from "@eshg/sti-protection-api";
@@ -13,9 +18,6 @@ import { Formik } from "formik";
 
 import { APPOINTMENT_TYPES } from "@/lib/businessModules/stiProtection/shared/constants";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export interface EditableAppointmentType {
   id: string;

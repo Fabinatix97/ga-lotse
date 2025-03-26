@@ -38,7 +38,7 @@ public class EmployeeKeycloakTestClient extends KeycloakTestClient {
     representation.setUsername(TEMPORARY_TEST_USER_USERNAME);
     representation.setFirstName("Temporary");
     representation.setLastName("TestUser");
-    representation.setEmail("temporary_test_user@eshg.de");
+    representation.setEmail("temporary_test_user@ga-lotse.de");
     representation.setEmailVerified(true);
     if (keycloakGroupName != null) {
       representation.setGroups(List.of(keycloakGroupName));

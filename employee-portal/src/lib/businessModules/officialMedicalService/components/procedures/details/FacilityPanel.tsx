@@ -4,6 +4,12 @@
  */
 
 import {
+  EditButton,
+  SyncBarrier,
+  useSidebarWithFormRef,
+  useSyncBarrier,
+} from "@eshg/lib-employee-portal";
+import {
   ApiEmployeeOmsProcedureDetails,
   ApiFacilitySync,
   ApiProcedureStatus,
@@ -14,14 +20,8 @@ import { isDefined } from "remeda";
 import { AddFacility } from "@/lib/businessModules/officialMedicalService/components/procedures/details/AddFacility";
 import { UpdateFacilitySidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/UpdateFacilitySidebar";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
-import { EditButton } from "@/lib/shared/components/buttons/EditButton";
 import { CentralFileFacilityDetails } from "@/lib/shared/components/centralFile/display/CentralFileFacilityDetails";
-import {
-  SyncBarrier,
-  useSyncBarrier,
-} from "@/lib/shared/components/centralFile/sync/SyncBarrier";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
-import { useSidebarWithFormRef } from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 const COLUMN_STYLE: SxProps = {
   flexGrow: 1,

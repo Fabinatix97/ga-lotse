@@ -120,7 +120,7 @@ const INSPECTION: ApiInspection = {
     assignedTo: {
       userId: "a9041175-bde5-4054-a0ba-c9a9713be621",
       username: "dummy",
-      email: "dummy@eshg.de",
+      email: "dummy@ga-lotse.de",
       phoneNumber: "+49 555 123 100",
       externalChatUsername: "dummy",
       firstName: "Max",
@@ -134,7 +134,7 @@ const INSPECTION: ApiInspection = {
     assignedTo: {
       userId: "a9041175-bde5-4054-a0ba-c9a9713be621",
       username: "dummy",
-      email: "dummy@eshg.de",
+      email: "dummy@ga-lotse.de",
       phoneNumber: "+49 555 123 100",
       externalChatUsername: "dummy",
       firstName: "Max",

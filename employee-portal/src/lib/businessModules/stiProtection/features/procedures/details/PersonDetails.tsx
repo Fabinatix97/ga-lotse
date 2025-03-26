@@ -6,6 +6,7 @@
 import {
   DetailsColumn,
   DetailsSection,
+  EditButton,
   ResponsiveDivider,
 } from "@eshg/lib-employee-portal";
 import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
@@ -14,7 +15,6 @@ import { ApiStiProtectionProcedure } from "@eshg/sti-protection-api";
 import { Sheet, Stack } from "@mui/joy";
 
 import { createOnlyIfProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
-import { EditButton } from "@/lib/shared/components/buttons/EditButton";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 

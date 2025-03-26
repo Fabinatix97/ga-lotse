@@ -7,9 +7,11 @@ package de.eshg.base.config;
 
 import static de.eshg.departmentinfo.mapper.DepartmentInfoMapper.mapToDomain;
 
+import com.google.common.annotations.VisibleForTesting;
 import de.eshg.base.config.BaseDepartmentInfoConfigService.MandatoryInitialDepartmentInfo;
 import de.eshg.base.config.persistence.BaseDepartmentInfoConfig;
 import de.eshg.departmentinfo.AbstractDepartmentInfoConfigService;
+import de.eshg.departmentinfo.domain.DepartmentInfo;
 import de.eshg.departmentinfo.initialization.InitialDepartmentInfo;
 import de.eshg.departmentinfo.spring.DepartmentInfoPropertyBinding;
 import de.eshg.lib.common.CountryCode;
@@ -45,8 +47,19 @@ public class BaseDepartmentInfoConfigService
   }
 
   @Override
-  public BaseDepartmentInfoConfig getConfig() {
-    return super.getConfig();
+  protected void updateDepartmentInfo(
+      BaseDepartmentInfoConfig config, DepartmentInfo departmentInfoUpdate) {
+    config.setInitialized(true);
+    super.updateDepartmentInfo(config, departmentInfoUpdate);
+  }
+
+  boolean isInitialized() {
+    return getConfig().isInitialized();
+  }
+
+  @VisibleForTesting
+  void setNotInitialized() {
+    getConfig().setInitialized(false);
   }
 
   @Validated

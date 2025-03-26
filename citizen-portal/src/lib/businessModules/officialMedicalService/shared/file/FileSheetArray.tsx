@@ -6,9 +6,16 @@
 import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 import { validateFileType } from "@eshg/lib-portal/components/formFields/file/validators";
 import { isNonEmptyArray } from "@eshg/lib-portal/helpers/guards";
-import { CheckOutlined, CloseOutlined } from "@mui/icons-material";
+import { ApiDocumentStatus } from "@eshg/official-medical-service-api";
+import {
+  CheckOutlined,
+  CloseOutlined,
+  InfoOutlined,
+  WatchLaterOutlined,
+} from "@mui/icons-material";
 import {
   Box,
+  Button,
   FormHelperText,
   FormLabel,
   FormLabelProps,
@@ -60,12 +67,14 @@ export interface FileSheetArrayProps {
   onChange?: (files: File[]) => void;
   onRemove?: (file: FileDescriptor) => void;
   onRemoveAll?: () => void;
+  onFileUpload?: () => void;
   accept?: FileType | FileType[];
   name?: string;
   required?: boolean;
   error?: boolean;
   helperText?: string;
   labels: FileSheetArrayLabels;
+  mode?: ApiDocumentStatus;
 }
 
 export function FileSheetArray({
@@ -73,17 +82,36 @@ export function FileSheetArray({
   onChange = () => undefined,
   onRemove,
   onRemoveAll,
+  onFileUpload,
   name,
   required,
   error,
   helperText,
   labels,
+  mode,
   ...props
 }: Readonly<FileSheetArrayProps>) {
+  const { t } = useTranslation(["officialMedicalService/personalArea"]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const fileInputId = useId();
 
   const accept = toArray(props.accept);
+
+  const showAddRemoveButtons = isDefined(mode)
+    ? mode === ApiDocumentStatus.Missing || mode === ApiDocumentStatus.Rejected
+    : true;
+
+  const iconType: IndicatorIconValues =
+    mode === ApiDocumentStatus.Accepted
+      ? "check"
+      : mode === ApiDocumentStatus.Missing ||
+          mode === ApiDocumentStatus.Rejected
+        ? "close"
+        : mode === ApiDocumentStatus.Submitted
+          ? "watch"
+          : isNonEmptyArray(files)
+            ? "check"
+            : "close";
 
   return (
     <>
@@ -101,10 +129,7 @@ export function FileSheetArray({
         }}
       >
         <HeaderGrid>
-          <IndicatorIcon
-            success={isNonEmptyArray(files)}
-            sx={{ gridArea: "indicatorIcon" }}
-          />
+          <IndicatorIcon type={iconType} sx={{ gridArea: "indicatorIcon" }} />
           <Box sx={{ gridArea: "label" }}>
             <StyledLabel htmlFor={fileInputId}>{labels.label}</StyledLabel>
             <Typography data-testid="uploadedFiles">
@@ -123,33 +148,69 @@ export function FileSheetArray({
               }),
             }}
           >
-            <FileInput
-              fileInputRef={fileInputRef}
-              fileInputId={fileInputId}
-              onChange={onChange}
-              accept={accept}
-              name={name}
-              required={required}
-              error={error}
-              labels={labels}
-            />
+            {showAddRemoveButtons && (
+              <FileInput
+                fileInputRef={fileInputRef}
+                fileInputId={fileInputId}
+                onChange={onChange}
+                accept={accept}
+                name={name}
+                required={required}
+                error={error}
+                labels={labels}
+              />
+            )}
           </Box>
         </HeaderGrid>
-        <FileStack files={files} onRemove={onRemove} labels={labels}>
-          {isDefined(onRemoveAll) && (
-            <StyledRemoveButton
-              onClick={() => onRemoveAll()}
-              sx={{
-                alignSelf: "end",
-                fontSize: theme.fontSize.md,
-                fontWeight: theme.fontWeight.md,
-                paddingX: byBreakpoint({ mobile: 2, desktop: 0 }),
-              }}
-            >
-              {labels.removeAllFiles}
-            </StyledRemoveButton>
+        <FileStack
+          files={files}
+          onRemove={showAddRemoveButtons ? onRemove : undefined}
+          labels={labels}
+        >
+          {isDefined(onRemoveAll) && showAddRemoveButtons && (
+            <Stack gap={0}>
+              {mode && (
+                <Typography
+                  startDecorator={<InfoOutlined />}
+                  textColor="danger.500"
+                >
+                  {t("documents.files.saveDocumentsInfo")}
+                </Typography>
+              )}
+              <StyledRemoveButton
+                onClick={() => onRemoveAll()}
+                sx={{
+                  alignSelf: "end",
+                  fontSize: theme.fontSize.md,
+                  fontWeight: theme.fontWeight.md,
+                  paddingX: byBreakpoint({ mobile: 2, desktop: 0 }),
+                }}
+              >
+                {labels.removeAllFiles}
+              </StyledRemoveButton>
+            </Stack>
           )}
         </FileStack>
+        {mode && files.length > 0 && showAddRemoveButtons && (
+          <FooterGrid>
+            <Button
+              variant="soft"
+              sx={{
+                gridArea: "uploadButton",
+                justifySelf: "end",
+                width: byBreakpoint({
+                  mobile: "100%",
+                  desktop: "80%",
+                }),
+              }}
+              onClick={onFileUpload}
+            >
+              {t("documents.files.save", {
+                context: mode,
+              })}
+            </Button>
+          </FooterGrid>
+        )}
       </Sheet>
       {isDefined(helperText) && (
         <FormHelperText id={`${fileInputId}-helper-text`}>
@@ -182,18 +243,45 @@ export function HeaderGrid({ children }: Readonly<PropsWithChildren>) {
   );
 }
 
+export function FooterGrid({ children }: Readonly<PropsWithChildren>) {
+  return (
+    <Box
+      sx={{
+        display: "grid",
+        gap: 2,
+        gridTemplateColumns: byBreakpoint({
+          mobile: "1fr",
+          desktop: "max-content 1fr 1fr",
+        }),
+        gridTemplateAreas: byBreakpoint({
+          mobile: '"uploadButton uploadButton"',
+          desktop: '"_ _ uploadButton"',
+        }),
+        paddingX: byBreakpoint({ mobile: 2, desktop: 0 }),
+      }}
+    >
+      {children}
+    </Box>
+  );
+}
+
+type IndicatorIconValues = "check" | "close" | "watch";
+
 export function IndicatorIcon({
-  success,
+  type,
   sx,
 }: Readonly<{
-  success: boolean;
+  type: IndicatorIconValues;
   sx?: SxProps;
 }>) {
-  return success ? (
-    <CheckOutlined color="success" sx={sx} />
-  ) : (
-    <CloseOutlined color="danger" sx={sx} />
-  );
+  switch (type) {
+    case "check":
+      return <CheckOutlined color="success" sx={sx} />;
+    case "close":
+      return <CloseOutlined color="danger" sx={sx} />;
+    case "watch":
+      return <WatchLaterOutlined color="warning" sx={sx} />;
+  }
 }
 
 function StyledLabel({

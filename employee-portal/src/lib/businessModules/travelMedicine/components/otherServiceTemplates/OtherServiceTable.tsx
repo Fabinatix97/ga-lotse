@@ -5,7 +5,13 @@
 
 "use client";
 
-import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
+import {
+  ButtonBar,
+  DataTable,
+  TablePage,
+  TableSheet,
+  useConfirmationDialog,
+} from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { ApiPostPutOtherServiceTemplateRequest } from "@eshg/travel-medicine-api";
 import AddIcon from "@mui/icons-material/Add";
@@ -20,8 +26,6 @@ import {
 import { useGetAllOtherServiceTemplatesQuery } from "@/lib/businessModules/travelMedicine/api/queries/otherServiceTemplates";
 import { useOtherServiceSidebar } from "@/lib/businessModules/travelMedicine/components/otherServiceTemplates/OtherServiceSidebar";
 import { otherServiceTemplatesColumns } from "@/lib/businessModules/travelMedicine/components/otherServiceTemplates/columns";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function OtherServiceTable() {
   const snackbar = useSnackbar();

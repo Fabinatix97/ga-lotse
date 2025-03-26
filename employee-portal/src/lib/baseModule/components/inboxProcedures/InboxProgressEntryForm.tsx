@@ -5,6 +5,7 @@
 
 "use client";
 
+import { TextareaField } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
@@ -22,7 +23,6 @@ import { ApiInboxProgressEntryType } from "@eshg/lib-procedures-api";
 import { Grid, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 import {
   FileField,
   FileFieldProps,

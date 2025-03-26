@@ -4,6 +4,17 @@
  */
 
 import { ApiContactCategory } from "@eshg/base-api";
+import {
+  FormButtonBar,
+  ProcedureLabel,
+  ProcedureLabelSelection,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { Alert, AlertProps } from "@eshg/lib-portal/components/Alert";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
@@ -33,30 +44,21 @@ import { FormikProvider, useFormik } from "formik";
 import { ReactNode, useEffect } from "react";
 import { isDefined } from "remeda";
 
-import { Label } from "@/lib/businessModules/schoolEntry/api/models/Label";
+import { useLabelApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { Location } from "@/lib/businessModules/schoolEntry/api/models/Location";
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
 import { useUpdateProcedure } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
+import { schoolEntryApiQueryKey } from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";
 import { useGetFreeAppointmentsForProcedureUnsuspended } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
 import {
   PROCEDURE_TYPE_OPTIONS_ENTRY_LEVEL,
   PROCEDURE_TYPE_OPTIONS_EXCLUDING_DRAFT,
 } from "@/lib/businessModules/schoolEntry/features/procedures/options";
-import { LabelSelection } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/LabelSelection";
 import { isDraft } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/options";
 import { Appointment } from "@/lib/businessModules/travelMedicine/api/models/Appointment";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { SelectContactField } from "@/lib/shared/components/formFields/SelectContactField";
 import { SchoolYearField } from "@/lib/shared/components/formFields/schoolYear";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useUpdateProcedureSidebar(): UseSidebarWithFormRefResult<UpdateProcedureSidebarProps> {
   return useSidebarWithFormRef({
@@ -66,7 +68,7 @@ export function useUpdateProcedureSidebar(): UseSidebarWithFormRefResult<UpdateP
 
 export interface UpdateProcedureValues {
   procedureType: ApiSchoolEntryProcedureType;
-  labels: Label[];
+  labels: ProcedureLabel[];
   appointment: SelectObjectFieldValue<ApiAppointment, false>;
   isInvitationSent: boolean;
   school: Location | null;
@@ -82,7 +84,7 @@ interface UpdateProcedureSidebarProps extends SidebarWithFormRefProps {
   locationSelectionMode: ApiLocationSelectionMode;
 }
 
-function getId(label: Label) {
+function getId(label: ProcedureLabel) {
   return label.id;
 }
 
@@ -146,6 +148,7 @@ function useUpdateProcedureForm(
 }
 
 function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
+  const labelApi = useLabelApi();
   const { procedure, locationSelectionMode } = props;
 
   const isInitialEntryLevel =
@@ -196,7 +199,10 @@ function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
                 }
               />
               <SchoolYearField name="schoolYear" label="Schuljahr" />
-              <LabelSelection />
+              <ProcedureLabelSelection
+                procedureLabelApi={labelApi}
+                procedureLabelApiQueryKey={schoolEntryApiQueryKey}
+              />
               <Divider />
               <SelectContactField
                 name="school"
@@ -320,7 +326,7 @@ function displayWarningWhen(
   return condition && <Alert {...props} color="warning" />;
 }
 
-function resolveLabelIds(labels: Label[]): string[] | undefined {
+function resolveLabelIds(labels: ProcedureLabel[]): string[] | undefined {
   if (labels.length === 0) {
     return undefined;
   }

@@ -12,11 +12,13 @@ import {
   NavigateFromOutputState,
   navigateFrom,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/actions/navigateFrom";
+import { toggleToothType } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/actions/tooth";
 import {
   DentalExaminationState,
   DirtyState,
   DmftValuesState,
   HasResultState,
+  PreviousDiagnosesState,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/dentalExaminationStore";
 import {
   createAddableTooth,
@@ -36,10 +38,23 @@ type SetMainResultState = SetResultState & NavigateFromOutputState;
 export function setMainResult(
   toothContext: ToothContext,
   newValue: string,
-  state: SetMainResultState,
+  state: SetMainResultState & PreviousDiagnosesState,
 ): SetMainResultState & DmftValuesState & DirtyState & HasResultState {
-  const { dentition, currentView, currentFocus } = state;
+  const { dentition, currentView, currentFocus, previousToothDiagnoses } =
+    state;
   const tooth = getToothFromToothContext(dentition, toothContext);
+
+  if (
+    !tooth.isRemovable &&
+    ((newValue === "M" && tooth.toothType === "SECONDARY_TOOTH") ||
+      (newValue === "B" && tooth.toothType === "PRIMARY_TOOTH"))
+  ) {
+    return {
+      ...toggleToothType(toothContext, dentition, previousToothDiagnoses),
+      currentView,
+      hasResult: hasAnyResult(dentition),
+    };
+  }
 
   const isInvalid = isEmptyString(newValue)
     ? !isEmptyString(tooth.secondaryResult1.value) ||

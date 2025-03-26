@@ -4,7 +4,6 @@
  */
 
 import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { Stack } from "@mui/joy";
 import { isNonNullish } from "remeda";
 
@@ -19,12 +18,12 @@ import { ConfigureChartFormModel } from "@/lib/businessModules/statistics/compon
 import { mapAttributeToAutocompleteSelectionOption } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/mapAttribute";
 import { LineChart } from "@/lib/businessModules/statistics/components/shared/charts/LineChart";
 import {
-  axisRangeValueNames,
   isCategorical,
   isNumeric,
 } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
-import { ToggleButtonGroupField } from "@/lib/shared/components/formFields/ToggleButtonGroupField";
+
+import { ConfigureLineChartMetaOptions } from "./ConfigureLineChartMetaOptions";
 
 export interface ConfigureLineChartStepProps
   extends SidebarStepContentProps<ConfigureChartFormModel> {
@@ -46,7 +45,6 @@ export function ConfigureLineChartStep({
       isCategorical(attribute.type),
     ),
   );
-  const axisRange = buildEnumOptions(axisRangeValueNames);
 
   const showGroupedConfigurations =
     isNonNullish(values.secondaryAttribute) &&
@@ -77,11 +75,7 @@ export function ConfigureLineChartStep({
             label="Sekundäres Attribut"
           />
         </Stack>
-        <ToggleButtonGroupField
-          options={axisRange}
-          name={fieldName("axisRange")}
-          label="Achsenskalierung"
-        />
+        <ConfigureLineChartMetaOptions fieldName={fieldName} values={values} />
       </Stack>
       <ChartsSamplePreview
         chart={

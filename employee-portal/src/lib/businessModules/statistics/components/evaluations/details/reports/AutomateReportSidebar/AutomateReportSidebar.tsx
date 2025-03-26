@@ -4,6 +4,12 @@
  */
 
 import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
+
+import {
   Interval,
   ReportingPeriod,
 } from "@/lib/businessModules/statistics/api/models/reportSeriesTypes";
@@ -12,11 +18,6 @@ import {
   SidebarStepper,
   createStepContent,
 } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 import { AutomateReportStep } from "./AutomateReportStep";
 import {

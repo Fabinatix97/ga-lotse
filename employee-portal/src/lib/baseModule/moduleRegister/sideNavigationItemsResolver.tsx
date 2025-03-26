@@ -27,6 +27,7 @@ import { resolveSideNavigationItems as resolveSchoolEntrySideNavigationItems } f
 import { sideNavigationItems as statisticsSideNavigationItems } from "@/lib/businessModules/statistics/shared/sideNavigationItem";
 import { resolveSideNavigationItems as resolveStiProtectionSideNavigationItems } from "@/lib/businessModules/stiProtection/shared/sideNavigationItem";
 import { resolveSideNavigationItems as resolveTravelMedicineSideNavigationItems } from "@/lib/businessModules/travelMedicine/shared/sideNavigationItem";
+import { sideNavigationItems as configurationSideNavigationItems } from "@/lib/configuration/shared/sideNavigationItem";
 import { sideNavigationItems as archivingSideNavigationItems } from "@/lib/shared/components/archiving/shared/sideNavigationItem";
 
 export type ResolveSideNavigationItems = (
@@ -72,6 +73,7 @@ function useBaseItems(): SideNavigationItem[] {
     statisticsSideNavigationItems,
     archivingSideNavigationItems,
     chatSideNavigations,
+    configurationSideNavigationItems,
   ];
 
   return baseItems.flat();

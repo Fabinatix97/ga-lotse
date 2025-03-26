@@ -4,10 +4,12 @@
  */
 
 import {
+  ButtonBar,
   DataTable,
   Pagination,
   TablePage,
   TableSheet,
+  useConfirmationDialog,
   usePagination,
   useTableSorting,
 } from "@eshg/lib-employee-portal";
@@ -24,8 +26,6 @@ import { useArchiveGeoShape } from "@/lib/businessModules/statistics/api/mutatio
 import { useDeleteGeoShape } from "@/lib/businessModules/statistics/api/mutations/useDeleteGeoShape";
 import { useGetGeoShapes } from "@/lib/businessModules/statistics/api/queries/useGetGeoShapes";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 import { geoShapeTableColumns } from "./columns";
 

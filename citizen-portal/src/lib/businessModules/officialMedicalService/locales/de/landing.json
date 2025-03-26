@@ -1,29 +1,7 @@
 {
   "pageTitle": "Amtsärztlicher Dienst",
   "information": {
-    "title": "Informationen",
-    "infoText": "Ein amtsärztliches Gesundheitszeugnis oder Attest erhalten Sie bei Vorliegen eines Auftrages und Terminvereinbarung im Gesundheitsamt.",
-    "pleaseComeDepartment": "Bitte kommen Sie am Untersuchungstag nüchtern zu uns:<br>{{ department }}",
-    "pleaseBring_heading": "Bringen Sie folgende Unterlagen zur amtsärztlichen Untersuchung mit:",
-    "pleaseBring_list": [
-      "Personalausweis / Reisepass",
-      "Ausgefüllter Anamnesebogen (siehe Downloadbox)",
-      "Auftragsschreiben (Schreiben des Dienstherrn mit Angabe des Untersuchungsgrundes) in Kopie",
-      "ärztliche Unterlagen in Kopie (z.B. Krankenhausentlassungsberichte, Atteste, Bescheinigungen etc.)",
-      "einen Nachweis der zurzeit verordneten Medikamente (falls vorhanden)"
-    ],
-    "forAttests_heading": "Für Atteste zur Prüfungsfähigkeit ist Folgendes zu beachten und mitzubringen",
-    "forAttests_list": [
-      "Wir sind nur für in Frankfurt Studierende zuständig",
-      "Kommen Sie bitte bei Prüfungen spätestens am Prüfungstag (auch ohne Termin) zu uns oder bei Abgabe einer wissenschaftlichen Arbeit nach vorheriger telefonischer Terminvereinbarung"
-    ],
-    "definitelyBring_heading": "Zum Termin unbedingt mitzubringen sind",
-    "definitelyBring_list": [
-      "Ihre ärztlichen Unterlagen mit Diagnose von Ihrem niedergelassenen Arzt.",
-      "Bescheinigung der Universität oder Hochschule über den Prüfungstermin.",
-      "Studentenausweis + Personalausweis oder Reisepass.",
-      "Gebühr in Höhe von 50 Euro (zahlbar bar oder mit EC-Karte)."
-    ]
+    "title": "Informationen"
   },
   "contact": {
     "title": "Kontakt und Erreichbarkeit",
@@ -44,7 +22,7 @@
   "personalArea": {
     "title": "Hier können Sie Ihr Anliegen für ein amtsärztliches Gutachten melden",
     "information": "Um ein Anliegen zu melden ist ein Auftragsschreiben notwendig.",
-    "bookAppointment": "Anliegen melden",
+    "bookAppointment": "Terminanfrage",
     "goToPersonalArea": "Zu meinem Anliegen"
   }
 }

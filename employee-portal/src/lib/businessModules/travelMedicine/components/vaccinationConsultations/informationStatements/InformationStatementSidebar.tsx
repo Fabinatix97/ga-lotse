@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { PostInformationStatementsRequest } from "@eshg/travel-medicine-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
@@ -13,11 +18,6 @@ import {
   InformationStatementForm,
   InformationStatementFormValues,
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/sidebarForms/InformationStatementForm";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useInformationStatementSidebar(): UseSidebarWithFormRefResult<InformationStatementSidebarProps> {
   return useSidebarWithFormRef({

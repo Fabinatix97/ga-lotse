@@ -3,7 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ContentPanel, ContentPanelTitle } from "@eshg/lib-employee-portal";
+import {
+  ButtonBar,
+  ContentPanel,
+  ContentPanelTitle,
+  TextareaField,
+} from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
@@ -23,9 +28,7 @@ import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/P
 import { WaitingRoom } from "@/lib/businessModules/schoolEntry/api/models/WaitingRoom";
 import { useUpdateWaitingRoomDetails } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import { WAITING_STATUS_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FormStack } from "@/lib/shared/components/form/FormStack";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
 interface WaitingRoomValues {
   description: OptionalFieldValue<string>;

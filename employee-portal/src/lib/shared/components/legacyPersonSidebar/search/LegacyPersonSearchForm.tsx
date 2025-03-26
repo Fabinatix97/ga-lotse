@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import {
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+} from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
@@ -13,15 +19,9 @@ import { Formik } from "formik";
 import { ReactNode, RefObject } from "react";
 
 import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
-import {
   LegacyMinimalPerson,
   MINIMAL_PERSON_VALUES,
 } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyBasePersonForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 interface LegacyPersonSearchFormProps {
   onSubmit: (personSearch: LegacyMinimalPerson) => void;

@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import {
+  ButtonBar,
+  SidebarActions,
+  SidebarForm,
+  TextareaField,
+} from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import {
   ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner,
@@ -15,9 +21,6 @@ import { Formik } from "formik";
 import { ReactNode, useContext, useState } from "react";
 import { isDefined } from "remeda";
 
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 import {
   ProgressEntriesContext,
   useIsReadOnly,
@@ -39,7 +42,6 @@ import {
 } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/DetailsContentWrapper";
 import { DetailsHistory } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/DetailsHistory";
 import { LabelValueDisplay } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/LabelValueDisplay";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 type ManualProgressEntryDetailsView = "DETAILS" | "HISTORY";

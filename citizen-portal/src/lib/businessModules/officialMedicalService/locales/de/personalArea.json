@@ -8,7 +8,8 @@
     "title": "Untersuchungstermin",
     "alert": {
       "title_BOOKABLE": "Terminbuchung erforderlich",
-      "message_BOOKABLE": "Der Termin muss noch über den Kalender gebucht werden."
+      "message_BOOKABLE": "Der Termin muss noch über den Kalender gebucht werden.",
+      "title_CANCELLED": "Abgelehnt"
     },
     "bookingState": {
       "label": "Terminstatus",
@@ -52,12 +53,14 @@
     "alert": {
       "message_MISSING": "Laden Sie die erforderlichen Dokumente hoch.",
       "title_REJECTED": "Es gibt abgelehnte Dokumente",
-      "message_REJECTED": "Bitte prüfen Sie den Ablehnungsgrund und laden Sie entsprechend neue Dateien hoch."
+      "message_REJECTED": "Bitte prüfen Sie den Ablehnungsgrund und laden Sie entsprechend neue Dateien hoch.",
+      "title_SUBMITTED": "In Bearbeitung",
+      "message_SUBMITTED": "Die eingereichten Dokumente werden aktuell geprüft."
     },
     "files": {
       "title": "Dokument",
       "required": "Bitte Dokument hochladen",
-      "helperText": "Datei als PDF, PNG oder JPG hochladen",
+      "helperText": "Erlaubte Dateiformate: PDF/A, PNG oder JPG",
       "inputSummary_one": "{{count}} Datei hochgeladen",
       "inputSummary_other": "{{count}} Dateien hochgeladen",
       "placeholder": "Datei auswählen",
@@ -66,7 +69,13 @@
       "format": "Format",
       "delete": "Entfernen",
       "deleteAll": "Alles entfernen",
-      "error": "Die Datei konnte nicht hochgeladen werden. Bitte versuchen Sie es erneut."
+      "error": "Die Datei konnte nicht hochgeladen werden. Bitte versuchen Sie es erneut.",
+      "saveDocumentsInfo": "Bitte Dokumente speichern",
+      "save_MISSING": "Dokumente speichern",
+      "save_REJECTED": "Zur Prüfung absenden"
+    },
+    "snackbar": {
+      "success": "Die Dokumente wurden erfolgreich hochgeladen"
     }
   },
   "overview": {

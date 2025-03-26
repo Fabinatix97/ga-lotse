@@ -4,6 +4,15 @@
  */
 
 import { ApiInspectionAppointment } from "@eshg/inspection-api";
+import {
+  FormButtonBar,
+  OverlayBoundary,
+  Sidebar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+} from "@eshg/lib-employee-portal";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import { Grid } from "@mui/joy";
@@ -13,16 +22,7 @@ import { SetStateAction, useMemo, useRef } from "react";
 import { isDefined, isEmpty, isNonNullish } from "remeda";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
 import { TimeField } from "@/lib/shared/components/formFields/TimeField";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import {
   formatTimeInput,
   isBeforeTime,

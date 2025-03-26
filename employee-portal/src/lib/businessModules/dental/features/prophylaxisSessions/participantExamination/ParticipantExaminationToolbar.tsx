@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ChildExamination, routes } from "@eshg/dental";
+import { ProphylaxisSessionExamination, routes } from "@eshg/dental";
 import {
   PersonToolbarHeader,
   TabNavigationBackButton,
@@ -15,7 +15,7 @@ import { MedicalServicesOutlined } from "@mui/icons-material";
 
 interface ParticipantExaminationToolbarProps {
   prophylaxisSessionId: string;
-  participant: ChildExamination;
+  participant: ProphylaxisSessionExamination;
   onBackClicked: () => void;
 }
 

@@ -15,7 +15,9 @@ import {
 import { ApiChild, ApiCreateChildRequest } from "@eshg/dental-api";
 import {
   DefaultPersonFormValues,
+  SidebarWithFormRefProps,
   mapToPersonAddRequest,
+  useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
@@ -44,10 +46,6 @@ import {
   SearchPersonFormValues,
 } from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
 import { getInstitutionOptionLabel } from "@/lib/shared/helpers/selectOptionMapper";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 interface DentalSearchForm extends SearchPersonFormValues {
   schoolYear: OptionalFieldValue<number>;

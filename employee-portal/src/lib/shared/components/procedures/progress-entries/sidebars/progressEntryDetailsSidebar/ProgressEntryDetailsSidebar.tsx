@@ -5,6 +5,7 @@
 
 "use client";
 
+import { Sidebar } from "@eshg/lib-employee-portal";
 import { useContext } from "react";
 import { isDefined } from "remeda";
 
@@ -13,7 +14,6 @@ import { useFetchProgressEntryDetails } from "@/lib/shared/components/procedures
 import { InboxProgressEntryDetails } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/InboxProgressEntryDetails";
 import { ManualProgressEntryDetails } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/ManualProgressEntryDetails";
 import { SystemProgressEntryDetails } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/SystemProgressEntryDetails";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 
 interface ProgressEntryDetailsSidebarProps {
   progressEntryId: string;

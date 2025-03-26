@@ -37,4 +37,9 @@ public class BarChartData extends DiagramData {
     barGroupDatas.forEach(barGroupData -> barGroupData.setBarChartData(this));
     this.barGroupDatas.addAll(barGroupDatas);
   }
+
+  public void removeBarGroupDatas() {
+    barGroupDatas.forEach(barGroupData -> barGroupData.setBarChartData(null));
+    barGroupDatas.clear();
+  }
 }

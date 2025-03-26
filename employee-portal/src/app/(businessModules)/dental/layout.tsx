@@ -4,10 +4,10 @@
  */
 
 import { DentalProvider } from "@eshg/dental";
+import { SidebarScope } from "@eshg/lib-employee-portal";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 import { env } from "@/env/server";
-import { SidebarScope } from "@/lib/shared/components/drawer/SidebarScope";
 
 export default function DentalLayout(props: RequiresChildren) {
   return (

@@ -19,6 +19,7 @@ import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.domain.model.FluoridationConsent;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
+import de.eshg.lib.xlsximport.util.AddressMapper;
 import java.time.Year;
 import java.util.List;
 import java.util.UUID;
@@ -117,6 +118,7 @@ public final class ChildMapper {
         importChildData.lastName(),
         importChildData.gender(),
         importChildData.dateOfBirth(),
+        AddressMapper.mapToDto(importChildData.address()),
         year,
         importChildData.groupName(),
         institutionId);

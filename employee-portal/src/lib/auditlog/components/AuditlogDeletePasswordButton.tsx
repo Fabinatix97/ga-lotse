@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { KeyOffOutlined } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 
 import { useDeleteEmployeeUserKeys } from "@/lib/baseModule/api/mutations/users";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function AuditlogDeletePasswordButton() {
   const { openConfirmationDialog } = useConfirmationDialog();

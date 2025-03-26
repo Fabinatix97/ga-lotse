@@ -20,6 +20,7 @@ import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockGroup;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
+import de.eshg.stiprotection.persistence.Appointments;
 import de.eshg.stiprotection.persistence.data.AppointmentData;
 import de.eshg.stiprotection.persistence.db.AppointmentHistoryEntry;
 import de.eshg.stiprotection.persistence.db.AppointmentStatus;
@@ -68,8 +69,13 @@ public class AppointmentService {
     updateAppointmentHistoryEntry(procedure, appointment);
   }
 
-  public void cancelAppointment(StiProtectionProcedure procedure) {
+  public void cancelAppointmentDeleteCalendarEvent(StiProtectionProcedure procedure) {
     deleteAppointmentCalendarEvent(procedure);
+    cancelAppointment(procedure);
+  }
+
+  public void cancelAppointment(StiProtectionProcedure procedure) {
+    Appointments.removeAppointmentFromBlock(procedure.getAppointment());
     procedure.setAppointment(null);
     procedure.setCalendarEventId(null);
     procedure.setUserDefinedAppointment(null);

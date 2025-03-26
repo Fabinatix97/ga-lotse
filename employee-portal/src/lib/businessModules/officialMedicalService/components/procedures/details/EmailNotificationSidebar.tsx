@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { ApiEmployeeOmsProcedureDetails } from "@eshg/official-medical-service-api";
 
 import { usePatchEmailNotifications } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
@@ -10,11 +15,6 @@ import {
   EmailNotificationsForm,
   EmailNotificationsFormValues,
 } from "@/lib/businessModules/officialMedicalService/components/procedures/details/EmailNotificationsForm";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useEmailNotificationSidebar(): UseSidebarWithFormRefResult<EmailNotificationSidebarProps> {
   return useSidebarWithFormRef({ component: EmailNotificationSidebar });

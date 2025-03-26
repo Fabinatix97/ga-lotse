@@ -37,4 +37,9 @@ public class ChoroplethMapData extends DiagramData {
     keyToValues.forEach(keyToValue -> keyToValue.setChoroplethMapData(this));
     this.keyToValues.addAll(keyToValues);
   }
+
+  public void removeKeyToValues() {
+    keyToValues.forEach(keyToValue -> keyToValue.setChoroplethMapData(null));
+    keyToValues.clear();
+  }
 }

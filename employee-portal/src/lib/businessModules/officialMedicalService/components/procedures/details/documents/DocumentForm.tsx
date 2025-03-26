@@ -4,6 +4,12 @@
  */
 
 import {
+  SidebarActions,
+  SidebarForm,
+  SidebarFormHandle,
+  useConfirmationDialog,
+} from "@eshg/lib-employee-portal";
+import {
   ApiDocument,
   ApiDocumentStatus,
 } from "@eshg/official-medical-service-api";
@@ -12,12 +18,6 @@ import { Ref } from "react";
 
 import { useReviewDocument } from "@/lib/businessModules/officialMedicalService/api/mutations/omsDocumentApi";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 import { DocumentFormContent } from "./DocumentFormContent";
 

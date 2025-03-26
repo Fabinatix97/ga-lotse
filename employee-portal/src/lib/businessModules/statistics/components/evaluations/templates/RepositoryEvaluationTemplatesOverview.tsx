@@ -5,7 +5,12 @@
 
 "use client";
 
-import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
+import {
+  DataTable,
+  TablePage,
+  TableSheet,
+  useConfirmationDialog,
+} from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { CloudDownload, Delete } from "@mui/icons-material";
 import { Box, List, ListItem } from "@mui/joy";
@@ -19,7 +24,6 @@ import {
   ActionsItem,
   ActionsMenu,
 } from "@/lib/shared/components/buttons/ActionsMenu";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 import { useRepositoryEvaluationTemplateDetailsSidebar } from "./RepositoryEvaluationTemplateDetailsSidebar";
 

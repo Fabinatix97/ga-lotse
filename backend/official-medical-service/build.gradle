@@ -12,6 +12,7 @@ dependencies {
     implementation project(':rest-oauth-client-commons')
     implementation project(':lib-appointmentblock')
     implementation project(":lib-statistics")
+    implementation project(':lib-scheduling')
 
     implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
 

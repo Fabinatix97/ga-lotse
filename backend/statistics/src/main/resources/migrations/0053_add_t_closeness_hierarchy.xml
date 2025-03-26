@@ -1,0 +1,39 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1741945793239-1">
+    <createTable tableName="tcloseness_hierarchy_entry">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_tcloseness_hierarchy_entry"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="anonymization_configuration_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="t_closeness_hierarchy_steps">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_t_closeness_hierarchy_steps"/>
+      </column>
+      <column name="hierarchy_step" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="hierarchy_steps_order" type="INTEGER">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_t_closeness_hierarchy_steps"/>
+      </column>
+    </createTable>
+
+    <createIndex indexName="idx_tcloseness_hierarchy_entry_anonymization_configuration_id" tableName="tcloseness_hierarchy_entry">
+      <column name="anonymization_configuration_id"/>
+    </createIndex>
+    <addForeignKeyConstraint baseColumnNames="id" baseTableName="t_closeness_hierarchy_steps" constraintName="fk_t_closeness_hierarchy_steps_tcloseness_hierarchy_entry" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="tcloseness_hierarchy_entry" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="anonymization_configuration_id" baseTableName="tcloseness_hierarchy_entry" constraintName="fk_tcloseness_hierarchy_entry_anonymization_configuration" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="anonymization_configuration" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

@@ -11,6 +11,7 @@ import {
   ApiInspectionPhase,
   ApiUpdateInspectionRequest,
 } from "@eshg/inspection-api";
+import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 import {
   AutorenewOutlined,
   Checklist as ChecklistIcon,
@@ -43,7 +44,6 @@ import { ChecklistValidationProvider } from "@/lib/businessModules/inspection/co
 import { IncidentsPanel } from "@/lib/businessModules/inspection/components/inspection/execution/incident/IncidentsPanel";
 import { ChecklistSelectSidebar } from "@/lib/businessModules/inspection/components/inspection/planning/checklist/ChecklistSelectSidebar";
 import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared/enums";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export type InspectionExecutionTabType = "CHECKLIST" | "INCIDENTS";
 
@@ -247,7 +247,16 @@ export function InspectionTabExecution({
             />
           )}
         </Grid>
-        <Grid xxs={12} lg={4} sx={{ order: { xxs: 0, lg: 1 } }}>
+        <Grid
+          xxs={12}
+          lg={4}
+          sx={{
+            order: { xxs: 0, lg: 1 },
+            maxHeight: { xxs: undefined, lg: "100%" },
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <ExecutionSidePanel
             tabs={tabsList.map((tab) => tab.SidePanelProps)}
             activeTabId={tabState.tabId}

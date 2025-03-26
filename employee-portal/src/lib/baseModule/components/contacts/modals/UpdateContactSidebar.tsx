@@ -5,8 +5,10 @@
 
 import { ApiInstitutionContact, ApiPersonContact } from "@eshg/base-api";
 import {
+  SidebarWithFormRefProps,
   createEmptyAddress,
   mapApiAddressToForm,
+  useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { isDefined } from "remeda";
 
@@ -18,10 +20,6 @@ import {
   PersonContactFormValues,
   isPersonContact,
 } from "@/lib/baseModule/components/contacts/types";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 interface UpdateContactSidebarProps extends SidebarWithFormRefProps {
   contact: Contact;

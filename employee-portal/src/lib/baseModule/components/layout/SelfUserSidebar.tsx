@@ -3,7 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useGetSelfUser } from "@eshg/lib-employee-portal";
+import {
+  ButtonBar,
+  SidebarActions,
+  SidebarContent,
+  UseSidebarResult,
+  useGetSelfUser,
+  useSidebar,
+} from "@eshg/lib-employee-portal";
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import ProfileIcon from "@mui/icons-material/AccountCircle";
@@ -17,13 +24,6 @@ import { ChatSettingsButton } from "@/lib/baseModule/components/layout/ChatSetti
 import { UserSidebarHeader } from "@/lib/baseModule/components/users/userSidebar/UserSidebarHeader";
 import { routes } from "@/lib/baseModule/shared/routes";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import {
-  UseSidebarResult,
-  useSidebar,
-} from "@/lib/shared/components/drawer/useSidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export function useSelfUserSidebar(): UseSidebarResult {
   return useSidebar({

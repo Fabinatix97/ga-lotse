@@ -21,6 +21,7 @@ public record EmployeeOmsProcedureDetailsDto(
     @NotNull ProcedureStatusDto status,
     @NotNull MedicalOpinionStatusDto medicalOpinionStatus,
     MedicalOpinionResultDto medicalOpinionResult,
+    String medicalOpinionComment,
     @NotNull @Valid WaitingRoomDto waitingRoom,
     @NotNull @Valid AffectedPersonDto affectedPerson,
     @Valid FacilityDto facility,

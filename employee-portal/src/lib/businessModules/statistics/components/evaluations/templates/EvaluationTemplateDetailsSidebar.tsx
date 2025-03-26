@@ -3,6 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  ButtonBar,
+  DrawerProps,
+  SidebarActions,
+  SidebarContent,
+  UseSidebarResult,
+  useSidebar,
+} from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { EditOutlined } from "@mui/icons-material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
@@ -17,14 +25,6 @@ import {
   Sensitivity,
 } from "@/lib/businessModules/statistics/components/evaluations/SidebarSummary";
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
-import {
-  UseSidebarResult,
-  useSidebar,
-} from "@/lib/shared/components/drawer/useSidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { UserLink } from "@/lib/shared/components/users/UserLink";
 
 export function useEvaluationTemplateDetailsSidebar(): UseSidebarResult<EvaluationTemplateDetailsSidebarProps> {

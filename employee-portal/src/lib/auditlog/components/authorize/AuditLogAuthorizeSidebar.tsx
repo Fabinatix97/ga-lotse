@@ -8,7 +8,17 @@ import {
   ApiGetAuditLogGrantedAccessesResponse,
 } from "@eshg/auditlog-api";
 import { ApiUser } from "@eshg/base-api";
-import { DetailsColumn } from "@eshg/lib-employee-portal";
+import {
+  DetailsColumn,
+  FormButtonBar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useConfirmationDialog,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { List, ListItem, Sheet, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
@@ -26,17 +36,7 @@ import {
   useGetAuditLogGranteesCandidates,
 } from "@/lib/auditlog/queries/auditlog";
 import { auditLogSourceNames } from "@/lib/shared/components/auditlog/constants";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { fullName } from "@/lib/shared/components/users/userFormatter";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useAuditLogAuthorizeSidebar(): UseSidebarWithFormRefResult<AuditlogAuthorizeSidebarProps> {
   return useSidebarWithFormRef({

@@ -4,6 +4,7 @@
  */
 
 import { ApiUser } from "@eshg/base-api";
+import { FormButtonBar } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
@@ -22,7 +23,6 @@ import {
 } from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
 import { AppointmentStaffSelection } from "@/lib/shared/components/appointmentBlocks/AppointmentStaffSelection";
 import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { FormSheet } from "@/lib/shared/components/form/FormSheet";
 import { validateFieldArray } from "@/lib/shared/helpers/validators";
 

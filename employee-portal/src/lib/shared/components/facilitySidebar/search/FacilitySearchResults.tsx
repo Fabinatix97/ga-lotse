@@ -4,6 +4,12 @@
  */
 
 import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
+import {
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+} from "@eshg/lib-employee-portal";
 import { AlertProps } from "@eshg/lib-portal/components/Alert";
 import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
@@ -18,12 +24,6 @@ import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { SelectableCard } from "@/lib/shared/components/cards/SelectableCard";
 import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchForm";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { fullAddress } from "@/lib/shared/helpers/facilityUtils";
 
 interface SearchResultFormValues {

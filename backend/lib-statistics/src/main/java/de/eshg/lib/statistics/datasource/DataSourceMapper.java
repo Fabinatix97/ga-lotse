@@ -41,6 +41,7 @@ public class DataSourceMapper {
         attribute.getDataPrivacyCategory(),
         attribute.getIntervalConfiguration(),
         attribute.getLDiversity(),
-        attribute.getTCloseness());
+        attribute.getTCloseness(),
+        attribute.getTClosenessHierarchyEntries());
   }
 }

@@ -11,9 +11,10 @@ import { mapAttributesToLabels } from "@/lib/businessModules/statistics/api/mapp
 import { mapToAnonymizationOptions } from "@/lib/businessModules/statistics/api/models/anonymizationOptions";
 import { EvaluationTemplateDetails } from "@/lib/businessModules/statistics/api/models/evaluationTemplateDetails";
 import { evaluationTemplateApiQueryKey } from "@/lib/businessModules/statistics/api/queries/apiQueryKeys";
-import { userMayCreateEvaluationFromTemplate } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplatesOverview";
-
-import { mapTemplateDataSourceSensitivityApiToFrontend } from "./useGetEvaluationTemplatesOverview";
+import {
+  mapTemplateDataSourceSensitivityApiToFrontend,
+  userMayCreateEvaluationFromTemplate,
+} from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplatesOverview";
 
 export function mapToEvaluationTemplateDetails(
   result: ApiEvaluationTemplate,

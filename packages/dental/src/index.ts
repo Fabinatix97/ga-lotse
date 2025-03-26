@@ -3,24 +3,30 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export { type Child, mapChild } from "./api/models/Child";
+export { ExaminationStatusChip } from "./components/examination/ExaminationStatusChip";
+
+export { type Child, mapChild } from "./features/children/api/models/Child";
 export {
   type ChildDetails,
   mapChildDetails,
-  mapPersonDetails,
-  mapPersonDetailsToForm,
-  type PersonDetails,
-} from "./api/models/ChildDetails";
+} from "./features/children/api/models/ChildDetails";
 export {
-  type ChildExamination,
-  mapChildExamination,
-} from "./api/models/ChildExamination";
+  type PersonDetails,
+  mapPersonDetails,
+} from "./features/children/api/models/PersonDetails";
+export {
+  type ProphylaxisSessionExamination,
+  mapProphylaxisSessionExamination,
+} from "./features/prophylaxisSessions/api/models/ProphylaxisSessionExamination";
 export {
   type ChildSearchResult,
   mapChildSearchResult,
-} from "./api/models/ChildSearchResult";
+} from "./features/children/api/models/ChildSearchResult";
 
-export { type Examination, mapExamination } from "./api/models/Examination";
+export {
+  type ChildExamination,
+  mapChildExamination,
+} from "./features/children/api/models/ChildExamination";
 export {
   type AbsenceExaminationResult,
   type ExaminationResult,
@@ -34,61 +40,65 @@ export {
   type ExaminationStatus,
   mapToExaminationStatus,
 } from "./api/models/ExaminationStatus";
+export { type Institution, mapInstitution } from "./api/models/Institution";
 export {
   type AnnualInstitution,
-  type Institution,
-  mapAnnualInstitutionDetails,
-  mapInstitution,
-} from "./api/models/Institution";
+  mapAnnualInstitution,
+} from "./api/models/AnnualInstitution";
 export {
   type ProphylaxisSession,
   mapProphylaxisSession,
-} from "./api/models/ProphylaxisSession";
+} from "./features/prophylaxisSessions/api/models/ProphylaxisSession";
 export {
   type ProphylaxisSessionDetails,
   mapProphylaxisSessionDetails,
-} from "./api/models/ProphylaxisSessionDetails";
+} from "./features/prophylaxisSessions/api/models/ProphylaxisSessionDetails";
 export {
   type ToothDiagnosis,
   mapToothDiagnosis,
 } from "./api/models/ToothDiagnosis";
 
 export {
-  useCloseSchoolYear,
-  useCreateChild,
   useUpdateAnnualChild,
   useUpdateAnnualChildPerson,
   useSyncPerson,
   useUpdateExamination,
-} from "./api/mutations/childApi";
-export { useImportChildren } from "./api/mutations/importApi";
+} from "./features/children/api/mutations/details";
 export {
-  useCreateProphylaxisSession,
+  useCloseSchoolYear,
+  useCreateChild,
+  useImportChildren,
+} from "./features/children/api/mutations/overview";
+export { useCreateProphylaxisSession } from "./features/prophylaxisSessions/api/mutations/overview";
+export {
   useDeleteProphylaxisSessionParticipantOptions,
   useUpdateProphylaxisSession,
   useUpdateProphylaxisSessionExaminations,
   useUpdateProphylaxisSessionParticipants,
-} from "./api/mutations/prophylaxisSessionApi";
+} from "./features/prophylaxisSessions/api/mutations/details";
 export {
   fileApiQueryKey,
   progressEntryApiQueryKey,
-} from "./api/queries/apiQueryKeys";
+} from "./config/apiQueryKeys";
 export {
   getChildrenByPersonQuery,
-  getChildDetailsQuery,
-  getExaminationQuery,
   useGetChildrenQuery,
   useSearchChildren,
   useSearchInstitutionGroups,
-} from "./api/queries/childApi";
+} from "./features/children/api/queries/overview";
+export {
+  getChildDetailsQuery,
+  getExaminationQuery,
+} from "./features/children/api/queries/details";
+export { useGetProphylaxisSessions } from "./features/prophylaxisSessions/api/queries/overview";
 export {
   getProphylaxisSessionQuery,
-  useGetProphylaxisSessions,
-} from "./api/queries/prophylaxisSessionApi";
-export {
   getAllDentalAssistantsQuery,
   getAllDentistsQuery,
-} from "./api/queries/staffApi";
+} from "./features/prophylaxisSessions/api/queries/details";
+
+export { EXAMINATION_STATUS } from "./translations/examination";
+export { PROPHYLAXIS_TYPES } from "./translations/prophylaxisSession";
 
 export { routes } from "./config/routes";
 export { RELATED_TEETH } from "./config/teeth";
@@ -99,10 +109,12 @@ export { DentalChildLayout } from "./features/children/layouts/DentalChildLayout
 export { useChildRouteParams } from "./features/children/hooks/useChildRouteParams";
 export { DentalChildExaminationRouteParams } from "./features/children/schemas/DentalChildExaminationRouteParams";
 export { DentalChildRouteParams } from "./features/children/schemas/DentalChildRouteParams";
+export { AnnualInstitutionsTable } from "./features/children/components/AnnualInstitutionsTable";
+export { DentalChildExaminationsPage } from "./features/children/pages/DentalChildExaminationsPage";
 
-export { moduleUserGroup } from "./shared/moduleUserGroup";
+export { moduleUserGroup } from "./config/moduleUserGroup";
 export {
   keyDocumentTypes,
   systemProgressEntryTypeTitles,
-} from "./shared/progressEntries";
-export { resolveSideNavigationItems } from "./shared/sideNavigationItem";
+} from "./config/progressEntries";
+export { resolveSideNavigationItems } from "./config/sideNavigationItem";

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { formatSchoolYear } from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { InternalLinkIconButton } from "@eshg/lib-portal/components/navigation/InternalLinkIconButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
@@ -15,7 +16,6 @@ import {
   procedureStatusNames,
   statusColors,
 } from "@/lib/shared/components/procedures/constants";
-import { formatSchoolYear } from "@/lib/shared/helpers/formatters";
 
 export function ProcedureCard(props: { procedure: ApiProcedureDetails }) {
   const procedure = props.procedure;

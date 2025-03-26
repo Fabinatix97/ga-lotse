@@ -73,5 +73,7 @@
   <include file="migrations/0063_add_department_info_config.xml"/>
   <include file="migrations/0064_update_LabStatus.xml"/>
   <include file="migrations/0065_privacy_documents_config.xml"/>
+  <include file="migrations/0066_access_code.xml"/>
+  <include file="migrations/0067_add_opening_hours_initialized.xml"/>
 
 </databaseChangeLog>

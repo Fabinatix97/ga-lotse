@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { SidebarFormHandle } from "@eshg/lib-employee-portal";
 import { parseISO } from "date-fns";
 import { Ref } from "react";
 import { groupBy, isDefined } from "remeda";
@@ -35,7 +36,6 @@ import {
   SidebarStepper,
   createStepContent,
 } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
-import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
 import { isEqualTimeSpan } from "@/lib/shared/components/formFields/TimeSpanField";
 
 export const CHOOSE_EVALUATION_TEMPLATE = "CHOOSE_EVALUATION_TEMPLATE";

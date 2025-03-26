@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAnnualInstitution, ApiInstitution } from "@eshg/dental-api";
+import { ApiInstitution } from "@eshg/dental-api";
 import { BaseEntity, mapBaseEntity } from "@eshg/lib-employee-portal";
 
 export interface Institution extends BaseEntity {
@@ -14,21 +14,5 @@ export function mapInstitution(response: ApiInstitution): Institution {
   return {
     ...mapBaseEntity(response),
     name: response.name,
-  };
-}
-
-export interface AnnualInstitution {
-  readonly institution: ApiInstitution;
-  readonly groupName: string;
-  readonly year: number;
-}
-
-export function mapAnnualInstitutionDetails(
-  response: ApiAnnualInstitution,
-): AnnualInstitution {
-  return {
-    institution: mapInstitution(response.institution),
-    groupName: response.group,
-    year: response.year,
   };
 }

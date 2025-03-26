@@ -75,6 +75,7 @@ public class ExpiredAnonymousUsersRemover
         log.warn("Error deleting user with ID {}", anonymousUserId, e);
       }
       procedure.setAnonymousUserId(null);
+      procedure.setAccessCode(null);
     }
   }
 }

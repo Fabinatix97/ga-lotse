@@ -11,8 +11,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import java.time.Instant;
 import java.time.Year;
+import java.util.UUID;
 
 public record AddPersonalDetailsResponse(
     @NotNull ConcernDto concern,
     @NotNull Instant appointmentStart,
-    @NotNull @Past @Schema(type = "integer") Year yearOfBirth) {}
+    @NotNull @Past @Schema(type = "integer") Year yearOfBirth,
+    @NotNull UUID procedureId) {}

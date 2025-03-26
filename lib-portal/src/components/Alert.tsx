@@ -22,9 +22,10 @@ import {
   TypographyProps,
 } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
-import { ReactNode } from "react";
+import { ReactNode, Ref } from "react";
 import { isDefined } from "remeda";
 
+import { Row } from "./Row";
 import { InternalLinkButton } from "./navigation/InternalLinkButton";
 
 type AlertAction = ButtonActionProps | LinkActionProps | ActionRenderer;
@@ -102,9 +103,11 @@ export interface AlertProps {
   sx?: SxProps;
   onClose?: () => void;
   messageComponent?: TypographyProps["component"];
+  ref?: Ref<HTMLDivElement>;
 }
 
 export function Alert({
+  ref,
   title,
   message,
   color,
@@ -116,59 +119,76 @@ export function Alert({
 }: AlertProps) {
   return (
     <AlertJoy
+      ref={ref}
       variant={variant}
       color={color}
       sx={{ ...sx, alignItems: "flex-start" }}
       startDecorator={renderIcon(color)}
-      endDecorator={
-        <>
-          {isDefined(action) && renderAction(action, color, variant)}
-          {isDefined(onClose) && (
-            <IconButton
-              variant={variant}
-              color={color}
-              size="sm"
-              aria-label="Schließen"
-              onClick={onClose}
-            >
-              <CloseRounded />
-            </IconButton>
-          )}
-        </>
-      }
     >
-      <Box>
-        {isDefined(title) && (
-          <Typography
-            color={color}
-            variant={variant}
-            level="title-md"
-            fontWeight="lg"
-            data-testid="title"
-          >
-            {title}
-          </Typography>
-        )}
-        {isDefined(message) && (
-          <Typography
-            {...(isDefined(messageComponent)
-              ? { component: messageComponent }
-              : {})}
-            color={color}
-            variant={variant}
-            level="body-md"
-            sx={{
-              fontSize: {
-                xs: "sm",
-                sm: "md",
-              },
-            }}
-            data-testid="message"
-          >
-            {message}
-          </Typography>
-        )}
-      </Box>
+      <Row justifyContent="space-between" flex="1">
+        <Box>
+          {isDefined(title) && (
+            <Typography
+              color={color}
+              variant={variant}
+              level="title-md"
+              fontWeight="lg"
+              data-testid="title"
+            >
+              {title}
+            </Typography>
+          )}
+          {isDefined(message) && (
+            <Typography
+              {...(isDefined(messageComponent)
+                ? { component: messageComponent }
+                : {})}
+              color={color}
+              variant={variant}
+              level="body-md"
+              sx={{
+                fontSize: {
+                  xs: "sm",
+                  sm: "md",
+                },
+              }}
+              data-testid="message"
+            >
+              {message}
+            </Typography>
+          )}
+        </Box>
+        <EndDecorator
+          color={color}
+          action={action}
+          onClose={onClose}
+          variant={variant}
+        />
+      </Row>
     </AlertJoy>
+  );
+}
+
+function EndDecorator({
+  action,
+  onClose,
+  variant,
+  color,
+}: Pick<AlertProps, "action" | "onClose" | "variant" | "color">) {
+  return (
+    <>
+      {isDefined(action) && renderAction(action, color, variant)}
+      {isDefined(onClose) && (
+        <IconButton
+          variant={"plain"}
+          color={color}
+          size="sm"
+          aria-label="Schließen"
+          onClick={onClose}
+        >
+          <CloseRounded />
+        </IconButton>
+      )}
+    </>
   );
 }

@@ -7,6 +7,13 @@ import {
   ApiInspectionAvailableCLDVersionsResponse,
   ApiInspectionCLDVersion,
 } from "@eshg/inspection-api";
+import {
+  FormButtonBar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+} from "@eshg/lib-employee-portal";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
@@ -16,14 +23,7 @@ import { Formik, FormikErrors } from "formik";
 import { useRef } from "react";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export interface ChecklistSelectSidebarFormProps {
   onClose: () => void;

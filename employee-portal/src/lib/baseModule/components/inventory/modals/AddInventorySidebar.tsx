@@ -4,6 +4,11 @@
  */
 
 import { ApiLabel } from "@eshg/base-api";
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { useRouter } from "next/navigation";
 
 import { mapAddInventoryItemRequest } from "@/lib/baseModule/api/mapper/inventory";
@@ -13,11 +18,6 @@ import {
   InventoryFormValues,
 } from "@/lib/baseModule/components/inventory/forms/InventoryForm";
 import { routes } from "@/lib/baseModule/shared/routes";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useAddInventorySidebar(): UseSidebarWithFormRefResult<AddInventorySidebarProps> {
   return useSidebarWithFormRef({

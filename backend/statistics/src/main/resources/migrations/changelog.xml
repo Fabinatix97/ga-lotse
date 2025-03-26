@@ -59,4 +59,7 @@
     <include file="migrations/0049_add_last_sensitivity_and_pending_state.xml"/>
     <include file="migrations/0050_anonymization_cell_entry_intervals_and_dates_as_text.xml"/>
     <include file="migrations/0051_add_anonymization_parameters.xml"/>
+    <include file="migrations/0052_add_date_filter.xml"/>
+    <include file="migrations/0053_add_t_closeness_hierarchy.xml"/>
+    <include file="migrations/0054_add_data_information_to_diagram.xml"/>
 </databaseChangeLog>

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ChildExamination } from "@eshg/dental";
+import { ProphylaxisSessionExamination } from "@eshg/dental";
 import { ApiReasonForAbsence } from "@eshg/dental-api";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
@@ -32,7 +32,7 @@ interface ChangeReasonForAbsenceModalProps {
   open?: boolean;
   onSubmit: (reasonForAbsence: ApiReasonForAbsence) => void;
   onCancel: () => void;
-  examination: ChildExamination;
+  examination: ProphylaxisSessionExamination;
 }
 
 export function ChangeReasonForAbsenceModal(

@@ -1,0 +1,84 @@
+{
+  "elements": [
+    {
+      "elementHeader": {
+        "de": "Bitte kommen Sie am Untersuchungstag nüchtern zu uns. D.h. bitte 3 - 4 Stunden vor der amtsärztlichen Untersuchung nichts essen und nur ungesüßte Getränke in geringer Menge (z.B. Wasser, Tee) zu sich nehmen.",
+        "en": "Please come to us on the day of the examination on an empty stomach. In other words, please do not eat anything for 3 - 4 hours before the medical examination and only consume a small amount of unsweetened drinks (e.g. water, tea)."
+      }
+    },
+    {
+      "elementHeader": {
+        "de": "Bringen Sie bitte folgende Unterlagen zur amtsärztlichen Untersuchung im Original mit:",
+        "en": "Bring the following documents with you to your medical examination:"
+      },
+      "elementList": {
+        "de": [
+          "Personalausweis / Reisepass",
+          "Ausgefüllter Anamnesebogen (siehe Downloadbox)",
+          "Auftragsschreiben (Schreiben des Dienstherrn mit Angabe des Untersuchungsgrundes) in Kopie",
+          "ärztliche Unterlagen in Kopie (z.B. Krankenhausentlassungsberichte, Atteste, Bescheinigungen etc.)",
+          "einen Nachweis der zurzeit verordneten Medikamente (falls vorhanden)"
+        ],
+        "en": [
+          "ID Card / Passport",
+          "Completed medical history form (see download box)",
+          "Letter of assignment (letter from the employer stating the reason for the examination) with a copy",
+          "Copies of medical documents (e.g. hospital discharge reports, certificates, etc.)",
+          "Proof of currently prescribed medications (when applicable)"
+        ]
+      }
+    },
+    {
+      "elementHeader": {
+        "de": "Für Atteste zur Prüfungsfähigkeit ist Folgendes zu beachten und mitzubringen:",
+        "en": "For certificates of exam eligibility, please bring the following with you:"
+      },
+      "elementList": {
+        "de": [
+          "Wir sind nur für in Frankfurt Studierende zuständig außer beim 2. Juristischen Staatsexamen, dort richtet die Zuständigkeit nach dem Wohnort (Rücksprache vorab mit dem Prüfungsamt erforderlich)",
+          "Kommen Sie bitte bei Prüfungen spätestens am Prüfungstag (auch ohne Termin) zu uns oder bei Abgabe einer wissenschaftlichen Arbeit nach vorheriger telefonischer Terminvereinbarung"
+        ],
+        "en": [
+          "We are only responsible for students in Frankfurt, except for the 2nd state law examination, where the responsibility depends on the place of residence (consultation with the examination office is required in advance)",
+          "Please arrive for exams no later than the day of the exam (even without an appointment) or when submitting an academic paper after making an appointment by telephone"
+        ]
+      }
+    },
+    {
+      "elementHeader": {
+        "de": "Zum Termin unbedingt im Original mitzubringen bzw. vorab hochzuladen sind:",
+        "en": "Please bring the following originals to your appointment or upload in advance:"
+      },
+      "elementList": {
+        "de": [
+          "Ärztliche Unterlagen (z. B. fachärztliche Befundberichte, Krankenhausentlassungsberichte, Röntgen, CT/MRT-Befunde)",
+          "Bescheinigung der Universität oder Hochschule über den Prüfungstermin",
+          "Studentenausweis + Personalausweis oder Reisepass",
+          "Gebühr in Höhe von 50 Euro (zahlbar bar oder mit EC-Karte)"
+        ],
+        "en": [
+          "Medical documents (e.g. specialist reports, hospital discharge reports, X-rays, CT/MRI findings)",
+          "Certificate from your university or college regarding the examination date.",
+          "Student- or Personal ID, or Passport",
+          "Fee of 50 euros (payable with cash or debit card)."
+        ]
+      }
+    },
+    {
+      "elementHeader": {
+        "de": "Prüfungs(un)fähigkeit / Verlängerung von Abgabefristen:",
+        "en": "Examination (in)ability / extension of deadlines:"
+      },
+      "elementList": {
+        "de": [
+          "Bei Erkrankung ist laut Prüfungsordnung (Schulen, Hochschulen, Universitäten und ähnlichen Einrichtungen) vorgesehen, dass ein Rücktritt von der Prüfung möglich ist, bzw. eine Abgabefrist bei gesundheitlichen Beeinträchtigungen verlängert werden kann. Ob eine amtsärztliche Bescheinigung erforderlich ist, entscheidet die jeweilige Prüfungskommission",
+          "Vor dem Besuch im Gesundheitsamt ist ein haus- oder fachärztliches Attest einzuholen, mit Angabe von Diagnose/n und Therapie"
+        ],
+        "en": [
+          "In the event of illness, the examination regulations (schools, colleges, universities and similar institutions) stipulate that it is possible to withdraw from the examination or that a submission deadline can be extended in the event of health impairments. The respective examination board decides whether a medical certificate is required",
+          "Before visiting the public health department, a medical certificate from a family doctor or specialist must be obtained, stating the diagnosis(es) and therapy"
+        ]
+      }
+    }
+  ]
+}

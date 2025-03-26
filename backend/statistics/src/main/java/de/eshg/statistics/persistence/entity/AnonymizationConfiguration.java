@@ -9,11 +9,15 @@ import static de.eshg.lib.common.SensitivityLevel.PUBLIC;
 
 import de.eshg.domain.model.BaseEntity;
 import de.eshg.lib.common.DataSensitivity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import java.math.BigDecimal;
 import java.util.*;
 import org.hibernate.annotations.JdbcType;
@@ -53,6 +57,14 @@ public class AnonymizationConfiguration extends BaseEntity {
   @CollectionTable(name = "integer_interval_border_values", joinColumns = @JoinColumn(name = "id"))
   @Column(name = "border", nullable = false)
   private List<Integer> integerBorders = new ArrayList<>();
+
+  @OneToMany(
+      cascade = CascadeType.PERSIST,
+      fetch = FetchType.LAZY,
+      mappedBy = TClosenessHierarchyEntry_.ANONYMIZATION_CONFIGURATION,
+      orphanRemoval = true)
+  @OrderBy
+  private final List<TClosenessHierarchyEntry> tClosenessHierarchyEntries = new ArrayList<>();
 
   public TableColumnDataPrivacyCategory getDataPrivacyCategory() {
     return dataPrivacyCategory;
@@ -134,5 +146,19 @@ public class AnonymizationConfiguration extends BaseEntity {
   public void setIntegerBorders(Collection<Integer> integerBorders) {
     this.integerBorders.clear();
     this.integerBorders.addAll(integerBorders);
+  }
+
+  public List<TClosenessHierarchyEntry> getTClosenessHierarchyEntries() {
+    return tClosenessHierarchyEntries;
+  }
+
+  public void setTClosenessHierarchyEntries(
+      List<TClosenessHierarchyEntry> tClosenessHierarchyEntries) {
+    this.tClosenessHierarchyEntries.forEach(
+        tClosenessHierarchyEntry -> tClosenessHierarchyEntry.setAnonymizationConfiguration(null));
+    this.tClosenessHierarchyEntries.clear();
+    this.tClosenessHierarchyEntries.addAll(tClosenessHierarchyEntries);
+    this.tClosenessHierarchyEntries.forEach(
+        tClosenessHierarchyEntry -> tClosenessHierarchyEntry.setAnonymizationConfiguration(this));
   }
 }

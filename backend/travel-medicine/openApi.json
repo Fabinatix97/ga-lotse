@@ -1029,6 +1029,43 @@
         "tags" : [ "DepartmentInfoConfig" ]
       }
     },
+    "/configuration/opening-hours" : {
+      "get" : {
+        "operationId" : "getConfigOpeningHours",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetOpeningHoursConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "OpeningHours" ]
+      },
+      "put" : {
+        "operationId" : "updateConfigOpeningHours",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpeningHours"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "OpeningHours" ]
+      }
+    },
     "/configuration/privacy-documents/privacy-notice" : {
       "get" : {
         "operationId" : "getPrivacyNoticeConfig",
@@ -6896,6 +6933,14 @@
           }
         }
       },
+      "GetOpeningHoursConfigResponse" : {
+        "type" : "object",
+        "properties" : {
+          "openingHoursDto" : {
+            "$ref" : "#/components/schemas/OpeningHours"
+          }
+        }
+      },
       "GetOpeningHoursResponse" : {
         "required" : [ "de", "en" ],
         "type" : "object",
@@ -7994,6 +8039,24 @@
         },
         "discriminator" : {
           "propertyName" : "@type"
+        }
+      },
+      "OpeningHours" : {
+        "required" : [ "de", "en" ],
+        "type" : "object",
+        "properties" : {
+          "de" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "en" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
         }
       },
       "Operation" : {

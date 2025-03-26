@@ -16,7 +16,7 @@ import {
   WatchLaterOutlined,
 } from "@mui/icons-material";
 import { Chip, Stack, Typography } from "@mui/joy";
-import { DefaultColorPalette } from "@mui/joy/styles/types";
+import { ColorPaletteProp, DefaultColorPalette } from "@mui/joy/styles/types";
 import { isDefined } from "remeda";
 
 import { theme } from "@/lib/baseModule/theme/theme";
@@ -42,16 +42,27 @@ const BOOKING_STATE_COLORS: EnumMap<ApiBookingState, DefaultColorPalette> = {
 export function AppointmentAlert({ appointment }: AppointmentCardProps) {
   const { t } = useTranslation(["officialMedicalService/personalArea"]);
 
-  // ToDo: bookingState === cancelled
+  const color: ColorPaletteProp =
+    appointment.bookingState === ApiBookingState.Bookable
+      ? "primary"
+      : "danger";
+
+  const message =
+    appointment.bookingState === ApiBookingState.Bookable
+      ? t("appointment.alert.message", {
+          context: appointment.bookingState,
+        })
+      : appointment.reasonForRejection
+          ?.split("\\n")
+          .map((str) => <div key={str}>{str}</div>);
+
   return (
     <Alert
       title={t("appointment.alert.title", {
         context: appointment.bookingState,
       })}
-      message={t("appointment.alert.message", {
-        context: appointment.bookingState,
-      })}
-      color={"primary"}
+      message={message}
+      color={color}
     />
   );
 }
@@ -59,11 +70,19 @@ export function AppointmentAlert({ appointment }: AppointmentCardProps) {
 export function AppointmentCard({ appointment }: AppointmentCardProps) {
   const { t } = useTranslation(["officialMedicalService/personalArea"]);
 
+  function shouldShowAppointmentAlert() {
+    return !!(
+      appointment.bookingState === ApiBookingState.Bookable ||
+      (appointment.bookingState === ApiBookingState.Cancelled &&
+        appointment.reasonForRejection)
+    );
+  }
+
   return (
     <ContentSheet data-testid="appointment-card">
       <ContentSheetTitle>{t("appointment.title")}</ContentSheetTitle>
       <Stack direction="column" gap={3}>
-        {appointment.bookingState === ApiBookingState.Bookable && (
+        {shouldShowAppointmentAlert() && (
           <AppointmentAlert appointment={appointment} />
         )}
         <InfoSectionGrid>

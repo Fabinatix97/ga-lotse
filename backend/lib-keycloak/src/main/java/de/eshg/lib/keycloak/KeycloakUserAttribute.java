@@ -13,6 +13,12 @@ public interface KeycloakUserAttribute {
   String DEFAULT_ATTRIBUTE_FIRST_NAME = "firstName";
   String DEFAULT_ATTRIBUTE_LAST_NAME = "lastName";
   String DEFAULT_ATTRIBUTE_EMAIL = "email";
+  List<String> defaultAttributes =
+      List.of(
+          DEFAULT_ATTRIBUTE_USERNAME,
+          DEFAULT_ATTRIBUTE_EMAIL,
+          DEFAULT_ATTRIBUTE_FIRST_NAME,
+          DEFAULT_ATTRIBUTE_LAST_NAME);
 
   ValidationRule[] DEFAULT_USERNAME_VALIDATIONS =
       new ValidationRule[] {

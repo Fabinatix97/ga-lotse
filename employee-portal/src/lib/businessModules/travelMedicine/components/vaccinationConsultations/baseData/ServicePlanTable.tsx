@@ -5,7 +5,12 @@
 
 "use client";
 
-import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
+import {
+  DataTable,
+  TablePage,
+  TableSheet,
+  useConfirmationDialog,
+} from "@eshg/lib-employee-portal";
 import {
   ApiAppointmentBookingType,
   ApiAppointmentType,
@@ -38,7 +43,6 @@ import { useEditServiceAppointmentSidebar } from "@/lib/businessModules/travelMe
 import { useOtherServiceAppliedSidebar } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/OtherServiceAppliedSidebar";
 import { useServiceAppliedSidebar } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/ServiceAppliedSidebar";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 import { useSessionStorage } from "@/lib/shared/hooks/useSessionStorage";
 
 function getSubRows(servicePlanEntry: ServicePlanEntry) {

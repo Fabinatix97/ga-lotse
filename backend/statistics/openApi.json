@@ -1918,6 +1918,8 @@
               "oneOf" : [ {
                 "$ref" : "#/components/schemas/BooleanFilterParameter"
               }, {
+                "$ref" : "#/components/schemas/DateFilterParameter"
+              }, {
                 "$ref" : "#/components/schemas/DecimalRangeFilterParameter"
               }, {
                 "$ref" : "#/components/schemas/DecimalValueFilterParameter"
@@ -2077,6 +2079,8 @@
             "items" : {
               "oneOf" : [ {
                 "$ref" : "#/components/schemas/BooleanFilterParameter"
+              }, {
+                "$ref" : "#/components/schemas/DateFilterParameter"
               }, {
                 "$ref" : "#/components/schemas/DecimalRangeFilterParameter"
               }, {
@@ -2775,6 +2779,23 @@
           }
         } ]
       },
+      "DateFilterParameter" : {
+        "required" : [ "attribute", "date" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/TableColumnFilterParameter"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "attribute" : {
+              "$ref" : "#/components/schemas/AttributeSelection"
+            },
+            "date" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
       "DateSpan" : {
         "type" : "object",
         "properties" : {
@@ -2946,6 +2967,8 @@
             "items" : {
               "oneOf" : [ {
                 "$ref" : "#/components/schemas/BooleanFilterParameter"
+              }, {
+                "$ref" : "#/components/schemas/DateFilterParameter"
               }, {
                 "$ref" : "#/components/schemas/DecimalRangeFilterParameter"
               }, {
@@ -3211,6 +3234,8 @@
               "oneOf" : [ {
                 "$ref" : "#/components/schemas/BooleanFilterParameter"
               }, {
+                "$ref" : "#/components/schemas/DateFilterParameter"
+              }, {
                 "$ref" : "#/components/schemas/DecimalRangeFilterParameter"
               }, {
                 "$ref" : "#/components/schemas/DecimalValueFilterParameter"
@@ -3418,6 +3443,8 @@
             "items" : {
               "oneOf" : [ {
                 "$ref" : "#/components/schemas/BooleanFilterParameter"
+              }, {
+                "$ref" : "#/components/schemas/DateFilterParameter"
               }, {
                 "$ref" : "#/components/schemas/DecimalRangeFilterParameter"
               }, {

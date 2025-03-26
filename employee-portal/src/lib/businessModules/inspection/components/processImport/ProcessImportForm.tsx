@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  ButtonBar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+} from "@eshg/lib-employee-portal";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
@@ -12,11 +18,7 @@ import { Button, Stack } from "@mui/joy";
 import { Formik } from "formik";
 
 import { useImportApi } from "@/lib/businessModules/inspection/api/clients";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export interface ProcessImportFormValues {
   file: File | null;

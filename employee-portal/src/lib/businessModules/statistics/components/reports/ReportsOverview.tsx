@@ -6,6 +6,7 @@
 "use client";
 
 import {
+  ButtonBar,
   DataTable,
   Pagination,
   TablePage,
@@ -25,7 +26,6 @@ import { useDataExportGuard } from "@/lib/businessModules/statistics/components/
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";

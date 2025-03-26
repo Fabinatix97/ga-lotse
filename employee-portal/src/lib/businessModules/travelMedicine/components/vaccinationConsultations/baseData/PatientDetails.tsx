@@ -9,6 +9,9 @@ import {
   BaseAddressDetailsColumn,
   DetailsItem,
   DetailsRow,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
 } from "@eshg/lib-employee-portal";
 import {
   GENDER_VALUES,
@@ -28,9 +31,6 @@ import { isDefined } from "remeda";
 
 import { instanceOfApiGetReferencePersonResponse } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/AcceptProcedureSidebar";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export interface PatientDetailsProps {
   title: string;

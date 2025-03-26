@@ -5,9 +5,11 @@
 
 import {
   DefaultPersonFormValues,
+  SidebarWithFormRefProps,
   mapApiAddressToForm,
   mapOptional,
   normalizeListInputs,
+  useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import { ApiAffectedPerson } from "@eshg/official-medical-service-api";
@@ -16,10 +18,6 @@ import { usePatchAffectedPerson } from "@/lib/businessModules/officialMedicalSer
 import { mapToPatchAffectedPersonRequest } from "@/lib/businessModules/officialMedicalService/shared/helpers";
 import { DefaultPersonForm } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
 import { PersonSidebarForm } from "@/lib/shared/components/personSidebar/form/PersonSidebarForm";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useUpdateAffectedPersonSidebar() {
   return useSidebarWithFormRef({

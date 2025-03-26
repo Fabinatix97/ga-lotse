@@ -7,10 +7,12 @@
 
 import { ApiTextBlock } from "@eshg/inspection-api";
 import {
+  ButtonBar,
   DataTable,
   Pagination,
   TablePage,
   TableSheet,
+  useConfirmationDialog,
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { Add, DeleteOutlined, Edit } from "@mui/icons-material";
@@ -21,9 +23,7 @@ import { useState } from "react";
 import { useDeleteTextBlock } from "@/lib/businessModules/inspection/api/mutations/textblocks";
 import { EditTextBlockSidebar } from "@/lib/businessModules/inspection/components/textBlock/EditTextBlockSidebar";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { SearchFilter } from "@/lib/shared/components/tableFilters/SearchFilter";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 const columnHelper = createColumnHelper<ApiTextBlock>();
 

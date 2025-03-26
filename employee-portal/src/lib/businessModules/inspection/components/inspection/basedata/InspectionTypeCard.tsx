@@ -10,6 +10,13 @@ import { ApiInspection } from "@eshg/inspection-api";
 import {
   DetailsItem,
   DetailsSection,
+  FormButtonBar,
+  OverlayBoundary,
+  Sidebar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
   SimplifiedModalProps,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
@@ -28,17 +35,8 @@ import {
 } from "@/lib/businessModules/inspection/api/queries/users";
 import { InspectionAssigneeSelection } from "@/lib/businessModules/inspection/components/inspection/assignee/InspectionAssigneeSelection";
 import { translateInspectionType } from "@/lib/businessModules/inspection/shared/enums";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export function InspectionTypeCard({
   inspection,

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { SIDEBAR_PADDING } from "@eshg/lib-employee-portal";
 import { Alert, AlertProps } from "@eshg/lib-portal/components/Alert";
 import { Box } from "@mui/joy";
 import { useEffect, useState } from "react";
@@ -33,7 +34,6 @@ import {
   markAllMessagesAsRead,
   setReadMarker,
 } from "@/lib/businessModules/chat/shared/utils";
-import { sidebarPadding } from "@/lib/shared/components/sidebar/Sidebar";
 import { useWindowFocus } from "@/lib/shared/hooks/useWindowFocus";
 
 export interface ChatPanelProps {
@@ -137,7 +137,7 @@ export function ChatPanel({
 
   if (isNonNullish(alert)) {
     return (
-      <Box sx={{ paddingRight: sidebarPadding, paddingLeft: sidebarPadding }}>
+      <Box sx={{ paddingRight: SIDEBAR_PADDING, paddingLeft: SIDEBAR_PADDING }}>
         <Alert {...alert} color="danger" />
       </Box>
     );

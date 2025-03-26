@@ -3,22 +3,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ChildDetails,
-  mapPersonDetailsToForm,
-  useUpdateAnnualChildPerson,
-} from "@eshg/dental";
+import { ChildDetails, useUpdateAnnualChildPerson } from "@eshg/dental";
 import {
   DefaultPersonFormValues,
+  SidebarWithFormRefProps,
+  mapApiAddressToForm,
+  mapOptional,
   mapToPersonUpdateRequest,
+  normalizeListInputs,
+  useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
+import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
+import { parseOptionalValue } from "@eshg/lib-portal/helpers/form";
 
 import { DefaultPersonForm } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
 import { PersonSidebarForm } from "@/lib/shared/components/personSidebar/form/PersonSidebarForm";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useUpdateAnnualChildPersonSidebar() {
   return useSidebarWithFormRef({
@@ -58,10 +57,36 @@ function UpdateAnnualChildPersonSidebar({
       title="Kind bearbeiten"
       onCancel={() => onClose(false)}
       onSubmit={handleSubmit}
-      initialValues={mapPersonDetailsToForm(child)}
+      initialValues={mapChildDetailsToPersonFormValues(child)}
       component={DefaultPersonForm}
       sidebarFormRef={formRef}
       addressRequired
     />
   );
+}
+
+function mapChildDetailsToPersonFormValues(
+  child: ChildDetails,
+): DefaultPersonFormValues {
+  return {
+    salutation: child.personDetails.salutation,
+    title: parseOptionalValue(child.personDetails.title),
+    firstName: child.firstName,
+    lastName: child.lastName,
+    dateOfBirth: toDateString(child.dateOfBirth),
+    gender: child.gender,
+    countryOfBirth: parseOptionalValue(child.personDetails.countryOfBirth),
+    nameAtBirth: parseOptionalValue(child.personDetails.nameAtBirth),
+    placeOfBirth: parseOptionalValue(child.personDetails.placeOfBirth),
+    emailAddresses: normalizeListInputs(child.personDetails.emailAddresses),
+    phoneNumbers: normalizeListInputs(child.personDetails.phoneNumbers),
+    contactAddress: mapOptional(
+      child.personDetails.contactAddress,
+      mapApiAddressToForm,
+    ),
+    differentBillingAddress: mapOptional(
+      child.personDetails.differentBillingAddress,
+      mapApiAddressToForm,
+    ),
+  };
 }

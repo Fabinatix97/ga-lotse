@@ -285,7 +285,7 @@ public class OmsAppointmentService {
   }
 
   @Transactional
-  public void cancelAppointmentEmployee(UUID appointmentId) {
+  public void cancelAppointmentEmployee(UUID appointmentId, String reasonForRejection) {
     OmsAppointment appointment = loadAppointment(appointmentId);
 
     OmsProcedure procedure = appointment.getProcedure();
@@ -303,6 +303,7 @@ public class OmsAppointmentService {
     appointment.setBookingType(null);
     appointment.setDuration(null);
     appointment.setAppointment(null); // to unlock appointment block
+    appointment.setReasonForRejection(reasonForRejection);
     progressEntryService.createProgressEntryForCancelingAppointment(procedure, appointment);
 
     if (procedure.getProcedureStatus() == ProcedureStatus.OPEN
@@ -315,7 +316,7 @@ public class OmsAppointmentService {
       String appointmentDate = zonedDateTime.format(dateFormatter);
       String appointmentTime = zonedDateTime.format(timeFormatter);
       notificationService.notifyCancelAppointment(
-          affectedPersonDto, appointmentDate, appointmentTime);
+          affectedPersonDto, appointmentDate, appointmentTime, reasonForRejection);
     }
   }
 
@@ -394,6 +395,7 @@ public class OmsAppointmentService {
     appointment.setBookingType(omsAppointmentMapper.toDomainType(bookingTypeDto));
     appointment.setStart(start);
     appointment.setDuration(duration);
+    appointment.setReasonForRejection(null);
 
     if (BookingTypeDto.APPOINTMENT_BLOCK.equals(bookingTypeDto)) {
       Instant end = start.plus(Duration.ofMinutes(duration));

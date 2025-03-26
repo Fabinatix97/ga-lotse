@@ -5,29 +5,15 @@
 
 package de.eshg.spatz;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import de.eshg.lib.servicedirectory.ServiceDirectoryApi;
 import de.eshg.spatz.config.SpatzConfigurationProperties;
-import de.eshg.spatz.relay.SpatzRelayConnection;
-import de.eshg.spatz.server.SpatzHttpServer;
-import de.eshg.spatz.server.inbound.InboundServer;
-import de.eshg.spatz.server.management.ManagementServer;
-import de.eshg.spatz.server.outbound.OutboundServer;
-import de.eshg.spatz.server.outbound.OutboundServer.RelayAddressMapper;
 import java.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.actuate.autoconfigure.web.server.ManagementServerProperties;
-import org.springframework.boot.actuate.health.HealthEndpoint;
-import org.springframework.boot.actuate.health.HttpCodeStatusMapper;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.ssl.SslBundles;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.util.unit.DataSize;
 import reactor.netty.http.HttpResources;
 import reactor.netty.http.server.HttpRequestDecoderSpec;
@@ -36,16 +22,9 @@ import reactor.netty.resources.ConnectionProvider;
 
 @SpringBootApplication
 @EnableConfigurationProperties(SpatzConfigurationProperties.class)
-@Import(SpatzRelayConnection.class)
 public class SpatzApp {
 
   private static final Logger logger = LoggerFactory.getLogger(SpatzApp.class);
-
-  private final ConfigurableApplicationContext context;
-
-  public SpatzApp(ConfigurableApplicationContext context) {
-    this.context = context;
-  }
 
   @Bean
   HttpServer baseServer(
@@ -73,82 +52,6 @@ public class SpatzApp {
     decoder.maxHeaderSize(size);
     decoder.maxInitialLineLength(size);
     return server;
-  }
-
-  @Bean
-  InboundServer inboundServer(
-      HttpServer baseServer,
-      SpatzConfigurationProperties spatzConfigProperties,
-      SslBundles sslBundles,
-      ServiceDirectoryApi serviceDirectoryApi) {
-    InboundServer inboundServer =
-        new InboundServer(
-            baseServer, spatzConfigProperties.inbound(), sslBundles, serviceDirectoryApi);
-    logger.info(
-        "SPATZ created inbound server on port {}, forwarding to port {}",
-        inboundServer.getListeningPort(),
-        inboundServer.getInboundTargetPort());
-
-    startServerAwaitThread(inboundServer);
-    return inboundServer;
-  }
-
-  @Bean
-  OutboundServer outboundServer(
-      HttpServer baseServer,
-      SpatzConfigurationProperties spatzConfigProperties,
-      SslBundles sslBundles,
-      RelayAddressMapper addressMapper) {
-    OutboundServer outboundServer =
-        new OutboundServer(
-            baseServer,
-            spatzConfigProperties.outbound(),
-            sslBundles,
-            spatzConfigProperties.dns().upstreamHost(),
-            addressMapper);
-    logger.info("SPATZ created outbound server on port {}", outboundServer.getListeningPort());
-
-    startServerAwaitThread(outboundServer);
-    return outboundServer;
-  }
-
-  @Bean
-  ManagementServer managementServer(
-      HttpServer baseServer,
-      ManagementServerProperties managementServerProperties,
-      HealthEndpoint healthEndpoint,
-      HttpCodeStatusMapper httpCodeStatusMapper,
-      ObjectMapper objectMapper) {
-    ManagementServer managementServer =
-        new ManagementServer(
-            baseServer,
-            healthEndpoint,
-            httpCodeStatusMapper,
-            objectMapper,
-            managementServerProperties);
-    logger.info("SPATZ created management server on port {}", managementServer.getListeningPort());
-
-    startServerAwaitThread(managementServer);
-    return managementServer;
-  }
-
-  private void startServerAwaitThread(SpatzHttpServer server) {
-    Thread awaitThread =
-        new Thread("start_server_" + server.getListeningPort()) {
-          @Override
-          public void run() {
-            try {
-              server.start();
-            } catch (Throwable throwable) {
-              logger.error("Thread terminated unexpectedly", throwable);
-              SpringApplication.exit(context, () -> 1);
-              throw throwable;
-            }
-          }
-        };
-    awaitThread.setContextClassLoader(getClass().getClassLoader());
-    awaitThread.setDaemon(false);
-    awaitThread.start();
   }
 
   public static void main(String[] args) {

@@ -620,6 +620,46 @@
         "tags" : [ "CitizenAuth" ]
       }
     },
+    "/citizen-auth/procedure/document/{documentId}" : {
+      "post" : {
+        "operationId" : "postDocumentCitizen",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "documentId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "files" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string",
+                      "format" : "binary"
+                    }
+                  }
+                },
+                "required" : [ "files" ]
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Upload files to a document of an oms procedure",
+        "tags" : [ "CitizenAuth" ]
+      }
+    },
     "/citizen-public/appointment-types" : {
       "get" : {
         "operationId" : "getAppointmentTypesForCitizen",
@@ -709,6 +749,25 @@
           }
         },
         "summary" : "Get free appointments for an appointment type.",
+        "tags" : [ "CitizenPublic" ]
+      }
+    },
+    "/citizen-public/landing" : {
+      "get" : {
+        "operationId" : "getLandingContent",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/LandingContent"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get landing content",
         "tags" : [ "CitizenPublic" ]
       }
     },
@@ -850,6 +909,43 @@
         "tags" : [ "DepartmentInfoConfig" ]
       }
     },
+    "/configuration/opening-hours" : {
+      "get" : {
+        "operationId" : "getConfigOpeningHours",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetOpeningHoursConfigResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "OpeningHours" ]
+      },
+      "put" : {
+        "operationId" : "updateConfigOpeningHours",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpeningHours"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "OpeningHours" ]
+      }
+    },
     "/configuration/privacy-documents/privacy-notice" : {
       "get" : {
         "operationId" : "getPrivacyNoticeConfig",
@@ -985,6 +1081,15 @@
             "format" : "uuid"
           }
         } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
         "responses" : {
           "200" : {
             "description" : "OK"
@@ -4221,6 +4326,9 @@
           "key" : {
             "type" : "string"
           },
+          "reasonForRejection" : {
+            "type" : "string"
+          },
           "request" : {
             "$ref" : "#/components/schemas/PostOmsAppointmentRequest"
           }
@@ -5045,6 +5153,9 @@
           "id" : {
             "type" : "string",
             "format" : "uuid"
+          },
+          "medicalOpinionComment" : {
+            "type" : "string"
           },
           "medicalOpinionResult" : {
             "$ref" : "#/components/schemas/MedicalOpinionResult"
@@ -6019,6 +6130,14 @@
           }
         }
       },
+      "GetOpeningHoursConfigResponse" : {
+        "type" : "object",
+        "properties" : {
+          "openingHoursDto" : {
+            "$ref" : "#/components/schemas/OpeningHours"
+          }
+        }
+      },
       "GetOpeningHoursResponse" : {
         "required" : [ "de", "en" ],
         "type" : "object",
@@ -6644,6 +6763,62 @@
           "propertyName" : "@type"
         }
       },
+      "LandingContent" : {
+        "required" : [ "elements" ],
+        "type" : "object",
+        "properties" : {
+          "elements" : {
+            "maxItems" : 2147483647,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/LandingElementConfig"
+            }
+          }
+        }
+      },
+      "LandingElementConfig" : {
+        "required" : [ "elementHeader" ],
+        "type" : "object",
+        "properties" : {
+          "elementHeader" : {
+            "$ref" : "#/components/schemas/LandingElementHeaderConfig"
+          },
+          "elementList" : {
+            "$ref" : "#/components/schemas/LandingElementListConfig"
+          }
+        }
+      },
+      "LandingElementHeaderConfig" : {
+        "required" : [ "de", "en" ],
+        "type" : "object",
+        "properties" : {
+          "de" : {
+            "type" : "string"
+          },
+          "en" : {
+            "type" : "string"
+          }
+        }
+      },
+      "LandingElementListConfig" : {
+        "required" : [ "de", "en" ],
+        "type" : "object",
+        "properties" : {
+          "de" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "en" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
       "Location" : {
         "required" : [ "latitude", "longitude" ],
         "type" : "object",
@@ -6847,6 +7022,9 @@
             "type" : "integer",
             "format" : "int32"
           },
+          "reasonForRejection" : {
+            "type" : "string"
+          },
           "start" : {
             "type" : "string",
             "format" : "date-time"
@@ -6874,6 +7052,24 @@
           "size" : {
             "type" : "integer",
             "format" : "int32"
+          }
+        }
+      },
+      "OpeningHours" : {
+        "required" : [ "de", "en" ],
+        "type" : "object",
+        "properties" : {
+          "de" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "en" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
           }
         }
       },
@@ -6999,6 +7195,9 @@
         "required" : [ "status" ],
         "type" : "object",
         "properties" : {
+          "comment" : {
+            "type" : "string"
+          },
           "result" : {
             "$ref" : "#/components/schemas/MedicalOpinionResult"
           },
@@ -7221,6 +7420,9 @@
           },
           "facility" : {
             "$ref" : "#/components/schemas/PostEmployeeOmsProcedureFacilityRequest"
+          },
+          "medicalOpinionComment" : {
+            "type" : "string"
           },
           "medicalOpinionResult" : {
             "$ref" : "#/components/schemas/MedicalOpinionResult"

@@ -4,6 +4,7 @@
  */
 
 import { ApiBusinessModule } from "@eshg/base-api";
+import { TextareaField } from "@eshg/lib-employee-portal";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
@@ -17,7 +18,6 @@ import { FormikErrors, useFormikContext } from "formik";
 import { ReactNode } from "react";
 
 import { openDataFileTypes } from "@/lib/opendata/constants";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
 import { buildOptionsFromBusinessModules } from "@/lib/shared/components/procedures/helper";
 import { validateURL } from "@/lib/shared/helpers/validators";

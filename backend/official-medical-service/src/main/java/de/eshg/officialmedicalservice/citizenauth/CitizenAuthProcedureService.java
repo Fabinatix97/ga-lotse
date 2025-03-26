@@ -9,6 +9,7 @@ import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.officialmedicalservice.appointment.OmsAppointmentService;
 import de.eshg.officialmedicalservice.citizenauth.api.GetCitizenProcedureDetailsResponse;
+import de.eshg.officialmedicalservice.document.OmsDocumentService;
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocument;
 import de.eshg.officialmedicalservice.person.PersonClient;
 import de.eshg.officialmedicalservice.person.PersonMapper;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class CitizenAuthProcedureService {
@@ -30,16 +32,19 @@ public class CitizenAuthProcedureService {
   private final PersonClient personClient;
   private final CitizenProcedureMapper citizenProcedureMapper;
   private final OmsAppointmentService omsAppointmentService;
+  private final OmsDocumentService omsDocumentService;
 
   public CitizenAuthProcedureService(
       OmsProcedureRepository omsProcedureRepository,
       PersonClient personClient,
       CitizenProcedureMapper citizenProcedureMapper,
-      OmsAppointmentService omsAppointmentService) {
+      OmsAppointmentService omsAppointmentService,
+      OmsDocumentService omsDocumentService) {
     this.omsProcedureRepository = omsProcedureRepository;
     this.personClient = personClient;
     this.citizenProcedureMapper = citizenProcedureMapper;
     this.omsAppointmentService = omsAppointmentService;
+    this.omsDocumentService = omsDocumentService;
   }
 
   @Transactional(readOnly = true)
@@ -84,5 +89,17 @@ public class CitizenAuthProcedureService {
     }
 
     omsAppointmentService.bookAppointmentCitizen(appointmentId, appointmentDto);
+  }
+
+  @Transactional
+  public void postDocumentByCitizen(
+      UUID citizenUserId, UUID documentId, List<MultipartFile> files) {
+    OmsProcedure procedure = getProcedureByCitizenUserId(citizenUserId);
+
+    if (procedure.isFinalized()) {
+      throw new BadRequestException("Procedure is already closed.");
+    }
+
+    omsDocumentService.uploadFilesToDocumentCitizen(documentId, files);
   }
 }

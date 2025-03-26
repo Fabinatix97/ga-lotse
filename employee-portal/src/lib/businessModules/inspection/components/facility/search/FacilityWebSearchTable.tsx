@@ -9,7 +9,11 @@ import {
   type ApiWebSearchOverviewEntry,
   type ApiWebSearchStatus,
 } from "@eshg/inspection-api";
-import { DataTable, TableSheet } from "@eshg/lib-employee-portal";
+import {
+  DataTable,
+  TableSheet,
+  useConfirmationDialog,
+} from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { DeleteOutlined, Edit, PlayArrow } from "@mui/icons-material";
 import { ColorPaletteProp } from "@mui/joy";
@@ -26,7 +30,6 @@ import {
 } from "@/lib/businessModules/inspection/api/mutations/webSearch";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 const columnHelper: ColumnHelper<ApiWebSearchOverviewEntry> =
   createColumnHelper<ApiWebSearchOverviewEntry>();

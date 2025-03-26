@@ -8,9 +8,14 @@ import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 import {
   ApiDocument,
   ApiDocumentStatus,
+  PostDocumentCitizenRequest,
 } from "@eshg/official-medical-service-api";
+import { Formik } from "formik";
+import { isEmpty } from "remeda";
 
-import { FileSheetArray } from "@/lib/businessModules/officialMedicalService/shared/file/FileSheetArray";
+import { usePostDocumentCitizen } from "@/lib/businessModules/officialMedicalService/api/mutations/citizenAuthApi";
+import { FileSheetArrayField } from "@/lib/businessModules/officialMedicalService/shared/file/FileSheetArrayField";
+import { mapFileTypeForOmsFile } from "@/lib/businessModules/officialMedicalService/shared/file/helpers";
 import { useManualTranslation } from "@/lib/businessModules/officialMedicalService/shared/useManualTranslation";
 import { useTranslation } from "@/lib/i18n/client";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
@@ -28,29 +33,44 @@ function DocumentAlert({ documents }: { documents: ApiDocument[] }) {
   const someRejected = documents.some(
     (document) => document.documentStatus === ApiDocumentStatus.Rejected,
   );
+  const reasonForRejection = documents.find(
+    (document) => document.documentStatus === ApiDocumentStatus.Rejected,
+  )?.reasonForRejection;
+  const someSubmitted = documents.some(
+    (document) => document.documentStatus === ApiDocumentStatus.Submitted,
+  );
 
   return (
-    (someMissing || someRejected) && (
-      <Alert
-        title={
-          someRejected
-            ? t("documents.alert.title", {
-                context: ApiDocumentStatus.Rejected,
-              })
-            : undefined
-        }
-        message={
-          someRejected
-            ? t("documents.alert.message", {
-                context: ApiDocumentStatus.Rejected,
-              })
-            : t("documents.alert.message", {
-                context: ApiDocumentStatus.Missing,
-              })
-        }
-        color={someRejected ? "danger" : "primary"}
-      />
-    )
+    <>
+      {someMissing && (
+        <Alert
+          message={t("documents.alert.message", {
+            context: ApiDocumentStatus.Missing,
+          })}
+          color="primary"
+        />
+      )}
+      {someRejected && (
+        <Alert
+          title={t("documents.alert.title", {
+            context: ApiDocumentStatus.Rejected,
+          })}
+          message={reasonForRejection}
+          color="danger"
+        />
+      )}
+      {someSubmitted && (
+        <Alert
+          title={t("documents.alert.title", {
+            context: ApiDocumentStatus.Submitted,
+          })}
+          message={t("documents.alert.message", {
+            context: ApiDocumentStatus.Submitted,
+          })}
+          color="warning"
+        />
+      )}
+    </>
   );
 }
 
@@ -83,32 +103,47 @@ function DocumentSheet({
   document: ApiDocument;
 }>) {
   const { t } = useTranslation(["officialMedicalService/personalArea"]);
+  const postDocumentCitizen = usePostDocumentCitizen();
 
   const documentType = useManualTranslation({
-    de: document.documentTypeDe,
-    en: document.documentTypeEn,
+    de: isEmpty(document.helpTextDe)
+      ? document.documentTypeDe
+      : `${document.documentTypeDe} - ${document.helpTextDe}`,
+    en: isEmpty(document.helpTextEn)
+      ? document.documentTypeEn
+      : `${document.documentTypeEn} - ${document.helpTextEn}`,
   });
 
-  const helpText = useManualTranslation({
-    de: document.helpTextDe,
-    en: document.helpTextEn,
-  });
+  async function handleFileUpload(files: unknown) {
+    const request: PostDocumentCitizenRequest = {
+      documentId: document.id,
+      files: files as Blob[],
+    };
+    await postDocumentCitizen.mutateAsync(request);
+  }
 
   return (
-    <FileSheetArray
-      files={document.files}
-      accept={[FileType.Jpeg, FileType.Png, FileType.Pdf]}
-      labels={{
-        label: documentType,
-        placeholder: t("documents.files.placeholder"),
-        helperText: helpText ?? t("documents.files.helperText"),
-        inputSummary: (count: number) =>
-          t("documents.files.inputSummary", {
-            count,
-          }),
-        removeAllFiles: t("documents.files.deleteAll"),
-        removeFile: t("documents.files.delete"),
-      }}
-    />
+    <Formik
+      initialValues={{ files: document.files.map(mapFileTypeForOmsFile) }}
+      onSubmit={handleFileUpload}
+    >
+      <FileSheetArrayField
+        name="files"
+        labels={{
+          label: documentType,
+          placeholder: t("documents.files.placeholder"),
+          helperText: t("documents.files.helperText"),
+          inputSummary: (count: number) =>
+            t("documents.files.inputSummary", {
+              count,
+            }),
+          removeAllFiles: t("documents.files.deleteAll"),
+          removeFile: t("documents.files.delete"),
+        }}
+        accept={[FileType.Jpeg, FileType.Png, FileType.Pdf]}
+        mode={document.documentStatus}
+        handleFileUpload={handleFileUpload}
+      />
+    </Formik>
   );
 }

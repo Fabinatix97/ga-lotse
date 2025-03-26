@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ExaminationResultWithDate, ExaminationStatus } from "@eshg/dental";
+import {
+  ExaminationResultWithDate,
+  ExaminationStatus,
+  ExaminationStatusChip,
+} from "@eshg/dental";
 import {
   ApiDentitionType,
   ApiMihStatus,
@@ -11,7 +15,11 @@ import {
   ApiOrthodonticFinding,
   ApiOrthodonticStatus,
 } from "@eshg/dental-api";
-import { DetailsItem, DetailsSection } from "@eshg/lib-employee-portal";
+import {
+  DetailsItem,
+  DetailsSection,
+  useSidebar,
+} from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { SoftRequiredBooleanSelectField } from "@eshg/lib-portal/components/form/fieldVariants";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
@@ -22,7 +30,6 @@ import { Divider, Grid, Stack, Typography } from "@mui/joy";
 import { useShallow } from "zustand/react/shallow";
 
 import { DecayHistorySidebar } from "@/lib/businessModules/dental/features/examinations/DecayHistorySidebar";
-import { ExaminationStatusChip } from "@/lib/businessModules/dental/features/examinations/ExaminationStatusChip";
 import { OrthodonticFindingsField } from "@/lib/businessModules/dental/features/examinations/OrthodonticFindingsField";
 import { useDentalExaminationStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
 import { selectDecayRiskValue } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/selectors/decayRisk";
@@ -30,7 +37,6 @@ import { selectDecayStatus } from "@/lib/businessModules/dental/features/prophyl
 import { selectDmftValues } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/selectors/dmftValues";
 import { DENTITION_TYPE_OPTIONS } from "@/lib/businessModules/dental/features/prophylaxisSessions/options";
 import { OpenHistorySidebarButton } from "@/lib/businessModules/dental/shared/OpenHistorySidebarButton";
-import { useSidebar } from "@/lib/shared/components/drawer/useSidebar";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 

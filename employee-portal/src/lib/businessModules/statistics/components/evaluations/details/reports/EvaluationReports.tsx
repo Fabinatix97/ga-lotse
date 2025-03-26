@@ -5,7 +5,12 @@
 
 "use client";
 
-import { DataTable, TablePage, TableSheet } from "@eshg/lib-employee-portal";
+import {
+  DataTable,
+  TablePage,
+  TableSheet,
+  useConfirmationDialog,
+} from "@eshg/lib-employee-portal";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiReportState } from "@eshg/statistics-api";
@@ -49,7 +54,6 @@ import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { RefreshButton } from "@/lib/shared/components/buttons/RefreshButton";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 import { useCopy } from "@/lib/shared/hooks/useCopy";
 
 import { useAutomateReportSidebar } from "./AutomateReportSidebar/AutomateReportSidebar";

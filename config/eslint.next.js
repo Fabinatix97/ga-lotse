@@ -56,7 +56,7 @@ const restrictDefaultIconImportsPattern = {
 function noRestrictedImportsRuleOptions(packageType) {
   return {
     patterns: [
-      ...(packageType === "app" ? [restrictRelativeImportsPattern] : []),
+      restrictRelativeImportsPattern,
       ...(packageType === "lib" ? [restrictDefaultIconImportsPattern] : []),
       {
         group: ["@mui/material", "@mui/material/*"],

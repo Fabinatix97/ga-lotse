@@ -79,5 +79,6 @@
   <include file="migrations/0063_add_previous_file_state_id_to_system_progress_entry.xml"/>
   <include file="migrations/0064_add_auditlog_entry.xml"/>
   <include file="migrations/0066_differentiate_between_previous_person_and_facility_file_state.xml"/>
+  <include file="migrations/0067_department_info.xml"/>
 
 </databaseChangeLog>

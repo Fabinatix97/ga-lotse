@@ -7,6 +7,14 @@
 
 import { useCreateProphylaxisSession } from "@eshg/dental";
 import { ApiDentitionType } from "@eshg/dental-api";
+import {
+  FormButtonBar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Formik } from "formik";
 
@@ -15,14 +23,6 @@ import {
   ProphylaxisSessionValues,
   mapValues,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/ProphylaxisSessionForm";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 import { useGetStaff } from "./staff";
 

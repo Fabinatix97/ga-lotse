@@ -3,17 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
+
 import { useDuplicateEvaluation } from "@/lib/businessModules/statistics/api/mutations/useDuplicateEvaluation";
 import { DuplicateEvaluationFormModel } from "@/lib/businessModules/statistics/components/evaluations/DuplicateEvaluationSidebar/duplicateEvaluationFormModel";
 import {
   SidebarStepper,
   createStepContent,
 } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 import { DuplicateEvaluationStep } from "./DuplicateEvaluationStep";
 

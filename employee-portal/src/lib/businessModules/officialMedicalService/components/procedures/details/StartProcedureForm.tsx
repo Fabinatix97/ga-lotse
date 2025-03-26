@@ -7,12 +7,12 @@ import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
   DefaultPersonFormValues,
   PersonFormValues,
+  SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
 import { ApiAffectedPerson } from "@eshg/official-medical-service-api";
 import { ComponentType, Ref, useState } from "react";
 import { isDefined } from "remeda";
 
-import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
 import { PersonDetailsSidebar } from "@/lib/shared/components/personSidebar/PersonDetailsSidebar";
 import {
   DefaultPersonForm,

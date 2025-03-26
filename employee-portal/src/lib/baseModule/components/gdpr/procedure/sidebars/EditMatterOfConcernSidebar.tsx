@@ -4,6 +4,14 @@
  */
 
 import { ApiGetGdprProcedureResponse } from "@eshg/base-api";
+import {
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarWithFormRefProps,
+  TextareaField,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
@@ -13,14 +21,6 @@ import { Formik } from "formik";
 import { useSetMatterOfConcern } from "@/lib/baseModule/api/mutations/gdpr";
 import { statusTranslation } from "@/lib/baseModule/components/gdpr/i18n";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 interface EditMatterOfConcernSidebarProps extends SidebarWithFormRefProps {
   procedure: ApiGetGdprProcedureResponse;

@@ -5,6 +5,8 @@
 
 import {
   DefaultPersonFormValues,
+  SidebarActions,
+  SidebarContent,
   createEmptyAddress,
 } from "@eshg/lib-employee-portal";
 import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
@@ -36,8 +38,6 @@ import { ContactAddressForm } from "@/lib/shared/components/form/address/BaseAdd
 import { CountryField } from "@/lib/shared/components/formFields/CountryField";
 import { PersonFormProps } from "@/lib/shared/components/personSidebar/form/PersonSidebarForm";
 import { SearchPersonFormValues } from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export function defaultPersonFormValues({
   inputs,

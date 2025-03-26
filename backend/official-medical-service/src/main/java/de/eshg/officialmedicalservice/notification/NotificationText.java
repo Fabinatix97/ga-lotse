@@ -63,6 +63,10 @@ public class NotificationText {
   @Value("${de.eshg.official-medical-service.notification.template.cancel_appointment.body}")
   private Resource cancelAppointmentTemplate;
 
+  @Value(
+      "${de.eshg.official-medical-service.notification.template.cancel_appointment_with_reason.body}")
+  private Resource cancelAppointmentWithReasonTemplate;
+
   @Value("${de.eshg.official-medical-service.notification.template.rebook_appointment.subject}")
   private String rebookAppointmentSubject;
 
@@ -154,9 +158,24 @@ public class NotificationText {
   }
 
   public String assembleCancelAppointmentBody(
-      String firstName, String lastName, String appointmentDate, String appointmentTime) {
-    String templateBody = readTemplateBody(cancelAppointmentTemplate);
-    return String.format(templateBody, firstName, lastName, appointmentDate, appointmentTime);
+      String firstName,
+      String lastName,
+      String appointmentDate,
+      String appointmentTime,
+      String reasonForRejection) {
+    if (reasonForRejection == null) {
+      String templateBody = readTemplateBody(cancelAppointmentTemplate);
+      return String.format(templateBody, firstName, lastName, appointmentDate, appointmentTime);
+    } else {
+      String templateBody = readTemplateBody(cancelAppointmentWithReasonTemplate);
+      return String.format(
+          templateBody,
+          firstName,
+          lastName,
+          appointmentDate,
+          appointmentTime,
+          reasonForRejection.replace("\\n", "<br>"));
+    }
   }
 
   public String getRebookAppointmentSubject() {

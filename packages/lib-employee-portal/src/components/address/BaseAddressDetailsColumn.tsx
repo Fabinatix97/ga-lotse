@@ -12,10 +12,9 @@ import {
   isDomesticAddress,
   isPostboxAddress,
 } from "@/api/models/address";
-
-import { DetailsColumn } from "../detailsSection/DetailsColumn";
-import { DetailsRow } from "../detailsSection/DetailsRow";
-import { DetailsItem } from "../detailsSection/items/DetailsItem";
+import { DetailsColumn } from "@/components/detailsSection/DetailsColumn";
+import { DetailsRow } from "@/components/detailsSection/DetailsRow";
+import { DetailsItem } from "@/components/detailsSection/items/DetailsItem";
 
 interface BaseAddressDetailsColumnProps {
   address: BaseAddress;

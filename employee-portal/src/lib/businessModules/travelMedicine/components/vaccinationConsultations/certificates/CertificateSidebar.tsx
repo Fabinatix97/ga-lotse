@@ -6,6 +6,11 @@
 "use client";
 
 import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
+import {
   ApiCertificateType,
   ApiStepWithAppliedServices,
 } from "@eshg/travel-medicine-api";
@@ -18,11 +23,6 @@ import {
   CertificateForm,
   CertificateFormValues,
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/certificates/CertificateForm";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 interface CertificateSidebarProps extends SidebarWithFormRefProps {
   procedureId: string;

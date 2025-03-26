@@ -235,7 +235,9 @@ public class ExaminationService {
   private <R extends ExaminationResult> void mapResult(
       Examination examination, Class<R> expectedResultClass, Consumer<R> mapping) {
     ExaminationResult existingResult = examination.getResult();
-    if (existingResult == null || existingResult instanceof AbsenceExaminationResult) {
+    if (existingResult == null
+        || existingResult instanceof AbsenceExaminationResult
+        || expectedResultClass.equals(AbsenceExaminationResult.class)) {
       acceptAndSetResult(examination, expectedResultClass, mapping);
     } else {
       Class<? extends ExaminationResult> examinationResultClass =

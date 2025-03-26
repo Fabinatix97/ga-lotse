@@ -9,6 +9,7 @@ import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.statistics.GeoShapeService;
 import de.eshg.statistics.api.AddAnalysisRequest;
+import de.eshg.statistics.api.AddDiagramRequest;
 import de.eshg.statistics.api.AnalysisDto;
 import de.eshg.statistics.api.AnalysisWithDiagrams;
 import de.eshg.statistics.api.UpdateAnalysisRequest;
@@ -71,9 +72,11 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import org.hibernate.Hibernate;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -177,29 +180,45 @@ public class AnalysisService {
                   diagramTemplate.getTitle(),
                   badRequestException.getMessage()));
     }
-
-    DiagramData diagramData = getEmptyDiagramData(analysis);
-
     AnalysisMapper.mapToPersistence(
         diagramTemplate.getTitle(),
         diagramTemplate.getDescription(),
         filters,
-        diagramData,
+        getEmptyDiagramData(analysis.getChartConfiguration()),
         analysis);
   }
 
-  private static DiagramData getEmptyDiagramData(Analysis analysis) {
+  public static DiagramData getEmptyDiagramData(ChartConfiguration chartConfiguration) {
     DiagramData diagramData =
-        switch (analysis.getChartConfiguration()) {
+        switch (chartConfiguration) {
+          case BarChartConfiguration ignored -> new BarChartData();
           case ChoroplethMapConfiguration ignored -> new ChoroplethMapData();
           case HistogramChartConfiguration ignored -> new HistogramChartData();
           case LineChartConfiguration ignored -> new LineOrScatterChartData();
           case PieChartConfiguration ignored -> new PieChartData();
           case ScatterChartConfiguration ignored -> new LineOrScatterChartData();
-          default -> new BarChartData();
+          default -> throw new IllegalStateException("Unexpected value: " + chartConfiguration);
         };
     diagramData.setEvaluatedDataAmount(0);
     return diagramData;
+  }
+
+  @Transactional
+  public UUID addDiagramWithoutData(UUID analysisId, AddDiagramRequest addDiagramRequest) {
+    Analysis analysis = getAnalysisInternal(analysisId);
+    validateAnalysisNotInReport(analysis);
+    AbstractAggregationResult aggregationResult = analysis.getAggregationResult();
+
+    AggregationResultUtil.validateColumnFilters(addDiagramRequest.filters(), aggregationResult);
+
+    ChartConfiguration chartConfiguration = AnalysisMapper.getChartConfiguration(analysis);
+    return AnalysisMapper.mapToPersistence(
+            addDiagramRequest.title(),
+            addDiagramRequest.description(),
+            addDiagramRequest.filters(),
+            getEmptyDiagramData(chartConfiguration),
+            analysis)
+        .getExternalId();
   }
 
   @Transactional
@@ -243,7 +262,7 @@ public class AnalysisService {
       AbstractAggregationResult aggregationResult,
       String name) {
     TableColumn tableColumnPrimary =
-        AggregationResultUtil.getTableColumn(
+        AggregationResultUtil.getTableColumnWithDto(
             barChartConfiguration.primaryAttribute(), aggregationResult);
 
     String configName = "BarChartConfiguration";
@@ -259,7 +278,7 @@ public class AnalysisService {
       }
     } else {
       TableColumn tableColumnSecondary =
-          AggregationResultUtil.getTableColumn(
+          AggregationResultUtil.getTableColumnWithDto(
               barChartConfiguration.secondaryAttribute(), aggregationResult);
       validateTableColumBooleanIntegerTextDateOrValueOption(
           tableColumnSecondary,
@@ -278,7 +297,7 @@ public class AnalysisService {
       AbstractAggregationResult aggregationResult,
       String name) {
     TableColumn tableColumnPrimary =
-        AggregationResultUtil.getTableColumn(
+        AggregationResultUtil.getTableColumnWithDto(
             choroplethMapConfiguration.primaryAttribute(), aggregationResult);
 
     validateChoroplethPrimaryAttribute(tableColumnPrimary);
@@ -290,7 +309,7 @@ public class AnalysisService {
       }
     } else {
       TableColumn tableColumnSecondary =
-          AggregationResultUtil.getTableColumn(
+          AggregationResultUtil.getTableColumnWithDto(
               choroplethMapConfiguration.secondaryAttribute(), aggregationResult);
       validateChoroplethSecondaryAttribute(tableColumnSecondary);
 
@@ -306,7 +325,7 @@ public class AnalysisService {
       AbstractAggregationResult aggregationResult,
       String name) {
     TableColumn tableColumnPrimary =
-        AggregationResultUtil.getTableColumn(
+        AggregationResultUtil.getTableColumnWithDto(
             histogramChartConfiguration.primaryAttribute(), aggregationResult);
 
     String configName = "HistogramChartConfiguration";
@@ -324,7 +343,7 @@ public class AnalysisService {
       }
     } else {
       TableColumn tableColumnSecondary =
-          AggregationResultUtil.getTableColumn(
+          AggregationResultUtil.getTableColumnWithDto(
               histogramChartConfiguration.secondaryAttribute(), aggregationResult);
       validateTableColumBooleanIntegerTextDateOrValueOption(
           tableColumnSecondary,
@@ -374,14 +393,14 @@ public class AnalysisService {
       HistogramChartConfigurationDto histogramChartConfiguration,
       AbstractAggregationResult aggregationResult) {
     TableColumn tableColumnPrimary =
-        AggregationResultUtil.getTableColumn(
+        AggregationResultUtil.getTableColumnWithDto(
             histogramChartConfiguration.primaryAttribute(), aggregationResult);
 
     long numberOfDataPoints =
         getNumberOfHistogramDataPoints(
             aggregationResult,
             tableColumnPrimary,
-            AggregationResultUtil.getTableColumn(
+            AggregationResultUtil.getTableColumnWithDto(
                 histogramChartConfiguration.secondaryAttribute(), aggregationResult));
     if (numberOfDataPoints == 0) {
       return Collections.emptyList();
@@ -467,7 +486,7 @@ public class AnalysisService {
       AbstractAggregationResult aggregationResult,
       String name) {
     TableColumn tableColumnPrimary =
-        AggregationResultUtil.getTableColumn(
+        AggregationResultUtil.getTableColumnWithDto(
             pieChartConfigurationDto.attribute(), aggregationResult);
 
     validateTableColumBooleanIntegerTextDateOrValueOption(
@@ -485,7 +504,8 @@ public class AnalysisService {
     String errorMessage = "'%s': %ss require an attribute of type %s or %s as '%s'";
 
     TableColumn tableColumnX =
-        AggregationResultUtil.getTableColumn(chartConfiguration.xAttribute(), aggregationResult);
+        AggregationResultUtil.getTableColumnWithDto(
+            chartConfiguration.xAttribute(), aggregationResult);
     validateTableColumnDecimalOrInteger(
         tableColumnX,
         errorMessage.formatted(
@@ -496,7 +516,8 @@ public class AnalysisService {
             "xAttribute"));
 
     TableColumn tableColumnY =
-        AggregationResultUtil.getTableColumn(chartConfiguration.yAttribute(), aggregationResult);
+        AggregationResultUtil.getTableColumnWithDto(
+            chartConfiguration.yAttribute(), aggregationResult);
     validateTableColumnDecimalOrInteger(
         tableColumnY,
         errorMessage.formatted(
@@ -508,7 +529,7 @@ public class AnalysisService {
 
     if (chartConfiguration.secondaryAttribute() != null) {
       TableColumn tableColumnSecondary =
-          AggregationResultUtil.getTableColumn(
+          AggregationResultUtil.getTableColumnWithDto(
               chartConfiguration.secondaryAttribute(), aggregationResult);
 
       validateTableColumBooleanIntegerTextDateOrValueOption(
@@ -582,8 +603,7 @@ public class AnalysisService {
     Analysis analysis = getAnalysisInternal(analysisId);
     validateAnalysisNotInReport(analysis);
     if (updateAnalysisRequest.updateChartConfigurationDto() != null) {
-      ChartConfiguration chartConfiguration =
-          Hibernate.unproxy(analysis.getChartConfiguration(), ChartConfiguration.class);
+      ChartConfiguration chartConfiguration = AnalysisMapper.getChartConfiguration(analysis);
       switch (chartConfiguration) {
         case BarChartConfiguration barChartConfiguration ->
             updateBarChartConfiguration(
@@ -778,9 +798,37 @@ public class AnalysisService {
       evaluation.setPendingState(null);
       evaluation.setState(AggregationResultState.COMPLETED);
     } else {
-      recalculateHistogramBins(evaluation);
-      evaluation.setPendingState(AggregationResultPendingState.DIAGRAM_CREATION);
+      Optional<Diagram> diagramWithData =
+          findDiagram(evaluation, diagram -> !diagram.isDiagramDataEmpty());
+      if (diagramWithData.isPresent()) {
+        clearDiagramData(diagramWithData.get());
+      } else {
+        recalculateHistogramBins(evaluation);
+        evaluation.setPendingState(AggregationResultPendingState.DIAGRAM_CREATION);
+      }
     }
+  }
+
+  private void clearDiagramData(Diagram diagram) {
+    switch (diagram.getDiagramData()) {
+      case BarChartData barChartData -> barChartData.removeBarGroupDatas();
+      case ChoroplethMapData choroplethMapData -> choroplethMapData.removeKeyToValues();
+      case HistogramChartData histogramChartData -> histogramChartData.removeHistogramGroupDatas();
+      case LineOrScatterChartData lineOrScatterChartData ->
+          lineOrScatterChartData.removeDataPointGroups();
+      case PieChartData pieChartData -> pieChartData.removeKeyToCounts();
+      default -> throw new IllegalStateException("Unexpected value: " + diagram.getDiagramData());
+    }
+    diagram.setDiagramDataEmpty(true);
+  }
+
+  public static Optional<Diagram> findDiagram(
+      AbstractAggregationResult aggregationResult, Predicate<Diagram> diagramPredicate) {
+    return aggregationResult.getAnalyses().stream()
+        .map(Analysis::getDiagrams)
+        .flatMap(List::stream)
+        .filter(diagramPredicate)
+        .findFirst();
   }
 
   private void recalculateHistogramBins(Evaluation evaluation) {
@@ -789,7 +837,7 @@ public class AnalysisService {
         .forEach(
             analysis -> {
               ChartConfiguration chartConfiguration =
-                  Hibernate.unproxy(analysis.getChartConfiguration(), ChartConfiguration.class);
+                  AnalysisMapper.getChartConfiguration(analysis);
               if (chartConfiguration
                   instanceof HistogramChartConfiguration histogramChartConfiguration) {
                 histogramChartConfiguration.removeBins();
@@ -800,5 +848,13 @@ public class AnalysisService {
                         evaluation));
               }
             });
+  }
+
+  @Transactional(readOnly = true)
+  public ChartConfigurationDto getChartConfiguration(UUID diagramId) {
+    Diagram diagram = getDiagramInternal(diagramId);
+    ChartConfiguration chartConfiguration =
+        AnalysisMapper.getChartConfiguration(diagram.getAnalysis());
+    return AnalysisMapper.mapToChartConfigurationDto(chartConfiguration, false);
   }
 }

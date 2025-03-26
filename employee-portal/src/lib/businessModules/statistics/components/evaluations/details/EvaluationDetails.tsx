@@ -5,6 +5,7 @@
 
 "use client";
 
+import { OverlayBoundary } from "@eshg/lib-employee-portal";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import { Stack } from "@mui/joy";
 import { useRouter } from "next/navigation";
@@ -29,7 +30,6 @@ import { useDeleteEvaluationWithConfirmation } from "@/lib/businessModules/stati
 import { AnalysisAccordion } from "@/lib/businessModules/statistics/components/shared/AnalysisAccordion/AnalysisAccordion";
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
 import { useCopy } from "@/lib/shared/hooks/useCopy";
 

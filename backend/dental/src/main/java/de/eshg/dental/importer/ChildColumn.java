@@ -13,6 +13,13 @@ public enum ChildColumn implements XlsxColumn {
   DATE_OF_BIRTH("Geburtsdatum"),
   GENDER("Geschlecht (Männlich = M, Weiblich = W, Divers = D, Unbekannt = U)"),
   GROUP("Gruppe"),
+
+  STREET("Straße"),
+  HOUSE_NUMBER("Hausnummer"),
+  POSTAL_CODE("PLZ"),
+  CITY("Ort"),
+  ADDRESS_ADDITION("Adresszusatz"),
+
   STATUS(STATUS_COLUMN_HEADER, Necessity.ADD_IF_MISSING, STATUS_COLUMN_HEADER_WIDTH),
   CHILD_ID("Kind-ID", Necessity.ADD_IF_MISSING, UUID_COLUMN_WIDTH),
   ;

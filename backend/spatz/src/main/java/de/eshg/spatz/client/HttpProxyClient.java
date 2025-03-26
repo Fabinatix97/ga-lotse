@@ -15,6 +15,7 @@ import java.util.function.Consumer;
 import javax.net.ssl.SNIHostName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactor.netty.http.HttpProtocol;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.http.client.HttpClient.RequestSender;
 import reactor.netty.http.client.HttpClient.WebsocketSender;
@@ -29,6 +30,7 @@ public class HttpProxyClient {
   public HttpProxyClient(RelayAddressMapper addressMapper, DnsAddressResolverGroup resolver) {
     this.httpClient =
         HttpClient.create()
+            .protocol(HttpProtocol.HTTP11)
             .doOnChannelInit(
                 (connectionObserver, channel, remoteAddress) ->
                     // use custom address mapper to allow redirecting outbound SSL via

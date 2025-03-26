@@ -7,7 +7,7 @@ import {
   type ApiInspectionResource,
   ApiResourceType,
 } from "@eshg/inspection-api";
-import { DataTable } from "@eshg/lib-employee-portal";
+import { DataTable, useConfirmationDialog } from "@eshg/lib-employee-portal";
 import {
   CameraAltOutlined,
   DeleteOutlined,
@@ -26,7 +26,6 @@ import { isDefined } from "remeda";
 import { resourceTypeNames } from "@/lib/baseModule/components/resources/constants";
 import { useDeleteResource } from "@/lib/businessModules/inspection/api/mutations/resources";
 import { formatDateTimeRange } from "@/lib/shared/helpers/dateTime";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export interface ResourcesTableProps {
   readonly?: boolean;

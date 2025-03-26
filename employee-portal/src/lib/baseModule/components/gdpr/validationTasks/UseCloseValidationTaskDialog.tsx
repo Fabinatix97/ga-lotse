@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 import {
   ApiBusinessProcedureInclusionStatus,
   ApiBusinessProcedureWithInclusionStatus,
@@ -12,7 +13,6 @@ import {
 import { Typography } from "@mui/joy";
 
 import { useCloseValidationTask } from "@/lib/baseModule/api/mutations/gdpr";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface UseCloseValidationTaskDialogProps {
   gdprValidationTaskApi: GdprValidationTaskApiInterface;

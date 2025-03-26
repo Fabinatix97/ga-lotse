@@ -1,29 +1,7 @@
 {
   "pageTitle": "Official Medical Service",
   "information": {
-    "title": "Information",
-    "infoText": "You will receive a medical certificate once assignment is complete and an appointment has been made with the health department",
-    "pleaseComeDepartment": "Please come sober on the day of your appointment:<br>{{ department }}",
-    "pleaseBring_heading": "Bring the following documents with you to your medical examination:",
-    "pleaseBring_list": [
-      "ID Card / Passport",
-      "Completed medical history form (see download box)",
-      "Letter of assignment (letter from the employer stating the reason for the examination) with a copy",
-      "Copies of medical documents (e.g. hospital discharge reports, certificates, etc.)",
-      "Proof of currently prescribed medications (when applicable)"
-    ],
-    "forAttests_heading": "For certificates of exam eligibility, please bring the following with you",
-    "forAttests_list": [
-      "We are only responsible for students in Frankfurt",
-      "Please arrive for exams no later than the day of the exam (even without an appointment) or when submitting an academic paper after making an appointment by telephone."
-    ],
-    "definitelyBring_heading": "Please bring the following to your appointment",
-    "definitelyBring_list": [
-      "Your medical records with diagnosis from your doctor",
-      "Certificate from your university or college regarding the examination date.",
-      "Student- or Personal ID, or Passport",
-      "Fee of 50 euros (payable with cash or debit card)."
-    ]
+    "title": "Information"
   },
   "contact": {
     "title": "Contact and Availability",
@@ -44,7 +22,7 @@
   "personalArea": {
     "title": "Here you can report your concern for an official medical examination.",
     "information": "To report a concern, a confirmation letter is needed",
-    "bookAppointment": "Report Concern",
+    "bookAppointment": "Appointment Request",
     "goToPersonalArea": "View Process"
   }
 }

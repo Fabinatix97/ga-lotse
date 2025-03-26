@@ -10,14 +10,16 @@ import {
   ApiChecklistDefinition,
   ApiChecklistDefinitionVersion,
 } from "@eshg/inspection-api";
-import { useHasUserRolesCheck } from "@eshg/lib-employee-portal";
+import {
+  OverlayBoundary,
+  Sidebar,
+  SidebarContent,
+  useHasUserRolesCheck,
+} from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { Stack, Typography } from "@mui/joy";
 
 import { useGetChecklistDefinitionVersions } from "@/lib/businessModules/inspection/api/queries/checklistDefinition";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 import { VersionSheet } from "./VersionSheet";
 

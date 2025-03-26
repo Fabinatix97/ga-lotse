@@ -6,7 +6,11 @@
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
   DefaultPersonFormValues,
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
   mapApiAddressToForm,
+  useConfirmationDialog,
+  useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
@@ -24,12 +28,6 @@ import { useAcceptDraftProcedure } from "@/lib/businessModules/officialMedicalSe
 import { StartProcedureForm } from "@/lib/businessModules/officialMedicalService/components/procedures/details/StartProcedureForm";
 import { mapPerson } from "@/lib/businessModules/officialMedicalService/shared/helpers";
 import { SearchPersonFormValues } from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useStartProcedureSidebar(): UseSidebarWithFormRefResult<StartProcedureSidebarProps> {
   return useSidebarWithFormRef({ component: StartProcedureSidebar });

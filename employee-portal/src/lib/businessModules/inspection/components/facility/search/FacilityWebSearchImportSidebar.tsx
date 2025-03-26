@@ -9,6 +9,10 @@ import {
   ApiProcedureStatus,
   ApiWebSearchEntry,
 } from "@eshg/inspection-api";
+import {
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Card, Chip, Typography } from "@mui/joy";
 import { useRouter } from "next/navigation";
@@ -24,10 +28,6 @@ import { FacilitySidebar } from "@/lib/shared/components/facilitySidebar/Facilit
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { BaseFacility } from "@/lib/shared/components/facilitySidebar/types";
 import { fullAddress } from "@/lib/shared/helpers/facilityUtils";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 type FacilityWebSearchImportSidebarProps = Readonly<{
   webSearchEntry: ApiWebSearchEntry | undefined;

@@ -5,6 +5,7 @@
 
 package de.eshg.schoolentry.pdf.schoolinfoletter;
 
+import de.eshg.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.document.generator.department.DepartmentClient;
@@ -36,18 +37,21 @@ public class SchoolInfoLetterGenerator extends AbstractGenerator {
   static final String SCHOOL_INFO_LETTER_TEMPLATE = "/templates/school_info_letter.ftlh";
 
   private final ClassPathResource schoolInfoLetterTemplate;
+  private final DepartmentClient departmentClient;
   private final SchoolInfoLetterExaminationMapper schoolInfoLetterExaminationMapper;
   private final DocumentGenerator documentGenerator;
   private final Clock clock;
 
   public SchoolInfoLetterGenerator(
       @Value(SCHOOL_INFO_LETTER_TEMPLATE) ClassPathResource schoolInfoLetterTemplate,
+      DepartmentInfoConfigService departmentInfoConfigService,
       DepartmentClient departmentClient,
       ContactClient contactClient,
       DocumentGenerator documentGenerator,
       Clock clock,
       SchoolInfoLetterExaminationMapper schoolInfoLetterExaminationMapper) {
-    super(departmentClient, contactClient);
+    super(departmentInfoConfigService, contactClient);
+    this.departmentClient = departmentClient;
     this.schoolInfoLetterExaminationMapper = schoolInfoLetterExaminationMapper;
     Assert.isTrue(
         schoolInfoLetterTemplate.exists(), () -> schoolInfoLetterTemplate + " does not exist");

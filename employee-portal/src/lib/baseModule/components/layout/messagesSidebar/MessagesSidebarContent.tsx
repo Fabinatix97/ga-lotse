@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { SidebarContent } from "@eshg/lib-employee-portal";
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { Divider, Stack, Typography } from "@mui/joy";
 import { useContext, useMemo } from "react";
@@ -16,7 +17,6 @@ import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";
 import { useNewMessages } from "@/lib/businessModules/chat/shared/hooks/useNewMessages";
 import { allMessagesRead } from "@/lib/businessModules/chat/shared/utils";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 function NoMessagesInfo() {
   return (

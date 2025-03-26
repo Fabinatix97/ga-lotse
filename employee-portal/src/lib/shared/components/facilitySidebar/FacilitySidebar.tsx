@@ -4,6 +4,12 @@
  */
 
 import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
+import {
+  SidebarActions,
+  SidebarContent,
+  SidebarWithFormRefProps,
+  useSidebarFormHandle,
+} from "@eshg/lib-employee-portal";
 import { LoadingIndicator } from "@eshg/lib-portal/components/LoadingIndicator";
 import { FormikProps } from "formik";
 import { ComponentType, ReactNode } from "react";
@@ -23,11 +29,7 @@ import {
 import { FacilitySearchResults } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchResults";
 import { useFacilitySidebarState } from "@/lib/shared/components/facilitySidebar/useFacilitySidebarState";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import { useSidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { useResetAlertContextOnChange } from "@/lib/shared/hooks/useResetAlertContextOnChange";
-import { SidebarWithFormRefProps } from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 type OptionalSearchFormComponent<TSearchValues> =
   | {

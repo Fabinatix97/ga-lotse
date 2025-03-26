@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { isDateString, toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
 import {
   ApiPatchVaccinationConsultationTravelDetailsRequest,
@@ -17,11 +22,6 @@ import {
   TravelDataFormValues,
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/sidebarForms/TravelDataForm";
 import { isInteger } from "@/lib/shared/helpers/guards";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useTravelDataSidebar(): UseSidebarWithFormRefResult<TravelDataSidebarProps> {
   return useSidebarWithFormRef({

@@ -3,26 +3,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ChildDetails, routes } from "@eshg/dental";
+import { AnnualInstitutionsTable, ChildDetails, routes } from "@eshg/dental";
 import {
   CentralFilePersonDetails,
   ContentPanel,
   DetailsItem,
   DetailsSection,
+  EditButton,
   PageGrid,
+  SyncBarrier,
+  useSyncBarrier,
 } from "@eshg/lib-employee-portal";
 import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { Divider, Grid, Stack } from "@mui/joy";
 
-import { AnnualInstitutionsTable } from "@/lib/businessModules/dental/features/children/details/AnnualInstitutionsTable";
 import { useUpdateAnnualChildPersonSidebar } from "@/lib/businessModules/dental/features/children/details/UpdateAnnualChildPersonSidebar";
 import { useUpdateAnnualChildSidebar } from "@/lib/businessModules/dental/features/children/details/UpdateAnnualChildSidebar";
 import { FluoridationConsentInformationSection } from "@/lib/businessModules/dental/shared/FluoridationConsentInformationSection";
-import { EditButton } from "@/lib/shared/components/buttons/EditButton";
-import {
-  SyncBarrier,
-  useSyncBarrier,
-} from "@/lib/shared/components/centralFile/sync/SyncBarrier";
 
 const SPACING = { xxs: 2, sm: 3, md: 4, xxl: 5 };
 

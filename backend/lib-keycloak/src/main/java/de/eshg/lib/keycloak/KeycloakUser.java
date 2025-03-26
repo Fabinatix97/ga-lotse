@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface KeycloakUser {
-  String TEST_USER_EMAIL_POSTFIX = "@eshg.de";
+  String TEST_USER_EMAIL_POSTFIX = "@ga-lotse.de";
 
   String username();
 

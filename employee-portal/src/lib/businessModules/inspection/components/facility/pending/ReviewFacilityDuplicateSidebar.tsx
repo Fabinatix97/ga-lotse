@@ -3,6 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  ButtonBar,
+  DrawerProps,
+  SidebarActions,
+  SidebarContent,
+  useSidebar,
+} from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Button, RadioGroup, Stack } from "@mui/joy";
@@ -11,11 +18,6 @@ import { ReactNode, useState } from "react";
 import { useResolveFacilityDuplicate } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { useGetFacilityDuplicates } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { FacilityDuplicateTile } from "@/lib/businessModules/inspection/components/facility/pending/FacilityDuplicateTile";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
-import { useSidebar } from "@/lib/shared/components/drawer/useSidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export function useReviewFacilityDuplicateSidebar() {
   return useSidebar({

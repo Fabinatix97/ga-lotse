@@ -5,6 +5,7 @@
 
 "use client";
 
+import { TextareaField } from "@eshg/lib-employee-portal";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { FormProps, OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { MutationBundle } from "@eshg/lib-portal/types/query";
@@ -32,7 +33,6 @@ import { VisuoMotorSkillsForm } from "@/lib/businessModules/schoolEntry/features
 import { EVALUATION_EXAMINATION_TYPES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 import { FormStack } from "@/lib/shared/components/form/FormStack";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 import { isInteger } from "@/lib/shared/helpers/guards";
 
 import { BodyCoordinationForm } from "./BodyCoordinationForm";

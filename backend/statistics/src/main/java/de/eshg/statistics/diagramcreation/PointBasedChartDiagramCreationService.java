@@ -8,12 +8,10 @@ package de.eshg.statistics.diagramcreation;
 import de.eshg.statistics.aggregation.AggregationResultUtil;
 import de.eshg.statistics.aggregation.AnalysisService;
 import de.eshg.statistics.aggregation.TableRowSpecifications;
-import de.eshg.statistics.api.AddDiagramRequest;
-import de.eshg.statistics.api.chart.PointBasedChartConfigurationDto;
-import de.eshg.statistics.api.chart.ScatterChartConfigurationDto;
 import de.eshg.statistics.api.filter.TableColumnFilterParameter;
 import de.eshg.statistics.config.StatisticsConfig;
 import de.eshg.statistics.mapper.AnalysisMapper;
+import de.eshg.statistics.mapper.FilterParameterMapper;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.Analysis;
 import de.eshg.statistics.persistence.entity.CellEntry;
@@ -21,11 +19,12 @@ import de.eshg.statistics.persistence.entity.Diagram;
 import de.eshg.statistics.persistence.entity.TableColumn;
 import de.eshg.statistics.persistence.entity.TableColumnValueType;
 import de.eshg.statistics.persistence.entity.TableRow;
+import de.eshg.statistics.persistence.entity.chart.PointBasedChartConfiguration;
+import de.eshg.statistics.persistence.entity.chart.ScatterChartConfiguration;
 import de.eshg.statistics.persistence.entity.diagramdata.DataPoint;
 import de.eshg.statistics.persistence.entity.diagramdata.DataPointGroup;
 import de.eshg.statistics.persistence.entity.diagramdata.LineOrScatterChartData;
 import de.eshg.statistics.persistence.entity.diagramdata.TrendLine;
-import de.eshg.statistics.persistence.repository.AnalysisRepository;
 import de.eshg.statistics.persistence.repository.TableRowRepository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -45,33 +44,27 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PointBasedChartDiagramCreationService
-    extends AbstractChartDiagramCreationService<
-        Map<Object, List<DataPointHolder>>, PointBasedChartConfigurationDto> {
+    extends AbstractChartDiagramCreationService<Map<Object, List<DataPointHolder>>> {
 
   private static final String EMPTY_KEY = "";
 
   public PointBasedChartDiagramCreationService(
       AnalysisService analysisService,
-      AnalysisRepository analysisRepository,
       TableRowRepository tableRowRepository,
       StatisticsConfig statisticsConfig) {
-    super(analysisService, analysisRepository, tableRowRepository, statisticsConfig);
+    super(analysisService, tableRowRepository, statisticsConfig);
   }
 
   @Override
   @Transactional(readOnly = true)
-  public Map<Object, List<DataPointHolder>> initializeChartDataHolder(
-      UUID analysisId,
-      PointBasedChartConfigurationDto pointBasedChartConfiguration,
-      List<TableColumnFilterParameter> filters) {
-    Analysis analysis = analysisService.getAnalysisInternal(analysisId);
+  public Map<Object, List<DataPointHolder>> initializeChartDataHolder(UUID diagramId) {
+    Analysis analysis = analysisService.getDiagramInternal(diagramId).getAnalysis();
     AbstractAggregationResult aggregationResult = analysis.getAggregationResult();
-
-    AggregationResultUtil.validateColumnFilters(filters, aggregationResult);
 
     TableColumn secondaryTableColumn =
         AggregationResultUtil.getTableColumn(
-            pointBasedChartConfiguration.secondaryAttribute(), aggregationResult);
+            getPointBasedChartConfiguration(analysis).getSecondaryAttributeSelection(),
+            aggregationResult);
 
     Map<Object, List<DataPointHolder>> chartDataHolder =
         createChartDataHolderMap(secondaryTableColumn);
@@ -79,6 +72,10 @@ public class PointBasedChartDiagramCreationService
         .forEach(key -> chartDataHolder.put(key, new ArrayList<>()));
 
     return chartDataHolder;
+  }
+
+  private static PointBasedChartConfiguration getPointBasedChartConfiguration(Analysis analysis) {
+    return (PointBasedChartConfiguration) AnalysisMapper.getChartConfiguration(analysis);
   }
 
   private static Map<Object, List<DataPointHolder>> createChartDataHolderMap(
@@ -109,29 +106,28 @@ public class PointBasedChartDiagramCreationService
   @Override
   @Transactional(readOnly = true)
   public int collectChartData(
-      UUID analysisId,
-      PointBasedChartConfigurationDto pointBasedChartConfiguration,
-      List<TableColumnFilterParameter> filters,
-      int page,
-      Map<Object, List<DataPointHolder>> chartDataHolder) {
-    Analysis analysis = analysisService.getAnalysisInternal(analysisId);
-    AbstractAggregationResult aggregationResult = analysis.getAggregationResult();
+      UUID diagramId, int page, Map<Object, List<DataPointHolder>> chartDataHolder) {
+    Diagram diagram = analysisService.getDiagramInternal(diagramId);
+    AbstractAggregationResult aggregationResult = diagram.getAnalysis().getAggregationResult();
+    PointBasedChartConfiguration pointBasedChartConfiguration =
+        getPointBasedChartConfiguration(diagram.getAnalysis());
 
     TableColumn secondaryTableColumn =
         AggregationResultUtil.getTableColumn(
-            pointBasedChartConfiguration.secondaryAttribute(), aggregationResult);
+            pointBasedChartConfiguration.getSecondaryAttributeSelection(), aggregationResult);
 
     TableColumn xTableColumn =
         AggregationResultUtil.getTableColumn(
-            pointBasedChartConfiguration.xAttribute(), aggregationResult);
+            pointBasedChartConfiguration.getXAttributeSelection(), aggregationResult);
     TableColumn yTableColumn =
         AggregationResultUtil.getTableColumn(
-            pointBasedChartConfiguration.yAttribute(), aggregationResult);
+            pointBasedChartConfiguration.getYAttributeSelection(), aggregationResult);
 
     List<Specification<TableRow>> notNullSpecifications =
         getNotNullSpecificationsForDataPointCharts(
             xTableColumn, yTableColumn, secondaryTableColumn);
 
+    List<TableColumnFilterParameter> filters = FilterParameterMapper.mapToApi(diagram.getFilters());
     return collectDataForTablePageAndReturnMaxPage(
         page,
         notNullSpecifications.stream(),
@@ -186,12 +182,10 @@ public class PointBasedChartDiagramCreationService
 
   @Override
   @Transactional
-  public UUID addDiagram(
-      UUID analysisId,
-      PointBasedChartConfigurationDto pointBasedChartConfiguration,
-      AddDiagramRequest addDiagramRequest,
-      Map<Object, List<DataPointHolder>> chartDataHolder) {
-    Analysis analysis = analysisService.getAnalysisInternal(analysisId);
+  public void fillDiagramData(UUID diagramId, Map<Object, List<DataPointHolder>> chartDataHolder) {
+    Diagram diagram = analysisService.getDiagramInternal(diagramId);
+    PointBasedChartConfiguration chartConfiguration =
+        getPointBasedChartConfiguration(diagram.getAnalysis());
 
     Comparator<DataPointHolder> comparator =
         Comparator.comparing(DataPointHolder::xCoordinate)
@@ -203,7 +197,7 @@ public class PointBasedChartDiagramCreationService
 
     AtomicInteger evaluatedDataAmount = new AtomicInteger(0);
     List<DataPointGroup> dataPointGroups = new ArrayList<>();
-    if (pointBasedChartConfiguration.secondaryAttribute() == null) {
+    if (chartConfiguration.getSecondaryAttributeSelection() == null) {
       List<DataPoint> dataPoints =
           chartDataHolder.get(EMPTY_KEY).stream().sorted(comparator).map(mapFunction).toList();
       DataPointGroup dataPointGroup = new DataPointGroup();
@@ -225,20 +219,16 @@ public class PointBasedChartDiagramCreationService
               });
     }
 
-    if (pointBasedChartConfiguration instanceof ScatterChartConfigurationDto) {
+    if (chartConfiguration instanceof ScatterChartConfiguration) {
       dataPointGroups.forEach(
           dataPointGroup -> dataPointGroup.setTrendLine(determineTrendLine(dataPointGroup)));
     }
 
-    LineOrScatterChartData lineOrScatterChartData = new LineOrScatterChartData();
+    LineOrScatterChartData lineOrScatterChartData =
+        (LineOrScatterChartData) diagram.getDiagramData();
     lineOrScatterChartData.addDataPointGroups(dataPointGroups);
     lineOrScatterChartData.setEvaluatedDataAmount(evaluatedDataAmount.get());
-
-    Diagram diagram =
-        AnalysisMapper.mapToPersistence(addDiagramRequest, lineOrScatterChartData, analysis);
-
-    analysisRepository.flush();
-    return diagram.getExternalId();
+    diagram.setDiagramDataEmpty(false);
   }
 
   private static DataPoint getDataPoint(BigDecimal xCoordinate, BigDecimal yCoordinate) {

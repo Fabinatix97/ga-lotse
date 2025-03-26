@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Alert } from "@eshg/lib-portal/components/Alert";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
 import { ApiConcern } from "@eshg/sti-protection-api";
 import {
   AccessTimeOutlined,
@@ -15,13 +17,20 @@ import {
 import { Box, Sheet, Stack, Typography } from "@mui/joy";
 import { formatDate } from "date-fns";
 import { Formik, useFormikContext } from "formik";
-import { PropsWithChildren, useCallback } from "react";
+import {
+  PropsWithChildren,
+  RefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import {
   ConfirmLeaveDirtyFormEffect,
   ConfirmLeaveDirtyFormEffectProps,
 } from "@/lib/baseModule/components/ConfirmLeaveDirtyFormEffect";
-import { useCancelAppointment } from "@/lib/businessModules/stiProtection/api/mutations/publicCitizensApi";
+import { useCancelPendingAppointment } from "@/lib/businessModules/stiProtection/api/mutations/publicCitizensApi";
 import { useStepContext } from "@/lib/businessModules/stiProtection/components/shared/StepContext";
 import { useTranslation } from "@/lib/i18n/client";
 import { useLocale } from "@/lib/i18n/useLocale";
@@ -42,9 +51,14 @@ export type StepLayoutProps<T extends FormDataWithoutConcern> =
   PropsWithChildren<
     {
       initialValues: InitialValues<T>;
-      onSubmit: (e: T) => Promise<FormDataWithoutConcern | void> | void;
+      onSubmit: (
+        e: T,
+      ) => Promise<
+        FormDataWithoutConcern | void | typeof PortalErrorCode.Conflict
+      > | void;
     } & Omit<StepButtonsProps, "onCancel">
   >;
+
 export function StepLayout<T extends FormDataWithoutConcern>({
   children,
   initialValues: givenInitialValues,
@@ -53,24 +67,39 @@ export function StepLayout<T extends FormDataWithoutConcern>({
 }: StepLayoutProps<T>) {
   const [formData, updateFormData] = useFormData<T & AppointmentFormData>();
   const { goForward } = useStepContext();
+  const scrollToErrorRef = useRef<() => void>(null);
+  const [hasConflict, setHasConflict] = useState(false);
 
   const hasBookedAppointment = formData.procedureId != null;
   const hasCreatedAccount = formData.accessCode != null;
   async function handleSubmit(values: T) {
     const newValues = await onSubmit(values);
-    if (newValues) {
-      updateFormData(newValues as T & AppointmentFormData);
-      goForward();
+    if (!newValues) {
+      return;
     }
+    if (newValues === PortalErrorCode.Conflict) {
+      // Server error
+      // Assume appointment is no longer booked
+      updateFormData({ bookedAppointment: undefined } as T &
+        AppointmentFormData);
+      setHasConflict(true);
+      scrollToErrorRef?.current?.();
+      return;
+    }
+
+    updateFormData(newValues as T & AppointmentFormData);
+    goForward();
   }
 
-  const cancelAppointment = useCancelAppointment(formData.procedureId);
+  const cancelPendingAppointment = useCancelPendingAppointment(
+    formData.procedureId,
+  );
   const handleConfirmCancel = useCallback(() => {
     if (formData.procedureId == null) {
       return;
     }
-    cancelAppointment.mutate();
-  }, [formData.procedureId, cancelAppointment]);
+    cancelPendingAppointment.mutate();
+  }, [formData.procedureId, cancelPendingAppointment]);
 
   const initialValues = {
     ...givenInitialValues,
@@ -78,35 +107,37 @@ export function StepLayout<T extends FormDataWithoutConcern>({
   };
 
   return (
-    <>
-      <BookAppointmentTitle />
-      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-        <FormPlus>
-          <DirtyCheck
-            hasBookedAppointment={hasBookedAppointment}
-            hasCreatedAccount={hasCreatedAccount}
-            handleConfirmCancel={handleConfirmCancel}
-          />
-          <TwoColumnGrid
-            content={
-              <Sheet>
-                <Stack gap={3}>
-                  {children}
-                  <Box
-                    sx={(theme) => ({
-                      [theme.breakpoints.up("md")]: { display: "none" },
-                    })}
-                  >
-                    <StepButtons {...buttonProps} />
-                  </Box>
-                </Stack>
-              </Sheet>
-            }
-            sidePanel={<AppointmentOverview {...buttonProps} />}
-          />
-        </FormPlus>
-      </Formik>
-    </>
+    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+      <FormPlus sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <BookAppointmentTitle />
+        <DirtyCheck
+          hasBookedAppointment={hasBookedAppointment}
+          hasCreatedAccount={hasCreatedAccount}
+          handleConfirmCancel={handleConfirmCancel}
+        />
+        <ConflictError
+          hasConflict={hasConflict}
+          scrollToErrorRef={scrollToErrorRef}
+        />
+        <TwoColumnGrid
+          content={
+            <Sheet>
+              <Stack gap={3}>
+                {children}
+                <Box
+                  sx={(theme) => ({
+                    [theme.breakpoints.up("md")]: { display: "none" },
+                  })}
+                >
+                  <StepButtons {...buttonProps} />
+                </Box>
+              </Stack>
+            </Sheet>
+          }
+          sidePanel={<AppointmentOverview {...buttonProps} />}
+        />
+      </FormPlus>
+    </Formik>
   );
 }
 
@@ -155,6 +186,40 @@ export function BookAppointmentTitle() {
         </Row>
       </Row>
     </PageTitle>
+  );
+}
+
+function ConflictError({
+  hasConflict,
+  scrollToErrorRef,
+}: {
+  hasConflict: boolean | undefined;
+  scrollToErrorRef: RefObject<(() => void) | null>;
+}) {
+  const { goBack, currentStepIndex, isFirstStep } = useStepContext();
+  const { t } = useTranslation("stiProtection/forms");
+  const action = isFirstStep
+    ? undefined
+    : {
+        text: t("common.select_new_appointment"),
+        onClick: () => goBack(currentStepIndex),
+      };
+  const alertRef = useRef<HTMLDivElement>(null);
+  function scrollToError() {
+    alertRef?.current?.scrollIntoView({ behavior: "smooth" });
+  }
+  scrollToErrorRef.current = scrollToError;
+  useEffect(() => () => scrollToErrorRef.current?.(), [scrollToErrorRef]);
+  if (!hasConflict) {
+    return;
+  }
+  return (
+    <Alert
+      ref={alertRef}
+      color="danger"
+      message={t("common.timeslot_taken")}
+      action={action}
+    />
   );
 }
 

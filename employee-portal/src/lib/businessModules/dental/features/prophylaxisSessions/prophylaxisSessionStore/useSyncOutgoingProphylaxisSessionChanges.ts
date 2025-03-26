@@ -5,9 +5,9 @@
 
 import {
   AbsenceExaminationResult,
-  ChildExamination,
   ExaminationResult,
   FluoridationExaminationResult,
+  ProphylaxisSessionExamination,
   ScreeningExaminationResult,
   useUpdateProphylaxisSessionExaminations,
 } from "@eshg/dental";
@@ -62,7 +62,7 @@ export function useSyncOutgoingProphylaxisSessionChanges() {
 }
 
 function mapExaminationToRequest(
-  examination: ChildExamination,
+  examination: ProphylaxisSessionExamination,
 ): ApiUpdateExaminationsInBulkRequest {
   return {
     id: examination.examinationId,

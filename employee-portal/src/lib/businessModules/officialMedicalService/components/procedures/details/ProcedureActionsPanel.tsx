@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   ApiEmployeeOmsProcedureDetails,
@@ -22,7 +23,6 @@ import {
 import { useStartProcedureSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/StartProcedureSidebar";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function ProcedureActionsPanel(
   props: Readonly<{

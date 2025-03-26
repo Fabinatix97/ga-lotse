@@ -6,6 +6,7 @@
 package de.eshg.lib.statistics.attributes;
 
 import de.eshg.lib.statistics.api.DataPrivacyCategory;
+import de.eshg.lib.statistics.api.TClosenessHierarchyEntryDto;
 import de.eshg.lib.statistics.api.ValueOptionInternal;
 import de.eshg.lib.statistics.api.ValueType;
 import java.util.List;
@@ -39,12 +40,17 @@ public final class ValueWithOptionsAttribute {
       String category,
       boolean mandatory,
       List<ValueOptionInternal> valueOptions,
-      SensitiveParameters sensitiveParameters) {
+      SensitiveParameters sensitiveParameters,
+      List<List<String>> tClosenessHierarchy) {
     AttributeData attribute =
         createValueOptionsAttribute(
             name, code, category, mandatory, valueOptions, DataPrivacyCategory.SENSITIVE);
-    attribute.setLDiversity(sensitiveParameters.lDiversity());
-    attribute.setTCloseness(sensitiveParameters.tCloseness());
+    attribute.setLDiversity(sensitiveParameters.getLDiversity());
+    attribute.setTCloseness(sensitiveParameters.getTCloseness());
+    if (tClosenessHierarchy != null) {
+      attribute.setTClosenessHierarchy(
+          tClosenessHierarchy.stream().map(TClosenessHierarchyEntryDto::new).toList());
+    }
     return attribute;
   }
 

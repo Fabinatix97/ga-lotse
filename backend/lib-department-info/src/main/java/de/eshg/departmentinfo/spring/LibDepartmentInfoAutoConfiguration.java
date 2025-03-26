@@ -7,6 +7,7 @@ package de.eshg.departmentinfo.spring;
 
 import de.eshg.departmentinfo.DepartmentInfoConfigController;
 import de.eshg.departmentinfo.DepartmentInfoConfigService;
+import de.eshg.departmentinfo.OpeningHoursController;
 import de.eshg.departmentinfo.OpeningHoursService;
 import de.eshg.departmentinfo.PrivacyDocumentController;
 import de.eshg.departmentinfo.PrivacyDocumentService;
@@ -21,7 +22,8 @@ import org.springframework.context.annotation.Import;
   OpeningHoursService.class,
   PrivacyDocumentService.class,
   DepartmentInfoConfigController.class,
-  PrivacyDocumentController.class
+  PrivacyDocumentController.class,
+  OpeningHoursController.class
 })
 @AutoConfigurationPackage(basePackageClasses = DepartmentInfo.class)
 public class LibDepartmentInfoAutoConfiguration {}

@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FormButtonBar } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { Stack } from "@mui/joy";
 import { Formik, useFormikContext } from "formik";
 import { ReactNode } from "react";
 
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { DateOrDateTimeField } from "@/lib/shared/components/formFields/DateOrDateTimeField";
 import {

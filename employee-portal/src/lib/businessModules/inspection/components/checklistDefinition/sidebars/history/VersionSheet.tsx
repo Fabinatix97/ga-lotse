@@ -8,7 +8,10 @@ import {
   ApiChecklistDefinition,
   ApiChecklistDefinitionVersion,
 } from "@eshg/inspection-api";
-import { useHasUserRolesCheck } from "@eshg/lib-employee-portal";
+import {
+  useConfirmationDialog,
+  useHasUserRolesCheck,
+} from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { ConfirmationDialogProps } from "@eshg/lib-portal/components/confirmationDialog/BaseConfirmationDialog";
 import {
@@ -52,7 +55,6 @@ import {
   ActionsItem,
   ActionsMenu,
 } from "@/lib/shared/components/buttons/ActionsMenu";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function VersionSheet({
   definition,

@@ -13,4 +13,6 @@ import jakarta.validation.constraints.NotNull;
 
 @Schema(name = "AppointmentPopulation")
 public record AppointmentPopulationDto(
-    @NotBlank String key, @NotNull @Valid PostOmsAppointmentRequest request) {}
+    @NotBlank String key,
+    @NotNull @Valid PostOmsAppointmentRequest request,
+    String reasonForRejection) {}

@@ -3,6 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  FormButtonBar,
+  OverlayBoundary,
+  Sidebar,
+  SidebarActions,
+  SidebarContent,
+  SidebarFormHandle,
+} from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { ApiMeaslesProtectionProcedure } from "@eshg/measles-protection-api";
 import { Stack } from "@mui/joy";
@@ -10,12 +18,6 @@ import { useFormikContext } from "formik";
 import { forwardRef, useImperativeHandle, useRef } from "react";
 
 import { useUpdateProcedureMutation } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 import {
   ProcedureForm,

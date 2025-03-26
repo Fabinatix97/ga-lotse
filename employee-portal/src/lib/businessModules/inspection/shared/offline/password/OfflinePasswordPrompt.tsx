@@ -5,6 +5,7 @@
 
 "use client";
 
+import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 import { useEffect, useState } from "react";
 
@@ -18,7 +19,6 @@ import { OfflineNewPasswordDialog } from "@/lib/businessModules/inspection/share
 import { hasQueuedRequests } from "@/lib/businessModules/inspection/shared/offline/password/hasQueuedRequests";
 import { isServiceWorkerRegistered } from "@/lib/businessModules/inspection/shared/offline/registerServiceWorker";
 import { useIsOfflineFeatureEnabled } from "@/lib/businessModules/inspection/shared/offline/useIsOfflineFeatureEnabled";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 import {
   SALT,
   getInspectionOfflineDb,

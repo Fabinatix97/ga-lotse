@@ -4,6 +4,7 @@
  */
 
 import { Alert } from "@eshg/lib-portal/components/Alert";
+import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
 import assert from "assert";
 
 import { useCreateAnonymousUser } from "@/lib/businessModules/stiProtection/api/mutations/publicCitizensApi";
@@ -11,9 +12,10 @@ import { useTranslation } from "@/lib/i18n/client";
 
 import { useFormData } from "./AppointmentDataContext";
 import { AppointmentFormData } from "./AppointmentStepper";
-import { PinField, parsePin } from "./PinField";
+import { PinField } from "./PinField";
 import { StepLayout } from "./StepLayout";
 import { StepSubTitle } from "./StepSubTitle";
+import { mapToCreateUser } from "./helpers";
 
 interface PinData {
   pin: string;
@@ -32,16 +34,23 @@ export function PinStep() {
     return t("pin.digit_label", { digitNumber, maxDigits });
   }
 
-  const [{ procedureId }] = useFormData<AppointmentFormData>();
+  const [{ procedureId, ...formData }] = useFormData<AppointmentFormData>();
   assert.ok(procedureId);
 
   const createAnonymousUser = useCreateAnonymousUser(procedureId);
 
   async function onSubmit(values: PinData) {
-    const { accessCode } = await createAnonymousUser.mutateAsync({
-      pin: parsePin(values.pin),
-    });
-    return { ...values, accessCode };
+    const results = await createAnonymousUser.mutateAsync(
+      mapToCreateUser({
+        ...formData,
+        ...values,
+      }),
+    );
+    if (results === PortalErrorCode.Conflict) {
+      return PortalErrorCode.Conflict;
+    }
+    const { accessCode, procedureId } = results;
+    return { ...values, accessCode, procedureId };
   }
 
   return (

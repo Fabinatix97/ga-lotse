@@ -7,6 +7,13 @@ import {
   ApiInspectionAnnouncement,
   ApiInspectionAnnouncementType,
 } from "@eshg/inspection-api";
+import {
+  FormButtonBar,
+  Sidebar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+} from "@eshg/lib-employee-portal";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { toDateString, toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
 import { Grid } from "@mui/joy";
@@ -15,12 +22,7 @@ import { isNullish } from "remeda";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { translateInspectionAnnouncement } from "@/lib/businessModules/inspection/shared/enums";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { RadioButtonsField } from "@/lib/shared/components/formFields/RadioButtonsField";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export interface AnnouncementSidebarProps {
   open: boolean;

@@ -57,6 +57,10 @@ public class UnconfirmedAppointmentsRemover
     run();
   }
 
+  public void runNow() {
+    run();
+  }
+
   @Override
   protected Page<ProcedureExpiration> fetchExpiredEntities(
       Instant retentionTime, Pageable pageable) {

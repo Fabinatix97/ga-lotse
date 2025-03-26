@@ -18,6 +18,8 @@ import jakarta.persistence.EntityManager;
 import java.lang.reflect.Field;
 import java.util.Optional;
 import java.util.function.Function;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
@@ -27,6 +29,9 @@ public abstract class AbstractDepartmentInfoWithBaseModuleFallbackConfigService<
 
   private final OptionalInitialDepartmentInfo initialDepartmentInfo;
   private final DepartmentApi departmentApi;
+
+  private static final Logger log =
+      LoggerFactory.getLogger(AbstractDepartmentInfoWithBaseModuleFallbackConfigService.class);
 
   protected AbstractDepartmentInfoWithBaseModuleFallbackConfigService(
       EntityManager entityManager,
@@ -56,8 +61,10 @@ public abstract class AbstractDepartmentInfoWithBaseModuleFallbackConfigService<
 
   private DepartmentInfo createDepartmentInfo() {
     if (initialDepartmentInfo.useDepartmentInfoFromBaseModule()) {
+      log.info("Using department info from base module.");
       return null;
     } else {
+      log.info("Using custom department info.");
       GetDepartmentInfoResponse baseDepartmentInfo = departmentApi.getDepartmentInfo();
 
       DepartmentInfo departmentInfo = new DepartmentInfo();

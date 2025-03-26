@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { TextareaField } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { Divider, Stack, Typography } from "@mui/joy";
@@ -15,7 +16,6 @@ import {
   DataSource,
 } from "@/lib/businessModules/statistics/components/evaluations/SidebarSummary";
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
 export interface SaveEvaluationTemplateStepProps
   extends SidebarStepContentProps<SaveEvaluationTemplateStepFormModel> {

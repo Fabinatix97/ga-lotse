@@ -1,0 +1,191 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1742822177092-1">
+    <ext:createPostgresEnumType name="countrycode"
+      values="AD, AE, AF, AG, AI, AL, AM, AO, AQ, AR, AS, AT, AU, AW, AX, AZ, BA, BB, BD, BE, BF, BG, BH, BI, BJ, BL, BM, BN, BO, BQ, BR, BS, BT, BV, BW, BY, BZ, CA, CC, CD, CF, CG, CH, CI, CK, CL, CM, CN, CO, CR, CU, CV, CW, CX, CY, CZ, DE, DJ, DK, DM, DO, DZ, EC, EE, EG, EH, ER, ES, ET, FI, FJ, FK, FM, FO, FR, GA, GB, GD, GE, GF, GG, GH, GI, GL, GM, GN, GP, GQ, GR, GS, GT, GU, GW, GY, HK, HM, HN, HR, HT, HU, ID, IE, IL, IM, IN, IO, IQ, IR, IS, IT, JE, JM, JO, JP, KE, KG, KH, KI, KM, KN, KP, KR, KW, KY, KZ, LA, LB, LC, LI, LK, LR, LS, LT, LU, LV, LY, MA, MC, MD, ME, MF, MG, MH, MK, ML, MM, MN, MO, MP, MQ, MR, MS, MT, MU, MV, MW, MX, MY, MZ, NA, NC, NE, NF, NG, NI, NL, NO, NP, NR, NU, NZ, OM, PA, PE, PF, PG, PH, PK, PL, PM, PN, PR, PS, PT, PW, PY, QA, RE, RO, RS, RU, RW, SA, SB, SC, SD, SE, SG, SH, SI, SJ, SK, SL, SM, SN, SO, SR, SS, ST, STATELESS, SV, SX, SY, SZ, TC, TD, TF, TG, TH, TJ, TK, TL, TM, TN, TO, TR, TT, TV, TW, TZ, UA, UG, UM, UNKNOWN, US, UY, UZ, VA, VC, VE, VG, VI, VN, VU, WF, WS, XK, YE, YT, ZA, ZM, ZW"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1742822177092-2">
+    <createTable tableName="department_info_config">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_department_info_config"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="department_info_id" type="BIGINT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1742822177092-3">
+    <createTable tableName="privacy_document">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_privacy_document"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="de_file_size_bytes" type="INTEGER">
+        <constraints nullable="false"/>
+      </column>
+      <column name="en_file_size_bytes" type="INTEGER"/>
+      <column name="de_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="en_id" type="BIGINT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1742822177092-4">
+    <createTable tableName="privacy_documents_config">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_privacy_documents_config"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="privacy_notice_id" type="BIGINT"/>
+      <column name="privacy_policy_id" type="BIGINT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1742822177092-5">
+    <createTable tableName="department_info">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_department_info"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="abbreviation" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="city" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="country" type="COUNTRYCODE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="email" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="homepage" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="house_number" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="latitude" type="FLOAT8">
+        <constraints nullable="false"/>
+      </column>
+      <column name="longitude" type="FLOAT8">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="phone_number" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="postal_code" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="street" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1742822177092-6">
+    <addUniqueConstraint columnNames="department_info_id"
+      constraintName="department_info_config_department_info_id_key"
+      tableName="department_info_config"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1742822177092-7">
+    <addUniqueConstraint columnNames="de_id" constraintName="privacy_document_de_id_key"
+      tableName="privacy_document"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1742822177092-8">
+    <addUniqueConstraint columnNames="en_id" constraintName="privacy_document_en_id_key"
+      tableName="privacy_document"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1742822177092-9">
+    <addUniqueConstraint columnNames="privacy_notice_id"
+      constraintName="privacy_documents_config_privacy_notice_id_key"
+      tableName="privacy_documents_config"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1742822177092-10">
+    <addUniqueConstraint columnNames="privacy_policy_id"
+      constraintName="privacy_documents_config_privacy_policy_id_key"
+      tableName="privacy_documents_config"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1742822177092-11">
+    <createTable tableName="document">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_document"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="content" type="BYTEA">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1742822177092-12">
+    <createTable tableName="opening_hours">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_opening_hours"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="de" type="TEXT[]">
+        <constraints nullable="false"/>
+      </column>
+      <column name="en" type="TEXT[]">
+        <constraints nullable="false"/>
+      </column>
+      <column name="initialized" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1742822177092-13">
+    <addForeignKeyConstraint baseColumnNames="department_info_id"
+      baseTableName="department_info_config"
+      constraintName="fk_department_info_config_department_info" deferrable="false"
+      initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="department_info" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1742822177092-14">
+    <addForeignKeyConstraint baseColumnNames="de_id" baseTableName="privacy_document"
+      constraintName="fk_privacy_document_de" deferrable="false" initiallyDeferred="false"
+      onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="document" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1742822177092-15">
+    <addForeignKeyConstraint baseColumnNames="en_id" baseTableName="privacy_document"
+      constraintName="fk_privacy_document_en" deferrable="false" initiallyDeferred="false"
+      onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="document" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1742822177092-16">
+    <addForeignKeyConstraint baseColumnNames="privacy_notice_id"
+      baseTableName="privacy_documents_config"
+      constraintName="fk_privacy_documents_config_privacy_notice" deferrable="false"
+      initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="privacy_document" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1742822177092-17">
+    <addForeignKeyConstraint baseColumnNames="privacy_policy_id"
+      baseTableName="privacy_documents_config"
+      constraintName="fk_privacy_documents_config_privacy_policy" deferrable="false"
+      initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="privacy_document" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

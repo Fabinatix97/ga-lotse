@@ -151,7 +151,7 @@ public class KeycloakTestClient {
       List<KeycloakUser> configuredUsers, BiConsumer<UserRepresentation, KeycloakUser> userUpdate) {
     UsersResource usersResource = keycloakClient.getRealm().users();
     List<UserRepresentation> existingUsers =
-        keycloakClient.getUsers(Integer.MAX_VALUE).stream().filter(this::hasEshgEmail).toList();
+        keycloakClient.getUsers(Integer.MAX_VALUE).stream().filter(this::hasGaLotseEmail).toList();
     List<KeycloakUser> missingUsers = new ArrayList<>(configuredUsers);
 
     existingUsers.forEach(
@@ -171,12 +171,13 @@ public class KeycloakTestClient {
         });
   }
 
-  private boolean hasEshgEmail(UserRepresentation userRepresentation) {
+  private boolean hasGaLotseEmail(UserRepresentation userRepresentation) {
     String email = userRepresentation.getEmail();
     if (email == null) {
       return false;
     }
-    return email.endsWith(KeycloakUser.TEST_USER_EMAIL_POSTFIX);
+    // TODO ISSUE-8232 remove this after migration
+    return email.endsWith(KeycloakUser.TEST_USER_EMAIL_POSTFIX) || email.endsWith("@eshg.de");
   }
 
   // The existing password can not be queried from keycloak, so there is no way to diff it.

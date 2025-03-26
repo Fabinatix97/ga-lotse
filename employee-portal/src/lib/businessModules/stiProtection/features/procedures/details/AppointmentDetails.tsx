@@ -7,6 +7,7 @@ import {
   DataTable,
   DetailsSection,
   TablePage,
+  useConfirmationDialog,
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
@@ -35,7 +36,6 @@ import {
 } from "@/lib/shared/components/buttons/ActionsMenu";
 import { CalendarAddDay } from "@/lib/shared/components/icons/CalendarAddDay";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 import { formatAppointmentTime } from "./AdditionalDataSection";
 import {

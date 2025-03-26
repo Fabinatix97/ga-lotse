@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useHeaderHeights } from "@eshg/lib-employee-portal";
+import { useHeaderHeights, useSidenav } from "@eshg/lib-employee-portal";
 import { Box, Drawer } from "@mui/joy";
 import { Dispatch, SetStateAction } from "react";
 
@@ -11,7 +11,6 @@ import { CollapsedNavigationList } from "@/lib/baseModule/components/layout/side
 import { ExpandedNavigationList } from "@/lib/baseModule/components/layout/sideNavigation/lists/ExpandedNavigationList";
 import { sideNavigationWidth } from "@/lib/baseModule/components/layout/sizes";
 import { useResolveSideNavigationItems } from "@/lib/baseModule/moduleRegister/sideNavigationItemsResolver";
-import { useSidenav } from "@/lib/shared/components/drawer/useSidenav";
 
 export function SideNavigation({
   collapsed,

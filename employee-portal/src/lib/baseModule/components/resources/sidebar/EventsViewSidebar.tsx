@@ -4,6 +4,7 @@
  */
 
 import { ApiDetailedEventWithoutCalendarId } from "@eshg/base-api";
+import { SidebarContent, useSidebar } from "@eshg/lib-employee-portal";
 import { Box, Button, Divider, Stack, Typography } from "@mui/joy";
 import { isDefined } from "remeda";
 
@@ -13,8 +14,6 @@ import {
   mapResourceCalendarEventColor,
   mapResourceEventDateInfo,
 } from "@/lib/baseModule/components/resources/resourceCalendarMapper";
-import { useSidebar } from "@/lib/shared/components/drawer/useSidebar";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { formatDateToFullReadableStringWithShortenedWeekday } from "@/lib/shared/helpers/dateTime";
 
 export function useEventsViewSidebar() {

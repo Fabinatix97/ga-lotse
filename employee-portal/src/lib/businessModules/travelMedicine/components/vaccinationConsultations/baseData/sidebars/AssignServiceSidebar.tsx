@@ -4,6 +4,11 @@
  */
 
 import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
+import {
   ApiPatchServiceAssignmentRequest,
   AssignStepToServiceRequest,
 } from "@eshg/travel-medicine-api";
@@ -16,11 +21,6 @@ import {
   AssignServiceForm,
   AssignServiceFormValues,
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/sidebarForms/AsssignServiceForm";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useAssignServiceSidebar(): UseSidebarWithFormRefResult<AssignServiceSidebarProps> {
   return useSidebarWithFormRef({

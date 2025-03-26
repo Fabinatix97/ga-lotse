@@ -3,6 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import {
+  FormButtonBar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+} from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { EmailField } from "@eshg/lib-portal/components/formFields/EmailField";
 import {
@@ -20,17 +27,10 @@ import { FieldArray, Formik } from "formik";
 import { Fragment, ReactNode, RefObject } from "react";
 
 import { BaseFacility } from "@/lib/shared/components/facilitySidebar/types";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
 import {
   ContactAddressForm,
   OptionalBillingAddressForm,
 } from "@/lib/shared/components/form/address/BaseAddressForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { createEmptyContactPerson } from "@/lib/shared/helpers/facilityUtils";
 
 import { ContactPersonForm } from "./ContactPersonForm";

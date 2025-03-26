@@ -6,6 +6,14 @@
 "use client";
 
 import { ApiUpdateInspectionModifyInventoryRequest } from "@eshg/inspection-api";
+import {
+  FormButtonBar,
+  OverlayBoundary,
+  Sidebar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+} from "@eshg/lib-employee-portal";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { validateRange } from "@eshg/lib-portal/helpers/validators";
@@ -14,12 +22,6 @@ import { Formik } from "formik";
 
 import { useModifyInventory } from "@/lib/businessModules/inspection/api/mutations/inventory";
 import { useGetInventoryItems } from "@/lib/businessModules/inspection/api/queries/inventory";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export interface InventorySidebarProps {
   open: boolean;

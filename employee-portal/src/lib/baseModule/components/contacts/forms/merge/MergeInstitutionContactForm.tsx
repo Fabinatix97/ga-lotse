@@ -6,6 +6,10 @@
 import { ApiInstitutionContact } from "@eshg/base-api";
 import {
   BaseAddressFormInputs,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
   createEmptyAddress,
 } from "@eshg/lib-employee-portal";
 import {
@@ -33,12 +37,6 @@ import {
 } from "@/lib/baseModule/components/contacts/types";
 import { contactCategoryNames } from "@/lib/baseModule/shared/translations";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 function initialValues(
   into: ApiInstitutionContact,

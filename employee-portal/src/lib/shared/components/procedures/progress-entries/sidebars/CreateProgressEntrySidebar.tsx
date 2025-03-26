@@ -5,6 +5,16 @@
 
 "use client";
 
+import {
+  FormButtonBar,
+  OverlayBoundary,
+  Sidebar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  TextareaField,
+  useConfirmationDialog,
+} from "@eshg/lib-employee-portal";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { validateFile } from "@eshg/lib-portal/helpers/validators";
@@ -14,10 +24,6 @@ import { Stack } from "@mui/joy";
 import { Formik, FormikHelpers } from "formik";
 import { isEmpty } from "remeda";
 
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
 import { useProgressEntriesConfig } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import {
@@ -30,10 +36,6 @@ import {
 } from "@/lib/shared/components/procedures/progress-entries/helper";
 import { mapFormValuesToCreateProgressEntryRequest } from "@/lib/shared/components/procedures/progress-entries/mapper";
 import { useCreateProgressEntry } from "@/lib/shared/components/procedures/progress-entries/mutations/progressEntryApi";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface CreateProgressEntrySidebarProps {
   open: boolean;

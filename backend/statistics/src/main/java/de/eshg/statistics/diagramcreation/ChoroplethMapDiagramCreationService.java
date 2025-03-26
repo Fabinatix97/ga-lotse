@@ -9,12 +9,10 @@ import de.eshg.statistics.GeoJsonHandler;
 import de.eshg.statistics.aggregation.AggregationResultUtil;
 import de.eshg.statistics.aggregation.AnalysisService;
 import de.eshg.statistics.aggregation.TableRowSpecifications;
-import de.eshg.statistics.api.AddDiagramRequest;
-import de.eshg.statistics.api.chart.CalculationDto;
-import de.eshg.statistics.api.chart.ChoroplethMapConfigurationDto;
 import de.eshg.statistics.api.filter.TableColumnFilterParameter;
 import de.eshg.statistics.config.StatisticsConfig;
 import de.eshg.statistics.mapper.AnalysisMapper;
+import de.eshg.statistics.mapper.FilterParameterMapper;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.Analysis;
 import de.eshg.statistics.persistence.entity.CellEntry;
@@ -22,9 +20,10 @@ import de.eshg.statistics.persistence.entity.Diagram;
 import de.eshg.statistics.persistence.entity.TableColumn;
 import de.eshg.statistics.persistence.entity.TableColumnValueType;
 import de.eshg.statistics.persistence.entity.TableRow;
+import de.eshg.statistics.persistence.entity.chart.Calculation;
+import de.eshg.statistics.persistence.entity.chart.ChoroplethMapConfiguration;
 import de.eshg.statistics.persistence.entity.diagramdata.ChoroplethMapData;
 import de.eshg.statistics.persistence.entity.diagramdata.KeyToValue;
-import de.eshg.statistics.persistence.repository.AnalysisRepository;
 import de.eshg.statistics.persistence.repository.TableRowRepository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -41,32 +40,29 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ChoroplethMapDiagramCreationService
-    extends AbstractChartDiagramCreationService<
-        Map<String, List<BigDecimal>>, ChoroplethMapConfigurationDto> {
+    extends AbstractChartDiagramCreationService<Map<String, List<BigDecimal>>> {
   public ChoroplethMapDiagramCreationService(
       AnalysisService analysisService,
-      AnalysisRepository analysisRepository,
       TableRowRepository tableRowRepository,
       StatisticsConfig statisticsConfig) {
-    super(analysisService, analysisRepository, tableRowRepository, statisticsConfig);
+    super(analysisService, tableRowRepository, statisticsConfig);
   }
 
   @Override
   @Transactional(readOnly = true)
-  public Map<String, List<BigDecimal>> initializeChartDataHolder(
-      UUID analysisId,
-      ChoroplethMapConfigurationDto choroplethMapConfigurationDto,
-      List<TableColumnFilterParameter> filters) {
-    Analysis analysis = analysisService.getAnalysisInternal(analysisId);
-    AbstractAggregationResult aggregationResult = analysis.getAggregationResult();
-
-    AggregationResultUtil.validateColumnFilters(filters, aggregationResult);
+  public Map<String, List<BigDecimal>> initializeChartDataHolder(UUID diagramId) {
+    Analysis analysis = analysisService.getDiagramInternal(diagramId).getAnalysis();
 
     Map<String, List<BigDecimal>> chartDataHolder = new TreeMap<>();
-    List<String> geoKeys = GeoJsonHandler.getGeoKeys(choroplethMapConfigurationDto.geoJson());
+    List<String> geoKeys =
+        GeoJsonHandler.getGeoKeys(getChoroplethMapConfiguration(analysis).getGeoJson());
     initializeChoroplethMapData(chartDataHolder, geoKeys);
 
     return chartDataHolder;
+  }
+
+  private static ChoroplethMapConfiguration getChoroplethMapConfiguration(Analysis analysis) {
+    return (ChoroplethMapConfiguration) AnalysisMapper.getChartConfiguration(analysis);
   }
 
   private static void initializeChoroplethMapData(
@@ -77,21 +73,19 @@ public class ChoroplethMapDiagramCreationService
   @Override
   @Transactional(readOnly = true)
   public int collectChartData(
-      UUID analysisId,
-      ChoroplethMapConfigurationDto choroplethMapConfigurationDto,
-      List<TableColumnFilterParameter> filters,
-      int page,
-      Map<String, List<BigDecimal>> chartDataHolder) {
-    Analysis analysis = analysisService.getAnalysisInternal(analysisId);
-    AbstractAggregationResult aggregationResult = analysis.getAggregationResult();
+      UUID diagramId, int page, Map<String, List<BigDecimal>> chartDataHolder) {
+    Diagram diagram = analysisService.getDiagramInternal(diagramId);
+    AbstractAggregationResult aggregationResult = diagram.getAnalysis().getAggregationResult();
+    ChoroplethMapConfiguration choroplethMapConfiguration =
+        getChoroplethMapConfiguration(diagram.getAnalysis());
 
     TableColumn primaryTableColumn =
         AggregationResultUtil.getTableColumn(
-            choroplethMapConfigurationDto.primaryAttribute(), aggregationResult);
+            choroplethMapConfiguration.getPrimaryAttributeSelection(), aggregationResult);
     TableColumn secondaryTableColumn =
         AggregationResultUtil.getTableColumn(
-            choroplethMapConfigurationDto.secondaryAttribute(), aggregationResult);
-    List<String> geoKeys = GeoJsonHandler.getGeoKeys(choroplethMapConfigurationDto.geoJson());
+            choroplethMapConfiguration.getSecondaryAttributeSelection(), aggregationResult);
+    List<String> geoKeys = GeoJsonHandler.getGeoKeys(choroplethMapConfiguration.getGeoJson());
 
     List<Specification<TableRow>> specifications =
         getNotNullSpecificationsForChoroplethMap(primaryTableColumn, secondaryTableColumn);
@@ -100,6 +94,7 @@ public class ChoroplethMapDiagramCreationService
         TableRowSpecifications.getValueOptionFilterSpecification(
             primaryTableColumn, geoKeys, false));
 
+    List<TableColumnFilterParameter> filters = FilterParameterMapper.mapToApi(diagram.getFilters());
     return collectDataForTablePageAndReturnMaxPage(
         page,
         specifications.stream(),
@@ -175,12 +170,10 @@ public class ChoroplethMapDiagramCreationService
 
   @Override
   @Transactional
-  public UUID addDiagram(
-      UUID analysisId,
-      ChoroplethMapConfigurationDto choroplethMapConfigurationDto,
-      AddDiagramRequest addDiagramRequest,
-      Map<String, List<BigDecimal>> chartDataHolder) {
-    Analysis analysis = analysisService.getAnalysisInternal(analysisId);
+  public void fillDiagramData(UUID diagramId, Map<String, List<BigDecimal>> chartDataHolder) {
+    Diagram diagram = analysisService.getDiagramInternal(diagramId);
+    ChoroplethMapConfiguration choroplethMapConfiguration =
+        getChoroplethMapConfiguration(diagram.getAnalysis());
 
     List<KeyToValue> keyToValues = new ArrayList<>();
     AtomicInteger evaluatedDataAmount = new AtomicInteger(0);
@@ -189,7 +182,7 @@ public class ChoroplethMapDiagramCreationService
           KeyToValue keyToValue = new KeyToValue();
           keyToValue.setKey(key);
           BigDecimal sum = value.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
-          if (CalculationDto.MEAN.equals(choroplethMapConfigurationDto.calculation())) {
+          if (Calculation.MEAN.equals(choroplethMapConfiguration.getCalculation())) {
             BigDecimal mean =
                 value.isEmpty()
                     ? null
@@ -202,14 +195,9 @@ public class ChoroplethMapDiagramCreationService
           evaluatedDataAmount.addAndGet(value.size());
         });
 
-    ChoroplethMapData choroplethMapData = new ChoroplethMapData();
+    ChoroplethMapData choroplethMapData = (ChoroplethMapData) diagram.getDiagramData();
     choroplethMapData.addKeyToValues(keyToValues);
     choroplethMapData.setEvaluatedDataAmount(evaluatedDataAmount.get());
-
-    Diagram diagram =
-        AnalysisMapper.mapToPersistence(addDiagramRequest, choroplethMapData, analysis);
-
-    analysisRepository.flush();
-    return diagram.getExternalId();
+    diagram.setDiagramDataEmpty(false);
   }
 }

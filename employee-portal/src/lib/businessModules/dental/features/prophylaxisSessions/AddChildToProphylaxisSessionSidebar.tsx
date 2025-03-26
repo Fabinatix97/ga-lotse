@@ -4,11 +4,20 @@
  */
 
 import {
-  ChildExamination,
   ChildSearchResult,
+  ProphylaxisSessionExamination,
   useSearchChildren,
   useUpdateProphylaxisSessionParticipants,
 } from "@eshg/dental";
+import {
+  DrawerProps,
+  FormButtonBar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  UseSidebarResult,
+  useSidebar,
+} from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -33,15 +42,6 @@ import { useDebounce } from "use-debounce";
 
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { SelectableCard } from "@/lib/shared/components/cards/SelectableCard";
-import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
-import {
-  UseSidebarResult,
-  useSidebar,
-} from "@/lib/shared/components/drawer/useSidebar";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export function useAddChildToProphylaxisSessionSidebar(): UseSidebarResult<AddChildToProphylaxisSessionSidebarProps> {
   return useSidebar({
@@ -64,7 +64,7 @@ interface AddChildToProphylaxisSessionSidebarProps extends DrawerProps {
   prophylaxisSessionId: string;
   prophylaxisSessionVersion: number;
   institutionId: string;
-  allParticipants: ChildExamination[];
+  allParticipants: ProphylaxisSessionExamination[];
 }
 
 function AddChildToProphylaxisSessionSidebar(

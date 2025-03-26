@@ -4,18 +4,20 @@
  */
 
 import { ApiFluoridationConsent } from "@eshg/dental-api";
-import { DetailsItem } from "@eshg/lib-employee-portal";
+import {
+  ButtonBar,
+  DetailsItem,
+  DrawerProps,
+  SidebarActions,
+  SidebarContent,
+  useSidebar,
+} from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Button, Stack, Typography } from "@mui/joy";
 import { isDefined } from "remeda";
 
 import { FluoridationConsentTable } from "@/lib/businessModules/dental/shared/FluoridationConsentTable";
 import { OpenHistorySidebarButton } from "@/lib/businessModules/dental/shared/OpenHistorySidebarButton";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
-import { useSidebar } from "@/lib/shared/components/drawer/useSidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { displayBoolean } from "@/lib/shared/helpers/booleans";
 
 interface FluoridationConsentInformationSectionProps {

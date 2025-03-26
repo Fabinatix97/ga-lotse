@@ -155,7 +155,7 @@ public class DiagramExportService {
       AbstractAggregationResult aggregationResult,
       boolean withUnit) {
     TableColumn tableColumn =
-        AggregationResultUtil.getTableColumn(attributeSelection.getSearchKey(), aggregationResult);
+        AggregationResultUtil.getTableColumn(attributeSelection, aggregationResult);
     return DataExportUtil.getAttributeName(tableColumn, withUnit);
   }
 
@@ -209,8 +209,7 @@ public class DiagramExportService {
       AbstractAggregationResult aggregationResult,
       AttributeSelection attribute) {
     List<ValueToMeaning> valueToMeanings =
-        AggregationResultUtil.getTableColumn(attribute.getSearchKey(), aggregationResult)
-            .getValueToMeanings();
+        AggregationResultUtil.getTableColumn(attribute, aggregationResult).getValueToMeanings();
     if (CollectionUtils.isEmpty(valueToMeanings)) {
       return;
     }

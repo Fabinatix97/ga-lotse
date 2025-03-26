@@ -31,6 +31,7 @@ export default function StiProtectionProcedureLaboratoryTestPage(
         <LaboratoryTestExamination
           procedureId={procedureId}
           laboratoryTestExamination={laboratoryTestExamination}
+          labStatus={procedure.labStatus}
         />
       </MainContentLayout>
     </DisabledFormProvider>

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ButtonBar, TextareaField } from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
@@ -22,9 +23,7 @@ import { Formik } from "formik";
 
 import { usePatchWaitingRoom } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
 import { WAITING_STATUS_OPTIONS } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/options";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FormStack } from "@/lib/shared/components/form/FormStack";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 
 interface WaitingRoomValues {
@@ -79,18 +78,19 @@ export function WaitingRoomPanel({
                 options={WAITING_STATUS_OPTIONS}
               />
               <ButtonBar
+                left={
+                  <Button
+                    variant="outlined"
+                    onClick={() => handleReset(setFieldValue)}
+                    sx={{ flexGrow: 1 }}
+                  >
+                    Zurücksetzen
+                  </Button>
+                }
                 right={
-                  <>
-                    <Button
-                      variant="outlined"
-                      onClick={() => handleReset(setFieldValue)}
-                    >
-                      Zurücksetzen
-                    </Button>
-                    <SubmitButton submitting={isSubmitting}>
-                      Speichern
-                    </SubmitButton>
-                  </>
+                  <SubmitButton submitting={isSubmitting} sx={{ flexGrow: 1 }}>
+                    Speichern
+                  </SubmitButton>
                 }
               />
             </FormStack>

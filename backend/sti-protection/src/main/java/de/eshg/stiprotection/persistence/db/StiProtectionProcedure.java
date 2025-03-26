@@ -58,6 +58,7 @@ import org.springframework.util.Assert;
       @Index(columnList = "procedure_status"),
       @Index(columnList = "sti_procedure_origin"),
       @Index(columnList = "closed_at"),
+      @Index(columnList = "access_code"),
     })
 public class StiProtectionProcedure
     extends Procedure<StiProtectionProcedure, StiProtectionTask, Person, Facility>
@@ -167,6 +168,9 @@ public class StiProtectionProcedure
   @NotNull
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private StiProcedureOrigin stiProcedureOrigin;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  private String accessCode;
 
   public static StiProtectionProcedure newProcedure(
       Concern concern,
@@ -410,5 +414,13 @@ public class StiProtectionProcedure
 
   public void setMedicalHistorySubmitted(Boolean medicalHistorySubmitted) {
     this.medicalHistorySubmitted = medicalHistorySubmitted;
+  }
+
+  public String getAccessCode() {
+    return accessCode;
+  }
+
+  public void setAccessCode(String accessCode) {
+    this.accessCode = accessCode;
   }
 }

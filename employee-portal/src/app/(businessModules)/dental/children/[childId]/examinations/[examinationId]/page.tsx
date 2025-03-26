@@ -6,8 +6,8 @@
 "use client";
 
 import {
+  ChildExamination,
   DentalChildExaminationRouteParams,
-  Examination,
   ExaminationResultWithDate,
   getChildDetailsQuery,
   getExaminationQuery,
@@ -79,7 +79,7 @@ export default function ExaminationDetailsPage(
 }
 
 function mapPreviousExaminations(
-  response: Examination[],
+  response: ChildExamination[],
 ): ExaminationResultWithDate[] {
   return response.map((examination) => ({
     result: examination.result,

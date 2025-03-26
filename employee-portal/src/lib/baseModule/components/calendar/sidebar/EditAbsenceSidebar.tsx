@@ -5,6 +5,14 @@
 
 "use client";
 
+import {
+  DrawerProps,
+  SidebarActions,
+  SidebarContent,
+  UseSidebarResult,
+  useConfirmationDialog,
+  useSidebar,
+} from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { DeleteForever } from "@mui/icons-material";
 import { Button, Stack } from "@mui/joy";
@@ -24,14 +32,6 @@ import {
   mapEventToFormValues,
   mapFormToRequestValues,
 } from "@/lib/baseModule/components/calendar/calendarMapper";
-import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
-import {
-  UseSidebarResult,
-  useSidebar,
-} from "@/lib/shared/components/drawer/useSidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function useEditAbsenceSidebar(): UseSidebarResult<EditAbsenceSidebarProps> {
   return useSidebar({

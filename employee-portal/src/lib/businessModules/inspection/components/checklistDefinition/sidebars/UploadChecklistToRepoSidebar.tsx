@@ -7,7 +7,17 @@ import {
   ApiChecklistDefinition,
   ApiChecklistDefinitionCentralRepoRequest,
 } from "@eshg/inspection-api";
-import { useGetSelfUser } from "@eshg/lib-employee-portal";
+import {
+  FormButtonBar,
+  OverlayBoundary,
+  Sidebar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+  TextareaField,
+  useGetSelfUser,
+} from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { Stack } from "@mui/joy";
@@ -19,16 +29,6 @@ import {
   useAddChecklistDefinitionToCentralRepo,
   useUpdateChecklistDefinitionToCentralRepo,
 } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export interface UploadChecklistToRepoSidebarProps {
   open: boolean;

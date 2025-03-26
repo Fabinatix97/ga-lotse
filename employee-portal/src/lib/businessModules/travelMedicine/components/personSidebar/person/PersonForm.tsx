@@ -3,15 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+} from "@eshg/lib-employee-portal";
 import { RefObject } from "@fullcalendar/core/preact.js";
 import { Divider, Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
 import { LegacyAddressForm } from "@/lib/shared/components/form/address/LegacyAddressForm";
 import { ApiFacilityAddressType } from "@/lib/shared/components/form/address/legacyTypes";
 import {
@@ -21,8 +23,6 @@ import {
 import { LegacyEmailAddressesForm } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyEmailAddressesForm";
 import { LegacyPerson } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyPersonForm";
 import { LegacyPhoneNumbersForm } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyPhoneNumbersForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export interface PersonFormConfig {
   hiddenFields?: (keyof LegacyPerson)[];

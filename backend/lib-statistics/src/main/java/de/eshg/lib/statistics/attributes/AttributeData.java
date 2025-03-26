@@ -6,6 +6,7 @@
 package de.eshg.lib.statistics.attributes;
 
 import de.eshg.lib.statistics.api.DataPrivacyCategory;
+import de.eshg.lib.statistics.api.TClosenessHierarchyEntryDto;
 import de.eshg.lib.statistics.api.ValueOptionInternal;
 import de.eshg.lib.statistics.api.ValueType;
 import de.eshg.lib.statistics.api.interval.IntervalConfiguration;
@@ -23,6 +24,7 @@ public final class AttributeData {
   private IntervalConfiguration intervalConfiguration;
   private Integer lDiversity;
   private Double tCloseness;
+  private List<TClosenessHierarchyEntryDto> tClosenessHierarchyEntries;
 
   static AttributeData createAttribute(
       String name,
@@ -158,5 +160,13 @@ public final class AttributeData {
 
   public void setTCloseness(Double tCloseness) {
     this.tCloseness = tCloseness;
+  }
+
+  public List<TClosenessHierarchyEntryDto> getTClosenessHierarchyEntries() {
+    return tClosenessHierarchyEntries;
+  }
+
+  public void setTClosenessHierarchy(List<TClosenessHierarchyEntryDto> tClosenessHierarchyEntries) {
+    this.tClosenessHierarchyEntries = tClosenessHierarchyEntries;
   }
 }

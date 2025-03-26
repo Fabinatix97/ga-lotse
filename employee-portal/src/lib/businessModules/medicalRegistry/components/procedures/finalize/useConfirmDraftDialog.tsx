@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { ConfirmationDialogOptions } from "@eshg/lib-portal/components/confirmationDialog/ConfirmationDialogProvider";
 import {
   ApiGetProcedureDraftResponse,
@@ -12,7 +13,6 @@ import {
 } from "@eshg/medical-registry-api";
 
 import { useConfirmDraft } from "@/lib/businessModules/medicalRegistry/api/mutations/medicalRegistryEntries";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface ConfirmDraftParams {
   procedure: ApiGetProcedureDraftResponse;

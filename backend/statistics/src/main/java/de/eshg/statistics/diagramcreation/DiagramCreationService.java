@@ -5,23 +5,16 @@
 
 package de.eshg.statistics.diagramcreation;
 
-import de.eshg.statistics.aggregation.EvaluationService;
-import de.eshg.statistics.api.AddDiagramRequest;
-import de.eshg.statistics.api.AnalysisDto;
+import de.eshg.statistics.aggregation.AnalysisService;
 import de.eshg.statistics.api.chart.BarChartConfigurationDto;
+import de.eshg.statistics.api.chart.ChartConfigurationDto;
 import de.eshg.statistics.api.chart.ChoroplethMapConfigurationDto;
 import de.eshg.statistics.api.chart.HistogramChartConfigurationDto;
 import de.eshg.statistics.api.chart.LineChartConfigurationDto;
 import de.eshg.statistics.api.chart.PieChartConfigurationDto;
 import de.eshg.statistics.api.chart.ScatterChartConfigurationDto;
-import de.eshg.statistics.mapper.AnalysisMapper;
-import de.eshg.statistics.mapper.FilterParameterMapper;
-import de.eshg.statistics.persistence.entity.AggregationResultState;
-import de.eshg.statistics.persistence.entity.Evaluation;
-import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DiagramCreationService {
@@ -30,7 +23,7 @@ public class DiagramCreationService {
   private final HistogramChartDiagramCreationService histogramChartDiagramCreationService;
   private final PieChartDiagramCreationService pieChartDiagramCreationService;
   private final PointBasedChartDiagramCreationService pointBasedChartDiagramCreationService;
-  private final EvaluationService evaluationService;
+  private final AnalysisService analysisService;
 
   public DiagramCreationService(
       BarChartDiagramCreationService barChartDiagramCreationService,
@@ -38,120 +31,51 @@ public class DiagramCreationService {
       HistogramChartDiagramCreationService histogramChartDiagramCreationService,
       PieChartDiagramCreationService pieChartDiagramCreationService,
       PointBasedChartDiagramCreationService pointBasedChartDiagramCreationService,
-      EvaluationService evaluationService) {
+      AnalysisService analysisService) {
     this.barChartDiagramCreationService = barChartDiagramCreationService;
     this.choroplethMapDiagramCreationService = choroplethMapDiagramCreationService;
     this.histogramChartDiagramCreationService = histogramChartDiagramCreationService;
     this.pieChartDiagramCreationService = pieChartDiagramCreationService;
     this.pointBasedChartDiagramCreationService = pointBasedChartDiagramCreationService;
-    this.evaluationService = evaluationService;
+    this.analysisService = analysisService;
   }
 
-  public UUID createDiagram(AnalysisDto analysisDto, AddDiagramRequest addDiagramRequest) {
-    UUID analysisId = analysisDto.id();
+  public void fillDiagramData(UUID diagramId) {
+    ChartConfigurationDto chartConfiguration = analysisService.getChartConfiguration(diagramId);
 
-    return switch (analysisDto.chartConfiguration()) {
-      case BarChartConfigurationDto barChartConfigurationDto ->
-          addDiagramWithData(
-              barChartDiagramCreationService,
-              analysisId,
-              barChartConfigurationDto,
-              addDiagramRequest);
-      case ChoroplethMapConfigurationDto choroplethMapConfigurationDto ->
-          addDiagramWithData(
-              choroplethMapDiagramCreationService,
-              analysisId,
-              choroplethMapConfigurationDto,
-              addDiagramRequest);
-      case HistogramChartConfigurationDto histogramChartConfigurationDto ->
-          addDiagramWithData(
-              histogramChartDiagramCreationService,
-              analysisId,
-              histogramChartConfigurationDto,
-              addDiagramRequest);
-      case LineChartConfigurationDto lineChartConfigurationDto ->
-          addDiagramWithData(
-              pointBasedChartDiagramCreationService,
-              analysisId,
-              lineChartConfigurationDto,
-              addDiagramRequest);
-      case PieChartConfigurationDto pieChartConfigurationDto ->
-          addDiagramWithData(
-              pieChartDiagramCreationService,
-              analysisId,
-              pieChartConfigurationDto,
-              addDiagramRequest);
-      case ScatterChartConfigurationDto scatterChartConfigurationDto ->
-          addDiagramWithData(
-              pointBasedChartDiagramCreationService,
-              analysisId,
-              scatterChartConfigurationDto,
-              addDiagramRequest);
-    };
+    switch (chartConfiguration) {
+      case BarChartConfigurationDto ignored ->
+          fillDiagramWithData(barChartDiagramCreationService, diagramId);
+      case ChoroplethMapConfigurationDto ignored ->
+          fillDiagramWithData(choroplethMapDiagramCreationService, diagramId);
+      case HistogramChartConfigurationDto ignored ->
+          fillDiagramWithData(histogramChartDiagramCreationService, diagramId);
+      case LineChartConfigurationDto ignored ->
+          fillDiagramWithData(pointBasedChartDiagramCreationService, diagramId);
+      case PieChartConfigurationDto ignored ->
+          fillDiagramWithData(pieChartDiagramCreationService, diagramId);
+      case ScatterChartConfigurationDto ignored ->
+          fillDiagramWithData(pointBasedChartDiagramCreationService, diagramId);
+    }
   }
 
-  private static <D, C> UUID addDiagramWithData(
-      AbstractChartDiagramCreationService<D, C> service,
-      UUID analysisId,
-      C chartConfigurationDto,
-      AddDiagramRequest addDiagramRequest) {
-    D chartDataHolder =
-        service.initializeChartDataHolder(
-            analysisId, chartConfigurationDto, addDiagramRequest.filters());
-    collectData(service, analysisId, chartConfigurationDto, addDiagramRequest, chartDataHolder);
-    return service.addDiagram(
-        analysisId, chartConfigurationDto, addDiagramRequest, chartDataHolder);
+  private static <D> void fillDiagramWithData(
+      AbstractChartDiagramCreationService<D> service, UUID diagramId) {
+    D chartDataHolder = service.initializeChartDataHolder(diagramId);
+    collectData(service, diagramId, chartDataHolder);
+    service.fillDiagramData(diagramId, chartDataHolder);
   }
 
-  private static <D, C> void collectData(
-      AbstractChartDiagramCreationService<D, C> service,
-      UUID analysisId,
-      C chartConfigurationDto,
-      AddDiagramRequest addDiagramRequest,
-      D chartDataHolder) {
+  private static <D> void collectData(
+      AbstractChartDiagramCreationService<D> service, UUID diagramId, D chartDataHolder) {
     int page = 0;
     int maxPage;
     while (true) {
-      maxPage =
-          service.collectChartData(
-              analysisId,
-              chartConfigurationDto,
-              addDiagramRequest.filters(),
-              page,
-              chartDataHolder);
+      maxPage = service.collectChartData(diagramId, page, chartDataHolder);
       if (page >= maxPage) {
         break;
       }
       page++;
     }
-  }
-
-  @Transactional
-  public void diagramRecreation(UUID evaluationId) {
-    Evaluation evaluation = evaluationService.getEvaluationInternal(evaluationId);
-    recreateDiagrams(evaluation);
-    evaluation.setPendingState(null);
-    evaluation.setState(AggregationResultState.COMPLETED);
-  }
-
-  private void recreateDiagrams(Evaluation evaluation) {
-    evaluation
-        .getAnalyses()
-        .forEach(
-            analysis -> {
-              AnalysisDto analysisDto = AnalysisMapper.mapToApi(analysis, true);
-              List<AddDiagramRequest> addDiagramRequests =
-                  analysis.getDiagrams().stream()
-                      .map(
-                          diagram ->
-                              new AddDiagramRequest(
-                                  diagram.getTitle(),
-                                  diagram.getDescription(),
-                                  FilterParameterMapper.mapToApi(diagram.getFilters())))
-                      .toList();
-              analysis.removeDiagrams();
-              addDiagramRequests.forEach(
-                  addDiagramRequest -> createDiagram(analysisDto, addDiagramRequest));
-            });
   }
 }

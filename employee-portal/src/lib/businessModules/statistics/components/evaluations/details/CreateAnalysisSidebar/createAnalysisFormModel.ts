@@ -24,3 +24,28 @@ export type ConfigureChartFormModel = ConfigureBarChartFormModel &
   ConfigureLineChartFormModel &
   ConfigureHistogramChartFormModel &
   ConfigureChoroplethChartFormModel;
+
+export type BarChartMetaFormModel = Pick<
+  ConfigureBarChartFormModel,
+  "orientation" | "grouping" | "scaling"
+>;
+
+export type HistogramChartMetaFormModel = Pick<
+  ConfigureHistogramChartFormModel,
+  "grouping" | "scaling"
+>;
+
+export type ScatterChartMetaFormModel = Pick<
+  ConfigureScatterChartFormModel,
+  "trendline" | "axisRange"
+>;
+
+export type LineChartMetaFormModel = Pick<
+  ConfigureLineChartFormModel,
+  "axisRange"
+>;
+
+export type ChoroplethChartMetaFormModel = Pick<
+  ConfigureChoroplethChartFormModel,
+  "colorScheme"
+>;

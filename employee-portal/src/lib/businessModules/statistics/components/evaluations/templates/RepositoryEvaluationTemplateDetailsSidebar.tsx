@@ -3,6 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  ButtonBar,
+  DrawerProps,
+  SidebarActions,
+  SidebarContent,
+  UseSidebarResult,
+  useSidebar,
+} from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Button, Divider, Stack, Typography } from "@mui/joy";
@@ -15,14 +23,6 @@ import {
   Attributes,
   DataSource,
 } from "@/lib/businessModules/statistics/components/evaluations/SidebarSummary";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
-import {
-  UseSidebarResult,
-  useSidebar,
-} from "@/lib/shared/components/drawer/useSidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export function useRepositoryEvaluationTemplateDetailsSidebar(): UseSidebarResult<RepositoryEvaluationTemplateDetailsSidebarProps> {
   return useSidebar({

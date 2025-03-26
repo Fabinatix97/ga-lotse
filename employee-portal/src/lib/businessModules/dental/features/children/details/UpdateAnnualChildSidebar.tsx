@@ -5,6 +5,15 @@
 
 import { ChildDetails, Institution, useUpdateAnnualChild } from "@eshg/dental";
 import { UpdateChildRequest } from "@eshg/dental-api";
+import {
+  FormButtonBar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { BooleanSelectField } from "@eshg/lib-portal/components/formFields/BooleanSelectField";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -22,16 +31,7 @@ import { isDefined } from "remeda";
 
 import { SCHOOL_OR_DAYCARE } from "@/lib/baseModule/api/queries/contacts";
 import { SearchGroupField } from "@/lib/businessModules/dental/features/prophylaxisSessions/SearchGroupField";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { SelectMultipleContactsField } from "@/lib/shared/components/formFields/SelectMultipleContactsField";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 interface FluoridationConsent {
   consented: boolean;

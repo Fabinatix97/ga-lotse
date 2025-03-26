@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import {
   ApiAppointmentHistoryEntry,
@@ -12,8 +13,6 @@ import {
   ApiStiProtectionProcedureOverview,
 } from "@eshg/sti-protection-api";
 import { FormikState } from "formik";
-
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function concernToAppointmentType(
   concern: ApiConcern | "RESULTS_REVIEW",

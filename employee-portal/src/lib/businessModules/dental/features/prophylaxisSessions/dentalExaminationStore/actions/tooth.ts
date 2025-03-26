@@ -27,7 +27,10 @@ import {
   isValidSecondaryResult,
 } from "./result";
 
-type AddToothState = Pick<DentalExaminationState, "dentition" | "dirty">;
+type AddToothState = Pick<
+  DentalExaminationState,
+  "dentition" | "dirty" | "currentFocus"
+>;
 
 export function addTooth(
   toothContext: ToothContext,
@@ -50,6 +53,7 @@ export function addTooth(
   const newTooth = createToothWithDiagnosis(tooth.toothNumber);
 
   return {
+    currentFocus: { toothContext: toothContext, element: "mainResultField" },
     dentition: {
       ...dentition,
       [quadrantNumber]: {
@@ -113,7 +117,10 @@ export function toggleToothType(
   toothContext: ToothContext,
   dentition: Dentition,
   previousToothDiagnoses: Partial<Record<ApiTooth, ToothDiagnosis>>,
-): Pick<DentalExaminationState, "dentition" | "dirty" | "dmftValues"> {
+): Pick<
+  DentalExaminationState,
+  "dentition" | "dirty" | "dmftValues" | "currentFocus"
+> {
   const { quadrantNumber, toothIndex } = toothContext;
   const targetQuadrant = dentition[quadrantNumber];
   const tooth = targetQuadrant.teeth[toothIndex];
@@ -153,6 +160,7 @@ export function toggleToothType(
     },
   };
   return {
+    currentFocus: { toothContext: toothContext, element: "mainResultField" },
     dentition: newDentition,
     dmftValues: calculateDmftValuesByDentitionType(newDentition),
     dirty: true,

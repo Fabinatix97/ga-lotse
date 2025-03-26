@@ -8,8 +8,10 @@
 import {
   DefaultPersonFormValues,
   MainContentLayout,
+  SidebarWithFormRefProps,
   StickyToolbarLayout,
   Toolbar,
+  useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -31,10 +33,6 @@ import {
   SearchPersonFormProps,
   SearchPersonFormValues,
 } from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export default function PersonSidebarPage() {
   const personSidebar = useSidebarWithFormRef({

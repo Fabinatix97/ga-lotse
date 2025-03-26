@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  ButtonBar,
+  SidebarActions,
+  SidebarContent,
+} from "@eshg/lib-employee-portal";
 import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
 import type { SvgIconComponent } from "@mui/icons-material";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
@@ -26,9 +31,6 @@ import {
   formatImportedCount,
   formatTotalCount,
 } from "@/lib/businessModules/inspection/components/processImport/formatters";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export interface ProcessImportResultProps
   extends PotentialDuplicatesFilterProps {

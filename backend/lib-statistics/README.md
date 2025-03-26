@@ -8,7 +8,7 @@ The statistics API ensures that statistics data of a business module can be retr
 The statistics library is by default autoconfigured, see
 [StatisticsLibraryAutoConfiguration](src/main/java/de/eshg/lib/statistics/spring/config/StatisticsLibraryAutoConfiguration.java)
 and
-[StatisticsLibraryDomainModelAutoConfiguration](src/main/java/de/eshg/lib/statistics/spring/config/StatisticsLibraryDomainModelAutoConfiguration.java)..
+[StatisticsLibraryDomainModelAutoConfiguration](src/main/java/de/eshg/lib/statistics/spring/config/StatisticsLibraryDomainModelAutoConfiguration.java).
 
 A liquibase migration is needed for `ProcedureReferenceForStatistics` and the `StatisticsProcedureReferenceHousekeeping` with `shedlock`.
 
@@ -38,3 +38,10 @@ the corresponding `AttributeInfo`. `null` is also a valid value.
 
 ## ValueOptionInternal
 None or only one option can be an explicit value that the information is not provided for the attribute (`isUnknownValue=true`).
+
+## SensitiveParameters
+Sensitive attributes require either a value for lDiversity or tCloseness.
+It is allowed to configure values for both.
+
+For ValueWithOptionsAttribute a tCloseness hierarchy might be provided like this:
+`List.of(List.of("dog", "mammal", "animal"), List.of("bear", "mammal", "animal"), List.of("crow", "bird", "animal"))`

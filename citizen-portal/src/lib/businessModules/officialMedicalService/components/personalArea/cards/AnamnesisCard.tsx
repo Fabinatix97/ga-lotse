@@ -44,7 +44,7 @@ export function AnamnesisCard() {
         }}
       >
         <HeaderGrid>
-          <IndicatorIcon success={false} sx={{ gridArea: "indicatorIcon" }} />
+          <IndicatorIcon type="close" sx={{ gridArea: "indicatorIcon" }} />
           <Box sx={{ gridArea: "label" }}>
             <Typography sx={{ fontWeight: theme.fontWeight.lg }}>
               {t("anamnesis.file.title")}

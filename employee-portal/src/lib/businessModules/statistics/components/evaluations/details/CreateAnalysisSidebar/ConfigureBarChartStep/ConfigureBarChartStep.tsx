@@ -4,7 +4,6 @@
  */
 
 import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
-import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { Stack } from "@mui/joy";
 import { isNonNullish } from "remeda";
 
@@ -17,15 +16,11 @@ import {
 import { ConfigureChartFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/createAnalysisFormModel";
 import { mapAttributeToAutocompleteSelectionOption } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/mapAttribute";
 import { BarChart } from "@/lib/businessModules/statistics/components/shared/charts/BarChart";
-import {
-  groupingValueNames,
-  isCategorical,
-  orientationValueNames,
-  scalingValueNames,
-} from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
+import { isCategorical } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
 import { AutocompleteSelectOption } from "@/lib/shared/components/AutocompleteSelectOptions";
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
-import { ToggleButtonGroupField } from "@/lib/shared/components/formFields/ToggleButtonGroupField";
+
+import { ConfigureBarChartMetaOptions } from "./ConfigureBarChartMetaOptions";
 
 export interface ConfigureBarChartStepProps
   extends SidebarStepContentProps<ConfigureChartFormModel> {
@@ -46,10 +41,6 @@ export function ConfigureBarChartStep({
     ),
   );
 
-  const orientations = buildEnumOptions(orientationValueNames);
-  const grouping = buildEnumOptions(groupingValueNames);
-  const scaling = buildEnumOptions(scalingValueNames);
-
   return (
     <Stack gap={4}>
       <Stack gap={3}>
@@ -68,25 +59,11 @@ export function ConfigureBarChartStep({
             label="Sekundäres Attribut"
           />
         </Stack>
-        <ToggleButtonGroupField
-          options={orientations}
-          name={fieldName("orientation")}
-          label="Ausrichtung"
+        <ConfigureBarChartMetaOptions
+          showGroupedConfigurations={showGroupedConfigurations}
+          fieldName={fieldName}
+          values={values}
         />
-        {showGroupedConfigurations && (
-          <>
-            <ToggleButtonGroupField
-              options={grouping}
-              name={fieldName("grouping")}
-              label="Anordnung"
-            />
-            <ToggleButtonGroupField
-              options={scaling}
-              name={fieldName("scaling")}
-              label="Verhältnisse"
-            />
-          </>
-        )}
       </Stack>
       <ChartsSamplePreview
         chart={

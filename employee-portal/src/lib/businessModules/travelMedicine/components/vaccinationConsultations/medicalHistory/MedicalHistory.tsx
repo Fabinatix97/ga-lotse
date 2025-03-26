@@ -5,6 +5,7 @@
 
 "use client";
 
+import { FormButtonBar, TextareaField } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { validateLength } from "@eshg/lib-portal/helpers/validators";
 import { ApiMedicalHistory } from "@eshg/travel-medicine-api";
@@ -24,8 +25,6 @@ import { MedicalHistorySectionElement } from "@/lib/businessModules/travelMedici
 import { MedicalHistorySectionElements } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/medicalHistory/MedicalHistorySectionElements";
 import { MedicalHistorySections } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/medicalHistory/MedicalHistorySections";
 import { MedicalHistoryTextareaElement } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/medicalHistory/MedicalHistoryTextareaElement";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
 interface MedicalHistoryProps {
   medicalHistory: ApiMedicalHistory;

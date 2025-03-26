@@ -7,6 +7,7 @@
 
 import { ApiObjectType } from "@eshg/inspection-api";
 import {
+  ButtonBar,
   DataTable,
   Pagination,
   TablePage,
@@ -40,7 +41,6 @@ import {
 import { useIsOfflineFeatureEnabled } from "@/lib/businessModules/inspection/shared/offline/useIsOfflineFeatureEnabled";
 import { PendingFacilitiesFilters } from "@/lib/businessModules/inspection/shared/types";
 import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";

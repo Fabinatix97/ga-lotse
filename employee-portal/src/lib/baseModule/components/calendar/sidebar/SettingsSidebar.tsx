@@ -5,16 +5,16 @@
 
 "use client";
 
+import {
+  DrawerProps,
+  SidebarContent,
+  UseSidebarResult,
+  useSidebar,
+} from "@eshg/lib-employee-portal";
 import { Dispatch, SetStateAction, useState } from "react";
 
 import { CalendarSelector } from "@/lib/baseModule/components/calendar/CalendarSelector";
 import { CalendarInfo } from "@/lib/baseModule/components/calendar/calendarDisplay";
-import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
-import {
-  UseSidebarResult,
-  useSidebar,
-} from "@/lib/shared/components/drawer/useSidebar";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export function useSettingsSidebar(): UseSidebarResult<SettingsSidebarProps> {
   return useSidebar({

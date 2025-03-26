@@ -4,6 +4,13 @@
  */
 
 import { ApiInventoryItemType, ApiLabel } from "@eshg/base-api";
+import {
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+  TextareaField,
+} from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
@@ -15,13 +22,6 @@ import { Ref } from "react";
 import { inventoryTypeOptions } from "@/lib/baseModule/components/inventory/constants";
 import { LabelField } from "@/lib/baseModule/components/labels/LabelField";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { validateNonNegativeInteger } from "@/lib/shared/helpers/validators";
 
 export interface InventoryFormValues {

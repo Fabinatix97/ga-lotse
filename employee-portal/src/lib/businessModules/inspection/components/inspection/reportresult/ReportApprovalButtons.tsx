@@ -6,17 +6,16 @@
 "use client";
 
 import { ApiInspection, ApiInspectionPhase } from "@eshg/inspection-api";
+import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { CheckOutlined, EditRoadOutlined } from "@mui/icons-material";
 import { Button } from "@mui/joy";
-import { useRouter } from "next/navigation";
 
 import { useApproveInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { inspectionHasResult } from "@/lib/businessModules/inspection/components/inspection/reportresult/reportutils";
 import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared/enums";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 export function ReportApprovalButtons({
@@ -26,7 +25,6 @@ export function ReportApprovalButtons({
 }>) {
   const snackbar = useSnackbar();
   const { mutateAsync: approveInspection } = useApproveInspection();
-  const router = useRouter();
   const { openConfirmationDialog } = useConfirmationDialog();
   const isOffline = useIsOffline();
   const editable =
@@ -56,7 +54,6 @@ export function ReportApprovalButtons({
 
   async function executeApproveInspection() {
     await approveInspection({ id: inspection.externalId });
-    router.refresh(); // to update displayed page
   }
 
   return (

@@ -21,4 +21,5 @@ public record CreateAnonymousUserResponse(
             example = "Wzhu89yP4F728jVTT")
         @NotNull
         @Size(min = 17, max = 17)
-        String accessCode) {}
+        String accessCode,
+    @NotNull UUID procedureId) {}

@@ -13,6 +13,7 @@ import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
+import de.eshg.stiprotection.persistence.Appointments;
 import de.eshg.stiprotection.persistence.data.PersonData;
 import de.eshg.stiprotection.persistence.db.Concern;
 import de.eshg.stiprotection.persistence.db.ProcedureExpiration;
@@ -58,6 +59,7 @@ public class CitizenAppointmentService {
                 citizenAccessCodeUserApi.addCitizenAccessCodeUserWithPinCredential(
                     new AddCitizenAccessCodeUserWithPinCredentialRequest(pin)));
     procedure.setAnonymousUserId(user.userId());
+    procedure.setAccessCode(user.accessCode());
     return user;
   }
 
@@ -87,7 +89,7 @@ public class CitizenAppointmentService {
         () -> stiProtectionService.getAnonymousIdentificationDocument(procedureId));
   }
 
-  public void cancelAppointment(UUID procedureId) {
+  public void cancelPendingAppointment(UUID procedureId) {
     Optional<ProcedureExpiration> expirationOptional =
         procedureExpirationRepository.findByProcedureExternalId(procedureId);
     Assert.isTrue(
@@ -98,7 +100,12 @@ public class CitizenAppointmentService {
     Assert.isTrue(
         CITIZEN_PORTAL.equals(procedure.getStiProcedureOrigin()),
         "Required a procedure originated from Citizen Portal");
+    Appointments.removeAppointmentFromBlock(appointment);
     stiProtectionService.deleteProcedure(procedure);
     procedureExpirationRepository.delete(expirationOptional.get());
+  }
+
+  public StiProtectionProcedure findByExternalId(UUID procedureId) {
+    return stiProtectionService.findByExternalId(procedureId);
   }
 }

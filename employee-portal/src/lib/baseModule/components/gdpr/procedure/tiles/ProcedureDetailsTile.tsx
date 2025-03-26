@@ -8,7 +8,12 @@ import {
   ApiGdprProcedureType,
   ApiGetGdprProcedureResponse,
 } from "@eshg/base-api";
-import { DetailsItem } from "@eshg/lib-employee-portal";
+import {
+  ButtonBar,
+  DetailsItem,
+  FormButtonBar,
+  useConfirmationDialog,
+} from "@eshg/lib-employee-portal";
 import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
@@ -43,9 +48,6 @@ import {
   SectionTile,
   SectionTitle,
 } from "@/lib/baseModule/components/gdpr/procedure/tiles/SectionTile";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 function isMatterOfConcernRequired(type: ApiGdprProcedureType) {
   return (

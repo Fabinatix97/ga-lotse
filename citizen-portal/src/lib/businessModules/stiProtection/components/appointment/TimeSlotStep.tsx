@@ -6,16 +6,17 @@
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { isSameAppointment } from "@eshg/lib-portal/components/formFields/appointmentPicker/helpers";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
 import { ApiConcern } from "@eshg/sti-protection-api";
 import { DateRangeOutlined } from "@mui/icons-material";
 import { Sheet, Stack, Typography } from "@mui/joy";
 import assert from "assert";
-import { differenceInMinutes, startOfMonth } from "date-fns";
+import { startOfMonth } from "date-fns";
 import { prop, sortBy } from "remeda";
 
 import {
   useBookAppointment,
-  useCancelAppointment,
+  useCancelPendingAppointment,
 } from "@/lib/businessModules/stiProtection/api/mutations/publicCitizensApi";
 import { useFreeAppointments } from "@/lib/businessModules/stiProtection/api/queries/publicCitizenApi";
 import { useCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
@@ -26,6 +27,7 @@ import { useFormData } from "./AppointmentDataContext";
 import { AppointmentFormData } from "./AppointmentStepper";
 import { BookAppointmentTitle, StepLayout } from "./StepLayout";
 import { StepSubTitle } from "./StepSubTitle";
+import { mapToBookAppointment } from "./helpers";
 
 interface TimeSlotData {
   appointment: Required<AppointmentFormData["appointment"]>;
@@ -51,7 +53,9 @@ export function TimeSlotStep() {
       : (appointments ?? []);
   const sortedAppointments = sortBy(appointmentsWithBooked, prop("start"));
 
-  const cancelAppointment = useCancelAppointment(formData.procedureId);
+  const cancelPendingAppointment = useCancelPendingAppointment(
+    formData.procedureId,
+  );
   const bookAppointment = useBookAppointment();
   if ((appointments?.length ?? 0) === 0) {
     return <NoAppointmentAvailable concern={formData.concern} />;
@@ -67,17 +71,19 @@ export function TimeSlotStep() {
         return {};
       }
       // Cancel previous
-      await cancelAppointment.mutateAsync();
+      await cancelPendingAppointment.mutateAsync();
     }
 
-    const { procedureId } = await bookAppointment.mutateAsync({
-      appointmentStart: timeSlotData.appointment.start,
-      concern: formData.concern,
-      durationInMinutes: differenceInMinutes(
-        timeSlotData.appointment.end,
-        timeSlotData.appointment.start,
-      ),
-    });
+    const result = await bookAppointment.mutateAsync(
+      mapToBookAppointment({
+        appointment: timeSlotData.appointment,
+        concern: formData.concern,
+      }),
+    );
+    if (result === PortalErrorCode.Conflict) {
+      return PortalErrorCode.Conflict;
+    }
+    const { procedureId } = result;
     return {
       ...timeSlotData,
       date: timeSlotData.date ?? timeSlotData.appointment.start,

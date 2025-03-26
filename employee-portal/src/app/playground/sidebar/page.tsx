@@ -6,26 +6,23 @@
 "use client";
 
 import {
+  ButtonBar,
+  DrawerProps,
   MainContentLayout,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarWithFormRefProps,
   StickyToolbarLayout,
   Toolbar,
+  useSidebar,
+  useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { Button, Grid, Input, Typography } from "@mui/joy";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Formik } from "formik";
 import { ReactNode, useState } from "react";
-
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
-import { useSidebar } from "@/lib/shared/components/drawer/useSidebar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export default function SidebarPlaygroundPage() {
   const sidebarWithoutParameters = useSidebar({

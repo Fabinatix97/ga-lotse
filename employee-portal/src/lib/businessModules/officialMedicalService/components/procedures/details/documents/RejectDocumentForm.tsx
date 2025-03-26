@@ -4,6 +4,13 @@
  */
 
 import {
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+  TextareaField,
+} from "@eshg/lib-employee-portal";
+import {
   ApiDocument,
   ApiReviewResult,
 } from "@eshg/official-medical-service-api";
@@ -14,13 +21,6 @@ import { Ref } from "react";
 
 import { useReviewDocument } from "@/lib/businessModules/officialMedicalService/api/mutations/omsDocumentApi";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 interface RejectDocumentFormProps {
   document: ApiDocument;

@@ -42,11 +42,12 @@ public interface GdprProcedureRepository
   List<UUID> findIdsOfYoungestExpiredProcedures(
       @Param("cutOffDate") Instant cutOffDate, Pageable pageable);
 
-  @Query("select p from GdprProcedure p where p.identificationData.bpk2 = :bpk2")
+  @Query(
+      "select p from GdprProcedure p where p.identificationData.bpk2 = :bpk2 ORDER BY p.createdAt DESC")
   List<GdprProcedure> findByAssociatedBpk2(@Param("bpk2") String bpk2);
 
   @Query(
-      "select p from GdprProcedure p where p.identificationData.dataTransmitterPseudonymId = :dataTransmitterPseudonymId")
+      "select p from GdprProcedure p where p.identificationData.dataTransmitterPseudonymId = :dataTransmitterPseudonymId ORDER BY p.createdAt DESC")
   List<GdprProcedure> findByAssociatedDataTransmitterPseudonymId(String dataTransmitterPseudonymId);
 
   @Query(

@@ -9,7 +9,10 @@ import {
   ApiInboxProcedure,
   ApiProcedureStatus,
 } from "@eshg/inspection-api";
-import { BaseAddressFormInputs } from "@eshg/lib-employee-portal";
+import {
+  BaseAddressFormInputs,
+  SidebarWithFormRefProps,
+} from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { assertNever } from "@eshg/lib-portal/helpers/assertions";
 import { useRouter } from "next/navigation";
@@ -23,7 +26,6 @@ import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { FacilitySidebar } from "@/lib/shared/components/facilitySidebar/FacilitySidebar";
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchForm";
-import { SidebarWithFormRefProps } from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 interface InspectionInboxProcedureCreateSidebarProps
   extends SidebarWithFormRefProps {

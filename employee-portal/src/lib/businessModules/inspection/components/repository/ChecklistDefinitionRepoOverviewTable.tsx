@@ -11,6 +11,7 @@ import {
   DataTable,
   TablePage,
   TableSheet,
+  useConfirmationDialog,
   useHasUserRolesCheck,
 } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -25,7 +26,6 @@ import {
   createCldRepoOverviewTableColumns,
   getRepoOverviewRowRoute,
 } from "@/lib/businessModules/inspection/components/repository/overviewTableColumns";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function ChecklistDefinitionRepoOverviewTable() {
   const { data: repoMetadataList, isFetching } =

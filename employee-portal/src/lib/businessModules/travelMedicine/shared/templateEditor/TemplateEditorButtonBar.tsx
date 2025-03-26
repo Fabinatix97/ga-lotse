@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { BottomToolbar } from "@eshg/lib-employee-portal";
+import { BottomToolbar, ButtonBar } from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { StickyBottomBox } from "@/lib/shared/components/layout/StickyBottomBox";
 
 export function TemplateEditorButtonBar({

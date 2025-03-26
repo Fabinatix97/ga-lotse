@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+} from "@eshg/lib-employee-portal";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 import { Button, Card, IconButton, Stack, Tooltip, Typography } from "@mui/joy";
@@ -11,9 +16,6 @@ import { ReactNode } from "react";
 
 import { routes } from "@/lib/baseModule/shared/routes";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 interface EntityWithId {
   id: string;

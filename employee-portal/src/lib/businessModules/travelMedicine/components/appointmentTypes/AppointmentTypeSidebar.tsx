@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { ApiAppointmentTypeConfig } from "@eshg/travel-medicine-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
@@ -12,11 +17,6 @@ import {
   AppointmentTypeForm,
   AppointmentTypeFormValues,
 } from "@/lib/businessModules/travelMedicine/components/appointmentTypes/AppointmentTypeForm";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useAppointmentTypeSidebar(): UseSidebarWithFormRefResult<AppointmentTypeSidebarProps> {
   return useSidebarWithFormRef({

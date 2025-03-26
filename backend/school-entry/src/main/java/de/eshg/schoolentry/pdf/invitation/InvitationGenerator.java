@@ -8,6 +8,7 @@ package de.eshg.schoolentry.pdf.invitation;
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.address.PostboxAddressDto;
+import de.eshg.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.appointmentblock.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.lib.contact.ContactClient;
@@ -52,11 +53,13 @@ public class InvitationGenerator extends AbstractGenerator {
   private final String citizenPortalUrl;
   private final DocumentGenerator documentGenerator;
   private final Clock clock;
+  private final DepartmentClient departmentClient;
   private final AppointmentBlockProperties appointmentBlockProperties;
   private final SchoolEntryProperties schoolEntryProperties;
 
   public InvitationGenerator(
       @Value(INVITATION_TEMPLATE) ClassPathResource invitationTemplate,
+      DepartmentInfoConfigService departmentInfoConfigService,
       DepartmentClient departmentClient,
       @Value("${eshg.citizen-portal.reverse-proxy.url}") String citizenPortalUrl,
       DocumentGenerator documentGenerator,
@@ -64,7 +67,8 @@ public class InvitationGenerator extends AbstractGenerator {
       AppointmentBlockProperties appointmentBlockProperties,
       ContactClient contactClient,
       SchoolEntryProperties schoolEntryProperties) {
-    super(departmentClient, contactClient);
+    super(departmentInfoConfigService, contactClient);
+    this.departmentClient = departmentClient;
     this.appointmentBlockProperties = appointmentBlockProperties;
     this.schoolEntryProperties = schoolEntryProperties;
     Assert.isTrue(invitationTemplate.exists(), () -> invitationTemplate + " does not exist");

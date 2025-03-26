@@ -6,7 +6,6 @@
 package de.eshg.stiprotection;
 
 import de.eshg.rest.service.error.NotFoundException;
-import de.eshg.stiprotection.persistence.data.StiProtectionProcedureData;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedureRepository;
 import java.util.UUID;
@@ -22,8 +21,8 @@ public class CitizenService {
     this.repository = repository;
   }
 
-  public StiProtectionProcedureData getProcedure(Jwt principal) {
-    return new StiProtectionProcedureData(findByAnonymousUserId(getCitizenUserId(principal)), null);
+  public StiProtectionProcedure getProcedure(Jwt principal) {
+    return findByAnonymousUserId(getCitizenUserId(principal));
   }
 
   private UUID getCitizenUserId(Jwt principal) {

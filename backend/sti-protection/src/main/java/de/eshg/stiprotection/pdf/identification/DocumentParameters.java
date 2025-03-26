@@ -9,7 +9,7 @@ import de.eshg.base.calendar.api.TimeRange;
 import de.eshg.base.department.GetDepartmentInfoResponse;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.rest.service.error.BadRequestException;
-import de.eshg.stiprotection.persistence.data.StiProtectionProcedureData;
+import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.UserDefinedAppointment;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -61,10 +61,10 @@ public final class DocumentParameters {
     return DATE_FORMATTER.format(instant);
   }
 
-  public static TimeRange toAppointmentTimeRange(StiProtectionProcedureData procedure) {
-    UserDefinedAppointment userDefinedAppointment = procedure.userDefinedAppointment();
-    Appointment appointment = procedure.appointment();
-    UUID procedureId = procedure.id();
+  public static TimeRange toAppointmentTimeRange(StiProtectionProcedure procedure) {
+    UserDefinedAppointment userDefinedAppointment = procedure.getUserDefinedAppointment();
+    Appointment appointment = procedure.getAppointment();
+    UUID procedureId = procedure.getExternalId();
     if (userDefinedAppointment == null && appointment == null) {
       throw new BadRequestException(procedureId + ": There is no appointment scheduled.");
     }

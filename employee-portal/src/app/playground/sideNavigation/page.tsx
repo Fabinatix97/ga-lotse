@@ -16,6 +16,7 @@ import {
   AcUnitOutlined,
   AppsOutlined,
   ChatOutlined,
+  ErrorOutlineOutlined,
   InsertEmoticonOutlined,
   LightOutlined,
   WavingHandOutlined,
@@ -107,7 +108,17 @@ const itemGroups: SideNavItemGroups = {
       type: "SideNavigationParentItem",
       name: "Kraftfahrzeug-Haftpflichtversicherung",
       decorator: <LightOutlined />,
-      subItems: [{ name: "Item", href: "#", accessCheck: noCheck() }],
+      subItems: [
+        { name: "Item", href: "#", accessCheck: noCheck() },
+        {
+          name: "Item with icon",
+          href: "#",
+          accessCheck: noCheck(),
+          endDecorator: (
+            <ErrorOutlineOutlined color="danger" sx={{ fontSize: "1rem" }} />
+          ),
+        },
+      ],
     },
     {
       type: "SideNavigationSuspenseItem",
@@ -200,6 +211,17 @@ function ItemStatePlayground() {
               name: "Sub Item",
               href: selected ? "/playground/sideNavigation" : "#",
               accessCheck: noCheck(),
+            },
+            {
+              name: "Icon",
+              href: selected ? "/playground/sideNavigation" : "#",
+              accessCheck: noCheck(),
+              endDecorator: (
+                <ErrorOutlineOutlined
+                  color="danger"
+                  sx={{ fontSize: "1rem" }}
+                />
+              ),
             },
           ],
         }}

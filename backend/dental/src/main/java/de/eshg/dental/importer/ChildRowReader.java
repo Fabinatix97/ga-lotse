@@ -5,13 +5,7 @@
 
 package de.eshg.dental.importer;
 
-import static de.eshg.dental.importer.ChildColumn.CHILD_ID;
-import static de.eshg.dental.importer.ChildColumn.DATE_OF_BIRTH;
-import static de.eshg.dental.importer.ChildColumn.FIRST_NAME;
-import static de.eshg.dental.importer.ChildColumn.GENDER;
-import static de.eshg.dental.importer.ChildColumn.GROUP;
-import static de.eshg.dental.importer.ChildColumn.LAST_NAME;
-import static de.eshg.dental.importer.ChildColumn.STATUS;
+import static de.eshg.dental.importer.ChildColumn.*;
 
 import de.eshg.dental.business.model.ImportChildData;
 import de.eshg.lib.xlsximport.ColumnAccessor;
@@ -26,6 +20,9 @@ public class ChildRowReader extends RowReader<ChildRow, ChildColumn> {
   public ChildRowReader(Sheet sheet, Clock clock, List<ChildColumn> actualColumns) {
     super(sheet, actualColumns, ChildRow::new, clock);
   }
+
+  private static final AddressColumns<ChildColumn> CHILD_ADDRESS_COLUMNS =
+      new AddressColumns<>(STREET, HOUSE_NUMBER, POSTAL_CODE, CITY, ADDRESS_ADDITION);
 
   @Override
   protected void read(ChildRow result, ColumnAccessor<ChildColumn> col, ErrorHandler errorHandler) {
@@ -43,6 +40,7 @@ public class ChildRowReader extends RowReader<ChildRow, ChildColumn> {
         cellAsString(col, FIRST_NAME, errorHandler),
         cellAsDateOfBirth(col, DATE_OF_BIRTH, errorHandler),
         cellAsGender(col, GENDER, errorHandler),
-        cellAsString(col, GROUP, errorHandler));
+        cellAsString(col, GROUP, errorHandler),
+        readAddressData(col, CHILD_ADDRESS_COLUMNS, errorHandler, false));
   }
 }

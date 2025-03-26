@@ -8,7 +8,8 @@
     "title": "Examination appointment",
     "alert": {
       "title_BOOKABLE": "Appointment booking necessary",
-      "message_BOOKABLE": "The appointment must still be booked via the calendar."
+      "message_BOOKABLE": "The appointment must still be booked via the calendar.",
+      "title_CANCELLED": "Cancelled"
     },
     "bookingState": {
       "label": "Appointment status",
@@ -52,12 +53,14 @@
     "alert": {
       "message_MISSING": "Upload the required documents.",
       "title_REJECTED": "There are rejected documents",
-      "message_REJECTED": "Please check the reason for rejection and upload new files accordingly."
+      "message_REJECTED": "Please check the reason for rejection and upload new files accordingly.",
+      "title_SUBMITTED": "In review",
+      "message_SUBMITTED": "The documents submitted are currently being reviewed."
     },
     "files": {
       "title": "Document",
       "required": "Please upload document",
-      "helperText": "Upload file as PDF, PNG or JPG",
+      "helperText": "Permitted file formats: PDF/A, PNG or JPG",
       "inputSummary_one": "{{count}} file uploaded",
       "inputSummary_other": "{{count}} files uploaded",
       "placeholder": "Select file",
@@ -66,7 +69,13 @@
       "format": "Format",
       "delete": "Delete",
       "deleteAll": "Delete all",
-      "error": "File could not be uploaded. Please try again"
+      "error": "File could not be uploaded. Please try again",
+      "saveDocumentsInfo": "Please save documents",
+      "save_MISSING": "Save documents",
+      "save_REJECTED": "Submit for review"
+    },
+    "snackbar": {
+      "success": "The documents have been successfully uploaded"
     }
   },
   "overview": {

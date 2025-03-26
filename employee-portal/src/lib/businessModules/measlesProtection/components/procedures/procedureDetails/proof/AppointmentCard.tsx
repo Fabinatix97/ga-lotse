@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DetailsSection } from "@eshg/lib-employee-portal";
+import {
+  DetailsSection,
+  useConfirmationDialog,
+} from "@eshg/lib-employee-portal";
 import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiAppointment } from "@eshg/measles-protection-api";
 import { Add, DeleteOutline, EditOutlined } from "@mui/icons-material";
@@ -16,7 +19,6 @@ import {
 } from "@/lib/shared/components/buttons/ActionsMenu";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export interface AppointmentCardProps {
   appointment?: ApiAppointment;

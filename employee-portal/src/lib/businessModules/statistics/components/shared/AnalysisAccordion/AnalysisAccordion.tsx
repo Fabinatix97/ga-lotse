@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { Delete, Edit } from "@mui/icons-material";
 import { CircularProgress, Stack } from "@mui/joy";
 import { Suspense, useState } from "react";
@@ -15,7 +16,6 @@ import { useUpdateAnalysisSidebar } from "@/lib/businessModules/statistics/compo
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 import { AccordionSheet } from "./AccordionSheet";
 import { AnalysisAccordionDetails } from "./AnalysisAccordionDetails";
@@ -122,6 +122,7 @@ function AnalysisAccordionItem(props: AnalysisAccordionItemProps) {
     updateAnalysisSidebar.open({
       analysisId: props.analysis.id,
       name: props.analysis.name,
+      diagramConfiguration: props.analysis.diagramConfiguration,
     });
   }
 

@@ -13,9 +13,12 @@ import de.eshg.lib.servicedirectory.ServiceDirectoryApiConfiguration.TrustedActo
 import de.eshg.lib.servicedirectory.api.ActorResponseDto;
 import de.eshg.lib.servicedirectory.api.CertificateDto;
 import de.eshg.servicedirectory.util.X509Utils;
+import de.eshg.spatz.LifecyclePhases;
 import de.eshg.spatz.config.SelfSignedCertificateLatch;
 import de.eshg.spatz.dns.DnsResolver;
 import de.eshg.spatz.security.CertificateValidationService;
+import de.eshg.spatz.server.outbound.OutboundServer;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.time.Instant;
@@ -25,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -35,15 +39,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.ssl.SslBundle;
 import org.springframework.boot.ssl.SslBundleRegistry;
+import org.springframework.context.SmartLifecycle;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
 
 @Service
 @ConditionalOnProperty(name = "eshg.servicedirectory.baseUrl")
 @EnableScheduling
-public class ServiceDirectoryTopologyService {
+public class ServiceDirectoryTopologyService implements SmartLifecycle {
 
   private static final Logger logger =
       LoggerFactory.getLogger(ServiceDirectoryTopologyService.class);
@@ -54,6 +60,7 @@ public class ServiceDirectoryTopologyService {
   private final SelfSignedCertificateLatch latch;
   private final Duration serviceDirectoryPollInterval;
   private final Duration pollRetryGracePeriod;
+  private final AtomicBoolean isRunning = new AtomicBoolean(false);
 
   private String lastEtag = null;
   private Instant lastSuccessfulPollTime = Instant.now();
@@ -85,6 +92,26 @@ public class ServiceDirectoryTopologyService {
         this.topologyChangedListeners);
   }
 
+  @Override
+  public void start() {
+    isRunning.set(true);
+  }
+
+  @Override
+  public void stop() {
+    isRunning.set(false);
+  }
+
+  @Override
+  public boolean isRunning() {
+    return isRunning.get();
+  }
+
+  @Override
+  public int getPhase() {
+    return LifecyclePhases.SERVICE_DIRECTORY_TOPOLOGY_SERVICE.phase;
+  }
+
   public Instant getCertificateDistributedTime() {
     // If we were able to poll from the SD, the SD's Spatz already fetched our certificate.
     // Wait one more serviceDirectoryPollInterval so all other Spatzs had time to fetch our
@@ -97,6 +124,9 @@ public class ServiceDirectoryTopologyService {
 
   @Scheduled(fixedDelayString = "${eshg.servicedirectory.topology.pollInterval:15000}")
   public void poll() throws InterruptedException {
+    if (!isRunning.get()) {
+      return;
+    }
     latch.await();
     try {
       GetTrustedActorsCacheEntry trustedActorsCacheEntry = trustedActorsSupplier.get();
@@ -136,19 +166,42 @@ public class ServiceDirectoryTopologyService {
     Duration durationSinceLastSuccessfulPoll =
         Duration.between(lastSuccessfulPollTime, Instant.now());
 
+    boolean sslHandshakeException =
+        e instanceof HttpServerErrorException see
+            && see.getStatusCode().value()
+                == HttpResponseStatus.NETWORK_AUTHENTICATION_REQUIRED.code()
+            && e.getMessage().contains(OutboundServer.OUTBOUND_RESPONSE_SSL_HANDSHAKE_EXCEPTION);
+
+    if (sslHandshakeException && firstSuccessfulPollTime != null) {
+      logger.error("SSL handshake failed after having passed before: {}", e.getMessage());
+    }
+
     if (durationSinceLastSuccessfulPoll.compareTo(pollRetryGracePeriod) > 0) {
-      logger.warn(
-          "could not poll trusted actors since {} - pollRetryGracePeriod expired -> "
-              + "trusting nobody until next successful polling",
-          lastSuccessfulPollTime,
-          e);
+      if (sslHandshakeException) {
+        logger.warn(
+            "could not poll trusted actors since {} - pollRetryGracePeriod expired -> "
+                + "trusting nobody until next successful polling {}",
+            lastSuccessfulPollTime,
+            e.toString());
+      } else {
+        logger.warn(
+            "could not poll trusted actors since {} - pollRetryGracePeriod expired -> "
+                + "trusting nobody until next successful polling",
+            lastSuccessfulPollTime,
+            e);
+      }
       lastEtag = null;
       if (!trustedActors.isEmpty()) {
         trustedActors = new TrustedActors(List.of(), List.of());
         notifyListeners(trustedActors);
       }
+      firstSuccessfulPollTime = null;
     } else {
-      logger.info("could not poll trusted actors -> will try again later", e);
+      if (sslHandshakeException) {
+        logger.info("could not poll trusted actors -> will try again later {}", e.toString());
+      } else {
+        logger.info("could not poll trusted actors -> will try again later", e);
+      }
     }
   }
 

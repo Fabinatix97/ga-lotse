@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { SidebarActions, SidebarContent } from "@eshg/lib-employee-portal";
 import { Stack } from "@mui/joy";
 import { PropsWithChildren } from "react";
 
@@ -12,8 +13,6 @@ import {
   SearchPersonFormProps,
   SearchPersonFormValues,
 } from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export function defaultSearchPersonValues(): SearchPersonFormValues {
   return {

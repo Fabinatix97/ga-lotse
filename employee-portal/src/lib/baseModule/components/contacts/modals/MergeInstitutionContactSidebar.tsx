@@ -4,16 +4,16 @@
  */
 
 import { ApiInstitutionContact } from "@eshg/base-api";
+import {
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { useState } from "react";
 
 import { InstitutionContactCard } from "@/lib/baseModule/components/contacts/forms/card/InstitutionContactCard";
 import { MergeInstitutionContactForm } from "@/lib/baseModule/components/contacts/forms/merge/MergeInstitutionContactForm";
 import { SelectMergeTargetForm } from "@/lib/baseModule/components/contacts/forms/merge/SelectMergeTargetForm";
 import { useResetAlertContextOnChange } from "@/lib/shared/hooks/useResetAlertContextOnChange";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 interface SelectStage {
   stage: "select";

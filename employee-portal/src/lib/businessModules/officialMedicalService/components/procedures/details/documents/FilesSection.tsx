@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
 import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
@@ -22,7 +23,6 @@ import { AddDocumentFormValues } from "@/lib/businessModules/officialMedicalServ
 import { DocumentFormValues } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/DocumentForm";
 import { FileCard } from "@/lib/shared/components/FileCard";
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 import { useToggle } from "@/lib/shared/hooks/useToggle";
 
 interface FilesSectionProps {

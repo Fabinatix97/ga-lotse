@@ -5,6 +5,7 @@
 
 import { routes } from "@eshg/dental";
 import { ApiChild } from "@eshg/dental-api";
+import { formatSchoolYear } from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { InternalLinkIconButton } from "@eshg/lib-portal/components/navigation/InternalLinkIconButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
@@ -15,7 +16,6 @@ import {
   procedureStatusNames,
   statusColors,
 } from "@/lib/shared/components/procedures/constants";
-import { formatSchoolYear } from "@/lib/shared/helpers/formatters";
 
 export function ChildProcedureCard(props: { procedure: ApiChild }) {
   const child = props.procedure;

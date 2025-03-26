@@ -4,6 +4,7 @@
  */
 
 import { ApiUser } from "@eshg/base-api";
+import { SIDEBAR_PADDING } from "@eshg/lib-employee-portal";
 import { Badge, DialogTitle, Stack, Typography } from "@mui/joy";
 
 import { UserAvatar } from "@/lib/baseModule/components/users/UserAvatar";
@@ -12,7 +13,6 @@ import {
   getPresenceLabel,
   getStatusColor,
 } from "@/lib/businessModules/chat/shared/utils";
-import { sidebarPadding } from "@/lib/shared/components/sidebar/Sidebar";
 import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 export function UserSidebarHeader({ selfUser }: { selfUser: ApiUser }) {
@@ -23,7 +23,7 @@ export function UserSidebarHeader({ selfUser }: { selfUser: ApiUser }) {
       gap={2}
       alignItems={"center"}
       sx={{
-        paddingRight: sidebarPadding,
+        paddingRight: SIDEBAR_PADDING,
       }}
     >
       <Badge

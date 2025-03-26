@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { TextareaField } from "@eshg/lib-employee-portal";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { IconButton, Stack } from "@mui/joy";
 
 import { DataElementBox } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/DataElementBox";
 import { DataElementHeading } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/DataElementHeading";
 import { validateTextBlock } from "@/lib/businessModules/travelMedicine/shared/templateEditor/templateFieldValidation";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
 export interface TemplateTextBlockProps {
   sectionElementFormikPath: string;

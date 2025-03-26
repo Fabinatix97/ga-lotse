@@ -4,12 +4,14 @@
  */
 
 import {
+  ButtonBar,
   DataTable,
   Pagination,
   TablePage,
   TableSheet,
   getSortDirection,
   getSortKey,
+  useConfirmationDialog,
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
@@ -28,11 +30,9 @@ import {
   getRelevantArchivableProceduresFilters,
   useArchiveAdminFilterSettings,
 } from "@/lib/shared/components/archiving/hooks/useArchiveAdminFilterSettings";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export type ArchiveAdminTableProps = Omit<ArchiveAdminViewProps, "title">;
 

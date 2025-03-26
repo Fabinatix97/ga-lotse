@@ -23,6 +23,9 @@ public class AbstractOpeningHours extends BaseEntity {
   @Column(nullable = false)
   private List<String> en = new ArrayList<>();
 
+  @Column(nullable = false)
+  private boolean initialized = true;
+
   public List<String> getDe() {
     return de;
   }
@@ -37,5 +40,13 @@ public class AbstractOpeningHours extends BaseEntity {
 
   public void setEn(List<String> en) {
     this.en = en;
+  }
+
+  public boolean isInitialized() {
+    return initialized;
+  }
+
+  public void setInitialized(boolean initialized) {
+    this.initialized = initialized;
   }
 }

@@ -7,6 +7,7 @@
 
 import { ApiTaskStatus } from "@eshg/base-api";
 import {
+  ButtonBar,
   DataTable,
   Pagination,
   TablePage,
@@ -31,7 +32,6 @@ import {
   useTaskTableFilterSettings,
 } from "@/lib/baseModule/components/task/useTaskTableFilterSettings";
 import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";

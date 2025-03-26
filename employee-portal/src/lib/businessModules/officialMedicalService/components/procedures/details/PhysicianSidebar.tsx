@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { ApiEmployeeOmsProcedureDetails } from "@eshg/official-medical-service-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { isDefined } from "remeda";
@@ -13,11 +18,6 @@ import {
   PhysicianForm,
   PhysicianFormValues,
 } from "@/lib/businessModules/officialMedicalService/components/procedures/details/PhysicianForm";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function usePhysicianSidebar(): UseSidebarWithFormRefResult<PhysicianSidebarProps> {
   return useSidebarWithFormRef({ component: PhysicianSidebar });

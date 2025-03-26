@@ -3,20 +3,21 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ImportDataResult, ImportStatistics } from "@eshg/lib-employee-portal";
+import {
+  FormButtonBar,
+  ImportDataResult,
+  ImportStatistics,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+} from "@eshg/lib-employee-portal";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { CircularProgress, Stack, Typography, styled } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { Ref } from "react";
 
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
 import { ImportResult } from "@/lib/shared/components/import/ImportResult";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 interface ImportDataFormProps extends RequiresChildren {
   title: string;

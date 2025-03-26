@@ -4,6 +4,12 @@
  */
 
 import {
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+} from "@eshg/lib-employee-portal";
+import {
   ApiAppointmentSummary,
   ApiDisease,
   ApiOtherServiceTemplate,
@@ -19,12 +25,6 @@ import { AppointmentSheet } from "@/lib/businessModules/travelMedicine/component
 import { ServicesSheet } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/sidebarForms/ServicesSheet";
 import { createAppointmentOptions } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/helpers";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export type ServicesRequest = ApiPostOtherServiceRequest &
   ApiPostVaccinationRequest & { serviceType: string; templateId: string };

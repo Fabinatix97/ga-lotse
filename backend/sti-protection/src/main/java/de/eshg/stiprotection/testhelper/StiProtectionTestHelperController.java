@@ -14,6 +14,7 @@ import de.eshg.stiprotection.api.TextTemplatePopulationRequest;
 import de.eshg.stiprotection.api.TextTemplatePopulationResponse;
 import de.eshg.stiprotection.api.texttemplate.TextTemplateDto;
 import de.eshg.stiprotection.scheduling.OverdueProceduresNotifier;
+import de.eshg.stiprotection.scheduling.UnconfirmedAppointmentsRemover;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.DefaultTestHelperService;
 import de.eshg.testhelper.TestHelperController;
@@ -38,6 +39,7 @@ public class StiProtectionTestHelperController extends TestHelperController
   private final StiProtectionPopulator populator;
   private final TextTemplatePopulator textTemplatePopulator;
   private final OverdueProceduresNotifier overdueProceduresNotifier;
+  private final UnconfirmedAppointmentsRemover unconfirmedAppointmentsRemover;
   private final StiProtectionTestHelperService testHelperService;
 
   public StiProtectionTestHelperController(
@@ -47,12 +49,14 @@ public class StiProtectionTestHelperController extends TestHelperController
       TextTemplatePopulator textTemplatePopulator,
       EnvironmentConfig environmentConfig,
       OverdueProceduresNotifier overdueProceduresNotifier,
+      UnconfirmedAppointmentsRemover unconfirmedAppointmentsRemover,
       StiProtectionTestHelperService testHelperService1) {
     super(testHelperService, environmentConfig);
     this.auditLogTestHelperService = auditLogTestHelperService;
     this.populator = populator;
     this.textTemplatePopulator = textTemplatePopulator;
     this.overdueProceduresNotifier = overdueProceduresNotifier;
+    this.unconfirmedAppointmentsRemover = unconfirmedAppointmentsRemover;
     this.testHelperService = testHelperService1;
   }
 
@@ -76,6 +80,12 @@ public class StiProtectionTestHelperController extends TestHelperController
   @PostExchange("/notify/overdue-procedures")
   public ResponseEntity<Void> notifyOfOverdueProcedures() {
     overdueProceduresNotifier.runNow();
+    return ResponseEntity.ok().build();
+  }
+
+  @PostExchange("/notify/expired-unconfirmed-appointments")
+  public ResponseEntity<Void> notifyOfExpiredUnconfirmedAppointments() {
+    this.unconfirmedAppointmentsRemover.runNow();
     return ResponseEntity.ok().build();
   }
 

@@ -3,6 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  FormButtonBar,
+  Sidebar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+} from "@eshg/lib-employee-portal";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { CheckCircleOutline, RadioButtonUnchecked } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
@@ -13,15 +21,7 @@ import { useRef } from "react";
 import { generateKeyPairs } from "@/lib/auditlog/components/crypto";
 import { useAddEmployeeSelfUserKeys } from "@/lib/baseModule/api/mutations/users";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
 import { PasswordField } from "@/lib/shared/components/formFields/PasswordField";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import {
   getPasswordValidityInfo,
   validatePassword,

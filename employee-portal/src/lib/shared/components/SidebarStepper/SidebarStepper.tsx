@@ -3,6 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import {
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarWithFormRefProps,
+  useConfirmationDialog,
+} from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { ConfirmationDialogOptions } from "@eshg/lib-portal/components/confirmationDialog/ConfirmationDialogProvider";
 import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
@@ -17,12 +24,6 @@ import {
   useState,
 } from "react";
 import { isDefined, isNonNullish } from "remeda";
-
-import { SidebarWithFormRefProps } from "@/lib/shared//hooks/useSidebarWithFormRef";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 import { SidebarStep, SidebarStepContentProps } from "./sidebarStep";
 

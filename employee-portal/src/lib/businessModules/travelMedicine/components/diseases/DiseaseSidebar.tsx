@@ -4,6 +4,11 @@
  */
 
 import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
+import {
   ApiDisease,
   ApiPostPutDiseaseRequest,
 } from "@eshg/travel-medicine-api";
@@ -17,11 +22,6 @@ import {
   DiseaseForm,
   DiseaseFormValues,
 } from "@/lib/businessModules/travelMedicine/components/diseases/DiseaseForm";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useDiseaseSidebar(): UseSidebarWithFormRefResult<DiseaseSidebarProps> {
   return useSidebarWithFormRef({

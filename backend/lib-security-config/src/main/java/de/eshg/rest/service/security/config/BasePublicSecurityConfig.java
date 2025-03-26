@@ -37,7 +37,7 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
     features();
     config();
     icd10codes();
-    grantAccessToLibDepartmentInfoUrls();
+    grantAccessToConfiguration();
   }
 
   private void citizenUsers() {

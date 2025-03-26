@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import {
+  ButtonBar,
+  OverlayBoundary,
+  SidebarActions,
+  SidebarContent,
+} from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiManualProgressEntry } from "@eshg/lib-procedures-api";
 import {
@@ -18,14 +24,10 @@ import {
 } from "@mui/joy";
 import { isDefined } from "remeda";
 
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { useProgressEntriesConfig } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import { useGetMetaDataHistory } from "@/lib/shared/components/procedures/progress-entries/queries/fileApi";
 import { useGetManualProgressEntryHistory } from "@/lib/shared/components/procedures/progress-entries/queries/progressEntryApi";
 import { HistoryItem } from "@/lib/shared/components/procedures/progress-entries/types";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export function DetailsHistory({
   entry,

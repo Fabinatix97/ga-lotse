@@ -4,6 +4,11 @@
  */
 
 import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
+import {
   ApiAppointmentType,
   ApiServicePlanGroup,
   PatchAppointmentRequest,
@@ -20,11 +25,6 @@ import {
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/sidebarForms/EditServiceAppointmentForm";
 import { determineStartAndDuration } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/helpers";
 import { mapDateTimeToInput } from "@/lib/shared/components/formFields/dateOrDateTimeFieldHelper";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useEditServiceAppointmentSidebar(): UseSidebarWithFormRefResult<EditServiceAppointmentSidebarProps> {
   return useSidebarWithFormRef({

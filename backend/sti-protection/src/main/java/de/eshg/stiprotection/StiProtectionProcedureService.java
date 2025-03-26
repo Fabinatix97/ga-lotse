@@ -20,6 +20,7 @@ import de.eshg.base.citizenuser.api.AddCitizenAccessCodeUserWithPinCredentialReq
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
 import de.eshg.base.citizenuser.api.CredentialTypeDto;
 import de.eshg.base.citizenuser.api.VerifyCitizenAccessCodeUserCredentialsRequest;
+import de.eshg.base.department.GetDepartmentInfoResponse;
 import de.eshg.lib.appointmentblock.MappingUtil;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.document.generator.department.DepartmentClient;
@@ -42,6 +43,8 @@ import de.eshg.stiprotection.api.GetStiProtectionProceduresSortOptions;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresSortOrderDto;
 import de.eshg.stiprotection.api.LabStatusDto;
 import de.eshg.stiprotection.api.StiProcedureOriginDto;
+import de.eshg.stiprotection.department.SexWorkDepartmentInfoConfigService;
+import de.eshg.stiprotection.department.StiConsultationDepartmentInfoConfigService;
 import de.eshg.stiprotection.mapper.PersonMapper;
 import de.eshg.stiprotection.pdf.identification.AnonymousIdentificationDocument;
 import de.eshg.stiprotection.pdf.identification.AnonymousIdentificationDocumentService;
@@ -52,7 +55,6 @@ import de.eshg.stiprotection.pdf.identification.DocumentSender;
 import de.eshg.stiprotection.pdf.identification.QrCodes;
 import de.eshg.stiprotection.persistence.data.PersonData;
 import de.eshg.stiprotection.persistence.data.ResultPage;
-import de.eshg.stiprotection.persistence.data.StiProtectionProcedureData;
 import de.eshg.stiprotection.persistence.db.Concern;
 import de.eshg.stiprotection.persistence.db.Gender;
 import de.eshg.stiprotection.persistence.db.LabStatus;
@@ -95,6 +97,8 @@ public class StiProtectionProcedureService {
   private final AuditLogger auditLogger;
   private final AnonymousIdentificationDocumentService documentService;
   private final DepartmentClient departmentClient;
+  private final StiConsultationDepartmentInfoConfigService stiConsultationDepartmentInfoService;
+  private final SexWorkDepartmentInfoConfigService sexWorkDepartmentInfoService;
   private final CitizenAccessCodeUserApi citizenAccessCodeUserApi;
   private final StiProtectionProcedureFinder procedureFinder;
   private final ProgressEntryUtil progressEntryUtil;
@@ -106,6 +110,8 @@ public class StiProtectionProcedureService {
       AuditLogger auditLogger,
       AnonymousIdentificationDocumentService documentService,
       DepartmentClient departmentClient,
+      StiConsultationDepartmentInfoConfigService stiConsultationDepartmentInfoService,
+      SexWorkDepartmentInfoConfigService sexWorkDepartmentInfoService,
       CitizenAccessCodeUserApi citizenAccessCodeUserApi,
       StiProtectionProcedureFinder procedureFinder,
       ProgressEntryUtil progressEntryUtil,
@@ -115,6 +121,8 @@ public class StiProtectionProcedureService {
     this.auditLogger = auditLogger;
     this.documentService = documentService;
     this.departmentClient = departmentClient;
+    this.stiConsultationDepartmentInfoService = stiConsultationDepartmentInfoService;
+    this.sexWorkDepartmentInfoService = sexWorkDepartmentInfoService;
     this.citizenAccessCodeUserApi = citizenAccessCodeUserApi;
     this.procedureFinder = procedureFinder;
     this.progressEntryUtil = progressEntryUtil;
@@ -172,7 +180,7 @@ public class StiProtectionProcedureService {
     return task;
   }
 
-  public ResultPage<StiProtectionProcedureData> getProcedures(
+  public ResultPage<StiProtectionProcedure> getProcedures(
       GetStiProtectionProceduresSortOptions sortOptions,
       GetStiProtectionProceduresPaginationOptions paginationOptions,
       GetStiProtectionProceduresFilterOptions filterOptions) {
@@ -198,9 +206,7 @@ public class StiProtectionProcedureService {
     }
 
     return new ResultPage<>(
-        procedures.getTotalPages(),
-        procedures.getTotalElements(),
-        procedures.stream().map(this::toProcedureData).toList());
+        procedures.getTotalPages(), procedures.getTotalElements(), procedures.stream().toList());
   }
 
   private Specification<StiProtectionProcedure> filterByStiProcedureOrigin(
@@ -357,19 +363,6 @@ public class StiProtectionProcedureService {
     };
   }
 
-  private StiProtectionProcedureData toProcedureData(StiProtectionProcedure procedure) {
-    UUID anonymousUserId = procedure.getAnonymousUserId();
-    String accessCode =
-        anonymousUserId != null
-            ? citizenAccessCodeUserApi.getCitizenAccessCodeUser(anonymousUserId).accessCode()
-            : null;
-    return new StiProtectionProcedureData(procedure, accessCode);
-  }
-
-  public StiProtectionProcedureData getProcedure(UUID procedureId) {
-    return toProcedureData(procedureFinder.findByExternalId(procedureId));
-  }
-
   public void updatePersonDetails(UUID procedureId, PersonData personData) {
     StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
     Person person = procedure.getPerson();
@@ -406,27 +399,36 @@ public class StiProtectionProcedureService {
   }
 
   public Pdf getAnonymousIdentificationDocument(UUID procedureId) {
-    StiProtectionProcedureData procedure = getProcedure(procedureId);
+    StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
     TimeRange timeRange = toAppointmentTimeRange(procedure);
-    Department department = mapToDepartment(departmentClient.getDepartmentInfo());
+    Department department = getRelavantDepartmentInfo(procedure);
     String documentDate = toDocumentDate(clock.instant());
     DepartmentLogo departmentLogo = departmentClient.getDepartmentLogo();
     String accessCode = getAccessCode(procedure);
-    String appointmentUrl = AppointmentUrls.url(citizenPortalUrl, procedure.concern());
-    String qrCode = QrCodes.qrCode(citizenPortalUrl, procedure.concern(), accessCode);
+    String qrCode = QrCodes.qrCode(citizenPortalUrl, procedure.getConcern(), accessCode);
+    String appointmentUrl = AppointmentUrls.url(citizenPortalUrl, procedure.getConcern());
     ConsultationAppointment appointment =
         toConsultationAppointment(department, timeRange, appointmentUrl, accessCode, qrCode);
     DocumentSender sender = new DocumentSender(department, documentDate, departmentLogo);
     return documentService.createPdf(new AnonymousIdentificationDocument(sender, appointment));
   }
 
-  private String getAccessCode(StiProtectionProcedureData procedure) {
-    UUID anonymousUserId = procedure.anonymousUserId();
+  private Department getRelavantDepartmentInfo(StiProtectionProcedure procedure) {
+    GetDepartmentInfoResponse departmentInfoResponse =
+        switch (procedure.getConcern()) {
+          case HIV_STI_CONSULTATION -> stiConsultationDepartmentInfoService.getDepartmentInfo();
+          case SEX_WORK -> sexWorkDepartmentInfoService.getDepartmentInfo();
+        };
+
+    return mapToDepartment(departmentInfoResponse);
+  }
+
+  private String getAccessCode(StiProtectionProcedure procedure) {
+    UUID anonymousUserId = procedure.getAnonymousUserId();
     if (anonymousUserId == null) {
       throw new BadRequestException("Anonymous user not registered");
     }
-    String accessCode =
-        citizenAccessCodeUserApi.getCitizenAccessCodeUser(anonymousUserId).accessCode();
+    String accessCode = procedure.getAccessCode();
     if (!StringUtils.hasText(accessCode)) {
       throw new BadRequestException("Access code cannot be null or blank");
     }
@@ -446,6 +448,7 @@ public class StiProtectionProcedureService {
         citizenAccessCodeUserApi.addCitizenAccessCodeUserWithPinCredential(
             new AddCitizenAccessCodeUserWithPinCredentialRequest(pin));
     procedure.setAnonymousUserId(user.userId());
+    procedure.setAccessCode(user.accessCode());
   }
 
   public void deleteAnonymousUser(StiProtectionProcedure procedure) {
@@ -453,6 +456,7 @@ public class StiProtectionProcedureService {
     if (anonymousUserId != null) {
       citizenAccessCodeUserApi.deleteCitizenAccessCodeUser(anonymousUserId);
       procedure.setAnonymousUserId(null);
+      procedure.setAccessCode(null);
     }
   }
 
@@ -475,5 +479,9 @@ public class StiProtectionProcedureService {
 
   public void deleteProcedure(StiProtectionProcedure procedure) {
     repository.delete(procedure);
+  }
+
+  public List<StiProtectionProcedure> findProcedures(String text) {
+    return procedureFinder.findProcedures(text);
   }
 }

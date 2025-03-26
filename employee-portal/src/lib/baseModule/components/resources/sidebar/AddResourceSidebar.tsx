@@ -4,6 +4,10 @@
  */
 
 import { ApiLabel } from "@eshg/base-api";
+import {
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { useRouter } from "next/navigation";
 
 import { mapAddResourceRequest } from "@/lib/baseModule/api/mapper/resources";
@@ -13,10 +17,6 @@ import {
   ResourceFormValues,
 } from "@/lib/baseModule/components/resources/forms/ResourceForm";
 import { routes } from "@/lib/baseModule/shared/routes";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 const emptyValues: ResourceFormValues = {
   type: "",

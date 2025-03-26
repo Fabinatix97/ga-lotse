@@ -242,6 +242,22 @@ public class OmsDocumentService {
   }
 
   @Transactional
+  public void uploadFilesToDocumentCitizen(UUID documentId, List<MultipartFile> files) {
+    OmsDocument omsDocument = loadOmsDocument(documentId);
+
+    if (omsDocument.getDocumentStatus() == OmsDocumentStatus.ACCEPTED) {
+      throw new BadRequestException("Files can not be uploaded to a document in accepted state");
+    }
+    List<File> parsedFiles = validateAndParseFiles(files);
+
+    saveFiles(omsDocument, parsedFiles);
+    omsDocument.setReasonForRejection(null);
+    omsDocument.setDocumentStatus(OmsDocumentStatus.SUBMITTED);
+    omsDocument.setLastDocumentUpload(Instant.now(clock));
+    omsDocument.setUploadedBy(DocumentUploadedBy.EXTERN);
+  }
+
+  @Transactional
   public void deleteDocumentEmployee(UUID documentId) {
     OmsDocument omsDocument = loadOmsDocument(documentId);
 

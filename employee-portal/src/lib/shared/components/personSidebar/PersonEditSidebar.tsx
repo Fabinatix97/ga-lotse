@@ -5,7 +5,10 @@
 
 import {
   DefaultPersonFormValues,
+  Sidebar,
+  SidebarWithFormRefProps,
   mapToPersonUpdateRequest,
+  useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 
 import { useUpdateReferencePerson } from "@/lib/baseModule/api/mutations/person";
@@ -14,11 +17,6 @@ import {
   PersonSidebarForm,
   PersonSidebarFormProps,
 } from "@/lib/shared/components/personSidebar/form/PersonSidebarForm";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export interface PersonEditSidebarProps<TValues>
   extends PersonSidebarFormProps<TValues> {

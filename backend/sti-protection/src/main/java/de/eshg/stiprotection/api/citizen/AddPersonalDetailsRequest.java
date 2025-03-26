@@ -9,6 +9,7 @@ import de.eshg.base.GenderDto;
 import de.eshg.lib.common.CountryCode;
 import de.eshg.stiprotection.api.PersonalDetails;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.PastOrPresent;
@@ -23,5 +24,8 @@ public record AddPersonalDetailsRequest(
             description = "The year since the person has been residing in Germany.",
             example = "2022")
         @PastOrPresent
-        Year inGermanySince)
+        Year inGermanySince,
+    @Schema(description = "Optional appointment booking information for resubmission on failure")
+        @Valid
+        BookAppointmentRequest appointmentBooking)
     implements PersonalDetails {}

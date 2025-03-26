@@ -5,15 +5,17 @@
 
 "use client";
 
+import {
+  OverlayBoundary,
+  Sidebar,
+  SidebarContent,
+} from "@eshg/lib-employee-portal";
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import AddIcon from "@mui/icons-material/Add";
 import { Box, Stack, Typography } from "@mui/joy";
 
 import { useGetPacklistDefinitionRevisions } from "@/lib/businessModules/inspection/api/queries/packlistDefinition";
 import { PacklistDefinitionRevisionTile } from "@/lib/businessModules/inspection/components/packlistDefinition/sidebars/PacklistDefinitionRevisionTile";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 interface CreatePacklistRevisionsSidebarProps {
   open: boolean;

@@ -7,8 +7,7 @@ package de.eshg.spatz.server.management;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.eshg.spatz.server.GracefulShutdown;
-import de.eshg.spatz.server.SpatzHttpServer;
+import de.eshg.spatz.LifecyclePhases;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
@@ -16,8 +15,8 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import jakarta.annotation.PreDestroy;
 import java.net.InetSocketAddress;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.function.Predicate;
 import org.reactivestreams.Publisher;
@@ -27,8 +26,10 @@ import org.springframework.boot.actuate.autoconfigure.web.server.ManagementServe
 import org.springframework.boot.actuate.health.HealthComponent;
 import org.springframework.boot.actuate.health.HealthEndpoint;
 import org.springframework.boot.actuate.health.HttpCodeStatusMapper;
-import org.springframework.boot.web.server.GracefulShutdownResult;
+import org.springframework.boot.autoconfigure.context.LifecycleProperties;
+import org.springframework.context.SmartLifecycle;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import reactor.core.publisher.Mono;
 import reactor.netty.DisposableChannel;
@@ -36,7 +37,8 @@ import reactor.netty.http.server.HttpServer;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 
-public class ManagementServer implements SpatzHttpServer {
+@Component
+public class ManagementServer implements SmartLifecycle {
 
   private static final Logger logger = LoggerFactory.getLogger(ManagementServer.class);
 
@@ -46,6 +48,7 @@ public class ManagementServer implements SpatzHttpServer {
   private final ObjectMapper objectMapper;
   private final InetSocketAddress bindAddress;
   private final String healthPath;
+  private final Duration shutdownTimeout;
 
   private DisposableChannel server;
 
@@ -54,7 +57,8 @@ public class ManagementServer implements SpatzHttpServer {
       HealthEndpoint healthEndpoint,
       HttpCodeStatusMapper httpCodeStatusMapper,
       ObjectMapper objectMapper,
-      ManagementServerProperties managementServerProperties) {
+      ManagementServerProperties managementServerProperties,
+      LifecycleProperties lifecycleProperties) {
     this.baseServer = baseServer;
     this.healthEndpoint = healthEndpoint;
     this.httpCodeStatusMapper = httpCodeStatusMapper;
@@ -64,43 +68,57 @@ public class ManagementServer implements SpatzHttpServer {
         new InetSocketAddress(
             managementServerProperties.getAddress(), getPort(managementServerProperties));
     healthPath = getBasePath(managementServerProperties) + "actuator/health";
-  }
-
-  @PreDestroy
-  public void shutdownGracefully() {
-    new GracefulShutdown(() -> this)
-        .shutDownGracefully((GracefulShutdownResult gsr) -> logger.info(gsr.toString()));
+    shutdownTimeout = LifecyclePhases.getShutdownTimeout(lifecycleProperties);
   }
 
   @Override
   public void start() {
-    logger.info("Starting server, binding to {}", bindAddress);
+    new Thread(
+            () -> {
+              logger.info(
+                  "Starting {}, binding to {}", this.getClass().getSimpleName(), bindAddress);
 
-    HttpServer bindServer =
-        this.baseServer
-            .doOnBind(c -> logger.info("start listening"))
-            .doOnBound(c -> logger.info("bound"));
-    server =
-        bindServer
-            .bindAddress(() -> bindAddress)
-            .handle(this::handlerFunction)
-            .bindNow()
-            .onDispose(() -> logger.info("stopped server"));
-    logger.info("started server");
+              HttpServer bindServer =
+                  this.baseServer
+                      .doOnBind(c -> logger.info("start listening"))
+                      .doOnBound(c -> logger.info("bound"));
+              server =
+                  bindServer
+                      .bindAddress(() -> bindAddress)
+                      .handle(this::handlerFunction)
+                      .bindNow()
+                      .onDispose(
+                          () ->
+                              logger.info(
+                                  "disposing {}, bound to {}",
+                                  this.getClass().getSimpleName(),
+                                  bindAddress));
+              logger.info("started {}, bound to {}", this.getClass().getSimpleName(), bindAddress);
 
-    server.onDispose().block();
+              server.onDispose().block();
+            })
+        .start();
   }
 
   @Override
   public void stop() {
-    logger.info("Stopping server");
-    server.disposeNow();
-    logger.info("Stopped server");
+    new Thread(
+            () -> {
+              logger.info("Stopping {} bound to {}", this.getClass().getSimpleName(), bindAddress);
+              server.disposeNow(shutdownTimeout);
+              logger.info("Stopped {} bound to {}", this.getClass().getSimpleName(), bindAddress);
+            })
+        .start();
   }
 
   @Override
-  public Integer getListeningPort() {
-    return bindAddress.getPort();
+  public boolean isRunning() {
+    return server != null && !server.isDisposed();
+  }
+
+  @Override
+  public int getPhase() {
+    return LifecyclePhases.MANAGEMENT_SERVER.phase;
   }
 
   protected Publisher<Void> handlerFunction(HttpServerRequest in, HttpServerResponse out) {

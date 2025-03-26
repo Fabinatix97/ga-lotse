@@ -7,7 +7,9 @@
 
 import {
   DefaultPersonFormValues,
+  SidebarWithFormRefProps,
   mapToPersonAddRequest,
+  useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
@@ -42,10 +44,6 @@ import {
   SearchPersonFormProps,
   SearchPersonFormValues,
 } from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 interface EsuSearchForm extends SearchPersonFormValues {
   type: OptionalFieldValue<ApiSchoolEntryProcedureType>;

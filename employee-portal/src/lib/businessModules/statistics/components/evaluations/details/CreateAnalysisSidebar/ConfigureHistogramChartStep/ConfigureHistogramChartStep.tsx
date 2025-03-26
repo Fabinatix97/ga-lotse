@@ -19,15 +19,15 @@ import { mapAttributeToAutocompleteSelectionOption } from "@/lib/businessModules
 import { Histogram } from "@/lib/businessModules/statistics/components/shared/charts/Histogram";
 import {
   binningValueNames,
-  groupingValueNames,
   isCategorical,
   isNumeric,
-  scalingValueNames,
 } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
 import { AutocompleteSelectOption } from "@/lib/shared/components/AutocompleteSelectOptions";
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import { SliderField } from "@/lib/shared/components/formFields/SliderField";
 import { ToggleButtonGroupField } from "@/lib/shared/components/formFields/ToggleButtonGroupField";
+
+import { ConfigureHistogramChartMetaOptions } from "./ConfigureHistogramChartMetaOptions";
 
 export interface ConfigureHistogramChartStepProps
   extends SidebarStepContentProps<ConfigureChartFormModel> {
@@ -55,8 +55,6 @@ export function ConfigureHistogramChartStep({
       ),
     );
 
-  const grouping = buildEnumOptions(groupingValueNames);
-  const scaling = buildEnumOptions(scalingValueNames);
   const binning = buildEnumOptions(binningValueNames);
 
   return (
@@ -77,20 +75,11 @@ export function ConfigureHistogramChartStep({
             label="Sekundäres Attribut"
           />
         </Stack>
-        {showGroupedConfigurations && (
-          <>
-            <ToggleButtonGroupField
-              options={grouping}
-              name={fieldName("grouping")}
-              label="Anordnung"
-            />
-            <ToggleButtonGroupField
-              options={scaling}
-              name={fieldName("scaling")}
-              label="Verhältnisse"
-            />
-          </>
-        )}
+        <ConfigureHistogramChartMetaOptions
+          showGroupedConfigurations={showGroupedConfigurations}
+          fieldName={fieldName}
+          values={values}
+        />
         <Stack gap={1}>
           <ToggleButtonGroupField
             options={binning}

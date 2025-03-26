@@ -5,9 +5,11 @@
 
 package de.eshg.officialmedicalservice.citizenpublic;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
 import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.officialmedicalservice.appointment.OmsAppointmentService;
+import de.eshg.officialmedicalservice.citizenpublic.api.LandingContentDto;
 import de.eshg.officialmedicalservice.concern.ConcernMapper;
 import de.eshg.officialmedicalservice.document.OmsDocumentService;
 import de.eshg.officialmedicalservice.notification.NotificationService;
@@ -18,8 +20,14 @@ import de.eshg.officialmedicalservice.procedure.ProgressEntryService;
 import de.eshg.officialmedicalservice.procedure.api.PostCitizenProcedureRequest;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedureRepository;
+import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.rest.service.error.ErrorCode;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,6 +41,9 @@ public class CitizenPublicProcedureService {
   private final OmsDocumentService omsDocumentService;
   private final NotificationService notificationService;
   private final ProgressEntryService progressEntryService;
+
+  @Value("${de.eshg.official-medical-service.landing.config}")
+  private Resource landingResource;
 
   public CitizenPublicProcedureService(
       OmsAppointmentService appointmentService,
@@ -80,5 +91,19 @@ public class CitizenPublicProcedureService {
         procedure, request.concern().nameDe());
 
     return procedure.getExternalId();
+  }
+
+  public LandingContentDto getLandingContent() {
+    try {
+      InputStream inputStream = landingResource.getInputStream();
+
+      ObjectMapper objectMapper = new ObjectMapper();
+
+      return objectMapper.readValue(inputStream, LandingContentDto.class);
+    } catch (IOException e) {
+      throw new BadRequestException(
+          ErrorCode.UNEXPECTED_ERROR,
+          "Cannot read landing config file: " + landingResource.getFilename());
+    }
   }
 }

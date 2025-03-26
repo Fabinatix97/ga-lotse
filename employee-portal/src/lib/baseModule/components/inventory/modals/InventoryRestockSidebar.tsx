@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
-
-import { useRestockInventoryItem } from "@/lib/baseModule/api/mutations/inventory";
-import { InventoryRestockForm } from "@/lib/baseModule/components/inventory/forms/InventoryRestockForm";
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
+} from "@eshg/lib-employee-portal";
+import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
+
+import { useRestockInventoryItem } from "@/lib/baseModule/api/mutations/inventory";
+import { InventoryRestockForm } from "@/lib/baseModule/components/inventory/forms/InventoryRestockForm";
 
 export function useInventoryRestockSidebar(): UseSidebarWithFormRefResult<InventoryRestockSidebarProps> {
   return useSidebarWithFormRef({

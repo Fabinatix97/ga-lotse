@@ -3,7 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useGetSelfUser } from "@eshg/lib-employee-portal";
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useGetSelfUser,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 
 import { useUploadEvaluationTemplate } from "@/lib/businessModules/statistics/api/mutations/useUploadEvaluationTemplate";
@@ -12,11 +17,6 @@ import {
   SidebarStepper,
   createStepContent,
 } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 import { UploadTemplateStep } from "./UploadTemplateStep";
 import { UploadTemplateFormModel } from "./uploadTemplateFormModel";

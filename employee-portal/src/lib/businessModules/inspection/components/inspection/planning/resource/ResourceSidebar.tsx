@@ -11,6 +11,14 @@ import {
   ApiResourceTypeFromJSON,
 } from "@eshg/base-api";
 import type { ApiInspectionTravelTime } from "@eshg/inspection-api";
+import {
+  FormButtonBar,
+  OverlayBoundary,
+  Sidebar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+} from "@eshg/lib-employee-portal";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
@@ -28,14 +36,8 @@ import { PropsWithChildren } from "react";
 import { resourceTypeNames } from "@/lib/baseModule/components/resources/constants";
 import { useAddResource } from "@/lib/businessModules/inspection/api/mutations/resources";
 import { useGetResourcesWithEvents } from "@/lib/businessModules/inspection/api/queries/resources";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { SelectableCardsField } from "@/lib/shared/components/formFields/SelectableCardsField";
 import { TimeField } from "@/lib/shared/components/formFields/TimeField";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import {
   formatTimeInput,
   parseTime,

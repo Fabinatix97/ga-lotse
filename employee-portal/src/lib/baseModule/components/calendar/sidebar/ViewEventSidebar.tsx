@@ -5,6 +5,13 @@
 
 "use client";
 
+import {
+  DrawerProps,
+  SidebarActions,
+  SidebarContent,
+  UseSidebarResult,
+  useSidebar,
+} from "@eshg/lib-employee-portal";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { Button, Stack } from "@mui/joy";
 import { isDefined } from "remeda";
@@ -16,13 +23,6 @@ import {
   mapEventTypeToFallbackTitle,
 } from "@/lib/baseModule/components/calendar/calendarMapper";
 import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";
-import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
-import {
-  UseSidebarResult,
-  useSidebar,
-} from "@/lib/shared/components/drawer/useSidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export function useViewEventSidebar(): UseSidebarResult<ViewEventSidebarProps> {
   return useSidebar({

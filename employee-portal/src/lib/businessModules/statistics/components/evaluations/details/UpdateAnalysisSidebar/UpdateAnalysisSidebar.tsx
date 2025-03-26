@@ -3,17 +3,30 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useUpdateAnalysis } from "@/lib/businessModules/statistics/api/mutations/useUpdateAnalysis";
-import { SaveAnalysisStep } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/SaveAnalysisStep/SaveAnalysisStep";
-import {
-  SidebarStepper,
-  createStepContent,
-} from "@/lib/shared/components/SidebarStepper/SidebarStepper";
 import {
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
+} from "@eshg/lib-employee-portal";
+import { isNonNullish } from "remeda";
+
+import {
+  AnalysisDiagramConfiguration,
+  DiagramType,
+} from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
+import { useUpdateAnalysis } from "@/lib/businessModules/statistics/api/mutations/useUpdateAnalysis";
+import {
+  SidebarStepper,
+  createStepContent,
+} from "@/lib/shared/components/SidebarStepper/SidebarStepper";
+
+import { UpdateBarChartStep } from "./UpdateBarChartStep";
+import { UpdateChoroplethChartStep } from "./UpdateChoroplethChartStep";
+import { UpdateHistogramChartStep } from "./UpdateHistogramChartStep";
+import { UpdateLineChartStep } from "./UpdateLineChartStep";
+import { UpdateAnalysisStep } from "./UpdateNameStep";
+import { UpdateScatterChartStep } from "./UpdateScatterChartStep";
+import { UpdateAnalysisFormModelStep } from "./updateAnalysisFormModel";
 
 export function useUpdateAnalysisSidebar(): UseSidebarWithFormRefResult<UpdateAnalysisSidebarProps> {
   return useSidebarWithFormRef({
@@ -24,6 +37,7 @@ export function useUpdateAnalysisSidebar(): UseSidebarWithFormRefResult<UpdateAn
 interface UpdateAnalysisSidebarProps extends SidebarWithFormRefProps {
   analysisId: string;
   name: string;
+  diagramConfiguration: AnalysisDiagramConfiguration;
 }
 
 function UpdateAnalysisSidebar(props: UpdateAnalysisSidebarProps) {
@@ -37,13 +51,95 @@ function UpdateAnalysisSidebar(props: UpdateAnalysisSidebarProps) {
       formRef={props.formRef}
       onSubmit={updateAnalysis}
       steps={[
-        () => ({
-          title: "Anpassung speichern",
-          content: createStepContent({
-            component: SaveAnalysisStep,
-          }),
-          initialValues: { name: props.name },
-        }),
+        () => {
+          switch (props.diagramConfiguration.type) {
+            case DiagramType.CHOROPLETH_CHART:
+              return {
+                title: "Anpassung speichern",
+                content: createStepContent({
+                  component: UpdateChoroplethChartStep,
+                }),
+                initialValues: {
+                  name: props.name,
+                  type: DiagramType.CHOROPLETH_CHART,
+                  colorScheme: props.diagramConfiguration.colorScheme,
+                } satisfies UpdateAnalysisFormModelStep,
+              };
+            case DiagramType.BAR_CHART:
+              return {
+                title: "Anpassung speichern",
+                content: createStepContent({
+                  component: UpdateBarChartStep,
+                  componentProps: {
+                    showGroupedConfigurations: isNonNullish(
+                      props.diagramConfiguration.secondaryAttribute,
+                    ),
+                  },
+                }),
+                initialValues: {
+                  name: props.name,
+                  type: DiagramType.BAR_CHART,
+                  orientation: props.diagramConfiguration.orientation,
+                  grouping: props.diagramConfiguration.grouping,
+                  scaling: props.diagramConfiguration.scaling,
+                } satisfies UpdateAnalysisFormModelStep,
+              };
+            case DiagramType.PIE_CHART:
+              return {
+                title: "Anpassung speichern",
+                content: createStepContent({
+                  component: UpdateAnalysisStep,
+                }),
+                initialValues: {
+                  name: props.name,
+                  type: DiagramType.PIE_CHART,
+                } satisfies UpdateAnalysisFormModelStep,
+              };
+            case DiagramType.SCATTER_CHART:
+              return {
+                title: "Anpassung speichern",
+                content: createStepContent({
+                  component: UpdateScatterChartStep,
+                }),
+                initialValues: {
+                  name: props.name,
+                  type: DiagramType.SCATTER_CHART,
+                  trendline: props.diagramConfiguration.trendline,
+                  axisRange: props.diagramConfiguration.axisRange,
+                } satisfies UpdateAnalysisFormModelStep,
+              };
+            case DiagramType.LINE_CHART:
+              return {
+                title: "Anpassung speichern",
+                content: createStepContent({
+                  component: UpdateLineChartStep,
+                }),
+                initialValues: {
+                  name: props.name,
+                  type: DiagramType.LINE_CHART,
+                  axisRange: props.diagramConfiguration.axisRange,
+                } satisfies UpdateAnalysisFormModelStep,
+              };
+            case DiagramType.HISTOGRAM_CHART:
+              return {
+                title: "Anpassung speichern",
+                content: createStepContent({
+                  component: UpdateHistogramChartStep,
+                  componentProps: {
+                    showGroupedConfigurations: isNonNullish(
+                      props.diagramConfiguration.secondaryAttribute,
+                    ),
+                  },
+                }),
+                initialValues: {
+                  name: props.name,
+                  type: DiagramType.HISTOGRAM_CHART,
+                  grouping: props.diagramConfiguration.grouping,
+                  scaling: props.diagramConfiguration.scaling,
+                } satisfies UpdateAnalysisFormModelStep,
+              };
+          }
+        },
       ]}
     />
   );

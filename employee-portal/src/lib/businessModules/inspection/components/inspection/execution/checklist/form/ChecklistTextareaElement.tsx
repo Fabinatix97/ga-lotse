@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { TextareaField } from "@eshg/lib-employee-portal";
 import { ReactNode, useId } from "react";
 
 import { ChecklistLabel } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/form/ChecklistLabel";
 import { CLFormElement } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/form/helpers";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
 interface ChecklistTextareaElementProps {
   element: CLFormElement;

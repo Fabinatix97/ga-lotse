@@ -4,6 +4,13 @@
  */
 
 import { ApiLabel, ApiResourceType } from "@eshg/base-api";
+import {
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+  TextareaField,
+} from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
@@ -14,13 +21,6 @@ import { Ref } from "react";
 import { LabelField } from "@/lib/baseModule/components/labels/LabelField";
 import { resourceTypeOptions } from "@/lib/baseModule/components/resources/constants";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export interface ResourceFormValues {
   type: OptionalFieldValue<ApiResourceType>;

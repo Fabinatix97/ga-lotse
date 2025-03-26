@@ -4,6 +4,7 @@
  */
 
 import {
+  ButtonBar,
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
@@ -13,7 +14,6 @@ import { Schedule } from "@mui/icons-material";
 
 import { AppointmentBlockGroupsTable } from "@/lib/businessModules/schoolEntry/features/appointmentBlocks/appointmentBlocksTable/AppointmentBlockGroupsTable";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 
 export default function AppointmentBlockGroupsOverviewPage() {

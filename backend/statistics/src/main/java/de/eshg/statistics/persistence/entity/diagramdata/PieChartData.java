@@ -38,4 +38,9 @@ public class PieChartData extends DiagramData {
     keyToCounts.forEach(keyToCount -> keyToCount.setPieChartData(this));
     this.keyToCounts.addAll(keyToCounts);
   }
+
+  public void removeKeyToCounts() {
+    keyToCounts.forEach(keyToCount -> keyToCount.setPieChartData(null));
+    keyToCounts.clear();
+  }
 }

@@ -4,18 +4,18 @@
  */
 
 import { ApiGetAggregatedNotificationsResponse } from "@eshg/base-api";
+import {
+  DrawerProps,
+  SidebarActions,
+  SidebarContent,
+  UseSidebarResult,
+  useSidebar,
+} from "@eshg/lib-employee-portal";
 import { InfoOutlined } from "@mui/icons-material";
 import { Button, Stack, Typography } from "@mui/joy";
 import { isNonNullish } from "remeda";
 
 import { useMarkNotificationsAsRead } from "@/lib/baseModule/api/mutations/notifications";
-import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
-import {
-  UseSidebarResult,
-  useSidebar,
-} from "@/lib/shared/components/drawer/useSidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 import { Notification } from "./Notification";
 

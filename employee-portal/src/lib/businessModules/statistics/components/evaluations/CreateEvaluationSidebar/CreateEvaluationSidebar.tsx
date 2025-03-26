@@ -4,6 +4,11 @@
  */
 
 import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
+import {
   ApiAvailableDataSource,
   ApiMinimalEvaluationTemplateInfo,
 } from "@eshg/statistics-api";
@@ -15,11 +20,6 @@ import { mapDataSourceSensitivityApiToFrontend } from "@/lib/businessModules/sta
 import { CategorizedFlatAttribute } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ChooseAttributesStep/ChooseAttributesStep";
 import { DataSource } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ChooseDataSourceStep/ChooseDataSourceStep";
 import { getAttributeLabel } from "@/lib/businessModules/statistics/components/evaluations/getAttributeLabel";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 import { CreateEvaluationFromScratchSidebar } from "./CreateEvaluationFromScratchSidebar";
 

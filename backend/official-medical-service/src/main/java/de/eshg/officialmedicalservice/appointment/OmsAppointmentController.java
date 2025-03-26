@@ -42,8 +42,10 @@ public class OmsAppointmentController {
 
   @PatchMapping(path = APPOINTMENT_URL + "/{id}/cancel")
   @Operation(summary = "Cancel an appointment")
-  public void cancelAppointment(@PathVariable("id") UUID appointmentId) {
-    omsAppointmentService.cancelAppointmentEmployee(appointmentId);
+  public void cancelAppointment(
+      @PathVariable("id") UUID appointmentId,
+      @Valid @RequestBody(required = false) String reasonForRejection) {
+    omsAppointmentService.cancelAppointmentEmployee(appointmentId, reasonForRejection);
   }
 
   @PatchMapping(path = APPOINTMENT_URL + "/{id}/close")

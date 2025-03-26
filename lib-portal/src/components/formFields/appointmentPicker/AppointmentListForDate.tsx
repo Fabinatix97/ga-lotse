@@ -15,7 +15,7 @@ import {
   useTheme,
 } from "@mui/joy";
 import { endOfDay, isWithinInterval, startOfDay } from "date-fns";
-import { useId } from "react";
+import { useId, useMemo } from "react";
 
 import { ifDefined } from "../../../helpers/ifDefined";
 import { useBaseField } from "../BaseField";
@@ -39,28 +39,31 @@ export function useAppointmentList<T extends Appointment>({
   listLabel,
   locale,
 }: UseAppointmentListProps<T>): { appointments: T[]; label: string } {
-  const currentDayInterval = selectedDay
-    ? {
-        start: startOfDay(selectedDay),
-        end: endOfDay(selectedDay),
-      }
-    : undefined;
-  const dayAppointments =
-    currentDayInterval != null
-      ? monthAppointments
-          .filter((t) => isWithinInterval(t.start, currentDayInterval))
-          .sort()
-      : [];
-
   const stringListLabel =
     typeof listLabel === "function"
       ? (ifDefined(selectedDay, (d) => listLabel(d, locale)) ?? "")
       : listLabel;
 
-  return {
-    label: stringListLabel,
-    appointments: dayAppointments,
-  };
+  return useMemo(() => {
+    const currentDayInterval = selectedDay
+      ? {
+          start: startOfDay(selectedDay),
+          end: endOfDay(selectedDay),
+        }
+      : undefined;
+
+    const dayAppointments =
+      currentDayInterval != null
+        ? monthAppointments
+            .filter((t) => isWithinInterval(t.start, currentDayInterval))
+            .sort()
+        : [];
+
+    return {
+      label: stringListLabel,
+      appointments: dayAppointments,
+    };
+  }, [stringListLabel, selectedDay, monthAppointments]);
 }
 
 export interface AppointmentListProps<T extends Appointment> {

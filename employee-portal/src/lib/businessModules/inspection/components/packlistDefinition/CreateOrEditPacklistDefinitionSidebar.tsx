@@ -9,6 +9,15 @@ import {
   ApiObjectType,
   ApiPacklistDefinitionRevision,
 } from "@eshg/inspection-api";
+import {
+  FormButtonBar,
+  OverlayBoundary,
+  Sidebar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+} from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Stack } from "@mui/joy";
 import { Formik } from "formik";
@@ -25,15 +34,6 @@ import { PacklistDefinitionElementsList } from "@/lib/businessModules/inspection
 import { PacklistDefinitionHeaderCard } from "@/lib/businessModules/inspection/components/packlistDefinition/header/PacklistDefinitionHeaderCard";
 import { PacklistDefinitionHeaderRow } from "@/lib/businessModules/inspection/components/packlistDefinition/header/PacklistDefinitionHeaderRow";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 interface CreateOrEditPacklistDefinitionSidebarProps {
   open: boolean;

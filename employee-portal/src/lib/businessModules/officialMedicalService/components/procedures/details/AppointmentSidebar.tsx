@@ -3,7 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DetailsItem } from "@eshg/lib-employee-portal";
+import {
+  DetailsItem,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
@@ -42,18 +49,11 @@ import { usePostAppointment } from "@/lib/businessModules/officialMedicalService
 import { useGetFreeAppointmentsQuery } from "@/lib/businessModules/officialMedicalService/api/queries/appointmentBlocksApi";
 import { APPOINTMENT_TYPE_OPTIONS } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/options";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { DateTimeField } from "@/lib/shared/components/formFields/DateTimeField";
 import {
   RadioAccordionGroupField,
   RadioAccordionItem,
 } from "@/lib/shared/components/formFields/RadioAccordionField";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 interface Appointment {
   start: Date;

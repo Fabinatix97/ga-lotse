@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 
 import { useDeleteEvaluation } from "@/lib/businessModules/statistics/api/mutations/useDeleteEvaluation";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function useDeleteEvaluationWithConfirmation(onConfirm?: () => void) {
   const deleteEvaluation = useDeleteEvaluation();

@@ -5,7 +5,10 @@
 
 "use client";
 
-import { ChildExamination, ProphylaxisSessionDetails } from "@eshg/dental";
+import {
+  ProphylaxisSessionDetails,
+  ProphylaxisSessionExamination,
+} from "@eshg/dental";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { createContext, useContext, useState } from "react";
 import { useStore } from "zustand";
@@ -64,7 +67,7 @@ export function useProphylaxisSessionStore<T>(
   return useStore(prophylaxisSessionStoreContext, selector);
 }
 
-export function useFilteredParticipants(): ChildExamination[] {
+export function useFilteredParticipants(): ProphylaxisSessionExamination[] {
   return useProphylaxisSessionStore(
     useShallow((state) =>
       sortParticipants(
@@ -75,7 +78,7 @@ export function useFilteredParticipants(): ChildExamination[] {
   );
 }
 
-export function useFilteredPresentParticipants(): ChildExamination[] {
+export function useFilteredPresentParticipants(): ProphylaxisSessionExamination[] {
   return useFilteredParticipants().filter(
     (participant) => participant.status !== "NOT_PRESENT",
   );

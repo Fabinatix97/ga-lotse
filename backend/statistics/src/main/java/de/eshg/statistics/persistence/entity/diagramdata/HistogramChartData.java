@@ -41,4 +41,13 @@ public class HistogramChartData extends DiagramData {
     histogramGroupData.setHistogramChartData(this);
     this.histogramGroupDatas.add(histogramGroupData);
   }
+
+  public void removeHistogramGroupDatas() {
+    histogramGroupDatas.forEach(
+        histogramGroupData -> {
+          histogramGroupData.setHistogramChartData(null);
+          histogramGroupData.setHistogramBin(null);
+        });
+    histogramGroupDatas.clear();
+  }
 }

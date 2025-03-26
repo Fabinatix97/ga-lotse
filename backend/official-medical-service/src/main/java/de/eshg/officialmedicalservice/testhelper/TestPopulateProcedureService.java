@@ -237,7 +237,9 @@ public class TestPopulateProcedureService {
             employeeOmsProcedureService.updateMedicalOpinionStatus(
                 procedureId,
                 new PatchMedicalOpinionStatusRequest(
-                    request.medicalOpinionStatus(), request.medicalOpinionResult()));
+                    request.medicalOpinionStatus(),
+                    request.medicalOpinionResult(),
+                    request.medicalOpinionComment()));
           }
 
           // 10. update waiting room
@@ -294,7 +296,8 @@ public class TestPopulateProcedureService {
                 appointmentService.addAppointmentEmployee(procedureId, population.request());
             appointmentMap.put(population.key(), appointmentId);
             if (canceledAppointmentsSet.contains(population.key())) {
-              appointmentService.cancelAppointmentEmployee(appointmentId);
+              appointmentService.cancelAppointmentEmployee(
+                  appointmentId, population.reasonForRejection());
             }
             if (closedAppointmentsSet.contains(population.key())) {
               appointmentService.closeAppointmentEmployee(appointmentId);

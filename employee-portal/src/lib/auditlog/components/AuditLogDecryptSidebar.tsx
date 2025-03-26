@@ -8,7 +8,15 @@ import {
   ApiAuditLogSourceFromJSON,
   AuditLogApi,
 } from "@eshg/auditlog-api";
-import { DetailsColumn } from "@eshg/lib-employee-portal";
+import {
+  DetailsColumn,
+  FormButtonBar,
+  Sidebar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+} from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { encodeReservedHtmlCharacters } from "@eshg/lib-portal/helpers/htmlStringEncoder";
@@ -24,15 +32,7 @@ import {
   unwrapPrivateKey,
 } from "@/lib/auditlog/components/crypto";
 import { auditLogSourceNames } from "@/lib/shared/components/auditlog/constants";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
 import { PasswordField } from "@/lib/shared/components/formFields/PasswordField";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 interface AuditlogAuthorizeSidebarProps {
   encryptedPrivateKey: string[];

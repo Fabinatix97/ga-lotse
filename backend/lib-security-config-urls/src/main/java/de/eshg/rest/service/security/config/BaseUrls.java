@@ -274,8 +274,10 @@ public final class BaseUrls {
   }
 
   public static final class DepartmentInfoLibrary {
-    public static final String DEPARTMENT_INFO_API = "/configuration/department-info";
-    public static final String PRIVACY_DOCUMENTS_API = "/configuration/privacy-documents";
+    public static final String CONFIGURATION_API = "/configuration";
+    public static final String DEPARTMENT_INFO_API = CONFIGURATION_API + "/department-info";
+    public static final String PRIVACY_DOCUMENTS_API = CONFIGURATION_API + "/privacy-documents";
+    public static final String OPENING_HOURS_API = CONFIGURATION_API + "/opening-hours";
   }
 
   public static final class OpenData {

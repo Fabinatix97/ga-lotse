@@ -27,6 +27,7 @@ public record PostPopulateProcedureRequest(
     @Valid List<DocumentPopulationDto> documents,
     MedicalOpinionStatusDto medicalOpinionStatus,
     MedicalOpinionResultDto medicalOpinionResult,
+    String medicalOpinionComment,
     ProcedureStatusDto targetState,
     Boolean sendEmailNotifications,
     @Valid WaitingRoomDto waitingRoom,

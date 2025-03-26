@@ -22,7 +22,7 @@ public class OfficialMedicalServicePublicSecurityConfig
         EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_ADMIN,
         ModuleLeaderRole.OFFICIAL_MEDICAL_SERVICE_LEADER);
     grantAccessToStatistics(EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_ADMIN);
-    grantAccessToLibDepartmentInfoUrls();
+    grantAccessToConfiguration();
 
     requestMatchers(BaseUrls.OfficialMedicalService.CITIZEN_PUBLIC_API + "/**").permitAll();
 
@@ -32,6 +32,8 @@ public class OfficialMedicalServicePublicSecurityConfig
     requestMatchers(
             BaseUrls.OfficialMedicalService.EMPLOYEE_API + "/**",
             BaseUrls.EVENT_METADATA_API + "/**")
-        .hasRole(EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_ADMIN);
+        .hasAnyRole(
+            EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_ADMIN,
+            EmployeePermissionRole.PROCEDURE_ARCHIVE);
   }
 }

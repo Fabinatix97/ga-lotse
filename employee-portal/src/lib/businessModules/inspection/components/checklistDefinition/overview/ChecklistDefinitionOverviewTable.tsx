@@ -11,6 +11,7 @@ import {
   DataTable,
   TablePage,
   TableSheet,
+  useConfirmationDialog,
   useHasUserRolesCheck,
 } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -26,7 +27,6 @@ import { generateChecklistDefinitionOverviewTableColumns } from "@/lib/businessM
 import { UploadChecklistToRepoSidebar } from "@/lib/businessModules/inspection/components/checklistDefinition/sidebars/UploadChecklistToRepoSidebar";
 import { ChecklistVersionsSidebar } from "@/lib/businessModules/inspection/components/checklistDefinition/sidebars/history/ChecklistVersionsSidebar";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 type UserActivityState =
   | { type: "view-table" }

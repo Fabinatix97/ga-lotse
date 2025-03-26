@@ -7,6 +7,7 @@
 
 import { ApiUserRole, GetGdprProceduresRequest } from "@eshg/base-api";
 import {
+  ButtonBar,
   DataTable,
   Pagination,
   TablePage,
@@ -22,7 +23,6 @@ import { useCreateGDPRProcedureSidebar } from "@/lib/baseModule/components/gdpr/
 import { columns } from "@/lib/baseModule/components/gdpr/overview/columns";
 import { useGdprProcedureFilterSettings } from "@/lib/baseModule/components/gdpr/overview/useGdprFilterSettings";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettingsContent } from "@/lib/shared/components/filterSettings/FilterSettingsContent";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";

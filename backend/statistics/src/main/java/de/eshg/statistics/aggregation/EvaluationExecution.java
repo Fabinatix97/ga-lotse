@@ -13,6 +13,7 @@ import de.eshg.statistics.diagramcreation.DiagramCreationService;
 import de.eshg.statistics.exception.IncompleteDeletionException;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -71,7 +72,11 @@ public class EvaluationExecution {
       case MIN_MAX_DETERMINATION -> evaluationService.minMaxDetermination(evaluationId);
       case ANONYMIZATION -> anonymizationExecution.anonymizeEvaluation(evaluationId);
       case ANALYSIS_CONDUCTION -> analysisService.analysisConduction(evaluationId);
-      case DIAGRAM_CREATION -> diagramCreationService.diagramRecreation(evaluationId);
+      case DIAGRAM_CREATION -> {
+        Optional<UUID> diagramIdOptional =
+            evaluationService.findDiagramWithEmptyDataOrCompleteEvaluation(evaluationId);
+        diagramIdOptional.ifPresent(diagramCreationService::fillDiagramData);
+      }
       default -> {
         // ignore
       }

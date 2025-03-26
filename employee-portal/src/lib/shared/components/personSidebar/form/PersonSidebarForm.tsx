@@ -3,14 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PersonFormValues } from "@eshg/lib-employee-portal";
-import { Formik, FormikProps } from "formik";
-import { ComponentType, Ref } from "react";
-
 import {
+  PersonFormValues,
   SidebarForm,
   SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
+} from "@eshg/lib-employee-portal";
+import { Formik, FormikProps } from "formik";
+import { ComponentType, Ref } from "react";
 
 export type PersonFormProps<TValues> = FormikProps<TValues> & {
   title: string;

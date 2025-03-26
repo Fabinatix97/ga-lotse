@@ -3,13 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { SidebarForm, SidebarFormHandle } from "@eshg/lib-employee-portal";
 import { Formik, FormikProps } from "formik";
 import { ComponentType, Ref } from "react";
 
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
 import {
   DefaultSearchPersonForm,
   defaultSearchPersonValues,

@@ -7,6 +7,7 @@ import {
   RowSelectionTableToolbar,
   RowSelectionTableToolbarButton,
   mapRowSelectionToRowIds,
+  useConfirmationDialog,
 } from "@eshg/lib-employee-portal";
 import { ApiArchivingRelevance } from "@eshg/lib-procedures-api";
 import { DeleteOutlined, Inventory2Outlined } from "@mui/icons-material";
@@ -14,7 +15,6 @@ import { Divider, Typography } from "@mui/joy";
 import { RowSelectionState } from "@tanstack/react-table";
 
 import { ArchiveTableProps } from "@/lib/shared/components/archiving/components/archiveView/ArchiveTable";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 interface ArchiveTableTitleProps extends ArchiveTableProps {
   rowSelection: RowSelectionState;

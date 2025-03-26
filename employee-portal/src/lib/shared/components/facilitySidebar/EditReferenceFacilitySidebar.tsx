@@ -4,7 +4,11 @@
  */
 
 import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
-import { mapApiAddressToForm } from "@eshg/lib-employee-portal";
+import {
+  SidebarWithFormRefProps,
+  mapApiAddressToForm,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { isDefined } from "remeda";
 
 import { useUpdateReferenceFacility } from "@/lib/baseModule/api/mutations/facility";
@@ -13,10 +17,6 @@ import {
   FacilityForm,
 } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { mapApiContactPersonToForm } from "@/lib/shared/helpers/facilityUtils";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 interface EditReferenceFacilitySidebarProps extends SidebarWithFormRefProps {
   facility: ApiGetReferenceFacilityResponse;

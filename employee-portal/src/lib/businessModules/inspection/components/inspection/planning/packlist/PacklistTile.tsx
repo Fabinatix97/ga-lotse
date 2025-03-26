@@ -6,6 +6,7 @@
 "use client";
 
 import { ApiInspection, ApiPacklist } from "@eshg/inspection-api";
+import { useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { Stack, Textarea, Typography } from "@mui/joy";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -22,7 +23,6 @@ import { Packlist } from "@/lib/businessModules/inspection/components/inspection
 import { PacklistSelectSidebar } from "@/lib/businessModules/inspection/components/inspection/planning/packlist/PacklistSelectSidebar";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export interface PacklistTileProps {
   readonly?: boolean;

@@ -7,7 +7,7 @@ import { Box, formControlClasses } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 // eslint-disable-next-line no-restricted-imports
 import { Form, FormikFormProps, useFormikContext } from "formik";
-import { MutableRefObject, useEffect, useRef } from "react";
+import { RefObject, useEffect, useRef } from "react";
 
 import { usePrevious } from "../../hooks/usePrevious";
 
@@ -19,7 +19,7 @@ export function useScrollToError({
   formRef,
 }: {
   enabled?: boolean;
-  formRef: MutableRefObject<HTMLFormElement | null>;
+  formRef: RefObject<HTMLFormElement | null>;
 }) {
   const { isSubmitting, errors } = useFormikContext();
   const wasSubmitting = usePrevious(isSubmitting);
@@ -34,7 +34,7 @@ export function useScrollToError({
 }
 
 export function scrollToFirstFormError(
-  formRef?: MutableRefObject<HTMLFormElement | null>,
+  formRef?: RefObject<HTMLFormElement | null>,
 ) {
   // If there's a formRef, use the form;
   // if not, search the whole document for validation errors

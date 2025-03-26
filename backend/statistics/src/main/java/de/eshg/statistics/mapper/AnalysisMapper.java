@@ -8,7 +8,6 @@ package de.eshg.statistics.mapper;
 import de.eshg.domain.model.BaseEntity;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.statistics.api.AddAnalysisRequest;
-import de.eshg.statistics.api.AddDiagramRequest;
 import de.eshg.statistics.api.AnalysisDto;
 import de.eshg.statistics.api.AnalysisWithDiagrams;
 import de.eshg.statistics.api.chart.AddChartConfigurationDto;
@@ -263,26 +262,17 @@ public class AnalysisMapper {
   }
 
   public static Diagram mapToPersistence(
-      AddDiagramRequest addDiagramRequest, DiagramData diagramData, Analysis analysis) {
-    return mapToPersistence(
-        addDiagramRequest.title(),
-        addDiagramRequest.description(),
-        addDiagramRequest.filters(),
-        diagramData,
-        analysis);
-  }
-
-  public static Diagram mapToPersistence(
       String title,
       String description,
       List<TableColumnFilterParameter> filters,
-      DiagramData diagramData,
+      DiagramData emptyDiagramData,
       Analysis analysis) {
     Diagram diagram = new Diagram();
-    diagram.setDiagramData(diagramData);
+    diagram.setDiagramData(emptyDiagramData);
     analysis.addDiagram(diagram);
     diagram.setTitle(title);
     diagram.setDescription(description);
+    diagram.setDiagramDataEmpty(true);
     if (filters != null) {
       List<AbstractFilterParameter> filterParameters =
           filters.stream().map(FilterParameterMapper::mapToPersistence).toList();
@@ -310,14 +300,15 @@ public class AnalysisMapper {
         analysis.getName(),
         analysis.getDiagrams().size(),
         analysis.getCreatedAt(),
-        mapToChartConfigurationDto(
-            Hibernate.unproxy(analysis.getChartConfiguration(), ChartConfiguration.class),
-            withJson));
+        mapToChartConfigurationDto(getChartConfiguration(analysis), withJson));
+  }
+
+  public static ChartConfiguration getChartConfiguration(Analysis analysis) {
+    return Hibernate.unproxy(analysis.getChartConfiguration(), ChartConfiguration.class);
   }
 
   public static AnalysisWithDiagrams mapToAnalysisWithDiagrams(Analysis analysis) {
-    ChartConfiguration chartConfiguration =
-        Hibernate.unproxy(analysis.getChartConfiguration(), ChartConfiguration.class);
+    ChartConfiguration chartConfiguration = getChartConfiguration(analysis);
     return new AnalysisWithDiagrams(
         analysis.getExternalId(),
         analysis.getName(),

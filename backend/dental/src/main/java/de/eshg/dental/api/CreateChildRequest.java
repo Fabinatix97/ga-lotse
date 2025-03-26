@@ -75,4 +75,33 @@ public record CreateChildRequest(
         groupName,
         institutionId);
   }
+
+  public CreateChildRequest(
+      String firstName,
+      String lastName,
+      GenderDto gender,
+      LocalDate dateOfBirth,
+      AddressDto contactAddress,
+      Year year,
+      String groupName,
+      UUID institutionId) {
+    this(
+        null,
+        null,
+        null,
+        firstName,
+        lastName,
+        gender,
+        dateOfBirth,
+        null,
+        null,
+        null,
+        null,
+        null,
+        contactAddress,
+        null,
+        year.getValue(),
+        groupName,
+        institutionId);
+  }
 }

@@ -60,6 +60,14 @@ public class Diagram extends BaseEntityWithExternalId {
       orphanRemoval = true)
   private DiagramData diagramData;
 
+  @DataSensitivity(PUBLIC)
+  @Column(nullable = false)
+  private boolean diagramDataEmpty;
+
+  @DataSensitivity(PUBLIC)
+  @Column
+  private Long originalDiagramId;
+
   public String getTitle() {
     return title;
   }
@@ -98,7 +106,26 @@ public class Diagram extends BaseEntityWithExternalId {
   }
 
   public void setDiagramData(DiagramData diagramData) {
+    if (this.diagramData != null) {
+      this.diagramData.setDiagram(null);
+    }
     diagramData.setDiagram(this);
     this.diagramData = diagramData;
+  }
+
+  public boolean isDiagramDataEmpty() {
+    return diagramDataEmpty;
+  }
+
+  public void setDiagramDataEmpty(boolean diagramDataEmpty) {
+    this.diagramDataEmpty = diagramDataEmpty;
+  }
+
+  public Long getOriginalDiagramId() {
+    return originalDiagramId;
+  }
+
+  public void setOriginalDiagramId(Long originalDiagramId) {
+    this.originalDiagramId = originalDiagramId;
   }
 }

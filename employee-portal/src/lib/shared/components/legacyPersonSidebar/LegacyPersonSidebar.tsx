@@ -7,13 +7,17 @@ import {
   type ApiGetReferencePersonResponse,
   ApiProcedureStatus,
 } from "@eshg/base-api";
+import {
+  OverlayBoundary,
+  Sidebar,
+  SidebarFormHandle,
+  useConfirmationDialog,
+} from "@eshg/lib-employee-portal";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { FormikErrors } from "formik";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { isNullish } from "remeda";
 
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
 import { LegacyMinimalPerson } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyBasePersonForm";
 import {
   LegacyPerson,
@@ -27,8 +31,6 @@ import {
 } from "@/lib/shared/components/legacyPersonSidebar/personSidebarHelper";
 import { ProcedureList } from "@/lib/shared/components/legacyPersonSidebar/procedures/ProcedureList";
 import { LegacyPersonSearch } from "@/lib/shared/components/legacyPersonSidebar/search/LegacyPersonSearch";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export interface ProcedureLiteItem {
   link: string;

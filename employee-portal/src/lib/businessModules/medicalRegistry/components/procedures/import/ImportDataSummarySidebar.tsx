@@ -5,6 +5,11 @@
 
 "use client";
 
+import {
+  ButtonBar,
+  SidebarActions,
+  SidebarContent,
+} from "@eshg/lib-employee-portal";
 import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { ApiImportStatistics } from "@eshg/medical-registry-api";
@@ -23,10 +28,6 @@ import {
   Stack,
   Typography,
 } from "@mui/joy";
-
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 interface ImportDataSummarySidebarProps {
   onClose: () => void;

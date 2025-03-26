@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { SidebarWithFormRefProps } from "@eshg/lib-employee-portal";
 import { ApiFacility } from "@eshg/official-medical-service-api";
 
 import { usePatchFacility } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
@@ -14,7 +15,6 @@ import {
   DefaultFacilityFormValues,
   FacilityForm,
 } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
-import { SidebarWithFormRefProps } from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 interface UpdateFacilitySidebarProps extends SidebarWithFormRefProps {
   procedureId: string;

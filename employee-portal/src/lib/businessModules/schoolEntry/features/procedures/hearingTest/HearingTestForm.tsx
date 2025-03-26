@@ -5,6 +5,7 @@
 
 "use client";
 
+import { TextareaField } from "@eshg/lib-employee-portal";
 import { FormProps, OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { MutationBundle } from "@eshg/lib-portal/types/query";
 import {
@@ -24,7 +25,6 @@ import { EarForm } from "@/lib/businessModules/schoolEntry/features/procedures/h
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 import { FormGroupGrid } from "@/lib/shared/components/form/FormGroupGrid";
 import { FormStack } from "@/lib/shared/components/form/FormStack";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
 type EarValues = Record<ApiHertzValue, OptionalFieldValue<ApiDecibelValue>>;
 

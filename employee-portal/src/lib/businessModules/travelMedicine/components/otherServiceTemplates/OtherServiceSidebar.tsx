@@ -3,17 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { ApiPostPutOtherServiceTemplateRequest } from "@eshg/travel-medicine-api";
 
 import {
   OtherServiceFormValues,
   OtherServiceSidebarForm,
 } from "@/lib/businessModules/travelMedicine/components/otherServiceTemplates/OtherServiceSidebarForm";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useOtherServiceSidebar(): UseSidebarWithFormRefResult<OtherServiceSidebarProps> {
   return useSidebarWithFormRef({

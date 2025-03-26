@@ -6,12 +6,15 @@
 package de.eshg.lsd.keycloak;
 
 import static de.eshg.lib.keycloak.EmployeeTestUser.DUMMY;
+import static de.eshg.lib.keycloak.KeycloakUserAttribute.DEFAULT_ATTRIBUTE_EMAIL;
+import static de.eshg.lib.keycloak.UserAttributePermissions.ADMIN_ONLY;
 import static de.eshg.lsd.keycloak.PermissionRole.LSD_WRITE_TECH_USER;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.cronn.commons.lang.SetUtils;
 import de.eshg.lib.keycloak.KeycloakRole;
+import de.eshg.lib.keycloak.KeycloakUserAttribute;
 import de.eshg.lib.keycloak.UsernamePassword;
 import de.eshg.lsd.keycloak.properties.LsdInternalKeycloakProperties;
 import de.eshg.lsd.service.LsdAttributeKey;
@@ -23,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.*;
+import org.apache.commons.lang3.StringUtils;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.resource.ClientResource;
 import org.keycloak.admin.client.resource.ClientsResource;
@@ -181,6 +185,10 @@ public class KeycloakProvisioning {
               passwordCredentials.setValue(user.password());
               passwordCredentials.setTemporary(false);
               existing.get().resetPassword(passwordCredentials);
+              // TODO ISSUE-8232 remove this after migration
+              UserRepresentation representation = existing.get().toRepresentation();
+              representation.setEmail("");
+              existing.get().update(representation);
             } else {
               keycloakClient.addUser(user.username(), user.password(), LSD_WRITE_TECH_USER);
               log.info("created user {} from importfile", user.username());
@@ -242,7 +250,16 @@ public class KeycloakProvisioning {
     if (profileConfig.getGroups().stream().noneMatch(g -> group.getName().equals(g.getName()))) {
       profileConfig.addGroup(group);
     }
-
+    for (String defaultAttribute : KeycloakUserAttribute.defaultAttributes) {
+      UPAttribute attribute = profileConfig.getAttribute(defaultAttribute);
+      attribute.setPermissions(
+          new UPAttributePermissions(ADMIN_ONLY.viewPermissions(), ADMIN_ONLY.editPermissions()));
+      if (StringUtils.equals(defaultAttribute, DEFAULT_ATTRIBUTE_EMAIL)) {
+        attribute.setRequired(null);
+        attribute.addValidation("length", Map.of("max", 0));
+      }
+      profileConfig.addOrReplaceAttribute(attribute);
+    }
     for (LsdAttributeKey attribute : LsdAttributeKey.values()) {
       profileConfig.addOrReplaceAttribute(getAttributeConfig(attribute, group));
     }
@@ -260,7 +277,7 @@ public class KeycloakProvisioning {
     attributeConfig.setMultivalued(attribute == LsdAttributeKey.CERTIFICATE);
     attributeConfig.setGroup(group.getName());
     attributeConfig.setPermissions(
-        new UPAttributePermissions(Set.of("user", "admin"), Set.of("user", "admin")));
+        new UPAttributePermissions(ADMIN_ONLY.viewPermissions(), ADMIN_ONLY.editPermissions()));
     return attributeConfig;
   }
 

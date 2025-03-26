@@ -7,7 +7,6 @@ package de.eshg.statistics.diagramcreation;
 
 import de.eshg.statistics.aggregation.AnalysisService;
 import de.eshg.statistics.aggregation.TableRowSpecifications;
-import de.eshg.statistics.api.AddDiagramRequest;
 import de.eshg.statistics.api.filter.TableColumnFilterParameter;
 import de.eshg.statistics.config.StatisticsConfig;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
@@ -20,7 +19,6 @@ import de.eshg.statistics.persistence.entity.diagramdata.KeyToCount;
 import de.eshg.statistics.persistence.entity.entry.BooleanEntry;
 import de.eshg.statistics.persistence.entity.entry.DecimalEntry;
 import de.eshg.statistics.persistence.entity.entry.IntegerEntry;
-import de.eshg.statistics.persistence.repository.AnalysisRepository;
 import de.eshg.statistics.persistence.repository.TableRowRepository;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -39,41 +37,28 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.CollectionUtils;
 
-public abstract class AbstractChartDiagramCreationService<D, C> {
+public abstract class AbstractChartDiagramCreationService<D> {
   private static final List<String> BOOLEAN_KEYS = List.of("Ja", "Nein");
 
   protected final AnalysisService analysisService;
-  protected final AnalysisRepository analysisRepository;
 
   private final TableRowRepository tableRowRepository;
   private final int pageSizeForCollectionDiagramData;
 
   protected AbstractChartDiagramCreationService(
       AnalysisService analysisService,
-      AnalysisRepository analysisRepository,
       TableRowRepository tableRowRepository,
       StatisticsConfig statisticsConfig) {
     this.analysisService = analysisService;
-    this.analysisRepository = analysisRepository;
     this.tableRowRepository = tableRowRepository;
     this.pageSizeForCollectionDiagramData = statisticsConfig.diagramData().pageSize();
   }
 
-  abstract D initializeChartDataHolder(
-      UUID analysisId, C chartConfigurationDto, List<TableColumnFilterParameter> filters);
+  abstract D initializeChartDataHolder(UUID diagramId);
 
-  abstract int collectChartData(
-      UUID analysisId,
-      C chartConfigurationDto,
-      List<TableColumnFilterParameter> filters,
-      int page,
-      D chartDataHolder);
+  abstract int collectChartData(UUID diagramId, int page, D chartDataHolder);
 
-  abstract UUID addDiagram(
-      UUID analysisId,
-      C chartConfigurationDto,
-      AddDiagramRequest addDiagramRequest,
-      D chartDataHolder);
+  abstract void fillDiagramData(UUID diagramId, D chartDataHolder);
 
   protected static Map<Object, Integer> createCountingMap(TableColumn tableColumn) {
     if (tableColumn == null) {

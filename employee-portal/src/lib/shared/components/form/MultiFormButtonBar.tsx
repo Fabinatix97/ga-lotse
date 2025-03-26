@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ButtonBar } from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { Button } from "@mui/joy";
+import { Button, ColorPaletteProp } from "@mui/joy";
 import { isDefined } from "remeda";
-
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 
 interface MultiFormButtonBarProps {
   onCancel?: () => void;
@@ -16,6 +15,7 @@ interface MultiFormButtonBarProps {
   onReject?: () => void;
   submitting: boolean;
   submitLabel: string | undefined;
+  submitButtonColor?: ColorPaletteProp;
 }
 
 export function MultiFormButtonBar(props: MultiFormButtonBarProps) {
@@ -53,6 +53,7 @@ export function MultiFormButtonBar(props: MultiFormButtonBarProps) {
             <SubmitButton
               submitting={props.submitting}
               sx={{ minWidth: "fit-content" }}
+              color={props.submitButtonColor ?? "primary"}
             >
               {props.submitLabel}
             </SubmitButton>

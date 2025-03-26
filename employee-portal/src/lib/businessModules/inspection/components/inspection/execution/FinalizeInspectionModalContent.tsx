@@ -6,6 +6,7 @@
 "use client";
 
 import { ApiInspectionPhase } from "@eshg/inspection-api";
+import { FormButtonBar } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import {
@@ -25,7 +26,6 @@ import { useFinalizeInspection } from "@/lib/businessModules/inspection/api/muta
 import { FinalizeInspectionModalProps } from "@/lib/businessModules/inspection/components/inspection/execution/FinalizeInspectionModal";
 import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared/enums";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 
 export function FinalizeInspectionModalContent({
   inspectionId,

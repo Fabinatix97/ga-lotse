@@ -3,7 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { DetailsItem } from "@eshg/lib-employee-portal";
+import {
+  DetailsItem,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+} from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { ApiUser } from "@eshg/travel-medicine-api";
 import { Sheet, Stack } from "@mui/joy";
@@ -12,12 +18,6 @@ import { Ref } from "react";
 
 import { AppliedByFields } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/sidebarForms/AppliedByFields";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { validateRequiredBatchId } from "@/lib/shared/helpers/validators";
 
 export interface ServiceAppliedFormValues {

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { TextareaField } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
@@ -15,7 +16,6 @@ import {
   ReportingPeriod,
 } from "@/lib/businessModules/statistics/api/models/reportSeriesTypes";
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
 import {
   AutomateReportFormModel,

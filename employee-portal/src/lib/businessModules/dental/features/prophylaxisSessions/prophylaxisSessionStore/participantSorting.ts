@@ -3,11 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ChildExamination } from "@eshg/dental";
+import {
+  EXAMINATION_STATUS,
+  ProphylaxisSessionExamination,
+} from "@eshg/dental";
 import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { isDefined } from "remeda";
 
-import { EXAMINATION_STATUS } from "@/lib/businessModules/dental/features/examinations/translations";
 import { displayBoolean } from "@/lib/shared/helpers/booleans";
 
 export interface ParticipantSorting {
@@ -16,7 +18,7 @@ export interface ParticipantSorting {
 }
 
 type ParticipantSortAttributes = Omit<
-  ChildExamination,
+  ProphylaxisSessionExamination,
   | "childId"
   | "result"
   | "note"
@@ -36,8 +38,8 @@ type ParticipantComparator = (
 
 export function sortParticipants(
   sorting: ParticipantSorting,
-  participants: ChildExamination[],
-): ChildExamination[] {
+  participants: ProphylaxisSessionExamination[],
+): ProphylaxisSessionExamination[] {
   const sortedParticipants = participants.toSorted(
     compareMultiple(
       compareBy(sorting.sortKey, sorting.sortDirection),

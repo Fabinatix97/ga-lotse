@@ -5,6 +5,10 @@
 
 import { ApiAddContact200Response } from "@eshg/base-api";
 import { useImportChildren } from "@eshg/dental";
+import {
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
 import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
@@ -18,10 +22,6 @@ import { FileField } from "@/lib/shared/components/formFields/file/FileField";
 import { SchoolYearField } from "@/lib/shared/components/formFields/schoolYear";
 import { ImportDataForm } from "@/lib/shared/components/import/ImportDataForm";
 import { getInstitutionOptionLabel } from "@/lib/shared/helpers/selectOptionMapper";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useImportChildrenSidebar() {
   return useSidebarWithFormRef({

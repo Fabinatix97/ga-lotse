@@ -3,6 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  ButtonBar,
+  SidebarActions,
+  SidebarForm,
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { ApiGetProcedureDraftResponse } from "@eshg/medical-registry-api";
@@ -22,13 +29,6 @@ import { PersonSidebarContent } from "@/lib/businessModules/medicalRegistry/comp
 import { ProcedureSidebarContent } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/ProcedureSidebarContent";
 import { isPartialDraft } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/helper";
 import { useConfirmDraftDialog } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/useConfirmDraftDialog";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useFinalizeDraft(procedure: ApiGetProcedureDraftResponse) {
   const confirmDraftDialog = useConfirmDraftDialog();

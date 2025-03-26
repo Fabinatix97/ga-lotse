@@ -26,7 +26,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -64,10 +63,6 @@ public class Analysis extends BaseEntityWithExternalId {
       orphanRemoval = true)
   @OrderBy
   private final List<Diagram> diagrams = new ArrayList<>();
-
-  @DataSensitivity(PUBLIC)
-  @Column
-  private UUID originalAnalysisId;
 
   public AbstractAggregationResult getAggregationResult() {
     return aggregationResult;
@@ -113,13 +108,5 @@ public class Analysis extends BaseEntityWithExternalId {
   public void removeDiagrams() {
     this.diagrams.forEach(diagram -> diagram.setAnalysis(null));
     this.diagrams.clear();
-  }
-
-  public UUID getOriginalAnalysisId() {
-    return originalAnalysisId;
-  }
-
-  public void setOriginalAnalysisId(UUID originalAnalysisId) {
-    this.originalAnalysisId = originalAnalysisId;
   }
 }

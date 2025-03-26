@@ -8,10 +8,12 @@
 import { Child, routes, useGetChildrenQuery } from "@eshg/dental";
 import { ApiChildSortKey } from "@eshg/dental-api";
 import {
+  ButtonBar,
   DataTable,
   Pagination,
   TablePage,
   TableSheet,
+  formatSchoolYear,
   getSortDirection,
   getSortKey,
   useTableControl,
@@ -25,7 +27,6 @@ import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 import { ReactNode } from "react";
 
 import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { useFilterDictionary } from "@/lib/shared/components/filterSettings/useFilterDictionary";
 import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
@@ -35,7 +36,6 @@ import {
   TogglePersonSearchButton,
   usePersonSearch,
 } from "@/lib/shared/components/personSearch/PersonSearchForm";
-import { formatSchoolYear } from "@/lib/shared/helpers/formatters";
 
 import {
   ChildrenFilterSettings,

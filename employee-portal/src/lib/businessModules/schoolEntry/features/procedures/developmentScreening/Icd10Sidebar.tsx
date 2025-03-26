@@ -6,6 +6,14 @@
 "use client";
 
 import { ApiIcd10Code } from "@eshg/base-api";
+import {
+  ButtonBar,
+  DrawerProps,
+  SidebarActions,
+  SidebarContent,
+  UseSidebarResult,
+  useSidebar,
+} from "@eshg/lib-employee-portal";
 import { Close, SearchOutlined } from "@mui/icons-material";
 import {
   Box,
@@ -24,14 +32,6 @@ import { ChangeEvent, TdHTMLAttributes, useState } from "react";
 import { useDebounce } from "use-debounce";
 
 import { useSearchIcd10Codes } from "@/lib/baseModule/api/queries/icd10Codes";
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
-import {
-  UseSidebarResult,
-  useSidebar,
-} from "@/lib/shared/components/drawer/useSidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export function useIcd10Sidebar(): UseSidebarResult<Icd10SidebarProps> {
   return useSidebar({

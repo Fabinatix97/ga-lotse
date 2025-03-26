@@ -4,6 +4,7 @@
  */
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
+import { SidebarContent } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import {
@@ -21,7 +22,6 @@ import {
 } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/FinalizeDraftSidebar";
 import { SelectCard } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/SelectCard";
 import { procedureStatusNames } from "@/lib/shared/components/procedures/constants";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { fullAddress } from "@/lib/shared/helpers/facilityUtils";
 
 interface ProcedureSidebarContentProps {

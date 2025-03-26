@@ -5,6 +5,7 @@
 
 "use client";
 
+import { TextareaField } from "@eshg/lib-employee-portal";
 import {
   FormProps,
   OptionalFieldValue,
@@ -32,7 +33,6 @@ import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/Confir
 import { FormGroupGrid } from "@/lib/shared/components/form/FormGroupGrid";
 import { FormStack } from "@/lib/shared/components/form/FormStack";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
 const CHECKBOX_GROUPS: CheckboxDefinition[][] = [
   [

@@ -4,6 +4,11 @@
  */
 
 import { ApiInventoryItem, ApiLabel } from "@eshg/base-api";
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 
 import {
   mapInventoryItemToUpdateInventoryValues,
@@ -14,11 +19,6 @@ import {
   InventoryForm,
   InventoryFormValues,
 } from "@/lib/baseModule/components/inventory/forms/InventoryForm";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useInventoryUpdateSidebar(): UseSidebarWithFormRefResult<UpdateInventorySidebarProps> {
   return useSidebarWithFormRef({

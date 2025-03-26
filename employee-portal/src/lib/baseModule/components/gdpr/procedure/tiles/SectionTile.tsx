@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { EditButton } from "@eshg/lib-employee-portal";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Sheet, SheetProps, Typography } from "@mui/joy";
 import { isDefined } from "remeda";
-
-import { EditButton } from "@/lib/shared/components/buttons/EditButton";
 
 export function SectionTile({
   id,

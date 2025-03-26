@@ -5,12 +5,15 @@
 
 package de.eshg.officialmedicalservice.citizenauth;
 
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
+
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.officialmedicalservice.citizenauth.api.GetCitizenProcedureDetailsResponse;
 import de.eshg.rest.service.security.config.BaseUrls.OfficialMedicalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,10 +21,13 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping(path = CitizenAuthController.BASE_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -31,6 +37,7 @@ public class CitizenAuthController {
   public static final String PROCEDURE_URL = "/procedure";
   public static final String CANCEL_APPOINTMENT_URL = "/cancel";
   public static final String APPOINTMENT_URL = "/appointment";
+  public static final String DOCUMENT_URL = "/document";
 
   private final CitizenAuthProcedureService citizenAuthProcedureService;
 
@@ -62,6 +69,18 @@ public class CitizenAuthController {
       @RequestBody @Valid AppointmentDto appointmentDto) {
     citizenAuthProcedureService.putAppointmentByCitizen(
         getCitizenUserId(principal), appointmentId, appointmentDto);
+  }
+
+  @PostMapping(
+      path = PROCEDURE_URL + DOCUMENT_URL + "/{documentId}",
+      consumes = MULTIPART_FORM_DATA_VALUE)
+  @Operation(summary = "Upload files to a document of an oms procedure")
+  public void postDocumentCitizen(
+      @AuthenticationPrincipal Jwt principal,
+      @PathVariable("documentId") UUID documentId,
+      @RequestPart(value = "files") List<MultipartFile> files) {
+    citizenAuthProcedureService.postDocumentByCitizen(
+        getCitizenUserId(principal), documentId, files);
   }
 
   private UUID getCitizenUserId(Jwt principal) {

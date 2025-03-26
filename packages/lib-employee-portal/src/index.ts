@@ -8,6 +8,10 @@ export {
   type PaginatedList,
   mapPaginatedList,
 } from "./api/models/PaginatedList";
+export {
+  type ProcedureLabel,
+  mapProcedureLabels,
+} from "@/features/procedureLabels/api/models/ProcedureLabel";
 export { mapOptional } from "./api/models/mapOptional";
 export { type Versioned, mapVersioned } from "./api/models/Versioned";
 export {
@@ -17,7 +21,7 @@ export {
   mapToPersonUpdateRequest,
   mapToPersonAddRequest,
   normalizeListInputs,
-} from "./features/personSidebar/types";
+} from "@/components/personSidebar/types";
 export {
   type BaseAddress,
   type BaseAddressType,
@@ -67,6 +71,8 @@ export { ResponsiveDivider } from "./components/ResponsiveDivider";
 export { BaseAddressDetailsColumn } from "./components/address/BaseAddressDetailsColumn";
 export { NoEntriesMessage } from "./components/NoEntriesMessage";
 export { IconButton } from "./components/buttons/IconButton";
+export { EditButton } from "./components/buttons/EditButton";
+export { ButtonBar } from "./components/buttons/ButtonBar";
 
 export { EmployeePortalProvider } from "./contexts/employeePortal";
 export { useLayoutConfig, type LayoutConfig } from "./contexts/layoutConfig";
@@ -81,20 +87,20 @@ export {
   type AccessCheckContext,
   type PermitCheck,
   type UserRoleCheck,
-} from "./features/auth/accessChecks";
-export { useGetSelfUser } from "./features/auth/queries";
+} from "./features/auth/utils/accessChecks";
+export { useGetSelfUser } from "./features/auth/api/queries";
 export {
   useAccessControl,
   useHasUserRoleCheck,
   useHasUserRolesCheck,
-} from "./features/auth/useAccessControl";
-export { CentralFilePersonDetails } from "./features/centralFile/CentralFilePersonDetails";
+} from "./features/auth/hooks/useAccessControl";
+export { CentralFilePersonDetails } from "@/components/centralFile/CentralFilePersonDetails";
 
 export {
   parseImportResult,
   type ImportDataResult,
-} from "./features/import/parseImportResult";
-export { type ImportStatistics } from "./features/import/ImportStatistics";
+} from "./features/import/utils/parseImportResult";
+export { type ImportStatistics } from "./features/import/types/ImportStatistics";
 
 export { TablePage } from "./features/table/components/TablePage";
 export { TableSheet } from "./features/table/components/TableSheet";
@@ -126,11 +132,62 @@ export type {
 export { type SubRowColumns } from "./features/table/types/subRowColumns";
 export { OffsetPagination } from "./features/table/components/pagination/OffsetPagination";
 
+export { DrawerProvider } from "./features/drawer/contexts/drawer";
+export { SidebarScope } from "./features/drawer/contexts/sidebarScope";
+export { SIDEBAR_PADDING } from "./features/drawer/config/sidebar";
+export type {
+  DrawerProps,
+  DrawerOpenOptions,
+} from "./features/drawer/types/drawer";
+export type { SidebarFormHandle } from "./features/drawer/types/sidebar";
+export {
+  Sidebar,
+  type SidebarProps,
+} from "./features/drawer/components/Sidebar";
+export { SidebarContent } from "./features/drawer/components/SidebarContent";
+export { SidebarActions } from "./features/drawer/components/SidebarActions";
+export {
+  SidebarForm,
+  useSidebarFormHandle,
+} from "./features/drawer/components/SidebarForm";
+export { SidebarSlot } from "./features/drawer/components/SidebarSlot";
+export {
+  useSidebar,
+  type UseSidebarResult,
+} from "./features/drawer/hooks/useSidebar";
+export {
+  useSidebarWithFormRef,
+  type SidebarWithFormRefProps,
+  type UseSidebarWithFormRefResult,
+} from "./features/drawer/hooks/useSidebarWithFormRef";
+export { useSidenav } from "./features/drawer/hooks/useSidenav";
+
+export {
+  ProcedureLabelFormFields,
+  type ProcedureLabelValues,
+} from "@/features/procedureLabels/components/ProcedureLabelFormFields";
+export { ProcedureLabelsPage } from "@/features/procedureLabels/components/ProcedureLabelsPage";
+export { ProcedureLabelAutocomplete } from "@/features/procedureLabels/components/ProcedureLabelAutocomplete";
+export { ProcedureLabelSelection } from "@/features/procedureLabels/components/ProcedureLabelSelection";
+export {
+  TextareaField,
+  type TextareaFieldProps,
+} from "./components/form/TextareaField";
+export { FormButtonBar } from "./components/form/FormButtonBar";
+export { OverlayBoundary } from "./components/boundaries/OverlayBoundary";
+export { EmployeePortalErrorModal } from "./components/boundaries/EmployeePortalErrorModal";
+
+export { ChipWithTooltip } from "./components/chip/ChipWithTooltip";
+
+export { SyncBarrier } from "./features/sync/components/SyncBarrier";
+export { useSyncBarrier } from "./features/sync/hooks/useSyncBarrier";
+
 export { useHeaderHeights } from "./hooks/useHeaderHeights";
 export {
   useReplaceSearchParams,
   type SearchParamReplacement,
 } from "./hooks/useReplaceSearchParams";
+export { useConfirmationDialog } from "./hooks/useConfirmationDialog";
 
 export type { ModuleUserGroupConfig } from "./types/module";
 export type {
@@ -141,3 +198,5 @@ export type {
   SideNavigationSuspenseItem,
   SideNavigationParentItem,
 } from "./types/sideNavigation";
+
+export { formatSchoolYear } from "./utils/formatters";

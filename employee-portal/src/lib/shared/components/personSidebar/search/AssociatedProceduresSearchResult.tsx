@@ -4,14 +4,12 @@
  */
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
+import { SidebarActions, SidebarContent } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import ArrowBackIosOutlined from "@mui/icons-material/ArrowBackIosOutlined";
 import { Button, Stack, Typography } from "@mui/joy";
 import { ReactNode } from "react";
 import { isDefined } from "remeda";
-
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 interface AssociatedProceduresSearchResultProps<TProcedure> {
   inputs: ApiGetReferencePersonResponse;

@@ -1,0 +1,107 @@
+/**
+ * Copyright 2025 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+"use client";
+
+import {
+  mapOptionalValue,
+  parseOptionalValue,
+} from "@eshg/lib-portal/helpers/form";
+import { Formik } from "formik";
+
+import { FormButtonBar } from "@/components/form/FormButtonBar";
+import { SidebarActions } from "@/features/drawer/components/SidebarActions";
+import { SidebarContent } from "@/features/drawer/components/SidebarContent";
+import { SidebarForm } from "@/features/drawer/components/SidebarForm";
+import {
+  UseSidebarResult,
+  useSidebar,
+} from "@/features/drawer/hooks/useSidebar";
+import { DrawerProps } from "@/features/drawer/types/drawer";
+import { ProcedureLabel } from "@/features/procedureLabels/api/models/ProcedureLabel";
+import { useUpdateProcedureLabel } from "@/features/procedureLabels/api/mutations";
+import {
+  ProcedureLabelFormFields,
+  ProcedureLabelValues,
+} from "@/features/procedureLabels/components/ProcedureLabelFormFields";
+import {
+  ProcedureLabelClient,
+  UpdateProcedureLabelRequest,
+} from "@/features/procedureLabels/types/procedureLabelClient";
+
+export function useUpdateProcedureLabelSidebar(): UseSidebarResult<UpdateProcedureLabelProps> {
+  return useSidebar({
+    component: UpdateProcedureLabelSidebar,
+  });
+}
+
+interface UpdateProcedureLabelProps extends DrawerProps {
+  procedureLabel: ProcedureLabel;
+  procedureLabelApi: ProcedureLabelClient;
+}
+
+function mapToProcedureLabelForm(
+  procedureLabel: ProcedureLabel,
+): ProcedureLabelValues {
+  return {
+    name: procedureLabel.name,
+    description: parseOptionalValue(procedureLabel.description),
+  };
+}
+
+function UpdateProcedureLabelSidebar(props: UpdateProcedureLabelProps) {
+  const updateProcedureLabel = useUpdateProcedureLabel(props.procedureLabelApi);
+
+  async function handleSubmit(procedureLabelFormValues: ProcedureLabelValues) {
+    const labelId = props.procedureLabel.id;
+    const labelVersion = props.procedureLabel.version;
+    await updateProcedureLabel.mutateAsync(
+      mapToRequest(labelId, procedureLabelFormValues, labelVersion),
+      {
+        onSuccess: () => props.onClose(),
+      },
+    );
+  }
+
+  return (
+    <>
+      <Formik
+        initialValues={mapToProcedureLabelForm(props.procedureLabel)}
+        onSubmit={handleSubmit}
+      >
+        {({ isSubmitting }) => (
+          <SidebarForm>
+            <SidebarContent title="Kennung bearbeiten">
+              <ProcedureLabelFormFields />
+            </SidebarContent>
+
+            <SidebarActions>
+              <FormButtonBar
+                submitLabel="Speichern"
+                submitting={isSubmitting}
+                onCancel={props.onClose}
+              />
+            </SidebarActions>
+          </SidebarForm>
+        )}
+      </Formik>
+    </>
+  );
+}
+
+function mapToRequest(
+  labelsId: string,
+  values: ProcedureLabelValues,
+  version: number,
+): UpdateProcedureLabelRequest {
+  return {
+    id: labelsId,
+    apiUpdateLabelRequest: {
+      name: values.name,
+      description: mapOptionalValue(values.description),
+      version: version,
+    },
+  };
+}

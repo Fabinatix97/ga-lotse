@@ -32,8 +32,8 @@ public final class DateAttribute {
     AttributeData attribute =
         createDateAttribute(
             name, code, category, mandatory, valueOption, DataPrivacyCategory.SENSITIVE);
-    attribute.setLDiversity(sensitiveParameters.lDiversity());
-    attribute.setTCloseness(sensitiveParameters.tCloseness());
+    attribute.setLDiversity(sensitiveParameters.getLDiversity());
+    attribute.setTCloseness(sensitiveParameters.getTCloseness());
     return attribute;
   }
 

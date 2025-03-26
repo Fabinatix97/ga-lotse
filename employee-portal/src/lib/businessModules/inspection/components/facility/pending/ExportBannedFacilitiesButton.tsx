@@ -5,12 +5,14 @@
 
 "use client";
 
+import {
+  OverlayBoundary,
+  useConfirmationDialog,
+} from "@eshg/lib-employee-portal";
 import { FileDownloadOutlined } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 
 import { useExportBannedFacilities } from "@/lib/businessModules/inspection/api/mutations/facility";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 export function ExportBannedFacilitiesButton() {
   return (

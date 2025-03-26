@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { PostDocumentRequest } from "@eshg/official-medical-service-api";
 
 import { usePostDocument } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
@@ -10,11 +15,6 @@ import {
   AddDocumentForm,
   AddDocumentFormValues,
 } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/AddDocumentForm";
-import {
-  SidebarWithFormRefProps,
-  UseSidebarWithFormRefResult,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useAddDocumentSidebar(): UseSidebarWithFormRefResult<AddDocumentSidebarProps> {
   return useSidebarWithFormRef({ component: AddDocumentSidebar });

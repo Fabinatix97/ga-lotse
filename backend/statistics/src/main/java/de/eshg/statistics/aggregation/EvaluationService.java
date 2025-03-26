@@ -9,6 +9,7 @@ import static de.eshg.statistics.mapper.EvaluationMapper.mapSortDirection;
 import static de.eshg.statistics.mapper.EvaluationMapper.mapSortKey;
 
 import de.eshg.base.user.api.UserDto;
+import de.eshg.domain.model.BaseEntityWithExternalId;
 import de.eshg.domain.model.BaseEntity_;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.lib.statistics.api.DataSourceSensitivity;
@@ -59,7 +60,6 @@ import de.eshg.statistics.persistence.entity.AbstractAggregationResult_;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
 import de.eshg.statistics.persistence.entity.Analysis;
-import de.eshg.statistics.persistence.entity.ChartConfiguration;
 import de.eshg.statistics.persistence.entity.Diagram;
 import de.eshg.statistics.persistence.entity.Evaluation;
 import de.eshg.statistics.persistence.entity.MinMaxNullUnknownValues;
@@ -90,7 +90,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -136,6 +135,19 @@ public class EvaluationService extends AbstractAggregationResultService {
     return evaluationRepository
         .findByExternalId(evaluationId)
         .orElseThrow(() -> new NotFoundException(EVALUATION_WITH_ID_NOT_FOUND));
+  }
+
+  @Transactional
+  public Optional<UUID> findDiagramWithEmptyDataOrCompleteEvaluation(UUID evaluationId) {
+    Evaluation evaluation = getEvaluationInternal(evaluationId);
+    Optional<UUID> diagramIdWithEmptyData =
+        AnalysisService.findDiagram(evaluation, Diagram::isDiagramDataEmpty)
+            .map(BaseEntityWithExternalId::getExternalId);
+    if (diagramIdWithEmptyData.isEmpty()) {
+      evaluation.setPendingState(null);
+      evaluation.setState(AggregationResultState.COMPLETED);
+    }
+    return diagramIdWithEmptyData;
   }
 
   @Transactional(readOnly = true)
@@ -495,7 +507,8 @@ public class EvaluationService extends AbstractAggregationResultService {
 
   private static TableColumn validateSortColumn(
       AttributeSelectionDto sortAttribute, Evaluation evaluation) {
-    TableColumn sortTableColumn = AggregationResultUtil.getTableColumn(sortAttribute, evaluation);
+    TableColumn sortTableColumn =
+        AggregationResultUtil.getTableColumnWithDto(sortAttribute, evaluation);
     if (sortTableColumn == null) {
       sortTableColumn =
           evaluation.getTableColumns().stream()
@@ -766,9 +779,7 @@ public class EvaluationService extends AbstractAggregationResultService {
                 new AnalysisTemplateData(
                     analysis.getName(),
                     AnalysisMapper.mapToChartConfigurationDto(
-                        Hibernate.unproxy(
-                            analysis.getChartConfiguration(), ChartConfiguration.class),
-                        true),
+                        AnalysisMapper.getChartConfiguration(analysis), true),
                     determineDiagramTemplateDatas(analysis.getDiagrams())))
         .toList();
   }

@@ -4,14 +4,13 @@
  */
 
 import { ApiInventoryItem, ApiLabel } from "@eshg/base-api";
-import { DetailsRow } from "@eshg/lib-employee-portal";
+import { DetailsRow, EditButton } from "@eshg/lib-employee-portal";
 import { Sheet, Stack, Typography } from "@mui/joy";
 
 import { LowCountWarning } from "@/lib/baseModule/components/inventory/LowCountWarning";
 import { inventoryItemTypeNames } from "@/lib/baseModule/components/inventory/constants";
 import { useInventoryUpdateSidebar } from "@/lib/baseModule/components/inventory/modals/InventoryUpdateSidebar";
 import { LabelList } from "@/lib/baseModule/components/labels/LabelList";
-import { EditButton } from "@/lib/shared/components/buttons/EditButton";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 
 export function InventoryDetails({

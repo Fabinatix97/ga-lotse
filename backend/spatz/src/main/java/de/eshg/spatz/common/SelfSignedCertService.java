@@ -7,6 +7,7 @@ package de.eshg.spatz.common;
 
 import static de.eshg.servicedirectory.util.X509Utils.ESHGACTOR_BUNDLE_NAME;
 
+import de.eshg.spatz.LifecyclePhases;
 import de.eshg.spatz.config.SpatzConfigurationProperties;
 import de.eshg.spatz.config.SpatzConfigurationProperties.ActorConfiguration;
 import de.eshg.spatz.config.SpatzConfigurationProperties.SelfSignedConfiguration;
@@ -16,12 +17,14 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health.Builder;
 import org.springframework.boot.ssl.SslBundle;
 import org.springframework.boot.ssl.SslBundleRegistry;
+import org.springframework.context.SmartLifecycle;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -50,7 +53,7 @@ import org.springframework.util.Assert;
  * java.security.cert.X509Certificate#getNotBefore} to {@link
  * java.security.cert.X509Certificate#getNotAfter()}.
  */
-public class SelfSignedCertService {
+public class SelfSignedCertService implements SmartLifecycle {
 
   private static final Logger logger = LoggerFactory.getLogger(SelfSignedCertService.class);
 
@@ -60,6 +63,7 @@ public class SelfSignedCertService {
   private final SelfSignedConfiguration config;
   private final ActorConfiguration actorConfiguration;
   private final TaskScheduler taskScheduler;
+  private final AtomicBoolean isRunning = new AtomicBoolean(false);
   private final SslBundleFactory sslBundleFactory;
   private final SslBundleRegistry sslBundleRegistry;
   private final SelfSignedCertificatePublisher selfSignedCertificatePublisher;
@@ -78,10 +82,33 @@ public class SelfSignedCertService {
     this.sslBundleFactory = sslBundleFactory;
     this.sslBundleRegistry = sslBundleRegistry;
     this.selfSignedCertificatePublisher = selfSignedCertificatePublisher;
+  }
+
+  @Override
+  public void start() {
+    isRunning.set(true);
     taskScheduler.schedule(this::renew, Instant.now());
   }
 
+  @Override
+  public void stop() {
+    isRunning.set(false);
+  }
+
+  @Override
+  public boolean isRunning() {
+    return isRunning.get();
+  }
+
+  @Override
+  public int getPhase() {
+    return LifecyclePhases.SELF_SIGNED_CERT_SERVICE.phase;
+  }
+
   private void renew() {
+    if (!isRunning.get()) {
+      return;
+    }
     CertificateBuild previousCertificate = certificate;
     certificate = createCertificate();
 
@@ -139,7 +166,7 @@ public class SelfSignedCertService {
 
   @Scheduled(fixedDelayString = "${eshg.spatz.self-signed.heartbeat:9000}")
   public void heartbeat() {
-    if (certificate != null) {
+    if (certificate != null && isRunning.get()) {
       logger.debug("Sending heartbeat to LSD");
       selfSignedCertificatePublisher.heartBeat(config.getSubjectLocation());
     }

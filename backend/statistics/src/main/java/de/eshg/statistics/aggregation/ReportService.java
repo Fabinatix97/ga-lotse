@@ -6,26 +6,16 @@
 package de.eshg.statistics.aggregation;
 
 import de.eshg.base.user.api.UserDto;
+import de.eshg.domain.model.BaseEntityWithExternalId;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.statistics.StatisticsUserService;
-import de.eshg.statistics.api.AddDiagramRequest;
 import de.eshg.statistics.api.AnalysisDto;
 import de.eshg.statistics.api.chart.HistogramChartConfigurationDto;
-import de.eshg.statistics.api.filter.BooleanFilterParameterDto;
-import de.eshg.statistics.api.filter.DecimalRangeFilterParameterDto;
-import de.eshg.statistics.api.filter.DecimalValueFilterParameterDto;
-import de.eshg.statistics.api.filter.IntegerRangeFilterParameterDto;
-import de.eshg.statistics.api.filter.IntegerValueFilterParameterDto;
-import de.eshg.statistics.api.filter.NullFilterParameterDto;
-import de.eshg.statistics.api.filter.TableColumnFilterParameter;
-import de.eshg.statistics.api.filter.TextFilterParameterDto;
-import de.eshg.statistics.api.filter.ValueOptionFilterParameterDto;
 import de.eshg.statistics.api.report.GetReportDetailPageResponse;
 import de.eshg.statistics.config.StatisticsConfig;
 import de.eshg.statistics.mapper.AnalysisMapper;
 import de.eshg.statistics.mapper.EvaluationMapper;
-import de.eshg.statistics.mapper.FilterParameterMapper;
 import de.eshg.statistics.mapper.ReportMapper;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
@@ -46,11 +36,9 @@ import de.eshg.statistics.persistence.repository.TableRowRepository;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -257,18 +245,18 @@ public class ReportService extends AbstractAggregationResultService {
     if (EvaluationService.hasNoDiagrams(evaluation)) {
       finishReport(report);
     } else {
-      copyAnalysesWithoutDiagrams(report, evaluation);
+      copyAnalysesWithEmptyDiagrams(report, evaluation);
       report.setPendingState(AggregationResultPendingState.DIAGRAM_CREATION);
     }
   }
 
-  private void copyAnalysesWithoutDiagrams(Report report, Evaluation evaluation) {
+  private void copyAnalysesWithEmptyDiagrams(Report report, Evaluation evaluation) {
     evaluation.getAnalyses().stream()
         .filter(analysis -> !analysis.getDiagrams().isEmpty())
-        .forEach(analysis -> report.addAnalysis(copyAnalysisWithoutDiagrams(analysis, report)));
+        .forEach(analysis -> report.addAnalysis(copyAnalysisWithEmptyDiagrams(analysis, report)));
   }
 
-  private Analysis copyAnalysisWithoutDiagrams(Analysis original, Report report) {
+  private Analysis copyAnalysisWithEmptyDiagrams(Analysis original, Report report) {
     ChartConfiguration originalChartConfiguration =
         Hibernate.unproxy(original.getChartConfiguration(), ChartConfiguration.class);
     ChartConfiguration chartConfiguration =
@@ -282,171 +270,24 @@ public class ReportService extends AbstractAggregationResultService {
     }
 
     Analysis analysis = new Analysis();
-    analysis.setOriginalAnalysisId(original.getExternalId());
     analysis.setName(original.getName());
     analysis.setChartConfiguration(chartConfiguration);
+    analysis.addDiagrams(
+        EvaluationCopyService.copyDiagramsWithEmptyData(
+            original.getDiagrams(), originalChartConfiguration));
     return analysis;
   }
 
   @Transactional
-  public Map<AnalysisDto, AddDiagramRequest> findMissingDiagramOrCompleteAutoReport(UUID reportId) {
+  public Optional<UUID> findDiagramWithEmptyDataOrCompleteReport(UUID reportId) {
     Report report = getReportInternal(reportId);
-    return findMissingDiagramOrComplete(report);
-  }
-
-  private Map<AnalysisDto, AddDiagramRequest> findMissingDiagramOrComplete(Report report) {
-    Optional<Analysis> firstUnfinishedAnalysis =
-        report.getAnalyses().stream()
-            .filter(analysis -> analysis.getOriginalAnalysisId() != null)
-            .findFirst();
-    if (firstUnfinishedAnalysis.isEmpty()) {
+    Optional<UUID> diagramIdWithEmptyData =
+        AnalysisService.findDiagram(report, Diagram::isDiagramDataEmpty)
+            .map(BaseEntityWithExternalId::getExternalId);
+    if (diagramIdWithEmptyData.isEmpty()) {
       finishReport(report);
-      return Collections.emptyMap();
     }
-
-    Analysis analysisToComplete = firstUnfinishedAnalysis.get();
-
-    Optional<Diagram> diagramToCopyOptional = Optional.empty();
-    try {
-      Analysis originalAnalysis =
-          analysisService.getAnalysisInternal(analysisToComplete.getOriginalAnalysisId());
-      diagramToCopyOptional =
-          originalAnalysis.getDiagrams().stream()
-              .filter(diagram -> notAlreadyCopied(analysisToComplete, diagram))
-              .findFirst();
-    } catch (NotFoundException e) {
-      // Analysis deleted
-      log.warn(
-          "Could not finish diagrams for report %s, analysis %s: %s"
-              .formatted(
-                  report.getExternalId(), analysisToComplete.getExternalId(), e.getMessage()));
-    }
-    if (diagramToCopyOptional.isEmpty()) {
-      analysisToComplete.setOriginalAnalysisId(null);
-      return Collections.emptyMap();
-    }
-
-    Diagram diagramToCopy = diagramToCopyOptional.get();
-    return Map.of(
-        AnalysisMapper.mapToApi(analysisToComplete, true),
-        new AddDiagramRequest(
-            diagramToCopy.getTitle(),
-            diagramToCopy.getDescription(),
-            FilterParameterMapper.mapToApi(diagramToCopy.getFilters())));
-  }
-
-  private boolean notAlreadyCopied(Analysis analysisToComplete, Diagram diagram) {
-    return analysisToComplete.getDiagrams().stream()
-        .noneMatch(copiedDiagram -> isIdentical(copiedDiagram, diagram));
-  }
-
-  private boolean isIdentical(Diagram copiedDiagram, Diagram originalDiagram) {
-    return copiedDiagram.getTitle().equals(originalDiagram.getTitle())
-        && Objects.equals(copiedDiagram.getDescription(), originalDiagram.getDescription())
-        && identicalFilters(
-            FilterParameterMapper.mapToApi(copiedDiagram.getFilters()),
-            FilterParameterMapper.mapToApi(originalDiagram.getFilters()));
-  }
-
-  private boolean identicalFilters(
-      List<TableColumnFilterParameter> copiedColumnFilters,
-      List<TableColumnFilterParameter> originalTableColumnFilters) {
-    if (copiedColumnFilters.size() != originalTableColumnFilters.size()) {
-      return false;
-    }
-
-    return copiedColumnFilters.stream()
-            .allMatch(
-                columnFilter ->
-                    identicalColumnFilterPresent(columnFilter, originalTableColumnFilters))
-        && originalTableColumnFilters.stream()
-            .allMatch(
-                columnFilter -> identicalColumnFilterPresent(columnFilter, copiedColumnFilters));
-  }
-
-  private boolean identicalColumnFilterPresent(
-      TableColumnFilterParameter columnFilterToFind, List<TableColumnFilterParameter> filters) {
-    return filters.stream().anyMatch(filter -> isIdentical(filter, columnFilterToFind));
-  }
-
-  private boolean isIdentical(
-      TableColumnFilterParameter filter, TableColumnFilterParameter columnFilterToFind) {
-    if (!filter.type().equals(columnFilterToFind.type())
-        || !filter
-            .attribute()
-            .businessModuleName()
-            .equals(columnFilterToFind.attribute().businessModuleName())
-        || !filter.attribute().dataSourceId().equals(columnFilterToFind.attribute().dataSourceId())
-        || !filter
-            .attribute()
-            .businessModuleAttributeCode()
-            .equals(columnFilterToFind.attribute().businessModuleAttributeCode())
-        || !Objects.equals(
-            filter.attribute().baseModuleAttributeCode(),
-            columnFilterToFind.attribute().baseModuleAttributeCode())) {
-      return false;
-    }
-    return switch (filter) {
-      case BooleanFilterParameterDto booleanFilter:
-        {
-          BooleanFilterParameterDto otherFilter = (BooleanFilterParameterDto) columnFilterToFind;
-          yield booleanFilter.searchForTrue() == otherFilter.searchForTrue()
-              && booleanFilter.searchForFalse() == otherFilter.searchForFalse()
-              && booleanFilter.searchForNull() == otherFilter.searchForNull();
-        }
-      case DecimalRangeFilterParameterDto decimalRangeFilter:
-        {
-          DecimalRangeFilterParameterDto otherFilter =
-              (DecimalRangeFilterParameterDto) columnFilterToFind;
-          yield decimalRangeFilter.minValueInclusive().compareTo(otherFilter.minValueInclusive())
-                  == 0
-              && decimalRangeFilter.maxValueInclusive().compareTo(otherFilter.maxValueInclusive())
-                  == 0
-              && decimalRangeFilter.withNullValues() == otherFilter.withNullValues();
-        }
-      case DecimalValueFilterParameterDto decimalValueFilter:
-        {
-          DecimalValueFilterParameterDto otherFilter =
-              (DecimalValueFilterParameterDto) columnFilterToFind;
-          yield decimalValueFilter.value().compareTo(otherFilter.value()) == 0
-              && decimalValueFilter.numericComparison().equals(otherFilter.numericComparison())
-              && decimalValueFilter.withNullValues() == otherFilter.withNullValues();
-        }
-      case IntegerRangeFilterParameterDto integerRangeFilter:
-        {
-          IntegerRangeFilterParameterDto otherFilter =
-              (IntegerRangeFilterParameterDto) columnFilterToFind;
-          yield integerRangeFilter.minValueInclusive().equals(otherFilter.minValueInclusive())
-              && integerRangeFilter.maxValueInclusive().equals(otherFilter.maxValueInclusive())
-              && integerRangeFilter.withNullValues() == otherFilter.withNullValues();
-        }
-      case IntegerValueFilterParameterDto integerValueFilter:
-        {
-          IntegerValueFilterParameterDto otherFilter =
-              (IntegerValueFilterParameterDto) columnFilterToFind;
-          yield integerValueFilter.value().equals(otherFilter.value())
-              && integerValueFilter.numericComparison().equals(otherFilter.numericComparison())
-              && integerValueFilter.withNullValues() == otherFilter.withNullValues();
-        }
-      case NullFilterParameterDto ignored:
-        {
-          yield true;
-        }
-      case TextFilterParameterDto textFilter:
-        {
-          yield textFilter.text().equals(((TextFilterParameterDto) columnFilterToFind).text());
-        }
-      case ValueOptionFilterParameterDto valueOptionFilter:
-        {
-          ValueOptionFilterParameterDto otherFilter =
-              (ValueOptionFilterParameterDto) columnFilterToFind;
-          Set<String> searchValueSet = new HashSet<>(valueOptionFilter.searchValues());
-          Set<String> otherSearchValueSet = new HashSet<>(otherFilter.searchValues());
-          yield searchValueSet.containsAll(otherFilter.searchValues())
-              && otherSearchValueSet.containsAll(valueOptionFilter.searchValues())
-              && valueOptionFilter.searchForNull() == otherFilter.searchForNull();
-        }
-    };
+    return diagramIdWithEmptyData;
   }
 
   private static void finishReport(Report report) {

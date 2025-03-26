@@ -2,10 +2,29 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 variables:
-  GRADLE_BASE_IMAGE: gradle@sha256:0c13b320f227a67179fca5d5746ab889c011ed143023c80c5fc8520609fe427f
+  GRADLE_BASE_IMAGE: gradle:8.12.1-jdk21-jammy@sha256:7d4ac2c6029b8fa1d61643365086ac232e6e8de4bedcf4671666381881e82de0
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/
 
 stages:
   - build
+  - release
+
+🎉 create:release:
+  stage: release
+  needs: [ ]
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  release:
+    tag_name: $CI_COMMIT_TAG
+    name: "Release $CI_COMMIT_TAG"
+    description: "Release created by the pipeline"
+  script:
+    - echo "Creating a release"
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/
 
 🏗 build:frontend:
   stage: build
@@ -13,6 +32,8 @@ stages:
   image: ${GRADLE_BASE_IMAGE}
   script:
     - gradle --no-daemon build -x test -x lint -x formatCheck
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 🏗 build:backend:
   image: ${GRADLE_BASE_IMAGE}
@@ -21,3 +42,5 @@ stages:
   script:
     - cd backend
     - gradle --continue build -x test -x findUnusedValidationFiles -x composeUp -x buildDockerImage -PuseDependencyProxy
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

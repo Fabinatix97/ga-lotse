@@ -7,6 +7,9 @@ import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
   BaseAddressDetailsColumn,
   DetailsRow,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
 } from "@eshg/lib-employee-portal";
 import {
   GENDER_VALUES,
@@ -22,9 +25,6 @@ import { isDefined } from "remeda";
 
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 export interface PersonDetailsSidebarProps {
   title: string;

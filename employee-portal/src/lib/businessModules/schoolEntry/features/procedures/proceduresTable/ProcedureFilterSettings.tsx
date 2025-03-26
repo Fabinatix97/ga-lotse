@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  OverlayBoundary,
+  ProcedureLabel,
+  ProcedureLabelAutocomplete,
+} from "@eshg/lib-employee-portal";
 import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import {
   isDateString,
@@ -13,11 +18,10 @@ import { GetProceduresRequest } from "@eshg/school-entry-api";
 import { FormControl, FormLabel, Input } from "@mui/joy";
 import { isEmpty } from "remeda";
 
-import { Label } from "@/lib/businessModules/schoolEntry/api/models/Label";
+import { useLabelApi } from "@/lib/businessModules/schoolEntry/api/clients";
+import { schoolEntryApiQueryKey } from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";
 import { PROCEDURE_TYPE_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
-import { LabelAutocomplete } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/LabelAutocomplete";
 import { ResettableSingleSelect } from "@/lib/shared/components/ResettableSingleSelect";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { ActiveFilter } from "@/lib/shared/components/filterSettings/ActiveFilter";
 import { FilterSettingsContent } from "@/lib/shared/components/filterSettings/FilterSettingsContent";
 import {
@@ -36,7 +40,7 @@ export type ProcedureFilters = Pick<
   | "hasAppointmentFilter"
   | "schoolYearFilter"
   | "isInvitationSentFilter"
-> & { labelsFilter?: Label[] };
+> & { labelsFilter?: ProcedureLabel[] };
 
 const FILTER_NAMES: Record<keyof ProcedureFilters, string> = {
   procedureTypeFilter: "Art",
@@ -73,6 +77,8 @@ function evaluateStringAsBoolean(value: string) {
 }
 
 export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
+  const labelApi = useLabelApi();
+
   return (
     <OverlayBoundary>
       <FilterSettingsSheet {...props.filterSettingsSheetProps}>
@@ -202,7 +208,7 @@ export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
           </FormControl>
           <FormControl>
             <FormLabel>Kennungen</FormLabel>
-            <LabelAutocomplete
+            <ProcedureLabelAutocomplete
               name="labels"
               value={props.filterFormValues.labelsFilter ?? []}
               onChange={(newValue) => {
@@ -211,6 +217,8 @@ export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
                   isEmpty(newValue) ? undefined : newValue,
                 );
               }}
+              procedureLabelApi={labelApi}
+              procedureLabelApiQueryKey={schoolEntryApiQueryKey}
             />
           </FormControl>
         </FilterSettingsContent>

@@ -5,6 +5,11 @@
 
 "use client";
 
+import {
+  DrawerProps,
+  useConfirmationDialog,
+  useSidebar,
+} from "@eshg/lib-employee-portal";
 import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
 import { Formik } from "formik";
@@ -15,9 +20,6 @@ import { ImportDataErrorSidebar } from "@/lib/businessModules/medicalRegistry/co
 import { ImportDataFormSidebar } from "@/lib/businessModules/medicalRegistry/components/procedures/import/ImportDataFormSidebar";
 import { ImportDataPendingSidebar } from "@/lib/businessModules/medicalRegistry/components/procedures/import/ImportDataPendingSidebar";
 import { ImportDataSummarySidebar } from "@/lib/businessModules/medicalRegistry/components/procedures/import/ImportDataSummarySidebar";
-import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
-import { useSidebar } from "@/lib/shared/components/drawer/useSidebar";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 type TryAbortCallback = (onAbort: (close: boolean) => void) => void;
 

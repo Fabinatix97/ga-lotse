@@ -3,6 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  FormButtonBar,
+  Sidebar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarFormHandle,
+} from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { CheckCircleOutline, RadioButtonUnchecked } from "@mui/icons-material";
@@ -19,15 +27,7 @@ import { setupNewSecretStorage } from "@/lib/businessModules/chat/matrix/secretS
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
 import { PasswordField } from "@/lib/shared/components/formFields/PasswordField";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import {
   getPasswordValidityInfo,
   validatePassword,

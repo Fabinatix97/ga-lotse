@@ -4,6 +4,14 @@
  */
 
 import { ApiDetailedEventWithoutCalendarId } from "@eshg/base-api";
+import {
+  FormButtonBar,
+  SidebarActions,
+  SidebarContent,
+  SidebarWithFormRefProps,
+  useConfirmationDialog,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -21,20 +29,12 @@ import {
   mapEventToFormValues,
   mapFormToRequestValues,
 } from "@/lib/baseModule/components/resources/resourceCalendarMapper";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { DateOrDateTimeField } from "@/lib/shared/components/formFields/DateOrDateTimeField";
 import {
   handleWholeDayChange,
   validateEndAfterStart,
 } from "@/lib/shared/components/formFields/dateOrDateTimeFieldHelper";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export interface AddServiceFormValues {
   reason: string;

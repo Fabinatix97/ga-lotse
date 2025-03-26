@@ -9,11 +9,10 @@ import de.eshg.domain.model.BaseEntity;
 import de.eshg.statistics.aggregation.AggregationResultUtil;
 import de.eshg.statistics.aggregation.AnalysisService;
 import de.eshg.statistics.aggregation.TableRowSpecifications;
-import de.eshg.statistics.api.AddDiagramRequest;
-import de.eshg.statistics.api.chart.HistogramChartConfigurationDto;
 import de.eshg.statistics.api.filter.TableColumnFilterParameter;
 import de.eshg.statistics.config.StatisticsConfig;
 import de.eshg.statistics.mapper.AnalysisMapper;
+import de.eshg.statistics.mapper.FilterParameterMapper;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.Analysis;
 import de.eshg.statistics.persistence.entity.ChartConfiguration;
@@ -25,7 +24,6 @@ import de.eshg.statistics.persistence.entity.chart.HistogramChartConfiguration;
 import de.eshg.statistics.persistence.entity.diagramdata.HistogramChartData;
 import de.eshg.statistics.persistence.entity.diagramdata.HistogramGroupData;
 import de.eshg.statistics.persistence.entity.diagramdata.KeyToCount;
-import de.eshg.statistics.persistence.repository.AnalysisRepository;
 import de.eshg.statistics.persistence.repository.TableRowRepository;
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -40,33 +38,28 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class HistogramChartDiagramCreationService
-    extends AbstractChartDiagramCreationService<
-        Map<Long, Map<Object, Integer>>, HistogramChartConfigurationDto> {
+    extends AbstractChartDiagramCreationService<Map<Long, Map<Object, Integer>>> {
   public HistogramChartDiagramCreationService(
       AnalysisService analysisService,
-      AnalysisRepository analysisRepository,
       TableRowRepository tableRowRepository,
       StatisticsConfig statisticsConfig) {
-    super(analysisService, analysisRepository, tableRowRepository, statisticsConfig);
+    super(analysisService, tableRowRepository, statisticsConfig);
   }
 
   @Override
   @Transactional(readOnly = true)
-  public Map<Long, Map<Object, Integer>> initializeChartDataHolder(
-      UUID analysisId,
-      HistogramChartConfigurationDto histogramChartConfigurationDto,
-      List<TableColumnFilterParameter> filters) {
-    Analysis analysis = analysisService.getAnalysisInternal(analysisId);
+  public Map<Long, Map<Object, Integer>> initializeChartDataHolder(UUID diagramId) {
+    Analysis analysis = analysisService.getDiagramInternal(diagramId).getAnalysis();
     AbstractAggregationResult aggregationResult = analysis.getAggregationResult();
-
-    AggregationResultUtil.validateColumnFilters(filters, aggregationResult);
+    HistogramChartConfiguration histogramChartConfiguration =
+        getHistogramChartConfiguration(analysis);
 
     HistogramChartConfiguration chartConfiguration =
         (HistogramChartConfiguration)
             Hibernate.unproxy(analysis.getChartConfiguration(), ChartConfiguration.class);
     TableColumn secondaryTableColumn =
         AggregationResultUtil.getTableColumn(
-            histogramChartConfigurationDto.secondaryAttribute(), aggregationResult);
+            histogramChartConfiguration.getSecondaryAttributeSelection(), aggregationResult);
 
     Map<Long, Map<Object, Integer>> chartDataHolder = new HashMap<>();
 
@@ -77,19 +70,18 @@ public class HistogramChartDiagramCreationService
     return chartDataHolder;
   }
 
+  private static HistogramChartConfiguration getHistogramChartConfiguration(Analysis analysis) {
+    return (HistogramChartConfiguration) AnalysisMapper.getChartConfiguration(analysis);
+  }
+
   @Override
   @Transactional(readOnly = true)
   public int collectChartData(
-      UUID analysisId,
-      HistogramChartConfigurationDto histogramChartConfigurationDto,
-      List<TableColumnFilterParameter> filters,
-      int page,
-      Map<Long, Map<Object, Integer>> chartDataHolder) {
-    Analysis analysis = analysisService.getAnalysisInternal(analysisId);
-    AbstractAggregationResult aggregationResult = analysis.getAggregationResult();
+      UUID diagramId, int page, Map<Long, Map<Object, Integer>> chartDataHolder) {
+    Diagram diagram = analysisService.getDiagramInternal(diagramId);
+    AbstractAggregationResult aggregationResult = diagram.getAnalysis().getAggregationResult();
     HistogramChartConfiguration chartConfiguration =
-        (HistogramChartConfiguration)
-            Hibernate.unproxy(analysis.getChartConfiguration(), ChartConfiguration.class);
+        getHistogramChartConfiguration(diagram.getAnalysis());
 
     if (chartConfiguration.getBins().isEmpty()) {
       return 0;
@@ -97,10 +89,10 @@ public class HistogramChartDiagramCreationService
 
     TableColumn primaryTableColumn =
         AggregationResultUtil.getTableColumn(
-            histogramChartConfigurationDto.primaryAttribute(), aggregationResult);
+            chartConfiguration.getPrimaryAttributeSelection(), aggregationResult);
     TableColumn secondaryTableColumn =
         AggregationResultUtil.getTableColumn(
-            histogramChartConfigurationDto.secondaryAttribute(), aggregationResult);
+            chartConfiguration.getSecondaryAttributeSelection(), aggregationResult);
 
     Specification<TableRow> notNullNotUnknownSpecification =
         TableRowSpecifications.getNotNullAndNotUnknownSpecificationDecimalAndInteger(
@@ -116,6 +108,7 @@ public class HistogramChartDiagramCreationService
               TableRowSpecifications.getNotNullSpecification(secondaryTableColumn));
     }
 
+    List<TableColumnFilterParameter> filters = FilterParameterMapper.mapToApi(diagram.getFilters());
     return collectDataForTablePageAndReturnMaxPage(
         page,
         specificationStream,
@@ -164,17 +157,12 @@ public class HistogramChartDiagramCreationService
 
   @Override
   @Transactional
-  public UUID addDiagram(
-      UUID analysisId,
-      HistogramChartConfigurationDto histogramChartConfigurationDto,
-      AddDiagramRequest addDiagramRequest,
-      Map<Long, Map<Object, Integer>> chartDataHolder) {
-    Analysis analysis = analysisService.getAnalysisInternal(analysisId);
+  public void fillDiagramData(UUID diagramId, Map<Long, Map<Object, Integer>> chartDataHolder) {
+    Diagram diagram = analysisService.getDiagramInternal(diagramId);
     HistogramChartConfiguration chartConfiguration =
-        (HistogramChartConfiguration)
-            Hibernate.unproxy(analysis.getChartConfiguration(), ChartConfiguration.class);
+        getHistogramChartConfiguration(diagram.getAnalysis());
     fillChartDataHolderWithMissingValues(
-        chartDataHolder, histogramChartConfigurationDto.secondaryAttribute() == null);
+        chartDataHolder, chartConfiguration.getSecondaryAttributeSelection() == null);
 
     List<HistogramGroupData> histogramGroupDatas =
         chartConfiguration.getBins().stream()
@@ -183,7 +171,7 @@ public class HistogramChartDiagramCreationService
                     mapToHistogramGroupData(
                         bin,
                         chartDataHolder,
-                        histogramChartConfigurationDto.secondaryAttribute() != null))
+                        chartConfiguration.getSecondaryAttributeSelection() != null))
             .toList();
 
     int evaluatedEntries =
@@ -199,15 +187,10 @@ public class HistogramChartDiagramCreationService
             .mapToInt(groupDataCount -> groupDataCount)
             .sum();
 
-    HistogramChartData histogramChartData = new HistogramChartData();
+    HistogramChartData histogramChartData = (HistogramChartData) diagram.getDiagramData();
     histogramChartData.setEvaluatedDataAmount(evaluatedEntries);
     histogramChartData.addHistogramGroupDatas(histogramGroupDatas);
-
-    Diagram diagram =
-        AnalysisMapper.mapToPersistence(addDiagramRequest, histogramChartData, analysis);
-
-    analysisRepository.flush();
-    return diagram.getExternalId();
+    diagram.setDiagramDataEmpty(false);
   }
 
   private static HistogramGroupData mapToHistogramGroupData(

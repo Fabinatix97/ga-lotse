@@ -5,10 +5,9 @@
 
 "use client";
 
+import { EmployeePortalErrorModal } from "@eshg/lib-employee-portal";
 import { NextErrorBoundaryProps } from "@eshg/lib-portal/components/boundaries/NextErrorBoundary";
 import { useRouter } from "next/navigation";
-
-import { EmployeePortalErrorModal } from "@/lib/shared/components/boundaries/EmployeePortalErrorModal";
 
 export default function ModalSlotError(props: NextErrorBoundaryProps) {
   const router = useRouter();

@@ -4,6 +4,15 @@
  */
 
 import { ApiObjectType } from "@eshg/inspection-api";
+import {
+  FormButtonBar,
+  SidebarActions,
+  SidebarContent,
+  SidebarForm,
+  SidebarWithFormRefProps,
+  useConfirmationDialog,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import {
   validateIntegerAnd,
@@ -14,16 +23,7 @@ import { Grid } from "@mui/joy";
 import { Formik } from "formik";
 
 import { useUpdateObjectType } from "@/lib/businessModules/inspection/api/mutations/objectTypes";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export interface EditableObjectType {
   id: string;

@@ -144,11 +144,18 @@ public class NotificationService {
   }
 
   public void notifyCancelAppointment(
-      AffectedPersonDto person, String appointmentDate, String appointmentTime) {
+      AffectedPersonDto person,
+      String appointmentDate,
+      String appointmentTime,
+      String reasonForRejection) {
     String cancelAppointmentSubject = notificationText.getCancelAppointmentSubject();
     String cancelAppointmentBody =
         notificationText.assembleCancelAppointmentBody(
-            person.firstName(), person.lastName(), appointmentDate, appointmentTime);
+            person.firstName(),
+            person.lastName(),
+            appointmentDate,
+            appointmentTime,
+            reasonForRejection);
 
     sendMailWithModuleClientAuthentication(
         cancelAppointmentSubject, cancelAppointmentBody, person, HTML_AND_PLAIN_TEXT);

@@ -5,7 +5,10 @@
 
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { ApiBookingInfo } from "@eshg/official-medical-service-api";
+import {
+  ApiBookingInfo,
+  CancelAppointmentRequest,
+} from "@eshg/official-medical-service-api";
 
 import { useOmsAppointmentApi } from "@/lib/businessModules/officialMedicalService/api/clients";
 
@@ -30,8 +33,8 @@ export function useCancelAppointment() {
   const employeeOmsProcedureApi = useOmsAppointmentApi();
 
   return useHandledMutation({
-    mutationFn: ({ appointmentId }: { appointmentId: string }) =>
-      employeeOmsProcedureApi.cancelAppointment(appointmentId),
+    mutationFn: (request: CancelAppointmentRequest) =>
+      employeeOmsProcedureApi.cancelAppointmentRaw(request),
     onSuccess: () => snackbar.confirmation("Termin abgesagt."),
   });
 }

@@ -4,6 +4,11 @@
  */
 
 import { ApiLabel, ApiResource } from "@eshg/base-api";
+import {
+  SidebarWithFormRefProps,
+  useConfirmationDialog,
+  useSidebarWithFormRef,
+} from "@eshg/lib-employee-portal";
 
 import { mapUpdateResourceRequest } from "@/lib/baseModule/api/mapper/resources";
 import { useUpdateResource } from "@/lib/baseModule/api/mutations/resources";
@@ -11,11 +16,6 @@ import {
   ResourceForm,
   ResourceFormValues,
 } from "@/lib/baseModule/components/resources/forms/ResourceForm";
-import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 interface UpdateResourceSidebarProps extends SidebarWithFormRefProps {
   labels: ApiLabel[];

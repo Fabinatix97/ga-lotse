@@ -77,6 +77,10 @@ public class OmsProcedure extends Procedure<OmsProcedure, OmsTask, Person, Facil
   private MedicalOpinionResult medicalOpinionResult;
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @Column
+  private String medicalOpinionComment;
+
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @Column(nullable = false)
   private boolean sendEmailNotifications = false;
 
@@ -179,5 +183,13 @@ public class OmsProcedure extends Procedure<OmsProcedure, OmsTask, Person, Facil
 
   public void setMedicalOpinionResult(@NotNull MedicalOpinionResult medicalOpinionResult) {
     this.medicalOpinionResult = medicalOpinionResult;
+  }
+
+  public String getMedicalOpinionComment() {
+    return medicalOpinionComment;
+  }
+
+  public void setMedicalOpinionComment(String medicalOpinionComment) {
+    this.medicalOpinionComment = medicalOpinionComment;
   }
 }

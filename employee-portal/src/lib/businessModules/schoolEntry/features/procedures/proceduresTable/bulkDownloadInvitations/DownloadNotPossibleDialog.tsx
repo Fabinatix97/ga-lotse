@@ -3,13 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { OverlayBoundary } from "@eshg/lib-employee-portal";
 import {
   BaseModal,
   BaseModalProps,
 } from "@eshg/lib-portal/components/BaseModal";
 import { Typography } from "@mui/joy";
-
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 
 export type DownloadNotPossibleDialogProps = Omit<
   BaseModalProps,

@@ -40,16 +40,16 @@ public class OmsAppointment extends GloballyUniqueEntityBase implements EntityWi
   private AppointmentType appointmentType;
 
   @NotNull
-  @Column()
+  @Column
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private AppointmentState appointmentState;
 
   @NotNull
-  @Column()
+  @Column
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private BookingState bookingState;
 
-  @Column()
+  @Column
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private BookingType bookingType;
 
@@ -58,6 +58,8 @@ public class OmsAppointment extends GloballyUniqueEntityBase implements EntityWi
   @Column private Integer duration;
 
   @NotNull @Column private int bookingsRemaining = 2;
+
+  @Column private String reasonForRejection;
 
   @NotNull @Column @CreatedDate private Instant createdAt;
 
@@ -158,5 +160,13 @@ public class OmsAppointment extends GloballyUniqueEntityBase implements EntityWi
 
   public void setBookingsRemaining(int bookingsRemaining) {
     this.bookingsRemaining = bookingsRemaining;
+  }
+
+  public String getReasonForRejection() {
+    return reasonForRejection;
+  }
+
+  public void setReasonForRejection(String reasonForRejection) {
+    this.reasonForRejection = reasonForRejection;
   }
 }
