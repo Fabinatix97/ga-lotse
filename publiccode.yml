@@ -19,6 +19,7 @@ platforms:
   - web
 usedBy:
   - Gesundheitsamt Stadt Frankfurt am Main
+logo: 'employee-portal/public/icon-256x256.png'
 releaseDate: '2024-10-01'
 softwareType: standalone/web
 softwareVersion: '1.0'
