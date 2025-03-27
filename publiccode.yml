@@ -1,6 +1,3 @@
-# Copyright 2025 cronn GmbH
-# SPDX-License-Identifier: AGPL-3.0-only
-
 # This repository adheres to the publiccode.yml standard by including this
 # metadata file that makes public software easily discoverable.
 # More info at https://github.com/italia/publiccode.yml
@@ -17,9 +14,29 @@ categories:
   - it-security
   - task-management
   - workflow-management
+name: GA-Lotse
+platforms:
+  - web
+releaseDate: '2024-10-01'
+softwareType: standalone/web
+softwareVersion: '1.0'
+url: 'https://gitlab.opencode.de/ga-lotse/ga-lotse-code.git'
+developmentStatus: development
+maintenance:
+  type: internal
+  contacts:
+    - name: Gesundheitsamt Stadt Frankfurt am Main
+      email: info.gesundheitsamt@stadt-frankfurt.de
+      phone: +49 69 21233970
+legal:
+  license: AGPL-3.0-only
+localisation:
+  availableLanguages:
+    - de
+  localisationReady: true
 description:
   en:
-    apiDocumentation: |-
+    apiDocumentation: >-
       https://gitlab.opencode.de/ga-lotse/ga-lotse-documentation/-/tree/main/open-api
     documentation: 'https://gitlab.opencode.de/ga-lotse/ga-lotse-documentation'
     features:
@@ -40,37 +57,65 @@ description:
       - service mesh
       - relay server
     genericName: Software for Health Departments
-    longDescription: |
+    longDescription: >
       GA-Lotse is an application platform for public health
-      departments in Germany. It was developed with state-of-the-art privacy
+      departments in Germany.
+
+      It was developed with state-of-the-art privacy
       and data protection mechanisms in mind.
-      The application is a service mesh at its core. It provides central
-      services at its core, which provides the needed infrastructure for every
-      business module. Therefore, new business modules can easily be integrated.
+
+      The application is a service mesh at its core.
+
+      It provides central services at its core, which provides the needed
+      infrastructure for every business module.
+
+      Therefore, new business modules can easily be integrated.
+
       The goal is to unify the vast application landscape that is currently
       used within the German health departments to improve efficiency and security
       and enable the health departments to analyse their data.
-    shortDescription: |-
-      GA-Lotse is an application platform for public health departments
-      in Germany. It contains multiple business modules and can be extended.
-developmentStatus: development
-legal:
-  license: AGPL-3.0-only
-localisation:
-  availableLanguages:
-    - de
-  localisationReady: true
-maintenance:
-  type: internal
-  contacts:
-    - name: Gesundheitsamt Stadt Frankfurt am Main
-      email: 'info.gesundheitsamt@stadt-frankfurt.de'
-      phone: '+49 69 21233970'
-name: GA-Lotse
-platforms:
-  - web
-releaseDate: '2024-10-01'
-softwareType: standalone/web
-softwareVersion: '1.0'
-url: 'https://gitlab.opencode.de/ga-lotse/ga-lotse-code.git'
-landingUrl: 'https://gitlab.opencode.de/ga-lotse'
+    shortDescription: GA-Lotse is an application platform for public health departments in Germany.
+  de:
+    apiDocumentation: >-
+      https://gitlab.opencode.de/ga-lotse/ga-lotse-documentation/-/tree/main/open-api
+    documentation: 'https://gitlab.opencode.de/ga-lotse/ga-lotse-documentation'
+    features:
+      - Basismodul
+      - Identitäts- und Zugriffsmanagement
+      - Zentrale Datei für Personen und Einrichtungen
+      - Kalender
+      - Inventar
+      - Ressourcenmanagement
+      - Kontaktmanagement
+      - Verfahrensmetriken
+      - Schulaufnahme-Modul
+      - Inspektionsmodul
+      - Masernschutz-Modul
+      - Reisemedizin-Modul
+      - Statistikmodul
+      - Bürgerportal
+      - Service-Mesh
+      - Relay-Server
+    genericName: Anwendung für Gesundheitsämter
+    longDescription: >
+      GA-Lotse ist eine Anwendungsplattform für Gesundheitsämter in Deutschland.
+
+      Sie wurde mit modernen Datenschutz- und Datensicherheitsmechanismen
+      entwickelt.
+
+      Die Anwendung ist im Kern ein Service-Mesh. Sie bietet zentrale Dienste,
+
+      die die erforderliche Infrastruktur für jedes Geschäftsmodul
+      bereitstellen.
+
+      Daher können neue Geschäftsmodule einfach integriert werden.
+
+      Das Ziel ist es, die vielfältige Anwendungslandschaft, die derzeit in den
+
+      deutschen Gesundheitsämtern genutzt wird, zu vereinheitlichen, um
+      Effizienz
+
+      und Sicherheit zu verbessern und den Gesundheitsämtern zu ermöglichen,
+
+      ihre Daten zu analysieren.
+    shortDescription: GA-Lotse ist eine Anwendungsplattform für Gesundheitsämter in Deutschland.
