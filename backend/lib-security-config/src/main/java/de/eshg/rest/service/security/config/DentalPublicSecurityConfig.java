@@ -19,7 +19,8 @@ public final class DentalPublicSecurityConfig extends AbstractPublicSecurityConf
     grantAccessToStatistics(EmployeePermissionRole.DENTAL_ADMIN);
     requestMatchers(
             BaseUrls.Dental.CHILD_CONTROLLER + "/**",
-            BaseUrls.Dental.PROPHYLAXIS_SESSION_CONTROLLER + "/**")
+            BaseUrls.Dental.PROPHYLAXIS_SESSION_CONTROLLER + "/**",
+            BaseUrls.Dental.PROCEDURE_LABEL_CONTROLLER + "/**")
         .hasRole(EmployeePermissionRole.DENTAL_ADMIN);
   }
 }

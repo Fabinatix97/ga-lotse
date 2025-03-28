@@ -69,6 +69,16 @@ public class AppointmentService {
     updateAppointmentHistoryEntry(procedure, appointment);
   }
 
+  public void updateCitizenAppointment(
+      StiProtectionProcedure procedure, AppointmentData appointmentData) {
+    procedure.setUserDefinedAppointment(null);
+    AppointmentType type = appointmentData.appointmentType();
+    Instant start = appointmentData.appointmentStart();
+    Instant end = start.plus(Duration.ofMinutes(appointmentData.durationInMinutes()));
+    appointmentBlockSlotUtil.updateAppointment(type, null, null, procedure, start, end);
+    updateAppointmentHistoryEntry(procedure, appointmentData);
+  }
+
   public void cancelAppointmentDeleteCalendarEvent(StiProtectionProcedure procedure) {
     deleteAppointmentCalendarEvent(procedure);
     cancelAppointment(procedure);

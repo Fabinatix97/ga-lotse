@@ -34,9 +34,7 @@ export function mapToStackedSeries(
 
   sortedData.forEach((item) => {
     item.attributes.forEach((attribute) => {
-      if (!dataGroups[attribute.label]) {
-        dataGroups[attribute.label] = [];
-      }
+      dataGroups[attribute.label] ??= [];
       dataGroups[attribute.label]!.push([item.min, attribute.value]);
     });
   });

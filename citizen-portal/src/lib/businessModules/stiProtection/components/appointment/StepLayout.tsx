@@ -30,7 +30,7 @@ import {
   ConfirmLeaveDirtyFormEffect,
   ConfirmLeaveDirtyFormEffectProps,
 } from "@/lib/baseModule/components/ConfirmLeaveDirtyFormEffect";
-import { useCancelPendingAppointment } from "@/lib/businessModules/stiProtection/api/mutations/publicCitizensApi";
+import { useCancelPendingAppointment } from "@/lib/businessModules/stiProtection/api/mutations/publicCitizenApi";
 import { useStepContext } from "@/lib/businessModules/stiProtection/components/shared/StepContext";
 import { useTranslation } from "@/lib/i18n/client";
 import { useLocale } from "@/lib/i18n/useLocale";
@@ -94,6 +94,7 @@ export function StepLayout<T extends FormDataWithoutConcern>({
   const cancelPendingAppointment = useCancelPendingAppointment(
     formData.procedureId,
   );
+
   const handleConfirmCancel = useCallback(() => {
     if (formData.procedureId == null) {
       return;

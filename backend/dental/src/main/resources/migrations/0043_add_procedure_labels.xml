@@ -1,0 +1,63 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1742908261936-1">
+    <createTable tableName="procedure_label">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+                     primaryKeyName="pk_procedure_label"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="external_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="description" type="TEXT"/>
+      <column name="hex_color" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addUniqueConstraint columnNames="external_id"
+                         constraintName="procedure_label_external_id_key"
+                         tableName="procedure_label"/>
+    <addUniqueConstraint columnNames="name"
+                         constraintName="procedure_label_name_key"
+                         tableName="procedure_label"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1742908261936-2">
+    <createTable tableName="child_procedure_labels">
+      <column name="child_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="procedure_labels_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint baseColumnNames="child_id"
+                             baseTableName="child_procedure_labels"
+                             constraintName="fk_child_procedure_labels_child"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="child" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="procedure_labels_id"
+                             baseTableName="child_procedure_labels"
+                             constraintName="fk_child_procedure_labels_procedure_label"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="procedure_label"
+                             validate="true"/>
+  </changeSet>
+</databaseChangeLog>

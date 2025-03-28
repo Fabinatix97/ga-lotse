@@ -50,5 +50,7 @@
   <include file="migrations/0040_add_orthodontic_status.xml"/>
   <include file="migrations/0041_add_orthodontic_findings.xml"/>
   <include file="migrations/0042_extend_main_result_values.xml"/>
+  <include file="migrations/0043_add_procedure_labels.xml"/>
+  <include file="migrations/0044_add_prophylaxis_status.xml"/>
 
 </databaseChangeLog>

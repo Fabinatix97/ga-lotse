@@ -15,7 +15,7 @@ import {
   ProgressEntryApi,
 } from "@eshg/medical-registry-api";
 
-function useConfiguration() {
+export function useConfiguration() {
   const configurationParameters = useApiConfiguration(
     "PUBLIC_MEDICAL_REGISTRY_BACKEND_URL",
   );

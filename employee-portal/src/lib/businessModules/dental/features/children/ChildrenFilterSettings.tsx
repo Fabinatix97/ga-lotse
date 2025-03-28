@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useSearchInstitutionGroups } from "@eshg/dental";
+import { useSearchInstitutionGroupsQuery } from "@eshg/dental";
 import { GetChildrenRequest } from "@eshg/dental-api";
+import { mapToSelectOption } from "@eshg/lib-employee-portal";
 import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { useHasChanged } from "@eshg/lib-portal/hooks/useHasChanged";
 import { CircularProgress, FormControl, FormLabel } from "@mui/joy";
@@ -19,7 +20,6 @@ import {
 } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 import { SearchInstitutionFilter } from "@/lib/shared/components/filterSettings/SearchInstitutionFilter";
 import { SetDictionaryFilterFn } from "@/lib/shared/components/filterSettings/useFilterDictionary";
-import { mapToSelectOption } from "@/lib/shared/helpers/selectOptionMapper";
 
 export type ChildrenFilters = Pick<
   GetChildrenRequest,
@@ -48,7 +48,7 @@ interface ChildrenFilterSettingsProps {
 }
 
 export function ChildrenFilterSettings(props: ChildrenFilterSettingsProps) {
-  const searchGroups = useSearchInstitutionGroups(
+  const searchGroups = useSearchInstitutionGroupsQuery(
     props.filterFormValues.institutionIdFilter ?? "",
   );
   const groups = searchGroups.isSuccess ? searchGroups.data : [];

@@ -100,6 +100,13 @@ export function mapFilterValuesToEvaluationFilters(
             text: filterValue.value,
             attribute: attributeSelection,
           } satisfies EvaluationFilter;
+        case "DateAttribute":
+          assertFilterType(filterValue, "Text");
+          return {
+            type: "DateFilterParameter",
+            date: filterValue.value,
+            attribute: attributeSelection,
+          } satisfies EvaluationFilter;
         default:
           throw new Error(`Attribute of type ${attribute.type} not expected`);
       }

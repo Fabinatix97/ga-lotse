@@ -198,7 +198,7 @@ export function useRoomTimeline(roomId: string) {
           };
         }
         case "m.room.redaction": {
-          const messageId = (eventContent.redacts ||
+          const messageId = (eventContent.redacts ??
             event.event.redacts) as string;
           return { removed: messageId };
         }
@@ -248,7 +248,7 @@ export function useRoomTimeline(roomId: string) {
             typeof eventContent.creator === "string" &&
             matrixClient.getUser(eventContent.creator || "");
           const newAdminIds = Object.entries(
-            (eventContent.users || {}) as Record<string, number>,
+            (eventContent.users ?? {}) as Record<string, number>,
           )
             ?.filter(([_, powerLevel]) => powerLevel === 100)
             ?.map(([userId]) => userId);

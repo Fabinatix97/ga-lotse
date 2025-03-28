@@ -7,6 +7,7 @@ import {
   ExaminationResultWithDate,
   ExaminationStatus,
   ExaminationStatusChip,
+  ScreeningExaminationResult,
 } from "@eshg/dental";
 import {
   ApiDentitionType,
@@ -27,14 +28,21 @@ import { calculateAge } from "@eshg/lib-portal/helpers/dateTime";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Divider, Grid, Stack, Typography } from "@mui/joy";
+import { compareDesc } from "date-fns";
+import { isDefined } from "remeda";
 import { useShallow } from "zustand/react/shallow";
 
-import { DecayHistorySidebar } from "@/lib/businessModules/dental/features/examinations/DecayHistorySidebar";
+import {
+  DecayHistoryItem,
+  DecayHistorySidebar,
+} from "@/lib/businessModules/dental/features/examinations/DecayHistorySidebar";
 import { OrthodonticFindingsField } from "@/lib/businessModules/dental/features/examinations/OrthodonticFindingsField";
 import { useDentalExaminationStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
+import { createDentitionByType } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/factories";
 import { selectDecayRiskValue } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/selectors/decayRisk";
 import { selectDecayStatus } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/selectors/decayStatus";
 import { selectDmftValues } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/selectors/dmftValues";
+import { Dentition } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
 import { DENTITION_TYPE_OPTIONS } from "@/lib/businessModules/dental/features/prophylaxisSessions/options";
 import { OpenHistorySidebarButton } from "@/lib/businessModules/dental/shared/OpenHistorySidebarButton";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
@@ -111,11 +119,13 @@ export function AdditionalInformationFormSection(
   );
 }
 
-function ScreeningFields(props: {
+interface ScreeningFieldsProps {
   participantDateOfBirth: Date;
   dateOfExamination: Date;
   previousExaminations: ExaminationResultWithDate[];
-}) {
+}
+
+function ScreeningFields(props: ScreeningFieldsProps) {
   const dmftValues = useDentalExaminationStore(useShallow(selectDmftValues));
   const decayRisk = useDentalExaminationStore(
     useShallow(
@@ -126,20 +136,15 @@ function ScreeningFields(props: {
   );
   const decayStatus = useDentalExaminationStore(useShallow(selectDecayStatus));
   const hasResult = useDentalExaminationStore((store) => store.hasResult);
-
-  const getToothDiagnoses = useDentalExaminationStore(
-    (store) => store.getToothDiagnoses,
-  );
+  const dentition = useDentalExaminationStore((store) => store.dentition);
   const toggleDentition = useDentalExaminationStore(
     (state) => state.toggleDentition,
   );
   const decayHistorySidebar = useSidebar({
     component: (drawerProps) => (
       <DecayHistorySidebar
-        currentDiagnoses={getToothDiagnoses()}
-        dateOfExamination={props.dateOfExamination}
+        historyItems={resolveDecayHistoryItems(dentition, props)}
         dateOfBirth={props.participantDateOfBirth}
-        previousExaminationResults={props.previousExaminations}
         onClose={drawerProps.onClose}
       />
     ),
@@ -213,6 +218,48 @@ function ScreeningFields(props: {
         />
       </Stack>
     </>
+  );
+}
+
+function resolveDecayHistoryItems(
+  currentDentition: Dentition,
+  props: ScreeningFieldsProps,
+): DecayHistoryItem[] {
+  const currentHistoryItem: DecayHistoryItem = {
+    dentition: currentDentition,
+    dateOfExamination: props.dateOfExamination,
+  };
+
+  const previousHistoryItems: DecayHistoryItem[] = props.previousExaminations
+    .filter((examination) =>
+      isPreviousScreeningExamination(examination, props.dateOfExamination),
+    )
+    .map((examination) => ({
+      dentition: createDentitionByType(
+        examination.result.dentitionType,
+        examination.result.toothDiagnoses,
+      ),
+      dateOfExamination: examination.dateAndTime,
+    }));
+
+  return [currentHistoryItem, ...previousHistoryItems].sort((a, b) =>
+    compareDesc(a.dateOfExamination, b.dateOfExamination),
+  );
+}
+
+interface ScreeningExaminationResultWithDate {
+  result: ScreeningExaminationResult;
+  dateAndTime: Date;
+}
+
+function isPreviousScreeningExamination(
+  examination: ExaminationResultWithDate,
+  currentDateOfExamination: Date,
+): examination is ScreeningExaminationResultWithDate {
+  return (
+    isDefined(examination.result) &&
+    examination.result.type === "screening" &&
+    examination.dateAndTime.getTime() !== currentDateOfExamination.getTime()
   );
 }
 

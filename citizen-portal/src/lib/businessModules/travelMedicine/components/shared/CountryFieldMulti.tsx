@@ -8,9 +8,10 @@ import {
   useBaseField,
 } from "@eshg/lib-portal/components/formFields/BaseField";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
 import { FieldProps } from "@eshg/lib-portal/types/form";
 import { Close } from "@mui/icons-material";
-import { Autocomplete, AutocompleteProps, Chip } from "@mui/joy";
+import { AutocompleteProps, Chip } from "@mui/joy";
 import { isString } from "remeda";
 
 import { useTranslateCountry } from "@/lib/i18n/useTranslateCountry";
@@ -49,8 +50,7 @@ export function CountryFieldMulti(props: CountryFieldMultiProps) {
       required={field.required}
       error={field.error}
     >
-      <Autocomplete
-        aria-description="Mehrfachauswahl möglich"
+      <CustomAutocomplete
         multiple
         clearOnBlur
         selectOnFocus

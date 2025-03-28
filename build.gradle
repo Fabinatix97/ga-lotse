@@ -141,7 +141,7 @@ tasks.register('updateDependencies', PnpmTask) {
   subprojects {
     outputs.dir "${projectDir}/${nodeModulesDir}"
   }
-  args = ['update', '--recursive', '--latest']
+  args = ['dlx', 'taze', 'major', '--write', '--update', '--recursive', '--include-locked']
 }
 
 tasks.register('outdatedDependencies', PnpmTask) {

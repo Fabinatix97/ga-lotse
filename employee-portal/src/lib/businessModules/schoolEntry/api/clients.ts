@@ -23,7 +23,7 @@ import {
   ValueEvaluatorApi,
 } from "@eshg/school-entry-api";
 
-function useConfiguration() {
+export function useConfiguration() {
   const configurationParameters = useApiConfiguration(
     "PUBLIC_SCHOOL_ENTRY_BACKEND_URL",
   );

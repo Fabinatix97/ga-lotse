@@ -25,6 +25,7 @@ public record ProphylaxisSessionDetailsDto(
     @NotNull boolean isScreening,
     DentitionTypeDto dentitionType,
     FluoridationVarnishDto fluoridationVarnish,
+    @NotNull ProphylaxisStatusDto status,
     @NotNull @Valid List<ProphylaxisSessionChildExaminationDto> participants,
     @NotEmpty @Valid List<? extends PerformingPersonDto> dentists,
     @NotEmpty @Valid List<? extends PerformingPersonDto> zfas) {}

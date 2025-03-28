@@ -7926,6 +7926,8 @@
               }, {
                 "$ref" : "#/components/schemas/FileDeletionApprovalRequestNotification"
               }, {
+                "$ref" : "#/components/schemas/ProcedureNotification"
+              }, {
                 "$ref" : "#/components/schemas/ProgressEntryDeletionApprovalRequestNotification"
               }, {
                 "$ref" : "#/components/schemas/SimpleNotification"
@@ -10624,6 +10626,27 @@
           }
         }
       },
+      "ProcedureNotification" : {
+        "required" : [ "businessModule", "createdAt", "id", "message", "procedureId", "title" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/AbstractNotification"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "message" : {
+              "type" : "string"
+            },
+            "procedureId" : {
+              "type" : "string",
+              "format" : "uuid"
+            },
+            "title" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
       "ProcedureStatus" : {
         "type" : "string",
         "enum" : [ "DRAFT", "OPEN", "IN_PROGRESS", "CLOSED", "ABORTED" ]
@@ -10933,7 +10956,7 @@
           },
           "text" : {
             "type" : "string",
-            "description" : "The content of the email. If the type is HTML or HTML_AND_PLAIN_TEXT, this should be an HTML fragment; otherwise, it should be plain text.",
+            "description" : "The content of the email. If the type is HTML or HTML_AND_PLAIN_TEXT, this should be an HTML fragment; otherwise, it should be plain text. When building the HTML fragment from a template be sure to escape your template parameter's values to prevent HTML-injection attacks.",
             "example" : "PLAIN_TEXT: 'Dear John Doe,\nthis a test.\nBest regards,\nJane Doe' HTML|HTML_AND_PLAIN_TEXT: 'Dear John Doe,<br>this a test.<br>Best regards,<br>Jane Doe'"
           },
           "to" : {

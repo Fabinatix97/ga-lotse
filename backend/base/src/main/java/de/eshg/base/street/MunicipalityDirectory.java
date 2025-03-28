@@ -31,9 +31,8 @@ public class MunicipalityDirectory {
   public MunicipalityDirectory(DepartmentConfigurationService departmentConfigurationService) {
     List<MunicipalityDirectoryCsvEntry> csvEntries =
         CsvMapper.csvToBeans(
-            departmentConfigurationService.getConfig().getMunicipalityDirectory(),
+            departmentConfigurationService.getMunicipalityDirectory(),
             MunicipalityDirectoryCsvEntry.class);
-
     this.entries = convertToDirectoryStructure(csvEntries);
   }
 

@@ -67,7 +67,7 @@ export function useOpeningHours(concern: ApiConcern) {
 export function useAnonymousIdentificationDocumentQuery(procedureId: string) {
   const publicCitizenApi = useCitizenPublicApi();
   return useFileDownload(() =>
-    publicCitizenApi.getAnonymousIdentificationDocument1Raw({
+    publicCitizenApi.getCitizenAnonymousIdentificationDocumentRaw({
       id: procedureId,
     }),
   );

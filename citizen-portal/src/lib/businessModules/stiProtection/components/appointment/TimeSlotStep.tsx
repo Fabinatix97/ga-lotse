@@ -17,7 +17,7 @@ import { prop, sortBy } from "remeda";
 import {
   useBookAppointment,
   useCancelPendingAppointment,
-} from "@/lib/businessModules/stiProtection/api/mutations/publicCitizensApi";
+} from "@/lib/businessModules/stiProtection/api/mutations/publicCitizenApi";
 import { useFreeAppointments } from "@/lib/businessModules/stiProtection/api/queries/publicCitizenApi";
 import { useCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";

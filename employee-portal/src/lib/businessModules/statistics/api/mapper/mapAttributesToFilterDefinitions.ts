@@ -46,6 +46,7 @@ export function mapAttributesToFilterDefinitions(
             unit: attribute.unit,
           } satisfies NumberFilterDefinition;
         case "TextAttribute":
+        case "DateAttribute":
           return {
             type: "Text",
             key: attribute.key,

@@ -29,11 +29,19 @@ type DentitionFactory = (
   previousToothDiagnoses: ToothDiagnoses,
 ) => Dentition;
 
-export const DENTITION_FACTORIES: Record<ApiDentitionType, DentitionFactory> = {
+const DENTITION_FACTORIES: Record<ApiDentitionType, DentitionFactory> = {
   PRIMARY: createPrimaryDentition,
   MIXED: createMixedDentition,
   SECONDARY: createSecondaryDentition,
 };
+
+export function createDentitionByType(
+  type: ApiDentitionType,
+  toothDiagnoses: ToothDiagnoses = {},
+  previousToothDiagnoses: ToothDiagnoses = {},
+): Dentition {
+  return DENTITION_FACTORIES[type](toothDiagnoses, previousToothDiagnoses);
+}
 
 export function createPrimaryDentition(
   toothDiagnoses: ToothDiagnoses = {},

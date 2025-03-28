@@ -44,6 +44,7 @@ public record ChildDetailsDto(
     @Valid AddressDto differentBillingAddress,
     @NotNull int year,
     @NotNull String groupName,
+    @NotNull @Valid List<ProcedureLabelDto> procedureLabels,
     @NotNull @Valid List<ExaminationDto> examinations,
     @NotEmpty @Valid List<AnnualInstitutionDto> institutions,
     @NotNull @Valid List<FluoridationConsentDto> fluoridationConsents) {

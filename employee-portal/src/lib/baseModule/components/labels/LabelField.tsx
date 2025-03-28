@@ -9,9 +9,10 @@ import {
   useBaseField,
 } from "@eshg/lib-portal/components/formFields/BaseField";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
 import { FieldProps } from "@eshg/lib-portal/types/form";
 import Close from "@mui/icons-material/Close";
-import { Autocomplete, AutocompleteProps, Chip } from "@mui/joy";
+import { AutocompleteProps, Chip } from "@mui/joy";
 import { isString } from "remeda";
 
 type JoyUiSelectValue = AutocompleteProps<
@@ -42,10 +43,9 @@ export function LabelField(props: LabelFieldProps) {
       required={field.required}
       error={field.error}
     >
-      <Autocomplete
+      <CustomAutocomplete
         freeSolo
         multiple
-        aria-description="Mehrfachauswahl möglich"
         clearOnBlur
         selectOnFocus
         filterSelectedOptions

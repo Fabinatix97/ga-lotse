@@ -51,13 +51,17 @@ export function TravelTimeTile({
   async function reverseGeocode(
     address: ApiDomesticAddress,
   ): Promise<Location> {
+    let street = address.street;
+    if (isNonNullish(address.houseNumber)) {
+      street += " " + address.houseNumber;
+    }
     const { locations } = await getReverseGeoCode(
       inspectionApi,
       queryClient,
       address.country,
       address.city,
       address.postalCode,
-      address.street + " " + address.houseNumber,
+      street,
     );
     if (!locations?.length) {
       throw Error("Fehler beim Suchen der Koordinaten der Einrichtung!");

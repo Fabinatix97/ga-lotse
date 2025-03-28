@@ -64,6 +64,7 @@ public final class ChildMapper {
         augmentedChild.personData().differentBillingAddress(),
         augmentedChild.child().getYear().getValue(),
         augmentedChild.child().getGroupName(),
+        ProcedureLabelMapper.toDto(augmentedChild.child().getProcedureLabels()),
         mapExaminationsToDto(examinations),
         institutions == null ? List.of() : institutions,
         mapFluoridationToDto(fluoridationConsents));

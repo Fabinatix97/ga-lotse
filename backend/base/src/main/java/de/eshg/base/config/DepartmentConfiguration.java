@@ -5,72 +5,81 @@
 
 package de.eshg.base.config;
 
+import de.eshg.departmentinfo.domain.Document;
 import de.eshg.domain.model.BaseEntity;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
-import jakarta.persistence.Column;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class DepartmentConfiguration extends BaseEntity {
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  @Column(nullable = false)
-  private byte[] logo;
+  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  @JoinColumn(nullable = false)
+  private Document logo;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  @Column(nullable = false)
-  private byte[] securityTxt;
+  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  @JoinColumn(nullable = false)
+  private Document securityTxt;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  @Column(nullable = false)
-  private byte[] securityTxtPublicKey;
+  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  @JoinColumn(nullable = false)
+  private Document securityTxtPublicKey;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  @Column(nullable = false)
-  private byte[] streetDirectory;
+  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  @JoinColumn(nullable = false)
+  private Document streetDirectory;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  @Column(nullable = false)
-  private byte[] municipalityDirectory;
+  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  @JoinColumn(nullable = false)
+  private Document municipalityDirectory;
 
-  public byte[] getLogo() {
+  public Document getLogo() {
     return logo;
   }
 
-  public void setLogo(byte[] logo) {
+  public void setLogo(Document logo) {
     this.logo = logo;
   }
 
-  public byte[] getSecurityTxt() {
+  public Document getSecurityTxt() {
     return securityTxt;
   }
 
-  public void setSecurityTxt(byte[] securityTxt) {
+  public void setSecurityTxt(Document securityTxt) {
     this.securityTxt = securityTxt;
   }
 
-  public byte[] getSecurityTxtPublicKey() {
+  public Document getSecurityTxtPublicKey() {
     return securityTxtPublicKey;
   }
 
-  public void setSecurityTxtPublicKey(byte[] securityTxtPublicKey) {
+  public void setSecurityTxtPublicKey(Document securityTxtPublicKey) {
     this.securityTxtPublicKey = securityTxtPublicKey;
   }
 
-  public byte[] getStreetDirectory() {
+  public Document getStreetDirectory() {
     return streetDirectory;
   }
 
-  public void setStreetDirectory(byte[] streetDirectory) {
+  public void setStreetDirectory(Document streetDirectory) {
     this.streetDirectory = streetDirectory;
   }
 
-  public byte[] getMunicipalityDirectory() {
+  public Document getMunicipalityDirectory() {
     return municipalityDirectory;
   }
 
-  public void setMunicipalityDirectory(byte[] municipalityDirectory) {
+  public void setMunicipalityDirectory(Document municipalityDirectory) {
     this.municipalityDirectory = municipalityDirectory;
   }
 }

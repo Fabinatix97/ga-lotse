@@ -5,6 +5,8 @@
 
 package de.eshg.dental;
 
+import static de.eshg.dental.util.ChildSystemProgressEntryType.LABELS_MODIFIED;
+
 import com.google.common.collect.Iterables;
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.PersonApi;
@@ -36,8 +38,10 @@ import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.domain.model.FluoridationConsent;
 import de.eshg.dental.domain.model.Person;
+import de.eshg.dental.domain.model.ProcedureLabel;
 import de.eshg.dental.domain.model.ScreeningExaminationResult;
 import de.eshg.dental.domain.repository.ChildRepository;
+import de.eshg.dental.domain.repository.ProcedureLabelRepository;
 import de.eshg.dental.importer.ChildColumn;
 import de.eshg.dental.importer.ChildImporter;
 import de.eshg.dental.importer.ChildRowReader;
@@ -79,6 +83,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.text.similarity.FuzzyScore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,6 +111,7 @@ public class ChildService {
   private final ProgressEntryUtil progressEntryUtil;
   private final ProcedureSearchService<Child> procedureSearchService;
   private final ProcedureQuery procedureQuery;
+  private final ProcedureLabelRepository procedureLabelRepository;
 
   public ChildService(
       Clock clock,
@@ -117,7 +123,8 @@ public class ChildService {
       PersonClient personClient,
       ProgressEntryUtil progressEntryUtil,
       ProcedureSearchService<Child> procedureSearchService,
-      ProcedureQuery procedureQuery) {
+      ProcedureQuery procedureQuery,
+      ProcedureLabelRepository procedureLabelRepository) {
     this.clock = clock;
     this.auditLogger = auditLogger;
     this.childRepository = childRepository;
@@ -128,6 +135,7 @@ public class ChildService {
     this.progressEntryUtil = progressEntryUtil;
     this.procedureSearchService = procedureSearchService;
     this.procedureQuery = procedureQuery;
+    this.procedureLabelRepository = procedureLabelRepository;
   }
 
   Child createChild(CreateChildRequest request) {
@@ -504,7 +512,27 @@ public class ChildService {
       child.addFluoridationConsent(requestedFluoridationConsent);
     }
 
+    updateProcedureLabels(child, request.procedureLabels());
+
+    if (updateGroup) {
+      log.debug("Updating group name: '{}' → '{}'", child.getGroupName(), request.groupName());
+      child.setGroupName(request.groupName());
+    }
+
     childRepository.flush();
+  }
+
+  private void updateProcedureLabels(Child child, List<UUID> requestedLabelIds) {
+    List<UUID> persistedLabelIds =
+        child.getProcedureLabels().stream().map(ProcedureLabel::getExternalId).toList();
+    if (!CollectionUtils.isEqualCollection(requestedLabelIds, persistedLabelIds)) {
+      List<ProcedureLabel> procedureLabels =
+          procedureLabelRepository.findAllByExternalIdInOrderById(requestedLabelIds);
+      Validator.validateLabelsExist(
+          requestedLabelIds, procedureLabels.stream().map(ProcedureLabel::getExternalId).toList());
+      child.setProcedureLabels(procedureLabels);
+      progressEntryUtil.addSystemProgressEntry(child, LABELS_MODIFIED);
+    }
   }
 
   private boolean fluoridationConsentsMatch(

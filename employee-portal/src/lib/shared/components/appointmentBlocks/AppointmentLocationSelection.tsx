@@ -3,11 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import {
+  CONTACT_CATEGORY_NAMES,
+  SearchContactField,
+} from "@eshg/lib-employee-portal";
 import { Grid } from "@mui/joy";
 
-import { contactCategoryNames } from "@/lib/baseModule/shared/translations";
 import { FormGroupGrid } from "@/lib/shared/components/form/FormGroupGrid";
-import { SearchContactField } from "@/lib/shared/components/formFields/SearchContactField";
 
 interface AppointmentLocationSelectionProps {
   contactCategory: "SCHOOL" | "HEALTH_DEPARTMENT";
@@ -16,7 +18,7 @@ interface AppointmentLocationSelectionProps {
 export function AppointmentLocationSelection(
   props: AppointmentLocationSelectionProps,
 ) {
-  const translatedCategory = contactCategoryNames[props.contactCategory];
+  const translatedCategory = CONTACT_CATEGORY_NAMES[props.contactCategory];
 
   return (
     <FormGroupGrid>

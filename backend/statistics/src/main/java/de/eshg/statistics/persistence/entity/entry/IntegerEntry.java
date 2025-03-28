@@ -8,6 +8,7 @@ package de.eshg.statistics.persistence.entity.entry;
 import static de.eshg.lib.common.SensitivityLevel.SENSITIVE;
 
 import de.eshg.lib.common.DataSensitivity;
+import de.eshg.statistics.anonymization.AnonymizationService;
 import de.eshg.statistics.persistence.entity.CellEntry;
 import de.eshg.statistics.persistence.entity.TableColumnValueType;
 import jakarta.persistence.Column;
@@ -56,7 +57,8 @@ public class IntegerEntry extends CellEntry {
     if (getTableColumn().getValueType().equals(TableColumnValueType.INTEGER)) {
       return getIntegerValue();
     } else {
-      return "[%s;%s]".formatted(getIntegerLowerBound(), getIntegerUpperBound());
+      return AnonymizationService.INTERVAL_FORMAT_STRING.formatted(
+          getIntegerLowerBound(), getIntegerUpperBound());
     }
   }
 }

@@ -4,7 +4,6 @@
  */
 
 import {
-  Autocomplete,
   AutocompleteInputChangeReason,
   AutocompleteProps,
   CircularProgress,
@@ -15,6 +14,7 @@ import { identity } from "remeda";
 
 import { FieldProps } from "../../types/form";
 import { useIsFormDisabled } from "../form/DisabledFormContext";
+import { CustomAutocomplete } from "../inputs/CustomAutocomplete";
 
 import { BaseField, BaseFieldProps, useBaseField } from "./BaseField";
 
@@ -59,7 +59,7 @@ export function SelectObjectField<
   const FieldComponent = props.component ?? BaseField;
   const field = useBaseField<SelectObjectFieldValue<TValue, TMultiple>>(props);
   const AutocompleteComponent =
-    props.autocomplete ?? Autocomplete<TValue, TMultiple, false, false>;
+    props.autocomplete ?? CustomAutocomplete<TValue, TMultiple, false, false>;
   const disabled = useIsFormDisabled();
 
   return (
@@ -87,9 +87,6 @@ export function SelectObjectField<
         filterOptions={props.disableFiltering ? identity() : undefined}
         onBlur={field.input.onBlur}
         multiple={props.multiple}
-        aria-description={
-          props.multiple ? "Mehrfachauswahl möglich" : undefined
-        }
         placeholder={props.placeholder}
         disabled={disabled || props.disabled}
         onInputChange={props.onInputChange}

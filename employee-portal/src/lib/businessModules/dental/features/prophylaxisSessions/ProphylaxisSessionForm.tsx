@@ -3,12 +3,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Institution } from "@eshg/dental";
+import {
+  Institution,
+  SCHOOL_OR_DAYCARE_CONTACT,
+  SearchGroupField,
+} from "@eshg/dental";
 import {
   ApiDentitionType,
   ApiFluoridationVarnish,
   ApiProphylaxisType,
 } from "@eshg/dental-api";
+import {
+  SelectContactField,
+  formatInstitutionNameWithCategoryShort,
+} from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
@@ -20,17 +28,13 @@ import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Stack, Typography } from "@mui/joy";
 import { useEffect } from "react";
 
-import { SCHOOL_OR_DAYCARE } from "@/lib/baseModule/api/queries/contacts";
 import { FluoridationField } from "@/lib/businessModules/dental/features/prophylaxisSessions/FluoridationField";
-import { SearchGroupField } from "@/lib/businessModules/dental/features/prophylaxisSessions/SearchGroupField";
 import { PROPHYLAXIS_TYPE_OPTIONS } from "@/lib/businessModules/dental/features/prophylaxisSessions/options";
 import {
   AppointmentStaffField,
   StaffUser,
 } from "@/lib/shared/components/appointmentBlocks/AppointmentStaffField";
 import { DateTimeField } from "@/lib/shared/components/formFields/DateTimeField";
-import { SelectContactField } from "@/lib/shared/components/formFields/SelectContactField";
-import { getInstitutionOptionLabel } from "@/lib/shared/helpers/selectOptionMapper";
 
 import { ScreeningField } from "./ScreeningField";
 
@@ -88,10 +92,10 @@ export function ProphylaxisSessionForm(props: ProphylaxisSessionFormProps) {
         name="institution"
         label="Einrichtung"
         placeholder="Schule/Kita suchen"
-        categories={SCHOOL_OR_DAYCARE}
+        categories={SCHOOL_OR_DAYCARE_CONTACT}
         required="Bitte eine Schule/Kita angeben."
         getOptionLabel={(institution) =>
-          institution ? getInstitutionOptionLabel(institution) : ""
+          institution ? formatInstitutionNameWithCategoryShort(institution) : ""
         }
         disabled={hasExaminationResults}
       />

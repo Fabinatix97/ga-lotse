@@ -17,6 +17,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.OrderColumn;
@@ -42,6 +43,12 @@ public class Child extends Procedure<Child, ChildTask, Person, Facility> {
   @DataSensitivity(PROTECTED)
   @Column(nullable = false)
   private String groupName;
+
+  @ManyToMany
+  @OrderBy
+  @DataSensitivity(PSEUDONYMIZED)
+  @BatchSize(size = 100)
+  private List<ProcedureLabel> procedureLabels = new ArrayList<>();
 
   @DataSensitivity(PROTECTED)
   @OneToMany(
@@ -90,6 +97,18 @@ public class Child extends Procedure<Child, ChildTask, Person, Facility> {
 
   public void setGroupName(String groupName) {
     this.groupName = groupName;
+  }
+
+  public List<ProcedureLabel> getProcedureLabels() {
+    return procedureLabels;
+  }
+
+  public void setProcedureLabels(List<ProcedureLabel> labels) {
+    this.procedureLabels = labels;
+  }
+
+  public void addProcedureLabel(ProcedureLabel label) {
+    this.procedureLabels.add(label);
   }
 
   public List<Examination> getExaminations() {

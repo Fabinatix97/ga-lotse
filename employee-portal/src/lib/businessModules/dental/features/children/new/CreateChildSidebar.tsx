@@ -7,6 +7,8 @@
 
 import { ApiAddContact200Response } from "@eshg/base-api";
 import {
+  SCHOOL_OR_DAYCARE_CONTACT,
+  SearchGroupField,
   getChildrenByPersonQuery,
   routes,
   useCreateChild,
@@ -15,7 +17,9 @@ import {
 import { ApiChild, ApiCreateChildRequest } from "@eshg/dental-api";
 import {
   DefaultPersonFormValues,
+  SelectContactField,
   SidebarWithFormRefProps,
+  formatInstitutionNameWithCategoryShort,
   mapToPersonAddRequest,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
@@ -26,11 +30,8 @@ import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 import { useRouter } from "next/navigation";
 
-import { SCHOOL_OR_DAYCARE } from "@/lib/baseModule/api/queries/contacts";
 import { ChildProcedureCard } from "@/lib/businessModules/dental/features/children/new/ChildProcedureCard";
-import { SearchGroupField } from "@/lib/businessModules/dental/features/prophylaxisSessions/SearchGroupField";
 import { BUTTON_SIZE } from "@/lib/businessModules/schoolEntry/features/procedures/new/constants";
-import { SelectContactField } from "@/lib/shared/components/formFields/SelectContactField";
 import { SchoolYearField } from "@/lib/shared/components/formFields/schoolYear";
 import {
   PersonSidebar,
@@ -45,7 +46,6 @@ import {
   SearchPersonFormProps,
   SearchPersonFormValues,
 } from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
-import { getInstitutionOptionLabel } from "@/lib/shared/helpers/selectOptionMapper";
 
 interface DentalSearchForm extends SearchPersonFormValues {
   schoolYear: OptionalFieldValue<number>;
@@ -77,10 +77,10 @@ function DentalSearchFormComponent(
       <SelectContactField
         name="institution"
         label="Einrichtung"
-        categories={SCHOOL_OR_DAYCARE}
+        categories={SCHOOL_OR_DAYCARE_CONTACT}
         required="Bitte eine Schule/Kita angeben."
         placeholder="Schule/Kita suchen"
-        getOptionLabel={getInstitutionOptionLabel}
+        getOptionLabel={formatInstitutionNameWithCategoryShort}
       />
       <SearchGroupField
         name="groupName"

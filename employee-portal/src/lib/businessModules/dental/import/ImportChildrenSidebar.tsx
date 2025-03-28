@@ -4,9 +4,11 @@
  */
 
 import { ApiAddContact200Response } from "@eshg/base-api";
-import { useImportChildren } from "@eshg/dental";
+import { SCHOOL_OR_DAYCARE_CONTACT, useImportChildren } from "@eshg/dental";
 import {
+  SelectContactField,
   SidebarWithFormRefProps,
+  formatInstitutionNameWithCategoryShort,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
@@ -16,12 +18,9 @@ import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Stack } from "@mui/joy";
 import { Formik } from "formik";
 
-import { SCHOOL_OR_DAYCARE } from "@/lib/baseModule/api/queries/contacts";
-import { SelectContactField } from "@/lib/shared/components/formFields/SelectContactField";
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
 import { SchoolYearField } from "@/lib/shared/components/formFields/schoolYear";
 import { ImportDataForm } from "@/lib/shared/components/import/ImportDataForm";
-import { getInstitutionOptionLabel } from "@/lib/shared/helpers/selectOptionMapper";
 
 export function useImportChildrenSidebar() {
   return useSidebarWithFormRef({
@@ -77,10 +76,10 @@ function ImportChildrenSidebar(props: SidebarWithFormRefProps) {
             <SelectContactField
               name="institution"
               label="Einrichtung"
-              categories={SCHOOL_OR_DAYCARE}
+              categories={SCHOOL_OR_DAYCARE_CONTACT}
               placeholder="Schule/Kita suchen"
               required="Bitte eine Schule/Kita angeben."
-              getOptionLabel={getInstitutionOptionLabel}
+              getOptionLabel={formatInstitutionNameWithCategoryShort}
             />
             <SchoolYearField
               name="schoolYear"

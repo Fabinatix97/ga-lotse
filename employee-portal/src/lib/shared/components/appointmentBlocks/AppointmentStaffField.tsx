@@ -7,9 +7,10 @@ import {
   BaseField,
   useBaseField,
 } from "@eshg/lib-portal/components/formFields/BaseField";
+import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
 import { FieldProps } from "@eshg/lib-portal/types/form";
 import Close from "@mui/icons-material/Close";
-import { Autocomplete, Chip, ChipProps, Tooltip } from "@mui/joy";
+import { Chip, ChipProps, Tooltip } from "@mui/joy";
 
 import { fullName } from "@/lib/shared/components/users/userFormatter";
 
@@ -21,6 +22,7 @@ export interface StaffUser {
 
 interface AppointmentStaffFieldProps extends FieldProps<string[]> {
   options: StaffUser[];
+  required?: string;
   placeholder?: string;
   blockedStaff: string[];
   freeStaff: string[];
@@ -64,9 +66,8 @@ export function AppointmentStaffField(
       required={field.required}
       error={field.error}
     >
-      <Autocomplete
+      <CustomAutocomplete
         multiple
-        aria-description="Mehrfachauswahl möglich"
         autoHighlight
         clearOnBlur
         selectOnFocus

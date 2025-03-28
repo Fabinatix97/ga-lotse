@@ -4,13 +4,12 @@
  */
 
 import { ApiContactCategory } from "@eshg/base-api";
+import { CONTACT_CATEGORY_NAMES } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { validateLength } from "@eshg/lib-portal/helpers/validators";
 import { Divider, Grid } from "@mui/joy";
-
-import { contactCategoryNames } from "@/lib/baseModule/shared/translations";
 
 export function InstitutionFormFields() {
   return (
@@ -25,7 +24,7 @@ export function InstitutionFormFields() {
       </Grid>
       <Grid xxs={12}>
         <SelectField
-          options={buildEnumOptions<ApiContactCategory>(contactCategoryNames)}
+          options={buildEnumOptions<ApiContactCategory>(CONTACT_CATEGORY_NAMES)}
           name={"category"}
           label={"Objekttyp"}
           required={"Bitte eine Objekttyp angeben"}

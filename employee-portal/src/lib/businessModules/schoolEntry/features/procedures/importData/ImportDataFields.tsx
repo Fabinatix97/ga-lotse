@@ -4,6 +4,7 @@
  */
 
 import { ApiContactCategory, ApiResponse } from "@eshg/base-api";
+import { SearchContactField } from "@eshg/lib-employee-portal";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
@@ -22,7 +23,6 @@ import { routes as baseRoutes } from "@/lib/baseModule/shared/routes";
 import { useImportApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { ImportDataValues } from "@/lib/businessModules/schoolEntry/features/procedures/importData/ImportDataSidebar";
 import { ImportListType } from "@/lib/businessModules/schoolEntry/features/procedures/importData/importTypes";
-import { SearchContactField } from "@/lib/shared/components/formFields/SearchContactField";
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
 import { SchoolYearField } from "@/lib/shared/components/formFields/schoolYear";
 

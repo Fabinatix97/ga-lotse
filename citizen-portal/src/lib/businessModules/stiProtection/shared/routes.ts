@@ -4,6 +4,7 @@
  */
 
 import { defineRoutes } from "@eshg/lib-portal/helpers/routes";
+import { ApiConcern } from "@eshg/sti-protection-api";
 
 import { routes as baseRoutes } from "@/lib/baseModule/shared/routes";
 import { SupportedLanguage } from "@/lib/i18n/options";
@@ -29,6 +30,8 @@ export function citizenRoutes(locale: SupportedLanguage | undefined) {
         stiProtectionPath("/meine-termine"),
         (appointmentsPath) => ({
           index: accessCodeRoute(appointmentsPath("/")),
+          details: appointmentsPath("/termin-info"),
+          anamnesis: accessCodeRoute(appointmentsPath("/anamnesebogen")),
         }),
       ),
     }),
@@ -40,4 +43,14 @@ export type CitizenRoutes = ReturnType<typeof citizenRoutes>;
 export function useCitizenRoutes() {
   const locale = useGivenLang();
   return citizenRoutes(locale);
+}
+
+export function useConcernedCitizenRoutes(concern?: ApiConcern) {
+  const routes = useCitizenRoutes();
+  const concernPath =
+    concern === ApiConcern.SexWork ? "sexWork" : "stiConsultation";
+  return {
+    concernPath: routes[concernPath],
+    appointments: routes.appointments,
+  };
 }

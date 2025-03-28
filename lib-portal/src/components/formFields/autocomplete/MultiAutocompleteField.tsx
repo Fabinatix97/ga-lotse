@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Autocomplete } from "@mui/joy";
+import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
 import { SyntheticEvent } from "react";
 
 import { BaseField } from "../BaseField";
@@ -36,10 +36,9 @@ export function MultiAutocompleteField(props: MultiAutocompleteFieldProps) {
 
   return (
     <BaseField {...fieldProps}>
-      <Autocomplete
+      <CustomAutocomplete
         {...autocompleteProps}
         multiple={true}
-        aria-description="Mehrfachauswahl möglich"
         freeSolo={false}
         value={field.input.value}
         onChange={(_, newValue) => {

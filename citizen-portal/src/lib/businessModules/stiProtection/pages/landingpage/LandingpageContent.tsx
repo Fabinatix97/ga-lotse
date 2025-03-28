@@ -8,12 +8,13 @@
 import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 import { ApiConcern } from "@eshg/sti-protection-api";
 import { CallOutlined, MailOutlineOutlined } from "@mui/icons-material";
-import { Box, Typography } from "@mui/joy";
+import { Typography } from "@mui/joy";
 
 import {
   useDepartmentInfo,
   useOpeningHours,
 } from "@/lib/businessModules/stiProtection/api/queries/publicCitizenApi";
+import { TranslatedList } from "@/lib/businessModules/stiProtection/components/shared/TranslatedList";
 import { useTranslation } from "@/lib/i18n/client";
 import { AddressSection } from "@/lib/shared/components/AddressSection";
 import { OpeningHoursSection } from "@/lib/shared/components/OpeningHoursSection";
@@ -49,6 +50,7 @@ export function LandingpageContent({ concern }: LandingpageContentProps) {
           baseKey="information"
           headingKey="applies_to_heading"
           listKey="applies_to_list"
+          localePath="stiProtection/overview"
           length={3}
         />
 
@@ -56,6 +58,7 @@ export function LandingpageContent({ concern }: LandingpageContentProps) {
           baseKey="information"
           headingKey="tests_available_heading"
           listKey="tests_available_list"
+          localePath="stiProtection/overview"
           length={3}
         />
 
@@ -63,6 +66,7 @@ export function LandingpageContent({ concern }: LandingpageContentProps) {
           baseKey="information"
           headingKey="exceptions_heading"
           listKey="exceptions_list"
+          localePath="stiProtection/overview"
           length={2}
         />
       </ContentSheet>
@@ -107,38 +111,5 @@ function EmailSection({ department }: DepartmentInfoProps) {
       <InfoSectionTitle>{t("contact.email_section.title")}</InfoSectionTitle>
       <ExternalLink href={`mailto:${email}`}>{email}</ExternalLink>
     </InfoSection>
-  );
-}
-
-interface TranslatedListProps {
-  baseKey: string;
-  headingKey: string;
-  listKey: string;
-  length: number;
-}
-function TranslatedList({
-  baseKey,
-  headingKey,
-  listKey,
-  length,
-}: TranslatedListProps) {
-  const { t } = useTranslation("stiProtection/overview");
-  return (
-    <div>
-      <Typography level="title-md">{t(`${baseKey}.${headingKey}`)}</Typography>
-      <Box component="ul" sx={{ margin: 1, paddingLeft: 2 }}>
-        {Array(length)
-          .fill(0)
-          .map((_, index) => (
-            <Typography
-              key={index}
-              component="li"
-              sx={{ display: "list-item" }}
-            >
-              {t(`${baseKey}.${listKey}.${index}`)}
-            </Typography>
-          ))}
-      </Box>
-    </div>
   );
 }

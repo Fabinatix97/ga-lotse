@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  CONTACT_CATEGORY_NAMES,
+  Contact,
+  isInstitutionContact,
+} from "@eshg/lib-employee-portal";
 import EditIcon from "@mui/icons-material/EditOutlined";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import PersonIcon from "@mui/icons-material/PersonOutlineOutlined";
@@ -16,10 +21,7 @@ import {
   getContactAddressLine,
 } from "@/lib/baseModule/components/contacts/helpers";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { contactCategoryNames } from "@/lib/baseModule/shared/translations";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
-
-import { Contact, isInstitutionContact } from "./types";
 
 const columnHelper = createColumnHelper<Contact>();
 
@@ -59,7 +61,7 @@ export function contactTableColumns({
       cell: (props) =>
         isInstitutionContact(props.row.original) &&
         isDefined(props.row.original.category)
-          ? contactCategoryNames[props.row.original.category]
+          ? CONTACT_CATEGORY_NAMES[props.row.original.category]
           : undefined,
       meta: {
         width: 250,

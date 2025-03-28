@@ -9,7 +9,7 @@ import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/Inter
 import { ApiConcern } from "@eshg/sti-protection-api";
 import { Stack, Typography } from "@mui/joy";
 
-import { useCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
+import { useConcernedCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 import {
   ContentSheet,
@@ -20,20 +20,14 @@ import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 export function LandingpageSidePanel({ concern }: { concern: ApiConcern }) {
   const { t } = useTranslation(["stiProtection/overview"]);
   const accessCode = useAccessCodeParam();
-  const citizenRoutes = useCitizenRoutes();
+  const citizenRoutes = useConcernedCitizenRoutes(concern);
 
   return (
     <ContentSheet>
       <ContentSheetTitle>{t("personal_area.title")}</ContentSheetTitle>
       <Typography>{t("personal_area.information")}</Typography>
       <Stack gap={2}>
-        <InternalLinkButton
-          href={
-            citizenRoutes[
-              concern === ApiConcern.SexWork ? "sexWork" : "stiConsultation"
-            ].bookAppointment
-          }
-        >
+        <InternalLinkButton href={citizenRoutes.concernPath.bookAppointment}>
           {t("personal_area.create_appointment")}
         </InternalLinkButton>
         <InternalLinkButton

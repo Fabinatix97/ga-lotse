@@ -7,7 +7,19 @@
     "sex_work": "Sexarbeit",
     "overview_title": "Terminübersicht",
     "timeslot_taken": "Leider ist dieser Termin nicht mehr verfügbar. Bitte wählen Sie einen anderen Termin aus.",
-    "select_new_appointment": "Neuen Termin auswählen"
+    "select_new_appointment": "Neuen Termin auswählen",
+    "reset": "Zurücksetzen",
+    "month": "Monat",
+    "year": "Jahr",
+    "yes": "Ja",
+    "no": "Nein",
+    "continue_button": "Weiter",
+    "back_button": "Zurück"
+  },
+  "anamnesis": {
+    "submit": "Anamnesebogen absenden",
+    "submit_success": "Die Anamnese wurde erfolgreich gespeichert.",
+    "submit_error": "Die Anamnese konnte nicht gespeichert werden."
   },
   "cancel_booking": {
     "title": "Termin absagen?",

@@ -1,0 +1,14 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1728927179310-1">
+    <update tableName="opening_hours">
+      <column name="de" value="{Sprechzeiten nur nach Terminvereinbarung:,Mo bis Fr | 08:00 bis 12:00 Uhr,Telefonische Terminvereinbarung:,Mo bis Do | 08:00 bis 11:00 Uhr und 14:00 bis 15:00 Uhr&#10;Fr | 08:00 bis 11:00 Uhr}"/>
+      <column name="en" value="{Consultation hours only with appointment:,Mon to Fri | 08:00 to 12:00,Make an appointment by telephone:,Mon to Thu | 08:00 to 11:00 a.m. and 02:00 to 03:00 p.m.&#10;Fri | 08:00 to 11:00 a.m.}" />
+    </update>
+  </changeSet>
+</databaseChangeLog>

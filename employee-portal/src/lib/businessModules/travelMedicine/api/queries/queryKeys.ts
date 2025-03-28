@@ -5,7 +5,7 @@
 
 import { queryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
 
-const apiQueryKey = queryKeyFactory(["travelMedicine"]);
+export const apiQueryKey = queryKeyFactory(["travelMedicine"]);
 
 export const appointmentBlockApiQueryKey = queryKeyFactory(
   apiQueryKey(["appointmentBlockApi"]),

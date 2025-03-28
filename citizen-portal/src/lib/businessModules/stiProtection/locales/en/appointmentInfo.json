@@ -1,0 +1,65 @@
+{
+  "header": {
+    "upcoming_appointment_title": "Upcoming Appointment",
+    "past_appointment_title": "Past Appointment",
+    "logout": "Logout"
+  },
+  "main": {
+    "title": "Preparation for the Appointment",
+    "important_info_to_heading": "Important Information",
+    "important_info_to_list": [
+      "Participation in the appointment is not possible without your access code and PIN.",
+      "The appointment can only be changed or canceled with your access code and PIN.",
+      "Please check the status of your appointment one day before the scheduled date."
+    ],
+    "auth_document_title": "Document for Anonymous Identification",
+    "auth_document_hint": "Please download the document",
+    "auth_document_required": "Downloading the document is required.",
+    "download_button": "Download",
+    "downloaded_button": "Downloaded",
+
+    "medical_history_title": "Medical History Form",
+    "medical_history_fulfilled": "successfully submitted",
+    "medical_history_unfulfilled": "not yet submitted",
+    "medical_history_button": "Fill out now"
+  },
+  "info": {
+    "title": "Information",
+    "year_of_birth_section": {
+      "title": "Year of Birth"
+    },
+    "service_section": {
+      "title": "Type of Service",
+      "HIV_STI_CONSULTATION": "HIV-STI Consultation",
+      "SEX_WORK": "Sex Work"
+    },
+    "appointment_date_section": {
+      "title": "Appointment Date"
+    },
+    "appointment_time_section": {
+      "title": "Time",
+      "time": "{{time}} o'clock",
+      "duration": "Duration: {{duration}} minutes"
+    },
+    "location_section": {
+      "title": "Address"
+    },
+    "internet_section": {
+      "title": "Internet",
+      "health_department": "Health Department",
+      "opening_hours": "Opening and Consultation Hours"
+    },
+    "contact_section": {
+      "title": "Contact",
+      "phone_number": "Phone: {{phoneNumber}}",
+      "email": "Email: "
+    },
+    "email_section": {
+      "title": "Email Address"
+    }
+  },
+  "personal_area": {
+    "title": "Can't make the appointment?",
+    "go_to_personal_area": "Go to my appointments"
+  }
+}

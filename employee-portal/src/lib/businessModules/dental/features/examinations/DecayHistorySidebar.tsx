@@ -6,95 +6,39 @@
 "use client";
 
 import {
-  ExaminationResultWithDate,
-  ScreeningExaminationResult,
-  ToothDiagnoses,
-} from "@eshg/dental";
-import { ApiDecayStatus } from "@eshg/dental-api";
-import {
   ButtonBar,
   DrawerProps,
   SidebarActions,
   SidebarContent,
 } from "@eshg/lib-employee-portal";
 import { Button, Stack } from "@mui/joy";
-import { compareDesc } from "date-fns";
-import { isDefined } from "remeda";
 
 import {
+  DecayHistoryRow,
   DecayHistoryTable,
-  DecayTableValue,
 } from "@/lib/businessModules/dental/features/examinations/DecayHistoryTable";
 import {
   calculateDecayRisk,
   calculateDecayStatus,
 } from "@/lib/businessModules/dental/features/examinations/decayCalculations";
-import { DECAY_STATUS } from "@/lib/businessModules/dental/features/examinations/translations";
+import { Dentition } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
+
+export interface DecayHistoryItem {
+  dentition: Dentition;
+  dateOfExamination: Date;
+}
 
 interface DecayHistorySidebarProps extends DrawerProps {
-  dateOfExamination: Date;
+  historyItems: DecayHistoryItem[];
   dateOfBirth: Date;
-  currentDiagnoses: ToothDiagnoses;
-  previousExaminationResults: ExaminationResultWithDate[];
 }
 
 export function DecayHistorySidebar(props: DecayHistorySidebarProps) {
-  const currentExaminationResultWithDate: ScreeningExaminationResultWithDate = {
-    resultWithDate: {
-      result: {
-        toothDiagnoses: props.currentDiagnoses,
-      } as ScreeningExaminationResult,
-      dateAndTime: props.dateOfExamination,
-    },
-  };
-
-  const previousScreeningResults: ScreeningExaminationResultWithDate[] =
-    props.previousExaminationResults
-      .filter(
-        (examination) =>
-          isDefined(examination.result) &&
-          examination.result.type === "screening",
-      )
-      .filter(
-        (examination) =>
-          examination.dateAndTime.getTime() !==
-          props.dateOfExamination.getTime(),
-      )
-      .map((examination) => ({
-        resultWithDate: {
-          result: examination.result as ScreeningExaminationResult,
-          dateAndTime: examination.dateAndTime,
-        },
-      }));
-
-  const examinationResultsWithDate: ScreeningExaminationResultWithDate[] = [
-    currentExaminationResultWithDate,
-    ...previousScreeningResults,
-  ].sort((a, b) =>
-    compareDesc(a.resultWithDate.dateAndTime, b.resultWithDate.dateAndTime),
+  const decayRiskRows: DecayHistoryRow[] = props.historyItems.map((result) =>
+    calculateDecayRisk(result, props.dateOfBirth),
   );
-
-  const decayRiskColumns: DecayTableValue[] = examinationResultsWithDate.map(
-    (result) => {
-      const decayRisk = calculateDecayRisk(result, props.dateOfBirth);
-      return {
-        date: result.resultWithDate.dateAndTime,
-        decayValue: decayRisk,
-        showWarning: decayRisk === "Ja",
-      };
-    },
-  );
-  const decayStatusColumns: DecayTableValue[] = examinationResultsWithDate.map(
-    (result) => {
-      const decayStatus = calculateDecayStatus(result);
-      return {
-        date: result.resultWithDate.dateAndTime,
-        decayValue: decayStatus,
-        showWarning:
-          decayStatus === DECAY_STATUS[ApiDecayStatus.TreatmentRequired],
-      };
-    },
-  );
+  const decayStatusRows: DecayHistoryRow[] =
+    props.historyItems.map(calculateDecayStatus);
 
   return (
     <>
@@ -103,12 +47,12 @@ export function DecayHistorySidebar(props: DecayHistorySidebarProps) {
           <DecayHistoryTable
             title="Kariesrisiko"
             valueColumnName="Risiko"
-            rows={decayRiskColumns}
+            rows={decayRiskRows}
           />
           <DecayHistoryTable
             title="Kariesstatus"
             valueColumnName="Status"
-            rows={decayStatusColumns}
+            rows={decayStatusRows}
           />
         </Stack>
       </SidebarContent>
@@ -128,11 +72,4 @@ export function DecayHistorySidebar(props: DecayHistorySidebarProps) {
       </SidebarActions>
     </>
   );
-}
-
-export interface ScreeningExaminationResultWithDate {
-  resultWithDate: {
-    result: ScreeningExaminationResult;
-    dateAndTime: Date;
-  };
 }

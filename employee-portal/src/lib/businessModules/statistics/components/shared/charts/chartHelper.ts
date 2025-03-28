@@ -102,11 +102,16 @@ export function isText(valueType: AttributeType) {
   return valueType === "TextAttribute";
 }
 
+function isDate(valueType: AttributeType) {
+  return valueType === "DateAttribute";
+}
+
 export function isCategorical(valueType: AttributeType) {
   return (
     isBoolean(valueType) ||
     isValueWithOptions(valueType) ||
     isText(valueType) ||
+    isDate(valueType) ||
     isInteger(valueType)
   );
 }

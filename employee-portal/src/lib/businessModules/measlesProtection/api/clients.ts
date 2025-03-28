@@ -25,7 +25,7 @@ import {
   StatusTransitionApi,
 } from "@eshg/measles-protection-api";
 
-function useConfiguration() {
+export function useConfiguration() {
   const configurationParameters = useApiConfiguration(
     "PUBLIC_MEASLES_PROTECTION_BACKEND_URL",
   );

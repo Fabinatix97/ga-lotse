@@ -9,6 +9,7 @@ import {
 } from "@eshg/base-api";
 
 import { mapFileDeletionApprovalRequestNotificationProps } from "@/lib/baseModule/components/layout/notificationsSidebar/mapToSpecificNotificationProps/mapFileDeletionApprovalRequestNotificationProps";
+import { mapProcedureNotificationProps } from "@/lib/baseModule/components/layout/notificationsSidebar/mapToSpecificNotificationProps/mapProcedureNotificationProps";
 import { mapProgressEntryDeletionApprovalRequestNotificationProps } from "@/lib/baseModule/components/layout/notificationsSidebar/mapToSpecificNotificationProps/mapProgressEntryDeletionApprovalRequestNotificationProps";
 import { mapSimpleNotificationProps } from "@/lib/baseModule/components/layout/notificationsSidebar/mapToSpecificNotificationProps/mapSimpleNotificationProps";
 import { mapTaskDueAtReminderNotificationProps } from "@/lib/baseModule/components/layout/notificationsSidebar/mapToSpecificNotificationProps/mapTaskDueAtReminderNotificationProps";
@@ -37,5 +38,7 @@ export function mapToSpecificNotificationProps(
       return mapTaskDueAtReminderNotificationProps(notification, resolvedUsers);
     case "SimpleNotification":
       return mapSimpleNotificationProps(notification);
+    case "ProcedureNotification":
+      return mapProcedureNotificationProps(notification);
   }
 }

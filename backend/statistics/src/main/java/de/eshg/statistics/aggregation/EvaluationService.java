@@ -34,6 +34,7 @@ import de.eshg.statistics.api.evaluation.AbstractUpdateEvaluationRequest;
 import de.eshg.statistics.api.evaluation.AddEvaluationWithDataSourcesRequest;
 import de.eshg.statistics.api.evaluation.AddEvaluationWithTemplateRequest;
 import de.eshg.statistics.api.evaluation.EvaluationStateDto;
+import de.eshg.statistics.api.evaluation.GetAttributesInformationResponse;
 import de.eshg.statistics.api.evaluation.GetEvaluationRequest;
 import de.eshg.statistics.api.evaluation.GetEvaluationResponse;
 import de.eshg.statistics.api.evaluation.GetEvaluationsFilterOptions;
@@ -793,5 +794,11 @@ public class EvaluationService extends AbstractAggregationResultService {
                     diagram.getDescription(),
                     FilterParameterMapper.mapToApi(diagram.getFilters())))
         .toList();
+  }
+
+  @Transactional(readOnly = true)
+  public GetAttributesInformationResponse getAttributesInformation(UUID evaluationId) {
+    Evaluation evaluation = getEvaluationInternal(evaluationId);
+    return EvaluationMapper.getAttributesInformation(evaluation);
   }
 }

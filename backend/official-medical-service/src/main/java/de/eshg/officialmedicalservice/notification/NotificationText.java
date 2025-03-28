@@ -5,6 +5,8 @@
 
 package de.eshg.officialmedicalservice.notification;
 
+import static de.eshg.base.mail.SendEmailRequest.safeHtmlFormat;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -97,6 +99,20 @@ public class NotificationText {
   @Value("${de.eshg.official-medical-service.notification.template.cancel_appointment_cp.body}")
   private Resource cancelAppointmentCpTemplate;
 
+  @Value(
+      "${de.eshg.official-medical-service.notification.template.review_document_accepted.subject}")
+  private String reviewDocumentAcceptedSubject;
+
+  @Value("${de.eshg.official-medical-service.notification.template.review_document_accepted.body}")
+  private Resource reviewDocumentAcceptedTemplate;
+
+  @Value(
+      "${de.eshg.official-medical-service.notification.template.review_document_rejected.subject}")
+  private String reviewDocumentRejectedSubject;
+
+  @Value("${de.eshg.official-medical-service.notification.template.review_document_rejected.body}")
+  private Resource reviewDocumentRejectedTemplate;
+
   public String getNewCitizenUserSubject() {
     return newCitizenUserSubject;
   }
@@ -106,16 +122,15 @@ public class NotificationText {
 
     String templateBody = readTemplateBody(newCitizenUserBodyTemplate);
 
-    return String.format(templateBody, firstName, lastName, loginUrl, loginUrl, accessCode);
+    return safeHtmlFormat(templateBody, firstName, lastName, loginUrl, loginUrl, accessCode);
   }
 
   public String getNewCitizenProcedureSubject() {
     return newCitizenProcedureSubject;
   }
 
-  public String assembleNewCitizenProcedureBody(String firstName, String lastName) {
-    String templateBody = readTemplateBody(newCitizenProcedureBodyTemplate);
-    return String.format(templateBody, firstName, lastName);
+  public String getNewCitizenProcedureBody() {
+    return readTemplateBody(newCitizenProcedureBodyTemplate);
   }
 
   public String getNewDocumentSubject() {
@@ -125,7 +140,7 @@ public class NotificationText {
   public String assembleNewDocumentBody(
       String firstName, String lastName, String documentTypeDe, String helpTextDe) {
     String templateBody = readTemplateBody(newDocumentBodyTemplate);
-    return String.format(templateBody, firstName, lastName, documentTypeDe, helpTextDe);
+    return safeHtmlFormat(templateBody, firstName, lastName, documentTypeDe, helpTextDe);
   }
 
   public String getNewAppointmentWithBookingSubject() {
@@ -139,7 +154,7 @@ public class NotificationText {
       String appointmentTime,
       String appointmentDuration) {
     String templateBody = readTemplateBody(newAppointmentWithBookingTemplate);
-    return String.format(
+    return safeHtmlFormat(
         templateBody, firstName, lastName, appointmentDate, appointmentTime, appointmentDuration);
   }
 
@@ -150,7 +165,7 @@ public class NotificationText {
   public String assembleNewAppointmentSelfBookingBody(
       String firstName, String lastName, String appointmentDuration) {
     String templateBody = readTemplateBody(newAppointmentSelfBookingTemplate);
-    return String.format(templateBody, firstName, lastName, appointmentDuration);
+    return safeHtmlFormat(templateBody, firstName, lastName, appointmentDuration);
   }
 
   public String getCancelAppointmentSubject() {
@@ -165,10 +180,10 @@ public class NotificationText {
       String reasonForRejection) {
     if (reasonForRejection == null) {
       String templateBody = readTemplateBody(cancelAppointmentTemplate);
-      return String.format(templateBody, firstName, lastName, appointmentDate, appointmentTime);
+      return safeHtmlFormat(templateBody, firstName, lastName, appointmentDate, appointmentTime);
     } else {
       String templateBody = readTemplateBody(cancelAppointmentWithReasonTemplate);
-      return String.format(
+      return safeHtmlFormat(
           templateBody,
           firstName,
           lastName,
@@ -190,7 +205,7 @@ public class NotificationText {
       String newAppointmentDate,
       String newAppointmentTime) {
     String templateBody = readTemplateBody(rebookAppointmentTemplate);
-    return String.format(
+    return safeHtmlFormat(
         templateBody,
         firstName,
         lastName,
@@ -206,7 +221,7 @@ public class NotificationText {
 
   public String assembleCloseAppointmentBody(String firstName, String lastName) {
     String templateBody = readTemplateBody(closeAppointmentTemplate);
-    return String.format(templateBody, firstName, lastName);
+    return safeHtmlFormat(templateBody, firstName, lastName);
   }
 
   public String getBookAppointmentCpSubject() {
@@ -216,7 +231,7 @@ public class NotificationText {
   public String assembleBookAppointmentCpBody(
       String firstName, String lastName, String appointmentDate, String appointmentTime) {
     String templateBody = readTemplateBody(bookAppointmentCpTemplate);
-    return String.format(templateBody, firstName, lastName, appointmentDate, appointmentTime);
+    return safeHtmlFormat(templateBody, firstName, lastName, appointmentDate, appointmentTime);
   }
 
   public String getRebookAppointmentCpSubject() {
@@ -231,7 +246,7 @@ public class NotificationText {
       String newAppointmentDate,
       String newAppointmentTime) {
     String templateBody = readTemplateBody(rebookAppointmentCpTemplate);
-    return String.format(
+    return safeHtmlFormat(
         templateBody,
         firstName,
         lastName,
@@ -248,7 +263,27 @@ public class NotificationText {
   public String assembleCancelAppointmentCpBody(
       String firstName, String lastName, String appointmentDate, String appointmentTime) {
     String templateBody = readTemplateBody(cancelAppointmentCpTemplate);
-    return String.format(templateBody, firstName, lastName, appointmentDate, appointmentTime);
+    return safeHtmlFormat(templateBody, firstName, lastName, appointmentDate, appointmentTime);
+  }
+
+  public String getReviewDocumentAcceptedSubject() {
+    return reviewDocumentAcceptedSubject;
+  }
+
+  public String assembleReviewDocumentAcceptedBody(
+      String firstName, String lastName, String documentType) {
+    String templateBody = readTemplateBody(reviewDocumentAcceptedTemplate);
+    return safeHtmlFormat(templateBody, firstName, lastName, documentType);
+  }
+
+  public String getReviewDocumentRejectedSubject() {
+    return reviewDocumentRejectedSubject;
+  }
+
+  public String assembleReviewDocumentRejectedBody(
+      String firstName, String lastName, String documentType, String reasonForRejection) {
+    String templateBody = readTemplateBody(reviewDocumentRejectedTemplate);
+    return safeHtmlFormat(templateBody, firstName, lastName, documentType, reasonForRejection);
   }
 
   private static String readTemplateBody(Resource bodyTemplateResource) {

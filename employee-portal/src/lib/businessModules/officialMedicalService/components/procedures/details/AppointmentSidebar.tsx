@@ -216,7 +216,11 @@ function EmbeddedAppointmentSidebar({
     physician?.userId,
   );
 
-  const steps = getSteps(!!appointment, setCurrentAppointmentType);
+  const hasAppointment = !!appointment;
+  const steps = useMemo(
+    () => getSteps(hasAppointment, setCurrentAppointmentType),
+    [hasAppointment],
+  );
   const lastStepIndex = steps.length - 1;
   const [stepIndex, changeToStep] = useReducer(
     (_index: number, newIndex: number) =>

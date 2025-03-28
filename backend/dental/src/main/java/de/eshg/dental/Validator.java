@@ -207,4 +207,15 @@ public class Validator {
       throw new BadRequestException("Dentition type is not allowed for non-screening sessions.");
     }
   }
+
+  public static void validateLabelsExist(List<UUID> requestLabels, List<UUID> persistedLabels) {
+    List<UUID> inexistentLabels =
+        requestLabels.stream()
+            .distinct()
+            .filter(label -> !persistedLabels.contains(label))
+            .toList();
+    if (!inexistentLabels.isEmpty()) {
+      throw new BadRequestException("Invalid procedureLabels: %s".formatted(inexistentLabels));
+    }
+  }
 }

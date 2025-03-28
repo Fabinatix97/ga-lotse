@@ -6,6 +6,7 @@
 import {
   ApiFluoridationVarnish,
   ApiProphylaxisSession,
+  ApiProphylaxisStatus,
   ApiProphylaxisType,
 } from "@eshg/dental-api";
 import { BaseEntity, mapBaseEntity } from "@eshg/lib-employee-portal";
@@ -19,6 +20,7 @@ export interface ProphylaxisSession extends BaseEntity {
   type: ApiProphylaxisType;
   isScreening: boolean;
   fluoridationVarnish?: ApiFluoridationVarnish;
+  status: ApiProphylaxisStatus;
 }
 
 export function mapProphylaxisSession(
@@ -32,5 +34,6 @@ export function mapProphylaxisSession(
     type: response.type,
     isScreening: response.isScreening,
     fluoridationVarnish: response.fluoridationVarnish,
+    status: response.status,
   };
 }

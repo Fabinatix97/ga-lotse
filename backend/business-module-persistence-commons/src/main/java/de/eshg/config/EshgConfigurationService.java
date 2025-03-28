@@ -21,7 +21,7 @@ public abstract class EshgConfigurationService<T extends BaseEntity> {
   private final Logger log = LoggerFactory.getLogger(getClass());
 
   private final EntityManager entityManager;
-  private final TransactionHelper transactionHelper;
+  protected final TransactionHelper transactionHelper;
   private final Class<T> configClass;
 
   protected EshgConfigurationService(

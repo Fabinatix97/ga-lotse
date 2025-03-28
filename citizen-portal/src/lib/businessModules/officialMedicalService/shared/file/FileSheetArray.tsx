@@ -371,7 +371,6 @@ function FileInput({
         onChange={handleInputChange}
         tabIndex={-1}
         multiple
-        aria-description="Mehrfachauswahl möglich"
       />
     </>
   );

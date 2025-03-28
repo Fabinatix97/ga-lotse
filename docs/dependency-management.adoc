@@ -39,6 +39,15 @@ If the new dependency is needed within multiple subprojects, it can be extracted
 
 See link:../backend/README.md#introducing-new-dependencies[Backend README], chapter "Introducing new dependencies".
 
+== Listing outdated dependencies
+
+To get an overview of outdated dependencies, run
+
+[,bash]
+----
+./gradlew outdatedDependencies
+----
+
 == Updating pnpm dependencies ==
 
 We use link:https://pnpm.io/catalogs[pnpm Catalogs] to define the versions of shared dependencies in a reusable way and simplify dependency updates.
@@ -48,21 +57,6 @@ To automatically update all dependencies, run
 [,bash]
 ----
 ./gradlew updateDependencies
-----
-
-Unfortunately, automatically updating dependencies from catalogs is not yet supported. For these, run
-
-[,bash]
-----
-./gradlew outdatedDependencies
-----
-
-You can now update the outdated dependencies in `pnpm-workspace.yaml`.
-Afterwards, run
-
-[,bash]
-----
-./gradlew updateLockfile
 ----
 
 == Updating Gradle dependencies

@@ -166,7 +166,6 @@ export function OpenDataFilters({ isMobile }: OpenDataFilterProps) {
             </Typography>
             <Select
               multiple
-              aria-description="Mehrfachauswahl möglich"
               aria-label={t("filterSection.selectTopic")}
               placeholder={t("filterSection.selectTopic")}
               startDecorator={<TopicOutlined />}

@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { RELATED_TEETH, ToothDiagnoses, ToothDiagnosis } from "@eshg/dental";
-import { ApiMainResult, ApiSecondaryResult, ApiTooth } from "@eshg/dental-api";
+import { RELATED_TEETH, ToothDiagnosis } from "@eshg/dental";
+import { ApiTooth } from "@eshg/dental-api";
 
 import { DentalExaminationState } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/dentalExaminationStore";
 import {
@@ -15,17 +15,12 @@ import {
   AddableTooth,
   Dentition,
   ToothContext,
-  ToothResult,
   ToothWithDiagnosis,
   isAddableTooth,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
 
 import { calculateDmftValuesByDentitionType } from "./dmftValues";
-import {
-  hasAnyResult,
-  isValidMainResult,
-  isValidSecondaryResult,
-} from "./result";
+import { hasAnyResult } from "./result";
 
 type AddToothState = Pick<
   DentalExaminationState,
@@ -165,58 +160,4 @@ export function toggleToothType(
     dmftValues: calculateDmftValuesByDentitionType(newDentition),
     dirty: true,
   };
-}
-
-export function getToothDiagnoses(dentition: Dentition): ToothDiagnoses {
-  const toothDiagnoses: ToothDiagnoses = {};
-
-  Object.values(dentition)
-    .flatMap((quadrant) => quadrant.teeth)
-    .forEach((tooth) => {
-      if (tooth.type !== "ToothWithDiagnosis") {
-        return;
-      }
-
-      const { toothNumber, mainResult, secondaryResult1, secondaryResult2 } =
-        tooth;
-
-      toothDiagnoses[toothNumber] = {
-        tooth: toothNumber,
-        mainResult: resolveMainResult(mainResult),
-        secondaryResult1: resolveSecondaryResult(secondaryResult1),
-        secondaryResult2: resolveSecondaryResult(secondaryResult2),
-      };
-    });
-
-  return toothDiagnoses;
-}
-
-function resolveSecondaryResult(
-  toothResult: ToothResult,
-): ApiSecondaryResult | undefined {
-  assertIsValid(toothResult);
-
-  if (!isValidSecondaryResult(toothResult.value)) {
-    return undefined;
-  }
-
-  return toothResult.value;
-}
-
-function resolveMainResult(
-  toothResult: ToothResult,
-): ApiMainResult | undefined {
-  assertIsValid(toothResult);
-
-  if (!isValidMainResult(toothResult.value)) {
-    return undefined;
-  }
-
-  return toothResult.value;
-}
-
-function assertIsValid(toothResult: ToothResult): void {
-  if (toothResult.isInvalid) {
-    throw new Error("Invalid tooth result");
-  }
 }

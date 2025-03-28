@@ -31,7 +31,7 @@ export interface FileCardActionProps {
   onClick: string | (() => Promise<void> | void);
   name: string;
   indicator: ReactNode;
-  color: ColorPaletteProp;
+  color?: ColorPaletteProp;
   disabled?: boolean;
 }
 
@@ -49,6 +49,7 @@ export interface FileCardProps {
   size: number;
   actions: FileCardActionProps[];
   sx?: SxProps;
+  actionMenuButtonColor?: ColorPaletteProp;
 }
 
 const iconByType = {
@@ -89,16 +90,26 @@ export function FileCard(props: FileCardProps) {
               {formatFileSize(props.size)}
             </Typography>
           </Stack>
-          <FileCardButton actions={props.actions} />
+          <FileCardButton
+            color={props.actionMenuButtonColor}
+            actions={props.actions}
+          />
         </Stack>
       </CardContent>
     </Card>
   );
 }
 
-function FileCardButton({ actions }: { actions: FileCardActionProps[] }) {
+function FileCardButton({
+  actions,
+  color,
+}: {
+  actions: FileCardActionProps[];
+  color?: ColorPaletteProp;
+}) {
   if (actions.length == 0) return <></>;
-  if (actions.length > 1) return <FileCardMenuButton actions={actions} />;
+  if (actions.length > 1)
+    return <FileCardMenuButton color={color} actions={actions} />;
   const onlyAction = actions[0];
   return isDefined(onlyAction) ? (
     <FileCardActionButton {...onlyAction} />
@@ -126,7 +137,13 @@ function FileCardActionButton(props: FileCardActionProps) {
   );
 }
 
-function FileCardMenuButton({ actions }: { actions: FileCardActionProps[] }) {
+function FileCardMenuButton({
+  actions,
+  color,
+}: {
+  actions: FileCardActionProps[];
+  color?: ColorPaletteProp;
+}) {
   return (
     <ActionsMenu
       actionItems={actions.map((action) => ({
@@ -136,7 +153,7 @@ function FileCardMenuButton({ actions }: { actions: FileCardActionProps[] }) {
         color: action.color,
         disabled: action.disabled,
       }))}
-      color="neutral"
+      color={color ?? "neutral"}
       sx={{ "--IconButton-size": "1.5rem" }}
     />
   );

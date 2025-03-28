@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Autocomplete } from "@mui/joy";
+import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
 import { ReactNode, SyntheticEvent } from "react";
 import { identity } from "remeda";
 
@@ -45,7 +45,7 @@ export function SingleAutocompleteField(props: SingleAutocompleteFieldProps) {
 
   return (
     <BaseField {...fieldProps}>
-      <Autocomplete
+      <CustomAutocomplete
         {...autocompleteProps}
         multiple={false}
         freeSolo={true}

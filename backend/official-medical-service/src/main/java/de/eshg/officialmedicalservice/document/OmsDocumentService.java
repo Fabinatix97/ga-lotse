@@ -23,6 +23,7 @@ import de.eshg.officialmedicalservice.document.persistence.entity.DocumentUpload
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocument;
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocumentRepository;
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocumentStatus;
+import de.eshg.officialmedicalservice.document.persistence.entity.ProcedureNotification;
 import de.eshg.officialmedicalservice.file.persistence.entity.OmsFile;
 import de.eshg.officialmedicalservice.file.persistence.entity.OmsFileRepository;
 import de.eshg.officialmedicalservice.notification.NotificationService;
@@ -56,9 +57,10 @@ public class OmsDocumentService {
   private final ProgressEntryService progressEntryService;
   private final Clock clock;
   private final NotificationService notificationService;
+  private final ProcedureNotificationService procedureNotificationService;
+  private final PersonClient personClient;
 
   private static final Logger logger = LoggerFactory.getLogger(OmsDocumentService.class);
-  private final PersonClient personClient;
 
   public OmsDocumentService(
       OmsProcedureRepository omsProcedureRepository,
@@ -67,6 +69,7 @@ public class OmsDocumentService {
       ProgressEntryService progressEntryService,
       Clock clock,
       NotificationService notificationService,
+      ProcedureNotificationService procedureNotificationService,
       PersonClient personClient) {
     this.omsProcedureRepository = omsProcedureRepository;
     this.omsDocumentRepository = omsDocumentRepository;
@@ -74,6 +77,7 @@ public class OmsDocumentService {
     this.progressEntryService = progressEntryService;
     this.clock = clock;
     this.notificationService = notificationService;
+    this.procedureNotificationService = procedureNotificationService;
     this.personClient = personClient;
   }
 
@@ -255,6 +259,16 @@ public class OmsDocumentService {
     omsDocument.setDocumentStatus(OmsDocumentStatus.SUBMITTED);
     omsDocument.setLastDocumentUpload(Instant.now(clock));
     omsDocument.setUploadedBy(DocumentUploadedBy.EXTERN);
+
+    UUID physicianId = omsDocument.getOmsProcedure().getPhysicianId();
+    if (physicianId != null) {
+      procedureNotificationService.addNotification(
+          new ProcedureNotification(
+              physicianId,
+              "Neues Dokument",
+              "Ein Dokument liegt zur Prüfung vor.",
+              omsDocument.getOmsProcedure().getExternalId()));
+    }
   }
 
   @Transactional
@@ -288,8 +302,9 @@ public class OmsDocumentService {
   @Transactional
   public void reviewDocumentEmployee(UUID documentId, PatchDocumentReviewRequest request) {
     OmsDocument document = loadOmsDocument(documentId);
+    OmsProcedure procedure = document.getOmsProcedure();
 
-    if (document.getOmsProcedure().isFinalized()) {
+    if (procedure.isFinalized()) {
       throw new BadRequestException("Document cannot be reviewed when the procedure is finalized.");
     }
     if (document.getDocumentStatus() != OmsDocumentStatus.SUBMITTED) {
@@ -305,6 +320,9 @@ public class OmsDocumentService {
         }
         document.setReasonForRejection(null);
         document.setDocumentStatus(OmsDocumentStatus.ACCEPTED);
+        if (document.isUploadInCitizenPortal() && procedure.isSendEmailNotifications()) {
+          sendReviewDocumentEmail(document);
+        }
         break;
       case REJECTED:
         if (isBlank(request.reasonForRejection())) {
@@ -314,6 +332,9 @@ public class OmsDocumentService {
         document.setUploadedBy(null);
         document.setReasonForRejection(request.reasonForRejection());
         document.setDocumentStatus(OmsDocumentStatus.REJECTED);
+        if (document.isUploadInCitizenPortal() && procedure.isSendEmailNotifications()) {
+          sendReviewDocumentEmail(document);
+        }
     }
   }
 
@@ -392,5 +413,22 @@ public class OmsDocumentService {
     OmsProcedure omsProcedure = omsDocument.getOmsProcedure();
     omsDocument.setOmsProcedure(null);
     omsProcedure.getDocuments().remove(omsDocument);
+  }
+
+  private void sendReviewDocumentEmail(OmsDocument document) {
+    Person person = document.getOmsProcedure().findAffectedPerson();
+    AffectedPersonDto affectedPersonDto =
+        PersonMapper.mapToAffectedPersonDto(
+            personClient.getPersonFileState(person.getCentralFileStateId()), person.getVersion());
+    String documentType = document.getDocumentTypeDe();
+    if (document.getHelpTextDe() != null && !document.getHelpTextDe().isBlank()) {
+      documentType += " - " + document.getHelpTextDe();
+    }
+    if (document.getDocumentStatus() == OmsDocumentStatus.ACCEPTED) {
+      notificationService.notifyReviewDocumentAccepted(affectedPersonDto, documentType);
+    } else if (document.getDocumentStatus() == OmsDocumentStatus.REJECTED) {
+      notificationService.notifyReviewDocumentRejected(
+          affectedPersonDto, documentType, document.getReasonForRejection());
+    }
   }
 }

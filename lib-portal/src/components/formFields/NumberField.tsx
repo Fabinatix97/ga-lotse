@@ -20,10 +20,12 @@ export interface NumberFieldProps
     StyledInputProps {
   input?: (props: InputProps) => ReactNode;
   sx?: SxProps;
+  fieldSx?: SxProps;
   onChange?: (newValue: OptionalFieldValue<number>) => void;
   min?: number;
   max?: number;
   endDecorator?: ReactNode;
+  readOnly?: boolean;
 }
 
 export function NumberField(props: NumberFieldProps) {
@@ -49,6 +51,7 @@ export function NumberField(props: NumberFieldProps) {
       required={field.required}
       fieldDecorator={props.fieldDecorator}
       error={field.error}
+      sx={props.fieldSx}
     >
       <InputComponent
         type="number"
@@ -63,8 +66,8 @@ export function NumberField(props: NumberFieldProps) {
           },
         }}
         color={props.primary ? "primary" : undefined}
-        sx={props.sx}
         disabled={disabled}
+        readOnly={props.readOnly}
         endDecorator={props.endDecorator}
       />
     </FieldComponent>

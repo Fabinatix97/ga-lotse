@@ -172,7 +172,7 @@ function BooleanWithDateFields(props: {
   const fieldName = props.nameBoolean.split(".")[1];
 
   return (
-    <Stack direction="row" gap={2} flexWrap="wrap" data-testId={fieldName}>
+    <Stack direction="row" gap={2} flexWrap="wrap" data-testid={fieldName}>
       <SoftRequiredBooleanSelectField
         name={props.nameBoolean}
         label={props.labelBoolean}

@@ -11,9 +11,10 @@
     "start": "{{ time }}",
     "duration": "Duration: {{ appointmentDuration }} minutes",
     "appointment_type": {
+      "consultation": "Consultation",
       "hiv_sti": "HIV-STI",
-      "sex_work": "Sex work",
-      "consultation": "Consultation"
+      "results_review": "Results review",
+      "sex_work": "Sex work"
     }
   },
   "appointment_status": {

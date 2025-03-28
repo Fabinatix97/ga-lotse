@@ -3,7 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { AnnualInstitutionsTable, ChildDetails, routes } from "@eshg/dental";
+import {
+  AnnualInstitutionsTable,
+  ChildDetails,
+  routes,
+  useUpdateAnnualChildSidebar,
+} from "@eshg/dental";
 import {
   CentralFilePersonDetails,
   ContentPanel,
@@ -18,7 +23,6 @@ import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledForm
 import { Divider, Grid, Stack } from "@mui/joy";
 
 import { useUpdateAnnualChildPersonSidebar } from "@/lib/businessModules/dental/features/children/details/UpdateAnnualChildPersonSidebar";
-import { useUpdateAnnualChildSidebar } from "@/lib/businessModules/dental/features/children/details/UpdateAnnualChildSidebar";
 import { FluoridationConsentInformationSection } from "@/lib/businessModules/dental/shared/FluoridationConsentInformationSection";
 
 const SPACING = { xxs: 2, sm: 3, md: 4, xxl: 5 };

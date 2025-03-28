@@ -16,12 +16,20 @@ import {
 } from "react";
 
 import { MutationBundle } from "../../types/query";
+import { ConfirmationDialogOptions } from "../confirmationDialog/ConfirmationDialogProvider";
+
+export interface OnBeforeNavigateProps {
+  onSaveMutation?: MutationBundle;
+  confirmationDialogProps?: Omit<ConfirmationDialogOptions, "onConfirm"> & {
+    onConfirm?: (onNavigate: () => void) => void;
+  };
+}
 
 interface NavigationContextValue {
   tryNavigate: (href: string) => void;
   setCanNavigate: (canNavigate: SetStateAction<boolean>) => void;
-  setOnSaveMutation: (
-    onSaveMutation?: SetStateAction<MutationBundle | undefined>,
+  setOnBeforeNavigateProps: (
+    onBeforeNavigateProps?: SetStateAction<OnBeforeNavigateProps | undefined>,
   ) => void;
 }
 
@@ -36,9 +44,9 @@ const NavigationContext = createContext<NavigationContextValue>({
       "Trying to use NavigationContext#setCanNavigate without using NavigationContextProvider",
     );
   },
-  setOnSaveMutation: () => {
+  setOnBeforeNavigateProps: () => {
     throw new Error(
-      "Trying to use NavigationContext#setOnSaveMutation without using NavigationContextProvider",
+      "Trying to use NavigationContext#setOnBeforeNavigationProps without using NavigationContextProvider",
     );
   },
 });
@@ -49,18 +57,18 @@ export function NavigationContextProvider({
 }: PropsWithChildren<{
   onBeforeNavigate: (
     onNavigate: () => Promise<void> | void,
-    onSaveMutation?: MutationBundle,
+    onBeforeNavigateProps?: OnBeforeNavigateProps,
   ) => void;
 }>) {
   const [canNavigate, setCanNavigate] = useState(true);
-  const [onSaveMutation, setOnSaveMutation] = useState<
-    MutationBundle | undefined
+  const [onBeforeNavigateProps, setOnBeforeNavigateProps] = useState<
+    OnBeforeNavigateProps | undefined
   >(undefined);
   const router = useRouter();
 
   const contextValue: NavigationContextValue = useMemo(
     () => ({
-      setOnSaveMutation,
+      setOnBeforeNavigateProps,
       setCanNavigate,
       tryNavigate(href: string) {
         if (canNavigate) {
@@ -69,7 +77,7 @@ export function NavigationContextProvider({
           onBeforeNavigate(() => {
             setCanNavigate(true);
             router.push(href);
-          }, onSaveMutation);
+          }, onBeforeNavigateProps);
         }
       },
     }),
@@ -78,8 +86,8 @@ export function NavigationContextProvider({
       setCanNavigate,
       router,
       onBeforeNavigate,
-      onSaveMutation,
-      setOnSaveMutation,
+      onBeforeNavigateProps,
+      setOnBeforeNavigateProps,
     ],
   );
 

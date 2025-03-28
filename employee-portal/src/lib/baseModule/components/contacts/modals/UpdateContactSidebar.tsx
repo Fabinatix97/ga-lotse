@@ -5,8 +5,10 @@
 
 import { ApiInstitutionContact, ApiPersonContact } from "@eshg/base-api";
 import {
+  Contact,
   SidebarWithFormRefProps,
   createEmptyAddress,
+  isPersonContact,
   mapApiAddressToForm,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
@@ -15,10 +17,8 @@ import { isDefined } from "remeda";
 import { contactDiscriminatorToEnum } from "@/lib/baseModule/components/contacts/constants";
 import { ContactEntityForm } from "@/lib/baseModule/components/contacts/forms/ContactEntityForm";
 import {
-  Contact,
   InstitutionContactFormValues,
   PersonContactFormValues,
-  isPersonContact,
 } from "@/lib/baseModule/components/contacts/types";
 
 interface UpdateContactSidebarProps extends SidebarWithFormRefProps {

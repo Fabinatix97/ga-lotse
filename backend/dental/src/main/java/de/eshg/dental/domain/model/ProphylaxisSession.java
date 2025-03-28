@@ -93,6 +93,11 @@ public class ProphylaxisSession extends BaseEntityWithExternalId {
   @DataSensitivity(SensitivityLevel.PROTECTED)
   private List<UUID> zfaIds = new ArrayList<>();
 
+  @DataSensitivity(SensitivityLevel.PROTECTED)
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  @Column(nullable = false)
+  private ProphylaxisStatus status;
+
   public Instant getDateAndTime() {
     return dateAndTime;
   }
@@ -193,5 +198,13 @@ public class ProphylaxisSession extends BaseEntityWithExternalId {
 
   public void setZfaIds(List<UUID> zfas) {
     this.zfaIds = zfas;
+  }
+
+  public ProphylaxisStatus getProphylaxisStatus() {
+    return status;
+  }
+
+  public void setProphylaxisStatus(ProphylaxisStatus prophylaxisStatus) {
+    this.status = prophylaxisStatus;
   }
 }

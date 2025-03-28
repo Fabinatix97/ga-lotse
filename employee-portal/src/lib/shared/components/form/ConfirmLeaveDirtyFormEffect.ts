@@ -3,15 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { MutationBundle } from "@eshg/lib-portal/types/query";
+import { OnBeforeNavigateProps } from "@eshg/lib-portal/components/navigation/NavigationContext";
 import { useFormikContext } from "formik";
 
 import { useConfirmNavigationEffect } from "@/lib/shared/hooks/useConfirmNavigationEffect";
 import { useConfirmUnloadEffect } from "@/lib/shared/hooks/useConfirmUnloadEffect";
 
-interface ConfirmLeaveDirtyFormEffectProps {
-  onSaveMutation?: MutationBundle;
-}
+type ConfirmLeaveDirtyFormEffectProps = OnBeforeNavigateProps;
 
 /**
  * Place this inside a Formik form to have it warn the user of unsaved data
@@ -31,6 +29,6 @@ export function ConfirmLeaveDirtyFormEffect(
 ) {
   const formik = useFormikContext();
   useConfirmUnloadEffect(formik.dirty);
-  useConfirmNavigationEffect(formik.dirty, props.onSaveMutation);
+  useConfirmNavigationEffect(formik.dirty, props);
   return null;
 }

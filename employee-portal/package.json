@@ -47,7 +47,7 @@
     "echarts": "5.6.0",
     "echarts-for-react": "3.0.2",
     "formik": "catalog:common",
-    "hpke-js": "1.6.1",
+    "hpke-js": "1.6.2",
     "iso8601-duration": "2.1.2",
     "matrix-js-sdk": "36.2.0",
     "next": "catalog:next",

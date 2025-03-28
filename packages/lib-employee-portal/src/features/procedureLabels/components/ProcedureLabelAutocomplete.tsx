@@ -4,7 +4,8 @@
  */
 
 import { QueryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
-import { Autocomplete, AutocompleteOption } from "@mui/joy";
+import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
+import { AutocompleteOption } from "@mui/joy";
 
 import { ChipWithTooltip } from "@/components/chip/ChipWithTooltip";
 import { ProcedureLabel } from "@/features/procedureLabels/api/models/ProcedureLabel";
@@ -28,10 +29,9 @@ export function ProcedureLabelAutocomplete(
   );
 
   return (
-    <Autocomplete
+    <CustomAutocomplete
       name={props.name}
       multiple
-      aria-description="Mehrfachauswahl möglich"
       placeholder="Kennung"
       options={labelsQuery.data}
       getOptionLabel={(option) => option.name}

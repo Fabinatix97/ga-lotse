@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Contact } from "@eshg/lib-employee-portal";
+
 import { HistoryChange } from "@/lib/baseModule/components/contacts/history/HistoryChange";
 import { HistoryDetailsSheet } from "@/lib/baseModule/components/contacts/history/HistoryDetailsSheet";
-import { Contact } from "@/lib/baseModule/components/contacts/types";
 
 export function ContactChangeDetails({ contact }: { contact: Contact }) {
   return (

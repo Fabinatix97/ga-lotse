@@ -7,6 +7,7 @@ package de.eshg.statistics.diagramcreation;
 
 import de.eshg.statistics.aggregation.AnalysisService;
 import de.eshg.statistics.aggregation.TableRowSpecifications;
+import de.eshg.statistics.anonymization.IntegerIntervalUtil;
 import de.eshg.statistics.api.filter.TableColumnFilterParameter;
 import de.eshg.statistics.config.StatisticsConfig;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
@@ -64,19 +65,23 @@ public abstract class AbstractChartDiagramCreationService<D> {
     if (tableColumn == null) {
       return new HashMap<>();
     } else if (tableColumn.getValueType().equals(TableColumnValueType.BOOLEAN)
+        || tableColumn.getValueType().equals(TableColumnValueType.INTEGER_INTERVAL)
         || tableColumn.getValueType().equals(TableColumnValueType.VALUE_WITH_OPTIONS)) {
       LinkedHashMap<Object, Integer> countingMap = new LinkedHashMap<>();
       initiallyFillKeyToCountingMapForStringKeys(
-          countingMap, getKeysForBooleanOrValueOptionsList(tableColumn));
+          countingMap, getKeysForBooleanIntegerIntervalOrValueOptionsList(tableColumn));
       return countingMap;
     } else {
       return new TreeMap<>();
     }
   }
 
-  protected static List<String> getKeysForBooleanOrValueOptionsList(TableColumn tableColumn) {
+  protected static List<String> getKeysForBooleanIntegerIntervalOrValueOptionsList(
+      TableColumn tableColumn) {
     if (tableColumn.getValueType().equals(TableColumnValueType.BOOLEAN)) {
       return BOOLEAN_KEYS;
+    } else if (tableColumn.getValueType().equals(TableColumnValueType.INTEGER_INTERVAL)) {
+      return IntegerIntervalUtil.getIntervalsAsStringList(tableColumn);
     } else {
       return tableColumn.getValueToMeanings().stream().map(ValueToMeaning::getValue).toList();
     }
@@ -137,7 +142,7 @@ public abstract class AbstractChartDiagramCreationService<D> {
         .map(filter -> TableRowSpecifications.createFilterSpecification(filter, aggregationResult));
   }
 
-  protected static Object getKeyForCellEntryBooleanIntegerTextDateOrValueOption(
+  protected static Object getKeyForCellEntryBooleanIntegerIntervalTextDateOrValueOption(
       CellEntry cellEntry) {
     if (cellEntry.getValue() == null) {
       return null;
@@ -145,12 +150,11 @@ public abstract class AbstractChartDiagramCreationService<D> {
     if (cellEntry.getTableColumn().getValueType().equals(TableColumnValueType.BOOLEAN)) {
       return Boolean.TRUE.equals(cellEntry.getValue()) ? "Ja" : "Nein";
     }
-    if (cellEntry.getTableColumn().getValueType().equals(TableColumnValueType.INTEGER)) {
-      return cellEntry.getValue();
-    }
-    if (cellEntry.getTableColumn().getValueType().equals(TableColumnValueType.TEXT)
+    if (cellEntry.getTableColumn().getValueType().equals(TableColumnValueType.INTEGER)
+        || cellEntry.getTableColumn().getValueType().equals(TableColumnValueType.INTEGER_INTERVAL)
+        || cellEntry.getTableColumn().getValueType().equals(TableColumnValueType.TEXT)
         || cellEntry.getTableColumn().getValueType().equals(TableColumnValueType.DATE)) {
-      return cellEntry.getValue().toString();
+      return cellEntry.getValue();
     }
     String stringValue = cellEntry.getValue().toString();
     if (cellEntry.getTableColumn().getValueType().equals(TableColumnValueType.VALUE_WITH_OPTIONS)
@@ -187,8 +191,9 @@ public abstract class AbstractChartDiagramCreationService<D> {
           Boolean.TRUE.equals(((BooleanEntry) cellEntry).getBoolValue())
               ? BigDecimal.ONE
               : BigDecimal.ZERO;
-      case TableColumnValueType.DECIMAL -> ((DecimalEntry) cellEntry).getBigDecimalValue();
-      case TableColumnValueType.INTEGER ->
+      case TableColumnValueType.DECIMAL, TableColumnValueType.DECIMAL_INTERVAL ->
+          ((DecimalEntry) cellEntry).getBigDecimalValue();
+      case TableColumnValueType.INTEGER, TableColumnValueType.INTEGER_INTERVAL ->
           new BigDecimal(((IntegerEntry) cellEntry).getIntegerValue());
       default -> throw new IllegalStateException("Unexpected value: " + valueType);
     };

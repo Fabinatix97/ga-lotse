@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Autocomplete } from "@mui/joy";
+import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
 import { useSearchParams } from "next/navigation";
 
 import { useReplaceSearchParams } from "@/lib/hooks/useReplaceSearchParams";
@@ -19,7 +19,7 @@ export function TextInputFilter(
   const replaceSearchParams = useReplaceSearchParams();
 
   return (
-    <Autocomplete
+    <CustomAutocomplete
       freeSolo
       autoSelect
       value={searchParams.get(props.searchParamName) ?? ""}

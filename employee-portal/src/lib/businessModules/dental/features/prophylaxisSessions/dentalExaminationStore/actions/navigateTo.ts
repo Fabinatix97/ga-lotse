@@ -13,7 +13,7 @@ import {
 
 import { resolveTooth } from "./utils";
 
-type NavigateToInputState = Pick<DentalExaminationState, "dentition">;
+export type NavigateToInputState = Pick<DentalExaminationState, "dentition">;
 
 type NavigateToOutputState = Pick<
   DentalExaminationState,
@@ -22,11 +22,13 @@ type NavigateToOutputState = Pick<
 
 export function navigateTo(
   toothContext: ToothContext,
+  element: ToothElement | "auto",
   state: NavigateToInputState,
 ): NavigateToOutputState {
   const tooth = resolveTooth(toothContext, state.dentition);
   const targetView = JAW_VIEW_BY_QUADRANT[toothContext.quadrantNumber];
-  const targetElement: ToothElement = initElement(targetView, tooth.type);
+  const targetElement: ToothElement =
+    element === "auto" ? initElement(targetView, tooth.type) : element;
 
   return {
     currentView: targetView,

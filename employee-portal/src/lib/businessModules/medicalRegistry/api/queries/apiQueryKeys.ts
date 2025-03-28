@@ -5,7 +5,7 @@
 
 import { queryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
 
-const apiQueryKey = queryKeyFactory(["medicalRegistry"]);
+export const apiQueryKey = queryKeyFactory(["medicalRegistry"]);
 
 export const medicalRegistryApiQueryKey = queryKeyFactory(
   apiQueryKey(["medicalRegistryApi"]),

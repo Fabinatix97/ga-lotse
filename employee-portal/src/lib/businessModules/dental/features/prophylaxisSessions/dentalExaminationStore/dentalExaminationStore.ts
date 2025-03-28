@@ -7,7 +7,6 @@ import {
   ExaminationResult,
   ExaminationResultWithDate,
   ScreeningExaminationResult,
-  ToothDiagnoses,
   ToothDiagnosis,
 } from "@eshg/dental";
 import { ApiDentitionType, ApiTooth } from "@eshg/dental-api";
@@ -23,13 +22,9 @@ import {
   setSecondaryResult1,
   setSecondaryResult2,
 } from "./actions/result";
-import {
-  addTooth,
-  getToothDiagnoses,
-  removeTooth,
-  toggleToothType,
-} from "./actions/tooth";
-import { DENTITION_FACTORIES } from "./factories";
+import { SubmitResult, submit } from "./actions/submit";
+import { addTooth, removeTooth, toggleToothType } from "./actions/tooth";
+import { createDentitionByType } from "./factories";
 import {
   DentalExaminationView,
   Dentition,
@@ -61,7 +56,7 @@ export interface DentalExaminationActions {
   setMainResult: SetToothResultAction;
   setSecondaryResult1: SetToothResultAction;
   setSecondaryResult2: SetToothResultAction;
-  getToothDiagnoses: () => ToothDiagnoses;
+  submit: () => SubmitResult;
 
   toggleDentition: (dentitionType: ApiDentitionType) => void;
 }
@@ -106,7 +101,8 @@ export function initDentalExaminationStore(
   const dentitionType =
     (isScreening ? examinationResult.dentitionType : undefined) ??
     defaultDentitionType;
-  const dentition = DENTITION_FACTORIES[dentitionType](
+  const dentition = createDentitionByType(
+    dentitionType,
     toothDiagnoses,
     previousToothDiagnoses,
   );
@@ -154,13 +150,13 @@ export function createDentalExaminationStore(
       set((state) => setSecondaryResult1(toothContext, newValue, state)),
     setSecondaryResult2: (toothContext: ToothContext, newValue: string) =>
       set((state) => setSecondaryResult2(toothContext, newValue, state)),
-    getToothDiagnoses: () => getToothDiagnoses(get().dentition),
+    submit: () => submit(get(), set),
     navigateFrom: (direction) => set((state) => navigateFrom(direction, state)),
     navigateTo: (toothContext) =>
-      set((state) => navigateTo(toothContext, state)),
+      set((state) => navigateTo(toothContext, "auto", state)),
     toggleDentition: (dentitionType) =>
       set(() => ({
-        dentition: DENTITION_FACTORIES[dentitionType]({}, {}),
+        dentition: createDentitionByType(dentitionType),
       })),
   }));
 }

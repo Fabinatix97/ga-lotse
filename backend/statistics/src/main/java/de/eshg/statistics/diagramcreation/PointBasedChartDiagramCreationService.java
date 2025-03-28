@@ -84,7 +84,7 @@ public class PointBasedChartDiagramCreationService
       return new LinkedHashMap<>();
     } else {
       return switch (secondaryTableColumn.getValueType()) {
-        case BOOLEAN, VALUE_WITH_OPTIONS -> new LinkedHashMap<>();
+        case BOOLEAN, INTEGER_INTERVAL, VALUE_WITH_OPTIONS -> new LinkedHashMap<>();
         default -> new TreeMap<>();
       };
     }
@@ -95,8 +95,9 @@ public class PointBasedChartDiagramCreationService
       return List.of(EMPTY_KEY);
     } else {
       if (secondaryTableColumn.getValueType().equals(TableColumnValueType.BOOLEAN)
+          || secondaryTableColumn.getValueType().equals(TableColumnValueType.INTEGER_INTERVAL)
           || secondaryTableColumn.getValueType().equals(TableColumnValueType.VALUE_WITH_OPTIONS)) {
-        return getKeysForBooleanOrValueOptionsList(secondaryTableColumn);
+        return getKeysForBooleanIntegerIntervalOrValueOptionsList(secondaryTableColumn);
       } else {
         return Collections.emptyList();
       }
@@ -171,7 +172,7 @@ public class PointBasedChartDiagramCreationService
     } else {
       CellEntry secondaryCellEntry = getCellEntry(tableRow, secondaryTableColumn);
       Object secondaryKey =
-          getKeyForCellEntryBooleanIntegerTextDateOrValueOption(secondaryCellEntry);
+          getKeyForCellEntryBooleanIntegerIntervalTextDateOrValueOption(secondaryCellEntry);
       if (secondaryKey != null) {
         chartDataHolder
             .computeIfAbsent(secondaryKey, key -> new ArrayList<>())

@@ -16,6 +16,7 @@ import de.eshg.dental.api.PerformingPersonDto;
 import de.eshg.dental.api.ProphylaxisSessionChildExaminationDto;
 import de.eshg.dental.api.ProphylaxisSessionDetailsDto;
 import de.eshg.dental.api.ProphylaxisSessionDto;
+import de.eshg.dental.api.ProphylaxisStatusDto;
 import de.eshg.dental.api.ProphylaxisTypeDto;
 import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedData;
 import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedInstitution;
@@ -23,6 +24,7 @@ import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.domain.model.FluoridationConsent;
 import de.eshg.dental.domain.model.FluoridationVarnish;
 import de.eshg.dental.domain.model.ProphylaxisSession;
+import de.eshg.dental.domain.model.ProphylaxisStatus;
 import de.eshg.dental.domain.model.ProphylaxisType;
 import java.util.Comparator;
 import java.util.List;
@@ -45,7 +47,16 @@ public final class ProphylaxisSessionMapper {
         session.getGroupName(),
         mapToDto(session.getType()),
         session.isScreening(),
-        mapToDto(session.getFluoridationVarnish()));
+        mapToDto(session.getFluoridationVarnish()),
+        mapToDto(session.getProphylaxisStatus()));
+  }
+
+  private static ProphylaxisStatusDto mapToDto(ProphylaxisStatus status) {
+    return switch (status) {
+      case null -> null;
+      case OPEN -> ProphylaxisStatusDto.OPEN;
+      case CLOSED -> ProphylaxisStatusDto.CLOSED;
+    };
   }
 
   public static ProphylaxisTypeDto mapToDto(ProphylaxisType type) {
@@ -89,6 +100,7 @@ public final class ProphylaxisSessionMapper {
         session.isScreening(),
         DentitionTypeMapper.mapToDto(session.getDentitionType()),
         mapToDto(session.getFluoridationVarnish()),
+        mapToDto(session.getProphylaxisStatus()),
         getParticipants(prophylaxisSession),
         mapPersons(session.getDentistIds(), userMap),
         mapPersons(session.getZfaIds(), userMap));

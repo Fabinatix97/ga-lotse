@@ -786,6 +786,112 @@
         "tags" : [ "Child" ]
       }
     },
+    "/dental-procedure-labels" : {
+      "get" : {
+        "operationId" : "getLabels",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetDentalLabelsResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "ProcedureLabel" ]
+      },
+      "post" : {
+        "operationId" : "createLabel",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateProcedureLabelRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DentalProcedureLabel"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "ProcedureLabel" ]
+      }
+    },
+    "/dental-procedure-labels/{id}" : {
+      "get" : {
+        "operationId" : "getLabel",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DentalProcedureLabel"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "ProcedureLabel" ]
+      },
+      "put" : {
+        "operationId" : "updateLabel",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateProcedureLabelRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DentalProcedureLabel"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "ProcedureLabel" ]
+      }
+    },
     "/files/{fileId}" : {
       "delete" : {
         "operationId" : "deleteFile",
@@ -3464,7 +3570,7 @@
         }
       },
       "ChildDetails" : {
-        "required" : [ "dateOfBirth", "emailAddresses", "examinations", "fileStateId", "fileStateOutdated", "firstName", "fluoridationConsents", "gender", "groupName", "id", "institutions", "lastName", "personVersion", "phoneNumbers", "salutation", "status", "version", "year" ],
+        "required" : [ "dateOfBirth", "emailAddresses", "examinations", "fileStateId", "fileStateOutdated", "firstName", "fluoridationConsents", "gender", "groupName", "id", "institutions", "lastName", "personVersion", "phoneNumbers", "procedureLabels", "salutation", "status", "version", "year" ],
         "type" : "object",
         "properties" : {
           "contactAddress" : {
@@ -3562,6 +3668,12 @@
             "maxLength" : 50,
             "minLength" : 1,
             "type" : "string"
+          },
+          "procedureLabels" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DentalProcedureLabel"
+            }
           },
           "salutation" : {
             "$ref" : "#/components/schemas/Salutation"
@@ -3831,6 +3943,20 @@
           }
         }
       },
+      "CreateProcedureLabelRequest" : {
+        "required" : [ "name" ],
+        "type" : "object",
+        "properties" : {
+          "description" : {
+            "type" : "string"
+          },
+          "name" : {
+            "maxLength" : 255,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        }
+      },
       "CreateProphylaxisSessionRequest" : {
         "required" : [ "dateAndTime", "dentistIds", "groupName", "institutionId", "isScreening", "type", "zfaIds" ],
         "type" : "object",
@@ -3945,6 +4071,38 @@
         "discriminator" : {
           "propertyName" : "@type"
         }
+      },
+      "DentalProcedureLabel" : {
+        "required" : [ "hexColor", "id", "name", "version" ],
+        "type" : "object",
+        "properties" : {
+          "description" : {
+            "type" : "string",
+            "description" : "Description of the label"
+          },
+          "hexColor" : {
+            "pattern" : "^#[0-9a-zA-Z]{6}$",
+            "type" : "string",
+            "description" : "Background color of the box surrounding the label"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Id of the label",
+            "format" : "uuid"
+          },
+          "name" : {
+            "maxLength" : 255,
+            "minLength" : 0,
+            "type" : "string",
+            "description" : "Name of the label"
+          },
+          "version" : {
+            "type" : "integer",
+            "description" : "Version of the entity. Each time the entity is changed, it is incremented by one.",
+            "format" : "int64"
+          }
+        },
+        "description" : "Labels can be associated to a procedure."
       },
       "DentitionType" : {
         "type" : "string",
@@ -4530,6 +4688,18 @@
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/Child"
+            }
+          }
+        }
+      },
+      "GetDentalLabelsResponse" : {
+        "required" : [ "labels" ],
+        "type" : "object",
+        "properties" : {
+          "labels" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DentalProcedureLabel"
             }
           }
         }
@@ -5953,7 +6123,7 @@
         "enum" : [ "ASC", "DESC" ]
       },
       "ProphylaxisSession" : {
-        "required" : [ "dateAndTime", "groupName", "id", "institution", "isScreening", "type" ],
+        "required" : [ "dateAndTime", "groupName", "id", "institution", "isScreening", "status", "type" ],
         "type" : "object",
         "properties" : {
           "dateAndTime" : {
@@ -5975,6 +6145,9 @@
           },
           "isScreening" : {
             "type" : "boolean"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/ProphylaxisStatus"
           },
           "type" : {
             "$ref" : "#/components/schemas/ProphylaxisType"
@@ -6049,7 +6222,7 @@
         }
       },
       "ProphylaxisSessionDetails" : {
-        "required" : [ "dateAndTime", "dentists", "groupName", "id", "institution", "isScreening", "participants", "type", "version", "zfas" ],
+        "required" : [ "dateAndTime", "dentists", "groupName", "id", "institution", "isScreening", "participants", "status", "type", "version", "zfas" ],
         "type" : "object",
         "properties" : {
           "dateAndTime" : {
@@ -6091,6 +6264,9 @@
               "$ref" : "#/components/schemas/ProphylaxisSessionChildExamination"
             }
           },
+          "status" : {
+            "$ref" : "#/components/schemas/ProphylaxisStatus"
+          },
           "type" : {
             "$ref" : "#/components/schemas/ProphylaxisType"
           },
@@ -6129,6 +6305,10 @@
       "ProphylaxisSessionSortKey" : {
         "type" : "string",
         "enum" : [ "ID", "TYPE", "GROUP_NAME", "DATE_AND_TIME", "IS_SCREENING", "FLUORIDATION_VARNISH" ]
+      },
+      "ProphylaxisStatus" : {
+        "type" : "string",
+        "enum" : [ "OPEN", "CLOSED" ]
       },
       "ProphylaxisType" : {
         "type" : "string",
@@ -6498,7 +6678,7 @@
         "enum" : [ "SYSTEM_AUTOMATIC", "EMPLOYEE", "CITIZEN" ]
       },
       "UpdateChildRequest" : {
-        "required" : [ "groupName", "institutionId", "version" ],
+        "required" : [ "groupName", "institutionId", "procedureLabels", "version" ],
         "type" : "object",
         "properties" : {
           "fluoridationConsent" : {
@@ -6510,6 +6690,13 @@
           "institutionId" : {
             "type" : "string",
             "format" : "uuid"
+          },
+          "procedureLabels" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
           },
           "version" : {
             "type" : "integer",
@@ -6635,6 +6822,24 @@
           "title" : {
             "maxLength" : 119,
             "minLength" : 1,
+            "type" : "string"
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "UpdateProcedureLabelRequest" : {
+        "required" : [ "name", "version" ],
+        "type" : "object",
+        "properties" : {
+          "description" : {
+            "type" : "string"
+          },
+          "name" : {
+            "maxLength" : 255,
+            "minLength" : 0,
             "type" : "string"
           },
           "version" : {

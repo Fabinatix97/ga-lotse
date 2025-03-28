@@ -8,6 +8,7 @@ package de.eshg.statistics.persistence.entity.entry;
 import static de.eshg.lib.common.SensitivityLevel.SENSITIVE;
 
 import de.eshg.lib.common.DataSensitivity;
+import de.eshg.statistics.anonymization.AnonymizationService;
 import de.eshg.statistics.persistence.entity.CellEntry;
 import de.eshg.statistics.persistence.entity.TableColumnValueType;
 import jakarta.persistence.Column;
@@ -62,8 +63,8 @@ public class DecimalEntry extends CellEntry {
     if (getTableColumn().getValueType().equals(TableColumnValueType.DECIMAL)) {
       return getBigDecimalValue().doubleValue();
     } else {
-      return "[%s;%s]"
-          .formatted(getAsString(getDecimalLowerBound()), getAsString(getDecimalUpperBound()));
+      return AnonymizationService.INTERVAL_FORMAT_STRING.formatted(
+          getAsString(getDecimalLowerBound()), getAsString(getDecimalUpperBound()));
     }
   }
 

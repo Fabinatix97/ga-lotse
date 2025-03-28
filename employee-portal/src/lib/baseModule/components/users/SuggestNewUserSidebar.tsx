@@ -177,7 +177,6 @@ function SuggestNewUserFormSidebar({
               <Grid xxs={12}>
                 <SelectField
                   multiple
-                  aria-description="Mehrfachauswahl möglich"
                   name={`groups`}
                   label={`Gruppen`}
                   options={availableGroups.map((name) => ({

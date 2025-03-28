@@ -8,6 +8,7 @@ import {
   FormButtonBar,
   ProcedureLabel,
   ProcedureLabelSelection,
+  SelectContactField,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -57,7 +58,6 @@ import {
 import { isDraft } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/options";
 import { Appointment } from "@/lib/businessModules/travelMedicine/api/models/Appointment";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
-import { SelectContactField } from "@/lib/shared/components/formFields/SelectContactField";
 import { SchoolYearField } from "@/lib/shared/components/formFields/schoolYear";
 
 export function useUpdateProcedureSidebar(): UseSidebarWithFormRefResult<UpdateProcedureSidebarProps> {

@@ -210,7 +210,7 @@ public class CitizenPublicController {
           @Content(
               mediaType = MediaType.APPLICATION_PDF_VALUE,
               schema = @Schema(format = "binary")))
-  public ResponseEntity<byte[]> getAnonymousIdentificationDocument(
+  public ResponseEntity<byte[]> getCitizenAnonymousIdentificationDocument(
       @PathVariable("id") UUID procedureId) {
     Pdf pdf = citizenAppointmentService.getAnonymousIdentificationDocument(procedureId);
     return ResponseEntities.pdfContent(pdf.getFileName(), pdf.getFileContent().getContent());

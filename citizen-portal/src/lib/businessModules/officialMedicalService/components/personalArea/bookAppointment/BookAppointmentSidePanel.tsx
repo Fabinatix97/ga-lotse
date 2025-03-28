@@ -56,7 +56,7 @@ export function BookAppointmentSidePanel({
   return (
     <ContentSheet data-testid="overview">
       <ContentSheetTitle>{t("sidePanel.title")}</ContentSheetTitle>
-      <Stack gap={1} data-testId="appointment-summary">
+      <Stack gap={1} data-testid="appointment-summary">
         <DetailsField
           value={`${concernName} ${t("sidePanel.appointmentDuration", { durationInMinutes: appointmentTypeConfig?.standardDurationInMinutes })}`}
           icon={<MedicalServicesOutlined />}

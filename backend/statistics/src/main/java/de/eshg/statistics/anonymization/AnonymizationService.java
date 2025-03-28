@@ -51,6 +51,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AnonymizationService {
+  public static final String INTERVAL_FORMAT_STRING = "[%s;%s]";
+
   private static final String ROW_ID_COLUMN = "id";
   private static final String NULL_NUMBER_VALUE_FOR_DATA = "NULL";
 
@@ -452,7 +454,7 @@ public class AnonymizationService {
 
   private static void updateDecimalInterval(DecimalEntry cellEntry, String value) {
     if (isInterval(value)) {
-      String[] split = value.split(",");
+      String[] split = value.split(";");
       BigDecimal lowerBound = parseBigDecimal(split[0].substring(1));
       BigDecimal upperBound = parseBigDecimal(split[1].substring(0, split[1].length() - 1));
       if (lowerBound == null || upperBound == null) {
@@ -495,7 +497,7 @@ public class AnonymizationService {
 
   private static void updateIntegerInterval(IntegerEntry cellEntry, String value) {
     if (isInterval(value)) {
-      String[] split = value.split(",");
+      String[] split = value.split(";");
       Integer lowerBound = parseInteger(split[0].substring(1));
       Integer upperBound = parseInteger(split[1].substring(0, split[1].length() - 1));
       if (lowerBound == null || upperBound == null) {

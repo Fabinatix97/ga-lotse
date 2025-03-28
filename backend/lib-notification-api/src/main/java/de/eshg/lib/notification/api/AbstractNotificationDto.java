@@ -33,7 +33,8 @@ import java.util.UUID;
           name = FileDeletionApprovalRequestNotificationDto.SCHEMA_NAME),
       @Type(
           value = TaskDueAtReminderNotificationDto.class,
-          name = TaskDueAtReminderNotificationDto.SCHEMA_NAME)
+          name = TaskDueAtReminderNotificationDto.SCHEMA_NAME),
+      @Type(value = ProcedureNotificationDto.class, name = ProcedureNotificationDto.SCHEMA_NAME)
     })
 public sealed interface AbstractNotificationDto
     permits AbsenceNotificationDto, AbstractProcedureNotificationDto, SimpleNotificationDto {

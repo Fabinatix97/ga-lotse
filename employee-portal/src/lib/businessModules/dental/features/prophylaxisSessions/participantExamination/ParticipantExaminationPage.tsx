@@ -13,7 +13,6 @@ import { ChildDetailsSection } from "@/lib/businessModules/dental/features/exami
 import { ExaminationFormLayout } from "@/lib/businessModules/dental/features/examinations/ExaminationFormLayout";
 import { NoteFormSection } from "@/lib/businessModules/dental/features/examinations/NoteFormSection";
 import { DentalExaminationFormSection } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExamination/DentalExaminationFormSection";
-import { useDentalExaminationStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
 import { ParticipantExaminationBottomBar } from "@/lib/businessModules/dental/features/prophylaxisSessions/participantExamination/ParticipantExaminationBottomBar";
 import { ParticipantExaminationForm } from "@/lib/businessModules/dental/features/prophylaxisSessions/participantExamination/ParticipantExaminationForm";
 import { ParticipantExaminationToolbar } from "@/lib/businessModules/dental/features/prophylaxisSessions/participantExamination/ParticipantExaminationToolbar";
@@ -45,21 +44,11 @@ export function ParticipantExaminationPage(
   const setExamination = useProphylaxisSessionStore(
     (state) => state.setExamination,
   );
-  const isDentalExaminationDirty = useDentalExaminationStore(
-    (state) => state.dirty,
-  );
 
   const examinationForm = useParticipantExaminationForm({
     initialValues: participant,
-    onSubmit: (values) => {
-      try {
-        if (examinationForm.dirty || isDentalExaminationDirty) {
-          setExamination(participant.examinationId, values.result, values.note);
-        }
-      } catch {
-        // TODO handle invalid tooth diagnoses
-      }
-    },
+    onSubmit: (values) =>
+      setExamination(participant.examinationId, values.result, values.note),
   });
 
   const presentFilteredParticipants = useFilteredPresentParticipants();

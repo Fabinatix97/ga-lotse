@@ -57,7 +57,7 @@ export function AuditLogDecryptSidebar({
 
   const fieldName = createFieldNameMapper<AuditLogDecryptSidebar>();
   const formRef = useRef<SidebarFormHandle>(null);
-  const decryptedPrivateKey = useRef<CryptoKey>(null);
+  const decryptedSymmetricKey = useRef<string>(null);
 
   function handleCloseSidebar() {
     onClose();
@@ -69,30 +69,32 @@ export function AuditLogDecryptSidebar({
       <Formik
         validateOnBlur={false}
         validateOnChange={false}
-        initialValues={{ validForm: "", password: "" }}
+        initialValues={{ password: "" }}
         validate={async (values) => {
-          const decryptedPrivateKeyResult = await unwrapPrivateKey(
-            encryptedPrivateKey,
-            values.password,
-          ).catch(() => {
-            return new Error("Invalid password.");
-          });
-
-          if (decryptedPrivateKeyResult instanceof Error) {
-            return { validForm: "false" };
+          try {
+            const decryptedPrivateKey = await unwrapPrivateKey(
+              encryptedPrivateKey,
+              values.password,
+            );
+            try {
+              decryptedSymmetricKey.current = await decryptSymmetricKey(
+                decryptedPrivateKey,
+                await fetchEncryptedSymmetricKey(auditLogApi, source, date),
+              );
+            } catch {
+              return {
+                password:
+                  "Es ist ein Fehler bei der Entschlüsselung aufgetreten. Falls nach dem Erstellungsdatum des Logs ihr Passwort geändert wurde, ist kein Zugriff mehr möglich.",
+              };
+            }
+          } catch {
+            return { password: "Das angegebene Passwort ist ungültig." };
           }
-
-          decryptedPrivateKey.current = decryptedPrivateKeyResult;
         }}
         onSubmit={async () => {
-          const decryptedSymmetricKey = await decryptSymmetricKey(
-            decryptedPrivateKey.current!,
-            await fetchEncryptedSymmetricKey(auditLogApi, source, date),
-          );
-
           const auditLogFile = await readAuditLogFile(
             auditLogApi,
-            decryptedSymmetricKey,
+            decryptedSymmetricKey.current!,
             source,
             date,
           );
@@ -109,7 +111,7 @@ export function AuditLogDecryptSidebar({
           handleCloseSidebar();
         }}
       >
-        {({ isSubmitting, errors }) => (
+        {({ isSubmitting }) => (
           <SidebarForm ref={formRef}>
             <SidebarContent title={"Log File anzeigen"}>
               <DetailsColumn sx={{ gap: 2 }}>
@@ -124,7 +126,6 @@ export function AuditLogDecryptSidebar({
                     label={"Passwort eingeben"}
                     name={fieldName("password")}
                   />
-                  {errors.validForm === "false" && <InvalidPassword />}
                 </Stack>
               </DetailsColumn>
             </SidebarContent>
@@ -160,13 +161,5 @@ async function readAuditLogFile(
     decryptedSymmetricKey,
     source,
     date,
-  );
-}
-
-function InvalidPassword() {
-  return (
-    <Typography mb={2} color={"danger"} fontSize={"small"}>
-      Das angegebene Passwort ist ungültig.
-    </Typography>
   );
 }

@@ -170,7 +170,7 @@ function TimeSlotList<T extends Appointment>({
   }
 
   return (
-    <Stack gap={2} data-testId={"time-slot-list"}>
+    <Stack gap={2} data-testid={"time-slot-list"}>
       <Typography level="title-md">{label}</Typography>
       <RadioGroup onChange={onSelected}>
         <ListGrid>

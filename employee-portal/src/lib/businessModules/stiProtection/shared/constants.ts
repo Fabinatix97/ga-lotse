@@ -101,7 +101,7 @@ export const sexualOrientationNames: EnumMap<ApiSexualOrientation> = {
 } satisfies Record<ApiSexualOrientation, string>;
 
 export const sexualContactNames: EnumMap<ApiGender> = {
-  [ApiGender.Diverse]: "Diverse",
+  [ApiGender.Diverse]: "Divers",
   [ApiGender.Female]: "Frauen",
   [ApiGender.Male]: "Männer",
   [ApiGender.NotSpecified]: "Keine Angabe",

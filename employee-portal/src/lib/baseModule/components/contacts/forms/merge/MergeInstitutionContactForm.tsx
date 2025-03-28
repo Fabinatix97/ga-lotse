@@ -6,6 +6,7 @@
 import { ApiInstitutionContact } from "@eshg/base-api";
 import {
   BaseAddressFormInputs,
+  CONTACT_CATEGORY_NAMES,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -35,7 +36,6 @@ import {
   InstitutionContactMergeSource,
   MergeInstitutionContactFormValues,
 } from "@/lib/baseModule/components/contacts/types";
-import { contactCategoryNames } from "@/lib/baseModule/shared/translations";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 
 function initialValues(
@@ -148,8 +148,8 @@ export function MergeInstitutionContactForm({
                   name={fieldName("category")}
                   label={"Objekttyp"}
                   getOptionLabel={(value) =>
-                    contactCategoryNames[
-                      value as keyof typeof contactCategoryNames
+                    CONTACT_CATEGORY_NAMES[
+                      value as keyof typeof CONTACT_CATEGORY_NAMES
                     ]
                   }
                   sourceValueLabel={fromLabel}

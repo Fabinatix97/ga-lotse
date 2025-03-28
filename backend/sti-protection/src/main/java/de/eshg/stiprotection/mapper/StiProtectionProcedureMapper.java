@@ -42,6 +42,7 @@ public class StiProtectionProcedureMapper {
   public static GetCitizenProcedureResponse toCitizenInterfaceType(
       StiProtectionProcedure procedure) {
     return new GetCitizenProcedureResponse(
+        procedure.getExternalId(),
         ConcernMapper.toInterfaceType(procedure.getConcern()),
         PersonMapper.toInterfaceType(procedure.getPerson(), procedure.getAccessCode()),
         AppointmentMapper.toInterfaceType(

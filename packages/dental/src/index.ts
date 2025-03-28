@@ -4,6 +4,7 @@
  */
 
 export { ExaminationStatusChip } from "./components/examination/ExaminationStatusChip";
+export { SearchGroupField } from "./components/group/SearchGroupField";
 
 export { type Child, mapChild } from "./features/children/api/models/Child";
 export {
@@ -57,9 +58,10 @@ export {
   type ToothDiagnosis,
   mapToothDiagnosis,
 } from "./api/models/ToothDiagnosis";
+export { useSearchSchoolOrDaycareContactQuery } from "./api/queries/contacts";
+export { useSearchInstitutionGroupsQuery } from "./api/queries/groups";
 
 export {
-  useUpdateAnnualChild,
   useUpdateAnnualChildPerson,
   useSyncPerson,
   useUpdateExamination,
@@ -84,7 +86,6 @@ export {
   getChildrenByPersonQuery,
   useGetChildrenQuery,
   useSearchChildren,
-  useSearchInstitutionGroups,
 } from "./features/children/api/queries/overview";
 export {
   getChildDetailsQuery,
@@ -102,6 +103,7 @@ export { PROPHYLAXIS_TYPES } from "./translations/prophylaxisSession";
 
 export { routes } from "./config/routes";
 export { RELATED_TEETH } from "./config/teeth";
+export { SCHOOL_OR_DAYCARE_CONTACT } from "./config/contacts";
 
 export { DentalProvider, useDentalApi } from "./contexts/dental";
 
@@ -111,6 +113,7 @@ export { DentalChildExaminationRouteParams } from "./features/children/schemas/D
 export { DentalChildRouteParams } from "./features/children/schemas/DentalChildRouteParams";
 export { AnnualInstitutionsTable } from "./features/children/components/AnnualInstitutionsTable";
 export { DentalChildExaminationsPage } from "./features/children/pages/DentalChildExaminationsPage";
+export { useUpdateAnnualChildSidebar } from "./features/children/components/UpdateAnnualChildSidebar";
 
 export { moduleUserGroup } from "./config/moduleUserGroup";
 export {

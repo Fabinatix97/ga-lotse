@@ -130,7 +130,7 @@ public class GdprRightToObjectLetterGenerator {
   private DepartmentLogo getDepartmentLogo() {
     return new DepartmentLogo(
         CustomMediaTypes.IMAGE_SVG_XML,
-        Base64.getEncoder().encodeToString(departmentConfigurationService.getConfig().getLogo()));
+        Base64.getEncoder().encodeToString(departmentConfigurationService.getLogo()));
   }
 
   public byte[] generatePdf(GdprProcedure procedure) {

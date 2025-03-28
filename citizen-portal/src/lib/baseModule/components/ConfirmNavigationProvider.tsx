@@ -6,8 +6,10 @@
 "use client";
 
 import { ConfirmationDialogOptions } from "@eshg/lib-portal/components/confirmationDialog/ConfirmationDialogProvider";
-import { NavigationContextProvider } from "@eshg/lib-portal/components/navigation/NavigationContext";
-import { MutationBundle } from "@eshg/lib-portal/types/query";
+import {
+  NavigationContextProvider,
+  OnBeforeNavigateProps,
+} from "@eshg/lib-portal/components/navigation/NavigationContext";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { createContext, useContext, useEffect, useMemo, useRef } from "react";
 import { isEmpty } from "remeda";
@@ -47,15 +49,15 @@ export function ConfirmNavigationProvider({ children }: RequiresChildren) {
 
   function onBeforeNavigate(
     onNavigate: () => void,
-    onSaveMutation?: MutationBundle,
+    onBeforeNavigateProps?: OnBeforeNavigateProps,
   ) {
     async function onConfirm() {
       await confirmationOptionsRef?.current?.onConfirm?.();
       onNavigate();
     }
-    if (onSaveMutation !== undefined) {
+    if (onBeforeNavigateProps?.onSaveMutation !== undefined) {
       openConfirmationDialog({
-        onConfirmMutation: onSaveMutation,
+        onConfirmMutation: onBeforeNavigateProps?.onSaveMutation,
         onDeny: onNavigate,
         title: t("confirmation_dialog.title"),
         color: "primary",

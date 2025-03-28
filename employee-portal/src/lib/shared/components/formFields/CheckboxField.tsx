@@ -20,6 +20,7 @@ export interface CheckboxFieldProps extends FieldProps<boolean> {
   variant?: CheckboxProps["variant"];
   sx?: SxProps;
   "aria-label"?: string;
+  readonly?: boolean;
 }
 
 type ValueType = boolean | number | string | readonly string[];

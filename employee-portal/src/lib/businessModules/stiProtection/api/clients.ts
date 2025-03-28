@@ -27,7 +27,7 @@ import {
   WaitingRoomApi,
 } from "@eshg/sti-protection-api";
 
-function useConfiguration() {
+export function useConfiguration() {
   const configParameters = useApiConfiguration(
     "PUBLIC_STI_PROTECTION_BACKEND_URL",
   );

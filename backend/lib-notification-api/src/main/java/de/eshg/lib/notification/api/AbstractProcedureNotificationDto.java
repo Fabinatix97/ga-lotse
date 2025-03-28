@@ -12,7 +12,9 @@ import java.util.UUID;
 
 @Schema(name = "AbstractProcedureNotification")
 public sealed interface AbstractProcedureNotificationDto extends AbstractNotificationDto
-    permits AbstractProcedureNotificationWithCreatorDto, TaskDueAtReminderNotificationDto {
+    permits AbstractProcedureNotificationWithCreatorDto,
+        TaskDueAtReminderNotificationDto,
+        ProcedureNotificationDto {
 
   @NotNull
   @JsonProperty

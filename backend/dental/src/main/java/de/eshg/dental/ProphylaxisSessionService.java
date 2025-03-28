@@ -28,6 +28,7 @@ import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.domain.model.FluoridationConsent;
 import de.eshg.dental.domain.model.Person;
 import de.eshg.dental.domain.model.ProphylaxisSession;
+import de.eshg.dental.domain.model.ProphylaxisStatus;
 import de.eshg.dental.domain.repository.ChildRepository;
 import de.eshg.dental.domain.repository.ExaminationRepository;
 import de.eshg.dental.domain.repository.ProphylaxisSessionRepository;
@@ -103,6 +104,7 @@ public class ProphylaxisSessionService {
     ProphylaxisSession session = new ProphylaxisSession();
     mapProphylaxisSessionRequest(session, request);
     addExaminationsForChildren(request, session);
+    session.setProphylaxisStatus(ProphylaxisStatus.OPEN);
     prophylaxisSessionRepository.save(session);
     return session;
   }

@@ -8,6 +8,7 @@ package de.eshg.statistics.aggregation;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import de.eshg.rest.service.security.config.BaseUrls;
+import de.eshg.statistics.api.evaluation.GetAttributesInformationResponse;
 import de.eshg.statistics.api.report.GetReportDetailPageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -50,5 +51,13 @@ public class ReportController {
   public void deleteReport(@PathVariable(name = "reportId") UUID reportId) {
     reportService.flagReportForDeletion(reportId);
     statisticsExecutorService.submit(() -> reportExecution.deleteReport(reportId));
+  }
+
+  @GetExchange(value = "/attributes/{reportId}", accept = APPLICATION_JSON_VALUE)
+  @ApiResponse(responseCode = "200", description = "Attribute information for a report")
+  @Operation(summary = "Get information about the attributes of the report")
+  public GetAttributesInformationResponse getReportAttributesInformation(
+      @PathVariable(name = "reportId") UUID reportId) {
+    return reportService.getAttributesInformation(reportId);
   }
 }

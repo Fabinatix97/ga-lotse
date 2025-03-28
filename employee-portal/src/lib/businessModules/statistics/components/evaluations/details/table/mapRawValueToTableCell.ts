@@ -3,9 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiValueOption } from "@eshg/statistics-api";
-import { isDate } from "date-fns";
 import { isDefined } from "remeda";
 
 import { EvaluationDetailsTableValue } from "@/lib/businessModules/statistics/api/models/evaluationDetailsTableData";
@@ -15,7 +13,6 @@ export function mapRawValueToTableCell(
   rawValue: EvaluationDetailsTableValue,
   valueType: FlatAttribute["type"],
   valueOptions?: ApiValueOption[],
-  locale?: string,
 ) {
   if (!isDefined(rawValue)) {
     return "";
@@ -23,11 +20,6 @@ export function mapRawValueToTableCell(
   switch (valueType) {
     case "BooleanAttribute":
       return rawValue === true ? "Ja" : rawValue === false ? "Nein" : "";
-    case "DateAttribute":
-      if (isDate(rawValue)) {
-        return formatDate(rawValue, locale);
-      }
-      return rawValue;
     case "ValueWithOptionsAttribute":
       return (
         valueOptions?.find((option) => option.value === rawValue)?.meaning ??

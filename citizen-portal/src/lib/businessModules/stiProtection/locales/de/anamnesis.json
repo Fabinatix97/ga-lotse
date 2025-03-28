@@ -1,0 +1,148 @@
+{
+  "title": {
+    "hiv_sti_consultation": "Anamnesebogen: HIV-STI-Beratung",
+    "sex_work": "Anamnesebogen: Sexarbeit"
+  },
+  "cancel_dialog": {
+    "title": "Änderungen verwerfen?",
+    "message": "Wenn Sie abbrechen, werden Sie abgemeldet, alle Ihre Änderungen werden gelöscht und Sie gelangen zurück zur Übersichtsseite.",
+    "cancel": "Anamnese weiter ausfüllen",
+    "confirm": "Ja, abbrechen"
+  },
+  "privacyNotice": "Alle Angaben sind freiwillig und unterliegen der Schweigepflicht. Es besteht die Möglichkeit, das Formular auch vor Ort auszufüllen, ohne dadurch Nachteile zu erfahren.",
+  "examinations": {
+    "title": "Untersuchungen",
+    "subtitle": "Wurden Sie bereits auf die folgenden Krankheiten untersucht?",
+    "had_examination": {
+      "mostRecentExamDate": "Wann zuletzt?"
+    },
+    "examinableIllness": {
+      "hepA": "Hepatitis A",
+      "hepB": "Hepatitis B",
+      "hepC": "Hepatitis C",
+      "hiv": "HIV",
+      "gonorrhea": "Gonorrhoe (Tripper)",
+      "syphilis": "Syphilis (Lues)",
+      "chlamydia": "Chlamydien"
+    }
+  },
+  "gender": {
+    "diverse": "Divers",
+    "female": "Weiblich",
+    "male": "Männlich",
+    "not_specified": "Keine Angabe"
+  },
+  "general": {
+    "title": "Allgemein",
+    "examinationReason": "Grund für die heutige Beratung",
+    "relationship_model": {
+      "title": "Beziehungsmodell",
+      "no_commitment": "Keine feste Beziehung",
+      "monogamous": "Monogam",
+      "open": "Offen",
+      "no_selection": "keine Auswahl"
+    },
+    "contactToClarifyDate": "Zeitpunkt abzuklärender Kontakt",
+    "currentSymptoms": "Aktuelle Beschwerden",
+    "lastCancerScreening": "Letzte Krebsvorsorge",
+    "lastMenstruation": "Letzte Menstruation",
+    "hasBeenPregnant": "Waren Sie schon mal schwanger?",
+    "knownOperationsOrIllnesses": "Bekannte Operationen oder Erkrankungen",
+    "medications": "Medikamente",
+    "numberOfBirthsOrAbortions": "Anzahl Geburten / Aborte",
+    "numberOfPregnancies": "Wie oft?"
+  },
+  "partner_risk_factor": {
+    "homosexual": "ist homosexuell",
+    "bisexual_male": "ist ein bisexueller Mann",
+    "hiv_positive": "ist HIV-positiv",
+    "sti_positive": "hat eine sexuell übertragbare Krankheit",
+    "injected_drugs": "hat Drogen gespritzt",
+    "sex_worker": "ist im Sexgewerbe tätig"
+  },
+  "prevention": {
+    "title": "Prävention",
+    "vaccinations": "Gegen was sind Sie geimpft?",
+    "safe_sex": "Wie häufig praktizieren Sie Safer Sex?",
+    "safe_sex_protective_measures": "Womit schützen Sie sich gegen sexuell übertragbare Krankheiten?",
+    "info_about_PrEP_desired": "Wünschen Sie Informationen zu PrEP (Prä-Expositions-Prophylaxe)?",
+    "PrEP_info_modal": {
+      "title": "PrEP (Prä-Expositions-Prophylaxe)",
+      "info": "Prä-Expositions-Prophylaxe ist eine vorbeugende HIV-Medikamententherapie, die das Infektionsrisiko bei Risikokontakten erheblich reduziert."
+    },
+    "other_risks": "Andere Risikosituation",
+    "other_risks_description": "Welche?"
+  },
+  "previous_illnesses": {
+    "title": "Bisherige Krankheiten",
+    "subtitle": "Haben oder hatten Sie bereits eine der folgenden Krankheiten?",
+    "other": "Andere sexuell übertragbare Krankheit",
+    "other_data": "Welche?"
+  },
+  "remarks": {
+    "title": "Bemerkungen",
+    "input": "Haben Sie Fragen oder Anmerkungen?"
+  },
+  "risks": {
+    "title": "Angaben zum Risiko"
+  },
+  "safe_sex_regularity": {
+    "always": "Immer",
+    "frequently": "Häufig",
+    "occasionally": "Gelegentlich",
+    "never": "Nie"
+  },
+  "sex_work": {
+    "employment_duration": "Seit wann in Sexarbeit?",
+    "types": {
+      "bordello": "Bordell",
+      "club": "Club",
+      "escort": "Escort",
+      "apartment": "Wohnung",
+      "appointment_apartment": "Terminwohnung",
+      "massage_parlor": "Massagesalon",
+      "tantra_practice": "Tantra-Praxis",
+      "street_prostitution": "Straßenstrich",
+      "other": "Sonstiges"
+    }
+  },
+  "sexual_contact": {
+    "diverse": "Divers",
+    "female": "Frauen",
+    "male": "Männer",
+    "not_specified": "Keine Angabe"
+  },
+  "sexual_orientation_and_contact": {
+    "title": "Sexuelle Orientierung / Kontakte",
+    "sexual_orientation": "Sexuelle Orientierung",
+    "number_of_sexual_partners_last_12_months": "Anzahl der Sexpartner:innen in den letzten 12 Monaten",
+    "sexual_contact_genders": "Zu wem hatten Sie sexuellen Kontakt?",
+    "sexual_contact": "Mindestens eine meiner bisherigen Sexpartner:innen",
+    "sex_work": "Arbeitsstätte"
+  },
+  "sexual_orientation": {
+    "bisexual": "Bisexuell",
+    "heterosexual": "Heterosexuell",
+    "homosexual": "Homosexuell",
+    "not_specified": "Keine Angabe"
+  },
+  "standard_risk_factor": {
+    "most_recent_incident": "Wann zuletzt?",
+    "unprotected_vaginal": "Ungeschützter Vaginalverkehr",
+    "unprotected_anal": "Ungeschützter Analverkehr",
+    "unprotected_oral": "Ungeschützter Oralverkehr"
+  },
+  "sti_protective_measure": {
+    "condom": "Kondom",
+    "dental_dam": "Lecktuch",
+    "gloves": "Handschuhe",
+    "PrEP": "PrEP (Prä-Expositions-Prophylaxe)",
+    "TasP": "TasP (Schutz durch Therapie)",
+    "other": "Sonstiges"
+  },
+  "vaccines": {
+    "hepA": "Hepatitis A",
+    "hepB": "Hepatitis B",
+    "hpv": "HPV"
+  }
+}

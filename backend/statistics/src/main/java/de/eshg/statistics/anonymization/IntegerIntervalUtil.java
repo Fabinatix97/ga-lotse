@@ -6,6 +6,7 @@
 package de.eshg.statistics.anonymization;
 
 import de.eshg.statistics.persistence.entity.AnonymizationConfiguration;
+import de.eshg.statistics.persistence.entity.TableColumn;
 import java.util.ArrayList;
 import java.util.List;
 import org.deidentifier.arx.Data;
@@ -98,11 +99,20 @@ public class IntegerIntervalUtil {
             builder.addInterval(
                 interval.minInclusive(),
                 interval.maxExclusive(),
-                "["
-                    + interval.minInclusive()
-                    + ","
-                    + (interval.maxExclusive() - MINIMAL_DIFFERENCE)
-                    + "]"));
+                AnonymizationService.INTERVAL_FORMAT_STRING.formatted(
+                    interval.minInclusive(), interval.maxExclusive() - MINIMAL_DIFFERENCE)));
     return builder;
+  }
+
+  public static List<String> getIntervalsAsStringList(TableColumn tableColumn) {
+    List<Interval<Long>> intervals =
+        createIntervals(tableColumn.getSearchKey(), tableColumn.getAnonymizationConfiguration());
+
+    return intervals.stream()
+        .map(
+            interval ->
+                AnonymizationService.INTERVAL_FORMAT_STRING.formatted(
+                    interval.minInclusive(), interval.maxExclusive() - MINIMAL_DIFFERENCE))
+        .toList();
   }
 }

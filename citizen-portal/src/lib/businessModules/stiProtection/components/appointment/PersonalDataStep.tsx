@@ -13,7 +13,7 @@ import assert from "assert";
 import { useFormikContext } from "formik";
 import { isNumber } from "remeda";
 
-import { useAddPersonalDetails } from "@/lib/businessModules/stiProtection/api/mutations/publicCitizensApi";
+import { useAddPersonalDetails } from "@/lib/businessModules/stiProtection/api/mutations/publicCitizenApi";
 import { useTranslation } from "@/lib/i18n/client";
 import { CountryField } from "@/lib/shared/components/form/CountryField";
 

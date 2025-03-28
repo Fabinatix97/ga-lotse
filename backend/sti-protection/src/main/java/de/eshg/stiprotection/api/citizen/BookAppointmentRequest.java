@@ -13,4 +13,5 @@ import java.time.Instant;
 public record BookAppointmentRequest(
     @NotNull ConcernDto concern,
     @NotNull Instant appointmentStart,
-    @NotNull @Positive Integer durationInMinutes) {}
+    @NotNull @Positive Integer durationInMinutes)
+    implements TimetableEntry {}

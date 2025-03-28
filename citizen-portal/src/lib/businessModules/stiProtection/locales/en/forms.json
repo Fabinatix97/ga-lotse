@@ -7,11 +7,23 @@
     "sex_work": "Sex work",
     "overview_title": "Appointment overview",
     "timeslot_taken": "Unfortunately, this appointment is no longer available. Please choose another appointment.",
-    "select_new_appointment": "New appointment"
+    "select_new_appointment": "New appointment",
+    "reset": "Reset",
+    "month": "Month",
+    "year": "Year",
+    "yes": "Yes",
+    "no": "No",
+    "continue_button": "Continue",
+    "back_button": "Back"
+  },
+  "anamnesis": {
+    "submit": "Submit medical history",
+    "submit_success": "Medical history saved successfully.",
+    "submit_error": "An error occurred while saving the medical history."
   },
   "cancel_booking": {
     "title": "Cancel the appointment?",
-    "message": "If you cancel the appointment, you will be logged out, all previous data will be deleted and you will be return to the overview page where you can make a new appointment. Alternatively, you can, under \"Reschedule Appointment\", move the appointment instead.",
+    "message": "If you cancel the appointment, you will be logged out, all previous data will be deleted and you will be returned to the overview page where you can make a new appointment. Alternatively, you can, under \"Reschedule Appointment\", move the appointment instead.",
     "cancel": "Keep appointment",
     "confirm": "Yes, cancel"
   },

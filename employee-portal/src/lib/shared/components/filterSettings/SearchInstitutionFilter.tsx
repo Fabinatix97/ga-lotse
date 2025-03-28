@@ -3,15 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Autocomplete } from "@mui/joy";
+import { useSearchSchoolOrDaycareContactQuery } from "@eshg/dental";
+import {
+  mapContactToSelectOption,
+  useGetOptionalContactQuery,
+} from "@eshg/lib-employee-portal";
+import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
 import { useState } from "react";
 import { identity } from "remeda";
-
-import {
-  useGetOptionalContact,
-  useSearchSchoolOrDaycare,
-} from "@/lib/baseModule/api/queries/contacts";
-import { mapContactToSelectOption } from "@/lib/shared/helpers/selectOptionMapper";
 
 interface SearchInstitutionFilterProps {
   institutionId: string | undefined;
@@ -21,11 +20,12 @@ interface SearchInstitutionFilterProps {
 
 export function SearchInstitutionFilter(props: SearchInstitutionFilterProps) {
   const [institutionName, setInstitutionName] = useState("");
-  const searchInstitutions = useSearchSchoolOrDaycare(institutionName);
+  const searchInstitutions =
+    useSearchSchoolOrDaycareContactQuery(institutionName);
   const institutions = searchInstitutions.isSuccess
     ? searchInstitutions.data.elements
     : [];
-  const { data } = useGetOptionalContact(props.institutionId);
+  const { data } = useGetOptionalContactQuery(props.institutionId);
   const selectedInstitution =
     data !== undefined ? mapContactToSelectOption(data) : undefined;
   const institutionOptions = institutions.map(mapContactToSelectOption);
@@ -36,7 +36,7 @@ export function SearchInstitutionFilter(props: SearchInstitutionFilterProps) {
     );
 
   return (
-    <Autocomplete
+    <CustomAutocomplete
       value={selectedOption ?? null}
       inputValue={institutionName}
       options={institutionOptions}

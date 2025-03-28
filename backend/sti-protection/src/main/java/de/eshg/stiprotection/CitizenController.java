@@ -8,10 +8,14 @@ package de.eshg.stiprotection;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.stiprotection.api.citizen.GetCitizenProcedureResponse;
+import de.eshg.stiprotection.api.citizen.UpdateBookedAppointmentRequest;
 import de.eshg.stiprotection.api.medicalhistory.CreateMedicalHistoryRequest;
+import de.eshg.stiprotection.mapper.AppointmentMapper;
 import de.eshg.stiprotection.mapper.StiProtectionProcedureMapper;
 import de.eshg.stiprotection.mapper.medicalhistory.MedicalHistoryMapper;
 import de.eshg.stiprotection.persistence.Appointments;
+import de.eshg.stiprotection.persistence.data.AppointmentData;
+import de.eshg.stiprotection.persistence.db.AppointmentHistoryEntry;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.StiProtectionSystemProgressEntryType;
 import de.eshg.stiprotection.persistence.db.medicalhistory.MedicalHistory;
@@ -63,7 +67,7 @@ public class CitizenController {
   @PutMapping("/medicalHistory")
   @Operation(summary = "Update or insert medical history once for citizen user.")
   @Transactional
-  public void updateMedicalHistory(
+  public void updateCitizenMedicalHistory(
       @AuthenticationPrincipal Jwt principal,
       @Valid @RequestBody CreateMedicalHistoryRequest request) {
     StiProtectionProcedure procedure = citizenService.getProcedure(principal);
@@ -88,5 +92,22 @@ public class CitizenController {
     StiProtectionProcedure procedure = citizenService.getProcedure(principal);
     Appointments.assertHasAppointment(procedure);
     appointmentService.cancelAppointment(procedure);
+  }
+
+  @PutMapping("/appointment")
+  @Transactional
+  public void updateBookedAppointment(
+      @AuthenticationPrincipal Jwt principal,
+      @Valid @RequestBody UpdateBookedAppointmentRequest request) {
+    StiProtectionProcedure procedure = citizenService.getProcedure(principal);
+    AppointmentHistoryEntry openAppointmentHistoryEntry =
+        appointmentService.getOpenAppointmentHistoryEntry(procedure);
+    AppointmentData updatedAppointmentData =
+        AppointmentMapper.toDataType(request, openAppointmentHistoryEntry.getAppointmentType());
+    appointmentService.updateCitizenAppointment(procedure, updatedAppointmentData);
+    progressEntryUtil.addProgressEntry(
+        procedure.getExternalId(),
+        StiProtectionSystemProgressEntryType.APPOINTMENT_REBOOKED,
+        appointmentService.getAppointmentTimeAsString(updatedAppointmentData));
   }
 }

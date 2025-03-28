@@ -13,7 +13,7 @@ import { useCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/rou
 import { useTranslation } from "@/lib/i18n/client";
 
 import { useFormData } from "./AppointmentDataContext";
-import { AppointmentFormData } from "./AppointmentStepper";
+import type { AppointmentFormData } from "./AppointmentStepper";
 
 export interface StepButtonsProps {
   submit?: string;

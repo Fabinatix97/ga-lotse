@@ -52,18 +52,18 @@ public class DepartmentController implements DepartmentApi {
     // svg may contain JavaScript. Make sure the image comes from a trustworthy source.
     return ResponseEntity.ok()
         .contentType(CustomMediaTypes.IMAGE_SVG_XML)
-        .body(new ByteArrayResource(departmentConfigurationService.getConfig().getLogo()));
+        .body(new ByteArrayResource(departmentConfigurationService.getLogo()));
   }
 
   @Override
   public ResponseEntity<byte[]> getSecurityTxt() {
-    byte[] securityTxt = departmentConfigurationService.getConfig().getSecurityTxt();
+    byte[] securityTxt = departmentConfigurationService.getSecurityTxt();
     return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body(securityTxt);
   }
 
   @Override
   public ResponseEntity<byte[]> getSecurityTxtPublicKey() {
-    byte[] securityTxt = departmentConfigurationService.getConfig().getSecurityTxtPublicKey();
+    byte[] securityTxt = departmentConfigurationService.getSecurityTxtPublicKey();
     return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body(securityTxt);
   }
 }

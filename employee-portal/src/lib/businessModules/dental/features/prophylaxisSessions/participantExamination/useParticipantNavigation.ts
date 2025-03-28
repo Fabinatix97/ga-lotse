@@ -8,9 +8,9 @@ import { ProphylaxisSessionExamination, routes } from "@eshg/dental";
 import { useProphylaxisSessionStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/ProphylaxisSessionStoreProvider";
 
 interface UseParticipantNavigationResult {
-  gotoPreviousParticipant?: (submit?: boolean) => void;
-  gotoNextParticipant?: (submit?: boolean) => void;
-  gotoOverview: (submit?: boolean) => void;
+  gotoPreviousParticipant?: (submit?: boolean) => Promise<void>;
+  gotoNextParticipant?: (submit?: boolean) => Promise<void>;
+  gotoOverview: (submit?: boolean) => Promise<void>;
 }
 
 interface UseParticipantNavigationParams {
@@ -37,39 +37,41 @@ export function useParticipantNavigation(
       .examinations.byExaminationId(examinationId);
   }
 
+  function tryWithOptionalSubmit(onContinue: () => void) {
+    return async function navigationHandler(submit = true): Promise<void> {
+      try {
+        if (submit) {
+          await params.onSubmit();
+        }
+        onContinue();
+      } catch {}
+    };
+  }
+
   const gotoPreviousParticipant =
     participantIndex > 0
-      ? (submit = true) => {
+      ? tryWithOptionalSubmit(() => {
           const previousParticipant = participants[participantIndex - 1];
           if (previousParticipant !== undefined) {
             onNavigate(examinationRoute(previousParticipant.examinationId));
           }
-          if (submit) {
-            void params.onSubmit();
-          }
-        }
+        })
       : undefined;
 
   const nextParticipantIndex = participantIndex + 1;
   const gotoNextParticipant =
     nextParticipantIndex < participantsLength
-      ? (submit = true) => {
+      ? tryWithOptionalSubmit(() => {
           const nextParticipant = participants[nextParticipantIndex];
           if (nextParticipant !== undefined) {
             onNavigate(examinationRoute(nextParticipant.examinationId));
           }
-          if (submit) {
-            void params.onSubmit();
-          }
-        }
+        })
       : undefined;
 
-  function gotoOverview(submit = true) {
-    onNavigate(routes.prophylaxisSessions.byId(prophylaxisSessionId).details);
-    if (submit) {
-      void params.onSubmit();
-    }
-  }
+  const gotoOverview = tryWithOptionalSubmit(() =>
+    onNavigate(routes.prophylaxisSessions.byId(prophylaxisSessionId).details),
+  );
 
   return {
     gotoPreviousParticipant,

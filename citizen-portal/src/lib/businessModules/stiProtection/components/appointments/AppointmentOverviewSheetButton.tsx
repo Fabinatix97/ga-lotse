@@ -10,6 +10,7 @@ import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
 import {
   ApiAppointmentStatus,
   ApiAppointmentType,
+  ApiConcern,
 } from "@eshg/sti-protection-api";
 import {
   ChevronRightOutlined,
@@ -24,7 +25,7 @@ import {
 import { Sheet } from "@mui/joy";
 
 import { theme } from "@/lib/baseModule/theme/theme";
-import { useCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
+import { useConcernedCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { AppointmentOverviewButtonElement } from "@/lib/shared/components/appointments/AppointmentOverviewButtonElement";
@@ -35,21 +36,21 @@ import {
   AppointmentOverviewSectionTitle,
 } from "@/lib/shared/components/appointments/AppointmentOverviewSection";
 import { HivOutlined } from "@/lib/shared/components/icons/HivOutlined";
-import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 import { ApiAppointmentSummary } from "./helpers";
 
 interface AppointmentOverviewSheetButtonProps {
   index: number;
   appointment: ApiAppointmentSummary;
+  concern: ApiConcern;
 }
 
 export function AppointmentOverviewSheetButton({
   index: _apptIndex,
   appointment,
+  concern,
 }: Readonly<AppointmentOverviewSheetButtonProps>) {
-  const citizenRoutes = useCitizenRoutes();
-  const accessCode = useAccessCodeParam();
+  const citizenRoutes = useConcernedCitizenRoutes(concern);
   const isMobile = useIsMobile();
   const { t } = useTranslation(["stiProtection/appointmentOverview"]);
 
@@ -62,7 +63,7 @@ export function AppointmentOverviewSheetButton({
       color={"neutral"}
       variant={"plain"}
       sx={{ padding: 0 }}
-      href={citizenRoutes.appointments.index(accessCode)}
+      href={citizenRoutes.appointments.details}
     >
       <Sheet
         component="section"

@@ -5,6 +5,8 @@
 
 import { ApiContactType, ApiUserRole } from "@eshg/base-api";
 import {
+  CONTACT_CATEGORY_NAMES,
+  Contact,
   DataTable,
   Pagination,
   TablePage,
@@ -39,9 +41,7 @@ import { ContactsTableTitle } from "@/lib/baseModule/components/contacts/Contact
 import { useMergeInstitutionContactSidebar } from "@/lib/baseModule/components/contacts/modals/MergeInstitutionContactSidebar";
 import { useMergePersonContactSidebar } from "@/lib/baseModule/components/contacts/modals/MergePersonContactSidebar";
 import { useUpdateContactSidebar } from "@/lib/baseModule/components/contacts/modals/UpdateContactSidebar";
-import { Contact } from "@/lib/baseModule/components/contacts/types";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { contactCategoryNames } from "@/lib/baseModule/shared/translations";
 import { SearchFilter } from "@/lib/shared/components/tableFilters/SearchFilter";
 import { SingleSelectFilter } from "@/lib/shared/components/tableFilters/SingleSelectFilter";
 
@@ -170,7 +170,7 @@ export function ContactsTable({
               <SingleSelectFilter
                 searchParamName={contactSearchParamNames.categories}
                 placeholder={"Objekttyp"}
-                options={buildEnumOptions(contactCategoryNames)}
+                options={buildEnumOptions(CONTACT_CATEGORY_NAMES)}
                 tableControl={tableControl}
                 sx={{
                   // width of longest option "Kindertagesstätte"

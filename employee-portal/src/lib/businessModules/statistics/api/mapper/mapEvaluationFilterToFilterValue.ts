@@ -89,6 +89,12 @@ export function mapEvaluationFilterToFilterValue(
         key: mapAttributeSelectionToKey(filter.attribute),
         value: filter.text,
       };
+    case "DateFilterParameter":
+      return {
+        type: "Text",
+        key: mapAttributeSelectionToKey(filter.attribute),
+        value: filter.date,
+      };
     default:
       throw new Error("Not Implemented!");
   }

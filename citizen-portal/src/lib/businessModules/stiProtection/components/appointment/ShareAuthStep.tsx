@@ -9,13 +9,13 @@ import assert from "assert";
 import { useRouter } from "next/navigation";
 import { useId } from "react";
 
+import { DownloadDocumentCardField } from "@/lib/businessModules/stiProtection/components/shared/DownloadDocumentCardField";
 import { useCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 import { ConfirmationCheckboxField } from "@/lib/shared/components/form/ConfirmationCheckboxField";
 
 import { useFormData } from "./AppointmentDataContext";
 import { AppointmentFormData } from "./AppointmentStepper";
-import { DownloadDocumentCardField } from "./DownloadDocumentCardField";
 import { parsePin } from "./PinField";
 import { StepLayout } from "./StepLayout";
 import { StepSubTitle } from "./StepSubTitle";
@@ -35,7 +35,7 @@ export function ShareAuthStep() {
   const routes = useCitizenRoutes();
   const pinTitleId = useId();
 
-  const [{ accessCode, pin }] = useFormData<AppointmentFormData>();
+  const [{ accessCode, pin, procedureId }] = useFormData<AppointmentFormData>();
   assert.ok(accessCode);
   assert.ok(pin);
 
@@ -61,6 +61,7 @@ export function ShareAuthStep() {
         {parsePin(pin)}
       </Typography>
       <DownloadDocumentCardField
+        procedureId={procedureId}
         documentTitle={t("share_auth.auth_document_title")}
         required={t("share_auth.auth_document_required")}
         hint={t("share_auth.auth_document_hint")}

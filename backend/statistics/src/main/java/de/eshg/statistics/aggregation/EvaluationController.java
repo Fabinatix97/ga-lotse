@@ -14,6 +14,7 @@ import de.eshg.statistics.api.completeness.GetCompletenessDataResponse;
 import de.eshg.statistics.api.evaluation.AbstractAddEvaluationRequest;
 import de.eshg.statistics.api.evaluation.AbstractUpdateEvaluationRequest;
 import de.eshg.statistics.api.evaluation.CloneEvaluationRequest;
+import de.eshg.statistics.api.evaluation.GetAttributesInformationResponse;
 import de.eshg.statistics.api.evaluation.GetEvaluationRequest;
 import de.eshg.statistics.api.evaluation.GetEvaluationResponse;
 import de.eshg.statistics.api.evaluation.GetEvaluationsRequest;
@@ -68,7 +69,7 @@ public class EvaluationController {
   @PatchExchange(value = "/{evaluationId}", accept = APPLICATION_JSON_VALUE)
   @Operation(summary = "Update evaluation")
   public void updateEvaluation(
-      @PathVariable(name = "evaluationId") UUID evaluationId,
+      @PathVariable("evaluationId") UUID evaluationId,
       @Valid @RequestBody AbstractUpdateEvaluationRequest updateEvaluationRequest) {
     evaluationService.checkPermissionForEvaluation(evaluationId);
     evaluationService.updateEvaluation(evaluationId, updateEvaluationRequest);
@@ -102,7 +103,7 @@ public class EvaluationController {
   @ApiResponse(responseCode = "200", description = "The information for the detail page")
   @Operation(summary = "Get the information for the detail page")
   public GetDetailPageInformationResponse getDetailPageInformation(
-      @PathVariable(name = "evaluationId") UUID evaluationId) {
+      @PathVariable("evaluationId") UUID evaluationId) {
     evaluationService.checkPermissionForEvaluation(evaluationId);
     return evaluationService.getDetailPageInformation(evaluationId);
   }
@@ -110,7 +111,7 @@ public class EvaluationController {
   @DeleteExchange(value = "/{evaluationId}", accept = APPLICATION_JSON_VALUE)
   @ApiResponse(responseCode = "200", description = "Returned when the evaluation is deleted")
   @Operation(summary = "Delete an evaluation")
-  public void deleteEvaluation(@PathVariable(name = "evaluationId") UUID evaluationId) {
+  public void deleteEvaluation(@PathVariable("evaluationId") UUID evaluationId) {
     evaluationService.checkPermissionForEvaluation(evaluationId);
     evaluationService.prepareEvaluationForDeletion(evaluationId);
     statisticsExecutorService.submit(() -> evaluationExecution.deleteEvaluation(evaluationId));
@@ -122,7 +123,7 @@ public class EvaluationController {
   @ApiResponse(responseCode = "200", description = "Evaluation with data")
   @Operation(summary = "Get data from one evaluation")
   public GetEvaluationResponse getEvaluation(
-      @PathVariable(name = "evaluationId") UUID evaluationId,
+      @PathVariable("evaluationId") UUID evaluationId,
       @RequestBody @Valid GetEvaluationRequest getEvaluationRequest) {
     evaluationService.checkPermissionForEvaluation(evaluationId);
     return evaluationService.getEvaluation(evaluationId, getEvaluationRequest);
@@ -132,16 +133,25 @@ public class EvaluationController {
   @ApiResponse(responseCode = "200", description = "Completeness of an evaluation")
   @Operation(summary = "Get information about the completeness of the evaluation data")
   public GetCompletenessDataResponse getCompletenessInformation(
-      @PathVariable(name = "evaluationId") UUID evaluationId) {
+      @PathVariable("evaluationId") UUID evaluationId) {
     evaluationService.checkPermissionForEvaluation(evaluationId);
     return evaluationService.getCompletenessInformation(evaluationId);
+  }
+
+  @GetExchange(value = "/attributes/{evaluationId}", accept = APPLICATION_JSON_VALUE)
+  @ApiResponse(responseCode = "200", description = "Attribute information of an evaluation")
+  @Operation(summary = "Get information about the attributes of the evaluation")
+  public GetAttributesInformationResponse getEvaluationAttributesInformation(
+      @PathVariable("evaluationId") UUID evaluationId) {
+    evaluationService.checkPermissionForEvaluation(evaluationId);
+    return evaluationService.getAttributesInformation(evaluationId);
   }
 
   @GetExchange(value = "/{evaluationId}/report-series", accept = APPLICATION_JSON_VALUE)
   @ApiResponse(responseCode = "200", description = "Report series entries for the evaluation")
   @Operation(summary = "Get report series entries for the evaluation")
   public GetReportSeriesEntriesOfEvaluationResponse getReportSeriesEntriesOfEvaluation(
-      @PathVariable(name = "evaluationId") UUID evaluationId) {
+      @PathVariable("evaluationId") UUID evaluationId) {
     evaluationService.checkPermissionForEvaluation(evaluationId);
     return evaluationService.getReportSeriesEntriesOfEvaluation(evaluationId);
   }

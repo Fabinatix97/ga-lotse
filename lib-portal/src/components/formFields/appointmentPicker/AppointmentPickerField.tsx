@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useHasChanged } from "@eshg/lib-portal/hooks/useHasChanged";
 import { FormControl, FormHelperText, Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { isSameDay } from "date-fns";
@@ -120,6 +121,14 @@ export function AppointmentPickerField<T extends Appointment>({
     ...props,
     required: active && required ? requiredWarning : undefined,
   });
+
+  // formik will not re-validate when the validate prop changes.
+  const requiredWarningChanged = useHasChanged(requiredWarning);
+  useEffect(() => {
+    if (requiredWarningChanged) {
+      void field.helpers.setTouched(field.meta.touched, true);
+    }
+  }, [requiredWarningChanged, field.meta.touched, field.helpers]);
 
   const listProps = useAppointmentList({
     selectedDay,

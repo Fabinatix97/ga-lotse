@@ -1,0 +1,65 @@
+{
+  "header": {
+    "upcoming_appointment_title": "Anstehender Termin",
+    "past_appointment_title": "Vergangener Termin",
+    "logout": "Mein Bereich verlassen"
+  },
+  "main": {
+    "title": "Vorbereitung zum Termin",
+    "important_info_to_heading": "Wichtige Informationen",
+    "important_info_to_list": [
+      "Eine Teilnahme am Termin ist ohne Anmeldecode und PIN nicht möglich.",
+      "Der Termin kann nur mit Anmeldecode und PIN geändert oder storniert werden.",
+      "Bitte überprüfen Sie den Status Ihres Termins einen Tag vor dem geplanten Termin."
+    ],
+    "auth_document_title": "Dokument zur anonymen Identifizierung",
+    "auth_document_hint": "Bitte das Dokument herunterladen",
+    "auth_document_required": "Das Herunterladen des Dokumentes ist erforderlich.",
+    "download_button": "Herunterladen",
+    "downloaded_button": "Heruntergeladen",
+
+    "medical_history_title": "Anamnesebogen",
+    "medical_history_fulfilled": "erfolgreich übermittelt",
+    "medical_history_unfulfilled": "noch nicht vorgelegt",
+    "medical_history_button": "Jetzt ausfüllen"
+  },
+  "info": {
+    "title": "Informationen",
+    "year_of_birth_section": {
+      "title": "Geburtsjahr"
+    },
+    "service_section": {
+      "title": "Leistungsart",
+      "HIV_STI_CONSULTATION": "HIV-STI-Beratung",
+      "SEX_WORK": "Sexarbeit"
+    },
+    "appointment_date_section": {
+      "title": "Termin Datum"
+    },
+    "appointment_time_section": {
+      "title": "Zeit",
+      "time": "{{time}} Uhr",
+      "duration": "Dauer: {{duration}} Minuten"
+    },
+    "location_section": {
+      "title": "Adresse"
+    },
+    "internet_section": {
+      "title": "Internet",
+      "health_department": "Gesundheitsamt",
+      "opening_hours": "Öffnungs- und Sprechzeiten"
+    },
+    "contact_section": {
+      "title": "Kontakt",
+      "phone_number": "Telefon: {{phoneNumber}}",
+      "email": "E-Mail: "
+    },
+    "email_section": {
+      "title": "E-Mail-Adresse"
+    }
+  },
+  "personal_area": {
+    "title": "Sie können den Termin nicht wahrnehmen?",
+    "go_to_personal_area": "Zu meinen Terminen"
+  }
+}

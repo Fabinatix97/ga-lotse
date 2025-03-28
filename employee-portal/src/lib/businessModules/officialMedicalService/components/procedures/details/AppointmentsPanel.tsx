@@ -7,7 +7,8 @@ import {
   ApiAppointmentType,
   ApiEmployeeOmsProcedureDetails,
 } from "@eshg/official-medical-service-api";
-import { Button } from "@mui/joy";
+import { Button, Typography } from "@mui/joy";
+import { isEmpty } from "remeda";
 
 import { useCreateAppointmentSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/AppointmentSidebar";
 import { AppointmentsTable } from "@/lib/businessModules/officialMedicalService/components/procedures/details/AppointmentsTable";
@@ -49,7 +50,14 @@ export function AppointmentsPanel({
         )
       }
     >
-      <AppointmentsTable procedure={procedure} />
+      <>
+        {isProcedureFinalized(procedure) && isEmpty(procedure.appointments) && (
+          <Typography data-testid="no-appointments-text">
+            Keine Termine vorhanden
+          </Typography>
+        )}
+        <AppointmentsTable procedure={procedure} />
+      </>
     </InfoTile>
   );
 }

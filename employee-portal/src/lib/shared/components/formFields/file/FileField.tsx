@@ -13,6 +13,7 @@ import {
 import { validatePipe } from "@eshg/lib-portal/helpers/validators";
 import { FieldProps } from "@eshg/lib-portal/types/form";
 import {
+  Box,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -20,6 +21,7 @@ import {
   Stack,
   styled,
 } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
 import { ChangeEvent, ReactNode, useId, useRef } from "react";
 import { isDefined, isFunction, isString } from "remeda";
 
@@ -60,6 +62,8 @@ export interface FileFieldProps extends Omit<FieldProps<File | null>, "label"> {
   placeholder?: string;
   variant?: "input" | "button";
   onChange?: (file: FileLike | null) => void;
+  sx?: SxProps;
+  readonly?: boolean;
 }
 
 type FileLabelProps = Pick<FormLabelProps, "htmlFor">;
@@ -110,37 +114,39 @@ export function FileField(props: Readonly<FileFieldProps>) {
     });
 
   return (
-    <FormControl error={field.error} required={field.required}>
-      <Stack>
-        {renderLabel(props.label, { htmlFor: fileInputId })}
-        <UploadButton
-          activeDragOver={dropState === "copy"}
-          error={field.error || dropState === "no-drop"}
-          onClick={handleButtonClick}
-          aria-controls={fileInputId}
-          onDragOver={handleFileDrag}
-          onDrop={handleFileDrop}
-          onDragLeave={handleFileDragLeave}
-        >
-          {fileName ?? placeholder}
-        </UploadButton>
-        <HiddenInput
-          ref={fileInputRef}
-          id={fileInputId}
-          type="file"
-          name={props.name}
-          placeholder={placeholder}
-          accept={acceptedMimeTypes}
-          required={field.required}
-          onChange={handleChange}
-          tabIndex={-1}
-        />
-        {isDefined(field.helperText) && (
-          <FormHelperText id={`${fileInputId}-helper-text`}>
-            {field.helperText}
-          </FormHelperText>
-        )}
-      </Stack>
-    </FormControl>
+    <Box sx={props.sx}>
+      <FormControl error={field.error} required={field.required}>
+        <Stack>
+          {renderLabel(props.label, { htmlFor: fileInputId })}
+          <UploadButton
+            activeDragOver={dropState === "copy"}
+            error={field.error || dropState === "no-drop"}
+            onClick={handleButtonClick}
+            aria-controls={fileInputId}
+            onDragOver={handleFileDrag}
+            onDrop={handleFileDrop}
+            onDragLeave={handleFileDragLeave}
+          >
+            {fileName ?? placeholder}
+          </UploadButton>
+          <HiddenInput
+            ref={fileInputRef}
+            id={fileInputId}
+            type="file"
+            name={props.name}
+            placeholder={placeholder}
+            accept={acceptedMimeTypes}
+            required={field.required}
+            onChange={handleChange}
+            tabIndex={-1}
+          />
+          {isDefined(field.helperText) && (
+            <FormHelperText id={`${fileInputId}-helper-text`}>
+              {field.helperText}
+            </FormHelperText>
+          )}
+        </Stack>
+      </FormControl>
+    </Box>
   );
 }

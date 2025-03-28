@@ -27,7 +27,7 @@ import {
 } from "@eshg/base-api";
 import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 
-function useConfiguration() {
+export function useConfiguration() {
   const configurationParameters = useApiConfiguration(
     "PUBLIC_BASE_BACKEND_URL",
   );

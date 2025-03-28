@@ -78,7 +78,7 @@ public class BarChartDiagramCreationService
   private static Map<Object, Map<Object, Integer>> createChartDataHolderMap(
       TableColumnValueType valueType) {
     return switch (valueType) {
-      case BOOLEAN, INTEGER, VALUE_WITH_OPTIONS -> new LinkedHashMap<>();
+      case BOOLEAN, INTEGER, INTEGER_INTERVAL, VALUE_WITH_OPTIONS -> new LinkedHashMap<>();
       default -> new TreeMap<>();
     };
   }
@@ -86,7 +86,8 @@ public class BarChartDiagramCreationService
   private static List<?> getKeysForIntegerBooleanOrValueOptions(TableColumn primaryTableColumn) {
     return switch (primaryTableColumn.getValueType()) {
       case INTEGER -> getIntegerKeys(primaryTableColumn.getMinMaxNullUnknownValues());
-      case BOOLEAN, VALUE_WITH_OPTIONS -> getKeysForBooleanOrValueOptionsList(primaryTableColumn);
+      case BOOLEAN, INTEGER_INTERVAL, VALUE_WITH_OPTIONS ->
+          getKeysForBooleanIntegerIntervalOrValueOptionsList(primaryTableColumn);
       default -> List.of();
     };
   }
@@ -155,7 +156,7 @@ public class BarChartDiagramCreationService
       TableColumn primaryTableColumn,
       TableColumn secondaryTableColumn) {
     Object primaryKey =
-        getKeyForCellEntryBooleanIntegerTextDateOrValueOption(
+        getKeyForCellEntryBooleanIntegerIntervalTextDateOrValueOption(
             getCellEntry(tableRow, primaryTableColumn));
 
     Object secondaryKey;
@@ -163,7 +164,7 @@ public class BarChartDiagramCreationService
       secondaryKey = primaryKey;
     } else {
       secondaryKey =
-          getKeyForCellEntryBooleanIntegerTextDateOrValueOption(
+          getKeyForCellEntryBooleanIntegerIntervalTextDateOrValueOption(
               getCellEntry(tableRow, secondaryTableColumn));
     }
 

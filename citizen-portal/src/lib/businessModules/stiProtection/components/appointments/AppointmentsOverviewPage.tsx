@@ -111,6 +111,7 @@ export function AppointmentsOverviewPage() {
                   key={index}
                   index={index}
                   appointment={appointment}
+                  concern={concern}
                 />
               ))}
             </Stack>

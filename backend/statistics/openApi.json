@@ -689,6 +689,34 @@
         "tags" : [ "Analysis" ]
       }
     },
+    "/evaluation/attributes/{evaluationId}" : {
+      "get" : {
+        "operationId" : "getEvaluationAttributesInformation",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "evaluationId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetAttributesInformationResponse"
+                }
+              }
+            },
+            "description" : "Attribute information of an evaluation"
+          }
+        },
+        "summary" : "Get information about the attributes of the evaluation",
+        "tags" : [ "Evaluation" ]
+      }
+    },
     "/evaluation/clone" : {
       "post" : {
         "operationId" : "cloneEvaluation",
@@ -914,6 +942,34 @@
         },
         "summary" : "Change title and description of a report series",
         "tags" : [ "ReportSeries" ]
+      }
+    },
+    "/evaluation/report/attributes/{reportId}" : {
+      "get" : {
+        "operationId" : "getReportAttributesInformation",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "reportId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetAttributesInformationResponse"
+                }
+              }
+            },
+            "description" : "Attribute information for a report"
+          }
+        },
+        "summary" : "Get information about the attributes of the report",
+        "tags" : [ "Report" ]
       }
     },
     "/evaluation/report/{reportId}" : {
@@ -2132,6 +2188,10 @@
           }
         } ]
       },
+      "AggregationResultState" : {
+        "type" : "string",
+        "enum" : [ "PLANNED", "COMPLETED", "FAILED", "CREATING", "UPDATING", "COPY_ONGOING", "DELETING" ]
+      },
       "Analysis" : {
         "required" : [ "chartConfiguration", "createdAt", "id", "name", "numberOfDiagrams" ],
         "type" : "object",
@@ -2240,6 +2300,21 @@
           "dataSourceId" : {
             "type" : "string",
             "format" : "uuid"
+          }
+        }
+      },
+      "AttributesInformation" : {
+        "required" : [ "dataSourceName", "displayName" ],
+        "type" : "object",
+        "properties" : {
+          "dataSourceName" : {
+            "type" : "string"
+          },
+          "displayName" : {
+            "type" : "string"
+          },
+          "privacyCategory" : {
+            "$ref" : "#/components/schemas/DataPrivacyCategory"
           }
         }
       },
@@ -3366,6 +3441,21 @@
             "items" : {
               "$ref" : "#/components/schemas/MinimalEvaluationTemplateInfo"
             }
+          }
+        }
+      },
+      "GetAttributesInformationResponse" : {
+        "required" : [ "attributes", "state" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AttributesInformation"
+            }
+          },
+          "state" : {
+            "$ref" : "#/components/schemas/AggregationResultState"
           }
         }
       },

@@ -3,13 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { fixupConfigRules } from "@eslint/compat";
 import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
 import pluginQuery from "@tanstack/eslint-plugin-query";
+import { defineConfig } from "eslint/config";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import tseslint from "typescript-eslint";
 
 import {
   eslintBaseConfig,
@@ -104,7 +103,7 @@ const nextPlugin = compat.config({
   extends: ["next/core-web-vitals", "next/typescript"],
 });
 
-const nextBaseConfig = tseslint.config(
+const nextBaseConfig = defineConfig(
   ...nextPlugin,
   ...pluginQuery.configs["flat/recommended"],
   ...eslintBaseConfig,
@@ -180,7 +179,7 @@ const nextBaseConfig = tseslint.config(
 );
 
 export const eslintNextConfigs = {
-  app: tseslint.config(
+  app: defineConfig(
     ...nextBaseConfig,
     {
       rules: {
@@ -203,7 +202,7 @@ export const eslintNextConfigs = {
       },
     },
   ),
-  lib: tseslint.config(
+  lib: defineConfig(
     ...nextBaseConfig,
     {
       rules: {

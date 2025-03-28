@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
 import {
-  Autocomplete,
   AutocompleteProps,
   Input,
   InputProps,
@@ -176,7 +176,7 @@ function SoftRequiredSelectObject<
     ? { input: SOFT_REQUIRED_MARKER }
     : undefined;
   return (
-    <Autocomplete<TValue, TMultiple, false, false>
+    <CustomAutocomplete<TValue, TMultiple, false, false>
       {...props}
       {...additionalProps}
       slotProps={slotProps}

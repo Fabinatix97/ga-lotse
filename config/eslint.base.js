@@ -7,6 +7,7 @@ import eslintConfigPrettier from "eslint-config-prettier";
 import eslintPluginImport from "eslint-plugin-import";
 import pluginPromise from "eslint-plugin-promise";
 import eslintPluginUnusedImports from "eslint-plugin-unused-imports";
+import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
 
 export const restrictRelativeImportsPattern = {
@@ -14,7 +15,7 @@ export const restrictRelativeImportsPattern = {
   message: "Use absolute imports.",
 };
 
-export const eslintBaseConfig = tseslint.config(
+export const eslintBaseConfig = defineConfig(
   ...tseslint.configs.recommendedTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,
   pluginPromise.configs["flat/recommended"],

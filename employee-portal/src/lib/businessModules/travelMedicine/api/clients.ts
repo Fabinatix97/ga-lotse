@@ -26,7 +26,7 @@ import {
   VaccineApi,
 } from "@eshg/travel-medicine-api";
 
-function useConfiguration() {
+export function useConfiguration() {
   const configurationParameters = useApiConfiguration(
     "PUBLIC_TRAVEL_MEDICINE_BACKEND_URL",
   );

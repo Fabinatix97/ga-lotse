@@ -124,6 +124,11 @@ export default function PlaygroundIndexPage() {
           <li>
             <InternalLink href="/playground/teeth">Zahn-Icons</InternalLink>
           </li>
+          <li>
+            <InternalLink href="/playground/configurator">
+              Konfigurator
+            </InternalLink>
+          </li>
         </ul>
       </MainContentLayout>
     </StickyToolbarLayout>

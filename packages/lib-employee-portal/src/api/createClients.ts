@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BaseAPI, Configuration, UserApi } from "@eshg/base-api";
+import { BaseAPI, Configuration, ContactApi, UserApi } from "@eshg/base-api";
 import { apiMiddlewares } from "@eshg/lib-portal/config/apiMiddlewares";
 
 export type EmployeePortalClients = ReturnType<typeof createClients>;
@@ -16,5 +16,6 @@ export function createClients(baseUrl: string) {
 
   return {
     userApi: new UserApi(configuration),
+    contactApi: new ContactApi(configuration),
   } satisfies Record<string, BaseAPI>;
 }

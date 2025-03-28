@@ -134,8 +134,7 @@ public class MailController implements MailApi {
     context.setVariable("content", content);
     context.setVariable("departmentName", departmentInfo.name());
     context.setVariable("departmentCity", departmentInfo.city());
-    context.setVariable(
-        "logoBase64Png", svgToBase64Png(departmentConfigurationService.getConfig().getLogo()));
+    context.setVariable("logoBase64Png", svgToBase64Png(departmentConfigurationService.getLogo()));
     context.setVariable("citizenPortalUrl", citizenPortalUrl);
     context.setVariable("year", Calendar.getInstance().get(Calendar.YEAR));
 

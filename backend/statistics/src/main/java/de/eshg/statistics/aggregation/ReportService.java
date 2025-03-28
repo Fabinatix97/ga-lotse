@@ -12,6 +12,7 @@ import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.statistics.StatisticsUserService;
 import de.eshg.statistics.api.AnalysisDto;
 import de.eshg.statistics.api.chart.HistogramChartConfigurationDto;
+import de.eshg.statistics.api.evaluation.GetAttributesInformationResponse;
 import de.eshg.statistics.api.report.GetReportDetailPageResponse;
 import de.eshg.statistics.config.StatisticsConfig;
 import de.eshg.statistics.mapper.AnalysisMapper;
@@ -331,5 +332,11 @@ public class ReportService extends AbstractAggregationResultService {
       removeTableRows(report);
       return false;
     }
+  }
+
+  @Transactional(readOnly = true)
+  public GetAttributesInformationResponse getAttributesInformation(UUID reportId) {
+    Report report = getReportInternal(reportId);
+    return EvaluationMapper.getAttributesInformation(report);
   }
 }

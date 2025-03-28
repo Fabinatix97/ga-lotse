@@ -1,3 +1,6 @@
+# Copyright 2025 cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
 # This repository adheres to the publiccode.yml standard by including this
 # metadata file that makes public software easily discoverable.
 # More info at https://github.com/italia/publiccode.yml
@@ -19,7 +22,7 @@ platforms:
   - web
 usedBy:
   - Gesundheitsamt Stadt Frankfurt am Main
-logo: 'employee-portal/public/icon-256x256.png'
+logo: publiccode_logo.png
 releaseDate: '2024-10-01'
 softwareType: standalone/web
 softwareVersion: '1.0'

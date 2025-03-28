@@ -14,6 +14,7 @@ import {
   ApiExaminationResult,
   UpdateExaminationRequest,
 } from "@eshg/dental-api";
+import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
 import {
   mapOptionalValue,
   mapRequiredValue,
@@ -25,6 +26,7 @@ import {
   ExaminationFormValues,
   mapToExaminationFormValues,
 } from "@/lib/businessModules/dental/features/examinations/ExaminationFormLayout";
+import { INVALID_EXAMINATION_RESULT_VALIDATION_ERROR } from "@/lib/businessModules/dental/features/examinations/translations";
 import { useDentalExaminationStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
 import { FormFooter } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/FormFooter";
 import { FormStack } from "@/lib/shared/components/form/FormStack";
@@ -35,19 +37,29 @@ interface ChildExaminationFormProps extends RequiresChildren {
 
 export function ChildExaminationForm(props: ChildExaminationFormProps) {
   const { examination } = props;
-  const getToothDiagnoses = useDentalExaminationStore(
-    (state) => state.getToothDiagnoses,
+  const submitDentalExamination = useDentalExaminationStore(
+    (state) => state.submit,
   );
   const updateExamination = useUpdateExamination(examination.id);
+  const alert = useAlert();
 
   async function handleSubmit(values: ExaminationFormValues) {
-    try {
-      const toothDiagnoses = getToothDiagnoses();
+    alert.close();
+    const dentalExaminationResult = submitDentalExamination();
+
+    if (dentalExaminationResult.isValid) {
       await updateExamination.mutateAsync(
-        mapToRequest(examination, values, toothDiagnoses),
+        mapToRequest(
+          examination,
+          values,
+          dentalExaminationResult.toothDiagnoses,
+        ),
       );
-    } catch {
-      // TODO handle invalid tooth diagnoses
+    } else {
+      alert.error({
+        message: INVALID_EXAMINATION_RESULT_VALIDATION_ERROR,
+        closeable: true,
+      });
     }
   }
 

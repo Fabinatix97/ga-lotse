@@ -50,6 +50,12 @@ export function formatDateToFullReadableString(date: Date, locale = "de-DE") {
   }).format(date);
 }
 
+export function formatDateToYear(date: Date, locale = "de-DE") {
+  return new Intl.DateTimeFormat(locale, {
+    dateStyle: "short",
+  }).format(date);
+}
+
 export function calculateAge(
   dateOfBirth: Date,
   referenceDate: Date = new Date(),

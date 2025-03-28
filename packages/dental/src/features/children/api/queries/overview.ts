@@ -3,11 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiGetInstitutionGroupsResponse,
-  ChildApi,
-  GetChildrenRequest,
-} from "@eshg/dental-api";
+import { ChildApi, GetChildrenRequest } from "@eshg/dental-api";
 import { mapPaginatedList } from "@eshg/lib-employee-portal";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { isBlankString } from "@eshg/lib-portal/helpers/guards";
@@ -39,21 +35,6 @@ export function useSearchChildren(institutionId: string, searchString: string) {
     select: (response) =>
       enabled ? response.children.map(mapChildSearchResult) : [],
   });
-}
-
-export function useSearchInstitutionGroups(institutionId: string) {
-  const { childApi } = useDentalApi();
-
-  return useQuery({
-    queryKey: childApiQueryKey(["getInstitutionGroups", institutionId]),
-    queryFn: () => childApi.getInstitutionGroups(institutionId),
-    select: getGroups,
-    enabled: !isBlankString(institutionId),
-  });
-
-  function getGroups(response: ApiGetInstitutionGroupsResponse) {
-    return response.groups;
-  }
 }
 
 export function getChildrenByPersonQuery(

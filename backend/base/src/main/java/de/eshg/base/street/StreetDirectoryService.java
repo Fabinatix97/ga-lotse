@@ -35,8 +35,7 @@ public class StreetDirectoryService implements StreetDirectory {
   public StreetDirectoryService(DepartmentConfigurationService departmentConfigurationService) {
     this(
         CsvMapper.csvToBeans(
-            departmentConfigurationService.getConfig().getStreetDirectory(),
-            StreetDirectoryCsvEntry.class));
+            departmentConfigurationService.getStreetDirectory(), StreetDirectoryCsvEntry.class));
   }
 
   public StreetDirectoryService(List<StreetDirectoryCsvEntry> csvEntries) {

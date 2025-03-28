@@ -6,8 +6,10 @@
 "use client";
 
 import { useConfirmationDialog } from "@eshg/lib-employee-portal";
-import { NavigationContextProvider } from "@eshg/lib-portal/components/navigation/NavigationContext";
-import { MutationBundle } from "@eshg/lib-portal/types/query";
+import {
+  NavigationContextProvider,
+  OnBeforeNavigateProps,
+} from "@eshg/lib-portal/components/navigation/NavigationContext";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 
 const LABELS = {
@@ -20,12 +22,11 @@ export function ConfirmNavigationProvider({ children }: RequiresChildren) {
 
   function onBeforeNavigate(
     onNavigate: () => void,
-    onSaveMutation?: MutationBundle,
+    onBeforeNavigateProps?: OnBeforeNavigateProps,
   ) {
-    if (onSaveMutation !== undefined) {
+    if (onBeforeNavigateProps?.onSaveMutation !== undefined) {
       openConfirmationDialog({
-        onConfirm: onNavigate,
-        onConfirmMutation: onSaveMutation,
+        onConfirmMutation: onBeforeNavigateProps?.onSaveMutation,
         onDeny: onNavigate,
         title: "Änderungen speichern?",
         color: "primary",
@@ -34,16 +35,30 @@ export function ConfirmNavigationProvider({ children }: RequiresChildren) {
         confirmLabel: "Speichern",
         denyLabel: LABELS.discard,
         cancelLabel: LABELS.cancel,
+        ...(onBeforeNavigateProps?.confirmationDialogProps ?? {}),
+        onConfirm: onBeforeNavigateProps?.confirmationDialogProps?.onConfirm
+          ? () =>
+              onBeforeNavigateProps.confirmationDialogProps!.onConfirm!(
+                onNavigate,
+              )
+          : onNavigate,
       });
     } else {
       openConfirmationDialog({
-        onConfirm: onNavigate,
+        onDeny: onNavigate,
         title: "Änderungen verwerfen?",
         color: "danger",
         description:
           "Sie haben ungespeicherte Änderungen. Möchten Sie diese verwerfen?",
         confirmLabel: LABELS.discard,
         cancelLabel: LABELS.cancel,
+        ...(onBeforeNavigateProps?.confirmationDialogProps ?? {}),
+        onConfirm: onBeforeNavigateProps?.confirmationDialogProps?.onConfirm
+          ? () =>
+              onBeforeNavigateProps.confirmationDialogProps!.onConfirm!(
+                onNavigate,
+              )
+          : onNavigate,
       });
     }
   }

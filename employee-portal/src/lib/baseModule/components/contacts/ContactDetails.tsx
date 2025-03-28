@@ -6,11 +6,15 @@
 import { ApiBaseFeature, ApiUserRole } from "@eshg/base-api";
 import {
   BaseAddressDetailsColumn,
+  CONTACT_CATEGORY_NAMES,
+  Contact,
   ContentPanel,
   DetailsColumn,
   DetailsRow,
   EditButton,
   ResponsiveDivider,
+  isInstitutionContact,
+  isPersonContact,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
 import {
@@ -25,12 +29,6 @@ import { isDefined, isNonNullish } from "remeda";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { useUpdateContactSidebar } from "@/lib/baseModule/components/contacts/modals/UpdateContactSidebar";
-import {
-  Contact,
-  isInstitutionContact,
-  isPersonContact,
-} from "@/lib/baseModule/components/contacts/types";
-import { contactCategoryNames } from "@/lib/baseModule/shared/translations";
 import { ChatUserId } from "@/lib/businessModules/chat/components/ChatUserId";
 import { routes } from "@/lib/businessModules/chat/shared/routes";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
@@ -140,7 +138,7 @@ export function ContactDetails({ contact }: { contact: Contact }) {
                 label={"Objekttyp"}
                 value={
                   isNonNullish(contact.category)
-                    ? contactCategoryNames[contact.category]
+                    ? CONTACT_CATEGORY_NAMES[contact.category]
                     : undefined
                 }
               />

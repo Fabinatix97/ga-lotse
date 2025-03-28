@@ -15,6 +15,7 @@ import de.eshg.stiprotection.api.CreateFollowUpProcedureRequest;
 import de.eshg.stiprotection.api.CreateProcedureRequest;
 import de.eshg.stiprotection.api.UpdateAppointmentRequest;
 import de.eshg.stiprotection.api.citizen.BookAppointmentRequest;
+import de.eshg.stiprotection.api.citizen.TimetableEntry;
 import de.eshg.stiprotection.persistence.data.AppointmentBookingType;
 import de.eshg.stiprotection.persistence.data.AppointmentData;
 import de.eshg.stiprotection.persistence.db.UserDefinedAppointment;
@@ -80,10 +81,16 @@ public class AppointmentMapper {
   }
 
   public static AppointmentData toDataType(BookAppointmentRequest request) {
+    AppointmentType appointmentType = MappingUtil.mapEnum(AppointmentType.class, request.concern());
+    return toDataType(request, appointmentType);
+  }
+
+  public static AppointmentData toDataType(
+      TimetableEntry timetableEntry, AppointmentType appointmentType) {
     return new AppointmentData(
         AppointmentBookingType.APPOINTMENT_BLOCK,
-        MappingUtil.mapEnum(AppointmentType.class, request.concern()),
-        request.appointmentStart(),
-        request.durationInMinutes());
+        appointmentType,
+        timetableEntry.appointmentStart(),
+        timetableEntry.durationInMinutes());
   }
 }

@@ -33,7 +33,7 @@ function useConfirmLeaveDirtyFormEffect({
   ...options
 }: ConfirmLeaveDirtyFormEffectProps) {
   const { dirty: formikDirty } = useFormikContext();
-  const { setCanNavigate, setOnSaveMutation } = useNavigation();
+  const { setCanNavigate, setOnBeforeNavigateProps } = useNavigation();
   const dirty = isDirty ?? formikDirty;
 
   useConfirmNavigation(options);
@@ -44,9 +44,9 @@ function useConfirmLeaveDirtyFormEffect({
   }, [dirty, setCanNavigate]);
   useEffect(() => {
     if (saveMutation) {
-      setOnSaveMutation(saveMutation);
+      setOnBeforeNavigateProps({ onSaveMutation: saveMutation });
     }
-  }, [saveMutation, setOnSaveMutation]);
+  }, [saveMutation, setOnBeforeNavigateProps]);
 }
 
 export interface ConfirmLeaveDirtyFormEffectProps

@@ -182,6 +182,22 @@ export { ChipWithTooltip } from "./components/chip/ChipWithTooltip";
 export { SyncBarrier } from "./features/sync/components/SyncBarrier";
 export { useSyncBarrier } from "./features/sync/hooks/useSyncBarrier";
 
+export { CONTACT_CATEGORY_NAMES } from "./features/contacts/translations";
+export {
+  type Contact,
+  isPersonContact,
+  isInstitutionContact,
+} from "./features/contacts/api/models/Contact";
+export {
+  useSearchContactsQuery,
+  useGetOptionalContactQuery,
+} from "./features/contacts/api/queries";
+export { SearchContactField } from "./features/contacts/components/SearchContactField";
+export { SelectContactField } from "./features/contacts/components/SelectContactField";
+export { SelectMultipleContactsField } from "./features/contacts/components/SelectMultipleContactsField";
+export { formatInstitutionNameWithCategoryShort } from "./features/contacts/utils/formatters";
+export { mapContactToSelectOption } from "./features/contacts/utils/mappers";
+
 export { useHeaderHeights } from "./hooks/useHeaderHeights";
 export {
   useReplaceSearchParams,
@@ -200,3 +216,4 @@ export type {
 } from "./types/sideNavigation";
 
 export { formatSchoolYear } from "./utils/formatters";
+export { mapToSelectOption } from "./utils/mappers";

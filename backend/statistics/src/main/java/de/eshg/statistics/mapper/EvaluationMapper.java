@@ -10,6 +10,7 @@ import de.eshg.base.user.api.UserDto;
 import de.eshg.lib.statistics.api.DataPrivacyCategory;
 import de.eshg.lib.statistics.api.DataRow;
 import de.eshg.lib.statistics.api.ValueOptionInternal;
+import de.eshg.statistics.api.AttributesInformation;
 import de.eshg.statistics.api.TableColumnHeader;
 import de.eshg.statistics.api.attributes.AbstractTableColumnHeaderAttribute;
 import de.eshg.statistics.api.attributes.BaseModuleIdAttribute;
@@ -27,8 +28,10 @@ import de.eshg.statistics.api.evaluation.EvaluationDataSensitivity;
 import de.eshg.statistics.api.evaluation.EvaluationInfo;
 import de.eshg.statistics.api.evaluation.EvaluationSortKey;
 import de.eshg.statistics.api.evaluation.EvaluationStateDto;
+import de.eshg.statistics.api.evaluation.GetAttributesInformationResponse;
 import de.eshg.statistics.api.evaluation.GetEvaluationResponse;
 import de.eshg.statistics.api.evaluation.GetEvaluationsResponse;
+import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult_;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
 import de.eshg.statistics.persistence.entity.CellEntry;
@@ -299,5 +302,20 @@ public class EvaluationMapper {
   private static AggregationResultState mapToAggregationResultState(
       EvaluationStateDto evaluationState) {
     return AggregationResultState.valueOf(evaluationState.name());
+  }
+
+  public static GetAttributesInformationResponse getAttributesInformation(
+      AbstractAggregationResult aggregationResult) {
+    return new GetAttributesInformationResponse(
+        aggregationResult.getState(),
+        aggregationResult.getTableColumns().stream()
+            .map(
+                tableColumn ->
+                    new AttributesInformation(
+                        getAttributeDisplayName(tableColumn, false),
+                        tableColumn.getDataSourceName(),
+                        mapDataPrivacyCategory(
+                            tableColumn.getAnonymizationConfiguration().getDataPrivacyCategory())))
+            .toList());
   }
 }

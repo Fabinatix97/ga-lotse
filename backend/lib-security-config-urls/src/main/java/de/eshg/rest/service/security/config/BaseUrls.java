@@ -184,6 +184,7 @@ public final class BaseUrls {
 
   public static final class Dental {
     public static final String CHILD_CONTROLLER = "/children";
+    public static final String PROCEDURE_LABEL_CONTROLLER = "/dental-procedure-labels";
     public static final String PROPHYLAXIS_SESSION_CONTROLLER = "/prophylaxis-sessions";
 
     private Dental() {}

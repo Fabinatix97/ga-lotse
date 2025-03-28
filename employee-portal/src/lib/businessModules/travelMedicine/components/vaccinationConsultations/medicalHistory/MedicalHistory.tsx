@@ -59,9 +59,7 @@ export function MedicalHistory({
   }
 
   useEffect(() => {
-    if (medicalHistory.note === undefined) {
-      medicalHistory.note = "";
-    }
+    medicalHistory.note ??= "";
   }, [medicalHistory]);
 
   return (

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { UploadFileOutlined } from "@mui/icons-material";
+import { FileUploadOutlined } from "@mui/icons-material";
 import { Button, ButtonProps, styled } from "@mui/joy";
 
 export const StyledButton = styled(Button)(({ theme }) => ({
@@ -38,7 +38,7 @@ export function FileInputButton(props: FileButtonProps) {
       {...buttonProps}
       variant="outlined"
       color={activeDragOver ? "primary" : error ? "danger" : "neutral"}
-      endDecorator={<UploadFileOutlined />}
+      endDecorator={<FileUploadOutlined />}
     />
   );
 }
@@ -51,7 +51,7 @@ export function FileButton(props: FileButtonProps) {
       {...buttonProps}
       variant="outlined"
       color={activeDragOver ? "primary" : error ? "danger" : "primary"}
-      startDecorator={<UploadFileOutlined />}
+      startDecorator={<FileUploadOutlined />}
       sx={{ width: "fit-content" }}
     />
   );

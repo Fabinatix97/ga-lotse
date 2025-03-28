@@ -89,7 +89,7 @@ public class AnalysisService {
   private static final String PRIMARY_ATTRIBUTE = "primaryAttribute";
   private static final String SECONDARY_ATTRIBUTE = "secondaryAttribute";
   private static final String ERROR_MESSAGE_ATTRIBUTE_TYPE =
-      "'%s': %ss require an attribute of type BOOLEAN, INTEGER, TEXT, DATE or VALUE_WITH_OPTIONS as '%s'";
+      "'%s': %ss require an attribute of type BOOLEAN, INTEGER, INTEGER_INTERVAL, TEXT, DATE or VALUE_WITH_OPTIONS as '%s'";
 
   private final EvaluationService evaluationService;
   private final GeoShapeService geoShapeService;
@@ -266,7 +266,7 @@ public class AnalysisService {
             barChartConfiguration.primaryAttribute(), aggregationResult);
 
     String configName = "BarChartConfiguration";
-    validateTableColumBooleanIntegerTextDateOrValueOption(
+    validateTableColumBooleanIntegerIntervalTextDateOrValueOption(
         tableColumnPrimary,
         ERROR_MESSAGE_ATTRIBUTE_TYPE.formatted(name, configName, PRIMARY_ATTRIBUTE));
 
@@ -280,7 +280,7 @@ public class AnalysisService {
       TableColumn tableColumnSecondary =
           AggregationResultUtil.getTableColumnWithDto(
               barChartConfiguration.secondaryAttribute(), aggregationResult);
-      validateTableColumBooleanIntegerTextDateOrValueOption(
+      validateTableColumBooleanIntegerIntervalTextDateOrValueOption(
           tableColumnSecondary,
           ERROR_MESSAGE_ATTRIBUTE_TYPE.formatted(name, configName, SECONDARY_ATTRIBUTE));
       validateThatTableColumnsAreDifferent(tableColumnPrimary, tableColumnSecondary, name);
@@ -329,9 +329,9 @@ public class AnalysisService {
             histogramChartConfiguration.primaryAttribute(), aggregationResult);
 
     String configName = "HistogramChartConfiguration";
-    validateTableColumnDecimalOrInteger(
+    validateTableColumnDecimalOrIntegerOrInterval(
         tableColumnPrimary,
-        "'%s': %ss require an attribute of type DECIMAL or INTEGER as '%s'"
+        "'%s': %ss require an attribute of type DECIMAL, DECIMAL_INTERVAL, INTEGER or INTEGER_INTERVAL as '%s'"
             .formatted(name, configName, PRIMARY_ATTRIBUTE));
 
     if (histogramChartConfiguration.secondaryAttribute() == null) {
@@ -345,7 +345,7 @@ public class AnalysisService {
       TableColumn tableColumnSecondary =
           AggregationResultUtil.getTableColumnWithDto(
               histogramChartConfiguration.secondaryAttribute(), aggregationResult);
-      validateTableColumBooleanIntegerTextDateOrValueOption(
+      validateTableColumBooleanIntegerIntervalTextDateOrValueOption(
           tableColumnSecondary,
           ERROR_MESSAGE_ATTRIBUTE_TYPE.formatted(name, configName, SECONDARY_ATTRIBUTE));
 
@@ -489,9 +489,9 @@ public class AnalysisService {
         AggregationResultUtil.getTableColumnWithDto(
             pieChartConfigurationDto.attribute(), aggregationResult);
 
-    validateTableColumBooleanIntegerTextDateOrValueOption(
+    validateTableColumBooleanIntegerIntervalTextDateOrValueOption(
         tableColumnPrimary,
-        "'%s': PieChartConfigurations require an attribute of type BOOLEAN, INTEGER, TEXT or VALUE_WITH_OPTIONS"
+        "'%s': PieChartConfigurations require an attribute of type BOOLEAN, INTEGER, INTEGER_INTERVAL, TEXT or VALUE_WITH_OPTIONS"
             .formatted(name));
   }
 
@@ -501,38 +501,27 @@ public class AnalysisService {
       String name,
       String configName) {
 
-    String errorMessage = "'%s': %ss require an attribute of type %s or %s as '%s'";
+    String errorMessage =
+        "'%s': %ss require an attribute of type DECIMAL, DECIMAL_INTERVAL, INTEGER or INTEGER_INTERVAL as '%s'";
 
     TableColumn tableColumnX =
         AggregationResultUtil.getTableColumnWithDto(
             chartConfiguration.xAttribute(), aggregationResult);
-    validateTableColumnDecimalOrInteger(
-        tableColumnX,
-        errorMessage.formatted(
-            name,
-            configName,
-            TableColumnValueType.DECIMAL,
-            TableColumnValueType.INTEGER,
-            "xAttribute"));
+    validateTableColumnDecimalOrIntegerOrInterval(
+        tableColumnX, errorMessage.formatted(name, configName, "xAttribute"));
 
     TableColumn tableColumnY =
         AggregationResultUtil.getTableColumnWithDto(
             chartConfiguration.yAttribute(), aggregationResult);
-    validateTableColumnDecimalOrInteger(
-        tableColumnY,
-        errorMessage.formatted(
-            name,
-            configName,
-            TableColumnValueType.DECIMAL,
-            TableColumnValueType.INTEGER,
-            "yAttribute"));
+    validateTableColumnDecimalOrIntegerOrInterval(
+        tableColumnY, errorMessage.formatted(name, configName, "yAttribute"));
 
     if (chartConfiguration.secondaryAttribute() != null) {
       TableColumn tableColumnSecondary =
           AggregationResultUtil.getTableColumnWithDto(
               chartConfiguration.secondaryAttribute(), aggregationResult);
 
-      validateTableColumBooleanIntegerTextDateOrValueOption(
+      validateTableColumBooleanIntegerIntervalTextDateOrValueOption(
           tableColumnSecondary,
           ERROR_MESSAGE_ATTRIBUTE_TYPE.formatted(name, configName, SECONDARY_ATTRIBUTE));
     }
@@ -546,10 +535,11 @@ public class AnalysisService {
     }
   }
 
-  private static void validateTableColumBooleanIntegerTextDateOrValueOption(
+  private static void validateTableColumBooleanIntegerIntervalTextDateOrValueOption(
       TableColumn tableColumn, String errorMessage) {
     if (!tableColumn.getValueType().equals(TableColumnValueType.BOOLEAN)
         && !tableColumn.getValueType().equals(TableColumnValueType.INTEGER)
+        && !tableColumn.getValueType().equals(TableColumnValueType.INTEGER_INTERVAL)
         && !tableColumn.getValueType().equals(TableColumnValueType.TEXT)
         && !tableColumn.getValueType().equals(TableColumnValueType.DATE)
         && !tableColumn.getValueType().equals(TableColumnValueType.VALUE_WITH_OPTIONS)) {
@@ -557,10 +547,12 @@ public class AnalysisService {
     }
   }
 
-  private static void validateTableColumnDecimalOrInteger(
+  private static void validateTableColumnDecimalOrIntegerOrInterval(
       TableColumn tableColumn, String errorMessage) {
     if (!tableColumn.getValueType().equals(TableColumnValueType.DECIMAL)
-        && !tableColumn.getValueType().equals(TableColumnValueType.INTEGER)) {
+        && !tableColumn.getValueType().equals(TableColumnValueType.DECIMAL_INTERVAL)
+        && !tableColumn.getValueType().equals(TableColumnValueType.INTEGER)
+        && !tableColumn.getValueType().equals(TableColumnValueType.INTEGER_INTERVAL)) {
       throw new BadRequestException(errorMessage);
     }
   }
@@ -576,14 +568,12 @@ public class AnalysisService {
 
   private static void validateChoroplethSecondaryAttribute(TableColumn tableColumn) {
     if (!tableColumn.getValueType().equals(TableColumnValueType.BOOLEAN)
+        && !tableColumn.getValueType().equals(TableColumnValueType.DECIMAL)
+        && !tableColumn.getValueType().equals(TableColumnValueType.DECIMAL_INTERVAL)
         && !tableColumn.getValueType().equals(TableColumnValueType.INTEGER)
-        && !tableColumn.getValueType().equals(TableColumnValueType.DECIMAL)) {
+        && !tableColumn.getValueType().equals(TableColumnValueType.INTEGER_INTERVAL)) {
       throw new BadRequestException(
-          "ChoroplethMapConfigurations require an attribute of type %s or %s or %s as 'secondaryAttribute'"
-              .formatted(
-                  TableColumnValueType.BOOLEAN,
-                  TableColumnValueType.INTEGER,
-                  TableColumnValueType.DECIMAL));
+          "ChoroplethMapConfigurations require an attribute of type BOOLEAN, DECIMAL, DECIMAL_INTERVAL, INTEGER or INTEGER_INTERVAL as 'secondaryAttribute'");
     }
   }
 

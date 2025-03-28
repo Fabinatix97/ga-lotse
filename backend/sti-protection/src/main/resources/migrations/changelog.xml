@@ -75,5 +75,6 @@
   <include file="migrations/0065_privacy_documents_config.xml"/>
   <include file="migrations/0066_access_code.xml"/>
   <include file="migrations/0067_add_opening_hours_initialized.xml"/>
+  <include file="migrations/0068_index_by_anonymous_user_id.xml"/>
 
 </databaseChangeLog>

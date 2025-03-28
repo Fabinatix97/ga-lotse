@@ -10,6 +10,7 @@ import {
   ToothDiagnosis,
 } from "@eshg/dental";
 import { ApiDentitionType, ApiTooth } from "@eshg/dental-api";
+import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
 import {
   mapOptionalValue,
   mapRequiredValue,
@@ -20,6 +21,7 @@ import {
   ExaminationFormValues,
   mapToExaminationFormValues,
 } from "@/lib/businessModules/dental/features/examinations/ExaminationFormLayout";
+import { INVALID_EXAMINATION_RESULT_VALIDATION_ERROR } from "@/lib/businessModules/dental/features/examinations/translations";
 import { useDentalExaminationStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/DentalExaminationStoreProvider";
 import { useProphylaxisSessionStore } from "@/lib/businessModules/dental/features/prophylaxisSessions/prophylaxisSessionStore/ProphylaxisSessionStoreProvider";
 
@@ -45,23 +47,50 @@ export function useParticipantExaminationForm(
   const { initialValues, onSubmit } = params;
 
   const isScreening = useProphylaxisSessionStore((state) => state.isScreening);
-  const getToothDiagnoses = useDentalExaminationStore(
-    (state) => state.getToothDiagnoses,
+  const isDentalExaminationDirty = useDentalExaminationStore(
+    (state) => state.dirty,
   );
+  const submitDentalExamination = useDentalExaminationStore(
+    (state) => state.submit,
+  );
+  const alert = useAlert();
 
-  return useFormik({
+  const form = useFormik({
     initialValues: mapToExaminationFormValues(
       initialValues.result,
       initialValues.note,
       initialValues.prophylaxisDentitionType,
     ),
     onSubmit: (formValues: ExaminationFormValues) => {
-      onSubmit(
-        mapToExaminationValues(isScreening, formValues, getToothDiagnoses()),
-      );
+      alert.close();
+
+      if (!(form.dirty || isDentalExaminationDirty)) {
+        return;
+      }
+
+      const dentalExaminationResult = submitDentalExamination();
+
+      if (dentalExaminationResult.isValid) {
+        onSubmit(
+          mapToExaminationValues(
+            isScreening,
+            formValues,
+            dentalExaminationResult.toothDiagnoses,
+          ),
+        );
+      } else {
+        alert.error({
+          message: INVALID_EXAMINATION_RESULT_VALIDATION_ERROR,
+          closeable: true,
+        });
+        // prevent navigation
+        throw new Error("Dental examination contains invalid results.");
+      }
     },
     enableReinitialize: true,
   });
+
+  return form;
 }
 
 function mapToExaminationValues(

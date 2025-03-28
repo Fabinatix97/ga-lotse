@@ -3,26 +3,28 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useNavigation } from "@eshg/lib-portal/components/navigation/NavigationContext";
-import { MutationBundle } from "@eshg/lib-portal/types/query";
+import {
+  OnBeforeNavigateProps,
+  useNavigation,
+} from "@eshg/lib-portal/components/navigation/NavigationContext";
 import { useEffect } from "react";
 
 export function useConfirmNavigationEffect(
   triggerLeaveConfirmation: boolean,
-  onSaveMutation?: MutationBundle,
+  onBeforeNavigateProps?: OnBeforeNavigateProps,
 ): void {
-  const { setCanNavigate, setOnSaveMutation } = useNavigation();
+  const { setCanNavigate, setOnBeforeNavigateProps } = useNavigation();
   useEffect(() => {
-    setOnSaveMutation(onSaveMutation);
+    setOnBeforeNavigateProps(onBeforeNavigateProps);
     setCanNavigate(!triggerLeaveConfirmation);
     return () => {
-      setOnSaveMutation(undefined);
+      setOnBeforeNavigateProps(undefined);
       setCanNavigate(true);
     };
   }, [
     triggerLeaveConfirmation,
     setCanNavigate,
-    setOnSaveMutation,
-    onSaveMutation,
+    setOnBeforeNavigateProps,
+    onBeforeNavigateProps,
   ]);
 }

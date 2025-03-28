@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
 import SearchIcon from "@mui/icons-material/Search";
 import {
-  Autocomplete,
   AutocompleteOption,
   Box,
   Chip,
@@ -36,9 +36,8 @@ export function UsersAutocomplete({
   const [field, meta, helpers] = useField<string | string[] | null>(name);
   return (
     <Box>
-      <Autocomplete
+      <CustomAutocomplete
         name="invite"
-        aria-description={multiple ? "Mehrfachauswahl möglich" : undefined}
         multiple={multiple}
         value={field.value}
         size="lg"

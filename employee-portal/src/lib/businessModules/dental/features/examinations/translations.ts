@@ -78,3 +78,6 @@ export const ORTHODONTIC_STATUS: Record<ApiOrthodonticStatus, string> = {
   [ApiOrthodonticStatus.TreatmentCanceled]: "Abgebrochen",
   [ApiOrthodonticStatus.UnderObservation]: "In Beobachtung",
 };
+
+export const INVALID_EXAMINATION_RESULT_VALIDATION_ERROR =
+  "Es wurden fehlerhafte Befunde eingetragen. Bitte korrigieren Sie die markierten Befunde und versuchen es danach erneut.";

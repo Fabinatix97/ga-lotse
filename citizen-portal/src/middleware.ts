@@ -37,9 +37,7 @@ export function middleware(request: NextRequest) {
     publicUrl: env.PUBLIC_FRONTEND_URL,
   })(request);
 
-  if (response === undefined) {
-    response = NextResponse.next({ request });
-  }
+  response ??= NextResponse.next({ request });
 
   addCspResponseHeader(response);
 

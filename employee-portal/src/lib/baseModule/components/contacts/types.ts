@@ -18,25 +18,6 @@ import {
   RequiredMergeValue,
 } from "@/lib/baseModule/components/contacts/forms/helpers";
 
-type TaggedPersonContact = ApiPersonContact & { type: "PersonContact" };
-type TaggedInstitutionContact = ApiInstitutionContact & {
-  type: "InstitutionContact";
-};
-
-export type Contact = TaggedPersonContact | TaggedInstitutionContact;
-
-export function isPersonContact(
-  contact: Contact,
-): contact is TaggedPersonContact {
-  return contact.type === "PersonContact";
-}
-
-export function isInstitutionContact(
-  contact: Contact,
-): contact is TaggedInstitutionContact {
-  return contact.type === "InstitutionContact";
-}
-
 export type ContactFormValues =
   | PersonContactFormValues
   | InstitutionContactFormValues;

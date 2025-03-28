@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
 import {
   ApiAdminActorSelector,
   ApiAdminActorType,
   ApiAdminOrgUnitType,
   ApiFederalState,
 } from "@eshg/service-directory-api";
-import { Autocomplete, Select, SelectProps, Stack } from "@mui/joy";
+import { Select, SelectProps, Stack } from "@mui/joy";
 import { CellContext } from "@tanstack/react-table";
 import { ReactNode, useCallback, useMemo } from "react";
 import { isEmpty, isNonNullish, unique } from "remeda";
@@ -231,7 +232,7 @@ function TextInput(
   const color = serverError ? "danger" : getColor(props.value, props.options);
 
   return (
-    <Autocomplete
+    <CustomAutocomplete
       freeSolo
       autoSelect
       value={props.value ?? ""}

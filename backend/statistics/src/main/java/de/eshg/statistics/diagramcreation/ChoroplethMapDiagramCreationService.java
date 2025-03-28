@@ -114,7 +114,10 @@ public class ChoroplethMapDiagramCreationService
         case TableColumnValueType.BOOLEAN ->
             notNullSpecifications.add(
                 TableRowSpecifications.getNotNullSpecification(secondaryTableColumn));
-        case TableColumnValueType.DECIMAL, TableColumnValueType.INTEGER ->
+        case TableColumnValueType.DECIMAL,
+                TableColumnValueType.DECIMAL_INTERVAL,
+                TableColumnValueType.INTEGER,
+                TableColumnValueType.INTEGER_INTERVAL ->
             notNullSpecifications.add(
                 TableRowSpecifications.getNotNullAndNotUnknownSpecificationDecimalAndInteger(
                     secondaryTableColumn));

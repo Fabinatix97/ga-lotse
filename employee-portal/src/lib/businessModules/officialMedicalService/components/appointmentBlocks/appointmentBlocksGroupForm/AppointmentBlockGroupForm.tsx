@@ -9,7 +9,7 @@ import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvid
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { Divider, Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
-import { isDefined, isEmpty } from "remeda";
+import { isDefined } from "remeda";
 
 import { AppointmentTypeConfig } from "@/lib/businessModules/officialMedicalService/api/models/AppointmentTypeConfig";
 import { CreateAppointmentBlockGroupValues } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/appointmentBlocksGroupForm/CreateAppointmentBlockGroupForm";
@@ -44,11 +44,6 @@ function validateForm(
   );
   if (isDefined(appointmentBlockErrors)) {
     errors.appointmentBlocks = appointmentBlockErrors;
-  }
-
-  if (isEmpty(values.physicians)) {
-    errors.physicians =
-      "Es muss mindestens ein Arzt/eine Ärztin ausgewählt sein.";
   }
 
   return errors;
@@ -129,6 +124,7 @@ export function AppointmentBlockGroupForm(
           <Stack gap={5}>
             <AppointmentStaffSelection
               physicianOptions={physicianOptions}
+              physicianRequired="Es muss mindestens ein Arzt/eine Ärztin ausgewählt sein."
               freeStaff={props.freeStaff}
               blockedStaff={props.blockedStaff}
               validateAvailability={() => props.validateAvailability(values)}

@@ -57,9 +57,7 @@ export function mapToStackedSeries(
   diagramData.forEach((item) => {
     labels.push(item.label);
     item.attributes.forEach((attribute) => {
-      if (!dataGroups[attribute.label]) {
-        dataGroups[attribute.label] = [];
-      }
+      dataGroups[attribute.label] ??= [];
       dataGroups[attribute.label]!.push({
         groupLabel: item.label,
         value: attribute.value,

@@ -4,9 +4,9 @@
  */
 
 import { ApiUser } from "@eshg/base-api";
+import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
 import { Close, Search } from "@mui/icons-material";
 import {
-  Autocomplete,
   AutocompleteOption,
   Chip,
   ListItemContent,
@@ -34,11 +34,10 @@ export function UserAutoCompleteField({
   setFieldValue,
 }: UserInputProps) {
   return (
-    <Autocomplete
+    <CustomAutocomplete
       name="users"
       startDecorator={<Search />}
       color="primary"
-      aria-description="Mehrfachauswahl möglich"
       multiple
       options={options}
       value={values}

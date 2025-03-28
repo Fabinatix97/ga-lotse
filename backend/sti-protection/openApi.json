@@ -558,11 +558,30 @@
           }
         },
         "tags" : [ "Citizen" ]
+      },
+      "put" : {
+        "operationId" : "updateBookedAppointment",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateBookedAppointmentRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "Citizen" ]
       }
     },
     "/citizen/auth/medicalHistory" : {
       "put" : {
-        "operationId" : "updateMedicalHistory_1",
+        "operationId" : "updateCitizenMedicalHistory",
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -652,7 +671,7 @@
     },
     "/citizen/public/appointments/{id}/anon-ident-document" : {
       "get" : {
-        "operationId" : "getAnonymousIdentificationDocument_1",
+        "operationId" : "getCitizenAnonymousIdentificationDocument",
         "parameters" : [ {
           "in" : "path",
           "name" : "id",
@@ -4658,7 +4677,7 @@
         }
       },
       "CitizenProcedure" : {
-        "required" : [ "appointmentHistory", "concern", "medicalHistorySubmitted", "person" ],
+        "required" : [ "appointmentHistory", "concern", "id", "medicalHistorySubmitted", "person" ],
         "type" : "object",
         "properties" : {
           "appointment" : {
@@ -4672,6 +4691,10 @@
           },
           "concern" : {
             "$ref" : "#/components/schemas/Concern"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
           },
           "medicalHistorySubmitted" : {
             "type" : "boolean"
@@ -8592,6 +8615,20 @@
             "minimum" : 1,
             "type" : "integer",
             "format" : "int64"
+          }
+        }
+      },
+      "UpdateBookedAppointmentRequest" : {
+        "required" : [ "appointmentStart", "durationInMinutes" ],
+        "type" : "object",
+        "properties" : {
+          "appointmentStart" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "durationInMinutes" : {
+            "type" : "integer",
+            "format" : "int32"
           }
         }
       },

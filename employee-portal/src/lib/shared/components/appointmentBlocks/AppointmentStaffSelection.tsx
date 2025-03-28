@@ -18,6 +18,7 @@ export const BUTTON_STYLES: SxProps = {
 
 export interface AppointmentStaffSelectionProps {
   physicianOptions: StaffUser[];
+  physicianRequired?: string;
   medicalAssistantOptions?: StaffUser[];
   consultantOptions?: StaffUser[];
   blockedStaff: string[];
@@ -36,6 +37,7 @@ export function AppointmentStaffSelection(
           label="Arzt/Ärztin"
           placeholder="auswählen"
           options={props.physicianOptions}
+          required={props.physicianRequired}
           freeStaff={props.freeStaff}
           blockedStaff={props.blockedStaff}
         />

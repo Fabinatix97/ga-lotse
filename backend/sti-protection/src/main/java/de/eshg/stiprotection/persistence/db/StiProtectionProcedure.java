@@ -59,6 +59,7 @@ import org.springframework.util.Assert;
       @Index(columnList = "sti_procedure_origin"),
       @Index(columnList = "closed_at"),
       @Index(columnList = "access_code"),
+      @Index(columnList = "anonymous_user_id"),
     })
 public class StiProtectionProcedure
     extends Procedure<StiProtectionProcedure, StiProtectionTask, Person, Facility>

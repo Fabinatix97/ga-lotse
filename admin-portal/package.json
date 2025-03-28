@@ -19,7 +19,7 @@
     "i18next": "catalog:i18next",
     "i18next-resources-to-backend": "catalog:i18next",
     "next": "catalog:next",
-    "pkijs": "3.2.4",
+    "pkijs": "3.2.5",
     "react": "catalog:react",
     "react-dom": "catalog:react",
     "react-i18next": "catalog:i18next",

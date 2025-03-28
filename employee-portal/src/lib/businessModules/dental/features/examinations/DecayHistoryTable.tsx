@@ -6,10 +6,16 @@
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Box, Table as JoyTable, Typography, useTheme } from "@mui/joy";
 
+export interface DecayHistoryRow {
+  value: string;
+  dateOfExamination: Date;
+  hasDecayRisk: boolean;
+}
+
 interface DecayHistoryTableProps {
   title: string;
   valueColumnName: string;
-  rows: DecayTableValue[];
+  rows: DecayHistoryRow[];
 }
 
 export function DecayHistoryTable(props: DecayHistoryTableProps) {
@@ -28,13 +34,13 @@ export function DecayHistoryTable(props: DecayHistoryTableProps) {
         </thead>
         <tbody>
           {props.rows.map((row, index) => {
-            const rowStyle = row.showWarning
+            const rowStyle = row.hasDecayRisk
               ? { backgroundColor: theme.palette.danger.outlinedActiveBg }
               : {};
             return (
               <Box component="tr" key={index} sx={rowStyle}>
-                <td>{row.decayValue}</td>
-                <td>{formatDate(row.date)}</td>
+                <td>{row.value}</td>
+                <td>{formatDate(row.dateOfExamination)}</td>
               </Box>
             );
           })}
@@ -42,10 +48,4 @@ export function DecayHistoryTable(props: DecayHistoryTableProps) {
       </JoyTable>
     </>
   );
-}
-
-export interface DecayTableValue {
-  date: Date;
-  decayValue: string;
-  showWarning: boolean;
 }

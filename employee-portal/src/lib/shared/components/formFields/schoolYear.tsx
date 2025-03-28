@@ -8,9 +8,10 @@ import {
   BaseField,
   useBaseField,
 } from "@eshg/lib-portal/components/formFields/BaseField";
+import { CustomAutocomplete } from "@eshg/lib-portal/components/inputs/CustomAutocomplete";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { FieldProps, OptionalFieldValue } from "@eshg/lib-portal/types/form";
-import { Autocomplete, AutocompleteProps } from "@mui/joy";
+import { AutocompleteProps } from "@mui/joy";
 import { isNullish } from "remeda";
 
 interface SchoolYearAutocompleteProps
@@ -38,7 +39,7 @@ export function SchoolYearAutocomplete(props: SchoolYearAutocompleteProps) {
     yearRange,
   );
   return (
-    <Autocomplete
+    <CustomAutocomplete
       {...props}
       options={addValueIfNecessary(props.value, schoolYearOptions)}
       getOptionLabel={getSchoolYearLabel}

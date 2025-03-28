@@ -112,13 +112,11 @@ public class DecimalIntervalUtil {
             builder.addInterval(
                 interval.minInclusive().doubleValue(),
                 interval.maxExclusive().doubleValue(),
-                "["
-                    + interval.minInclusive().stripTrailingZeros().toPlainString()
-                    + ","
-                    + round(interval.maxExclusive().subtract(MINIMAL_DIFFERENCE))
+                AnonymizationService.INTERVAL_FORMAT_STRING.formatted(
+                    interval.minInclusive().stripTrailingZeros().toPlainString(),
+                    round(interval.maxExclusive().subtract(MINIMAL_DIFFERENCE))
                         .stripTrailingZeros()
-                        .toPlainString()
-                    + "]"));
+                        .toPlainString())));
     return builder;
   }
 }
