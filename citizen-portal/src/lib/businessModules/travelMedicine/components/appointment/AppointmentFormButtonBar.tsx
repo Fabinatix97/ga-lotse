@@ -3,103 +3,87 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm";
 import { ApiAppointmentType, ApiTravelType } from "@eshg/travel-medicine-api";
-import { useFormikContext } from "formik";
+import { FormikErrors, FormikTouched, useFormikContext } from "formik";
 import { useRouter } from "next/navigation";
+import { isEmpty } from "remeda";
 
+import { AppointmentFormStep } from "@/lib/businessModules/travelMedicine/components/appointment/AppointmentStepper";
 import { InitialAppointmentFormValues } from "@/lib/businessModules/travelMedicine/components/appointment/types";
 import { MultiStepFormButtonBar } from "@/lib/businessModules/travelMedicine/components/shared/components/multiStepForm/MultiStepFormButtonsBar";
-import { useStepContext } from "@/lib/businessModules/travelMedicine/components/shared/contexts/StepContext";
 import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 
-import { StepKey } from "./AppointmentStepper";
-
 export function AppointmentFormButtonBar() {
-  const { isLastStep, currentNode, goForward, goBack } = useStepContext();
-  const { values, setTouched, validateForm, setFieldTouched, setErrors } =
+  const { currentStep, totalSteps, goForward, goBack, setStep } =
+    useMultiStepForm();
+  const { values, setTouched, validateForm, touched } =
     useFormikContext<InitialAppointmentFormValues>();
 
   const { t } = useTranslation(["travelMedicine/forms"]);
   const router = useRouter();
   const citizenRoutes = useCitizenRoutes();
 
-  function isAppointmentPickerInValid() {
-    let isInvalid = false;
-    if (currentNode?.key === StepKey.AppointmentSlotStep) {
-      isInvalid = !values.appointmentBlockDate;
-    }
-    return isInvalid;
-  }
-
   function handleCancel() {
     router.push(citizenRoutes.overview);
   }
 
-  async function handleValidation() {
-    Object.entries(values).forEach(([key, value]: [string, unknown]) => {
-      if (typeof value === "object" && !!value) {
-        Object.keys(value).forEach(
-          (it) => void setFieldTouched(`${key}.${it}`, true),
-        );
-      } else {
-        void setFieldTouched(key, true);
-      }
+  async function handleValidation(doNext: () => void | Promise<void>) {
+    // We want to show errors before moving to the next step
+    //  By default, Formik only does this on submit;
+    //  Formik also won't show errors if the field is not touched,
+    //  some fields don't ever set themselves as touched.
+    //  To show all errors we need to trigger validation manually
+    //  then set all fields with errors as touched
+
+    const errors = await validateForm();
+
+    await setTouched({
+      ...touched,
+      ...toTouchedDeep(errors),
     });
 
-    const fieldErrors = await validateForm();
-
-    // AppointmentDatePicker needs to be validated manually because it is no formik field
-    if (isAppointmentPickerInValid()) {
-      fieldErrors.appointmentBlockDate = t(
-        "appointmentSlotFormContent.fields.appointmentStart_required",
-      );
-      setErrors(fieldErrors);
+    if (isEmpty(errors)) {
+      await doNext();
     }
-
-    return fieldErrors && Object.keys(fieldErrors).length > 0
-      ? fieldErrors
-      : null;
   }
 
   async function handleNextStep() {
-    const errors = await handleValidation();
-    if (!errors) {
-      await setTouched({});
-      switch (currentNode?.key) {
-        case StepKey.AppointmentSlotStep: {
-          if (
-            values.initialStepAppointmentType === ApiAppointmentType.Vaccination
-          ) {
-            goForward(3);
-          } else goForward();
-          break;
-        }
-        case StepKey.TravelTypeStep: {
-          if (values.travelInformation.travelType === ApiTravelType.NoTravel) {
-            goForward(2);
-          } else goForward();
-          break;
-        }
-        default: {
-          goForward();
-          break;
-        }
+    await setTouched({});
+    switch (currentStep) {
+      case AppointmentFormStep.AppointmentSlotStep: {
+        if (
+          values.initialStepAppointmentType === ApiAppointmentType.Vaccination
+        ) {
+          setStep(AppointmentFormStep.PersonalDataStep);
+        } else goForward();
+        break;
+      }
+      case AppointmentFormStep.TravelTypeStep: {
+        if (values.travelInformation.travelType === ApiTravelType.NoTravel) {
+          setStep(AppointmentFormStep.PersonalDataStep);
+        } else goForward();
+        break;
+      }
+      default: {
+        goForward();
+        break;
       }
     }
   }
 
   function handlePrevStep() {
-    if (currentNode?.key === StepKey.PersonalDataStep) {
+    if (currentStep === AppointmentFormStep.PersonalDataStep) {
       if (
         values.travelInformation.travelType === ApiTravelType.NoTravel &&
         values.initialStepAppointmentType === ApiAppointmentType.Consultation
       ) {
-        goBack(2);
+        setStep(AppointmentFormStep.TravelTypeStep);
       } else if (
         values.initialStepAppointmentType === ApiAppointmentType.Vaccination
       ) {
-        goBack(3);
+        setStep(AppointmentFormStep.AppointmentSlotStep);
       } else goBack();
     } else goBack();
   }
@@ -107,10 +91,11 @@ export function AppointmentFormButtonBar() {
   return (
     <MultiStepFormButtonBar
       onNextStep={{
-        title: isLastStep
-          ? t("confirmationSection.submit")
-          : t("appointmentOverviewSection.onNextStep"),
-        action: handleNextStep,
+        title:
+          currentStep === totalSteps
+            ? t("confirmationSection.submit")
+            : t("appointmentOverviewSection.onNextStep"),
+        action: () => handleValidation(handleNextStep),
       }}
       onPrevStep={{
         title: t("appointmentOverviewSection.onPrevStep"),
@@ -122,4 +107,21 @@ export function AppointmentFormButtonBar() {
       }}
     />
   );
+}
+
+// Turn FormikErrors into FormikTouched
+function toTouchedDeep<T extends object>(
+  errors: FormikErrors<T>,
+): FormikTouched<T> {
+  return Object.entries(errors).reduce(
+    (acc, [key, value]) => {
+      if (!!value && typeof value === "object") {
+        acc[key as keyof T] = toTouchedDeep(value);
+      } else {
+        acc[key as keyof T] = true;
+      }
+      return acc;
+    },
+    {} as { [key in keyof T]: boolean | object },
+  ) as FormikTouched<T>;
 }

@@ -4,6 +4,7 @@
  */
 
 import {
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -14,8 +15,6 @@ import { ApiProcedureStepService } from "@eshg/travel-medicine-api";
 import { List, ListItem, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 import { Ref } from "react";
-
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 
 export interface EditEarliestDateFormValues {
   earliestDate: string;

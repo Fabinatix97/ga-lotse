@@ -8,10 +8,15 @@ import {
   ApiGetReferencePersonResponse,
 } from "@eshg/base-api";
 import {
+  MultiFormButtonBar,
+  PersonCardContent,
+  PersonDetailsSidebar,
+  SelectableCard,
   SidebarActions,
   SidebarContent,
   SidebarForm,
   useConfirmationDialog,
+  useResetAlertContextOnChange,
 } from "@eshg/lib-employee-portal";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { Stack } from "@mui/joy";
@@ -22,13 +27,8 @@ import { isNonNullish } from "remeda";
 import { mapAddCentralFileIdToGdprProcedureRequest } from "@/lib/baseModule/api/mapper/gdpr";
 import { useAddCentralFileIdToGdprProcedure } from "@/lib/baseModule/api/mutations/gdpr";
 import { FacilityCardContent } from "@/lib/baseModule/components/facility/FacilityCardContent";
-import { PersonCardContent } from "@/lib/baseModule/components/person/PersonCardContent";
-import { SelectableCard } from "@/lib/shared/components/cards/SelectableCard";
 import { FacilityDetailsSidebar } from "@/lib/shared/components/facilitySidebar/FacilityDetailsSidebar";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import { PersonDetailsSidebar } from "@/lib/shared/components/personSidebar/PersonDetailsSidebar";
 import { fullAddress } from "@/lib/shared/helpers/facilityUtils";
-import { useResetAlertContextOnChange } from "@/lib/shared/hooks/useResetAlertContextOnChange";
 
 type CentralFileData =
   | ApiGetReferencePersonResponse

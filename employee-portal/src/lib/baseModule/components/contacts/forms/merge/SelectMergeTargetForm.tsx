@@ -4,6 +4,7 @@
  */
 
 import {
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -15,7 +16,6 @@ import { Formik } from "formik";
 import { ReactNode } from "react";
 
 import { routes } from "@/lib/baseModule/shared/routes";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 
 interface EntityWithId {
   id: string;

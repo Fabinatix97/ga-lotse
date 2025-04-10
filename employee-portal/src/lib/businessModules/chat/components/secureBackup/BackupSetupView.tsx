@@ -20,7 +20,7 @@ export interface SecureBackupContent {
 }
 
 const content = {
-  [ClientState.CreateBackupKey]: {
+  [ClientState.CreateKeyBackup]: {
     header: "Richten Sie ein Sicherheitsbackup ein",
     subheader:
       "Richten Sie ein Sicherheitsbackup ein um die Chatfunktion zu nutzen",
@@ -29,7 +29,7 @@ const content = {
       "Geben Sie ein Passwort ein, das nur Sie kennen, da es zum Schutz Ihrer Daten verwendet wird. Aus Sicherheitsgründen sollten Sie Ihr GA-Lotse Benutzerpasswort nicht wieder verwenden.",
     ],
   },
-  [ClientState.RestoreBackupKey]: {
+  [ClientState.RestoreKeyBackup]: {
     header: "Bestätigen sie dieses Endgerät",
     subheader: "Bestätigen sie dieses Endgerät um die Chatfunktion zu nutzen",
     description: [
@@ -69,14 +69,16 @@ export function BackupSetupView() {
       </Sheet>
 
       <OverlayBoundary>
-        {clientState === ClientState.RestoreBackupKey ? (
-          <RestoreBackupSidebar
+        {clientState === ClientState.CreateKeyBackup && (
+          <CreateBackupSidebar
             open={open}
             onClose={() => setOpen(false)}
             content={stateContent}
           />
-        ) : (
-          <CreateBackupSidebar
+        )}
+
+        {clientState === ClientState.RestoreKeyBackup && (
+          <RestoreBackupSidebar
             open={open}
             onClose={() => setOpen(false)}
             content={stateContent}

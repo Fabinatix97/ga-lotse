@@ -7,6 +7,7 @@
 
 import { ApiAddContact200Response } from "@eshg/base-api";
 import {
+  ImportDataForm,
   SidebarWithFormRefProps,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
@@ -22,7 +23,6 @@ import {
 } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
 import { ImportDataFields } from "@/lib/businessModules/schoolEntry/features/procedures/importData/ImportDataFields";
 import { ImportListType } from "@/lib/businessModules/schoolEntry/features/procedures/importData/importTypes";
-import { ImportDataForm } from "@/lib/shared/components/import/ImportDataForm";
 
 export function useImportDataSidebar() {
   return useSidebarWithFormRef({

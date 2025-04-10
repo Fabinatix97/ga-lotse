@@ -5,7 +5,7 @@
 
 package de.eshg.stiprotection;
 
-import de.eshg.departmentinfo.AbstractOpeningHoursController;
+import de.eshg.config.departmentinfo.AbstractOpeningHoursController;
 import de.eshg.rest.service.security.config.BaseUrls.DepartmentInfoLibrary;
 import de.eshg.stiprotection.department.StiConsultationOpeningHoursService;
 import de.eshg.stiprotection.persistence.StiConsultationOpeningHours;

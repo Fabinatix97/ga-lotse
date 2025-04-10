@@ -8,32 +8,60 @@ package de.eshg.lib.appointmentblock;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 import de.eshg.base.SortDirection;
-import de.eshg.lib.appointmentblock.api.*;
+import de.eshg.lib.appointmentblock.api.AppointmentBlockPaginationAndSortParameters;
+import de.eshg.lib.appointmentblock.api.AppointmentBlockSortKey;
+import de.eshg.lib.appointmentblock.api.AppointmentDto;
+import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
+import de.eshg.lib.appointmentblock.api.CreateAppointmentBlockGroupResponse;
+import de.eshg.lib.appointmentblock.api.CreateDailyAppointmentBlockDto;
+import de.eshg.lib.appointmentblock.api.CreateDailyAppointmentBlockGroupRequest;
+import de.eshg.lib.appointmentblock.api.LocationDto;
+import de.eshg.lib.appointmentblock.api.ValidateAppointmentBlockGroupResponse;
 import de.eshg.lib.appointmentblock.client.CalendarClient;
-import de.eshg.lib.appointmentblock.model.*;
+import de.eshg.lib.appointmentblock.model.AppointmentBlockData;
+import de.eshg.lib.appointmentblock.model.AppointmentBlockGroupData;
+import de.eshg.lib.appointmentblock.model.AppointmentBlockSlot;
+import de.eshg.lib.appointmentblock.model.CreateAppointmentBlockData;
 import de.eshg.lib.appointmentblock.persistence.AppointmentBlockGroupRepository;
 import de.eshg.lib.appointmentblock.persistence.AppointmentBlockGroupSpecification;
 import de.eshg.lib.appointmentblock.persistence.AppointmentBlockRepository;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.AppointmentTypeRepository;
-import de.eshg.lib.appointmentblock.persistence.entity.*;
+import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock;
+import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockGroup;
+import de.eshg.lib.appointmentblock.persistence.entity.AppointmentTypeConfig;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Stream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AppointmentBlockService {
+
+  private static final Logger log = LoggerFactory.getLogger(AppointmentBlockService.class);
 
   private final AppointmentBlockGroupRepository appointmentBlockGroupRepository;
   private final AppointmentBlockRepository appointmentBlockRepository;
@@ -336,5 +364,24 @@ public class AppointmentBlockService {
     userIdsWithoutEventConflicts.removeAll(userIdsWithEventConflicts);
     return new ValidateAppointmentBlockGroupResponse(
         userIdsWithEventConflicts, userIdsWithoutEventConflicts);
+  }
+
+  public void deleteAppointmentBlock(UUID appointmentBlockId) {
+    AppointmentBlock appointmentBlock =
+        appointmentBlockRepository
+            .findByExternalId(appointmentBlockId)
+            .orElseThrow(() -> new NotFoundException("Appointment block not found"));
+    if (!appointmentBlock.getAppointments().isEmpty()) {
+      throw new BadRequestException("Appointment block is not empty");
+    }
+    AppointmentBlockGroup appointmentBlockGroup = appointmentBlock.getAppointmentBlockGroup();
+    Set<AppointmentBlock> appointmentBlocks = appointmentBlockGroup.getAppointmentBlocks();
+    boolean removed = appointmentBlocks.remove(appointmentBlock);
+    if (!removed) {
+      log.warn("Appointment block does not exist: {}", appointmentBlockId);
+    }
+    if (appointmentBlocks.isEmpty()) {
+      appointmentBlockGroupRepository.delete(appointmentBlockGroup);
+    }
   }
 }

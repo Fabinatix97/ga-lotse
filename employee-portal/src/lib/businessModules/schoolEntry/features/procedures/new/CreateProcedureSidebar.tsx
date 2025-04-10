@@ -7,7 +7,14 @@
 
 import {
   DefaultPersonFormValues,
+  DefaultSearchPersonForm,
+  DefaultSearchPersonFormFields,
+  PersonSidebar,
+  PersonSidebarProps,
+  SearchPersonFormProps,
+  SearchPersonFormValues,
   SidebarWithFormRefProps,
+  defaultSearchPersonValues,
   mapToPersonAddRequest,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
@@ -31,19 +38,6 @@ import { ProcedureCard } from "@/lib/businessModules/schoolEntry/features/proced
 import { BUTTON_SIZE } from "@/lib/businessModules/schoolEntry/features/procedures/new/constants";
 import { PROCEDURE_TYPE_OPTIONS_EXCLUDING_DRAFT } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
-import {
-  PersonSidebar,
-  PersonSidebarProps,
-} from "@/lib/shared/components/personSidebar/PersonSidebar";
-import {
-  DefaultSearchPersonForm,
-  defaultSearchPersonValues,
-} from "@/lib/shared/components/personSidebar/search/DefaultSearchPersonForm";
-import { DefaultSearchPersonFormFields } from "@/lib/shared/components/personSidebar/search/DefaultSearchPersonFormFields";
-import {
-  SearchPersonFormProps,
-  SearchPersonFormValues,
-} from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
 
 interface EsuSearchForm extends SearchPersonFormValues {
   type: OptionalFieldValue<ApiSchoolEntryProcedureType>;

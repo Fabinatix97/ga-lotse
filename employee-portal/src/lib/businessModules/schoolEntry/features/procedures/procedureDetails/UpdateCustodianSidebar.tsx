@@ -4,7 +4,9 @@
  */
 
 import {
+  DefaultPersonForm,
   DefaultPersonFormValues,
+  PersonSidebarForm,
   SidebarWithFormRefProps,
   mapToPersonUpdateRequest,
   useConfirmationDialog,
@@ -18,8 +20,6 @@ import {
   useRemoveCustodian,
   useUpdateCustodian,
 } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
-import { DefaultPersonForm } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
-import { PersonSidebarForm } from "@/lib/shared/components/personSidebar/form/PersonSidebarForm";
 
 export function useDeleteCustodianWithConfirmation(
   procedureId: string,

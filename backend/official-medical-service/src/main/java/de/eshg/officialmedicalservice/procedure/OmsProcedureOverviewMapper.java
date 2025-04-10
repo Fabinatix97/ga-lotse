@@ -104,6 +104,7 @@ public class OmsProcedureOverviewMapper {
         facilityName,
         ConcernMapper.mapToConcernDto(procedure.getConcern()),
         physicianName,
-        nextAppointment);
+        nextAppointment,
+        procedure.getMedicalOpinionCutOffDate());
   }
 }

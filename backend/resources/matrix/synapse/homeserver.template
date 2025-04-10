@@ -144,8 +144,8 @@ jwt_config:
 
 session_lifetime: 600m
 refresh_token_lifetime: 600m # No need to have RefreshToken lifetime longer than 10 hours, because employee-portal will always log out user after 10 hours of *Activity* and requires user to re-authenticate with Keycloak.
-refreshable_access_token_lifetime: 3m
-nonrefreshable_access_token_lifetime: 3m
+refreshable_access_token_lifetime: 60m
+nonrefreshable_access_token_lifetime: 60m
 
 #templates:
 #  custom_template_directory: "/data/templates/"

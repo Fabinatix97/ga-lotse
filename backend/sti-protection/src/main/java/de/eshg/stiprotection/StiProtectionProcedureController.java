@@ -146,8 +146,8 @@ public class StiProtectionProcedureController {
   }
 
   @GetMapping("/search")
-  @Transactional(readOnly = true)
   @Operation(summary = "Find STI procedures by access code or lab sample barcode.")
+  @Transactional(readOnly = true)
   public GetProceduresOverviewResponse findProcedures(@RequestParam(value = "text") String text) {
     List<StiProtectionProcedureOverviewDto> procedures =
         stiProtectionService.findProcedures(text).stream()

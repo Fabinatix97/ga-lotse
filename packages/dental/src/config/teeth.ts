@@ -57,3 +57,55 @@ export const RELATED_TEETH: Partial<Record<ApiTooth, ApiTooth>> = {
   T84: "T44",
   T85: "T45",
 };
+
+/**
+ * Defines teeth which exist in every dentition
+ */
+export const REQUIRED_TEETH = new Set<ApiTooth>([
+  "T11",
+  "T12",
+  "T13",
+  "T14",
+  "T15",
+  "T21",
+  "T22",
+  "T23",
+  "T24",
+  "T25",
+  "T31",
+  "T32",
+  "T33",
+  "T34",
+  "T35",
+  "T41",
+  "T42",
+  "T43",
+  "T44",
+  "T45",
+]);
+
+/**
+ * Defines teeth which can be added and removed
+ */
+export const OPTIONAL_TEETH = new Set<ApiTooth>([
+  "T16",
+  "T17",
+  "T18",
+  "T26",
+  "T27",
+  "T28",
+  "T36",
+  "T37",
+  "T38",
+  "T46",
+  "T47",
+  "T48",
+]);
+
+/**
+ * Defines the union of REQUIRED_TEETH and OPTIONAL_TEETH
+ */
+export const ALL_TEETH = new Set<ApiTooth>([
+  ...REQUIRED_TEETH,
+  ...OPTIONAL_TEETH,
+]);

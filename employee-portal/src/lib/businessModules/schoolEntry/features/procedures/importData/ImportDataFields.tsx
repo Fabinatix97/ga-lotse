@@ -4,11 +4,15 @@
  */
 
 import { ApiContactCategory, ApiResponse } from "@eshg/base-api";
-import { SearchContactField } from "@eshg/lib-employee-portal";
+import {
+  FileField,
+  SchoolYearField,
+  SearchContactField,
+} from "@eshg/lib-employee-portal";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
+import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
@@ -23,8 +27,6 @@ import { routes as baseRoutes } from "@/lib/baseModule/shared/routes";
 import { useImportApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { ImportDataValues } from "@/lib/businessModules/schoolEntry/features/procedures/importData/ImportDataSidebar";
 import { ImportListType } from "@/lib/businessModules/schoolEntry/features/procedures/importData/importTypes";
-import { FileField } from "@/lib/shared/components/formFields/file/FileField";
-import { SchoolYearField } from "@/lib/shared/components/formFields/schoolYear";
 
 interface ImportDataFieldsProps {
   listType: ImportListType;

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { ApiCreateMedicalHistoryRequest } from "@eshg/sti-protection-api";
 import { MutationOptions, useMutation } from "@tanstack/react-query";
@@ -35,4 +36,12 @@ export function useUpsertMedicalHistory() {
   const options = useUpsertMedicalHistoryOptions();
 
   return useMutation(options);
+}
+
+export function useCancelBookedAppointment() {
+  const citizenApi = useCitizenApi();
+
+  return useHandledMutation({
+    mutationFn: () => citizenApi.cancelBookedAppointment(),
+  });
 }

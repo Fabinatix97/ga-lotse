@@ -86,6 +86,12 @@ public class WaitingRoomSpecification implements Specification<SchoolEntryProced
               root.get(SchoolEntryProcedure_.waitingRoom).get(WaitingRoom_.modifiedAt);
         };
 
+    if (sortKey == WaitingRoomSortKey.MODIFIED_AT) {
+      return switch (sortDirection) {
+        case ASC -> criteriaBuilder.desc(expression);
+        case DESC -> criteriaBuilder.asc(expression);
+      };
+    }
     return switch (sortDirection) {
       case ASC -> criteriaBuilder.asc(expression);
       case DESC -> criteriaBuilder.desc(expression);

@@ -15,7 +15,7 @@ const secretStorageKeyInfo: Record<
   SecretStorage.SecretStorageKeyDescription
 > = {};
 
-export async function getSecretStorageKey(
+export async function getSecretStorageKeyFromCache(
   {
     keys: keyInfos,
   }: {
@@ -28,7 +28,7 @@ export async function getSecretStorageKey(
   let keyId = await matrixClient.secretStorage.getDefaultKeyId();
   let keyInfo: SecretStorage.SecretStorageKeyDescription | undefined;
 
-  logger.info("GET SECRET STORAGE - getDefaultKeyId", keyId);
+  logger.debug("Getting secretStorage key from cache", keyId);
 
   if (keyId) {
     keyInfo = keyInfos[keyId];
@@ -54,7 +54,9 @@ export async function getSecretStorageKey(
   // Check the in-memory cache
   const cachedKey = secretStorageKeys[keyId];
   if (cachedKey) {
-    logger.debug(`getSecretStorageKey: returning key ${keyId} from cache`);
+    logger.debug(
+      `getSecretStorageKeyFromCache: returning key ${keyId} from cache`,
+    );
     return [keyId, cachedKey];
   }
 
@@ -62,29 +64,28 @@ export async function getSecretStorageKey(
     throw new Error("Invalid passphrase - unable to get secret storage key.");
   }
 
-  const key = await deriveKey(
+  const restoredKey = await deriveKey(
     passphrase,
     keyInfo.passphrase.salt,
     keyInfo.passphrase.iterations,
   );
 
-  logger.debug({ restoredKey: key });
+  logger.debug({ restoredKey });
 
   // Save to cache to avoid future prompts in the current session
   if (!disableCache) {
-    cacheSecretStorageKey(keyId, keyInfo, key);
+    saveSecretStorageKeyToCache(keyId, keyInfo, restoredKey);
   }
 
-  return [keyId, key];
+  return [keyId, restoredKey];
 }
 
-export function cacheSecretStorageKey(
+export function saveSecretStorageKeyToCache(
   keyId: string,
   keyInfo: SecretStorage.SecretStorageKeyDescription,
   key: Uint8Array,
 ): void {
-  logger.info("CACHE SECRET STORAGE", { keyId, keyInfo, key });
-
+  logger.debug("Caching secretStorage key", { keyId, keyInfo, key });
   secretStorageKeys[keyId] = key;
   secretStorageKeyInfo[keyId] = keyInfo;
 }

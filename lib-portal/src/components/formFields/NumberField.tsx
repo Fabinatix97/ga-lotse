@@ -26,6 +26,7 @@ export interface NumberFieldProps
   max?: number;
   endDecorator?: ReactNode;
   readOnly?: boolean;
+  placeholder?: string;
 }
 
 export function NumberField(props: NumberFieldProps) {
@@ -69,6 +70,7 @@ export function NumberField(props: NumberFieldProps) {
         disabled={disabled}
         readOnly={props.readOnly}
         endDecorator={props.endDecorator}
+        placeholder={props.placeholder}
       />
     </FieldComponent>
   );

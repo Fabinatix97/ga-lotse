@@ -365,6 +365,15 @@ public class ProphylaxisSessionService {
     return getProphylaxisSessionWithDetails(persistedProphylaxisSession.getExternalId());
   }
 
+  public void closeProphylaxisSession(UUID prophylaxisSessionId, long version) {
+    ProphylaxisSession prophylaxisSession =
+        findProphylaxisSessionForUpdate(prophylaxisSessionId, version);
+    Validator.validateAllExaminationsAreClosed(prophylaxisSession);
+
+    prophylaxisSession.setProphylaxisStatus(ProphylaxisStatus.CLOSED);
+    prophylaxisSessionRepository.flush();
+  }
+
   public ProphylaxisSessionWithAugmentedData updateProphylaxisSessionExaminations(
       UUID prophylaxisSessionId, UpdateProphylaxisSessionExaminationsRequest updateRequest) {
     List<UUID> examinationIds =

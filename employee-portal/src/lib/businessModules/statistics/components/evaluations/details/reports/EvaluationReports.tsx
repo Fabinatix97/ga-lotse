@@ -7,6 +7,7 @@
 
 import {
   DataTable,
+  NoSearchResults,
   TablePage,
   TableSheet,
   useConfirmationDialog,
@@ -51,7 +52,6 @@ import { getSharedURL } from "@/lib/businessModules/statistics/components/shared
 import { useDataExportGuard } from "@/lib/businessModules/statistics/components/shared/hooks/useDataExportGuard";
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
-import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { RefreshButton } from "@/lib/shared/components/buttons/RefreshButton";
 import { useCopy } from "@/lib/shared/hooks/useCopy";

@@ -3,13 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBaseFeature } from "@eshg/base-api";
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { ApiOpenDataFeature } from "@eshg/opendata-api";
 import { Box, Stack, Typography, styled } from "@mui/joy";
 
-import { useIsNewFeatureEnabled as useIsNewBaseFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { useRoutes } from "@/lib/baseModule/shared/routes";
 import { useIsNewFeatureEnabled as useIsNewOpenDataFeatureEnabled } from "@/lib/businessModules/opendata/api/queries/featureTogglesApi";
 import { useTranslation } from "@/lib/i18n/client";
@@ -50,9 +48,6 @@ function FooterLink({ children, href }: FooterLinkProps) {
 export function Footer(props: DepartmentInfoProps) {
   const { t } = useTranslation("footer");
   const routes = useRoutes();
-  const isGdprFeatureEnabled = useIsNewBaseFeatureEnabled(
-    ApiBaseFeature.GdprOnlinePortal,
-  );
   const isOpenDataEnabled = useIsNewOpenDataFeatureEnabled(
     ApiOpenDataFeature.OpenData,
   );
@@ -85,11 +80,9 @@ export function Footer(props: DepartmentInfoProps) {
           <FooterLink href={routes.privacyPolicy}>
             {t("privacy_policy_link")}
           </FooterLink>
-          {isGdprFeatureEnabled && (
-            <FooterLink href={routes.data_privacy_rights}>
-              {t("data_privacy_rights_link")}
-            </FooterLink>
-          )}
+          <FooterLink href={routes.data_privacy_rights}>
+            {t("data_privacy_rights_link")}
+          </FooterLink>
           <FooterLink href={routes.accessibility}>
             {t("accessibility_link")}
           </FooterLink>

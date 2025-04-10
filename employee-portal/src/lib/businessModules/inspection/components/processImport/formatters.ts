@@ -3,38 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-function formatCount(
-  count: number,
-  singularLabel: string,
-  pluralLabel: string,
-) {
-  if (count === 1) {
-    return `${count} ${singularLabel}`;
-  }
+import { createCountFormatter } from "@eshg/lib-employee-portal";
 
-  return `${count} ${pluralLabel}`;
-}
+export const formatImportedCount = createCountFormatter("Vorgang", "Vorgänge");
 
-export function formatImportedCount(count: number) {
-  return formatCount(count, "Vorgang", "Vorgänge");
-}
+export const formatIncidentCount = createCountFormatter(
+  "Vorkommnis",
+  "Vorkommnisse",
+);
 
-export function formatDuplicatedCount(count: number) {
-  return formatCount(count, "doppelter Datensatz", "doppelte Datensätze");
-}
-
-export function formatFailedCount(count: number) {
-  return formatCount(count, "fehlerhafter Datensatz", "fehlerhafte Datensätze");
-}
-
-export function formatTotalCount(count: number) {
-  return formatCount(count, "Datensatz", "Datensätze");
-}
-
-export function formatIncidentCount(count: number) {
-  return formatCount(count, "Vorkommnis", "Vorkommnisse");
-}
-
-export function formatPossibleDuplicates(count: number) {
-  return formatCount(count, "potentielles Duplikat", "potentielle Duplikate");
-}
+export const formatPossibleDuplicates = createCountFormatter(
+  "potentielles Duplikat",
+  "potentielle Duplikate",
+);

@@ -11,7 +11,7 @@ dependencies {
     implementation project(':lib-procedures')
     implementation project(':lib-calendar')
     implementation project(':lib-notification')
-    implementation project(':lib-department-info')
+    implementation project(':lib-config')
     implementation project(':lib-document-generator')
     implementation project(':lib-editor')
     implementation project(':lib-scheduling')

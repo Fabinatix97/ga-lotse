@@ -5,8 +5,8 @@
 
 package de.eshg.stiprotection.persistence.config;
 
-import de.eshg.departmentinfo.initialization.MandatoryInitialOpeningHours;
-import de.eshg.departmentinfo.initialization.OptionalInitialDepartmentInfo;
+import de.eshg.config.initialization.MandatoryInitialOpeningHours;
+import de.eshg.config.initialization.OptionalInitialDepartmentInfo;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.boot.context.properties.ConfigurationProperties;

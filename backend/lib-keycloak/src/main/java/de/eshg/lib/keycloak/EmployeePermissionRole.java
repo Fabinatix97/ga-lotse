@@ -212,20 +212,26 @@ public enum EmployeePermissionRole implements PermissionRole {
       Module.ARCHIVE),
 
   AUDITLOG_FILE_SEND(
-      "Berechtigung zum Senden von Audit-Log-Dateien an den Audit-Log-Service",
+      "Audit-Log - Technischer User (Audit-Log-Dateien senden)",
+      "Technischer User des Auditlog-Moduls, um Audit-Log-Dateien an den Audit-Log-Service zu senden.",
       Module.AUDIT_LOG_SERVICE),
   AUDITLOG_DECRYPT_AND_ACCESS(
-      "Berechtigung für die Entschlüsselung und den Abruf von Audit-Log-Dateien vom Audit-Log-Service",
+      "Audit-Log - Betriebsrat",
+      "Kann freigegebene Audit-Log-Dateien abrufen und entschlüsseln",
       Module.AUDIT_LOG_SERVICE),
   AUDITLOG_AUTHORIZE_ACCESS(
-      "Berechtigung für die Freigabe des Abrufs von Audit-Log-Dateien vom Audit-Log-Service",
+      "Audit-Log - Admin",
+      "Kann den Abruf von Audit-Log-Dateien freigeben",
       Module.AUDIT_LOG_SERVICE),
   AUDITLOG_PUBLIC_KEYS_READ(
-      "Berechtigung zum Abruf der öffentlichen Schlüssel von Usern, welche Audit-Log-Dateien entschlüsseln dürfen",
+      "Audit-Log - Technischer User (Schlüssel abrufen)",
+      "Technischer User des Grundmoduls, um öffentliche Schlüssel von Benutzern abzurufen.",
       Module.BASE),
 
   MEDICAL_REGISTRY_IMPORT(
-      "Berechtigung zum Importieren von Berufskartei-Daten", Module.MEDICAL_REGISTRY),
+      "Medizinalaufsicht - Import",
+      "Kann eine bestehende Medizinalkartei importieren, um das System initial zu befüllen.",
+      Module.MEDICAL_REGISTRY),
 
   // TODO ISSUE-3317: Add keycloak descriptions for the inspection module
   INSPECTION_NOTIFICATIONS_READ("Benachrichtigungen erhalten", Module.INSPECTION),
@@ -276,6 +282,7 @@ public enum EmployeePermissionRole implements PermissionRole {
 
   STATISTICS_STATISTICS_ADMIN(
       ADMIN_KEYCLOAK_NAME.formatted("Statistik"),
+      "Kann Geo-Shapes anlegen, anpassen und löschen. Kann die Datenbasis von Auswertungen von anderen Benutzern aktualisieren. Kann Auswertungen, Reportserien und Reports von anderen Benutzern löschen.",
       Module.STATISTICS,
       STATISTICS_STATISTICS_READ,
       STATISTICS_STATISTICS_WRITE),
@@ -320,6 +327,7 @@ public enum EmployeePermissionRole implements PermissionRole {
 
   MEDICAL_REGISTRY_ADMIN(
       ADMIN_KEYCLOAK_NAME.formatted("Medizinalaufsicht"),
+      "Kann Einträge der Medizinalkartei einsehen / Entwürfe erstellen / Entwürfe übernehmen",
       Module.MEDICAL_REGISTRY,
       BASE_PERSONS_READ,
       BASE_PERSONS_WRITE,
@@ -335,7 +343,10 @@ public enum EmployeePermissionRole implements PermissionRole {
       BASE_CONTACTS_WRITE,
       BASE_GDPR_PROCEDURE_REVIEW),
 
-  OPEN_DATA_ADMIN(ADMIN_KEYCLOAK_NAME.formatted("Open Data"), Module.OPEN_DATA),
+  OPEN_DATA_ADMIN(
+      ADMIN_KEYCLOAK_NAME.formatted("Open Data"),
+      "Kann Ressource (-> Dateien + Metadaten) im Open Data Portal einstellen / bearbeiten / löschen.",
+      Module.OPEN_DATA),
 
   CHAT_MANAGEMENT_WRITE(
       READ_AND_WRITE_PERMISSION_TEMPLATE.formatted("Chat - Management"), Module.CHAT_MANAGEMENT),

@@ -6,6 +6,7 @@
 "use client";
 
 import {
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -19,7 +20,6 @@ import { Formik } from "formik";
 import { Ref } from "react";
 
 import { translateAppointmentType } from "@/lib/businessModules/travelMedicine/components/appointmentTypes/translations";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 
 export interface AppointmentTypeFormValues {
   id: string;

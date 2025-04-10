@@ -6,9 +6,9 @@
 package de.eshg.base.config;
 
 import de.eshg.base.config.persistence.BaseDepartmentInfoConfig;
-import de.eshg.departmentinfo.AbstractDepartmentInfoConfigController;
-import de.eshg.departmentinfo.api.GetInternalConfigDepartmentInfoResponse;
-import de.eshg.departmentinfo.mapper.DepartmentInfoMapper;
+import de.eshg.config.api.GetInternalConfigDepartmentInfoResponse;
+import de.eshg.config.departmentinfo.AbstractDepartmentInfoConfigController;
+import de.eshg.config.mapper.DepartmentInfoMapper;
 import de.eshg.rest.service.security.config.BaseUrls.DepartmentInfoLibrary;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

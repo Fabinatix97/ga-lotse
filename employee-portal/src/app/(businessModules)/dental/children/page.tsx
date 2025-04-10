@@ -5,30 +5,42 @@
 
 "use client";
 
+import { useCreateChildSidebar, useImportChildrenSidebar } from "@eshg/dental";
 import {
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
-import { Cached } from "@mui/icons-material";
+import { Add, Cached } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 
 import { ChildrenTable } from "@/lib/businessModules/dental/features/children/ChildrenTable";
 import { CloseSchoolYearButton } from "@/lib/businessModules/dental/features/children/CloseSchoolYearButton";
-import { CreateChildSidebar } from "@/lib/businessModules/dental/features/children/new/CreateChildSidebar";
-import { useImportChildrenSidebar } from "@/lib/businessModules/dental/import/ImportChildrenSidebar";
-import { BUTTON_SIZE } from "@/lib/businessModules/schoolEntry/features/procedures/new/constants";
 
 function ImportChildrenButton() {
   const importChildrenSidebar = useImportChildrenSidebar();
   return (
     <Button
-      size={BUTTON_SIZE}
-      onClick={importChildrenSidebar.open}
+      size="sm"
       variant="outlined"
       startDecorator={<Cached />}
+      onClick={importChildrenSidebar.open}
     >
       Daten importieren
+    </Button>
+  );
+}
+
+function CreateChildButton() {
+  const createChildSidebar = useCreateChildSidebar();
+
+  return (
+    <Button
+      size="sm"
+      startDecorator={<Add />}
+      onClick={createChildSidebar.open}
+    >
+      Neues Kind anlegen
     </Button>
   );
 }
@@ -41,7 +53,7 @@ export default function DentalProceduresPage() {
           buttons={[
             <CloseSchoolYearButton key="closeSchoolYear" />,
             <ImportChildrenButton key="importChildren" />,
-            <CreateChildSidebar key="createChild" />,
+            <CreateChildButton key="createChild" />,
           ]}
         />
       </MainContentLayout>

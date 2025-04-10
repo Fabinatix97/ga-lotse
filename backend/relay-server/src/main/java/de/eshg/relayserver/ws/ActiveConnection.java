@@ -5,7 +5,13 @@
 
 package de.eshg.relayserver.ws;
 
-record ActiveConnection(WebsocketEndpoint client, WebsocketEndpoint server) {
+import java.util.concurrent.atomic.AtomicBoolean;
+
+record ActiveConnection(WebsocketEndpoint client, WebsocketEndpoint server, AtomicBoolean closing) {
+
+  public ActiveConnection(WebsocketEndpoint client, WebsocketEndpoint server) {
+    this(client, server, new AtomicBoolean(false));
+  }
 
   public WebsocketEndpoint getOther(WebsocketEndpoint endpoint) {
     if (client == endpoint) {

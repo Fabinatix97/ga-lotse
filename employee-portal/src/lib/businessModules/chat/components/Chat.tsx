@@ -71,8 +71,8 @@ export function Chat() {
   }, [userIdForChatStart, matrixClient, createNewChat, isClientPrepared]);
 
   if (
-    clientState === ClientState.CreateBackupKey ||
-    clientState === ClientState.RestoreBackupKey
+    clientState === ClientState.CreateKeyBackup ||
+    clientState === ClientState.RestoreKeyBackup
   ) {
     return <BackupSetupView />;
   }

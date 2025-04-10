@@ -16,13 +16,42 @@ import java.util.Set;
 import org.springframework.web.bind.annotation.BindParam;
 
 public record GetStiProtectionProceduresFilterOptions(
-    @BindParam("creationDateStart") @Parameter LocalDate creationDateStart,
-    @BindParam("creationDateEnd") @Parameter LocalDate creationDateEnd,
-    @BindParam("yearOfBirth") @Parameter @Schema(type = "integer") @Past Year yearOfBirth,
-    @BindParam("appointmentDateStart") @Parameter LocalDate appointmentDateStart,
-    @BindParam("appointmentDateEnd") @Parameter LocalDate appointmentDateEnd,
-    @BindParam("gender") @Parameter Set<GenderDto> gender,
-    @BindParam("concern") @Parameter Set<ConcernDto> concern,
-    @BindParam("procedureStatus") @Parameter Set<ProcedureStatusDto> procedureStatus,
-    @BindParam("labStatus") @Parameter Set<LabStatusDto> labStatus,
-    @BindParam("procedureOrigin") @Parameter Set<StiProcedureOriginDto> procedureOrigin) {}
+    @Schema(description = "Start of the procedure creation date.")
+        @BindParam("creationDateStart")
+        @Parameter
+        LocalDate creationDateStart,
+    @Schema(description = "End of the procedure creation date.")
+        @BindParam("creationDateEnd")
+        @Parameter
+        LocalDate creationDateEnd,
+    @BindParam("yearOfBirth")
+        @Parameter
+        @Schema(type = "integer", description = "Indicates the year of birth of the person.")
+        @Past
+        Year yearOfBirth,
+    @Schema(description = "Start date of the appointment.")
+        @BindParam("appointmentDateStart")
+        @Parameter
+        LocalDate appointmentDateStart,
+    @Schema(description = "End date of the appointment.")
+        @BindParam("appointmentDateEnd")
+        @Parameter
+        LocalDate appointmentDateEnd,
+    @Schema(description = "Sex of the person.") @BindParam("gender") @Parameter
+        Set<GenderDto> gender,
+    @Schema(description = "Indicates the specific context or reason for the procedure.")
+        @BindParam("concern")
+        @Parameter
+        Set<ConcernDto> concern,
+    @Schema(description = "The current status of the procedure.")
+        @BindParam("procedureStatus")
+        @Parameter
+        Set<ProcedureStatusDto> procedureStatus,
+    @Schema(description = "The current status of the laboratory tests.")
+        @BindParam("labStatus")
+        @Parameter
+        Set<LabStatusDto> labStatus,
+    @Schema(description = "The origin where the procedure was initially created.")
+        @BindParam("procedureOrigin")
+        @Parameter
+        Set<StiProcedureOriginDto> procedureOrigin) {}

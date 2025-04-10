@@ -156,8 +156,8 @@ public class SchoolEntryService {
         pastProcedures.stream().map(ImportPastProcedureData::procedureData).toList();
     List<SchoolEntryProcedure> result = new ArrayList<>();
 
-    Label specialNeedsLabel = fetchSpecialNeedsLabelIfNecessary(procedureData);
-    Label informationBlockLabel = fetchInformationBlockLabelIfNecessary(procedureData);
+    ProcedureLabel specialNeedsLabel = fetchSpecialNeedsLabelIfNecessary(procedureData);
+    ProcedureLabel informationBlockLabel = fetchInformationBlockLabelIfNecessary(procedureData);
 
     List<ProcedureIds> createdIds =
         personClient.createPersonsInCentralFile(procedureData, DataOrigin.DATA_IMPORT);
@@ -208,8 +208,8 @@ public class SchoolEntryService {
       ProcedureStatus initialProcedureStatus) {
     List<SchoolEntryProcedure> result = new ArrayList<>();
 
-    Label specialNeedsLabel = fetchSpecialNeedsLabelIfNecessary(procedures);
-    Label informationBlockLabel = fetchInformationBlockLabelIfNecessary(procedures);
+    ProcedureLabel specialNeedsLabel = fetchSpecialNeedsLabelIfNecessary(procedures);
+    ProcedureLabel informationBlockLabel = fetchInformationBlockLabelIfNecessary(procedures);
 
     List<ProcedureIds> createdIds = personClient.createPersonsInCentralFile(procedures, dataOrigin);
     for (int i = 0; i < procedures.size(); i++) {
@@ -251,14 +251,16 @@ public class SchoolEntryService {
     return result;
   }
 
-  private Label fetchSpecialNeedsLabelIfNecessary(List<ImportProcedureData> procedureData) {
+  private ProcedureLabel fetchSpecialNeedsLabelIfNecessary(
+      List<ImportProcedureData> procedureData) {
     if (procedureData.stream().anyMatch(ImportProcedureData::isEarlyExamination)) {
       return labelService.getSpecialNeedsLabel();
     }
     return null;
   }
 
-  private Label fetchInformationBlockLabelIfNecessary(List<ImportProcedureData> procedureData) {
+  private ProcedureLabel fetchInformationBlockLabelIfNecessary(
+      List<ImportProcedureData> procedureData) {
     if (procedureData.stream().anyMatch(ImportProcedureData::hasInformationBlock)) {
       return labelService.getInformationBlockLabel();
     }
@@ -664,9 +666,9 @@ public class SchoolEntryService {
     ProcedureType requestedType = ProcedureMapper.mapToDomain(request.procedureType());
     updateProcedureType(procedure, procedure.getProcedureType(), requestedType);
 
-    List<UUID> requestedLabelIds = request.labels();
+    List<UUID> requestedLabelIds = request.procedureLabels();
     List<UUID> persistedLabelIds =
-        procedure.getLabels().stream().map(Label::getExternalId).toList();
+        procedure.getLabels().stream().map(ProcedureLabel::getExternalId).toList();
     updateLabels(procedure, persistedLabelIds, requestedLabelIds);
 
     updateSchoolId(procedure, procedure.getSchoolId(), request.schoolId());
@@ -726,9 +728,9 @@ public class SchoolEntryService {
   private void updateLabels(
       SchoolEntryProcedure procedure, List<UUID> persistedLabelIds, List<UUID> requestedLabelIds) {
     if (!CollectionUtils.isEqualCollection(requestedLabelIds, persistedLabelIds)) {
-      List<Label> labels = labelService.findByExternalIds(requestedLabelIds);
+      List<ProcedureLabel> labels = labelService.findByExternalIds(requestedLabelIds);
       Validator.validateLabelsExist(
-          requestedLabelIds, labels.stream().map(Label::getExternalId).toList());
+          requestedLabelIds, labels.stream().map(ProcedureLabel::getExternalId).toList());
       procedure.setLabels(labels);
       progressEntryUtil.addProgressEntry(procedure, LABELS_MODIFIED);
     }

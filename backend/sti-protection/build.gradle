@@ -9,7 +9,7 @@ dependencies {
     implementation project(':lib-procedures')
     implementation project(':lib-appointmentblock')
     implementation project(':lib-calendar')
-    implementation project(':lib-department-info')
+    implementation project(':lib-config')
     implementation project(":lib-document-generator")
     implementation project(':lib-scheduling')
     implementation project(':rest-oauth-client-commons')

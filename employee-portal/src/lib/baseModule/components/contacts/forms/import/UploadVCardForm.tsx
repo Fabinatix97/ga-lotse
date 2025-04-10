@@ -4,17 +4,16 @@
  */
 
 import {
+  FileField,
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
   SidebarFormHandle,
 } from "@eshg/lib-employee-portal";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
+import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
 import { Formik } from "formik";
 import { Ref } from "react";
-
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import { FileField } from "@/lib/shared/components/formFields/file/FileField";
 
 interface UploadForm {
   file: File | null;

@@ -17,6 +17,7 @@ import {
   TablePage,
   TableSheet,
   UseTableControlResult,
+  formatList,
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
@@ -38,7 +39,6 @@ import {
 import { FacilityWebSearchFiltersSchema } from "@/lib/businessModules/inspection/shared/types";
 import { SingleSelectFilter } from "@/lib/shared/components/tableFilters/SingleSelectFilter";
 import { TextInputFilter } from "@/lib/shared/components/tableFilters/TextInputFilter";
-import { join } from "@/lib/shared/helpers/strings";
 
 import {
   createFacilitySearchResultColumns,
@@ -141,7 +141,7 @@ function TableControls({
       snackbar.notification("Bitte geben Sie erst Suchkriterien ein.");
       return;
     }
-    const queryName = join([keywords, facilityAddress, facilityName]);
+    const queryName = formatList([keywords, facilityAddress, facilityName]);
     await saveQuery({
       id: webSearchId,
       apiWebSearchSaveQueryRequest: {

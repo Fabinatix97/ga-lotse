@@ -20,6 +20,7 @@ import { validate as isUUID, v4 as uuidv4 } from "uuid";
 import { useMessageTeaser } from "@/lib/businessModules/chat/components/messageTeaser/MessageTeaserProvider";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import {
+  ClientState,
   Membership,
   MessageTypeEnum,
 } from "@/lib/businessModules/chat/shared/enums";
@@ -42,7 +43,7 @@ const messagesLimit = 20;
 export function useRoomTimeline(roomId: string) {
   const [messages, setMessages] = useState<(Message | ChatSystemMessage)[]>([]);
   const [hasNextPage, setHasNextPage] = useState<boolean>(true);
-  const { matrixClient } = useChatClientContext();
+  const { matrixClient, clientState } = useChatClientContext();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const currentRoom = matrixClient.getRoom(roomId);
@@ -324,6 +325,7 @@ export function useRoomTimeline(roomId: string) {
       room: Room | undefined,
       _: boolean | undefined,
     ) {
+      if (clientState !== ClientState.Ready) return;
       if (room?.roomId !== roomId) return;
       void handleTimelineEvent(event, room);
     }
@@ -333,7 +335,7 @@ export function useRoomTimeline(roomId: string) {
     return () => {
       matrixClient.removeListener(RoomEvent.Timeline, onRoomTimeline);
     };
-  }, [handleTimelineEvent, matrixClient, roomId]);
+  }, [handleTimelineEvent, matrixClient, roomId, clientState]);
 
   const fetchRoomMessages = useCallback(async () => {
     try {

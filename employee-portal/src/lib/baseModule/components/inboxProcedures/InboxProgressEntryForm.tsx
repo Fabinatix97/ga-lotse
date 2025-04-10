@@ -5,15 +5,18 @@
 
 "use client";
 
-import { TextareaField } from "@eshg/lib-employee-portal";
+import {
+  FileField,
+  FileFieldProps,
+  TextareaField,
+} from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
+import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
 import {
   buildEnumOptions,
   createFieldNameMapper,
 } from "@eshg/lib-portal/helpers/form";
-import { validateFile } from "@eshg/lib-portal/helpers/validators";
 import {
   NestedFormProps,
   OptionalFieldValue,
@@ -22,11 +25,6 @@ import { EnumMap } from "@eshg/lib-portal/types/helpers";
 import { ApiInboxProgressEntryType } from "@eshg/lib-procedures-api";
 import { Grid, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
-
-import {
-  FileField,
-  FileFieldProps,
-} from "@/lib/shared/components/formFields/file/FileField";
 
 import { CreateInboxProcedureValues } from "./CreateInboxProcedureForm";
 
@@ -58,19 +56,6 @@ export function acceptedFileTypes(
       return [FileType.Eml];
     case "LETTER":
       return [FileType.Pdf];
-    default:
-      return [];
-  }
-}
-
-export function acceptedFileExtensions(
-  type: OptionalFieldValue<ApiInboxProgressEntryType>,
-): string[] {
-  switch (type) {
-    case "EMAIL":
-      return FileType.Eml.extensions;
-    case "LETTER":
-      return FileType.Pdf.extensions;
     default:
       return [];
   }
@@ -128,7 +113,7 @@ export function InboxProgressEntryForm(props: NestedFormProps) {
           ) && (
             <FileField
               name={fieldName("file")}
-              validate={validateFile(acceptedFileExtensions(progressEntryType))}
+              accept={acceptedFileTypes(progressEntryType)}
               {...additionalFileFieldProps(progressEntryType)}
             />
           )}

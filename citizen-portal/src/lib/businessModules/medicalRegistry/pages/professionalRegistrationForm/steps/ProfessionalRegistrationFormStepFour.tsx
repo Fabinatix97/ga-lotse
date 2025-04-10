@@ -9,8 +9,7 @@ import {
   RequiredDocumentsFormValues,
 } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
 import { shouldEnable } from "@eshg/lib-portal/businessModules/medicalRegistry/sections";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
-import { validateFile } from "@eshg/lib-portal/helpers/validators";
+import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
 import { ApiCountryCode, ApiTypeOfChange } from "@eshg/medical-registry-api";
 import { Add, DeleteOutlined } from "@mui/icons-material";
 import { Button, Grid, IconButton, Sheet, Stack, Typography } from "@mui/joy";
@@ -63,8 +62,8 @@ export function ProfessionalRegistrationFormStepFour() {
             name={requiredDocumentsForm("identificationDocument")}
             label={t("stepFour.contentSheetOne.label.identificationDocument")}
             accept={FileType.Jpeg}
+            maxFileSize={MAX_FILE_SIZE}
             required={t(requiredFieldMessageKey)}
-            validate={validateFile(FileType.Jpeg.extensions, MAX_FILE_SIZE)}
           />
         </Sheet>
         {shouldEnable("optionalDocuments", changeType) && (
@@ -73,13 +72,13 @@ export function ProfessionalRegistrationFormStepFour() {
               name={requiredDocumentsForm("license")}
               label={t("stepFour.contentSheetOne.label.license")}
               accept={FileType.Jpeg}
+              maxFileSize={MAX_FILE_SIZE}
               required={
                 changeType === ApiTypeOfChange.NewRegistration ||
                 changeType === ApiTypeOfChange.ReRegistration
                   ? t(requiredFieldMessageKey)
                   : undefined
               }
-              validate={validateFile(FileType.Jpeg.extensions, MAX_FILE_SIZE)}
             />
           </Sheet>
         )}
@@ -90,8 +89,8 @@ export function ProfessionalRegistrationFormStepFour() {
                 name={requiredDocumentsForm("workPermit")}
                 label={t("stepFour.contentSheetOne.label.workPermit")}
                 accept={FileType.Jpeg}
+                maxFileSize={MAX_FILE_SIZE}
                 required={t(requiredFieldMessageKey)}
-                validate={validateFile(FileType.Jpeg.extensions, MAX_FILE_SIZE)}
               />
             </Sheet>
           )}
@@ -116,20 +115,19 @@ export function ProfessionalRegistrationFormStepFour() {
                           "stepFour.contentSheetOne.label.otherRelevantDocument",
                         )}
                         accept={FileType.Jpeg}
+                        maxFileSize={MAX_FILE_SIZE}
                         required={t(requiredFieldMessageKey)}
-                        validate={validateFile(
-                          FileType.Jpeg.extensions,
-                          MAX_FILE_SIZE,
-                        )}
                       />
                     </Sheet>
 
                     <IconButton
-                      aria-label="Dokument löschen"
+                      aria-label={t(
+                        "stepFour.contentSheetOne.label.deleteDocument",
+                      )}
                       color="neutral"
                       variant="outlined"
                       sx={{
-                        marginTop: "27px",
+                        alignSelf: "center",
                         "--Icon-fontSize": (theme) => theme.fontSize.xl,
                       }}
                       onClick={() => remove(index)}
@@ -167,8 +165,8 @@ export function ProfessionalRegistrationFormStepFour() {
               name={employeeInformationForm("employeesFile")}
               label={t("stepFour.contentSheetTwo.label.employeesFile")}
               accept={FileType.Jpeg}
+              maxFileSize={MAX_FILE_SIZE}
               required={t(requiredFieldMessageKey)}
-              validate={validateFile(FileType.Jpeg.extensions, MAX_FILE_SIZE)}
             />
           </Sheet>
         </ContentSheet>
@@ -185,6 +183,7 @@ function TranslatedFileField(
     | "fileInformationTranslation"
     | "helperText"
     | "removeFile"
+    | "validate"
   >,
 ) {
   const { t } = useTranslation([
@@ -196,6 +195,7 @@ function TranslatedFileField(
       name={props.name}
       label={props.label}
       accept={props.accept}
+      maxFileSize={props.maxFileSize}
       required={props.required}
       placeholder={t("stepFour.fileField.placeholder")}
       placeholderSelected={t("stepFour.fileField.placeholderSelected")}
@@ -205,7 +205,6 @@ function TranslatedFileField(
       }}
       helperText={t("stepFour.fileField.helperText")}
       removeFile={t("stepFour.fileField.removeFile")}
-      validate={props.validate}
     />
   );
 }

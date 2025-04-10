@@ -3,23 +3,29 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isDateCurrentDateOrGreater } from "@eshg/lib-portal/helpers/dateTime";
 import { ApiAppointmentType } from "@eshg/travel-medicine-api";
-import { isAfter, isEqual } from "date-fns";
 import { useFormikContext } from "formik";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 
 import { useGetFreeAppointmentsForCitizen } from "@/lib/businessModules/travelMedicine/api/queries/citizenPublicApi";
+import { AppointmentStepperContext } from "@/lib/businessModules/travelMedicine/components/appointment/AppointmentStepper";
 import { NoAppointments } from "@/lib/businessModules/travelMedicine/components/appointment/steps/appointmentSlotStep/NoAppointments";
 import { NoAppointmentsContent } from "@/lib/businessModules/travelMedicine/components/appointment/steps/appointmentSlotStep/NoAppointmentsContent";
-import { AppointmentPicker } from "@/lib/businessModules/travelMedicine/components/appointment/steps/appointmentSlotStep/calendar/AppointmentPicker";
 import { InitialAppointmentFormValues } from "@/lib/businessModules/travelMedicine/components/appointment/types";
-import { useStepContext } from "@/lib/businessModules/travelMedicine/components/shared/contexts/StepContext";
+import {
+  FormSheet,
+  FormSheetTitle,
+} from "@/lib/businessModules/travelMedicine/components/shared/components/FormSheet";
 import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
+import { useTranslation } from "@/lib/i18n/client";
+import { AppointmentPickerSection } from "@/lib/shared/components/AppointmentPickerSection";
 
 export function AppointmentContent() {
+  const { t } = useTranslation(["travelMedicine/forms"]);
   const { values } = useFormikContext<InitialAppointmentFormValues>();
-  const { onShowOverviewChange } = useStepContext();
   const citizenRoutes = useCitizenRoutes();
+  const { setShowSidepanel } = useContext(AppointmentStepperContext);
 
   const freeAppointments = useGetFreeAppointmentsForCitizen(
     values.initialStepAppointmentType as ApiAppointmentType,
@@ -30,25 +36,27 @@ export function AppointmentContent() {
   );
 
   useEffect(() => {
-    if (filteredAppointments.length === 0) {
-      onShowOverviewChange(false);
-    }
-  }, [filteredAppointments, onShowOverviewChange]);
-
-  function isDateCurrentDateOrGreater(date: Date) {
-    const now = new Date();
-    return isEqual(date, now) || isAfter(date, now); //filter out dates that are not at least
-  }
+    setShowSidepanel(filteredAppointments.length !== 0);
+  }, [filteredAppointments, setShowSidepanel]);
 
   return (
-    <>
+    <FormSheet data-testid="appointment-slot-content-form">
       {filteredAppointments.length > 0 ? (
-        <AppointmentPicker filteredAppointments={filteredAppointments} />
+        <>
+          <FormSheetTitle requiredTitle={t("common.requiredTitle")}>
+            {t("appointmentSlotFormContent.title")}
+          </FormSheetTitle>
+          <AppointmentPickerSection
+            appointments={filteredAppointments}
+            name="appointment"
+            t={t}
+          />
+        </>
       ) : (
         <NoAppointments>
           <NoAppointmentsContent backButtonLocation={citizenRoutes.overview} />
         </NoAppointments>
       )}
-    </>
+    </FormSheet>
   );
 }

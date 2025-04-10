@@ -10,7 +10,7 @@ import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.schoolentry.api.SchoolDto;
-import de.eshg.schoolentry.domain.model.Label;
+import de.eshg.schoolentry.domain.model.ProcedureLabel;
 import de.eshg.schoolentry.domain.model.WaitingRoom;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -25,7 +25,7 @@ public record ProcedureDetailsData(
     ProcedureType type,
     PersonDetailsData child,
     List<PersonDetailsData> custodians,
-    List<Label> labels,
+    List<ProcedureLabel> labels,
     Appointment appointment,
     SchoolDto school,
     LocationDto location,

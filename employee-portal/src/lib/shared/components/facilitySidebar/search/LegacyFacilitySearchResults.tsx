@@ -5,6 +5,7 @@
 
 import type { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
 import {
+  SelectableCard,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -19,7 +20,6 @@ import { Formik, FormikErrors } from "formik";
 import { ReactNode } from "react";
 
 import { FacilityCardContent } from "@/lib/baseModule/components/facility/FacilityCardContent";
-import { SelectableCard } from "@/lib/shared/components/cards/SelectableCard";
 import { fullAddress } from "@/lib/shared/helpers/facilityUtils";
 
 interface LegacyFacilitySearchResultsProps {

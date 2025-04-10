@@ -66,6 +66,7 @@ import de.eshg.stiprotection.persistence.db.StiProtectionProcedureRepository;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure_;
 import de.eshg.stiprotection.persistence.db.StiProtectionTask;
 import de.eshg.stiprotection.util.ProgressEntryUtil;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.metamodel.SingularAttribute;
@@ -190,6 +191,7 @@ public class StiProtectionProcedureService {
 
     Specification<StiProtectionProcedure> spec =
         allOf(
+            hasRelatedPersons(),
             filterByCreatedAt(filterOptions),
             filterByYearOfBirth(filterOptions),
             filterByAppointmentDate(filterOptions),
@@ -207,6 +209,14 @@ public class StiProtectionProcedureService {
 
     return new ResultPage<>(
         procedures.getTotalPages(), procedures.getTotalElements(), procedures.stream().toList());
+  }
+
+  private static Specification<StiProtectionProcedure> hasRelatedPersons() {
+    return (root, query, cb) -> {
+      // No where clause needed — the INNER JOIN itself excludes procedures with no persons
+      root.join(Procedure_.RELATED_PERSONS, JoinType.INNER);
+      return cb.conjunction();
+    };
   }
 
   private Specification<StiProtectionProcedure> filterByStiProcedureOrigin(
@@ -365,11 +375,7 @@ public class StiProtectionProcedureService {
 
   public void updatePersonDetails(UUID procedureId, PersonData personData) {
     StiProtectionProcedure procedure = procedureFinder.findByExternalId(procedureId);
-    Person person = procedure.getPerson();
-    person.setGender(personData.gender());
-    person.setYearOfBirth(personData.yearOfBirth());
-    person.setCountryOfBirth(personData.countryOfBirth());
-    person.setInGermanySince(personData.inGermanySince());
+    PersonMapper.updatePersonDetails(procedure.getPerson(), personData);
     progressEntryUtil.addProgressEntry(procedureId, PERSON_DETAILS_UPDATED);
   }
 

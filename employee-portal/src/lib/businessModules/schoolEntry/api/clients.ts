@@ -13,8 +13,8 @@ import {
   FileApi,
   ImportApi,
   InboxProcedureApi,
-  LabelApi,
   ProcedureApi,
+  ProcedureLabelApi,
   ProgressEntryApi,
   SchoolEntryApi,
   SchoolEntryConfigApi,
@@ -62,7 +62,7 @@ export function useImportApi() {
 
 export function useLabelApi() {
   const configuration = useConfiguration();
-  return new LabelApi(configuration);
+  return new ProcedureLabelApi(configuration);
 }
 
 export function useConfigApi() {

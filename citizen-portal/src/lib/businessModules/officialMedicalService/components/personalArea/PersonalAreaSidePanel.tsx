@@ -13,6 +13,7 @@ import {
 } from "@eshg/official-medical-service-api";
 import {
   CakeOutlined,
+  DifferenceOutlined,
   MedicalServicesOutlined,
   PersonOutlined,
 } from "@mui/icons-material";
@@ -50,19 +51,26 @@ export function PersonalAreaSidePanel({
       <ContentSheetTitle>{t("overview.title")}</ContentSheetTitle>
       <Stack direction="column" gap={2}>
         <DetailsItem
-          label={t("overview.name_section.title")}
+          label={t("overview.name.title")}
           value={formatPersonName(procedure)}
           icon={<PersonOutlined />}
         />
         <DetailsItem
-          label={t("overview.birthdate_section.title")}
+          label={t("overview.birthdate.title")}
           value={formatDate(procedure.dateOfBirth)}
           icon={<CakeOutlined />}
         />
         <DetailsItem
-          label={t("overview.concern_section.title")}
+          label={t("overview.concern.title")}
           value={concernName}
           icon={<MedicalServicesOutlined />}
+        />
+        <DetailsItem
+          label={t("overview.medicalOpinion.title")}
+          value={t("overview.medicalOpinion.value", {
+            context: procedure.medicalOpinionStatus,
+          })}
+          icon={<DifferenceOutlined />}
         />
         {isDefined(procedure.appointment) &&
           renderActions(
@@ -131,6 +139,7 @@ function BookedContent({ procedure }: PersonalAreaSidePanelProps) {
         variant="outlined"
         color="danger"
         onClick={handleCancelAppointment}
+        sx={{ height: "40px" }}
       >
         {t("overview.actions.booked.cancel_appointment")}
       </Button>
@@ -150,6 +159,7 @@ function CancelledContent({ procedure }: PersonalAreaSidePanelProps) {
           <InternalLinkButton
             variant="solid"
             href={citizenRoutes.personalArea.rebook(accessCode)}
+            sx={{ height: "40px" }}
           >
             {t("overview.actions.cancelled.reschedule_appointment")}
           </InternalLinkButton>
@@ -170,6 +180,7 @@ function BookableContent({ procedure }: PersonalAreaSidePanelProps) {
           <InternalLinkButton
             variant="solid"
             href={citizenRoutes.personalArea.rebook(accessCode)}
+            sx={{ height: "40px" }}
           >
             {t("overview.actions.bookable.book_appointment")}
           </InternalLinkButton>

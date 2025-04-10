@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isDateCurrentDateOrGreater } from "@eshg/lib-portal/helpers/dateTime";
 import { ApiAppointmentType } from "@eshg/official-medical-service-api";
 import { useSuspenseQueries } from "@tanstack/react-query";
-import { isAfter, isEqual } from "date-fns";
 import { useFormikContext } from "formik";
 import { useMemo } from "react";
 
@@ -17,11 +17,6 @@ import { useCitizenRoutes } from "@/lib/businessModules/officialMedicalService/s
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
 
 import { AppointmentFormSidePanel } from "./AppointmentFormSidePanel";
-
-export function isDateCurrentDateOrGreater(date: Date) {
-  const now = new Date();
-  return isEqual(date, now) || isAfter(date, now); //filter out dates before now
-}
 
 export function AppointmentStepWrapper() {
   const citizenRoutes = useCitizenRoutes();

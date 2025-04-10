@@ -5,14 +5,14 @@
 
 package de.eshg.base.config;
 
-import static de.eshg.departmentinfo.PrivacyDocumentController.DE;
-import static de.eshg.departmentinfo.PrivacyDocumentController.EN;
-import static de.eshg.departmentinfo.PrivacyDocumentController.PRIVACY_NOTICE_PATH;
-import static de.eshg.departmentinfo.PrivacyDocumentController.PRIVACY_POLICY_PATH;
+import static de.eshg.config.departmentinfo.PrivacyDocumentController.DE;
+import static de.eshg.config.departmentinfo.PrivacyDocumentController.EN;
+import static de.eshg.config.departmentinfo.PrivacyDocumentController.PRIVACY_NOTICE_PATH;
+import static de.eshg.config.departmentinfo.PrivacyDocumentController.PRIVACY_POLICY_PATH;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
-import de.eshg.departmentinfo.api.PrivacyDocumentDto;
-import de.eshg.departmentinfo.mapper.PrivacyDocumentMapper;
+import de.eshg.config.api.PrivacyDocumentDto;
+import de.eshg.config.mapper.PrivacyDocumentMapper;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;

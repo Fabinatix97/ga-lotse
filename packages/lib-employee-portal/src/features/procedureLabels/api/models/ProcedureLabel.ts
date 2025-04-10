@@ -10,7 +10,7 @@ export interface ProcedureLabel extends BaseEntity, Versioned {
   readonly name: string;
   readonly description?: string;
   readonly hexColor: string;
-  readonly readonly: boolean;
+  readonly readonly?: boolean;
 }
 
 export interface ProcedureLabelResponse {
@@ -19,7 +19,7 @@ export interface ProcedureLabelResponse {
   name: string;
   description?: string;
   hexColor: string;
-  readonly: boolean;
+  readonly?: boolean;
 }
 
 function mapProcedureLabel(response: ProcedureLabelResponse): ProcedureLabel {

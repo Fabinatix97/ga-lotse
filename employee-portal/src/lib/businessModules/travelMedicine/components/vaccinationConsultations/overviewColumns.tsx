@@ -4,6 +4,10 @@
  */
 
 import {
+  PROCEDURE_STATUS_COLORS,
+  PROCEDURE_STATUS_NAMES,
+} from "@eshg/lib-employee-portal";
+import {
   formatDate,
   formatDateTime,
 } from "@eshg/lib-portal/formatters/dateTime";
@@ -22,10 +26,6 @@ import {
   translateAppointmentType,
   translateCreatedByUserType,
 } from "@/lib/businessModules/travelMedicine/components/appointmentTypes/translations";
-import {
-  procedureStatusNames,
-  statusColors,
-} from "@/lib/shared/components/procedures/constants";
 
 const columnHelper: ColumnHelper<ApiAppointmentOverviewEntry> =
   createColumnHelper<ApiAppointmentOverviewEntry>();
@@ -117,8 +117,8 @@ export function appointmentOverviewEntriesColumns() {
     columnHelper.accessor("status", {
       header: "Status",
       cell: (props) => (
-        <Chip color={statusColors[props.getValue()]} size="md">
-          {procedureStatusNames[props.getValue()]}
+        <Chip color={PROCEDURE_STATUS_COLORS[props.getValue()]} size="md">
+          {PROCEDURE_STATUS_NAMES[props.getValue()]}
         </Chip>
       ),
       meta: {

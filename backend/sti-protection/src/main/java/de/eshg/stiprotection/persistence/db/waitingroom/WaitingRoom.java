@@ -23,20 +23,28 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@DataSensitivity(SensitivityLevel.SENSITIVE)
 public class WaitingRoom extends GenericEntity<Long> {
-  @Id private Long id;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  @Id
+  private Long id;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   @MapsId
   @OneToOne(optional = false)
   private StiProtectionProcedure procedure;
 
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String info;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private WaitingStatus status;
 
-  @NotNull @LastModifiedDate private Instant modifiedAt;
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  @NotNull
+  @LastModifiedDate
+  private Instant modifiedAt;
 
   @Override
   public Long getId() {

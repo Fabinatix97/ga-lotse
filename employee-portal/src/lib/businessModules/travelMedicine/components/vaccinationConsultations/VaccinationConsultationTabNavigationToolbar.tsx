@@ -7,6 +7,7 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import {
+  PROCEDURE_STATUS_COLORS,
   TabNavigationItem,
   TabNavigationToolbar,
   useHasUserRoleCheck,
@@ -26,7 +27,6 @@ import { procedureStatusNames } from "@/lib/baseModule/api/procedures/enums";
 import { useGetStatusQuery } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
 import { VaccinationConsultationTabHeader } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/VaccinationConsultationTabHeader";
 import { routes as businessRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
-import { statusColors } from "@/lib/shared/components/procedures/constants";
 
 export function VaccinationConsultationTabNavigationToolbar({
   id,
@@ -50,7 +50,7 @@ export function VaccinationConsultationTabNavigationToolbar({
       afterTabs={
         <Chip
           data-testid="tab-procedure-state"
-          color={statusColors[status]}
+          color={PROCEDURE_STATUS_COLORS[status]}
           size="md"
         >
           {procedureStatusNames[status]}

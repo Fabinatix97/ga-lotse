@@ -15,6 +15,8 @@ import static java.util.Comparator.naturalOrder;
 import static java.util.Comparator.nullsLast;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.eshg.base.SortDirection;
 import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
@@ -44,6 +46,10 @@ import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import de.eshg.lib.procedure.procedures.ProcedureSearchService;
 import de.eshg.lib.procedure.util.ProcedureValidator;
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
+import de.eshg.officialmedicalservice.anamnesis.api.AnamnesisDto;
+import de.eshg.officialmedicalservice.anamnesis.api.GetAnamnesisResponse;
+import de.eshg.officialmedicalservice.anamnesis.api.UpdateAnamnesisRequest;
+import de.eshg.officialmedicalservice.anamnesis.persistence.entity.OmsAnamnesis;
 import de.eshg.officialmedicalservice.appointment.OmsAppointmentMapper;
 import de.eshg.officialmedicalservice.appointment.persistence.entity.AppointmentState;
 import de.eshg.officialmedicalservice.appointment.persistence.entity.OmsAppointment;
@@ -54,6 +60,7 @@ import de.eshg.officialmedicalservice.document.api.GetDocumentsResponse;
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocument;
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocumentRepository;
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocumentStatus;
+import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocument_;
 import de.eshg.officialmedicalservice.facility.FacilityClient;
 import de.eshg.officialmedicalservice.facility.FacilityMapper;
 import de.eshg.officialmedicalservice.notification.NotificationService;
@@ -61,6 +68,7 @@ import de.eshg.officialmedicalservice.person.PersonClient;
 import de.eshg.officialmedicalservice.person.PersonMapper;
 import de.eshg.officialmedicalservice.procedure.api.AcceptDraftProcedureResponse;
 import de.eshg.officialmedicalservice.procedure.api.AffectedPersonDto;
+import de.eshg.officialmedicalservice.procedure.api.ConcernDto;
 import de.eshg.officialmedicalservice.procedure.api.EmployeeOmsProcedureDetailsDto;
 import de.eshg.officialmedicalservice.procedure.api.EmployeeOmsProcedureHeaderDto;
 import de.eshg.officialmedicalservice.procedure.api.EmployeeOmsProcedureOverviewDto;
@@ -71,15 +79,15 @@ import de.eshg.officialmedicalservice.procedure.api.FacilityDto;
 import de.eshg.officialmedicalservice.procedure.api.GetOmsProceduresFilterOptionsDto;
 import de.eshg.officialmedicalservice.procedure.api.MedicalOpinionResultDto;
 import de.eshg.officialmedicalservice.procedure.api.MedicalOpinionStatusDto;
+import de.eshg.officialmedicalservice.procedure.api.MergeAffectedPersonRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchAcceptDraftProcedureRequest;
+import de.eshg.officialmedicalservice.procedure.api.PatchAdditionalInfoRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchAffectedPersonRequest;
-import de.eshg.officialmedicalservice.procedure.api.PatchConcernRequest;
-import de.eshg.officialmedicalservice.procedure.api.PatchEmployeeOmsProcedureEmailNotificationsRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchEmployeeOmsProcedureFacilityRequest;
-import de.eshg.officialmedicalservice.procedure.api.PatchEmployeeOmsProcedurePhysicianRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchMedicalOpinionStatusRequest;
 import de.eshg.officialmedicalservice.procedure.api.PostEmployeeOmsProcedureFacilityRequest;
 import de.eshg.officialmedicalservice.procedure.api.PostEmployeeOmsProcedureRequest;
+import de.eshg.officialmedicalservice.procedure.api.ProcedureLabCodeSearchParameters;
 import de.eshg.officialmedicalservice.procedure.api.SyncAffectedPersonRequest;
 import de.eshg.officialmedicalservice.procedure.api.SyncFacilityRequest;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.Concern;
@@ -95,7 +103,10 @@ import de.eshg.officialmedicalservice.procedure.persistence.entity.Person;
 import de.eshg.officialmedicalservice.user.CitizenAccessCodeUserClient;
 import de.eshg.officialmedicalservice.user.UserClient;
 import de.eshg.officialmedicalservice.waitingroom.WaitingRoomMapper;
+import de.eshg.officialmedicalservice.waitingroom.persistence.entity.WaitingStatus;
+import de.eshg.persistence.TransactionHelper;
 import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.validation.ValidationUtil;
@@ -107,10 +118,10 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -124,9 +135,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
@@ -153,6 +166,11 @@ public class EmployeeOmsProcedureService {
   private final ModuleClientAuthenticator moduleClientAuthenticator;
   private final CitizenAccessCodeUserClient citizenAccessCodeUserClient;
   private final OmsDocumentRepository omsDocumentRepository;
+  private final ObjectMapper objectMapper;
+  private final TransactionHelper transactionHelper;
+
+  @Value("${de.eshg.official-medical-service.cutOffDate.leadTime}")
+  private int cutOffDateLeadTime;
 
   public EmployeeOmsProcedureService(
       OmsProcedureRepository omsProcedureRepository,
@@ -170,7 +188,9 @@ public class EmployeeOmsProcedureService {
       NotificationService notificationService,
       ModuleClientAuthenticator moduleClientAuthenticator,
       CitizenAccessCodeUserClient citizenAccessCodeUserClient,
-      OmsDocumentRepository omsDocumentRepository) {
+      OmsDocumentRepository omsDocumentRepository,
+      ObjectMapper objectMapper,
+      TransactionHelper transactionHelper) {
     this.omsProcedureRepository = omsProcedureRepository;
     this.omsProcedureOverviewMapper = omsProcedureOverviewMapper;
     this.omsAppointmentMapper = omsAppointmentMapper;
@@ -187,6 +207,12 @@ public class EmployeeOmsProcedureService {
     this.moduleClientAuthenticator = moduleClientAuthenticator;
     this.citizenAccessCodeUserClient = citizenAccessCodeUserClient;
     this.omsDocumentRepository = omsDocumentRepository;
+    this.objectMapper = objectMapper;
+    this.transactionHelper = transactionHelper;
+  }
+
+  public int getCutOffDateLeadTime() {
+    return cutOffDateLeadTime;
   }
 
   @Transactional
@@ -203,11 +229,13 @@ public class EmployeeOmsProcedureService {
 
     OmsDocument letterOfAssignmentDocument =
         createInitialDocument("Auftragsschreiben", "Letter of assignment", procedure);
+    procedure.getDocuments().add(letterOfAssignmentDocument);
     omsDocumentRepository.save(letterOfAssignmentDocument);
 
     OmsDocument releaseFromConfidentialityDocument =
         createInitialDocument(
             "Schweigepflichtsentbindung", "Release from confidentiality", procedure);
+    procedure.getDocuments().add(releaseFromConfidentialityDocument);
     omsDocumentRepository.save(releaseFromConfidentialityDocument);
 
     return procedure.getExternalId();
@@ -274,6 +302,7 @@ public class EmployeeOmsProcedureService {
         omsAppointmentMapper.toInterfaceType(
             omsProcedureAndAffectedPerson.omsProcedure.getAppointments()),
         omsProcedureAndAffectedPerson.omsProcedure.isSendEmailNotifications(),
+        omsProcedureAndAffectedPerson.omsProcedure.getMedicalOpinionCutOffDate(),
         omsProcedureAndAffectedPerson.omsProcedure.getCitizenUserId());
   }
 
@@ -281,53 +310,49 @@ public class EmployeeOmsProcedureService {
   public EmployeePagedOmsProcedures getEmployeeProceduresOverview(
       GetOmsProceduresFilterOptionsDto filters,
       EmployeeOmsProcedurePaginationAndSortParameters paginationAndSortParameters,
-      ProcedureSearchParameters searchParameters) {
+      ProcedureSearchParameters searchParameters,
+      ProcedureLabCodeSearchParameters labCodeSearchParameters) {
 
     List<OmsProcedureView> candidates;
 
     if (ProcedureValidator.hasNonNullValue(searchParameters)) {
-
-      List<OmsProcedure> allProcedures;
-      if (allSearchParametersAreNotNull(searchParameters)) {
-        allProcedures =
-            procedureSearchService.searchProceduresByPerson(
-                searchParameters.searchFirstName(),
-                searchParameters.searchLastName(),
-                searchParameters.searchDateOfBirth(),
-                PersonType.PATIENT);
-      } else {
-        allProcedures =
-            procedureSearchService
-                .searchProceduresByPartialPersonData(
-                    searchParameters.searchFirstName(),
-                    searchParameters.searchLastName(),
-                    searchParameters.searchDateOfBirth(),
-                    PersonType.PATIENT)
-                .stream()
-                .filter(procedure -> procedure.getProcedureStatus().isOpen())
-                .toList();
-      }
+      List<OmsProcedure> allProcedures =
+          procedureSearchService.searchProceduresByPerson(searchParameters, PersonType.PATIENT);
 
       candidates = allProcedures.stream().flatMap(this::convertToProcedureViewStream).toList();
     } else {
-      Instant isBefore = null;
-      Instant isAfter = null;
-
-      if (Boolean.TRUE.equals(filters.today())) {
-        LocalDate today = LocalDate.ofInstant(clock.instant(), clock.getZone());
-        LocalDateTime startOfDay = today.atStartOfDay();
-        isAfter = startOfDay.atZone(clock.getZone()).toInstant();
-        isBefore = isAfter.plus(1, ChronoUnit.DAYS);
-      }
-
       UserDto selfUser = userClient.getSelfUser();
       UUID physicianId = Boolean.TRUE.equals(filters.assigned()) ? selfUser.userId() : null;
 
+      DateSpanHelper.LocalDateSpan appointmentDateSpan =
+          DateSpanHelper.splitDateSpan(filters.appointmentDateSpan());
+
+      LocalDate dateStart = appointmentDateSpan.getDateStart();
+      LocalDate dateEnd = appointmentDateSpan.getDateEnd();
+
+      // Note: the second instant is not the last millisecond of the given date but the first
+      // millisecond of the next date; we do keep this is mind when choosing the rsp. comparison
+      // operators
+      Instant instantStart =
+          (dateStart == null ? null : dateStart.atStartOfDay(clock.getZone()).toInstant());
+      Instant instantPastEnd =
+          (dateEnd == null
+              ? null
+              : dateEnd.atStartOfDay(clock.getZone()).toInstant().plus(1, ChronoUnit.DAYS));
+
       candidates =
           findOmsProcedures(
-                  physicianId, filters.status(), isBefore, isAfter, filters.highPriority())
+                  physicianId,
+                  filters.status(),
+                  instantStart,
+                  instantPastEnd,
+                  filters.highPriority(),
+                  labCodeSearchParameters.searchLabCode())
               .stream()
-              .filter(procedure -> procedure.procedure().getProcedureStatus().isOpen())
+              .filter(
+                  procedure ->
+                      labCodeSearchParameters.searchLabCode() != null
+                          || procedure.procedure().getProcedureStatus().isOpen())
               .toList();
     }
 
@@ -346,14 +371,6 @@ public class EmployeeOmsProcedureService {
         sortAndPageEntries(omsProcedureOverviewDtos, paginationAndSortParameters, idMap);
 
     return new EmployeePagedOmsProcedures(result, omsProcedureOverviewDtos.size());
-  }
-
-  private boolean allSearchParametersAreNotNull(ProcedureSearchParameters searchParameters) {
-    return (searchParameters.searchFirstName() != null
-            && !searchParameters.searchFirstName().isBlank())
-        && (searchParameters.searchLastName() != null
-            && !searchParameters.searchLastName().isBlank())
-        && (searchParameters.searchDateOfBirth() != null);
   }
 
   // temporarily skip the current authentication
@@ -382,9 +399,10 @@ public class EmployeeOmsProcedureService {
   private List<OmsProcedureView> findOmsProcedures(
       @Nullable UUID physicianId,
       @Nullable Set<ProcedureStatusDto> status,
-      @Nullable Instant isBefore,
-      @Nullable Instant isAfter,
-      @Nullable Boolean highPriority) {
+      @Nullable Instant appointmentDateStart,
+      @Nullable Instant appointmentDatePastEnd,
+      @Nullable Boolean highPriority,
+      @Nullable String labCode) {
     Set<ProcedureStatus> procedureStatus =
         Stream.ofNullable(status)
             .flatMap(Collection::stream)
@@ -400,6 +418,8 @@ public class EmployeeOmsProcedureService {
         procedureRoot.join(OmsProcedure_.CONCERN, JoinType.LEFT);
     Join<OmsProcedure, OmsAppointment> appointmentJoin =
         procedureRoot.join(OmsProcedure_.appointments, JoinType.LEFT);
+    Join<OmsProcedure, OmsDocument> documentJoin =
+        procedureRoot.join(OmsProcedure_.documents, JoinType.LEFT);
 
     List<Predicate> predicates = new ArrayList<>();
 
@@ -411,7 +431,7 @@ public class EmployeeOmsProcedureService {
       predicates.add(procedureRoot.get(OmsProcedure_.procedureStatus).in(procedureStatus));
     }
 
-    if (isBefore != null || isAfter != null) {
+    if (appointmentDateStart != null || appointmentDatePastEnd != null) {
       predicates.add(
           cb.and(
               cb.isNotNull(appointmentJoin),
@@ -419,17 +439,23 @@ public class EmployeeOmsProcedureService {
                   appointmentJoin.get(OmsAppointment_.appointmentState),
                   cb.literal(AppointmentState.CLOSED))));
 
-      if (isBefore != null) {
-        predicates.add(cb.lessThanOrEqualTo(appointmentJoin.get(OmsAppointment_.start), isBefore));
-      }
-      if (isAfter != null) {
+      if (appointmentDateStart != null) {
         predicates.add(
-            cb.greaterThanOrEqualTo(appointmentJoin.get(OmsAppointment_.start), isAfter));
+            cb.greaterThanOrEqualTo(
+                appointmentJoin.get(OmsAppointment_.start), appointmentDateStart));
+      }
+      if (appointmentDatePastEnd != null) {
+        predicates.add(
+            cb.lessThan(appointmentJoin.get(OmsAppointment_.start), appointmentDatePastEnd));
       }
     }
 
     if (Boolean.TRUE.equals(highPriority)) {
       predicates.add(cb.isTrue(concernJoin.get(Concern_.HIGH_PRIORITY)));
+    }
+
+    if (labCode != null) {
+      predicates.add(cb.equal(documentJoin.get(OmsDocument_.labCode), cb.literal(labCode)));
     }
 
     cq.select(cb.construct(OmsProcedureView.class, procedureRoot, concernJoin, appointmentJoin));
@@ -527,8 +553,11 @@ public class EmployeeOmsProcedureService {
               comparing(
                   e -> e.nextAppointment() == null ? null : e.nextAppointment(),
                   nullsLast(naturalOrder()));
+          case MEDICALOPINIONSTATUS ->
+              comparing(
+                  e -> e.medicalOpinionStatus() == null ? null : e.medicalOpinionStatus().name(),
+                  nullsLast(naturalOrder()));
           default -> throw new BadRequestException("invalid sort param: " + sortKey);
-            // TODO Implement sorting for medical opinion state when the attribute is created
         };
     if (paginationAndSortParameters.sortDirection() == SortDirection.DESC) {
       comparator = comparator.reversed();
@@ -557,6 +586,9 @@ public class EmployeeOmsProcedureService {
     OmsProcedure omsProcedure = omsProcedureAndAffectedPerson.omsProcedure();
     if (omsProcedure.getProcedureStatus() != ProcedureStatus.DRAFT) {
       throw new BadRequestException("Procedure is not in DRAFT status");
+    }
+    if (omsProcedureAndAffectedPerson.affectedPerson.dataOrigin() == DataOriginDto.EXTERNAL) {
+      throw new BadRequestException("Affected person's data origin is EXTERNAL");
     }
     requireFacility(omsProcedure);
     requireConcern(omsProcedure);
@@ -619,8 +651,13 @@ public class EmployeeOmsProcedureService {
     if (omsProcedure.getProcedureStatus() != ProcedureStatus.OPEN) {
       throw new BadRequestException("Procedure is not in OPEN status");
     }
-
-    // ToDo require all appointments closed
+    if (omsProcedure.getMedicalOpinionStatus() != MedicalOpinionStatus.ACCOMPLISHED) {
+      throw new BadRequestException("Procedure is missing accomplished medical opinion");
+    }
+    requireAllAppointmentsClosed(omsProcedure);
+    requireAllMandatoryDocumentsAccepted(omsProcedure);
+    requireMedicalOpinionAccomplished(omsProcedure);
+    requireWaiting(omsProcedure);
 
     omsProcedure.updateProcedureStatus(ProcedureStatus.CLOSED, clock, auditLogger);
   }
@@ -759,44 +796,101 @@ public class EmployeeOmsProcedureService {
   }
 
   @Transactional
-  public UUID modifyPhysician(UUID externalId, PatchEmployeeOmsProcedurePhysicianRequest request) {
+  public void updateAdditionalInfo(UUID externalId, PatchAdditionalInfoRequest request) {
     OmsProcedure procedure = loadOmsProcedureForUpdate(externalId);
 
+    if (procedure.isFinalized()) {
+      throw new BadRequestException(
+          "Additional info can not be updated when the procedure is finalized.");
+    }
+
+    if (procedure.getConcern() == null
+        || !procedure.getConcern().getNameDe().equals(request.concern().nameDe())) {
+      updateConcern(procedure, request.concern());
+    }
+    if (request.physicianId() != null
+        && (procedure.getPhysicianId() == null
+            || !procedure.getPhysicianId().equals(request.physicianId()))) {
+      updatePhysician(procedure, request.physicianId());
+    }
+    updateMedicalOpinionCutOffDate(procedure, request.cutOffDate());
+    if (request.sendEmailNotifications() != null) {
+      updateEmailNotifications(procedure, request.sendEmailNotifications());
+    }
+    progressEntryService.createProgressEntryForAdditionalInfoChanged(procedure);
+  }
+
+  public void updateConcern(OmsProcedure procedure, ConcernDto concern) {
+    if (procedure.getProcedureStatus() != ProcedureStatus.DRAFT) {
+      throw new BadRequestException(
+          "Concern can only be edited when the procedure is in draft status.");
+    }
+
+    Concern existingConcern = procedure.getConcern();
+
+    if (existingConcern != null) {
+      ValidationUtil.validateVersion(concern.version(), existingConcern);
+      ConcernMapper.mapOntoExistingEntity(concern, existingConcern);
+    } else {
+      procedure.setConcern(mapToEntity(concern));
+    }
+  }
+
+  public void updatePhysician(OmsProcedure procedure, UUID newPhysicianId) {
     if (procedure.isFinalized()) {
       throw new BadRequestException("A physician can not be set when the procedure is finalized.");
     }
 
-    UUID newPhysicianId = request.physicianId();
-    UserDto newPhysician =
-        userClient.validateUser(newPhysicianId, userClient.getTechnicalGroupPhysicians());
-
     procedure.setPhysicianId(newPhysicianId);
-    progressEntryService.createProgressEntryForModifiedPhysician(procedure, newPhysician);
-    return newPhysicianId;
   }
 
-  @Transactional
-  public void updateOmsProcedureConcern(UUID externalId, PatchConcernRequest request) {
-    OmsProcedure omsProcedure = loadOmsProcedureForUpdate(externalId);
-
-    if (omsProcedure.isFinalized()) {
-      throw new BadRequestException("Concern can not be edited when the procedure is finalized.");
-    }
-    if (omsProcedure.getProcedureStatus() != ProcedureStatus.DRAFT) {
-      throw new BadRequestException("Procedure is not in DRAFT status");
+  public void updateMedicalOpinionCutOffDate(
+      OmsProcedure procedure, LocalDate medicalOpinionCutOffDate) {
+    if (procedure.isFinalized()) {
+      throw new BadRequestException(
+          "The cut-off date cannot be edited when the procedure is finalized.");
     }
 
-    Concern existingConcern = omsProcedure.getConcern();
+    if (medicalOpinionCutOffDate != null) {
+      LocalDate creationDate =
+          procedure
+              .getCreatedAt()
+              .truncatedTo(ChronoUnit.DAYS)
+              .atZone(clock.getZone())
+              .toLocalDate();
 
-    if (existingConcern != null) {
-      ValidationUtil.validateVersion(request.concern().version(), existingConcern);
-      ConcernMapper.mapOntoExistingEntity(request.concern(), existingConcern);
-    } else {
-      omsProcedure.setConcern(mapToEntity(request.concern()));
+      if (medicalOpinionCutOffDate.isBefore(creationDate)) {
+        throw new BadRequestException(
+            "The cut-off date must not be set to a day before the procedure was created.");
+      }
     }
 
-    progressEntryService.createProgressEntryForConcernChanged(
-        omsProcedure, request.concern().nameDe());
+    procedure.setMedicalOpinionCutOffDate(medicalOpinionCutOffDate);
+  }
+
+  public void updateEmailNotifications(OmsProcedure procedure, boolean sendEmailNotifications) {
+    if (procedure.isFinalized()) {
+      throw new BadRequestException(
+          "E-Mail notification can not be edited when the procedure is finalized.");
+    }
+
+    procedure.setSendEmailNotifications(sendEmailNotifications);
+
+    if (sendEmailNotifications
+        && List.of(ProcedureStatus.OPEN, ProcedureStatus.IN_PROGRESS)
+            .contains(procedure.getProcedureStatus())) {
+      UUID citizenUserId = procedure.getCitizenUserId();
+      String accessCode =
+          citizenAccessCodeUserClient.getCitizenAccessCode(citizenUserId).accessCode();
+
+      Person person = procedure.findAffectedPerson();
+      AffectedPersonDto affectedPersonDto =
+          PersonMapper.mapToAffectedPersonDto(
+              personClient.getPersonFileState(person.getCentralFileStateId()), person.getVersion());
+
+      notificationService.notifyNewCitizenUser(
+          procedure::isSendEmailNotifications, affectedPersonDto, accessCode);
+    }
   }
 
   @Transactional(readOnly = true)
@@ -836,35 +930,95 @@ public class EmployeeOmsProcedureService {
   }
 
   @Transactional
-  public void patchEmailNotifications(
-      UUID externalId, PatchEmployeeOmsProcedureEmailNotificationsRequest request) {
+  public void updateAnamnesis(UUID externalId, UpdateAnamnesisRequest request) {
     OmsProcedure procedure = loadOmsProcedureForUpdate(externalId);
 
-    if (procedure.isFinalized()) {
-      throw new BadRequestException(
-          "E-Mail notification can not be edited when the procedure is finalized.");
+    OmsAnamnesis anamnesis =
+        procedure.getAnamnesis() != null ? procedure.getAnamnesis() : new OmsAnamnesis();
+
+    try {
+      anamnesis.setProcedure(procedure);
+      anamnesis.setContent(
+          objectMapper
+              .writerWithDefaultPrettyPrinter()
+              .writeValueAsString(request.anamnesis())
+              .getBytes(StandardCharsets.UTF_8));
+
+      procedure.setAnamnesis(anamnesis);
+    } catch (JsonProcessingException e) {
+      throw new BadRequestException(ErrorCode.BAD_REQUEST, "Anamnesis is malformed");
+    }
+  }
+
+  @Transactional
+  public GetAnamnesisResponse getAnamnesis(UUID externalId) {
+    OmsProcedure procedure = loadOmsProcedure(externalId);
+    OmsAnamnesis anamnesis = procedure.getAnamnesis();
+
+    if (anamnesis == null) {
+      return new GetAnamnesisResponse(null);
     }
 
-    procedure.setSendEmailNotifications(request.sendEmailNotifications());
+    byte[] anamnesisContent = anamnesis.getContent();
 
-    NotificationService.NotificationSummary notificationSummary = null;
-    if (request.sendEmailNotifications()
-        && List.of(ProcedureStatus.OPEN, ProcedureStatus.IN_PROGRESS)
-            .contains(procedure.getProcedureStatus())) {
-      UUID citizenUserId = procedure.getCitizenUserId();
-      String accessCode =
-          citizenAccessCodeUserClient.getCitizenAccessCode(citizenUserId).accessCode();
-
-      Person person = procedure.findAffectedPerson();
-      AffectedPersonDto affectedPersonDto =
-          PersonMapper.mapToAffectedPersonDto(
-              personClient.getPersonFileState(person.getCentralFileStateId()), person.getVersion());
-
-      notificationSummary =
-          notificationService.notifyNewCitizenUser(
-              procedure::isSendEmailNotifications, affectedPersonDto, accessCode);
+    try {
+      return new GetAnamnesisResponse(
+          objectMapper.readValue(
+              new String(anamnesisContent, StandardCharsets.UTF_8), AnamnesisDto.class));
+    } catch (JsonProcessingException e) {
+      throw new BadRequestException(ErrorCode.BAD_REQUEST, "Anamnesis is malformed");
     }
-    progressEntryService.createProgressEntryForMailNotification(procedure, notificationSummary);
+  }
+
+  @Transactional
+  public void mergeAffectedPerson(UUID externalId, MergeAffectedPersonRequest request) {
+    AtomicReference<UUID> personFileStateToDelete = new AtomicReference<>();
+
+    // We manually put only this part in the transaction so we don't accidentally delete the old
+    // file state even though the transaction failed, leaving us with a procedure with a deleted
+    // file state
+    transactionHelper.executeInTransaction(
+        () -> {
+          OmsProcedure omsProcedure = loadOmsProcedureForUpdate(externalId);
+
+          GetPersonFileStateResponse oldPersonFileState =
+              personClient.getPersonFileState(
+                  omsProcedure.findAffectedPerson().getCentralFileStateId());
+
+          if (oldPersonFileState.dataOrigin() != DataOriginDto.EXTERNAL) {
+            throw new BadRequestException(
+                ErrorCode.BAD_REQUEST, "Data origin of person is not EXTERNAL");
+          }
+
+          if (request.mergeInto() != null) {
+            GetReferencePersonResponse referencePerson =
+                personClient.getReferencePersonById(request.mergeInto());
+            UpdatePersonRequest updatePersonRequest =
+                mapToUpdatePersonRequest(request.affectedPerson());
+
+            UpdateReferencePersonRequest updateReferencePersonRequest =
+                new UpdateReferencePersonRequest(updatePersonRequest, referencePerson.version());
+
+            AddPersonFileStateResponse affectedPersonBaseResponse =
+                personClient.updateReferencePerson(
+                    request.mergeInto(), updateReferencePersonRequest);
+
+            omsProcedure
+                .findAffectedPerson()
+                .setCentralFileStateId(affectedPersonBaseResponse.id());
+            personFileStateToDelete.set(oldPersonFileState.id());
+          } else {
+            AddPersonFileStateResponse affectedPersonBaseResponse =
+                personClient.addPersonFileState(
+                    PersonMapper.mapToAddPersonFileStateRequest(request.affectedPerson()));
+            omsProcedure
+                .findAffectedPerson()
+                .setCentralFileStateId(affectedPersonBaseResponse.id());
+          }
+        });
+    if (personFileStateToDelete.get() != null) {
+      personClient.markPersonFileStateForDeletion(personFileStateToDelete.get());
+    }
   }
 
   private OmsProcedure loadOmsProcedure(UUID externalId) {
@@ -971,6 +1125,34 @@ public class EmployeeOmsProcedureService {
   private void requireConcern(OmsProcedure omsProcedure) {
     if (omsProcedure.getConcern() == null) {
       throw new BadRequestException("Procedure is missing a concern");
+    }
+  }
+
+  private void requireAllMandatoryDocumentsAccepted(OmsProcedure omsProcedure) {
+    if (omsProcedure.getDocuments().stream()
+        .filter(OmsDocument::isMandatoryDocument)
+        .anyMatch(document -> document.getDocumentStatus() != OmsDocumentStatus.ACCEPTED)) {
+      throw new BadRequestException("Procedure has unaccepted mandatory documents");
+    }
+  }
+
+  private void requireMedicalOpinionAccomplished(OmsProcedure omsProcedure) {
+    if (omsProcedure.getMedicalOpinionStatus() != MedicalOpinionStatus.ACCOMPLISHED) {
+      throw new BadRequestException("Procedure has unaccomplished medical opinion");
+    }
+  }
+
+  private void requireAllAppointmentsClosed(OmsProcedure omsProcedure) {
+    if (omsProcedure.getAppointments().stream()
+        .anyMatch(appointment -> appointment.getAppointmentState() == AppointmentState.OPEN)) {
+      throw new BadRequestException("Procedure has open appointments");
+    }
+  }
+
+  private void requireWaiting(OmsProcedure omsProcedure) {
+    if (omsProcedure.getWaitingRoom().getStatus() == WaitingStatus.WAITING_FOR_CONSULTATION
+        || omsProcedure.getWaitingRoom().getStatus() == WaitingStatus.IN_CONSULTATION) {
+      throw new BadRequestException("Procedure has waiting room in wrong status");
     }
   }
 

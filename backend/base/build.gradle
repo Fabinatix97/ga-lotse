@@ -9,7 +9,7 @@ dependencies {
     implementation project(':lib-aggregation')
     implementation project(':lib-auditlog')
     implementation project(':lib-calendar-api')
-    implementation project(':lib-department-info')
+    implementation project(':lib-config')
     implementation project(":lib-document-generator")
     implementation project(':lib-procedures-api')
     implementation project(':lib-notification')

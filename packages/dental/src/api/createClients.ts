@@ -10,6 +10,7 @@ import {
   Configuration,
   FileApi,
   ProcedureApi,
+  ProcedureLabelApi,
   ProgressEntryApi,
   ProphylaxisSessionApi,
 } from "@eshg/dental-api";
@@ -30,5 +31,6 @@ export function createClients(baseUrl: string) {
     progressEntryApi: new ProgressEntryApi(configuration),
     fileApi: new FileApi(configuration),
     approvalRequestApi: new ApprovalRequestApi(configuration),
+    procedureLabelApi: new ProcedureLabelApi(configuration),
   } satisfies Record<string, BaseAPI>;
 }

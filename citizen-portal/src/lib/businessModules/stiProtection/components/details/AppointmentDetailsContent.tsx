@@ -59,11 +59,11 @@ export function AppointmentDetailsContent() {
   const { data: departmentInfo } = useDepartmentInfo(concern);
   const document = useAnonymousIdentificationDocumentQuery(procedure.id);
 
-  const hasUpcommingAppointment = appointment != null;
+  const hasUpcomingAppointment = appointment != null;
 
   return (
     <GridColumnStack>
-      {hasUpcommingAppointment ? (
+      {hasUpcomingAppointment ? (
         <ContentSheet>
           <ContentSheetTitle>{t("main.title")}</ContentSheetTitle>
           <MedicalHistoryCard
@@ -72,7 +72,7 @@ export function AppointmentDetailsContent() {
             unfulfilledLabel={t("main.medical_history_unfulfilled")}
             buttonLabel={t("main.medical_history_button")}
             status={medicalHistorySubmitted}
-            href={citizenRoutes.appointments.anamnesis(person.accessCode)}
+            href={citizenRoutes.personalArea.anamnesis}
           />
           <DownloadDocumentCard
             documentTitle={t("main.auth_document_title")}
@@ -94,10 +94,10 @@ export function AppointmentDetailsContent() {
         <InfoSectionGrid>
           <YearOfBirthSection yearOfBirth={person.yearOfBirth} />
           <ServiceSection concern={concern} />
-          {hasUpcommingAppointment ? (
+          {hasUpcomingAppointment ? (
             <AppointmentDateSection date={appointment.start} locale={code} />
           ) : null}
-          {hasUpcommingAppointment ? (
+          {hasUpcomingAppointment ? (
             <AppointmentTimeSection
               time={appointment.start}
               duration={durationBetweenDatesInMinutes(

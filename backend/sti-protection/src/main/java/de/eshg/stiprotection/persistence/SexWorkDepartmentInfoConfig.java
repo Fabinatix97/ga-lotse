@@ -5,7 +5,7 @@
 
 package de.eshg.stiprotection.persistence;
 
-import de.eshg.departmentinfo.domain.AbstractDepartmentInfoConfig;
+import de.eshg.config.domain.AbstractDepartmentInfoConfig;
 import jakarta.persistence.Entity;
 
 @Entity

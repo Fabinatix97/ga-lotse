@@ -4,66 +4,99 @@
  */
 
 import { MatrixClient, UIAuthCallback } from "matrix-js-sdk";
-import { KeyBackupInfo } from "matrix-js-sdk/lib/crypto-api";
+import {
+  CryptoApi,
+  ImportRoomKeyProgressData,
+} from "matrix-js-sdk/lib/crypto-api";
 
+import {
+  fetchBackupInfo,
+  getCryptoApi,
+} from "@/lib/businessModules/chat/matrix/crypto";
+import { getSecretStorageKeyFromCache } from "@/lib/businessModules/chat/matrix/cryptoCallbacks";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
+import {
+  fetchBackupInfoWithRetry,
+  retryAsyncOperation,
+} from "@/lib/businessModules/chat/shared/utils";
 
-import { getSecretStorageKey } from "./cryptoCallbacks";
-
-export async function deleteKeyBackup(
+export async function deleteKeyBackupFromSecretStorage(
   matrixClient: MatrixClient,
-  backupInfo?: KeyBackupInfo | null,
 ) {
   try {
-    const crypto = matrixClient.getCrypto();
-    if (!crypto) {
-      throw new Error("DeleteBackup: End-to-end encryption is disabled");
-    }
-
+    const cryptoApi: CryptoApi = getCryptoApi(matrixClient);
+    const backupInfo = await cryptoApi.getKeyBackupInfo();
     if (!backupInfo?.version) {
       throw new Error("DeleteBackup: BackupInfo version is not available");
     }
 
-    await crypto.deleteKeyBackupVersion(backupInfo.version);
-    logger.debug("DeleteBackup: succeed");
+    logger.debug("deleteKeyBackup version:", backupInfo.version);
+    await cryptoApi.deleteKeyBackupVersion(backupInfo.version);
   } catch (error) {
-    logger.softError("DeleteBackup: failed", error);
+    logger.softError("Error deleteKeyBackup: failed", error);
   }
 }
 
-export async function restoreKeyBackupFromCache(matrixClient: MatrixClient) {
-  let handled = false;
-  try {
-    const crypto = matrixClient.getCrypto();
-    if (!crypto) throw new Error("CryptoApi is undefined");
+export async function hasKeyBackupInSecretStorage(matrixClient: MatrixClient) {
+  const backupInfo = await fetchBackupInfoWithRetry(matrixClient);
+  if (!backupInfo?.keyBackupInfo) {
+    return false;
+  }
+  return backupInfo.hasDefaultKey;
+}
 
-    const keyBackup = await crypto.restoreKeyBackup();
+export async function restoreKeyBackupFromSecretStorage(
+  matrixClient: MatrixClient,
+) {
+  try {
+    const cryptoApi: CryptoApi = getCryptoApi(matrixClient);
+    const keyBackup = await cryptoApi.restoreKeyBackup({
+      progressCallback: (progress: ImportRoomKeyProgressData) =>
+        logger.debug(
+          `Backup import progress: ${progress.stage}, successes: ${progress.successes}, failures: ${progress.failures}, total: ${progress.total}`,
+        ),
+    });
+
     if (keyBackup) {
-      handled = true;
-      logger.debug("Key backup restored successfully from cache");
+      if (keyBackup.imported == 0 && keyBackup.total > 0) {
+        throw new Error(`Imported: 0 keys of total: ${keyBackup.total}`);
+      }
+      logger.debug(
+        "restoreKeyBackup imported number of keys:",
+        keyBackup.imported,
+        "of total:",
+        keyBackup.total,
+      );
+      return keyBackup;
     }
   } catch (e) {
-    logger.softError("Failed to restore key backup from cache", e);
+    logger.softError("Failed to restore key backup", e);
   }
-  return handled;
+  return undefined; //TODO: probably not need to return undefined
 }
 
-export async function restoreBackupKeyFromSecretStorage(
+export async function loadKeyBackupPrivateKeyFromSecretStorage(
   matrixClient: MatrixClient,
   passphrase?: string,
 ) {
   try {
     await accessSecretStorage(matrixClient, passphrase);
-    const crypto = matrixClient.getCrypto();
-    if (!crypto) throw new Error("CryptoApi is undefined");
+    const cryptoApi: CryptoApi = getCryptoApi(matrixClient);
+    await cryptoApi.loadSessionBackupPrivateKeyFromSecretStorage();
+    await restoreKeyBackupFromSecretStorage(matrixClient);
 
-    await crypto.loadSessionBackupPrivateKeyFromSecretStorage();
-    const keyBackup = await crypto.restoreKeyBackup();
-    if (!keyBackup) throw new Error("KeyBackup is null");
+    await retryAsyncOperation(
+      async () => await fetchBackupInfo(matrixClient),
+      (keyBackupInfo) => keyBackupInfo.isBackupMatchesStoredKey === true,
+      30,
+      1000,
+      true,
+      "Failed to trust backupInfo isBackupMatchesStoredKey=false",
+    );
 
-    logger.debug("Key backup successfully loaded from secret storage");
+    // await startDehydration(matrixClient); //TODO: experimental feature: matrix dehydrated devices is disabled
     logger.debug(
-      `Total keys: ${keyBackup.total}, Imported keys: ${keyBackup.imported}`,
+      "KeyBackup Private Key successfully loaded from server's SecretStorage to local CryptoStore",
     );
   } catch (e) {
     logger.softError("Failed to load key backup from secret storage");
@@ -71,36 +104,83 @@ export async function restoreBackupKeyFromSecretStorage(
   }
 }
 
-export async function setupNewSecretStorage(
+export async function bootstrapNewSecretStorage(
   matrixClient: MatrixClient,
   passphrase: string,
   authUploadDeviceSigningKeys: UIAuthCallback<void>,
 ): Promise<void> {
   try {
-    const crypto = matrixClient.getCrypto();
-    if (!crypto) {
-      throw new Error(
-        "SetupNewSecretStorage: End-to-end encryption is disabled - unable to create secret storage.",
-      );
-    }
+    logger.info("bootstrapNewSecretStorage");
+    const cryptoApi: CryptoApi = getCryptoApi(matrixClient);
+    logger.info("createSecretStorageKey");
+    const secretStorageKey = createSecretStorageKey(cryptoApi, passphrase);
 
-    const recoveryKey = crypto.createRecoveryKeyFromPassphrase(passphrase);
-
-    await crypto.bootstrapSecretStorage({
-      createSecretStorageKey: () => recoveryKey,
+    logger.info(
+      "bootstrapSecretStorage, setupNewKeyBackup: true, setupNewSecretStorage: true",
+    );
+    await cryptoApi.bootstrapSecretStorage({
+      createSecretStorageKey: () => secretStorageKey,
+      setupNewKeyBackup: true,
       setupNewSecretStorage: true,
     });
 
-    await crypto.bootstrapCrossSigning({
+    logger.info("bootstrapCrossSigning, setupNewCrossSigning: true");
+    await cryptoApi.bootstrapCrossSigning({
       authUploadDeviceSigningKeys,
       setupNewCrossSigning: true,
     });
 
-    await crypto.resetKeyBackup();
+    await retryAsyncOperation(
+      async () => await cryptoApi.isCrossSigningReady(),
+      (isCrossSigningReady) => isCrossSigningReady,
+      30,
+      1000,
+      true,
+      "Failed to boostrap CrossSigning",
+    );
+
+    await retryAsyncOperation(
+      async () =>
+        await matrixClient
+          .getCrypto()!
+          .getUserVerificationStatus(matrixClient.getUserId()!),
+      (verificationStatus) => verificationStatus.isCrossSigningVerified(),
+      30,
+      1000,
+      true,
+      "Failed to verify CrossSigning",
+    );
+
+    await retryAsyncOperation(
+      async () => await cryptoApi.isSecretStorageReady(),
+      (isSecretStorageReady) => isSecretStorageReady,
+      30,
+      1000,
+      true,
+      "Failed to bootstrap SecretStorage",
+    );
+
+    const hasBackupInSecretStorage: boolean =
+      await hasKeyBackupInSecretStorage(matrixClient);
+
+    if (!hasBackupInSecretStorage) {
+      throw new Error(
+        "Failed bootstrapNewSecretStorage: no keyBackup found in SecretStorage",
+      );
+    }
+
+    // await startDehydration(matrixClient, true); //TODO: experimental feature: matrix dehydrated devices is disabled
   } catch (e) {
-    logger.softError("SetupNewSecretStorage: error during operation", e);
+    logger.softError("bootstrapNewSecretStorage: error during operation", e);
     throw e;
   }
+}
+
+export function createSecretStorageKey(
+  cryptoApi: CryptoApi,
+  passphrase: string,
+) {
+  return cryptoApi.createRecoveryKeyFromPassphrase(passphrase);
 }
 
 export async function accessSecretStorage(
@@ -109,18 +189,68 @@ export async function accessSecretStorage(
   disableCache = false,
 ): Promise<void> {
   try {
-    const crypto = matrixClient.getCrypto();
-    if (!crypto) {
-      throw new Error(
-        "AccessSecretStorage: End-to-end encryption is disabled - unable to access secret storage.",
-      );
-    }
-
+    logger.info("accessSecretStorage");
+    const cryptoApi: CryptoApi = getCryptoApi(matrixClient);
+    logger.info("getSecretStorageKey from cache");
     matrixClient.cryptoCallbacks.getSecretStorageKey = (keys) =>
-      getSecretStorageKey(keys, matrixClient, passphrase, disableCache);
+      getSecretStorageKeyFromCache(
+        keys,
+        matrixClient,
+        passphrase,
+        disableCache,
+      );
 
-    await crypto.bootstrapCrossSigning({});
-    await crypto.bootstrapSecretStorage({});
+    logger.info(
+      "bootstrapSecretStorage, setupNewKeyBackup: false, setupNewSecretStorage: false",
+    );
+    await cryptoApi.bootstrapSecretStorage({
+      setupNewKeyBackup: false,
+      setupNewSecretStorage: false,
+    });
+
+    logger.info("bootstrapCrossSigning, setupNewCrossSigning: false");
+    await cryptoApi.bootstrapCrossSigning({
+      setupNewCrossSigning: false,
+    });
+
+    await retryAsyncOperation(
+      async () => await cryptoApi.isSecretStorageReady(),
+      (isSecretStorageReady) => isSecretStorageReady,
+      30,
+      1000,
+      true,
+      "Failed to bootstrap SecretStorage",
+    );
+
+    await retryAsyncOperation(
+      async () => await cryptoApi.isCrossSigningReady(),
+      (isCrossSigningReady) => isCrossSigningReady,
+      30,
+      1000,
+      true,
+      "Failed to boostrap CrossSigning",
+    );
+
+    await retryAsyncOperation(
+      async () =>
+        await matrixClient
+          .getCrypto()!
+          .getUserVerificationStatus(matrixClient.getUserId()!),
+      (verificationStatus) => verificationStatus.isCrossSigningVerified(),
+      30,
+      1000,
+      true,
+      "Failed to verify CrossSigning",
+    );
+
+    await retryAsyncOperation(
+      async () => await fetchBackupInfo(matrixClient),
+      (keyBackupInfo) => keyBackupInfo.isBackupSignedByTrustedDevice === true,
+      30,
+      1000,
+      true,
+      "Failed to trust backupInfo isBackupSignedByTrustedDevice=false",
+    );
   } catch (e) {
     logger.softError("AccessSecretStorage: error during operation", e);
     throw e;

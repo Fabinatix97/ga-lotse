@@ -4,21 +4,17 @@
  */
 
 import { ApiBusinessModule } from "@eshg/base-api";
-import { TextareaField } from "@eshg/lib-employee-portal";
+import { FileField, TextareaField } from "@eshg/lib-employee-portal";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import {
-  validateFile,
-  validateFileName,
-} from "@eshg/lib-portal/helpers/validators";
+import { validateFileName } from "@eshg/lib-portal/components/formFields/file/validators";
 import { Chip, Stack } from "@mui/joy";
 import { parse } from "date-fns";
 import { FormikErrors, useFormikContext } from "formik";
 import { ReactNode } from "react";
 
 import { openDataFileTypes } from "@/lib/opendata/constants";
-import { FileField } from "@/lib/shared/components/formFields/file/FileField";
 import { buildOptionsFromBusinessModules } from "@/lib/shared/components/procedures/helper";
 import { validateURL } from "@/lib/shared/helpers/validators";
 
@@ -102,9 +98,6 @@ export function OpenDataForm({ children, mode }: OpenDataFormContentProps) {
           label="Datei hochladen"
           accept={openDataFileTypes}
           required="Bitte eine Datei auswählen."
-          validate={validateFile(
-            openDataFileTypes.flatMap(({ extensions }) => extensions),
-          )}
         />
       ) : (
         <InputField

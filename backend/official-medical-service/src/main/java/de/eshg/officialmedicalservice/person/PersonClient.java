@@ -6,6 +6,8 @@
 package de.eshg.officialmedicalservice.person;
 
 import de.eshg.base.centralfile.PersonApi;
+import de.eshg.base.centralfile.api.DeleteFileStatesRequest;
+import de.eshg.base.centralfile.api.GetFileStateIdsResponse;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateRequest;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.ExternalAddPersonFileStateRequest;
@@ -13,6 +15,7 @@ import de.eshg.base.centralfile.api.person.GetPersonDiffResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesResponse;
+import de.eshg.base.centralfile.api.person.GetReferencePersonResponse;
 import de.eshg.base.centralfile.api.person.SearchReferencePersonsResponse;
 import de.eshg.base.centralfile.api.person.SyncFileStateRequest;
 import de.eshg.base.centralfile.api.person.UpdatePersonRequest;
@@ -76,6 +79,30 @@ public class PersonClient {
 
   public GetPersonDiffResponse getAffectedPersonDiff(UUID fileStateId) {
     return doAndForwardErrorCodes(() -> personApi.getPersonDiff(fileStateId));
+  }
+
+  public void markPersonFileStateForDeletion(UUID... fileStateIds) {
+    doAndForwardErrorCodes(
+        () -> {
+          personApi.markPersonFileStateForDeletion(new DeleteFileStatesRequest(fileStateIds));
+          return null;
+        });
+  }
+
+  public GetReferencePersonResponse getReferencePerson(UUID id) {
+    return doAndForwardErrorCodes(() -> personApi.getReferencePerson(id));
+  }
+
+  public GetFileStateIdsResponse getPersonFileStateIdsAssociatedWithReferencePerson(UUID id) {
+    return doAndForwardErrorCodes(
+        () -> personApi.getPersonFileStateIdsAssociatedWithReferencePerson(id));
+  }
+
+  public GetReferencePersonResponse getReferencePersonById(UUID id) {
+    return getReferencePerson(
+        getPersonFileStateIdsAssociatedWithReferencePerson(id).fileStateIds().stream()
+            .findAny()
+            .orElseThrow());
   }
 
   private <T> T doAndForwardErrorCodes(Supplier<T> action) {

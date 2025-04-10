@@ -96,6 +96,7 @@ public class OmsDocumentService {
     document.setDocumentTypeEn(request.documentTypeEn());
     document.setHelpTextDe(request.helpTextDe());
     document.setHelpTextEn(request.helpTextEn());
+    document.setLabCode(request.labCode());
 
     if (!files.isEmpty()) {
       document.setReasonForRejection(null);
@@ -194,6 +195,7 @@ public class OmsDocumentService {
     omsDocument.setHelpTextEn(request.helpTextEn());
     omsDocument.setMandatoryDocument(request.mandatoryDocument());
     omsDocument.setUploadInCitizenPortal(request.uploadInCitizenPortal());
+    omsDocument.setLabCode(request.labCode());
 
     if (!Objects.equals(oldDocumentTypeDe, request.documentTypeDe())
         || !Objects.equals(oldHelpTextDe, request.helpTextDe())) {
@@ -323,6 +325,7 @@ public class OmsDocumentService {
         if (document.isUploadInCitizenPortal() && procedure.isSendEmailNotifications()) {
           sendReviewDocumentEmail(document);
         }
+        progressEntryService.createProgressEntryForReviewDocument(procedure, document);
         break;
       case REJECTED:
         if (isBlank(request.reasonForRejection())) {
@@ -335,6 +338,7 @@ public class OmsDocumentService {
         if (document.isUploadInCitizenPortal() && procedure.isSendEmailNotifications()) {
           sendReviewDocumentEmail(document);
         }
+        progressEntryService.createProgressEntryForReviewDocument(procedure, document);
     }
   }
 

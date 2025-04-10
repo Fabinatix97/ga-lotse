@@ -25,7 +25,7 @@ public final class DocumentParameters {
       DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneId.systemDefault());
 
   private static final DateTimeFormatter TIME_FORMATTER =
-      DateTimeFormatter.ofPattern("hh:mm").withZone(ZoneId.systemDefault());
+      DateTimeFormatter.ofPattern("HH:mm").withZone(ZoneId.systemDefault());
 
   public static Department mapToDepartment(GetDepartmentInfoResponse departmentInfo) {
     return new Department(

@@ -35,38 +35,57 @@ public class SchoolInfoLetterExaminationMapper {
     this.clock = clock;
   }
 
-  SchoolInfoLetterExamination mapToData(
+  public SchoolInfoLetterExamination mapToData(
       SchoolEntryProcedure procedure,
-      ProcedureDetailsData procedureDetails,
+      ProcedureDetailsData procedureDetailsData,
       CreateSchoolInfoLetterRequest request) {
     DevelopmentScreening developmentScreening = procedure.getDevelopmentScreeningResult();
     SopessExaminationResult sopess = procedure.getSopessExaminationResult();
     VaccinationStatus vaccinationStatus = procedure.getVaccinationStatus();
     EyeExaminationResult eyeExaminationResult = procedure.getEyeExaminationResult();
+    boolean prefilled = request.prefilled();
+
     return new SchoolInfoLetterExamination(
-        new SchoolInfoLetterChild(
-            concat(procedureDetails.child().firstName(), procedureDetails.child().lastName()),
-            procedureDetails.child().dateOfBirth().format(DATE_FORMATTER)),
-        YEAR_FORMATTER.format(procedureDetails.schoolYear()),
-        DATE_FORMATTER.format(
-            procedure.getExaminationDate() != null
-                ? procedure.getExaminationDate()
-                : procedureDetails.appointment().getAppointmentEnd().atZone(clock.getZone())),
-        new SchoolInfoLetterExaminationType(
-            mapType(procedureDetails.type()),
-            List.of(BACK_REGULAR, BACK_ENTRY_LEVEL)
-                .contains(developmentScreening.getSchoolRecommendation())),
-        mapSopessExaminationResult(sopess),
+        createSchoolInfoLetterChild(procedureDetailsData),
+        getFormattedSchoolYear(procedureDetailsData),
+        getFormattedExaminationDate(procedure, procedureDetailsData),
+        prefilled
+            ? new SchoolInfoLetterExaminationType(
+                mapType(procedureDetailsData.type()),
+                List.of(BACK_REGULAR, BACK_ENTRY_LEVEL)
+                    .contains(developmentScreening.getSchoolRecommendation()))
+            : null,
+        prefilled ? mapSopessExaminationResult(sopess) : null,
         request.note(),
-        mapVaccinationResult(vaccinationStatus),
-        mapEyeExaminationResult(
-            eyeExaminationResult, procedure.getAnamnesis().getSpectaclesSince() != null),
-        mapHearingExaminationResult(procedure.getHearingTestResult()),
+        prefilled ? mapVaccinationResult(vaccinationStatus) : null,
+        prefilled
+            ? mapEyeExaminationResult(
+                eyeExaminationResult, procedure.getAnamnesis().getSpectaclesSince() != null)
+            : null,
+        prefilled ? mapHearingExaminationResult(procedure.getHearingTestResult()) : null,
         request.consultationWithCustodianRecommended(),
-        mapTherapyAndPromotionInfo(procedure.getAnamnesis()),
+        prefilled ? mapTherapyAndPromotionInfo(procedure.getAnamnesis()) : null,
         mapPhysiciansRecommendation(procedure.getDevelopmentScreeningResult(), request),
         new SchoolInfoLetterParentsWish(
             request.parentsWishNote(), request.referredToFurtherConsultationFromSchool()));
+  }
+
+  private String getFormattedSchoolYear(ProcedureDetailsData procedureDetails) {
+    return YEAR_FORMATTER.format(procedureDetails.schoolYear());
+  }
+
+  private String getFormattedExaminationDate(
+      SchoolEntryProcedure procedure, ProcedureDetailsData procedureDetails) {
+    return DATE_FORMATTER.format(
+        procedure.getExaminationDate() != null
+            ? procedure.getExaminationDate()
+            : procedureDetails.appointment().getAppointmentEnd().atZone(clock.getZone()));
+  }
+
+  private SchoolInfoLetterChild createSchoolInfoLetterChild(ProcedureDetailsData procedureDetails) {
+    return new SchoolInfoLetterChild(
+        concat(procedureDetails.child().firstName(), procedureDetails.child().lastName()),
+        procedureDetails.child().dateOfBirth().format(DATE_FORMATTER));
   }
 
   private static String concat(String... parts) {
@@ -226,12 +245,15 @@ public class SchoolInfoLetterExaminationMapper {
   private static SchoolInfoLetterPhysiciansRecommendation mapPhysiciansRecommendation(
       DevelopmentScreening result, CreateSchoolInfoLetterRequest request) {
     SchoolRecommendation schoolRecommendation = result.getSchoolRecommendation();
+    boolean prefilled = request.prefilled();
     return new SchoolInfoLetterPhysiciansRecommendation(
-        schoolRecommendation.equals(SchoolRecommendation.CONCERNS_EARLY_ENROLMENT),
-        result.getSchoolCounselling(),
-        schoolRecommendation.equals(SchoolRecommendation.ADVICE_CENTER),
-        mapPromotionOutsideSchool(result),
-        result.getOtherSupport(),
+        prefilled
+            ? schoolRecommendation.equals(SchoolRecommendation.CONCERNS_EARLY_ENROLMENT)
+            : null,
+        prefilled ? result.getSchoolCounselling() : null,
+        prefilled ? schoolRecommendation.equals(SchoolRecommendation.ADVICE_CENTER) : null,
+        prefilled ? mapPromotionOutsideSchool(result) : null,
+        prefilled ? result.getOtherSupport() : null,
         request.meetingBetweenYouthHealthServicesAndSchoolManagementRecommended());
   }
 

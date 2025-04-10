@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { CountryField } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import {
   buildEnumOptions,
@@ -18,7 +19,6 @@ import { useFormikContext } from "formik";
 import { useState } from "react";
 
 import { ApiFacilityAddressType } from "@/lib/shared/components/form/address/legacyTypes";
-import { CountryField } from "@/lib/shared/components/formFields/CountryField";
 import { LegacyPerson } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyPersonForm";
 
 const LEGACY_ADDRESS_TYPE_LABELS = {

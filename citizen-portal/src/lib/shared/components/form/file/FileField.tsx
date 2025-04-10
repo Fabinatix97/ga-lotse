@@ -4,13 +4,16 @@
  */
 
 import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
-import { useDragAndDrop } from "@eshg/lib-portal/components/formFields/file/useDragAndDrop";
+import { formatFileSize } from "@eshg/lib-portal/components/formFields/file/helpers";
 import {
   FileLike,
+  FileType,
+} from "@eshg/lib-portal/components/formFields/file/types";
+import { useDragAndDrop } from "@eshg/lib-portal/components/formFields/file/useDragAndDrop";
+import {
+  validateFile,
   validateFileType,
 } from "@eshg/lib-portal/components/formFields/file/validators";
-import { formatFileSize } from "@eshg/lib-portal/helpers/file";
 import { validatePipe } from "@eshg/lib-portal/helpers/validators";
 import { FieldProps } from "@eshg/lib-portal/types/form";
 import { CheckOutlined, CloseOutlined } from "@mui/icons-material";
@@ -66,8 +69,10 @@ export interface FileInformationTranslations {
   size: string;
 }
 
+type FileLabelProps = Pick<FormLabelProps, "id">;
+
 export interface FileFieldProps extends Omit<FieldProps<File | null>, "label"> {
-  label: string | ((labelProps: FileLabelProps) => ReactNode);
+  label: string | (() => ReactNode);
   accept?: FileType | FileType[];
   placeholder: string;
   placeholderSelected: string;
@@ -75,9 +80,8 @@ export interface FileFieldProps extends Omit<FieldProps<File | null>, "label"> {
   removeFile: string;
   fileInformationTranslation: FileInformationTranslations;
   onChange?: (file: FileLike | null) => void;
+  maxFileSize?: number;
 }
-
-type FileLabelProps = Pick<FormLabelProps, "htmlFor">;
 
 export function FileField(props: Readonly<FileFieldProps>) {
   const { i18n } = useTranslation();
@@ -86,10 +90,17 @@ export function FileField(props: Readonly<FileFieldProps>) {
     acceptedFileTypes,
     i18n.resolvedLanguage ?? "de-DE",
   );
-  const validate = validatePipe(fileTypeErrorVal, props.validate);
+  const validate = validatePipe(
+    fileTypeErrorVal,
+    validateFile(
+      acceptedFileTypes.flatMap((type) => type.extensions),
+      props.maxFileSize,
+    ),
+    props.validate,
+  );
   const field = useBaseField<File | null>({ ...props, validate });
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const fileInputId = useId();
+  const fileLabelId = useId();
   const acceptedMimeTypes =
     acceptedFileTypes.length > 0
       ? acceptedFileTypes
@@ -135,13 +146,13 @@ export function FileField(props: Readonly<FileFieldProps>) {
             <CloseOutlined color={"danger"} />
           )}
           <Stack>
-            {renderLabel(props.label, { htmlFor: fileInputId })}
+            {renderLabel(props.label, { id: fileLabelId })}
             {props.accept && !isFileSelected && (
               <Typography>{props.helperText}</Typography>
             )}
             {isFileSelected && (
               <>
-                <Typography>
+                <Typography sx={{ wordBreak: "break-all" }}>
                   {props.fileInformationTranslation.file}: {fileName}
                 </Typography>
                 <Typography>
@@ -171,7 +182,7 @@ export function FileField(props: Readonly<FileFieldProps>) {
               activeDragOver={dropState === "copy"}
               error={field.error || dropState === "no-drop"}
               onClick={handleButtonClick}
-              aria-controls={fileInputId}
+              aria-controls={fileLabelId}
               onDragOver={handleFileDrag}
               onDrop={handleFileDrop}
               onDragLeave={handleFileDragLeave}
@@ -180,7 +191,7 @@ export function FileField(props: Readonly<FileFieldProps>) {
             </FileButton>
             <HiddenInput
               ref={fileInputRef}
-              id={fileInputId}
+              aria-labelledby={fileLabelId}
               type="file"
               name={props.name}
               placeholder={props.placeholder}
@@ -190,7 +201,7 @@ export function FileField(props: Readonly<FileFieldProps>) {
               tabIndex={-1}
             />
             {isDefined(field.helperText) && (
-              <FormHelperText id={`${fileInputId}-helper-text`}>
+              <FormHelperText id={`${fileLabelId}-helper-text`}>
                 {field.helperText}
               </FormHelperText>
             )}

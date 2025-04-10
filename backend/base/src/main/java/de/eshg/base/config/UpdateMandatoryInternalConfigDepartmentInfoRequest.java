@@ -5,7 +5,7 @@
 
 package de.eshg.base.config;
 
-import de.eshg.departmentinfo.api.DepartmentInfoDto;
+import de.eshg.config.api.DepartmentInfoDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 

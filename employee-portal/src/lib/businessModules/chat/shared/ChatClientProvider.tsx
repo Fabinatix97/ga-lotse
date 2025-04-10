@@ -63,10 +63,12 @@ export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
   });
   const matrixClient = useRef(placeholderMatrixClient);
 
-  const [clientState, setClientState] = useState<ClientState>(ClientState.Idle);
+  const [clientState, setClientState] = useState<ClientState>(
+    ClientState.CreateMatrixClient,
+  );
   const { data: departmentInfo } = useGetDepartment();
 
-  const isClientPrepared = clientState === ClientState.Prepared;
+  const isClientPrepared = clientState === ClientState.Ready;
 
   useIdleTimerHook(matrixClient, setClientState);
   useChatLifecycle(matrixClient, clientState, setClientState);
@@ -137,13 +139,13 @@ export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
    */
   useEffect(() => {
     if (
-      clientState === ClientState.CreateBackupKey ||
-      clientState === ClientState.RestoreBackupKey
+      clientState === ClientState.CreateKeyBackup ||
+      clientState === ClientState.RestoreKeyBackup
     ) {
       showMessageTeaser({
         title: "Chat",
         text:
-          clientState === ClientState.CreateBackupKey
+          clientState === ClientState.CreateKeyBackup
             ? "Richten Sie ein Sicherheitsbackup ein um die Chatfunktion zu nutzen"
             : "Bestätigen sie dieses Endgerät um die Chatfunktion zu nutzen",
         type: "info",
@@ -182,7 +184,7 @@ export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
       setClientState,
       matrixClient: matrixClient.current,
       departmentInfo,
-      isClientPrepared,
+      isClientPrepared: isClientPrepared,
     }),
     [clientState, departmentInfo, isClientPrepared],
   );

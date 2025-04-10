@@ -24,4 +24,5 @@ public record EmployeeOmsProcedureOverviewDto(
     String facilityName,
     @Valid ConcernDto concern,
     String physicianName,
-    Instant nextAppointment) {}
+    Instant nextAppointment,
+    LocalDate medicalOpinionCutOffDate) {}

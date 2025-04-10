@@ -6,6 +6,7 @@
 "use client";
 
 import {
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -24,7 +25,6 @@ import { theme } from "@/lib/baseModule/theme/theme";
 import { FilesSection } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/FilesSection";
 import { SwitchField } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/SwitchField";
 import { HorizontalFieldLabelEnd } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/HorizontalFieldLabelEnd";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 
 export interface AddDocumentFormValues {
   documentTypeDe: string;
@@ -36,6 +36,7 @@ export interface AddDocumentFormValues {
   files?: File[];
   note?: string;
   upload?: string;
+  labCode?: string;
 }
 
 interface AddDocumentFormProps {
@@ -150,6 +151,7 @@ export function AddDocumentForm(props: Readonly<AddDocumentFormProps>) {
                   </FormAddMoreButton>
                 )}
               </Stack>
+              <InputField name="labCode" label="Labortest-Barcode" />
               <SwitchField
                 name="mandatoryDocument"
                 label="Pflichtdokument"

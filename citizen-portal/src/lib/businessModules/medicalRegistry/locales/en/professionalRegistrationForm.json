@@ -155,7 +155,8 @@
         "license": "Professional / medical license",
         "workPermit": "Work permit",
         "otherRelevantDocument": "Other document",
-        "anotherRelevantDocument": "Add another document"
+        "anotherRelevantDocument": "Add another document",
+        "deleteDocument": "Delete document"
       }
     },
     "contentSheetTwo": {

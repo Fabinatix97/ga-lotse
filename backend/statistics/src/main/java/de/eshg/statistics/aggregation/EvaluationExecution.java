@@ -10,6 +10,7 @@ import static de.eshg.statistics.persistence.entity.AggregationResultPendingStat
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
 import de.eshg.statistics.anonymization.AnonymizationExecution;
 import de.eshg.statistics.diagramcreation.DiagramCreationService;
+import de.eshg.statistics.exception.AnonymizationFailedException;
 import de.eshg.statistics.exception.IncompleteDeletionException;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
@@ -50,6 +51,7 @@ public class EvaluationExecution {
   }
 
   public void addEvaluation(UUID evaluationId) {
+    final String errorMessage = "Could not complete evaluation {}";
     try {
       while (evaluationService
           .getAggregationResultState(evaluationId)
@@ -57,8 +59,11 @@ public class EvaluationExecution {
         moduleClientAuthenticator.doWithModuleClientAuthentication(
             () -> workOnEvaluation(evaluationId));
       }
+    } catch (AnonymizationFailedException e) {
+      log.error(errorMessage, evaluationId, e);
+      setState(evaluationId, AggregationResultState.ANONYMIZATION_FAILED);
     } catch (Exception e) {
-      log.error("Could not complete evaluation", e);
+      log.error(errorMessage, evaluationId, e);
       setState(evaluationId, AggregationResultState.FAILED);
     }
   }
@@ -89,11 +94,15 @@ public class EvaluationExecution {
   }
 
   public void updateEvaluation(UUID evaluationId) {
+    final String errorMessage = "Could not update evaluation {}";
     try {
       removeEvaluationData(evaluationId, AggregationResultPendingState.DATA_AGGREGATION);
       updateEvaluationData(evaluationId);
+    } catch (AnonymizationFailedException e) {
+      log.error(errorMessage, evaluationId, e);
+      setState(evaluationId, AggregationResultState.ANONYMIZATION_FAILED);
     } catch (Exception e) {
-      log.error("Could not update evaluation", e);
+      log.error(errorMessage, evaluationId, e);
       setState(evaluationId, AggregationResultState.FAILED);
     }
   }
@@ -155,6 +164,6 @@ public class EvaluationExecution {
 
   private void setFailed(UUID evaluationId) {
     moduleClientAuthenticator.doWithModuleClientAuthentication(
-        () -> evaluationService.setStateToFailed(evaluationId));
+        () -> evaluationService.setState(evaluationId, AggregationResultState.FAILED));
   }
 }

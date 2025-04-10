@@ -5,6 +5,9 @@
 
 import { ApiGetReferenceFacilityResponse } from "@eshg/base-api";
 import {
+  MultiFormButtonBar,
+  NoSearchResults,
+  SelectableCard,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -20,10 +23,7 @@ import { ReactNode, Ref } from "react";
 import { isDefined } from "remeda";
 
 import { FacilityCardContent } from "@/lib/baseModule/components/facility/FacilityCardContent";
-import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
-import { SelectableCard } from "@/lib/shared/components/cards/SelectableCard";
 import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchForm";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { fullAddress } from "@/lib/shared/helpers/facilityUtils";
 
 interface SearchResultFormValues {

@@ -24,8 +24,9 @@ interface ResultInputFieldProps extends InputProps {
 }
 
 export function ResultInputField(props: ResultInputFieldProps) {
+  const { result, toothContext, setResultAction, ...inputProps } = props;
   const fieldContext: ElementContext = {
-    toothContext: props.toothContext,
+    toothContext,
     element: props.field,
   };
   const { elementRef, focusHandler, blurHandler } = useElementFocus(
@@ -35,27 +36,25 @@ export function ResultInputField(props: ResultInputFieldProps) {
       requestAnimationFrame(() => input.select()); // delay value selection to ensure focus is active
     },
   );
+
   const keyboardNavigationHandler = useKeyboardNavigationHandler();
 
   return (
     <Input
-      {...props}
+      {...inputProps}
       slotProps={{
         input: {
           ref: elementRef,
-          "aria-invalid": props.result.isInvalid,
+          "aria-invalid": result.isInvalid,
         },
       }}
-      value={props.result.value}
+      value={result.value}
       sx={{ width: 60 }}
-      color={props.result.isInvalid ? "danger" : "primary"}
+      color={result.isInvalid ? "danger" : "primary"}
       type="text"
       variant={props.variant}
       onChange={(event) => {
-        props.setResultAction(
-          props.toothContext,
-          event.target.value.toUpperCase(),
-        );
+        setResultAction(toothContext, event.target.value.toUpperCase());
       }}
       onFocus={focusHandler}
       onBlur={blurHandler}

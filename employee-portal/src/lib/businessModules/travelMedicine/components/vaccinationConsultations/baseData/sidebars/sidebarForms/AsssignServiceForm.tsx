@@ -4,6 +4,7 @@
  */
 
 import {
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -16,7 +17,6 @@ import { Ref } from "react";
 
 import { AppointmentSheet } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/sidebarForms/AppointmentSheet";
 import { createAppointmentOptions } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/helpers";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 
 export interface AssignServiceFormValues {
   procedureStepId?: string;

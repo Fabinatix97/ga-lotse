@@ -5,7 +5,8 @@
 
 "use client";
 
-import { EditButton } from "@eshg/lib-employee-portal";
+import { DetailsItem, EditButton } from "@eshg/lib-employee-portal";
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import {
   ApiEmployeeOmsProcedureDetails,
@@ -15,50 +16,29 @@ import { InfoOutlined } from "@mui/icons-material";
 import { Alert } from "@mui/joy";
 import { isDefined } from "remeda";
 
-import { useConcernSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/ConcernSidebar";
-import { useEmailNotificationSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/EmailNotificationSidebar";
-import { usePhysicianSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/PhysicianSidebar";
-import { DetailsItemInlineEdit } from "@/lib/businessModules/officialMedicalService/shared/DetailsItemInlineEdit";
+import { useAdditionalInfoSidebar } from "@/lib/businessModules/officialMedicalService/components/procedures/details/AdditionalInfoSidebar";
 import { isProcedureFinalized } from "@/lib/businessModules/officialMedicalService/shared/helpers";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
-import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
 
 export function AdditionalInfoPanel({
   procedure,
 }: Readonly<{
   procedure: ApiEmployeeOmsProcedureDetails;
 }>) {
-  const concernSidebar = useConcernSidebar();
-  const physicianSidebar = usePhysicianSidebar();
-  const emailNotificationSidebar = useEmailNotificationSidebar();
+  const additionalInfoSidebar = useAdditionalInfoSidebar();
 
   return (
     <InfoTile
       data-testid="additional-info"
       name="additionalInfo"
       title="Zusatzinfos"
-      footer={
-        <>
-          {!procedure.concern &&
-            procedure.status === ApiProcedureStatus.Draft && (
-              <InfoTileAddButton
-                onClick={() => concernSidebar.open({ procedure })}
-              >
-                Anliegen hinzufügen
-              </InfoTileAddButton>
-            )}
-          {!isProcedureFinalized(procedure) && !procedure.physician && (
-            <InfoTileAddButton
-              onClick={() =>
-                physicianSidebar.open({
-                  procedure: procedure,
-                })
-              }
-            >
-              Ärzt:in hinzufügen
-            </InfoTileAddButton>
-          )}
-        </>
+      controls={
+        !isProcedureFinalized(procedure) && (
+          <EditButton
+            aria-label="Zusatzinfos bearbeiten"
+            onClick={() => additionalInfoSidebar.open({ procedure })}
+          />
+        )
       }
     >
       {isDefined(procedure.concern) && procedure.concern.highPriority && (
@@ -71,48 +51,25 @@ export function AdditionalInfoPanel({
           Um einen Vorgang anzulegen, muss ein Anliegen ergänzt werden.
         </Alert>
       )}
-      {procedure.concern && (
-        <DetailsItemInlineEdit
-          label="Anliegen"
-          value={procedure.concern.nameDe}
-          renderEditButton={
-            procedure.status === ApiProcedureStatus.Draft && (
-              <EditButton
-                aria-label="Anliegen bearbeiten"
-                onClick={() => concernSidebar.open({ procedure })}
-              />
-            )
-          }
-        />
-      )}
-
-      {procedure.physician && (
-        <DetailsItemInlineEdit
-          renderEditButton={
-            !isProcedureFinalized(procedure) && (
-              <EditButton
-                aria-label="Ärzt:in bearbeiten"
-                onClick={() => physicianSidebar.open({ procedure })}
-              />
-            )
-          }
-          label="Ärzt:In"
-          value={formatPersonName(procedure.physician)}
-        />
-      )}
-
+      <DetailsItem label="Anliegen" value={procedure.concern?.nameDe ?? "-"} />
+      <DetailsItem
+        label="Arzt/Ärztin"
+        value={
+          procedure.physician ? formatPersonName(procedure.physician) : "-"
+        }
+      />
+      <DetailsItem
+        label="Stichtag"
+        value={
+          procedure.medicalOpinionCutOffDate
+            ? formatDate(procedure.medicalOpinionCutOffDate)
+            : "-"
+        }
+      />
       {!!procedure.affectedPerson.emailAddresses?.length && (
-        <DetailsItemInlineEdit
+        <DetailsItem
           label="E-Mail-Benachrichtigungen"
           value={procedure.sendEmailNotifications ? "Aktiviert" : "Deaktiviert"}
-          renderEditButton={
-            !isProcedureFinalized(procedure) && (
-              <EditButton
-                aria-label="E-Mail-Benachrichtigungen bearbeiten"
-                onClick={() => emailNotificationSidebar.open({ procedure })}
-              />
-            )
-          }
         />
       )}
     </InfoTile>

@@ -5,7 +5,10 @@
 
 package de.eshg.dental;
 
+import static de.eshg.dental.mapper.ProphylaxisSessionMapper.mapProphylaxisSessionToDetailsDto;
+
 import de.eshg.api.commons.InlineParameterObject;
+import de.eshg.dental.api.CloseProphylaxisSessionRequest;
 import de.eshg.dental.api.CreateProphylaxisSessionRequest;
 import de.eshg.dental.api.CreateProphylaxisSessionResponse;
 import de.eshg.dental.api.GetProphylaxisSessionResponse;
@@ -76,7 +79,7 @@ public class ProphylaxisSessionController {
   @Transactional(readOnly = true)
   public ProphylaxisSessionDetailsDto getProphylaxisSession(
       @PathVariable("prophylaxisSessionId") UUID prophylaxisSessionId) {
-    return ProphylaxisSessionMapper.mapProphylaxisSessionToDetailsDto(
+    return mapProphylaxisSessionToDetailsDto(
         prophylaxisSessionService.getProphylaxisSessionWithDetails(prophylaxisSessionId));
   }
 
@@ -85,7 +88,7 @@ public class ProphylaxisSessionController {
   public ProphylaxisSessionDetailsDto updateProphylaxisSession(
       @PathVariable("prophylaxisSessionId") UUID prophylaxisSessionId,
       @Valid @RequestBody UpdateProphylaxisSessionRequest request) {
-    return ProphylaxisSessionMapper.mapProphylaxisSessionToDetailsDto(
+    return mapProphylaxisSessionToDetailsDto(
         prophylaxisSessionService.updateProphylaxisSession(prophylaxisSessionId, request));
   }
 
@@ -94,7 +97,7 @@ public class ProphylaxisSessionController {
   public ProphylaxisSessionDetailsDto updateProphylaxisSessionParticipants(
       @PathVariable("prophylaxisSessionId") UUID prophylaxisSessionId,
       @Valid @RequestBody UpdateProphylaxisSessionParticipantsRequest request) {
-    return ProphylaxisSessionMapper.mapProphylaxisSessionToDetailsDto(
+    return mapProphylaxisSessionToDetailsDto(
         prophylaxisSessionService.updateProphylaxisSessionParticipants(
             prophylaxisSessionId, request));
   }
@@ -104,8 +107,18 @@ public class ProphylaxisSessionController {
   public ProphylaxisSessionDetailsDto updateProphylaxisSessionExaminations(
       @PathVariable("prophylaxisSessionId") UUID prophylaxisSessionId,
       @Valid @RequestBody UpdateProphylaxisSessionExaminationsRequest request) {
-    return ProphylaxisSessionMapper.mapProphylaxisSessionToDetailsDto(
+    return mapProphylaxisSessionToDetailsDto(
         prophylaxisSessionService.updateProphylaxisSessionExaminations(
             prophylaxisSessionId, request));
+  }
+
+  @PostMapping("/{prophylaxisSessionId}/close-prophylaxis-session")
+  @Transactional
+  public ProphylaxisSessionDetailsDto closeProphylaxisSession(
+      @PathVariable("prophylaxisSessionId") UUID prophylaxisSessionId,
+      @Valid @RequestBody CloseProphylaxisSessionRequest request) {
+    prophylaxisSessionService.closeProphylaxisSession(prophylaxisSessionId, request.version());
+    return mapProphylaxisSessionToDetailsDto(
+        prophylaxisSessionService.getProphylaxisSessionWithDetails(prophylaxisSessionId));
   }
 }

@@ -24,4 +24,6 @@ public record GetCitizenProcedureDetailsResponse(
     @Valid OmsAppointmentDto appointment,
     @NotNull @Valid ConcernDto concern,
     @NotNull @Valid List<DocumentDto> documents,
-    @NotNull MedicalOpinionStatusDto medicalOpinionStatus) {}
+    @NotNull MedicalOpinionStatusDto medicalOpinionStatus,
+    @NotNull boolean isAnamnesisAnswered,
+    @NotNull boolean isAnamnesisEnabled) {}

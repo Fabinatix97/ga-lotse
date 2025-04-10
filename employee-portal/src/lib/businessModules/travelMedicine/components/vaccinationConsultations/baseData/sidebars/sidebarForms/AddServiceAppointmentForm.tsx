@@ -4,6 +4,7 @@
  */
 
 import {
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -28,7 +29,6 @@ import {
   CheckboxGroup,
   Mode as CheckboxGroupMode,
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/CheckboxGroup";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 
 export interface AddServiceAppointmentFormValues {
   procedureId: string;

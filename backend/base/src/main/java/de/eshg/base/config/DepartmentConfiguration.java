@@ -5,7 +5,7 @@
 
 package de.eshg.base.config;
 
-import de.eshg.departmentinfo.domain.Document;
+import de.eshg.config.domain.Document;
 import de.eshg.domain.model.BaseEntity;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;

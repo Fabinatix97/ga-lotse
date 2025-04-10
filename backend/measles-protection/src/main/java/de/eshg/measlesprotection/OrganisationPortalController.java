@@ -5,7 +5,7 @@
 
 package de.eshg.measlesprotection;
 
-import de.eshg.departmentinfo.PrivacyDocumentService;
+import de.eshg.config.departmentinfo.PrivacyDocumentService;
 import de.eshg.measlesprotection.api.citizenportal.ReportCaseRequest;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;

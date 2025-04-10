@@ -10,6 +10,16 @@
     "infoPanelTitle": "Terminverschiebung",
     "infoPanelText": "Sie können Ihren Termin maximal zwei Mal verschieben."
   },
+  "appointment_calendar": {
+    "required_appointment": "Bitte einen Termin auswählen",
+    "required_day": "Bitte einen Tag auswählen",
+    "month_selection": "Termin Kalendermonat",
+    "next_month": "zum nächsten Monat",
+    "prev_month": "zum vorherigen Monat",
+    "list_label": "Verfügbare Uhrzeiten *",
+    "calendar_label": "Datum *",
+    "available": "verfügbar"
+  },
   "sidePanel": {
     "title": "Übersicht",
     "dateAndTime": "{{ appointmentStart }} Uhr",

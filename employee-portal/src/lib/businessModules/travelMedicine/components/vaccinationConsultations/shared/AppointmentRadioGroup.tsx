@@ -9,13 +9,13 @@ import {
   AppointmentPickerField,
   FIELD_LABELS_DE,
 } from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentPickerField";
+import { isDateCurrentDateOrGreater } from "@eshg/lib-portal/helpers/dateTime";
 import { isNonEmptyArray } from "@eshg/lib-portal/helpers/guards";
 import {
   ApiAppointmentBookingType,
   ApiAppointmentType,
 } from "@eshg/travel-medicine-api";
 import { FormHelperText, Stack } from "@mui/joy";
-import { isAfter, isEqual } from "date-fns";
 import { useField } from "formik";
 import { ReactNode, useMemo, useState } from "react";
 
@@ -37,11 +37,6 @@ interface AppointmentRadioGroupProps extends RadioGroupFieldProps {
   freeConsultationBlockAppointments: Appointment[];
   freeVaccinationBlockAppointments: Appointment[];
   appointmentInfo?: ReactNode;
-}
-
-export function isDateCurrentDateOrGreater(date: Date) {
-  const now = new Date();
-  return isEqual(date, now) || isAfter(date, now); //filter out dates before now
 }
 
 export function AppointmentRadioGroup({

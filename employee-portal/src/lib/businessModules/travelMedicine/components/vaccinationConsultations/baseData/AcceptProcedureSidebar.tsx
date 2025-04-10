@@ -5,6 +5,7 @@
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
+  SearchPersonFormValues,
   SidebarWithFormRefProps,
   UseSidebarWithFormRefResult,
   useSidebarWithFormRef,
@@ -22,7 +23,6 @@ import {
 
 import { useAcceptDraftVaccinationConsultation } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
 import { AcceptProcedureForm } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/AcceptProcedureForm";
-import { SearchPersonFormValues } from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
 
 export function useAcceptProcedureSidebar(): UseSidebarWithFormRefResult<AcceptProcedureSidebarProps> {
   return useSidebarWithFormRef({

@@ -8,10 +8,9 @@ import { validateFileType } from "@eshg/lib-portal/components/formFields/file/va
 import { isNonEmptyArray } from "@eshg/lib-portal/helpers/guards";
 import { FieldProps } from "@eshg/lib-portal/types/form";
 import { FormControl } from "@mui/joy";
-import { isDefined } from "remeda";
+import { isDefined, splice } from "remeda";
 
 import {
-  FileDescriptor,
   FileSheetArray,
   FileSheetArrayProps,
 } from "@/lib/businessModules/officialMedicalService/shared/file/FileSheetArray";
@@ -62,11 +61,10 @@ export function FileSheetArrayField({
     }
   }
 
-  async function handleRemove(file: FileDescriptor) {
-    const newArray =
-      field.input.value?.filter(
-        (it) => it.name !== file.name || it.size !== file.size,
-      ) ?? null;
+  async function handleRemove(index: number) {
+    const newArray = field.input.value
+      ? splice(field.input.value, index, 1, [])
+      : null;
     await field.helpers.setValue(newArray);
   }
 

@@ -53,7 +53,8 @@ public class OmsDocumentMapper {
         document.getReasonForRejection(),
         document.getUploadedBy() != null
             ? DocumentUploadedByDto.valueOf(document.getUploadedBy().name())
-            : null);
+            : null,
+        document.getLabCode());
   }
 
   public DocumentStatusDto toInterfaceType(OmsDocumentStatus documentStatus) {

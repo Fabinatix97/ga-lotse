@@ -136,6 +136,7 @@ export function ChildrenTable(props: ChildrenTableProps) {
           <PersonSearchForm
             {...personSearch.formProps}
             onChange={handleChangePersonSearch}
+            allowPartialSearch
           />
         )
       }

@@ -5,9 +5,9 @@
 
 package de.eshg.stiprotection.department;
 
-import de.eshg.departmentinfo.AbstractOpeningHoursService;
-import de.eshg.departmentinfo.domain.AbstractOpeningHours;
-import de.eshg.departmentinfo.initialization.MandatoryInitialOpeningHours;
+import de.eshg.config.departmentinfo.AbstractOpeningHoursService;
+import de.eshg.config.domain.AbstractOpeningHours;
+import de.eshg.config.initialization.MandatoryInitialOpeningHours;
 import de.eshg.persistence.TransactionHelper;
 import de.eshg.stiprotection.api.citizen.GetOpeningHoursResponse;
 import jakarta.persistence.EntityManager;

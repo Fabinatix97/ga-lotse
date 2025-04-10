@@ -6,10 +6,10 @@
 package de.eshg.schoolentry;
 
 import de.eshg.base.department.GetDepartmentInfoResponse;
-import de.eshg.departmentinfo.DepartmentInfoConfigService;
-import de.eshg.departmentinfo.OpeningHoursService;
-import de.eshg.departmentinfo.PrivacyDocumentService;
-import de.eshg.departmentinfo.domain.OpeningHours;
+import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
+import de.eshg.config.departmentinfo.OpeningHoursService;
+import de.eshg.config.departmentinfo.PrivacyDocumentService;
+import de.eshg.config.domain.OpeningHours;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.schoolentry.api.citizen.GetOpeningHoursResponse;
 import io.swagger.v3.oas.annotations.Operation;

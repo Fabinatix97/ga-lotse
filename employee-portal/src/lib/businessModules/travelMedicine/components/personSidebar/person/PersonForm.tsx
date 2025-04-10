@@ -4,6 +4,7 @@
  */
 
 import {
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -13,7 +14,6 @@ import { RefObject } from "@fullcalendar/core/preact.js";
 import { Divider, Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { LegacyAddressForm } from "@/lib/shared/components/form/address/LegacyAddressForm";
 import { ApiFacilityAddressType } from "@/lib/shared/components/form/address/legacyTypes";
 import {

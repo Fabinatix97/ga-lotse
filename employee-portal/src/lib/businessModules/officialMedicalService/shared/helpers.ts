@@ -13,9 +13,12 @@ import {
   DefaultPersonFormValues,
   mapApiAddressToForm,
   mapBaseAddressToApi,
+  mapOptional,
   mapToPersonAddRequest,
   mapToPersonUpdateRequest,
+  normalizeListInputs,
 } from "@eshg/lib-employee-portal";
+import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import {
   ApiAffectedPerson,
@@ -132,6 +135,26 @@ export function mapToApiPatchFacilityRequest(
       emailAddresses: facility.emailAddresses ?? [],
       phoneNumbers: facility.phoneNumbers ?? [],
     },
+  };
+}
+
+export function mapPersonDetailsToForm(
+  person: ApiAffectedPerson,
+): DefaultPersonFormValues {
+  return {
+    salutation: person.salutation ?? "",
+    title: person.title ?? "",
+    firstName: person.firstName,
+    lastName: person.lastName,
+    dateOfBirth: toDateString(person.dateOfBirth),
+    gender: person.gender ?? "",
+    countryOfBirth: person.countryOfBirth ?? "",
+    nameAtBirth: person.nameAtBirth ?? "",
+    placeOfBirth: person.placeOfBirth ?? "",
+    emailAddresses: normalizeListInputs(person.emailAddresses),
+    phoneNumbers: normalizeListInputs(person.phoneNumbers),
+    contactAddress: mapOptional(person.contactAddress, mapApiAddressToForm),
+    differentBillingAddress: undefined,
   };
 }
 

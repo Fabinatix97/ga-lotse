@@ -8,8 +8,8 @@ import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvid
 export function useCopy() {
   const snackbar = useSnackbar();
 
-  return async (content: string) => {
+  return async (content: string, notification?: string) => {
     await navigator.clipboard.writeText(content);
-    snackbar.notification("Link in die Zwischenablage kopiert");
+    snackbar.notification(notification ?? "Link in die Zwischenablage kopiert");
   };
 }

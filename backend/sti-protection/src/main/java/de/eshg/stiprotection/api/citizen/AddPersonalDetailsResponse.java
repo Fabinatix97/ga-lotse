@@ -15,6 +15,11 @@ import java.util.UUID;
 
 public record AddPersonalDetailsResponse(
     @NotNull ConcernDto concern,
-    @NotNull Instant appointmentStart,
-    @NotNull @Past @Schema(type = "integer") Year yearOfBirth,
-    @NotNull UUID procedureId) {}
+    @Schema(description = "The start date and time of the appointment.") @NotNull
+        Instant appointmentStart,
+    @NotNull
+        @Past
+        @Schema(type = "integer", description = "Indicates the year of birth of the person.")
+        Year yearOfBirth,
+    @Schema(description = "An unique identifier for the STI protection procedure.") @NotNull
+        UUID procedureId) {}

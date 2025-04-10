@@ -7,7 +7,7 @@ package de.eshg.stiprotection.api.medicalhistory;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "SexWorkLocation")
+@Schema(name = "SexWorkLocation", description = "Locations where the patient engages in sex work.")
 public enum SexWorkLocationDto {
   BORDELLO,
   CLUB,

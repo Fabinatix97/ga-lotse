@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { CountryField } from "@eshg/lib-employee-portal";
 import {
   MedicalRegistryCreateProcedureFormValues,
   PersonalInformationFormValues,
@@ -26,7 +27,6 @@ import { Grid, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
-import { CountryField } from "@/lib/shared/components/formFields/CountryField";
 
 export function PersonalInformationForm(props: NestedFormProps) {
   const values =

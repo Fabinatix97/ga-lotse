@@ -10,6 +10,7 @@ import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.*;
 
 @Entity
+@Table(indexes = {@Index(columnList = "dataTransmitterPseudonymId")})
 @Inheritance(strategy = InheritanceType.JOINED)
 public class GdprFacility extends IdentificationData {
   @Column(nullable = false)

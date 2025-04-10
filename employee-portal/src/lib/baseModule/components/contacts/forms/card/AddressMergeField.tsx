@@ -8,6 +8,7 @@ import {
   BaseAddressDetailsColumn,
   BaseAddressFormInputs,
   DetailsRow,
+  formatList,
 } from "@eshg/lib-employee-portal";
 import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import { translateCountry } from "@eshg/lib-portal/helpers/countryOption";
@@ -27,7 +28,6 @@ import { ChangeEvent, useState } from "react";
 import { isDefined } from "remeda";
 
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { join } from "@/lib/shared/helpers/strings";
 
 interface AddressSelectOption {
   label: string;
@@ -58,7 +58,7 @@ function AddressOption({ address }: { address: BaseAddressFormInputs }) {
         <DetailsCell
           name={"street"}
           label={"Straße und Haus-Nr."}
-          value={join([address.street, address.houseNumber], " ")}
+          value={formatList([address.street, address.houseNumber], " ")}
         />
       )}
 
@@ -130,13 +130,13 @@ export function AddressMergeField({
         value={selectedLabel}
         name={input.name}
       >
-        <Stack gap={2}>
+        <Stack gap={3}>
           {options.map(({ label, value }, index) => (
             <Radio
               key={index}
               value={index}
               label={
-                <Stack gap={3}>
+                <Stack gap={2}>
                   {label}
                   {isDefined(value) && (
                     <Sheet variant={"soft"}>

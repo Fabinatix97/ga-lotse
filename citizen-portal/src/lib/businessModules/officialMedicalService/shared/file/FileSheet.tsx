@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { formatFileSize } from "@eshg/lib-portal/helpers/file";
+import { formatFileSize } from "@eshg/lib-portal/components/formFields/file/helpers";
 import { DeleteOutlined } from "@mui/icons-material";
 import { Box, IconButton, Sheet, Typography } from "@mui/joy";
 import { PropsWithChildren } from "react";
@@ -15,7 +15,7 @@ import { byBreakpoint } from "@/lib/shared/breakpoints";
 export interface FileSheet {
   file: FileDescriptor;
   removeLabel?: string;
-  onRemove?: (file: FileDescriptor) => void;
+  onRemove?: () => void;
 }
 
 export function FileSheet({
@@ -56,7 +56,7 @@ export function FileSheet({
           <IconButton
             aria-label={removeLabel}
             color="danger"
-            onClick={() => onRemove(file)}
+            onClick={() => onRemove()}
             sx={{
               minHeight: "24px",
               minWidth: "24px",

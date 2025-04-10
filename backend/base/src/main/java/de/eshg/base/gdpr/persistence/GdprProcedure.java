@@ -18,6 +18,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
+@Table(indexes = {@Index(columnList = "status"), @Index(columnList = "closedAt")})
 @EntityListeners(AuditingEntityListener.class)
 public class GdprProcedure extends BaseEntityWithExternalId {
 

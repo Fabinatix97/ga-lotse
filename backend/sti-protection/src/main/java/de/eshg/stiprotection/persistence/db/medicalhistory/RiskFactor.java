@@ -11,17 +11,30 @@ import jakarta.persistence.Embeddable;
 import java.time.LocalDate;
 
 @Embeddable
-@DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
 public class RiskFactor {
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean riskActivityDateVaginalIntercourse;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean riskActivityDateOralIntercourse;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean riskActivityDateAnalIntercourse;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean otherRiskActivities;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private LocalDate riskActivityDateVaginalIntercourseDate;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private LocalDate riskActivityDateOralIntercourseDate;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private LocalDate riskActivityDateAnalIntercourseDate;
+
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String otherRiskActivitiesData;
 
   public Boolean getRiskActivityDateVaginalIntercourse() {

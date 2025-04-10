@@ -1,6 +1,6 @@
 <#import "../common/forms.ftlh" as forms />
 
-<#macro content eyeExaminationInfo >
+<#macro content eyeExaminationInfo="NUL" >
 <#-- @ftlvariable name="eyeExaminationInfo" type="de.eshg.schoolentry.pdf.schoolinfoletter.model.SchoolInfoLetterEyeExaminationInfo" -->
   <table style="width: 100%;">
     <colgroup>
@@ -11,25 +11,25 @@
     </colgroup>
     <tr>
       <td>
-        <@forms.checkbox checked=!eyeExaminationInfo.conspicuous title="Nein"/>
+        <@forms.checkbox checked=eyeExaminationInfo?isHash && !eyeExaminationInfo.conspicuous title="Nein"/>
       </td>
       <td>
-        <@forms.checkbox checked=eyeExaminationInfo.conspicuous title="Ja"/>
+        <@forms.checkbox checked=eyeExaminationInfo?isHash && eyeExaminationInfo.conspicuous title="Ja"/>
       </td>
       <td>
-        <@forms.checkbox checked=eyeExaminationInfo.clarificationArranged title="Abklärung veranlasst"/>
+        <@forms.checkbox checked=eyeExaminationInfo?isHash && eyeExaminationInfo.clarificationArranged title="Abklärung veranlasst"/>
       </td>
       <td>
-        <@forms.checkbox checked=eyeExaminationInfo.underTreatment title="in Kontrolle / Behandlung"/>
+        <@forms.checkbox checked=eyeExaminationInfo?isHash && eyeExaminationInfo.underTreatment title="in Kontrolle / Behandlung"/>
       </td>
     </tr>
     <tr>
       <td colspan="2"></td>
       <td>
-        <@forms.checkbox checked=eyeExaminationInfo.spectacleWearer title="Brillenträger"/>
+        <@forms.checkbox checked=eyeExaminationInfo?isHash && eyeExaminationInfo.spectacleWearer title="Brillenträger"/>
       </td>
       <td>
-        <@forms.checkbox checked=eyeExaminationInfo.colorSenseDisorder title="Farbsinnstörung"/>
+        <@forms.checkbox checked=eyeExaminationInfo?isHash && eyeExaminationInfo.colorSenseDisorder title="Farbsinnstörung"/>
       </td>
     </tr>
   </table>

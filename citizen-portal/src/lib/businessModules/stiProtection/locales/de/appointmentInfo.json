@@ -60,6 +60,14 @@
   },
   "personal_area": {
     "title": "Sie können den Termin nicht wahrnehmen?",
-    "go_to_personal_area": "Zu meinen Terminen"
+    "go_to_personal_area": "Zu meinen Terminen",
+    "cancel_appointment": "Termin absagen"
+  },
+  "cancel_dialog": {
+    "title": "Termin absagen?",
+    "message": "Wenn Sie den Termin absagen, werden Sie automatisch ausgeloggt, alle vorausgefüllten Daten werden gelöscht, und Sie kehren zur Übersichtsseite zurück, wo Sie einen neuen Termin vereinbaren können. Alternativ können Sie unter \"Termin verschieben\" den Termin stattdessen verschieben.",
+    "cancel": "Beibehalten",
+    "confirm": "Ja, absagen",
+    "error": "Der Termin konnte nicht abgesagt werden."
   }
 }

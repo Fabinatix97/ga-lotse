@@ -11,6 +11,7 @@ import {
   DetailsItem,
   DetailsRow,
   DetailsSection,
+  formatBoolean,
 } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
@@ -23,7 +24,6 @@ import {
   DENTITION_TYPES,
   fluoridationDescription,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/translations";
-import { displayBoolean } from "@/lib/shared/helpers/booleans";
 
 export function ProphylaxisSessionDetails() {
   const prophylaxisSession = useProphylaxisSessionStore((state) => state);
@@ -72,7 +72,7 @@ export function ProphylaxisSessionDetails() {
               />
               <DetailsItem
                 label="Reihenuntersuchung"
-                value={displayBoolean(prophylaxisSession.isScreening)}
+                value={formatBoolean(prophylaxisSession.isScreening)}
               />
               <DetailsItem label="Gebisstyp" value={detentionType} />
               <DetailsItem
@@ -106,7 +106,7 @@ export function ProphylaxisSessionDetails() {
 
 function PerformingPersons(props: { persons: ApiPerformingPerson[] }) {
   return (
-    <Stack>
+    <Stack component="span">
       {props.persons.map((person) =>
         isExistingUser(person) ? (
           <Typography key={person.id}>{formatPersonName(person)}</Typography>

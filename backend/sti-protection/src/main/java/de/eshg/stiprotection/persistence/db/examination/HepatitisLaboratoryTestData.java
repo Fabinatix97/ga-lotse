@@ -10,12 +10,21 @@ import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-@DataSensitivity(SensitivityLevel.SENSITIVE)
 public class HepatitisLaboratoryTestData {
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean result;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean infection;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean vaccineTitre;
+
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String value;
+
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String remark;
 
   public Boolean getResult() {

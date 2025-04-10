@@ -15,6 +15,7 @@ import {
   format,
   formatDistanceStrict,
   formatDistanceToNow,
+  formatDistanceToNowStrict,
   formatISO,
   getWeek,
   isBefore,
@@ -162,6 +163,16 @@ export function formatDateTimeRangeToNow(
 ) {
   return formatDistanceToNow(date, {
     locale: options?.locale ?? getDateLocale(),
+  });
+}
+
+export function formatDateTimeRangeToNowInMinutes(
+  date: Date,
+  options?: FormatDistanceToNowOptions,
+) {
+  return formatDistanceToNowStrict(date, {
+    locale: options?.locale ?? getDateLocale(),
+    unit: "minute",
   });
 }
 

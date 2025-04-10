@@ -20,7 +20,7 @@ public record ProcedureDto(
     @NotNull ProcedureStatusDto status,
     @Valid SchoolDto school,
     Integer schoolYear,
-    @NotNull @Valid List<LabelDto> labels,
+    @NotNull @Valid List<ProcedureLabelDto> labels,
     Instant appointmentStart,
     @NotNull Instant createdAt,
     @NotNull Instant modifiedAt)

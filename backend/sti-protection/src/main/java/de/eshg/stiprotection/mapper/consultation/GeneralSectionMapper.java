@@ -20,8 +20,8 @@ public class GeneralSectionMapper {
     return new GeneralSectionDto(
         entity.getMainReason(),
         entity.getFurtherGenderInfo(),
-        entity.getHasSufficientGermanLanguageSkills(),
-        entity.getIsIlliterate(),
+        null,
+        null,
         entity.getOtherKnownLanguages(),
         entity.getHasHealthInsurance(),
         entity.getHasGermanHealthInsurance(),
@@ -41,8 +41,6 @@ public class GeneralSectionMapper {
     GeneralSection entity = new GeneralSection();
     entity.setMainReason(dto.mainReason());
     entity.setFurtherGenderInfo(dto.furtherGenderInfo());
-    entity.setHasSufficientGermanLanguageSkills(dto.hasSufficientGermanLanguageSkills());
-    entity.setIsIlliterate(dto.isIlliterate());
     entity.setOtherKnownLanguages(dto.otherKnownLanguages());
     entity.setHasHealthInsurance(dto.hasHealthInsurance());
     entity.setHasGermanHealthInsurance(dto.hasGermanHealthInsurance());

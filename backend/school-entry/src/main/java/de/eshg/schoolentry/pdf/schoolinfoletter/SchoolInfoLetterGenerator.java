@@ -5,7 +5,7 @@
 
 package de.eshg.schoolentry.pdf.schoolinfoletter;
 
-import de.eshg.departmentinfo.DepartmentInfoConfigService;
+import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.document.generator.department.DepartmentClient;

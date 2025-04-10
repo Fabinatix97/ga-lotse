@@ -10,7 +10,7 @@ import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-@DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+@DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
 public class PreviousIllness {
 
   private Boolean hepA;

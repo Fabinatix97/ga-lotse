@@ -13,5 +13,6 @@ public enum ReportStateDto {
   COMPLETED,
   FAILED,
   CREATING,
-  DELETING
+  DELETING,
+  ANONYMIZATION_FAILED
 }

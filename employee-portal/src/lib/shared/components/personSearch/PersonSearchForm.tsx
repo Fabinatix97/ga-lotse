@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Alert } from "@eshg/lib-portal/components/Alert";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { isDateString, toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
+import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { validateDateOfBirth } from "@eshg/lib-portal/helpers/validators";
 import {
   Close,
@@ -16,7 +18,7 @@ import {
 } from "@mui/icons-material";
 import { Button, styled } from "@mui/joy";
 import { Formik } from "formik";
-import { ReactNode, useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { isDefined } from "remeda";
 
 import {
@@ -68,22 +70,44 @@ interface PersonSearchFormProps {
   onChange: (searchParams: PersonSearchFormValues) => void;
   onReset: () => void;
   allowPartialSearch?: boolean;
-  children?: ReactNode;
+}
+
+interface ValidationResult {
+  valid: boolean;
+  message?: string;
 }
 
 export function PersonSearchForm(props: PersonSearchFormProps) {
+  const [alertMessage, setAlertMessage] = useState<string | undefined>();
+
+  useEffect(() => {
+    setAlertMessage(validateSearchParameters(props.initialValues).message);
+  }, [props.initialValues]);
+
+  function handleChange(formValues: PersonSearchFormValues) {
+    const validationResult = validateSearchParameters(formValues);
+    if (validationResult.valid) {
+      if (hasAtLeastOneValue(formValues)) {
+        props.onChange(formValues);
+      } else {
+        props.onReset();
+      }
+    }
+    setAlertMessage(validationResult.message);
+  }
+
   return (
     <Formik
       enableReinitialize
       initialValues={props.initialValues}
-      onSubmit={(formValues) => props.onChange(formValues)}
+      onSubmit={(formValues) => handleChange(formValues)}
     >
       {({ resetForm }) => (
         <>
           <SearchFormSheet id={props.id} data-testid="personSearch">
             <InputField
-              label="Vorname"
               name="firstName"
+              label="Vorname"
               required={
                 !props.allowPartialSearch
                   ? "Bitte Vornamen eingeben"
@@ -126,17 +150,69 @@ export function PersonSearchForm(props: PersonSearchFormProps) {
               startDecorator={<Close />}
               onClick={() => {
                 resetForm();
+                setAlertMessage(undefined);
                 props.onReset();
               }}
             >
               Suche zurücksetzen
             </Button>
           </SearchFormSheet>
-          {props.children}
+          {isNonEmptyString(alertMessage) && (
+            <Alert color="primary" message={alertMessage} />
+          )}
         </>
       )}
     </Formik>
   );
+}
+
+function validateSearchParameters(
+  values: PersonSearchFormValues,
+): ValidationResult {
+  if (!hasAtLeastOneValue(values)) {
+    return { valid: true };
+  }
+
+  if (isFullSearch(values)) {
+    return { valid: true };
+  }
+
+  if (isInvalidPartialSearch(values)) {
+    return {
+      valid: false,
+      message:
+        "Die Suche ausschließlich nach Vor- oder Nachname ist nicht erlaubt.",
+    };
+  } else {
+    return {
+      valid: true,
+      message:
+        "Es werden aus Datenschutzgründen nur offene Vorgänge angezeigt. Geben Sie alle 3 Such-Faktoren an, um auch geschlossene Vorgänge anzuzeigen.",
+    };
+  }
+}
+
+function hasAtLeastOneValue(values: PersonSearchFormValues) {
+  return !!(values.firstName || values.lastName || values.dateOfBirth);
+}
+
+function isFullSearch(values: PersonSearchFormValues) {
+  return !!(values.firstName && values.lastName && values.dateOfBirth);
+}
+
+function isInvalidPartialSearch(values: PersonSearchFormValues) {
+  const hasOnlyFirstNameFilled = !!(
+    values.firstName &&
+    !values.lastName &&
+    !values.dateOfBirth
+  );
+  const hasOnlyLastNameFilled = !!(
+    !values.firstName &&
+    values.lastName &&
+    !values.dateOfBirth
+  );
+
+  return hasOnlyFirstNameFilled || hasOnlyLastNameFilled;
 }
 
 interface TogglePersonSearchButtonProps extends ToggleExpandButtonProps {

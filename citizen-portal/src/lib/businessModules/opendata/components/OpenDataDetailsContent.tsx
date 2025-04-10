@@ -4,10 +4,10 @@
  */
 
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
+import { formatFileSize } from "@eshg/lib-portal/components/formFields/file/helpers";
 import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { formatFileSize } from "@eshg/lib-portal/helpers/file";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { ApiVersion } from "@eshg/opendata-api";
 import { DownloadOutlined, FileCopyOutlined } from "@mui/icons-material";

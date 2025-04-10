@@ -89,6 +89,10 @@ public enum ToothDto {
     return milkTooth;
   }
 
+  public boolean isPermanentTooth() {
+    return !milkTooth;
+  }
+
   public static boolean isMolar(ToothDto tooth) {
     char secondDigit = tooth.name().charAt(2);
     return secondDigit == '6' || secondDigit == '7' || secondDigit == '8';

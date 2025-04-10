@@ -9,6 +9,7 @@ import {
   OverlayBoundary,
   SidebarActions,
   SidebarContent,
+  formatList,
 } from "@eshg/lib-employee-portal";
 import { SALUTATION_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
@@ -32,7 +33,6 @@ import {
   postalCodeAndCity,
   streetAndHouseNumber,
 } from "@/lib/shared/helpers/facilityUtils";
-import { join } from "@/lib/shared/helpers/strings";
 
 import {
   contactTypeNames,
@@ -437,7 +437,7 @@ function DetailsGroup({ labeledValues }: { labeledValues: LabelValuePair[] }) {
 }
 
 function fullAddressAndCountry(address: ApiInboxProcedureAddress | undefined) {
-  return join(
+  return formatList(
     [
       streetAndHouseNumber(address),
       postalCodeAndCity(address),

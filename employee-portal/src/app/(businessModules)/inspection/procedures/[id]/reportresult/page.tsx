@@ -32,6 +32,7 @@ export default function InspectionTabReportResultPage(
           "Um einen Bericht zu erstellen, muss eine Begehung abgeschlossen sein."
         }
         margin={24}
+        procedureId={id}
       />
     );
   }

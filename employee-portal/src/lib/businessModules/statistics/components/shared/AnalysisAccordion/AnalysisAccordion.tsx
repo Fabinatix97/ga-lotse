@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useConfirmationDialog } from "@eshg/lib-employee-portal";
+import {
+  NoSearchResults,
+  useConfirmationDialog,
+} from "@eshg/lib-employee-portal";
 import { Delete, Edit } from "@mui/icons-material";
 import { CircularProgress, Stack } from "@mui/joy";
 import { Suspense, useState } from "react";
@@ -14,7 +17,6 @@ import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatA
 import { useDeleteAnalysis } from "@/lib/businessModules/statistics/api/mutations/useDeleteAnalysis";
 import { useUpdateAnalysisSidebar } from "@/lib/businessModules/statistics/components/evaluations/details/UpdateAnalysisSidebar/UpdateAnalysisSidebar";
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
-import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 
 import { AccordionSheet } from "./AccordionSheet";

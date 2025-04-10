@@ -11,17 +11,9 @@ export {
 export {
   type ProcedureLabel,
   mapProcedureLabels,
-} from "@/features/procedureLabels/api/models/ProcedureLabel";
+} from "./features/procedureLabels/api/models/ProcedureLabel";
 export { mapOptional } from "./api/models/mapOptional";
 export { type Versioned, mapVersioned } from "./api/models/Versioned";
-export {
-  type DefaultPersonFormValues,
-  type PersonFormValues,
-  mapReferencePersonToForm,
-  mapToPersonUpdateRequest,
-  mapToPersonAddRequest,
-  normalizeListInputs,
-} from "@/components/personSidebar/types";
 export {
   type BaseAddress,
   type BaseAddressType,
@@ -31,11 +23,19 @@ export {
   isPostboxAddress,
 } from "./api/models/address";
 export {
-  type BaseAddressFormInputs,
   createEmptyAddress,
   mapApiAddressToForm,
   mapBaseAddressToApi,
-} from "./components/form/address/helpers";
+} from "@/components/address/helpers";
+export { MultiFormButtonBar } from "./components/form/MultiFormButtonBar";
+export { CountryField } from "./components/formFields/CountryField";
+export {
+  type BaseAddressFormInputs,
+  ContactAddressForm,
+  BillingAddressForm,
+  OptionalBillingAddressForm,
+  OptionalContactAddressForm,
+} from "./components/address/addressForms";
 
 export { MainContentLayout } from "./components/layout/MainContentLayout";
 export { StickyToolbarLayout } from "./components/layout/StickyToolbarLayout";
@@ -68,11 +68,24 @@ export {
 export { ExternalLinkDetailsItem } from "./components/detailsSection/items/ExternalLinkDetailsItem";
 export { DetailsSectionHeader } from "./components/detailsSection/DetailsSectionHeader";
 export { ResponsiveDivider } from "./components/ResponsiveDivider";
-export { BaseAddressDetailsColumn } from "./components/address/BaseAddressDetailsColumn";
+export { BaseAddressDetailsColumn } from "@/components/address/BaseAddressDetailsColumn";
 export { NoEntriesMessage } from "./components/NoEntriesMessage";
 export { IconButton } from "./components/buttons/IconButton";
 export { EditButton } from "./components/buttons/EditButton";
 export { ButtonBar } from "./components/buttons/ButtonBar";
+export { SelectableCard } from "./components/cards/SelectableCard";
+export { NoSearchResults } from "./components/NoSearchResults";
+export {
+  SchoolYearAutocomplete,
+  SchoolYearField,
+} from "./components/formFields/schoolYear";
+export {
+  FileField,
+  type FileFieldProps,
+} from "./components/formFields/file/FileField";
+export { DeletableFileField } from "./components/formFields/file/DeletableFileField";
+
+export { PROCEDURE_STATUS_COLORS } from "./config/procedures";
 
 export { EmployeePortalProvider } from "./contexts/employeePortal";
 export { useLayoutConfig, type LayoutConfig } from "./contexts/layoutConfig";
@@ -96,11 +109,16 @@ export {
 } from "./features/auth/hooks/useAccessControl";
 export { CentralFilePersonDetails } from "@/components/centralFile/CentralFilePersonDetails";
 
+export { ImportDataForm } from "./features/import/components/ImportDataForm";
 export {
   parseImportResult,
   type ImportDataResult,
 } from "./features/import/utils/parseImportResult";
-export { type ImportStatistics } from "./features/import/types/ImportStatistics";
+export {
+  formatDuplicatedRecordCount,
+  formatFaultyRecordCount,
+  formatTotalRecordCount,
+} from "./features/import/utils/formatters";
 
 export { TablePage } from "./features/table/components/TablePage";
 export { TableSheet } from "./features/table/components/TableSheet";
@@ -198,12 +216,48 @@ export { SelectMultipleContactsField } from "./features/contacts/components/Sele
 export { formatInstitutionNameWithCategoryShort } from "./features/contacts/utils/formatters";
 export { mapContactToSelectOption } from "./features/contacts/utils/mappers";
 
+export type {
+  PersonFormValues,
+  PersonFormProps,
+} from "./features/persons/types/personForm";
+export { PersonCardContent } from "./features/persons/components/PersonCardContent";
+export {
+  type DefaultPersonFormValues,
+  DefaultPersonForm,
+  defaultPersonFormValues,
+} from "@/features/persons/components/form/DefaultPersonForm";
+export { PersonSidebarForm } from "@/features/persons/components/form/PersonSidebarForm";
+export {
+  DefaultSearchPersonForm,
+  defaultSearchPersonValues,
+} from "./features/persons/components/search/DefaultSearchPersonForm";
+export { DefaultSearchPersonFormFields } from "./features/persons/components/search/DefaultSearchPersonFormFields";
+export {
+  type SearchPersonFormProps,
+  type SearchPersonFormValues,
+} from "./features/persons/components/search/SearchPersonSidebar";
+export { PersonSearchResults } from "./features/persons/components/search/PersonSearchResults";
+export {
+  PersonSidebar,
+  type PersonSidebarProps,
+} from "@/features/persons/components/sidebar/PersonSidebar";
+export { PersonDetailsSidebar } from "@/features/persons/components/sidebar/PersonDetailsSidebar";
+export { useEditReferencePersonSidebar } from "@/features/persons/components/sidebar/EditReferencePersonSidebar";
+export { useSearchReferencePersonsQuery } from "./features/persons/api/queries";
+export {
+  mapReferencePersonToForm,
+  mapToPersonUpdateRequest,
+  mapToPersonAddRequest,
+  normalizeListInputs,
+} from "./features/persons/utils/mappers";
+
 export { useHeaderHeights } from "./hooks/useHeaderHeights";
 export {
   useReplaceSearchParams,
   type SearchParamReplacement,
 } from "./hooks/useReplaceSearchParams";
 export { useConfirmationDialog } from "./hooks/useConfirmationDialog";
+export { useResetAlertContextOnChange } from "./hooks/useResetAlertContextOnChange";
 
 export type { ModuleUserGroupConfig } from "./types/module";
 export type {
@@ -215,5 +269,12 @@ export type {
   SideNavigationParentItem,
 } from "./types/sideNavigation";
 
-export { formatSchoolYear } from "./utils/formatters";
+export { PROCEDURE_STATUS_NAMES } from "./translations/procedures";
+
+export {
+  formatBoolean,
+  formatList,
+  formatSchoolYear,
+  createCountFormatter,
+} from "./utils/formatters";
 export { mapToSelectOption } from "./utils/mappers";

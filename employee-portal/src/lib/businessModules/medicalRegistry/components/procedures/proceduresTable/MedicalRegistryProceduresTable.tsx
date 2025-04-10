@@ -7,6 +7,7 @@
 
 import {
   DataTable,
+  NoSearchResults,
   Pagination,
   TablePage,
   TableSheet,
@@ -29,7 +30,6 @@ import { useGetMedicalProceduresTablePage } from "@/lib/businessModules/medicalR
 import { MedicalRegistryProcedureChip } from "@/lib/businessModules/medicalRegistry/components/procedures/MedicalRegistryProcedureChip";
 import { useMedicalRegistryFilterSettings } from "@/lib/businessModules/medicalRegistry/shared/hooks/useMedicalRegistryFilterSettings";
 import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";
-import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";

@@ -3,4 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import "@cronn/vitest-file-snapshots/extend-expect";
+import { registerValidationFileMatcher } from "@cronn/vitest-file-snapshots/matcher";
+
+registerValidationFileMatcher({
+  baseDir: "src",
+});

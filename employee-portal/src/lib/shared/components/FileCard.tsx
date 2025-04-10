@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { formatFileSize } from "@eshg/lib-portal/components/formFields/file/helpers";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { formatFileSize } from "@eshg/lib-portal/helpers/file";
 import { ApiFileType } from "@eshg/lib-procedures-api";
 import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlined";
 import AudioFileOutlinedIcon from "@mui/icons-material/AudioFileOutlined";

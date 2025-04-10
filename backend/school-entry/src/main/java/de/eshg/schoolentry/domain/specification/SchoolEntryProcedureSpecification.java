@@ -8,8 +8,8 @@ package de.eshg.schoolentry.domain.specification;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment_;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
-import de.eshg.schoolentry.domain.model.Label;
-import de.eshg.schoolentry.domain.model.Label_;
+import de.eshg.schoolentry.domain.model.ProcedureLabel;
+import de.eshg.schoolentry.domain.model.ProcedureLabel_;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure_;
 import de.eshg.schoolentry.util.ProcedureSortKey;
@@ -112,9 +112,9 @@ public class SchoolEntryProcedureSpecification implements Specification<SchoolEn
       for (UUID labelId : labelFilter) {
         Subquery<SchoolEntryProcedure> subquery = query.subquery(SchoolEntryProcedure.class);
         Root<SchoolEntryProcedure> subqueryRoot = subquery.correlate(root);
-        ListJoin<SchoolEntryProcedure, Label> labelJoin =
+        ListJoin<SchoolEntryProcedure, ProcedureLabel> labelJoin =
             subqueryRoot.join(SchoolEntryProcedure_.labels);
-        subquery.where(criteriaBuilder.equal(labelJoin.get(Label_.externalId), labelId));
+        subquery.where(criteriaBuilder.equal(labelJoin.get(ProcedureLabel_.externalId), labelId));
         conjunctions.add(criteriaBuilder.exists(subquery));
       }
     }

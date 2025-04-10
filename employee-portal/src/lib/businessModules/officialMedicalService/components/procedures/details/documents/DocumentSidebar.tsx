@@ -90,6 +90,7 @@ function DocumentSidebar({
         helpTextEn: values.helpTextEn,
         mandatoryDocument: values.mandatoryDocument,
         uploadInCitizenPortal: values.uploadInCitizenPortal,
+        labCode: values.labCode,
       },
     };
 
@@ -136,6 +137,7 @@ function DocumentSidebar({
     uploadInCitizenPortal: document.uploadInCitizenPortal,
     files: [],
     note: document.note ?? "",
+    labCode: document.labCode,
   };
 
   return (

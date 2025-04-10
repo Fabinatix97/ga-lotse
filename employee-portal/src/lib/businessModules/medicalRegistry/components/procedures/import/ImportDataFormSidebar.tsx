@@ -7,18 +7,18 @@
 
 import {
   ButtonBar,
+  FileField,
   SidebarActions,
   SidebarContent,
   SidebarForm,
 } from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
+import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
 import { Button, List, ListItem, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 
 import { DownloadTemplateLink } from "@/lib/businessModules/medicalRegistry/components/procedures/import/DownloadTemplateLink";
-import { FileField } from "@/lib/shared/components/formFields/file/FileField";
 
 interface ImportDataFormSidebarProps {
   onClose: () => void;

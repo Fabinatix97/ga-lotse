@@ -1,0 +1,28 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2025 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1744016354914-1">
+    <createIndex indexName="idx_gdpr_facility_data_transmitter_pseudonym_id" tableName="gdpr_facility">
+      <column name="data_transmitter_pseudonym_id"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744016354914-2">
+    <createIndex indexName="idx_gdpr_person_bpk2" tableName="gdpr_person">
+      <column name="bpk2"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744016354914-3">
+    <createIndex indexName="idx_gdpr_procedure_closed_at" tableName="gdpr_procedure">
+      <column name="closed_at"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1744016354914-4">
+    <createIndex indexName="idx_gdpr_procedure_status" tableName="gdpr_procedure">
+      <column name="status"/>
+    </createIndex>
+  </changeSet>
+</databaseChangeLog>

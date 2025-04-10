@@ -19,6 +19,7 @@ public class DataSourceMapper {
         dataSource.getId(),
         dataSource.getName(),
         dataSource.getSensitivity(),
+        dataSource.getKAnonymity(),
         getAttributes(dataSource));
   }
 

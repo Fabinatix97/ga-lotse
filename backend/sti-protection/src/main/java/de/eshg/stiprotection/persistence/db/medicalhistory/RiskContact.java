@@ -16,20 +16,23 @@ import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Embeddable
-@DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
 public class RiskContact {
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private SexualOrientation sexualOrientation;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Integer numberOfSexualPartnersLast12Months;
 
   @ElementCollection(fetch = FetchType.EAGER)
   @JdbcType(PostgreSQLEnumJdbcType.class)
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Set<Gender> sexualContacts;
 
   @ElementCollection(fetch = FetchType.EAGER)
   @JdbcType(PostgreSQLEnumJdbcType.class)
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private Set<PartnerRiskFactor> partnerRiskFactors;
 
   public SexualOrientation getSexualOrientation() {

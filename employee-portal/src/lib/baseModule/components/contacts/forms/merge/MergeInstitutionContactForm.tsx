@@ -7,6 +7,7 @@ import { ApiInstitutionContact } from "@eshg/base-api";
 import {
   BaseAddressFormInputs,
   CONTACT_CATEGORY_NAMES,
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -36,7 +37,6 @@ import {
   InstitutionContactMergeSource,
   MergeInstitutionContactFormValues,
 } from "@/lib/baseModule/components/contacts/types";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 
 function initialValues(
   into: ApiInstitutionContact,

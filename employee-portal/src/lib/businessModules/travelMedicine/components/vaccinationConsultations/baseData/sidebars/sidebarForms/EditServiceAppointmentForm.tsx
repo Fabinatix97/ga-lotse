@@ -4,6 +4,7 @@
  */
 
 import {
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -26,7 +27,6 @@ import { Ref, useId } from "react";
 import { theme } from "@/lib/baseModule/theme/theme";
 import { Appointment } from "@/lib/businessModules/travelMedicine/api/models/Appointment";
 import { AppointmentRadioGroup } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/AppointmentRadioGroup";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 
 export interface EditServiceAppointmentFormValues {
   procedureId: string;

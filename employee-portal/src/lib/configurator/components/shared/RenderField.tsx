@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useConfirmationDialog } from "@eshg/lib-employee-portal";
+import { FileField, useConfirmationDialog } from "@eshg/lib-employee-portal";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
@@ -15,7 +15,27 @@ import { OpeningHoursField } from "@/lib/configurator/components/shared/OpeningH
 import { FileCard, FileCardProps } from "@/lib/shared/components/FileCard";
 import { InfoIconTooltipButton } from "@/lib/shared/components/buttons/IconTooltipButton";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
-import { FileField } from "@/lib/shared/components/formFields/file/FileField";
+
+interface Width {
+  width: string;
+  minWidth?: string;
+  maxWidth?: string;
+}
+
+function widthSx(width?: Width) {
+  if (!width) {
+    return {
+      flex: 1,
+    };
+  }
+  return {
+    width: width.width,
+    minWidth: width.minWidth,
+    maxWidth: width.maxWidth,
+    flexShrink: "unset",
+    flexGrow: "unset",
+  };
+}
 
 export type FormFields =
   | TextFormField
@@ -35,18 +55,22 @@ interface TextFormField extends BaseFormField {
   type: "text";
   placeholder?: string;
   readonly?: boolean;
-  flex?: number;
+  width?: Width;
+  maxLength?: number;
 }
 
 interface NumberFormField extends BaseFormField {
   type: "number";
   readonly?: boolean;
-  flex?: number;
+  width?: Width;
+  min?: number;
+  max?: number;
+  placeholder?: string;
 }
 
 interface UploadFormField extends BaseFormField {
   type: "upload";
-  flex?: number;
+  width?: Width;
 }
 
 interface CheckboxFormField extends BaseFormField {
@@ -91,27 +115,27 @@ export function RenderField({
     case "text":
       return (
         <InputField
-          sx={{
-            flex: field.flex ?? 1,
-          }}
+          sx={widthSx(field.width)}
           type="text"
           name={field.name}
           label={field.label}
           placeholder={field.placeholder}
           readOnly={field.readonly}
           required={field.required}
+          maxLength={field.maxLength}
         />
       );
     case "number":
       return (
         <NumberField
-          fieldSx={{
-            flex: field.flex ?? 1,
-          }}
+          fieldSx={widthSx(field.width)}
           name={field.name}
           label={field.label}
           readOnly={field.readonly}
           required={field.required}
+          min={field.min}
+          max={field.max}
+          placeholder={field.placeholder}
         />
       );
     case "upload":
@@ -122,9 +146,7 @@ export function RenderField({
         <>
           {!isCard && (
             <FileField
-              sx={{
-                flex: field.flex ?? 1,
-              }}
+              sx={widthSx(field.width)}
               label={field.label}
               name={field.name}
               required={field.required}
@@ -132,9 +154,7 @@ export function RenderField({
           )}
           {isCard && (
             <FileCard
-              sx={{
-                flex: field.flex ?? 1,
-              }}
+              sx={widthSx(field.width)}
               name={uploadValue.name}
               type={uploadValue.type}
               creationDate={uploadValue.creationDate}

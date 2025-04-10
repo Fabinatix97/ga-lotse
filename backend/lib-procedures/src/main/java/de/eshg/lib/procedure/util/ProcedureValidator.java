@@ -11,6 +11,7 @@ import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.rest.service.error.BadRequestException;
 import java.util.Objects;
+import org.springframework.util.StringUtils;
 
 public class ProcedureValidator {
   private ProcedureValidator() {}
@@ -22,14 +23,14 @@ public class ProcedureValidator {
     }
   }
 
-  public static void validateSearchParametersAreComplete(
-      ProcedureSearchParameters searchParameters) {
-    if (hasNonNullValue(searchParameters)
-        && (searchParameters.searchFirstName() == null
-            || searchParameters.searchLastName() == null
-            || searchParameters.searchDateOfBirth() == null)) {
-      throw new BadRequestException(
-          "If search parameters are used, all of firstName, lastName and dateOfBirth have to be provided.");
+  public static void validatePartialSearchParameters(ProcedureSearchParameters searchParameters) {
+    if (hasNonNullValue(searchParameters)) {
+      boolean searchForFirstName = StringUtils.hasText(searchParameters.searchFirstName());
+      boolean searchForLastName = StringUtils.hasText(searchParameters.searchLastName());
+      if (searchParameters.searchDateOfBirth() == null && searchForFirstName != searchForLastName) {
+        throw new BadRequestException(
+            "Searching by first-name or last-name only is not permitted.");
+      }
     }
   }
 

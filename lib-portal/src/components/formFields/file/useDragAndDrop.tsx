@@ -5,7 +5,7 @@
 
 import { DragEvent, useCallback, useState } from "react";
 
-import { FileLike } from "./validators";
+import { FileLike } from "./types";
 
 export function useDragAndDrop({
   onChange,

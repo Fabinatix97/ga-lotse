@@ -5,6 +5,7 @@
 
 import {
   DetailsItem,
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -48,7 +49,6 @@ import { useBookAppointment } from "@/lib/businessModules/officialMedicalService
 import { usePostAppointment } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
 import { useGetFreeAppointmentsQuery } from "@/lib/businessModules/officialMedicalService/api/queries/appointmentBlocksApi";
 import { APPOINTMENT_TYPE_OPTIONS } from "@/lib/businessModules/officialMedicalService/components/appointmentBlocks/options";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { DateTimeField } from "@/lib/shared/components/formFields/DateTimeField";
 import {
   RadioAccordionGroupField,

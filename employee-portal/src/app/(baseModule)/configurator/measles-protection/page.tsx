@@ -5,27 +5,8 @@
 
 "use client";
 
-import { Typography } from "@mui/joy";
-
-import { useGetDepartmentInfo } from "@/lib/configurator/api/queries/useGetDepartmentInfo";
-import { ConfiguratorLayout } from "@/lib/configurator/components/shared/ConfiguratorLayout";
-import { routes } from "@/lib/configurator/shared/routes";
+import { ConfiguratorOverview } from "@/lib/configurator/components/overview/ConfiguratorOverview";
 
 export default function MeaslesProtectionConfiguratorPage() {
-  const status = "warning";
-  const _tabItems = [
-    {
-      tabButtonName: "Angaben zum GA",
-      href: routes.measlesProtection.index,
-      status,
-    },
-  ];
-  const { data } = useGetDepartmentInfo("measlesProtection");
-
-  return (
-    <ConfiguratorLayout status={status} module={"measlesProtection"}>
-      <Typography level="h1">Configuration measles-protection</Typography>
-      {data.departmentInfo?.name}
-    </ConfiguratorLayout>
-  );
+  return <ConfiguratorOverview module={"measlesProtection"} />;
 }

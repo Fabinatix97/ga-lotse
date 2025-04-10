@@ -71,6 +71,7 @@ function mapPersonContactToForm(
     differentBillingAddress: isDefined(contact.differentBillingAddress)
       ? mapApiAddressToForm(contact.differentBillingAddress)
       : undefined,
+    nameAtBirth: "",
   };
 }
 

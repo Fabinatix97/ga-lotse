@@ -33,7 +33,8 @@ public class CitizenProcedureMapper {
   public GetCitizenProcedureDetailsResponse toInterfaceType(
       OmsProcedure omsProcedure,
       AffectedPersonDto affectedPersonDto,
-      List<OmsDocument> citizenPortalDocuments) {
+      List<OmsDocument> citizenPortalDocuments,
+      boolean isAnamnesisEnabled) {
     OmsAppointmentDto appointment =
         omsProcedure.getAppointments().stream()
             .filter(app -> app.getAppointmentState().equals(AppointmentState.OPEN))
@@ -49,6 +50,8 @@ public class CitizenProcedureMapper {
         appointment,
         ConcernMapper.mapToConcernDto(omsProcedure.getConcern()),
         omsDocumentMapper.toInterfaceType(citizenPortalDocuments),
-        MedicalOpinionStatusDto.valueOf(omsProcedure.getMedicalOpinionStatus().name()));
+        MedicalOpinionStatusDto.valueOf(omsProcedure.getMedicalOpinionStatus().name()),
+        omsProcedure.getAnamnesis() != null,
+        isAnamnesisEnabled);
   }
 }

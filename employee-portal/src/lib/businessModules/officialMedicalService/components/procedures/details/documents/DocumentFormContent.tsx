@@ -183,6 +183,13 @@ export function DocumentFormContent(props: {
             label="Hilfstext (EN)"
             value={props.document.helpTextEn ?? "-"}
           />
+          <DetailsItem
+            label="Labortest-Barcode"
+            value={
+              !isEmpty(props.document.labCode) ? props.document.labCode : "-"
+            }
+            slotProps={{ value: { pt: 1 } }}
+          />
         </Stack>
       </Stack>
     </SidebarContent>

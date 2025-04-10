@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FormControl, FormLabel, Input, Stack } from "@mui/joy";
+import { Button, FormControl, FormLabel, Input, Stack } from "@mui/joy";
 import { format, parse, startOfDay, subDays } from "date-fns";
 import { isEmpty } from "remeda";
 
@@ -45,6 +45,16 @@ export function DateSpanFilter(props: DateSpanFilterProps) {
     );
   }
 
+  function setToday() {
+    const today = format(new Date(), "yyyy-MM-dd");
+    props.onChange({
+      type: "DateSpan",
+      key: props.definition.key,
+      startDate: today,
+      endDate: today,
+    });
+  }
+
   return (
     <Stack gap={2} sx={{ width: "100%" }}>
       <FormControl>
@@ -72,6 +82,11 @@ export function DateSpanFilter(props: DateSpanFilterProps) {
           }}
         />
       </FormControl>
+      {props.definition.showTodayButton && (
+        <Button variant="soft" onClick={() => setToday()}>
+          Nur heute
+        </Button>
+      )}
     </Stack>
   );
 }

@@ -23,7 +23,10 @@ import { isObjectType } from "remeda";
 import { useBindKeycloakId } from "@/lib/businessModules/chat/api/mutations/userAccountApi";
 import { SecureBackupContent } from "@/lib/businessModules/chat/components/secureBackup/BackupSetupView";
 import { SSOAuthModal } from "@/lib/businessModules/chat/components/secureBackup/SSOAuthModal";
-import { setupNewSecretStorage } from "@/lib/businessModules/chat/matrix/secretStorage";
+import {
+  bootstrapNewSecretStorage,
+  hasKeyBackupInSecretStorage,
+} from "@/lib/businessModules/chat/matrix/secretStorage";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
@@ -134,12 +137,26 @@ export function CreateBackupSidebar({
 
   async function handleSubmit(values: InitialValues) {
     try {
-      await setupNewSecretStorage(
+      const hasBackupInSecretStorage: boolean =
+        await hasKeyBackupInSecretStorage(matrixClient);
+      if (hasBackupInSecretStorage) {
+        logger.error(
+          "Aborting bootstrapNewSecretStorage because KeyBackup already exists in 4S",
+        );
+        snackbar.error("Unexpected error, KeyBackup is already ");
+        setClientState(ClientState.HardReset);
+        return;
+      }
+
+      logger.info("Step 6/6 CreateKeyBackupInSecretStorage");
+      await bootstrapNewSecretStorage(
         matrixClient,
         values.passphrase,
         authUploadDeviceSigningKeys,
       );
-      setClientState(ClientState.Prepared);
+      //TODO: check if device is verified and backup ready
+      logger.info("Step 6/6 CreateKeyBackupInSecretStorage - FINISHED");
+      setClientState(ClientState.Ready);
       snackbar.confirmation("Sicherheitsbackup erfolgreich eingerichtet");
     } catch (e) {
       handleClose();

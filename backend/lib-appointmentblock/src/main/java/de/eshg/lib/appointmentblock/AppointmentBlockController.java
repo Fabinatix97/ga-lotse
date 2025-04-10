@@ -6,7 +6,15 @@
 package de.eshg.lib.appointmentblock;
 
 import de.eshg.api.commons.InlineParameterObject;
-import de.eshg.lib.appointmentblock.api.*;
+import de.eshg.lib.appointmentblock.api.AppointmentBlockPaginationAndSortParameters;
+import de.eshg.lib.appointmentblock.api.AppointmentDto;
+import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
+import de.eshg.lib.appointmentblock.api.CreateAppointmentBlockGroupResponse;
+import de.eshg.lib.appointmentblock.api.CreateDailyAppointmentBlockGroupRequest;
+import de.eshg.lib.appointmentblock.api.GetAppointmentBlockGroupDto;
+import de.eshg.lib.appointmentblock.api.GetAppointmentBlockGroupsResponse;
+import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
+import de.eshg.lib.appointmentblock.api.ValidateAppointmentBlockGroupResponse;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,7 +25,9 @@ import java.util.List;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,7 +56,7 @@ public class AppointmentBlockController {
     return appointmentBlockService.createDailyAppointmentBlocksForGroup(request);
   }
 
-  @Operation(summary = "Create appointment group with blocks for week days.")
+  @Operation(summary = "Validate appointment group with blocks for week days.")
   @PostMapping("/daily-appointment-block-groups/validate")
   @Transactional
   public ValidateAppointmentBlockGroupResponse validateDailyAppointmentBlocksForGroup(
@@ -89,5 +99,12 @@ public class AppointmentBlockController {
             physicianId);
 
     return new GetFreeAppointmentsResponse(appointments);
+  }
+
+  @Operation(summary = "Delete appointment block.")
+  @DeleteMapping("/{appointmentBlockId}")
+  @Transactional
+  public void deleteAppointmentBlock(@PathVariable("appointmentBlockId") UUID appointmentBlockId) {
+    appointmentBlockService.deleteAppointmentBlock(appointmentBlockId);
   }
 }

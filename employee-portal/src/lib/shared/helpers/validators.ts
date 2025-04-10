@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiCountryCode } from "@eshg/base-api";
 import { isDateString } from "@eshg/lib-portal/helpers/dateTime";
 import { isValidEmailString } from "@eshg/lib-portal/helpers/email";
 import { isBlankString, isEmptyString } from "@eshg/lib-portal/helpers/guards";
@@ -63,27 +62,6 @@ export function validateURL(value: string) {
   }
 
   return "Bitte eine gültige URL angeben.";
-}
-
-export function validateGermanZipCode(value: string) {
-  if (value === undefined || isEmptyString(value)) {
-    return undefined;
-  }
-
-  if (!/^[0-9]{5}$/.test(value)) {
-    return "Bitte eine gültige Postleitzahl angeben.";
-  }
-
-  return undefined;
-}
-
-export function validateZipCode(country: ApiCountryCode) {
-  switch (country) {
-    case ApiCountryCode.De:
-      return validateGermanZipCode;
-    default:
-      return () => undefined;
-  }
 }
 
 export function validateNonNegativeInteger(value: OptionalFieldValue<number>) {

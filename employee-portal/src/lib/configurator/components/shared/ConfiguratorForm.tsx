@@ -11,7 +11,9 @@ import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvid
 import { Button, Divider, Radio, Sheet, Stack, Typography } from "@mui/joy";
 import { Formik, FormikValues } from "formik";
 import { ReactElement, useState } from "react";
+import { isDefined } from "remeda";
 
+import { ConfiguratorStatus } from "@/lib/configurator/api/models/configuratorTabItem";
 import { ErrorListener } from "@/lib/configurator/components/shared/ErrorListener";
 import {
   FormFields,
@@ -25,7 +27,7 @@ interface FormSheet {
   sections: FormSection[];
 }
 
-interface FormSection {
+export interface FormSection {
   title?: string;
   description?: string | ReactElement;
   content: ChooseSectionContent | TextSectionContent | FieldSectionContent;
@@ -38,18 +40,18 @@ interface ChooseSectionContent {
     label: string;
     value: string;
     readonly?: boolean;
-    content?: TextSectionContent | FieldSectionContent;
+    sections: (Omit<FormSection, "content"> & {
+      content: TextSectionContent | FieldSectionContent;
+    })[];
   }[];
 }
 
 interface TextSectionContent {
   type: "text";
-  subsection: {
-    title?: string;
-    entries: {
-      label: string;
-      content: string;
-    }[];
+  title?: string;
+  entries: {
+    label: string;
+    content: string;
   }[];
 }
 
@@ -73,7 +75,7 @@ function ChooseSection({
   downloadFile: (fileName: string) => void;
 }) {
   const selectedOption = content.options.find(
-    (it) => it.content && values[content.name] === it.value,
+    (it) => it.sections.length > 0 && values[content.name] === it.value,
   );
   return (
     <Stack gap={4}>
@@ -87,16 +89,18 @@ function ChooseSection({
           />
         ))}
       </RadioGroupField>
-      {selectedOption?.content && (
+      {selectedOption && (
         <>
           <Divider />
-          <SectionContent
-            content={selectedOption.content}
-            key={`radio-section-${selectedOption.value}`}
-            values={values}
-            deleteFile={deleteFile}
-            downloadFile={downloadFile}
-          />
+          {selectedOption.sections.map((it, index) => (
+            <SectionContent
+              key={`radio-section-${selectedOption.value}-${index}`}
+              content={it.content}
+              values={values}
+              deleteFile={deleteFile}
+              downloadFile={downloadFile}
+            />
+          ))}
         </>
       )}
     </Stack>
@@ -148,17 +152,15 @@ function SectionContent({
     case "text":
       return (
         <Stack gap={3}>
-          {content.subsection.map((subsection, index) => (
-            <Stack key={`subsection-${index}`} gap={3}>
-              {subsection.title && (
-                <Typography level="title-md">{subsection.title}</Typography>
-              )}
-              {subsection.entries.map((entry) => (
-                <Stack key={`subsection-entry-${entry.label}`} gap={1}>
-                  <Typography level="title-sm">{entry.label}</Typography>
-                  <Typography level="body-sm">{entry.content}</Typography>
-                </Stack>
-              ))}
+          {isDefined(content.title) && (
+            <Typography level="title-md">{content.title}</Typography>
+          )}
+          {content.entries.map((entry) => (
+            <Stack key={`subsection-entry-${entry.label}`} gap={1}>
+              <Typography fontWeight={500} fontSize={14}>
+                {entry.label}
+              </Typography>
+              <Typography level="body-md">{entry.content}</Typography>
             </Stack>
           ))}
         </Stack>
@@ -177,9 +179,9 @@ export function ConfiguratorForm<T extends FormikValues>({
   sheets: FormSheet[];
   initialValues: T;
   onSubmit: (model: T) => Promise<void>;
-  status: "COMPLETE" | "INCOMPLETE" | "ONLY_EN_MISSING";
-  deleteFile: (fileName: string) => void;
-  downloadFile: (fileName: string) => void;
+  status: ConfiguratorStatus;
+  deleteFile?: (fileName: string) => void;
+  downloadFile?: (fileName: string) => void;
 }) {
   const [showError, setShowError] = useState(false);
   const { openCancelDialog } = useConfirmationDialog();
@@ -197,7 +199,10 @@ export function ConfiguratorForm<T extends FormikValues>({
     >
       {({ values, handleReset, isSubmitting, handleSubmit, errors, dirty }) => (
         <FormPlus>
-          <ErrorListener onError={() => setShowError(true)} />
+          <ErrorListener
+            onError={() => setShowError(true)}
+            noErrors={() => setShowError(false)}
+          />
           <ConfirmLeaveDirtyFormEffect
             confirmationDialogProps={{
               title: "Änderungen speichern?",
@@ -236,32 +241,47 @@ export function ConfiguratorForm<T extends FormikValues>({
                   <Stack gap={4}>
                     <Stack gap={1}>
                       <Typography level="h3">{sheet.title}</Typography>
-                      {sheet.description && (
-                        <Typography level="body-md">
-                          {sheet.description}
-                        </Typography>
+                      {isDefined(sheet.description) && (
+                        <>
+                          {typeof sheet.description === "string" ? (
+                            <Typography level="body-md">
+                              {sheet.description}
+                            </Typography>
+                          ) : (
+                            sheet.description
+                          )}
+                        </>
                       )}
                     </Stack>
                     {sheet.sections.map((section, index) => (
                       <Stack key={`sheet-${index}`} gap={3}>
-                        <Stack gap={1}>
-                          {section.title && (
-                            <Typography level="title-md">
-                              {section.title}
-                            </Typography>
-                          )}
-                          {section.description && (
-                            <Typography level="body-md">
-                              {section.description}
-                            </Typography>
-                          )}
-                        </Stack>
+                        {(isDefined(section.title) ||
+                          isDefined(section.description)) && (
+                          <Stack gap={1}>
+                            {isDefined(section.title) && (
+                              <Typography level="title-md">
+                                {section.title}
+                              </Typography>
+                            )}
+                            {isDefined(section.description) && (
+                              <>
+                                {typeof section.description === "string" ? (
+                                  <Typography level="body-md">
+                                    {section.description}
+                                  </Typography>
+                                ) : (
+                                  section.description
+                                )}
+                              </>
+                            )}
+                          </Stack>
+                        )}
                         <SectionContent
                           content={section.content}
                           key={`section-${index}`}
                           values={values}
-                          deleteFile={deleteFile}
-                          downloadFile={downloadFile}
+                          deleteFile={(fileName) => deleteFile?.(fileName)}
+                          downloadFile={(fileName) => downloadFile?.(fileName)}
                         />
                         {index + 1 !== sheet.sections.length && <Divider />}
                       </Stack>
@@ -274,21 +294,21 @@ export function ConfiguratorForm<T extends FormikValues>({
               <Sheet>
                 <Stack gap={3}>
                   <Typography level="h3">Hinweis</Typography>
-                  {status === "COMPLETE" && (
+                  {status === "complete" && (
                     <Alert
                       variant="soft"
                       color="success"
                       message="Alle Pflichtangaben sind vollständig."
                     />
                   )}
-                  {status === "ONLY_EN_MISSING" && (
+                  {status === "warning" && (
                     <Alert
                       variant="soft"
                       color="warning"
                       message="Die englischsprachige Datei wurde nicht hochgeladen. Die deutsche Version wird für diese als Fallback genutzt."
                     />
                   )}
-                  {status === "INCOMPLETE" && (
+                  {status === "error" && (
                     <Alert
                       variant="soft"
                       color="danger"
@@ -312,11 +332,16 @@ export function ConfiguratorForm<T extends FormikValues>({
                         snackbar.notification(
                           "Es wurden keine Änderungen zum Verwerfen erkannt.",
                         );
+                        setShowError(false);
+                        handleReset();
                       } else {
                         openCancelDialog({
                           title: "Änderungen wirklich verwerfen?",
                           description: "Ihre Angaben werden nicht gespeichert.",
-                          onConfirm: () => handleReset(),
+                          onConfirm: () => {
+                            setShowError(false);
+                            return handleReset();
+                          },
                         });
                       }
                     }}

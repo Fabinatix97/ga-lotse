@@ -5,7 +5,8 @@
 
 import { ApiOrthodonticFinding } from "@eshg/dental-api";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { Checkbox, Chip } from "@mui/joy";
+import { CheckBox, CheckBoxOutlineBlank } from "@mui/icons-material";
+import { Chip } from "@mui/joy";
 import { useField } from "formik";
 
 import { ORTHODONTIC_FINDINGS_OPTIONS } from "@/lib/businessModules/dental/features/examinations/AdditionalInformationFormSection";
@@ -19,10 +20,14 @@ export function OrthodonticFindingsField() {
     return {
       value: option.value,
       label: (
-        <Checkbox
-          checked={findings.includes(option.value)}
-          label={option.label}
-        />
+        <>
+          {findings.includes(option.value) ? (
+            <CheckBox color="primary" />
+          ) : (
+            <CheckBoxOutlineBlank color="neutral" />
+          )}
+          {option.label}
+        </>
       ),
     };
   });

@@ -12,6 +12,7 @@ const statusNames = {
   [ApiReportState.Creating]: "Wird erstellt",
   [ApiReportState.Planned]: "Geplant",
   [ApiReportState.Deleting]: "Wird gelöscht",
+  [ApiReportState.AnonymizationFailed]: "Anonymisierungsfehler",
 } satisfies Record<ApiReportState, string>;
 
 const statusColors = {
@@ -20,6 +21,7 @@ const statusColors = {
   [ApiReportState.Creating]: "warning",
   [ApiReportState.Planned]: "warning",
   [ApiReportState.Deleting]: "warning",
+  [ApiReportState.AnonymizationFailed]: "danger",
 } satisfies Record<ApiReportState, ChipProps["color"]>;
 
 export function ReportStateChip({ value }: { value: ApiReportState }) {

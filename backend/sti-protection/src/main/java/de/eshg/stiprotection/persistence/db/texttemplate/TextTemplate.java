@@ -14,16 +14,18 @@ import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
-@DataSensitivity(SensitivityLevel.SENSITIVE)
 public class TextTemplate extends BaseEntityWithExternalId {
 
   @Column(nullable = false)
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String name;
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
   @Column(nullable = false)
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private TextTemplateContext context;
 
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String content;
 
   public String getName() {

@@ -10,8 +10,6 @@ import de.eshg.base.centralfile.api.facility.GetReferenceFacilityResponse;
 import de.eshg.base.centralfile.mapper.FacilityMapper;
 import de.eshg.base.centralfile.persistence.entity.Facility;
 import de.eshg.base.centralfile.persistence.repository.FacilityRepository;
-import de.eshg.base.feature.BaseFeature;
-import de.eshg.base.feature.BaseFeatureToggle;
 import de.eshg.base.muk.Api.AddMukFacilityLinkRequest;
 import de.eshg.base.muk.persistence.MukFacilityLinkService;
 import de.eshg.rest.service.error.NotFoundException;
@@ -24,23 +22,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class MukFacilityLinkController implements MukFacilityLinkApi {
 
   private final MukFacilityLinkService mukFacilityLinkService;
-  private final BaseFeatureToggle featureToggle;
   private final FacilityRepository facilityRepository;
 
   public MukFacilityLinkController(
-      MukFacilityLinkService mukFacilityLinkService,
-      BaseFeatureToggle featureToggle,
-      FacilityRepository facilityRepository) {
+      MukFacilityLinkService mukFacilityLinkService, FacilityRepository facilityRepository) {
     this.mukFacilityLinkService = mukFacilityLinkService;
-    this.featureToggle = featureToggle;
     this.facilityRepository = facilityRepository;
   }
 
   @Override
   @Transactional
   public void createMukFacilityLink(AddMukFacilityLinkRequest request) {
-    featureToggle.assertNewFeatureIsEnabled(BaseFeature.MUK_FACILITY_LINK);
-
     Facility refFacility =
         facilityRepository
             .findByExternalId(request.referenceFacilityId())
@@ -53,8 +45,6 @@ public class MukFacilityLinkController implements MukFacilityLinkApi {
   @Override
   @Transactional(readOnly = true)
   public GetReferenceFacilityResponse getReferenceFacilityLinkedToMukSelfUser() {
-    featureToggle.assertNewFeatureIsEnabled(BaseFeature.MUK_FACILITY_LINK);
-
     String dataTransmitterPseudonymId =
         mukFacilityLinkService.getMukSelfUserDataTransmitterPseudonymId();
     Facility referenceFacility =

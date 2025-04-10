@@ -65,6 +65,24 @@
         "tags" : [ "TestHelper" ]
       }
     },
+    "/test-helper/get-test-user-id" : {
+      "get" : {
+        "operationId" : "getTestUserId",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
     "/test-helper/population" : {
       "post" : {
         "operationId" : "populateDefaults",
@@ -212,6 +230,27 @@
                 }
               }
             },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "TestHelper" ]
+      }
+    },
+    "/test-helper/unbind-keycloak-id" : {
+      "post" : {
+        "operationId" : "unbindKeycloakId",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BindKeycloakIdRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
             "description" : "OK"
           }
         },

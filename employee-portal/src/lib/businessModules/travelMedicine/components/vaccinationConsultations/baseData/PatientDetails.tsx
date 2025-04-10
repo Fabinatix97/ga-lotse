@@ -9,6 +9,7 @@ import {
   BaseAddressDetailsColumn,
   DetailsItem,
   DetailsRow,
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -30,7 +31,6 @@ import { Formik } from "formik";
 import { isDefined } from "remeda";
 
 import { instanceOfApiGetReferencePersonResponse } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/AcceptProcedureSidebar";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 
 export interface PatientDetailsProps {
   title: string;

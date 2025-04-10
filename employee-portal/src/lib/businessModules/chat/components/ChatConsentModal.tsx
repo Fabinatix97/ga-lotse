@@ -10,7 +10,7 @@ import {
 import { Block, Done } from "@mui/icons-material";
 import { Box, Button, Divider, Stack, Typography } from "@mui/joy";
 
-import { clearCachedCredentials } from "@/lib/businessModules/chat/matrix/tokens";
+import { clearAllStores } from "@/lib/businessModules/chat/matrix/tokens";
 import { useUserSettings } from "@/lib/businessModules/chat/shared/hooks/useUserSettings";
 import { termsOfUseText } from "@/lib/businessModules/chat/shared/termsOfUseText";
 
@@ -24,8 +24,8 @@ type ChatConsentModalProps = Omit<
 export function ChatConsentModal(props: ChatConsentModalProps) {
   const { updateChatUserConsents } = useUserSettings();
 
-  function handleAcceptClick() {
-    clearCachedCredentials();
+  async function handleAcceptClick() {
+    await clearAllStores();
     updateChatUserConsents({
       isChatConsentAsked: true,
       isChatUsageEnabled: true,

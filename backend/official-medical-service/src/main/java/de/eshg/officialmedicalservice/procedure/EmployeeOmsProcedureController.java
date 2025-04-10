@@ -9,6 +9,8 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.lib.procedure.api.ProcedureSearchParameters;
+import de.eshg.officialmedicalservice.anamnesis.api.GetAnamnesisResponse;
+import de.eshg.officialmedicalservice.anamnesis.api.UpdateAnamnesisRequest;
 import de.eshg.officialmedicalservice.appointment.OmsAppointmentService;
 import de.eshg.officialmedicalservice.appointment.api.PostOmsAppointmentRequest;
 import de.eshg.officialmedicalservice.document.OmsDocumentService;
@@ -21,15 +23,15 @@ import de.eshg.officialmedicalservice.procedure.api.EmployeeOmsProcedurePaginati
 import de.eshg.officialmedicalservice.procedure.api.EmployeePagedOmsProcedures;
 import de.eshg.officialmedicalservice.procedure.api.GetEmployeeOmsProcedureOverviewResponse;
 import de.eshg.officialmedicalservice.procedure.api.GetOmsProceduresFilterOptionsDto;
+import de.eshg.officialmedicalservice.procedure.api.MergeAffectedPersonRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchAcceptDraftProcedureRequest;
+import de.eshg.officialmedicalservice.procedure.api.PatchAdditionalInfoRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchAffectedPersonRequest;
-import de.eshg.officialmedicalservice.procedure.api.PatchConcernRequest;
-import de.eshg.officialmedicalservice.procedure.api.PatchEmployeeOmsProcedureEmailNotificationsRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchEmployeeOmsProcedureFacilityRequest;
-import de.eshg.officialmedicalservice.procedure.api.PatchEmployeeOmsProcedurePhysicianRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchMedicalOpinionStatusRequest;
 import de.eshg.officialmedicalservice.procedure.api.PostEmployeeOmsProcedureFacilityRequest;
 import de.eshg.officialmedicalservice.procedure.api.PostEmployeeOmsProcedureRequest;
+import de.eshg.officialmedicalservice.procedure.api.ProcedureLabCodeSearchParameters;
 import de.eshg.officialmedicalservice.procedure.api.SyncAffectedPersonRequest;
 import de.eshg.officialmedicalservice.procedure.api.SyncFacilityRequest;
 import de.eshg.officialmedicalservice.waitingroom.WaitingRoomService;
@@ -67,15 +69,16 @@ public class EmployeeOmsProcedureController {
   public static final String AFFECTED_PERSON_URL = "/affected-person";
   public static final String SYNC_AFFECTED_PERSON_URL = "/sync-affected-person";
   public static final String SYNC_FACILITY_URL = "/sync-facility";
-  public static final String CONCERN = "/concern";
+  public static final String ADDITIONAL_INFO_URL = "/additional-info";
   public static final String ACCEPT_DRAFT_URL = "/accept-draft";
   public static final String CLOSE_PROCEDURE_URL = "/close";
-  public static final String PHYSICIAN_URL = "/physician";
   public static final String APPOINTMENT_URL = "/appointment";
   public static final String DOCUMENT_URL = "/document";
   public static final String MEDICAL_OPINION_STATUS_URL = "/medical-opinion-status";
-  public static final String EMAIL_NOTIFICATIONS_URL = "/email-notifications";
   public static final String WAITING_ROOM_URL = "/waiting-room";
+  public static final String ANAMNESIS_URL = "/anamnesis";
+  public static final String CUTOFF_DATE_URL = "/cut-off-date";
+  public static final String MERGE_AFFECTED_PERSON_URL = "/merge-affected-person";
 
   private final EmployeeOmsProcedureService employeeOmsProcedureService;
   private final OmsAppointmentService omsAppointmentService;
@@ -119,12 +122,17 @@ public class EmployeeOmsProcedureController {
       @InlineParameterObject @ParameterObject @Valid GetOmsProceduresFilterOptionsDto filters,
       @InlineParameterObject @ParameterObject @Valid
           EmployeeOmsProcedurePaginationAndSortParameters paginationAndSortParameters,
-      @InlineParameterObject @ParameterObject @Valid ProcedureSearchParameters searchParameters) {
+      @InlineParameterObject @ParameterObject @Valid ProcedureSearchParameters searchParameters,
+      @InlineParameterObject @ParameterObject @Valid
+          ProcedureLabCodeSearchParameters labCodeSearchParameters) {
     EmployeePagedOmsProcedures pagedOmsProcedures =
         employeeOmsProcedureService.getEmployeeProceduresOverview(
-            filters, paginationAndSortParameters, searchParameters);
+            filters, paginationAndSortParameters, searchParameters, labCodeSearchParameters);
+    int medicalOpinionLeadTime = employeeOmsProcedureService.getCutOffDateLeadTime();
     return new GetEmployeeOmsProcedureOverviewResponse(
-        pagedOmsProcedures.proceduresPage(), pagedOmsProcedures.totalNumberOfProcedures());
+        pagedOmsProcedures.proceduresPage(),
+        pagedOmsProcedures.totalNumberOfProcedures(),
+        medicalOpinionLeadTime);
   }
 
   @PatchMapping(path = PROCEDURES_URL + "/{procedureId}" + AFFECTED_PERSON_URL)
@@ -172,11 +180,11 @@ public class EmployeeOmsProcedureController {
     employeeOmsProcedureService.abortDraftProcedure(externalId);
   }
 
-  @PatchMapping(path = PROCEDURES_URL + "/{id}" + CONCERN)
-  @Operation(summary = "Update concern of an oms procedure")
-  public void updateOmsProcedureConcern(
-      @PathVariable("id") UUID externalId, @Valid @RequestBody PatchConcernRequest request) {
-    employeeOmsProcedureService.updateOmsProcedureConcern(externalId, request);
+  @PatchMapping(path = PROCEDURES_URL + "/{id}" + ADDITIONAL_INFO_URL)
+  @Operation(summary = "Update additional info of an oms procedure")
+  public void updateAdditionalInfo(
+      @PathVariable("id") UUID externalId, @Valid @RequestBody PatchAdditionalInfoRequest request) {
+    employeeOmsProcedureService.updateAdditionalInfo(externalId, request);
   }
 
   @PatchMapping(path = PROCEDURES_URL + "/{id}" + ACCEPT_DRAFT_URL)
@@ -191,14 +199,6 @@ public class EmployeeOmsProcedureController {
   @Operation(summary = "Close open oms procedure")
   public void closeOpenProcedure(@PathVariable("id") UUID procedureId) {
     employeeOmsProcedureService.closeOpenProcedure(procedureId);
-  }
-
-  @PatchMapping(path = PROCEDURES_URL + "/{id}" + PHYSICIAN_URL)
-  @Operation(summary = "Updates the associated physician of a draft oms procedure")
-  public UUID patchPhysician(
-      @PathVariable("id") UUID externalId,
-      @Valid @RequestBody PatchEmployeeOmsProcedurePhysicianRequest request) {
-    return employeeOmsProcedureService.modifyPhysician(externalId, request);
   }
 
   @PostMapping(path = PROCEDURES_URL + "/{id}" + APPOINTMENT_URL)
@@ -233,18 +233,30 @@ public class EmployeeOmsProcedureController {
     employeeOmsProcedureService.updateMedicalOpinionStatus(externalId, request);
   }
 
-  @PatchMapping(path = PROCEDURES_URL + "/{id}" + EMAIL_NOTIFICATIONS_URL)
-  @Operation(summary = "Updates the whether or not email notifications will be sent")
-  public void patchEmailNotifications(
-      @PathVariable("id") UUID externalId,
-      @Valid @RequestBody PatchEmployeeOmsProcedureEmailNotificationsRequest request) {
-    employeeOmsProcedureService.patchEmailNotifications(externalId, request);
-  }
-
   @PatchMapping(path = PROCEDURES_URL + "/{id}" + WAITING_ROOM_URL)
   @Operation(summary = "Update waiting room details for a procedure")
   public void patchWaitingRoom(
       @PathVariable("id") UUID id, @Valid @RequestBody WaitingRoomDto request) {
     waitingRoomService.updateWaitingRoom(id, request);
+  }
+
+  @PatchMapping(path = PROCEDURES_URL + "/{id}" + ANAMNESIS_URL)
+  @Operation(summary = "Update anamnesis")
+  public void patchAnamnesis(
+      @PathVariable("id") UUID id, @Valid @RequestBody UpdateAnamnesisRequest request) {
+    employeeOmsProcedureService.updateAnamnesis(id, request);
+  }
+
+  @GetMapping(path = PROCEDURES_URL + "/{id}" + ANAMNESIS_URL)
+  @Operation(summary = "Get anamnesis")
+  public GetAnamnesisResponse getAnamnesis(@PathVariable("id") UUID id) {
+    return employeeOmsProcedureService.getAnamnesis(id);
+  }
+
+  @PatchMapping(path = PROCEDURES_URL + "/{id}" + MERGE_AFFECTED_PERSON_URL)
+  @Operation(summary = "Merge external affected person with existing person accept it as a new one")
+  public void mergeAffectedPerson(
+      @PathVariable("id") UUID id, @Valid @RequestBody MergeAffectedPersonRequest request) {
+    employeeOmsProcedureService.mergeAffectedPerson(id, request);
   }
 }

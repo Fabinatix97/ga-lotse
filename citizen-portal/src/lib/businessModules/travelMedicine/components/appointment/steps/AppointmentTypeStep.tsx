@@ -100,7 +100,7 @@ export function AppointmentTypeStep() {
   }
 
   function resetAppointmentBlockDateValue() {
-    void setFieldValue("appointmentBlockDate", "");
+    void setFieldValue("appointment", undefined);
   }
 
   const allAppointmentTypesForCitizen =
@@ -114,6 +114,7 @@ export function AppointmentTypeStep() {
           title={t("appointmentTypeFormContent.infoHeader")}
           color={"primary"}
           message={<AlertMessage />}
+          messageComponent="span"
         />
         <RadioGroupField
           name="initialStepAppointmentType"

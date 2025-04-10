@@ -11,8 +11,8 @@ import {
 } from "@/features/table/utils/cellStyles";
 
 export const DataCell = styled("td")<
-  { canNavigate: boolean } & StyledCellProps
->(({ theme, meta, canNavigate }) => {
+  { canNavigate: boolean; isClickableElement: boolean } & StyledCellProps
+>(({ theme, meta, canNavigate, isClickableElement }) => {
   return {
     // higher specificity needed to override default style from Joy table
     ".MuiTable-root &": getRowCellStyles(meta, theme),
@@ -22,5 +22,17 @@ export const DataCell = styled("td")<
           userSelect: "none",
         }
       : undefined,
+    // make entire row linked with `rowNavigationRoute`
+    // https://adrianroselli.com/2020/02/block-links-cards-clickable-regions-etc.html#Update02 as suggested in the ticket
+    "& a[href]::after": {
+      content: '""',
+      display: "block",
+      position: "absolute",
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+    },
+    "& > *": isClickableElement ? { zIndex: 1 } : undefined,
   };
 });

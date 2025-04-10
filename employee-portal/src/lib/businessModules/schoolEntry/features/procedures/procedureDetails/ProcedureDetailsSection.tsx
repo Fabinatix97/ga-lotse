@@ -11,7 +11,7 @@ import {
 } from "@eshg/lib-employee-portal";
 import {
   formatDate,
-  formatDateTime,
+  formatWeekdayDateTime,
 } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiLocationSelectionMode } from "@eshg/school-entry-api";
 import { Divider, Stack } from "@mui/joy";
@@ -108,7 +108,7 @@ export function ProcedureDetailsSection(props: ProcedureDetailsProps) {
                 label="Termin"
                 value={
                   props.procedure.appointment
-                    ? `${formatDateTime(props.procedure.appointment.start)} Uhr`
+                    ? `${formatWeekdayDateTime(props.procedure.appointment.start)} Uhr`
                     : "Kein Termin gebucht"
                 }
               />

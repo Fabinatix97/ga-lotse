@@ -12,7 +12,7 @@ import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.department.GetDepartmentInfoResponse;
-import de.eshg.departmentinfo.DepartmentInfoConfigService;
+import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.model.AppointmentBlockSlot;

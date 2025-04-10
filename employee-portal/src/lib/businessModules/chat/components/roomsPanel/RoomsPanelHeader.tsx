@@ -9,7 +9,11 @@ import SearchIcon from "@mui/icons-material/Search";
 import { Dropdown, Input, Menu, MenuButton, MenuItem, Stack } from "@mui/joy";
 
 import { ChatColumnHeaderWrapper } from "@/lib/businessModules/chat/components/ChatColumnHeaderWrapper";
-import { ChatPanelView } from "@/lib/businessModules/chat/shared/enums";
+import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
+import {
+  ChatPanelView,
+  ClientState,
+} from "@/lib/businessModules/chat/shared/enums";
 
 interface RoomsPanelHeaderProps {
   setChatPanelView: (viewType: ChatPanelView) => void;
@@ -26,6 +30,7 @@ export function RoomsPanelHeader({
   function handleClose() {
     setSearchQuery("");
   }
+  const { clientState } = useChatClientContext();
 
   return (
     <ChatColumnHeaderWrapper>
@@ -54,6 +59,7 @@ export function RoomsPanelHeader({
             aria-label="Open new chat window"
             variant="solid"
             color="primary"
+            disabled={clientState !== ClientState.Ready}
             sx={{ p: "0.5rem" }}
           >
             <AddIcon size="sm" />

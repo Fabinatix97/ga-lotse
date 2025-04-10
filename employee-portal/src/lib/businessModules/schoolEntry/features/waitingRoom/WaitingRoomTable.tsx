@@ -10,14 +10,11 @@ import {
   Pagination,
   TablePage,
   TableSheet,
-  TableSortingProps,
   getSortDirection,
+  getSortKey,
   useTableControl,
 } from "@eshg/lib-employee-portal";
-import {
-  formatDate,
-  formatDateTime,
-} from "@eshg/lib-portal/formatters/dateTime";
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiWaitingRoomSortKey } from "@eshg/school-entry-api";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 import { isDefined, isNullish } from "remeda";
@@ -26,6 +23,7 @@ import { WaitingRoomProcedure } from "@/lib/businessModules/schoolEntry/api/mode
 import { useGetWaitingRoomProcedures } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
 import { WAITING_STATUS_VALUES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
+import { formatDateTimeRangeToNowInMinutes } from "@/lib/shared/helpers/dateTime";
 
 const initialSorting: ColumnSort = {
   id: "modifiedAt",
@@ -37,13 +35,13 @@ export function WaitingRoomTable() {
     serverSideSorting: true,
     sortFieldName: "sortKey",
     sortDirectionName: "sortDirection",
-    initialSorting: initialSorting,
+    initialSorting,
   });
 
   const procedures = useGetWaitingRoomProcedures({
     pageNumber: tableControl.paginationProps.pageNumber,
     pageSize: tableControl.paginationProps.pageSize,
-    sortKey: getSortKey(tableControl.tableSorting),
+    sortKey: getSortKey(tableControl.tableSorting, SORT_KEY_MAPPING),
     sortDirection: getSortDirection(tableControl.tableSorting),
   });
 
@@ -139,7 +137,7 @@ const COLUMNS = [
     cell: (props) =>
       isNullish(props.getValue())
         ? ""
-        : `${formatDateTime(props.getValue())} Uhr`,
+        : formatDateTimeRangeToNowInMinutes(props.getValue()),
     enableSorting: true,
     meta: {
       canNavigate: {
@@ -155,17 +153,5 @@ const SORT_KEY_MAPPING: Record<string, ApiWaitingRoomSortKey> = {
   child_dateOfBirth: ApiWaitingRoomSortKey.DateOfBirth,
   waitingRoom_info: ApiWaitingRoomSortKey.Info,
   waitingRoom_status: ApiWaitingRoomSortKey.Status,
-  waitingRoom_modifiedAt: ApiWaitingRoomSortKey.ModifiedAt,
+  modifiedAt: ApiWaitingRoomSortKey.ModifiedAt,
 };
-
-function getSortKey(
-  sortingProps: TableSortingProps,
-): ApiWaitingRoomSortKey | undefined {
-  const sorting = sortingProps.manualSorting
-    ? sortingProps.sortingState
-    : sortingProps.initialSorting;
-  if (sorting?.[0] === undefined) return undefined;
-
-  const columnId = sorting[0].id;
-  return SORT_KEY_MAPPING[columnId];
-}

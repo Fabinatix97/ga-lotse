@@ -115,7 +115,7 @@
             "description" : "OK"
           }
         },
-        "summary" : "Create appointment group with blocks for week days.",
+        "summary" : "Validate appointment group with blocks for week days.",
         "tags" : [ "AppointmentBlock" ]
       }
     },
@@ -159,6 +159,27 @@
           }
         },
         "summary" : "Get free appointments for an appointment type.",
+        "tags" : [ "AppointmentBlock" ]
+      }
+    },
+    "/appointment-blocks/{appointmentBlockId}" : {
+      "delete" : {
+        "operationId" : "deleteAppointmentBlock",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "appointmentBlockId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Delete appointment block.",
         "tags" : [ "AppointmentBlock" ]
       }
     },
@@ -990,6 +1011,24 @@
         },
         "summary" : "Save a new vaccination consultation",
         "tags" : [ "CitizenPublic" ]
+      }
+    },
+    "/configuration" : {
+      "get" : {
+        "operationId" : "getConfiguration",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetConfigurationStatusResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "ConfigStatus" ]
       }
     },
     "/configuration/department-info" : {
@@ -5464,6 +5503,10 @@
           }
         }
       },
+      "ConfigurationStatus" : {
+        "type" : "string",
+        "enum" : [ "COMPLETE", "PARTIALLY_COMPLETE", "INCOMPLETE" ]
+      },
       "ContactDetails" : {
         "required" : [ "contactType", "salutation" ],
         "type" : "object",
@@ -6546,6 +6589,21 @@
           "procedureId" : {
             "type" : "string",
             "format" : "uuid"
+          }
+        }
+      },
+      "GetConfigurationStatusResponse" : {
+        "required" : [ "endpointStates", "moduleState" ],
+        "type" : "object",
+        "properties" : {
+          "endpointStates" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/ConfigurationStatus"
+            }
+          },
+          "moduleState" : {
+            "$ref" : "#/components/schemas/ConfigurationStatus"
           }
         }
       },

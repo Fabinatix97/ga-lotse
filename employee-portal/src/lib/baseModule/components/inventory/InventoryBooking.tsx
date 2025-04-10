@@ -9,7 +9,7 @@ import {
   ApiInventoryItemBookingHistory,
   ApiUser,
 } from "@eshg/base-api";
-import { DetailsSectionHeader } from "@eshg/lib-employee-portal";
+import { DetailsSectionHeader, formatList } from "@eshg/lib-employee-portal";
 import {
   formatDate,
   formatDateTime,
@@ -35,7 +35,6 @@ import { Timeline } from "@/lib/shared/components/timeline/Timeline";
 import { TimelineEntry } from "@/lib/shared/components/timeline/TimelineEntry";
 import { TimelineEntryIndicator } from "@/lib/shared/components/timeline/TimelineEntryIndicator";
 import { UserLink } from "@/lib/shared/components/users/UserLink";
-import { join } from "@/lib/shared/helpers/strings";
 
 const headerId = "inventory-management-history-header";
 
@@ -72,7 +71,7 @@ export function InventoryBooking({
   const timeSuffix = isDefined(startDate)
     ? `${formatDate(startDate, "de")} bis ${isDefined(endDate) ? formatDate(endDate, "de") : "heute"}`
     : undefined;
-  const title = join(["Buchungshistorie", timeSuffix], " ") ?? "";
+  const title = formatList(["Buchungshistorie", timeSuffix], " ") ?? "";
 
   return (
     <Sheet sx={{ flex: 1, padding: 3 }}>

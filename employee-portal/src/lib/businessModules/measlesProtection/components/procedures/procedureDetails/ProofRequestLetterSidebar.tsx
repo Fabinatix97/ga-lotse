@@ -6,6 +6,7 @@
 import {
   FormButtonBar,
   IconButton,
+  MultiFormButtonBar,
   Sidebar,
   SidebarActions,
   SidebarContent,
@@ -30,7 +31,6 @@ import {
 import { useProcedureQuery } from "@/lib/businessModules/measlesProtection/api/queries/procedures";
 import { DateAndButtonRow } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/DateAndButtonRow";
 import { LetterRecipientField } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/LetterRecipientField";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 interface ProofRequestLetterValues {

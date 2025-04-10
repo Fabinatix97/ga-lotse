@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { SelectableCard } from "@eshg/lib-employee-portal";
 import { Stack, Typography } from "@mui/joy";
-
-import { SelectableCard } from "@/lib/shared/components/cards/SelectableCard";
 
 export interface SelectCardProps {
   title: string;

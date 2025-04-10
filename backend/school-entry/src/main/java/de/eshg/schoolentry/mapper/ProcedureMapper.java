@@ -32,7 +32,7 @@ public final class ProcedureMapper {
         mapTypeToDto(procedureDetailsData.type()),
         PersonMapper.mapPersonDetailsToDto(procedureDetailsData.child()),
         PersonMapper.mapCustodiansToDto(procedureDetailsData.custodians()),
-        LabelMapper.toDto(procedureDetailsData.labels()),
+        ProcedureLabelMapper.toDto(procedureDetailsData.labels()),
         AppointmentMapper.mapAppointmentToDto(procedureDetailsData.appointment()),
         procedureDetailsData.school(),
         procedureDetailsData.location(),
@@ -64,7 +64,7 @@ public final class ProcedureMapper {
         mapStatusToDto(procedureData.status()),
         procedureData.school(),
         mapYearToInteger(procedureData.schoolYear()),
-        LabelMapper.toDto(procedureData.labels()),
+        ProcedureLabelMapper.toDto(procedureData.labels()),
         procedureData.appointmentStart(),
         procedureData.createdAt(),
         procedureData.modifiedAt());

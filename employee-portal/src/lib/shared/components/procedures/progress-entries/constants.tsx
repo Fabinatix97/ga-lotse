@@ -4,7 +4,7 @@
  */
 
 import { systemProgressEntryTypeTitles as dentalSystemProgressEntryTypeTitles } from "@eshg/dental";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
+import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
 import {
   ApiInboxProgressEntryType,
   ApiManualProgressEntryType,

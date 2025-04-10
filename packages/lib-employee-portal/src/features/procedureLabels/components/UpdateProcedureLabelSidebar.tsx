@@ -98,7 +98,7 @@ function mapToRequest(
 ): UpdateProcedureLabelRequest {
   return {
     id: labelsId,
-    apiUpdateLabelRequest: {
+    apiUpdateProcedureLabelRequest: {
       name: values.name,
       description: mapOptionalValue(values.description),
       version: version,

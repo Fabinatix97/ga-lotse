@@ -22,15 +22,6 @@ import { OptionalFieldValue, Validator } from "../types/form";
 import { isDateString, isMonthString } from "./dateTime";
 import { isValidEmailString } from "./email";
 import {
-  fileExtensionChanged,
-  fileHasAcceptedExtension,
-  fileIsTooLarge,
-  fileNameIsTooLong,
-  fileNameIsValid,
-  formatFileSize,
-  getExtensionFromFileName,
-} from "./file";
-import {
   isDict,
   isEmptyString,
   isInteger,
@@ -208,45 +199,4 @@ export function validateEmail(value: string, message?: string) {
   return isNonEmptyString(message)
     ? message
     : "Bitte eine gültige Email angeben.";
-}
-
-export function validateFile(
-  acceptedExtensions?: string[],
-  maxFileSize?: number,
-) {
-  function validateFile(file: File | null) {
-    if (isNullish(file)) return undefined;
-    if (!fileNameIsValid(file))
-      return "Bitte eine Datei mit gültigem Dateinamen auswählen.";
-    if (fileNameIsTooLong(file))
-      return "Bitte eine Datei mit einem kürzeren Dateinamen auswählen.";
-    if (!fileHasAcceptedExtension(file, acceptedExtensions))
-      return "Bitte eine Datei mit einer gültigen Dateiendung auswählen.";
-    if (fileIsTooLarge(file, maxFileSize))
-      return `Bitte eine Datei kleiner ${formatFileSize(maxFileSize!)} auswählen.`;
-    return undefined;
-  }
-
-  return validateFile;
-}
-
-export function validateFileName(existingFileName?: string) {
-  function validateFileName(fileName: string) {
-    if (isEmpty(fileName)) return undefined;
-
-    const file = new File([], fileName);
-    if (!fileNameIsValid(file))
-      return "Bitte einen gültigen Dateinamen auswählen.";
-    if (fileNameIsTooLong(file))
-      return "Bitte einen kürzeren Dateinamen auswählen.";
-    if (
-      existingFileName !== undefined &&
-      fileExtensionChanged(file, existingFileName)
-    ) {
-      return `Die ursprüngliche Dateiendung (.${getExtensionFromFileName(existingFileName)}) darf nicht verändert werden.`;
-    }
-    return undefined;
-  }
-
-  return validateFileName;
 }

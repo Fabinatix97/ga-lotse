@@ -5,6 +5,8 @@
 
 package de.eshg.inspection.statistics;
 
+import de.eshg.inspection.feature.InspectionFeature;
+import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.inspection.persistence.Inspection;
 import de.eshg.inspection.inspection.persistence.InspectionAppointment;
 import de.eshg.inspection.inspection.persistence.InspectionAppointment_;
@@ -22,6 +24,7 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
@@ -32,21 +35,60 @@ public class InspectionDataSource extends ProcedureDataSource<Inspection, Inspec
   public static final UUID DATA_SOURCE_ID = UUID.fromString("f0ac7a7b-dfa7-4a1a-9409-a7588da26531");
   public static final String DATA_SOURCE_NAME = "Vorgänge";
 
+  private static final List<InspectionAttributes> ANONYMIZATION_ATTRIBUTES =
+      List.of(
+          InspectionAttributes.PROCEDURE_ID,
+          InspectionAttributes.FACILITY_CENTRAL_FILE_ID,
+          InspectionAttributes.YEAR_OF_INSPECTION_ANONYMIZATION,
+          InspectionAttributes.OBJECT_TYPE_ANONYMIZATION,
+          InspectionAttributes.RESULT_ANONYMIZATION,
+          InspectionAttributes.DURATION_ANONYMIZATION,
+          InspectionAttributes.NUMBER_OF_INCIDENTS_ANONYMIZATION);
+
+  private static final List<InspectionAttributes> NO_ANONYMIZATION_ATTRIBUTES =
+      List.of(
+          InspectionAttributes.PROCEDURE_ID,
+          InspectionAttributes.FACILITY_CENTRAL_FILE_ID,
+          InspectionAttributes.YEAR_OF_INSPECTION,
+          InspectionAttributes.OBJECT_TYPE,
+          InspectionAttributes.RESULT,
+          InspectionAttributes.DURATION,
+          InspectionAttributes.NUMBER_OF_INCIDENTS);
+
   private final Clock clock;
+  private final InspectionFeatureToggle inspectionFeatureToggle;
 
   public InspectionDataSource(
       InspectionRepository inspectionRepository,
       Clock clock,
-      ObjectTypeProperties objectTypeProperties) {
+      ObjectTypeProperties objectTypeProperties,
+      InspectionFeatureToggle inspectionFeatureToggle) {
     super(
         DATA_SOURCE_ID,
         DATA_SOURCE_NAME,
         DataSourceSensitivity.INTERNAL_USAGE,
         null,
         inspectionRepository,
-        InspectionAttributes.values());
+        NO_ANONYMIZATION_ATTRIBUTES.toArray(InspectionAttributes[]::new));
     this.clock = clock;
+    this.inspectionFeatureToggle = inspectionFeatureToggle;
     AttributeUtil.addValueOptions(InspectionAttributes.OBJECT_TYPE, objectTypeProperties);
+    AttributeUtil.addValueOptions(
+        InspectionAttributes.OBJECT_TYPE_ANONYMIZATION, objectTypeProperties);
+  }
+
+  @Override
+  public Integer getKAnonymity() {
+    return inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.STATISTIC_ANONYMIZATION)
+        ? 3
+        : null;
+  }
+
+  @Override
+  public List<InspectionAttributes> getAttributes() {
+    return inspectionFeatureToggle.isNewFeatureEnabled(InspectionFeature.STATISTIC_ANONYMIZATION)
+        ? ANONYMIZATION_ATTRIBUTES
+        : NO_ANONYMIZATION_ATTRIBUTES;
   }
 
   @Override
@@ -55,11 +97,13 @@ public class InspectionDataSource extends ProcedureDataSource<Inspection, Inspec
     return switch (attribute) {
       case PROCEDURE_ID -> procedure.getExternalId();
       case FACILITY_CENTRAL_FILE_ID -> procedure.getCentralFileStateId();
-      case YEAR_OF_INSPECTION -> getYearOfInspection(procedure);
-      case OBJECT_TYPE -> AttributeUtil.getObjectTypeName(procedure.getFacility().getObjectType());
-      case RESULT -> procedure.getResult();
-      case DURATION -> getDurationInMinutes(procedure);
-      case NUMBER_OF_INCIDENTS -> procedure.getIncidents().size();
+      case YEAR_OF_INSPECTION, YEAR_OF_INSPECTION_ANONYMIZATION -> getYearOfInspection(procedure);
+      case OBJECT_TYPE, OBJECT_TYPE_ANONYMIZATION ->
+          AttributeUtil.getObjectTypeName(procedure.getFacility().getObjectType());
+      case RESULT, RESULT_ANONYMIZATION -> procedure.getResult();
+      case DURATION, DURATION_ANONYMIZATION -> getDurationInMinutes(procedure);
+      case NUMBER_OF_INCIDENTS, NUMBER_OF_INCIDENTS_ANONYMIZATION ->
+          procedure.getIncidents().size();
     };
   }
 

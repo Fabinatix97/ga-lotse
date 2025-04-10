@@ -8,6 +8,7 @@ package de.eshg.statistics.aggregation;
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
 import de.eshg.statistics.anonymization.AnonymizationExecution;
 import de.eshg.statistics.diagramcreation.DiagramCreationService;
+import de.eshg.statistics.exception.AnonymizationFailedException;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
 import java.util.Optional;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ReportExecution {
   private static final Logger log = LoggerFactory.getLogger(ReportExecution.class);
+  private static final String COULD_NOT_COMPLETE_REPORT = "Could not complete report {}";
 
   private final ModuleClientAuthenticator moduleClientAuthenticator;
   private final ReportService reportService;
@@ -77,7 +79,7 @@ public class ReportExecution {
       moduleClientAuthenticator.doWithModuleClientAuthentication(
           () -> reportService.createNewPlannedReportInSeries(reportId));
     } catch (Exception e) {
-      log.error("Could not complete report {}", reportId, e);
+      log.error(COULD_NOT_COMPLETE_REPORT, reportId, e);
       setToFailed(reportId);
     }
   }
@@ -107,15 +109,23 @@ public class ReportExecution {
             });
         stateInfo = reportService.getStateInformation(reportId);
       }
+    } catch (AnonymizationFailedException e) {
+      log.error(COULD_NOT_COMPLETE_REPORT, reportId, e);
+      setToAnonymizationFailed(reportId);
     } catch (Exception e) {
-      log.error("Could not complete report {}", reportId, e);
+      log.error(COULD_NOT_COMPLETE_REPORT, reportId, e);
       setToFailed(reportId);
     }
   }
 
   private void setToFailed(UUID reportId) {
     moduleClientAuthenticator.doWithModuleClientAuthentication(
-        () -> reportService.setStateToFailed(reportId));
+        () -> reportService.setState(reportId, AggregationResultState.FAILED));
+  }
+
+  private void setToAnonymizationFailed(UUID reportId) {
+    moduleClientAuthenticator.doWithModuleClientAuthentication(
+        () -> reportService.setState(reportId, AggregationResultState.ANONYMIZATION_FAILED));
   }
 
   public boolean deleteReport(UUID reportId) {

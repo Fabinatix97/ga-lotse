@@ -7,6 +7,9 @@ import {
   ButtonBar,
   SidebarActions,
   SidebarContent,
+  formatDuplicatedRecordCount,
+  formatFaultyRecordCount,
+  formatTotalRecordCount,
 } from "@eshg/lib-employee-portal";
 import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
 import type { SvgIconComponent } from "@mui/icons-material";
@@ -25,12 +28,7 @@ import { PropsWithChildren } from "react";
 
 import { ImportProcessResult } from "@/lib/businessModules/inspection/api/mutations/processImport";
 import { PotentialDuplicatesFilterProps } from "@/lib/businessModules/inspection/components/facility/pending/PotentialDuplicatesWarning";
-import {
-  formatDuplicatedCount,
-  formatFailedCount,
-  formatImportedCount,
-  formatTotalCount,
-} from "@/lib/businessModules/inspection/components/processImport/formatters";
+import { formatImportedCount } from "@/lib/businessModules/inspection/components/processImport/formatters";
 
 export interface ProcessImportResultProps
   extends PotentialDuplicatesFilterProps {
@@ -54,19 +52,19 @@ export function ProcessImportResult({
           </Typography>
           <InfoSheet>
             <InfoText iconComponent={InfoOutlinedIcon} iconColor="primary">
-              {formatTotalCount(statistics.total)}
+              {formatTotalRecordCount(statistics.total)}
             </InfoText>
             <InfoText
               iconComponent={ErrorOutlineOutlinedIcon}
               iconColor="danger"
             >
-              {formatDuplicatedCount(statistics.duplicated)}
+              {formatDuplicatedRecordCount(statistics.duplicated)}
             </InfoText>
             <InfoText
               iconComponent={ErrorOutlineOutlinedIcon}
               iconColor="danger"
             >
-              {formatFailedCount(statistics.failed)}
+              {formatFaultyRecordCount(statistics.failed)}
             </InfoText>
           </InfoSheet>
           <Section title="Vorgänge und Einrichtungen">

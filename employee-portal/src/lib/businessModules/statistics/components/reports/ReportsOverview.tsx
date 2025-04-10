@@ -8,6 +8,7 @@
 import {
   ButtonBar,
   DataTable,
+  NoSearchResults,
   Pagination,
   TablePage,
   TableSheet,
@@ -25,7 +26,6 @@ import { useDeleteWithConfirmation } from "@/lib/businessModules/statistics/comp
 import { useDataExportGuard } from "@/lib/businessModules/statistics/components/shared/hooks/useDataExportGuard";
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
-import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";

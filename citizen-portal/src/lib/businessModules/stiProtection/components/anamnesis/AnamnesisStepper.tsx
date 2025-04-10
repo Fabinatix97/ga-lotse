@@ -10,8 +10,8 @@ import { useRef } from "react";
 import { useUpsertMedicalHistory } from "@/lib/businessModules/stiProtection/api/mutations/citizenApi";
 import { useGetProcedure } from "@/lib/businessModules/stiProtection/api/queries/citizenApi";
 import { FormDataProvider } from "@/lib/businessModules/stiProtection/components/appointment/AppointmentDataContext";
+import { StepContextProvider } from "@/lib/businessModules/stiProtection/components/shared/TravelMedicineStepContext";
 import { useCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
-import { StepContextProvider } from "@/lib/businessModules/travelMedicine/components/shared/contexts/StepContext";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 import { AnamnesisStepLayout, AnamnesisTitle } from "./AnamnesisLayout";
@@ -56,11 +56,11 @@ export function AnamnesisStepper() {
       mapFormValuesToApi({ concern, formValues: values }),
       {
         onSuccess: () => {
-          router.push(citizenRoutes.appointments.index(accessCode));
+          router.push(citizenRoutes.personalArea.index(accessCode));
         },
       },
     );
-    router.push(citizenRoutes.appointments.index(accessCode));
+    router.push(citizenRoutes.personalArea.index(accessCode));
   }
 
   return (

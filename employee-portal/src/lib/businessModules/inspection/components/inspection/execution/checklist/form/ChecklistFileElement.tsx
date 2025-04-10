@@ -6,11 +6,13 @@
 "use client";
 
 import { ApiFileType } from "@eshg/inspection-api";
+import { FileField } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
-import { FileLike } from "@eshg/lib-portal/components/formFields/file/validators";
-import { formatFileSize } from "@eshg/lib-portal/helpers/file";
-import { validateFile } from "@eshg/lib-portal/helpers/validators";
+import { formatFileSize } from "@eshg/lib-portal/components/formFields/file/helpers";
+import {
+  FileLike,
+  FileType,
+} from "@eshg/lib-portal/components/formFields/file/types";
 import { DeleteOutlined, OpenInNew } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
 import { useId } from "react";
@@ -26,7 +28,6 @@ import {
   FileCardActionProps,
 } from "@/lib/shared/components/FileCard";
 import { InfoIconTooltipButton } from "@/lib/shared/components/buttons/IconTooltipButton";
-import { FileField } from "@/lib/shared/components/formFields/file/FileField";
 
 interface ChecklistFileElementProps {
   inspectionExternalId: string;
@@ -128,12 +129,9 @@ export function ChecklistFileElement({
               label=""
               placeholder={placeholderText}
               accept={accept}
+              maxFileSize={config.maxFileSize}
               required={requiredText}
               variant="button"
-              validate={validateFile(
-                accept?.flatMap((fileType) => fileType.extensions),
-                config.maxFileSize,
-              )}
               onChange={onChange}
             />
           </>

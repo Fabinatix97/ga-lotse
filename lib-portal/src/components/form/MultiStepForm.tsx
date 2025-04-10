@@ -19,6 +19,7 @@ interface MultiStepFormContextProps {
   totalSteps: number;
   goForward: () => void;
   goBack: () => void;
+  setStep: (step: number) => void;
 }
 
 const MultiStepFormContext = createContext<MultiStepFormContextProps>({
@@ -32,6 +33,11 @@ const MultiStepFormContext = createContext<MultiStepFormContextProps>({
   goBack: () => {
     throw new Error(
       "Trying to use MultiStepFormContext#goBack without using MultiStepForm",
+    );
+  },
+  setStep: () => {
+    throw new Error(
+      "Trying to use MultiStepFormContext#setStep without using MultiStepForm",
     );
   },
 });
@@ -80,9 +86,22 @@ export function MultiStepForm<TValues extends FormikValues = FormikValues>({
     [currentStep, setStep],
   );
 
+  const setStepClamped = useCallback(
+    function (step: number) {
+      setStep(Math.max(1, Math.min(step, totalSteps)));
+    },
+    [setStep, totalSteps],
+  );
+
   const contextValue = useMemo(
-    () => ({ goForward, goBack, currentStep, totalSteps }),
-    [goForward, goBack, currentStep, totalSteps],
+    () => ({
+      goForward,
+      goBack,
+      currentStep,
+      totalSteps,
+      setStep: setStepClamped,
+    }),
+    [goForward, goBack, currentStep, totalSteps, setStepClamped],
   );
 
   return (

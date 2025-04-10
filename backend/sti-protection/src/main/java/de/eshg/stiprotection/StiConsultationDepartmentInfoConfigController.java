@@ -5,7 +5,7 @@
 
 package de.eshg.stiprotection;
 
-import de.eshg.departmentinfo.AbstractOptionalDepartmentInfoConfigController;
+import de.eshg.config.departmentinfo.AbstractOptionalDepartmentInfoConfigController;
 import de.eshg.rest.service.security.config.BaseUrls.DepartmentInfoLibrary;
 import de.eshg.stiprotection.department.StiConsultationDepartmentInfoConfigService;
 import de.eshg.stiprotection.persistence.StiConsultationDepartmentInfoConfig;

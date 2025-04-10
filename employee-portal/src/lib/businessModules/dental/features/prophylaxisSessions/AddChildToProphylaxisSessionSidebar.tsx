@@ -12,6 +12,8 @@ import {
 import {
   DrawerProps,
   FormButtonBar,
+  NoSearchResults,
+  SelectableCard,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -39,9 +41,6 @@ import { OverridableComponent } from "@mui/types";
 import { Formik } from "formik";
 import { ReactNode } from "react";
 import { useDebounce } from "use-debounce";
-
-import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
-import { SelectableCard } from "@/lib/shared/components/cards/SelectableCard";
 
 export function useAddChildToProphylaxisSessionSidebar(): UseSidebarResult<AddChildToProphylaxisSessionSidebarProps> {
   return useSidebar({

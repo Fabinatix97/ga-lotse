@@ -4,7 +4,9 @@
  */
 
 import {
+  DefaultPersonForm,
   DefaultPersonFormValues,
+  PersonSidebarForm,
   SidebarWithFormRefProps,
   mapApiAddressToForm,
   mapOptional,
@@ -16,8 +18,6 @@ import { ApiAffectedPerson } from "@eshg/official-medical-service-api";
 
 import { usePatchAffectedPerson } from "@/lib/businessModules/officialMedicalService/api/mutations/employeeOmsProcedureApi";
 import { mapToPatchAffectedPersonRequest } from "@/lib/businessModules/officialMedicalService/shared/helpers";
-import { DefaultPersonForm } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
-import { PersonSidebarForm } from "@/lib/shared/components/personSidebar/form/PersonSidebarForm";
 
 export function useUpdateAffectedPersonSidebar() {
   return useSidebarWithFormRef({

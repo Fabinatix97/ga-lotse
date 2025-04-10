@@ -15,9 +15,11 @@ import {
 export function CentralFileLinkTile({
   numMatches,
   onAddLink,
+  hasLinkedMatches,
 }: {
   numMatches: number;
   onAddLink: (() => void) | false;
+  hasLinkedMatches: boolean;
 }) {
   return (
     <SectionTile id={"procedure-central-file-links"}>
@@ -26,7 +28,9 @@ export function CentralFileLinkTile({
           ? numMatches === 1
             ? "1 Datensatz gefunden"
             : `${numMatches} Datensätze gefunden`
-          : "Keine Datensätze gefunden"}
+          : hasLinkedMatches
+            ? "Keine weiteren Datensätze gefunden"
+            : "Keine Datensätze gefunden"}
       </SectionTitle>
       {numMatches > 0 ? (
         onAddLink !== false && (

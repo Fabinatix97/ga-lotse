@@ -8,6 +8,7 @@ import {
   ContentPanel,
   DefaultPersonFormValues,
   DetailsSection,
+  PersonSidebar,
   SidebarWithFormRefProps,
   mapToPersonAddRequest,
   useSidebarWithFormRef,
@@ -18,7 +19,6 @@ import { Button } from "@mui/joy";
 
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
 import { useAddPersonAsCustodian } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
-import { PersonSidebar } from "@/lib/shared/components/personSidebar/PersonSidebar";
 
 export function AddCustodianPanel(props: { procedure: ProcedureDetails }) {
   const personSidebar = useSidebarWithFormRef({

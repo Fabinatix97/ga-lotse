@@ -8,6 +8,7 @@
 import {
   DataTable,
   NoEntriesMessage,
+  PROCEDURE_STATUS_NAMES,
   TablePage,
   TableSheet,
   useTableControl,
@@ -37,7 +38,6 @@ import {
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
 import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
-import { procedureStatusNames } from "@/lib/shared/components/procedures/constants";
 import { TextInputClientFilter } from "@/lib/shared/components/tableFilters/TextInputClientFilter";
 
 export function VaccinationConsultationsOverviewTable(
@@ -145,7 +145,7 @@ export function VaccinationConsultationsOverviewTable(
   function getStatusOptions() {
     return Array.from(Object.values(ApiProcedureStatus)).map((value) => ({
       value,
-      label: procedureStatusNames[value],
+      label: PROCEDURE_STATUS_NAMES[value],
     }));
   }
 

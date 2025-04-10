@@ -32,7 +32,7 @@ function MessagesSidebar({ onClose }: DrawerProps) {
           sx={{ alignSelf: "end" }}
           onClick={() => {
             onClose();
-            tryNavigate(routes.chat as string);
+            tryNavigate(routes.chat);
           }}
           endDecorator={<OpenInNew />}
         >

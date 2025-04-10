@@ -11,6 +11,6 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 
 @Entity
-@DataSensitivity(SensitivityLevel.UNDEFINED)
+@DataSensitivity(SensitivityLevel.SENSITIVE)
 @DiscriminatorValue(value = "HIV_STI_CONSULTATION")
 public class StiConsultationMedicalHistory extends MedicalHistory {}

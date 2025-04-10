@@ -7,16 +7,9 @@ import { DentalExaminationState } from "@/lib/businessModules/dental/features/pr
 import {
   DentalExaminationView,
   ElementContext,
-  Quadrant,
   Tooth,
   ToothElement,
 } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
-
-import {
-  firstToothWithDiagnosisIndex,
-  lastToothWithDiagnosisIndex,
-  resolveToothType,
-} from "./utils";
 
 type FocusOutputState = Pick<DentalExaminationState, "currentFocus">;
 
@@ -27,29 +20,6 @@ export function setFocus(
 ): FocusOutputState {
   return {
     currentFocus: newFocus,
-  };
-}
-
-type FocusPosition = "FIRST_TOOTH" | "LAST_TOOTH";
-
-export function initFocus(
-  view: DentalExaminationView,
-  quadrant: Quadrant,
-  position: FocusPosition,
-): ElementContext {
-  const { quadrantNumber, teeth } = quadrant;
-  const toothIndex =
-    position === "LAST_TOOTH"
-      ? lastToothWithDiagnosisIndex(teeth)
-      : firstToothWithDiagnosisIndex(teeth);
-  const toothType = resolveToothType(toothIndex, teeth);
-
-  return {
-    toothContext: {
-      quadrantNumber,
-      toothIndex,
-    },
-    element: initElement(view, toothType),
   };
 }
 

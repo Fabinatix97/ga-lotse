@@ -16,8 +16,14 @@ import java.util.UUID;
 @Schema(name = "WaitingRoomProcedure")
 public record WaitingRoomProcedureDto(
     @NotNull UUID procedureId,
-    String accessCode,
-    @NotNull Year yearOfBirth,
+    @Schema(description = "Unique code for patient identification", example = "h28RQNDRXoffRMzqM")
+        String accessCode,
+    @Schema(description = "Indicates the year of birth of the person.", example = "1996") @NotNull
+        Year yearOfBirth,
     @NotNull Gender gender,
     @NotNull @Valid WaitingRoomDto waitingRoom,
-    @NotNull Instant modifiedAt) {}
+    @Schema(
+            description =
+                "Timestamp indicating when the last status change occurred for the procedure.")
+        @NotNull
+        Instant modifiedAt) {}

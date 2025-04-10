@@ -8,10 +8,10 @@ package de.eshg.officialmedicalservice.citizenpublic;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import de.eshg.base.department.GetDepartmentInfoResponse;
-import de.eshg.departmentinfo.DepartmentInfoConfigService;
-import de.eshg.departmentinfo.OpeningHoursService;
-import de.eshg.departmentinfo.PrivacyDocumentService;
-import de.eshg.departmentinfo.domain.OpeningHours;
+import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
+import de.eshg.config.departmentinfo.OpeningHoursService;
+import de.eshg.config.departmentinfo.PrivacyDocumentService;
+import de.eshg.config.domain.OpeningHours;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
 import de.eshg.lib.appointmentblock.AppointmentTypeService;
 import de.eshg.lib.appointmentblock.MappingUtil;

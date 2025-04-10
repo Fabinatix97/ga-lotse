@@ -5,6 +5,7 @@
 
 import {
   DetailsItem,
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -17,7 +18,6 @@ import { Formik } from "formik";
 import { Ref } from "react";
 
 import { AppliedByFields } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/sidebarForms/AppliedByFields";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { validateRequiredBatchId } from "@/lib/shared/helpers/validators";
 
 export interface ServiceAppliedFormValues {

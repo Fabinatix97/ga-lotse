@@ -11,8 +11,9 @@ import {
   FluoridationExaminationResult,
   ScreeningExaminationResult,
 } from "@/api/models/ExaminationResult";
-import { ToothDiagnosis } from "@/api/models/ToothDiagnosis";
-import { RELATED_TEETH } from "@/config/teeth";
+import { ALL_TEETH, OPTIONAL_TEETH, RELATED_TEETH } from "@/config/teeth";
+
+import { ToothDiagnosis } from "./ToothDiagnosis";
 
 export type ExaminationStatus = "OPEN" | "CLOSED" | "NOT_PRESENT";
 
@@ -35,7 +36,7 @@ function requiredFieldsDefined(
     case "screening":
       return (
         isDefined(examinationResult.fluorideVarnishApplied) &&
-        allRequiredDiagnosesSet(examinationResult.toothDiagnoses)
+        allRequiredDiagnosesSet(examinationResult)
       );
     case "fluoridation":
       return isDefined(examinationResult.fluorideVarnishApplied);
@@ -44,39 +45,23 @@ function requiredFieldsDefined(
   }
 }
 
-const requiredSecondaryTeeth = new Set<ApiTooth>([
-  "T11",
-  "T12",
-  "T13",
-  "T14",
-  "T15",
-  "T21",
-  "T22",
-  "T23",
-  "T24",
-  "T25",
-  "T31",
-  "T32",
-  "T33",
-  "T34",
-  "T35",
-  "T41",
-  "T42",
-  "T43",
-  "T44",
-  "T45",
-]);
+function allRequiredDiagnosesSet(result: ScreeningExaminationResult) {
+  const diagnoses = result.toothDiagnoses;
 
-function allRequiredDiagnosesSet(
-  diagnoses: Partial<Record<ApiTooth, ToothDiagnosis>>,
-) {
-  return requiredSecondaryTeeth.values().every((secondaryTooth) => {
+  return ALL_TEETH.values().every((secondaryTooth) => {
     const primaryTooth = RELATED_TEETH[secondaryTooth];
-    return (
-      (isDefined(diagnoses[secondaryTooth]) &&
-        isDefined(diagnoses[secondaryTooth].mainResult)) ||
-      (isDefined(primaryTooth) &&
-        isDefined(diagnoses[primaryTooth]?.mainResult))
-    );
+    const isOptionalTooth = OPTIONAL_TEETH.has(secondaryTooth);
+    const toothRemoved = !isDefined(diagnoses[secondaryTooth]);
+    return isOptionalTooth
+      ? mainResultDefined(diagnoses, secondaryTooth) || toothRemoved
+      : mainResultDefined(diagnoses, secondaryTooth) ||
+          mainResultDefined(diagnoses, primaryTooth);
   });
+}
+
+function mainResultDefined(
+  diagnoses: Partial<Record<ApiTooth, ToothDiagnosis>>,
+  tooth: ApiTooth | undefined,
+) {
+  return isDefined(tooth) && isDefined(diagnoses[tooth]?.mainResult);
 }

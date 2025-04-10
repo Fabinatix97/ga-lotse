@@ -19,7 +19,7 @@ import static de.eshg.measlesprotection.persistence.support.MeaslesProtectionSys
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
-import de.eshg.departmentinfo.DepartmentInfoConfigService;
+import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
 import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;

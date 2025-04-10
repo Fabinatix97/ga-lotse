@@ -198,11 +198,11 @@ public class SelfSignedCertService implements SmartLifecycle {
   @Component("certificateDistributedHealthIndicator")
   public static class CertificatePublishedHealthIndicator extends AbstractHealthIndicator {
     private final SelfSignedConfiguration config;
-    private final ServiceDirectoryTopologyService serviceDirectoryTopologyService;
+    private final Optional<ServiceDirectoryTopologyService> serviceDirectoryTopologyService;
 
     public CertificatePublishedHealthIndicator(
         SpatzConfigurationProperties config,
-        ServiceDirectoryTopologyService serviceDirectoryTopologyService) {
+        Optional<ServiceDirectoryTopologyService> serviceDirectoryTopologyService) {
       this.config = config.selfSigned();
       this.serviceDirectoryTopologyService = serviceDirectoryTopologyService;
     }
@@ -214,10 +214,15 @@ public class SelfSignedCertService implements SmartLifecycle {
       if (!config.isEnabled()) {
         builder.up();
         return;
+      } else if (serviceDirectoryTopologyService.isEmpty()) {
+        logger.warn(
+            "eshg-spatz.self-signed.enabled is true but no eshg.servicedirectory.baseUrl configured. health check may be inaccurate.");
+        builder.up();
+        return;
       }
 
       Instant certificateDistributedTime =
-          serviceDirectoryTopologyService.getCertificateDistributedTime();
+          serviceDirectoryTopologyService.get().getCertificateDistributedTime();
       if (certificateDistributedTime != null
           && certificateDistributedTime.isBefore(Instant.now())) {
         builder.up();

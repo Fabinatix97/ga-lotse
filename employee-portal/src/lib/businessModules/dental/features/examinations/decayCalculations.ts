@@ -4,6 +4,7 @@
  */
 
 import { ApiDecayStatus } from "@eshg/dental-api";
+import { formatBoolean } from "@eshg/lib-employee-portal";
 import { calculateAge } from "@eshg/lib-portal/helpers/dateTime";
 import { isDefined } from "remeda";
 
@@ -13,7 +14,6 @@ import { calculateDmftValuesByDentitionType } from "@/lib/businessModules/dental
 import { calculateDecayRiskValue } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/selectors/decayRisk";
 import { selectDecayStatus } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/selectors/decayStatus";
 import { selectDmftValues } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/selectors/dmftValues";
-import { displayBoolean } from "@/lib/shared/helpers/booleans";
 
 import { DecayHistoryRow } from "./DecayHistoryTable";
 
@@ -35,7 +35,7 @@ export function calculateDecayRisk(
   );
 
   return {
-    value: isDefined(hasDecayRisk) ? displayBoolean(hasDecayRisk) : EMPTY_VALUE,
+    value: isDefined(hasDecayRisk) ? formatBoolean(hasDecayRisk) : EMPTY_VALUE,
     dateOfExamination: historyItem.dateOfExamination,
     hasDecayRisk: hasDecayRisk === true,
   };

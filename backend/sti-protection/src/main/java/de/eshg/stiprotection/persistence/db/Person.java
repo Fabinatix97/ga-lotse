@@ -5,7 +5,6 @@
 
 package de.eshg.stiprotection.persistence.db;
 
-import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.lib.procedure.domain.model.RelatedPerson;
@@ -28,19 +27,21 @@ public class Person extends RelatedPerson<StiProtectionProcedure> {
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
   @Column(nullable = false)
-  @DataSensitivity(SensitivityLevel.UNDEFINED)
+  @DataSensitivity(SensitivityLevel.PUBLIC)
   private Gender gender;
 
   @Column(nullable = false)
-  @DataSensitivity(SensitivityLevel.UNDEFINED)
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Year yearOfBirth;
 
-  @JdbcType(PostgreSQLEnumJdbcType.class)
-  @DataSensitivity(SensitivityLevel.UNDEFINED)
-  private CountryCode countryOfBirth;
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  private Boolean hasSufficientGermanLanguageSkills;
 
-  @DataSensitivity(SensitivityLevel.UNDEFINED)
-  private Year inGermanySince;
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
+  private String otherKnownLanguages;
+
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
+  private String pronouns;
 
   public Gender getGender() {
     return gender;
@@ -58,28 +59,37 @@ public class Person extends RelatedPerson<StiProtectionProcedure> {
     this.yearOfBirth = yearOfBirth;
   }
 
-  public CountryCode getCountryOfBirth() {
-    return countryOfBirth;
-  }
-
-  public void setCountryOfBirth(CountryCode countryOfBirth) {
-    this.countryOfBirth = countryOfBirth;
-  }
-
-  public Year getInGermanySince() {
-    return inGermanySince;
-  }
-
-  public void setInGermanySince(Year inGermanySince) {
-    this.inGermanySince = inGermanySince;
-  }
-
   public void copyFrom(Person source) {
     setGender(source.getGender());
     setYearOfBirth(source.getYearOfBirth());
-    setCountryOfBirth(source.getCountryOfBirth());
-    setInGermanySince(source.getInGermanySince());
     setPersonType(source.getPersonType());
     setCentralFileStateId(source.getCentralFileStateId());
+    setHasSufficientGermanLanguageSkills(source.getHasSufficientGermanLanguageSkills());
+    setOtherKnownLanguages(source.getOtherKnownLanguages());
+    setPronouns(source.getPronouns());
+  }
+
+  public Boolean getHasSufficientGermanLanguageSkills() {
+    return hasSufficientGermanLanguageSkills;
+  }
+
+  public void setHasSufficientGermanLanguageSkills(Boolean hasSufficientGermanLanguageSkills) {
+    this.hasSufficientGermanLanguageSkills = hasSufficientGermanLanguageSkills;
+  }
+
+  public String getOtherKnownLanguages() {
+    return otherKnownLanguages;
+  }
+
+  public void setOtherKnownLanguages(String otherKnownLanguages) {
+    this.otherKnownLanguages = otherKnownLanguages;
+  }
+
+  public String getPronouns() {
+    return pronouns;
+  }
+
+  public void setPronouns(String pronouns) {
+    this.pronouns = pronouns;
   }
 }

@@ -7,7 +7,7 @@ package de.eshg.travelmedicine.document.informationstatement;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.eshg.departmentinfo.DepartmentInfoConfigService;
+import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.file.common.FileValidator;
 import de.eshg.file.common.ImageRewriter;
 import de.eshg.lib.document.generator.DocumentGenerator;

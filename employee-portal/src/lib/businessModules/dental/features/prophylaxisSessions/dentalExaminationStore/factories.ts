@@ -3,13 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { RELATED_TEETH, ToothDiagnoses, ToothDiagnosis } from "@eshg/dental";
+import {
+  OPTIONAL_TEETH,
+  RELATED_TEETH,
+  ToothDiagnoses,
+  ToothDiagnosis,
+} from "@eshg/dental";
 import { ApiDentitionType, ApiTooth } from "@eshg/dental-api";
 import { isDefined } from "remeda";
 
 import {
   INITIALLY_TOGGLED_OPTIONAL_TEETH,
-  OPTIONAL_TEETH,
   TOOTH_TYPES,
   WISDOM_TEETH,
 } from "./constants";
@@ -97,6 +101,8 @@ function createDentition(
   previousToothDiagnoses: ToothDiagnoses = {},
   initiallyToggledOptionalTeeth: Set<ApiTooth>,
 ): Dentition {
+  const initialRendering = Object.keys(toothDiagnoses).length === 0;
+
   function createToothWithType(
     tooth: ApiTooth,
   ): ToothWithDiagnosis | AddableTooth {
@@ -114,7 +120,7 @@ function createDentition(
     }
 
     return OPTIONAL_TEETH.has(tooth) &&
-      !initiallyToggledOptionalTeeth.has(tooth)
+      !(initiallyToggledOptionalTeeth.has(tooth) && initialRendering)
       ? createAddableTooth(tooth)
       : createToothWithDiagnosis(tooth, toothDiagnoses, previousToothDiagnoses);
   }

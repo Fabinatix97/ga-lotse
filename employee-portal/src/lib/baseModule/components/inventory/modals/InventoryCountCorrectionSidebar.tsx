@@ -5,6 +5,7 @@
 
 import { ApiInventoryItem } from "@eshg/base-api";
 import {
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -19,7 +20,6 @@ import { Grid, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 
 import { useCorrectInventoryItemCount } from "@/lib/baseModule/api/mutations/inventory";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 
 export function useInventoryCountCorrectionSidebar(): UseSidebarWithFormRefResult<InventoryCountCorrectionSidebarProps> {
   return useSidebarWithFormRef({

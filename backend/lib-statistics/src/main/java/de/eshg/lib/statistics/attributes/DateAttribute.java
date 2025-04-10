@@ -19,6 +19,9 @@ public final class DateAttribute {
       boolean mandatory,
       ValueOptionInternal valueOption,
       DataPrivacyCategory dataPrivacyCategory) {
+    if (DataPrivacyCategory.SENSITIVE.equals(dataPrivacyCategory)) {
+      throw new IllegalArgumentException("Use method 'createSensitive' instead");
+    }
     return createDateAttribute(name, code, category, mandatory, valueOption, dataPrivacyCategory);
   }
 
@@ -29,6 +32,9 @@ public final class DateAttribute {
       boolean mandatory,
       ValueOptionInternal valueOption,
       SensitiveParameters sensitiveParameters) {
+    if (sensitiveParameters == null) {
+      throw new IllegalArgumentException("'sensitiveParameters' is null");
+    }
     AttributeData attribute =
         createDateAttribute(
             name, code, category, mandatory, valueOption, DataPrivacyCategory.SENSITIVE);

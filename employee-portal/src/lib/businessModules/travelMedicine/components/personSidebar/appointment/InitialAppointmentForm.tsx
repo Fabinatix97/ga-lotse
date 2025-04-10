@@ -4,6 +4,7 @@
  */
 
 import {
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -24,7 +25,6 @@ import { useState } from "react";
 import { theme } from "@/lib/baseModule/theme/theme";
 import { useGetFreeAppointmentsQuery } from "@/lib/businessModules/travelMedicine/api/queries/appointmentBlocks";
 import { AppointmentRadioGroup } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/AppointmentRadioGroup";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { LegacyPerson } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyPersonForm";
 
 interface AppointmentFormProps {

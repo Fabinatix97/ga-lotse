@@ -115,7 +115,7 @@
             "description" : "OK"
           }
         },
-        "summary" : "Create appointment group with blocks for week days.",
+        "summary" : "Validate appointment group with blocks for week days.",
         "tags" : [ "AppointmentBlock" ]
       }
     },
@@ -159,6 +159,27 @@
           }
         },
         "summary" : "Get free appointments for an appointment type.",
+        "tags" : [ "AppointmentBlock" ]
+      }
+    },
+    "/appointment-blocks/{appointmentBlockId}" : {
+      "delete" : {
+        "operationId" : "deleteAppointmentBlock",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "appointmentBlockId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Delete appointment block.",
         "tags" : [ "AppointmentBlock" ]
       }
     },
@@ -557,6 +578,7 @@
             "description" : "OK"
           }
         },
+        "summary" : "Cancel current appointment of an STI procedure as citizen.",
         "tags" : [ "Citizen" ]
       },
       "put" : {
@@ -576,6 +598,7 @@
             "description" : "OK"
           }
         },
+        "summary" : "Update current appointment of an STI procedure as citizen.",
         "tags" : [ "Citizen" ]
       }
     },
@@ -666,6 +689,7 @@
             "description" : "OK"
           }
         },
+        "summary" : "Cancel pending appointment of an STI procedure.",
         "tags" : [ "CitizenPublic" ]
       }
     },
@@ -861,6 +885,24 @@
         },
         "summary" : "Get opening hours",
         "tags" : [ "CitizenPublic" ]
+      }
+    },
+    "/configuration" : {
+      "get" : {
+        "operationId" : "getConfiguration",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetConfigurationStatusResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "ConfigStatus" ]
       }
     },
     "/configuration/department-info/sex-work" : {
@@ -2609,6 +2651,7 @@
           "required" : false,
           "schema" : {
             "type" : "string",
+            "description" : "Start of the procedure creation date.",
             "format" : "date"
           }
         }, {
@@ -2617,6 +2660,7 @@
           "required" : false,
           "schema" : {
             "type" : "string",
+            "description" : "End of the procedure creation date.",
             "format" : "date"
           }
         }, {
@@ -2625,6 +2669,7 @@
           "required" : false,
           "schema" : {
             "type" : "integer",
+            "description" : "Indicates the year of birth of the person.",
             "format" : "int32"
           }
         }, {
@@ -2633,6 +2678,7 @@
           "required" : false,
           "schema" : {
             "type" : "string",
+            "description" : "Start date of the appointment.",
             "format" : "date"
           }
         }, {
@@ -2641,6 +2687,7 @@
           "required" : false,
           "schema" : {
             "type" : "string",
+            "description" : "End date of the appointment.",
             "format" : "date"
           }
         }, {
@@ -2650,6 +2697,7 @@
           "schema" : {
             "uniqueItems" : true,
             "type" : "array",
+            "description" : "Sex of the person.",
             "items" : {
               "$ref" : "#/components/schemas/Gender"
             }
@@ -2661,6 +2709,7 @@
           "schema" : {
             "uniqueItems" : true,
             "type" : "array",
+            "description" : "Indicates the specific context or reason for the procedure.",
             "items" : {
               "$ref" : "#/components/schemas/Concern"
             }
@@ -2672,6 +2721,7 @@
           "schema" : {
             "uniqueItems" : true,
             "type" : "array",
+            "description" : "The current status of the procedure.",
             "items" : {
               "$ref" : "#/components/schemas/ProcedureStatus"
             }
@@ -2683,6 +2733,7 @@
           "schema" : {
             "uniqueItems" : true,
             "type" : "array",
+            "description" : "The current status of the laboratory tests.",
             "items" : {
               "$ref" : "#/components/schemas/LabStatus"
             }
@@ -2694,6 +2745,7 @@
           "schema" : {
             "uniqueItems" : true,
             "type" : "array",
+            "description" : "The origin where the procedure was initially created.",
             "items" : {
               "$ref" : "#/components/schemas/StiProcedureOrigin"
             }
@@ -4321,11 +4373,25 @@
           "gender" : {
             "$ref" : "#/components/schemas/Gender"
           },
+          "hasSufficientGermanLanguageSkills" : {
+            "type" : "boolean",
+            "description" : "Indicates whether the patient has sufficient German language skills."
+          },
           "inGermanySince" : {
             "type" : "integer",
             "description" : "The year since the person has been residing in Germany.",
             "format" : "int32",
             "example" : 2022
+          },
+          "otherKnownLanguages" : {
+            "type" : "string",
+            "description" : "Other languages the patient can speak or understand.",
+            "example" : "Spanish and French."
+          },
+          "pronouns" : {
+            "type" : "string",
+            "description" : "Specifies the pronouns the person uses.",
+            "example" : "she/her"
           },
           "yearOfBirth" : {
             "type" : "integer",
@@ -4339,6 +4405,7 @@
         "properties" : {
           "appointmentStart" : {
             "type" : "string",
+            "description" : "The start date and time of the appointment.",
             "format" : "date-time"
           },
           "concern" : {
@@ -4346,10 +4413,12 @@
           },
           "procedureId" : {
             "type" : "string",
+            "description" : "An unique identifier for the STI protection procedure.",
             "format" : "uuid"
           },
           "yearOfBirth" : {
             "type" : "integer",
+            "description" : "Indicates the year of birth of the person.",
             "format" : "int32"
           }
         }
@@ -4387,6 +4456,7 @@
       },
       "AppointmentBookingType" : {
         "type" : "string",
+        "description" : "Specifies whether the appointment is a block type or an individual type.",
         "enum" : [ "USER_DEFINED", "APPOINTMENT_BLOCK" ]
       },
       "AppointmentHistoryEntry" : {
@@ -4395,6 +4465,7 @@
         "properties" : {
           "appointmentStart" : {
             "type" : "string",
+            "description" : "The start date and time of the appointment.",
             "format" : "date-time"
           },
           "appointmentStatus" : {
@@ -4403,7 +4474,8 @@
           "appointmentType" : {
             "$ref" : "#/components/schemas/AppointmentType"
           }
-        }
+        },
+        "description" : "Represents an entry documenting past and upcoming appointments."
       },
       "AppointmentLocation" : {
         "required" : [ "id", "name" ],
@@ -4420,6 +4492,7 @@
       },
       "AppointmentStatus" : {
         "type" : "string",
+        "description" : "Indicates the status of the appointment.",
         "enum" : [ "OPEN", "CLOSED", "CANCELLED" ]
       },
       "AppointmentType" : {
@@ -4562,6 +4635,7 @@
         "properties" : {
           "appointmentStart" : {
             "type" : "string",
+            "description" : "The start date and time of the appointment.",
             "format" : "date-time"
           },
           "concern" : {
@@ -4569,7 +4643,9 @@
           },
           "durationInMinutes" : {
             "type" : "integer",
-            "format" : "int32"
+            "description" : "Duration of the appointment in minutes.",
+            "format" : "int32",
+            "example" : 30
           }
         },
         "description" : "Optional appointment booking information for resubmission on failure"
@@ -4694,10 +4770,12 @@
           },
           "id" : {
             "type" : "string",
+            "description" : "An unique identifier for the STI protection procedure.",
             "format" : "uuid"
           },
           "medicalHistorySubmitted" : {
-            "type" : "boolean"
+            "type" : "boolean",
+            "description" : "Indicates whether the medical history has been submitted."
           },
           "person" : {
             "$ref" : "#/components/schemas/Person"
@@ -4706,7 +4784,12 @@
       },
       "Concern" : {
         "type" : "string",
+        "description" : "Indicates the specific context or reason for the procedure.",
         "enum" : [ "HIV_STI_CONSULTATION", "SEX_WORK" ]
+      },
+      "ConfigurationStatus" : {
+        "type" : "string",
+        "enum" : [ "COMPLETE", "PARTIALLY_COMPLETE", "INCOMPLETE" ]
       },
       "Consultation" : {
         "type" : "object",
@@ -4949,6 +5032,7 @@
           },
           "appointmentStart" : {
             "type" : "string",
+            "description" : "The start date and time of the appointment.",
             "format" : "date-time"
           },
           "appointmentType" : {
@@ -4956,7 +5040,9 @@
           },
           "durationInMinutes" : {
             "type" : "integer",
-            "format" : "int32"
+            "description" : "Duration of the appointment in minutes.",
+            "format" : "int32",
+            "example" : 30
           }
         }
       },
@@ -5048,6 +5134,7 @@
           },
           "appointmentStart" : {
             "type" : "string",
+            "description" : "The start date and time of the appointment.",
             "format" : "date-time"
           },
           "concern" : {
@@ -5055,7 +5142,9 @@
           },
           "durationInMinutes" : {
             "type" : "integer",
-            "format" : "int32"
+            "description" : "Duration of the appointment in minutes.",
+            "format" : "int32",
+            "example" : 30
           }
         }
       },
@@ -5071,6 +5160,7 @@
           },
           "procedureId" : {
             "type" : "string",
+            "description" : "An unique identifier for the STI protection procedure.",
             "format" : "uuid"
           }
         }
@@ -5142,6 +5232,7 @@
           },
           "appointmentStart" : {
             "type" : "string",
+            "description" : "The start date and time of the appointment.",
             "format" : "date-time"
           },
           "concern" : {
@@ -5152,10 +5243,16 @@
           },
           "durationInMinutes" : {
             "type" : "integer",
-            "format" : "int32"
+            "description" : "Duration of the appointment in minutes.",
+            "format" : "int32",
+            "example" : 30
           },
           "gender" : {
             "$ref" : "#/components/schemas/Gender"
+          },
+          "hasSufficientGermanLanguageSkills" : {
+            "type" : "boolean",
+            "description" : "Indicates whether the patient has sufficient German language skills."
           },
           "inGermanySince" : {
             "type" : "integer",
@@ -5163,9 +5260,21 @@
             "format" : "int32",
             "example" : 2022
           },
+          "otherKnownLanguages" : {
+            "type" : "string",
+            "description" : "Other languages the patient can speak or understand.",
+            "example" : "Spanish and French."
+          },
+          "pronouns" : {
+            "type" : "string",
+            "description" : "Specifies the pronouns the person uses.",
+            "example" : "she/her"
+          },
           "yearOfBirth" : {
             "type" : "integer",
-            "format" : "int32"
+            "description" : "Indicates the year of birth of the person.",
+            "format" : "int32",
+            "example" : 1996
           }
         }
       },
@@ -5210,6 +5319,7 @@
         "properties" : {
           "textTemplateId" : {
             "type" : "string",
+            "description" : "An unique identifier for the text template.",
             "format" : "uuid"
           }
         }
@@ -5961,6 +6071,21 @@
           "gracePeriodMonths" : {
             "type" : "integer",
             "format" : "int32"
+          }
+        }
+      },
+      "GetConfigurationStatusResponse" : {
+        "required" : [ "endpointStates", "moduleState" ],
+        "type" : "object",
+        "properties" : {
+          "endpointStates" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/ConfigurationStatus"
+            }
+          },
+          "moduleState" : {
+            "$ref" : "#/components/schemas/ConfigurationStatus"
           }
         }
       },
@@ -6968,6 +7093,7 @@
       },
       "LabStatus" : {
         "type" : "string",
+        "description" : "The current status of the laboratory tests.",
         "enum" : [ "OPEN", "TESTS_REQUESTED", "TESTS_CONDUCTED", "RESULTS_RECORDED", "RESULTS_COMMUNICATED" ]
       },
       "LaboratoryTest" : {
@@ -7359,7 +7485,7 @@
       },
       "PartnerRiskFactors" : {
         "type" : "string",
-        "description" : "Details any know risk factors associated the patient's sexual partners.",
+        "description" : "Known risk factors associated with a patient’s sexual partners.",
         "example" : "['SEX_WORKER','STI_POSITIVE','INJECTED_DRUGS']",
         "enum" : [ "HOMOSEXUAL", "BISEXUAL_MALE", "HIV_POSITIVE", "STI_POSITIVE", "INJECTED_DRUGS", "SEX_WORKER" ]
       },
@@ -7532,8 +7658,6 @@
           "protectionMethodsUsed" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Lists the methods of protection the patient has used during sexual activity.",
-            "example" : "['CONDOM','PREP']",
             "items" : {
               "$ref" : "#/components/schemas/ProtectionMethod"
             }
@@ -7544,8 +7668,6 @@
           "vaccinations" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Provides information on vaccinations the patient has received.",
-            "example" : "['HEPATITIS_A', 'HPV']",
             "items" : {
               "$ref" : "#/components/schemas/Vaccination"
             }
@@ -7689,6 +7811,7 @@
       },
       "ProcedureStatus" : {
         "type" : "string",
+        "description" : "The current status of the procedure.",
         "enum" : [ "DRAFT", "OPEN", "IN_PROGRESS", "CLOSED", "ABORTED" ]
       },
       "ProcedureType" : {
@@ -7811,8 +7934,7 @@
       },
       "ProtectionMethod" : {
         "type" : "string",
-        "description" : "Lists the methods of protection the patient has used during sexual activity.",
-        "example" : "['CONDOM','PREP']",
+        "description" : "Various methods used for protection and prevention in sexual health contexts.",
         "enum" : [ "CONDOM", "DENTAL_DAM", "GLOVES", "PREP", "TASP", "OTHER" ]
       },
       "RapidTestData" : {
@@ -7906,7 +8028,7 @@
       },
       "RelationshipModel" : {
         "type" : "string",
-        "description" : "Provides details on the patient's relationship model.",
+        "description" : "Details on the patient’s relationship model.",
         "example" : "OPEN",
         "enum" : [ "NO_COMMITMENT", "MONOGAMOUS", "OPEN" ]
       },
@@ -7986,7 +8108,7 @@
       },
       "SafeSexPractice" : {
         "type" : "string",
-        "description" : "Indicates whether the patient engages in practices considered safe sex.",
+        "description" : "The extent to which a patient engages in practices considered safe sex.",
         "enum" : [ "ALWAYS", "FREQUENTLY", "OCCASIONALLY", "NEVER" ]
       },
       "Salutation" : {
@@ -8009,7 +8131,7 @@
       },
       "SexWorkLocation" : {
         "type" : "string",
-        "description" : "The locations where the patient engages in sex work.",
+        "description" : "Locations where the patient engages in sex work.",
         "example" : "['BORDELLO','APARTMENT']",
         "enum" : [ "BORDELLO", "CLUB", "ESCORT", "APARTMENT", "APPOINTMENT_APARTMENT", "MASSAGE_PARLOR", "TANTRA_PRACTICE", "STREET_PROSTITUTION", "OTHER" ]
       },
@@ -8120,7 +8242,7 @@
       },
       "SexualOrientation" : {
         "type" : "string",
-        "description" : "Represents the gender of the patient's sexual contacts over the specified period.",
+        "description" : "Patient’s sexual orientation, which refers to the pattern of romantic or sexual attraction to individuals of specific genders.",
         "example" : "BISEXUAL",
         "enum" : [ "HETEROSEXUAL", "HOMOSEXUAL", "BISEXUAL", "NOT_SPECIFIED" ]
       },
@@ -8177,6 +8299,7 @@
       },
       "StiProcedureOrigin" : {
         "type" : "string",
+        "description" : "The origin where the procedure was initially created.",
         "enum" : [ "EMPLOYEE_PORTAL", "CITIZEN_PORTAL" ]
       },
       "StiProtectionProcedure" : {
@@ -8197,14 +8320,17 @@
           },
           "createdAt" : {
             "type" : "string",
+            "description" : "The timestamp indicating when the procedure was created.",
             "format" : "date-time"
           },
           "id" : {
             "type" : "string",
+            "description" : "An unique identifier for the STI protection procedure.",
             "format" : "uuid"
           },
           "isFollowUp" : {
-            "type" : "boolean"
+            "type" : "boolean",
+            "description" : "Specifies whether the procedure is a follow-up procedure."
           },
           "labStatus" : {
             "$ref" : "#/components/schemas/LabStatus"
@@ -8213,7 +8339,9 @@
             "$ref" : "#/components/schemas/Person"
           },
           "sampleBarCode" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Barcode for tracking the results with the external laboratory.",
+            "example" : "Lab-586172"
           },
           "status" : {
             "$ref" : "#/components/schemas/ProcedureStatus"
@@ -8228,13 +8356,16 @@
         "type" : "object",
         "properties" : {
           "accessCode" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Unique code for patient identification.",
+            "example" : "h28RQNDRXoffRMzqM"
           },
           "appointment" : {
             "$ref" : "#/components/schemas/Appointment"
           },
           "appointmentStart" : {
             "type" : "string",
+            "description" : "The start date and time of the appointment.",
             "format" : "date-time"
           },
           "concern" : {
@@ -8245,6 +8376,7 @@
           },
           "createdAt" : {
             "type" : "string",
+            "description" : "The timestamp indicating when the procedure was created.",
             "format" : "date-time"
           },
           "gender" : {
@@ -8252,6 +8384,7 @@
           },
           "id" : {
             "type" : "string",
+            "description" : "An unique identifier for the STI protection procedure.",
             "format" : "uuid"
           },
           "labStatus" : {
@@ -8261,14 +8394,18 @@
             "$ref" : "#/components/schemas/StiProcedureOrigin"
           },
           "sampleBarCode" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Barcode for tracking the results with the external laboratory.",
+            "example" : "Lab-586172"
           },
           "status" : {
             "$ref" : "#/components/schemas/ProcedureStatus"
           },
           "yearOfBirth" : {
             "type" : "integer",
-            "format" : "int32"
+            "description" : "Indicates the year of birth of the person.",
+            "format" : "int32",
+            "example" : 1996
           }
         }
       },
@@ -8599,11 +8736,14 @@
           },
           "appointmentStart" : {
             "type" : "string",
+            "description" : "The start date and time of the appointment.",
             "format" : "date-time"
           },
           "durationInMinutes" : {
             "type" : "integer",
-            "format" : "int32"
+            "description" : "Duration of the appointment in minutes.",
+            "format" : "int32",
+            "example" : 30
           }
         }
       },
@@ -8624,11 +8764,14 @@
         "properties" : {
           "appointmentStart" : {
             "type" : "string",
+            "description" : "The start date and time of the appointment.",
             "format" : "date-time"
           },
           "durationInMinutes" : {
             "type" : "integer",
-            "format" : "int32"
+            "description" : "Duration of the appointment in minutes.",
+            "format" : "int32",
+            "example" : 30
           }
         }
       },
@@ -8650,13 +8793,29 @@
           "gender" : {
             "$ref" : "#/components/schemas/Gender"
           },
+          "hasSufficientGermanLanguageSkills" : {
+            "type" : "boolean",
+            "description" : "Indicates whether the patient has sufficient German language skills."
+          },
           "inGermanySince" : {
             "type" : "integer",
             "format" : "int32"
           },
+          "otherKnownLanguages" : {
+            "type" : "string",
+            "description" : "Other languages the patient can speak or understand.",
+            "example" : "Spanish and French."
+          },
+          "pronouns" : {
+            "type" : "string",
+            "description" : "Specifies the pronouns the person uses.",
+            "example" : "she/her"
+          },
           "yearOfBirth" : {
             "type" : "integer",
-            "format" : "int32"
+            "description" : "Indicates the year of birth of the person.",
+            "format" : "int32",
+            "example" : 1996
           }
         }
       },
@@ -8709,8 +8868,7 @@
       },
       "Vaccination" : {
         "type" : "string",
-        "description" : "Provides information on vaccinations the patient has received.",
-        "example" : "['HEPATITIS_A', 'HPV']",
+        "description" : "Types of vaccinations the patient may have received.",
         "enum" : [ "HEPATITIS_A", "HEPATITIS_B", "HPV" ]
       },
       "ValidateAppointmentBlockGroupResponse" : {
@@ -8765,13 +8923,16 @@
         "type" : "object",
         "properties" : {
           "accessCode" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Unique code for patient identification",
+            "example" : "h28RQNDRXoffRMzqM"
           },
           "gender" : {
             "$ref" : "#/components/schemas/Gender"
           },
           "modifiedAt" : {
             "type" : "string",
+            "description" : "Timestamp indicating when the last status change occurred for the procedure.",
             "format" : "date-time"
           },
           "procedureId" : {
@@ -8783,6 +8944,8 @@
           },
           "yearOfBirth" : {
             "type" : "object",
+            "description" : "Indicates the year of birth of the person.",
+            "example" : 1996,
             "properties" : {
               "leap" : {
                 "type" : "boolean"
@@ -8801,8 +8964,7 @@
       },
       "WaitingStatus" : {
         "type" : "string",
-        "description" : "Indicates the current status of the procedure waiting in the room.",
-        "example" : "IN_CONSULTATION",
+        "description" : "Current status of the procedure waiting in the room.",
         "enum" : [ "WAITING_FOR_CONSULTATION", "WAITING_FOR_RESULTS_REVIEW", "WAITING_FOR_TESTS", "IN_CONSULTATION", "IN_TESTING", "CANCELLED", "DONE" ]
       }
     }

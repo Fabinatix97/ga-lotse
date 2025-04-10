@@ -4,6 +4,7 @@
  */
 
 import {
+  MultiFormButtonBar,
   Sidebar,
   SidebarActions,
   SidebarContent,
@@ -29,7 +30,6 @@ import {
   deleteUndefined,
   optionalInt,
 } from "@/lib/businessModules/stiProtection/shared/helpers";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
 

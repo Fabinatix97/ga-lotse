@@ -7,7 +7,7 @@ package de.eshg.stiprotection.api;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "LabStatus")
+@Schema(name = "LabStatus", description = "The current status of the laboratory tests.")
 public enum LabStatusDto {
   OPEN,
   TESTS_REQUESTED,

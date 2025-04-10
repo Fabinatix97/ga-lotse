@@ -98,7 +98,7 @@ public class ReportSeriesService {
     if (evaluation.getDataSensitivity().equals(StatisticsDataSensitivity.SENSITIVE)) {
       throw new BadRequestException("Reports are only allowed for non-sensitive evaluations");
     }
-    validateIsNotDeleting(evaluation);
+    EvaluationService.validateEvaluationCompleted(evaluation);
     AggregationResultUtil.validateSameSensitivityPossible(
         evaluation, dataSourceValidator.getAllAvailableDataSources());
 
@@ -116,13 +116,6 @@ public class ReportSeriesService {
     return ReportMapper.mapToApi(
         reportSeries,
         report -> AbstractAggregationResultService.isTooMuchDataForExportFunction().apply(report));
-  }
-
-  private void validateIsNotDeleting(Evaluation evaluation) {
-    if (AggregationResultState.DELETING.equals(evaluation.getState())) {
-      throw new BadRequestException(
-          "Evaluation %s is in the process of being deleted".formatted(evaluation.getExternalId()));
-    }
   }
 
   private ReportSeries createManualReportSeries(

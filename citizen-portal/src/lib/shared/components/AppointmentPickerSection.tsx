@@ -26,6 +26,7 @@ import {
   useTheme,
 } from "@mui/joy";
 import assert from "assert";
+import { useFormikContext } from "formik";
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
 
 import { Row } from "@/lib/businessModules/measlesProtection/shared/components/Row";
@@ -39,6 +40,7 @@ interface AppointmentPickerSectionProps<T extends Appointment> {
   onAppointmentSelected?: (d: T) => unknown;
   onDateSelected?: (d: Date) => unknown;
   appointments: T[];
+  autoSelectFirst?: boolean;
 }
 
 export function AppointmentPickerSection<T extends Appointment>({
@@ -48,12 +50,14 @@ export function AppointmentPickerSection<T extends Appointment>({
   t,
   onAppointmentSelected,
   onDateSelected,
+  autoSelectFirst = true,
 }: AppointmentPickerSectionProps<T>) {
+  const { value } = useFormikContext().getFieldMeta<T | undefined>(name);
   const startMonth =
     appointments
       .map((t) => t.start)
       .sort((a, b) => a.getTime() - b.getTime())[0] ?? new Date();
-  const [month, setMonth] = useState<Date>(startMonth);
+  const [month, setMonth] = useState<Date>(value?.start ?? startMonth);
   const { code } = useLocale();
   const labels = useMemo(
     () => ({
@@ -74,7 +78,7 @@ export function AppointmentPickerSection<T extends Appointment>({
       name={name}
       currentMonth={month}
       setCurrentMonth={setMonth}
-      autoSelectFirst
+      autoSelectFirst={autoSelectFirst ? true : undefined}
       monthAppointments={appointments}
       required={true}
       labels={labels}

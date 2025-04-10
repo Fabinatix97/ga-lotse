@@ -19,47 +19,82 @@ import jakarta.persistence.OneToOne;
 import java.time.LocalDate;
 
 @Entity
-@DataSensitivity(SensitivityLevel.SENSITIVE)
 public class LaboratoryTestExamination extends GenericEntity<Long> {
 
-  @Id private Long id;
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  @Id
+  private Long id;
 
   @MapsId
   @OneToOne(optional = false)
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private StiProtectionProcedure procedure;
 
   // General
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String sampleBarCode;
+
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String generalRemarks;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private LocalDate testsConductedDate;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean testsPayed;
 
   // Tests
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean hivRequested;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean syphilisRequested;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean hepARequested;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean hepBRequested;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean hepCRequested;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean chlamydiaRequested;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean gonorrheaRequested;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean mycoplasmaRequested;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean cancerScreeningRequested;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean hpvRequested;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean mpoxRequested;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean otherTestRequested;
 
   @AttributeOverride(name = "result", column = @Column(name = "hiv_result"))
   @AttributeOverride(name = "value", column = @Column(name = "hiv_value"))
   @AttributeOverride(name = "remark", column = @Column(name = "hiv_remark"))
   @Embedded
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private LaboratoryTestData hivData;
 
   @AttributeOverride(name = "result", column = @Column(name = "syphilis_result"))
   @AttributeOverride(name = "value", column = @Column(name = "syphilis_value"))
   @AttributeOverride(name = "remark", column = @Column(name = "syphilis_remark"))
   @Embedded
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private LaboratoryTestData syphilisData;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean hadSyphilis;
 
   @AttributeOverride(name = "result", column = @Column(name = "hepA_result"))
@@ -68,6 +103,7 @@ public class LaboratoryTestExamination extends GenericEntity<Long> {
   @AttributeOverride(name = "value", column = @Column(name = "hepA_value"))
   @AttributeOverride(name = "remark", column = @Column(name = "hepA_remark"))
   @Embedded
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private HepatitisLaboratoryTestData hepAData;
 
   @AttributeOverride(name = "result", column = @Column(name = "hepB_result"))
@@ -76,12 +112,14 @@ public class LaboratoryTestExamination extends GenericEntity<Long> {
   @AttributeOverride(name = "value", column = @Column(name = "hepB_value"))
   @AttributeOverride(name = "remark", column = @Column(name = "hepB_remark"))
   @Embedded
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private HepatitisLaboratoryTestData hepBData;
 
   @AttributeOverride(name = "result", column = @Column(name = "hepC_result"))
   @AttributeOverride(name = "value", column = @Column(name = "hepC_value"))
   @AttributeOverride(name = "remark", column = @Column(name = "hepC_remark"))
   @Embedded
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private LaboratoryTestData hepCData;
 
   @AttributeOverride(
@@ -126,6 +164,7 @@ public class LaboratoryTestExamination extends GenericEntity<Long> {
       name = "analSampleData.remark",
       column = @Column(name = "gonorrhea_anal_sample_data_remark"))
   @Embedded
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private LaboratoryTestSamplesData gonorrheaTestSamples;
 
   @AttributeOverride(
@@ -170,6 +209,7 @@ public class LaboratoryTestExamination extends GenericEntity<Long> {
       name = "analSampleData.remark",
       column = @Column(name = "chlamydia_anal_sample_data_remark"))
   @Embedded
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private LaboratoryTestSamplesData chlamydiaTestSamples;
 
   @AttributeOverride(
@@ -218,32 +258,38 @@ public class LaboratoryTestExamination extends GenericEntity<Long> {
       name = "analSampleData.remark",
       column = @Column(name = "mycoplasma_anal_sample_data_remark"))
   @Embedded
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private LaboratoryTestSamplesData mycoplasmaTestSamples;
 
   @AttributeOverride(name = "result", column = @Column(name = "cancerScreening_result"))
   @AttributeOverride(name = "value", column = @Column(name = "cancerScreening_value"))
   @AttributeOverride(name = "remark", column = @Column(name = "cancerScreening_remark"))
   @Embedded
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private LaboratoryTestData cancerScreeningData;
 
   @AttributeOverride(name = "result", column = @Column(name = "hpv_result"))
   @AttributeOverride(name = "value", column = @Column(name = "hpv_value"))
   @AttributeOverride(name = "remark", column = @Column(name = "hpv_remark"))
   @Embedded
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private LaboratoryTestData hpvData;
 
   @AttributeOverride(name = "result", column = @Column(name = "mpox_result"))
   @AttributeOverride(name = "value", column = @Column(name = "mpox_value"))
   @AttributeOverride(name = "remark", column = @Column(name = "mpox_remark"))
   @Embedded
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private LaboratoryTestData mpoxData;
 
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String otherTestName;
 
   @AttributeOverride(name = "result", column = @Column(name = "otherTest_result"))
   @AttributeOverride(name = "value", column = @Column(name = "otherTest_value"))
   @AttributeOverride(name = "remark", column = @Column(name = "otherTest_remark"))
   @Embedded
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private LaboratoryTestData otherTestData;
 
   @Override

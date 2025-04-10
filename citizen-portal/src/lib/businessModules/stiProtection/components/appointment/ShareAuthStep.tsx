@@ -40,7 +40,7 @@ export function ShareAuthStep() {
   assert.ok(pin);
 
   function onSubmit(_values: ShareAuthData) {
-    router.push(routes.appointments.index(accessCode));
+    router.push(routes.personalArea.index(accessCode));
   }
 
   return (

@@ -10,8 +10,8 @@ export interface ParticipantFilters {
   fluoridationConsentGiven: FluoridationConsentFilter;
 }
 
-export type GenderFilter = "MALE" | "FEMALE" | "ANY";
-export type FluoridationConsentFilter = "YES" | "NO" | "ANY";
+export type GenderFilter = "MALE" | "FEMALE" | "ANY" | "OTHER";
+export type FluoridationConsentFilter = "YES" | "NO" | "ANY" | "NOT_AVAILABLE";
 
 export function filterParticipants(
   filters: ParticipantFilters,
@@ -31,6 +31,13 @@ function matchesGender(
   if (filter === "ANY") {
     return true;
   }
+  if (filter === "OTHER") {
+    return (
+      participant.gender === "NOT_SPECIFIED" ||
+      participant.gender === "DIVERSE" ||
+      participant.gender === undefined
+    );
+  }
 
   return participant.gender === filter;
 }
@@ -41,6 +48,10 @@ function matchesFluoridationConsent(
 ): boolean {
   if (filter === "ANY") {
     return true;
+  }
+
+  if (filter === "NOT_AVAILABLE") {
+    return participant.currentFluoridationConsent === undefined;
   }
 
   const requiresConsent = filter === "YES";

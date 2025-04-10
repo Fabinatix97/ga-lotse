@@ -9,7 +9,7 @@ import static de.eshg.travelmedicine.document.DocumentDtoHelper.isDocumentConten
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.eshg.departmentinfo.DepartmentInfoConfigService;
+import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.procedure.domain.model.Pdf;

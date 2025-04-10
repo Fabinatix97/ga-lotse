@@ -4,6 +4,7 @@
  */
 
 import { ApiGetGdprProcedureResponse } from "@eshg/base-api";
+import { NoSearchResults } from "@eshg/lib-employee-portal";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 import CheckmarkIcon from "@mui/icons-material/Check";
@@ -33,7 +34,6 @@ import {
   useDownloadPackageFileByModule,
   useGetGdprDownloadPackagesInfo,
 } from "@/lib/shared/api/queries/gdpr";
-import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
 
 function useFileDownloadForPackage() {

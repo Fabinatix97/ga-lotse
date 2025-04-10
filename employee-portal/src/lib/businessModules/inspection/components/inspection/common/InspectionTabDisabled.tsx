@@ -5,16 +5,34 @@
 
 "use client";
 
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { InfoOutlined } from "@mui/icons-material";
 import { Sheet, Stack, SvgIcon, Typography } from "@mui/joy";
+
+import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 
 export function InspectionTabDisabled({
   message,
   margin,
+  procedureId,
+  selfUserId,
 }: Readonly<{
   message: string;
   margin: number;
+  procedureId: string;
+  selfUserId?: string;
 }>) {
+  const { mutateAsync: updateInspection } = useUpdateInspection();
+
+  async function assignSelf() {
+    await updateInspection({
+      id: procedureId,
+      apiUpdateInspectionRequest: {
+        assigneeId: selfUserId,
+      },
+    });
+  }
+
   return (
     <Sheet
       sx={{
@@ -32,6 +50,9 @@ export function InspectionTabDisabled({
         <Typography textAlign="center" data-testid="message">
           {message}
         </Typography>
+        {selfUserId && (
+          <ButtonLink onClick={assignSelf}>Mir zuweisen</ButtonLink>
+        )}
       </Stack>
     </Sheet>
   );

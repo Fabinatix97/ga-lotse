@@ -11,4 +11,8 @@ import java.util.Set;
 
 @Schema(name = "GetOmsProceduresFilterOptions")
 public record GetOmsProceduresFilterOptionsDto(
-    Boolean assigned, Set<ProcedureStatusDto> status, Boolean highPriority, Boolean today) {}
+    Boolean assigned,
+    Set<ProcedureStatusDto> status,
+    Boolean highPriority,
+    /* span format: yyyy-mm-dd<>yyyy-mm-dd, from first, both dates optional, <> separator fix */
+    String appointmentDateSpan) {}

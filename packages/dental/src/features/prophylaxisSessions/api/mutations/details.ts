@@ -122,3 +122,23 @@ export function useUpdateProphylaxisSessionExaminations(
     },
   });
 }
+
+export function useCloseProphylaxisSession(prophylaxisSessionId: string) {
+  const { prophylaxisSessionApi } = useDentalApi();
+  const queryClient = useQueryClient();
+  const { queryKey } = getProphylaxisSessionQuery(prophylaxisSessionApi, {
+    prophylaxisSessionId,
+  });
+  const snackbar = useSnackbar();
+
+  return useHandledMutation({
+    mutationFn: (prophylaxisSessionVersion: number) =>
+      prophylaxisSessionApi.closeProphylaxisSession(prophylaxisSessionId, {
+        version: prophylaxisSessionVersion,
+      }),
+    onSuccess: (response) => {
+      queryClient.setQueryData(queryKey, response);
+      snackbar.confirmation("Die Prophylaxe wurde erfolgreich abgeschlossen.");
+    },
+  });
+}

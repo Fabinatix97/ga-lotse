@@ -19,41 +19,53 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 
 @Entity
-@DataSensitivity(SensitivityLevel.SENSITIVE)
 public class RapidTestExamination extends GenericEntity<Long> {
 
-  @Id private Long id;
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  @Id
+  private Long id;
 
   @MapsId
   @OneToOne(optional = false)
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private StiProtectionProcedure procedure;
 
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String generalComments;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   @Column(nullable = false)
   private Boolean testsPayed;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   @Column(nullable = false)
   private Boolean hivRequested;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   @Column(nullable = false)
   private Boolean syphilisRequested;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   @Column(nullable = false)
   private Boolean pregnancyTestRequested;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   @Column(nullable = false)
   private Boolean ultrasoundRequested;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   @Column(nullable = false)
   private Boolean bloodPressureRequested;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   @Column(nullable = false)
   private Boolean pulseRequested;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   @Column(nullable = false)
   private Boolean urinalysisRequested;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   @AttributeOverrides({
     @AttributeOverride(name = "number", column = @Column(name = "hiv_number")),
     @AttributeOverride(name = "result", column = @Column(name = "hiv_result")),
@@ -61,6 +73,7 @@ public class RapidTestExamination extends GenericEntity<Long> {
   @Embedded
   private RapidTestData hivData;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   @AttributeOverrides({
     @AttributeOverride(name = "number", column = @Column(name = "syphilis_number")),
     @AttributeOverride(name = "result", column = @Column(name = "syphilis_result")),
@@ -68,6 +81,7 @@ public class RapidTestExamination extends GenericEntity<Long> {
   @Embedded
   private RapidTestData syphilisData;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   @AttributeOverrides({
     @AttributeOverride(name = "number", column = @Column(name = "pregnancy_test_number")),
     @AttributeOverride(name = "result", column = @Column(name = "pregnancy_test_result")),
@@ -75,9 +89,16 @@ public class RapidTestExamination extends GenericEntity<Long> {
   @Embedded
   private RapidTestData pregnancyTestData;
 
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String ultrasoundData;
+
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String bloodPressureData;
+
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String pulseData;
+
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String urinalysisData;
 
   @Override

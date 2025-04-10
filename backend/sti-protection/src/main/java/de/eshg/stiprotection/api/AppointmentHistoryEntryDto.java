@@ -10,8 +10,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 
-@Schema(name = "AppointmentHistoryEntry")
+@Schema(
+    name = "AppointmentHistoryEntry",
+    description = "Represents an entry documenting past and upcoming appointments.")
 public record AppointmentHistoryEntryDto(
     @NotNull AppointmentTypeDto appointmentType,
-    @NotNull Instant appointmentStart,
+    @Schema(description = "The start date and time of the appointment.") @NotNull
+        Instant appointmentStart,
     @NotNull AppointmentStatusDto appointmentStatus) {}

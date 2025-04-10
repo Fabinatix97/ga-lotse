@@ -22,7 +22,7 @@ type UseSidebarWithFormRefOptions<
 > = Omit<DrawerOpenOptions<TSidebarProps>, "onBeforeClose">;
 
 export type UseSidebarWithFormRefResult<
-  TSidebarProps extends SidebarWithFormRefProps,
+  TSidebarProps extends SidebarWithFormRefProps = SidebarWithFormRefProps,
 > = UseSidebarResult<Omit<TSidebarProps, "formRef">>;
 
 export function useSidebarWithFormRef<

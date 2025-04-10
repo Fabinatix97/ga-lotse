@@ -5,8 +5,14 @@
 
 package de.eshg.officialmedicalservice.citizenauth;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
+import de.eshg.officialmedicalservice.anamnesis.AnamnesisProperties;
+import de.eshg.officialmedicalservice.anamnesis.api.AnamnesisDto.AffectedPersonInfoDto.FillingPersonDto;
+import de.eshg.officialmedicalservice.anamnesis.api.PostAnamnesisRequest;
+import de.eshg.officialmedicalservice.anamnesis.persistence.entity.OmsAnamnesis;
 import de.eshg.officialmedicalservice.appointment.OmsAppointmentService;
 import de.eshg.officialmedicalservice.citizenauth.api.GetCitizenProcedureDetailsResponse;
 import de.eshg.officialmedicalservice.document.OmsDocumentService;
@@ -19,6 +25,7 @@ import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedureR
 import de.eshg.officialmedicalservice.procedure.persistence.entity.Person;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
@@ -33,18 +40,24 @@ public class CitizenAuthProcedureService {
   private final CitizenProcedureMapper citizenProcedureMapper;
   private final OmsAppointmentService omsAppointmentService;
   private final OmsDocumentService omsDocumentService;
+  private final ObjectMapper objectMapper;
+  private final AnamnesisProperties anamnesisProperties;
 
   public CitizenAuthProcedureService(
       OmsProcedureRepository omsProcedureRepository,
       PersonClient personClient,
       CitizenProcedureMapper citizenProcedureMapper,
       OmsAppointmentService omsAppointmentService,
-      OmsDocumentService omsDocumentService) {
+      OmsDocumentService omsDocumentService,
+      ObjectMapper objectMapper,
+      AnamnesisProperties anamnesisProperties) {
     this.omsProcedureRepository = omsProcedureRepository;
     this.personClient = personClient;
     this.citizenProcedureMapper = citizenProcedureMapper;
     this.omsAppointmentService = omsAppointmentService;
     this.omsDocumentService = omsDocumentService;
+    this.objectMapper = objectMapper;
+    this.anamnesisProperties = anamnesisProperties;
   }
 
   @Transactional(readOnly = true)
@@ -59,7 +72,10 @@ public class CitizenAuthProcedureService {
         procedure.getDocuments().stream().filter(OmsDocument::isUploadInCitizenPortal).toList();
 
     return citizenProcedureMapper.toInterfaceType(
-        procedure, affectedPersonDto, citizenPortalDocuments);
+        procedure,
+        affectedPersonDto,
+        citizenPortalDocuments,
+        anamnesisProperties.isAnamnesisEnabled());
   }
 
   private OmsProcedure getProcedureByCitizenUserId(UUID citizenUserId) {
@@ -101,5 +117,36 @@ public class CitizenAuthProcedureService {
     }
 
     omsDocumentService.uploadFilesToDocumentCitizen(documentId, files);
+  }
+
+  @Transactional
+  public void postAnamnesis(UUID citizenUserId, PostAnamnesisRequest request) {
+    if (!anamnesisProperties.isAnamnesisEnabled()) {
+      throw new BadRequestException("Anamnesis is not enabled for online-portal");
+    }
+
+    if (request.anamnesis().affectedPersonInfo().fillingPerson() == FillingPersonDto.EMPLOYEE) {
+      throw new BadRequestException("Filling person cannot be employee");
+    }
+
+    OmsProcedure procedure = getProcedureByCitizenUserId(citizenUserId);
+
+    if (procedure.getAnamnesis() != null) {
+      throw new BadRequestException("Anamnesis was already posted");
+    }
+
+    try {
+      OmsAnamnesis anamnesis = new OmsAnamnesis();
+      anamnesis.setProcedure(procedure);
+      anamnesis.setContent(
+          objectMapper
+              .writerWithDefaultPrettyPrinter()
+              .writeValueAsString(request.anamnesis())
+              .getBytes(StandardCharsets.UTF_8));
+
+      procedure.setAnamnesis(anamnesis);
+    } catch (JsonProcessingException e) {
+      throw new BadRequestException("Anamnesis is malformed");
+    }
   }
 }

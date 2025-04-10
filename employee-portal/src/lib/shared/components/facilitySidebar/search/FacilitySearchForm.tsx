@@ -4,6 +4,7 @@
  */
 
 import {
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -11,8 +12,6 @@ import {
 } from "@eshg/lib-employee-portal";
 import { Formik, FormikProps } from "formik";
 import { ComponentType, Ref } from "react";
-
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 
 export interface FacilitySearchFormValues {
   name: string;

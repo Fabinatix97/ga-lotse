@@ -16,6 +16,7 @@ import { ProcedureLabelsTable } from "./ProcedureLabelsTable";
 interface ProcedureLabelsPageProps {
   procedureLabelApi: ProcedureLabelClient;
   procedureLabelApiQueryKey: QueryKeyFactory;
+  hasReadOnlyProcedureLabels?: boolean;
 }
 
 export function ProcedureLabelsPage(props: ProcedureLabelsPageProps) {
@@ -31,6 +32,7 @@ export function ProcedureLabelsPage(props: ProcedureLabelsPageProps) {
           procedureLabels={getProcedureLabels.data}
           loading={getProcedureLabels.isFetching}
           procedureLabelApi={props.procedureLabelApi}
+          hasReadOnlyProcedureLabels={props.hasReadOnlyProcedureLabels ?? false}
         />
       </MainContentLayout>
     </StickyToolbarLayout>

@@ -1,6 +1,6 @@
 <#import "../common/forms.ftlh" as forms />
 
-<#macro content hearingExaminationInfo >
+<#macro content hearingExaminationInfo="NUL" >
 <#-- @ftlvariable name="hearingExaminationInfo" type="de.eshg.schoolentry.pdf.schoolinfoletter.model.SchoolInfoLetterHearingExaminationInfo" -->
   <table style="width: 100%;">
     <colgroup>
@@ -11,16 +11,16 @@
     </colgroup>
     <tr>
       <td>
-        <@forms.checkbox checked=!hearingExaminationInfo.conspicuous title="Nein"/>
+        <@forms.checkbox checked=hearingExaminationInfo?isHash && !hearingExaminationInfo.conspicuous title="Nein"/>
       </td>
       <td>
-        <@forms.checkbox checked=hearingExaminationInfo.conspicuous title="Ja"/>
+        <@forms.checkbox checked=hearingExaminationInfo?isHash && hearingExaminationInfo.conspicuous title="Ja"/>
       </td>
       <td>
-        <@forms.checkbox checked=hearingExaminationInfo.clarificationArranged title="Abklärung veranlasst"/>
+        <@forms.checkbox checked=hearingExaminationInfo?isHash && hearingExaminationInfo.clarificationArranged title="Abklärung veranlasst"/>
       </td>
       <td>
-        <@forms.checkbox checked=hearingExaminationInfo.underTreatment title="in Kontrolle / Behandlung"/>
+        <@forms.checkbox checked=hearingExaminationInfo?isHash && hearingExaminationInfo.underTreatment title="in Kontrolle / Behandlung"/>
       </td>
     </tr>
   </table>

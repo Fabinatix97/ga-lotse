@@ -62,4 +62,5 @@
     <include file="migrations/0052_add_date_filter.xml"/>
     <include file="migrations/0053_add_t_closeness_hierarchy.xml"/>
     <include file="migrations/0054_add_data_information_to_diagram.xml"/>
+    <include file="migrations/0055_add_status_anonymization_failed.xml"/>
 </databaseChangeLog>

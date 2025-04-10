@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useGetSelfUser } from "@eshg/lib-employee-portal";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   ClientEvent,
@@ -20,6 +21,7 @@ import {
 } from "react";
 
 import { useUpdateSelfUserChatAttributes } from "@/lib/businessModules/chat/api/mutations/selfUserApi";
+import { useBindKeycloakId } from "@/lib/businessModules/chat/api/mutations/userAccountApi";
 import { useCreateOrUpdateUserSettings } from "@/lib/businessModules/chat/api/mutations/userSettingsApi";
 import {
   getSelfUserChatAttributesQueryKey,
@@ -31,109 +33,134 @@ import {
   isDeviceVerified,
 } from "@/lib/businessModules/chat/matrix/crypto";
 import {
-  cacheSecretStorageKey,
-  getSecretStorageKey,
+  getSecretStorageKeyFromCache,
+  saveSecretStorageKeyToCache,
 } from "@/lib/businessModules/chat/matrix/cryptoCallbacks";
 import {
-  createTemporaryMatrixClient,
+  clearAllStoresOnUserChange,
   fetchFn,
-  getCredentials,
-  requestCredentials,
+  loginWithCachedDeviceOrWithNewDevice,
+  loginWithNewDevice,
 } from "@/lib/businessModules/chat/matrix/login";
-import { restoreKeyBackupFromCache } from "@/lib/businessModules/chat/matrix/secretStorage";
 import {
-  clearCachedCredentials,
-  clearMatrixStores,
-  persistCredentials,
+  deleteKeyBackupFromSecretStorage,
+  hasKeyBackupInSecretStorage,
+  restoreKeyBackupFromSecretStorage,
+} from "@/lib/businessModules/chat/matrix/secretStorage";
+import {
+  clearAllStores,
+  saveUserDeviceToLocalStorage,
 } from "@/lib/businessModules/chat/matrix/tokens";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
-import { chatSearchParamNames } from "@/lib/businessModules/chat/shared/constants";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
-import { IStoredCredentials } from "@/lib/businessModules/chat/shared/types";
-import {
-  clearSearchParams,
-  fetchBackupInfoWithRetry,
-  waitUntilCryptoApiIsInitialized,
-} from "@/lib/businessModules/chat/shared/utils";
+import { UserDevice } from "@/lib/businessModules/chat/shared/types";
+import { waitUntilCryptoApiIsInitialized } from "@/lib/businessModules/chat/shared/utils";
 
 export function useChatLifecycle(
   matrixClient: MutableRefObject<MatrixClient>,
   clientState: ClientState,
   setClientState: Dispatch<SetStateAction<ClientState>>,
 ) {
+  const { data: selfUser } = useGetSelfUser();
   const { data: selfUserChatAttributesData } = useGetSelfUserChatAttributes();
   const { configuration, userSettings } = useChat();
 
+  const { mutateAsync: bindKeycloakIdToSynapseUser } = useBindKeycloakId();
   const { mutateAsync: registerAccount } = useCreateOrUpdateUserSettings();
   const { mutateAsync: updateSelfUserChatAttributes } =
     useUpdateSelfUserChatAttributes();
 
   const baseUrl = configuration.PUBLIC_MATRIX_SERVER_URL;
-  const credentialsRef = useRef<IStoredCredentials | null>(null);
+  const userDeviceRef = useRef<UserDevice | null>(null);
   const wasRegisterFlowStarted = useRef(false);
-  const wasRegisterFlowFinished = useRef(false);
   const wasExternalChatUsernameUpdated = useRef(false);
   const wasMatrixClientInitialized = useRef(false);
   const wasRustCryptoInitialized = useRef(false);
+  const isInitEncryptionStarted = useRef(false);
+  const userWasJustRegistered = useRef(false);
   const queryClient = useQueryClient();
 
   function resetClientStateFlags() {
     wasRegisterFlowStarted.current = false;
     wasExternalChatUsernameUpdated.current = false;
     wasMatrixClientInitialized.current = false;
+    isInitEncryptionStarted.current = false;
     wasRustCryptoInitialized.current = false;
   }
 
   /**
-   * Resets the chat client by stopping the matrix client, resetting client state flags,
-   * clearing cached credentials, and clearing the matrix stores. Finally, it sets the client state to `Idle`.
+   * WARNING: To be used only if user lost E2EE passphrase.
+   * This action **will delete forever** current 4S E2EE keyBackup from the server and user
+   * will never be able to access current message history again.
    */
-  const resetChat = useCallback(async () => {
-    logger.warn("RESETTING CHAT");
-
+  const factoryResetChat = useCallback(async () => {
+    logger.warn("FACTORY RESET CHAT");
     matrixClient.current.stopClient();
+    await deleteKeyBackupFromSecretStorage(matrixClient.current);
+    await clearAllStores();
     resetClientStateFlags();
-    clearCachedCredentials();
-    await clearMatrixStores();
-    setClientState(ClientState.Idle);
+    setClientState(ClientState.CreateMatrixClient);
   }, [setClientState, matrixClient]);
 
   /**
-   * Restarts the chat client by resetting the client state flags and setting the client state to `Idle`.
-   * This function is typically used to perform a soft reset of the chat.
+   * Clears locally cached keyBackup, restarts matrixClient and triggers downloading fresh key backup from Synapse's 4S
+   */
+  const hardResetChat = useCallback(async () => {
+    logger.warn("HARD RESET CHAT");
+    matrixClient.current.stopClient();
+    await clearAllStores();
+    resetClientStateFlags();
+    setClientState(ClientState.CreateMatrixClient);
+  }, [setClientState, matrixClient]);
+
+  /**
+   * Restarts matrixClient with cached keyBackup
    */
   const restartChat = useCallback(() => {
-    logger.warn("RESTARTING CHAT");
-
+    logger.warn("REFRESHING CHAT");
     resetClientStateFlags();
-    setClientState(ClientState.Idle);
+    setClientState(ClientState.CreateMatrixClient);
   }, [setClientState]);
 
   /**
-   * First ever whoami request creates synapse user account.
-   * Then Chat management is called to create synapse user mapping with keycloak user id.
+   * User's first time ever request to Synapse triggers Synapse to register new Matrix User Account
+   * Then chat-management is called to create synapse user mapping with keycloak user id.
    * This ensures proper behavior of requests that require User-Interactive Authentication (E2EE passphrase reset, account deactivation).
    */
   const registerChatUser = useCallback(async () => {
     if (wasRegisterFlowStarted.current) return;
     wasRegisterFlowStarted.current = true;
-    logger.info("Step 0/4: REGISTER NEW CHAT USER");
+    logger.info("Step 0/5: registerChatUser");
 
     if (userSettings.accountRegistered) {
-      logger.info("Account already registered, skipping");
+      logger.debug("User Matrix Account already registered, skipping.");
       wasMatrixClientInitialized.current = false;
-      return setClientState(ClientState.Idle);
+      setClientState(ClientState.CreateMatrixClient);
+      return;
     }
 
     try {
-      const temporaryMatrixClient = createTemporaryMatrixClient(baseUrl);
-      const credentials = await requestCredentials(temporaryMatrixClient);
-      persistCredentials(credentials);
+      const userDevice: UserDevice = await loginWithNewDevice(baseUrl);
+      saveUserDeviceToLocalStorage(userDevice);
 
+      logger.debug(
+        "Binding Keycloak User ID to Synapse User:",
+        userDevice.userId,
+      );
+      await bindKeycloakIdToSynapseUser({
+        matrixUserId: userDevice.userId,
+      }).catch((error) => {
+        throw new Error(`Error binding keycloak id to synapse user: ${error}`);
+      });
+
+      logger.debug(
+        "Binding Synapse User ID (MXID) to Keycloak User:",
+        userDevice.userId,
+      );
       try {
         await updateSelfUserChatAttributes({
-          externalChatUsername: credentials.userId,
+          externalChatUsername: userDevice.userId,
           chatCryptoStoreDeriveKeySecret: generateCryptoRandomUUID(),
         });
         await queryClient.invalidateQueries({
@@ -145,28 +172,25 @@ export function useChatLifecycle(
         });
       }
 
-      try {
-        await registerAccount({
-          userId: selfUserChatAttributesData.userId,
-          accountRegistered: true,
-        });
-      } catch (err) {
-        throw new Error("Error marking user as registered", {
-          cause: err,
-        });
-      }
+      await registerAccount({
+        userId: selfUserChatAttributesData.userId,
+        accountRegistered: true,
+      }).catch((error) => {
+        throw new Error(`Error marking user as registered: ${error}`);
+      });
 
-      logger.info("Registered new chat user: ", credentials);
-      wasRegisterFlowFinished.current = true;
-      setClientState(ClientState.Restart);
+      logger.info("Step 0/5: registerChatUser - FINISHED");
+      userWasJustRegistered.current = true;
+      wasMatrixClientInitialized.current = false;
+      setClientState(ClientState.CreateMatrixClient);
     } catch (error) {
-      logger.error("Failed to register chat user", error);
+      logger.error("Error registerChatUser", error);
       setClientState(ClientState.Error);
     }
-    clearSearchParams(chatSearchParamNames.loginToken);
   }, [
     baseUrl,
     registerAccount,
+    bindKeycloakIdToSynapseUser,
     selfUserChatAttributesData.userId,
     setClientState,
     updateSelfUserChatAttributes,
@@ -176,68 +200,68 @@ export function useChatLifecycle(
 
   /**
    * Create matrix client based on verified credentials with crypto callbacks
-   * - Call whoami endpoint to check if user is authenticated
-   * - Cache deviceId and matrix userId
-   * - Verify logged-in user with cached matrix userId
+   * - Login to Matrix Server and get deviceId (use cached deviceId if present)
+   * - Cache deviceId and matrix userId in local storage
+   * - Create MatrixClient
    */
-  const initMatrixClient = useCallback(async () => {
+  const createMatrixClient = useCallback(async () => {
     if (wasMatrixClientInitialized.current) return;
     wasMatrixClientInitialized.current = true;
+    logger.info("Step 1/5: createMatrixClient");
 
-    if (!userSettings.accountRegistered && !wasRegisterFlowFinished.current) {
+    void clearAllStoresOnUserChange(selfUser.externalChatUsername);
+
+    if (!userSettings.accountRegistered && !userWasJustRegistered.current) {
       logger.info(
-        "INIT MATRIX CLIENT: Account not yet registered, starting register flow",
+        "User Matrix Account not yet registered. Starting registration.",
       );
-      return setClientState(ClientState.Registration);
+      return setClientState(ClientState.RegisterMatrixUser);
     }
 
-    logger.info("Step 1/4: INIT MATRIX CLIENT");
-
     try {
-      const credentials = await getCredentials(
+      const userDevice: UserDevice = await loginWithCachedDeviceOrWithNewDevice(
         baseUrl,
-        selfUserChatAttributesData.externalChatUsername,
+        selfUser?.externalChatUsername,
       );
 
-      logger.info("Setting credentialsRef: ", credentials);
-      credentialsRef.current = credentials;
+      userDeviceRef.current = userDevice;
 
       matrixClient.current = createClient({
         baseUrl: baseUrl,
-        deviceId: credentials.deviceId,
-        userId: credentials.userId,
-        fetchFn: (input, init) => fetchFn(input, init, credentials.deviceId),
+        deviceId: userDevice.deviceId,
+        userId: userDevice.userId,
+        fetchFn: (input, init) => fetchFn(input, init, userDevice.deviceId),
         cryptoCallbacks: {
           getSecretStorageKey: (keys) =>
-            getSecretStorageKey(keys, matrixClient.current),
-          cacheSecretStorageKey,
+            getSecretStorageKeyFromCache(keys, matrixClient.current),
+          cacheSecretStorageKey: (keyId, keyInfo, key) =>
+            saveSecretStorageKeyToCache(keyId, keyInfo, key),
         },
       });
 
-      setClientState(ClientState.Authorized);
+      setClientState(ClientState.StartMatrixClient);
     } catch (error) {
-      logger.error("Error logging into matrix chat:", error);
+      logger.error("Error createMatrixClient:", error);
       setClientState(ClientState.Error);
     }
-    logger.info("FINISHED Step 1/4: INIT MATRIX CLIENT");
+    logger.info("Step 1/5: createMatrixClient - FINISHED");
   }, [
     baseUrl,
-    matrixClient,
-    selfUserChatAttributesData.externalChatUsername,
+    selfUser.externalChatUsername,
     setClientState,
-    userSettings.accountRegistered,
+    userSettings,
+    matrixClient,
   ]);
 
   /**
    * Initiate matrix-sdk-crypto-wasm for E2EE communication and start matrixClient.
    */
   const initRustCryptoAndStartMatrixClient = useCallback(async () => {
-    if (wasRustCryptoInitialized.current || !credentialsRef.current?.deviceId)
-      return;
+    if (wasRustCryptoInitialized.current) return;
     wasRustCryptoInitialized.current = true;
 
     try {
-      logger.info("Step 2/4: INIT RUST CRYPTO");
+      logger.info("Step 2/5: initRustCrypto");
 
       if (!selfUserChatAttributesData.chatCryptoStoreDeriveKeySecret) {
         throw new Error(
@@ -245,25 +269,28 @@ export function useChatLifecycle(
         );
       }
 
+      const userId = matrixClient.current.getUserId() ?? "";
+      const deviceId = matrixClient.current.getDeviceId() ?? "";
+
       const storageKey = await createStorageKey(
-        selfUserChatAttributesData.userId,
-        credentialsRef.current.deviceId,
+        userId,
+        deviceId,
         selfUserChatAttributesData.chatCryptoStoreDeriveKeySecret,
       );
+
       await matrixClient.current.initRustCrypto({
         storageKey,
       });
       await waitUntilCryptoApiIsInitialized(matrixClient.current);
-      logger.info("FINISHED Step 2/4: INIT RUST CRYPTO");
+      logger.info("Step 2/5: initRustCrypto - FINISHED");
 
-      //Changing the client's state to ClientCreated will initiate listening for sync events.
-      setClientState(ClientState.ClientCreated);
-
-      logger.info("Step 3/4: START MATRIX CLIENT");
+      logger.info("Step 3/5: startMatrixClient");
       await matrixClient.current.startClient({
         initialSyncLimit: 20,
       });
-      logger.info("FINISHED Step 3/4: START MATRIX CLIENT");
+
+      logger.info("Step 3/5: startMatrixClient - FINISHED");
+      setClientState(ClientState.WaitUntilClientPrepared);
     } catch (error) {
       logger.error("Error starting matrix client", error);
       setClientState(ClientState.Error);
@@ -271,42 +298,50 @@ export function useChatLifecycle(
   }, [matrixClient, setClientState, selfUserChatAttributesData]);
 
   /**
-   * Initialize E2EE key stores
+   * Checks for E2EE key backup in 4S
    */
   const initChatEncryption = useCallback(async () => {
-    logger.info("Step 4/4: INIT CHAT ENCRYPTION");
-    try {
-      const backupInfo = await fetchBackupInfoWithRetry(matrixClient.current);
+    if (isInitEncryptionStarted.current) return;
+    isInitEncryptionStarted.current = true;
 
-      if (!backupInfo?.has4SKey || !backupInfo?.keyBackupInfo) {
-        setClientState(ClientState.CreateBackupKey);
-      } else {
-        const isKeyBackupRestored = await restoreKeyBackupFromCache(
+    logger.info("Step 5/5: initEncryption");
+    try {
+      const hasBackupInSecretStorage: boolean =
+        await hasKeyBackupInSecretStorage(matrixClient.current);
+
+      if (hasBackupInSecretStorage) {
+        //TODO: export function, use it in CreateBackupSidebar and RestoreBackupSidebar
+        const keyBackupRestoreResult = await restoreKeyBackupFromSecretStorage(
           matrixClient.current,
         );
+        logger.debug({ keyBackupRestoreResult });
 
         const isVerifiedDevice = await isDeviceVerified(matrixClient.current);
+        logger.debug({ isVerifiedDevice });
 
-        if (!isKeyBackupRestored || !isVerifiedDevice) {
-          setClientState(ClientState.RestoreBackupKey);
+        if (!keyBackupRestoreResult || !isVerifiedDevice) {
+          logger.warn("Failed to restore keyBackup or device is not verified.");
+          setClientState(ClientState.RestoreKeyBackup);
         } else {
-          setClientState(ClientState.Prepared);
+          setClientState(ClientState.Ready);
         }
+      } else {
+        setClientState(ClientState.CreateKeyBackup);
       }
     } catch (error) {
-      logger.error("Encryption Error: ", error);
+      logger.error("Error initChatEncryption", error);
       matrixClient.current.stopClient();
       setClientState(ClientState.Error);
     }
-    logger.info("FINISHED Step 4/4: INIT CHAT ENCRYPTION");
+    logger.info("Step 5/5: initEncryption - FINISHED");
   }, [matrixClient, setClientState]);
 
   const updateMatrixUserDisplayName = useCallback(async () => {
-    if (!credentialsRef.current?.userId) return;
+    if (!userDeviceRef.current?.userId) return;
 
     try {
       const profile = await matrixClient.current.getProfileInfo(
-        credentialsRef.current.userId,
+        userDeviceRef.current.userId,
         "displayname",
       );
       const matrixUserDisplayName =
@@ -326,92 +361,70 @@ export function useChatLifecycle(
     selfUserChatAttributesData.lastName,
   ]);
 
-  const updateSelfUserChatUsername = useCallback(async () => {
-    if (!credentialsRef.current?.userId) return;
-    if (wasExternalChatUsernameUpdated.current) return;
-
-    if (
-      credentialsRef.current.userId !==
-      selfUserChatAttributesData.externalChatUsername
-    ) {
-      logger.info(
-        "Updating selfUser externalChatUsername: ",
-        credentialsRef.current.userId,
-      );
-
-      wasExternalChatUsernameUpdated.current = true;
-
-      await updateSelfUserChatAttributes({
-        externalChatUsername: credentialsRef.current.userId,
-      }).catch((error) => {
-        wasExternalChatUsernameUpdated.current = false;
-        logger.softError("Error updating selfUser's chat userId: ", error);
-      });
-    }
-  }, [selfUserChatAttributesData, updateSelfUserChatAttributes]);
-
   useEffect(() => {
     switch (clientState) {
-      case ClientState.Registration:
+      case ClientState.RegisterMatrixUser:
         void registerChatUser();
         break;
-      case ClientState.Idle:
-        void initMatrixClient();
+      case ClientState.CreateMatrixClient:
+        void createMatrixClient();
         break;
-      case ClientState.Authorized:
+      case ClientState.StartMatrixClient:
         void initRustCryptoAndStartMatrixClient();
         break;
-      case ClientState.ReadyForEncryption:
+      case ClientState.InitEncryption:
         void updateMatrixUserDisplayName();
-        void updateSelfUserChatUsername();
         void initChatEncryption();
         break;
       case ClientState.Restart:
         void restartChat();
         break;
-      case ClientState.Reset:
-        void resetChat();
+      case ClientState.HardReset:
+        void hardResetChat();
+        break;
+      case ClientState.FactoryReset:
+        void factoryResetChat();
         break;
       default:
         break;
     }
   }, [
     clientState,
-    initRustCryptoAndStartMatrixClient,
-    initChatEncryption,
-    initMatrixClient,
-    resetChat,
-    updateMatrixUserDisplayName,
-    updateSelfUserChatUsername,
     registerChatUser,
+    createMatrixClient,
+    initRustCryptoAndStartMatrixClient,
+    updateMatrixUserDisplayName,
+    initChatEncryption,
     restartChat,
+    hardResetChat,
+    factoryResetChat,
   ]);
 
   useEffect(() => {
-    if (
-      clientState === ClientState.Idle ||
-      clientState === ClientState.Authorized
-    )
+    if (clientState !== ClientState.WaitUntilClientPrepared) {
       return;
+    }
 
-    function handleSync(state: SyncState) {
-      logger.debug("SyncState", state);
+    logger.info("Step 4/5: WaitUntilClientPrepared");
+    matrixClient.current.on(ClientEvent.Sync, syncStateEventHandler);
+    return () => {
+      matrixClient.current.off(ClientEvent.Sync, syncStateEventHandler);
+    };
+
+    function syncStateEventHandler(state: SyncState) {
+      logger.info("SyncState", state);
       switch (state) {
         case SyncState.Prepared:
-          setClientState(ClientState.ReadyForEncryption);
+          logger.info("Step 4/5: WaitUntilClientPrepared - FINISHED");
+          setClientState(ClientState.InitEncryption);
           break;
         case SyncState.Error:
+          logger.error("SyncState", state);
           setClientState(ClientState.Error);
         default:
           break;
       }
     }
-
-    matrixClient.current.on(ClientEvent.Sync, handleSync);
-
-    return () => {
-      matrixClient.current.off(ClientEvent.Sync, handleSync);
-    };
   }, [clientState, matrixClient, setClientState]);
 
   return null;

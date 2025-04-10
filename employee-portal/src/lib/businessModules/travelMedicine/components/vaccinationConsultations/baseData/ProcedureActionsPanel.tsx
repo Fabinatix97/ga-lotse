@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSearchReferencePersonsQuery } from "@eshg/lib-employee-portal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   ApiGetVaccinationConsultationDetailsResponse,
@@ -12,7 +13,6 @@ import {
 import { Button, Grid } from "@mui/joy";
 import { ReactNode } from "react";
 
-import { useSearchReferencePersonsQuery } from "@/lib/baseModule/api/queries/persons";
 import {
   UsePatchStatusRequest,
   useAcceptDraftVaccinationConsultation,

@@ -4,11 +4,13 @@
  */
 
 import type { ApiGetReferencePersonResponse } from "@eshg/base-api";
-import { SidebarFormHandle } from "@eshg/lib-employee-portal";
+import {
+  SidebarFormHandle,
+  useSearchReferencePersonsQuery,
+} from "@eshg/lib-employee-portal";
 import { Button } from "@mui/joy";
 import { ReactNode, RefObject, useState } from "react";
 
-import { useSearchReferencePersonsQuery } from "@/lib/baseModule/api/queries/persons";
 import {
   LegacyMinimalPerson,
   MINIMAL_PERSON_VALUES,

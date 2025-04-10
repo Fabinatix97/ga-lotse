@@ -6,6 +6,7 @@
 "use client";
 
 import {
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -17,7 +18,6 @@ import { FormLabel, Input, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 
 import { APPOINTMENT_TYPES } from "@/lib/businessModules/stiProtection/shared/constants";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 
 export interface EditableAppointmentType {
   id: string;

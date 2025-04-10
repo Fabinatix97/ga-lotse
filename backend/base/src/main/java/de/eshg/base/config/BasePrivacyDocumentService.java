@@ -9,10 +9,10 @@ import static de.eshg.util.ResourceUtils.assertIsReadable;
 
 import de.eshg.base.config.BasePrivacyDocumentService.MandatoryInitialPrivacyDocuments;
 import de.eshg.base.config.persistence.entity.BasePrivacyDocumentsConfig;
-import de.eshg.departmentinfo.AbstractPrivacyDocumentService;
-import de.eshg.departmentinfo.domain.PrivacyDocument;
-import de.eshg.departmentinfo.initialization.InitialPrivacyDocuments;
-import de.eshg.departmentinfo.spring.DepartmentInfoPropertyBinding;
+import de.eshg.config.departmentinfo.AbstractPrivacyDocumentService;
+import de.eshg.config.domain.PrivacyDocument;
+import de.eshg.config.initialization.InitialPrivacyDocuments;
+import de.eshg.config.spring.DepartmentInfoPropertyBinding;
 import de.eshg.persistence.TransactionHelper;
 import jakarta.persistence.EntityManager;
 import jakarta.validation.constraints.NotNull;

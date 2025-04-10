@@ -5,23 +5,29 @@
 
 package de.eshg.base.config;
 
-import static de.eshg.departmentinfo.mapper.DepartmentInfoMapper.mapToDomain;
+import static de.eshg.config.mapper.DepartmentInfoMapper.mapToDomain;
 
 import com.google.common.annotations.VisibleForTesting;
 import de.eshg.base.config.BaseDepartmentInfoConfigService.MandatoryInitialDepartmentInfo;
 import de.eshg.base.config.persistence.BaseDepartmentInfoConfig;
-import de.eshg.departmentinfo.AbstractDepartmentInfoConfigService;
-import de.eshg.departmentinfo.domain.DepartmentInfo;
-import de.eshg.departmentinfo.initialization.InitialDepartmentInfo;
-import de.eshg.departmentinfo.spring.DepartmentInfoPropertyBinding;
+import de.eshg.base.util.MapUtils;
+import de.eshg.config.ConfigurationEndpoint;
+import de.eshg.config.ConfigurationStatus;
+import de.eshg.config.departmentinfo.AbstractDepartmentInfoConfigService;
+import de.eshg.config.domain.DepartmentInfo;
+import de.eshg.config.initialization.InitialDepartmentInfo;
+import de.eshg.config.spring.DepartmentInfoPropertyBinding;
 import de.eshg.lib.common.CountryCode;
 import de.eshg.persistence.TransactionHelper;
 import jakarta.persistence.EntityManager;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.util.SequencedMap;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 @Component
@@ -37,6 +43,21 @@ public class BaseDepartmentInfoConfigService
       TransactionHelper transactionHelper) {
     super(entityManager, transactionHelper, BaseDepartmentInfoConfig.class);
     this.initialDepartmentInfo = initialDepartmentInfo;
+  }
+
+  @Override
+  @Transactional(propagation = Propagation.REQUIRED)
+  protected SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
+    return MapUtils.orderedMapOf(
+        ConfigurationEndpoint.DEPARTMENT_INFO.name(), toConfigurationStatus(getConfig()));
+  }
+
+  private ConfigurationStatus toConfigurationStatus(BaseDepartmentInfoConfig config) {
+    if (config.isInitialized()) {
+      return ConfigurationStatus.COMPLETE;
+    } else {
+      return ConfigurationStatus.INCOMPLETE;
+    }
   }
 
   @Override

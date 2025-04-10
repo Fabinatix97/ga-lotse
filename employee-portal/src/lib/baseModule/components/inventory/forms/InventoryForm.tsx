@@ -5,6 +5,7 @@
 
 import { ApiInventoryItemType, ApiLabel } from "@eshg/base-api";
 import {
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -21,7 +22,6 @@ import { Ref } from "react";
 
 import { inventoryTypeOptions } from "@/lib/baseModule/components/inventory/constants";
 import { LabelField } from "@/lib/baseModule/components/labels/LabelField";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { validateNonNegativeInteger } from "@/lib/shared/helpers/validators";
 
 export interface InventoryFormValues {

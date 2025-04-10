@@ -51,11 +51,10 @@
   "documents": {
     "title": "Unterlagen zum Vorgang",
     "alert": {
-      "message_MISSING": "Laden Sie die erforderlichen Dokumente hoch.",
-      "title_REJECTED": "Es gibt abgelehnte Dokumente",
-      "message_REJECTED": "Bitte prüfen Sie den Ablehnungsgrund und laden Sie entsprechend neue Dateien hoch.",
+      "message_MISSING": "Laden Sie das erforderliche Dokument hoch.",
+      "title_REJECTED": "Dieses Dokument wurde abgelehnt.",
       "title_SUBMITTED": "In Bearbeitung",
-      "message_SUBMITTED": "Die eingereichten Dokumente werden aktuell geprüft."
+      "message_SUBMITTED": "Das Dokument wird aktuell geprüft."
     },
     "files": {
       "title": "Dokument",
@@ -80,14 +79,19 @@
   },
   "overview": {
     "title": "Übersicht",
-    "nameSection": {
+    "name": {
       "title": "Name"
     },
-    "birthdateSection": {
+    "birthdate": {
       "title": "Geburtsdatum"
     },
-    "concernSection": {
+    "concern": {
       "title": "Anliegen"
+    },
+    "medicalOpinion": {
+      "title": "Gutachten",
+      "value_IN_PROGRESS": "In Arbeit",
+      "value_ACCOMPLISHED": "Fertig"
     },
     "actions": {
       "booked": {

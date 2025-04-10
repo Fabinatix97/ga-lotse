@@ -12,5 +12,6 @@ import java.util.List;
 
 public record GetEmployeeOmsProcedureOverviewResponse(
     @Valid @NotNull List<EmployeeOmsProcedureOverviewDto> elements,
-    @NotNull long totalNumberOfElements)
+    @NotNull long totalNumberOfElements,
+    @NotNull int medicalOpinionLeadTime)
     implements PagedResponse<EmployeeOmsProcedureOverviewDto> {}

@@ -18,7 +18,7 @@ import de.eshg.base.testhelper.BaseTestHelperApi;
 import de.eshg.lib.appointmentblock.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.lib.appointmentblock.testhelper.AppointmentBlockGroupsPopulator;
-import de.eshg.schoolentry.LabelController;
+import de.eshg.schoolentry.ProcedureLabelController;
 import de.eshg.schoolentry.SchoolEntryController;
 import de.eshg.schoolentry.api.*;
 import de.eshg.schoolentry.api.anamnesis.*;
@@ -48,7 +48,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
   private final PopulateWithAccessTokenHelper populateWithAccessTokenHelper;
   private final SchoolEntryController schoolEntryController;
   private final SchoolEntryProcedureRepository schoolEntryProcedureRepository;
-  private final LabelController labelController;
+  private final ProcedureLabelController procedureLabelController;
   private final Icd10CodeApi icd10CodeApi;
   private final BaseTestHelperApi baseTestHelperApi;
   private final ContactApi contactApi;
@@ -61,7 +61,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
       PopulateWithAccessTokenHelper populateWithAccessTokenHelper,
       SchoolEntryController schoolEntryController,
       SchoolEntryProcedureRepository schoolEntryProcedureRepository,
-      LabelController labelController,
+      ProcedureLabelController procedureLabelController,
       BaseTestHelperApi baseTestHelperApi,
       @SuppressWarnings("unused") // Used to define a dependency
           AppointmentBlockGroupsPopulator appointmentBlockGroupsPopulator,
@@ -77,7 +77,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
     this.schoolEntryController =
         RequestContextFaker.withFakedRequestContextsIfNecessary(schoolEntryController);
     this.schoolEntryProcedureRepository = schoolEntryProcedureRepository;
-    this.labelController = labelController;
+    this.procedureLabelController = procedureLabelController;
     this.baseTestHelperApi = baseTestHelperApi;
     this.icd10CodeApi = icd10CodeApi;
     this.contactApi = contactApi;
@@ -111,7 +111,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
   }
 
   private void assignSpecialNeedsLabel(List<CreateProcedureResponse> procedures) {
-    UUID labelId = labelController.getLabels().labels().getFirst().id();
+    UUID labelId = procedureLabelController.getLabels().labels().getFirst().id();
     for (CreateProcedureResponse procedure : procedures) {
       ProcedureDetailsDto procedureToUpdate =
           schoolEntryController.getProcedure(procedure.procedureId());
@@ -148,7 +148,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
           new UpdateProcedureRequest(
               procedureToUpdate.version(),
               procedureToUpdate.type(),
-              procedureToUpdate.labels().stream().map(LabelDto::id).toList(),
+              procedureToUpdate.labels().stream().map(ProcedureLabelDto::id).toList(),
               procedureToUpdate.appointment(),
               procedureToUpdate.isInvitationSent(),
               schoolId,
@@ -168,7 +168,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
           new UpdateProcedureRequest(
               procedureToUpdate.version(),
               procedureToUpdate.type(),
-              procedureToUpdate.labels().stream().map(LabelDto::id).toList(),
+              procedureToUpdate.labels().stream().map(ProcedureLabelDto::id).toList(),
               procedureToUpdate.appointment(),
               procedureToUpdate.isInvitationSent(),
               procedureToUpdate.school().id(),
@@ -255,7 +255,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
         new UpdateProcedureRequest(
             procedureToUpdate.version(),
             procedureToUpdate.type(),
-            procedureToUpdate.labels().stream().map(LabelDto::id).toList(),
+            procedureToUpdate.labels().stream().map(ProcedureLabelDto::id).toList(),
             procedureToUpdate.appointment(),
             procedureToUpdate.isInvitationSent(),
             getSchoolId(procedureToUpdate),

@@ -41,7 +41,7 @@ const defaultSubItems: SideNavigationSubItem[] = [
   },
   {
     name: "Kennungen",
-    href: routes.labels.overview,
+    href: routes.procedureLabels.overview,
     accessCheck: hasUserRole(ApiUserRole.SchoolEntryAdmin),
   },
 ];

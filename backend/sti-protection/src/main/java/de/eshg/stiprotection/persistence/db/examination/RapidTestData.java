@@ -10,11 +10,11 @@ import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-@DataSensitivity(SensitivityLevel.SENSITIVE)
 public class RapidTestData {
-
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String number;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean result;
 
   public String getNumber() {

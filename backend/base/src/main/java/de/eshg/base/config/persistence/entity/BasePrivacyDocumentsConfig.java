@@ -5,7 +5,7 @@
 
 package de.eshg.base.config.persistence.entity;
 
-import de.eshg.departmentinfo.domain.AbstractPrivacyDocumentsConfig;
+import de.eshg.config.domain.AbstractPrivacyDocumentsConfig;
 import jakarta.persistence.Entity;
 
 @Entity

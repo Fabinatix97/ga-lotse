@@ -8,18 +8,17 @@ import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvid
 import {
   AbortDraftProcedureRequest,
   AcceptDraftProcedureRequest,
-  ApiConcern,
-  ApiPatchEmployeeOmsProcedureEmailNotificationsRequest,
   ApiPatchEmployeeOmsProcedureFacilityRequest,
-  ApiPatchEmployeeOmsProcedurePhysicianRequest,
   ApiPostEmployeeOmsProcedureRequest,
   ApiPostOmsAppointmentRequest,
   ApiSyncAffectedPersonRequest,
   ApiSyncFacilityRequest,
   CloseOpenProcedureRequest,
+  MergeAffectedPersonRequest,
   PatchMedicalOpinionStatusRequest,
   PatchWaitingRoomRequest,
   PostDocumentRequest,
+  UpdateAdditionalInfoRequest,
   UpdateAffectedPersonRequest,
 } from "@eshg/official-medical-service-api";
 
@@ -108,18 +107,16 @@ export function usePatchFacility() {
   });
 }
 
-export function useUpdateOmsProcedureConcern() {
+export function usePatchAdditionalInfo() {
   const snackbar = useSnackbar();
   const employeeOmsProcedureApi = useEmployeeOmsProcedureApi();
 
   return useHandledMutation({
-    mutationFn: ({ id, concern }: { id: string; concern: ApiConcern }) => {
-      return employeeOmsProcedureApi.updateOmsProcedureConcern(id, {
-        concern: concern,
-      });
+    mutationFn: (request: UpdateAdditionalInfoRequest) => {
+      return employeeOmsProcedureApi.updateAdditionalInfoRaw(request);
     },
     onSuccess: () => {
-      snackbar.confirmation("Das Anliegen wurde gesetzt.");
+      snackbar.confirmation("Die Zusatzinfos wurden gespeichert.");
     },
   });
 }
@@ -165,39 +162,6 @@ export function useCloseOpenProcedure() {
     mutationFn: (request: CloseOpenProcedureRequest) =>
       employeeOmsProcedureApi.closeOpenProcedureRaw(request),
     onSuccess: () => snackbar.confirmation("Der Vorgang wurde geschlossen."),
-  });
-}
-
-export function usePatchPhysician(procedureId: string) {
-  const snackbar = useSnackbar();
-  const employeeOmsProcedureApi = useEmployeeOmsProcedureApi();
-
-  return useHandledMutation({
-    mutationFn: (request: ApiPatchEmployeeOmsProcedurePhysicianRequest) => {
-      return employeeOmsProcedureApi.patchPhysician(procedureId, request);
-    },
-    onSuccess: () => {
-      snackbar.confirmation("Die Ärzt:in wurde bearbeitet.");
-    },
-  });
-}
-
-export function usePatchEmailNotifications(procedureId: string) {
-  const snackbar = useSnackbar();
-  const employeeOmsProcedureApi = useEmployeeOmsProcedureApi();
-
-  return useHandledMutation({
-    mutationFn: (
-      request: ApiPatchEmployeeOmsProcedureEmailNotificationsRequest,
-    ) => {
-      return employeeOmsProcedureApi.patchEmailNotifications(
-        procedureId,
-        request,
-      );
-    },
-    onSuccess: () => {
-      snackbar.confirmation("Die E-Mail-Einstellungen wurden gespeichert.");
-    },
   });
 }
 
@@ -251,5 +215,16 @@ export function usePatchWaitingRoom() {
       employeeOmsProcedureApi.patchWaitingRoomRaw(request),
     onSuccess: () =>
       snackbar.confirmation("Das Wartezimmer wurde aktualisiert."),
+  });
+}
+
+export function useMergeAffectedPerson() {
+  const snackbar = useSnackbar();
+  const employeeOmsProcedureApi = useEmployeeOmsProcedureApi();
+
+  return useHandledMutation({
+    mutationFn: (request: MergeAffectedPersonRequest) =>
+      employeeOmsProcedureApi.mergeAffectedPersonRaw(request),
+    onSuccess: () => snackbar.confirmation("Personendaten geprüft"),
   });
 }

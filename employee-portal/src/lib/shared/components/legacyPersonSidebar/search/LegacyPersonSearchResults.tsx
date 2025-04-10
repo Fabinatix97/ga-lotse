@@ -5,6 +5,10 @@
 
 import type { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
+  MultiFormButtonBar,
+  NoSearchResults,
+  PersonCardContent,
+  SelectableCard,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -14,11 +18,6 @@ import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGro
 import { Formik, FormikErrors } from "formik";
 import { ReactNode } from "react";
 import { isNonNullish } from "remeda";
-
-import { PersonCardContent } from "@/lib/baseModule/components/person/PersonCardContent";
-import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
-import { SelectableCard } from "@/lib/shared/components/cards/SelectableCard";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 
 interface LegacyPersonSearchResultsProps {
   persons: ApiGetReferencePersonResponse[];

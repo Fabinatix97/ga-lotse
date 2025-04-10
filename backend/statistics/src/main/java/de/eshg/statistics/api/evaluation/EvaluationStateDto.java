@@ -14,5 +14,6 @@ public enum EvaluationStateDto {
   CREATING,
   UPDATING,
   COPY_ONGOING,
-  DELETING
+  DELETING,
+  ANONYMIZATION_FAILED
 }

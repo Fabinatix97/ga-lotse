@@ -4,6 +4,7 @@
  */
 
 import {
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -16,7 +17,6 @@ import { Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { Ref } from "react";
 
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { validateNonNegativeNumberWithAtMostTwoDecimalDigits } from "@/lib/shared/helpers/validators";
 
 export interface OtherServiceFormValues {

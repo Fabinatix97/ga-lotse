@@ -6,3 +6,14 @@
 import { routes } from "@/lib/configurator/shared/routes";
 
 export type ConfiguratorModuleName = keyof typeof routes;
+
+export const configuratorNameMapping: Record<ConfiguratorModuleName, string> = {
+  baseModule: "Grundmodul",
+  schoolEntry: "Einschulungsuntersuchung",
+  travelMedicine: "Impfberatung",
+  measlesProtection: "Masernschutz",
+  medicalRegistry: "Medizinalaufsicht",
+  stiProtection: "HIV-STI Beratung",
+  sexWork: "Sexarbeit",
+  officialMedicalService: "Amtsärztliche DIenste",
+};

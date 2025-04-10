@@ -79,13 +79,13 @@ export function Incisor(props: ToothIconProps) {
           d="M30.8944 12.0249L34.6584 19.5528C34.9908 20.2177 34.5073 21 33.7639 21H26.2361C25.4927 21 25.0092 20.2177 25.3416 19.5528L29.1056 12.0249C29.4741 11.2879 30.5259 11.2879 30.8944 12.0249Z"
           fill={props.isPrimaryTooth ? "white" : FILL_COLOR}
           stroke={FILL_COLOR}
-          stroke-width="2"
+          strokeWidth="2"
         />
         <path
           d="M11 34C11 30.134 14.134 27 18 27H42C45.866 27 49 30.134 49 34V58C49 61.866 45.866 65 42 65H18C14.134 65 11 61.866 11 58V34Z"
           fill={props.isPrimaryTooth ? "white" : FILL_COLOR}
           stroke={FILL_COLOR}
-          stroke-width="2"
+          strokeWidth="2"
         />
         {props.hasPreviousExaminationResult && (
           <g
@@ -116,19 +116,19 @@ export function Premolar(props: ToothIconProps) {
           d="M22.8944 4.02492L26.6584 11.5528C26.9908 12.2177 26.5073 13 25.7639 13H18.2361C17.4927 13 17.0092 12.2177 17.3416 11.5528L21.1056 4.02492C21.4741 3.28787 22.5259 3.28787 22.8944 4.02492Z"
           fill={props.isPrimaryTooth ? "white" : FILL_COLOR}
           stroke={FILL_COLOR}
-          stroke-width="2"
+          strokeWidth="2"
         />
         <path
           d="M38.8944 4.02492L42.6584 11.5528C42.9908 12.2177 42.5073 13 41.7639 13H34.2361C33.4927 13 33.0092 12.2177 33.3416 11.5528L37.1056 4.02492C37.4741 3.28787 38.5259 3.28787 38.8944 4.02492Z"
           fill={props.isPrimaryTooth ? "white" : FILL_COLOR}
           stroke={FILL_COLOR}
-          stroke-width="2"
+          strokeWidth="2"
         />
         <path
           d="M7 26C7 22.134 10.134 19 14 19H46C49.866 19 53 22.134 53 26V58C53 61.866 49.866 65 46 65H14C10.134 65 7 61.866 7 58V26Z"
           fill={props.isPrimaryTooth ? "white" : FILL_COLOR}
           stroke={FILL_COLOR}
-          stroke-width="2"
+          strokeWidth="2"
         />
         {props.hasPreviousExaminationResult && (
           <g
@@ -159,13 +159,13 @@ export function Cuspid(props: ToothIconProps) {
           d="M30.8944 4.02492L34.6584 11.5528C34.9908 12.2177 34.5073 13 33.7639 13H26.2361C25.4927 13 25.0092 12.2177 25.3416 11.5528L29.1056 4.02492C29.4741 3.28787 30.5259 3.28787 30.8944 4.02492Z"
           fill={props.isPrimaryTooth ? "white" : FILL_COLOR}
           stroke={FILL_COLOR}
-          stroke-width="2"
+          strokeWidth="2"
         />
         <path
           d="M11 26C11 22.134 14.134 19 18 19H42C45.866 19 49 22.134 49 26V58C49 61.866 45.866 65 42 65H18C14.134 65 11 61.866 11 58V26Z"
           fill={props.isPrimaryTooth ? "white" : FILL_COLOR}
           stroke={FILL_COLOR}
-          stroke-width="2"
+          strokeWidth="2"
         />
         {props.hasPreviousExaminationResult && (
           <g

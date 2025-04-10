@@ -87,6 +87,7 @@ public class CitizenController {
   }
 
   @DeleteMapping("/appointment")
+  @Operation(summary = "Cancel current appointment of an STI procedure as citizen.")
   @Transactional
   public void cancelBookedAppointment(@AuthenticationPrincipal Jwt principal) {
     StiProtectionProcedure procedure = citizenService.getProcedure(principal);
@@ -95,6 +96,7 @@ public class CitizenController {
   }
 
   @PutMapping("/appointment")
+  @Operation(summary = "Update current appointment of an STI procedure as citizen.")
   @Transactional
   public void updateBookedAppointment(
       @AuthenticationPrincipal Jwt principal,

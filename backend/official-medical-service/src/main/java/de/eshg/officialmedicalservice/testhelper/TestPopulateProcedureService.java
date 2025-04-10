@@ -9,24 +9,24 @@ import static de.eshg.lib.procedure.model.ProcedureStatusDto.CLOSED;
 import static de.eshg.lib.procedure.model.ProcedureStatusDto.OPEN;
 
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
+import de.eshg.officialmedicalservice.anamnesis.api.UpdateAnamnesisRequest;
 import de.eshg.officialmedicalservice.appointment.OmsAppointmentService;
 import de.eshg.officialmedicalservice.citizenpublic.CitizenPublicProcedureService;
 import de.eshg.officialmedicalservice.concern.ConcernMapper;
 import de.eshg.officialmedicalservice.concern.ConcernService;
 import de.eshg.officialmedicalservice.document.OmsDocumentService;
-import de.eshg.officialmedicalservice.document.api.DocumentStatusDto;
 import de.eshg.officialmedicalservice.document.api.PatchDocumentReviewRequest;
 import de.eshg.officialmedicalservice.document.api.ReviewResultDto;
+import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocument;
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocumentRepository;
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocumentStatus;
 import de.eshg.officialmedicalservice.procedure.EmployeeOmsProcedureService;
 import de.eshg.officialmedicalservice.procedure.api.ConcernDto;
+import de.eshg.officialmedicalservice.procedure.api.MergeAffectedPersonRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchAcceptDraftProcedureRequest;
-import de.eshg.officialmedicalservice.procedure.api.PatchConcernRequest;
-import de.eshg.officialmedicalservice.procedure.api.PatchEmployeeOmsProcedureEmailNotificationsRequest;
-import de.eshg.officialmedicalservice.procedure.api.PatchEmployeeOmsProcedurePhysicianRequest;
 import de.eshg.officialmedicalservice.procedure.api.PatchMedicalOpinionStatusRequest;
 import de.eshg.officialmedicalservice.procedure.api.PostCitizenProcedureRequest;
+import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedureRepository;
 import de.eshg.officialmedicalservice.testhelper.api.AppointmentPopulationDto;
 import de.eshg.officialmedicalservice.testhelper.api.CitizenPortalCredentialsDto;
@@ -38,6 +38,7 @@ import de.eshg.officialmedicalservice.testhelper.api.PostPopulateProcedureReques
 import de.eshg.officialmedicalservice.testhelper.api.PostPopulateProcedureResponse;
 import de.eshg.officialmedicalservice.user.CitizenAccessCodeUserClient;
 import de.eshg.officialmedicalservice.waitingroom.WaitingRoomService;
+import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.population.PopulateWithAccessTokenHelper;
 import jakarta.transaction.Transactional;
@@ -179,10 +180,8 @@ public class TestPopulateProcedureService {
 
           // 2. Deactivate email notifications
           if (request.sendEmailNotifications() != null) {
-            employeeOmsProcedureService.patchEmailNotifications(
-                procedureId,
-                new PatchEmployeeOmsProcedureEmailNotificationsRequest(
-                    request.sendEmailNotifications()));
+            employeeOmsProcedureService.updateEmailNotifications(
+                loadOmsProcedure(procedureId), request.sendEmailNotifications());
           }
 
           // 3. add facility
@@ -194,17 +193,24 @@ public class TestPopulateProcedureService {
           if (request.concern() != null) {
             ConcernDto concern = loadConcern(request.concern());
 
-            employeeOmsProcedureService.updateOmsProcedureConcern(
-                procedureId, new PatchConcernRequest(concern));
+            employeeOmsProcedureService.updateConcern(loadOmsProcedure(procedureId), concern);
           }
 
           // 5. add physician
           if (request.physician() != null) {
-            employeeOmsProcedureService.modifyPhysician(
-                procedureId, new PatchEmployeeOmsProcedurePhysicianRequest(request.physician()));
+            employeeOmsProcedureService.updatePhysician(
+                loadOmsProcedure(procedureId), request.physician());
           }
 
-          // 6. start procedure
+          // 6. accept person
+          if (Boolean.TRUE.equals(request.personAccepted())) {
+            employeeOmsProcedureService.mergeAffectedPerson(
+                procedureId,
+                new MergeAffectedPersonRequest(
+                    request.procedureDataCitizen().affectedPerson(), null));
+          }
+
+          // 7. start procedure
           if (Arrays.asList(OPEN, CLOSED).contains(request.targetState())) {
             employeeOmsProcedureService.acceptDraftProcedure(
                 procedureId, new PatchAcceptDraftProcedureRequest(null, null));
@@ -221,7 +227,7 @@ public class TestPopulateProcedureService {
             }
           }
 
-          // 7. add (and cancel and close) appointments
+          // 8. add (and cancel and close) appointments
           appointmentMap =
               addAppointments(
                   procedureId,
@@ -229,10 +235,16 @@ public class TestPopulateProcedureService {
                   request.cancelledAppointments(),
                   request.closedAppointments());
 
-          // 8. add documents
-          documentMap = addDocuments(procedureId, request.documents());
+          // 9. add documents
+          documentMap =
+              addDocuments(
+                  procedureId,
+                  request.documents(),
+                  request.submittedDocuments(),
+                  request.rejectedDocuments(),
+                  request.acceptedDocuments());
 
-          // 9. update medical opinion status
+          // 11. update medical opinion status
           if (request.medicalOpinionStatus() != null) {
             employeeOmsProcedureService.updateMedicalOpinionStatus(
                 procedureId,
@@ -242,12 +254,24 @@ public class TestPopulateProcedureService {
                     request.medicalOpinionComment()));
           }
 
-          // 10. update waiting room
+          // 12. update waiting room
           if (request.waitingRoom() != null) {
             waitingRoomService.updateWaitingRoom(procedureId, request.waitingRoom());
           }
 
-          // 11. close procedure
+          // 13. update cut-off date
+          if (request.cutOffDate() != null) {
+            employeeOmsProcedureService.updateMedicalOpinionCutOffDate(
+                loadOmsProcedure(procedureId), request.cutOffDate());
+          }
+
+          // 14. update anamnesis
+          if (request.anamnesis() != null) {
+            employeeOmsProcedureService.updateAnamnesis(
+                procedureId, new UpdateAnamnesisRequest(request.anamnesis()));
+          }
+
+          // 15. close procedure
           if (Objects.equals(CLOSED, request.targetState())) {
             employeeOmsProcedureService.closeOpenProcedure(procedureId);
           }
@@ -308,46 +332,94 @@ public class TestPopulateProcedureService {
   }
 
   private Map<String, UUID> addDocuments(
-      UUID procedureId, List<DocumentPopulationDto> documentPopulation) {
+      UUID procedureId,
+      List<DocumentPopulationDto> documentPopulation,
+      List<String> submittedDocuments,
+      List<String> rejectedDocuments,
+      List<String> acceptedDocuments) {
     Map<String, UUID> documentMap = new LinkedHashMap<>();
+    Set<String> submittedDocumentsSet =
+        new HashSet<>(submittedDocuments != null ? submittedDocuments : Collections.emptyList());
+    Set<String> rejectedDocumentsSet =
+        new HashSet<>(rejectedDocuments != null ? rejectedDocuments : Collections.emptyList());
+    Set<String> acceptedDocumentsSet =
+        new HashSet<>(acceptedDocuments != null ? acceptedDocuments : Collections.emptyList());
+
+    // TODO ISSUE-7371: use citizen portal document function from document service
+
+    List<OmsDocument> initialDocuments =
+        omsProcedureRepository.findByExternalId(procedureId).orElseThrow().getDocuments();
+
+    initialDocuments.forEach(
+        document -> {
+          String key = document.getDocumentTypeDe();
+          documentMap.put(key, document.getId());
+
+          if (acceptedDocumentsSet.contains(key)) {
+            omsDocumentRepository
+                .findById(document.getId())
+                .orElseThrow()
+                .setDocumentStatus(OmsDocumentStatus.SUBMITTED);
+
+            omsDocumentService.reviewDocumentEmployee(
+                document.getId(), new PatchDocumentReviewRequest(ReviewResultDto.ACCEPTED, null));
+          }
+        });
+
     if (documentPopulation != null) {
       documentPopulation.forEach(
           document -> {
             List<MultipartFile> filesToAdd = new ArrayList<>();
             String note = null;
-            if (document.targetState() == DocumentStatusDto.ACCEPTED
-                || document.targetState() == DocumentStatusDto.SUBMITTED) {
-              filesToAdd = loadFiles(document.files());
 
-              if (!document.files().isEmpty()) {
-                note = document.note();
-              }
+            if (document.files() != null && !document.files().isEmpty()) {
+              filesToAdd = loadFiles(document.files());
+              note = document.note();
             }
 
             UUID documentId =
                 omsDocumentService.addDocumentEmployee(
                     procedureId, document.request(), filesToAdd, note);
 
-            // TODO ISSUE-7371: use citizen portal document function from document service
-            if (DocumentStatusDto.SUBMITTED == document.targetState()
-                || DocumentStatusDto.REJECTED == document.targetState()) {
+            documentMap.put(document.key(), documentId);
+
+            if (submittedDocumentsSet.contains(document.key())) {
               omsDocumentRepository
                   .findById(documentId)
                   .orElseThrow()
                   .setDocumentStatus(OmsDocumentStatus.SUBMITTED);
             }
 
-            if (document.targetState() == DocumentStatusDto.REJECTED) {
+            if (rejectedDocumentsSet.contains(document.key())) {
+              omsDocumentRepository
+                  .findById(documentId)
+                  .orElseThrow()
+                  .setDocumentStatus(OmsDocumentStatus.SUBMITTED);
+
               omsDocumentService.reviewDocumentEmployee(
                   documentId,
                   new PatchDocumentReviewRequest(
                       ReviewResultDto.REJECTED, document.reasonForRejection()));
             }
 
-            documentMap.put(document.key(), documentId);
+            if (acceptedDocumentsSet.contains(document.key())) {
+              omsDocumentRepository
+                  .findById(documentId)
+                  .orElseThrow()
+                  .setDocumentStatus(OmsDocumentStatus.SUBMITTED);
+
+              omsDocumentService.reviewDocumentEmployee(
+                  documentId, new PatchDocumentReviewRequest(ReviewResultDto.ACCEPTED, null));
+            }
           });
     }
     return documentMap;
+  }
+
+  private OmsProcedure loadOmsProcedure(UUID externalId) {
+    return omsProcedureRepository
+        .findByExternalId(externalId)
+        .orElseThrow(() -> new NotFoundException("Procedure not found"));
   }
 
   private ConcernDto loadConcern(ConcernTestDataConfig concern) {

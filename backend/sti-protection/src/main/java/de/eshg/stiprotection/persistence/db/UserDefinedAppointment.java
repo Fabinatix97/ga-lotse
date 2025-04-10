@@ -18,7 +18,7 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import java.time.Instant;
 
-@DataSensitivity(SensitivityLevel.PUBLIC)
+@DataSensitivity(SensitivityLevel.SENSITIVE)
 @Entity
 public class UserDefinedAppointment extends GenericEntity<Long> {
 

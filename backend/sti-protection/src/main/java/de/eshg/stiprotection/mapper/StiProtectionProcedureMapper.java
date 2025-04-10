@@ -59,7 +59,7 @@ public class StiProtectionProcedureMapper {
         ProcedureMapper.toInterfaceType(procedure.getProcedureStatus()),
         ConcernMapper.toInterfaceType(procedure.getConcern()),
         person.getYearOfBirth(),
-        person.getCountryOfBirth(),
+        null,
         GenderMapper.toInterfaceType(person.getGender()),
         AppointmentMapper.toInterfaceType(
             procedure.getAppointment(), procedure.getUserDefinedAppointment()),

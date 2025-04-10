@@ -7,7 +7,7 @@ package de.eshg.stiprotection.api;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "AppointmentStatus")
+@Schema(name = "AppointmentStatus", description = "Indicates the status of the appointment.")
 public enum AppointmentStatusDto {
   OPEN,
   CLOSED,

@@ -115,7 +115,7 @@
             "description" : "OK"
           }
         },
-        "summary" : "Create appointment group with blocks for week days.",
+        "summary" : "Validate appointment group with blocks for week days.",
         "tags" : [ "AppointmentBlock" ]
       }
     },
@@ -159,6 +159,27 @@
           }
         },
         "summary" : "Get free appointments for an appointment type.",
+        "tags" : [ "AppointmentBlock" ]
+      }
+    },
+    "/appointment-blocks/{appointmentBlockId}" : {
+      "delete" : {
+        "operationId" : "deleteAppointmentBlock",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "appointmentBlockId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Delete appointment block.",
         "tags" : [ "AppointmentBlock" ]
       }
     },

@@ -10,8 +10,11 @@ import {
   PropsWithChildren,
   SetStateAction,
   createContext,
+  useCallback,
   useContext,
+  useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -25,31 +28,17 @@ export interface OnBeforeNavigateProps {
   };
 }
 
+type TryNavigateFn = (href: string) => void;
+
 interface NavigationContextValue {
-  tryNavigate: (href: string) => void;
+  tryNavigate: TryNavigateFn;
   setCanNavigate: (canNavigate: SetStateAction<boolean>) => void;
   setOnBeforeNavigateProps: (
     onBeforeNavigateProps?: SetStateAction<OnBeforeNavigateProps | undefined>,
   ) => void;
 }
 
-const NavigationContext = createContext<NavigationContextValue>({
-  tryNavigate: () => {
-    throw new Error(
-      "Trying to use NavigationContext#tryNavigate without using NavigationContextProvider",
-    );
-  },
-  setCanNavigate: () => {
-    throw new Error(
-      "Trying to use NavigationContext#setCanNavigate without using NavigationContextProvider",
-    );
-  },
-  setOnBeforeNavigateProps: () => {
-    throw new Error(
-      "Trying to use NavigationContext#setOnBeforeNavigationProps without using NavigationContextProvider",
-    );
-  },
-});
+const NavigationContext = createContext<NavigationContextValue | null>(null);
 
 export function NavigationContextProvider({
   children,
@@ -64,32 +53,43 @@ export function NavigationContextProvider({
   const [onBeforeNavigateProps, setOnBeforeNavigateProps] = useState<
     OnBeforeNavigateProps | undefined
   >(undefined);
-  const router = useRouter();
+  const { push: pushRoute } = useRouter();
+  const tryNavigateRef = useRef<TryNavigateFn>(pushRoute);
 
-  const contextValue: NavigationContextValue = useMemo(
-    () => ({
-      setOnBeforeNavigateProps,
-      setCanNavigate,
-      tryNavigate(href: string) {
-        if (canNavigate) {
-          router.push(href);
-        } else {
-          onBeforeNavigate(() => {
-            setCanNavigate(true);
-            router.push(href);
-          }, onBeforeNavigateProps);
-        }
-      },
-    }),
-    [
-      canNavigate,
-      setCanNavigate,
-      router,
-      onBeforeNavigate,
-      onBeforeNavigateProps,
-      setOnBeforeNavigateProps,
-    ],
+  const tryNavigate = useCallback<TryNavigateFn>(
+    (href) => {
+      tryNavigateRef.current(href);
+    },
+    [tryNavigateRef],
   );
+
+  const contextValue = useMemo(
+    () => ({
+      tryNavigate,
+      setCanNavigate,
+      setOnBeforeNavigateProps,
+    }),
+    [tryNavigate, setCanNavigate, setOnBeforeNavigateProps],
+  );
+
+  useEffect(() => {
+    if (canNavigate) {
+      tryNavigateRef.current = pushRoute;
+    } else {
+      tryNavigateRef.current = function tryNavigate(href): void {
+        onBeforeNavigate(() => {
+          setCanNavigate(true);
+          pushRoute(href);
+        }, onBeforeNavigateProps);
+      };
+    }
+  }, [
+    canNavigate,
+    setCanNavigate,
+    onBeforeNavigate,
+    onBeforeNavigateProps,
+    pushRoute,
+  ]);
 
   return (
     <NavigationContext.Provider value={contextValue}>
@@ -98,6 +98,12 @@ export function NavigationContextProvider({
   );
 }
 
-export function useNavigation() {
-  return useContext(NavigationContext);
+export function useNavigation(): NavigationContextValue {
+  const navigationContext = useContext(NavigationContext);
+
+  if (navigationContext === null) {
+    throw new Error("Missing NavigationContext");
+  }
+
+  return navigationContext;
 }

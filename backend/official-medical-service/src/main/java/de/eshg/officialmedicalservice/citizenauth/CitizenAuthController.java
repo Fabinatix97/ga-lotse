@@ -8,6 +8,7 @@ package de.eshg.officialmedicalservice.citizenauth;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
+import de.eshg.officialmedicalservice.anamnesis.api.PostAnamnesisRequest;
 import de.eshg.officialmedicalservice.citizenauth.api.GetCitizenProcedureDetailsResponse;
 import de.eshg.rest.service.security.config.BaseUrls.OfficialMedicalService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,6 +39,7 @@ public class CitizenAuthController {
   public static final String CANCEL_APPOINTMENT_URL = "/cancel";
   public static final String APPOINTMENT_URL = "/appointment";
   public static final String DOCUMENT_URL = "/document";
+  public static final String ANAMNESIS_URL = "/anamnesis";
 
   private final CitizenAuthProcedureService citizenAuthProcedureService;
 
@@ -81,6 +83,13 @@ public class CitizenAuthController {
       @RequestPart(value = "files") List<MultipartFile> files) {
     citizenAuthProcedureService.postDocumentByCitizen(
         getCitizenUserId(principal), documentId, files);
+  }
+
+  @PostMapping(path = PROCEDURE_URL + ANAMNESIS_URL)
+  @Operation(summary = "Posts anamnesis")
+  public void postAnamnesisCitizen(
+      @AuthenticationPrincipal Jwt principal, @RequestBody @Valid PostAnamnesisRequest request) {
+    citizenAuthProcedureService.postAnamnesis(getCitizenUserId(principal), request);
   }
 
   private UUID getCitizenUserId(Jwt principal) {

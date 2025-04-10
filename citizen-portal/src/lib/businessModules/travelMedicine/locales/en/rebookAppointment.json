@@ -10,6 +10,16 @@
     "infoPanelTitle": "Rescheduling",
     "infoPanelText": "You are allowed to reschedule a maximum of two times."
   },
+  "appointment_calendar": {
+    "required_appointment": "Please select an appointment",
+    "required_day": "Please select a day",
+    "month_selection": "Appointment calendar week",
+    "next_month": "next month",
+    "prev_month": "previous month",
+    "list_label": "Available times *",
+    "calendar_label": "Date *",
+    "available": "available"
+  },
   "sidePanel": {
     "title": "Overview",
     "dateAndTime": "{{ appointmentStart }}",

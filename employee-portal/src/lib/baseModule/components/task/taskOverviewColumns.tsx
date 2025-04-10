@@ -5,6 +5,7 @@
 
 "use client";
 
+import { PROCEDURE_STATUS_COLORS } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { Chip, Stack, Typography } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
@@ -13,7 +14,6 @@ import { Task } from "@/lib/baseModule/api/models/task";
 import { OverdueTaskIcon } from "@/lib/baseModule/components/task/OverdueTaskIcon";
 import {
   businessModuleNames,
-  statusColors,
   taskStatusNames,
   taskTypeNames,
 } from "@/lib/shared/components/procedures/constants";
@@ -81,7 +81,7 @@ export const tasksColumns = [
   columnHelper.accessor("taskStatus", {
     header: "Status",
     cell: (props) => (
-      <Chip color={statusColors[props.getValue()]}>
+      <Chip color={PROCEDURE_STATUS_COLORS[props.getValue()]}>
         {taskStatusNames[props.getValue()]}
       </Chip>
     ),

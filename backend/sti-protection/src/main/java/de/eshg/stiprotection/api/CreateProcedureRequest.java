@@ -18,7 +18,13 @@ import java.time.Year;
 public record CreateProcedureRequest(
     @NotNull ConcernDto concern,
     @NotNull GenderDto gender,
-    @NotNull @Past @Schema(type = "integer") Year yearOfBirth,
+    @NotNull
+        @Past
+        @Schema(
+            type = "integer",
+            description = "Indicates the year of birth of the person.",
+            example = "1996")
+        Year yearOfBirth,
     CountryCode countryOfBirth,
     @Schema(
             type = "integer",
@@ -27,6 +33,18 @@ public record CreateProcedureRequest(
         @PastOrPresent
         Year inGermanySince,
     @NotNull AppointmentBookingTypeDto appointmentBookingType,
-    @NotNull Instant appointmentStart,
-    @NotNull @Positive Integer durationInMinutes)
+    @Schema(description = "The start date and time of the appointment.") @NotNull
+        Instant appointmentStart,
+    @Schema(description = "Duration of the appointment in minutes.", example = "30")
+        @NotNull
+        @Positive
+        Integer durationInMinutes,
+    @Schema(description = "Indicates whether the patient has sufficient German language skills.")
+        Boolean hasSufficientGermanLanguageSkills,
+    @Schema(
+            description = "Other languages the patient can speak or understand.",
+            example = "Spanish and French.")
+        String otherKnownLanguages,
+    @Schema(description = "Specifies the pronouns the person uses.", example = "she/her")
+        String pronouns)
     implements PersonalDetails {}

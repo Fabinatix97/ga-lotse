@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
-@DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+@DataSensitivity(SensitivityLevel.SENSITIVE)
 @Embeddable
 public class RiskActivity {
 

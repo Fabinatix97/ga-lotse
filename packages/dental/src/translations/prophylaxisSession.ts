@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiProphylaxisType } from "@eshg/dental-api";
+import { ApiProphylaxisStatus, ApiProphylaxisType } from "@eshg/dental-api";
 
 export const PROPHYLAXIS_TYPES: Record<ApiProphylaxisType, string> = {
   [ApiProphylaxisType.P1]: "P1 (mit FL/ mit und ohne U)",
@@ -13,4 +13,9 @@ export const PROPHYLAXIS_TYPES: Record<ApiProphylaxisType, string> = {
   [ApiProphylaxisType.P5]: "P5 (P+3.FL)",
   [ApiProphylaxisType.P6]: "P6 (P+4.FL)",
   [ApiProphylaxisType.P7]: "P7 (nur Unterrichtseinheit)",
+};
+
+export const PROPHYLAXIS_STATUS: Record<ApiProphylaxisStatus, string> = {
+  OPEN: "offen",
+  CLOSED: "abgeschlossen",
 };

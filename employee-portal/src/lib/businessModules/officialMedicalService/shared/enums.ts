@@ -21,7 +21,3 @@ export const omsProcedureStatusFilterNames = {
 export const omsProcedureHighPriorityFilterNames = {
   ["true"]: "Nur dringende Fälle",
 } satisfies Record<string, string>;
-
-export const omsProcedureTodayFilterNames = {
-  ["true"]: "Nur Vorgänge mit Termin heute",
-} satisfies Record<string, string>;

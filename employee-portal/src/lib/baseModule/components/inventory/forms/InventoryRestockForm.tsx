@@ -4,6 +4,7 @@
  */
 
 import {
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -16,7 +17,6 @@ import { Formik } from "formik";
 import { Ref } from "react";
 
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { validatePositiveInteger } from "@/lib/shared/helpers/validators";
 
 export interface InventoryManagementValues {

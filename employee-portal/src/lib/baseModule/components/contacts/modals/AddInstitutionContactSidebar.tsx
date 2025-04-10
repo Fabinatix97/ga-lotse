@@ -7,6 +7,7 @@ import { ApiInstitutionContact } from "@eshg/base-api";
 import {
   SidebarWithFormRefProps,
   createEmptyAddress,
+  useResetAlertContextOnChange,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { useState } from "react";
@@ -19,7 +20,6 @@ import {
   AddContactSidebarState,
   InstitutionContactFormValues,
 } from "@/lib/baseModule/components/contacts/types";
-import { useResetAlertContextOnChange } from "@/lib/shared/hooks/useResetAlertContextOnChange";
 
 type AddInstitutionContactSidebarState = AddContactSidebarState<
   InstitutionContactFormValues,

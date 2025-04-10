@@ -9,6 +9,7 @@ import { ApiUserRole } from "@eshg/base-api";
 import {
   ButtonBar,
   DataTable,
+  NoSearchResults,
   Pagination,
   TablePage,
   TableSheet,
@@ -34,7 +35,6 @@ import { useCreateEvaluationFromTemplateSidebar } from "@/lib/businessModules/st
 import { useEvaluationTemplateDetailsSidebar } from "@/lib/businessModules/statistics/components/evaluations/templates/EvaluationTemplateDetailsSidebar";
 import { createFilterDefinitions } from "@/lib/businessModules/statistics/components/evaluations/templates/filterDefinitions";
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/permissions/useStatisticsRoleChecks";
-import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import {
   ActionsItem,
   ActionsMenu,

@@ -55,4 +55,37 @@ public interface CellEntryRepository extends JpaRepository<CellEntry, Long> {
     """)
   Integer findIntegerValueMax(
       @Param("tableColumn") TableColumn tableColumn, @Param("unknownValue") Integer unknownValue);
+
+  @Query(
+      value =
+          """
+        SELECT COUNT(DISTINCT ce.boolValue)
+        FROM BooleanEntry ce
+        WHERE ce.tableColumn = :tableColumn
+        """)
+  Long countDistinctBooleanValues(@Param("tableColumn") TableColumn tableColumn);
+
+  @Query(
+      """
+        SELECT COUNT(DISTINCT ce.bigDecimalValue)
+        FROM DecimalEntry ce
+        WHERE ce.tableColumn = :tableColumn
+        """)
+  Long countDistinctDecimalValues(@Param("tableColumn") TableColumn tableColumn);
+
+  @Query(
+      """
+        SELECT COUNT(DISTINCT ce.integerValue)
+        FROM IntegerEntry ce
+        WHERE ce.tableColumn = :tableColumn
+        """)
+  Long countDistinctIntegerValues(@Param("tableColumn") TableColumn tableColumn);
+
+  @Query(
+      """
+        SELECT COUNT(DISTINCT ce.textValue)
+        FROM TextEntry ce
+        WHERE ce.tableColumn = :tableColumn
+        """)
+  Long countDistinctTextValues(@Param("tableColumn") TableColumn tableColumn);
 }

@@ -6,5 +6,6 @@
 package de.eshg.inspection.feature;
 
 public enum InspectionFeature {
+  STATISTIC_ANONYMIZATION,
   OFFLINE,
 }

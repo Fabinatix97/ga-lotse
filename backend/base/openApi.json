@@ -771,6 +771,24 @@
         "tags" : [ "CitizenUser" ]
       }
     },
+    "/configuration" : {
+      "get" : {
+        "operationId" : "getConfiguration",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetConfigurationStatusResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "ConfigStatus" ]
+      }
+    },
     "/configuration/department-info" : {
       "get" : {
         "operationId" : "getInternalConfigDepartmentInfo",
@@ -6610,7 +6628,7 @@
       },
       "BaseFeature" : {
         "type" : "string",
-        "enum" : [ "CHAT_USERNAME", "SEARCH_PROCEDURES", "INBOX", "GDPR", "GDPR_ONLINE_PORTAL", "MUK_FACILITY_LINK", "BUNDID_PERSON_LINK" ]
+        "enum" : [ "CHAT_USERNAME", "SEARCH_PROCEDURES", "INBOX" ]
       },
       "BlockingEventsOfCalendar" : {
         "required" : [ "calendarId", "events" ],
@@ -6831,6 +6849,10 @@
             "format" : "int64"
           }
         }
+      },
+      "ConfigurationStatus" : {
+        "type" : "string",
+        "enum" : [ "COMPLETE", "PARTIALLY_COMPLETE", "INCOMPLETE" ]
       },
       "Contact" : {
         "required" : [ "@type" ],
@@ -8190,6 +8212,21 @@
           "maxFileSize" : {
             "type" : "integer",
             "format" : "int64"
+          }
+        }
+      },
+      "GetConfigurationStatusResponse" : {
+        "required" : [ "endpointStates", "moduleState" ],
+        "type" : "object",
+        "properties" : {
+          "endpointStates" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/ConfigurationStatus"
+            }
+          },
+          "moduleState" : {
+            "$ref" : "#/components/schemas/ConfigurationStatus"
           }
         }
       },

@@ -1,4 +1,4 @@
-<#macro checkbox checked title>
+<#macro checkbox title checked=false>
 <#-- @ftlvariable name="checked" type="java.lang.Boolean" -->
 <#-- @ftlvariable name="title" type="java.lang.String" -->
   <div>

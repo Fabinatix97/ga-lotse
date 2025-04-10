@@ -7,8 +7,11 @@
 
 import {
   BaseAddressFormInputs,
+  BillingAddressForm,
+  ContactAddressForm,
   FormButtonBar,
   MainContentLayout,
+  OptionalBillingAddressForm,
   Sidebar,
   SidebarActions,
   SidebarContent,
@@ -21,12 +24,6 @@ import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Button, Grid, Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { useState } from "react";
-
-import {
-  BillingAddressForm,
-  ContactAddressForm,
-  OptionalBillingAddressForm,
-} from "@/lib/shared/components/form/address/BaseAddressForm";
 
 type SidebarState = "contact_only" | "billing_only" | "optional_billing";
 

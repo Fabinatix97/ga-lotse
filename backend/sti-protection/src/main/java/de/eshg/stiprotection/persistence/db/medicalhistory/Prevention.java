@@ -15,7 +15,7 @@ import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Embeddable
-@DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+@DataSensitivity(SensitivityLevel.SENSITIVE)
 public class Prevention {
 
   @ElementCollection(fetch = FetchType.EAGER)

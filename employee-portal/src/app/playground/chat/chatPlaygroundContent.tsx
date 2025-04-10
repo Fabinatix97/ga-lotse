@@ -23,9 +23,9 @@ import {
 } from "@/lib/businessModules/chat/matrix/crypto";
 import {
   accessSecretStorage,
-  deleteKeyBackup,
+  deleteKeyBackupFromSecretStorage,
 } from "@/lib/businessModules/chat/matrix/secretStorage";
-import { updateLocalStorageDeviceId } from "@/lib/businessModules/chat/matrix/tokens";
+import { clearAllStores } from "@/lib/businessModules/chat/matrix/tokens";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { useBackupInfo } from "@/lib/businessModules/chat/shared/hooks/useBackupInfo";
@@ -72,9 +72,9 @@ export function ChatPlaygroundContent() {
     }
   }
 
-  function clearStores() {
+  async function clearStores() {
     matrixClient.stopClient();
-    updateLocalStorageDeviceId("");
+    await clearAllStores();
     window.location.href = window.location.href;
   }
 
@@ -98,7 +98,7 @@ export function ChatPlaygroundContent() {
   }
 
   async function handleDeleteKeyBackupClick() {
-    await deleteKeyBackup(matrixClient, backupInfoStatus.backupInfo);
+    await deleteKeyBackupFromSecretStorage(matrixClient);
   }
 
   async function handleDeviceVerify() {

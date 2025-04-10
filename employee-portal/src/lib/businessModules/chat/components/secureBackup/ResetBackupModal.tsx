@@ -9,7 +9,6 @@ import {
 } from "@eshg/lib-portal/components/BaseModal";
 import { Button, Stack, Typography } from "@mui/joy";
 
-import { deleteKeyBackup } from "@/lib/businessModules/chat/matrix/secretStorage";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
@@ -17,17 +16,11 @@ import { logger } from "@/lib/businessModules/chat/shared/helpers";
 export function ResetBackupModal(
   props: Omit<BaseModalProps, "children" | "modalTitle">,
 ) {
-  const { matrixClient, setClientState } = useChatClientContext();
+  const { setClientState } = useChatClientContext();
 
-  async function handleResetAllClick() {
+  function handleResetAllClick() {
     try {
-      const crypto = matrixClient.getCrypto();
-      if (!crypto) throw new Error("CryptoApi is undefined");
-
-      const backupInfo = await crypto.getKeyBackupInfo();
-      matrixClient.stopClient();
-      await deleteKeyBackup(matrixClient, backupInfo);
-      setClientState(ClientState.Reset);
+      setClientState(ClientState.FactoryReset);
     } catch (error) {
       setClientState(ClientState.Error);
       logger.error("Reset Everything error", error);

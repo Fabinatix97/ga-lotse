@@ -7,6 +7,7 @@ import {
   ExaminationResultWithDate,
   ExaminationStatus,
   ExaminationStatusChip,
+  OpenHistorySidebarButton,
   ScreeningExaminationResult,
 } from "@eshg/dental";
 import {
@@ -44,7 +45,6 @@ import { selectDecayStatus } from "@/lib/businessModules/dental/features/prophyl
 import { selectDmftValues } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/selectors/dmftValues";
 import { Dentition } from "@/lib/businessModules/dental/features/prophylaxisSessions/dentalExaminationStore/types";
 import { DENTITION_TYPE_OPTIONS } from "@/lib/businessModules/dental/features/prophylaxisSessions/options";
-import { OpenHistorySidebarButton } from "@/lib/businessModules/dental/shared/OpenHistorySidebarButton";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 
@@ -198,10 +198,9 @@ function ScreeningFields(props: ScreeningFieldsProps) {
         <Typography component="h3" fontWeight={600}>
           Automatisierte Werte
         </Typography>
-        <OpenHistorySidebarButton
-          onClick={decayHistorySidebar.open}
-          name="Historie"
-        />
+        <OpenHistorySidebarButton onClick={decayHistorySidebar.open}>
+          Historie
+        </OpenHistorySidebarButton>
       </Stack>
       <Stack direction="row" gap={3} flexWrap="wrap">
         <DetailsItem

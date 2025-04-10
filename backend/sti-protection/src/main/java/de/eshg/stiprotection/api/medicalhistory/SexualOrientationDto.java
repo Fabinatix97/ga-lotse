@@ -7,7 +7,10 @@ package de.eshg.stiprotection.api.medicalhistory;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "SexualOrientation")
+@Schema(
+    name = "SexualOrientation",
+    description =
+        "Patient’s sexual orientation, which refers to the pattern of romantic or sexual attraction to individuals of specific genders.")
 public enum SexualOrientationDto {
   HETEROSEXUAL,
   HOMOSEXUAL,

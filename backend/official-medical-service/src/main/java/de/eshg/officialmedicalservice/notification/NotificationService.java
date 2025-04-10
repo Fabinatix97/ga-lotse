@@ -5,7 +5,7 @@
 
 package de.eshg.officialmedicalservice.notification;
 
-import de.eshg.departmentinfo.DepartmentInfoConfigService;
+import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
 import de.eshg.officialmedicalservice.procedure.api.AffectedPersonDto;
 import java.util.List;

@@ -14,4 +14,5 @@ public enum EmployeeOmsProcedureSortKey {
   PHYSICIANNAME,
   STATUS,
   NEXTAPPOINTMENT,
+  MEDICALOPINIONSTATUS,
 }

@@ -7,7 +7,7 @@ package de.eshg.medicalregistry;
 
 import static de.eshg.rest.service.security.config.BaseUrls.MedicalRegistry.CITIZEN_PORTAL_ENDPOINT;
 
-import de.eshg.departmentinfo.PrivacyDocumentService;
+import de.eshg.config.departmentinfo.PrivacyDocumentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.core.io.Resource;

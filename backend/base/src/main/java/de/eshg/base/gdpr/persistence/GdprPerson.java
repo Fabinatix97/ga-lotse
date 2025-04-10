@@ -14,6 +14,7 @@ import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
+@Table(indexes = {@Index(columnList = "bpk2")})
 @Inheritance(strategy = InheritanceType.JOINED)
 public class GdprPerson extends IdentificationData {
   @Column(nullable = false)

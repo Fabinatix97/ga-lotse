@@ -8,20 +8,16 @@ package de.eshg.statistics.anonymization;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.statistics.config.StatisticsFeature;
 import de.eshg.statistics.config.StatisticsFeatureToggle;
-import java.io.IOException;
+import de.eshg.statistics.exception.AnonymizationFailedException;
 import java.util.UUID;
 import java.util.function.BiPredicate;
 import org.deidentifier.arx.ARXAnonymizer;
 import org.deidentifier.arx.ARXResult;
 import org.deidentifier.arx.DataHandle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AnonymizationExecution {
-  private static final Logger log = LoggerFactory.getLogger(AnonymizationExecution.class);
-
   private final StatisticsFeatureToggle featureToggle;
   private final AnonymizationService anonymizationService;
 
@@ -50,20 +46,19 @@ public class AnonymizationExecution {
         anonymizationService.finishAnonymization(id, isReport, false);
       } else {
         doForAllTableRowPages(dataHolderBeforeAnonymization, anonymizationService::addTableRows);
+        ARXResult result;
         try {
-          ARXResult result =
+          result =
               new ARXAnonymizer()
                   .anonymize(
                       dataHolderBeforeAnonymization.data(), dataHolderBeforeAnonymization.config());
-          if (result.isResultAvailable()) {
-            storeAnonymizedData(result.getOutput(false), id, isReport);
-          } else {
-            String message = "Error during anonymization: no result available";
-            log.error(message);
-            throw new BadRequestException(message);
-          }
-        } catch (IOException e) {
-          throw new IllegalStateException(e);
+        } catch (Exception e) {
+          throw new AnonymizationFailedException(e);
+        }
+        if (result.isResultAvailable()) {
+          storeAnonymizedData(result.getOutput(false), id, isReport);
+        } else {
+          throw new AnonymizationFailedException("Error during anonymization: no result available");
         }
       }
     }

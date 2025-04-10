@@ -17,8 +17,6 @@ import de.eshg.base.centralfile.persistence.FacilityService;
 import de.eshg.base.centralfile.persistence.PersonService;
 import de.eshg.base.centralfile.persistence.entity.Facility;
 import de.eshg.base.centralfile.persistence.entity.Person;
-import de.eshg.base.feature.BaseFeature;
-import de.eshg.base.feature.BaseFeatureToggle;
 import de.eshg.base.gdpr.api.*;
 import de.eshg.base.gdpr.api.GetCitizenSelfUsersGdprProceduresResponse;
 import de.eshg.base.gdpr.persistence.*;
@@ -65,7 +63,6 @@ public class GdprProcedureController implements GdprProcedureApi {
   private final GdprProcedureService service;
   private final PersonService personService;
   private final FacilityService facilityService;
-  private final BaseFeatureToggle baseFeatureToggle;
   private final BusinessModuleAggregationHelper businessModuleAggregationHelper;
   private final Clock clock;
 
@@ -73,13 +70,11 @@ public class GdprProcedureController implements GdprProcedureApi {
       GdprProcedureService service,
       PersonService personService,
       FacilityService facilityService,
-      BaseFeatureToggle baseFeatureToggle,
       BusinessModuleAggregationHelper businessModuleAggregationHelper,
       Clock clock) {
     this.service = service;
     this.personService = personService;
     this.facilityService = facilityService;
-    this.baseFeatureToggle = baseFeatureToggle;
     this.businessModuleAggregationHelper = businessModuleAggregationHelper;
     this.clock = clock;
   }
@@ -87,7 +82,6 @@ public class GdprProcedureController implements GdprProcedureApi {
   @Override
   @Transactional
   public GetGdprProcedureResponse addGdprProcedure(AddGdprProcedureRequest request) {
-    baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR);
     GdprProcedure procedure = mapToDm(request);
     GdprProcedure saved = service.addFromEmployeePortal(procedure);
     return mapGdprProcedureToApi(saved);
@@ -97,7 +91,6 @@ public class GdprProcedureController implements GdprProcedureApi {
   @Transactional
   public CitizenUsersGdprProcedureDto addGdprProcedureFromCitizenPortal(
       AddGdprProcedureFromCitizenPortalRequest request) {
-    baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR_ONLINE_PORTAL);
 
     GdprProcedure procedure = mapToDm(request);
 
@@ -110,8 +103,6 @@ public class GdprProcedureController implements GdprProcedureApi {
 
   @Override
   public GetCitizenSelfUsersGdprProceduresResponse getCitizenSelfUserLinkedGdprProcedures() {
-    baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR_ONLINE_PORTAL);
-
     List<GdprProcedure> procedures = service.findGdprProceduresLinkedWithSelfUser();
 
     return GdprProcedureMapper.mapCitizenGdprProceduresToApi(procedures);
@@ -120,14 +111,12 @@ public class GdprProcedureController implements GdprProcedureApi {
   @Override
   @Transactional(readOnly = true)
   public GetGdprProcedureResponse getGdprProcedure(UUID id) {
-    baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR);
     return mapGdprProcedureToApi(service.getGdprProcedureFromDb(id));
   }
 
   @Override
   @Transactional
   public GetGdprProcedureResponse refreshStatus(UUID id) {
-    baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR);
     log.info("Refreshing status of GdprProcedure with id {}", id);
     GdprProcedure gdprProcedureFromDb = service.getGdprProcedureForUpdate(id);
 
@@ -150,7 +139,6 @@ public class GdprProcedureController implements GdprProcedureApi {
   @Override
   @Transactional(readOnly = true)
   public GetGdprProcedureDetailsPageResponse getGdprProcedureDetailsPage(UUID id) {
-    baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR);
     GdprProcedure persistedProcedure = service.getGdprProcedureFromDb(id);
     GetGdprProcedureResponse procedure = mapGdprProcedureToApi(persistedProcedure);
 
@@ -200,7 +188,6 @@ public class GdprProcedureController implements GdprProcedureApi {
   @Override
   @Transactional(readOnly = true)
   public GetGdprProceduresResponse getGdprProcedures(GdprProcedureFilterParameters parameters) {
-    baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR);
     PageSpec pageSpec =
         mapToPageSpec(
             parameters.pageNumberOrFallback(0),
@@ -215,7 +202,6 @@ public class GdprProcedureController implements GdprProcedureApi {
   @Transactional
   public GetGdprProcedureResponse addCentralFileIdToGdprProcedure(
       UUID id, AddCentralFileIdToGdprProcedureRequest request) {
-    baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR);
 
     List<CentralFileIdWrapper> centralFileIds =
         mapToDm(request.centralFileIds().stream().distinct().toList());
@@ -226,7 +212,6 @@ public class GdprProcedureController implements GdprProcedureApi {
   @Override
   @Transactional(readOnly = true)
   public GetGdprProcedureFileStateIdsResponse getFileStateIds(UUID id) {
-    baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR);
     GdprProcedure gdprProcedure = service.getGdprProcedureFromDb(id);
     validateCreatedAt(gdprProcedure);
 
@@ -292,7 +277,6 @@ public class GdprProcedureController implements GdprProcedureApi {
   @Override
   @Transactional(readOnly = true)
   public ResponseEntity<Resource> getReportDocument(UUID id) {
-    baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR);
     GdprProcedure procedure = service.getGdprProcedureFromDb(id);
 
     return service.generateResponseWithRightToObjectLetter(procedure);
@@ -301,7 +285,6 @@ public class GdprProcedureController implements GdprProcedureApi {
   @Override
   @Transactional
   public void addDownloads(UUID id, AddGdprDownloadsRequest request) {
-    baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR);
     validateStatusDownloadIdsChange(service.getGdprProcedureFromDb(id));
     validateUniqueDownloadIds(request.downloadIds());
     service.addGdprDownloads(id, request.downloadIds());
@@ -310,7 +293,6 @@ public class GdprProcedureController implements GdprProcedureApi {
   @Override
   @Transactional(readOnly = true)
   public GetGdprDownloadsResponse getDownloads(UUID id) {
-    baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR);
     GdprProcedure procedure = service.getGdprProcedureFromDb(id);
     log.info("Retrieved downloadIds={} from GdprProcedure(id={})", procedure.getDownloads(), id);
 
@@ -320,7 +302,6 @@ public class GdprProcedureController implements GdprProcedureApi {
   @Override
   @Transactional
   public void deleteDownloads(UUID id, DeleteGdprDownloadsRequest request) {
-    baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR);
     validateStatusDownloadIdsChange(service.getGdprProcedureFromDb(id));
     service.deleteGdprDownloads(id, request.downloadIds());
   }
@@ -328,8 +309,6 @@ public class GdprProcedureController implements GdprProcedureApi {
   @Override
   @Transactional(readOnly = true)
   public ResponseEntity<Resource> getCentralFileDownloadPackage(UUID id) {
-    baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR);
-
     byte[] content = service.getCentralFileDownloadPackage(id);
 
     return ResponseEntity.ok()
@@ -462,7 +441,6 @@ public class GdprProcedureController implements GdprProcedureApi {
   }
 
   private GdprProcedure getProcedureAndValidateVersion(UUID id, long version) {
-    baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR);
     GdprProcedure procedure = service.getGdprProcedureForUpdate(id);
     ValidationUtil.validateVersion(version, procedure);
     return procedure;

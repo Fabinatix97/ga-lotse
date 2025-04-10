@@ -5,6 +5,7 @@
 
 package de.eshg.stiprotection.api;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.time.Instant;
@@ -12,5 +13,9 @@ import java.time.Instant;
 public record CreateFollowUpProcedureRequest(
     @NotNull ConcernDto concern,
     @NotNull AppointmentBookingTypeDto appointmentBookingType,
-    @NotNull Instant appointmentStart,
-    @NotNull @Positive Integer durationInMinutes) {}
+    @Schema(description = "The start date and time of the appointment.") @NotNull
+        Instant appointmentStart,
+    @Schema(description = "Duration of the appointment in minutes.", example = "30")
+        @NotNull
+        @Positive
+        Integer durationInMinutes) {}

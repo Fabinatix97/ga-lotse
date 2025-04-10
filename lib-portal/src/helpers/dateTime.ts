@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { differenceInYears, format, isMatch } from "date-fns";
+import { differenceInYears, format, isAfter, isEqual, isMatch } from "date-fns";
 
 export const DATE_FORMAT = "yyyy-MM-dd";
 export const DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm";
@@ -65,4 +65,9 @@ export function calculateAge(
 
 export function isAdult(dateOfBirth: Date): boolean {
   return calculateAge(dateOfBirth) >= 18;
+}
+
+export function isDateCurrentDateOrGreater(date: Date) {
+  const now = new Date();
+  return isEqual(date, now) || isAfter(date, now); //filter out dates that are not at least
 }

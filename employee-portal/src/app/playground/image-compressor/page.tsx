@@ -6,19 +6,19 @@
 "use client";
 
 import {
+  FileField,
   MainContentLayout,
   StickyToolbarLayout,
   Toolbar,
 } from "@eshg/lib-employee-portal";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { FileLike } from "@eshg/lib-portal/components/formFields/file/validators";
-import { formatFileSize } from "@eshg/lib-portal/helpers/file";
+import { formatFileSize } from "@eshg/lib-portal/components/formFields/file/helpers";
+import { FileLike } from "@eshg/lib-portal/components/formFields/file/types";
 import { FormLabel, Slider, Stack, Typography, styled } from "@mui/joy";
 import { useQuery } from "@tanstack/react-query";
 import { Formik } from "formik";
 import { useEffect, useState } from "react";
 
-import { FileField } from "@/lib/shared/components/formFields/file/FileField";
 import { compressImage } from "@/lib/shared/helpers/imageCompressor";
 
 const StyledImage = styled("img")({ width: "100%" });

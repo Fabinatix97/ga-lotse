@@ -7,7 +7,7 @@ package de.eshg.stiprotection.api.texttemplate;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "TextTemplateContext")
+@Schema(name = "TextTemplateContext", description = "Category where the template is applicable.")
 public enum TextTemplateContextDto {
   CONSULTATION_REASON,
   CONSULTATION_REMARK,

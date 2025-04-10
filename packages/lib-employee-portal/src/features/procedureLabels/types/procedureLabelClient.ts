@@ -14,7 +14,7 @@ export interface CreateProcedureLabelRequest {
 
 export interface UpdateProcedureLabelRequest {
   id: string;
-  apiUpdateLabelRequest: {
+  apiUpdateProcedureLabelRequest: {
     name: string;
     description?: string;
     version: number;

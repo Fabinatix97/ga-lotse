@@ -7,7 +7,9 @@ package de.eshg.stiprotection.api;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "Concern")
+@Schema(
+    name = "Concern",
+    description = "Indicates the specific context or reason for the procedure.")
 public enum ConcernDto {
   HIV_STI_CONSULTATION,
   SEX_WORK

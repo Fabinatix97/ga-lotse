@@ -17,9 +17,11 @@ import java.util.UUID;
 
 @Schema(name = "CitizenProcedure")
 public record GetCitizenProcedureResponse(
-    @NotNull UUID id,
+    @Schema(description = "An unique identifier for the STI protection procedure.") @NotNull
+        UUID id,
     @NotNull ConcernDto concern,
     @NotNull @Valid PersonDto person,
     @Valid AppointmentDto appointment,
     @NotNull @Valid List<AppointmentHistoryEntryDto> appointmentHistory,
-    @NotNull Boolean medicalHistorySubmitted) {}
+    @Schema(description = "Indicates whether the medical history has been submitted.") @NotNull
+        Boolean medicalHistorySubmitted) {}

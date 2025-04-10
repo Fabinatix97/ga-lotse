@@ -4,7 +4,9 @@
  */
 
 import {
+  DefaultPersonForm,
   DefaultPersonFormValues,
+  PersonSidebarForm,
   SidebarWithFormRefProps,
   mapToPersonUpdateRequest,
   useSidebarWithFormRef,
@@ -15,8 +17,6 @@ import {
   mapPersonDetailsToForm,
 } from "@/lib/businessModules/schoolEntry/api/models/Person";
 import { useUpdateChild } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
-import { DefaultPersonForm } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
-import { PersonSidebarForm } from "@/lib/shared/components/personSidebar/form/PersonSidebarForm";
 
 export function useUpdateChildSidebar() {
   return useSidebarWithFormRef({

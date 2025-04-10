@@ -4,12 +4,13 @@
  */
 
 import { Alert } from "@eshg/lib-portal/components/Alert";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
+import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
 import {
   ApiDocument,
   ApiDocumentStatus,
   PostDocumentCitizenRequest,
 } from "@eshg/official-medical-service-api";
+import { Divider, Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { isEmpty } from "remeda";
 
@@ -24,25 +25,16 @@ import {
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
 
-function DocumentAlert({ documents }: { documents: ApiDocument[] }) {
+function DocumentAlert({ document }: { document: ApiDocument }) {
   const { t } = useTranslation(["officialMedicalService/personalArea"]);
 
-  const someMissing = documents.some(
-    (document) => document.documentStatus === ApiDocumentStatus.Missing,
-  );
-  const someRejected = documents.some(
-    (document) => document.documentStatus === ApiDocumentStatus.Rejected,
-  );
-  const reasonForRejection = documents.find(
-    (document) => document.documentStatus === ApiDocumentStatus.Rejected,
-  )?.reasonForRejection;
-  const someSubmitted = documents.some(
-    (document) => document.documentStatus === ApiDocumentStatus.Submitted,
-  );
+  const isMissing = document.documentStatus === ApiDocumentStatus.Missing;
+  const isRejected = document.documentStatus === ApiDocumentStatus.Rejected;
+  const isSubmitted = document.documentStatus === ApiDocumentStatus.Submitted;
 
   return (
     <>
-      {someMissing && (
+      {isMissing && (
         <Alert
           message={t("documents.alert.message", {
             context: ApiDocumentStatus.Missing,
@@ -50,16 +42,16 @@ function DocumentAlert({ documents }: { documents: ApiDocument[] }) {
           color="primary"
         />
       )}
-      {someRejected && (
+      {isRejected && (
         <Alert
           title={t("documents.alert.title", {
             context: ApiDocumentStatus.Rejected,
           })}
-          message={reasonForRejection}
+          message={document.reasonForRejection}
           color="danger"
         />
       )}
-      {someSubmitted && (
+      {isSubmitted && (
         <Alert
           title={t("documents.alert.title", {
             context: ApiDocumentStatus.Submitted,
@@ -89,9 +81,12 @@ export function DocumentsCard({
       <ContentSheetTitle sx={{ px: byBreakpoint({ mobile: 2, desktop: 0 }) }}>
         {t("documents.title")}
       </ContentSheetTitle>
-      <DocumentAlert documents={documents} />
-      {documents.map((document) => (
-        <DocumentSheet key={document.id} document={document} />
+      {documents.map((document, index) => (
+        <Stack key={index} gap={3} data-testid="document-form">
+          <DocumentAlert document={document} />
+          <DocumentSheet key={document.id} document={document} />
+          {index < documents.length - 1 && <Divider orientation="horizontal" />}
+        </Stack>
       ))}
     </ContentSheet>
   );

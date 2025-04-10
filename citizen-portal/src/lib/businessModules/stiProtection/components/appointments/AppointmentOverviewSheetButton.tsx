@@ -43,12 +43,14 @@ interface AppointmentOverviewSheetButtonProps {
   index: number;
   appointment: ApiAppointmentSummary;
   concern: ApiConcern;
+  accessCode: string;
 }
 
 export function AppointmentOverviewSheetButton({
   index: _apptIndex,
   appointment,
   concern,
+  accessCode,
 }: Readonly<AppointmentOverviewSheetButtonProps>) {
   const citizenRoutes = useConcernedCitizenRoutes(concern);
   const isMobile = useIsMobile();
@@ -63,7 +65,7 @@ export function AppointmentOverviewSheetButton({
       color={"neutral"}
       variant={"plain"}
       sx={{ padding: 0 }}
-      href={citizenRoutes.appointments.details}
+      href={citizenRoutes.personalArea.index(accessCode)}
     >
       <Sheet
         component="section"

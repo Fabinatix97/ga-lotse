@@ -7,6 +7,7 @@ import {
   type ApiInspPendingFacility,
   ApiProcedureStatus,
 } from "@eshg/inspection-api";
+import { PROCEDURE_STATUS_COLORS } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { OpenInNewOutlined } from "@mui/icons-material";
 import { Chip, IconButton, Stack, Typography } from "@mui/joy";
@@ -23,7 +24,6 @@ import {
 import { useInspectionPrecacheState } from "@/lib/businessModules/inspection/shared/offline/useInspectionPrecacheState";
 import { useIsOfflineFeatureEnabled } from "@/lib/businessModules/inspection/shared/offline/useIsOfflineFeatureEnabled";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { statusColors } from "@/lib/shared/components/procedures/constants";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 const columnHelper: ColumnHelper<ApiInspPendingFacility> =
@@ -162,7 +162,7 @@ export function createInspectionHistoryColumns(
         const value = ctx.getValue();
         if (!value) return null;
         return (
-          <Chip color={statusColors[value]}>
+          <Chip color={PROCEDURE_STATUS_COLORS[value]}>
             {translateProcedureStatus(value)}
           </Chip>
         );

@@ -18,6 +18,29 @@ import {
   RequiredMergeValue,
 } from "@/lib/baseModule/components/contacts/forms/helpers";
 
+type TaggedPersonContact = ApiPersonContact & { type: "PersonContact" };
+type TaggedInstitutionContact = ApiInstitutionContact & {
+  type: "InstitutionContact";
+};
+
+export type PersonContactWithNameAtBirth = ApiPersonContact & {
+  nameAtBirth?: string;
+};
+
+export type Contact = TaggedPersonContact | TaggedInstitutionContact;
+
+export function isPersonContact(
+  contact: Contact,
+): contact is TaggedPersonContact {
+  return contact.type === "PersonContact";
+}
+
+export function isInstitutionContact(
+  contact: Contact,
+): contact is TaggedInstitutionContact {
+  return contact.type === "InstitutionContact";
+}
+
 export type ContactFormValues =
   | PersonContactFormValues
   | InstitutionContactFormValues;
@@ -29,6 +52,7 @@ export interface PersonContactFormValues {
   salutation: OptionalFieldValue<ApiSalutation>;
   name: string;
   firstName: string;
+  nameAtBirth: string;
   externalChatUsername: string;
   emailAddresses: string[];
   phoneNumbers: string[];
@@ -53,6 +77,7 @@ export interface MergePersonContactFormValues {
   salutation: OptionalMergeValue<ApiSalutation>;
   name: RequiredMergeValue<string>;
   firstName: RequiredMergeValue<string>;
+  nameAtBirth: OptionalMergeValue<string>;
   externalChatUsername: OptionalMergeValue<string>;
   emailAddresses: string[];
   phoneNumbers: string[];
@@ -87,7 +112,7 @@ export type InstitutionContactMergeSource = MergeSource<
 
 export type PersonContactMergeSource = MergeSource<
   PersonContactFormValues,
-  ApiPersonContact
+  PersonContactWithNameAtBirth
 >;
 
 export type AddContactSidebarState<TForm, TApiModel> =

@@ -16,6 +16,8 @@ import {
 } from "date-fns";
 import { de } from "date-fns/locale";
 import {
+  DeviceMap,
+  DeviceVerification,
   Direction,
   EventType,
   MatrixClient,
@@ -26,6 +28,7 @@ import {
   SetPresence,
   User,
 } from "matrix-js-sdk";
+import { CryptoApi } from "matrix-js-sdk/lib/crypto-api";
 import {
   filter,
   isEmpty,
@@ -36,7 +39,10 @@ import {
   pipe,
 } from "remeda";
 
-import { fetchBackupInfo } from "@/lib/businessModules/chat/matrix/crypto";
+import {
+  fetchBackupInfo,
+  getCryptoApi,
+} from "@/lib/businessModules/chat/matrix/crypto";
 import { CommunicationType } from "@/lib/businessModules/chat/shared/enums";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import {
@@ -339,11 +345,11 @@ export async function waitUntilCryptoApiIsInitialized(
   const cryptoApi = await retryOperation(
     () => matrixClient.getCrypto(),
     (cryptoApi) => cryptoApi !== undefined,
-    5,
+    30,
     1000,
   );
   if (!cryptoApi) {
-    throw Error(
+    throw new Error(
       "Rust Crypto initialization failed: Crypto module not available.",
     );
   }
@@ -355,9 +361,10 @@ export async function fetchBackupInfoWithRetry(matrixClient: MatrixClient) {
   const backupInfo = await retryAsyncOperation(
     async () => await fetchBackupInfo(matrixClient),
     (backupInfo) =>
-      !backupInfo.has4SKey && backupInfo.keyBackupInfo ? false : true,
+      !backupInfo.hasDefaultKey && backupInfo.keyBackupInfo ? false : true,
     3,
-    3000,
+    1000,
+    true,
   );
   logger.info("Fetching backup info... - DONE");
   return backupInfo;
@@ -369,6 +376,7 @@ export async function retryOperation<T>(
   maxRetries: number,
   retryAfterMillis: number,
   errorAfterLastRetry = false,
+  errorMessage = `Operation failed after ${maxRetries} retries`,
 ): Promise<T | undefined> {
   let result: T | undefined = undefined;
   for (let attempt = 0; attempt < maxRetries; attempt++) {
@@ -390,7 +398,7 @@ export async function retryOperation<T>(
   }
 
   if (errorAfterLastRetry) {
-    throw new Error(`Operation failed after ${maxRetries} retries`);
+    throw new Error(errorMessage);
   } else {
     return result;
   }
@@ -402,6 +410,7 @@ export async function retryAsyncOperation<T>(
   maxRetries: number,
   retryAfterMillis: number,
   errorAfterLastRetry = false,
+  errorMessage = `Operation failed after ${maxRetries} retries`,
 ): Promise<T | undefined> {
   let result: T | undefined = undefined;
   for (let attempt = 0; attempt < maxRetries; attempt++) {
@@ -423,7 +432,7 @@ export async function retryAsyncOperation<T>(
   }
 
   if (errorAfterLastRetry) {
-    throw new Error(`Operation failed after ${maxRetries} retries`);
+    throw new Error(errorMessage);
   } else {
     return result;
   }
@@ -715,5 +724,42 @@ export async function setPresenceOnline(matrixClient: MatrixClient) {
     await matrixClient.setPresence({ presence: SetPresence.Online });
   } catch (error) {
     logger.error("Failed to set user presence to online", error);
+  }
+}
+
+export async function setAllUserDevicesAsVerified(
+  matrixClient: MatrixClient,
+  userIds: string[],
+) {
+  try {
+    const cryptoApi: CryptoApi = getCryptoApi(matrixClient);
+    const usersDeviceMap: DeviceMap = await cryptoApi.getUserDeviceInfo(
+      userIds,
+      true,
+    );
+    for (const allUserDevices of usersDeviceMap.values()) {
+      if (allUserDevices.size === 0) {
+        logger.error(
+          "One of users does not have any encryption-capable devices",
+        );
+        return false;
+      }
+      for (const device of allUserDevices.values()) {
+        if (device.verified !== DeviceVerification.Verified) {
+          logger.warn(
+            `Setting User's ${device.userId} device ${device.deviceId} as verified`,
+          );
+          await cryptoApi.setDeviceVerified(
+            device.userId,
+            device.deviceId,
+            true,
+          );
+        }
+      }
+    }
+    return true;
+  } catch (e) {
+    logger.error("Error setAllUsersAsVerified", e);
+    return false;
   }
 }

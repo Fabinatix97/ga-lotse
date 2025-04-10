@@ -5,9 +5,7 @@
 
 package de.eshg.stiprotection.api.consultation;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.AssertFalse;
 
 @Schema(
     name = "ConsultationGeneralSection",
@@ -54,13 +52,4 @@ public record GeneralSectionDto(
                 "Optional field for additional remarks or comments during the consultation.",
             example =
                 "The patient was advised to follow up in two weeks for further monitoring of symptoms.")
-        String notes) {
-
-  @AssertFalse(message = "A person with sufficient skills in German cannot be illiterate.")
-  @JsonIgnore
-  @SuppressWarnings("unused")
-  public boolean isIlliteratePersonWithSufficientGermanLanguageSkills() {
-    return Boolean.TRUE.equals(isIlliterate())
-        && Boolean.TRUE.equals(hasSufficientGermanLanguageSkills());
-  }
-}
+        String notes) {}

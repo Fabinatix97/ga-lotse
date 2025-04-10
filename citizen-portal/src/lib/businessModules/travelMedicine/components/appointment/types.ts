@@ -5,6 +5,7 @@
 
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import {
+  ApiAppointment,
   ApiAppointmentType,
   ApiCountryCode,
   ApiTravelTimeUnit,
@@ -15,8 +16,7 @@ export interface AppointmentFormValues {
   patient: PatientFormValues;
   travelInformation: TravelInformationFormValues;
   initialStepAppointmentType: OptionalFieldValue<ApiAppointmentType>;
-  appointmentStart: string;
-  durationInMinutes: string;
+  appointment?: ApiAppointment;
 }
 
 export interface PatientFormValues {
@@ -36,7 +36,6 @@ export interface TravelInformationFormValues {
 }
 
 export interface InitialAppointmentFormValues extends AppointmentFormValues {
-  appointmentBlockDate: string;
   confirmPrivacyPolicy: boolean;
   confirmPrivacyNotice: boolean;
   confirmOnlineServices: boolean;

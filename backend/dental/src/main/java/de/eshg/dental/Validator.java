@@ -20,7 +20,11 @@ import de.eshg.dental.api.MainResultDto;
 import de.eshg.dental.api.ToothDiagnosisDto;
 import de.eshg.dental.api.ToothDto;
 import de.eshg.dental.domain.model.Examination;
+import de.eshg.dental.domain.model.ExaminationResult;
+import de.eshg.dental.domain.model.FluoridationExaminationResult;
 import de.eshg.dental.domain.model.ProphylaxisSession;
+import de.eshg.dental.domain.model.ScreeningExaminationResult;
+import de.eshg.dental.domain.model.ToothDiagnosis;
 import de.eshg.dental.domain.repository.ChildRepository;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.keycloak.TechnicalGroup;
@@ -199,6 +203,50 @@ public class Validator {
     }
   }
 
+  public static void validateAllExaminationsAreClosed(ProphylaxisSession prophylaxisSession) {
+    String prophylaxisSessionNotCloseableMessage =
+        "ProphylaxisSession cannot be closed, because at least one existing examination has not yet been closed.";
+    List<Examination> examinations = prophylaxisSession.getExaminations();
+
+    for (Examination examination : examinations) {
+      if (!examination.hasResult()) {
+        throw new BadRequestException(prophylaxisSessionNotCloseableMessage);
+      }
+      ExaminationResult result = examination.getResult();
+
+      if (result instanceof FluoridationExaminationResult fluoridationExaminationResult) {
+        validateFluoridationResult(
+            fluoridationExaminationResult, prophylaxisSessionNotCloseableMessage);
+      } else if (result instanceof ScreeningExaminationResult screeningExaminationResult) {
+        validateScreeningResult(screeningExaminationResult, prophylaxisSessionNotCloseableMessage);
+      }
+    }
+  }
+
+  private static void validateFluoridationResult(
+      FluoridationExaminationResult result, String errorMessage) {
+    if (result.isFluorideVarnishApplied() == null) {
+      throw new BadRequestException(errorMessage);
+    }
+  }
+
+  private static void validateScreeningResult(
+      ScreeningExaminationResult result, String errorMessage) {
+    if (result.isFluorideVarnishApplied() == null) {
+      throw new BadRequestException(errorMessage);
+    }
+
+    for (ToothDiagnosis diagnosis : result.getToothDiagnoses().values()) {
+      if (!hasMainResult(diagnosis)) {
+        throw new BadRequestException(errorMessage);
+      }
+    }
+  }
+
+  private static boolean hasMainResult(ToothDiagnosis diagnosis) {
+    return (diagnosis != null && diagnosis.mainResult() != null);
+  }
+
   public void validateDentitionType(DentitionTypeDto dentitionType, boolean isScreening) {
     boolean hasDentitionType = dentitionType != null;
     if (isScreening && !hasDentitionType) {
@@ -215,7 +263,7 @@ public class Validator {
             .filter(label -> !persistedLabels.contains(label))
             .toList();
     if (!inexistentLabels.isEmpty()) {
-      throw new BadRequestException("Invalid procedureLabels: %s".formatted(inexistentLabels));
+      throw new BadRequestException("Invalid labels: %s".formatted(inexistentLabels));
     }
   }
 }

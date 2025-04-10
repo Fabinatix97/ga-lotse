@@ -10,14 +10,13 @@ import { useFormikContext } from "formik";
 import { useRouter } from "next/navigation";
 import { MouseEvent } from "react";
 
+import { useStepContext } from "@/lib/businessModules/stiProtection/components/shared/TravelMedicineStepContext";
 import { useCitizenRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
-import { useStepContext } from "@/lib/businessModules/travelMedicine/components/shared/contexts/StepContext";
 import { useTranslation } from "@/lib/i18n/client";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 import { useConfirmationDialog } from "@/lib/shared/hooks/useConfirmationDialog";
 
 import { FormDataWithoutConcern } from "./AnamnesisStepper.config";
-import { setAnamnesisForm } from "./anamnesis.storage";
 
 interface StepButtonsProps {
   submitButton?: {
@@ -41,13 +40,12 @@ export function StepButtons({ submitButton }: StepButtonsProps) {
       label: t("stiProtection/forms:anamnesis.submit"),
       disabled: false,
     };
-  const landingPageRoute = routes.appointments.index(accessCode);
+  const landingPageRoute = routes.personalArea.index(accessCode);
 
   function onCancel(_e: MouseEvent) {
     openCancelDialog({
       onConfirm: () => {
         router.push(landingPageRoute);
-        setAnamnesisForm();
       },
       title: t("stiProtection/anamnesis:cancel_dialog.title"),
       children: t("stiProtection/anamnesis:cancel_dialog.message"),
@@ -59,11 +57,7 @@ export function StepButtons({ submitButton }: StepButtonsProps) {
   return (
     <Stack gap={2} marginTop={2}>
       {!isLastStep ? (
-        <Button
-          type={isLastStep ? "submit" : "button"}
-          onClick={() => goForward()}
-          disabled={submitDisabled || disabled}
-        >
+        <Button type="button" onClick={() => goForward()}>
           {t("common.continue")}
         </Button>
       ) : (

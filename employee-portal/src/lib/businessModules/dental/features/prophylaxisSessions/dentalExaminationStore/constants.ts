@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { OPTIONAL_TEETH } from "@eshg/dental";
 import { ApiDentitionType, ApiTooth } from "@eshg/dental-api";
 
 import { DentalExaminationView, QuadrantNumber, ToothType } from "./types";
@@ -85,24 +86,6 @@ export const TOOTH_TYPES: Record<ApiTooth, ToothType> = {
 };
 
 export const WISDOM_TEETH = new Set<ApiTooth>(["T18", "T28", "T38", "T48"]);
-
-/**
- * Defines teeth which can be added and removed
- */
-export const OPTIONAL_TEETH = new Set<ApiTooth>([
-  "T16",
-  "T17",
-  "T18",
-  "T26",
-  "T27",
-  "T28",
-  "T36",
-  "T37",
-  "T38",
-  "T46",
-  "T47",
-  "T48",
-]);
 
 export const INITIALLY_TOGGLED_OPTIONAL_TEETH: Record<
   ApiDentitionType,

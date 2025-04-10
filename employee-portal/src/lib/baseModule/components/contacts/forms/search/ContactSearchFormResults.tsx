@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { NoSearchResults } from "@eshg/lib-employee-portal";
 import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
@@ -10,7 +11,6 @@ import { Stack, Typography } from "@mui/joy";
 import { ReactNode } from "react";
 
 import { routes } from "@/lib/baseModule/shared/routes";
-import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 
 interface ContactSearchFormResultsProps<T> {
   label: string;

@@ -7,6 +7,7 @@
 
 import {
   DataTable,
+  NoSearchResults,
   TablePage,
   TableSheet,
   useConfirmationDialog,
@@ -19,7 +20,6 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { EvaluationTemplateFromRepository } from "@/lib/businessModules/statistics/api/models/evaluationTemplatesOverview";
 import { useDeleteRepositoryEvaluationTemplate } from "@/lib/businessModules/statistics/api/mutations/useDeleteRepositoryEvaluationTemplate";
 import { useGetEvaluationTemplatesFromRepository } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplatesFromRepository";
-import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import {
   ActionsItem,
   ActionsMenu,

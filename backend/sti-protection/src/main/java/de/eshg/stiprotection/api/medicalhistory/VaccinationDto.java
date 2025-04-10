@@ -7,7 +7,7 @@ package de.eshg.stiprotection.api.medicalhistory;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "Vaccination")
+@Schema(name = "Vaccination", description = "Types of vaccinations the patient may have received.")
 public enum VaccinationDto {
   HEPATITIS_A,
   HEPATITIS_B,

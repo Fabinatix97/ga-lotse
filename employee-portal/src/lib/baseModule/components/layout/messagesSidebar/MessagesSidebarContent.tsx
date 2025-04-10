@@ -50,8 +50,8 @@ export function MessagesSidebarContent() {
   }
 
   if (
-    clientState === ClientState.CreateBackupKey ||
-    clientState === ClientState.RestoreBackupKey
+    clientState === ClientState.CreateKeyBackup ||
+    clientState === ClientState.RestoreKeyBackup
   ) {
     return (
       <SidebarContent title={title}>

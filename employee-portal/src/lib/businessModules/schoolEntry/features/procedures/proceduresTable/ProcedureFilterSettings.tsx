@@ -7,6 +7,7 @@ import {
   OverlayBoundary,
   ProcedureLabel,
   ProcedureLabelAutocomplete,
+  SchoolYearAutocomplete,
 } from "@eshg/lib-employee-portal";
 import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import {
@@ -30,7 +31,6 @@ import {
 } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 import { SearchInstitutionFilter } from "@/lib/shared/components/filterSettings/SearchInstitutionFilter";
 import { SetDictionaryFilterFn } from "@/lib/shared/components/filterSettings/useFilterDictionary";
-import { SchoolYearAutocomplete } from "@/lib/shared/components/formFields/schoolYear";
 
 export type ProcedureFilters = Pick<
   GetProceduresRequest,

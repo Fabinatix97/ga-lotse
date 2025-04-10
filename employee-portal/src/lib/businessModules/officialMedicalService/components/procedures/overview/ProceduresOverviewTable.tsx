@@ -24,12 +24,17 @@ import { ColumnSort } from "@tanstack/react-table";
 import { ReactNode, useMemo, useState } from "react";
 
 import { useGetAllProceduresQuery } from "@/lib/businessModules/officialMedicalService/api/queries/employeeOmsProcedureApi";
+import {
+  LabCodeSearchForm,
+  LabCodeSearchFormValues,
+  ToggleLabCodeSearchButton,
+  useLabCodeSearch,
+} from "@/lib/businessModules/officialMedicalService/components/procedures/overview/LabCodeSearchForm";
 import { procedureOverviewTableColumns } from "@/lib/businessModules/officialMedicalService/components/procedures/overview/procedureOverviewColumns";
 import {
   omsProcedureAssignedFilterNames,
   omsProcedureHighPriorityFilterNames,
   omsProcedureStatusFilterNames,
-  omsProcedureTodayFilterNames,
 } from "@/lib/businessModules/officialMedicalService/shared/enums";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
@@ -50,9 +55,8 @@ import {
   TogglePersonSearchButton,
   usePersonSearch,
 } from "@/lib/shared/components/personSearch/PersonSearchForm";
-import { usePartialPersonSearchHelpers } from "@/lib/shared/components/personSearch/usePartialPersonSearchHelpers";
 
-type PanelName = "filters" | "personSearch";
+type PanelName = "filters" | "personSearch" | "labCodeSearch";
 
 interface ProceduresOverviewTableProps {
   buttons?: ReactNode[];
@@ -64,34 +68,33 @@ const initialSorting: ColumnSort = {
   desc: true,
 };
 
-function createFilterDefinitions(): FilterDefinition[] {
-  return [
-    {
-      type: "Enum",
-      key: "assigned",
-      name: "Zugewiesen",
-      options: optionsFromRecord(omsProcedureAssignedFilterNames),
-    },
-    {
-      type: "Enum",
-      key: "status",
-      name: "Vorgang Status",
-      options: optionsFromRecord(omsProcedureStatusFilterNames),
-    },
-    {
-      type: "Enum",
-      key: "highPriority",
-      name: "Dringender Fall",
-      options: optionsFromRecord(omsProcedureHighPriorityFilterNames),
-    },
-    {
-      type: "Enum",
-      key: "today",
-      name: "Termin heute",
-      options: optionsFromRecord(omsProcedureTodayFilterNames),
-    },
-  ];
-}
+const filterDefinitions = [
+  {
+    type: "Enum",
+    key: "assigned",
+    name: "Zugewiesen",
+    options: optionsFromRecord(omsProcedureAssignedFilterNames),
+  },
+  {
+    type: "Enum",
+    key: "status",
+    name: "Vorgang Status",
+    options: optionsFromRecord(omsProcedureStatusFilterNames),
+  },
+  {
+    type: "Enum",
+    key: "highPriority",
+    name: "Dringender Fall",
+    options: optionsFromRecord(omsProcedureHighPriorityFilterNames),
+  },
+  {
+    type: "DateSpan",
+    key: "appointmentDateSpan",
+    name: "Termin",
+    doNotRequireStartAndEnd: true,
+    showTodayButton: true,
+  },
+] as const satisfies FilterDefinition[];
 
 export function ProceduresOverviewTable(
   props: Readonly<ProceduresOverviewTableProps>,
@@ -104,18 +107,12 @@ export function ProceduresOverviewTable(
     initialSorting: initialSorting,
   });
 
-  const {
-    hasAtLeastOneValue,
-    isInvalidPartialSearch,
-    isFullSearch,
-    setAlertMessage,
-    renderAlert,
-  } = usePartialPersonSearchHelpers();
-
   const personSearch = usePersonSearch();
+  const labCodeSearch = useLabCodeSearch();
   const proceduresQuery = useGetAllProceduresQuery({
     ...props.filter,
     ...personSearch.searchParams,
+    ...labCodeSearch.searchParams,
     pageNumber: tableControl.paginationProps.pageNumber,
     pageSize: tableControl.paginationProps.pageSize,
     sortKey: getSortKey(tableControl.tableSorting),
@@ -135,7 +132,6 @@ export function ProceduresOverviewTable(
     businessModule: ApiBusinessModule.OfficialMedicalService,
   });
 
-  const filterDefinitions = createFilterDefinitions();
   const paramStateProvider = useSearchParamStateProvider(
     filterDefinitions,
     true,
@@ -152,33 +148,32 @@ export function ProceduresOverviewTable(
     stateProvider,
     onValuesSubmit: (_values) => {
       personSearch.reset();
+      labCodeSearch.reset();
     },
     showSearch: false,
   });
 
   function handleChangePersonSearch(formValues: PersonSearchFormValues) {
-    if (!hasAtLeastOneValue(formValues)) return;
-    if (hasAtLeastOneValue(formValues) && isInvalidPartialSearch(formValues)) {
-      setAlertMessage(
-        "Die Suche ausschließlich nach Vor- oder Nachname ist nicht erlaubt.",
-      );
-    } else {
-      if (!isFullSearch(formValues)) {
-        setAlertMessage(
-          "Es werden aus Datenschutzgründen nur offene Vorgänge angezeigt. Geben Sie alle 3 Such-Faktoren an, um auch geschlossene Vorgänge anzuzeigen.",
-        );
-      } else {
-        setAlertMessage(undefined);
-      }
-      tableControl.paginationProps.onPageChange(0);
-      resetFilters();
-      personSearch.setValues(formValues);
-    }
+    tableControl.paginationProps.onPageChange(0);
+    resetFilters();
+    labCodeSearch.reset();
+    personSearch.setValues(formValues);
   }
 
-  function handleReset() {
-    setAlertMessage(undefined);
+  function handleChangeLabCodeSearch(formValues: LabCodeSearchFormValues) {
+    if (!formValues.labCode) return;
+    tableControl.paginationProps.onPageChange(0);
+    resetFilters();
     personSearch.reset();
+    labCodeSearch.setValues(formValues);
+  }
+
+  function handleResetPersonSearch() {
+    personSearch.reset();
+  }
+
+  function handleResetLabCodeSearch() {
+    labCodeSearch.reset();
   }
 
   return (
@@ -199,6 +194,12 @@ export function ProceduresOverviewTable(
               expanded={activePanel === "personSearch"}
               onClick={() => toggleActivePanel("personSearch")}
             />,
+            <ToggleLabCodeSearchButton
+              {...labCodeSearch.buttonProps}
+              key="labCodeSearchButton"
+              expanded={activePanel === "labCodeSearch"}
+              onClick={() => toggleActivePanel("labCodeSearch")}
+            />,
           ]}
           right={props.buttons}
           alignItems="flex-end"
@@ -207,16 +208,23 @@ export function ProceduresOverviewTable(
       }
       data-testid="procedures-table"
       search={
-        activePanel === "personSearch" && (
-          <PersonSearchForm
-            {...personSearch.formProps}
-            onChange={handleChangePersonSearch}
-            onReset={handleReset}
-            allowPartialSearch
-          >
-            {renderAlert()}
-          </PersonSearchForm>
-        )
+        <>
+          {activePanel === "personSearch" && (
+            <PersonSearchForm
+              {...personSearch.formProps}
+              onChange={handleChangePersonSearch}
+              onReset={handleResetPersonSearch}
+              allowPartialSearch
+            />
+          )}
+          {activePanel === "labCodeSearch" && (
+            <LabCodeSearchForm
+              {...labCodeSearch.formProps}
+              onChange={handleChangeLabCodeSearch}
+              onReset={handleResetLabCodeSearch}
+            />
+          )}
+        </>
       }
       filterSettings={
         activePanel === "filters" && (
@@ -237,7 +245,9 @@ export function ProceduresOverviewTable(
       >
         <DataTable
           data={procedures.data.elements}
-          columns={procedureOverviewTableColumns()}
+          columns={procedureOverviewTableColumns(
+            procedures.data.medicalOpinionLeadTime,
+          )}
           sorting={tableControl.tableSorting}
           enableSortingRemoval={false}
           rowNavigation={{
@@ -295,14 +305,15 @@ function activeValuesToFilters(
 
   for (const value of activeValues) {
     switch (value.type) {
-      case "Date":
+      case "DateSpan":
+        filters.set(value.key + "Start", value.startDate);
+        filters.set(value.key + "End", value.endDate);
+        break;
       case "EnumSingle":
         filters.set(value.key, value.selectedValue);
         break;
       case "Enum":
         filters.set(value.key, value.selectedValues);
-        break;
-      case "Number":
         break;
     }
   }

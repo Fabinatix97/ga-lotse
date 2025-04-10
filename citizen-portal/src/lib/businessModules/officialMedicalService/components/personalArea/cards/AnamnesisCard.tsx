@@ -19,7 +19,9 @@ import {
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
 
-export function AnamnesisCard() {
+export function AnamnesisCard({
+  isAnamnesisAnswered,
+}: Readonly<{ isAnamnesisAnswered: boolean }>) {
   const { t } = useTranslation(["officialMedicalService/personalArea"]);
 
   return (
@@ -44,32 +46,39 @@ export function AnamnesisCard() {
         }}
       >
         <HeaderGrid>
-          <IndicatorIcon type="close" sx={{ gridArea: "indicatorIcon" }} />
+          <IndicatorIcon
+            type={isAnamnesisAnswered ? "check" : "close"}
+            sx={{ gridArea: "indicatorIcon" }}
+          />
           <Box sx={{ gridArea: "label" }}>
             <Typography sx={{ fontWeight: theme.fontWeight.lg }}>
               {t("anamnesis.file.title")}
             </Typography>
             <Typography data-testid="status">
-              {t("anamnesis.file.helperText_MISSING")}
+              {isAnamnesisAnswered
+                ? t("anamnesis.file.helperText_SUMBITTED")
+                : t("anamnesis.file.helperText_MISSING")}
             </Typography>
           </Box>
-          <Box
-            sx={{
-              gridArea: "uploadButton",
-              justifySelf: "end",
-              width: "100%",
-            }}
-          >
-            <InternalLinkButton
-              variant="outlined"
-              fullWidth
-              startDecorator={<UploadOutlined />}
-              href={""}
-              sx={{ backgroundColor: "white" }}
+          {!isAnamnesisAnswered && (
+            <Box
+              sx={{
+                gridArea: "uploadButton",
+                justifySelf: "end",
+                width: "100%",
+              }}
             >
-              {t("anamnesis.file.placeholder")}
-            </InternalLinkButton>
-          </Box>
+              <InternalLinkButton
+                variant="outlined"
+                fullWidth
+                startDecorator={<UploadOutlined />}
+                href={""}
+                sx={{ backgroundColor: "white", height: "40px" }}
+              >
+                {t("anamnesis.file.placeholder")}
+              </InternalLinkButton>
+            </Box>
+          )}
         </HeaderGrid>
       </Sheet>
     </ContentSheet>

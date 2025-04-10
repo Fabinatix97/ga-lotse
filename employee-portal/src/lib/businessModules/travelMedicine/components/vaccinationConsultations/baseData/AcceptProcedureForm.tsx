@@ -7,19 +7,17 @@ import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
   DefaultPersonFormValues,
   PersonFormValues,
+  PersonSearchResults,
+  SearchPersonFormProps,
+  SearchPersonFormValues,
   SidebarFormHandle,
+  defaultPersonFormValues,
 } from "@eshg/lib-employee-portal";
 import { ApiPatient } from "@eshg/travel-medicine-api";
 import { ComponentType, Ref, useState } from "react";
 import { isDefined } from "remeda";
 
 import { PatientDetails } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/PatientDetails";
-import { defaultPersonFormValues } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
-import { PersonSearchResults } from "@/lib/shared/components/personSidebar/search/PersonSearchResults";
-import {
-  SearchPersonFormProps,
-  SearchPersonFormValues,
-} from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
 
 type CreatePersonStateMapper<TSearchValues, TCreateValues> = (props: {
   inputs: TSearchValues;

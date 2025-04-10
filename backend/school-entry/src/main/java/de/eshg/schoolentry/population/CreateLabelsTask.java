@@ -6,8 +6,8 @@
 package de.eshg.schoolentry.population;
 
 import de.eshg.persistence.TransactionHelper;
-import de.eshg.schoolentry.domain.model.Label;
-import de.eshg.schoolentry.domain.repository.LabelRepository;
+import de.eshg.schoolentry.domain.model.ProcedureLabel;
+import de.eshg.schoolentry.domain.repository.ProcedureLabelRepository;
 import jakarta.annotation.PostConstruct;
 import java.util.List;
 import org.springframework.stereotype.Component;
@@ -29,11 +29,12 @@ public class CreateLabelsTask {
               "Für den Vorgang liegt eine Auskunftssperre vor.",
               "#800080"));
 
-  private final LabelRepository labelRepository;
+  private final ProcedureLabelRepository procedureLabelRepository;
   private final TransactionHelper transactionHelper;
 
-  public CreateLabelsTask(LabelRepository labelRepository, TransactionHelper transactionHelper) {
-    this.labelRepository = labelRepository;
+  public CreateLabelsTask(
+      ProcedureLabelRepository procedureLabelRepository, TransactionHelper transactionHelper) {
+    this.procedureLabelRepository = procedureLabelRepository;
     this.transactionHelper = transactionHelper;
   }
 
@@ -43,13 +44,13 @@ public class CreateLabelsTask {
         () ->
             SYSTEM_LABELS.forEach(
                 labelData -> {
-                  if (!labelRepository.existsByName(labelData.name())) {
-                    Label label = new Label();
+                  if (!procedureLabelRepository.existsByName(labelData.name())) {
+                    ProcedureLabel label = new ProcedureLabel();
                     label.setName(labelData.name());
                     label.setDescription(labelData.description());
                     label.setHexColor(labelData.hexColor());
                     label.setReadonly(true);
-                    labelRepository.save(label);
+                    procedureLabelRepository.save(label);
                   }
                 }));
   }

@@ -8,6 +8,7 @@ import {
   FormButtonBar,
   ProcedureLabel,
   ProcedureLabelSelection,
+  SchoolYearField,
   SelectContactField,
   SidebarActions,
   SidebarContent,
@@ -24,7 +25,7 @@ import {
   SelectObjectField,
   SelectObjectFieldValue,
 } from "@eshg/lib-portal/components/formFields/SelectObjectField";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import { formatWeekdayDateTimeRange } from "@eshg/lib-portal/formatters/dateTime";
 import { toDateString, toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
 import {
   mapOptionalValue,
@@ -58,7 +59,6 @@ import {
 import { isDraft } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/options";
 import { Appointment } from "@/lib/businessModules/travelMedicine/api/models/Appointment";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
-import { SchoolYearField } from "@/lib/shared/components/formFields/schoolYear";
 
 export function useUpdateProcedureSidebar(): UseSidebarWithFormRefResult<UpdateProcedureSidebarProps> {
   return useSidebarWithFormRef({
@@ -68,7 +68,7 @@ export function useUpdateProcedureSidebar(): UseSidebarWithFormRefResult<UpdateP
 
 export interface UpdateProcedureValues {
   procedureType: ApiSchoolEntryProcedureType;
-  labels: ProcedureLabel[];
+  procedureLabels: ProcedureLabel[];
   appointment: SelectObjectFieldValue<ApiAppointment, false>;
   isInvitationSent: boolean;
   school: Location | null;
@@ -96,7 +96,7 @@ function mapValues(
     procedureId: procedure.id,
     apiUpdateProcedureRequest: {
       version: procedure.version,
-      labels: values.labels.map(getId),
+      procedureLabels: values.procedureLabels.map(getId),
       procedureType:
         isDraft(procedure.type) && isEmptyString(values.procedureType)
           ? procedure.type
@@ -115,9 +115,7 @@ function mapValues(
 }
 
 function getAppointmentLabel(appointment: Appointment) {
-  return `${formatDateTime(appointment.start)} - ${formatDateTime(
-    appointment.end,
-  )}`;
+  return formatWeekdayDateTimeRange(appointment.start, appointment.end);
 }
 
 function useUpdateProcedureForm(
@@ -128,7 +126,7 @@ function useUpdateProcedureForm(
   return useFormik<UpdateProcedureValues>({
     initialValues: {
       procedureType: procedure.type,
-      labels: procedure.labels,
+      procedureLabels: procedure.labels,
       appointment: procedure.appointment ?? null,
       isInvitationSent: procedure.isInvitationSent,
       school: procedure.school ?? null,
@@ -164,7 +162,7 @@ function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
   const getFreeAppointments = useGetFreeAppointmentsForProcedureUnsuspended({
     procedureId: procedure.id,
     procedureType: values.procedureType,
-    labelIds: resolveLabelIds(values.labels),
+    labelIds: resolveLabelIds(values.procedureLabels),
     schoolId: values.school?.id,
     locationId: values.location?.id,
   });

@@ -5,6 +5,9 @@
 
 import {
   BaseAddressFormInputs,
+  MultiFormButtonBar,
+  OptionalBillingAddressForm,
+  OptionalContactAddressForm,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -28,11 +31,6 @@ import { isDefined } from "remeda";
 import { FacilityContactPersonArrayForm } from "@/lib/shared/components/facilitySidebar/create/FacilityContactPersonArrayForm";
 import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchForm";
 import { BaseFacilityContactPerson } from "@/lib/shared/components/facilitySidebar/types";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import {
-  OptionalBillingAddressForm,
-  OptionalContactAddressForm,
-} from "@/lib/shared/components/form/address/BaseAddressForm";
 import { createEmptyContactPerson } from "@/lib/shared/helpers/facilityUtils";
 
 export interface DefaultFacilityFormValues {

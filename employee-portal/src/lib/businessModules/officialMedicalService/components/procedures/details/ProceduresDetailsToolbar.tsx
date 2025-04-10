@@ -7,6 +7,7 @@
 
 import { ApiUserRole } from "@eshg/base-api";
 import {
+  PROCEDURE_STATUS_COLORS,
   TabNavigationItem,
   TabNavigationToolbar,
   useHasUserRoleCheck,
@@ -22,7 +23,6 @@ import { procedureStatusNames } from "@/lib/baseModule/api/procedures/enums";
 import { useGetProcedureHeader } from "@/lib/businessModules/officialMedicalService/api/queries/employeeOmsProcedureApi";
 import { ProcedureDetailsTabHeader } from "@/lib/businessModules/officialMedicalService/components/procedures/details/ProcedureDetailsTabHeader";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
-import { statusColors } from "@/lib/shared/components/procedures/constants";
 
 interface ProcedureDetailsToolbarProps {
   id: string;
@@ -45,7 +45,7 @@ export function ProcedureDetailsToolbar(props: ProcedureDetailsToolbarProps) {
       afterTabs={
         <Chip
           data-testid="tab-procedure-state"
-          color={statusColors[procedureHeader.status]}
+          color={PROCEDURE_STATUS_COLORS[procedureHeader.status]}
           size="md"
         >
           {procedureStatusNames[procedureHeader.status]}

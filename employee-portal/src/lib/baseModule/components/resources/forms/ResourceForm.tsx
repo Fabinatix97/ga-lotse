@@ -5,6 +5,7 @@
 
 import { ApiLabel, ApiResourceType } from "@eshg/base-api";
 import {
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -20,7 +21,6 @@ import { Ref } from "react";
 
 import { LabelField } from "@/lib/baseModule/components/labels/LabelField";
 import { resourceTypeOptions } from "@/lib/baseModule/components/resources/constants";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 
 export interface ResourceFormValues {
   type: OptionalFieldValue<ApiResourceType>;

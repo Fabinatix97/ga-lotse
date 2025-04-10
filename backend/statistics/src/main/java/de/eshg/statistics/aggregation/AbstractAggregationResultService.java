@@ -71,9 +71,9 @@ public abstract class AbstractAggregationResultService {
   }
 
   @Transactional
-  public void setStateToFailed(UUID id) {
+  public void setState(UUID id, AggregationResultState state) {
     AbstractAggregationResult aggregationResult = getAbstractAggregationResultInternal(id);
-    aggregationResult.setState(AggregationResultState.FAILED);
+    aggregationResult.setState(state);
   }
 
   @Transactional

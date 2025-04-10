@@ -134,7 +134,7 @@ public class SchoolEntryController {
       @InlineParameterObject @ParameterObject @Valid ProcedureSearchParameters searchParameters) {
 
     Validator.validateOnlyOneOfSearchAndFilterParametersAreSet(filterParameters, searchParameters);
-    ProcedureValidator.validateSearchParametersAreComplete(searchParameters);
+    ProcedureValidator.validatePartialSearchParameters(searchParameters);
     PagedProcedures pagedProcedures =
         procedureOverviewService.getProcedures(
             filterParameters, paginationAndSortParameters, searchParameters);

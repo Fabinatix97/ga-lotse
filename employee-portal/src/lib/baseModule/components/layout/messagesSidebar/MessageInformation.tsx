@@ -9,12 +9,12 @@ import { Alert, Box, Typography } from "@mui/joy";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";
 
 interface MessageInformationProps {
-  clientState: ClientState.CreateBackupKey | ClientState.RestoreBackupKey;
+  clientState: ClientState.CreateKeyBackup | ClientState.RestoreKeyBackup;
 }
 
 export function MessageInformation({ clientState }: MessageInformationProps) {
   const text =
-    clientState === ClientState.CreateBackupKey
+    clientState === ClientState.CreateKeyBackup
       ? "Richten Sie ein Sicherheitsbackup ein um die Chatfunktion zu nutzen"
       : "Bestätigen sie dieses Endgerät um die Chatfunktion zu nutzen";
 

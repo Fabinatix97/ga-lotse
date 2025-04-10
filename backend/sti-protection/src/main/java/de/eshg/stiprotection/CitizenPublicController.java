@@ -217,6 +217,7 @@ public class CitizenPublicController {
   }
 
   @DeleteMapping("/appointments/{id}")
+  @Operation(summary = "Cancel pending appointment of an STI procedure.")
   @Transactional
   public void cancelPendingAppointment(@PathVariable("id") UUID procedureId) {
     citizenAppointmentService.cancelPendingAppointment(procedureId);

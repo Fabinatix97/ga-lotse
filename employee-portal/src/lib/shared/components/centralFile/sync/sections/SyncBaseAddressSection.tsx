@@ -6,6 +6,7 @@
 import { ApiDiffAddress } from "@eshg/base-api";
 import {
   BaseAddress,
+  formatList,
   isDomesticAddress,
   isPostboxAddress,
 } from "@eshg/lib-employee-portal";
@@ -20,7 +21,6 @@ import {
   SyncFormBlock,
   SyncFormSection,
 } from "@/lib/shared/components/centralFile/sync/SyncFormGrid";
-import { join } from "@/lib/shared/helpers/strings";
 
 export function SyncBaseAddressSection({
   address,
@@ -66,7 +66,7 @@ function BaseAddressBlock({
         label={BASE_ADDRESS_FIELD_NAME.streetAndHouseNumber}
         value={
           isDomesticAddress(address)
-            ? join([address?.street, address?.houseNumber], " ")
+            ? formatList([address?.street, address?.houseNumber], " ")
             : undefined
         }
         visible={

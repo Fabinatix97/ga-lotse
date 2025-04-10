@@ -10,21 +10,39 @@ import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-@DataSensitivity(SensitivityLevel.SENSITIVE)
 public class GeneralSection {
 
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String mainReason;
+
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String furtherGenderInfo;
-  private Boolean hasSufficientGermanLanguageSkills;
-  private Boolean isIlliterate;
+
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String otherKnownLanguages;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean hasHealthInsurance;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean hasGermanHealthInsurance;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean hasInsecureResidence;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean hasSymptoms;
+
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String symptoms;
+
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String drugUse;
+
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String referral;
+
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String notes;
 
   public String getMainReason() {
@@ -41,22 +59,6 @@ public class GeneralSection {
 
   public void setFurtherGenderInfo(String furtherGenderInfo) {
     this.furtherGenderInfo = furtherGenderInfo;
-  }
-
-  public Boolean getHasSufficientGermanLanguageSkills() {
-    return hasSufficientGermanLanguageSkills;
-  }
-
-  public void setHasSufficientGermanLanguageSkills(Boolean hasSufficientGermanLanguageSkills) {
-    this.hasSufficientGermanLanguageSkills = hasSufficientGermanLanguageSkills;
-  }
-
-  public Boolean getIsIlliterate() {
-    return isIlliterate;
-  }
-
-  public void setIsIlliterate(Boolean isIlliterate) {
-    this.isIlliterate = isIlliterate;
   }
 
   public String getOtherKnownLanguages() {

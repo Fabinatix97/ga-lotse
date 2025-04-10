@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm";
 import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
 
 import { AppointmentFormButtonBar } from "@/lib/businessModules/travelMedicine/components/appointment/AppointmentFormButtonBar";
@@ -12,13 +13,13 @@ import {
   FormSheet,
   FormSheetTitle,
 } from "@/lib/businessModules/travelMedicine/components/shared/components/FormSheet";
-import { useStepContext } from "@/lib/businessModules/travelMedicine/components/shared/contexts/StepContext";
 import { useTranslation } from "@/lib/i18n/client";
 
 export function AppointmentOverview() {
   const { t } = useTranslation(["travelMedicine/forms"]);
-  const { isLastStep } = useStepContext();
+  const { currentStep, totalSteps } = useMultiStepForm();
   const isMobile = useIsMobile();
+  const isLastStep = currentStep === totalSteps;
 
   return (
     <FormSheet data-testid="appointment-overview">

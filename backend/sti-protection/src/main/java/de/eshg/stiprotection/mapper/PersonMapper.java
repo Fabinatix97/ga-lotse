@@ -26,8 +26,8 @@ public class PersonMapper {
         person.getExternalId(),
         GenderMapper.toInterfaceType(person.getGender()),
         person.getYearOfBirth(),
-        person.getCountryOfBirth(),
-        person.getInGermanySince(),
+        null,
+        null,
         accessCode);
   }
 
@@ -35,32 +35,39 @@ public class PersonMapper {
     return new PersonData(
         GenderMapper.toDatabaseType(request.gender()),
         request.yearOfBirth(),
-        request.countryOfBirth(),
-        request.inGermanySince());
+        request.hasSufficientGermanLanguageSkills(),
+        request.otherKnownLanguages(),
+        request.pronouns());
   }
 
   public static PersonData toDataType(UpdatePersonDetailsRequest request) {
     return new PersonData(
         GenderMapper.toDatabaseType(request.gender()),
         request.yearOfBirth(),
-        request.countryOfBirth(),
-        request.inGermanySince());
+        request.hasSufficientGermanLanguageSkills(),
+        request.otherKnownLanguages(),
+        request.pronouns());
   }
 
   public static PersonData toDataType(Person entity) {
     return new PersonData(
         entity.getGender(),
         entity.getYearOfBirth(),
-        entity.getCountryOfBirth(),
-        entity.getInGermanySince());
+        entity.getHasSufficientGermanLanguageSkills(),
+        null,
+        entity.getPronouns());
   }
 
   public static Person toDatabaseType(PersonData data) {
-    Person person = new Person();
+    return updatePersonDetails(new Person(), data);
+  }
+
+  public static Person updatePersonDetails(Person person, PersonData data) {
     person.setGender(data.gender());
     person.setYearOfBirth(data.yearOfBirth());
-    person.setCountryOfBirth(data.countryOfBirth());
-    person.setInGermanySince(data.inGermanySince());
+    person.setHasSufficientGermanLanguageSkills(data.hasSufficientGermanLanguageSkills());
+    person.setOtherKnownLanguages(data.otherKnownLanguages());
+    person.setPronouns(data.pronouns());
     return person;
   }
 

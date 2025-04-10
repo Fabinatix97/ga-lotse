@@ -5,12 +5,10 @@
 
 import {
   ApiBusinessModule,
-  ApiProcedureStatus,
   ApiProcedureType,
   ApiTaskStatus,
   ApiTaskType,
 } from "@eshg/base-api";
-import { ChipProps } from "@mui/joy";
 
 export const businessModuleNames = {
   [ApiBusinessModule.Inspection]: "Begehung",
@@ -42,22 +40,6 @@ export const procedureTypeNames = {
   [ApiProcedureType.DentalChild]: "Kind",
   [ApiProcedureType.OfficialMedicalService]: "Amtsärztlicher Dienst",
 } satisfies Record<ApiProcedureType, string>;
-
-export const procedureStatusNames = {
-  [ApiProcedureStatus.Aborted]: "Abgebrochen",
-  [ApiProcedureStatus.Closed]: "Geschlossen",
-  [ApiProcedureStatus.Draft]: "Entwurf",
-  [ApiProcedureStatus.InProgress]: "in Arbeit",
-  [ApiProcedureStatus.Open]: "Offen",
-} satisfies Record<ApiProcedureStatus, string>;
-
-export const statusColors = {
-  [ApiProcedureStatus.Aborted]: "warning",
-  [ApiProcedureStatus.Closed]: "success",
-  [ApiProcedureStatus.Draft]: "neutral",
-  [ApiProcedureStatus.InProgress]: "primary",
-  [ApiProcedureStatus.Open]: "warning",
-} satisfies Record<ApiProcedureStatus, ChipProps["color"]>;
 
 export const taskTypeNames = {
   [ApiTaskType.BookAppointment]: "Termin vereinbaren",

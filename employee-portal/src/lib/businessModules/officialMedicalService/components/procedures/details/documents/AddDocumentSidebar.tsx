@@ -49,6 +49,7 @@ function AddDocumentSidebar(props: Readonly<AddDocumentSidebarProps>) {
         helpTextEn: values.helpTextEn,
         mandatoryDocument: values.mandatoryDocument,
         uploadInCitizenPortal: values.uploadInCitizenPortal,
+        labCode: values.labCode,
       },
       files: values.files as Blob[],
       note: values.note,

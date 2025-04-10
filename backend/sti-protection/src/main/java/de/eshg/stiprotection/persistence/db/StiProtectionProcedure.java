@@ -70,14 +70,14 @@ public class StiProtectionProcedure
   @Column(nullable = false)
   private Concern concern;
 
-  @DataSensitivity(SensitivityLevel.UNDEFINED)
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private UUID anonymousUserId;
 
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   @Column(nullable = false)
   private Boolean isFollowUp = false;
 
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   @OneToOne(
       mappedBy = MedicalHistory_.PROCEDURE,
       cascade = CascadeType.PERSIST,
@@ -85,7 +85,7 @@ public class StiProtectionProcedure
       fetch = FetchType.LAZY)
   private MedicalHistory medicalHistory;
 
-  @DataSensitivity(SensitivityLevel.UNDEFINED)
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   @Column(nullable = false)
   private Boolean medicalHistorySubmitted = false;
 
@@ -121,11 +121,11 @@ public class StiProtectionProcedure
       fetch = FetchType.LAZY)
   private Diagnosis diagnosis;
 
-  @DataSensitivity(SensitivityLevel.PUBLIC)
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   @OneToOne(orphanRemoval = true, cascade = CascadeType.PERSIST)
   private Appointment appointment;
 
-  @DataSensitivity(SensitivityLevel.PUBLIC)
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   @OneToOne(
       orphanRemoval = true,
       fetch = FetchType.LAZY,
@@ -145,7 +145,7 @@ public class StiProtectionProcedure
   @OrderColumn
   private final List<AppointmentHistoryEntry> appointmentHistory = new ArrayList<>();
 
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   @OneToOne(
       mappedBy = WaitingRoom_.PROCEDURE,
       cascade = CascadeType.PERSIST,

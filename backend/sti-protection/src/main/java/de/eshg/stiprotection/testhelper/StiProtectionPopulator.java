@@ -77,10 +77,13 @@ public class StiProtectionPopulator extends BasePopulator<CreateProcedureRespons
             gender(faker),
             yearOfBirth(faker, age),
             optional(faker, randomCountry(), 0.66),
-            optional(faker, inGermanySince(faker, age), 0.5),
+            null,
             appointmentBookingType(),
             appointmentStart(faker, clock),
-            durationInMinutes(faker));
+            durationInMinutes(faker),
+            hasSufficientGermanLanguageSkills(faker),
+            null,
+            null);
 
     CreateProcedureResponse resp =
         stiProtectionProcedureController.createProcedure(createProcedureRequest);
@@ -93,6 +96,10 @@ public class StiProtectionPopulator extends BasePopulator<CreateProcedureRespons
     }
 
     return resp;
+  }
+
+  private static Boolean hasSufficientGermanLanguageSkills(Faker faker) {
+    return faker.random().nextBoolean();
   }
 
   @Override
@@ -119,10 +126,6 @@ public class StiProtectionPopulator extends BasePopulator<CreateProcedureRespons
   private Year yearOfBirth(Faker faker, int age) {
     return Year.of(
         LocalDate.now(clock).minusYears(age).minusDays(faker.random().nextInt(182)).getYear());
-  }
-
-  private Year inGermanySince(Faker faker, int age) {
-    return Year.of(LocalDate.now(clock).minusYears(faker.random().nextInt(age)).getYear());
   }
 
   private static AppointmentBookingTypeDto appointmentBookingType() {

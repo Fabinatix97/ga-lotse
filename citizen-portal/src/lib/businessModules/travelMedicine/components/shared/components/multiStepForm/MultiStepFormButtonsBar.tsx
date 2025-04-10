@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm";
 import { Button, Stack } from "@mui/joy";
-
-import { useStepContext } from "@/lib/businessModules/travelMedicine/components/shared/contexts/StepContext";
 
 export interface MultiStepFormButtonBarProps {
   onNextStep?: { title: string; action: () => Promise<void> };
@@ -13,7 +12,9 @@ export interface MultiStepFormButtonBarProps {
   onCancel?: { title: string; action: () => void };
 }
 export function MultiStepFormButtonBar(props: MultiStepFormButtonBarProps) {
-  const { isFirstStep, isLastStep } = useStepContext();
+  const { currentStep, totalSteps } = useMultiStepForm();
+  const isFirstStep = currentStep === 1;
+  const isLastStep = currentStep === totalSteps;
 
   return (
     <Stack direction="column" gap={2} width="100%">

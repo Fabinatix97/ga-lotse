@@ -30,3 +30,20 @@ Authorization: Bearer [SYNAPSE_ACCESS_TOKEN]
   "force_purge": true,
   "block": true
 }
+
+### Find user in user_directory
+POST http://localhost:8008/_matrix/client/v3/user_directory/search
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer [SYNAPSE_ACCESS_TOKEN]
+
+{
+"limit": 10,
+"search_term":"synapse.local.dev"
+}
+
+### Get user details
+GET  http://localhost:8008/_synapse/admin/v2/users/%40testuser1%3Asynapse.local.dev
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer [SYNAPSE_ACCESS_TOKEN]

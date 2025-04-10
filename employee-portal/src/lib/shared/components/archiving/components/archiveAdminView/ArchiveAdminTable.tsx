@@ -15,7 +15,7 @@ import {
   useTableControl,
 } from "@eshg/lib-employee-portal";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
-import { formatFileSize } from "@eshg/lib-portal/helpers/file";
+import { formatFileSize } from "@eshg/lib-portal/components/formFields/file/helpers";
 import {
   ApiArchivingRelevance,
   ApiGetRelevantArchivableProceduresSortBy,

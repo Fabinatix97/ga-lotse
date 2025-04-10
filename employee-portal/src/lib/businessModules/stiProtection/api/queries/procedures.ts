@@ -12,7 +12,11 @@ import {
   ApiGetStiProtectionProceduresSortOrder,
   ApiStiProtectionProcedureOverview,
 } from "@eshg/sti-protection-api";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useQueries,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 
 import { useStiProtectionProcedureApi } from "@/lib/businessModules/stiProtection/api/clients";
 import { ProcedureFilters } from "@/lib/businessModules/stiProtection/components/procedures/proceduresTable/StiProtectionProceduresTableFilters";
@@ -23,11 +27,6 @@ type PageRequest = Pick<
   PaginationProps,
   "pageSize" | "pageNumber" | "pageSizeOptions"
 >;
-
-export function useStiProcedureQuery(procedureId?: string) {
-  const options = useStiProcedureQueryOptions(procedureId);
-  return useSuspenseQuery(options);
-}
 
 export function useStiProcedureQueryOptions(procedureId?: string) {
   const stiProtectionApi = useStiProtectionProcedureApi();
@@ -43,7 +42,12 @@ export function useStiProcedureQueryOptions(procedureId?: string) {
   });
 }
 
-export function useStiProceduresQuery(
+export function useStiProcedureQuery(procedureId?: string) {
+  const options = useStiProcedureQueryOptions(procedureId);
+  return useSuspenseQuery(options);
+}
+
+export function useStiProceduresQueryOptions(
   page: PageRequest,
   sorting: TableSortingProps,
   filters: ProcedureFilters,
@@ -92,6 +96,51 @@ function makeFiltersQueryKeyPart(filters: ProcedureFilters) {
       return [key, value];
     }),
   );
+}
+
+export function useStiProceduresSearchQueryOptions(searchQuery: string) {
+  const stiProtectionApi = useStiProtectionProcedureApi();
+
+  return queryOptions({
+    queryFn: () => stiProtectionApi.findProcedures(searchQuery),
+    queryKey: proceduresQueryKey(["searchProcedures", searchQuery]),
+  });
+}
+
+export function useGetStiProceduresTablePage({
+  filters,
+  page,
+  searchQuery,
+  sorting,
+}: {
+  filters: ProcedureFilters;
+  page: PageRequest;
+  searchQuery: string;
+  sorting: TableSortingProps;
+}) {
+  const stiProceduresQueryOptions = useStiProceduresQueryOptions(
+    page,
+    sorting,
+    filters,
+  );
+  const stiProtectionSearchQueryOptions =
+    useStiProceduresSearchQueryOptions(searchQuery);
+
+  const proceduresQuery = searchQuery
+    ? stiProtectionSearchQueryOptions
+    : stiProceduresQueryOptions;
+
+  const [{ data: stiProceduresData, isLoading }] = useQueries({
+    queries: [proceduresQuery],
+  });
+
+  return {
+    stiProceduresData: stiProceduresData ?? {
+      procedures: [],
+      totalElements: 0,
+    },
+    isLoading,
+  };
 }
 
 export function useAnonymousIdentificationDocumentQuery(procedureId: string) {

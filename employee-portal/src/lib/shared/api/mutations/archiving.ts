@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { formatList } from "@eshg/lib-employee-portal";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { ApiArchivingRelevance, ArchivingApi } from "@eshg/lib-procedures-api";
-
-import { join } from "@/lib/shared/helpers/strings";
 
 type UseBulkUpdateProceduresArchivingRelevanceResult = ReturnType<
   typeof useBulkUpdateProceduresArchivingRelevanceTemplate
@@ -75,7 +74,7 @@ function buildSnackbarText(
       ? `1 ausgewählter Vorgang konnte nicht ${verb} werden.`
       : `${failedProceduresCount} ausgewählte Vorgänge konnten nicht ${verb} werden.`;
 
-  return join([successfulUpdatesText, failedUpdatesText], " ");
+  return formatList([successfulUpdatesText, failedUpdatesText], " ");
 }
 
 type UseExportRelevantProceduresResult = ReturnType<

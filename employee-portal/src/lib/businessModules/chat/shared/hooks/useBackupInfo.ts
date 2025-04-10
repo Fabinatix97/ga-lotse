@@ -5,12 +5,16 @@
 
 import {
   BackupTrustInfo,
+  CryptoApi,
   CryptoEvent,
   KeyBackupInfo,
 } from "matrix-js-sdk/lib/crypto-api";
 import { useCallback, useEffect, useState } from "react";
 
-import { getBackupKeyStatus } from "@/lib/businessModules/chat/matrix/crypto";
+import {
+  getBackupKeyStatus,
+  getCryptoApi,
+} from "@/lib/businessModules/chat/matrix/crypto";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 
@@ -36,17 +40,14 @@ export function useBackupInfo() {
   const loadBackupStatus = useCallback(async () => {
     const backupKeyStatus = await getBackupKeyStatus(matrixClient);
     try {
-      const crypto = matrixClient.getCrypto();
-      if (!crypto) throw new Error("CryptoApi is undefined");
-
-      const backupInfo = await crypto.getKeyBackupInfo();
+      const cryptoApi: CryptoApi = getCryptoApi(matrixClient);
+      const backupInfo = await cryptoApi.getKeyBackupInfo();
       const backupTrustInfo = backupInfo
-        ? await matrixClient.getCrypto()?.isKeyBackupTrusted(backupInfo)
+        ? await cryptoApi.isKeyBackupTrusted(backupInfo)
         : undefined;
 
       const activeBackupVersion =
-        (await matrixClient.getCrypto()?.getActiveSessionBackupVersion()) ??
-        null;
+        (await cryptoApi.getActiveSessionBackupVersion()) ?? null;
 
       updateState({
         backupInfo,

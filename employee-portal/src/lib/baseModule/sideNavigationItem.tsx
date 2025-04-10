@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBaseFeature, ApiUserRole } from "@eshg/base-api";
+import { ApiUserRole } from "@eshg/base-api";
 import {
   SideNavigationItem,
   hasUserRole,
@@ -25,7 +25,6 @@ import {
   WarehouseOutlined,
 } from "@mui/icons-material";
 
-import { useIsNewFeatureEnabled as useIsNewBaseFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { useIsNewFeatureEnabled as useIsNewOpenDataFeatureEnabled } from "@/lib/opendata/queries/feature";
 
 import { routes } from "./shared/routes";
@@ -123,15 +122,11 @@ const sideNavigationItems: SideNavigationItem[] = [
 ];
 
 export function useSideNavigationItems(): SideNavigationItem[] {
-  const isGdprEnabled = useIsNewBaseFeatureEnabled(ApiBaseFeature.Gdpr);
   const isOpenDataEnabled = useIsNewOpenDataFeatureEnabled(
     ApiOpenDataFeature.OpenData,
   );
 
   let items = sideNavigationItems;
-  if (!isGdprEnabled) {
-    items = items.filter((item) => item.name !== "DSGVO");
-  }
   if (!isOpenDataEnabled) {
     items = items.filter((item) => item.name !== "Open Data");
   }

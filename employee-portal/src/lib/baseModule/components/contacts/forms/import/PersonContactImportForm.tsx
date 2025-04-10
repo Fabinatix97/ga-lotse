@@ -42,6 +42,7 @@ function mapImportToCreate(
     emailAddresses: vcard.emailAddresses,
     contactAddress: mapVCardAddressToForm(address),
     differentBillingAddress: undefined,
+    nameAtBirth: "",
   } as const;
 }
 

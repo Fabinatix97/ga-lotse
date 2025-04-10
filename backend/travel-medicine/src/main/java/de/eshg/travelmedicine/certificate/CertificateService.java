@@ -7,7 +7,7 @@ package de.eshg.travelmedicine.certificate;
 
 import static de.eshg.travelmedicine.util.TravelMedicineProgressEntryType.CERTIFICATE_FOR_HEALTH_INSURANCE;
 
-import de.eshg.departmentinfo.DepartmentInfoConfigService;
+import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;

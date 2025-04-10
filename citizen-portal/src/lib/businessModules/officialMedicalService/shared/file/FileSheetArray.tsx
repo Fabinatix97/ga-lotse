@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
+import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
 import { validateFileType } from "@eshg/lib-portal/components/formFields/file/validators";
 import { isNonEmptyArray } from "@eshg/lib-portal/helpers/guards";
 import { ApiDocumentStatus } from "@eshg/official-medical-service-api";
@@ -65,7 +65,7 @@ export interface FileDescriptor {
 export interface FileSheetArrayProps {
   files: FileDescriptor[];
   onChange?: (files: File[]) => void;
-  onRemove?: (file: FileDescriptor) => void;
+  onRemove?: (index: number) => void;
   onRemoveAll?: () => void;
   onFileUpload?: () => void;
   accept?: FileType | FileType[];
@@ -191,31 +191,32 @@ export function FileSheetArray({
             </Stack>
           )}
         </FileStack>
-        {mode && files.length > 0 && showAddRemoveButtons && (
-          <FooterGrid>
-            <Button
-              variant="soft"
-              sx={{
-                gridArea: "uploadButton",
-                justifySelf: "end",
-                width: byBreakpoint({
-                  mobile: "100%",
-                  desktop: "80%",
-                }),
-              }}
-              onClick={onFileUpload}
-            >
-              {t("documents.files.save", {
-                context: mode,
-              })}
-            </Button>
-          </FooterGrid>
-        )}
       </Sheet>
       {isDefined(helperText) && (
         <FormHelperText id={`${fileInputId}-helper-text`}>
           {helperText}
         </FormHelperText>
+      )}
+      {mode && files.length > 0 && showAddRemoveButtons && (
+        <FooterGrid>
+          <Button
+            variant="soft"
+            sx={{
+              gridArea: "uploadButton",
+              justifySelf: "end",
+              height: "40px",
+              width: byBreakpoint({
+                mobile: "100%",
+                desktop: "80%",
+              }),
+            }}
+            onClick={onFileUpload}
+          >
+            {t("documents.files.save", {
+              context: mode,
+            })}
+          </Button>
+        </FooterGrid>
       )}
     </>
   );
@@ -247,6 +248,7 @@ export function FooterGrid({ children }: Readonly<PropsWithChildren>) {
   return (
     <Box
       sx={{
+        pt: 3,
         display: "grid",
         gap: 2,
         gridTemplateColumns: byBreakpoint({
@@ -341,8 +343,10 @@ function FileInput({
   }
 
   function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
-    if (event.target.files !== null) {
+    if (event.target.files?.length) {
       onChange([...event.target.files]);
+      // work-around for Chrome not allowing selecting the same file twice in a row:
+      event.target.value = "";
     }
   }
 
@@ -356,7 +360,7 @@ function FileInput({
         onDragOver={handleFileDrag}
         onDrop={handleFileDrop}
         onDragLeave={handleFileDragLeave}
-        sx={{ backgroundColor: "white", minWidth: "100%" }}
+        sx={{ backgroundColor: "white", height: "40px", minWidth: "100%" }}
       >
         {labels.placeholder}
       </FileButton>
@@ -376,18 +380,18 @@ function FileInput({
   );
 }
 
+export type FileStackProps = PropsWithChildren<
+  Pick<FileSheetArrayProps, "files" | "onRemove"> & {
+    labels: Pick<FileSheetArrayLabels, "removeFile">;
+  }
+>;
+
 function FileStack({
   files,
   onRemove,
   labels,
   children,
-}: Readonly<
-  PropsWithChildren<{
-    files: FileDescriptor[];
-    onRemove?: (file: FileDescriptor) => void;
-    labels: Pick<FileSheetArrayLabels, "removeFile">;
-  }>
->) {
+}: Readonly<FileStackProps>) {
   if (files.length === 0) {
     return null;
   }
@@ -404,7 +408,7 @@ function FileStack({
           key={`${file.name}.${index}`}
           file={file}
           removeLabel={`${labels.removeFile}.${index}`}
-          onRemove={onRemove}
+          onRemove={onRemove ? () => onRemove(index) : undefined}
         />
       ))}
       {children}

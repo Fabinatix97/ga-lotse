@@ -323,9 +323,10 @@ public class InspectionTestDataProvider {
   }
 
   private static UpdateInspectionAppointmentDto getAppointmentTime(int index) {
+    int year = index > 4 && index < 10 ? 2036 + (index % 2) : 2030 + index;
     OffsetDateTime startTime =
         OffsetDateTime.of(
-            2030 + index,
+            year,
             index % 12 + 1,
             index % 28 + 1,
             12 + (index % 12),

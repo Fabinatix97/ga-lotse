@@ -46,7 +46,7 @@ public final class SchoolEntryPublicSecurityConfig extends AbstractPublicSecurit
 
     requestMatchers(
             BaseUrls.SchoolEntry.SCHOOL_ENTRY_CONTROLLER + "/**",
-            BaseUrls.SchoolEntry.LABEL_CONTROLLER + "/**",
+            BaseUrls.SchoolEntry.PROCEDURE_LABEL_CONTROLLER + "/**",
             BaseUrls.SchoolEntry.IMPORT_CONTROLLER + "/**",
             BaseUrls.EVENT_METADATA_API + "/**")
         .hasRole(EmployeePermissionRole.SCHOOL_ENTRY_ADMIN);

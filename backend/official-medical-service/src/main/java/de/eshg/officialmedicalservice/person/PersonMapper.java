@@ -14,6 +14,7 @@ import de.eshg.base.centralfile.api.person.PersonDetailsDto;
 import de.eshg.base.centralfile.api.person.UpdatePersonRequest;
 import de.eshg.officialmedicalservice.procedure.api.AffectedPersonDto;
 import de.eshg.officialmedicalservice.procedure.api.AffectedPersonSyncDto;
+import java.util.UUID;
 
 public class PersonMapper {
 
@@ -45,11 +46,17 @@ public class PersonMapper {
 
   public static AddPersonFileStateRequest mapToAddPersonFileStateRequest(
       AffectedPersonDto affectedPersonDto) {
+    return mapToAddPersonFileStateRequest(affectedPersonDto, null);
+  }
+
+  // TODO Make the other method use this one?
+  public static AddPersonFileStateRequest mapToAddPersonFileStateRequest(
+      AffectedPersonDto affectedPersonDto, UUID referenceId) {
     if (affectedPersonDto == null) {
       return null;
     }
     return new AddPersonFileStateRequest(
-        mapToPersonDetailsDto(affectedPersonDto), DataOriginDto.MANUAL);
+        referenceId, mapToPersonDetailsDto(affectedPersonDto), DataOriginDto.MANUAL);
   }
 
   public static ExternalAddPersonFileStateRequest mapToExternalAddPersonFileStateRequest(

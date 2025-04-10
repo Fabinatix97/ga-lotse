@@ -155,10 +155,7 @@ public class ProcedureOverviewService {
     if (ProcedureValidator.hasNonNullValue(searchParameters)) {
       List<SchoolEntryProcedure> allProcedures =
           procedureSearchService.searchProceduresByPerson(
-              searchParameters.searchFirstName(),
-              searchParameters.searchLastName(),
-              searchParameters.searchDateOfBirth(),
-              Person.PERSON_TYPE_USED_FOR_CHILDREN);
+              searchParameters, Person.PERSON_TYPE_USED_FOR_CHILDREN);
 
       int offset = pageSpec.pageNumber() * pageSpec.pageSize();
 

@@ -22,7 +22,7 @@ import {
 } from "@eshg/lib-employee-portal";
 import {
   formatDate,
-  formatDateTime,
+  formatWeekdayDateTime,
 } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 import {
@@ -147,6 +147,7 @@ export function ProceduresTable(props: ProceduresTableProps) {
                 <PersonSearchForm
                   {...personSearch.formProps}
                   onChange={handleChangePersonSearch}
+                  allowPartialSearch
                 />
               </UnstyledTabPanel>
             )
@@ -261,7 +262,7 @@ const COLUMNS = [
     header: "Nachname",
     cell: (props) => props.getValue(),
     enableSorting: true,
-    meta: { width: 180, canNavigate: { parentRow: true }, isRowHeader: true },
+    meta: { width: 180, canNavigate: { parentRow: true } },
   }),
   columnHelper.accessor("child.dateOfBirth", {
     header: "Geburtsdatum",
@@ -275,7 +276,7 @@ const COLUMNS = [
     enableSorting: true,
     meta: { width: 116, canNavigate: { parentRow: true } },
   }),
-  columnHelper.accessor("school.name", {
+  columnHelper.accessor((row) => row.school?.name, {
     header: "Schule",
     cell: (props) => props.getValue(),
     enableSorting: false,
@@ -317,7 +318,7 @@ const COLUMNS = [
     cell: (props) =>
       isNullish(props.getValue())
         ? ""
-        : `${formatDateTime(props.getValue())} Uhr`,
+        : `${formatWeekdayDateTime(props.getValue())} Uhr`,
     enableSorting: true,
     meta: { canNavigate: { parentRow: true } },
   }),

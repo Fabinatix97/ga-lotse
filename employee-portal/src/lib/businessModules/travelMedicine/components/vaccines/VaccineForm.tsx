@@ -4,6 +4,7 @@
  */
 
 import {
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -26,7 +27,6 @@ import { FieldArray, Formik } from "formik";
 import { Ref } from "react";
 
 import { routes } from "@/lib/baseModule/shared/routes";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import {
   validateBatchId,
   validateNonNegativeNumberWithAtMostTwoDecimalDigits,

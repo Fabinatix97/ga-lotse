@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FluoridationConsentInformationSection } from "@eshg/dental";
 import { ApiFluoridationConsent } from "@eshg/dental-api";
 import { DetailsItem } from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
@@ -16,7 +17,6 @@ import {
 } from "@mui/joy";
 import { differenceInYears } from "date-fns";
 
-import { FluoridationConsentInformationSection } from "@/lib/businessModules/dental/shared/FluoridationConsentInformationSection";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 
 interface ChildDetailsSectionProps {

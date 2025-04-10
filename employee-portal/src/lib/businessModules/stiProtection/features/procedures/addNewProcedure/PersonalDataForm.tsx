@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { CountryField } from "@eshg/lib-employee-portal";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { GENDER_OPTIONS } from "@eshg/lib-portal/components/formFields/constants";
@@ -11,7 +12,6 @@ import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Stack } from "@mui/joy";
 
 import { EditPersonalDataForm } from "@/lib/businessModules/stiProtection/features/procedures/details/EditPersonalDataSidebar";
-import { CountryField } from "@/lib/shared/components/formFields/CountryField";
 
 import { AddNewProcedureForm } from "./AddNewProcedureSidebar";
 

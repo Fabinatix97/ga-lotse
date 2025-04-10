@@ -7,12 +7,12 @@ import { MatrixClient, createClient } from "matrix-js-sdk";
 import { isStrictEqual } from "remeda";
 
 import {
-  clearCachedCredentials,
-  clearMatrixStores,
-  getCachedCredentials,
-  persistCredentials,
+  clearAllStores,
+  getUserDeviceFromLocalStorage,
+  saveUserDeviceToLocalStorage,
 } from "@/lib/businessModules/chat/matrix/tokens";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
+import { UserDevice } from "@/lib/businessModules/chat/shared/types";
 
 export function fetchFn(
   input: RequestInfo | URL,
@@ -33,76 +33,81 @@ export function fetchFn(
   });
 }
 
-export async function getCredentials(
+export async function clearAllStoresOnUserChange(selfUserChatUserId?: string) {
+  const userDevice: UserDevice | undefined = getUserDeviceFromLocalStorage();
+  logger.info(
+    `Validating cached userDevice: ${userDevice?.deviceId} userId: ${userDevice?.userId} for selfUserChatUserId: ${selfUserChatUserId}`,
+  );
+  if (
+    !userDevice ||
+    !deviceBelongsToLoggedInUser(userDevice, selfUserChatUserId)
+  ) {
+    await clearAllStores();
+  }
+}
+
+export async function loginWithCachedDeviceOrWithNewDevice(
   baseUrl: string,
   selfUserChatUserId?: string,
 ) {
-  let credentials = getCachedCredentials();
+  let userDevice: UserDevice | undefined = getUserDeviceFromLocalStorage();
 
   if (
-    !hasValidCachedCredentials(
-      credentials.userId,
-      credentials.deviceId,
-      selfUserChatUserId,
-    )
+    userDevice &&
+    deviceBelongsToLoggedInUser(userDevice, selfUserChatUserId)
   ) {
-    logger.debug("Clear cache and Login to synapse and get new deviceId");
-    const temporaryMatrixClient = createTemporaryMatrixClient(baseUrl);
-    await clearMatrixStores();
-    clearCachedCredentials();
-    credentials = await requestCredentials(temporaryMatrixClient);
-    persistCredentials(credentials);
+    userDevice = await loginWithDevice(baseUrl, userDevice.deviceId);
   } else {
-    logger.debug("Login to synapse with cached deviceId");
-    const temporaryMatrixClient = createTemporaryMatrixClient(
-      baseUrl,
-      credentials.deviceId,
-    );
-    await requestCredentials(temporaryMatrixClient);
-  }
+    await clearAllStores();
+    userDevice = await loginWithNewDevice(baseUrl);
 
-  return credentials;
+    saveUserDeviceToLocalStorage(userDevice);
+  }
+  logger.info("Logged into userDevice", userDevice);
+  return userDevice;
 }
 
-export async function validateCachedCredentials(
-  selfUserChatUserId?: string,
-  initialValidation = false,
-) {
-  logger.debug("Validate cached credentials", selfUserChatUserId);
-  const credentials = getCachedCredentials();
-
-  if (initialValidation && !credentials.deviceId && !credentials.userId) return;
-
-  if (
-    !hasValidCachedCredentials(
-      credentials.userId,
-      credentials.deviceId,
-      selfUserChatUserId,
-    )
-  ) {
-    await clearMatrixStores();
-    clearCachedCredentials();
-  }
-}
-
-function hasValidCachedCredentials(
-  userId?: string,
-  deviceId?: string,
+export function deviceBelongsToLoggedInUser(
+  userDevice?: UserDevice,
   selfUserChatUserId?: string,
 ) {
-  if (!deviceId || !userId) {
-    logger.debug("deviceId or userId not found in cache");
+  if (!userDevice) {
+    logger.debug("UserDevice info not found in local storage");
     return false;
   }
 
-  if (!isStrictEqual(selfUserChatUserId, userId)) {
-    logger.debug("Cached userId is not matching logged-in user.");
+  if (!userDevice.deviceId || !userDevice.userId) {
+    logger.debug("Missing deviceId or userId in local storage");
+    return false;
+  }
+
+  if (!isStrictEqual(selfUserChatUserId, userDevice.userId)) {
+    logger.debug(
+      "Device userId: " +
+        userDevice.userId +
+        " is not matching logged-in user: " +
+        selfUserChatUserId,
+    );
     return false;
   }
   return true;
 }
 
-export async function requestCredentials(matrixClient: MatrixClient) {
+export async function loginWithDevice(baseUrl: string, deviceId: string) {
+  logger.info("Login to synapse with deviceId:", deviceId);
+  const matrixClient = createTemporaryMatrixClient(baseUrl, deviceId);
+  return await requestUserDeviceInfo(matrixClient);
+}
+
+export async function loginWithNewDevice(baseUrl: string) {
+  logger.info("Login to synapse with new deviceId.");
+  const matrixClient = createTemporaryMatrixClient(baseUrl);
+  return await requestUserDeviceInfo(matrixClient);
+}
+
+export async function requestUserDeviceInfo(
+  matrixClient: MatrixClient,
+): Promise<UserDevice> {
   logger.debug("Requesting userId and deviceid from matrix whoami endpoint");
 
   try {

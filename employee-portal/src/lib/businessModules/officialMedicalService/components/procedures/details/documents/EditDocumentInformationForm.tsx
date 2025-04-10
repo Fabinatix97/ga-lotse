@@ -4,6 +4,7 @@
  */
 
 import {
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -18,7 +19,6 @@ import { theme } from "@/lib/baseModule/theme/theme";
 import { DocumentFormValues } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/DocumentForm";
 import { SwitchField } from "@/lib/businessModules/officialMedicalService/components/procedures/details/documents/SwitchField";
 import { HorizontalFieldLabelEnd } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/HorizontalFieldLabelEnd";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 
 interface EditDocumentInformationFormProps {
   initialValues: DocumentFormValues;
@@ -72,6 +72,7 @@ export function EditDocumentInformationForm(
               <InputField name="documentTypeEn" label="Dokumentenart (EN)" />
               <InputField name="helpTextDe" label="Hilfstext" />
               <InputField name="helpTextEn" label="Hilfstext (EN)" />
+              <InputField name="labCode" label="Labortest-Barcode" />
             </Stack>
           </SidebarContent>
           <SidebarActions>

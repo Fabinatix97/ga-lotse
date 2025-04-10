@@ -13,6 +13,7 @@ const statusNames = {
   [ApiEvaluationState.CopyOngoing]: "Wird kopiert",
   [ApiEvaluationState.Updating]: "Wird aktualisiert",
   [ApiEvaluationState.Deleting]: "Wird gelöscht",
+  [ApiEvaluationState.AnonymizationFailed]: "Anonymisierungsfehler",
 } satisfies Record<ApiEvaluationState, string>;
 
 const statusColors = {
@@ -22,6 +23,7 @@ const statusColors = {
   [ApiEvaluationState.CopyOngoing]: "warning",
   [ApiEvaluationState.Updating]: "warning",
   [ApiEvaluationState.Deleting]: "warning",
+  [ApiEvaluationState.AnonymizationFailed]: "danger",
 } satisfies Record<ApiEvaluationState, ChipProps["color"]>;
 
 export function StateChip({ value }: { value: ApiEvaluationState }) {

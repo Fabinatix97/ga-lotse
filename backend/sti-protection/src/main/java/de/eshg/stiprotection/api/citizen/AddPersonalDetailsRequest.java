@@ -27,5 +27,13 @@ public record AddPersonalDetailsRequest(
         Year inGermanySince,
     @Schema(description = "Optional appointment booking information for resubmission on failure")
         @Valid
-        BookAppointmentRequest appointmentBooking)
+        BookAppointmentRequest appointmentBooking,
+    @Schema(description = "Indicates whether the patient has sufficient German language skills.")
+        Boolean hasSufficientGermanLanguageSkills,
+    @Schema(
+            description = "Other languages the patient can speak or understand.",
+            example = "Spanish and French.")
+        String otherKnownLanguages,
+    @Schema(description = "Specifies the pronouns the person uses.", example = "she/her")
+        String pronouns)
     implements PersonalDetails {}

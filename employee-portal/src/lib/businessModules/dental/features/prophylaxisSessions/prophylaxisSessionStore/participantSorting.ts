@@ -7,10 +7,9 @@ import {
   EXAMINATION_STATUS,
   ProphylaxisSessionExamination,
 } from "@eshg/dental";
+import { formatBoolean } from "@eshg/lib-employee-portal";
 import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
 import { isDefined } from "remeda";
-
-import { displayBoolean } from "@/lib/shared/helpers/booleans";
 
 export interface ParticipantSorting {
   sortKey: ParticipantSortKey;
@@ -98,8 +97,8 @@ function compareFluoridation(
   b: ParticipantSortAttributes,
   sortDirection: ParticipantSortDirection,
 ): number {
-  const aValue = displayBoolean(a.currentFluoridationConsent?.consented);
-  const bValue = displayBoolean(b.currentFluoridationConsent?.consented);
+  const aValue = formatBoolean(a.currentFluoridationConsent?.consented);
+  const bValue = formatBoolean(b.currentFluoridationConsent?.consented);
 
   return compareAndSortEmptyStringToEnd(aValue, bValue, sortDirection);
 }

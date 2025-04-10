@@ -4,6 +4,7 @@
  */
 
 import { ApiProcedureStatus } from "@eshg/base-api";
+import { PROCEDURE_STATUS_NAMES } from "@eshg/lib-employee-portal";
 import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
 import {
   ApiCaseStatus,
@@ -30,7 +31,6 @@ import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/
 import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 import { useFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { useSearchParamStateProvider } from "@/lib/shared/components/filterSettings/useSearchParamStateProvider";
-import { procedureStatusNames } from "@/lib/shared/components/procedures/constants";
 
 type ProceduresFilterDefinition = FilterDefinition & {
   key: keyof ProcedureFilters;
@@ -63,7 +63,7 @@ const filterDefinitions = [
     key: "procedureStatus",
     name: "Status",
     type: "Enum",
-    options: Object.entries(procedureStatusNames).map(toLabelValue),
+    options: Object.entries(PROCEDURE_STATUS_NAMES).map(toLabelValue),
   },
   {
     key: "roleStatus",

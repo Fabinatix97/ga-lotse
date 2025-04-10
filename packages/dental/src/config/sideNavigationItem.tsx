@@ -29,6 +29,11 @@ const defaultSubItems: SideNavigationSubItem[] = [
     href: routes.children.overview,
     accessCheck: hasUserRole(ApiUserRole.DentalAdmin),
   },
+  {
+    name: "Kennungen",
+    href: routes.procedureLabels.overview,
+    accessCheck: hasUserRole(ApiUserRole.DentalAdmin),
+  },
 ];
 
 export function resolveSideNavigationItems(): SideNavigationItem[] {

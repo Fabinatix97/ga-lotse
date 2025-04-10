@@ -42,7 +42,10 @@ export const routes = defineRoutes("/school-entry", (schoolEntryPath) => ({
   inbox: defineRoutes(schoolEntryPath("/inbox"), (inboxPath) => ({
     overview: inboxPath("/"),
   })),
-  labels: defineRoutes(schoolEntryPath("/labels"), (labelsPath) => ({
-    overview: labelsPath("/"),
-  })),
+  procedureLabels: defineRoutes(
+    schoolEntryPath("/procedure-labels"),
+    (labelsPath) => ({
+      overview: labelsPath("/"),
+    }),
+  ),
 }));

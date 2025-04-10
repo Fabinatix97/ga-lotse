@@ -48,4 +48,10 @@ export const routes = defineRoutes("/dental", (dentalPath) => ({
         progressEntries: childPath("/progress-entries"),
       })),
   })),
+  procedureLabels: defineRoutes(
+    dentalPath("/procedure-labels"),
+    (procedureLabelsPath) => ({
+      overview: procedureLabelsPath("/"),
+    }),
+  ),
 }));

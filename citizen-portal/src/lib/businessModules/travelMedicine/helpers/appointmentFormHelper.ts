@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
+import {
+  durationBetweenDatesInMinutes,
+  toUtcDate,
+} from "@eshg/lib-portal/helpers/dateTime";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import {
@@ -25,19 +28,18 @@ import {
 export function mapToApiPostCitizenVaccinationConsultationRequest(
   data: InitialAppointmentFormValues,
 ): ApiPostCitizenVaccinationConsultationRequest {
-  const split = data.appointmentBlockDate.split(",");
-  const appointmentStart = new Date(split.at(0)!);
-  const durationInMinutes = Number.parseInt(split.at(1)!);
-  const request = {
+  return {
     patient: mapToApiPatient(data.patient),
     travelInformation: mapToApiTravelInformation(data.travelInformation),
     initialStepAppointmentType: !isEmpty(data.initialStepAppointmentType)
       ? data.initialStepAppointmentType
       : ApiAppointmentType.Vaccination,
-    appointmentStart: appointmentStart,
-    durationInMinutes: durationInMinutes,
+    appointmentStart: data.appointment!.start,
+    durationInMinutes: durationBetweenDatesInMinutes(
+      data.appointment!.start,
+      data.appointment!.end,
+    ),
   };
-  return request;
 }
 
 function mapToApiPatient(patient: PatientFormValues): ApiPatient {

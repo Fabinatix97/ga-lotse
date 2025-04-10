@@ -5,10 +5,12 @@ plugins {
 
 dependencies {
     implementation project(':business-module-persistence-commons')
+    implementation project(':lib-matrix-client')
     implementation 'commons-codec:commons-codec:1.16.1' // keycloak-admin-client forces version 1.16.1
 
     implementation "org.zalando:logbook-api:latest.release"
     implementation "org.zalando:logbook-spring:latest.release"
+    implementation 'org.springframework.retry:spring-retry'
     runtimeOnly project(':rest-service-commons')
 
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isDateCurrentDateOrGreater } from "@eshg/lib-portal/helpers/dateTime";
 import {
   ApiAppointment,
   ApiGetCitizenProcedureDetailsResponse,
@@ -11,7 +12,6 @@ import { useSuspenseQueries } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 import { useGetFreeAppointmentsForCitizen } from "@/lib/businessModules/officialMedicalService/api/queries/citizenPublicApi";
-import { isDateCurrentDateOrGreater } from "@/lib/businessModules/officialMedicalService/components/appointment/AppointmentStepWrapper";
 import { NoAppointmentCard } from "@/lib/businessModules/officialMedicalService/components/appointment/NoAppointmentCard";
 import { BookAppointment } from "@/lib/businessModules/officialMedicalService/components/personalArea/bookAppointment/BookAppointment";
 import { BookAppointmentSidePanel } from "@/lib/businessModules/officialMedicalService/components/personalArea/bookAppointment/BookAppointmentSidePanel";

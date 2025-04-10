@@ -26,15 +26,18 @@ import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
-@DataSensitivity(SensitivityLevel.SENSITIVE)
 public class Diagnosis extends GenericEntity<Long> {
 
-  @Id private Long id;
+  @Id
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  private Long id;
 
   @MapsId
   @OneToOne(optional = false)
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private StiProtectionProcedure procedure;
 
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String results;
 
   @ElementCollection
@@ -42,21 +45,27 @@ public class Diagnosis extends GenericEntity<Long> {
       name = "medications",
       joinColumns = @JoinColumn(name = "procedure_id", nullable = false))
   @OrderColumn
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private List<Medication> medications;
 
   @ElementCollection(fetch = FetchType.EAGER)
   @Column(name = "icd10_code", nullable = false)
   @OrderColumn
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private List<String> icd10Codes = new ArrayList<>();
 
   @ElementCollection(fetch = FetchType.EAGER)
   @JdbcType(PostgreSQLEnumJdbcType.class)
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Set<TestType> testTypes;
 
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String otherTestTypeName;
 
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String generalRemarks;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean resultsCommunicated;
 
   @Override

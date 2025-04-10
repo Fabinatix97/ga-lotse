@@ -5,6 +5,8 @@
 
 package de.eshg.officialmedicalservice.procedure;
 
+import static de.eshg.officialmedicalservice.document.persistence.entity.OmsDocumentStatus.ACCEPTED;
+
 import de.eshg.base.user.api.UserDto;
 import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
 import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
@@ -13,10 +15,10 @@ import de.eshg.officialmedicalservice.appointment.api.BookingInfoDto;
 import de.eshg.officialmedicalservice.appointment.api.PostOmsAppointmentRequest;
 import de.eshg.officialmedicalservice.appointment.persistence.entity.OmsAppointment;
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocument;
-import de.eshg.officialmedicalservice.notification.NotificationService.NotificationSummary;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.MedicalOpinionResult;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.MedicalOpinionStatus;
 import de.eshg.officialmedicalservice.procedure.persistence.entity.OmsProcedure;
+import de.eshg.officialmedicalservice.user.UserClient;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
@@ -28,13 +30,15 @@ import org.springframework.stereotype.Service;
 public class ProgressEntryService {
 
   private final Clock clock;
+  private final UserClient userClient;
   private final DateTimeFormatter dateTimeFormatter =
       DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
   private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
   private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
-  public ProgressEntryService(Clock clock) {
+  public ProgressEntryService(Clock clock, UserClient userClient) {
     this.clock = clock;
+    this.userClient = userClient;
   }
 
   public void createProgressEntryForUpdateAffectedPerson(
@@ -61,21 +65,6 @@ public class ProgressEntryService {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             OmsProgressEntryType.SYNC_FACILITY.name(), TriggerType.SYSTEM_AUTOMATIC);
-    progressEntry.setProcedureId(procedure.getId());
-    procedure.addProgressEntry(progressEntry);
-  }
-
-  public void createProgressEntryForModifiedPhysician(
-      OmsProcedure procedure, UserDto newPhysician) {
-    String note =
-        "Der Vorgang wurde "
-            + newPhysician.firstName()
-            + " "
-            + newPhysician.lastName()
-            + " zugeordnet.";
-    SystemProgressEntry progressEntry =
-        SystemProgressEntryFactory.createSystemProgressEntry(
-            OmsProgressEntryType.PHYSICIAN_CHANGED.name(), note, TriggerType.SYSTEM_AUTOMATIC);
     progressEntry.setProcedureId(procedure.getId());
     procedure.addProgressEntry(progressEntry);
   }
@@ -313,6 +302,20 @@ public class ProgressEntryService {
     procedure.addProgressEntry(progressEntry);
   }
 
+  public void createProgressEntryForReviewDocument(OmsProcedure procedure, OmsDocument document) {
+    String changeDescription =
+        "Das Dokument "
+            + assembleDocumentDescription(document)
+            + " wurde "
+            + (document.getDocumentStatus() == ACCEPTED ? "akzeptiert." : "abgelehnt.");
+
+    SystemProgressEntry progressEntry =
+        SystemProgressEntryFactory.createSystemProgressEntry(
+            OmsProgressEntryType.DOCUMENT_REVIEWED.name(), changeDescription, TriggerType.EMPLOYEE);
+    progressEntry.setProcedureId(procedure.getId());
+    procedure.addProgressEntry(progressEntry);
+  }
+
   private String assembleDocumentDescription(OmsDocument document) {
     StringBuilder documentDescription = new StringBuilder();
     documentDescription.append(document.getDocumentTypeDe());
@@ -367,6 +370,40 @@ public class ProgressEntryService {
     procedure.addProgressEntry(progressEntry);
   }
 
+  public void createProgressEntryForAdditionalInfoChanged(OmsProcedure procedure) {
+    String concernNameDe = procedure.getConcern().getNameDe();
+    String cutOffDate =
+        procedure.getMedicalOpinionCutOffDate() != null
+            ? procedure.getMedicalOpinionCutOffDate().format(dateFormatter)
+            : "-";
+    UUID physicianId = procedure.getPhysicianId();
+    UserDto newPhysician = null;
+    if (physicianId != null) {
+      newPhysician = userClient.validateUser(physicianId, userClient.getTechnicalGroupPhysicians());
+    }
+    String physician =
+        newPhysician != null ? newPhysician.firstName() + " " + newPhysician.lastName() : "-";
+    String mailNotification = procedure.isSendEmailNotifications() ? "Aktiviert" : "Deaktiviert";
+    String changeDescription =
+        "Zusatzinfos wurden aktualisiert."
+            + "\nAnliegen: "
+            + concernNameDe
+            + "\nStichtag: "
+            + cutOffDate
+            + "\nZugewiesene(r) Ärztin / Arzt: "
+            + physician
+            + "\nE-Mail-Benachrichtigung: "
+            + mailNotification;
+
+    SystemProgressEntry progressEntry =
+        SystemProgressEntryFactory.createSystemProgressEntry(
+            OmsProgressEntryType.ADDITIONAL_INFO_CHANGED.name(),
+            changeDescription,
+            TriggerType.EMPLOYEE);
+    progressEntry.setProcedureId(procedure.getId());
+    procedure.addProgressEntry(progressEntry);
+  }
+
   public void createProgressEntryForConcernChanged(OmsProcedure procedure, String concernNameDe) {
     String changeDescription =
         new StringBuilder()
@@ -380,21 +417,6 @@ public class ProgressEntryService {
             OmsProgressEntryType.CONCERN_CHANGED.name(),
             changeDescription,
             TriggerType.SYSTEM_AUTOMATIC);
-    progressEntry.setProcedureId(procedure.getId());
-    procedure.addProgressEntry(progressEntry);
-  }
-
-  public void createProgressEntryForMailNotification(
-      OmsProcedure procedure, NotificationSummary notificationSummary) {
-    String note =
-        "Die E-Mail-Benachrichtigungen wurden "
-            + (procedure.isSendEmailNotifications() ? "aktiviert." : "deaktiviert.");
-    if (notificationSummary != null) {
-      note += " " + notificationSummary;
-    }
-    SystemProgressEntry progressEntry =
-        SystemProgressEntryFactory.createSystemProgressEntry(
-            OmsProgressEntryType.E_MAIL_NOTIFICATION.name(), note, TriggerType.EMPLOYEE);
     progressEntry.setProcedureId(procedure.getId());
     procedure.addProgressEntry(progressEntry);
   }

@@ -17,10 +17,10 @@ catalogs:
     "eslint-config-next": "15.2.4"
 
   react:
-    "react": "19.0.0"
-    "@types/react": "19.0.12"
-    "react-dom": "19.0.0"
-    "@types/react-dom": "19.0.4"
+    "react": "19.1.0"
+    "@types/react": "19.1.0"
+    "react-dom": "19.1.0"
+    "@types/react-dom": "19.1.1"
 
   joy:
     "@mui/joy": "5.0.0-beta.52"
@@ -85,7 +85,7 @@ catalogs:
     "zustand": "5.0.3"
     "resolve-tspaths": "0.8.23"
     "@keycloak/keycloak-admin-client": "26.1.4"
-    "@cronn/vitest-file-snapshots": "0.3.0"
+    "@cronn/vitest-file-snapshots": "0.4.0"
 
 # add new dependencies with exact version instead of semver ranges
 saveExact: true

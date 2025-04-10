@@ -5,6 +5,9 @@
 
 import { ApiContactType } from "@eshg/base-api";
 import {
+  ContactAddressForm,
+  MultiFormButtonBar,
+  OptionalBillingAddressForm,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -36,11 +39,6 @@ import { InstitutionFormFields } from "@/lib/baseModule/components/contacts/form
 import { PersonFormFields } from "@/lib/baseModule/components/contacts/forms/PersonFormFields";
 import { ContactFormValues } from "@/lib/baseModule/components/contacts/types";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import {
-  ContactAddressForm,
-  OptionalBillingAddressForm,
-} from "@/lib/shared/components/form/address/BaseAddressForm";
 
 interface ContactEntityFormProps {
   contactId?: string;

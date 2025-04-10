@@ -10,6 +10,7 @@ import {
   SidebarContent,
   useSidebar,
 } from "@eshg/lib-employee-portal";
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import CircleIcon from "@mui/icons-material/Circle";
 import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
 import ErrorIcon from "@mui/icons-material/Error";
@@ -60,11 +61,9 @@ export function Legend() {
           />
         </ListItem>
       </List>
-      <Button variant="plain" onClick={findingsOverviewSidebar.open}>
-        <Typography component="u" color="primary">
-          Befundwerte?
-        </Typography>
-      </Button>
+      <ButtonLink onClick={findingsOverviewSidebar.open}>
+        Befundwerte?
+      </ButtonLink>
     </Stack>
   );
 }

@@ -4,6 +4,7 @@
  */
 
 import {
+  MultiFormButtonBar,
   SidebarActions,
   SidebarForm,
   SidebarFormHandle,
@@ -17,7 +18,6 @@ import { Formik } from "formik";
 import { Ref } from "react";
 
 import { useReviewDocument } from "@/lib/businessModules/officialMedicalService/api/mutations/omsDocumentApi";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 
 import { DocumentFormContent } from "./DocumentFormContent";
 
@@ -30,6 +30,7 @@ export interface DocumentFormValues {
   uploadInCitizenPortal: boolean;
   files?: File[];
   note?: string;
+  labCode?: string;
 }
 
 interface DocumentFormProps {

@@ -13,8 +13,6 @@ import de.eshg.base.centralfile.api.person.GetReferencePersonResponse;
 import de.eshg.base.centralfile.mapper.PersonMapper;
 import de.eshg.base.centralfile.persistence.entity.Person;
 import de.eshg.base.centralfile.persistence.repository.PersonRepository;
-import de.eshg.base.feature.BaseFeature;
-import de.eshg.base.feature.BaseFeatureToggle;
 import de.eshg.rest.service.error.NotFoundException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,23 +23,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class BundIdPersonLinkController implements BundIdPersonLinkApi {
 
   private final BundIdPersonLinkService bundIdPersonLinkService;
-  private final BaseFeatureToggle featureToggle;
   private final PersonRepository personRepository;
 
   public BundIdPersonLinkController(
-      BundIdPersonLinkService bundIdPersonLinkService,
-      BaseFeatureToggle featureToggle,
-      PersonRepository personRepository) {
+      BundIdPersonLinkService bundIdPersonLinkService, PersonRepository personRepository) {
     this.bundIdPersonLinkService = bundIdPersonLinkService;
-    this.featureToggle = featureToggle;
     this.personRepository = personRepository;
   }
 
   @Override
   @Transactional
   public void createBundIdPersonLink(AddBundIdPersonLinkRequest request) {
-    featureToggle.assertNewFeatureIsEnabled(BaseFeature.BUNDID_PERSON_LINK);
-
     Person refPerson =
         personRepository
             .findByExternalId(request.referencePersonId())
@@ -53,8 +45,6 @@ public class BundIdPersonLinkController implements BundIdPersonLinkApi {
   @Override
   @Transactional(readOnly = true)
   public GetReferencePersonResponse getReferencePersonLinkedToBundIdSelfUser() {
-    featureToggle.assertNewFeatureIsEnabled(BaseFeature.BUNDID_PERSON_LINK);
-
     String bpk2 = bundIdPersonLinkService.getBundIdSelfUserBPK2();
     Person referencePerson = bundIdPersonLinkService.getReferencePerson(bpk2);
 

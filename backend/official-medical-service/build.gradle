@@ -7,7 +7,7 @@ dependencies {
     implementation project(':lib-base-client')
     implementation project(':lib-procedures')
     implementation project(':lib-calendar')
-    implementation project(':lib-department-info')
+    implementation project(':lib-config')
     implementation project(':business-module-persistence-commons')
     implementation project(':rest-oauth-client-commons')
     implementation project(':lib-appointmentblock')

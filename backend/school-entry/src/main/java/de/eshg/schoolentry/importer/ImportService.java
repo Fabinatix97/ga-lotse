@@ -29,8 +29,8 @@ import de.eshg.schoolentry.business.model.ProcedureWithChildData;
 import de.eshg.schoolentry.business.model.ResolvedMergeProcedureData;
 import de.eshg.schoolentry.client.PersonClient;
 import de.eshg.schoolentry.config.SchoolEntryProperties;
-import de.eshg.schoolentry.domain.model.Label;
 import de.eshg.schoolentry.domain.model.Person;
+import de.eshg.schoolentry.domain.model.ProcedureLabel;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure_;
 import de.eshg.schoolentry.domain.repository.SchoolEntryProcedureRepository;
@@ -366,9 +366,9 @@ public class ImportService {
     }
 
     if (mergeData.isEarlyExamination() != null && mergeData.isEarlyExamination()) {
-      Label specialNeedsLabel = labelService.getSpecialNeedsLabel();
+      ProcedureLabel specialNeedsLabel = labelService.getSpecialNeedsLabel();
 
-      List<Label> labels = procedure.getLabels();
+      List<ProcedureLabel> labels = procedure.getLabels();
       if (!labels.contains(specialNeedsLabel)) {
         labels.add(specialNeedsLabel);
       }

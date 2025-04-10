@@ -4,7 +4,10 @@
  */
 
 import { formatTime } from "@eshg/lib-portal/formatters/dateTime";
-import { formatDateToFullReadableString } from "@eshg/lib-portal/helpers/dateTime";
+import {
+  durationBetweenDatesInMinutes,
+  formatDateToFullReadableString,
+} from "@eshg/lib-portal/helpers/dateTime";
 import { ApiAppointmentBookingType } from "@eshg/travel-medicine-api";
 import { AccessTimeOutlined, DateRange } from "@mui/icons-material";
 import { Button, Stack } from "@mui/joy";
@@ -30,10 +33,13 @@ export function RebookAppointmentSidePanel() {
   const { procedureId, procedureStepId, appointmentDetails } = useIdContext();
   const { values, handleSubmit } =
     useFormikContext<RebookAppointmentFormValues>();
-  const splitArr = values.selectedAppointment?.split(",");
-  const split = splitArr?.at(0);
-  const appointmentStart = new Date(split!);
-  const durationInMinutes = splitArr?.at(1);
+  const appointmentStart = values.appointment?.start;
+  const durationInMinutes =
+    values.appointment &&
+    durationBetweenDatesInMinutes(
+      values.appointment?.start,
+      values.appointment?.end,
+    );
 
   function routeBackToDetails() {
     const url = `${citizenRoutes.viewAppointment.details.index(accessCode)}?procedureId=${procedureId}&procedureStepId=${procedureStepId}`;
@@ -52,14 +58,14 @@ export function RebookAppointmentSidePanel() {
   return (
     <ContentSheet data-testid="rebook-appointment-side-panel">
       <ContentSheetTitle>{t("sidePanel.title")}</ContentSheetTitle>
-      {values.selectedAppointment && (
+      {appointmentStart && (
         <>
           <DetailsField
             value={formatDateToFullReadableString(appointmentStart)}
             icon={<DateRange />}
           />
           <DetailsField
-            value={`${formatTime(appointmentStart)} ${t("sidePanel.appointmentDuration", { durationInMinutes: durationInMinutes })}`}
+            value={`${formatTime(appointmentStart)} ${t("sidePanel.appointmentDuration", { durationInMinutes })}`}
             icon={<AccessTimeOutlined />}
           />
         </>

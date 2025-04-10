@@ -12,4 +12,5 @@ public enum ProphylaxisSessionSortKey {
   DATE_AND_TIME,
   IS_SCREENING,
   FLUORIDATION_VARNISH,
+  STATUS,
 }

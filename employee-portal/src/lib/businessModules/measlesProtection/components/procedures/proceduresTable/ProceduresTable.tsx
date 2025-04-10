@@ -8,6 +8,8 @@
 import { ApiUserRole } from "@eshg/base-api";
 import {
   DataTable,
+  PROCEDURE_STATUS_COLORS,
+  PROCEDURE_STATUS_NAMES,
   Pagination,
   TablePage,
   TableSheet,
@@ -33,10 +35,6 @@ import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
 import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
-import {
-  procedureStatusNames,
-  statusColors,
-} from "@/lib/shared/components/procedures/constants";
 
 import {
   ProceduresTableFilters,
@@ -138,8 +136,8 @@ function getProceduresColumns({
     columnHelper.accessor("procedureStatus", {
       header: "Status",
       cell: (props) => (
-        <Chip color={statusColors[props.getValue()]}>
-          {procedureStatusNames[props.getValue()]}
+        <Chip color={PROCEDURE_STATUS_COLORS[props.getValue()]}>
+          {PROCEDURE_STATUS_NAMES[props.getValue()]}
         </Chip>
       ),
       enableSorting: true,

@@ -5,20 +5,19 @@
 
 import { ApiVCardAddress } from "@eshg/base-api";
 import {
+  MultiFormButtonBar,
+  SelectableCard,
   SidebarActions,
   SidebarContent,
   SidebarForm,
   SidebarFormHandle,
+  formatList,
 } from "@eshg/lib-employee-portal";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { Sheet, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 import { ComponentType, Ref } from "react";
 import { isDefined } from "remeda";
-
-import { SelectableCard } from "@/lib/shared/components/cards/SelectableCard";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import { join } from "@/lib/shared/helpers/strings";
 
 interface ImportResponse<TMatch> {
   matches: TMatch[];
@@ -83,12 +82,15 @@ export function ImportResultForm<TMatch extends { id: string }>({
                   </Typography>
                   {isDefined(address) && (
                     <Typography>
-                      {join(
+                      {formatList(
                         [
                           isDefined(address.street)
-                            ? join([address.street, address.houseNumber], " ")
+                            ? formatList(
+                                [address.street, address.houseNumber],
+                                " ",
+                              )
                             : undefined,
-                          join([address.postalCode, address.city], " "),
+                          formatList([address.postalCode, address.city], " "),
                         ],
                         ", ",
                       )}

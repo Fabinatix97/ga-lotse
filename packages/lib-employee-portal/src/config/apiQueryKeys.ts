@@ -9,4 +9,8 @@ const baseQueryKey = queryKeyFactory([["libEmployeePortal"]]);
 
 export const userApiQueryKey = queryKeyFactory(baseQueryKey(["userApi"]));
 
+export const personApiQueryKey = queryKeyFactory(baseQueryKey(["personApi"]));
+
 export const contactApiQueryKey = queryKeyFactory(baseQueryKey(["contactApi"]));
+
+export const streetApiQueryKey = queryKeyFactory(baseQueryKey(["streetApi"]));

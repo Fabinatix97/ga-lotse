@@ -95,6 +95,10 @@ public class OmsDocument extends GloballyUniqueEntityBase {
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private String reasonForRejection;
 
+  @Column
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  private String labCode;
+
   public OmsProcedure getOmsProcedure() {
     return omsProcedure;
   }
@@ -193,5 +197,13 @@ public class OmsDocument extends GloballyUniqueEntityBase {
 
   public void setReasonForRejection(String reasonForRejection) {
     this.reasonForRejection = reasonForRejection;
+  }
+
+  public String getLabCode() {
+    return labCode;
+  }
+
+  public void setLabCode(String labTestBarCode) {
+    this.labCode = labTestBarCode;
   }
 }

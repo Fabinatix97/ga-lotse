@@ -173,5 +173,6 @@ export function useGetWaitingRoomProcedures(
         .getWaitingRoomProceduresRaw(request)
         .then(unwrapRawResponse),
     select: mapPaginatedList(mapWaitingRoomProcedure),
+    refetchInterval: 60_000,
   });
 }

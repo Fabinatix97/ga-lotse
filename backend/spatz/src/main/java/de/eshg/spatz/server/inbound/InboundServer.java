@@ -51,7 +51,7 @@ public class InboundServer extends ProxyServer implements TopologyChangedListene
   public static final String INBOUND_RESPONSE_HANDLED = "success";
   private final int inboundTargetPort;
   private final String inboundTargetHost;
-  private final ServiceDirectoryApi serviceDirectoryApi;
+  private final Optional<ServiceDirectoryApi> serviceDirectoryApi;
   private final WebsocketProxyHandler websocketProxyHandler = new WebsocketProxyHandler();
   private final HttpProxyClient httpProxyClient;
   private Map<String, ActorResponseDto> actorsByHostname = Collections.emptyMap();
@@ -62,7 +62,7 @@ public class InboundServer extends ProxyServer implements TopologyChangedListene
       HttpServer baseServer,
       SpatzConfigurationProperties properties,
       SslBundles sslBundles,
-      ServiceDirectoryApi serviceDirectoryApi,
+      Optional<ServiceDirectoryApi> serviceDirectoryApi,
       LifecycleProperties lifecycleProperties) {
     super(
         applicationContext,
@@ -236,8 +236,14 @@ public class InboundServer extends ProxyServer implements TopologyChangedListene
   @Override
   public void trustedActorsChanged(TrustedActors trustedActors) {
     actorsByHostname = trustedActors.inboundByHostname();
+    if (serviceDirectoryApi.isEmpty()) {
+      logger.warn(
+          "no eshg.servicedirectory.baseUrl configured. {} will not be set.",
+          EshgHttpHeaders.X_ESHG_TARGET_ORGUNIT.headerName);
+      return;
+    }
     try {
-      self = serviceDirectoryApi.getSelf();
+      self = serviceDirectoryApi.get().getSelf();
     } catch (Exception e) {
       logger.info("could not get own actor information: {}", e.getMessage());
       self = null;

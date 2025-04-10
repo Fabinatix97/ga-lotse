@@ -29,28 +29,33 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
-@DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
 public abstract class MedicalHistory extends GenericEntity<Long> {
 
-  @Id private Long id;
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  @Id
+  private Long id;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   @MapsId
   @OneToOne(fetch = FetchType.LAZY)
   private StiProtectionProcedure procedure;
 
   // General
-
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String examinationReason;
 
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String currentSymptoms;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private LocalDate contactToClarifyDate;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private RelationshipModel relationshipModel;
 
   // Examinations
-
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   @AttributeOverrides({
     @AttributeOverride(name = "hepA", column = @Column(name = "examination_hep_a")),
     @AttributeOverride(name = "hepB", column = @Column(name = "examination_hep_b")),
@@ -64,7 +69,7 @@ public abstract class MedicalHistory extends GenericEntity<Long> {
   private Examination examinations;
 
   // Previous Diseases
-
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   @AttributeOverrides({
     @AttributeOverride(name = "hepA", column = @Column(name = "previous_illnesses_hep_a")),
     @AttributeOverride(name = "hepB", column = @Column(name = "previous_illnesses_hep_b")),
@@ -79,19 +84,22 @@ public abstract class MedicalHistory extends GenericEntity<Long> {
   private PreviousIllness previousIllnesses;
 
   // Orientation and Contact
-
-  @Embedded private RiskContact riskContacts;
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  @Embedded
+  private RiskContact riskContacts;
 
   // Prevention
-
-  @Embedded private Prevention prevention;
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  @Embedded
+  private Prevention prevention;
 
   // Risk Factors
-
-  @Embedded private RiskFactor riskFactors;
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  @Embedded
+  private RiskFactor riskFactors;
 
   // Comments
-
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String additionalComments;
 
   // Getter and Setters

@@ -10,6 +10,7 @@ export interface DateSpanFilterDefinition extends FilterDefinitionBase {
   type: "DateSpan";
   maxInputPast?: boolean;
   doNotRequireStartAndEnd?: boolean;
+  showTodayButton?: boolean;
 }
 
 export interface DateSpanFilterValue extends FilterValueBase {

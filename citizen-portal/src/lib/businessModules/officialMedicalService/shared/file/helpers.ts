@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
+import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
 import { ApiOmsFile } from "@eshg/official-medical-service-api";
 
 import { FileDescriptor } from "@/lib/businessModules/officialMedicalService/shared/file/FileSheetArray";

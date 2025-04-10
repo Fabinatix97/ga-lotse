@@ -16,19 +16,19 @@ public class WebsocketEndpointDeque extends ConcurrentLinkedDeque<WebsocketEndpo
 
   public WebsocketEndpointDeque(String name) {
     logger = LoggerFactory.getLogger(WebsocketEndpointDeque.class.getSimpleName() + ":" + name);
-    logger.debug("creating endpoint deque");
+    logger.trace("creating endpoint deque");
   }
 
   public boolean addEndpoint(WebsocketEndpoint endpoint) {
     synchronized (this) {
       if (this.contains(endpoint)) {
-        logger.debug("endpoint {} already in deque", endpoint);
+        logger.trace("endpoint {} already in deque", endpoint);
         return false;
       }
-      logger.debug("adding endpoint {} to deque", endpoint);
-      logger.debug("before add: {}", this);
+      logger.trace("adding endpoint {} to deque", endpoint);
+      logger.trace("before add: {}", this);
       this.add(endpoint);
-      logger.debug("after add: {}", this);
+      logger.trace("after add: {}", this);
       return true;
     }
   }
@@ -36,13 +36,13 @@ public class WebsocketEndpointDeque extends ConcurrentLinkedDeque<WebsocketEndpo
   public WebsocketEndpoint rotateAndGet() {
     // for round-robin load-balancing
     synchronized (this) {
-      logger.debug("before rotate: {}", this);
+      logger.trace("before rotate: {}", this);
       WebsocketEndpoint endpoint = this.pollFirst();
       if (endpoint != null) {
         this.add(endpoint);
       }
-      logger.debug("after rotate: {}", this);
-      logger.debug("returning endpoint {}", endpoint);
+      logger.trace("after rotate: {}", this);
+      logger.trace("returning endpoint {}", endpoint);
       return endpoint;
     }
   }

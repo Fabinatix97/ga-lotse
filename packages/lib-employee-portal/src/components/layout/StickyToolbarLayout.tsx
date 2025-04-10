@@ -48,6 +48,7 @@ export function StickyToolbarLayout(props: StickyToolbarLayoutProps) {
           // We need to set minHeight to 0 in this case because the child component should provide it's own scroll container if desired.
           // See https://www.w3.org/TR/css-flexbox-1/#min-size-auto
           minHeight: 0,
+          overflowY: "auto",
         }}
       >
         {props.children}

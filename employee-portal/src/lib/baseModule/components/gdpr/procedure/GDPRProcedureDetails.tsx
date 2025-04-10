@@ -16,6 +16,7 @@ import {
 import {
   CentralFilePersonDetails,
   mapReferencePersonToForm,
+  useEditReferencePersonSidebar,
   useHasUserRoleCheck,
   useSidebar,
 } from "@eshg/lib-employee-portal";
@@ -43,7 +44,6 @@ import {
 import { SheetQueryBoundary } from "@/lib/shared/components/boundaries/SheetQueryBoundary";
 import { CentralFileFacilityDetails } from "@/lib/shared/components/centralFile/display/CentralFileFacilityDetails";
 import { useEditReferenceFacilitySidebar } from "@/lib/shared/components/facilitySidebar/EditReferenceFacilitySidebar";
-import { useEditReferencePersonSidebar } from "@/lib/shared/components/personSidebar/PersonEditSidebar";
 
 import { GdprFacilityDataTile } from "./tiles/GdprFacilityDataTile";
 
@@ -195,6 +195,9 @@ export function GDPRProcedureDetails({
         </SheetQueryBoundary>
         {procedure.status === ApiGdprProcedureStatus.Draft && (
           <CentralFileLinkTile
+            hasLinkedMatches={
+              linkedFacilities.length + linkedPersons.length > 0
+            }
             numMatches={personMatches.length + facilityMatches.length}
             onAddLink={hasWritePerms && (() => openLinkSidebar())}
           />

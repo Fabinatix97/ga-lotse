@@ -23,7 +23,7 @@ public record ProcedureDetailsDto(
     @NotNull ProcedureTypeDto type,
     @NotNull @Valid PersonDetailsDto child,
     @NotNull @Valid List<PersonDetailsDto> custodians,
-    @NotNull @Valid List<LabelDto> labels,
+    @NotNull @Valid List<ProcedureLabelDto> labels,
     @Valid AppointmentDto appointment,
     @Valid SchoolDto school,
     @Valid LocationDto location,

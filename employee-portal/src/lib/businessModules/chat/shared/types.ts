@@ -124,9 +124,9 @@ export interface ChatUserSettings {
   accountRegistered: boolean;
 }
 
-export interface IStoredCredentials {
-  userId?: string;
-  deviceId?: string;
+export interface UserDevice {
+  userId: string;
+  deviceId: string;
 }
 
 export interface RoomLastMessage {

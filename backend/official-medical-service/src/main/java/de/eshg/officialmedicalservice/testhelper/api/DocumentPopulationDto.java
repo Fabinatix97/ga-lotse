@@ -5,7 +5,6 @@
 
 package de.eshg.officialmedicalservice.testhelper.api;
 
-import de.eshg.officialmedicalservice.document.api.DocumentStatusDto;
 import de.eshg.officialmedicalservice.document.api.PostDocumentRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -17,7 +16,6 @@ import java.util.List;
 public record DocumentPopulationDto(
     @NotBlank String key,
     @NotNull @Valid PostDocumentRequest request,
-    DocumentStatusDto targetState,
     String reasonForRejection,
     List<FileTestDataConfig> files,
     String note) {}

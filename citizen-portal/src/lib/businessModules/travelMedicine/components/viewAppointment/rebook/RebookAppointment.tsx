@@ -4,19 +4,12 @@
  */
 
 import { Alert } from "@eshg/lib-portal/components/Alert";
-import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
 import { ApiAppointment } from "@eshg/travel-medicine-api";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { Grid, Stack, Typography } from "@mui/joy";
-import { useFormikContext } from "formik";
-import { useCallback, useState } from "react";
+import { Stack } from "@mui/joy";
 
-import { AppointmentDayPicker } from "@/lib/businessModules/travelMedicine/components/appointment/steps/appointmentSlotStep/calendar/AppointmentDayPicker";
-import { AppointmentTimePicker } from "@/lib/businessModules/travelMedicine/components/appointment/steps/appointmentSlotStep/calendar/AppointmentTimePicker";
 import { FormSheetTitle } from "@/lib/businessModules/travelMedicine/components/shared/components/FormSheet";
-import { RebookAppointmentFormValues } from "@/lib/businessModules/travelMedicine/components/viewAppointment/rebook/RebookAppointmentPageContent";
 import { useTranslation } from "@/lib/i18n/client";
-import { byBreakpoint } from "@/lib/shared/breakpoints";
+import { AppointmentPickerSection } from "@/lib/shared/components/AppointmentPickerSection";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 
 export function RebookAppointment({
@@ -25,52 +18,6 @@ export function RebookAppointment({
   appointments: ApiAppointment[];
 }>) {
   const { t } = useTranslation(["travelMedicine/rebookAppointment"]);
-  const { values, setFieldValue, errors } =
-    useFormikContext<RebookAppointmentFormValues>();
-
-  const [isAppointmentDaySelected, setIsAppointmentDaySelected] =
-    useState(false);
-  const [availableAppointments, setAvailableAppointments] = useState<
-    ApiAppointment[]
-  >([]);
-
-  const handelAvailableAppointmentsSelection = useCallback(
-    (appointments: ApiAppointment[]) => {
-      setAvailableAppointments(appointments);
-      setIsAppointmentDaySelected(true);
-    },
-    [],
-  );
-
-  function handleAppointmentSelection(api: ApiAppointment) {
-    void setFieldValue(
-      "selectedAppointment",
-      `${api.start.toISOString()},${durationBetweenDatesInMinutes(
-        api.start,
-        api.end,
-      )}`,
-    );
-  }
-
-  function resetSelectedAppointment() {
-    void setFieldValue("selectedAppointment", "");
-  }
-
-  function onDisplayedMonthChanged() {
-    resetSelectedAppointment();
-    setIsAppointmentDaySelected(false);
-    setAvailableAppointments([]);
-  }
-
-  function getSelectedAppointmentFromContext() {
-    let selectedDate = "";
-    const date = values.selectedAppointment?.split(",")[0];
-    if (date) {
-      selectedDate = new Date(date).toString();
-    }
-    return selectedDate;
-  }
-
   return (
     <ContentSheet data-testid="rebook-appointment-content-form">
       <FormSheetTitle requiredTitle={t("content.requiredTitle")}>
@@ -82,36 +29,11 @@ export function RebookAppointment({
         color="primary"
       />
       <Stack data-testid="appointment-picker">
-        {errors.selectedAppointment && (
-          <Typography
-            data-testid="appointment-picker-helper-text"
-            startDecorator={<InfoOutlinedIcon size="md" />}
-            color="danger"
-            sx={{ marginBottom: 2 }}
-          >
-            {errors.selectedAppointment}
-          </Typography>
-        )}
-        <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-          <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
-            <AppointmentDayPicker
-              appointmentDayCandidates={appointments}
-              onAvailableAppointmentsSelected={
-                handelAvailableAppointmentsSelection
-              }
-              onDisplayedMonthChanged={onDisplayedMonthChanged}
-              resetPreviousSelectedAppointment={resetSelectedAppointment}
-            />
-          </Grid>
-          <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
-            <AppointmentTimePicker
-              onAppointmentDateAndTimeSelected={handleAppointmentSelection}
-              availableAppointments={availableAppointments}
-              isAppointmentDaySelected={isAppointmentDaySelected}
-              selectedAppointmentDayAndTime={getSelectedAppointmentFromContext()}
-            />
-          </Grid>
-        </Grid>
+        <AppointmentPickerSection
+          appointments={appointments}
+          name="appointment"
+          t={t}
+        />
       </Stack>
     </ContentSheet>
   );

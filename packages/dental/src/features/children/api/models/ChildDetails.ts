@@ -4,7 +4,11 @@
  */
 
 import { ApiChildDetails, ApiFluoridationConsent } from "@eshg/dental-api";
-import { Versioned, mapVersioned } from "@eshg/lib-employee-portal";
+import {
+  ProcedureLabel,
+  Versioned,
+  mapVersioned,
+} from "@eshg/lib-employee-portal";
 
 import {
   AnnualInstitution,
@@ -22,6 +26,7 @@ export interface ChildDetails extends Child, Versioned {
   readonly currentFluoridationConsent?: ApiFluoridationConsent;
   readonly allFluoridationConsents: ApiFluoridationConsent[];
   readonly personDetails: PersonDetails;
+  readonly procedureLabels: ProcedureLabel[];
 }
 
 export function mapChildDetails(response: ApiChildDetails): ChildDetails {
@@ -40,6 +45,7 @@ export function mapChildDetails(response: ApiChildDetails): ChildDetails {
       response.fluoridationConsents,
     ),
     allFluoridationConsents: response.fluoridationConsents,
+    procedureLabels: response.procedureLabels,
   };
 }
 

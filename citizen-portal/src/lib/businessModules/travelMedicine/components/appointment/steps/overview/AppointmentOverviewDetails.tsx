@@ -5,7 +5,10 @@
 
 import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
-import { formatDateToFullReadableString } from "@eshg/lib-portal/helpers/dateTime";
+import {
+  durationBetweenDatesInMinutes,
+  formatDateToFullReadableString,
+} from "@eshg/lib-portal/helpers/dateTime";
 import {
   AccessTimeOutlined,
   CakeOutlined,
@@ -31,10 +34,13 @@ export function AppointmentOverviewDetails() {
   const { t } = useTranslation(["travelMedicine/forms"]);
   const { values } = useFormikContext<InitialAppointmentFormValues>();
   const department = useDepartmentContext();
-  const splitArr = values.appointmentBlockDate.split(",");
-  const split = splitArr.at(0);
-  const appointmentStart = new Date(split!);
-  const durationInMinutes = splitArr.at(1);
+  const appointmentStart = values.appointment?.start;
+  const durationInMinutes =
+    values.appointment &&
+    durationBetweenDatesInMinutes(
+      values.appointment?.start,
+      values.appointment?.end,
+    );
 
   return (
     <Stack gap={1} data-testid="appointment-overview-summary">
@@ -48,15 +54,15 @@ export function AppointmentOverviewDetails() {
         value={formatDepartmentAddress(department.department!)}
         icon={<FmdGoodOutlined />}
       />
-      {values.appointmentBlockDate && (
+      {appointmentStart && (
         <DetailsField
           value={formatDateToFullReadableString(appointmentStart)}
           icon={<DateRange />}
         />
       )}
-      {values.appointmentBlockDate && (
+      {durationInMinutes && (
         <DetailsField
-          value={`${formatTime(appointmentStart)} ${t("appointmentOverviewSection.values.appointmentDuration", { durationInMinutes: durationInMinutes })}`}
+          value={`${formatTime(appointmentStart)} ${t("appointmentOverviewSection.values.appointmentDuration", { durationInMinutes })}`}
           icon={<AccessTimeOutlined />}
         />
       )}

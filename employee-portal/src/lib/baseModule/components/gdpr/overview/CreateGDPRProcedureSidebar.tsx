@@ -6,6 +6,8 @@
 import { ApiGdprProcedureType, ApiSalutation } from "@eshg/base-api";
 import {
   BaseAddressFormInputs,
+  ContactAddressForm,
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -32,8 +34,6 @@ import { mapAddGdprProcedureRequest } from "@/lib/baseModule/api/mapper/gdpr";
 import { useAddGdprProcedure } from "@/lib/baseModule/api/mutations/gdpr";
 import { TYPE_OPTIONS } from "@/lib/baseModule/components/gdpr/i18n";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import { ContactAddressForm } from "@/lib/shared/components/form/address/BaseAddressForm";
 
 export interface GDPRProcedureFormInputs {
   type: OptionalFieldValue<ApiGdprProcedureType>;

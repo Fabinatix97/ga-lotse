@@ -11,6 +11,8 @@ import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.lib.procedure.domain.model.Procedure;
+import de.eshg.officialmedicalservice.anamnesis.persistence.entity.OmsAnamnesis;
+import de.eshg.officialmedicalservice.anamnesis.persistence.entity.OmsAnamnesis_;
 import de.eshg.officialmedicalservice.appointment.persistence.entity.OmsAppointment;
 import de.eshg.officialmedicalservice.appointment.persistence.entity.OmsAppointment_;
 import de.eshg.officialmedicalservice.document.persistence.entity.OmsDocument;
@@ -27,6 +29,7 @@ import jakarta.persistence.OrderBy;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -92,6 +95,10 @@ public class OmsProcedure extends Procedure<OmsProcedure, OmsTask, Person, Facil
   @DataSensitivity(PSEUDONYMIZED)
   private WaitingRoom waitingRoom;
 
+  @Column
+  @DataSensitivity(PSEUDONYMIZED)
+  private LocalDate medicalOpinionCutOffDate;
+
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @Column
   private UUID citizenUserId;
@@ -99,6 +106,14 @@ public class OmsProcedure extends Procedure<OmsProcedure, OmsTask, Person, Facil
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @Column
   private Instant startedAt;
+
+  @OneToOne(
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+      mappedBy = OmsAnamnesis_.PROCEDURE,
+      orphanRemoval = true,
+      fetch = FetchType.LAZY)
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  private OmsAnamnesis anamnesis;
 
   public Person findAffectedPerson() {
     if (getRelatedPersons().isEmpty()) {
@@ -191,5 +206,21 @@ public class OmsProcedure extends Procedure<OmsProcedure, OmsTask, Person, Facil
 
   public void setMedicalOpinionComment(String medicalOpinionComment) {
     this.medicalOpinionComment = medicalOpinionComment;
+  }
+
+  public LocalDate getMedicalOpinionCutOffDate() {
+    return medicalOpinionCutOffDate;
+  }
+
+  public void setMedicalOpinionCutOffDate(LocalDate medicalOpinionCutOffDate) {
+    this.medicalOpinionCutOffDate = medicalOpinionCutOffDate;
+  }
+
+  public OmsAnamnesis getAnamnesis() {
+    return anamnesis;
+  }
+
+  public void setAnamnesis(OmsAnamnesis anamnesis) {
+    this.anamnesis = anamnesis;
   }
 }

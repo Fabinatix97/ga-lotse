@@ -3,21 +3,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { FileField } from "@eshg/lib-employee-portal";
 import {
   EmployeeInformationFormValues,
   MedicalRegistryCreateProcedureFormValues,
 } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
 import { BooleanRadioField } from "@eshg/lib-portal/components/formFields/BooleanRadioField";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
+import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { validateFile } from "@eshg/lib-portal/helpers/validators";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { Grid, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 
 import { useServerConfig } from "@/lib/baseModule/api/queries/config";
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
-import { FileField } from "@/lib/shared/components/formFields/file/FileField";
 
 export function EmployeeInformationForm(props: NestedFormProps) {
   const values =
@@ -63,10 +62,7 @@ export function EmployeeInformationForm(props: NestedFormProps) {
               label={"Mitarbeiter:innen-Liste als JPG hochladen"}
               accept={FileType.Jpeg}
               required={requiredFieldMessage}
-              validate={validateFile(
-                FileType.Jpeg.extensions,
-                config.maxFileSize,
-              )}
+              maxFileSize={config.maxFileSize}
             />
           </Grid>
         </>

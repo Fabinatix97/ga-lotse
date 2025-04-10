@@ -22,6 +22,7 @@ interface ProcedureLabelsTableProps {
   procedureLabels: ProcedureLabel[];
   loading: boolean;
   procedureLabelApi: ProcedureLabelClient;
+  hasReadOnlyProcedureLabels: boolean;
 }
 
 export function ProcedureLabelsTable(props: ProcedureLabelsTableProps) {
@@ -58,6 +59,7 @@ export function ProcedureLabelsTable(props: ProcedureLabelsTableProps) {
                   procedureLabelApi: props.procedureLabelApi,
                   procedureLabel: item,
                 }),
+              hasReadOnlyProcedureLabels: props.hasReadOnlyProcedureLabels,
             })}
             minWidth={750}
           />

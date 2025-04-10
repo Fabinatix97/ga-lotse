@@ -5,14 +5,18 @@
 
 package de.eshg.opendata.config;
 
+import de.eshg.base.util.MapUtils;
+import de.eshg.config.ConfigurationStatus;
 import de.eshg.config.EshgConfigurationService;
 import de.eshg.persistence.TransactionHelper;
 import jakarta.persistence.EntityManager;
+import java.util.SequencedMap;
 import org.springframework.stereotype.Component;
 
 @Component
 public class OpenDataConfigService extends EshgConfigurationService<OpenDataConfiguration> {
 
+  private static final String CONFIGURATION_ENDPOINT = "OPEN_DATA";
   private final InitialOpenDataConfiguration initialOpenDataConfiguration;
 
   public OpenDataConfigService(
@@ -36,5 +40,10 @@ public class OpenDataConfigService extends EshgConfigurationService<OpenDataConf
     openDataConfiguration.setTermsOfUse(
         initialOpenDataConfiguration.termsOfUse().getContentAsByteArray());
     return openDataConfiguration;
+  }
+
+  @Override
+  protected SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
+    return MapUtils.orderedMapOf(CONFIGURATION_ENDPOINT, ConfigurationStatus.COMPLETE);
   }
 }

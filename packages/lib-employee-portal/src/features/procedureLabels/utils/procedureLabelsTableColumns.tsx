@@ -14,10 +14,14 @@ const columnHelper = createColumnHelper<ProcedureLabel>();
 
 interface ProcedureLabelColumnsProps {
   onEdit: (item: ProcedureLabel) => void;
+  hasReadOnlyProcedureLabels: boolean;
 }
 
-export function procedureLabelColumns({ onEdit }: ProcedureLabelColumnsProps) {
-  return [
+export function procedureLabelColumns({
+  onEdit,
+  hasReadOnlyProcedureLabels,
+}: ProcedureLabelColumnsProps) {
+  const defaultColumns = [
     columnHelper.accessor("name", {
       header: "Kennung",
       cell: (props) => (
@@ -37,15 +41,25 @@ export function procedureLabelColumns({ onEdit }: ProcedureLabelColumnsProps) {
       cell: (props) => props.getValue(),
       enableSorting: false,
     }),
-    columnHelper.accessor("readonly", {
-      header: "Erstellt von",
-      id: "createdBy",
-      cell: (props) => (props.getValue() ? "System" : "Benutzer"),
-      meta: {
-        width: 160,
-      },
-      enableSorting: false,
-    }),
+  ];
+
+  const readonlyColumns = hasReadOnlyProcedureLabels
+    ? [
+        columnHelper.accessor("readonly", {
+          header: "Erstellt von",
+          id: "createdBy",
+          cell: (props) => (props.getValue() ? "System" : "Benutzer"),
+          meta: {
+            width: 160,
+          },
+          enableSorting: false,
+        }),
+      ]
+    : [];
+
+  return [
+    ...defaultColumns,
+    ...readonlyColumns,
     columnHelper.accessor("readonly", {
       header: "Aktionen",
       id: "actions",

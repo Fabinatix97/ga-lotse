@@ -1,7 +1,7 @@
 <#import "../common/forms.ftlh" as forms />
 
-<#macro content schoolAndPromotionHints>
-<#-- @ftlvariable name="examination" type="de.eshg.schoolentry.pdf.schoolinfoletter.model.SchoolInfoLetterSchoolAndPromotionHints" -->
+<#macro content schoolAndPromotionHints="NUL">
+<#-- @ftlvariable name="schoolAndPromotionHints" type="de.eshg.schoolentry.pdf.schoolinfoletter.model.SchoolInfoLetterSchoolAndPromotionHints" -->
   <table class="schoolAndPromotionHints" style="width: 100%">
     <colgroup>
       <col style="width: 34%" />
@@ -10,40 +10,40 @@
     </colgroup>
     <tr>
       <td>
-        <@forms.checkbox checked=schoolAndPromotionHints.behavior title="Verhalten" />
+        <@forms.checkbox checked=schoolAndPromotionHints?isHash && schoolAndPromotionHints.behavior title="Verhalten" />
       </td>
     </tr>
     <tr>
       <td>
-        <@forms.checkbox checked=schoolAndPromotionHints.language title="Sprache" />
+        <@forms.checkbox checked=schoolAndPromotionHints?isHash && schoolAndPromotionHints.language title="Sprache" />
       </td>
       <td>
-        <@forms.checkbox checked=schoolAndPromotionHints.articulation title="Artikulation" />
+        <@forms.checkbox checked=schoolAndPromotionHints?isHash && schoolAndPromotionHints.articulation title="Artikulation" />
       </td>
       <td>
-        <@forms.checkbox checked=schoolAndPromotionHints.grammarAndVocabulary title="Grammatik / Wortschatz" />
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <@forms.checkbox checked=schoolAndPromotionHints.auditiveInformationProcessing title="Auditive Informationsverarbeitung" />
-      </td>
-      <td>
-        <@forms.checkbox checked=schoolAndPromotionHints.visualPerception title="Visuelle Wahrnehmung" />
-      </td>
-      <td>
-        <@forms.checkbox checked=schoolAndPromotionHints.colorsShapesNumbersSets title="Farben / Formen / Zahlen / Mengen" />
+        <@forms.checkbox checked=schoolAndPromotionHints?isHash && schoolAndPromotionHints.grammarAndVocabulary title="Grammatik / Wortschatz" />
       </td>
     </tr>
     <tr>
       <td>
-        <@forms.checkbox checked=schoolAndPromotionHints.fineOrVisuoMotorSkills title="Feinmotorik / Visuomotorik" />
+        <@forms.checkbox checked=schoolAndPromotionHints?isHash && schoolAndPromotionHints.auditiveInformationProcessing title="Auditive Informationsverarbeitung" />
       </td>
       <td>
-        <@forms.checkbox checked=schoolAndPromotionHints.grossMotorSkillsOrPhysicalCoordination title="Grobmotorik / Körperkoordination" />
+        <@forms.checkbox checked=schoolAndPromotionHints?isHash && schoolAndPromotionHints.visualPerception title="Visuelle Wahrnehmung" />
       </td>
       <td>
-        <@forms.checkbox checked=schoolAndPromotionHints.leftHandedness title="Linkshändigkeit" />
+        <@forms.checkbox checked=schoolAndPromotionHints?isHash && schoolAndPromotionHints.colorsShapesNumbersSets title="Farben / Formen / Zahlen / Mengen" />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <@forms.checkbox checked=schoolAndPromotionHints?isHash && schoolAndPromotionHints.fineOrVisuoMotorSkills title="Feinmotorik / Visuomotorik" />
+      </td>
+      <td>
+        <@forms.checkbox checked=schoolAndPromotionHints?isHash && schoolAndPromotionHints.grossMotorSkillsOrPhysicalCoordination title="Grobmotorik / Körperkoordination" />
+      </td>
+      <td>
+        <@forms.checkbox checked=schoolAndPromotionHints?isHash && schoolAndPromotionHints.leftHandedness title="Linkshändigkeit" />
       </td>
     </tr>
   </table>

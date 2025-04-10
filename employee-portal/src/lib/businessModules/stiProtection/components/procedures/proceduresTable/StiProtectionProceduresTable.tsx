@@ -14,18 +14,18 @@ import {
 } from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { GENDER_VALUES } from "@eshg/lib-portal/components/formFields/constants";
+import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 import {
   formatDate,
   formatDateTime,
 } from "@eshg/lib-portal/formatters/dateTime";
-import { ApiBusinessModule } from "@eshg/lib-procedures-api";
 import { ApiStiProtectionProcedureOverview } from "@eshg/sti-protection-api";
-import { EditOutlined, ToggleOffOutlined } from "@mui/icons-material";
-import { Chip } from "@mui/joy";
-import { useSuspenseQueries } from "@tanstack/react-query";
+import { Add, EditOutlined, ToggleOffOutlined } from "@mui/icons-material";
+import { Button, Chip } from "@mui/joy";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
+import { useReducer, useState } from "react";
 
-import { useStiProceduresQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
+import { useGetStiProceduresTablePage } from "@/lib/businessModules/stiProtection/api/queries/procedures";
 import { DisplayAccessCode } from "@/lib/businessModules/stiProtection/features/procedures/DisplayAccessCode";
 import {
   ReopenConfirmationDialog,
@@ -42,12 +42,18 @@ import {
 } from "@/lib/businessModules/stiProtection/shared/constants";
 import { isProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
-import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
-import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
+import {
+  ProceduresTableControls,
+  TableControlName,
+  reduceActiveTableControl,
+} from "@/lib/shared/components/tableControls/ProceduresTableControls";
+import { useSearchParamLink } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 import {
+  StiProtectionProceduresTableFilterButton,
   StiProtectionProceduresTableFilters,
+  useProceduresFilterState,
   useProceduresFilters,
 } from "./StiProtectionProceduresTableFilters";
 
@@ -80,6 +86,7 @@ function getProceduresColumns({
       cell: ({ getValue }) => getValue(),
       enableSorting: false,
       meta: {
+        width: 120,
         canNavigate: {
           parentRow: true,
         },
@@ -90,6 +97,7 @@ function getProceduresColumns({
       cell: ({ getValue }) => GENDER_VALUES[getValue()],
       enableSorting: false,
       meta: {
+        width: 134,
         canNavigate: {
           parentRow: true,
         },
@@ -104,6 +112,7 @@ function getProceduresColumns({
       ),
       enableSorting: false,
       meta: {
+        width: 134,
         canNavigate: {
           parentRow: true,
         },
@@ -114,6 +123,7 @@ function getProceduresColumns({
       cell: ({ getValue }) => formatDateTime(getValue()),
       enableSorting: true,
       meta: {
+        width: 144,
         canNavigate: {
           parentRow: true,
         },
@@ -124,6 +134,7 @@ function getProceduresColumns({
       cell: ({ getValue }) => CONCERN_VALUES[getValue()],
       enableSorting: false,
       meta: {
+        width: 180,
         canNavigate: {
           parentRow: true,
         },
@@ -134,6 +145,7 @@ function getProceduresColumns({
       cell: ({ getValue }) => formatDate(getValue()),
       enableSorting: true,
       meta: {
+        width: 100,
         canNavigate: {
           parentRow: true,
         },
@@ -144,6 +156,7 @@ function getProceduresColumns({
       cell: ({ getValue }) => getValue(),
       enableSorting: true,
       meta: {
+        width: 172,
         canNavigate: {
           parentRow: true,
         },
@@ -158,6 +171,7 @@ function getProceduresColumns({
       ),
       enableSorting: false,
       meta: {
+        width: 145,
         canNavigate: {
           parentRow: true,
         },
@@ -168,6 +182,7 @@ function getProceduresColumns({
       cell: ({ getValue }) => PROCEDURE_ORIGIN_VALUES[getValue()],
       enableSorting: false,
       meta: {
+        width: 100,
         canNavigate: {
           parentRow: true,
         },
@@ -221,8 +236,15 @@ function closedActions({
 }
 
 export function StiProtectionProceduresTable() {
+  const { setFilterSettingsVisible } = useProceduresFilterState();
   const filters = useProceduresFilters();
+  const openNewProcedureSidebarLink = useSearchParamLink("add-procedure", true);
+  const [searchQuery, setSearchQuery] = useState("");
 
+  const [activeTableControl, toggleActiveTableControl] = useReducer(
+    reduceActiveTableControl,
+    undefined,
+  );
   const tableControl = useTableControl({
     serverSideSorting: true,
     initialSorting,
@@ -230,36 +252,41 @@ export function StiProtectionProceduresTable() {
     sortDirectionName: "sortOrder",
   });
 
-  const proceduresQuery = useStiProceduresQuery(
-    tableControl.paginationProps,
-    tableControl.tableSorting,
+  const {
+    stiProceduresData: { procedures: stiProcedures, totalElements },
+    isLoading,
+  } = useGetStiProceduresTablePage({
     filters,
-  );
-  const gdprBannerQuery = useGetGdprValidationBannerQuery(
-    ApiBusinessModule.StiProtection,
-  );
-
-  const [
-    {
-      data: { procedures, totalElements },
-      isLoading,
-    },
-    gdprBanner,
-  ] = useSuspenseQueries({
-    queries: [proceduresQuery, gdprBannerQuery],
-  });
-
-  useGdprValidationTasksAlert({
-    banner: gdprBanner.data,
-    businessModule: ApiBusinessModule.StiProtection,
+    page: tableControl.paginationProps,
+    sorting: tableControl.tableSorting,
+    searchQuery,
   });
 
   const reopenDialog = useCloseAndReopenProcedure();
+
+  function handleToggleActiveTableControl(tableControl: TableControlName) {
+    toggleActiveTableControl(tableControl);
+
+    if (tableControl === "entrySearch") setFilterSettingsVisible(false);
+  }
 
   return (
     <TablePage
       aria-label="Vorgänge"
       filterSettings={<StiProtectionProceduresTableFilters />}
+      controls={
+        <ProceduresTableControls
+          onEntrySearch={setSearchQuery}
+          onToggleActiveTableControl={handleToggleActiveTableControl}
+          activeTableControl={activeTableControl}
+          FilterButton={<StiProtectionProceduresTableFilterButton />}
+          controlsRight={
+            <NavigationLink href={openNewProcedureSidebarLink} passHref>
+              <Button startDecorator={<Add />}>Neuen Vorgang anlegen</Button>
+            </NavigationLink>
+          }
+        />
+      }
     >
       <TableSheet
         loading={isLoading}
@@ -271,7 +298,7 @@ export function StiProtectionProceduresTable() {
         }
       >
         <DataTable
-          data={procedures}
+          data={stiProcedures}
           sorting={tableControl.tableSorting}
           enableSortingRemoval={false}
           columns={getProceduresColumns({ reopenDialog })}

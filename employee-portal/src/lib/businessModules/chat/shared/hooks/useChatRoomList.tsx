@@ -12,11 +12,11 @@ import {
   RoomEvent,
   RoomMemberEvent,
 } from "matrix-js-sdk";
-import { KnownMembership } from "matrix-js-sdk/lib/types";
 import { useCallback, useEffect, useState } from "react";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import {
+  ClientState,
   CommunicationType,
   MessageTypeEnum,
 } from "@/lib/businessModules/chat/shared/enums";
@@ -33,7 +33,7 @@ import {
 } from "@/lib/businessModules/chat/shared/utils";
 
 export function useChatRoomList() {
-  const { matrixClient } = useChatClientContext();
+  const { matrixClient, clientState } = useChatClientContext();
   const [roomList, setRoomList] = useState<RoomData[]>([]);
 
   const onMessage = useCallback(
@@ -79,12 +79,13 @@ export function useChatRoomList() {
 
   useEffect(() => {
     void (async () => {
-      const rooms = matrixClient.getRooms();
-      const joinedRooms = rooms.filter(
-        (room) => room.getMyMembership() === KnownMembership.Join.toString(),
-      );
+      if (clientState !== ClientState.Ready) return;
+      const joinedRooms = await matrixClient.getJoinedRooms();
+      const rooms = joinedRooms?.joined_rooms
+        ?.map((roomId) => matrixClient.getRoom(roomId))
+        .filter((room) => !!room);
       const roomsWithType = await Promise.all(
-        joinedRooms.map(async (room) => {
+        rooms.map(async (room) => {
           const membershipStatus = room.getMyMembership();
           if (membershipStatus === "invite") return;
           const roomWithCommunicationType = getRoomNameAndCommunicationType(
@@ -96,9 +97,9 @@ export function useChatRoomList() {
         }),
       );
       const roomWithTypeFiltered = roomsWithType.filter((item) => !!item);
-      const invitations = rooms.filter(
-        (room) => room.getMyMembership() === "invite",
-      );
+      const invitations = matrixClient
+        .getRooms()
+        ?.filter((room) => room.getMyMembership() === "invite");
       await Promise.all(
         invitations.map(async (invitation) => {
           await matrixClient.joinRoom(invitation.roomId);
@@ -120,7 +121,7 @@ export function useChatRoomList() {
       );
       setRoomList(roomWithTypeFiltered);
     })();
-  }, [getLatestMessage, matrixClient]);
+  }, [clientState, getLatestMessage, matrixClient]);
 
   // Listening for my membership in chat rooms
   useEffect(() => {

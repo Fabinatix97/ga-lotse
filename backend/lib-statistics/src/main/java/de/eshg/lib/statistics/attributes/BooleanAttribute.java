@@ -21,6 +21,9 @@ public final class BooleanAttribute {
       String category,
       boolean mandatory,
       DataPrivacyCategory dataPrivacyCategory) {
+    if (DataPrivacyCategory.SENSITIVE.equals(dataPrivacyCategory)) {
+      throw new IllegalArgumentException("Use method 'createSensitive' instead");
+    }
     return createBooleanAttribute(name, code, category, mandatory, dataPrivacyCategory);
   }
 

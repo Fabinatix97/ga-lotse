@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGender, ApiPersonContact, ApiSalutation } from "@eshg/base-api";
+import { ApiGender, ApiSalutation } from "@eshg/base-api";
 import {
   BaseAddressFormInputs,
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -39,11 +40,11 @@ import {
   MergePersonContactFormValues,
   PersonContactFormValues,
   PersonContactMergeSource,
+  PersonContactWithNameAtBirth,
 } from "@/lib/baseModule/components/contacts/types";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 
 function initialValues(
-  into: ApiPersonContact,
+  into: PersonContactWithNameAtBirth,
   from: PersonContactMergeSource,
   contactAddress: BaseAddressFormInputs | undefined,
   billingAddress: BaseAddressFormInputs | undefined,
@@ -52,6 +53,7 @@ function initialValues(
     type: "UpdatePersonContactRequest",
     firstName: mapMergeValue(into.firstName, from.data.firstName),
     name: mapMergeValue(into.name, from.data.name),
+    nameAtBirth: mapMergeValue(into.nameAtBirth, from.data.nameAtBirth),
     title: mapMergeValue(into.title, from.data.title),
     salutation: mapMergeValue(into.salutation, from.data.salutation),
     gender: mapMergeValue(into.gender, from.data.gender),
@@ -70,14 +72,16 @@ function initialValues(
 }
 
 interface MergePersonContactFormProps {
-  into: ApiPersonContact;
+  into: PersonContactWithNameAtBirth;
   from: PersonContactMergeSource;
   sidebarFormRef: Ref<SidebarFormHandle>;
   onCancel: () => void;
   onSuccess: () => void;
+  onSubmit?: (values: MergePersonContactFormValues) => Promise<void>;
   onBack?: () => void;
   fromLabel: string;
   intoLabel: string;
+  withNameAtBirth?: boolean;
 }
 
 export function MergePersonContactForm({
@@ -86,9 +90,11 @@ export function MergePersonContactForm({
   sidebarFormRef,
   onCancel,
   onSuccess,
+  onSubmit,
   onBack,
   fromLabel,
   intoLabel,
+  withNameAtBirth,
 }: MergePersonContactFormProps) {
   const fieldName = createFieldNameMapper<PersonContactFormValues>();
 
@@ -119,15 +125,19 @@ export function MergePersonContactForm({
   const updateContact = useUpdateContactMutation(into.id);
 
   async function handleSubmit(values: MergePersonContactFormValues) {
-    await updateContact.mutateAsync(
-      mapImportMergeContactRequest(
-        values,
-        from.type === "Entity" ? from.data.id : undefined,
-      ),
-      {
-        onSuccess,
-      },
-    );
+    if (onSubmit) {
+      await onSubmit(values);
+    } else {
+      await updateContact.mutateAsync(
+        mapImportMergeContactRequest(
+          values,
+          from.type === "Entity" ? from.data.id : undefined,
+        ),
+        {
+          onSuccess,
+        },
+      );
+    }
   }
 
   return (
@@ -190,6 +200,16 @@ export function MergePersonContactForm({
                   sourceValueLabel={fromLabel}
                   targetValueLabel={intoLabel}
                 />
+                {withNameAtBirth && (
+                  <MergeStringField
+                    target={into.nameAtBirth}
+                    source={from.data.nameAtBirth}
+                    name={fieldName("nameAtBirth")}
+                    label={"Geburtsname"}
+                    sourceValueLabel={fromLabel}
+                    targetValueLabel={intoLabel}
+                  />
+                )}
                 <MergeStringField
                   target={into.gender}
                   source={from.data.gender}

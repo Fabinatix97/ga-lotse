@@ -4,6 +4,7 @@
  */
 
 import {
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -13,8 +14,6 @@ import {
 import { List, ListItem, Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { Ref } from "react";
-
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 
 export interface CancelAppointmentFormValues {
   reasonForRejection: string;

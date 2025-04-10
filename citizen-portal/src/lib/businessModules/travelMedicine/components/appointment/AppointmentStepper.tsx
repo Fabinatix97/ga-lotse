@@ -4,8 +4,13 @@
  */
 
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import {
+  MultiStepForm,
+  StepFactory,
+} from "@eshg/lib-portal/components/form/MultiStepForm";
 import { Formik, FormikHelpers } from "formik";
 import { useRouter } from "next/navigation";
+import { Dispatch, SetStateAction, createContext, useState } from "react";
 
 import { usePostCitizenVaccinationConsultation } from "@/lib/businessModules/travelMedicine/api/mutations/citizenPublicApi";
 import { initialValues } from "@/lib/businessModules/travelMedicine/components/appointment/appointmentFormValuesFactory";
@@ -15,37 +20,47 @@ import { TravelDataStep } from "@/lib/businessModules/travelMedicine/components/
 import { TravelTypeStep } from "@/lib/businessModules/travelMedicine/components/appointment/steps/TravelTypeStep";
 import { VaccinationStep } from "@/lib/businessModules/travelMedicine/components/appointment/steps/VaccinationStep";
 import { AppointmentReviewStep } from "@/lib/businessModules/travelMedicine/components/appointment/steps/appointmentReviewFormStep/AppointmentReviewStep";
-import { AppointmentSlotStep } from "@/lib/businessModules/travelMedicine/components/appointment/steps/appointmentSlotStep/AppointmentSlotStep";
+import { AppointmentContent } from "@/lib/businessModules/travelMedicine/components/appointment/steps/appointmentSlotStep/AppointmentContent";
 import { AppointmentOverview } from "@/lib/businessModules/travelMedicine/components/appointment/steps/overview/AppointmentOverview";
 import { InitialAppointmentFormValues } from "@/lib/businessModules/travelMedicine/components/appointment/types";
 import { MultiStepFormTitle } from "@/lib/businessModules/travelMedicine/components/shared/components/multiStepForm/MultiStepFormWrapper";
 import { DepartmentContextProvider } from "@/lib/businessModules/travelMedicine/components/shared/contexts/DepartmentContext";
-import { StepContextProvider } from "@/lib/businessModules/travelMedicine/components/shared/contexts/StepContext";
 import { mapToApiPostCitizenVaccinationConsultationRequest } from "@/lib/businessModules/travelMedicine/helpers/appointmentFormHelper";
 import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
 
-export const StepKey = {
-  AppointmentTypeStep: "AppointmentTypeStep",
-  AppointmentSlotStep: "AppointmentSlotStep",
-  TravelTypeStep: "TravelTypeStep",
-  TravelDataStep: "TravelDataStep",
-  PersonalDataStep: "PersonalDataStep",
-  VaccinationStep: "VaccinationStep",
-  AppointmentReviewStep: "AppointmentReviewStep",
+export const AppointmentFormStep = {
+  AppointmentTypeStep: 1,
+  AppointmentSlotStep: 2,
+  TravelTypeStep: 3,
+  TravelDataStep: 4,
+  PersonalDataStep: 5,
+  VaccinationStep: 6,
+  AppointmentReviewStep: 7,
 } as const;
-export type StepKey = (typeof StepKey)[keyof typeof StepKey];
+export type AppointmentFormStep =
+  (typeof AppointmentFormStep)[keyof typeof AppointmentFormStep];
 
-const appointmentFormSteps = [
-  <AppointmentTypeStep key={StepKey.AppointmentTypeStep} />,
-  <AppointmentSlotStep key={StepKey.AppointmentSlotStep} />,
-  <TravelTypeStep key={StepKey.TravelTypeStep} />,
-  <TravelDataStep key={StepKey.TravelDataStep} />,
-  <PersonalDataStep key={StepKey.PersonalDataStep} />,
-  <VaccinationStep key={StepKey.VaccinationStep} />,
-  <AppointmentReviewStep key={StepKey.AppointmentReviewStep} />,
+const STEPS: StepFactory<InitialAppointmentFormValues>[] = [
+  AppointmentTypeStep,
+  AppointmentContent,
+  TravelTypeStep,
+  TravelDataStep,
+  PersonalDataStep,
+  VaccinationStep,
+  AppointmentReviewStep,
 ];
+
+export const AppointmentStepperContext = createContext<{
+  showSidepanel: boolean;
+  setShowSidepanel: Dispatch<SetStateAction<boolean>>;
+}>({
+  showSidepanel: true,
+  setShowSidepanel: () => {
+    throw new Error("AppointmentStepperContext not initialized");
+  },
+});
 
 export function AppointmentStepper() {
   const { t } = useTranslation(["travelMedicine/forms"]);
@@ -53,6 +68,7 @@ export function AppointmentStepper() {
     usePostCitizenVaccinationConsultation();
   const router = useRouter();
   const citizenRoutes = useCitizenRoutes();
+  const [showSidepanel, setShowSidepanel] = useState(true);
 
   async function handleSubmit(
     values: InitialAppointmentFormValues,
@@ -70,35 +86,41 @@ export function AppointmentStepper() {
 
   return (
     <DepartmentContextProvider>
-      <StepContextProvider steps={appointmentFormSteps}>
-        {({ currentNode, currentStepIndex, totalSteps, isLastStep }) => (
-          <>
-            <MultiStepFormTitle
-              title={t("common.title")}
-              stepperTitle={t("common.stepperTitle", {
-                currentStepIndex: currentStepIndex,
-                totalSteps: totalSteps,
-              })}
-              withLogoutButton={false}
-            />
-            <Formik
-              initialValues={initialValues}
-              onSubmit={(values, helpers) => handleSubmit(values, helpers)}
-            >
-              <FormPlus>
-                {!isLastStep ? (
-                  <TwoColumnGrid
-                    content={currentNode}
-                    sidePanel={<AppointmentOverview />}
-                  />
-                ) : (
-                  currentNode
+      <AppointmentStepperContext.Provider
+        value={{ showSidepanel, setShowSidepanel }}
+      >
+        <MultiStepForm<InitialAppointmentFormValues> steps={STEPS}>
+          {({ Outlet, currentStep, totalSteps }) => (
+            <>
+              <MultiStepFormTitle
+                title={t("common.title")}
+                stepperTitle={t("common.stepperTitle", {
+                  currentStepIndex: currentStep,
+                  totalSteps: totalSteps,
+                })}
+                withLogoutButton={false}
+              />
+              <Formik
+                initialValues={initialValues}
+                onSubmit={(values, helpers) => handleSubmit(values, helpers)}
+              >
+                {(formikProps) => (
+                  <FormPlus>
+                    {currentStep !== totalSteps && showSidepanel ? (
+                      <TwoColumnGrid
+                        content={<Outlet {...formikProps} />}
+                        sidePanel={<AppointmentOverview />}
+                      />
+                    ) : (
+                      <Outlet {...formikProps} />
+                    )}
+                  </FormPlus>
                 )}
-              </FormPlus>
-            </Formik>
-          </>
-        )}
-      </StepContextProvider>
+              </Formik>
+            </>
+          )}
+        </MultiStepForm>
+      </AppointmentStepperContext.Provider>
     </DepartmentContextProvider>
   );
 }

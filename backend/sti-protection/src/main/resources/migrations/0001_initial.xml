@@ -4,80 +4,191 @@
  SPDX-License-Identifier: AGPL-3.0-only
 -->
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
   <changeSet author="GA-Lotse" id="1727784238270-1">
-    <ext:createPostgresEnumType name="facilitytype" values="DAYCARE, HOSPITAL, INSPECTION, MEDICAL_PRACTICE, OTHER, REFUGEE_ACCOMMODATION, SCHOOL"/>
+    <ext:createPostgresEnumType name="protectionmethod"
+      values="CONDOM, DENTAL_DAM, GLOVES, OTHER, PREP, THERAPIE"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-2">
-    <ext:createPostgresEnumType name="persontype" values="PARENT, PATIENT"/>
+    <ext:createPostgresEnumType name="safesexpractice"
+      values="ALWAYS, FREQUENTLY, NEVER, OCCASIONALLY"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-3">
-    <ext:createPostgresEnumType name="countrycodedto" values="AD, AE, AF, AG, AI, AL, AM, AO, AQ, AR, AS, AT, AU, AW, AX, AZ, BA, BB, BD, BE, BF, BG, BH, BI, BJ, BL, BM, BN, BO, BQ, BR, BS, BT, BV, BW, BY, BZ, CA, CC, CD, CF, CG, CH, CI, CK, CL, CM, CN, CO, CR, CU, CV, CW, CX, CY, CZ, DE, DJ, DK, DM, DO, DZ, EC, EE, EG, EH, ER, ES, ET, FI, FJ, FK, FM, FO, FR, GA, GB, GD, GE, GF, GG, GH, GI, GL, GM, GN, GP, GQ, GR, GS, GT, GU, GW, GY, HK, HM, HN, HR, HT, HU, ID, IE, IL, IM, IN, IO, IQ, IR, IS, IT, JE, JM, JO, JP, KE, KG, KH, KI, KM, KN, KP, KR, KW, KY, KZ, LA, LB, LC, LI, LK, LR, LS, LT, LU, LV, LY, MA, MC, MD, ME, MF, MG, MH, MK, ML, MM, MN, MO, MP, MQ, MR, MS, MT, MU, MV, MW, MX, MY, MZ, NA, NC, NE, NF, NG, NI, NL, NO, NP, NR, NU, NZ, OM, PA, PE, PF, PG, PH, PK, PL, PM, PN, PR, PS, PT, PW, PY, QA, RE, RO, RS, RU, RW, SA, SB, SC, SD, SE, SG, SH, SI, SJ, SK, SL, SM, SN, SO, SR, SS, ST, SV, SX, SY, SZ, TC, TD, TF, TG, TH, TJ, TK, TL, TM, TN, TO, TR, TT, TV, TW, TZ, UA, UG, UM, US, UY, UZ, VA, VC, VE, VG, VI, VN, VU, WF, WS, YE, YT, ZA, ZM, ZW"/>
+    <ext:createPostgresEnumType name="vaccination"
+      values="HEPATITIS_A, HEPATITIS_B, HPV"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-4">
-    <ext:createPostgresEnumType name="gender" values="DIVERSE, FEMALE, MALE, NOT_SPECIFIED"/>
+    <ext:createPostgresEnumType name="partnerriskfactor"
+      values="BISEXUAL_MALE, HIV_POSITIVE, HOMOSEXUAL, INJECTED_DRUGS, SEX_WORKER, STI_POSITIVE"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-5">
-    <ext:createPostgresEnumType name="archivingrelevance" values="DEFAULT, IRRELEVANT, RELEVANT"/>
+    <ext:createPostgresEnumType name="gender"
+      values="DIVERSE, FEMALE, MALE, NOT_SPECIFIED"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-6">
-    <ext:createPostgresEnumType name="procedurestatus" values="ABORTED, CLOSED, DRAFT, IN_PROGRESS, OPEN"/>
+    <ext:createPostgresEnumType name="sexualorientation"
+      values="BISEXUAL, HETEROSEXUAL, HOMOSEXUAL, NOT_SPECIFIED"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-7">
-    <ext:createPostgresEnumType name="proceduretype" values="CAN_CHILD, DRAFT_CITIZEN_OFFICE_IMPORT, DRAFT_SCHOOL_IMPORT, ENTRY_LEVEL, INSPECTION, MEASLES_PROTECTION, REGULAR_EXAMINATION, STI_PROTECTION, TM_VACCINATION_CONSULTATION"/>
+    <ext:createPostgresEnumType name="sexworklocation"
+      values="APARTMENT, APPOINTMENT_APARTMENT, BORDELLO, CLUB, ESCORT, MASSAGE_PARLOR, OTHER, STREET_PROSTITUTION, TANTRA_PRACTICE"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-8">
-    <ext:createPostgresEnumType name="concern" values="HIV_STI_CONSULTATION, SEX_WORK"/>
+    <ext:createPostgresEnumType name="facilitytype"
+      values="DAYCARE, HOSPITAL, INSPECTION, MEDICAL_PRACTICE, OTHER, REFUGEE_ACCOMMODATION, SCHOOL"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-9">
-    <ext:createPostgresEnumType name="taskstatus" values="CLOSED, OPEN"/>
+    <ext:createPostgresEnumType name="persontype"
+      values="PARENT, PATIENT, PROFESSIONAL"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-10">
-    <ext:createPostgresEnumType name="tasktype" values="BOOK_APPOINTMENT, INSPECTION_EXECUTION, INSPECTION_PLANNING, INSPECTION_REPORT, MEASLES_PROTECTION, PERFORM_SCHOOL_ENTRY_EXAMINATION, STI_PROTECTION, TRAVEL_MEDICINE"/>
+    <ext:createPostgresEnumType name="archivingrelevance"
+      values="DEFAULT, IRRELEVANT, RELEVANT"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-11">
-    <ext:createPostgresEnumType name="diseasetype" values="CHLAMYDIA, GONORRHEA, HEPATITIS_A, HEPATITIS_B, HEPATITIS_C, HIV, HPV, SYPHILIS"/>
+    <ext:createPostgresEnumType name="procedurestatus"
+      values="ABORTED, CLOSED, DRAFT, IN_PROGRESS, OPEN"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-12">
-    <ext:createPostgresEnumType name="sexualorientation" values="BISEXUAL, HETEROSEXUAL, HOMOSEXUAL, NOT_SPECIFIED"/>
+    <ext:createPostgresEnumType name="proceduretype"
+      values="CAN_CHILD, DENTAL_CHILD, DRAFT_CITIZEN_OFFICE_IMPORT, DRAFT_SCHOOL_IMPORT, ENTRY_LEVEL, INSPECTION, MEASLES_PROTECTION, MEDICAL_REGISTRY_CITIZEN_DRAFT, MEDICAL_REGISTRY_EMPLOYEE_DRAFT, MEDICAL_REGISTRY_ENTRY, OFFICIAL_MEDICAL_SERVICE, REGULAR_EXAMINATION, STI_PROTECTION, TM_VACCINATION_CONSULTATION"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-13">
-    <ext:createPostgresEnumType name="contacttype" values="FACILITY, PRIVATE_PERSON"/>
+    <ext:createPostgresEnumType name="concern"
+      values="HIV_STI_CONSULTATION, SEX_WORK"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-14">
-    <ext:createPostgresEnumType name="title" values="DR, PROF, PROF_DR"/>
+    <ext:createPostgresEnumType name="labstatus"
+      values="OPEN, RESULTS_COMMUNICATED, RESULTS_RECORDED, TESTS_CONDUCTED, TESTS_REQUESTED"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-15">
-    <ext:createPostgresEnumType name="taskdueatremindernotificationtype" values="ONE_DAY_BEFORE_DUE_AT, THREE_DAYS_BEFORE_DUE_AT"/>
+    <ext:createPostgresEnumType name="stiprocedureorigin"
+      values="CITIZEN_PORTAL, EMPLOYEE_PORTAL"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-16">
-    <ext:createPostgresEnumType name="inboxprogressentrytype" values="EMAIL, LETTER, PHONE_CALL"/>
+    <ext:createPostgresEnumType name="taskstatus" values="CLOSED, OPEN"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-17">
-    <ext:createPostgresEnumType name="decision" values="DENIED, GRANTED"/>
+    <ext:createPostgresEnumType name="tasktype"
+      values="BOOK_APPOINTMENT, INSPECTION_EXECUTION, INSPECTION_PLANNING, INSPECTION_REPORT, MEASLES_PROTECTION, OFFICIAL_MEDICAL_SERVICE, PERFORM_SCHOOL_ENTRY_EXAMINATION, STI_PROTECTION, TRAVEL_MEDICINE"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-18">
-    <ext:createPostgresEnumType name="filetype" values="EML, JPEG, PDF, PNG"/>
+    <ext:createPostgresEnumType name="relationshipmodel"
+      values="MONOGAMOUS, NO_COMMITMENT, OPEN"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-19">
-    <ext:createPostgresEnumType name="triggertype" values="CITIZEN, EMPLOYEE, SYSTEM_AUTOMATIC"/>
+    <ext:createPostgresEnumType name="texttemplatecontext"
+      values="CONSULTATION_REASON, CONSULTATION_REMARK, DIAGNOSIS_REMARK, DIAGNOSIS_RESULT, LABORATORY_TESTS_REMARK, RAPID_TESTS_REMARK"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-20">
-    <ext:createPostgresEnumType name="keydocumenttype" values="INVOICE, REPORT"/>
+    <ext:createPostgresEnumType name="waitingstatus"
+      values="CANCELLED, DONE, IN_CONSULTATION, IN_TESTING, WAITING_FOR_CONSULTATION, WAITING_FOR_RESULTS_REVIEW, WAITING_FOR_TESTS"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-21">
-    <ext:createPostgresEnumType name="manualprogressentrytype" values="DOCUMENT, EMAIL, IMAGE, LETTER, NOTE, PHONE_CALL"/>
+    <ext:createPostgresEnumType name="contacttype"
+      values="FACILITY, PRIVATE_PERSON"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-22">
-    <ext:createPostgresEnumType name="inboxprocedurestatus" values="CLOSED, OPEN"/>
+    <ext:createPostgresEnumType name="salutation"
+      values="FEMALE, MALE, NEUTRAL, NOT_SPECIFIED"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-23">
-    <ext:createPostgresEnumType name="appointmenttype" values="CAN_CHILD, CONSULTATION, ENTRY_LEVEL, HIV_STI_CONSULTATION, PROOF_SUBMISSION, REGULAR_EXAMINATION, RESULTS_REVIEW, SEX_WORK, SPECIAL_NEEDS, VACCINATION"/>
+    <ext:createPostgresEnumType name="title" values="DR, PROF, PROF_DR"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-24">
+    <ext:createPostgresEnumType name="procedurefiletype"
+      values="EML, JPEG, PDF, PNG"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-25">
+    <ext:createPostgresEnumType name="decision" values="DENIED, GRANTED"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-26">
+    <ext:createPostgresEnumType name="gdprvalidationtaskstatus"
+      values="CLOSED, OPEN"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-27">
+    <ext:createPostgresEnumType name="gdprvalidationtasktype"
+      values="RIGHT_OF_ACCESS, RIGHT_TO_ERASURE"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-28">
+    <ext:createPostgresEnumType name="inboxprocedurestatus"
+      values="CLOSED, OPEN"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-29">
+    <ext:createPostgresEnumType name="inboxprogressentrytype"
+      values="EMAIL, LETTER, PHONE_CALL"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-30">
+    <ext:createPostgresEnumType name="manualprogressentrytype"
+      values="DOCUMENT, EMAIL, IMAGE, LETTER, NOTE, PHONE_CALL"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-31">
+    <ext:createPostgresEnumType name="triggertype"
+      values="CITIZEN, EMPLOYEE, SYSTEM_AUTOMATIC"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-32">
+    <ext:createPostgresEnumType name="taskdueatremindernotificationtype"
+      values="ONE_DAY_BEFORE_DUE_AT, THREE_DAYS_BEFORE_DUE_AT"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-33">
+    <ext:createPostgresEnumType name="appointmenttype"
+      values="CAN_CHILD, CONSULTATION, ENTRY_LEVEL, HIV_STI_CONSULTATION, OFFICIAL_MEDICAL_SERVICE_LONG, OFFICIAL_MEDICAL_SERVICE_SHORT, PROOF_SUBMISSION, REGULAR_EXAMINATION, RESULTS_REVIEW, SEX_WORK, SPECIAL_NEEDS, VACCINATION"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-34">
+    <ext:createPostgresEnumType name="countrycode"
+      values="AD, AE, AF, AG, AI, AL, AM, AO, AQ, AR, AS, AT, AU, AW, AX, AZ, BA, BB, BD, BE, BF, BG, BH, BI, BJ, BL, BM, BN, BO, BQ, BR, BS, BT, BV, BW, BY, BZ, CA, CC, CD, CF, CG, CH, CI, CK, CL, CM, CN, CO, CR, CU, CV, CW, CX, CY, CZ, DE, DJ, DK, DM, DO, DZ, EC, EE, EG, EH, ER, ES, ET, FI, FJ, FK, FM, FO, FR, GA, GB, GD, GE, GF, GG, GH, GI, GL, GM, GN, GP, GQ, GR, GS, GT, GU, GW, GY, HK, HM, HN, HR, HT, HU, ID, IE, IL, IM, IN, IO, IQ, IR, IS, IT, JE, JM, JO, JP, KE, KG, KH, KI, KM, KN, KP, KR, KW, KY, KZ, LA, LB, LC, LI, LK, LR, LS, LT, LU, LV, LY, MA, MC, MD, ME, MF, MG, MH, MK, ML, MM, MN, MO, MP, MQ, MR, MS, MT, MU, MV, MW, MX, MY, MZ, NA, NC, NE, NF, NG, NI, NL, NO, NP, NR, NU, NZ, OM, PA, PE, PF, PG, PH, PK, PL, PM, PN, PR, PS, PT, PW, PY, QA, RE, RO, RS, RU, RW, SA, SB, SC, SD, SE, SG, SH, SI, SJ, SK, SL, SM, SN, SO, SR, SS, ST, STATELESS, SV, SX, SY, SZ, TC, TD, TF, TG, TH, TJ, TK, TL, TM, TN, TO, TR, TT, TV, TW, TZ, UA, UG, UM, UNKNOWN, US, UY, UZ, VA, VC, VE, VG, VI, VN, VU, WF, WS, XK, YE, YT, ZA, ZM, ZW"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-35">
+    <ext:createPostgresEnumType name="testtype"
+      values="OTHER, P24, PCR, WESTERN_BLOT"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-36">
+    <ext:createPostgresEnumType name="appointmentstatus"
+      values="CANCELLED, CLOSED, OPEN"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-37">
+    <createTable tableName="simple_notification">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_simple_notification"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="external_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_by_user_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="read_at" type="TIMESTAMP WITH TIME ZONE"/>
+      <column name="recipient_user_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="mail_sent_at" type="TIMESTAMP WITH TIME ZONE"/>
+      <column defaultValueBoolean="false" name="mail_to_sent_flag"
+        type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="message" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="title" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-38">
     <createTable tableName="appointment">
       <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_appointment"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_appointment"/>
       </column>
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
@@ -93,10 +204,11 @@
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-25">
+  <changeSet author="GA-Lotse" id="1727784238270-39">
     <createTable tableName="appointment_block">
       <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_appointment_block"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_appointment_block"/>
       </column>
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
@@ -118,10 +230,11 @@
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-26">
+  <changeSet author="GA-Lotse" id="1727784238270-40">
     <createTable tableName="assignment_history_item">
       <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_assignment_history_item"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_assignment_history_item"/>
       </column>
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
@@ -138,10 +251,11 @@
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-27">
+  <changeSet author="GA-Lotse" id="1727784238270-41">
     <createTable tableName="file_deletion_approval_request_notification">
       <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_file_deletion_approval_request_notification"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_file_deletion_approval_request_notification"/>
       </column>
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
@@ -165,10 +279,12 @@
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-28">
-    <createTable tableName="manual_progress_entry_deletion_approval_request_notification">
+  <changeSet author="GA-Lotse" id="1727784238270-42">
+    <createTable
+      tableName="manual_progress_entry_deletion_approval_request_notification">
       <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_manual_progress_entry_deletion_approval_request_notification"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_manual_progress_entry_deletion_approval_request_notification"/>
       </column>
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
@@ -192,10 +308,26 @@
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-29">
+  <changeSet author="GA-Lotse" id="1727784238270-43">
+    <createTable tableName="procedure_expiration">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_procedure_expiration"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="procedure_external_id" type="UUID"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-44">
     <createTable tableName="progress_entry">
       <column name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_progress_entry"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_progress_entry"/>
       </column>
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
@@ -215,10 +347,11 @@
       <column name="file_id" type="BIGINT"/>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-30">
+  <changeSet author="GA-Lotse" id="1727784238270-45">
     <createTable tableName="address">
       <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_address"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_address"/>
       </column>
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
@@ -235,26 +368,23 @@
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-31">
-    <createTable tableName="file_deletion_approval_request">
-      <column name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_file_deletion_approval_request"/>
-      </column>
-      <column name="file_id" type="BIGINT"/>
-    </createTable>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-32">
-    <createTable tableName="manual_progress_entry_deletion_approval_request">
-      <column name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_manual_progress_entry_deletion_approval_request"/>
-      </column>
-      <column name="manual_progress_entry_id" type="BIGINT"/>
-    </createTable>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-33">
-    <createTable tableName="simple_notification">
+  <changeSet author="GA-Lotse" id="1727784238270-46">
+    <createTable tableName="department_info_config">
       <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_simple_notification"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_department_info_config"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="department_info_id" type="BIGINT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-47">
+    <createTable tableName="gdpr_download_package">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_gdpr_download_package"/>
       </column>
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
@@ -262,28 +392,209 @@
       <column name="external_id" type="UUID">
         <constraints nullable="false"/>
       </column>
-      <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+      <column name="business_procedure_id" type="UUID">
         <constraints nullable="false"/>
       </column>
-      <column name="created_by_user_id" type="UUID">
-        <constraints nullable="false"/>
-      </column>
-      <column name="read_at" type="TIMESTAMP WITH TIME ZONE"/>
-      <column name="recipient_user_id" type="UUID">
-        <constraints nullable="false"/>
-      </column>
-      <column name="message" type="TEXT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="title" type="TEXT">
+      <column name="content" type="BYTEA">
         <constraints nullable="false"/>
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-34">
+  <changeSet author="GA-Lotse" id="1727784238270-48">
+    <createTable tableName="privacy_document">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_privacy_document"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="de_file_size_bytes" type="INTEGER">
+        <constraints nullable="false"/>
+      </column>
+      <column name="en_file_size_bytes" type="INTEGER"/>
+      <column name="de_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="en_id" type="BIGINT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-49">
+    <createTable tableName="privacy_documents_config">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_privacy_documents_config"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="privacy_notice_id" type="BIGINT"/>
+      <column name="privacy_policy_id" type="BIGINT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-50">
+    <createTable tableName="sex_work_department_info_config">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_sex_work_department_info_config"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="department_info_id" type="BIGINT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-51">
+    <createTable tableName="sti_consultation_department_info_config">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_sti_consultation_department_info_config"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="department_info_id" type="BIGINT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-52">
+    <createTable tableName="medical_history_protection_methods">
+      <column name="medical_history_procedure_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="protection_methods" type="PROTECTIONMETHOD"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-53">
+    <createTable tableName="medical_history">
+      <column name="type" type="VARCHAR(31)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="additional_comments" type="TEXT"/>
+      <column name="contact_to_clarify_date" type="date"/>
+      <column name="current_symptoms" type="TEXT"/>
+      <column name="examination_reason" type="TEXT"/>
+      <column name="examination_chlamydia" type="BOOLEAN"/>
+      <column name="chlamydia_date" type="date"/>
+      <column name="examination_gonorrhea" type="BOOLEAN"/>
+      <column name="gonorrhea_date" type="date"/>
+      <column name="examination_hep_a" type="BOOLEAN"/>
+      <column name="hepadate" type="date"/>
+      <column name="examination_hep_b" type="BOOLEAN"/>
+      <column name="hepbdate" type="date"/>
+      <column name="examination_hep_c" type="BOOLEAN"/>
+      <column name="hepcdate" type="date"/>
+      <column name="examination_hiv" type="BOOLEAN"/>
+      <column name="hiv_date" type="date"/>
+      <column name="examination_syphilis" type="BOOLEAN"/>
+      <column name="syphilis_date" type="date"/>
+      <column name="info_about_prep_desired" type="BOOLEAN"/>
+      <column name="safe_sex_practice" type="SAFESEXPRACTICE"/>
+      <column name="previous_illnesses_chlamydia" type="BOOLEAN"/>
+      <column name="previous_illnesses_gonorrhea" type="BOOLEAN"/>
+      <column name="previous_illnesses_hep_a" type="BOOLEAN"/>
+      <column name="previous_illnesses_hep_b" type="BOOLEAN"/>
+      <column name="previous_illnesses_hep_c" type="BOOLEAN"/>
+      <column name="previous_illnesses_hiv" type="BOOLEAN"/>
+      <column name="previous_illnesses_other" type="BOOLEAN"/>
+      <column name="other_data" type="TEXT"/>
+      <column name="previous_illnesses_syphilis" type="BOOLEAN"/>
+      <column name="relationship_model" type="RELATIONSHIPMODEL"/>
+      <column name="number_of_sexual_partners_last12months" type="INTEGER"/>
+      <column name="sexual_orientation" type="SEXUALORIENTATION"/>
+      <column name="other_risk_activities" type="BOOLEAN"/>
+      <column name="other_risk_activities_data" type="TEXT"/>
+      <column name="risk_activity_date_anal_intercourse" type="BOOLEAN"/>
+      <column name="risk_activity_date_anal_intercourse_date" type="date"/>
+      <column name="risk_activity_date_oral_intercourse" type="BOOLEAN"/>
+      <column name="risk_activity_date_oral_intercourse_date" type="date"/>
+      <column name="risk_activity_date_vaginal_intercourse" type="BOOLEAN"/>
+      <column name="risk_activity_date_vaginal_intercourse_date" type="date"/>
+      <column name="amount_abortions" type="INTEGER"/>
+      <column name="amount_pregnancies" type="INTEGER"/>
+      <column name="known_operations" type="TEXT"/>
+      <column name="last_cancer_screening_date" type="date"/>
+      <column name="last_menstruation_date" type="date"/>
+      <column name="medications" type="TEXT"/>
+      <column name="previously_pregnant" type="BOOLEAN"/>
+      <column name="start_in_sex_work_date" type="date"/>
+      <column name="procedure_id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_medical_history"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-54">
+    <createTable tableName="medical_history_vaccinations">
+      <column name="medical_history_procedure_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="vaccinations" type="VACCINATION"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-55">
+    <createTable tableName="medical_history_partner_risk_factors">
+      <column name="medical_history_procedure_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="partner_risk_factors" type="PARTNERRISKFACTOR"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-56">
+    <createTable tableName="medical_history_sexual_contacts">
+      <column name="medical_history_procedure_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="sexual_contacts" type="GENDER"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-57">
+    <createTable tableName="person">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_person"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="external_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="central_file_state_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="person_type" type="PERSONTYPE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="gender" type="GENDER">
+        <constraints nullable="false"/>
+      </column>
+      <column name="has_sufficient_german_language_skills" type="BOOLEAN"/>
+      <column name="other_known_languages" type="TEXT"/>
+      <column name="pronouns" type="TEXT"/>
+      <column name="year_of_birth" type="INTEGER">
+        <constraints nullable="false"/>
+      </column>
+      <column name="procedure_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-58">
+    <createTable tableName="sex_work_medical_history_sex_work_locations">
+      <column name="sex_work_medical_history_procedure_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="sex_work_locations" type="SEXWORKLOCATION"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-59">
     <createTable tableName="facility">
       <column name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_facility"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_facility"/>
       </column>
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
@@ -302,57 +613,11 @@
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-35">
-    <createTable tableName="person">
-      <column name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_person"/>
-      </column>
-      <column name="version" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="external_id" type="UUID">
-        <constraints nullable="false"/>
-      </column>
-      <column name="central_file_state_id" type="UUID">
-        <constraints nullable="false"/>
-      </column>
-      <column name="person_type" type="PERSONTYPE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="country_of_birth" type="COUNTRYCODEDTO"/>
-      <column name="gender" type="GENDER">
-        <constraints nullable="false"/>
-      </column>
-      <column name="in_germany_since" type="INTEGER"/>
-      <column name="year_of_birth" type="INTEGER">
-        <constraints nullable="false"/>
-      </column>
-      <column name="procedure_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-    </createTable>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-36">
-    <createTable tableName="medical_history">
-      <column name="type" type="VARCHAR(31)">
-        <constraints nullable="false"/>
-      </column>
-      <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_medical_history"/>
-      </column>
-      <column name="version" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="examination_reason" type="TEXT"/>
-      <column name="sexual_contact" type="GENDER"/>
-      <column name="sexual_orientation" type="SEXUALORIENTATION"/>
-      <column name="procedure_id" type="BIGINT"/>
-    </createTable>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-37">
+  <changeSet author="GA-Lotse" id="1727784238270-60">
     <createTable tableName="sti_protection_procedure">
       <column name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_sti_protection_procedure"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_sti_protection_procedure"/>
       </column>
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
@@ -377,16 +642,34 @@
       <column name="procedure_type" type="PROCEDURETYPE">
         <constraints nullable="false"/>
       </column>
+      <column name="access_code" type="TEXT"/>
+      <column name="anonymous_user_id" type="UUID"/>
+      <column name="appointment_start" type="TIMESTAMP WITH TIME ZONE"/>
+      <column name="calendar_event_id" type="UUID"/>
       <column name="concern" type="CONCERN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="is_follow_up" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="lab_status" type="LABSTATUS">
+        <constraints nullable="false"/>
+      </column>
+      <column name="medical_history_submitted" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="sample_bar_code" type="TEXT"/>
+      <column name="sti_procedure_origin" type="STIPROCEDUREORIGIN">
         <constraints nullable="false"/>
       </column>
       <column name="appointment_id" type="BIGINT"/>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-38">
+  <changeSet author="GA-Lotse" id="1727784238270-61">
     <createTable tableName="inbox_procedure">
       <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_inbox_procedure"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_inbox_procedure"/>
       </column>
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
@@ -405,12 +688,19 @@
         <constraints nullable="false"/>
       </column>
       <column name="procedure_type" type="PROCEDURETYPE"/>
+      <column name="contact_details_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="inbox_progress_entry_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-39">
+  <changeSet author="GA-Lotse" id="1727784238270-62">
     <createTable tableName="sti_protection_task">
       <column name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_sti_protection_task"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_sti_protection_task"/>
       </column>
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
@@ -439,48 +729,48 @@
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-40">
-    <createTable tableName="examination">
+  <changeSet author="GA-Lotse" id="1727784238270-63">
+    <createTable tableName="text_template">
       <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_examination"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_text_template"/>
       </column>
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
       </column>
-      <column name="disease_type" type="DISEASETYPE">
+      <column name="external_id" type="UUID">
         <constraints nullable="false"/>
       </column>
-      <column name="examination_date" type="date">
+      <column name="content" type="TEXT"/>
+      <column name="context" type="TEXTTEMPLATECONTEXT">
         <constraints nullable="false"/>
       </column>
-      <column name="medical_history_id" type="BIGINT">
+      <column name="name" type="TEXT">
         <constraints nullable="false"/>
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-41">
-    <createTable tableName="vaccination">
-      <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_vaccination"/>
-      </column>
+  <changeSet author="GA-Lotse" id="1727784238270-64">
+    <createTable tableName="waiting_room">
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
       </column>
-      <column name="disease_type" type="DISEASETYPE">
+      <column name="info" type="TEXT"/>
+      <column name="modified_at" type="TIMESTAMP WITH TIME ZONE">
         <constraints nullable="false"/>
       </column>
-      <column name="vaccination_date" type="date">
-        <constraints nullable="false"/>
-      </column>
-      <column name="medical_history_id" type="BIGINT">
-        <constraints nullable="false"/>
+      <column name="status" type="WAITINGSTATUS"/>
+      <column name="procedure_id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_waiting_room"/>
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-42">
+  <changeSet author="GA-Lotse" id="1727784238270-65">
     <createTable tableName="contact_details">
       <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_contact_details"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_contact_details"/>
       </column>
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
@@ -494,16 +784,17 @@
       <column name="first_name" type="TEXT"/>
       <column name="last_name" type="TEXT"/>
       <column name="phone_number" type="TEXT"/>
+      <column name="salutation" type="SALUTATION">
+        <constraints nullable="false"/>
+      </column>
       <column name="title" type="TITLE"/>
-      <column name="inbox_procedure_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-43">
-    <createTable tableName="task_due_at_reminder_notification">
+  <changeSet author="GA-Lotse" id="1727784238270-66">
+    <createTable tableName="file">
       <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_task_due_at_reminder_notification"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_file"/>
       </column>
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
@@ -511,59 +802,49 @@
       <column name="external_id" type="UUID">
         <constraints nullable="false"/>
       </column>
-      <column name="read_at" type="TIMESTAMP WITH TIME ZONE"/>
-      <column name="reminder_type" type="TASKDUEATREMINDERNOTIFICATIONTYPE">
+      <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
         <constraints nullable="false"/>
       </column>
-      <column name="task_id" type="BIGINT">
+      <column name="created_by" type="UUID"/>
+      <column name="deletable" type="BOOLEAN">
         <constraints nullable="false"/>
       </column>
-    </createTable>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-44">
-    <createTable tableName="inbox_progress_entry">
-      <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_inbox_progress_entry"/>
-      </column>
-      <column name="version" type="BIGINT">
+      <column name="deleted" type="BOOLEAN">
         <constraints nullable="false"/>
       </column>
-      <column name="external_id" type="UUID">
+      <column name="file_name" type="TEXT">
         <constraints nullable="false"/>
       </column>
-      <column name="inbox_progress_entry_type" type="INBOXPROGRESSENTRYTYPE">
+      <column name="file_size_bytes" type="INTEGER">
         <constraints nullable="false"/>
       </column>
-      <column name="message_text" type="TEXT"/>
-      <column name="subject" type="TEXT"/>
-      <column name="file_id" type="BIGINT"/>
-      <column name="inbox_procedure_id" type="BIGINT">
+      <column name="file_type" type="PROCEDUREFILETYPE">
         <constraints nullable="false"/>
       </column>
-    </createTable>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-45">
-    <createTable tableName="processed_inbox_progress_entry">
-      <column name="created_by" type="UUID">
+      <column name="locked_by_mail" type="BOOLEAN">
         <constraints nullable="false"/>
       </column>
-      <column name="inbox_progress_entry_type" type="INBOXPROGRESSENTRYTYPE">
+      <column name="locked_by_progress_entry" type="BOOLEAN">
         <constraints nullable="false"/>
       </column>
-      <column name="message_text" type="TEXT"/>
-      <column name="subject" type="TEXT"/>
-      <column name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_processed_inbox_progress_entry"/>
+      <column name="locked_by_self" type="BOOLEAN">
+        <constraints nullable="false"/>
       </column>
-      <column name="inbox_procedure_id" type="BIGINT">
+      <column name="modified_at" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="attached_to_mail_id" type="BIGINT"/>
+      <column name="deletion_approval_request_id" type="BIGINT"/>
+      <column name="file_content_id" type="BIGINT">
         <constraints nullable="false"/>
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-46">
+  <changeSet author="GA-Lotse" id="1727784238270-67">
     <createTable tableName="approval_request">
       <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_approval_request"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_approval_request"/>
       </column>
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
@@ -585,10 +866,41 @@
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-47">
-    <createTable tableName="file">
+  <changeSet author="GA-Lotse" id="1727784238270-68">
+    <createTable tableName="gdpr_validation_task">
       <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_file"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_gdpr_validation_task"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="closed_at" type="TIMESTAMP WITH TIME ZONE"/>
+      <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="gdpr_procedure_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="modified_at" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="started_at" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="status" type="GDPRVALIDATIONTASKSTATUS">
+        <constraints nullable="false"/>
+      </column>
+      <column name="type" type="GDPRVALIDATIONTASKTYPE">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-69">
+    <createTable tableName="inbox_progress_entry">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_inbox_progress_entry"/>
       </column>
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
@@ -596,61 +908,34 @@
       <column name="external_id" type="UUID">
         <constraints nullable="false"/>
       </column>
-      <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+      <column name="inbox_progress_entry_type" type="INBOXPROGRESSENTRYTYPE">
         <constraints nullable="false"/>
       </column>
+      <column name="message_text" type="TEXT"/>
+      <column name="subject" type="TEXT"/>
+      <column name="file_id" type="BIGINT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-70">
+    <createTable tableName="processed_inbox_progress_entry">
       <column name="created_by" type="UUID">
         <constraints nullable="false"/>
       </column>
-      <column name="deletable" type="BOOLEAN">
+      <column name="inbox_progress_entry_type" type="INBOXPROGRESSENTRYTYPE">
         <constraints nullable="false"/>
       </column>
-      <column name="deleted" type="BOOLEAN">
-        <constraints nullable="false"/>
-      </column>
-      <column name="file_name" type="TEXT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="file_size_bytes" type="INTEGER">
-        <constraints nullable="false"/>
-      </column>
-      <column name="file_type" type="FILETYPE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="locked_by_mail" type="BOOLEAN">
-        <constraints nullable="false"/>
-      </column>
-      <column name="locked_by_progress_entry" type="BOOLEAN">
-        <constraints nullable="false"/>
-      </column>
-      <column name="locked_by_self" type="BOOLEAN">
-        <constraints nullable="false"/>
-      </column>
-      <column name="modified_at" type="TIMESTAMP WITH TIME ZONE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="attached_to_mail_id" type="BIGINT"/>
-      <column name="file_content_id" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-    </createTable>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-48">
-    <createTable tableName="system_progress_entry">
-      <column name="change_description" type="TEXT"/>
-      <column name="system_progress_entry_type" type="TEXT">
-        <constraints nullable="false"/>
-      </column>
-      <column name="trigger_type" type="TRIGGERTYPE">
-        <constraints nullable="false"/>
-      </column>
-      <column name="triggered_by" type="UUID"/>
+      <column name="message_text" type="TEXT"/>
+      <column name="subject" type="TEXT"/>
       <column name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_system_progress_entry"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_processed_inbox_progress_entry"/>
+      </column>
+      <column name="inbox_procedure_id" type="BIGINT">
+        <constraints nullable="false"/>
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-49">
+  <changeSet author="GA-Lotse" id="1727784238270-71">
     <createTable tableName="manual_progress_entry_aud">
       <column name="id" type="BIGINT">
         <constraints nullable="false"/>
@@ -659,21 +944,19 @@
         <constraints nullable="false"/>
       </column>
       <column name="created_by" type="UUID"/>
-      <column name="key_document_type" type="KEYDOCUMENTTYPE"/>
+      <column name="key_document_type" type="TEXT"/>
       <column name="key_document_version" type="INTEGER"/>
       <column name="locked" type="BOOLEAN"/>
       <column name="manual_progress_entry_type" type="MANUALPROGRESSENTRYTYPE"/>
-      <column name="message_text" type="TEXT"/>
       <column name="note" type="TEXT"/>
-      <column name="subject" type="TEXT"/>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-50">
+  <changeSet author="GA-Lotse" id="1727784238270-72">
     <createTable tableName="manual_progress_entry">
       <column name="created_by" type="UUID">
         <constraints nullable="false"/>
       </column>
-      <column name="key_document_type" type="KEYDOCUMENTTYPE"/>
+      <column name="key_document_type" type="TEXT"/>
       <column name="key_document_version" type="INTEGER"/>
       <column name="locked" type="BOOLEAN">
         <constraints nullable="false"/>
@@ -681,18 +964,81 @@
       <column name="manual_progress_entry_type" type="MANUALPROGRESSENTRYTYPE">
         <constraints nullable="false"/>
       </column>
-      <column name="message_text" type="TEXT"/>
       <column name="note" type="TEXT"/>
-      <column name="subject" type="TEXT"/>
       <column name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_manual_progress_entry"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_manual_progress_entry"/>
+      </column>
+      <column name="deletion_approval_request_id" type="BIGINT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-73">
+    <createTable tableName="system_progress_entry">
+      <column name="change_description" type="TEXT"/>
+      <column name="key_document_type" type="TEXT"/>
+      <column name="key_document_version" type="INTEGER"/>
+      <column name="previous_facility_file_state_id" type="UUID"/>
+      <column name="previous_person_file_state_id" type="UUID"/>
+      <column name="system_progress_entry_type" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="trigger_type" type="TRIGGERTYPE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="triggered_by" type="UUID"/>
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_system_progress_entry"/>
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-51">
+  <changeSet author="GA-Lotse" id="1727784238270-74">
+    <createTable tableName="task_due_at_reminder_notification">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_task_due_at_reminder_notification"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="external_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="read_at" type="TIMESTAMP WITH TIME ZONE"/>
+      <column name="reminder_type" type="TASKDUEATREMINDERNOTIFICATIONTYPE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="task_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-75">
+    <createTable tableName="appointment_history">
+      <column name="procedure_id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_appointment_history"/>
+      </column>
+      <column name="appointment_start" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="appointment_status" type="APPOINTMENTSTATUS">
+        <constraints nullable="false"/>
+      </column>
+      <column name="appointment_type" type="APPOINTMENTTYPE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="appointment_history_order" type="INTEGER">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_appointment_history"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-76">
     <createTable tableName="appointment_type_config">
       <column name="id" type="UUID">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_appointment_type_config"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_appointment_type_config"/>
       </column>
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
@@ -700,15 +1046,16 @@
       <column name="appointment_type" type="APPOINTMENTTYPE">
         <constraints nullable="false"/>
       </column>
-      <column name="standard_duration_in_minutes" type="INTEGER">
+      <column name="standard_duration" type="INTERVAL">
         <constraints nullable="false"/>
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-52">
+  <changeSet author="GA-Lotse" id="1727784238270-77">
     <createTable tableName="appointment_block_group">
       <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_appointment_block_group"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_appointment_block_group"/>
       </column>
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
@@ -720,7 +1067,7 @@
       <column name="parallel_examinations" type="INTEGER">
         <constraints nullable="false"/>
       </column>
-      <column name="slot_duration_in_minutes" type="INTEGER">
+      <column name="slot_duration" type="INTERVAL">
         <constraints nullable="false"/>
       </column>
       <column name="type" type="APPOINTMENTTYPE">
@@ -728,157 +1075,387 @@
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-53">
-    <addUniqueConstraint columnNames="calendar_event_id" constraintName="appointment_block_calendar_event_id_key" tableName="appointment_block"/>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-54">
-    <addUniqueConstraint columnNames="external_id" constraintName="appointment_block_external_id_key" tableName="appointment_block"/>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-55">
-    <addUniqueConstraint columnNames="external_id" constraintName="file_deletion_approval_request_notification_external_id_key" tableName="file_deletion_approval_request_notification"/>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-56">
-    <addUniqueConstraint columnNames="external_id" constraintName="manual_progress_entry_deletion_approval_request_external_id_key" tableName="manual_progress_entry_deletion_approval_request_notification"/>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-57">
-    <addUniqueConstraint columnNames="external_id" constraintName="progress_entry_external_id_key" tableName="progress_entry"/>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-58">
-    <addUniqueConstraint columnNames="file_id" constraintName="progress_entry_file_id_key" tableName="progress_entry"/>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-59">
-    <addUniqueConstraint columnNames="contact_details_id" constraintName="address_contact_details_id_key" tableName="address"/>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-60">
-    <addUniqueConstraint columnNames="file_id" constraintName="file_deletion_approval_request_file_id_key" tableName="file_deletion_approval_request"/>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-61">
-    <addUniqueConstraint columnNames="manual_progress_entry_id" constraintName="manual_progress_entry_deletion_app_manual_progress_entry_id_key" tableName="manual_progress_entry_deletion_approval_request"/>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-62">
-    <addUniqueConstraint columnNames="external_id" constraintName="simple_notification_external_id_key" tableName="simple_notification"/>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-63">
-    <addUniqueConstraint columnNames="central_file_state_id" constraintName="facility_central_file_state_id_key" tableName="facility"/>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-64">
-    <addUniqueConstraint columnNames="external_id" constraintName="facility_external_id_key" tableName="facility"/>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-65">
-    <addUniqueConstraint columnNames="central_file_state_id" constraintName="person_central_file_state_id_key" tableName="person"/>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-66">
-    <addUniqueConstraint columnNames="external_id" constraintName="person_external_id_key" tableName="person"/>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-67">
-    <addUniqueConstraint columnNames="procedure_id" constraintName="person_procedure_id_key" tableName="person"/>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-68">
-    <addUniqueConstraint columnNames="procedure_id" constraintName="medical_history_procedure_id_key" tableName="medical_history"/>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-69">
-    <addUniqueConstraint columnNames="appointment_id" constraintName="sti_protection_procedure_appointment_id_key" tableName="sti_protection_procedure"/>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-70">
-    <addUniqueConstraint columnNames="external_id" constraintName="sti_protection_procedure_external_id_key" tableName="sti_protection_procedure"/>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-71">
-    <addUniqueConstraint columnNames="external_id" constraintName="inbox_procedure_external_id_key" tableName="inbox_procedure"/>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-72">
-    <addUniqueConstraint columnNames="external_id" constraintName="sti_protection_task_external_id_key" tableName="sti_protection_task"/>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-73">
-    <addUniqueConstraint columnNames="medical_history_id, disease_type" constraintName="examination_medical_history_id_disease_type_key" tableName="examination"/>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-74">
-    <addUniqueConstraint columnNames="medical_history_id, disease_type" constraintName="vaccination_medical_history_id_disease_type_key" tableName="vaccination"/>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-75">
-    <addUniqueConstraint columnNames="inbox_procedure_id" constraintName="contact_details_inbox_procedure_id_key" tableName="contact_details"/>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-76">
-    <addUniqueConstraint columnNames="external_id" constraintName="task_due_at_reminder_notification_external_id_key" tableName="task_due_at_reminder_notification"/>
-  </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-77">
-    <addUniqueConstraint columnNames="external_id" constraintName="inbox_progress_entry_external_id_key" tableName="inbox_progress_entry"/>
-  </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-78">
-    <addUniqueConstraint columnNames="file_id" constraintName="inbox_progress_entry_file_id_key" tableName="inbox_progress_entry"/>
+    <createTable tableName="department_info">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_department_info"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="abbreviation" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="city" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="country" type="COUNTRYCODE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="email" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="homepage" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="house_number" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="latitude" type="FLOAT8">
+        <constraints nullable="false"/>
+      </column>
+      <column name="longitude" type="FLOAT8">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="phone_number" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="postal_code" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="street" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-79">
-    <addUniqueConstraint columnNames="inbox_procedure_id" constraintName="inbox_progress_entry_inbox_procedure_id_key" tableName="inbox_progress_entry"/>
+    <createTable tableName="diagnosis_test_types">
+      <column name="diagnosis_procedure_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="test_types" type="TESTTYPE"/>
+    </createTable>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-80">
-    <addUniqueConstraint columnNames="inbox_procedure_id" constraintName="processed_inbox_progress_entry_inbox_procedure_id_key" tableName="processed_inbox_progress_entry"/>
+    <addUniqueConstraint columnNames="external_id"
+      constraintName="simple_notification_external_id_key"
+      tableName="simple_notification"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-81">
-    <addUniqueConstraint columnNames="external_id" constraintName="approval_request_external_id_key" tableName="approval_request"/>
+    <addUniqueConstraint columnNames="calendar_event_id"
+      constraintName="appointment_block_calendar_event_id_key"
+      tableName="appointment_block"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-82">
-    <addUniqueConstraint columnNames="external_id" constraintName="file_external_id_key" tableName="file"/>
+    <addUniqueConstraint columnNames="external_id"
+      constraintName="appointment_block_external_id_key"
+      tableName="appointment_block"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-83">
-    <addUniqueConstraint columnNames="file_content_id" constraintName="file_file_content_id_key" tableName="file"/>
+    <addUniqueConstraint columnNames="external_id"
+      constraintName="file_deletion_approval_request_notification_external_id_key"
+      tableName="file_deletion_approval_request_notification"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-84">
-    <addUniqueConstraint columnNames="appointment_type" constraintName="appointment_type_config_appointment_type_key" tableName="appointment_type_config"/>
+    <addUniqueConstraint columnNames="external_id"
+      constraintName="manual_progress_entry_deletion_approval_request_external_id_key"
+      tableName="manual_progress_entry_deletion_approval_request_notification"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-85">
-    <addUniqueConstraint columnNames="external_id" constraintName="appointment_block_group_external_id_key" tableName="appointment_block_group"/>
+    <createIndex indexName="idx_procedure_expiration_created_at"
+      tableName="procedure_expiration">
+      <column name="created_at"/>
+    </createIndex>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-86">
-    <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="50" maxValue="9223372036854775807" minValue="1" sequenceName="facility_seq" startValue="1"/>
+    <addUniqueConstraint columnNames="external_id"
+      constraintName="progress_entry_external_id_key"
+      tableName="progress_entry"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-87">
-    <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="50" maxValue="9223372036854775807" minValue="1" sequenceName="person_seq" startValue="1"/>
+    <addUniqueConstraint columnNames="file_id"
+      constraintName="progress_entry_file_id_key" tableName="progress_entry"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-88">
-    <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="50" maxValue="9223372036854775807" minValue="1" sequenceName="progress_entry_seq" startValue="1"/>
+    <addUniqueConstraint columnNames="contact_details_id"
+      constraintName="address_contact_details_id_key" tableName="address"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-89">
-    <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="50" maxValue="9223372036854775807" minValue="1" sequenceName="sti_protection_procedure_seq" startValue="1"/>
+    <addUniqueConstraint columnNames="department_info_id"
+      constraintName="department_info_config_department_info_id_key"
+      tableName="department_info_config"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-90">
-    <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="50" maxValue="9223372036854775807" minValue="1" sequenceName="sti_protection_task_seq" startValue="1"/>
+    <addUniqueConstraint columnNames="external_id"
+      constraintName="gdpr_download_package_external_id_key"
+      tableName="gdpr_download_package"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-91">
-    <createTable tableName="appointment_block_group_consultants">
-      <column name="appointment_block_group_id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_appointment_block_group_consultants"/>
-      </column>
-      <column name="consultants" type="UUID"/>
-      <column name="consultants_order" type="INTEGER">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_appointment_block_group_consultants"/>
-      </column>
-    </createTable>
+    <addUniqueConstraint columnNames="de_id"
+      constraintName="privacy_document_de_id_key" tableName="privacy_document"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-92">
-    <createTable tableName="appointment_block_group_mfas">
-      <column name="appointment_block_group_id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_appointment_block_group_mfas"/>
-      </column>
-      <column name="mfas" type="UUID"/>
-      <column name="mfas_order" type="INTEGER">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_appointment_block_group_mfas"/>
-      </column>
-    </createTable>
+    <addUniqueConstraint columnNames="en_id"
+      constraintName="privacy_document_en_id_key" tableName="privacy_document"/>
   </changeSet>
   <changeSet author="GA-Lotse" id="1727784238270-93">
-    <createTable tableName="appointment_block_group_physicians">
+    <addUniqueConstraint columnNames="privacy_notice_id"
+      constraintName="privacy_documents_config_privacy_notice_id_key"
+      tableName="privacy_documents_config"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-94">
+    <addUniqueConstraint columnNames="privacy_policy_id"
+      constraintName="privacy_documents_config_privacy_policy_id_key"
+      tableName="privacy_documents_config"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-95">
+    <addUniqueConstraint columnNames="department_info_id"
+      constraintName="sex_work_department_info_config_department_info_id_key"
+      tableName="sex_work_department_info_config"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-96">
+    <addUniqueConstraint columnNames="department_info_id"
+      constraintName="sti_consultation_department_info_config_department_info_id_key"
+      tableName="sti_consultation_department_info_config"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-97">
+    <addUniqueConstraint columnNames="central_file_state_id"
+      constraintName="person_central_file_state_id_key" tableName="person"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-98">
+    <addUniqueConstraint columnNames="external_id"
+      constraintName="person_external_id_key" tableName="person"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-99">
+    <addUniqueConstraint columnNames="procedure_id"
+      constraintName="person_procedure_id_key" tableName="person"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-100">
+    <addUniqueConstraint columnNames="central_file_state_id"
+      constraintName="facility_central_file_state_id_key" tableName="facility"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-101">
+    <addUniqueConstraint columnNames="external_id"
+      constraintName="facility_external_id_key" tableName="facility"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-102">
+    <addUniqueConstraint columnNames="appointment_id"
+      constraintName="sti_protection_procedure_appointment_id_key"
+      tableName="sti_protection_procedure"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-103">
+    <addUniqueConstraint columnNames="calendar_event_id"
+      constraintName="sti_protection_procedure_calendar_event_id_key"
+      tableName="sti_protection_procedure"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-104">
+    <addUniqueConstraint columnNames="external_id"
+      constraintName="sti_protection_procedure_external_id_key"
+      tableName="sti_protection_procedure"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-105">
+    <addUniqueConstraint columnNames="contact_details_id"
+      constraintName="inbox_procedure_contact_details_id_key"
+      tableName="inbox_procedure"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-106">
+    <addUniqueConstraint columnNames="external_id"
+      constraintName="inbox_procedure_external_id_key"
+      tableName="inbox_procedure"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-107">
+    <addUniqueConstraint columnNames="inbox_progress_entry_id"
+      constraintName="inbox_procedure_inbox_progress_entry_id_key"
+      tableName="inbox_procedure"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-108">
+    <addUniqueConstraint columnNames="external_id"
+      constraintName="sti_protection_task_external_id_key"
+      tableName="sti_protection_task"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-109">
+    <addUniqueConstraint columnNames="external_id"
+      constraintName="text_template_external_id_key" tableName="text_template"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-110">
+    <addUniqueConstraint columnNames="deletion_approval_request_id"
+      constraintName="file_deletion_approval_request_id_key" tableName="file"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-111">
+    <addUniqueConstraint columnNames="external_id"
+      constraintName="file_external_id_key" tableName="file"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-112">
+    <addUniqueConstraint columnNames="file_content_id"
+      constraintName="file_file_content_id_key" tableName="file"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-113">
+    <addUniqueConstraint columnNames="external_id"
+      constraintName="approval_request_external_id_key"
+      tableName="approval_request"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-114">
+    <addUniqueConstraint columnNames="gdpr_procedure_id"
+      constraintName="gdpr_validation_task_gdpr_procedure_id_key"
+      tableName="gdpr_validation_task"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-115">
+    <addUniqueConstraint columnNames="external_id"
+      constraintName="inbox_progress_entry_external_id_key"
+      tableName="inbox_progress_entry"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-116">
+    <addUniqueConstraint columnNames="file_id"
+      constraintName="inbox_progress_entry_file_id_key"
+      tableName="inbox_progress_entry"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-117">
+    <addUniqueConstraint columnNames="inbox_procedure_id"
+      constraintName="processed_inbox_progress_entry_inbox_procedure_id_key"
+      tableName="processed_inbox_progress_entry"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-118">
+    <addUniqueConstraint columnNames="deletion_approval_request_id"
+      constraintName="manual_progress_entry_deletion_approval_request_id_key"
+      tableName="manual_progress_entry"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-119">
+    <addUniqueConstraint columnNames="previous_facility_file_state_id"
+      constraintName="system_progress_entry_previous_facility_file_state_id_key"
+      tableName="system_progress_entry"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-120">
+    <addUniqueConstraint columnNames="previous_person_file_state_id"
+      constraintName="system_progress_entry_previous_person_file_state_id_key"
+      tableName="system_progress_entry"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-121">
+    <addUniqueConstraint columnNames="external_id"
+      constraintName="task_due_at_reminder_notification_external_id_key"
+      tableName="task_due_at_reminder_notification"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-122">
+    <addUniqueConstraint columnNames="appointment_type"
+      constraintName="appointment_type_config_appointment_type_key"
+      tableName="appointment_type_config"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-123">
+    <addUniqueConstraint columnNames="external_id"
+      constraintName="appointment_block_group_external_id_key"
+      tableName="appointment_block_group"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-124">
+    <createSequence cacheSize="1" cycle="false" dataType="bigint"
+      incrementBy="50" maxValue="9223372036854775807" minValue="1"
+      sequenceName="audit_log_entry_seq" startValue="1"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-125">
+    <createSequence cacheSize="1" cycle="false" dataType="bigint"
+      incrementBy="50" maxValue="9223372036854775807" minValue="1"
+      sequenceName="cemetery_seq" startValue="1"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-126">
+    <createSequence cacheSize="1" cycle="false" dataType="bigint"
+      incrementBy="50" maxValue="9223372036854775807" minValue="1"
+      sequenceName="facility_seq" startValue="1"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-127">
+    <createSequence cacheSize="1" cycle="false" dataType="bigint"
+      incrementBy="50" maxValue="9223372036854775807" minValue="1"
+      sequenceName="person_seq" startValue="1"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-128">
+    <createSequence cacheSize="1" cycle="false" dataType="bigint"
+      incrementBy="50" maxValue="9223372036854775807" minValue="1"
+      sequenceName="progress_entry_seq" startValue="1"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-129">
+    <createSequence cacheSize="1" cycle="false" dataType="bigint"
+      incrementBy="50" maxValue="9223372036854775807" minValue="1"
+      sequenceName="sti_protection_procedure_seq" startValue="1"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-130">
+    <createSequence cacheSize="1" cycle="false" dataType="bigint"
+      incrementBy="50" maxValue="9223372036854775807" minValue="1"
+      sequenceName="sti_protection_task_seq" startValue="1"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-131">
+    <createTable tableName="appointment_block_group_consultants">
       <column name="appointment_block_group_id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_appointment_block_group_physicians"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_appointment_block_group_consultants"/>
       </column>
-      <column name="physicians" type="UUID"/>
-      <column name="physicians_order" type="INTEGER">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_appointment_block_group_physicians"/>
+      <column name="consultant_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="consultants_order" type="INTEGER">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_appointment_block_group_consultants"/>
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-94">
+  <changeSet author="GA-Lotse" id="1727784238270-132">
+    <createTable tableName="appointment_block_group_mfas">
+      <column name="appointment_block_group_id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_appointment_block_group_mfas"/>
+      </column>
+      <column name="mfa_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="mfas_order" type="INTEGER">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_appointment_block_group_mfas"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-133">
+    <createTable tableName="appointment_block_group_physicians">
+      <column name="appointment_block_group_id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_appointment_block_group_physicians"/>
+      </column>
+      <column name="physician_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="physicians_order" type="INTEGER">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_appointment_block_group_physicians"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-134">
+    <createTable tableName="audit_log_entry">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_audit_log_entry"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="category" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="function" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-135">
+    <createTable tableName="audit_log_entry_additional_data">
+      <column name="audit_log_entry_id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_audit_log_entry_additional_data"/>
+      </column>
+      <column name="additional_data" type="TEXT"/>
+      <column name="additional_data_key" type="TEXT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_audit_log_entry_additional_data"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-136">
     <createTable tableName="cemetery">
-      <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cemetery"/>
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_cemetery"/>
       </column>
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
@@ -887,6 +1464,9 @@
         <constraints nullable="false"/>
       </column>
       <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="delete_at" type="TIMESTAMP WITH TIME ZONE">
         <constraints nullable="false"/>
       </column>
       <column name="former_external_id" type="UUID"/>
@@ -898,10 +1478,41 @@
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-95">
+  <changeSet author="GA-Lotse" id="1727784238270-137">
+    <createTable tableName="consultation">
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="drug_use" type="TEXT"/>
+      <column name="further_gender_info" type="TEXT"/>
+      <column name="has_german_health_insurance" type="BOOLEAN"/>
+      <column name="has_health_insurance" type="BOOLEAN"/>
+      <column name="has_insecure_residence" type="BOOLEAN"/>
+      <column name="has_symptoms" type="BOOLEAN"/>
+      <column name="main_reason" type="TEXT"/>
+      <column name="notes" type="TEXT"/>
+      <column name="other_known_languages" type="TEXT"/>
+      <column name="referral" type="TEXT"/>
+      <column name="symptoms" type="TEXT"/>
+      <column name="has_pregnancy_related_info" type="BOOLEAN"/>
+      <column name="last_cytology_test" type="date"/>
+      <column name="number_of_births" type="INTEGER"/>
+      <column name="number_of_ectopic_pregnancies" type="INTEGER"/>
+      <column name="number_of_induced_abortions" type="INTEGER"/>
+      <column name="number_of_other_abortions" type="INTEGER"/>
+      <column name="number_of_pregnancies" type="INTEGER"/>
+      <column name="start_of_last_period" type="date"/>
+      <column name="procedure_id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_consultation"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-138">
     <createTable tableName="default_revision_entity">
       <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_default_revision_entity"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_default_revision_entity"/>
       </column>
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
@@ -909,15 +1520,58 @@
       <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
         <constraints nullable="false"/>
       </column>
-      <column name="created_by" type="UUID">
+      <column name="created_by" type="UUID"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-139">
+    <createTable tableName="diagnosis">
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="general_remarks" type="TEXT"/>
+      <column name="other_test_type_name" type="TEXT"/>
+      <column name="results" type="TEXT"/>
+      <column name="results_communicated" type="BOOLEAN"/>
+      <column name="procedure_id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_diagnosis"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-140">
+    <createTable tableName="diagnosis_icd10codes">
+      <column name="diagnosis_procedure_id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_diagnosis_icd10codes"/>
+      </column>
+      <column name="icd10_code" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="icd10codes_order" type="INTEGER">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_diagnosis_icd10codes"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-141">
+    <createTable tableName="document">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_document"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="content" type="BYTEA">
         <constraints nullable="false"/>
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-96">
+  <changeSet author="GA-Lotse" id="1727784238270-142">
     <createTable tableName="file_content">
       <column autoIncrement="true" name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_file_content"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_file_content"/>
       </column>
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
@@ -925,14 +1579,23 @@
       <column name="content" type="BYTEA"/>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-97">
-    <createTable tableName="image">
+  <changeSet author="GA-Lotse" id="1727784238270-143">
+    <createTable tableName="file_deletion_approval_request">
       <column name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_image"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_file_deletion_approval_request"/>
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-98">
+  <changeSet author="GA-Lotse" id="1727784238270-144">
+    <createTable tableName="image">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_image"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-145">
     <createTable tableName="image_meta_data">
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
@@ -940,11 +1603,12 @@
       <column name="description" type="TEXT"/>
       <column name="created_date" type="TIMESTAMP WITH TIME ZONE"/>
       <column name="image_id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_image_meta_data"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_image_meta_data"/>
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-99">
+  <changeSet author="GA-Lotse" id="1727784238270-146">
     <createTable tableName="image_meta_data_aud">
       <column name="image_id" type="BIGINT">
         <constraints nullable="false"/>
@@ -957,17 +1621,114 @@
       <column name="created_date" type="TIMESTAMP WITH TIME ZONE"/>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-100">
+  <changeSet author="GA-Lotse" id="1727784238270-147">
+    <createTable tableName="laboratory_test_examination">
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="cancer_screening_remark" type="TEXT"/>
+      <column name="cancer_screening_result" type="BOOLEAN"/>
+      <column name="cancer_screening_value" type="TEXT"/>
+      <column name="cancer_screening_requested" type="BOOLEAN"/>
+      <column name="chlamydia_requested" type="BOOLEAN"/>
+      <column name="chlamydia_anal_sample_data_remark" type="TEXT"/>
+      <column name="chlamydia_anal_sample_data_result" type="BOOLEAN"/>
+      <column name="chlamydia_anal_sample_data_value" type="TEXT"/>
+      <column name="chlamydia_anal_sample_requested" type="BOOLEAN"/>
+      <column name="chlamydia_oral_sample_data_remark" type="TEXT"/>
+      <column name="chlamydia_oral_sample_data_result" type="BOOLEAN"/>
+      <column name="chlamydia_oral_sample_data_value" type="TEXT"/>
+      <column name="chlamydia_oral_sample_requested" type="BOOLEAN"/>
+      <column name="chlamydia_urethral_sample_data_remark" type="TEXT"/>
+      <column name="chlamydia_urethral_sample_data_result" type="BOOLEAN"/>
+      <column name="chlamydia_urethral_sample_data_value" type="TEXT"/>
+      <column name="chlamydia_urethral_sample_requested" type="BOOLEAN"/>
+      <column name="general_remarks" type="TEXT"/>
+      <column name="gonorrhea_requested" type="BOOLEAN"/>
+      <column name="gonorrhea_anal_sample_data_remark" type="TEXT"/>
+      <column name="gonorrhea_anal_sample_data_result" type="BOOLEAN"/>
+      <column name="gonorrhea_anal_sample_data_value" type="TEXT"/>
+      <column name="gonorrhea_anal_sample_requested" type="BOOLEAN"/>
+      <column name="gonorrhea_oral_sample_data_remark" type="TEXT"/>
+      <column name="gonorrhea_oral_sample_data_result" type="BOOLEAN"/>
+      <column name="gonorrhea_oral_sample_data_value" type="TEXT"/>
+      <column name="gonorrhea_oral_sample_requested" type="BOOLEAN"/>
+      <column name="gonorrhea_urethral_sample_data_remark" type="TEXT"/>
+      <column name="gonorrhea_urethral_sample_data_result" type="BOOLEAN"/>
+      <column name="gonorrhea_urethral_sample_data_value" type="TEXT"/>
+      <column name="gonorrhea_urethral_sample_requested" type="BOOLEAN"/>
+      <column name="had_syphilis" type="BOOLEAN"/>
+      <column name="hepa_infection" type="BOOLEAN"/>
+      <column name="hepa_remark" type="TEXT"/>
+      <column name="hepa_result" type="BOOLEAN"/>
+      <column name="hepa_vaccine_titre" type="BOOLEAN"/>
+      <column name="hepa_value" type="TEXT"/>
+      <column name="heparequested" type="BOOLEAN"/>
+      <column name="hepb_infection" type="BOOLEAN"/>
+      <column name="hepb_remark" type="TEXT"/>
+      <column name="hepb_result" type="BOOLEAN"/>
+      <column name="hepb_vaccine_titre" type="BOOLEAN"/>
+      <column name="hepb_value" type="TEXT"/>
+      <column name="hepbrequested" type="BOOLEAN"/>
+      <column name="hepc_remark" type="TEXT"/>
+      <column name="hepc_result" type="BOOLEAN"/>
+      <column name="hepc_value" type="TEXT"/>
+      <column name="hepcrequested" type="BOOLEAN"/>
+      <column name="hiv_remark" type="TEXT"/>
+      <column name="hiv_result" type="BOOLEAN"/>
+      <column name="hiv_value" type="TEXT"/>
+      <column name="hiv_requested" type="BOOLEAN"/>
+      <column name="hpv_remark" type="TEXT"/>
+      <column name="hpv_result" type="BOOLEAN"/>
+      <column name="hpv_value" type="TEXT"/>
+      <column name="hpv_requested" type="BOOLEAN"/>
+      <column name="mpox_remark" type="TEXT"/>
+      <column name="mpox_result" type="BOOLEAN"/>
+      <column name="mpox_value" type="TEXT"/>
+      <column name="mpox_requested" type="BOOLEAN"/>
+      <column name="mycoplasma_requested" type="BOOLEAN"/>
+      <column name="mycoplasma_anal_sample_data_remark" type="TEXT"/>
+      <column name="mycoplasma_anal_sample_data_result" type="BOOLEAN"/>
+      <column name="mycoplasma_anal_sample_data_value" type="TEXT"/>
+      <column name="mycoplasma_anal_sample_requested" type="BOOLEAN"/>
+      <column name="mycoplasma_oral_sample_data_remark" type="TEXT"/>
+      <column name="mycoplasma_oral_sample_data_result" type="BOOLEAN"/>
+      <column name="mycoplasma_oral_sample_data_value" type="TEXT"/>
+      <column name="mycoplasma_oral_sample_requested" type="BOOLEAN"/>
+      <column name="mycoplasma_urethral_sample_data_remark" type="TEXT"/>
+      <column name="mycoplasma_urethral_sample_data_result" type="BOOLEAN"/>
+      <column name="mycoplasma_urethral_sample_data_value" type="TEXT"/>
+      <column name="mycoplasma_urethral_sample_requested" type="BOOLEAN"/>
+      <column name="other_test_remark" type="TEXT"/>
+      <column name="other_test_result" type="BOOLEAN"/>
+      <column name="other_test_value" type="TEXT"/>
+      <column name="other_test_name" type="TEXT"/>
+      <column name="other_test_requested" type="BOOLEAN"/>
+      <column name="sample_bar_code" type="TEXT"/>
+      <column name="syphilis_remark" type="TEXT"/>
+      <column name="syphilis_result" type="BOOLEAN"/>
+      <column name="syphilis_value" type="TEXT"/>
+      <column name="syphilis_requested" type="BOOLEAN"/>
+      <column name="tests_conducted_date" type="date"/>
+      <column name="tests_payed" type="BOOLEAN"/>
+      <column name="procedure_id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_laboratory_test_examination"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-148">
     <createTable tableName="mail">
       <column name="removed_invalid_attachments" type="INTEGER">
         <constraints nullable="false"/>
       </column>
       <column name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_mail"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_mail"/>
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-101">
+  <changeSet author="GA-Lotse" id="1727784238270-149">
     <createTable tableName="mail_meta_data">
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
@@ -979,15 +1740,22 @@
       <column name="mail_to" type="TEXT">
         <constraints nullable="false"/>
       </column>
+      <column name="message_text" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
       <column name="sent_date" type="TIMESTAMP WITH TIME ZONE">
         <constraints nullable="false"/>
       </column>
+      <column name="subject" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
       <column name="mail_id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_mail_meta_data"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_mail_meta_data"/>
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-102">
+  <changeSet author="GA-Lotse" id="1727784238270-150">
     <createTable tableName="mail_meta_data_aud">
       <column name="mail_id" type="BIGINT">
         <constraints nullable="false"/>
@@ -999,17 +1767,69 @@
       <column name="description" type="TEXT"/>
       <column name="mail_from" type="TEXT"/>
       <column name="mail_to" type="TEXT"/>
+      <column name="message_text" type="TEXT"/>
       <column name="sent_date" type="TIMESTAMP WITH TIME ZONE"/>
+      <column name="subject" type="TEXT"/>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-103">
-    <createTable tableName="pdf">
+  <changeSet author="GA-Lotse" id="1727784238270-151">
+    <createTable tableName="manual_progress_entry_deletion_approval_request">
       <column name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_pdf"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_manual_progress_entry_deletion_approval_request"/>
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-104">
+  <changeSet author="GA-Lotse" id="1727784238270-152">
+    <createTable tableName="medications">
+      <column name="procedure_id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_medications"/>
+      </column>
+      <column name="name" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="dose" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="prescription_date" type="date">
+        <constraints nullable="false"/>
+      </column>
+      <column name="medications_order" type="INTEGER">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_medications"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-153">
+    <createTable tableName="opening_hours">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_opening_hours"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="de" type="TEXT[]">
+        <constraints nullable="false"/>
+      </column>
+      <column name="en" type="TEXT[]">
+        <constraints nullable="false"/>
+      </column>
+      <column name="initialized" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-154">
+    <createTable tableName="pdf">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_pdf"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-155">
     <createTable tableName="pdf_meta_data">
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
@@ -1017,11 +1837,12 @@
       <column name="description" type="TEXT"/>
       <column name="created_date" type="TIMESTAMP WITH TIME ZONE"/>
       <column name="pdf_id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_pdf_meta_data"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_pdf_meta_data"/>
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-105">
+  <changeSet author="GA-Lotse" id="1727784238270-156">
     <createTable tableName="pdf_meta_data_aud">
       <column name="pdf_id" type="BIGINT">
         <constraints nullable="false"/>
@@ -1034,7 +1855,7 @@
       <column name="created_date" type="TIMESTAMP WITH TIME ZONE"/>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-106">
+  <changeSet author="GA-Lotse" id="1727784238270-157">
     <createTable tableName="progress_entry_aud">
       <column name="id" type="BIGINT">
         <constraints nullable="false"/>
@@ -1049,10 +1870,114 @@
       <column name="procedure_id" type="BIGINT"/>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-107">
+  <changeSet author="GA-Lotse" id="1727784238270-158">
+    <createTable tableName="rapid_test_examination">
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="blood_pressure_data" type="TEXT"/>
+      <column name="blood_pressure_requested" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="general_comments" type="TEXT"/>
+      <column name="hiv_number" type="TEXT"/>
+      <column name="hiv_result" type="BOOLEAN"/>
+      <column name="hiv_requested" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="pregnancy_test_number" type="TEXT"/>
+      <column name="pregnancy_test_result" type="BOOLEAN"/>
+      <column name="pregnancy_test_requested" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="pulse_data" type="TEXT"/>
+      <column name="pulse_requested" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="syphilis_number" type="TEXT"/>
+      <column name="syphilis_result" type="BOOLEAN"/>
+      <column name="syphilis_requested" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="tests_payed" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="ultrasound_data" type="TEXT"/>
+      <column name="ultrasound_requested" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="urinalysis_data" type="TEXT"/>
+      <column name="urinalysis_requested" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="procedure_id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_rapid_test_examination"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-159">
+    <createTable tableName="sex_work_opening_hours">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_sex_work_opening_hours"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="de" type="TEXT[]">
+        <constraints nullable="false"/>
+      </column>
+      <column name="en" type="TEXT[]">
+        <constraints nullable="false"/>
+      </column>
+      <column name="initialized" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-160">
+    <createTable tableName="shedlock">
+      <column name="name" type="VARCHAR(64)">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_shedlock"/>
+      </column>
+      <column name="lock_until" type="TIMESTAMP WITHOUT TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="locked_at" type="TIMESTAMP WITHOUT TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="locked_by" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-161">
+    <createTable tableName="sti_consultation_opening_hours">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_sti_consultation_opening_hours"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="de" type="TEXT[]">
+        <constraints nullable="false"/>
+      </column>
+      <column name="en" type="TEXT[]">
+        <constraints nullable="false"/>
+      </column>
+      <column name="initialized" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-162">
     <createTable tableName="user_defined_appointment">
       <column name="id" type="BIGINT">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_user_defined_appointment"/>
+        <constraints nullable="false" primaryKey="true"
+          primaryKeyName="pk_user_defined_appointment"/>
       </column>
       <column name="version" type="BIGINT">
         <constraints nullable="false"/>
@@ -1065,201 +1990,653 @@
       </column>
     </createTable>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-108">
-    <addPrimaryKey columnNames="rev, image_id" constraintName="pk_image_meta_data_aud" tableName="image_meta_data_aud"/>
+  <changeSet author="GA-Lotse" id="1727784238270-163">
+    <addPrimaryKey columnNames="rev, image_id"
+      constraintName="pk_image_meta_data_aud" tableName="image_meta_data_aud"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-109">
-    <addPrimaryKey columnNames="rev, mail_id" constraintName="pk_mail_meta_data_aud" tableName="mail_meta_data_aud"/>
+  <changeSet author="GA-Lotse" id="1727784238270-164">
+    <addPrimaryKey columnNames="rev, mail_id"
+      constraintName="pk_mail_meta_data_aud" tableName="mail_meta_data_aud"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-110">
-    <addPrimaryKey columnNames="rev, id" constraintName="pk_manual_progress_entry_aud" tableName="manual_progress_entry_aud"/>
+  <changeSet author="GA-Lotse" id="1727784238270-165">
+    <addPrimaryKey columnNames="rev, id"
+      constraintName="pk_manual_progress_entry_aud"
+      tableName="manual_progress_entry_aud"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-111">
-    <addPrimaryKey columnNames="rev, pdf_id" constraintName="pk_pdf_meta_data_aud" tableName="pdf_meta_data_aud"/>
+  <changeSet author="GA-Lotse" id="1727784238270-166">
+    <addPrimaryKey columnNames="rev, pdf_id"
+      constraintName="pk_pdf_meta_data_aud" tableName="pdf_meta_data_aud"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-112">
-    <addPrimaryKey columnNames="rev, id" constraintName="pk_progress_entry_aud" tableName="progress_entry_aud"/>
+  <changeSet author="GA-Lotse" id="1727784238270-167">
+    <addPrimaryKey columnNames="rev, id" constraintName="pk_progress_entry_aud"
+      tableName="progress_entry_aud"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-113">
-    <createIndex indexName="idx_appointment_appointment_block_id" tableName="appointment">
+  <changeSet author="GA-Lotse" id="1727784238270-168">
+    <createIndex indexName="idx_appointment_appointment_block_id"
+      tableName="appointment">
       <column name="appointment_block_id"/>
     </createIndex>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-114">
-    <createIndex indexName="idx_appointment_block_appointment_block_group_id" tableName="appointment_block">
+  <changeSet author="GA-Lotse" id="1727784238270-169">
+    <createIndex indexName="idx_appointment_block_appointment_block_group_id"
+      tableName="appointment_block">
       <column name="appointment_block_group_id"/>
     </createIndex>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-115">
-    <createIndex indexName="idx_assignment_history_item_task_id" tableName="assignment_history_item">
+  <changeSet author="GA-Lotse" id="1727784238270-170">
+    <createIndex indexName="idx_assignment_history_item_task_id"
+      tableName="assignment_history_item">
       <column name="task_id"/>
     </createIndex>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-116">
+  <changeSet author="GA-Lotse" id="1727784238270-171">
     <createIndex indexName="idx_facility_procedure_id" tableName="facility">
       <column name="procedure_id"/>
     </createIndex>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-117">
+  <changeSet author="GA-Lotse" id="1727784238270-172">
     <createIndex indexName="idx_file_attached_to_mail_id" tableName="file">
       <column name="attached_to_mail_id"/>
     </createIndex>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-118">
-    <createIndex indexName="idx_file_deletion_approval_request_notification_approval_request_id" tableName="file_deletion_approval_request_notification">
+  <changeSet author="GA-Lotse" id="1727784238270-173">
+    <createIndex
+      indexName="idx_file_deletion_approval_request_notification_approval_request_id"
+      tableName="file_deletion_approval_request_notification">
       <column name="approval_request_id"/>
     </createIndex>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-119">
-    <createIndex indexName="idx_manual_progress_entry_deletion_approval_request_notification_approval_request_id" tableName="manual_progress_entry_deletion_approval_request_notification">
+  <changeSet author="GA-Lotse" id="1727784238270-174">
+    <createIndex
+      indexName="idx_manual_progress_entry_deletion_approval_request_notification_approval_request_id"
+      tableName="manual_progress_entry_deletion_approval_request_notification">
       <column name="approval_request_id"/>
     </createIndex>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-120">
-    <createIndex indexName="idx_progress_entry_procedure_id" tableName="progress_entry">
+  <changeSet author="GA-Lotse" id="1727784238270-175">
+    <createIndex indexName="idx_person_gender" tableName="person">
+      <column name="gender"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-176">
+    <createIndex indexName="idx_person_year_of_birth" tableName="person">
+      <column name="year_of_birth"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-177">
+    <createIndex indexName="idx_procedure_expiration_procedure_external_id"
+      tableName="procedure_expiration">
+      <column name="procedure_external_id"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-178">
+    <createIndex indexName="idx_progress_entry_procedure_id"
+      tableName="progress_entry">
       <column name="procedure_id"/>
     </createIndex>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-121">
-    <createIndex indexName="idx_sti_protection_task_procedure_id" tableName="sti_protection_task">
+  <changeSet author="GA-Lotse" id="1727784238270-179">
+    <createIndex indexName="idx_sti_protection_procedure_access_code"
+      tableName="sti_protection_procedure">
+      <column name="access_code"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-180">
+    <createIndex indexName="idx_sti_protection_procedure_anonymous_user_id"
+      tableName="sti_protection_procedure">
+      <column name="anonymous_user_id"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-181">
+    <createIndex indexName="idx_sti_protection_procedure_appointment_start"
+      tableName="sti_protection_procedure">
+      <column name="appointment_start"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-182">
+    <createIndex indexName="idx_sti_protection_procedure_closed_at"
+      tableName="sti_protection_procedure">
+      <column name="closed_at"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-183">
+    <createIndex indexName="idx_sti_protection_procedure_concern"
+      tableName="sti_protection_procedure">
+      <column name="concern"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-184">
+    <createIndex indexName="idx_sti_protection_procedure_lab_status"
+      tableName="sti_protection_procedure">
+      <column name="lab_status"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-185">
+    <createIndex indexName="idx_sti_protection_procedure_procedure_status"
+      tableName="sti_protection_procedure">
+      <column name="procedure_status"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-186">
+    <createIndex indexName="idx_sti_protection_procedure_sample_bar_code"
+      tableName="sti_protection_procedure">
+      <column name="sample_bar_code"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-187">
+    <createIndex indexName="idx_sti_protection_procedure_sti_procedure_origin"
+      tableName="sti_protection_procedure">
+      <column name="sti_procedure_origin"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-188">
+    <createIndex indexName="idx_sti_protection_task_procedure_id"
+      tableName="sti_protection_task">
       <column name="procedure_id"/>
     </createIndex>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-122">
-    <createIndex indexName="idx_task_due_at_reminder_notification_task_id" tableName="task_due_at_reminder_notification">
+  <changeSet author="GA-Lotse" id="1727784238270-189">
+    <createIndex indexName="idx_task_due_at_reminder_notification_task_id"
+      tableName="task_due_at_reminder_notification">
       <column name="task_id"/>
     </createIndex>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-123">
-    <addForeignKeyConstraint baseColumnNames="contact_details_id" baseTableName="address" constraintName="fk_address_contact_details" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="contact_details" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-190">
+    <addForeignKeyConstraint baseColumnNames="contact_details_id"
+      baseTableName="address" constraintName="fk_address_contact_details"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="contact_details" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-124">
-    <addForeignKeyConstraint baseColumnNames="appointment_block_id" baseTableName="appointment" constraintName="fk_appointment_appointment_block" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="appointment_block" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-191">
+    <addForeignKeyConstraint baseColumnNames="appointment_block_id"
+      baseTableName="appointment"
+      constraintName="fk_appointment_appointment_block" deferrable="false"
+      initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+      referencedColumnNames="id" referencedTableName="appointment_block"
+      validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-125">
-    <addForeignKeyConstraint baseColumnNames="appointment_block_group_id" baseTableName="appointment_block" constraintName="fk_appointment_block_appointment_block_group" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="appointment_block_group" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-192">
+    <addForeignKeyConstraint baseColumnNames="appointment_block_group_id"
+      baseTableName="appointment_block"
+      constraintName="fk_appointment_block_appointment_block_group"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="appointment_block_group" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-126">
-    <addForeignKeyConstraint baseColumnNames="appointment_block_group_id" baseTableName="appointment_block_group_consultants" constraintName="fk_appointment_block_group_consultants_appointment_block_group" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="appointment_block_group" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-193">
+    <addForeignKeyConstraint baseColumnNames="appointment_block_group_id"
+      baseTableName="appointment_block_group_consultants"
+      constraintName="fk_appointment_block_group_consultants_appointment_block_group"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="appointment_block_group" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-127">
-    <addForeignKeyConstraint baseColumnNames="appointment_block_group_id" baseTableName="appointment_block_group_mfas" constraintName="fk_appointment_block_group_mfas_appointment_block_group" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="appointment_block_group" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-194">
+    <addForeignKeyConstraint baseColumnNames="appointment_block_group_id"
+      baseTableName="appointment_block_group_mfas"
+      constraintName="fk_appointment_block_group_mfas_appointment_block_group"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="appointment_block_group" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-128">
-    <addForeignKeyConstraint baseColumnNames="appointment_block_group_id" baseTableName="appointment_block_group_physicians" constraintName="fk_appointment_block_group_physicians_appointment_block_group" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="appointment_block_group" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-195">
+    <addForeignKeyConstraint baseColumnNames="appointment_block_group_id"
+      baseTableName="appointment_block_group_physicians"
+      constraintName="fk_appointment_block_group_physicians_appointment_block_group"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="appointment_block_group" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-129">
-    <addForeignKeyConstraint baseColumnNames="task_id" baseTableName="assignment_history_item" constraintName="fk_assignment_history_item_sti_protection_task" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="sti_protection_task" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-196">
+    <addForeignKeyConstraint baseColumnNames="procedure_id"
+      baseTableName="appointment_history"
+      constraintName="fk_appointment_history_sti_protection_procedure"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="sti_protection_procedure" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-130">
-    <addForeignKeyConstraint baseColumnNames="inbox_procedure_id" baseTableName="contact_details" constraintName="fk_contact_details_inbox_procedure" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="inbox_procedure" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-197">
+    <addForeignKeyConstraint baseColumnNames="task_id"
+      baseTableName="assignment_history_item"
+      constraintName="fk_assignment_history_item_sti_protection_task"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="sti_protection_task" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-131">
-    <addForeignKeyConstraint baseColumnNames="medical_history_id" baseTableName="examination" constraintName="fk_examination_medical_history" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="medical_history" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-198">
+    <addForeignKeyConstraint baseColumnNames="audit_log_entry_id"
+      baseTableName="audit_log_entry_additional_data"
+      constraintName="fk_audit_log_entry_additional_data_audit_log_entry"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="audit_log_entry" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-132">
-    <addForeignKeyConstraint baseColumnNames="procedure_id" baseTableName="facility" constraintName="fk_facility_sti_protection_procedure" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="sti_protection_procedure" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-199">
+    <addForeignKeyConstraint baseColumnNames="procedure_id"
+      baseTableName="consultation"
+      constraintName="fk_consultation_sti_protection_procedure"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="sti_protection_procedure" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-133">
-    <addForeignKeyConstraint baseColumnNames="id" baseTableName="file_deletion_approval_request" constraintName="fk_file_deletion_approval_request_approval_request" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="approval_request" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-200">
+    <addForeignKeyConstraint baseColumnNames="department_info_id"
+      baseTableName="department_info_config"
+      constraintName="fk_department_info_config_department_info"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="department_info" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-134">
-    <addForeignKeyConstraint baseColumnNames="file_id" baseTableName="file_deletion_approval_request" constraintName="fk_file_deletion_approval_request_file" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="file" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-201">
+    <addForeignKeyConstraint baseColumnNames="diagnosis_procedure_id"
+      baseTableName="diagnosis_icd10codes"
+      constraintName="fk_diagnosis_icd10codes_diagnosis" deferrable="false"
+      initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+      referencedColumnNames="procedure_id" referencedTableName="diagnosis"
+      validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-135">
-    <addForeignKeyConstraint baseColumnNames="approval_request_id" baseTableName="file_deletion_approval_request_notification" constraintName="fk_file_deletion_approval_request_notification_file_deletion_approval_request" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="file_deletion_approval_request" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-202">
+    <addForeignKeyConstraint baseColumnNames="procedure_id"
+      baseTableName="diagnosis"
+      constraintName="fk_diagnosis_sti_protection_procedure" deferrable="false"
+      initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+      referencedColumnNames="id" referencedTableName="sti_protection_procedure"
+      validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-136">
-    <addForeignKeyConstraint baseColumnNames="file_content_id" baseTableName="file" constraintName="fk_file_file_content" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="file_content" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-203">
+    <addForeignKeyConstraint baseColumnNames="diagnosis_procedure_id"
+      baseTableName="diagnosis_test_types"
+      constraintName="fk_diagnosis_test_types_diagnosis" deferrable="false"
+      initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+      referencedColumnNames="procedure_id" referencedTableName="diagnosis"
+      validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-137">
-    <addForeignKeyConstraint baseColumnNames="attached_to_mail_id" baseTableName="file" constraintName="fk_file_mail" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="mail" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-204">
+    <addForeignKeyConstraint baseColumnNames="procedure_id"
+      baseTableName="facility"
+      constraintName="fk_facility_sti_protection_procedure" deferrable="false"
+      initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+      referencedColumnNames="id" referencedTableName="sti_protection_procedure"
+      validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-138">
-    <addForeignKeyConstraint baseColumnNames="id" baseTableName="image" constraintName="fk_image_file" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="file" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-205">
+    <addForeignKeyConstraint baseColumnNames="id"
+      baseTableName="file_deletion_approval_request"
+      constraintName="fk_file_deletion_approval_request_approval_request"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="approval_request" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-139">
-    <addForeignKeyConstraint baseColumnNames="rev" baseTableName="image_meta_data_aud" constraintName="fk_image_meta_data_aud_default_revision_entity" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="default_revision_entity" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-206">
+    <addForeignKeyConstraint baseColumnNames="approval_request_id"
+      baseTableName="file_deletion_approval_request_notification"
+      constraintName="fk_file_deletion_approval_request_notification_file_deletion_approval_request"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="file_deletion_approval_request" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-140">
-    <addForeignKeyConstraint baseColumnNames="image_id" baseTableName="image_meta_data" constraintName="fk_image_meta_data_image" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="image" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-207">
+    <addForeignKeyConstraint baseColumnNames="file_content_id"
+      baseTableName="file" constraintName="fk_file_file_content"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="file_content" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-141">
-    <addForeignKeyConstraint baseColumnNames="file_id" baseTableName="inbox_progress_entry" constraintName="fk_inbox_progress_entry_file" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="file" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-208">
+    <addForeignKeyConstraint baseColumnNames="deletion_approval_request_id"
+      baseTableName="file"
+      constraintName="fk_file_file_deletion_approval_request" deferrable="false"
+      initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+      referencedColumnNames="id"
+      referencedTableName="file_deletion_approval_request" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-142">
-    <addForeignKeyConstraint baseColumnNames="inbox_procedure_id" baseTableName="inbox_progress_entry" constraintName="fk_inbox_progress_entry_inbox_procedure" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="inbox_procedure" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-209">
+    <addForeignKeyConstraint baseColumnNames="attached_to_mail_id"
+      baseTableName="file" constraintName="fk_file_mail" deferrable="false"
+      initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+      referencedColumnNames="id" referencedTableName="mail" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-143">
-    <addForeignKeyConstraint baseColumnNames="id" baseTableName="mail" constraintName="fk_mail_file" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="file" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-210">
+    <addForeignKeyConstraint baseColumnNames="id" baseTableName="image"
+      constraintName="fk_image_file" deferrable="false"
+      initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+      referencedColumnNames="id" referencedTableName="file" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-144">
-    <addForeignKeyConstraint baseColumnNames="rev" baseTableName="mail_meta_data_aud" constraintName="fk_mail_meta_data_aud_default_revision_entity" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="default_revision_entity" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-211">
+    <addForeignKeyConstraint baseColumnNames="rev"
+      baseTableName="image_meta_data_aud"
+      constraintName="fk_image_meta_data_aud_default_revision_entity"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="default_revision_entity" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-145">
-    <addForeignKeyConstraint baseColumnNames="mail_id" baseTableName="mail_meta_data" constraintName="fk_mail_meta_data_mail" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="mail" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-212">
+    <addForeignKeyConstraint baseColumnNames="image_id"
+      baseTableName="image_meta_data" constraintName="fk_image_meta_data_image"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="image" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-146">
-    <addForeignKeyConstraint baseColumnNames="rev,id" baseTableName="manual_progress_entry_aud" constraintName="fk_manual_progress_entry_aud_progress_entry_aud" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="rev,id" referencedTableName="progress_entry_aud" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-213">
+    <addForeignKeyConstraint baseColumnNames="contact_details_id"
+      baseTableName="inbox_procedure"
+      constraintName="fk_inbox_procedure_contact_details" deferrable="false"
+      initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+      referencedColumnNames="id" referencedTableName="contact_details"
+      validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-147">
-    <addForeignKeyConstraint baseColumnNames="id" baseTableName="manual_progress_entry_deletion_approval_request" constraintName="fk_manual_progress_entry_deletion_approval_request_approval_request" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="approval_request" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-214">
+    <addForeignKeyConstraint baseColumnNames="inbox_progress_entry_id"
+      baseTableName="inbox_procedure"
+      constraintName="fk_inbox_procedure_inbox_progress_entry"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="inbox_progress_entry" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-148">
-    <addForeignKeyConstraint baseColumnNames="manual_progress_entry_id" baseTableName="manual_progress_entry_deletion_approval_request" constraintName="fk_manual_progress_entry_deletion_approval_request_manual_progress_entry" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="manual_progress_entry" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-215">
+    <addForeignKeyConstraint baseColumnNames="file_id"
+      baseTableName="inbox_progress_entry"
+      constraintName="fk_inbox_progress_entry_file" deferrable="false"
+      initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+      referencedColumnNames="id" referencedTableName="file" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-149">
-    <addForeignKeyConstraint baseColumnNames="approval_request_id" baseTableName="manual_progress_entry_deletion_approval_request_notification" constraintName="fk_manual_progress_entry_deletion_approval_request_notification_manual_progress_entry_deletion_approval_request" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="manual_progress_entry_deletion_approval_request" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-216">
+    <addForeignKeyConstraint baseColumnNames="procedure_id"
+      baseTableName="laboratory_test_examination"
+      constraintName="fk_laboratory_test_examination_sti_protection_procedure"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="sti_protection_procedure" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-150">
-    <addForeignKeyConstraint baseColumnNames="id" baseTableName="manual_progress_entry" constraintName="fk_manual_progress_entry_progress_entry" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="progress_entry" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-217">
+    <addForeignKeyConstraint baseColumnNames="id" baseTableName="mail"
+      constraintName="fk_mail_file" deferrable="false" initiallyDeferred="false"
+      onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="file" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-151">
-    <addForeignKeyConstraint baseColumnNames="procedure_id" baseTableName="medical_history" constraintName="fk_medical_history_sti_protection_procedure" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="sti_protection_procedure" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-218">
+    <addForeignKeyConstraint baseColumnNames="rev"
+      baseTableName="mail_meta_data_aud"
+      constraintName="fk_mail_meta_data_aud_default_revision_entity"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="default_revision_entity" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-152">
-    <addForeignKeyConstraint baseColumnNames="id" baseTableName="pdf" constraintName="fk_pdf_file" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="file" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-219">
+    <addForeignKeyConstraint baseColumnNames="mail_id"
+      baseTableName="mail_meta_data" constraintName="fk_mail_meta_data_mail"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="mail"
+      validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-153">
-    <addForeignKeyConstraint baseColumnNames="rev" baseTableName="pdf_meta_data_aud" constraintName="fk_pdf_meta_data_aud_default_revision_entity" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="default_revision_entity" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-220">
+    <addForeignKeyConstraint baseColumnNames="rev,id"
+      baseTableName="manual_progress_entry_aud"
+      constraintName="fk_manual_progress_entry_aud_progress_entry_aud"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="rev,id"
+      referencedTableName="progress_entry_aud" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-154">
-    <addForeignKeyConstraint baseColumnNames="pdf_id" baseTableName="pdf_meta_data" constraintName="fk_pdf_meta_data_pdf" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="pdf" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-221">
+    <addForeignKeyConstraint baseColumnNames="id"
+      baseTableName="manual_progress_entry_deletion_approval_request"
+      constraintName="fk_manual_progress_entry_deletion_approval_request_approval_request"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="approval_request" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-155">
-    <addForeignKeyConstraint baseColumnNames="procedure_id" baseTableName="person" constraintName="fk_person_sti_protection_procedure" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="sti_protection_procedure" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-222">
+    <addForeignKeyConstraint baseColumnNames="approval_request_id"
+      baseTableName="manual_progress_entry_deletion_approval_request_notification"
+      constraintName="fk_manual_progress_entry_deletion_approval_request_notification_manual_progress_entry_deletion_approval_request"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="manual_progress_entry_deletion_approval_request"
+      validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-156">
-    <addForeignKeyConstraint baseColumnNames="inbox_procedure_id" baseTableName="processed_inbox_progress_entry" constraintName="fk_processed_inbox_progress_entry_inbox_procedure" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="inbox_procedure" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-223">
+    <addForeignKeyConstraint baseColumnNames="deletion_approval_request_id"
+      baseTableName="manual_progress_entry"
+      constraintName="fk_manual_progress_entry_manual_progress_entry_deletion_approval_request"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="manual_progress_entry_deletion_approval_request"
+      validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-157">
-    <addForeignKeyConstraint baseColumnNames="id" baseTableName="processed_inbox_progress_entry" constraintName="fk_processed_inbox_progress_entry_progress_entry" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="progress_entry" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-224">
+    <addForeignKeyConstraint baseColumnNames="id"
+      baseTableName="manual_progress_entry"
+      constraintName="fk_manual_progress_entry_progress_entry"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="progress_entry" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-158">
-    <addForeignKeyConstraint baseColumnNames="rev" baseTableName="progress_entry_aud" constraintName="fk_progress_entry_aud_default_revision_entity" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="default_revision_entity" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-225">
+    <addForeignKeyConstraint baseColumnNames="medical_history_procedure_id"
+      baseTableName="medical_history_partner_risk_factors"
+      constraintName="fk_medical_history_partner_risk_factors_medical_history"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="procedure_id"
+      referencedTableName="medical_history" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-159">
-    <addForeignKeyConstraint baseColumnNames="file_id" baseTableName="progress_entry" constraintName="fk_progress_entry_file" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="file" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-226">
+    <addForeignKeyConstraint baseColumnNames="medical_history_procedure_id"
+      baseTableName="medical_history_protection_methods"
+      constraintName="fk_medical_history_protection_methods_medical_history"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="procedure_id"
+      referencedTableName="medical_history" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-160">
-    <addForeignKeyConstraint baseColumnNames="procedure_id" baseTableName="progress_entry" constraintName="fk_progress_entry_sti_protection_procedure" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="sti_protection_procedure" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-227">
+    <addForeignKeyConstraint baseColumnNames="medical_history_procedure_id"
+      baseTableName="medical_history_sexual_contacts"
+      constraintName="fk_medical_history_sexual_contacts_medical_history"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="procedure_id"
+      referencedTableName="medical_history" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-161">
-    <addForeignKeyConstraint baseColumnNames="appointment_id" baseTableName="sti_protection_procedure" constraintName="fk_sti_protection_procedure_appointment" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="appointment" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-228">
+    <addForeignKeyConstraint baseColumnNames="procedure_id"
+      baseTableName="medical_history"
+      constraintName="fk_medical_history_sti_protection_procedure"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="sti_protection_procedure" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-162">
-    <addForeignKeyConstraint baseColumnNames="procedure_id" baseTableName="sti_protection_task" constraintName="fk_sti_protection_task_sti_protection_procedure" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="sti_protection_procedure" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-229">
+    <addForeignKeyConstraint baseColumnNames="medical_history_procedure_id"
+      baseTableName="medical_history_vaccinations"
+      constraintName="fk_medical_history_vaccinations_medical_history"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="procedure_id"
+      referencedTableName="medical_history" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-163">
-    <addForeignKeyConstraint baseColumnNames="id" baseTableName="system_progress_entry" constraintName="fk_system_progress_entry_progress_entry" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="progress_entry" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-230">
+    <addForeignKeyConstraint baseColumnNames="procedure_id"
+      baseTableName="medications" constraintName="fk_medications_diagnosis"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="procedure_id"
+      referencedTableName="diagnosis" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-164">
-    <addForeignKeyConstraint baseColumnNames="task_id" baseTableName="task_due_at_reminder_notification" constraintName="fk_task_due_at_reminder_notification_sti_protection_task" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="sti_protection_task" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-231">
+    <addForeignKeyConstraint baseColumnNames="id" baseTableName="pdf"
+      constraintName="fk_pdf_file" deferrable="false" initiallyDeferred="false"
+      onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="file" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-165">
-    <addForeignKeyConstraint baseColumnNames="id" baseTableName="user_defined_appointment" constraintName="fk_user_defined_appointment_sti_protection_procedure" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="sti_protection_procedure" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-232">
+    <addForeignKeyConstraint baseColumnNames="rev"
+      baseTableName="pdf_meta_data_aud"
+      constraintName="fk_pdf_meta_data_aud_default_revision_entity"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="default_revision_entity" validate="true"/>
   </changeSet>
-  <changeSet author="GA-Lotse" id="1727784238270-166">
-    <addForeignKeyConstraint baseColumnNames="medical_history_id" baseTableName="vaccination" constraintName="fk_vaccination_medical_history" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="medical_history" validate="true"/>
+  <changeSet author="GA-Lotse" id="1727784238270-233">
+    <addForeignKeyConstraint baseColumnNames="pdf_id"
+      baseTableName="pdf_meta_data" constraintName="fk_pdf_meta_data_pdf"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="pdf"
+      validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-234">
+    <addForeignKeyConstraint baseColumnNames="procedure_id"
+      baseTableName="person" constraintName="fk_person_sti_protection_procedure"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="sti_protection_procedure" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-235">
+    <addForeignKeyConstraint baseColumnNames="de_id"
+      baseTableName="privacy_document"
+      constraintName="fk_privacy_document_document_de" deferrable="false"
+      initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+      referencedColumnNames="id" referencedTableName="document"
+      validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-236">
+    <addForeignKeyConstraint baseColumnNames="en_id"
+      baseTableName="privacy_document"
+      constraintName="fk_privacy_document_document_en" deferrable="false"
+      initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+      referencedColumnNames="id" referencedTableName="document"
+      validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-237">
+    <addForeignKeyConstraint baseColumnNames="privacy_notice_id"
+      baseTableName="privacy_documents_config"
+      constraintName="fk_privacy_documents_config_privacy_document_privacy_notice"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="privacy_document" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-238">
+    <addForeignKeyConstraint baseColumnNames="privacy_policy_id"
+      baseTableName="privacy_documents_config"
+      constraintName="fk_privacy_documents_config_privacy_document_privacy_policy"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="privacy_document" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-239">
+    <addForeignKeyConstraint baseColumnNames="inbox_procedure_id"
+      baseTableName="processed_inbox_progress_entry"
+      constraintName="fk_processed_inbox_progress_entry_inbox_procedure"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="inbox_procedure" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-240">
+    <addForeignKeyConstraint baseColumnNames="id"
+      baseTableName="processed_inbox_progress_entry"
+      constraintName="fk_processed_inbox_progress_entry_progress_entry"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="progress_entry" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-241">
+    <addForeignKeyConstraint baseColumnNames="rev"
+      baseTableName="progress_entry_aud"
+      constraintName="fk_progress_entry_aud_default_revision_entity"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="default_revision_entity" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-242">
+    <addForeignKeyConstraint baseColumnNames="file_id"
+      baseTableName="progress_entry" constraintName="fk_progress_entry_file"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="file"
+      validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-243">
+    <addForeignKeyConstraint baseColumnNames="procedure_id"
+      baseTableName="progress_entry"
+      constraintName="fk_progress_entry_sti_protection_procedure"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="sti_protection_procedure" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-244">
+    <addForeignKeyConstraint baseColumnNames="procedure_id"
+      baseTableName="rapid_test_examination"
+      constraintName="fk_rapid_test_examination_sti_protection_procedure"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="sti_protection_procedure" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-245">
+    <addForeignKeyConstraint baseColumnNames="department_info_id"
+      baseTableName="sex_work_department_info_config"
+      constraintName="fk_sex_work_department_info_config_department_info"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="department_info" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-246">
+    <addForeignKeyConstraint
+      baseColumnNames="sex_work_medical_history_procedure_id"
+      baseTableName="sex_work_medical_history_sex_work_locations"
+      constraintName="fk_sex_work_medical_history_sex_work_locations_medical_history"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="procedure_id"
+      referencedTableName="medical_history" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-247">
+    <addForeignKeyConstraint baseColumnNames="department_info_id"
+      baseTableName="sti_consultation_department_info_config"
+      constraintName="fk_sti_consultation_department_info_config_department_info"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="department_info" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-248">
+    <addForeignKeyConstraint baseColumnNames="appointment_id"
+      baseTableName="sti_protection_procedure"
+      constraintName="fk_sti_protection_procedure_appointment"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="appointment" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-249">
+    <addForeignKeyConstraint baseColumnNames="procedure_id"
+      baseTableName="sti_protection_task"
+      constraintName="fk_sti_protection_task_sti_protection_procedure"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="sti_protection_procedure" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-250">
+    <addForeignKeyConstraint baseColumnNames="id"
+      baseTableName="system_progress_entry"
+      constraintName="fk_system_progress_entry_progress_entry"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="progress_entry" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-251">
+    <addForeignKeyConstraint baseColumnNames="task_id"
+      baseTableName="task_due_at_reminder_notification"
+      constraintName="fk_task_due_at_reminder_notification_sti_protection_task"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="sti_protection_task" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-252">
+    <addForeignKeyConstraint baseColumnNames="id"
+      baseTableName="user_defined_appointment"
+      constraintName="fk_user_defined_appointment_sti_protection_procedure"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="sti_protection_procedure" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727784238270-253">
+    <addForeignKeyConstraint baseColumnNames="procedure_id"
+      baseTableName="waiting_room"
+      constraintName="fk_waiting_room_sti_protection_procedure"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="sti_protection_procedure" validate="true"/>
   </changeSet>
 </databaseChangeLog>

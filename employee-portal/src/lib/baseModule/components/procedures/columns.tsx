@@ -6,15 +6,17 @@
 "use client";
 
 import { ApiProcedure } from "@eshg/base-api";
+import {
+  PROCEDURE_STATUS_COLORS,
+  PROCEDURE_STATUS_NAMES,
+} from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { Chip } from "@mui/joy";
 import { SortingState, createColumnHelper } from "@tanstack/react-table";
 
 import {
   businessModuleNames,
-  procedureStatusNames,
   procedureTypeNames,
-  statusColors,
 } from "@/lib/shared/components/procedures/constants";
 
 const columnHelper = createColumnHelper<ApiProcedure>();
@@ -67,8 +69,8 @@ export const proceduresColumns = [
   columnHelper.accessor("procedureStatus", {
     header: "Status",
     cell: (props) => (
-      <Chip color={statusColors[props.getValue()]}>
-        {procedureStatusNames[props.getValue()]}
+      <Chip color={PROCEDURE_STATUS_COLORS[props.getValue()]}>
+        {PROCEDURE_STATUS_NAMES[props.getValue()]}
       </Chip>
     ),
     meta: {

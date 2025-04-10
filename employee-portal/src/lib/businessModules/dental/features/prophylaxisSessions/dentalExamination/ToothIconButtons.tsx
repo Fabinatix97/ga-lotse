@@ -43,24 +43,26 @@ interface ToothIconButtonProps extends Omit<IconButtonProps, "children"> {
 }
 
 function ToothIconButton(props: ToothIconButtonProps) {
+  const { hoverIcon, icon, toothContext, ...buttonProps } = props;
+
   const { elementRef, isFocused, focusHandler, blurHandler } =
     useElementFocus<HTMLButtonElement>({
-      toothContext: props.toothContext,
+      toothContext,
       element: "toothButton",
     });
   const keyboardNavigationHandler = useKeyboardNavigationHandler();
 
   return (
     <SizedIconButton
+      {...buttonProps}
       variant="plain"
-      {...props}
       ref={elementRef}
       sx={{
         "--Button-focused": isFocused ? "1" : "0",
         ".hover-icon": {
           display: "none",
         },
-        ...(props.hoverIcon && {
+        ...(hoverIcon && {
           "&:hover, &:focus-visible": {
             ".default-icon": {
               display: "none",
@@ -75,10 +77,10 @@ function ToothIconButton(props: ToothIconButtonProps) {
       onBlur={blurHandler}
       onKeyDown={keyboardNavigationHandler}
     >
-      <IconSizedBox className="default-icon">{props.icon}</IconSizedBox>
-      {props.hoverIcon && (
+      <IconSizedBox className="default-icon">{icon}</IconSizedBox>
+      {hoverIcon && (
         <IconSizedBox className="hover-icon" sx={{ padding: "auto" }}>
-          {props.hoverIcon}
+          {hoverIcon}
         </IconSizedBox>
       )}
     </SizedIconButton>

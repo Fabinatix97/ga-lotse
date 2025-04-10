@@ -4,44 +4,95 @@
  */
 
 import {
+  PROCEDURE_STATUS_COLORS,
+  PROCEDURE_STATUS_NAMES,
+} from "@eshg/lib-employee-portal";
+import {
   formatDate,
   formatDateTime,
 } from "@eshg/lib-portal/formatters/dateTime";
-import { ApiEmployeeOmsProcedureOverview } from "@eshg/official-medical-service-api";
+import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
+import {
+  ApiEmployeeOmsProcedureOverview,
+  ApiMedicalOpinionStatus,
+} from "@eshg/official-medical-service-api";
 import { WarningAmberOutlined } from "@mui/icons-material";
 import { Chip, Tooltip } from "@mui/joy";
-import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
+import {
+  CellContext,
+  ColumnHelper,
+  createColumnHelper,
+} from "@tanstack/react-table";
+import { addDays, isAfter } from "date-fns";
+import { isDefined } from "remeda";
 
 import { statusColorsMedicalOpinionStatus } from "@/lib/businessModules/officialMedicalService/shared/constants";
 import { STATUS_NAMES_MEDICAL_OPINION_STATUS } from "@/lib/businessModules/officialMedicalService/shared/translations";
-import {
-  procedureStatusNames,
-  statusColors,
-} from "@/lib/shared/components/procedures/constants";
+
+function daysInFuture(numberOfDays: number) {
+  return addDays(new Date(), numberOfDays);
+}
 
 const columnHelper: ColumnHelper<ApiEmployeeOmsProcedureOverview> =
   createColumnHelper<ApiEmployeeOmsProcedureOverview>();
 
-export function procedureOverviewTableColumns() {
+function evaluateContext(
+  ctx: CellContext<ApiEmployeeOmsProcedureOverview, unknown>,
+  medicalOpinionLeadTime: number,
+): {
+  isUrgentCase: boolean;
+  alertTooltip: string;
+} {
+  const isHighPriorityConcern = ctx.row.original.concern?.highPriority ?? false;
+  const isOpinionOverdue =
+    ctx.row.original.medicalOpinionStatus ===
+      ApiMedicalOpinionStatus.InProgress &&
+    isDefined(ctx.row.original.medicalOpinionCutOffDate) &&
+    isAfter(
+      daysInFuture(medicalOpinionLeadTime),
+      ctx.row.original.medicalOpinionCutOffDate,
+    );
+
+  const alertTooltip = [
+    isHighPriorityConcern ? "Dringender Fall" : "",
+    isOpinionOverdue ? "Gutachten überfällig" : "",
+  ]
+    .filter((s) => isNonEmptyString(s))
+    .join(", ");
+
+  return {
+    isUrgentCase: isHighPriorityConcern || isOpinionOverdue,
+    alertTooltip: alertTooltip,
+  };
+}
+
+export function procedureOverviewTableColumns(medicalOpinionLeadTime: number) {
   return [
     columnHelper.display({
-      id: "highPriority",
+      id: "Dringlich",
       header: "",
-      cell: (ctx) =>
-        ctx.row.original.concern?.highPriority && (
-          <Tooltip
-            title={"Dringender Fall"}
-            arrow
-            placement="top"
-            sx={{ marginBottom: -0.5 }}
-          >
-            <WarningAmberOutlined color="danger" />
-          </Tooltip>
-        ),
+      cell: (ctx) => {
+        const procedureEvaluation = evaluateContext(
+          ctx,
+          medicalOpinionLeadTime,
+        );
+        return (
+          procedureEvaluation.isUrgentCase && (
+            <Tooltip
+              title={procedureEvaluation.alertTooltip}
+              arrow
+              placement="top"
+              sx={{ marginBottom: -0.5 }}
+            >
+              <WarningAmberOutlined color="danger" />
+            </Tooltip>
+          )
+        );
+      },
       meta: {
         width: 24,
         cellStyle: "icon",
-        headerLabel: "Dringender Fall",
+        headerLabel: "Dringlich",
       },
     }),
     columnHelper.accessor("firstName", {
@@ -102,13 +153,24 @@ export function procedureOverviewTableColumns() {
     columnHelper.accessor("status", {
       header: "Vorgang Status",
       cell: (props) => (
-        <Chip color={statusColors[props.getValue()]} size="md">
-          {procedureStatusNames[props.getValue()]}
+        <Chip color={PROCEDURE_STATUS_COLORS[props.getValue()]} size="md">
+          {PROCEDURE_STATUS_NAMES[props.getValue()]}
         </Chip>
       ),
       enableSorting: true,
       meta: {
         width: 130,
+        canNavigate: {
+          parentRow: true,
+        },
+      },
+    }),
+    columnHelper.accessor("medicalOpinionCutOffDate", {
+      header: "Gutachtenfrist",
+      cell: (props) => formatDate(props.getValue()),
+      enableSorting: false,
+      meta: {
+        width: 140,
         canNavigate: {
           parentRow: true,
         },

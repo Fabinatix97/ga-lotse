@@ -59,5 +59,6 @@
   <include file="migrations/0049_add_department_info_config_initialized.xml"/>
   <include file="migrations/0050_add_opening_hours_initialized.xml"/>
   <include file="migrations/0051_department_configuration_change_columns_to_document.xml"/>
+  <include file="migrations/0052_gdpr_indices.xml"/>
 
 </databaseChangeLog>

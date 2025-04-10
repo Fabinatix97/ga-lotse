@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { NoSearchResults } from "@eshg/lib-employee-portal";
 import {
   CloseOutlined,
   KeyboardArrowDown,
@@ -21,8 +22,6 @@ import {
 } from "@mui/joy";
 import { Fragment, ReactNode, useId, useState } from "react";
 import { isNonNullish } from "remeda";
-
-import { NoSearchResults } from "./NoSearchResult";
 
 export interface SearchableGroupItem {
   key: string;

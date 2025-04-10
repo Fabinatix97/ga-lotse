@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import {
+  PROCEDURE_STATUS_COLORS,
+  PROCEDURE_STATUS_NAMES,
+} from "@eshg/lib-employee-portal";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { InternalLinkIconButton } from "@eshg/lib-portal/components/navigation/InternalLinkIconButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
@@ -11,10 +15,6 @@ import { Chip, Grid, Sheet, Typography } from "@mui/joy";
 import { useId } from "react";
 
 import { ProcedureLiteItem } from "@/lib/shared/components/legacyPersonSidebar/LegacyPersonSidebar";
-import {
-  procedureStatusNames,
-  statusColors,
-} from "@/lib/shared/components/procedures/constants";
 
 export function ProcedureCard({ procedure }: { procedure: ProcedureLiteItem }) {
   const reportingDateLabelId = useId();
@@ -23,8 +23,8 @@ export function ProcedureCard({ procedure }: { procedure: ProcedureLiteItem }) {
   return (
     <Sheet sx={{ marginBottom: 2 }}>
       <Row marginBottom={1} justifyContent="space-between">
-        <Chip color={statusColors[procedure.status]}>
-          {procedureStatusNames[procedure.status]}
+        <Chip color={PROCEDURE_STATUS_COLORS[procedure.status]}>
+          {PROCEDURE_STATUS_NAMES[procedure.status]}
         </Chip>
         <InternalLinkIconButton
           target={"_blank"}

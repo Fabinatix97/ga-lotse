@@ -16,7 +16,7 @@ import java.util.UUID;
 public record UpdateProcedureRequest(
     @NotNull long version,
     @NotNull ProcedureTypeDto procedureType,
-    @NotNull List<UUID> labels,
+    @NotNull List<UUID> procedureLabels,
     @Valid AppointmentDto appointment,
     @NotNull boolean isInvitationSent,
     UUID schoolId,

@@ -88,7 +88,7 @@ export function InventoryTable({
           ),
           meta: {
             cellStyle: "button",
-            width: "48px",
+            width: "52px",
           },
         })
       : undefined,

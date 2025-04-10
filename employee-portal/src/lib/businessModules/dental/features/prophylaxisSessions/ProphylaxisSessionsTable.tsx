@@ -7,6 +7,7 @@
 
 import {
   ProphylaxisSession,
+  ProphylaxisSessionStatusChip,
   routes,
   useGetProphylaxisSessions,
 } from "@eshg/dental";
@@ -17,6 +18,7 @@ import {
   Pagination,
   TablePage,
   TableSheet,
+  formatBoolean,
   getSortDirection,
   getSortKey,
   useTableControl,
@@ -34,7 +36,6 @@ import {
 import { fluoridationDescription } from "@/lib/businessModules/dental/features/prophylaxisSessions/translations";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { useFilterDictionary } from "@/lib/shared/components/filterSettings/useFilterDictionary";
-import { displayBoolean } from "@/lib/shared/helpers/booleans";
 
 const initialSorting: ColumnSort = {
   id: "id",
@@ -185,7 +186,7 @@ const COLUMNS = [
   }),
   columnHelper.accessor("isScreening", {
     header: "Reihenuntersuchung",
-    cell: (props) => displayBoolean(props.getValue()),
+    cell: (props) => formatBoolean(props.getValue()),
     enableSorting: true,
     meta: {
       width: 180,
@@ -201,6 +202,16 @@ const COLUMNS = [
       canNavigate: { parentRow: true },
     },
   }),
+
+  columnHelper.accessor("status", {
+    header: "Status",
+    cell: (props) => <ProphylaxisSessionStatusChip status={props.getValue()} />,
+    enableSorting: true,
+    meta: {
+      width: 120,
+      canNavigate: { parentRow: true },
+    },
+  }),
 ];
 
 const SORT_KEY_MAPPING: Record<string, ApiProphylaxisSessionSortKey> = {
@@ -209,4 +220,5 @@ const SORT_KEY_MAPPING: Record<string, ApiProphylaxisSessionSortKey> = {
   type: ApiProphylaxisSessionSortKey.Type,
   isScreening: ApiProphylaxisSessionSortKey.IsScreening,
   fluoridationVarnish: ApiProphylaxisSessionSortKey.FluoridationVarnish,
+  status: ApiProphylaxisSessionSortKey.Status,
 };

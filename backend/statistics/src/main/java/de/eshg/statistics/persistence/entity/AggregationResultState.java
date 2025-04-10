@@ -12,5 +12,6 @@ public enum AggregationResultState {
   CREATING,
   UPDATING,
   COPY_ONGOING,
-  DELETING
+  DELETING,
+  ANONYMIZATION_FAILED
 }

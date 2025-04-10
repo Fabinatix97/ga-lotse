@@ -6,10 +6,10 @@
 package de.eshg.travelmedicine.citizenpublic;
 
 import de.eshg.base.department.GetDepartmentInfoResponse;
-import de.eshg.departmentinfo.DepartmentInfoConfigService;
-import de.eshg.departmentinfo.OpeningHoursService;
-import de.eshg.departmentinfo.PrivacyDocumentService;
-import de.eshg.departmentinfo.domain.OpeningHours;
+import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
+import de.eshg.config.departmentinfo.OpeningHoursService;
+import de.eshg.config.departmentinfo.PrivacyDocumentService;
+import de.eshg.config.domain.OpeningHours;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
 import de.eshg.lib.appointmentblock.AppointmentTypeService;
 import de.eshg.lib.appointmentblock.MappingUtil;

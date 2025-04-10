@@ -73,6 +73,9 @@ export function DepartmentCard() {
               </Typography>
             </Stack>
           }
+          slotProps={{
+            value: { component: "div" },
+          }}
           icon={<ChatBubbleOutlineOutlined />}
         />
       </InfoSectionGrid>

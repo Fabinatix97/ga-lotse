@@ -10,6 +10,7 @@ import {
   ApiUserGroup,
 } from "@eshg/base-api";
 import {
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -38,7 +39,6 @@ import { UserSidebarHeader } from "@/lib/baseModule/components/users/userSidebar
 import { phoneNumberValidator } from "@/lib/baseModule/components/users/validation";
 import { ChatUserId } from "@/lib/businessModules/chat/components/ChatUserId";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 
 interface UserEditFormInputs {
   email: string;

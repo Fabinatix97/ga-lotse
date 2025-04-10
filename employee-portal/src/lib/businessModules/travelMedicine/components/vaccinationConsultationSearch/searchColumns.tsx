@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  PROCEDURE_STATUS_COLORS,
+  PROCEDURE_STATUS_NAMES,
+} from "@eshg/lib-employee-portal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { calculateAge } from "@eshg/lib-portal/helpers/dateTime";
 import { ApiVaccinationConsultationSearch } from "@eshg/travel-medicine-api";
@@ -10,10 +14,6 @@ import { Chip } from "@mui/joy";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 
 import { translateCreatedByUserType } from "@/lib/businessModules/travelMedicine/components/appointmentTypes/translations";
-import {
-  procedureStatusNames,
-  statusColors,
-} from "@/lib/shared/components/procedures/constants";
 
 const columnHelper: ColumnHelper<ApiVaccinationConsultationSearch> =
   createColumnHelper<ApiVaccinationConsultationSearch>();
@@ -83,8 +83,8 @@ export function searchColumns() {
     columnHelper.accessor("status", {
       header: "Status",
       cell: (props) => (
-        <Chip color={statusColors[props.getValue()]} size="md">
-          {procedureStatusNames[props.getValue()]}
+        <Chip color={PROCEDURE_STATUS_COLORS[props.getValue()]} size="md">
+          {PROCEDURE_STATUS_NAMES[props.getValue()]}
         </Chip>
       ),
       meta: {

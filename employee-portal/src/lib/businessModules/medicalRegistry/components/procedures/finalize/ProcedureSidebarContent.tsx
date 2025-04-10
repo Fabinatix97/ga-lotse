@@ -4,7 +4,10 @@
  */
 
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
-import { SidebarContent } from "@eshg/lib-employee-portal";
+import {
+  PROCEDURE_STATUS_NAMES,
+  SidebarContent,
+} from "@eshg/lib-employee-portal";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import {
@@ -21,7 +24,6 @@ import {
   FORM_OPTION_NO_MATCH,
 } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/FinalizeDraftSidebar";
 import { SelectCard } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/SelectCard";
-import { procedureStatusNames } from "@/lib/shared/components/procedures/constants";
 import { fullAddress } from "@/lib/shared/helpers/facilityUtils";
 
 interface ProcedureSidebarContentProps {
@@ -73,7 +75,7 @@ export function ProcedureSidebarContent({
               title={`Eintrag vom ${formatDate(procedure.created)} aktualisieren`}
               texts={[
                 `Letze Änderung: ${formatDateTime(procedure.modifiedAt)}`,
-                `Eintrag-Status: ${procedureStatusNames[procedure.status]}`,
+                `Eintrag-Status: ${PROCEDURE_STATUS_NAMES[procedure.status]}`,
                 ...procedure.practiceNames.map(
                   (practiceName) => `Zugehörige Einrichtung: ${practiceName}`,
                 ),

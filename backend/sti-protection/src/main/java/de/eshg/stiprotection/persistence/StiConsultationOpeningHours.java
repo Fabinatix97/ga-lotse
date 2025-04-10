@@ -5,7 +5,7 @@
 
 package de.eshg.stiprotection.persistence;
 
-import de.eshg.departmentinfo.domain.AbstractOpeningHours;
+import de.eshg.config.domain.AbstractOpeningHours;
 import jakarta.persistence.Entity;
 
 @Entity

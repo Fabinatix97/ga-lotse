@@ -23,7 +23,9 @@ export function PersonalAreaContent({ procedure }: PersonalAreaContentProps) {
       {isDefined(procedure.appointment) && (
         <AppointmentCard appointment={procedure.appointment} />
       )}
-      <AnamnesisCard />
+      {procedure.isAnamnesisEnabled && (
+        <AnamnesisCard isAnamnesisAnswered={procedure.isAnamnesisAnswered} />
+      )}
       {isNonEmptyArray(procedure.documents) && (
         <DocumentsCard documents={procedure.documents} />
       )}

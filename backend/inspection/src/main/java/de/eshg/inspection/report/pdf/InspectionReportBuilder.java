@@ -19,7 +19,7 @@ import de.eshg.base.address.PostboxAddressDto;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.department.GetDepartmentInfoResponse;
 import de.eshg.base.user.api.UserDto;
-import de.eshg.departmentinfo.DepartmentInfoConfigService;
+import de.eshg.config.departmentinfo.DepartmentInfoConfigService;
 import de.eshg.inspection.client.UserClient;
 import de.eshg.inspection.facility.FacilityClient;
 import de.eshg.inspection.inspection.persistence.Inspection;

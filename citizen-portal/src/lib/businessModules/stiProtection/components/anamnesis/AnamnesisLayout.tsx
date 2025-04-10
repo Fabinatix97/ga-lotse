@@ -8,12 +8,8 @@ import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { ApiConcern } from "@eshg/sti-protection-api";
 import { Box, Sheet, Stack, Typography } from "@mui/joy";
 
-import {
-  ConfirmLeaveDirtyFormEffect,
-  ConfirmLeaveDirtyFormEffectProps,
-} from "@/lib/baseModule/components/ConfirmLeaveDirtyFormEffect";
 import { useFormData } from "@/lib/businessModules/stiProtection/components/appointment/AppointmentDataContext";
-import { useStepContext } from "@/lib/businessModules/travelMedicine/components/shared/contexts/StepContext";
+import { useStepContext } from "@/lib/businessModules/stiProtection/components/shared/TravelMedicineStepContext";
 import { useTranslation } from "@/lib/i18n/client";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
 import { PageTitle } from "@/lib/shared/components/layout/page";
@@ -105,23 +101,5 @@ export function AnamnesisOverview({
         />
       </Stack>
     </Sheet>
-  );
-}
-
-export function DirtyCheck({
-  handleConfirmCancel,
-}: {
-  handleConfirmCancel: ConfirmLeaveDirtyFormEffectProps["onConfirm"];
-}) {
-  const { t } = useTranslation("stiProtection/anamnesis");
-
-  return (
-    <ConfirmLeaveDirtyFormEffect
-      title={t("cancel_dialog.title")}
-      description={t("cancel_dialog.message")}
-      cancelLabel={t("cancel_dialog.cancel")}
-      confirmLabel={t("cancel_dialog.confirm")}
-      onConfirm={handleConfirmCancel}
-    />
   );
 }

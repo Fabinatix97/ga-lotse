@@ -9,27 +9,36 @@ import { isDeepEqual } from "remeda";
 
 export function ErrorListener<T>({
   onError,
+  noErrors,
 }: {
   onError: (errors: FormikErrors<T>) => void;
+  noErrors: () => void;
 }) {
   const formik = useFormikContext();
   const [prevErrors, setPrevErrors] = useState<FormikErrors<T>>({});
   const [prevSubmitCount, setPrevSubmitCount] = useState<number>(0);
 
   useEffect(() => {
-    if (
-      Object.keys(formik.errors).length > 0 &&
-      !isDeepEqual(formik.errors, prevErrors) &&
-      formik.submitCount > prevSubmitCount
-    ) {
-      onError(formik.errors);
-      setPrevErrors(formik.errors);
-      setPrevSubmitCount(formik.submitCount);
+    if (!isDeepEqual(formik.errors, prevErrors)) {
+      if (
+        Object.keys(formik.errors).length > 0 &&
+        formik.submitCount > prevSubmitCount
+      ) {
+        onError(formik.errors);
+        setPrevErrors(formik.errors);
+        setPrevSubmitCount(formik.submitCount);
+      }
+
+      if (Object.keys(formik.errors).length === 0) {
+        noErrors();
+        setPrevErrors(formik.errors);
+      }
     }
   }, [
     formik.errors,
     formik.submitCount,
     onError,
+    noErrors,
     prevErrors,
     setPrevErrors,
     prevSubmitCount,

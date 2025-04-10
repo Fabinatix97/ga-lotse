@@ -4,42 +4,71 @@
  */
 
 import { MatrixClient } from "matrix-js-sdk";
+import {
+  BackupTrustInfo,
+  CryptoApi,
+  KeyBackupInfo,
+} from "matrix-js-sdk/lib/crypto-api";
 
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 
 export async function fetchBackupInfo(matrixClient: MatrixClient) {
-  const crypto = matrixClient.getCrypto();
-  if (!crypto) throw new Error("CryptoApi is undefined");
+  const cryptoApi: CryptoApi = getCryptoApi(matrixClient);
 
-  const keyBackupInfo = await crypto.getKeyBackupInfo();
-  const has4SKey = await matrixClient.secretStorage.hasKey();
-  const has4SBackupKeyStored = has4SKey
+  const keyBackupInfo: KeyBackupInfo | null =
+    await cryptoApi.getKeyBackupInfo();
+
+  const hasDefaultKey = await matrixClient.secretStorage.hasKey(undefined);
+
+  const hasKeyBackupKeyStored = hasDefaultKey
     ? !!(await matrixClient.isKeyBackupKeyStored())
     : false;
 
+  const backupTrustInfo: BackupTrustInfo | null = keyBackupInfo
+    ? await cryptoApi.isKeyBackupTrusted(keyBackupInfo)
+    : null;
+
+  const isBackupSignedByTrustedDevice = backupTrustInfo?.trusted;
+  const isBackupMatchesStoredKey = backupTrustInfo?.matchesDecryptionKey;
+
   logger.debug("fetchBackupInfo", {
-    has4SBackupKeyStored,
     keyBackupInfo,
-    has4SKey,
+    hasDefaultKey,
+    hasKeyBackupKeyStored,
+    isBackupSignedByTrustedDevice,
+    isBackupMatchesStoredKey,
   });
 
-  return { keyBackupInfo, has4SKey, has4SBackupKeyStored };
+  return {
+    keyBackupInfo,
+    hasDefaultKey,
+    hasKeyBackupKeyStored,
+    isBackupSignedByTrustedDevice,
+    isBackupMatchesStoredKey,
+  };
 }
 
 export async function getBackupKeyStatus(matrixClient: MatrixClient) {
-  const crypto = matrixClient.getCrypto();
-  if (!crypto) return;
+  const cryptoApi: CryptoApi = getCryptoApi(matrixClient);
 
   const serverSideSecretStorage = matrixClient.secretStorage;
 
   const isKeyBackupKeyStored = await matrixClient.isKeyBackupKeyStored();
 
   const backupKeyStored = !!isKeyBackupKeyStored;
-  const backupKeyFromCache = await crypto.getSessionBackupPrivateKey();
+  const backupKeyFromCache = await cryptoApi.getSessionBackupPrivateKey();
   const backupKeyCached = !!backupKeyFromCache;
   const backupKeyWellFormed = backupKeyFromCache instanceof Uint8Array;
   const secretStorageKeyInAccount = await serverSideSecretStorage.hasKey();
-  const secretStorageReady = await crypto.isSecretStorageReady();
+  const secretStorageReady = await cryptoApi.isSecretStorageReady();
+
+  logger.debug("getBackupKeyStatus", {
+    backupKeyStored,
+    backupKeyCached,
+    backupKeyWellFormed,
+    secretStorageKeyInAccount,
+    secretStorageReady,
+  });
 
   return {
     backupKeyStored,
@@ -51,10 +80,9 @@ export async function getBackupKeyStatus(matrixClient: MatrixClient) {
 }
 
 export async function getCrossSigningStatus(matrixClient: MatrixClient) {
-  const crypto = matrixClient.getCrypto();
-  if (!crypto) return;
+  const cryptoApi: CryptoApi = getCryptoApi(matrixClient);
 
-  const crossSigningStatus = await crypto.getCrossSigningStatus();
+  const crossSigningStatus = await cryptoApi.getCrossSigningStatus();
   const crossSigningPublicKeysOnDevice = crossSigningStatus.publicKeysOnDevice;
   const crossSigningPrivateKeysInStorage =
     crossSigningStatus.privateKeysInSecretStorage;
@@ -68,7 +96,17 @@ export async function getCrossSigningStatus(matrixClient: MatrixClient) {
     await matrixClient.doesServerSupportUnstableFeature(
       "org.matrix.e2e_cross_signing",
     );
-  const crossSigningReady = await crypto.isCrossSigningReady();
+  const crossSigningReady = await cryptoApi.isCrossSigningReady();
+
+  logger.debug("getCrossSigningStatus", {
+    crossSigningPublicKeysOnDevice,
+    crossSigningPrivateKeysInStorage,
+    masterPrivateKeyCached,
+    selfSigningPrivateKeyCached,
+    userSigningPrivateKeyCached,
+    homeserverSupportsCrossSigning,
+    crossSigningReady,
+  });
 
   return {
     crossSigningPublicKeysOnDevice,
@@ -81,21 +119,15 @@ export async function getCrossSigningStatus(matrixClient: MatrixClient) {
   };
 }
 
-export async function isDeviceVerified(client: MatrixClient) {
-  const crypto = client.getCrypto();
-  if (!crypto) {
-    logger.warn("Unable to verify device: RustCrypto is not yet initialized.");
-    return false;
-  }
-
-  const deviceId = client.getDeviceId();
+export async function isDeviceVerified(matrixClient: MatrixClient) {
+  const deviceId = matrixClient.getDeviceId();
   if (!deviceId) {
     logger.warn("Unable to verify device: MatrixClient is missing deviceId.");
     return false;
   }
-
-  const trustLevel = await crypto.getDeviceVerificationStatus(
-    client.getSafeUserId(),
+  const cryptoApi: CryptoApi = getCryptoApi(matrixClient);
+  const trustLevel = await cryptoApi.getDeviceVerificationStatus(
+    matrixClient.getSafeUserId(),
     deviceId,
   );
   if (!trustLevel) {
@@ -134,4 +166,12 @@ export async function createStorageKey(
 export function generateCryptoRandomUUID() {
   // eslint-disable-next-line no-restricted-properties
   return crypto.randomUUID();
+}
+
+export function getCryptoApi(matrixClient: MatrixClient) {
+  const cryptoApi = matrixClient.getCrypto();
+  if (!cryptoApi) {
+    throw new Error("CryptoApi is not initialized - first call initRustCrypto");
+  }
+  return cryptoApi;
 }

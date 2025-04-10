@@ -5,9 +5,12 @@
 
 package de.eshg.stiprotection.persistence.data;
 
-import de.eshg.lib.common.CountryCode;
 import de.eshg.stiprotection.persistence.db.Gender;
 import java.time.Year;
 
 public record PersonData(
-    Gender gender, Year yearOfBirth, CountryCode countryOfBirth, Year inGermanySince) {}
+    Gender gender,
+    Year yearOfBirth,
+    Boolean hasSufficientGermanLanguageSkills,
+    String otherKnownLanguages,
+    String pronouns) {}

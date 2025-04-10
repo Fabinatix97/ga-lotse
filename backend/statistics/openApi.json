@@ -2190,7 +2190,7 @@
       },
       "AggregationResultState" : {
         "type" : "string",
-        "enum" : [ "PLANNED", "COMPLETED", "FAILED", "CREATING", "UPDATING", "COPY_ONGOING", "DELETING" ]
+        "enum" : [ "PLANNED", "COMPLETED", "FAILED", "CREATING", "UPDATING", "COPY_ONGOING", "DELETING", "ANONYMIZATION_FAILED" ]
       },
       "Analysis" : {
         "required" : [ "chartConfiguration", "createdAt", "id", "name", "numberOfDiagrams" ],
@@ -3158,7 +3158,7 @@
       },
       "EvaluationState" : {
         "type" : "string",
-        "enum" : [ "COMPLETED", "FAILED", "CREATING", "UPDATING", "COPY_ONGOING", "DELETING" ]
+        "enum" : [ "COMPLETED", "FAILED", "CREATING", "UPDATING", "COPY_ONGOING", "DELETING", "ANONYMIZATION_FAILED" ]
       },
       "EvaluationTemplate" : {
         "required" : [ "analysisInfos", "createdAt", "dataSources", "id", "name", "templateSensitivityInfo" ],
@@ -4544,7 +4544,7 @@
       },
       "ReportState" : {
         "type" : "string",
-        "enum" : [ "PLANNED", "COMPLETED", "FAILED", "CREATING", "DELETING" ]
+        "enum" : [ "PLANNED", "COMPLETED", "FAILED", "CREATING", "DELETING", "ANONYMIZATION_FAILED" ]
       },
       "ReportType" : {
         "type" : "string",

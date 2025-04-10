@@ -13,25 +13,33 @@ import jakarta.persistence.Entity;
 import java.time.LocalDate;
 
 @Entity
-@DataSensitivity(SensitivityLevel.UNDEFINED)
 @DiscriminatorValue(value = "SEX_WORK")
 public class SexWorkMedicalHistory extends MedicalHistory {
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private LocalDate lastMenstruationDate;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private LocalDate lastCancerScreeningDate;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Boolean previouslyPregnant;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Integer amountPregnancies;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Integer amountAbortions;
 
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String knownOperations;
 
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String medications;
 
-  @Embedded private SexWorkRiskContact sexWorkRiskContacts;
+  @Embedded
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  private SexWorkRiskContact sexWorkRiskContacts;
 
   public LocalDate getLastMenstruationDate() {
     return lastMenstruationDate;

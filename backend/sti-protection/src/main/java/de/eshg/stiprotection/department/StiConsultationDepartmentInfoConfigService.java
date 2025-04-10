@@ -6,7 +6,7 @@
 package de.eshg.stiprotection.department;
 
 import de.eshg.base.department.DepartmentApi;
-import de.eshg.departmentinfo.AbstractDepartmentInfoWithBaseModuleFallbackConfigService;
+import de.eshg.config.departmentinfo.AbstractDepartmentInfoWithBaseModuleFallbackConfigService;
 import de.eshg.persistence.TransactionHelper;
 import de.eshg.stiprotection.persistence.StiConsultationDepartmentInfoConfig;
 import de.eshg.stiprotection.persistence.config.DepartmentInfoConfig;

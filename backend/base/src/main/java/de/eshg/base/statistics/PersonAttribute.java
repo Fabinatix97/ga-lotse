@@ -23,7 +23,7 @@ public enum PersonAttribute implements CommonAttribute {
       ValueType.INTEGER,
       null,
       true,
-      new IntegerMinMaxCountIntervalConfiguration(1945, 2100, 31)),
+      new IntegerMinMaxCountIntervalConfiguration(1945, 2099, 31)),
 
   PLACE_OF_BIRTH("Geburtsort", "Geburtsort", ValueType.TEXT, true),
 

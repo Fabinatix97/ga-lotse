@@ -20,7 +20,9 @@ interface ProcedureLabelSelectionProps {
 }
 
 export function ProcedureLabelSelection(props: ProcedureLabelSelectionProps) {
-  const field = useBaseField<ProcedureLabel[]>({ name: "labels" });
+  const field = useBaseField<ProcedureLabel[]>({
+    name: "procedureLabels",
+  });
 
   return (
     <BaseField label="Kennungen">

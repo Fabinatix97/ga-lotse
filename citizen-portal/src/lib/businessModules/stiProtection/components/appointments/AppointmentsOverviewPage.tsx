@@ -34,7 +34,7 @@ export function AppointmentsOverviewPage() {
   const { t } = useTranslation(["stiProtection/appointmentOverview"]);
 
   const { data: procedure } = useGetProcedure();
-  const { concern, appointmentHistory, appointment } = procedure;
+  const { concern, appointmentHistory, appointment, person } = procedure;
 
   const [selectedAppointmentType, setSelectedAppointmentType] =
     useState<OverviewAppointmentType>(OverviewAppointmentType.UPCOMING);
@@ -112,6 +112,7 @@ export function AppointmentsOverviewPage() {
                   index={index}
                   appointment={appointment}
                   concern={concern}
+                  accessCode={person.accessCode!} //TODO: Improve this!
                 />
               ))}
             </Stack>

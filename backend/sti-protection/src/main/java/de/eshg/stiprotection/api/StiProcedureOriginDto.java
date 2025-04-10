@@ -7,7 +7,9 @@ package de.eshg.stiprotection.api;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "StiProcedureOrigin")
+@Schema(
+    name = "StiProcedureOrigin",
+    description = "The origin where the procedure was initially created.")
 public enum StiProcedureOriginDto {
   EMPLOYEE_PORTAL,
   CITIZEN_PORTAL

@@ -8,6 +8,8 @@
 import { ApiGetReferencePersonResponse } from "@eshg/base-api";
 import {
   DefaultPersonFormValues,
+  PersonSidebar,
+  PersonSidebarProps,
   SidebarWithFormRefProps,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
@@ -22,10 +24,6 @@ import {
   mapToCreateProcedureRequest,
 } from "@/lib/businessModules/officialMedicalService/shared/helpers";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
-import {
-  PersonSidebar,
-  PersonSidebarProps,
-} from "@/lib/shared/components/personSidebar/PersonSidebar";
 
 export function CreateProcedure() {
   const personSidebar = useSidebarWithFormRef({

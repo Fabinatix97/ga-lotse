@@ -15,6 +15,10 @@ public class RelayDestinationPredicate implements BiPredicate<ActorResponseDto, 
 
   @Override
   public boolean test(ActorResponseDto remoteActor, ActorResponseDto selfActor) {
+    if (selfActor == null) {
+      logger.debug("selfActor is null - assuming not a relay destination");
+      return false;
+    }
     if (remoteActor == null) {
       logger.debug("remoteActor is null - assuming not a relay destination");
       return false;

@@ -3,11 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ProcedureLabel,
-  mapOptional,
-  mapProcedureLabels,
-} from "@eshg/lib-employee-portal";
+import { mapOptional, mapProcedureLabels } from "@eshg/lib-employee-portal";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { ApiProcedureDetails } from "@eshg/school-entry-api";
 
@@ -19,7 +15,6 @@ import { WaitingRoom, mapWaitingRoom } from "./WaitingRoom";
 
 export interface ProcedureDetails extends Procedure {
   readonly version: number;
-  readonly labels: ProcedureLabel[];
   readonly appointment?: Appointment;
   readonly location?: Location;
   readonly isEntryLevel: boolean;

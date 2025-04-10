@@ -8,6 +8,8 @@ package de.eshg.lib.statistics.attributes;
 import de.eshg.lib.statistics.api.DataPrivacyCategory;
 import de.eshg.lib.statistics.api.ValueOptionInternal;
 import de.eshg.lib.statistics.api.ValueType;
+import de.eshg.lib.statistics.api.interval.IntegerIntervalBordersConfiguration;
+import de.eshg.lib.statistics.api.interval.IntegerMinMaxCountIntervalConfiguration;
 import de.eshg.lib.statistics.api.interval.IntervalConfiguration;
 
 public final class IntegerAttribute {
@@ -44,6 +46,14 @@ public final class IntegerAttribute {
       String unit,
       ValueOptionInternal valueOption,
       IntervalConfiguration intervalConfiguration) {
+    if (!(intervalConfiguration instanceof IntegerIntervalBordersConfiguration)
+        && !(intervalConfiguration instanceof IntegerMinMaxCountIntervalConfiguration)) {
+      throw new IllegalArgumentException(
+          "'intervalConfiguration' must be %s or %s"
+              .formatted(
+                  IntegerIntervalBordersConfiguration.class.getName(),
+                  IntegerMinMaxCountIntervalConfiguration.class.getName()));
+    }
     AttributeData attribute =
         createIntegerAttribute(
             name,
@@ -76,6 +86,9 @@ public final class IntegerAttribute {
       String unit,
       ValueOptionInternal valueOption,
       SensitiveParameters sensitiveParameters) {
+    if (sensitiveParameters == null) {
+      throw new IllegalArgumentException("'sensitiveParameters' is null");
+    }
     AttributeData attribute =
         createIntegerAttribute(
             name, code, category, mandatory, unit, valueOption, DataPrivacyCategory.SENSITIVE);

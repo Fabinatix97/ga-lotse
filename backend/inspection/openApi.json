@@ -889,6 +889,24 @@
         "tags" : [ "Checklist" ]
       }
     },
+    "/configuration" : {
+      "get" : {
+        "operationId" : "getConfiguration",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetConfigurationStatusResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "ConfigStatus" ]
+      }
+    },
     "/configuration/department-info" : {
       "get" : {
         "operationId" : "getInternalConfigDepartmentInfo",
@@ -6434,6 +6452,10 @@
           }
         }
       },
+      "ConfigurationStatus" : {
+        "type" : "string",
+        "enum" : [ "COMPLETE", "PARTIALLY_COMPLETE", "INCOMPLETE" ]
+      },
       "ContactDetails" : {
         "required" : [ "contactType", "salutation" ],
         "type" : "object",
@@ -7623,6 +7645,21 @@
             "items" : {
               "$ref" : "#/components/schemas/Checklist"
             }
+          }
+        }
+      },
+      "GetConfigurationStatusResponse" : {
+        "required" : [ "endpointStates", "moduleState" ],
+        "type" : "object",
+        "properties" : {
+          "endpointStates" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/ConfigurationStatus"
+            }
+          },
+          "moduleState" : {
+            "$ref" : "#/components/schemas/ConfigurationStatus"
           }
         }
       },
@@ -9103,7 +9140,7 @@
       },
       "InspectionFeature" : {
         "type" : "string",
-        "enum" : [ "OFFLINE" ]
+        "enum" : [ "STATISTIC_ANONYMIZATION", "OFFLINE" ]
       },
       "InspectionFollowupInfo" : {
         "type" : "object",

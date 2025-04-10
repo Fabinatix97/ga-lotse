@@ -8,7 +8,7 @@ package de.eshg.schoolentry.business.model;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.schoolentry.api.SchoolDto;
-import de.eshg.schoolentry.domain.model.Label;
+import de.eshg.schoolentry.domain.model.ProcedureLabel;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Year;
@@ -23,7 +23,7 @@ public record ProcedureData(
     ProcedureStatus status,
     SchoolDto school,
     Year schoolYear,
-    List<Label> labels,
+    List<ProcedureLabel> labels,
     Instant appointmentStart,
     Instant createdAt,
     Instant modifiedAt) {

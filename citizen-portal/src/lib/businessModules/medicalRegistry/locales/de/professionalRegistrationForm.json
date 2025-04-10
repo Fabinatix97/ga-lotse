@@ -155,7 +155,8 @@
         "license": "Berufserlaubnisurkunde / Approbationsurkunde",
         "workPermit": "Arbeitserlaubnis",
         "otherRelevantDocument": "Sonstiges Dokument",
-        "anotherRelevantDocument": "Weiteres Dokument hinzufügen"
+        "anotherRelevantDocument": "Weiteres Dokument hinzufügen",
+        "deleteDocument": "Dokument löschen"
       }
     },
     "contentSheetTwo": {

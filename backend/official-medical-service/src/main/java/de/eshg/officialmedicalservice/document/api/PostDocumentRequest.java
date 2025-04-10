@@ -13,4 +13,5 @@ public record PostDocumentRequest(
     String helpTextDe,
     String helpTextEn,
     @NotNull boolean mandatoryDocument,
-    @NotNull boolean uploadInCitizenPortal) {}
+    @NotNull boolean uploadInCitizenPortal,
+    String labCode) {}

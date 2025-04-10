@@ -20,6 +20,7 @@ import {
   SimplifiedModalProps,
   useHasUserRoleCheck,
 } from "@eshg/lib-employee-portal";
+import { Alert } from "@eshg/lib-portal/components/Alert";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
 import { Divider, Grid, Stack } from "@mui/joy";
@@ -47,6 +48,12 @@ export function InspectionTypeCard({
 }>) {
   return (
     <InformationSheet>
+      {!inspection.assignee && (
+        <Alert
+          color="primary"
+          message="Die Begehung muss eine:r Bearbeiter:in zugewiesen sein."
+        />
+      )}
       <DetailsSection
         data-testid="inspectionType"
         title="Begehungsart"
@@ -74,10 +81,14 @@ export function InspectionTypeCard({
           />
           <DetailsItem
             label="Zugewiesene:r Bearbeiter:in"
-            value={formatPersonName({
-              firstName: inspection.assignee?.firstName,
-              lastName: inspection.assignee?.lastName,
-            })}
+            value={
+              inspection.assignee
+                ? formatPersonName({
+                    firstName: inspection.assignee?.firstName,
+                    lastName: inspection.assignee?.lastName,
+                  })
+                : "-"
+            }
           />
         </Grid>
       </DetailsSection>

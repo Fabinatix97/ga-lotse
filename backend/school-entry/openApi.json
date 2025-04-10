@@ -115,7 +115,7 @@
             "description" : "OK"
           }
         },
-        "summary" : "Create appointment group with blocks for week days.",
+        "summary" : "Validate appointment group with blocks for week days.",
         "tags" : [ "AppointmentBlock" ]
       }
     },
@@ -159,6 +159,27 @@
           }
         },
         "summary" : "Get free appointments for an appointment type.",
+        "tags" : [ "AppointmentBlock" ]
+      }
+    },
+    "/appointment-blocks/{appointmentBlockId}" : {
+      "delete" : {
+        "operationId" : "deleteAppointmentBlock",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "appointmentBlockId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Delete appointment block.",
         "tags" : [ "AppointmentBlock" ]
       }
     },
@@ -721,6 +742,24 @@
           }
         },
         "tags" : [ "SchoolEntryConfig" ]
+      }
+    },
+    "/configuration" : {
+      "get" : {
+        "operationId" : "getConfiguration",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetConfigurationStatusResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "ConfigStatus" ]
       }
     },
     "/configuration/department-info" : {
@@ -3848,7 +3887,7 @@
         "tags" : [ "SchoolEntry" ]
       }
     },
-    "/school-entry-labels" : {
+    "/school-entry-procedure-labels" : {
       "get" : {
         "operationId" : "getLabels",
         "responses" : {
@@ -3863,7 +3902,7 @@
             "description" : "OK"
           }
         },
-        "tags" : [ "Label" ]
+        "tags" : [ "ProcedureLabel" ]
       },
       "post" : {
         "operationId" : "createLabel",
@@ -3871,7 +3910,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/CreateLabelRequest"
+                "$ref" : "#/components/schemas/CreateProcedureLabelRequest"
               }
             }
           },
@@ -3882,17 +3921,17 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/SchoolEntryLabel"
+                  "$ref" : "#/components/schemas/SchoolEntryProcedureLabel"
                 }
               }
             },
             "description" : "OK"
           }
         },
-        "tags" : [ "Label" ]
+        "tags" : [ "ProcedureLabel" ]
       }
     },
-    "/school-entry-labels/{id}" : {
+    "/school-entry-procedure-labels/{id}" : {
       "get" : {
         "operationId" : "getLabel",
         "parameters" : [ {
@@ -3909,14 +3948,14 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/SchoolEntryLabel"
+                  "$ref" : "#/components/schemas/SchoolEntryProcedureLabel"
                 }
               }
             },
             "description" : "OK"
           }
         },
-        "tags" : [ "Label" ]
+        "tags" : [ "ProcedureLabel" ]
       },
       "put" : {
         "operationId" : "updateLabel",
@@ -3933,7 +3972,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/UpdateLabelRequest"
+                "$ref" : "#/components/schemas/UpdateProcedureLabelRequest"
               }
             }
           },
@@ -3944,14 +3983,14 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/SchoolEntryLabel"
+                  "$ref" : "#/components/schemas/SchoolEntryProcedureLabel"
                 }
               }
             },
             "description" : "OK"
           }
         },
-        "tags" : [ "Label" ]
+        "tags" : [ "ProcedureLabel" ]
       }
     },
     "/statistics/procedure-ids" : {
@@ -5357,6 +5396,10 @@
           }
         }
       },
+      "ConfigurationStatus" : {
+        "type" : "string",
+        "enum" : [ "COMPLETE", "PARTIALLY_COMPLETE", "INCOMPLETE" ]
+      },
       "ContactDetails" : {
         "required" : [ "contactType", "salutation" ],
         "type" : "object",
@@ -5565,20 +5608,6 @@
           }
         }
       },
-      "CreateLabelRequest" : {
-        "required" : [ "name" ],
-        "type" : "object",
-        "properties" : {
-          "description" : {
-            "type" : "string"
-          },
-          "name" : {
-            "maxLength" : 255,
-            "minLength" : 0,
-            "type" : "string"
-          }
-        }
-      },
       "CreateManualProgressEntryRequest" : {
         "required" : [ "manualProgressEntryType" ],
         "type" : "object",
@@ -5686,6 +5715,20 @@
           }
         }
       },
+      "CreateProcedureLabelRequest" : {
+        "required" : [ "name" ],
+        "type" : "object",
+        "properties" : {
+          "description" : {
+            "type" : "string"
+          },
+          "name" : {
+            "maxLength" : 255,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        }
+      },
       "CreateProcedureRequest" : {
         "required" : [ "child", "type" ],
         "type" : "object",
@@ -5711,7 +5754,7 @@
         }
       },
       "CreateSchoolInfoLetterRequest" : {
-        "required" : [ "consultationWithCustodianRecommended", "meetingBetweenYouthHealthServicesAndSchoolManagementRecommended", "referredToFurtherConsultationFromSchool" ],
+        "required" : [ "consultationWithCustodianRecommended", "meetingBetweenYouthHealthServicesAndSchoolManagementRecommended", "prefilled", "referredToFurtherConsultationFromSchool" ],
         "type" : "object",
         "properties" : {
           "consultationWithCustodianRecommended" : {
@@ -5725,6 +5768,9 @@
           },
           "parentsWishNote" : {
             "type" : "string"
+          },
+          "prefilled" : {
+            "type" : "boolean"
           },
           "referredToFurtherConsultationFromSchool" : {
             "type" : "boolean"
@@ -6688,6 +6734,21 @@
           }
         }
       },
+      "GetConfigurationStatusResponse" : {
+        "required" : [ "endpointStates", "moduleState" ],
+        "type" : "object",
+        "properties" : {
+          "endpointStates" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/ConfigurationStatus"
+            }
+          },
+          "moduleState" : {
+            "$ref" : "#/components/schemas/ConfigurationStatus"
+          }
+        }
+      },
       "GetCountryCodesResponse" : {
         "required" : [ "countryCodes" ],
         "type" : "object",
@@ -7463,7 +7524,7 @@
           "labels" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/SchoolEntryLabel"
+              "$ref" : "#/components/schemas/SchoolEntryProcedureLabel"
             }
           }
         }
@@ -8646,7 +8707,7 @@
           "labels" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/SchoolEntryLabel"
+              "$ref" : "#/components/schemas/SchoolEntryProcedureLabel"
             }
           },
           "location" : {
@@ -9012,7 +9073,53 @@
         "type" : "string",
         "enum" : [ "DUMMY" ]
       },
-      "SchoolEntryLabel" : {
+      "SchoolEntryProcedure" : {
+        "required" : [ "child", "createdAt", "id", "labels", "modifiedAt", "status", "type" ],
+        "type" : "object",
+        "properties" : {
+          "appointmentStart" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "child" : {
+            "$ref" : "#/components/schemas/Child"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Id of the Procedure.",
+            "format" : "uuid",
+            "example" : "UUID_2"
+          },
+          "labels" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SchoolEntryProcedureLabel"
+            }
+          },
+          "modifiedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "school" : {
+            "$ref" : "#/components/schemas/School"
+          },
+          "schoolYear" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/SchoolEntryStatusType"
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/SchoolEntryProcedureType"
+          }
+        }
+      },
+      "SchoolEntryProcedureLabel" : {
         "required" : [ "hexColor", "id", "name", "readonly", "version" ],
         "type" : "object",
         "properties" : {
@@ -9047,52 +9154,6 @@
           }
         },
         "description" : "Labels can be associated to a procedure. There are predefined labels and additional labels can be created by the users."
-      },
-      "SchoolEntryProcedure" : {
-        "required" : [ "child", "createdAt", "id", "labels", "modifiedAt", "status", "type" ],
-        "type" : "object",
-        "properties" : {
-          "appointmentStart" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "child" : {
-            "$ref" : "#/components/schemas/Child"
-          },
-          "createdAt" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "id" : {
-            "type" : "string",
-            "description" : "Id of the Procedure.",
-            "format" : "uuid",
-            "example" : "UUID_2"
-          },
-          "labels" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/SchoolEntryLabel"
-            }
-          },
-          "modifiedAt" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "school" : {
-            "$ref" : "#/components/schemas/School"
-          },
-          "schoolYear" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "status" : {
-            "$ref" : "#/components/schemas/SchoolEntryStatusType"
-          },
-          "type" : {
-            "$ref" : "#/components/schemas/SchoolEntryProcedureType"
-          }
-        }
       },
       "SchoolEntryProcedurePopulationResult" : {
         "required" : [ "count", "procedures" ],
@@ -9552,24 +9613,6 @@
           }
         }
       },
-      "UpdateLabelRequest" : {
-        "required" : [ "name", "version" ],
-        "type" : "object",
-        "properties" : {
-          "description" : {
-            "type" : "string"
-          },
-          "name" : {
-            "maxLength" : 255,
-            "minLength" : 0,
-            "type" : "string"
-          },
-          "version" : {
-            "type" : "integer",
-            "format" : "int64"
-          }
-        }
-      },
       "UpdatePersonRequest" : {
         "required" : [ "dateOfBirth", "firstName", "lastName", "version" ],
         "type" : "object",
@@ -9654,8 +9697,26 @@
           }
         }
       },
+      "UpdateProcedureLabelRequest" : {
+        "required" : [ "name", "version" ],
+        "type" : "object",
+        "properties" : {
+          "description" : {
+            "type" : "string"
+          },
+          "name" : {
+            "maxLength" : 255,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
       "UpdateProcedureRequest" : {
-        "required" : [ "isDeceased", "isInvitationSent", "labels", "procedureType", "version" ],
+        "required" : [ "isDeceased", "isInvitationSent", "procedureLabels", "procedureType", "version" ],
         "type" : "object",
         "properties" : {
           "appointment" : {
@@ -9671,16 +9732,16 @@
           "isInvitationSent" : {
             "type" : "boolean"
           },
-          "labels" : {
+          "locationId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "procedureLabels" : {
             "type" : "array",
             "items" : {
               "type" : "string",
               "format" : "uuid"
             }
-          },
-          "locationId" : {
-            "type" : "string",
-            "format" : "uuid"
           },
           "procedureType" : {
             "$ref" : "#/components/schemas/SchoolEntryProcedureType"

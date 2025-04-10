@@ -7,10 +7,17 @@
 
 import {
   DefaultPersonFormValues,
+  DefaultSearchPersonForm,
+  DefaultSearchPersonFormFields,
   MainContentLayout,
+  PersonSidebar,
+  PersonSidebarProps,
+  SearchPersonFormProps,
+  SearchPersonFormValues,
   SidebarWithFormRefProps,
   StickyToolbarLayout,
   Toolbar,
+  defaultSearchPersonValues,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
@@ -20,19 +27,6 @@ import { ApiSchoolEntryProcedureType } from "@eshg/school-entry-api";
 import { Button, Stack } from "@mui/joy";
 
 import { PROCEDURE_TYPE_OPTIONS_EXCLUDING_DRAFT } from "@/lib/businessModules/schoolEntry/features/procedures/options";
-import {
-  PersonSidebar,
-  PersonSidebarProps,
-} from "@/lib/shared/components/personSidebar/PersonSidebar";
-import {
-  DefaultSearchPersonForm,
-  defaultSearchPersonValues,
-} from "@/lib/shared/components/personSidebar/search/DefaultSearchPersonForm";
-import { DefaultSearchPersonFormFields } from "@/lib/shared/components/personSidebar/search/DefaultSearchPersonFormFields";
-import {
-  SearchPersonFormProps,
-  SearchPersonFormValues,
-} from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
 
 export default function PersonSidebarPage() {
   const personSidebar = useSidebarWithFormRef({

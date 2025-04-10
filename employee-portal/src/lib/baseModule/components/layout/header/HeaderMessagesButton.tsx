@@ -32,7 +32,7 @@ export function HeaderMessagesButton() {
     if (canAccessChat && userSettings.chatUsageEnabled) {
       toggleMessagesSidebar();
     } else {
-      tryNavigate(routes.chat as string);
+      tryNavigate(routes.chat);
     }
   }
 

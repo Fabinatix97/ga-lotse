@@ -4,8 +4,9 @@
  */
 
 import { useIsMobile } from "@eshg/lib-portal/hooks/useIsMobile";
-import { addMinutes, isAfter, isEqual } from "date-fns";
-import { Formik, FormikErrors } from "formik";
+import { ApiAppointment } from "@eshg/travel-medicine-api";
+import { isAfter, isEqual } from "date-fns";
+import { Formik } from "formik";
 import { useRouter } from "next/navigation";
 
 import {
@@ -19,7 +20,6 @@ import { useIdContext } from "@/lib/businessModules/travelMedicine/components/sh
 import { RebookAppointment } from "@/lib/businessModules/travelMedicine/components/viewAppointment/rebook/RebookAppointment";
 import { RebookAppointmentSidePanel } from "@/lib/businessModules/travelMedicine/components/viewAppointment/rebook/RebookAppointmentSidePanel";
 import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
-import { useTranslation } from "@/lib/i18n/client";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 import {
   OneColumnGrid,
@@ -28,11 +28,14 @@ import {
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 export interface RebookAppointmentFormValues {
-  selectedAppointment: string;
+  appointment?: ApiAppointment;
 }
 
+const INITIAL_VALUES: RebookAppointmentFormValues = {
+  appointment: undefined,
+};
+
 export function RebookAppointmentPageContent() {
-  const { t } = useTranslation(["travelMedicine/rebookAppointment"]);
   const isMobile = useIsMobile();
   const idContext = useIdContext();
   const router = useRouter();
@@ -55,16 +58,13 @@ export function RebookAppointmentPageContent() {
   }
 
   async function handleSubmit(values: RebookAppointmentFormValues) {
-    const split = values.selectedAppointment.split(",");
-    const durationInMinutes = Number.parseInt(split.at(1)!);
-    const start = new Date(split.at(0)!);
+    if (!values.appointment) {
+      return;
+    }
     const request: PutAppointmentRequest = {
       procedureId: idContext.procedureId,
       procedureStepId: idContext.procedureStepId,
-      appointment: {
-        start: start,
-        end: addMinutes(start, durationInMinutes),
-      },
+      appointment: values.appointment,
     };
     await putAppointment.mutateAsync(request, {
       onSuccess: () => routeBackToDetails(),
@@ -76,22 +76,8 @@ export function RebookAppointmentPageContent() {
     router.push(url);
   }
 
-  function validateForm(values: RebookAppointmentFormValues) {
-    const errors: FormikErrors<RebookAppointmentFormValues> = {};
-
-    if (values.selectedAppointment === "") {
-      errors.selectedAppointment = t("content.errorMessage");
-    }
-
-    return errors;
-  }
-
   return (
-    <Formik
-      initialValues={{ selectedAppointment: "" }}
-      onSubmit={handleSubmit}
-      validate={validateForm}
-    >
+    <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
       {filteredAppointments.length > 0 ? (
         isMobile ? (
           <OneColumnGrid

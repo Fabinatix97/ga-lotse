@@ -4,6 +4,7 @@
  */
 
 import {
+  MultiFormButtonBar,
   Sidebar,
   SidebarActions,
   SidebarContent,
@@ -39,7 +40,6 @@ import {
   CreateAppointmentForm,
   initialValues,
 } from "@/lib/businessModules/stiProtection/shared/procedure/AppointmentForm";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
 

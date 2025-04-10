@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiBaseFeature } from "@eshg/base-api";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
 import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
@@ -22,7 +21,6 @@ import { isDefined } from "remeda";
 import { useGdprProcedureApi } from "@/lib/baseModule/api/clients";
 import { gdprValidationTaskApiQueryKey } from "@/lib/baseModule/api/queries/apiQueryKey";
 import { useServerConfig } from "@/lib/baseModule/api/queries/config";
-import { useIsNewFeatureEnabled as useIsNewBaseFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { useGdprValidationTaskApi } from "@/lib/shared/api/clients";
 
 const businessModules = Object.freeze(Object.values(ApiBusinessModule));
@@ -31,21 +29,13 @@ export function useGetGdprValidationBannerQuery(
   businessModule: ApiBusinessModule,
 ) {
   const taskApi = useGdprValidationTaskApi(businessModule);
-  const isGdprFeatureEnabled = useIsNewBaseFeatureEnabled(ApiBaseFeature.Gdpr);
   return queryOptions({
     queryKey: gdprValidationTaskApiQueryKey([
       businessModule,
       "getGdprNotificationBanner",
-      isGdprFeatureEnabled,
     ]),
     queryFn: async (): Promise<ApiGetGdprNotificationBannerResponse> => {
-      if (isGdprFeatureEnabled) {
-        return await taskApi.getGdprNotificationBanner();
-      } else {
-        return {
-          openValidationTasksCount: 0,
-        };
-      }
+      return await taskApi.getGdprNotificationBanner();
     },
   });
 }

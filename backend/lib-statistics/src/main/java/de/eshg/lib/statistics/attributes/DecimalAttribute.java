@@ -8,6 +8,8 @@ package de.eshg.lib.statistics.attributes;
 import de.eshg.lib.statistics.api.DataPrivacyCategory;
 import de.eshg.lib.statistics.api.ValueOptionInternal;
 import de.eshg.lib.statistics.api.ValueType;
+import de.eshg.lib.statistics.api.interval.DecimalIntervalBordersConfiguration;
+import de.eshg.lib.statistics.api.interval.DecimalMinMaxCountIntervalConfiguration;
 import de.eshg.lib.statistics.api.interval.IntervalConfiguration;
 
 public final class DecimalAttribute {
@@ -35,6 +37,14 @@ public final class DecimalAttribute {
       String unit,
       ValueOptionInternal valueOption,
       IntervalConfiguration intervalConfiguration) {
+    if (!(intervalConfiguration instanceof DecimalIntervalBordersConfiguration)
+        && !(intervalConfiguration instanceof DecimalMinMaxCountIntervalConfiguration)) {
+      throw new IllegalArgumentException(
+          "'intervalConfiguration' must be %s or %s"
+              .formatted(
+                  DecimalIntervalBordersConfiguration.class.getName(),
+                  DecimalMinMaxCountIntervalConfiguration.class.getName()));
+    }
     AttributeData attribute =
         createDecimalAttribute(
             name,
@@ -67,6 +77,9 @@ public final class DecimalAttribute {
       String unit,
       ValueOptionInternal valueOption,
       SensitiveParameters sensitiveParameters) {
+    if (sensitiveParameters == null) {
+      throw new IllegalArgumentException("'sensitiveParameters' is null");
+    }
     AttributeData attribute =
         createDecimalAttribute(
             name, code, category, mandatory, unit, valueOption, DataPrivacyCategory.SENSITIVE);

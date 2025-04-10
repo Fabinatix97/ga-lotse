@@ -4,7 +4,9 @@
  */
 
 import {
+  ContactAddressForm,
   FormButtonBar,
+  OptionalBillingAddressForm,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -27,10 +29,6 @@ import { FieldArray, Formik } from "formik";
 import { Fragment, ReactNode, RefObject } from "react";
 
 import { BaseFacility } from "@/lib/shared/components/facilitySidebar/types";
-import {
-  ContactAddressForm,
-  OptionalBillingAddressForm,
-} from "@/lib/shared/components/form/address/BaseAddressForm";
 import { createEmptyContactPerson } from "@/lib/shared/helpers/facilityUtils";
 
 import { ContactPersonForm } from "./ContactPersonForm";

@@ -115,7 +115,7 @@
             "description" : "OK"
           }
         },
-        "summary" : "Create appointment group with blocks for week days.",
+        "summary" : "Validate appointment group with blocks for week days.",
         "tags" : [ "AppointmentBlock" ]
       }
     },
@@ -159,6 +159,27 @@
           }
         },
         "summary" : "Get free appointments for an appointment type.",
+        "tags" : [ "AppointmentBlock" ]
+      }
+    },
+    "/appointment-blocks/{appointmentBlockId}" : {
+      "delete" : {
+        "operationId" : "deleteAppointmentBlock",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "appointmentBlockId",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Delete appointment block.",
         "tags" : [ "AppointmentBlock" ]
       }
     },
@@ -568,6 +589,28 @@
         "tags" : [ "CitizenAuth" ]
       }
     },
+    "/citizen-auth/procedure/anamnesis" : {
+      "post" : {
+        "operationId" : "postAnamnesisCitizen",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PostAnamnesisRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Posts anamnesis",
+        "tags" : [ "CitizenAuth" ]
+      }
+    },
     "/citizen-auth/procedure/appointment/{appointmentId}" : {
       "put" : {
         "operationId" : "putAppointmentCitizen",
@@ -870,6 +913,24 @@
         },
         "summary" : "Save a new citizen oms procedure.",
         "tags" : [ "CitizenPublic" ]
+      }
+    },
+    "/configuration" : {
+      "get" : {
+        "operationId" : "getConfiguration",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetConfigurationStatusResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "ConfigStatus" ]
       }
     },
     "/configuration/department-info" : {
@@ -1357,10 +1418,10 @@
           }
         }, {
           "in" : "query",
-          "name" : "today",
+          "name" : "appointmentDateSpan",
           "required" : false,
           "schema" : {
-            "type" : "boolean"
+            "type" : "string"
           }
         }, {
           "in" : "query",
@@ -1415,6 +1476,13 @@
           "schema" : {
             "type" : "string",
             "format" : "date"
+          }
+        }, {
+          "in" : "query",
+          "name" : "searchLabCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
           }
         } ],
         "responses" : {
@@ -1520,6 +1588,94 @@
         "tags" : [ "EmployeeOmsProcedure" ]
       }
     },
+    "/employee/procedures/{id}/additional-info" : {
+      "patch" : {
+        "operationId" : "updateAdditionalInfo",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PatchAdditionalInfoRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update additional info of an oms procedure",
+        "tags" : [ "EmployeeOmsProcedure" ]
+      }
+    },
+    "/employee/procedures/{id}/anamnesis" : {
+      "get" : {
+        "operationId" : "getAnamnesis",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetAnamnesisResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Get anamnesis",
+        "tags" : [ "EmployeeOmsProcedure" ]
+      },
+      "patch" : {
+        "operationId" : "patchAnamnesis",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateAnamnesisRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "Update anamnesis",
+        "tags" : [ "EmployeeOmsProcedure" ]
+      }
+    },
     "/employee/procedures/{id}/appointment" : {
       "post" : {
         "operationId" : "postAppointment",
@@ -1577,37 +1733,6 @@
           }
         },
         "summary" : "Close open oms procedure",
-        "tags" : [ "EmployeeOmsProcedure" ]
-      }
-    },
-    "/employee/procedures/{id}/concern" : {
-      "patch" : {
-        "operationId" : "updateOmsProcedureConcern",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/PatchConcernRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "description" : "OK"
-          }
-        },
-        "summary" : "Update concern of an oms procedure",
         "tags" : [ "EmployeeOmsProcedure" ]
       }
     },
@@ -1716,37 +1841,6 @@
           }
         },
         "summary" : "Add a document to an oms procedure",
-        "tags" : [ "EmployeeOmsProcedure" ]
-      }
-    },
-    "/employee/procedures/{id}/email-notifications" : {
-      "patch" : {
-        "operationId" : "patchEmailNotifications",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/PatchEmployeeOmsProcedureEmailNotificationsRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "description" : "OK"
-          }
-        },
-        "summary" : "Updates the whether or not email notifications will be sent",
         "tags" : [ "EmployeeOmsProcedure" ]
       }
     },
@@ -1877,9 +1971,9 @@
         "tags" : [ "EmployeeOmsProcedure" ]
       }
     },
-    "/employee/procedures/{id}/physician" : {
+    "/employee/procedures/{id}/merge-affected-person" : {
       "patch" : {
-        "operationId" : "patchPhysician",
+        "operationId" : "mergeAffectedPerson",
         "parameters" : [ {
           "in" : "path",
           "name" : "id",
@@ -1893,7 +1987,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/PatchEmployeeOmsProcedurePhysicianRequest"
+                "$ref" : "#/components/schemas/MergeAffectedPersonRequest"
               }
             }
           },
@@ -1901,18 +1995,10 @@
         },
         "responses" : {
           "200" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "string",
-                  "format" : "uuid"
-                }
-              }
-            },
             "description" : "OK"
           }
         },
-        "summary" : "Updates the associated physician of a draft oms procedure",
+        "summary" : "Merge external affected person with existing person accept it as a new one",
         "tags" : [ "EmployeeOmsProcedure" ]
       }
     },
@@ -4183,6 +4269,37 @@
           }
         }
       },
+      "Addiction" : {
+        "type" : "string",
+        "enum" : [ "ALCOHOL", "CANNABIS", "NICOTINE", "ILLEGAL_DRUGS" ]
+      },
+      "AddictionsSegment" : {
+        "required" : [ "answer" ],
+        "type" : "object",
+        "properties" : {
+          "amount" : {
+            "type" : "string"
+          },
+          "answer" : {
+            "$ref" : "#/components/schemas/YesNoDontKnowAnswer"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "notAnymoreSince" : {
+            "type" : "string"
+          },
+          "since" : {
+            "type" : "string"
+          },
+          "which" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Addiction"
+            }
+          }
+        }
+      },
       "Address" : {
         "required" : [ "@type" ],
         "type" : "object",
@@ -4270,6 +4387,32 @@
           }
         }
       },
+      "AffectedPersonInfo" : {
+        "required" : [ "fillingPerson", "maritalStatus", "numberOfChildren" ],
+        "type" : "object",
+        "properties" : {
+          "fillingPerson" : {
+            "$ref" : "#/components/schemas/FillingPerson"
+          },
+          "maritalStatus" : {
+            "$ref" : "#/components/schemas/MaritalStatus"
+          },
+          "numberOfChildren" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "occupation" : {
+            "type" : "string"
+          },
+          "yearsOfBirthOfChildren" : {
+            "type" : "array",
+            "items" : {
+              "type" : "integer",
+              "format" : "int32"
+            }
+          }
+        }
+      },
       "AffectedPersonSync" : {
         "required" : [ "fileStateId", "outdated", "version" ],
         "type" : "object",
@@ -4284,6 +4427,27 @@
           "version" : {
             "type" : "integer",
             "format" : "int64"
+          }
+        }
+      },
+      "Anamnesis" : {
+        "required" : [ "affectedPersonInfo", "currentHealthConditionInfo", "healthFitnessAndDisabilityInfo", "medicalHistoryInfo", "retirementInfo" ],
+        "type" : "object",
+        "properties" : {
+          "affectedPersonInfo" : {
+            "$ref" : "#/components/schemas/AffectedPersonInfo"
+          },
+          "currentHealthConditionInfo" : {
+            "$ref" : "#/components/schemas/CurrentHealthConditionInfo"
+          },
+          "healthFitnessAndDisabilityInfo" : {
+            "$ref" : "#/components/schemas/HealthFitnessAndDisabilityInfo"
+          },
+          "medicalHistoryInfo" : {
+            "$ref" : "#/components/schemas/MedicalHistory"
+          },
+          "retirementInfo" : {
+            "$ref" : "#/components/schemas/RetirementInfo"
           }
         }
       },
@@ -4472,6 +4636,21 @@
           }
         }
       },
+      "BoneFractureBrainTraumaSegment" : {
+        "required" : [ "answer" ],
+        "type" : "object",
+        "properties" : {
+          "answer" : {
+            "$ref" : "#/components/schemas/YesNoDontKnowAnswer"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "whatWhenAndWhere" : {
+            "type" : "string"
+          }
+        }
+      },
       "BookingInfo" : {
         "required" : [ "bookingType", "duration", "start" ],
         "type" : "object",
@@ -4558,6 +4737,21 @@
           },
           "inclusionStatus" : {
             "$ref" : "#/components/schemas/BusinessProcedureInclusionStatus"
+          }
+        }
+      },
+      "CancerSegment" : {
+        "required" : [ "answer" ],
+        "type" : "object",
+        "properties" : {
+          "answer" : {
+            "$ref" : "#/components/schemas/YesNoDontKnowAnswer"
+          },
+          "chemoRadiationTherapy" : {
+            "type" : "boolean"
+          },
+          "whichAndWhen" : {
+            "type" : "string"
           }
         }
       },
@@ -4675,6 +4869,10 @@
       "ConcernTestDataConfig" : {
         "type" : "string",
         "enum" : [ "DRUG_SCREENING", "REINTEGRATION", "ATTESTATION", "ASSISTANCE", "CERTIFICATE_FOR_CALL_OF_DUTY_FREE", "CERTIFICATE_FOR_CALL_OF_DUTY_PAID", "CERTIFICATE_FOR_CALL_OF_DUTY_ADDITION", "CERTIFICATE_FOR_CALL_OF_DUTY_CONTRADICTION", "OPERATIONAL_CAPABILITY", "RECRUITMENT_FREE", "RECRUITMENT_PAID", "CIVIL_SERVANTS_ON_PROBATION", "CIVIL_SERVANTS", "PROBATIONARY_CIVIL_SERVANTS", "TEMPORARY_CIVIL_SERVANTS", "RECRUITMENT_CONTRADICTION", "RECRUITMENT_FIRE_DEPARTMENT", "HOURLY_DISCOUNT", "ACCIDENT_REPORT_FREE", "ACCIDENT_REPORT_PAID", "RESCUE_SERVICES_LAW", "PEDIGREE_REPORT", "ADOPTION", "WORK_EARNING_CAPACITY", "INVESTIGATION_ASSIGNMENT", "FOSTER_CHILD", "SOCIAL_MEDICINE", "S_HANDICAPPED", "PRESELECTION_FIRE_DEPARTMENT", "PRESELECTION_FIRE_DEPARTMENT_EYESIGHT", "CONTRADICTION", "TAX_OFFICE", "EXAMINATION_ELIGIBILITY", "MISCELLANEOUS" ]
+      },
+      "ConfigurationStatus" : {
+        "type" : "string",
+        "enum" : [ "COMPLETE", "PARTIALLY_COMPLETE", "INCOMPLETE" ]
       },
       "ContactDetails" : {
         "required" : [ "contactType", "salutation" ],
@@ -4865,6 +5063,55 @@
           }
         }
       },
+      "CurrentHealthConditionInfo" : {
+        "required" : [ "currentMedicalConditionsInfo", "healthyAndCapableInfo", "medicalImagingFindingsInfo", "medicationDietarySupplementsOrDrugsInfo", "opticalAidInfo", "primaryCareDoctorOrAttendingPhysician", "sportsInfo" ],
+        "type" : "object",
+        "properties" : {
+          "currentMedicalConditionsInfo" : {
+            "$ref" : "#/components/schemas/CurrentMedicalConditionSegment"
+          },
+          "healthyAndCapableInfo" : {
+            "$ref" : "#/components/schemas/SubInfoSegmentWithAnswerBoolean"
+          },
+          "medicalImagingFindingsInfo" : {
+            "$ref" : "#/components/schemas/MedicalImagingFindingsInfoSegment"
+          },
+          "medicationDietarySupplementsOrDrugsInfo" : {
+            "$ref" : "#/components/schemas/MedicationDietarySupplementsOrDrugsSegment"
+          },
+          "opticalAidInfo" : {
+            "$ref" : "#/components/schemas/SubInfoSegmentWithAnswerOpticalAidAnswer"
+          },
+          "primaryCareDoctorOrAttendingPhysician" : {
+            "type" : "string"
+          },
+          "sportsInfo" : {
+            "$ref" : "#/components/schemas/SportsSegment"
+          }
+        }
+      },
+      "CurrentMedicalCondition" : {
+        "type" : "string",
+        "enum" : [ "ATTACKS", "LACK_OF_APPETITE", "JOINT_TROUBLE", "EAR_NOSE_THROAT", "HEART_TROUBLE", "COUGH", "HEADACHE", "NIGHT_SWEATS", "NERVOUS_TROUBLE", "PAINFUL_URINATION", "IMPAIRED_VISION_EYE_TROUBLE", "MOOD_AND_MOTIVATION_SWINGS", "WEIGHT_LOSS_OR_GAIN", "RHEUMATIC_DISORDERS", "BACK_PAIN", "PAIN", "HEARING_DIFFICULTY", "HEARING_LOSS", "INSOMNIA", "VERTIGO", "ADDICTION", "INDIGESTION", "TREMBLING", "OTHER", "NO_SELECTION" ]
+      },
+      "CurrentMedicalConditionSegment" : {
+        "required" : [ "answer" ],
+        "type" : "object",
+        "properties" : {
+          "answer" : {
+            "type" : "boolean"
+          },
+          "descriptionOfCondition" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CurrentMedicalCondition"
+            }
+          },
+          "particulars" : {
+            "type" : "string"
+          }
+        }
+      },
       "DataOrigin" : {
         "type" : "string",
         "description" : "A list of possible origins of Persons and Facility in the Central Files. EDIT will only be set automatically on changes. EXTERNAL is for entries that come, e.g., from the citizen portal. IMPORT is reserved for automatic imports. MANUAL shall be set for every creation or connection done by an employee.",
@@ -4985,6 +5232,21 @@
           }
         }
       },
+      "DisabilitySegment" : {
+        "required" : [ "hasDisability" ],
+        "type" : "object",
+        "properties" : {
+          "degree" : {
+            "type" : "string"
+          },
+          "hasDisability" : {
+            "type" : "boolean"
+          },
+          "reason" : {
+            "type" : "string"
+          }
+        }
+      },
       "Document" : {
         "required" : [ "documentStatus", "documentTypeDe", "files", "id", "mandatoryDocument", "uploadInCitizenPortal" ],
         "type" : "object",
@@ -5013,6 +5275,9 @@
           "id" : {
             "type" : "string",
             "format" : "uuid"
+          },
+          "labCode" : {
+            "type" : "string"
           },
           "lastDocumentUpload" : {
             "type" : "string",
@@ -5056,9 +5321,6 @@
           },
           "request" : {
             "$ref" : "#/components/schemas/PostDocumentRequest"
-          },
-          "targetState" : {
-            "$ref" : "#/components/schemas/DocumentStatus"
           }
         }
       },
@@ -5127,6 +5389,10 @@
           }
         } ]
       },
+      "EatingDisorder" : {
+        "type" : "string",
+        "enum" : [ "ANOREXIE_NERVOSA", "BULIMIE_NERVOSA" ]
+      },
       "EmployeeOmsProcedureDetails" : {
         "required" : [ "affectedPerson", "appointments", "id", "medicalOpinionStatus", "sendEmailNotifications", "status", "waitingRoom" ],
         "type" : "object",
@@ -5156,6 +5422,10 @@
           },
           "medicalOpinionComment" : {
             "type" : "string"
+          },
+          "medicalOpinionCutOffDate" : {
+            "type" : "string",
+            "format" : "date"
           },
           "medicalOpinionResult" : {
             "$ref" : "#/components/schemas/MedicalOpinionResult"
@@ -5224,6 +5494,10 @@
           "lastName" : {
             "type" : "string"
           },
+          "medicalOpinionCutOffDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
           "medicalOpinionStatus" : {
             "$ref" : "#/components/schemas/MedicalOpinionStatus"
           },
@@ -5241,7 +5515,7 @@
       },
       "EmployeeOmsProcedureSortKey" : {
         "type" : "string",
-        "enum" : [ "ID", "FIRSTNAME", "LASTNAME", "DATEOFBIRTH", "FACILITYNAME", "PHYSICIANNAME", "STATUS", "NEXTAPPOINTMENT" ]
+        "enum" : [ "ID", "FIRSTNAME", "LASTNAME", "DATEOFBIRTH", "FACILITYNAME", "PHYSICIANNAME", "STATUS", "NEXTAPPOINTMENT", "MEDICALOPINIONSTATUS" ]
       },
       "ExportArchivingRelevantProceduresRequest" : {
         "required" : [ "procedures" ],
@@ -5395,6 +5669,10 @@
       "FileType" : {
         "type" : "string",
         "enum" : [ "JPEG", "PNG", "PDF", "EML" ]
+      },
+      "FillingPerson" : {
+        "type" : "string",
+        "enum" : [ "EMPLOYEE", "AFFECTED_PERSON", "LEGAL_GUARDIAN" ]
       },
       "GdprDownloadPackageInfo" : {
         "required" : [ "id" ],
@@ -5608,6 +5886,14 @@
           }
         }
       },
+      "GetAnamnesisResponse" : {
+        "type" : "object",
+        "properties" : {
+          "anamnesis" : {
+            "$ref" : "#/components/schemas/Anamnesis"
+          }
+        }
+      },
       "GetAppointmentBlock" : {
         "required" : [ "end", "id", "numberOfBookedAppointments", "numberOfFreeAppointments", "start" ],
         "type" : "object",
@@ -5752,7 +6038,7 @@
         }
       },
       "GetCitizenProcedureDetailsResponse" : {
-        "required" : [ "concern", "dateOfBirth", "documents", "firstName", "lastName", "medicalOpinionStatus", "procedureId" ],
+        "required" : [ "concern", "dateOfBirth", "documents", "firstName", "isAnamnesisAnswered", "isAnamnesisEnabled", "lastName", "medicalOpinionStatus", "procedureId" ],
         "type" : "object",
         "properties" : {
           "appointment" : {
@@ -5773,6 +6059,12 @@
           },
           "firstName" : {
             "type" : "string"
+          },
+          "isAnamnesisAnswered" : {
+            "type" : "boolean"
+          },
+          "isAnamnesisEnabled" : {
+            "type" : "boolean"
           },
           "lastName" : {
             "type" : "string"
@@ -5795,6 +6087,21 @@
             "items" : {
               "$ref" : "#/components/schemas/ConcernCategoryConfig"
             }
+          }
+        }
+      },
+      "GetConfigurationStatusResponse" : {
+        "required" : [ "endpointStates", "moduleState" ],
+        "type" : "object",
+        "properties" : {
+          "endpointStates" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/ConfigurationStatus"
+            }
+          },
+          "moduleState" : {
+            "$ref" : "#/components/schemas/ConfigurationStatus"
           }
         }
       },
@@ -5895,7 +6202,7 @@
         }
       },
       "GetEmployeeOmsProcedureOverviewResponse" : {
-        "required" : [ "elements", "totalNumberOfElements" ],
+        "required" : [ "elements", "medicalOpinionLeadTime", "totalNumberOfElements" ],
         "type" : "object",
         "properties" : {
           "elements" : {
@@ -5903,6 +6210,10 @@
             "items" : {
               "$ref" : "#/components/schemas/EmployeeOmsProcedureOverview"
             }
+          },
+          "medicalOpinionLeadTime" : {
+            "type" : "integer",
+            "format" : "int32"
           },
           "totalNumberOfElements" : {
             "type" : "integer",
@@ -6577,6 +6888,43 @@
           }
         }
       },
+      "HealthFitnessAndDisabilityInfo" : {
+        "required" : [ "disabilityInfo", "priorExaminationInfo" ],
+        "type" : "object",
+        "properties" : {
+          "disabilityInfo" : {
+            "$ref" : "#/components/schemas/DisabilitySegment"
+          },
+          "priorExaminationInfo" : {
+            "$ref" : "#/components/schemas/PriorExaminationSegment"
+          }
+        }
+      },
+      "HeartDisease" : {
+        "type" : "string",
+        "enum" : [ "HYPERTENSION_HYPOTENSION", "CARDIAC_ARRHYTHMIA", "CORONARY_HEART_DISEASE", "HEART_ATTACK", "STROKE" ]
+      },
+      "HeartDiseaseSegment" : {
+        "required" : [ "answer" ],
+        "type" : "object",
+        "properties" : {
+          "answer" : {
+            "$ref" : "#/components/schemas/YesNoDontKnowAnswer"
+          },
+          "bypass" : {
+            "type" : "boolean"
+          },
+          "stent" : {
+            "type" : "boolean"
+          },
+          "which" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/HeartDisease"
+            }
+          }
+        }
+      },
       "HttpMethod" : {
         "type" : "string",
         "enum" : [ "GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "TRACE" ]
@@ -6955,6 +7303,88 @@
         "type" : "string",
         "enum" : [ "LETTER", "PHONE_CALL", "NOTE", "EMAIL", "IMAGE", "DOCUMENT" ]
       },
+      "MaritalStatus" : {
+        "type" : "string",
+        "enum" : [ "UNMARRIED", "MARRIED", "WIDOWED", "DIVORCED", "NO_SELECTION" ]
+      },
+      "MedicalHistory" : {
+        "required" : [ "hadPastDiseasesOrDisabilities" ],
+        "type" : "object",
+        "properties" : {
+          "addictionsInfo" : {
+            "$ref" : "#/components/schemas/AddictionsSegment"
+          },
+          "allergiesAndIntoleranceInfo" : {
+            "$ref" : "#/components/schemas/SubInfoSegmentWithAnswerWhichStringYesNoDontKnowAnswer"
+          },
+          "bladderKidneysAbdominalOrganInfo" : {
+            "$ref" : "#/components/schemas/SubInfoSegmentWithAnswerYesNoDontKnowAnswer"
+          },
+          "boneFractureBrainTraumaInfo" : {
+            "$ref" : "#/components/schemas/BoneFractureBrainTraumaSegment"
+          },
+          "bonesJointsAndSpineInfo" : {
+            "$ref" : "#/components/schemas/SubInfoSegmentWithAnswerWhichStringYesNoDontKnowAnswer"
+          },
+          "bronchiaLungsInfo" : {
+            "$ref" : "#/components/schemas/SubInfoSegmentWithAnswerYesNoDontKnowAnswer"
+          },
+          "cancerInfo" : {
+            "$ref" : "#/components/schemas/CancerSegment"
+          },
+          "diabetesInfo" : {
+            "$ref" : "#/components/schemas/SubInfoSegmentWithAnswerYesNoDontKnowAnswer"
+          },
+          "earNoseThroatInfo" : {
+            "$ref" : "#/components/schemas/SubInfoSegmentWithAnswerYesNoDontKnowAnswer"
+          },
+          "eatingDisorderInfo" : {
+            "$ref" : "#/components/schemas/SubInfoSegmentWithAnswerWhichEnumListYesNoDontKnowAnswerEatingDisorder"
+          },
+          "hadPastDiseasesOrDisabilities" : {
+            "type" : "boolean"
+          },
+          "heartDiseaseInfo" : {
+            "$ref" : "#/components/schemas/HeartDiseaseSegment"
+          },
+          "liverInfo" : {
+            "$ref" : "#/components/schemas/SubInfoSegmentWithAnswerYesNoDontKnowAnswer"
+          },
+          "mentalIllnessInfo" : {
+            "$ref" : "#/components/schemas/MentalIllnessSegment"
+          },
+          "miscellaneousInfo" : {
+            "$ref" : "#/components/schemas/MiscellaneousSegment"
+          },
+          "nervousSystemInfo" : {
+            "$ref" : "#/components/schemas/SubInfoSegmentWithAnswerYesNoDontKnowAnswer"
+          },
+          "overweightInfo" : {
+            "$ref" : "#/components/schemas/OverweightSegment"
+          },
+          "stomachAndIntestinesInfo" : {
+            "$ref" : "#/components/schemas/SubInfoSegmentWithAnswerYesNoDontKnowAnswer"
+          },
+          "thyroidInfo" : {
+            "$ref" : "#/components/schemas/SubInfoSegmentWithAnswerWhichEnumListYesNoDontKnowAnswerThyroidDisease"
+          },
+          "tuberculosis" : {
+            "$ref" : "#/components/schemas/SubInfoSegmentWithAnswerYesNoDontKnowAnswer"
+          }
+        }
+      },
+      "MedicalImagingFindingsInfoSegment" : {
+        "required" : [ "answer" ],
+        "type" : "object",
+        "properties" : {
+          "answer" : {
+            "type" : "boolean"
+          },
+          "result" : {
+            "type" : "string"
+          }
+        }
+      },
       "MedicalOpinionResult" : {
         "type" : "string",
         "enum" : [ "POSITIVE", "NEGATIVE", "NO_VALUATION" ]
@@ -6962,6 +7392,53 @@
       "MedicalOpinionStatus" : {
         "type" : "string",
         "enum" : [ "IN_PROGRESS", "ACCOMPLISHED" ]
+      },
+      "MedicationDietarySupplementsOrDrugsSegment" : {
+        "required" : [ "answer" ],
+        "type" : "object",
+        "properties" : {
+          "answer" : {
+            "type" : "boolean"
+          },
+          "substances" : {
+            "type" : "string"
+          }
+        }
+      },
+      "MentalIllness" : {
+        "type" : "string",
+        "enum" : [ "DEPRESSION", "ANXIETY_DISORDER", "SOMATIZATION_DISORDER", "BORDERLINE", "BIPOLAR_DISORDER", "PSYCHOSIS", "OBSESSIVE_COMPULSIVE_DISORDER" ]
+      },
+      "MentalIllnessSegment" : {
+        "required" : [ "answer" ],
+        "type" : "object",
+        "properties" : {
+          "answer" : {
+            "$ref" : "#/components/schemas/YesNoDontKnowAnswer"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "which" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/MentalIllness"
+            }
+          }
+        }
+      },
+      "MergeAffectedPersonRequest" : {
+        "required" : [ "affectedPerson" ],
+        "type" : "object",
+        "properties" : {
+          "affectedPerson" : {
+            "$ref" : "#/components/schemas/AffectedPerson"
+          },
+          "mergeInto" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
       },
       "MetaData" : {
         "required" : [ "@type" ],
@@ -6992,6 +7469,18 @@
         },
         "discriminator" : {
           "propertyName" : "@type"
+        }
+      },
+      "MiscellaneousSegment" : {
+        "required" : [ "answer" ],
+        "type" : "object",
+        "properties" : {
+          "answer" : {
+            "$ref" : "#/components/schemas/YesNoDontKnowAnswer"
+          },
+          "description" : {
+            "type" : "string"
+          }
         }
       },
       "OmsAppointment" : {
@@ -7077,6 +7566,30 @@
         "type" : "string",
         "enum" : [ "DELETE" ]
       },
+      "OpticalAidAnswer" : {
+        "type" : "string",
+        "enum" : [ "YES_GLASSES", "YES_CONTACT_LENSES", "NO" ]
+      },
+      "OverweightSegment" : {
+        "required" : [ "answer" ],
+        "type" : "object",
+        "properties" : {
+          "answer" : {
+            "$ref" : "#/components/schemas/YesNoDontKnowAnswer"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "heightInCm" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "weightInKg" : {
+            "type" : "number",
+            "format" : "double"
+          }
+        }
+      },
       "PatchAcceptDraftProcedureRequest" : {
         "type" : "object",
         "properties" : {
@@ -7089,21 +7602,32 @@
           }
         }
       },
+      "PatchAdditionalInfoRequest" : {
+        "required" : [ "concern" ],
+        "type" : "object",
+        "properties" : {
+          "concern" : {
+            "$ref" : "#/components/schemas/Concern"
+          },
+          "cutOffDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "physicianId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "sendEmailNotifications" : {
+            "type" : "boolean"
+          }
+        }
+      },
       "PatchAffectedPersonRequest" : {
         "required" : [ "affectedPerson" ],
         "type" : "object",
         "properties" : {
           "affectedPerson" : {
             "$ref" : "#/components/schemas/AffectedPerson"
-          }
-        }
-      },
-      "PatchConcernRequest" : {
-        "required" : [ "concern" ],
-        "type" : "object",
-        "properties" : {
-          "concern" : {
-            "$ref" : "#/components/schemas/Concern"
           }
         }
       },
@@ -7121,6 +7645,9 @@
             "type" : "string"
           },
           "helpTextEn" : {
+            "type" : "string"
+          },
+          "labCode" : {
             "type" : "string"
           },
           "mandatoryDocument" : {
@@ -7151,31 +7678,12 @@
           }
         }
       },
-      "PatchEmployeeOmsProcedureEmailNotificationsRequest" : {
-        "required" : [ "sendEmailNotifications" ],
-        "type" : "object",
-        "properties" : {
-          "sendEmailNotifications" : {
-            "type" : "boolean"
-          }
-        }
-      },
       "PatchEmployeeOmsProcedureFacilityRequest" : {
         "required" : [ "updatedFacility" ],
         "type" : "object",
         "properties" : {
           "updatedFacility" : {
             "$ref" : "#/components/schemas/Facility"
-          }
-        }
-      },
-      "PatchEmployeeOmsProcedurePhysicianRequest" : {
-        "required" : [ "physicianId" ],
-        "type" : "object",
-        "properties" : {
-          "physicianId" : {
-            "type" : "string",
-            "format" : "uuid"
           }
         }
       },
@@ -7275,6 +7783,15 @@
           }
         }
       },
+      "PostAnamnesisRequest" : {
+        "required" : [ "anamnesis" ],
+        "type" : "object",
+        "properties" : {
+          "anamnesis" : {
+            "$ref" : "#/components/schemas/Anamnesis"
+          }
+        }
+      },
       "PostCitizenProcedureRequest" : {
         "required" : [ "affectedPerson", "appointment", "concern" ],
         "type" : "object",
@@ -7304,6 +7821,9 @@
             "type" : "string"
           },
           "helpTextEn" : {
+            "type" : "string"
+          },
+          "labCode" : {
             "type" : "string"
           },
           "mandatoryDocument" : {
@@ -7388,6 +7908,15 @@
       "PostPopulateProcedureRequest" : {
         "type" : "object",
         "properties" : {
+          "acceptedDocuments" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "anamnesis" : {
+            "$ref" : "#/components/schemas/Anamnesis"
+          },
           "appointments" : {
             "type" : "array",
             "items" : {
@@ -7412,6 +7941,10 @@
           "concern" : {
             "$ref" : "#/components/schemas/ConcernTestDataConfig"
           },
+          "cutOffDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
           "documents" : {
             "type" : "array",
             "items" : {
@@ -7430,6 +7963,9 @@
           "medicalOpinionStatus" : {
             "$ref" : "#/components/schemas/MedicalOpinionStatus"
           },
+          "personAccepted" : {
+            "type" : "boolean"
+          },
           "physician" : {
             "type" : "string",
             "format" : "uuid"
@@ -7440,8 +7976,20 @@
           "procedureDataCitizen" : {
             "$ref" : "#/components/schemas/PostPopulateCitizenProcedureRequest"
           },
+          "rejectedDocuments" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
           "sendEmailNotifications" : {
             "type" : "boolean"
+          },
+          "submittedDocuments" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
           },
           "targetState" : {
             "$ref" : "#/components/schemas/ProcedureStatus"
@@ -7524,6 +8072,28 @@
             }
           }
         } ]
+      },
+      "PriorExaminationSegment" : {
+        "required" : [ "hasPriorExaminations" ],
+        "type" : "object",
+        "properties" : {
+          "hasPriorExaminations" : {
+            "type" : "boolean"
+          },
+          "place" : {
+            "type" : "string"
+          },
+          "reason" : {
+            "type" : "string"
+          },
+          "result" : {
+            "type" : "string"
+          },
+          "year" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
       },
       "PrivacyDocument" : {
         "required" : [ "de" ],
@@ -7739,6 +8309,21 @@
         "default" : "ASC",
         "enum" : [ "ASC", "DESC" ]
       },
+      "RetirementInfo" : {
+        "required" : [ "appliedForRetirement" ],
+        "type" : "object",
+        "properties" : {
+          "appliedForRetirement" : {
+            "type" : "boolean"
+          },
+          "reason" : {
+            "type" : "string"
+          },
+          "reductionOfEarningCapacity" : {
+            "type" : "string"
+          }
+        }
+      },
       "ReviewResult" : {
         "type" : "string",
         "enum" : [ "ACCEPTED", "REJECTED" ]
@@ -7764,6 +8349,87 @@
       "SortDirection" : {
         "type" : "string",
         "enum" : [ "ASC", "DESC" ]
+      },
+      "SportsSegment" : {
+        "required" : [ "answer" ],
+        "type" : "object",
+        "properties" : {
+          "answer" : {
+            "type" : "boolean"
+          },
+          "formOfSport" : {
+            "type" : "string"
+          }
+        }
+      },
+      "SubInfoSegmentWithAnswerBoolean" : {
+        "required" : [ "answer" ],
+        "type" : "object",
+        "properties" : {
+          "answer" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "SubInfoSegmentWithAnswerOpticalAidAnswer" : {
+        "required" : [ "answer" ],
+        "type" : "object",
+        "properties" : {
+          "answer" : {
+            "$ref" : "#/components/schemas/OpticalAidAnswer"
+          }
+        }
+      },
+      "SubInfoSegmentWithAnswerWhichEnumListYesNoDontKnowAnswerEatingDisorder" : {
+        "required" : [ "answer" ],
+        "type" : "object",
+        "properties" : {
+          "answer" : {
+            "$ref" : "#/components/schemas/YesNoDontKnowAnswer"
+          },
+          "which" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/EatingDisorder"
+            }
+          }
+        }
+      },
+      "SubInfoSegmentWithAnswerWhichEnumListYesNoDontKnowAnswerThyroidDisease" : {
+        "required" : [ "answer" ],
+        "type" : "object",
+        "properties" : {
+          "answer" : {
+            "$ref" : "#/components/schemas/YesNoDontKnowAnswer"
+          },
+          "which" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ThyroidDisease"
+            }
+          }
+        }
+      },
+      "SubInfoSegmentWithAnswerWhichStringYesNoDontKnowAnswer" : {
+        "required" : [ "answer" ],
+        "type" : "object",
+        "properties" : {
+          "answer" : {
+            "$ref" : "#/components/schemas/YesNoDontKnowAnswer"
+          },
+          "which" : {
+            "type" : "string"
+          }
+        }
+      },
+      "SubInfoSegmentWithAnswerYesNoDontKnowAnswer" : {
+        "required" : [ "answer" ],
+        "type" : "object",
+        "properties" : {
+          "answer" : {
+            "$ref" : "#/components/schemas/YesNoDontKnowAnswer"
+          }
+        }
       },
       "SyncAffectedPersonRequest" : {
         "required" : [ "fileStateId", "personVersion", "referenceVersion" ],
@@ -8023,6 +8689,10 @@
           }
         }
       },
+      "ThyroidDisease" : {
+        "type" : "string",
+        "enum" : [ "HYPOTHYREOSIS", "NODULE", "HYPERTHYREOISIS", "HASHIMOTO_THYREOIDITIS" ]
+      },
       "Title" : {
         "type" : "string",
         "enum" : [ "DR", "PROF", "PROF_DR" ]
@@ -8030,6 +8700,15 @@
       "TriggerType" : {
         "type" : "string",
         "enum" : [ "SYSTEM_AUTOMATIC", "EMPLOYEE", "CITIZEN" ]
+      },
+      "UpdateAnamnesisRequest" : {
+        "required" : [ "anamnesis" ],
+        "type" : "object",
+        "properties" : {
+          "anamnesis" : {
+            "$ref" : "#/components/schemas/Anamnesis"
+          }
+        }
       },
       "UpdateAppointmentTypeRequest" : {
         "required" : [ "standardDurationInMinutes" ],
@@ -8168,6 +8847,10 @@
       "WaitingStatus" : {
         "type" : "string",
         "enum" : [ "WAITING_FOR_CONSULTATION", "IN_CONSULTATION", "DONE" ]
+      },
+      "YesNoDontKnowAnswer" : {
+        "type" : "string",
+        "enum" : [ "YES", "NO", "DONT_KNOW" ]
       }
     }
   }

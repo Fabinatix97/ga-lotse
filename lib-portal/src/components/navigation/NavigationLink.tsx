@@ -27,7 +27,8 @@ function Navlink(
       prefetch={false}
       onClick={(e) => {
         e.preventDefault();
-        tryNavigate(props.href as string);
+        // eslint-disable-next-line @typescript-eslint/no-base-to-string
+        tryNavigate(props.href.toString());
       }}
       ref={ref}
     />

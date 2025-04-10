@@ -22,7 +22,7 @@ import { SecureBackupContent } from "@/lib/businessModules/chat/components/secur
 import { ResetBackupModal } from "@/lib/businessModules/chat/components/secureBackup/ResetBackupModal";
 import { fetchBackupInfo } from "@/lib/businessModules/chat/matrix/crypto";
 import {
-  restoreBackupKeyFromSecretStorage,
+  loadKeyBackupPrivateKeyFromSecretStorage,
   validateAccessSecretStorage,
 } from "@/lib/businessModules/chat/matrix/secretStorage";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
@@ -59,8 +59,9 @@ export function RestoreBackupSidebar({
     formRef.current?.resetForm();
   }
 
-  async function validateSecretPhrase(values: InitialValues) {
+  async function validateSecretStoragePassphrase(values: InitialValues) {
     try {
+      logger.info("Step 6/6 RestoreKeyBackupFromSecretStorage");
       await validateAccessSecretStorage(matrixClient, values.passphrase);
       return undefined;
     } catch {
@@ -73,15 +74,19 @@ export function RestoreBackupSidebar({
 
   async function handleSubmit(values: InitialValues) {
     try {
-      const { keyBackupInfo, has4SBackupKeyStored } =
+      const { keyBackupInfo, hasKeyBackupKeyStored } =
         await fetchBackupInfo(matrixClient);
 
-      if (!keyBackupInfo || !has4SBackupKeyStored) {
-        throw new Error("No backupInfo");
+      if (!keyBackupInfo || !hasKeyBackupKeyStored) {
+        throw new Error("No backupInfo stored on the server");
       }
 
-      await restoreBackupKeyFromSecretStorage(matrixClient, values.passphrase);
-      setClientState(ClientState.Prepared);
+      await loadKeyBackupPrivateKeyFromSecretStorage(
+        matrixClient,
+        values.passphrase,
+      );
+      setClientState(ClientState.Ready);
+      logger.info("Step 6/6 RestoreKeyBackupFromSecretStorage - FINISHED");
       snackbar.confirmation("Ihr Gerät wurde nun verifiziert");
     } catch (e) {
       handleClose();
@@ -101,7 +106,7 @@ export function RestoreBackupSidebar({
           }}
           validateOnBlur={false}
           validateOnChange={false}
-          validate={validateSecretPhrase}
+          validate={validateSecretStoragePassphrase}
         >
           {({ isSubmitting }) => (
             <SidebarForm ref={formRef}>

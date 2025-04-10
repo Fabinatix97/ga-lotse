@@ -14,9 +14,9 @@ export const systemProgressEntryTypeTitles: Record<string, string> = {
   UPDATE_AFFECTED_PERSON: "Geänderte Personendaten übernommen",
   SYNC_AFFECTED_PERSON: "Geänderte Personendaten synchronisiert",
   SYNC_FACILITY: "Geänderte Auftraggeberdaten übernommen",
-  PHYSICIAN_CHANGED: "Geänderte(r) Ärzt:in übernommen",
   PROCEDURE_STARTED: "Vorgang gestartet",
   DOCUMENT_DELETED: "Dokument gelöscht",
+  DOCUMENT_REVIEWED: "Dokument geprüft",
   APPOINTMENT_FOR_SELF_BOOKING_ADDED: "Selbstbucheroption hinzugefügt",
   APPOINTMENT_ADDED_WITH_BOOKING: "Termin mit Buchung hinzugefügt",
   APPOINTMENT_BOOKED: "Termin gebucht",
@@ -34,8 +34,8 @@ export const systemProgressEntryTypeTitles: Record<string, string> = {
     "Dokument von “Fehlt”  nach “Akzeptiert” (Upload durch MA)",
   FACILITY_ADDED: "Auftraggeber hinzugefügt",
   MEDICAL_OPINION_STATUS_CHANGED: "Gutachtenstatus verändert",
+  ADDITIONAL_INFO_CHANGED: "Zusatzinfos aktualisiert",
   CONCERN_CHANGED: "Anliegen gesetzt",
-  E_MAIL_NOTIFICATION: "E-Mail-Benachrichtigungen",
 };
 
 export const statusColorsDocumentStatus = {

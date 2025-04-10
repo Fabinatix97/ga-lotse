@@ -4,6 +4,7 @@
  */
 
 import { ApiCountryCode, ApiGender, ApiSalutation } from "@eshg/base-api";
+import { CountryField } from "@eshg/lib-employee-portal";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
@@ -20,7 +21,6 @@ import {
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Grid, Stack } from "@mui/joy";
 
-import { CountryField } from "@/lib/shared/components/formFields/CountryField";
 import { LegacyPerson } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyPersonForm";
 
 export interface LegacyMinimalPerson {

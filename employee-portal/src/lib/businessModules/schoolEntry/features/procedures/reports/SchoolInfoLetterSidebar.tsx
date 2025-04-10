@@ -36,6 +36,7 @@ interface SchoolInfoLetterFormValues {
   meetingBetweenYouthHealthServicesAndSchoolManagementRecommended: boolean;
   parentsWishNote: OptionalFieldValue<string>;
   referredToFurtherConsultationFromSchool: boolean;
+  prefilled: boolean;
 }
 
 const INITIAL_VALUES: SchoolInfoLetterFormValues = {
@@ -44,6 +45,7 @@ const INITIAL_VALUES: SchoolInfoLetterFormValues = {
   meetingBetweenYouthHealthServicesAndSchoolManagementRecommended: false,
   parentsWishNote: "",
   referredToFurtherConsultationFromSchool: false,
+  prefilled: true,
 };
 
 interface SchoolInfoLetterSidebarProps extends SidebarWithFormRefProps {
@@ -77,7 +79,7 @@ function SchoolInfoLetterSidebar(props: SchoolInfoLetterSidebarProps) {
                   label="Rücksprache mit den PSB empfohlen"
                 />
                 <CheckboxField
-                  name="meetingBetweenYouthHealthServicesAndSchoolManagement"
+                  name="meetingBetweenYouthHealthServicesAndSchoolManagementRecommended"
                   label="Besprechung Kinder- und Jugendgesundheitsdienst mit Schulleitung"
                 />
                 <Divider />
@@ -91,6 +93,10 @@ function SchoolInfoLetterSidebar(props: SchoolInfoLetterSidebarProps) {
                 <CheckboxField
                   name="referredToFurtherConsultationFromSchool"
                   label="auf weitere Beratung der Schule verwiesen"
+                />
+                <CheckboxField
+                  name="prefilled"
+                  label="Mit Ergebnissen aus der Anamnese und der Untersuchung vorausgefüllt"
                 />
               </Stack>
             </SidebarContent>

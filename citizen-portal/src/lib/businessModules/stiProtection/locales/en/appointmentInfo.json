@@ -60,6 +60,14 @@
   },
   "personal_area": {
     "title": "Can't make the appointment?",
-    "go_to_personal_area": "Go to my appointments"
+    "go_to_personal_area": "Go to my appointments",
+    "cancel_appointment": "Cancel appointment"
+  },
+  "cancel_dialog": {
+    "title": "Cancel Appointment?",
+    "message": "If you cancel the appointment, you will be automatically logged out, all pre-filled data will be deleted and you will return to the overview page where you can make a new appointment. Alternatively, you can reschedule the appointment instead under \"Reschedule appointment\".",
+    "cancel": "Keep appointment",
+    "confirm": "Yes, cancel appointment",
+    "error": "The appointment could not be cancelled."
   }
 }

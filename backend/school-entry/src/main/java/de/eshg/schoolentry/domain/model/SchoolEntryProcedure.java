@@ -100,7 +100,7 @@ public class SchoolEntryProcedure
   @OrderBy
   @DataSensitivity(PSEUDONYMIZED)
   @BatchSize(size = 100)
-  private List<Label> labels = new ArrayList<>();
+  private List<ProcedureLabel> labels = new ArrayList<>();
 
   @DataSensitivity(PSEUDONYMIZED)
   private boolean isEntryLevel = false;
@@ -218,15 +218,15 @@ public class SchoolEntryProcedure
     anamnesis.setProcedure(this);
   }
 
-  public List<Label> getLabels() {
+  public List<ProcedureLabel> getLabels() {
     return labels;
   }
 
-  public void setLabels(List<Label> labels) {
+  public void setLabels(List<ProcedureLabel> labels) {
     this.labels = labels;
   }
 
-  public void addLabel(Label label) {
+  public void addLabel(ProcedureLabel label) {
     this.labels.add(label);
   }
 

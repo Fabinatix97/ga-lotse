@@ -6,6 +6,7 @@
 "use client";
 
 import {
+  FileField,
   FormButtonBar,
   OverlayBoundary,
   Sidebar,
@@ -17,14 +18,12 @@ import {
 } from "@eshg/lib-employee-portal";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
-import { validateFile } from "@eshg/lib-portal/helpers/validators";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { ApiManualProgressEntryType } from "@eshg/lib-procedures-api";
 import { Stack } from "@mui/joy";
 import { Formik, FormikHelpers } from "formik";
 import { isEmpty } from "remeda";
 
-import { FileField } from "@/lib/shared/components/formFields/file/FileField";
 import { useProgressEntriesConfig } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import {
   manualProgressEntryFileTypes,
@@ -119,11 +118,6 @@ function CreateProgressEntrySidebarContent({
                       label={"Datei hochladen"}
                       accept={acceptedFileTypes(values.type)}
                       required="Bitte eine Datei auswählen."
-                      validate={validateFile(
-                        acceptedFileTypes(values.type)?.flatMap(
-                          (type) => type.extensions,
-                        ),
-                      )}
                     />
                     <TextareaField
                       name={"documentDescription"}

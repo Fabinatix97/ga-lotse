@@ -35,7 +35,6 @@ export function RoomList({
   const { messageReadsPerRoom } = useReadConfirmation();
   const { unreadNotificationsPerRoom } = useNotificationContext();
   const sortedChats = useMemo(() => {
-    //todo: here?
     return roomList.toSorted((roomA, roomB) => {
       const timestampA = roomA.latestMessage?.timestamp?.getTime() ?? 0;
       const timestampB = roomB.latestMessage?.timestamp?.getTime() ?? 0;

@@ -12,6 +12,7 @@ import {
   StickyToolbarLayout,
   TableSheet,
   Toolbar,
+  formatList,
 } from "@eshg/lib-employee-portal";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import LaptopIcon from "@mui/icons-material/Laptop";
@@ -23,7 +24,6 @@ import { ReactNode, useMemo } from "react";
 
 import { useInvalidateUserSessions } from "@/lib/baseModule/api/mutations/users";
 import { useGetSelfActiveSessions } from "@/lib/baseModule/api/queries/users";
-import { join } from "@/lib/shared/helpers/strings";
 
 function DeviceIndicator({ label, icon }: { label: string; icon: ReactNode }) {
   return (
@@ -37,7 +37,9 @@ function DeviceIndicator({ label, icon }: { label: string; icon: ReactNode }) {
 const columnHelper = createColumnHelper<ApiActiveUserSession>();
 
 function osName(session: ApiActiveUserSession) {
-  return join([session.device.osName, session.device.osVersion], " ") ?? "";
+  return (
+    formatList([session.device.osName, session.device.osVersion], " ") ?? ""
+  );
 }
 
 function useColumns() {

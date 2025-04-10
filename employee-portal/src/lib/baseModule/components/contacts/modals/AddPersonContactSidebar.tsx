@@ -7,6 +7,7 @@ import { ApiPersonContact } from "@eshg/base-api";
 import {
   SidebarWithFormRefProps,
   createEmptyAddress,
+  useResetAlertContextOnChange,
   useSidebarWithFormRef,
 } from "@eshg/lib-employee-portal";
 import { useState } from "react";
@@ -19,7 +20,6 @@ import {
   AddContactSidebarState,
   PersonContactFormValues,
 } from "@/lib/baseModule/components/contacts/types";
-import { useResetAlertContextOnChange } from "@/lib/shared/hooks/useResetAlertContextOnChange";
 
 type AddPersonContactSidebarState = AddContactSidebarState<
   PersonContactFormValues,
@@ -35,6 +35,7 @@ const initialCreateContactFormValues = {
   gender: "",
   salutation: "",
   name: "",
+  nameAtBirth: "",
   firstName: "",
   externalChatUsername: "",
   emailAddresses: [""],

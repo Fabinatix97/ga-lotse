@@ -10,9 +10,11 @@ import {
 import {
   BaseAddressDetailsColumn,
   DetailsRow,
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
+  formatList,
 } from "@eshg/lib-employee-portal";
 import {
   SALUTATION_VALUES,
@@ -35,8 +37,6 @@ import { Formik } from "formik";
 import { isDefined } from "remeda";
 
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import { join } from "@/lib/shared/helpers/strings";
 
 export interface FacilityDetailsSidebarProps {
   title: string;
@@ -143,7 +143,7 @@ function ContactPersonDetails(props: {
               defaultExpanded={props.contactPersons.length < 2}
             >
               <AccordionSummary>
-                {join([person.firstName, person.lastName], " ")}
+                {formatList([person.firstName, person.lastName], " ")}
               </AccordionSummary>
               <AccordionDetails>
                 <DetailsRow>

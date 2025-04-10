@@ -31,6 +31,7 @@ import java.net.SocketAddress;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.net.ssl.SSLHandshakeException;
@@ -197,7 +198,7 @@ public final class OutboundServer extends ProxyServer {
       implements TopologyChangedListener {
 
     private final boolean relayEnabled;
-    private final ServiceDirectoryApi serviceDirectoryApi;
+    private final Optional<ServiceDirectoryApi> serviceDirectoryApi;
     private final InetSocketAddress relayTargetAddress;
     private Map<String, ActorResponseDto> hostNameToActiveActor = Collections.emptyMap();
     private ActorResponseDto self = null;
@@ -205,7 +206,8 @@ public final class OutboundServer extends ProxyServer {
         new RelayDestinationPredicate();
 
     public RelayAddressMapper(
-        SpatzConfigurationProperties properties, ServiceDirectoryApi serviceDirectoryApi) {
+        SpatzConfigurationProperties properties,
+        Optional<ServiceDirectoryApi> serviceDirectoryApi) {
       this.relayEnabled = properties.relay().enabled();
       this.serviceDirectoryApi = serviceDirectoryApi;
       if (this.relayEnabled) {
@@ -246,7 +248,12 @@ public final class OutboundServer extends ProxyServer {
     public void trustedActorsChanged(TrustedActors trustedActors) {
       if (this.relayEnabled) {
         hostNameToActiveActor = trustedActors.outboundByHostname();
-        self = serviceDirectoryApi.getSelf();
+        if (serviceDirectoryApi.isEmpty()) {
+          logger.warn(
+              "eshg.spatz.relay.enabled is true but no eshg.servicedirectory.baseUrl configured.");
+        } else {
+          self = serviceDirectoryApi.get().getSelf();
+        }
       }
     }
   }

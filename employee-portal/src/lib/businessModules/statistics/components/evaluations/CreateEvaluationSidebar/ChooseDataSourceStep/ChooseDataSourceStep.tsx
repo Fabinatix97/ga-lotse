@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { SelectableCard } from "@eshg/lib-employee-portal";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { Stack, Typography } from "@mui/joy";
 
@@ -12,7 +13,6 @@ import { DataSourceSensitivity } from "@/lib/businessModules/statistics/api/mode
 import { CategorizedFlatAttribute } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ChooseAttributesStep/ChooseAttributesStep";
 import { CHOOSE_EVALUATION_TEMPLATE } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/CreateEvaluationFromScratchSidebar";
 import { SidebarStepContentProps } from "@/lib/shared/components/SidebarStepper/sidebarStep";
-import { SelectableCard } from "@/lib/shared/components/cards/SelectableCard";
 import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
 
 import { ChooseDataSourceStepFormModel } from "./chooseDataSourceStepFormModel";

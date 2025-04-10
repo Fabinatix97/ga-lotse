@@ -22,7 +22,7 @@ export function ChatErrorBoundary({ children }: PropsWithChildren) {
         onReset={() => {
           try {
             refresh();
-            setClientState(ClientState.Reset);
+            setClientState(ClientState.HardReset);
           } catch (error) {
             logger.error("Chat reset error", error);
           }

@@ -11,7 +11,7 @@ import jakarta.persistence.Embeddable;
 import java.time.LocalDate;
 
 @Embeddable
-@DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+@DataSensitivity(SensitivityLevel.SENSITIVE)
 public class Examination {
 
   private Boolean hepA;

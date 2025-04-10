@@ -9,7 +9,6 @@ import {
   SidebarActions,
   SidebarContent,
   UseSidebarResult,
-  useGetSelfUser,
   useSidebar,
 } from "@eshg/lib-employee-portal";
 import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
@@ -22,19 +21,15 @@ import { AuthDict, IAuthData, UIAResponse } from "matrix-js-sdk";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { isObjectType } from "remeda";
 
-import { useUpdateSelfUserChatUsername } from "@/lib/baseModule/api/mutations/users";
-import { useGetUserProfile } from "@/lib/baseModule/api/queries/users";
 import { ChatDeviceId } from "@/lib/baseModule/components/layout/sideNavigation/ChatDeviceId";
 import { routes } from "@/lib/baseModule/shared/routes";
+import { useUpdateSelfUserChatAttributes } from "@/lib/businessModules/chat/api/mutations/selfUserApi";
 import { ChatUserId } from "@/lib/businessModules/chat/components/ChatUserId";
 import {
   DeactivateModal,
   DeactivateModalProps,
 } from "@/lib/businessModules/chat/components/deactivate/DeactivateModal";
-import {
-  clearCachedCredentials,
-  clearMatrixStores,
-} from "@/lib/businessModules/chat/matrix/tokens";
+import { clearAllStores } from "@/lib/businessModules/chat/matrix/tokens";
 import { ChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
@@ -62,6 +57,9 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
 
   const chatUserId = matrixClient?.getUserId();
 
+  const { mutateAsync: updateSelfUserChatAttributes } =
+    useUpdateSelfUserChatAttributes();
+
   const {
     userSettings: {
       sharePresence,
@@ -74,9 +72,6 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
     toggleReadConfirmation,
     toggleTypingNotifications,
   } = useUserSettings();
-  const updateSelfUser = useUpdateSelfUserChatUsername();
-  const { data: selfUser } = useGetSelfUser();
-  const { data: userData } = useGetUserProfile(selfUser.userId);
   const { deactivateAccount } = useUserSettings();
   const { backupStatus } = useBackupInfo();
 
@@ -103,23 +98,23 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
 
   const handleStopChat = useCallback(async () => {
     if (!matrixClient) return;
+
     try {
-      await updateSelfUser.mutateAsync({
-        externalChatUsername: undefined,
-        phoneNumber: userData.user.phoneNumber,
-        salutation: userData.salutation,
-        title: userData.title,
+      await updateSelfUserChatAttributes({
+        externalChatUsername: "",
+        chatCryptoStoreDeriveKeySecret: "",
       });
     } catch (e) {
       logger.error(e);
     }
+
     try {
-      clearCachedCredentials();
-      await clearMatrixStores();
+      matrixClient.stopClient();
+      await clearAllStores();
     } catch (error) {
       logger.error(error);
     }
-  }, [matrixClient, updateSelfUser, userData]);
+  }, [matrixClient, updateSelfUserChatAttributes]);
 
   const showSSOModal = useCallback(
     (values: Omit<DeactivateModalProps, "onFinished" | "open">) => {
@@ -254,7 +249,7 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
           sx={{ alignSelf: "end" }}
           onClick={() => {
             onClose();
-            tryNavigate(routes.chat as string);
+            tryNavigate(routes.chat);
           }}
           endDecorator={<OpenInNew />}
         >

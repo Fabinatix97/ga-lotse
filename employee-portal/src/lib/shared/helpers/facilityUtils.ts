@@ -10,6 +10,7 @@ import {
 } from "@eshg/base-api";
 import { ApiDataOrigin } from "@eshg/inspection-api";
 import {
+  formatList,
   mapApiAddressToForm,
   mapBaseAddressToApi,
 } from "@eshg/lib-employee-portal";
@@ -21,20 +22,19 @@ import {
   BaseFacility,
   BaseFacilityContactPerson,
 } from "@/lib/shared/components/facilitySidebar/types";
-import { join } from "@/lib/shared/helpers/strings";
 
 export function streetAndHouseNumber(address?: {
   street?: string;
   houseNumber?: string;
 }) {
-  return join([address?.street, address?.houseNumber], " ");
+  return formatList([address?.street, address?.houseNumber], " ");
 }
 
 export function postalCodeAndCity(address?: {
   postalCode?: string;
   city?: string;
 }) {
-  return join([address?.postalCode, address?.city], " ");
+  return formatList([address?.postalCode, address?.city], " ");
 }
 
 export function fullAddress(address?: {
@@ -43,7 +43,7 @@ export function fullAddress(address?: {
   postalCode?: string;
   city?: string;
 }) {
-  return join(
+  return formatList(
     [streetAndHouseNumber(address), postalCodeAndCity(address)],
     ", ",
   );

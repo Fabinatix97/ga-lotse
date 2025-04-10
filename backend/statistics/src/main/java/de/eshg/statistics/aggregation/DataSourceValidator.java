@@ -7,6 +7,7 @@ package de.eshg.statistics.aggregation;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.aggregation.BusinessModuleAggregationHelper;
+import de.eshg.lib.statistics.api.DataPrivacyCategory;
 import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.statistics.api.datasource.AvailableDataSource;
@@ -136,23 +137,26 @@ public class DataSourceValidator {
   private void validateDataSource(
       DataSourceDto requestDataSource, List<AvailableDataSource> availableDataSources) {
     AvailableDataSource matchingDataSource =
-        availableDataSources.stream()
-            .filter(
-                availableDataSource ->
-                    compareBusinessModuleNameAndDataSourceId(
-                        availableDataSource, requestDataSource))
-            .findFirst()
-            .orElseThrow(
-                () ->
-                    new BadRequestException(
-                        "Data source '%s' not found for business module '%s'"
-                            .formatted(
-                                requestDataSource.id(), requestDataSource.businessModuleName())));
-
+        getMatchingDataSource(requestDataSource, availableDataSources);
     validateDataAttributes(requestDataSource, matchingDataSource);
   }
 
-  private boolean compareBusinessModuleNameAndDataSourceId(
+  private static AvailableDataSource getMatchingDataSource(
+      DataSourceDto requestDataSource, List<AvailableDataSource> availableDataSources) {
+    return availableDataSources.stream()
+        .filter(
+            availableDataSource ->
+                compareBusinessModuleNameAndDataSourceId(availableDataSource, requestDataSource))
+        .findFirst()
+        .orElseThrow(
+            () ->
+                new BadRequestException(
+                    "Data source '%s' not found for business module '%s'"
+                        .formatted(
+                            requestDataSource.id(), requestDataSource.businessModuleName())));
+  }
+
+  private static boolean compareBusinessModuleNameAndDataSourceId(
       AvailableDataSource availableDataSource, DataSourceDto requestDataSource) {
     return availableDataSource.businessModuleName().equals(requestDataSource.businessModuleName())
         && availableDataSource.id().equals(requestDataSource.id());
@@ -173,22 +177,25 @@ public class DataSourceValidator {
       AvailableDataSource availableDataSource,
       UUID dataSourceId) {
     BusinessDataSourceAttribute matchingBusinessDataSourceAttribute =
-        availableDataSource.attributes().stream()
-            .filter(
-                businessDataSourceAttribute ->
-                    businessDataSourceAttribute.code().equals(requestDataAttribute.code()))
-            .findFirst()
-            .orElseThrow(
-                () ->
-                    new BadRequestException(
-                        "Business data attribute '%s' not found for data source '%s'"
-                            .formatted(requestDataAttribute.code(), dataSourceId)));
-
-    validateBaseAttributeCodes(
-        requestDataAttribute, dataSourceId, matchingBusinessDataSourceAttribute);
+        getBusinessAttribute(requestDataAttribute, availableDataSource);
+    validateBaseAttributes(requestDataAttribute, dataSourceId, matchingBusinessDataSourceAttribute);
   }
 
-  private void validateBaseAttributeCodes(
+  private static BusinessDataSourceAttribute getBusinessAttribute(
+      BusinessDataAttribute requestDataAttribute, AvailableDataSource availableDataSource) {
+    return availableDataSource.attributes().stream()
+        .filter(
+            businessDataSourceAttribute ->
+                businessDataSourceAttribute.code().equals(requestDataAttribute.code()))
+        .findFirst()
+        .orElseThrow(
+            () ->
+                new BadRequestException(
+                    "Business data attribute '%s' not found for data source '%s'"
+                        .formatted(requestDataAttribute.code(), availableDataSource.id())));
+  }
+
+  private void validateBaseAttributes(
       BusinessDataAttribute requestDataAttribute,
       UUID dataSourceId,
       BusinessDataSourceAttribute availableBusinessDataSourceAttribute) {
@@ -249,5 +256,40 @@ public class DataSourceValidator {
 
   public static boolean getCanBeAnonymized(List<AvailableDataSource> availableDataSources) {
     return availableDataSources.stream().allMatch(AvailableDataSource::canBeAnonymized);
+  }
+
+  public static int countQuasiIdentifyingAttributes(
+      DataSourceDto dataSource, List<AvailableDataSource> availableDataSources) {
+    AvailableDataSource relevantDataSource =
+        getMatchingDataSource(dataSource, availableDataSources);
+    return dataSource.attributeCodes().stream()
+        .map(
+            businessAttribute ->
+                getQuasiIdentifyingCount(
+                    businessAttribute, getBusinessAttribute(businessAttribute, relevantDataSource)))
+        .mapToInt(Integer::intValue)
+        .sum();
+  }
+
+  private static int getQuasiIdentifyingCount(
+      BusinessDataAttribute attributeFromRequest,
+      BusinessDataSourceAttribute attributeFromDataSource) {
+    if (attributeFromDataSource.baseAttributes() == null) {
+      if (DataPrivacyCategory.QUASI_IDENTIFYING.equals(
+          attributeFromDataSource.dataPrivacyCategory())) {
+        return 1;
+      } else {
+        return 0;
+      }
+    } else {
+      return attributeFromDataSource.baseAttributes().stream()
+          .filter(
+              baseAttribute ->
+                  DataPrivacyCategory.QUASI_IDENTIFYING.equals(baseAttribute.dataPrivacyCategory())
+                      && attributeFromRequest.baseAttributeCodes().contains(baseAttribute.code()))
+          .map(BaseDataSourceAttribute::code)
+          .toList()
+          .size();
+    }
   }
 }

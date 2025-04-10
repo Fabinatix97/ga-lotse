@@ -27,4 +27,5 @@ public record DocumentDto(
     @NotNull boolean mandatoryDocument,
     @NotNull boolean uploadInCitizenPortal,
     String reasonForRejection,
-    DocumentUploadedByDto uploadedBy) {}
+    DocumentUploadedByDto uploadedBy,
+    String labCode) {}

@@ -48,6 +48,11 @@ declare module "@tanstack/react-table" {
     spanWhenParentRow?: number;
     // to ensure accessibility for hidden header labels, set isHeaderLabelHidden to true and provide a headerLabel
     isHeaderLabelHidden?: boolean;
+    /**
+     * a11y: to manually add a rowheader if rowNavigation is not specified;
+     * otherwise the `focusColumnAccessorKey` from `rowNavigation` are directly used
+     * https://bitvtest.de/pruefschritt/bitv-20-web/bitv-20-web-9-1-3-1e-datentabellen-richtig-aufgebaut
+     */
     isRowHeader?: boolean;
   }
 }

@@ -4,6 +4,7 @@
  */
 
 import {
+  MultiFormButtonBar,
   Sidebar,
   SidebarActions,
   SidebarContent,
@@ -36,7 +37,6 @@ import { mapFollowUpProcedureFormToApi } from "@/lib/businessModules/stiProtecti
 import { useFormWithSteps } from "@/lib/businessModules/stiProtection/shared/procedure/useFormWithSteps";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { SelectableCardsField } from "@/lib/shared/components/formFields/SelectableCardsField";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";

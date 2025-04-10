@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicReference;
@@ -129,7 +130,7 @@ public class WebsocketEndpoint {
     buffer.position(0);
     ActiveConnection activeConnection = activeConnections.getIfPresent(connectionId);
     if (messageType == MessageType.CONNECTION_CLOSED) {
-      activeConnections.invalidate(connectionId);
+      removeActiveConnection(connectionId, activeConnection);
     }
     if (activeConnection != null) {
       logger.trace(
@@ -168,6 +169,31 @@ public class WebsocketEndpoint {
           targetSni);
       sendHostNotOnline(connectionId, sourceSni, targetSni);
     }
+  }
+
+  private static void removeActiveConnection(UUID connectionId, ActiveConnection activeConnection) {
+    if (activeConnection == null) {
+      logger.warn(
+          "Received close message for connection {} not in activeConnections", connectionId);
+      return;
+    }
+    if (activeConnection.closing().get()) {
+      logger.info("Received close message for connection {} already closing", connectionId);
+      return;
+    }
+    activeConnection.closing().set(true);
+    // delay removal of connection to allow late messages to be routed
+    CompletableFuture.runAsync(
+        () -> {
+          try {
+            Thread.sleep(10_000);
+          } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
+          }
+          logger.info("connection {} removed from active connections", connectionId);
+          activeConnections.invalidate(connectionId);
+        });
   }
 
   private String checkSniMatch(String sni) throws IOException {

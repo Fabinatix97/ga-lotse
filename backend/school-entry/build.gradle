@@ -9,7 +9,7 @@ dependencies {
     implementation project(':lib-calendar')
     implementation project(':lib-contact')
     implementation project(':lib-document-generator')
-    implementation project(':lib-department-info')
+    implementation project(':lib-config')
     implementation project(':lib-procedures')
     implementation project(":lib-statistics")
     implementation project(":lib-xlsx-import")

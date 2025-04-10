@@ -5,6 +5,7 @@
 
 import { ApiGetGdprProcedureResponse } from "@eshg/base-api";
 import {
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -20,7 +21,6 @@ import { Formik } from "formik";
 
 import { useSetMatterOfConcern } from "@/lib/baseModule/api/mutations/gdpr";
 import { statusTranslation } from "@/lib/baseModule/components/gdpr/i18n";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 
 interface EditMatterOfConcernSidebarProps extends SidebarWithFormRefProps {
   procedure: ApiGetGdprProcedureResponse;

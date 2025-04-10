@@ -5,11 +5,14 @@
 
 package de.eshg.base.config;
 
+import de.eshg.base.util.MapUtils;
+import de.eshg.config.ConfigurationStatus;
 import de.eshg.config.EshgConfigurationService;
-import de.eshg.departmentinfo.domain.Document;
+import de.eshg.config.domain.Document;
 import de.eshg.persistence.TransactionHelper;
 import jakarta.persistence.EntityManager;
 import java.io.IOException;
+import java.util.SequencedMap;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Component;
 public class DepartmentConfigurationService
     extends EshgConfigurationService<DepartmentConfiguration> {
 
+  private static final String CONFIGURATION_ENDPOINT = "DEPARTMENT_CONFIG";
   private final InitialDepartmentConfigurationDefaults initialDepartmentConfiguration;
 
   public DepartmentConfigurationService(
@@ -69,6 +73,11 @@ public class DepartmentConfigurationService
     departmentConfiguration.setMunicipalityDirectory(
         mapToDocument(initialDepartmentConfiguration.municipalityDirectory()));
     return departmentConfiguration;
+  }
+
+  @Override
+  protected SequencedMap<String, ConfigurationStatus> getConfigurationStatus() {
+    return MapUtils.orderedMapOf(CONFIGURATION_ENDPOINT, ConfigurationStatus.COMPLETE);
   }
 
   private static Document mapToDocument(Resource resource) throws IOException {

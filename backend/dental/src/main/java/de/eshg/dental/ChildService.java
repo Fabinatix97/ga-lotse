@@ -227,10 +227,7 @@ public class ChildService {
 
     List<Child> children =
         procedureSearchService.searchProceduresByPerson(
-            searchParameters.searchFirstName(),
-            searchParameters.searchLastName(),
-            searchParameters.searchDateOfBirth(),
-            Person.PERSON_TYPE_USED_FOR_CHILDREN);
+            searchParameters, Person.PERSON_TYPE_USED_FOR_CHILDREN);
 
     Optional<Child> latestChild = children.stream().max(Comparator.comparing(Child::getId));
     return latestChild.map(this::augmentWithDetails);

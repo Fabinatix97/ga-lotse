@@ -107,6 +107,10 @@ export function PersonSidebar({
   }
 
   function handleCancel() {
+    if (!sidebarPersonFormRef.current?.dirty) {
+      return resetAndCloseForm();
+    }
+
     openCancelDialog({
       onConfirm: resetAndCloseForm,
     });

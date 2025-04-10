@@ -1,6 +1,6 @@
 <#import "../common/forms.ftlh" as forms />
 
-<#macro content vaccinationInfo >
+<#macro content vaccinationInfo="NUL" >
 <#-- @ftlvariable name="vaccinationInfo" type="de.eshg.schoolentry.pdf.schoolinfoletter.model.SchoolInfoLetterVaccinationInfo" -->
   <table style="width: 100%;">
     <colgroup>
@@ -10,26 +10,30 @@
     </colgroup>
     <tr>
       <td colspan="3">
-        <@forms.checkbox checked=vaccinationInfo.measlesProtectionComplete title="Masernschutz vollständig"/>
+        <@forms.checkbox checked=vaccinationInfo?isHash && vaccinationInfo.measlesProtectionComplete title="Masernschutz vollständig"/>
       </td>
     </tr>
     <tr>
       <td>
-        <@forms.checkbox checked=!vaccinationInfo.measlesProtectionComplete title="Masernschutz unvollständig"/>
+        <@forms.checkbox checked=vaccinationInfo?isHash && !vaccinationInfo.measlesProtectionComplete title="Masernschutz unvollständig"/>
       </td>
       <td colspan="2">
-        <@forms.checkbox checked=vaccinationInfo.measlesContraIndication title="Medizinische Kontraindikation gegen Masernimpfung besteht:"/>
+        <@forms.checkbox checked=vaccinationInfo?isHash && vaccinationInfo.measlesContraIndication title="Medizinische Kontraindikation gegen Masernimpfung besteht:"/>
       </td>
     </tr>
     <tr>
       <td>
-        <@forms.checkbox checked=vaccinationInfo.vaccinationPassNotPresented title="Impfbuch nicht vorgelegt"/>
+        <@forms.checkbox checked=vaccinationInfo?isHash && vaccinationInfo.vaccinationPassNotPresented title="Impfbuch nicht vorgelegt"/>
       </td>
       <td>
-        <@forms.checkbox checked=vaccinationInfo.measlesContraIndicationPermanent title="ständig"/>
+        <@forms.checkbox checked=vaccinationInfo?isHash && vaccinationInfo.measlesContraIndicationPermanent title="ständig"/>
       </td>
       <td>
-        <@forms.checkbox checked=(vaccinationInfo.measlesContraIndicationUntil??) title="bis zum: " + (vaccinationInfo.measlesContraIndicationUntil ! "_______________________________________")/>
+        <#if vaccinationInfo?isHash>
+          <@forms.checkbox checked=(vaccinationInfo.measlesContraIndicationUntil??) title="bis zum: " + (vaccinationInfo.measlesContraIndicationUntil ! "_______________________________________")/>
+        <#else>
+          <@forms.checkbox title="bis zum: _______________________________________"/>
+        </#if>
       </td>
     </tr>
   </table>

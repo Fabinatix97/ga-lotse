@@ -9,13 +9,14 @@ import {
   routes,
   useDeleteProphylaxisSessionParticipantOptions,
 } from "@eshg/dental";
-import { ApiReasonForAbsence } from "@eshg/dental-api";
+import { ApiProphylaxisStatus, ApiReasonForAbsence } from "@eshg/dental-api";
 import {
   ButtonBar,
   DataTable,
   OverlayBoundary,
   TablePage,
   TableSortingProps,
+  formatBoolean,
   useConfirmationDialog,
   useTableControl,
 } from "@eshg/lib-employee-portal";
@@ -24,6 +25,7 @@ import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/Inter
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Add } from "@mui/icons-material";
 import CancelIcon from "@mui/icons-material/Cancel";
+import CheckIcon from "@mui/icons-material/Check";
 import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import StartIcon from "@mui/icons-material/Start";
@@ -34,6 +36,7 @@ import { isDefined } from "remeda";
 
 import { useAddChildToProphylaxisSessionSidebar } from "@/lib/businessModules/dental/features/prophylaxisSessions/AddChildToProphylaxisSessionSidebar";
 import { ChangeReasonForAbsenceModal } from "@/lib/businessModules/dental/features/prophylaxisSessions/ChangeReasonForAbsenceModal";
+import { CloseProphylaxisSessionModal } from "@/lib/businessModules/dental/features/prophylaxisSessions/CloseProphylaxisSessionModal";
 import { canBeMarkedAbsent } from "@/lib/businessModules/dental/features/prophylaxisSessions/canBeMarkedAbsent";
 import {
   useFilteredParticipants,
@@ -52,7 +55,7 @@ import {
   ActionsItem,
   ActionsMenu,
 } from "@/lib/shared/components/buttons/ActionsMenu";
-import { displayBoolean } from "@/lib/shared/helpers/booleans";
+import { OpenModalButton } from "@/lib/shared/components/buttons/OpenModalButton";
 
 import { ParticipantFilter, ParticipantFilterDef } from "./ParticipantFilter";
 
@@ -60,13 +63,15 @@ const GENDER_FILTERS: ParticipantFilterDef<GenderFilter>[] = [
   { label: "Alle", value: "ANY" },
   { label: "männlich", value: "MALE" },
   { label: "weiblich", value: "FEMALE" },
+  { label: "andere", value: "OTHER" },
 ];
 
 const FLUORIDATION_CONSENT_FILTERS: ParticipantFilterDef<FluoridationConsentFilter>[] =
   [
     { label: "Alle", value: "ANY" },
-    { label: "Ja", value: "YES" },
-    { label: "Nein", value: "NO" },
+    { label: "ja", value: "YES" },
+    { label: "nein", value: "NO" },
+    { label: "liegt nicht vor", value: "NOT_AVAILABLE" },
   ];
 
 export function ProphylaxisSessionParticipantsTable() {
@@ -76,6 +81,7 @@ export function ProphylaxisSessionParticipantsTable() {
     useProphylaxisSessionStore((state) => state.fluoridationVarnish),
   );
   const isExamination = isFluoridation || isScreening;
+  const status = useProphylaxisSessionStore((state) => state.status);
   const prophylaxisSessionVersion = useProphylaxisSessionStore(
     (state) => state.version,
   );
@@ -168,55 +174,63 @@ export function ProphylaxisSessionParticipantsTable() {
   const presentParticipants = useFilteredPresentParticipants();
   const firstParticipant = presentParticipants[0];
 
+  const allParticipantsCompleted =
+    completedParticipants > 0 &&
+    completedParticipants === allParticipants.length;
+
   return (
     <TablePage
       controls={
         <ButtonBar
           left={
-            <Typography level="h3" component="h2">
-              Teilnehmende Kinder
-            </Typography>
+            <Stack direction="row" gap={3}>
+              <Typography level="h3" component="h2">
+                Teilnehmende Kinder
+              </Typography>
+              {(isScreening || isFluoridation) && (
+                <Stack direction="row" gap={2}>
+                  <Typography level="title-md">{`${completedParticipants} von ${allParticipants.length} abgeschlossen`}</Typography>
+                  <CheckCircleOutline color="success" />
+                </Stack>
+              )}
+            </Stack>
           }
           right={
-            <>
-              <AddChildButton />
-              {isExamination && firstParticipant !== undefined && (
-                <InternalLinkButton
-                  href={routeToExamination(firstParticipant.examinationId)}
-                  endDecorator={<StartIcon />}
-                >
-                  Prophylaxe starten
-                </InternalLinkButton>
-              )}
-            </>
+            status === ApiProphylaxisStatus.Open && (
+              <>
+                <AddChildButton />
+                {allParticipantsCompleted ? (
+                  <CloseProphylaxisButton />
+                ) : isExamination && firstParticipant !== undefined ? (
+                  <InternalLinkButton
+                    href={routeToExamination(firstParticipant.examinationId)}
+                    endDecorator={<StartIcon />}
+                  >
+                    Prophylaxe starten
+                  </InternalLinkButton>
+                ) : null}
+              </>
+            )
           }
           invertDomOrder={true}
         />
       }
     >
       <Divider />
-      <Stack direction="row" sx={{ justifyContent: "space-between" }}>
-        <Stack direction="row" gap={3} alignItems="center" flexWrap="wrap">
-          <Typography level="title-md">Filter:</Typography>
+      <Stack direction="row" gap={3} alignItems="center" flexWrap="wrap">
+        <Typography level="title-md">Filter:</Typography>
+        <ParticipantFilter
+          name="gender"
+          label="Geschlecht"
+          filters={GENDER_FILTERS}
+        />
+        {isFluoridation && (
           <ParticipantFilter
-            name="gender"
-            label="Geschlecht"
-            filters={GENDER_FILTERS}
+            name="fluoridationConsentGiven"
+            label="Fluoridierungseinverständnis"
+            filters={FLUORIDATION_CONSENT_FILTERS}
+            sx={{ marginLeft: { xxs: 0, xl: 5 } }}
           />
-          {isFluoridation && (
-            <ParticipantFilter
-              name="fluoridationConsentGiven"
-              label="Fluoridierungseinverständnis"
-              filters={FLUORIDATION_CONSENT_FILTERS}
-              sx={{ marginLeft: { xxs: 0, xl: 5 } }}
-            />
-          )}
-        </Stack>
-        {(isScreening || isFluoridation) && (
-          <Stack direction="row" gap={2}>
-            <Typography level="title-md">{`${completedParticipants} von ${allParticipants.length} abgeschlossen`}</Typography>
-            <CheckCircleOutline color="success" />
-          </Stack>
         )}
       </Stack>
       <DataTable
@@ -314,7 +328,7 @@ function columnDefs(
       ? [
           columnHelper.accessor("currentFluoridationConsent", {
             header: "Fluoridierungseinverständnis",
-            cell: (props) => displayBoolean(props.getValue()?.consented),
+            cell: (props) => formatBoolean(props.getValue()?.consented),
             enableSorting: true,
             meta: {
               canNavigate: { parentRow: true },
@@ -421,6 +435,20 @@ function AddChildButton() {
     >
       Kind hinzufügen
     </Button>
+  );
+}
+
+function CloseProphylaxisButton() {
+  return (
+    <OpenModalButton
+      color={"success"}
+      endDecorator={<CheckIcon />}
+      renderModal={(modalProps) => (
+        <CloseProphylaxisSessionModal {...modalProps} />
+      )}
+    >
+      Prophylaxe abschließen
+    </OpenModalButton>
   );
 }
 

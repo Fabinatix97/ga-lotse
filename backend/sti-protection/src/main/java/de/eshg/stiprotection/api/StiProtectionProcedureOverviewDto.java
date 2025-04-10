@@ -18,16 +18,28 @@ import java.util.UUID;
 
 @Schema(name = "StiProtectionProcedureOverview")
 public record StiProtectionProcedureOverviewDto(
-    @NotNull UUID id,
-    @NotNull Instant createdAt,
-    @NotNull ProcedureStatusDto status,
+    @Schema(description = "An unique identifier for the STI protection procedure.") @NotNull
+        UUID id,
+    @Schema(description = "The timestamp indicating when the procedure was created.") @NotNull
+        Instant createdAt,
+    @Schema(description = "The current status of the procedure.") @NotNull
+        ProcedureStatusDto status,
     @NotNull ConcernDto concern,
-    @Schema(type = "integer") @NotNull Year yearOfBirth,
+    @Schema(
+            type = "integer",
+            description = "Indicates the year of birth of the person.",
+            example = "1996")
+        @NotNull
+        Year yearOfBirth,
     CountryCode countryOfBirth,
     @NotNull GenderDto gender,
     @Valid AppointmentDto appointment,
-    String accessCode,
+    @Schema(description = "Unique code for patient identification.", example = "h28RQNDRXoffRMzqM")
+        String accessCode,
     @NotNull LabStatusDto labStatus,
-    String sampleBarCode,
-    Instant appointmentStart,
+    @Schema(
+            description = "Barcode for tracking the results with the external laboratory.",
+            example = "Lab-586172")
+        String sampleBarCode,
+    @Schema(description = "The start date and time of the appointment.") Instant appointmentStart,
     @NotNull StiProcedureOriginDto procedureOrigin) {}

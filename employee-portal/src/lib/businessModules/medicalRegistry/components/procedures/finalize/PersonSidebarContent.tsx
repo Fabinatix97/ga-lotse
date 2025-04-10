@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SidebarContent } from "@eshg/lib-employee-portal";
+import { SidebarContent, formatList } from "@eshg/lib-employee-portal";
 import { RadioGroupField } from "@eshg/lib-portal/components/formFields/RadioGroupField";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { ApiGetProcedureDraftResponse } from "@eshg/medical-registry-api";
@@ -17,7 +17,6 @@ import {
 import { SelectCard } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/SelectCard";
 import { mapToOptionalPhoneNumbers } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/helper";
 import { fullAddress } from "@/lib/shared/helpers/facilityUtils";
-import { join } from "@/lib/shared/helpers/strings";
 
 interface PersonSidebarContentProps {
   fieldName: string;
@@ -33,9 +32,9 @@ export function PersonSidebarContent({
   showNoMatchOption,
 }: PersonSidebarContentProps) {
   const { applicant } = procedure;
-  const name = join([applicant.lastName, applicant.firstName], ", ");
+  const name = formatList([applicant.lastName, applicant.firstName], ", ");
   const dateOfBirth = formatDate(applicant.dateOfBirth);
-  const formattedProfessional = join([name, dateOfBirth], ", ");
+  const formattedProfessional = formatList([name, dateOfBirth], ", ");
 
   return (
     <SidebarContent title="Eintrag anlegen" subtitle="Angaben zur Person">
@@ -54,7 +53,9 @@ export function PersonSidebarContent({
             <SelectCard
               key={person.id}
               value={person.id}
-              title={join([person.lastName, person.firstName], ", ") ?? ""}
+              title={
+                formatList([person.lastName, person.firstName], ", ") ?? ""
+              }
               texts={[
                 `Geb.: ${person.dateOfBirth ? formatDate(person.dateOfBirth) : "-"}`,
                 `Adresse: ${fullAddress(person.contactAddress) ?? "-"}`,

@@ -15,4 +15,5 @@ public record DataSourceInfo(
     @NotNull UUID id,
     @NotBlank String name,
     @NotNull DataSourceSensitivity sensitivity,
+    Integer kAnonymity,
     @NotNull @Valid List<Attribute> attributes) {}

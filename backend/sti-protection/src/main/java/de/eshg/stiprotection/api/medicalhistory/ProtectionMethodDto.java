@@ -7,7 +7,9 @@ package de.eshg.stiprotection.api.medicalhistory;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "ProtectionMethod")
+@Schema(
+    name = "ProtectionMethod",
+    description = "Various methods used for protection and prevention in sexual health contexts.")
 public enum ProtectionMethodDto {
   CONDOM,
   DENTAL_DAM,

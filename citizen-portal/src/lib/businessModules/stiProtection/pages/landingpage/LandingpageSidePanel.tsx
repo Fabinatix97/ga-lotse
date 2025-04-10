@@ -31,7 +31,7 @@ export function LandingpageSidePanel({ concern }: { concern: ApiConcern }) {
           {t("personal_area.create_appointment")}
         </InternalLinkButton>
         <InternalLinkButton
-          href={citizenRoutes.appointments.index(accessCode)}
+          href={citizenRoutes.personalArea.index(accessCode)}
           variant="outlined"
         >
           {t("personal_area.go_to_personal_area")}

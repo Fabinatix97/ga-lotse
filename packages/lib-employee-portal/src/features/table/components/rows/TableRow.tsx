@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import { styled } from "@mui/joy";
 import { Cell, Row, flexRender } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
@@ -13,6 +14,7 @@ import { RowNavigation } from "@/features/table/types/rowNavigation";
 
 const StyledRow = styled("tr")<{ subRow: boolean }>(({ theme, subRow }) => ({
   background: subRow ? theme.palette.background.level2 : undefined,
+  position: "relative",
   "&:focus-visible": {
     ...theme.focus.default,
     outlineOffset: "-2px",
@@ -34,14 +36,10 @@ function isFocusColumn<TData>(
   );
 }
 
-function getRowAriaLabel<TData>({ row, rowNavigation }: TableRowProps<TData>) {
-  const focusCell = row
+function isRowFocusable<TData>({ row, rowNavigation }: TableRowProps<TData>) {
+  return row
     .getVisibleCells()
-    .find((cell) => isFocusColumn(cell, rowNavigation?.focusColumnAccessorKey));
-
-  return isDefined(focusCell)
-    ? `${String(focusCell.getValue())} (Klicken zum Navigieren)`
-    : undefined;
+    .some((cell) => isFocusColumn(cell, rowNavigation?.focusColumnAccessorKey));
 }
 
 function isParentRow<TData>(row: Row<TData>) {
@@ -63,6 +61,7 @@ function useRowNavigation<TData>({
   rowNavigationRoute: string | undefined;
   handleNavigate: () => void;
   cellCanNavigate: (cell: Cell<TData, unknown>) => boolean;
+  cellIsLink: (cell: Cell<TData, unknown>) => boolean;
 } {
   const router = useRouter();
 
@@ -71,6 +70,7 @@ function useRowNavigation<TData>({
       rowNavigationRoute: undefined,
       handleNavigate: doNothing,
       cellCanNavigate: () => false,
+      cellIsLink: () => false,
     };
   }
 
@@ -85,6 +85,7 @@ function useRowNavigation<TData>({
       },
       cellCanNavigate: (cell) =>
         isDefined(rowNavigationOnClick) && canNavigate(row, cell),
+      cellIsLink: () => false,
     };
   }
 
@@ -98,6 +99,10 @@ function useRowNavigation<TData>({
     },
     cellCanNavigate: (cell) =>
       isDefined(rowNavigationRoute) && canNavigate(row, cell),
+    cellIsLink: (cell) =>
+      isDefined(rowNavigationRoute) &&
+      canNavigate(row, cell) &&
+      isFocusColumn(cell, rowNavigation?.focusColumnAccessorKey),
   };
 }
 
@@ -112,19 +117,18 @@ export function TableRow<TData>({
   rowNavigation,
   ...props
 }: TableRowProps<TData>) {
-  const rowLabel = getRowAriaLabel({ row, rowNavigation });
-  const { rowNavigationRoute, handleNavigate, cellCanNavigate } =
+  const { rowNavigationRoute, handleNavigate, cellCanNavigate, cellIsLink } =
     useRowNavigation({
       row,
       rowNavigation,
     });
+  const tabIndex = isRowFocusable({ row, rowNavigation }) ? 0 : undefined;
 
   return (
     <StyledRow
       data-testid={props["data-testid"]}
       subRow={!isParentRow(row)}
-      tabIndex={isDefined(rowLabel) ? 0 : undefined}
-      aria-label={rowLabel}
+      tabIndex={tabIndex}
       data-targetroute={rowNavigationRoute}
       onKeyDown={(event) => {
         switch (event.key) {
@@ -161,13 +165,21 @@ export function TableRow<TData>({
         })
         .map((cell) => {
           const canNavigate = cellCanNavigate(cell);
+          const cellFlexRenderer = flexRender(
+            cell.column.columnDef.cell,
+            cell.getContext(),
+          );
+          const isLink = cellIsLink(cell);
+          const isRowHeader =
+            cell.column.columnDef.meta?.isRowHeader ??
+            isFocusColumn(cell, rowNavigation?.focusColumnAccessorKey);
+          const isClickableElement =
+            canNavigate === false &&
+            isDefined(rowNavigation?.focusColumnAccessorKey);
+
           return (
             <DataCell
-              role={
-                cell.column.columnDef.meta?.isRowHeader
-                  ? "rowheader"
-                  : undefined
-              }
+              role={isRowHeader ? "rowheader" : undefined}
               colSpan={
                 isParentRow(row) &&
                 isDefined(cell.column.columnDef.meta?.spanWhenParentRow)
@@ -175,12 +187,28 @@ export function TableRow<TData>({
                   : undefined
               }
               canNavigate={canNavigate}
+              isClickableElement={isClickableElement}
               key={cell.id}
               meta={cell.column.columnDef.meta}
               className={canNavigate ? "cellCanNavigate" : undefined}
               onClick={canNavigate ? handleNavigate : undefined}
             >
-              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              {isLink ? (
+                <InternalLink
+                  sx={{
+                    color: "unset",
+                    "&:hover": {
+                      textDecorationLine: "none",
+                    },
+                  }}
+                  position="unset"
+                  href={rowNavigationRoute!}
+                >
+                  {cellFlexRenderer}
+                </InternalLink>
+              ) : (
+                cellFlexRenderer
+              )}
             </DataCell>
           );
         })}

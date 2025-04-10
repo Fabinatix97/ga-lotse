@@ -102,6 +102,7 @@ import org.springframework.util.CollectionUtils;
 
 @Service
 public class EvaluationService extends AbstractAggregationResultService {
+  private static final int MAX_QUASI_IDENTIFIER_COUNT = 5;
   private static final String EVALUATION_WITH_ID_NOT_FOUND = "Evaluation with given id not found";
 
   private final EvaluationRepository evaluationRepository;
@@ -214,11 +215,11 @@ public class EvaluationService extends AbstractAggregationResultService {
               evaluationTemplate.getDataSources().getFirst());
     }
 
-    List<AvailableDataSource> availableDataSources =
+    List<AvailableDataSource> relevantAvailableDataSources =
         dataSourceValidator.validateDataSourcesAndGetRelevantAvailableDataSources(
             List.of(dataSource));
     DataSourceSensitivity sensitivity =
-        DataSourceValidator.getMostRestrictiveSensitivity(availableDataSources);
+        DataSourceValidator.getMostRestrictiveSensitivity(relevantAvailableDataSources);
     if (!anonymized
         && sensitivity.equals(DataSourceSensitivity.SENSITIVE)
         && !businessModuleConfig.sensitiveDataAllowedForCurrentUser(
@@ -230,6 +231,20 @@ public class EvaluationService extends AbstractAggregationResultService {
         && !sensitivity.equals(DataSourceSensitivity.ANONYMOUS)
         && !featureToggle.isNewFeatureEnabled(StatisticsFeature.ANONYMIZATION)) {
       throw new BadRequestException("Data anonymization is required but feature is not enabled");
+    }
+
+    if (anonymized) {
+      if (!DataSourceValidator.getCanBeAnonymized(relevantAvailableDataSources)) {
+        throw new BadRequestException("Anonymization is not possible for this data source");
+      }
+      int countQuasiIdentifyers =
+          DataSourceValidator.countQuasiIdentifyingAttributes(
+              dataSource, relevantAvailableDataSources);
+      if (countQuasiIdentifyers > MAX_QUASI_IDENTIFIER_COUNT) {
+        throw new BadRequestException(
+            "A maximum of %s quasi identifying attributes is allowed for anonymization. %s quasi identifying attributes are selected"
+                .formatted(MAX_QUASI_IDENTIFIER_COUNT, countQuasiIdentifyers));
+      }
     }
 
     Evaluation evaluation =
@@ -709,12 +724,6 @@ public class EvaluationService extends AbstractAggregationResultService {
   static boolean hasNoDiagrams(Evaluation evaluation) {
     return evaluation.getAnalyses().isEmpty()
         || evaluation.getAnalyses().stream().allMatch(analysis -> analysis.getDiagrams().isEmpty());
-  }
-
-  @Transactional
-  public void setState(UUID evaluationId, AggregationResultState state) {
-    Evaluation evaluation = getEvaluationInternal(evaluationId);
-    evaluation.setState(state);
   }
 
   @Transactional

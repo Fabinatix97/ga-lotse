@@ -36,9 +36,7 @@ export function ViewAppointmentDetailsPage() {
           </PageTitle>
           <TwoColumnGrid
             content={<AppointmentDetailsContent />}
-            sidePanel={
-              <AppointmentDetailsSidePanel concern={procedure.concern} />
-            }
+            sidePanel={<AppointmentDetailsSidePanel />}
           />
         </FormDataProvider>
       </PageContent>

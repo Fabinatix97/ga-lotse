@@ -5,7 +5,7 @@
 
 package de.eshg.base.config.persistence;
 
-import de.eshg.departmentinfo.domain.AbstractDepartmentInfoConfig;
+import de.eshg.config.domain.AbstractDepartmentInfoConfig;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.AssociationOverride;

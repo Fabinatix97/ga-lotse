@@ -4,13 +4,13 @@
  */
 
 import { ApiCountryCode } from "@eshg/base-api";
+import { FileField } from "@eshg/lib-employee-portal";
 import {
   MedicalRegistryCreateProcedureFormValues,
   RequiredDocumentsFormValues,
 } from "@eshg/lib-portal/businessModules/medicalRegistry/medicalRegistryCreateProcedureFormValues";
-import { FileType } from "@eshg/lib-portal/components/formFields/file/FileType";
+import { FileType } from "@eshg/lib-portal/components/formFields/file/types";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { validateFile } from "@eshg/lib-portal/helpers/validators";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
 import { ApiTypeOfChange } from "@eshg/medical-registry-api";
 import { Add, DeleteOutlined } from "@mui/icons-material";
@@ -20,7 +20,6 @@ import { Fragment } from "react";
 
 import { useServerConfig } from "@/lib/baseModule/api/queries/config";
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
-import { FileField } from "@/lib/shared/components/formFields/file/FileField";
 
 const MAX_OTHER_RELEVANT_DOCUMENTS = 3;
 
@@ -60,10 +59,7 @@ export function RequiredDocumentsForm(props: RequiredDocumentsFormProps) {
                 "Berufserlaubnisurkunde / Approbationsurkunde als JPG hochladen"
               }
               accept={FileType.Jpeg}
-              validate={validateFile(
-                FileType.Jpeg.extensions,
-                config.maxFileSize,
-              )}
+              maxFileSize={config.maxFileSize}
               required={
                 changeType === ApiTypeOfChange.NewRegistration ||
                 changeType === ApiTypeOfChange.ReRegistration
@@ -81,8 +77,8 @@ export function RequiredDocumentsForm(props: RequiredDocumentsFormProps) {
           name={fieldName("identificationDocument")}
           label={"Ausweis / Reisepass als JPG hochladen"}
           accept={FileType.Jpeg}
+          maxFileSize={config.maxFileSize}
           required={requiredFieldMessage}
-          validate={validateFile(FileType.Jpeg.extensions, config.maxFileSize)}
         />
       </Grid>
       <Grid xxl={6} />
@@ -94,11 +90,8 @@ export function RequiredDocumentsForm(props: RequiredDocumentsFormProps) {
               name={fieldName("workPermit")}
               label={"Arbeitserlaubnis als JPG hochladen"}
               accept={FileType.Jpeg}
+              maxFileSize={config.maxFileSize}
               required={requiredFieldMessage}
-              validate={validateFile(
-                FileType.Jpeg.extensions,
-                config.maxFileSize,
-              )}
             />
           </Grid>
           <Grid xxl={6} />
@@ -124,17 +117,14 @@ export function RequiredDocumentsForm(props: RequiredDocumentsFormProps) {
                       label={"Sonstiges Dokument als JPG hochladen"}
                       accept={FileType.Jpeg}
                       required={requiredFieldMessage}
-                      validate={validateFile(
-                        FileType.Jpeg.extensions,
-                        config.maxFileSize,
-                      )}
+                      maxFileSize={config.maxFileSize}
                     />
                     <IconButton
                       aria-label="Dokument löschen"
                       color="neutral"
                       variant="outlined"
                       sx={{
-                        marginTop: "27px",
+                        alignSelf: "center",
                         "--Icon-fontSize": (theme) => theme.fontSize.xl,
                       }}
                       onClick={() => remove(index)}

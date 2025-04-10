@@ -4,16 +4,17 @@
  */
 
 export enum ClientState {
-  Registration = "REGISTRATION",
-  Idle = "IDLE",
-  Authorized = "AUTHORIZED",
-  ClientCreated = "CLIENT_CREATED",
-  ReadyForEncryption = "READY_FOR_ENCRYPTION",
-  CreateBackupKey = "CREATE_BACKUP_KEY",
-  RestoreBackupKey = "RESTORE_BACKUP_KEY",
-  Prepared = "PREPARED",
-  Restart = "RESTART",
-  Reset = "RESET",
+  RegisterMatrixUser = "REGISTER_MATRIX_USER",
+  CreateMatrixClient = "CREATE_MATRIX_CLIENT",
+  StartMatrixClient = "START_MATRIX_CLIENT",
+  WaitUntilClientPrepared = "WAIT_UNTIL_CLIENT_PREPARED",
+  InitEncryption = "INIT_ENCRYPTION",
+  CreateKeyBackup = "CREATE_KEY_BACKUP",
+  RestoreKeyBackup = "RESTORE_KEY_BACKUP",
+  Ready = "READY",
+  Restart = "REFRESH_CHAT",
+  HardReset = "HARD_RESET",
+  FactoryReset = "FACTORY_RESET",
   Error = "ERROR",
 }
 

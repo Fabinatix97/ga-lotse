@@ -6,6 +6,7 @@
 import {
   ButtonBar,
   DataTable,
+  NoSearchResults,
   Pagination,
   TablePage,
   TableSheet,
@@ -25,7 +26,6 @@ import { useActivateGeoShape } from "@/lib/businessModules/statistics/api/mutati
 import { useArchiveGeoShape } from "@/lib/businessModules/statistics/api/mutations/useArchiveGeoShape";
 import { useDeleteGeoShape } from "@/lib/businessModules/statistics/api/mutations/useDeleteGeoShape";
 import { useGetGeoShapes } from "@/lib/businessModules/statistics/api/queries/useGetGeoShapes";
-import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 
 import { geoShapeTableColumns } from "./columns";
 

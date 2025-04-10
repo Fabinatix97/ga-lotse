@@ -12,8 +12,8 @@ import jakarta.persistence.Embeddable;
 import java.time.LocalDate;
 
 @Embeddable
-@DataSensitivity(SensitivityLevel.SENSITIVE)
 public record Medication(
-    @Column(nullable = false) String name,
-    @Column(nullable = false) String dose,
-    @Column(nullable = false) LocalDate prescriptionDate) {}
+    @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE) @Column(nullable = false) String name,
+    @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE) @Column(nullable = false) String dose,
+    @DataSensitivity(SensitivityLevel.SENSITIVE) @Column(nullable = false)
+        LocalDate prescriptionDate) {}

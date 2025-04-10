@@ -15,6 +15,7 @@ import de.eshg.lib.aggregation.BusinessModuleAggregationHelper;
 import de.eshg.lib.aggregation.BusinessModuleClient;
 import de.eshg.lib.aggregation.ClientResponse;
 import de.eshg.lib.statistics.api.Attribute;
+import de.eshg.lib.statistics.api.DataPrivacyCategory;
 import de.eshg.lib.statistics.api.DataSourceInfo;
 import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.api.GetDataSourcesResponse;
@@ -128,12 +129,43 @@ public class DataSourceAggregationService {
         dataSource.id(),
         dataSource.name(),
         dataSource.sensitivity(),
-        !DataSourceSensitivity.ANONYMOUS.equals(dataSource.sensitivity()) && canBeAnonymized(),
+        canBeAnonymized(dataSource),
         mapAndExtendAttributes(dataSource.attributes(), baseAvailableDataSources));
   }
 
-  private boolean canBeAnonymized() {
-    return statisticsFeatureToggle.isNewFeatureEnabled(StatisticsFeature.ANONYMIZATION);
+  private boolean canBeAnonymized(DataSourceInfo dataSource) {
+    return statisticsFeatureToggle.isNewFeatureEnabled(StatisticsFeature.ANONYMIZATION)
+        && !DataSourceSensitivity.ANONYMOUS.equals(dataSource.sensitivity())
+        && dataSource.kAnonymity() != null
+        && noDataPrivacyCategoryMissing(dataSource)
+        && noIntervalConfigMissing(dataSource)
+        && noSensitiveConfigMissing(dataSource);
+  }
+
+  private static boolean noDataPrivacyCategoryMissing(DataSourceInfo dataSource) {
+    return dataSource.attributes().stream()
+        .noneMatch(
+            attribute ->
+                attribute.dataPrivacyCategory() == null && !isBaseModuleId(attribute.valueType()));
+  }
+
+  private static boolean noIntervalConfigMissing(DataSourceInfo dataSource) {
+    return dataSource.attributes().stream()
+        .noneMatch(
+            attribute ->
+                DataPrivacyCategory.QUASI_IDENTIFYING.equals(attribute.dataPrivacyCategory())
+                    && (attribute.valueType().equals(ValueType.INTEGER)
+                        || attribute.valueType().equals(ValueType.DECIMAL))
+                    && attribute.intervalConfiguration() == null);
+  }
+
+  private static boolean noSensitiveConfigMissing(DataSourceInfo dataSource) {
+    return dataSource.attributes().stream()
+        .noneMatch(
+            attribute ->
+                DataPrivacyCategory.SENSITIVE.equals(attribute.dataPrivacyCategory())
+                    && attribute.lDiversity() == null
+                    && attribute.tCloseness() == null);
   }
 
   public static boolean isSensitiveDataAllowed(

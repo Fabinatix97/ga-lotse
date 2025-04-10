@@ -13,7 +13,7 @@ import { ApiDentitionType, ApiTooth } from "@eshg/dental-api";
 import { createStore } from "zustand";
 
 import { calculateDmftValuesByDentitionType } from "./actions/dmftValues";
-import { initFocus, setFocus } from "./actions/focus";
+import { setFocus } from "./actions/focus";
 import { NavigateDirection, navigateFrom } from "./actions/navigateFrom";
 import { navigateTo } from "./actions/navigateTo";
 import {
@@ -112,7 +112,7 @@ export function initDentalExaminationStore(
   return {
     currentView,
     dentition,
-    currentFocus: initFocus(currentView, dentition.Q1, "FIRST_TOOTH"),
+    currentFocus: undefined,
     dmftValues: calculateDmftValuesByDentitionType(dentition),
     previousToothDiagnoses,
     dirty: false,

@@ -4,6 +4,7 @@
  */
 
 import {
+  MultiFormButtonBar,
   SidebarActions,
   SidebarContent,
   SidebarForm,
@@ -26,7 +27,6 @@ import {
   VACCINATION_CONSULTATION_TRAVEL_TIME_UNITS,
   VACCINATION_CONSULTATION_TRAVEL_TYPE_OPTIONS,
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/options";
-import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { validatePositiveInteger } from "@/lib/shared/helpers/validators";
 
 export interface TravelDataFormValues {

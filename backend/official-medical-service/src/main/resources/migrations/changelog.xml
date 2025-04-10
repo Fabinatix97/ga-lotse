@@ -11,4 +11,7 @@
   <include file="migrations/0001_initial.xml"/>
   <include file="migrations/0002_opening_hours_update.xml"/>
   <include file="migrations/0003_procedure_notification.xml"/>
+  <include file="migrations/0004_add_medicalopinion_cutoffdate.xml"/>
+  <include file="migrations/0005_labcodes.xml"/>
+  <include file="migrations/0006_anamnesis.xml"/>
 </databaseChangeLog>

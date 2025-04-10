@@ -17,6 +17,7 @@ import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
 import de.eshg.base.centralfile.api.person.GetReferencePersonResponse;
 import de.eshg.base.centralfile.api.person.PersonKeyAttributes;
+import de.eshg.lib.procedure.api.ProcedureSearchParameters;
 import de.eshg.lib.procedure.domain.model.PersonType;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
@@ -29,7 +30,6 @@ import de.eshg.lib.procedure.helper.FacilityFileStateSearchableStringFormatter;
 import de.eshg.lib.procedure.helper.PersonFileStateSearchableStringFormatter;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Subquery;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -52,6 +52,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
+import org.springframework.util.StringUtils;
 
 @Component
 public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, ?, ?>> {
@@ -207,27 +208,47 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
   }
 
   public List<ProcedureT> searchProceduresByPerson(
-      String firstName, String lastName, LocalDate dateOfBirth, PersonType personType) {
-    List<UUID> fileStateIds =
-        personApi.searchReferencePersons(firstName, lastName, dateOfBirth).persons().stream()
-            .map(GetReferencePersonResponse::id)
-            .map(
-                referencePersonId ->
-                    personApi
-                        .getPersonFileStateIdsAssociatedWithReferencePerson(referencePersonId)
-                        .fileStateIds())
-            .flatMap(Collection::stream)
-            .toList();
-    return procedureRepository.findByRelatedPersonsCentralFileStateIds(fileStateIds, personType);
+      ProcedureSearchParameters searchParameters, PersonType personType) {
+
+    if (isFullSearch(searchParameters)) {
+      return processSearchResult(performFullSearch(searchParameters), personType);
+    } else {
+      return processSearchResult(performPartialSearch(searchParameters), personType).stream()
+          .filter(procedure -> procedure.getProcedureStatus().isOpen())
+          .toList();
+    }
   }
 
-  public List<ProcedureT> searchProceduresByPartialPersonData(
-      String firstName, String lastName, LocalDate dateOfBirth, PersonType personType) {
+  private static boolean isFullSearch(ProcedureSearchParameters searchParameters) {
+    return StringUtils.hasText(searchParameters.searchFirstName())
+        && StringUtils.hasText(searchParameters.searchLastName())
+        && (searchParameters.searchDateOfBirth() != null);
+  }
+
+  private List<GetReferencePersonResponse> performFullSearch(
+      ProcedureSearchParameters searchParameters) {
+    return personApi
+        .searchReferencePersons(
+            searchParameters.searchFirstName(),
+            searchParameters.searchLastName(),
+            searchParameters.searchDateOfBirth())
+        .persons();
+  }
+
+  private List<GetReferencePersonResponse> performPartialSearch(
+      ProcedureSearchParameters searchParameters) {
+    return personApi
+        .searchReferencePersonsWithPartialKnowledgeFactors(
+            searchParameters.searchFirstName(),
+            searchParameters.searchLastName(),
+            searchParameters.searchDateOfBirth())
+        .persons();
+  }
+
+  private List<ProcedureT> processSearchResult(
+      List<GetReferencePersonResponse> searchResult, PersonType personType) {
     List<UUID> fileStateIds =
-        personApi
-            .searchReferencePersonsWithPartialKnowledgeFactors(firstName, lastName, dateOfBirth)
-            .persons()
-            .stream()
+        searchResult.stream()
             .map(GetReferencePersonResponse::id)
             .map(
                 referencePersonId ->

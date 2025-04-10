@@ -5,10 +5,15 @@
 
 "use client";
 
-import { Grid, Stack } from "@mui/joy";
+import { ApiDataOrigin } from "@eshg/base-api";
+import { WarningAmberOutlined } from "@mui/icons-material";
+import { Alert, Grid, Stack } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
-import { useGetProcedureDetails } from "@/lib/businessModules/officialMedicalService/api/queries/employeeOmsProcedureApi";
+import {
+  useGetAllDocuments,
+  useGetProcedureDetails,
+} from "@/lib/businessModules/officialMedicalService/api/queries/employeeOmsProcedureApi";
 import { AdditionalInfoPanel } from "@/lib/businessModules/officialMedicalService/components/procedures/details/AdditionalInfoPanel";
 import { AffectedPersonPanel } from "@/lib/businessModules/officialMedicalService/components/procedures/details/AffectedPersonPanel";
 import { AppointmentsPanel } from "@/lib/businessModules/officialMedicalService/components/procedures/details/AppointmentsPanel";
@@ -28,14 +33,23 @@ interface ProcedureDetailsTabProps {
 export function ProcedureDetailsTab({
   procedureId,
 }: Readonly<ProcedureDetailsTabProps>) {
-  const [{ data: procedure }] = useSuspenseQueries({
-    queries: [useGetProcedureDetails(procedureId)],
+  const [{ data: procedure }, { data: documents }] = useSuspenseQueries({
+    queries: [
+      useGetProcedureDetails(procedureId),
+      useGetAllDocuments(procedureId),
+    ],
   });
 
   return (
     <DetailsGrid data-testid="procedure-detail-page">
       <Grid xs={9}>
         <Stack spacing={SPACING}>
+          {procedure.affectedPerson.dataOrigin === ApiDataOrigin.External && (
+            <Alert color={"warning"} startDecorator={<WarningAmberOutlined />}>
+              Der Entwurf kommt aus einer externen Quelle. Sie müssen die
+              Personendaten prüfen, bevor Sie den Vorgang anlegen können.
+            </Alert>
+          )}
           <AffectedPersonPanel procedure={procedure} />
           <FacilityPanel procedure={procedure} />
           <AppointmentsPanel procedure={procedure} />
@@ -50,6 +64,7 @@ export function ProcedureDetailsTab({
           )}
           <ProcedureActionsPanel
             procedure={procedure}
+            documents={documents}
             dataTestid="procedure-actions"
           />
         </Stack>

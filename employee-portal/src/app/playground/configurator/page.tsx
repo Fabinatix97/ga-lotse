@@ -124,19 +124,15 @@ export default function ConfiguratorPage() {
                 description: "Lorem Ipsum etc",
                 content: {
                   type: "text",
-                  subsection: [
+                  title: "subsection title",
+                  entries: [
                     {
-                      title: "subsection title",
-                      entries: [
-                        {
-                          label: "Label",
-                          content: "Content",
-                        },
-                        {
-                          label: "Label 2",
-                          content: "Content 2",
-                        },
-                      ],
+                      label: "Label",
+                      content: "Content",
+                    },
+                    {
+                      label: "Label 2",
+                      content: "Content 2",
                     },
                   ],
                 },
@@ -152,10 +148,10 @@ export default function ConfiguratorPage() {
                       label: "Label 1",
                       value: "VALUE_1",
                       readonly: false,
-                      content: {
-                        type: "text",
-                        subsection: [
-                          {
+                      sections: [
+                        {
+                          content: {
+                            type: "text",
                             title: "Wambo",
                             entries: [
                               {
@@ -164,27 +160,31 @@ export default function ConfiguratorPage() {
                               },
                             ],
                           },
-                        ],
-                      },
+                        },
+                      ],
                     },
                     {
                       label: "Label 2",
                       value: "VALUE_2",
                       readonly: false,
-                      content: {
-                        type: "field",
-                        rows: [
-                          {
-                            fields: [
+                      sections: [
+                        {
+                          content: {
+                            type: "field",
+                            rows: [
                               {
-                                type: "text",
-                                label: "Text field label",
-                                name: "text_name3",
+                                fields: [
+                                  {
+                                    type: "text",
+                                    label: "Text field label",
+                                    name: "text_name3",
+                                  },
+                                ],
                               },
                             ],
                           },
-                        ],
-                      },
+                        },
+                      ],
                     },
                   ],
                 },
@@ -227,7 +227,7 @@ export default function ConfiguratorPage() {
           // eslint-disable-next-line no-console
           console.log("Download: ", fileName);
         }}
-        status="COMPLETE"
+        status="complete"
       />
     </MainContentLayout>
   );

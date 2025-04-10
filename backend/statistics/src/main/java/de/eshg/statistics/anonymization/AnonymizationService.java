@@ -9,6 +9,7 @@ import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.statistics.aggregation.DataAggregationService;
 import de.eshg.statistics.aggregation.EvaluationService;
 import de.eshg.statistics.aggregation.ReportService;
+import de.eshg.statistics.exception.AnonymizationFailedException;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AnonymizationConfiguration;
@@ -23,6 +24,7 @@ import de.eshg.statistics.persistence.entity.entry.DecimalEntry;
 import de.eshg.statistics.persistence.entity.entry.IntegerEntry;
 import de.eshg.statistics.persistence.entity.entry.TextEntry;
 import de.eshg.statistics.persistence.entity.report.Report;
+import de.eshg.statistics.persistence.repository.CellEntryRepository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.ParseException;
@@ -59,14 +61,17 @@ public class AnonymizationService {
   private final EvaluationService evaluationService;
   private final ReportService reportService;
   private final DataAggregationService dataAggregationService;
+  private final CellEntryRepository cellEntryRepository;
 
   public AnonymizationService(
       EvaluationService evaluationService,
       ReportService reportService,
-      DataAggregationService dataAggregationService) {
+      DataAggregationService dataAggregationService,
+      CellEntryRepository cellEntryRepository) {
     this.evaluationService = evaluationService;
     this.reportService = reportService;
     this.dataAggregationService = dataAggregationService;
+    this.cellEntryRepository = cellEntryRepository;
   }
 
   @Transactional(readOnly = true)
@@ -87,21 +92,30 @@ public class AnonymizationService {
 
   private DataHolderBeforeAnonymization prepareAnonymization(
       AbstractAggregationResult aggregationResult) {
-    if (getQuasiIdentifyingColumnStream(aggregationResult).findAny().isEmpty()) {
+    List<TableColumn> relevantTableColumns =
+        getRelevantTableColumns(aggregationResult.getTableColumns());
+    if (relevantTableColumns.isEmpty() || aggregationResult.getNumberOfTableRows() == 0) {
       return null;
     }
     if (aggregationResult.getKAnonymity() == null) {
       throw new BadRequestException(
           "No kAnonymity defined for %s".formatted(aggregationResult.getExternalId()));
     }
+    if (relevantTableColumns.stream()
+        .noneMatch(
+            column ->
+                TableColumnDataPrivacyCategory.QUASI_IDENTIFYING.equals(
+                    column.getAnonymizationConfiguration().getDataPrivacyCategory()))) {
+      relevantTableColumns.forEach(this::checkLDiversityIsOk);
+      return null;
+    }
 
     ARXConfiguration config = ARXConfiguration.create();
-    config.addPrivacyModel(new KAnonymity(aggregationResult.getKAnonymity()));
+    if (getQuasiIdentifyingColumnStream(aggregationResult).findAny().isPresent()) {
+      config.addPrivacyModel(new KAnonymity(aggregationResult.getKAnonymity()));
+    }
 
     Data.DefaultData data = Data.create();
-
-    List<TableColumn> relevantTableColumns =
-        getRelevantTableColumns(aggregationResult.getTableColumns());
     data.add(
         Stream.concat(
                 Stream.of(ROW_ID_COLUMN),
@@ -114,7 +128,7 @@ public class AnonymizationService {
         .filter(
             tableColumn ->
                 TableColumnDataPrivacyCategory.SENSITIVE.equals(
-                    getTableColumnDataPrivacyCategory(tableColumn)))
+                    tableColumn.getAnonymizationConfiguration().getDataPrivacyCategory()))
         .forEach(tableColumn -> configureSensitiveColumnConfig(tableColumn, config));
 
     Map<String, Interval<Number>> tableColumnSearchKeyToMinMaxInterval = new HashMap<>();
@@ -134,36 +148,60 @@ public class AnonymizationService {
         tableColumnSearchKeyToMinMaxInterval);
   }
 
+  private List<TableColumn> getRelevantTableColumns(List<TableColumn> tableColumns) {
+    return tableColumns.stream()
+        .filter(
+            tableColumn -> {
+              AnonymizationConfiguration anonymizationConfiguration =
+                  tableColumn.getAnonymizationConfiguration();
+              if (anonymizationConfiguration == null
+                  || anonymizationConfiguration.getDataPrivacyCategory() == null) {
+                throw new IllegalStateException(
+                    "Data privacy not configured %s".formatted(tableColumn.getSearchKey()));
+              }
+              // insensitive columns not relevant for anonymization
+              return !anonymizationConfiguration
+                  .getDataPrivacyCategory()
+                  .equals(TableColumnDataPrivacyCategory.INSENSITIVE);
+            })
+        .toList();
+  }
+
+  private void checkLDiversityIsOk(TableColumn tableColumn) {
+    long count =
+        switch (tableColumn.getValueType()) {
+          case BOOLEAN -> cellEntryRepository.countDistinctBooleanValues(tableColumn);
+          case DATE, TEXT, VALUE_WITH_OPTIONS ->
+              cellEntryRepository.countDistinctTextValues(tableColumn);
+          case DECIMAL -> cellEntryRepository.countDistinctDecimalValues(tableColumn);
+          case INTEGER -> cellEntryRepository.countDistinctIntegerValues(tableColumn);
+          default ->
+              throw new IllegalStateException(
+                  "Unexpected sensitive column %s".formatted(tableColumn.getSearchKey()));
+        };
+    if (tableColumn.getMinMaxNullUnknownValues().getNumberOfNullEntries() > 0) {
+      count++;
+    }
+
+    Integer lDiversity = tableColumn.getAnonymizationConfiguration().getLDiversity();
+    String error = "TableColumn %s does not have at least %s different values";
+    if (lDiversity == null) {
+      if (count < 2) {
+        throw new AnonymizationFailedException(error.formatted(tableColumn.getSearchKey(), 2));
+      }
+    } else if (count < lDiversity) {
+      throw new AnonymizationFailedException(
+          error.formatted(tableColumn.getSearchKey(), lDiversity));
+    }
+  }
+
   private static Stream<TableColumn> getQuasiIdentifyingColumnStream(
       AbstractAggregationResult aggregationResult) {
     return aggregationResult.getTableColumns().stream()
         .filter(
             tableColumn ->
                 TableColumnDataPrivacyCategory.QUASI_IDENTIFYING.equals(
-                    getTableColumnDataPrivacyCategory(tableColumn)));
-  }
-
-  private List<TableColumn> getRelevantTableColumns(List<TableColumn> tableColumns) {
-    return tableColumns.stream()
-        .filter(
-            tableColumn -> {
-              TableColumnDataPrivacyCategory category =
-                  getTableColumnDataPrivacyCategory(tableColumn);
-              if (category == null) {
-                throw new IllegalStateException(
-                    "Data privacy not configured %s".formatted(tableColumn.getSearchKey()));
-              }
-              // insensitive columns not relevant for anonymization
-              return !category.equals(TableColumnDataPrivacyCategory.INSENSITIVE);
-            })
-        .toList();
-  }
-
-  private static TableColumnDataPrivacyCategory getTableColumnDataPrivacyCategory(
-      TableColumn tableColumn) {
-    return tableColumn.getAnonymizationConfiguration() == null
-        ? null
-        : tableColumn.getAnonymizationConfiguration().getDataPrivacyCategory();
+                    tableColumn.getAnonymizationConfiguration().getDataPrivacyCategory()));
   }
 
   private static void configureSensitiveColumnConfig(
@@ -215,7 +253,8 @@ public class AnonymizationService {
   private static Optional<Interval<Number>> configureColumnData(
       TableColumn tableColumn, Data.DefaultData data) {
     Optional<Interval<Number>> minMaxIntervalOptional = Optional.empty();
-    TableColumnDataPrivacyCategory category = getTableColumnDataPrivacyCategory(tableColumn);
+    TableColumnDataPrivacyCategory category =
+        tableColumn.getAnonymizationConfiguration().getDataPrivacyCategory();
     switch (Objects.requireNonNull(category)) {
       case SENSITIVE ->
           data.getDefinition()
@@ -301,12 +340,12 @@ public class AnonymizationService {
       case DecimalEntry decimalEntry ->
           getDecimalValueInInterval(
               decimalEntry.getBigDecimalValue(),
-              getTableColumnDataPrivacyCategory(cellEntry.getTableColumn()),
+              cellEntry.getTableColumn().getAnonymizationConfiguration().getDataPrivacyCategory(),
               minMaxIntervalOfColumn);
       case IntegerEntry integerEntry ->
           getIntegerValueInInterval(
               integerEntry.getIntegerValue(),
-              getTableColumnDataPrivacyCategory(cellEntry.getTableColumn()),
+              cellEntry.getTableColumn().getAnonymizationConfiguration().getDataPrivacyCategory(),
               minMaxIntervalOfColumn);
       default -> cellEntry.getValue() == null ? "" : cellEntry.getValue().toString();
     };

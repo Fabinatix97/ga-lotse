@@ -26,12 +26,12 @@ export function citizenRoutes(locale: SupportedLanguage | undefined) {
           bookAppointment: path("/termin-buchen"),
         }),
       ),
-      appointments: defineRoutes(
-        stiProtectionPath("/meine-termine"),
-        (appointmentsPath) => ({
-          index: accessCodeRoute(appointmentsPath("/")),
-          details: appointmentsPath("/termin-info"),
-          anamnesis: accessCodeRoute(appointmentsPath("/anamnesebogen")),
+      personalArea: defineRoutes(
+        stiProtectionPath("/mein-bereich"),
+        (path) => ({
+          index: accessCodeRoute(path("/")),
+          appointments: path("/termine"),
+          anamnesis: path("/anamnesebogen"),
         }),
       ),
     }),
@@ -51,6 +51,6 @@ export function useConcernedCitizenRoutes(concern?: ApiConcern) {
     concern === ApiConcern.SexWork ? "sexWork" : "stiConsultation";
   return {
     concernPath: routes[concernPath],
-    appointments: routes.appointments,
+    personalArea: routes.personalArea,
   };
 }
